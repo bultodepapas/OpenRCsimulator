@@ -1,0 +1,28 @@
+{
+  "format": "openrc-d8b-r2b-trace-inventory-v1",
+  "label": "intermediate-480-v25-abrupt",
+  "generated_case_count": 1,
+  "retained_case_count": 1,
+  "retained_case_ids": [
+    "v25_abrupt_positive_trim"
+  ],
+  "generated_total_bytes": 9438658,
+  "retained_compressed_bytes": 2616555,
+  "cases": [
+    {
+      "case_id": "v25_abrupt_positive_trim",
+      "samples": 2401,
+      "expected_samples": 2401,
+      "complete": true,
+      "finite": true,
+      "generated_sha256": "488d5d874fb492b1da502db433f6a0381f58ea3d36fd1f0fa0264e6baf3a745b",
+      "generated_bytes": 9438658,
+      "trace_retained": true,
+      "file": "v25_abrupt_positive_trim.csv.gz",
+      "compression": "gzip",
+      "compressed_sha256": "ca13ad9b7af2cfbc913c5153b4694ba1518f4b5bed59cf2b4ac831cefd1f497e",
+      "compressed_bytes": 2616555,
+      "lossless_verified": true
+    }
+  ]
+}

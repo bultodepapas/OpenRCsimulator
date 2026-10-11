@@ -46,6 +46,7 @@ var session: Node
 var recorder: RefCounted
 ## The catalog aircraft to fly. Set before adding the node (Home does); otherwise --aircraft=<id>, else the Ugly Stik.
 var aircraft_id := ""
+var _experimental_aircraft_path := ""
 var _electric_demo: String = ""
 ## Interactive Home choice only; CLI and scripted routes retain the airborne default.
 var start_choice: String = "airborne"
@@ -227,6 +228,20 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		get_tree().quit(ERR_INVALID_PARAMETER)
 		return
+	var experimental_input_sha256 := ""
+	if args.has("experimental-aircraft-data"):
+		var experimental: Dictionary = _validate_experimental_aircraft_data(
+			args.get("experimental-aircraft-data"), aircraft_id, _scripted, args.has("electric-demo"))
+		if not experimental.ok:
+			printerr("experimental aircraft data refused: ", experimental.error)
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_experimental_aircraft_path = experimental.path
+		experimental_input_sha256 = experimental.input_sha256
+		_note = "EXPERIMENTAL: wing polar; aircraft-specific flight validation pending."
+		print("EXPERIMENTAL AIRCRAFT DATA: wing polar, aircraft-specific flight validation pending: ", _experimental_aircraft_path)
 	_auto_zoom = str(args.get("autozoom", "1")) != "0"
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
@@ -256,8 +271,20 @@ func _ready() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
-	var physics_path: String = str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_")
+	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
 	session.setup(physics_path)
+	if not _experimental_aircraft_path.is_empty():
+		var candidate_model: Dictionary = session.aircraft.get("model", {}) if session.aircraft.get("ok", false) else {}
+		var candidate_envelope: Dictionary = candidate_model.get("envelope", {})
+		if not session.aircraft.get("ok", false) or candidate_model.get("id", "") != Catalog.DEFAULT_ID or not candidate_envelope.has("wing_polar") or session.aircraft.get("input_identity", {}).get("sha256", "") != experimental_input_sha256:
+			var load_reason := "; ".join(session.aircraft.get("errors", PackedStringArray())) if not session.aircraft.get("ok", false) else "loaded model identity/polar is missing, or candidate changed during validation"
+			printerr("experimental aircraft data refused after load: ", load_reason)
+			session.free()
+			session = null
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 	if args.has("shaft-integrator") and not session.is_flyable():
 		printerr("shaft integrator refused: ", session.pause_reason)
 		session.free()
@@ -292,6 +319,17 @@ func _ready() -> void:
 	if session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root)
 	session.reset()
+	if not _experimental_aircraft_path.is_empty() and (not session.is_flyable() or not session.surface_error.is_empty()):
+		var candidate_flight_error: String = session.start_error if not session.start_error.is_empty() else session.pause_reason
+		if candidate_flight_error.is_empty():
+			candidate_flight_error = session.surface_error if not session.surface_error.is_empty() else "candidate did not produce a flyable start"
+		printerr("experimental aircraft data refused before flight: ", candidate_flight_error)
+		session.sim.set_paused(true)
+		session.sim.process_mode = Node.PROCESS_MODE_DISABLED
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
 	if interactive_start and not session.is_flyable():
 		startup_error = session.start_error if not session.start_error.is_empty() else session.pause_reason
 		if startup_error.is_empty():
@@ -400,6 +438,8 @@ func _update_hud() -> void:
 		lines.append(tr("EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m") % [true_speed * M.sqrt_(field_air.sigma), field_air.rho_kgm3, field_air.density_altitude_m])
 	if _show_perf:
 		lines.append(Hud.perf_line(_frame_times, session.sim.step_usec))
+	if not _experimental_aircraft_path.is_empty():
+		lines.append("EXPERIMENTAL: wing polar; aircraft-specific flight validation pending.")
 	_hud.text = "\n".join(lines)
 
 
@@ -508,7 +548,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_F3:
 				_show_perf = not _show_perf
 			KEY_F5:
-				_note = session.reload()
+				_note = session.reload() if _experimental_aircraft_path.is_empty() else "Experimental polar is fixed for this flight; restart the application to load another file."
 				_update_cg_model()
 				print(_note)
 
@@ -661,13 +701,49 @@ func _on_resetting() -> void:
 ## --hide_airplane (readability reference), --hide_treeline (L6c tree-mask reference; refused without field objects),
 ## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
 ## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
-## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted)
+## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted),
+## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
 func _user_args() -> Dictionary:
 	var args := {}
 	for a in OS.get_cmdline_user_args():
 		var kv := a.trim_prefix("--").split("=", true, 1)
 		args[kv[0]] = kv[1] if kv.size() > 1 else true
 	return args
+
+
+func _validate_experimental_aircraft_data(path: Variant, selected_aircraft_id: String, scripted: bool, electric_demo: bool) -> Dictionary:
+	if typeof(path) != TYPE_STRING or str(path).is_empty():
+		return {ok = false, error = "--experimental-aircraft-data needs an absolute JSON file path"}
+	var candidate_path: String = str(path)
+	if not candidate_path.is_absolute_path() or candidate_path.get_extension().to_lower() != "json":
+		return {ok = false, error = "--experimental-aircraft-data needs an absolute JSON file path"}
+	if not FileAccess.file_exists(candidate_path):
+		return {ok = false, error = "candidate file does not exist: %s" % candidate_path}
+	if selected_aircraft_id != Catalog.DEFAULT_ID or scripted or electric_demo:
+		return {ok = false, error = "candidate route requires a physics flight of the catalog default Ugly Stik only"}
+	var candidate_parser := JSON.new()
+	var candidate_bytes := FileAccess.get_file_as_bytes(candidate_path)
+	if candidate_parser.parse(candidate_bytes.get_string_from_utf8()) != OK or typeof(candidate_parser.data) != TYPE_DICTIONARY:
+		return {ok = false, error = "candidate must be a JSON object: %s" % candidate_path}
+	var candidate: Dictionary = candidate_parser.data
+	if typeof(candidate.get("id")) != TYPE_STRING or candidate.get("id") != Catalog.DEFAULT_ID:
+		return {ok = false, error = "candidate id must match the catalog default Ugly Stik"}
+	if typeof(candidate.get("aero")) != TYPE_DICTIONARY or typeof(candidate.aero.get("wing_polar")) != TYPE_DICTIONARY:
+		return {ok = false, error = "candidate must contain aero.wing_polar as an object"}
+	var reference_path: String = str(Catalog.entry(Catalog.DEFAULT_ID).get("data", ""))
+	var reference_parser := JSON.new()
+	if reference_path.is_empty() or reference_parser.parse(FileAccess.get_file_as_string(reference_path)) != OK or typeof(reference_parser.data) != TYPE_DICTIONARY:
+		return {ok = false, error = "catalog default aircraft reference data is unavailable"}
+	var candidate_reference: Dictionary = candidate.duplicate(true)
+	var catalog_reference: Dictionary = reference_parser.data.duplicate(true)
+	candidate_reference["aero"].erase("wing_polar")
+	catalog_reference["aero"].erase("wing_polar")
+	if candidate_reference != catalog_reference:
+		return {ok = false, error = "candidate may change only aero.wing_polar from catalog default data; reference geometry and other data must match"}
+	var digest := HashingContext.new()
+	digest.start(HashingContext.HASH_SHA256)
+	digest.update(candidate_bytes)
+	return {ok = true, path = candidate_path, input_sha256 = digest.finish().hex_encode()}
 
 
 func _view_name() -> String:

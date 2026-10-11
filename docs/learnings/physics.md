@@ -46,6 +46,14 @@ Small numerical errors do not prove identical execution paths: a changed early r
 
 ## Ground and aerodynamic models
 
+### Stall existence does not validate departure severity
+
+A positive post-stall roll derivative and a successful low-speed symmetric-stall test do not bound a high-speed pull's departure. Measure the derivative's magnitude, perturbation growth, actual input ramp and recovery at the maneuver's speed. Centered CG also does not imply zero cross inertia: balancing masses can cancel first moments while reinforcing products of inertia. Audit the full reference inventory before attributing a repeatable wing drop to a control or gyro defect. [D8b-R2 diagnosis and evidence](../research/flight-robustness/D8b-R2/README.md).
+
+Matching CLmax does not constrain the falling lift-curve slope: D8b-R2 candidates with the same helper peak differed 3.44-fold in maximum post-stall roll feedback. Verify the joined curve and force derivatives. A strip-count sweep that re-fits section slope at each resolution mixes discretization and calibration; also refine with fixed physical inputs before claiming mesh convergence. [D8b-R2 supplemental experiments](../research/flight-robustness/D8b-R2/research-experiments.md).
+
+Identical maneuvers from different polar tables may never reach the intervals where those tables differ. Record local strip incidence and the interpolation support before counting candidate agreement as independent evidence. Compare actual summed-load extrema too: reducing lateral departure while moving the lift limit is not a validated repair. [D8b-R2 implementation matrix](../research/flight-robustness/D8b-R2/implementation/matrix/README.md).
+
 A feedback pilot can compensate for changed physics. Record the applied controls and replay them downstream of trims, retaining servos, anchors, modes and crash detection; do not regenerate expected behavior during ordinary regression checks. Restore the authentic configuration before an in-memory sensitivity probe, so configuration refusal is not mistaken for detection of changed dynamics. ([E4a](../research/ground-contact/E4a/README.md))
 
 ### Model the ground at the contact points and through the real session

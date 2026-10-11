@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   stalled (α 16°), no rotation: no stall roll or yaw moment  { &"CL": 0.61681504435107, &"CD": 0.14002031093278, &"CY": 0.0, &"Cl": 0.0, &"Cm": -0.22833887603416, &"Cn": 0.0 }
+ok   α 5°: roll damping = the linear oracle's (attached flow at every strip)  -0.451322 vs -0.451322 (Clp -0.4496)
+ok   α 13.5° (stall break): roll damping turns positive → autorotation  0.640
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   symmetric airplane: stalls (α > 20°) without rolling (< 0.5°)  α max 22°, roll max 0.00°
+ok   inventory airplane (Jxy -0.0095): asymmetry produces more roll than symmetric inertia  roll max 180°
+ok   cross-controlled stall sustains right autorotation over 2.5–4 s (>1 rad/s engineering screen)  2.93 rad/s
+ok   autorotation descends (potential energy feeds rotation)  14.4 m/s
+ok   standard recovery (opposite rudder, forward stick, 0.9 s): rotation stopped and stays stopped from 6 s  
+8 checks, 0 failed

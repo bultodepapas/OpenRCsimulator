@@ -1,0 +1,32 @@
+{
+  "task": "D8b-R2 isolated wing-polar mutation verification",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "isolation": "Temporary copy of app under system TEMP; all mutations were confined to that copy.",
+  "temp_copy": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-wing-polar-mutation-45c8e1d1d4b146448a188202aa7f6c78",
+  "baseline_hashes_sha256": {
+    "wing_polar": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+    "aero": "b1a9d96a357281ca1c02bc5e87ad452d2445e8e799f1a750d69de51d0e33521b",
+    "aircraft_data": "207034a053df29db70e11d494ecb64b1e4b6043a7a08f656d1bfd1818af484ae",
+    "test": "08976c59a05c30449b24ed567f93d2afde090a6fd2fc68351fc1f724e8150a11"
+  },
+  "baseline": {
+    "exit_code": 0,
+    "positive_control": true,
+    "summary": "D8b-R2 polar: 111 checks, 0 failed",
+    "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nD8b-R2 polar: 111 checks, 0 failed"
+  },
+  "profile_drag_mutation": {
+    "edit": "WingPolar.evaluate: result[1] = -absf(result[1])",
+    "exit_code": 1,
+    "rejected_by_test": true,
+    "expected_failure": "full angle range finite, nonnegative drag and bounded retention",
+    "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nFAIL C1 knot 1.0/0/1\r\nFAIL knot 1.0/1/1\r\nFAIL knot 1.0/2/1\r\nFAIL knot 1.0/3/1\r\nFAIL knot 1.0/4/1\r\nFAIL knot 1.0/5/1\r\nFAIL C1 knot 1.0/6/1\r\nFAIL C1 knot -1.0/0/1\r\nFAIL knot -1.0/1/1\r\nFAIL knot -1.0/2/1\r\nFAIL knot -1.0/3/1\r\nFAIL knot -1.0/4/1\r\nFAIL knot -1.0/5/1\r\nFAIL C1 knot -1.0/6/1\r\nFAIL all table intervals preserve sample bounds\r\nFAIL full angle range finite, nonnegative drag and bounded retention\r\nFAIL wing force+moment power passive with fixed surfaces\r\nD8b-R2 polar: 111 checks, 17 failed"
+  },
+  "empty_source_mutation": {
+    "edit": "AircraftData._q no longer rejects blank source strings",
+    "exit_code": 1,
+    "rejected_by_test": true,
+    "expected_failure": "empty source",
+    "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nFAIL empty source\r\nD8b-R2 polar: 111 checks, 1 failed"
+  }
+}

@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v15_progressive_positive_trim: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_progressive_positive_trim: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v30_progressive_positive_trim: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v15_abrupt_positive_trim: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_abrupt_positive_trim: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v30_abrupt_positive_trim: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_progressive_negative_trim: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_abrupt_negative_trim: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_progressive_positive_idle: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_progressive_positive_full: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_abrupt_positive_idle: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_abrupt_positive_full: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_progressive_seed_plus_0001: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_progressive_seed_minus_0001: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_abrupt_seed_plus_0001: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v25_abrupt_seed_minus_0001: complete (1201/1201 samples, complete=true, finite=true)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+matrix case v15_trim_accelerate_25_preserve_trim: complete (4321/4321 samples, complete=true, finite=true)

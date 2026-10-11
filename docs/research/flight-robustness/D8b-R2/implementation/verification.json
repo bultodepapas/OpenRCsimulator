@@ -1,0 +1,75 @@
+{
+  "format": "openrc-pullup-implementation v1",
+  "date": "2026-10-11",
+  "base_commit": "fd945cd0b8a567e6e169a76ff5a472ba98fb9fef",
+  "native_engine": "4.7.2.stable.official.ed1daf0bf",
+  "source_files_sha256": {
+    "app/data/schema/openrc-aircraft-v1.schema.json": "dbec4707128e0ea44e5714cd9788c7fff7585ba0d966aa38b64ce7a97f09d80c",
+    "app/main.gd": "95c1bccd9402dff6caffed1b60a9c6ad15722837e61be709aa43eaf4b41fbd53",
+    "app/physics/aero.gd": "b1a9d96a357281ca1c02bc5e87ad452d2445e8e799f1a750d69de51d0e33521b",
+    "app/physics/aircraft_data.gd": "207034a053df29db70e11d494ecb64b1e4b6043a7a08f656d1bfd1818af484ae",
+    "app/physics/wing_polar.gd": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+    "app/physics/wing_polar.gd.uid": "c8cf48ffc52321ca3d75dedd5f5fdaa52c62e7e429c9c8bbe2c98b51327a3563",
+    "app/sim/flight_session.gd": "112d89f1c1368ccddaab6ad19dbd33d2ce0b444f9d7bc9213e0d1eb4520ea7f3",
+    "app/test.sh": "3f39a15a3b1de1863910fb90bcc9ef048fa4506e6b9e18e5bdc0386f6d4893c3",
+    "app/tests/test_pullup_cli.py": "139202e75dc62ed41953835591352d4f699ac9cae86668fdece24027db23bf69",
+    "app/tests/test_pullup_invariants.gd": "6066eadfc5532121eb2c56262f6d7d66da1e6b296ea992053d17ee4377de0f9e",
+    "app/tests/test_pullup_invariants.gd.uid": "8976316a5a410d9f9ed7fa541dd0c14a64fe96d0c33390e396b7975124e73575",
+    "app/tests/test_wing_polar.gd": "08976c59a05c30449b24ed567f93d2afde090a6fd2fc68351fc1f724e8150a11",
+    "app/tests/test_wing_polar.gd.uid": "fff57d44e6ffa9b97649e9f6a559e9eba644390716258ff3901807d3d003fc38",
+    "app/tests/test_wing_polar_session.gd": "6f72415025a89a9420be771322b961be83a97876c3e55439557f9f9499d7e1fd",
+    "app/tests/test_wing_polar_session.gd.uid": "d6169d82ae13a7c79bd6dcfa0091ec1bb82ae831844b662976d82b2bbe448388",
+    "app/tests/wing_polar_fixture.gd": "13d9f43b6cbbb1e70a1ceac4a7bc8c87b982faf8a1722d09df34f011fc68e88b",
+    "app/tests/wing_polar_fixture.gd.uid": "f3ba744459e423fd6c39bbc8325596b247c30a32ad493675675f0d8e9db1d715",
+    "research/flight-robustness/d8b-r2/candidates/intermediate.json": "2f2cab6851457963397820bb5949fb74fdd7da9c801a7407c9078769ebf6cc0b",
+    "research/flight-robustness/d8b-r2/candidates/retained.json": "6ae116accd95f7081a897a82fdac3025676600e67ee47706a04143ba702e2ebd",
+    "research/flight-robustness/d8b-r2/candidates/steep.json": "04d7f5b658b803be7467d48fdf1d326c27af5865f73ef52c91fcf19c933f0958",
+    "research/flight-robustness/d8b-r2/flight_matrix.gd": "36179dd0538c4e24b45242b87221a1c76f991d21cfc436715028a0a534b53f3b",
+    "research/flight-robustness/d8b-r2/make_candidates.gd": "636f0bcf8c4c1166bac90b450bc18a01e8e131d3c6ae6595231f5131a126e4b2",
+    "research/flight-robustness/d8b-r2/probe.gd": "4331528a5ddc1f218b0acfd10e188bc09b1be9a80e988a0546ec5f98bcdc7616",
+    "research/flight-robustness/d8b-r2/run.py": "f2caf17f6fb9f454e8e0dda69bffec91a09bbbda36744efc6d0e0155bdb9917a",
+    "research/flight-robustness/d8b-r2/run_matrix.py": "cb199f918b57b7718b73d9a7ea2ad560a1ad58bcecaa45d9c68d07e6510e4c74",
+    "research/flight-robustness/d8b-r2/run_supplement.py": "de74745297321965b85356ec46876746a894636a73d6620ecb3dfab5f2580bd2",
+    "research/flight-robustness/d8b-r2/screen_candidates.gd": "2213bfcc1931dc38259b15b27df8693a8e21d0a85eeb83bdfa533696d0696774",
+    "research/flight-robustness/d8b-r2/supplement.gd": "c31fb75d8e14fb73ccc6bcb90c71eadc3686dcf88894c16a3b4740a638ae339e"
+  },
+  "default_aircraft_json_changes": [],
+  "golden_changes": [],
+  "native_directed": {
+    "checks": 160,
+    "failed": 0,
+    "log": "native-directed.log"
+  },
+  "native_cli": {
+    "test_methods": 3,
+    "app_launches": 13,
+    "failed": 0,
+    "log": "native-cli.log"
+  },
+  "full_suite": {
+    "command": "bash app/test.sh",
+    "platform": "Linux x86_64 under WSL, isolated clean clone plus recorded overlay",
+    "engine": "4.7.2.stable.official.ed1daf0bf",
+    "exit_code": 0,
+    "gd_test_scripts": 177,
+    "log": "app-test.log",
+    "snapshot_manifest": "suite-snapshot.json",
+    "final_delta": "After snapshot: provenance-neutral status literals and corresponding CLI assertion, verified on Windows; equivalent schema exponent spelling, parsed JSON equality checked. No physics difference."
+  },
+  "physical_acceptance": false,
+  "production_candidate_selected": null,
+  "evidence_sha256": {
+    "app-test.log": "adbd93d16d8ddd296b8053052ffa2932571977185428d91b4f37fcf74229b9e6",
+    "app-test.exit-code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "suite-snapshot.json": "a9527ff5f0b48b6a6e001c84414e25cbc1b49c874717fca67906a0e13f409a3b",
+    "native-directed.log": "2cd219ad0d149d6dbad6d78b3da540a15fe12ae617306a1a3ab59bc5625bd643",
+    "native-cli.log": "052b98bdafca863f3da09c80af66eb25f7f1c73311a650200e722fec64148631",
+    "candidate-screen.json": "73a4d0b33e862a2078751839887bd43b5ad2c763fa17264432749b6ec324cccb",
+    "polar-mutation.json": "5ca26346b4b1c36212b07eb665444e4e21741a7a1e244ab44f9e5660706d24d7"
+  },
+  "document_checks": {
+    "local_links": 130,
+    "heading_anchors": 20,
+    "missing": 0
+  }
+}
