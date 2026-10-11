@@ -47,6 +47,8 @@ func _initialize() -> void:
 
 
 func _test_off_is_noop() -> void:
+	var previous_scenery := OS.get_environment("OPENRC_SCENERY")
+	OS.set_environment("OPENRC_SCENERY", "off")
 	var node := FieldBuilder.build(_field)
 	_check("switch off: the field has no Scenery node", node.get_node_or_null("Scenery") == null)
 	var rough := node.get_node_or_null("rough") as MeshInstance3D
@@ -54,6 +56,9 @@ func _test_off_is_noop() -> void:
 		rough != null and rough.mesh is ArrayMesh and rough.mesh.get_surface_count() == 1
 		and rough.mesh.get_aabb().size.x == 40000.0)
 	node.free()
+	OS.unset_environment("OPENRC_SCENERY")
+	if not previous_scenery.is_empty():
+		OS.set_environment("OPENRC_SCENERY", previous_scenery)
 
 
 func _triangles(root: Node) -> int:

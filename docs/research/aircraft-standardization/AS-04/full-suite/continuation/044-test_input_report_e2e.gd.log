@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Input report: move every stick through its full range for 1.00 seconds. Event spacing is observed by Godot, not USB report timing. JSON: user://test_input_report_e2e.json
+Input report: move every stick through its full range for 3600.00 seconds. Event spacing is observed by Godot, not USB report timing. JSON: stdout
+F1 e2e: 18 checks, 0 failed

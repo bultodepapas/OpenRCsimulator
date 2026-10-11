@@ -142,7 +142,7 @@ Main-line EL1–EL6 work follows [ELECTRIC-PROPULSION-PLAN](ELECTRIC-PROPULSION-
 | Gate W-A, W-B | Wind feel and configuration | Uniform wind/repeating gusts and temporal OU turbulence implemented; independent pilot/atmosphere acceptance open | WIND-PLAN |
 | Gate FW-U | Is there one field, and did nothing change? | Open; FW-01/FW-02 delivered with byte parity, field folder and plan consolidation pending | FIELD-WORLD-PLAN |
 | Gate FW-N | Can I fly a full session at dusk and at night, and is it beautiful? | Open; time of day, stars, field lights and night kit engineering-verified, owner flight pending | FIELD-WORLD-PLAN |
-| Gate SC | Is the field more beautiful and alive while flying stays as readable and fast? Turns scenery on by default | Open; implemented scenery stays opt-in pending readability/performance acceptance | SCENERY-PLAN |
+| Gate SC | Is the field more beautiful and alive while flying stays as readable and fast? | Open for readability/performance acceptance; owner requested default-on scenery on 2026-10-11 (SC-02a) | SCENERY-PLAN |
 
 ## Where things live
 

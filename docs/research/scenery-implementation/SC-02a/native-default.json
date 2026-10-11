@@ -1,0 +1,35 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "field_build_ms": 783.326,
+  "scenery": true,
+  "stats": {
+    "build_ms": 136.538,
+    "cells": 48,
+    "fleet": 4,
+    "flowers": 2970,
+    "instances": 128,
+    "motion": 5,
+    "quality": "high",
+    "shadows": 78,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "fence": 5.227,
+      "fleet": 16.479,
+      "flowers": 16.843,
+      "hedge": 22.463,
+      "instances": 54.765,
+      "meshes": 19.93,
+      "patch": 0.331,
+      "track": 0.348
+    }
+  },
+  "views": {
+    "postcard_club": {
+      "draw_calls": 34.0,
+      "objects": 34.0,
+      "primitives": 212883.0,
+      "shadow_draw_calls": 0
+    }
+  }
+}

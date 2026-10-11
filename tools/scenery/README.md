@@ -15,12 +15,12 @@ Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)).
 
 **The rest of the scenery is procedural:** buildings, people, trees, hedges, flowers and landmarks are built in `app/scenery/prefabs.gd` and `ground_features.gd`.
 
-**How to see it:** `OPENRC_SCENERY=on $(app/get-godot.sh) --path app` (Home and flight), or `-- --scenery=on` on the direct route.
+**Default:** scenery is on in normal Home and flight launches (SC-02a, owner's request, 2026-10-11). `app/run-landscape.sh` also forces it on if the environment disables it. Opt out with `OPENRC_SCENERY=off` (Home and flight) or `-- --scenery=off` on the direct route. CLI takes precedence over the environment. Evidence: [SC-02a](../../docs/research/scenery-implementation/SC-02a/README.md).
 
 **Options:**
 - `--scenery_theme=temperate|summer|autumn`
 - `--scenery_quality=low|balanced|high`
 - `--scenery_audio=off`
-- `--scenery_birds=on`
+- `--scenery_birds=on` (off by default)
 
 Each option has an `OPENRC_SCENERY_*` environment-variable twin.

@@ -1,0 +1,7 @@
+== E5a: generated Extra taildragger contacts, P-51 review and session refinement
+Traceback (most recent call last):
+  File "/home/bulto/.cache/openrc-as-continuation-20261011/app/../research/ground-contact/e5a/verify.py", line 131, in <module>
+    main()
+  File "/home/bulto/.cache/openrc-as-continuation-20261011/app/../research/ground-contact/e5a/verify.py", line 55, in main
+    raise RuntimeError("generated Extra files are stale")
+RuntimeError: generated Extra files are stale

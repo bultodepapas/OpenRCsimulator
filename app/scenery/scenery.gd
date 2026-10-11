@@ -25,7 +25,7 @@ const SHADOW_RANGE_M := 300.0
 const QUALITIES: Array[String] = ["low", "balanced", "high"]
 
 
-## The switch and options. CLI (after --) wins, then the environment, then the defaults. Off by default (Gate SC).
+## The switch and options. CLI (after --) wins, then the environment, then the defaults. On by default (SC-02a).
 static func options() -> Dictionary:
 	var args := {}
 	for a: String in OS.get_cmdline_user_args():
@@ -38,7 +38,7 @@ static func options() -> Dictionary:
 		return e if not e.is_empty() else fallback
 	var on := func(v: String) -> bool: return ["on", "1", "true", "yes"].has(v.to_lower())
 	return {
-		enabled = on.call(get.call("scenery", "OPENRC_SCENERY", "off")),
+		enabled = on.call(get.call("scenery", "OPENRC_SCENERY", "on")),
 		theme = get.call("scenery_theme", "OPENRC_SCENERY_THEME", ""),
 		quality = get.call("scenery_quality", "OPENRC_SCENERY_QUALITY", "high"),
 		audio = on.call(get.call("scenery_audio", "OPENRC_SCENERY_AUDIO", "on")),

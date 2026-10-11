@@ -27,7 +27,7 @@ The P-51 p50 ratio is 1.20, but its six-pair range is 0.82–1.42, and its p95 r
 
 ## P-51-only 24-pair repeat
 
-After the lead paused the full suite and other owned engine runs, the driver ran `--only p51d-mustang-120 --pairs 24`. It repeated the self-check, then measured 24 paired 120-tick batches in the same ABBA order. All 24 final simulation byte comparisons passed; normalized models, identity guards, warmup and reset boundaries matched. Both engine processes exited 0 without errors, and the integration app manifest stayed at `643aa1a0b8d934dff6bbd9f339c62c4529482b0122123a731c60c66ec8a4970e`.
+After the full suite stopped at its first failure and other owned engine runs finished, the driver ran `--only p51d-mustang-120 --pairs 24`. It repeated the self-check, then measured 24 paired 120-tick batches in the same ABBA order. All 24 final simulation byte comparisons passed; normalized models, identity guards, warmup and reset boundaries matched. Both engine processes exited 0 without errors, and the integration app manifest stayed at `643aa1a0b8d934dff6bbd9f339c62c4529482b0122123a731c60c66ec8a4970e`.
 
 The P-51 p50 ratio median was 0.986, range 0.754–1.134; the p95 ratio median was 0.972, range 0.690–1.369. This does not reproduce the initial +20% median as a stable slowdown. The 24-pair spread still exceeds 5% by a wide margin, so this run also cannot claim the ≤5% target is met. The WSL process inventory was empty immediately before and after these phases, while two native Windows Godot processes remained open; inventories do not capture total CPU load.
 

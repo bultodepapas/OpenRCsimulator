@@ -4,6 +4,8 @@
 
 **Status: Complete. Bounded read-only audit of the current working tree.** No runtime files were changed and no tests were run.
 
+This is the pre-migration audit. AS-03 subsequently added the selected-ID/version guard and actual authored-throw hinge checks. The concurrent ground team added wheel profiles and live wheel presentation after this snapshot; see the [current contract](../../../../AIRCRAFT_CONTRACT.md) and [module supplement](../AS-01/module-semantics.md#concurrent-ground-profile-interface). The findings below retain the observed baseline, rather than attributing those later changes to AS.
+
 ## Route through the app
 
 Home stores a catalog ID. `main.gd` resolves that ID to the catalog's physics JSON and separately calls the render adapter with the ID. `AircraftData.load_file()` parses and validates the file, hashes its bytes, and derives a normalized model. `FlightSession._prepare_aircraft()` checks mass, inertia, control throws and trim; `_commit_aircraft()` installs that model and its callbacks into the fixed-step simulation. Each tick turns conditioned commands into actual servo outputs, then passes the normalized model to aerodynamic, propulsion and ground-force code. Rendering uses the selected ID's model builder and datum, the session's servo outputs for surface animation, and the simulation RPM for the propeller and engine audio.

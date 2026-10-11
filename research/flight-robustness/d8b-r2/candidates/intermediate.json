@@ -43,12 +43,6 @@
         "unit": "1/rad",
         "value": 4.58
       },
-      "CLadot": {
-        "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e",
-        "unit": "1/rad",
-        "value": 1.9724
-      },
       "CLda_each": {
         "kind": "borrowed",
         "source": "OpenFlightSim UltraStick25e",
@@ -242,6 +236,14 @@
         "source": "Width of the smooth transition from attached flow to flat-plate flow (PicaSim uses a cosine ramp of about 10 deg, YASim a stall-width parameter); the start is solved so the lift peak equals CL_max",
         "unit": "deg",
         "value": 6.0
+      }
+    },
+    "reference_coefficients": {
+      "CLadot": {
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e",
+        "unit": "1/rad",
+        "value": 1.9724
       }
     },
     "source": "OpenFlightSim UltraStick25e AeroOpenFlight.xml @ b020511 (sha256 43ff5c1e…); nondimensional, applied to the Ugly Stik as a geometrically similar Stik; Cmq, CLq and Cnr derived from the Stik itself (D11g)",
@@ -471,6 +473,14 @@
       ]
     }
   },
+  "capabilities": {
+    "controls": "conventional",
+    "damage": "terminal_hull",
+    "energy": "prescribed_fuel",
+    "flaps": "not_simulated",
+    "gear": "fixed_tricycle",
+    "propulsion_layout": "single_tractor"
+  },
   "controls": {
     "max_throw": {
       "aileron": {
@@ -499,6 +509,7 @@
       "value": 0.14
     }
   },
+  "convention_id": "openrc-le-frd-v1",
   "crash_hull": {
     "kind": "estimated",
     "source": "Points that hit the ground first (le frame): wing tips (60 in span, slight dihedral), spinner tip (firewall 6.94 in ahead of LE plus engine and spinner), tail end and stabilizer tips (52 in overall length), fin top, belly under the CG (fuselage bottom 0.053 m below the thrust line, from the model team's fuselage stations). Read from the Jensen plan and the visual model. Since E1 the wheels are landing_gear contacts, not hull points: a wheel on the ground is a landing, a leg pushed past its travel is a crash",
@@ -547,7 +558,7 @@
     ]
   },
   "description": "Jensen Das Ugly Stik (Phil Kraft design), 60 in span, .61 two-stroke glow. Physics data only; visual geometry lives in assets/aircraft/ugly-stik-60/geometry.json.",
-  "format": "openrc-aircraft v1",
+  "format": "openrc-aircraft v2",
   "frames": {
     "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up",
     "le_frame": "positions in metres from the wing leading edge at the fuselage centreline: [x_aft, y_right, z_up]; z = 0 on the thrust line"
@@ -600,6 +611,16 @@
           0.06,
           -0.02
         ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ]
       }
     },
     {
@@ -648,6 +669,16 @@
           0.0,
           0.0
         ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ]
       }
     },
     {
@@ -667,6 +698,16 @@
           0.0,
           -0.01
         ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ]
       }
     },
     {
@@ -683,6 +724,16 @@
         "unit": "m",
         "value": [
           -0.1,
+          0.0,
+          0.0
+        ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
           0.0,
           0.0
         ]
@@ -705,6 +756,16 @@
           0.0,
           0.0
         ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ]
       }
     },
     {
@@ -724,6 +785,16 @@
           0.0,
           -0.03
         ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ]
       }
     },
     {
@@ -740,6 +811,16 @@
         "unit": "m",
         "value": [
           0.04,
+          0.0,
+          0.0
+        ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
           0.0,
           0.0
         ]
@@ -762,6 +843,16 @@
           0.0,
           -0.02
         ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ]
       }
     },
     {
@@ -781,6 +872,16 @@
           0.0,
           0.05
         ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ]
       }
     },
     {
@@ -799,6 +900,16 @@
           -0.17,
           0.0,
           -0.12
+        ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
         ]
       }
     },
@@ -993,6 +1104,16 @@
           0.0,
           0.0
         ]
+      },
+      "size": {
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ]
       }
     },
     {
@@ -1046,6 +1167,12 @@
           "unit": "m",
           "value": 0.12
         },
+        "max_steering": {
+          "kind": "derived",
+          "source": "AS-02 compatibility default: explicit zero preserves the v1 omitted-steering behavior for this contact",
+          "unit": "deg",
+          "value": 0.0
+        },
         "name": "main_left",
         "position": {
           "kind": "estimated",
@@ -1076,6 +1203,12 @@
           "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice",
           "unit": "m",
           "value": 0.12
+        },
+        "max_steering": {
+          "kind": "derived",
+          "source": "AS-02 compatibility default: explicit zero preserves the v1 omitted-steering behavior for this contact",
+          "unit": "deg",
+          "value": 0.0
         },
         "name": "main_right",
         "position": {
@@ -1209,6 +1342,7 @@
         "value": 16000.0
       }
     },
+    "kind": "glow_prop",
     "propeller": {
       "cp_table": {
         "kind": "borrowed",
@@ -1313,7 +1447,7 @@
         "unit": "kg·m2",
         "value": 0.00035
       },
-      "rotation": "clockwise seen from behind (standard tractor): the reaction torque rolls the airplane left",
+      "rotation": "clockwise_from_rear",
       "thrust_line_offset": {
         "kind": "derived",
         "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE",
@@ -1355,6 +1489,14 @@
       "source": "60 in, oz1253 title block",
       "unit": "m",
       "value": 1.524
+    }
+  },
+  "start": {
+    "level_speed": {
+      "kind": "derived",
+      "source": "AS-02 compatibility default: preserves the v1 loader's 15 m/s default for this existing Stik-derived configuration",
+      "unit": "m/s",
+      "value": 15.0
     }
   }
 }

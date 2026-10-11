@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   one loop is RATE × LOOP_S samples
+ok   the same seed gives the same samples
+ok   another seed gives other samples
+ok   normalised to −6 dBFS (peak 16384)
+ok   a bed, not silence nor noise blast (RMS 0.084 FS)
+ok   the loop point is seamless (step 78 ≤ the largest of 2000 neighbouring steps, 427)
+ok   a looping 16-bit mono stream
+ok   the player is quiet and pausable
+all scenery ambience checks passed

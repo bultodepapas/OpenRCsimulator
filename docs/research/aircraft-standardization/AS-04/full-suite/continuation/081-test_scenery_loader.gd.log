@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   committed default.json validates against the default field
+ok   it has groups
+ok   load_from reads the same file
+ok   a missing file is refused
+ok   refused: unknown format
+ok   refused: another field's data
+ok   refused: unknown theme
+ok   refused: unknown prefab
+ok   refused: collides = true (L14 owns collisions)
+ok   refused: duplicate group id
+ok   refused: no groups
+ok   refused: wrong unit
+ok   refused: unknown evidence kind
+ok   refused: missing source
+ok   refused: a non-numeric coordinate
+ok   refused: a prop on the runway
+ok   refused: pits too close to the safety line
+ok   refused: pits too close to the take-off path (BMFA)
+ok   refused: parking too close
+ok   refused: a tall prop in the flight box
+ok   refused: above the approach surface
+ok   refused: a landmark closer than 1 km
+ok   refused: a landmark beyond 5 km (SC-01 depth rule)
+ok   refused: a prop on a treeline tree
+ok   refused: an unknown fence style
+ok   refused: an unknown track surface
+ok   refused: flowers on the runway
+ok   refused: a fleet aircraft without a baked model
+ok   scenery is off by default (Gate SC)
+ok   OPENRC_SCENERY=on turns it on
+ok   OPENRC_SCENERY_QUALITY is read
+ok   and off again without it
+ok   app/data/scenery/default.json matches tools/scenery/place.py
+all scenery loader checks passed

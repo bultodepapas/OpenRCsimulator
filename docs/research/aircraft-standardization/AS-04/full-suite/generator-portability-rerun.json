@@ -1,0 +1,37 @@
+[
+  {
+    "command": [
+      "python3",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/research/extra-300/ex05/derive_physics.py",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/research/p51/p51-05/derive_physics.py",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/research/avanti-s/av06/derive_physics.py",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/research/ground-contact/e5a/verify.py",
+      "--godot",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--out",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-standardization/AS-04/full-suite/e5a-rerun"
+    ],
+    "exit_code": 0
+  }
+]

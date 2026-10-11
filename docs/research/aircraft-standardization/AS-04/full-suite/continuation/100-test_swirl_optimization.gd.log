@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6p optimized swirl equivalence: 200 deterministic cases, seed 2601007
+ok 200 cases include default and held downwash CL default=100 held=100
+ok 200 cases include both horizontal tail-law modes free_slope/downwash=150 classic/no-free_slope=50
+ok active smooth geometry crosses the regularized vortex core 72 cases
+ok active smooth geometry crosses the inner occupancy edge 94 cases
+ok active smooth geometry crosses the outer occupancy edge 105 cases
+ok forward and reverse fade regimes are all sampled full=140 partial=16 cutoff=44
+ok optimized helper matches frozen helper within abs+relative 1e-10 0 mismatches; worst none
+E0b6p equivalence worst absolute error=0, worst error/tolerance=0 (none)
+E0b6p equivalence coverage: core=72 inner=94 outer=105 reverse(full/partial/cutoff)=140/16/44 CL(default/held)=100/100 tail_law(downwash/classic)=150/50
+E0b6p optimized swirl equivalence: 7 checks, 0 failed

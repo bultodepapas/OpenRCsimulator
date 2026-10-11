@@ -1,0 +1,14 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "field_build_ms": 518.417,
+  "scenery": false,
+  "stats": {},
+  "views": {
+    "postcard_club": {
+      "draw_calls": 14.0,
+      "objects": 14.0,
+      "primitives": 124322.0,
+      "shadow_draw_calls": 0
+    }
+  }
+}

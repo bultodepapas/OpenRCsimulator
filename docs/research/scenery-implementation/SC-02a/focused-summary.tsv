@@ -1,0 +1,6 @@
+test	exit	engine_errors
+test_scenery_loader	0	0
+test_scenery_build	0	0
+test_scenery_trace	0	0
+test_scenery_ambience	0	0
+test_scenery_scenario	0	0

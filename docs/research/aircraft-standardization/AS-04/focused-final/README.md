@@ -10,4 +10,6 @@ The 62-case v2 harness on `app/` reported 60 expected schema/loader agreements a
 
 The offline combustion propeller range-audit compatibility update is documented in [its AS-04 note](range-audit-v2-compatibility.md), with its own [focused log](range-audit-v2-compatibility.log).
 
+The synthetic authoring template passed offline structural validation and the production Godot file loader with no errors: [loader result and exact template hash](template-loader.json), [engine log](template-loader.log). This proves a usable shape/example, not physical calibration. The full suite's five stale battery diagnostic assertions were updated to the v2 error paths while retaining v2 inputs; all 67 checks passed natively and in the Linux continuation ([native log](test_electric_battery_data.log)).
+
 See [provenance](provenance.json) for the pinned Godot version, source hashes, commands, and results; the two test logs are in this directory.

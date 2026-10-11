@@ -4,7 +4,7 @@
 
 ## Scope and runtime path
 
-The requested `app/sim/aircraft.gd` does not exist. Code graph discovery found the production loader in [aircraft_data.gd](../../../../app/physics/aircraft_data.gd), and the session boundary in [flight_session.gd](../../../../app/sim/flight_session.gd). `FlightSession.setup()` and `reload()` call `AircraftData.load_file()`. A successful result becomes `aircraft.model`; reset/trim, dynamics, propulsion, ground contact and crash handling consume that derived model.
+There is no `app/sim/aircraft.gd`. Code graph discovery found the production loader in [aircraft_data.gd](../../../../app/physics/aircraft_data.gd), and the session boundary in [flight_session.gd](../../../../app/sim/flight_session.gd). `FlightSession.setup()` and `reload()` call `AircraftData.load_file()`. A successful result becomes `aircraft.model`; reset/trim, dynamics, propulsion, ground contact and crash handling consume that derived model.
 
 The catalog in [aircraft_catalog.gd](../../../../app/app_state/aircraft_catalog.gd) currently contains four aircraft: Jensen Ugly Stik (`jensen_ugly_stik_60.json`), Extra 300S (`gp_extra_300s_60.json`), P-51D (`p51d_mustang_120.json`) and Avanti S (`sebart_avanti_s_a200.json`). The electric comparison below is `synthetic_stik_electric_4s.json`, a non-catalog demonstration fixture.
 

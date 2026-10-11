@@ -1,0 +1,5 @@
+== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering
+ticks=480 frames=61 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+ticks=480 frames=121 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+ticks=480 frames=289 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+identical
