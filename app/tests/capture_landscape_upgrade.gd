@@ -12,6 +12,16 @@ const LightingConfig := preload("res://environment/time_of_day_config.gd")
 const SnapshotLighting := preload("res://render/time_of_day_lighting.gd")
 const SceneryMaterials := preload("res://scenery/scenery.gd")
 const FLEET_VIEWS := {
+	"people_5m": {eye = [-12.5, -2.5, -1.65], at = [-17.5, -2.5, -0.9], fov = 38.0},
+	"people_15m": {eye = [-2.5, -2.5, -1.65], at = [-17.5, -2.5, -0.9], fov = 38.0},
+	"people_40m": {eye = [22.5, -2.5, -1.65], at = [-17.5, -2.5, -0.9], fov = 38.0},
+	"cars_5m": {eye = [-31.2, -5.3, -1.65], at = [-37.25, -3.75, -0.7], fov = 52.0},
+	"seated_5m": {eye = [-11.5, 12.3, -1.6], at = [-16.5, 11.5, -0.85], fov = 42.0},
+	"pilot_5m": {eye = [5.0, -12.3, -1.65], at = [0.0, -13.0, -0.95], fov = 38.0},
+	"flower_border": {eye = [-11.5, 4.0, -1.1], at = [-15.5, 3.2, -0.28], fov = 42.0},
+	"entry_path": {eye = [-12.0, -8.0, -2.0], at = [-21.0, 0.0, -0.4], fov = 52.0},
+	"horizon_raised25": {eye = [0.0, 0.0, -25.0], at = [4000.0, 0.0, -80.0], fov = 55.0},
+	"horizon_raised120": {eye = [0.0, 0.0, -120.0], at = [4000.0, 0.0, -100.0], fov = 55.0},
 	"gravel_close": {eye = [-35.0, -8.0, -1.2], at = [-39.0, -12.0, -0.04], fov = 45.0},
 	"gravel_far": {eye = [-39.0, -15.0, -240.0], at = [-38.9, -15.0, 0.0], fov = 55.0},
 	"twilight_aircraft": {eye = [0.0, 0.0, -1.7], at = [120.0, 0.0, -13.0], fov = 38.0},
@@ -54,6 +64,17 @@ func _run() -> void:
 	var built := World.build(parent, loaded.field, Callable(), {}, snapshot)
 	if built.field.get_node_or_null("DistantRidges") == null:
 		parent.add_child(Ridges.build())
+	# LU-16 diagnostic controls preserve camera/time/exposure while isolating the seam.
+	var horizon_diagnostic := str(args.get("horizon_diagnostic", "normal"))
+	if horizon_diagnostic == "no-ridges":
+		var ridges: Node3D = built.field.get_node_or_null("DistantRidges")
+		if ridges != null:
+			ridges.visible = false
+	if horizon_diagnostic == "no-rim":
+		for mat: ShaderMaterial in World.haze_materials(built.field):
+			if mat.shader.resource_path == "res://render/ground.gdshader":
+				mat.set_shader_parameter("rim_start", 100000.0)
+				mat.set_shader_parameter("rim_end", 100001.0)
 	# LU-12 isolated material A/B. Same world, geometry and draws, no production setting.
 	if str(args.get("gravel_detail", "on")) in ["off", "legacy"]:
 		var pending: Array[Node] = [parent]
@@ -152,20 +173,46 @@ func _run() -> void:
 				blocker.basis = camera.basis
 		for i in 60:
 			World.update(built.environment, 1.5, Vector3.ZERO, camera.position + -camera.basis.z * 30.0, camera)
+			if horizon_diagnostic == "no-rim":
+				for mat: ShaderMaterial in World.haze_materials(built.field):
+					if mat.shader.resource_path == "res://render/ground.gdshader":
+						mat.set_shader_parameter("rim_start", 100000.0)
+						mat.set_shader_parameter("rim_end", 100001.0)
 			if case.begins_with("marker_") and lighting_helper != null:
 				# Hold sky/exposure fixed to isolate the lamp fade and real opaque-depth occlusion.
 				var elevation := 3.0 if case == "marker_off" else -0.5 if case == "marker_half" else -4.0
 				lighting_helper.apply_lighting({sun_elevation_deg = elevation})
 			await process_frame
 			await RenderingServer.frame_post_draw
+		if args.has("horizon_diagnostic"):
+			for mat: ShaderMaterial in World.haze_materials(built.field):
+				if mat.shader.resource_path == "res://render/ground.gdshader":
+					print("HORIZON diagnostic=", horizon_diagnostic, " rim=", mat.get_shader_parameter("rim_start"), ",", mat.get_shader_parameter("rim_end"))
 		var frames := []
+		var motion := str(args.get("motion", "off"))
+		var camera_origin := camera.transform
+		var aircraft_origin: Transform3D = aircraft.root.transform
+		var motion_frames := []
 		var last := Time.get_ticks_usec()
 		for i in int(args.get("frames", 30)):
+			if motion != "off":
+				var elapsed := float(i) / 60.0
+				if motion == "camera":
+					camera.position = camera_origin.origin + camera_origin.basis.x * elapsed * 1.5
+				elif motion == "aircraft":
+					aircraft.root.position = aircraft_origin.origin + camera.basis.x * (elapsed * 2.0 - 2.0)
+				World.update(built.environment, 1.5 + elapsed, Vector3(3.0, 0.0, 1.0), camera.position + -camera.basis.z * 30.0, camera)
 			await process_frame
 			await RenderingServer.frame_post_draw
 			var now := Time.get_ticks_usec()
 			frames.append((now - last) / 1000.0)
 			last = now
+			if motion != "off":
+				var filename := "%s_%03d.png" % [case, i]
+				root.get_texture().get_image().save_png(out.path_join(filename))
+				motion_frames.append({file = filename, time_s = float(i) / 60.0,
+					camera_position = camera.position, aircraft_position = aircraft.root.position,
+					exposure = built.environment.tonemap_exposure, glare_strength = flare.get_meta("strength", 0.0)})
 		root.get_texture().get_image().save_png(out.path_join(case + ".png"))
 		var raw_frames := frames.duplicate()
 		frames.sort()
@@ -175,6 +222,7 @@ func _run() -> void:
 			primitives = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
 			video_memory = Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED),
 			frame_ms_raw = raw_frames, median_ms = frames[frames.size()/2], p95_ms = frames[mini(frames.size()-1, ceili(frames.size()*0.95)-1)],
+			motion = motion_frames, timing_valid = motion == "off",
 			p99_ms = frames[mini(frames.size()-1, ceili(frames.size()*0.99)-1)],
 			glare_visible = flare.visible, glare_strength = flare.get_meta("strength", 0.0), exposure = built.environment.tonemap_exposure,
 			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,

@@ -1,0 +1,14 @@
+COMMAND: & '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path '.tools/lu16-stage/app' --script 'res://tests/benchmark_landscape_collision.gd'
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+locator proxy=vehicle:cars:00:car_hatch hit=vehicle:cars:00:car_hatch fraction=0.33742327489522
+locator proxy=tree:shade-tree:shade-trees:00:crown hit=tree:shade-tree:shade-trees:00:crown fraction=0.2218187499375
+benchmark_metadata engine=Godot 4.7.2.stable.official.ed1daf0bf; physics_hz=240; speed_mps=80.0; hull_points=8; proxies=3877; bins=1039; world_build_ms=154.025; warmup=20; samples=200; methods=baseline_first_hit,candidate_first_hit,candidate_contacts; pair_order=alternating; context=record active native workload separately
+world_identity=481b7b5dc048ef33dab7c4c6bcd261236a7143903f81c9af33e0930fdc4b5f13; car=vehicle:cars:00:car_hatch NED=-37.75,-21.0,-0.74500000476837; shade_tree=tree:shade-tree:shade-trees:00:crown NED=-49.0,-22.0,-6.7675374714373
+CASE rate_hz=120 speed_mps=80.0 displacement_m=0.66666666666667 scenario=empty_air baseline_hit=none candidate_hit=none baseline_first=p50=25us,p95=29us,p99=35us,max=47us candidate_first=p50=25us,p95=29us,p99=36us,max=39us candidate_contacts=p50=24us,p95=28us,p99=32us,max=36us
+CASE rate_hz=120 speed_mps=80.0 displacement_m=0.66666666666667 scenario=near_car baseline_hit=vehicle:cars:00:car_hatch:2 candidate_hit=vehicle:cars:00:car_hatch:2 baseline_first=p50=406us,p95=501us,p99=545us,max=597us candidate_first=p50=290us,p95=349us,p99=410us,max=422us candidate_contacts=p50=289us,p95=352us,p99=390us,max=407us
+CASE rate_hz=120 speed_mps=80.0 displacement_m=0.66666666666667 scenario=near_tree baseline_hit=tree:shade-tree:shade-trees:00:crown:2 candidate_hit=tree:shade-tree:shade-trees:00:crown:2 baseline_first=p50=460us,p95=475us,p99=481us,max=487us candidate_first=p50=322us,p95=333us,p99=344us,max=475us candidate_contacts=p50=319us,p95=331us,p99=365us,max=375us
+CASE rate_hz=240 speed_mps=80.0 displacement_m=0.33333333333333 scenario=empty_air baseline_hit=none candidate_hit=none baseline_first=p50=13us,p95=26us,p99=30us,max=62us candidate_first=p50=13us,p95=27us,p99=28us,max=57us candidate_contacts=p50=13us,p95=26us,p99=28us,max=35us
+CASE rate_hz=240 speed_mps=80.0 displacement_m=0.33333333333333 scenario=near_car baseline_hit=vehicle:cars:00:car_hatch:2 candidate_hit=vehicle:cars:00:car_hatch:2 baseline_first=p50=461us,p95=481us,p99=499us,max=513us candidate_first=p50=323us,p95=335us,p99=342us,max=443us candidate_contacts=p50=320us,p95=333us,p99=342us,max=372us
+CASE rate_hz=240 speed_mps=80.0 displacement_m=0.33333333333333 scenario=near_tree baseline_hit=tree:shade-tree:shade-trees:00:crown:2 candidate_hit=tree:shade-tree:shade-trees:00:crown:2 baseline_first=p50=358us,p95=461us,p99=488us,max=656us candidate_first=p50=250us,p95=321us,p99=349us,max=383us candidate_contacts=p50=252us,p95=317us,p99=352us,max=408us
+EXIT_CODE: 0

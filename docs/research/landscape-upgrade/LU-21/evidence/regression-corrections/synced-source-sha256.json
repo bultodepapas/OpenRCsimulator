@@ -1,0 +1,9 @@
+{
+  "app/render/field_projected_shadows.gd": "b4f9ca3dcade669b8989928230a93c6d4c2fee82bb142c87700a97839664ebb3",
+  "app/scenery/population.gd": "0540a6363f2d9b1b41395ab46bee393234f7ecfd33f50f8b2697d050f43de3a5",
+  "app/scenery/scenery.gd": "7d8b1689ee92e201f40c285ceca23fdda0387882cdddf7219a9ff85710bb277c",
+  "app/tests/test_field_projected_shadows.gd": "424ac0c8c2daacf7db3f5deae484e690ceb1c565fdcd1eaaf2a843e528e9b6ce",
+  "app/tests/test_time_of_day_scenery_update.gd": "e5d9f2f3110671a3b35eb303adb8c4c6ac719cd2d0f161aeb50d9e2810842ece",
+  "app/tests/test_landscape_gravel.gd": "6f3f1ac800a5aa4147cff12c4e2fe72b3d94ec72d439c38d822c52ba65cbb31c",
+  "app/tests/test_landscape_vegetation.gd": "38f9d668452ec84231caa86dfdfb1f14525fab8669bd939d627fbfd8631d7b24"
+}

@@ -1,0 +1,340 @@
+{
+  "format": "openrc-human-population-sources-v1",
+  "step": "LU-21",
+  "observed_on": "2026-10-12",
+  "status": "Three poses integrated and native-verified in Godot 4.7.2 Compatibility; final evidence in docs/research/landscape-upgrade/LU-21/README.md.",
+  "toolchain": {
+    "blender": "5.2.2",
+    "mpfb": "2.0.18",
+    "runtime_dependency": "None; the app consumes static glTF-derived mesh and texture assets only.",
+    "recipe": "tools/scenery/population/generate_people.py",
+    "recipe_license": "MIT"
+  },
+  "source_archives": [
+    {
+      "id": "mpfb2",
+      "version": "2.0.18",
+      "url": "https://github.com/makehumancommunity/mpfb2/releases/tag/v2.0.18",
+      "downloaded_archive": ".tools/lu21-human-research/mpfb2-v2.0.18.zip",
+      "bytes": 45601989,
+      "sha256": "ADA7C4FF11E79CF6ED9B441BCCABC52C9359F2848B988F66E89C14C30B21FED7",
+      "license": "GPL-3.0-or-later; authoring tool only"
+    },
+    {
+      "id": "makehuman_system_assets",
+      "url": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "catalog": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html",
+      "downloaded_archive": ".tools/lu21-human-research/makehuman_system_assets_cc0.zip",
+      "bytes": 280737770,
+      "sha256": "B542127A8E25547C7C29C19F2D1D2ADB9A664C80396ECD694095DBC8028A0107",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "makehuman_system_poses",
+      "url": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_poses/makehuman_system_poses_cc0.zip",
+      "catalog": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_poses.html",
+      "downloaded_archive": ".tools/lu21-human-research/makehuman_system_poses_cc0.zip",
+      "bytes": 820410,
+      "sha256": "C4675523714854D86B2FC1315BAE152646254B0BADFCE8E9AD0CF624D9EF5689",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "poses01",
+      "url": "https://files2.makehumancommunity.org/asset_packs/poses01/poses01_cc0.zip",
+      "catalog": "https://static.makehumancommunity.org/assets/assetpacks/poses01.html",
+      "downloaded_archive": ".tools/lu21-human-research/poses01_cc0.zip",
+      "bytes": 1207533,
+      "sha256": "67B1D14923ADDA85F371F81E1C529FCD058F975D0BF93848838E1A3860705B7D",
+      "license": "CC0-1.0"
+    }
+  ],
+  "source_assets": [
+    {
+      "pack": "makehuman_system_assets",
+      "catalog_author": "makehuman_system",
+      "catalog_license": "CC0-1.0",
+      "catalog_url": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html",
+      "assets": [
+        {
+          "name": "male1591",
+          "type": "proxy",
+          "file": "source/makehuman_system_assets/proxymeshes/male1591/male1591.proxy",
+          "bytes": 108133,
+          "sha256": "6FC9A44FC19DCACE1BEE1199555AF0BC26C9CE76571843CCF47300FD16B647E2"
+        },
+        {
+          "name": "middleage_caucasian_male",
+          "type": "skin material",
+          "file": "source/makehuman_system_assets/skins/middleage_caucasian_male/middleage_caucasian_male.mhmat",
+          "bytes": 1469,
+          "sha256": "113326B7670CB273610314B91E2597B228711ADF5F0666660B16FEF269BFBE72"
+        },
+        {
+          "name": "low-poly",
+          "type": "eyes",
+          "file": "source/makehuman_system_assets/eyes/low-poly/low-poly.mhclo",
+          "bytes": 1344,
+          "sha256": "68582E28E9176CBA7CFCF35208F671B6201B8D1BC95C32DECFF61A3160EC34D8"
+        },
+        {
+          "name": "eyebrow001",
+          "type": "eyebrows",
+          "file": "source/makehuman_system_assets/eyebrows/eyebrow001/eyebrow001.mhclo",
+          "bytes": 9141,
+          "sha256": "54C8892C2BA577F4152D779CE1F20F7CD323BEB8CBD9CB701796165C221B4F5B"
+        },
+        {
+          "name": "eyebrow001",
+          "type": "material",
+          "file": "source/makehuman_system_assets/eyebrows/eyebrow001/eyebrow001.mhmat",
+          "bytes": 1098,
+          "sha256": "976E5F4F1D3922D7A11C6E2DB233F8B4584B068D00619D5749687E81C92D61FC"
+        },
+        {
+          "name": "short01",
+          "type": "hair",
+          "file": "source/makehuman_system_assets/hair/short01/short01.mhclo",
+          "bytes": 201588,
+          "sha256": "AE1FFAA98DA5753B803B3A173BEDE4895D2215E6BB94763F3765A71F0E984F35"
+        },
+        {
+          "name": "short01",
+          "type": "material",
+          "file": "source/makehuman_system_assets/hair/short01/short01.mhmat",
+          "bytes": 1314,
+          "sha256": "01E2E12CE3F3D3C859225456660ACADCDD27D4F4B4D888BCBD6F11998CADD975"
+        },
+        {
+          "name": "male_casualsuit04",
+          "type": "clothes",
+          "file": "source/makehuman_system_assets/clothes/male_casualsuit04/male_casualsuit04.mhclo",
+          "bytes": 116682,
+          "sha256": "8C1A2D3272CD51BA03F0840D593EDDC6325D3D2C4C8529F8203D2C2CAD3D0CEF"
+        },
+        {
+          "name": "male_casualsuit04",
+          "type": "material",
+          "file": "source/makehuman_system_assets/clothes/male_casualsuit04/male_casualsuit04.mhmat",
+          "bytes": 1396,
+          "sha256": "0408DEA995C10E078AB79A3B68FA3092BDF18D3241B74FA35D48FE5397B42430"
+        },
+        {
+          "name": "shoes02",
+          "type": "shoes",
+          "file": "source/makehuman_system_assets/clothes/shoes02/shoes02.mhclo",
+          "bytes": 110217,
+          "sha256": "0D447FD6B7415D6B2603E91697336EE51AC2F00EF85878D6667E9ACFB45A20FE"
+        },
+        {
+          "name": "shoes02",
+          "type": "material",
+          "file": "source/makehuman_system_assets/clothes/shoes02/shoes02.mhmat",
+          "bytes": 1184,
+          "sha256": "7F2CB19506784FBE22BA3F766F94BB13D1EEE1712DD29ED10B926C5905BAB924"
+        }
+      ]
+    },
+    {
+      "pack": "makehuman_system_poses",
+      "catalog_author": "MakeHuman / makehuman_system",
+      "catalog_license": "CC0-1.0",
+      "catalog_url": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_poses.html",
+      "asset": "standing02",
+      "file": "source/poses/standing02/standing02.bvh",
+      "bytes": 42275,
+      "sha256": "8AC8B0E6CB72CA1CB56A87B8E51E0E1490CA7FB1F0BFC106E8FB5EC9E0080043",
+      "metadata": "source/poses/standing02/standing02.meta",
+      "metadata_sha256": "E8901FF696AE3ADDEBA0D7AB8B239757097CBF8E75AC6E757842B58895A8F6DB"
+    },
+    {
+      "pack": "poses01",
+      "catalog_author": "Anrico",
+      "catalog_license": "CC0-1.0",
+      "catalog_url": "https://static.makehumancommunity.org/assets/assetpacks/poses01.html",
+      "asset_page": "http://www.makehumancommunity.org/node/2217",
+      "asset": "anrico_sitting03",
+      "description": "A sitting pose on a chair.",
+      "file": "source/poses/anrico_sitting03/anrico_sitting03.bvh",
+      "bytes": 44119,
+      "sha256": "A3813600C29732081074B0138AAF7547C4A7F9DC74A885432D3C0A7577F5902D",
+      "metadata": "source/poses/anrico_sitting03/anrico_sitting03.meta",
+      "metadata_sha256": "8EB58662CFB75D54E0D36C47B1BB91A22FAC5BC89FFFCC8FFE6C23AF4D2A05ED",
+      "thumbnail": "source/poses/anrico_sitting03/anrico_sitting03.thumb",
+      "thumbnail_sha256": "5AE03C7EE139B77AF5277EFC1277CBD72F6A207D466F4B09BE7EAC4BAF2DF9A6"
+    }
+  ],
+  "generated_textures": [
+    {
+      "file": "brown_eye.png",
+      "bytes": 71364,
+      "sha256": "A37E1A54F61EC20D0A00B962EE75A620260EB686319F61463A479440EDA902B7"
+    },
+    {
+      "file": "eyebrow001.png",
+      "bytes": 27403,
+      "sha256": "10C8FF3AC95BCFDCD65D6A0E24F69C626898871B572DF4588ED78D3C6ADECE03"
+    },
+    {
+      "file": "male_casualsuit04_diffuse.png",
+      "bytes": 891916,
+      "sha256": "D2C5FA34F5909AF635400FB03FC366C202761E0EAD4D04165B6CD82565035826"
+    },
+    {
+      "file": "male_casualsuit04_normal.png",
+      "bytes": 584631,
+      "sha256": "3EDA9D7A08E5EB7F786BF00E88D0F33BC2DD764C89A5754AE03AAF77E47714A6"
+    },
+    {
+      "file": "middleage_lightskinned_male_diffuse.png",
+      "bytes": 1101557,
+      "sha256": "B87763C35DC9C0242D7EB4ADDB7D0F856B4F161357903A071BACD257FA0B5B90"
+    },
+    {
+      "file": "shoes02_diffuse.png",
+      "bytes": 1282057,
+      "sha256": "EFEF94EA34B0E0C2283095CB47A9E0389B55449C61A4F4972D0AD4D2BF06B4F0"
+    },
+    {
+      "file": "short01_diffuse.png",
+      "bytes": 308642,
+      "sha256": "E6BD9C9C0C30D9D2A0AA576A84672671D0A81C005488C71027121E07937BE50A"
+    }
+  ],
+  "review_exports": [
+    {
+      "pose": "standing",
+      "source_pose": "standing02",
+      "gltf": {
+        "file": ".tools/lu21-human-research/posed-assets/person_standing.gltf",
+        "bytes": 9725,
+        "sha256": "83031F3049705BCCF9FAEAD9A4B69574B13EA5BCE936C9D316FE3ED4C7E2545C"
+      },
+      "buffer": {
+        "file": ".tools/lu21-human-research/posed-assets/person_standing.bin",
+        "bytes": 208796,
+        "sha256": "61955D7EC62D2C77228662FF3D404290FBECA3FBEE60C467E74D68BF4938F783"
+      },
+      "triangles": 7332,
+      "mesh_objects": 6,
+      "surfaces": 6,
+      "materials": 6,
+      "nodes": 7,
+      "godot_bounds_m": {
+        "min": [
+          -0.309751,
+          0.0,
+          -0.164977
+        ],
+        "max": [
+          0.309751,
+          1.75,
+          0.164977
+        ],
+        "size": [
+          0.619502,
+          1.75,
+          0.329953
+        ]
+      }
+    },
+    {
+      "pose": "seated",
+      "source_pose": "anrico_sitting03",
+      "gltf": {
+        "file": ".tools/lu21-human-research/posed-assets/person_seated.gltf",
+        "bytes": 9730,
+        "sha256": "1DB1365BEB4EF35F96E47951064569E16E6D4E3589753DD631088FE522E3059A"
+      },
+      "buffer": {
+        "file": ".tools/lu21-human-research/posed-assets/person_seated.bin",
+        "bytes": 208992,
+        "sha256": "4906E7AC7F6FBDA3CB7A5628B3C9278967F44CA3A9A93843A34D79E96513AD63"
+      },
+      "triangles": 7333,
+      "mesh_objects": 6,
+      "surfaces": 6,
+      "materials": 6,
+      "nodes": 7,
+      "godot_bounds_m": {
+        "min": [
+          -0.293644,
+          0.0,
+          -0.362583
+        ],
+        "max": [
+          0.293644,
+          1.443456,
+          0.362583
+        ],
+        "size": [
+          0.587287,
+          1.443456,
+          0.725167
+        ]
+      },
+      "bench_contact": {
+        "y_m": 0.47421,
+        "bench_surface_y_m": 0.48,
+        "sample_count": 375,
+        "measurement": "Lowest rear-buttock/upper-thigh imported vertices in the seated region; feet are at y=0."
+      }
+    },
+    {
+      "pose": "pilot",
+      "source_pose": "standing02 plus project-scripted arm IK and transmitter",
+      "gltf": {
+        "file": ".tools/lu21-human-research/posed-assets/person_pilot.gltf",
+        "bytes": 11162,
+        "sha256": "11424E514FC542D203767A783E92663A7A68AF668D2B039AEABE05A3112C9190"
+      },
+      "buffer": {
+        "file": ".tools/lu21-human-research/posed-assets/person_pilot.bin",
+        "bytes": 246580,
+        "sha256": "467FC4E3CCEC8766DAFC357104685270BBFD78F804ABD7CA6F1785D89344EBC9"
+      },
+      "triangles": 7880,
+      "mesh_objects": 7,
+      "surfaces": 7,
+      "materials": 7,
+      "nodes": 8,
+      "godot_bounds_m": {
+        "min": [
+          -0.323774,
+          0.0,
+          -0.217037
+        ],
+        "max": [
+          0.323774,
+          1.75,
+          0.217037
+        ],
+        "size": [
+          0.647549,
+          1.75,
+          0.434074
+        ]
+      },
+      "project_authored_transmitter_triangles": 548
+    }
+  ],
+  "shared_texture_bytes": 4267570,
+  "runtime_limits": {
+    "all_poses_static": true,
+    "skeletons": 0,
+    "animation_players": 0,
+    "textures_shared_by_hash": true,
+    "front_direction_godot": "-Z; confirmed visually in the integrated isolated field scene by the landscape lead",
+    "limitation": "These three poses use the same adult male body, outfit, skin and hair. The pilot's fingers are relaxed/open around the transmitter. Runtime motion and placement are owned by the scenery integration."
+  },
+  "checks": {
+    "engine": "Godot 4.7.2 stable, Compatibility renderer",
+    "isolated_probe_log": ".tools/lu21-human-research/godot-probe-final/inspect-final.log",
+    "result": "PASS: all three scenes imported; geometry, materials, bounds and absence of runtime skeleton/animation verified.",
+    "external_user_file": {
+      "path": "%APPDATA%/Blender Foundation/Blender/5.2/mpfb/config/log_levels.json",
+      "bytes": 14,
+      "content": "{\"default\": 3}",
+      "status": "A cleanup attempt was rejected by the environment; the file remains. No further removal was attempted. Later authoring runs used isolated Blender user directories."
+    }
+  }
+}

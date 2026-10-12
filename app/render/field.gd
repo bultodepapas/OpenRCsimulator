@@ -56,10 +56,6 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 		result.add_child(mesh_instance)
 	for object_data: Dictionary in field.objects:
 		result.add_child(Treeline.build(object_data, field.pilot))
-	var near_grass: Node3D = NearGrass.build(field, grass)
-	result.add_child(near_grass)
-	if near_grass.has_meta("lighting_material"):
-		materials.append(near_grass.get_meta("lighting_material") as ShaderMaterial)
 	for cue: Dictionary in field.get("flight_cues", []):
 		if cue.type == "pilot_station":
 			result.add_child(PilotStation.build(cue))
@@ -70,8 +66,16 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	if not field.get("flight_cues", []).is_empty():
 		result.add_child(FlightCueShadows.build(field.flight_cues, lighting.has("solar")))
 	Scenery.attach(result, field, lighting)
+	var scenery_node := result.get_node_or_null("Scenery")
+	var exclusions: Array = scenery_node.get_meta("grass_exclusions", []) if scenery_node != null else []
+	var near_grass: Node3D = NearGrass.build(field, grass, exclusions)
+	result.add_child(near_grass)
+	if near_grass.has_meta("lighting_material"):
+		materials.append(near_grass.get_meta("lighting_material") as ShaderMaterial)
 	if LandscapeOptions.enabled() and field.get("id", "") == "default":
-		result.add_child(DistantRidges.build())
+		var ridges := DistantRidges.build(lighting)
+		result.add_child(ridges)
+		materials.append(ridges.get_meta("lighting_material") as ShaderMaterial)
 	FieldProjectedShadows.attach(result, field, lighting)
 	result.set_meta("lighting_materials", materials)
 	result.set_meta("lighting_snapshot", lighting.duplicate(true))

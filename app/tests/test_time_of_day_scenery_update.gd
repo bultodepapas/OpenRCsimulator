@@ -20,40 +20,47 @@ func _initialize() -> void:
 	var field_node: Node3D = _field_node(field, scenery, options, legacy)
 	var root: Node3D = field_node.get_node("Scenery") as Node3D
 	var shadow_nodes: Dictionary = root.get_meta("directional_shadow_nodes")
+	var population_shadow_node: MeshInstance3D = root.get_node_or_null("PopulationContacts") as MeshInstance3D
 	var shadow_material: StandardMaterial3D = root.get_meta("directional_shadow_material")
 	var static_meshes: Dictionary = _static_meshes(root)
-	_check("fixture has retained nearby shadow batches", shadow_nodes.size() > 0)
+	var retained_batches := shadow_nodes.size() + (1 if population_shadow_node != null else 0)
+	_check("fixture has retained nearby and population shadow batches", retained_batches > 0)
 
 	var night: Dictionary = _lighting(180.0, 0.05, 0.0)
 	var before_night_hash: String = _shadow_digest(root)
 	var prepared_night: Dictionary = Scenery.prepare_lighting(field_node, night)
 	_check("day to night prepares one replacement per retained shadow batch",
-		prepared_night.ok and prepared_night.changed and prepared_night.batches.size() == shadow_nodes.size())
+		prepared_night.ok and prepared_night.changed and prepared_night.batches.size() == retained_batches)
 	_check("prepare leaves live alpha and shadow geometry untouched",
 		shadow_material.albedo_color.a == 1.0 and _shadow_digest(root) == before_night_hash)
 	var commit_started: int = Time.get_ticks_usec()
 	_check("night commit succeeds", Scenery.commit_lighting(field_node, prepared_night))
 	var commit_ms: float = float(Time.get_ticks_usec() - commit_started) / 1000.0
 	_check("night clears mesh surfaces and material alpha in place",
-		shadow_material.albedo_color.a == 0.0 and _all_empty(shadow_nodes))
+		shadow_material.albedo_color.a == 0.0 and _all_empty(shadow_nodes)
+			and (population_shadow_node == null or population_shadow_node.mesh.get_surface_count() == 0))
 	_check("night keeps shadow node and material identity",
-		_same_nodes(root, shadow_nodes) and root.get_meta("directional_shadow_material") == shadow_material)
+		_same_nodes(root, shadow_nodes)
+			and (population_shadow_node == null or population_shadow_node.get_parent() == root)
+			and root.get_meta("directional_shadow_material") == shadow_material)
 	_check("night keeps static scenery mesh resources", _same_meshes(root, static_meshes))
 	print("     scenery night update: prepare %.3f ms, commit %.3f ms, %d cells, %d triangles" % [
 		prepared_night.prepare_ms, commit_ms, prepared_night.batches.size(), prepared_night.triangles])
 
 	var empty_meshes: Dictionary = _shadow_meshes(shadow_nodes)
+	var empty_population_mesh: Mesh = population_shadow_node.mesh if population_shadow_node != null else null
 	var later_night: Dictionary = _lighting(270.0, -8.0, 0.0)
 	var hidden_prepare: Dictionary = Scenery.prepare_lighting(field_node, later_night)
 	_check("zero-strength solar direction changes create no mesh replacements",
 		not hidden_prepare.changed and hidden_prepare.batches.is_empty())
 	_check("night no-op commit preserves empty mesh resources",
-		Scenery.commit_lighting(field_node, hidden_prepare) and _same_shadow_meshes(shadow_nodes, empty_meshes))
+		Scenery.commit_lighting(field_node, hidden_prepare) and _same_shadow_meshes(shadow_nodes, empty_meshes)
+			and (population_shadow_node == null or population_shadow_node.mesh == empty_population_mesh))
 
 	var dawn: Dictionary = _lighting(80.0, 1.0, 0.18)
 	var dawn_prepared: Dictionary = Scenery.prepare_lighting(field_node, dawn)
 	_check("night to dawn prepares projected shadows", dawn_prepared.ok and dawn_prepared.changed
-		and dawn_prepared.geometry_changed and dawn_prepared.batches.size() == shadow_nodes.size())
+		and dawn_prepared.geometry_changed and dawn_prepared.batches.size() == retained_batches)
 	var dawn_commit_started: int = Time.get_ticks_usec()
 	_check("night to dawn commit succeeds", Scenery.commit_lighting(field_node, dawn_prepared))
 	var dawn_commit_ms: float = float(Time.get_ticks_usec() - dawn_commit_started) / 1000.0
@@ -62,6 +69,7 @@ func _initialize() -> void:
 	_check("dawn mesh hash equals a fresh build", _matches_fresh(field, scenery, options, root, dawn))
 	_check("dawn preserves static geometry, batch nodes and material",
 		_same_meshes(root, static_meshes) and _same_nodes(root, shadow_nodes)
+		and (population_shadow_node == null or population_shadow_node.get_parent() == root)
 		and root.get_meta("directional_shadow_material") == shadow_material)
 
 	var stale: Dictionary = Scenery.prepare_lighting(field_node, night)
@@ -94,6 +102,7 @@ func _initialize() -> void:
 	_check("night to legacy reversal succeeds", Scenery.update_lighting(field_node, legacy))
 	_check("legacy mesh hash equals a fresh build", _matches_fresh(field, scenery, options, root, legacy))
 	_check("final identity remains stable", _same_meshes(root, static_meshes) and _same_nodes(root, shadow_nodes)
+		and (population_shadow_node == null or population_shadow_node.get_parent() == root)
 		and root.get_meta("directional_shadow_material") == shadow_material)
 
 	field_node.free()
@@ -167,7 +176,7 @@ func _shadow_digest(root: Node3D) -> String:
 	var bytes: PackedByteArray = PackedByteArray()
 	var names: Array[String] = []
 	for child: Node in root.get_children():
-		if child is MeshInstance3D and str(child.name).begins_with("shadows_"):
+		if child is MeshInstance3D and (str(child.name).begins_with("shadows_") or str(child.name) == "PopulationContacts"):
 			names.append(str(child.name))
 	names.sort()
 	for name: String in names:

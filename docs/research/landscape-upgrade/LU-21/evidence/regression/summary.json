@@ -1,0 +1,13 @@
+{
+  "total_scripts": 222,
+  "passed_scripts": 221,
+  "failed_scripts": 1,
+  "initial_passes": 9,
+  "continued_scripts": 212,
+  "failure": "test_atmosphere_flight.gd: pre-existing Linux extreme-density fresh-trim failure; Windows 140/140 passes",
+  "post_gdscript_shell_tail_passed": true,
+  "correction_reruns": 12,
+  "correction_reruns_passed": true,
+  "full_script_exit": 1,
+  "note": "Combined result of unchanged app/test.sh until failure, continuation, and twelve final targeted reruns. This is not a green app/test.sh run."
+}

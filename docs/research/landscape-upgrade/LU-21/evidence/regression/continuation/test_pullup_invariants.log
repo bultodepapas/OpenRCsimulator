@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+source inventory: 20 parts, mass 2.88505829104375 kg, CG LE [0.1209, 0.0, 0.0] m
+source inertia [Jxx,Jyy,Jzz,Jxy,Jxz,Jyz] kg m^2: [0.11540678010017, 0.38708561399355, 0.48410759044528, -0.00954, 0.0072395, 0.00045525693736]
+control throws { "aileron": 20.0, "elevator": 20.0, "rudder": 25.0 } deg (kinds ["estimated", "estimated", "estimated"]); full-throw time 0.14 s (estimated)
+D8b-R2c: 41 checks, 0 failed

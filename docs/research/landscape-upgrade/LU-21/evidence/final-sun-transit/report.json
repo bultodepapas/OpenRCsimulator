@@ -1,0 +1,1141 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "arguments": {
+    "cases": "glare_aircraft",
+    "engine_shadows": "on",
+    "frames": "121",
+    "height": "1080",
+    "motion": "aircraft",
+    "out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/landscape-lu16/final-sun-transit",
+    "scenery": "on",
+    "scenery_audio": "off",
+    "soundscape": "off",
+    "width": "1920"
+  },
+  "cases": {
+    "glare_aircraft": {
+      "draws": 332.0,
+      "exposure": 0.600000023841858,
+      "frame_ms_raw": [
+        3.61,
+        437.432,
+        438.607,
+        436.195,
+        443.332,
+        432.291,
+        440.591,
+        436.582,
+        444.028,
+        444.83,
+        440.187,
+        452.267,
+        444.208,
+        447.788,
+        438.348,
+        438.622,
+        441.448,
+        447.852,
+        454.005,
+        441.743,
+        441.404,
+        439.638,
+        440.852,
+        442.431,
+        454.095,
+        448.804,
+        436.851,
+        440.826,
+        436.349,
+        441.604,
+        446.556,
+        448.239,
+        435.652,
+        436.98,
+        436.434,
+        438.23,
+        434.801,
+        432.61,
+        432.979,
+        423.246,
+        436.68,
+        425.428,
+        417.202,
+        428.486,
+        436.878,
+        421.559,
+        419.507,
+        418.514,
+        421.187,
+        411.192,
+        410.016,
+        417.494,
+        411.863,
+        405.769,
+        424.585,
+        410.913,
+        403.54,
+        403.163,
+        406.425,
+        406.605,
+        411.323,
+        403.987,
+        403.953,
+        401.454,
+        407.627,
+        416.358,
+        402.733,
+        409.785,
+        413.123,
+        412.12,
+        405.158,
+        410.197,
+        416.27,
+        415.274,
+        415.249,
+        419.147,
+        404.867,
+        409.437,
+        410.347,
+        442.594,
+        420.866,
+        427.507,
+        433.82,
+        434.574,
+        433.077,
+        430.247,
+        426.812,
+        438.592,
+        440.633,
+        456.522,
+        438.315,
+        450.406,
+        443.417,
+        438.682,
+        435.585,
+        438.142,
+        443.806,
+        442.626,
+        452.746,
+        452.594,
+        445.305,
+        449.521,
+        450.538,
+        439.735,
+        440.798,
+        438.649,
+        441.116,
+        448.662,
+        443.362,
+        440.026,
+        431.894,
+        446.473,
+        430.292,
+        430.279,
+        444.595,
+        433.412,
+        436.827,
+        435.044,
+        439.909,
+        444.79,
+        437.079
+      ],
+      "glare_strength": 1.0,
+      "glare_visible": true,
+      "lamp_factor": 0.0,
+      "marker_center_px": "(2128.439, 2001.167)",
+      "median_ms": 436.582,
+      "motion": [
+        {
+          "aircraft_position": "(-23.58579, 37.35534, 26.41421)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_000.png",
+          "glare_strength": 1.0,
+          "time_s": 0.0
+        },
+        {
+          "aircraft_position": "(-23.60936, 37.35534, 26.39064)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_001.png",
+          "glare_strength": 1.0,
+          "time_s": 0.0166666666666667
+        },
+        {
+          "aircraft_position": "(-23.63293, 37.35534, 26.36707)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_002.png",
+          "glare_strength": 1.0,
+          "time_s": 0.0333333333333333
+        },
+        {
+          "aircraft_position": "(-23.6565, 37.35534, 26.3435)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_003.png",
+          "glare_strength": 1.0,
+          "time_s": 0.05
+        },
+        {
+          "aircraft_position": "(-23.68007, 37.35534, 26.31993)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_004.png",
+          "glare_strength": 1.0,
+          "time_s": 0.0666666666666667
+        },
+        {
+          "aircraft_position": "(-23.70364, 37.35534, 26.29636)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_005.png",
+          "glare_strength": 1.0,
+          "time_s": 0.0833333333333333
+        },
+        {
+          "aircraft_position": "(-23.72721, 37.35534, 26.27279)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_006.png",
+          "glare_strength": 1.0,
+          "time_s": 0.1
+        },
+        {
+          "aircraft_position": "(-23.75078, 37.35534, 26.24922)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_007.png",
+          "glare_strength": 1.0,
+          "time_s": 0.116666666666667
+        },
+        {
+          "aircraft_position": "(-23.77435, 37.35534, 26.22565)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_008.png",
+          "glare_strength": 1.0,
+          "time_s": 0.133333333333333
+        },
+        {
+          "aircraft_position": "(-23.79792, 37.35534, 26.20208)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_009.png",
+          "glare_strength": 1.0,
+          "time_s": 0.15
+        },
+        {
+          "aircraft_position": "(-23.82149, 37.35534, 26.17851)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_010.png",
+          "glare_strength": 1.0,
+          "time_s": 0.166666666666667
+        },
+        {
+          "aircraft_position": "(-23.84506, 37.35534, 26.15494)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_011.png",
+          "glare_strength": 1.0,
+          "time_s": 0.183333333333333
+        },
+        {
+          "aircraft_position": "(-23.86863, 37.35534, 26.13137)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_012.png",
+          "glare_strength": 1.0,
+          "time_s": 0.2
+        },
+        {
+          "aircraft_position": "(-23.8922, 37.35534, 26.1078)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_013.png",
+          "glare_strength": 1.0,
+          "time_s": 0.216666666666667
+        },
+        {
+          "aircraft_position": "(-23.91577, 37.35534, 26.08423)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_014.png",
+          "glare_strength": 1.0,
+          "time_s": 0.233333333333333
+        },
+        {
+          "aircraft_position": "(-23.93934, 37.35534, 26.06066)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_015.png",
+          "glare_strength": 1.0,
+          "time_s": 0.25
+        },
+        {
+          "aircraft_position": "(-23.96291, 37.35534, 26.03709)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_016.png",
+          "glare_strength": 1.0,
+          "time_s": 0.266666666666667
+        },
+        {
+          "aircraft_position": "(-23.98648, 37.35534, 26.01352)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_017.png",
+          "glare_strength": 1.0,
+          "time_s": 0.283333333333333
+        },
+        {
+          "aircraft_position": "(-24.01005, 37.35534, 25.98995)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_018.png",
+          "glare_strength": 1.0,
+          "time_s": 0.3
+        },
+        {
+          "aircraft_position": "(-24.03362, 37.35534, 25.96638)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_019.png",
+          "glare_strength": 1.0,
+          "time_s": 0.316666666666667
+        },
+        {
+          "aircraft_position": "(-24.05719, 37.35534, 25.94281)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_020.png",
+          "glare_strength": 1.0,
+          "time_s": 0.333333333333333
+        },
+        {
+          "aircraft_position": "(-24.08076, 37.35534, 25.91924)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_021.png",
+          "glare_strength": 1.0,
+          "time_s": 0.35
+        },
+        {
+          "aircraft_position": "(-24.10433, 37.35534, 25.89567)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_022.png",
+          "glare_strength": 1.0,
+          "time_s": 0.366666666666667
+        },
+        {
+          "aircraft_position": "(-24.1279, 37.35534, 25.8721)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_023.png",
+          "glare_strength": 1.0,
+          "time_s": 0.383333333333333
+        },
+        {
+          "aircraft_position": "(-24.15147, 37.35534, 25.84853)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_024.png",
+          "glare_strength": 1.0,
+          "time_s": 0.4
+        },
+        {
+          "aircraft_position": "(-24.17504, 37.35534, 25.82496)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_025.png",
+          "glare_strength": 1.0,
+          "time_s": 0.416666666666667
+        },
+        {
+          "aircraft_position": "(-24.19861, 37.35534, 25.80139)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_026.png",
+          "glare_strength": 1.0,
+          "time_s": 0.433333333333333
+        },
+        {
+          "aircraft_position": "(-24.22218, 37.35534, 25.77782)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_027.png",
+          "glare_strength": 1.0,
+          "time_s": 0.45
+        },
+        {
+          "aircraft_position": "(-24.24575, 37.35534, 25.75425)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_028.png",
+          "glare_strength": 1.0,
+          "time_s": 0.466666666666667
+        },
+        {
+          "aircraft_position": "(-24.26932, 37.35534, 25.73068)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_029.png",
+          "glare_strength": 1.0,
+          "time_s": 0.483333333333333
+        },
+        {
+          "aircraft_position": "(-24.29289, 37.35534, 25.70711)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_030.png",
+          "glare_strength": 1.0,
+          "time_s": 0.5
+        },
+        {
+          "aircraft_position": "(-24.31646, 37.35534, 25.68354)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_031.png",
+          "glare_strength": 1.0,
+          "time_s": 0.516666666666667
+        },
+        {
+          "aircraft_position": "(-24.34003, 37.35534, 25.65997)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_032.png",
+          "glare_strength": 1.0,
+          "time_s": 0.533333333333333
+        },
+        {
+          "aircraft_position": "(-24.3636, 37.35534, 25.6364)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_033.png",
+          "glare_strength": 1.0,
+          "time_s": 0.55
+        },
+        {
+          "aircraft_position": "(-24.38717, 37.35534, 25.61283)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_034.png",
+          "glare_strength": 1.0,
+          "time_s": 0.566666666666667
+        },
+        {
+          "aircraft_position": "(-24.41074, 37.35534, 25.58926)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_035.png",
+          "glare_strength": 1.0,
+          "time_s": 0.583333333333333
+        },
+        {
+          "aircraft_position": "(-24.43431, 37.35534, 25.56569)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_036.png",
+          "glare_strength": 1.0,
+          "time_s": 0.6
+        },
+        {
+          "aircraft_position": "(-24.45789, 37.35534, 25.54211)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_037.png",
+          "glare_strength": 1.0,
+          "time_s": 0.616666666666667
+        },
+        {
+          "aircraft_position": "(-24.48145, 37.35534, 25.51855)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_038.png",
+          "glare_strength": 1.0,
+          "time_s": 0.633333333333333
+        },
+        {
+          "aircraft_position": "(-24.50503, 37.35534, 25.49497)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_039.png",
+          "glare_strength": 1.0,
+          "time_s": 0.65
+        },
+        {
+          "aircraft_position": "(-24.52859, 37.35534, 25.47141)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_040.png",
+          "glare_strength": 1.0,
+          "time_s": 0.666666666666667
+        },
+        {
+          "aircraft_position": "(-24.55217, 37.35534, 25.44783)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_041.png",
+          "glare_strength": 1.0,
+          "time_s": 0.683333333333333
+        },
+        {
+          "aircraft_position": "(-24.57574, 37.35534, 25.42426)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_042.png",
+          "glare_strength": 1.0,
+          "time_s": 0.7
+        },
+        {
+          "aircraft_position": "(-24.59931, 37.35534, 25.40069)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_043.png",
+          "glare_strength": 1.0,
+          "time_s": 0.716666666666667
+        },
+        {
+          "aircraft_position": "(-24.62288, 37.35534, 25.37712)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_044.png",
+          "glare_strength": 1.0,
+          "time_s": 0.733333333333333
+        },
+        {
+          "aircraft_position": "(-24.64645, 37.35534, 25.35355)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_045.png",
+          "glare_strength": 1.0,
+          "time_s": 0.75
+        },
+        {
+          "aircraft_position": "(-24.67002, 37.35534, 25.32998)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_046.png",
+          "glare_strength": 1.0,
+          "time_s": 0.766666666666667
+        },
+        {
+          "aircraft_position": "(-24.69359, 37.35534, 25.30641)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_047.png",
+          "glare_strength": 1.0,
+          "time_s": 0.783333333333333
+        },
+        {
+          "aircraft_position": "(-24.71716, 37.35534, 25.28284)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_048.png",
+          "glare_strength": 1.0,
+          "time_s": 0.8
+        },
+        {
+          "aircraft_position": "(-24.74073, 37.35534, 25.25927)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_049.png",
+          "glare_strength": 1.0,
+          "time_s": 0.816666666666667
+        },
+        {
+          "aircraft_position": "(-24.7643, 37.35534, 25.2357)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_050.png",
+          "glare_strength": 1.0,
+          "time_s": 0.833333333333333
+        },
+        {
+          "aircraft_position": "(-24.78787, 37.35534, 25.21213)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_051.png",
+          "glare_strength": 1.0,
+          "time_s": 0.85
+        },
+        {
+          "aircraft_position": "(-24.81144, 37.35534, 25.18856)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_052.png",
+          "glare_strength": 1.0,
+          "time_s": 0.866666666666667
+        },
+        {
+          "aircraft_position": "(-24.83501, 37.35534, 25.16499)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_053.png",
+          "glare_strength": 1.0,
+          "time_s": 0.883333333333333
+        },
+        {
+          "aircraft_position": "(-24.85858, 37.35534, 25.14142)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_054.png",
+          "glare_strength": 1.0,
+          "time_s": 0.9
+        },
+        {
+          "aircraft_position": "(-24.88215, 37.35534, 25.11785)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_055.png",
+          "glare_strength": 1.0,
+          "time_s": 0.916666666666667
+        },
+        {
+          "aircraft_position": "(-24.90572, 37.35534, 25.09428)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_056.png",
+          "glare_strength": 1.0,
+          "time_s": 0.933333333333333
+        },
+        {
+          "aircraft_position": "(-24.92929, 37.35534, 25.07071)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_057.png",
+          "glare_strength": 1.0,
+          "time_s": 0.95
+        },
+        {
+          "aircraft_position": "(-24.95286, 37.35534, 25.04714)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_058.png",
+          "glare_strength": 1.0,
+          "time_s": 0.966666666666667
+        },
+        {
+          "aircraft_position": "(-24.97643, 37.35534, 25.02357)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_059.png",
+          "glare_strength": 1.0,
+          "time_s": 0.983333333333333
+        },
+        {
+          "aircraft_position": "(-25.0, 37.35534, 25.0)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_060.png",
+          "glare_strength": 1.0,
+          "time_s": 1.0
+        },
+        {
+          "aircraft_position": "(-25.02357, 37.35534, 24.97643)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_061.png",
+          "glare_strength": 1.0,
+          "time_s": 1.01666666666667
+        },
+        {
+          "aircraft_position": "(-25.04714, 37.35534, 24.95286)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_062.png",
+          "glare_strength": 1.0,
+          "time_s": 1.03333333333333
+        },
+        {
+          "aircraft_position": "(-25.07071, 37.35534, 24.92929)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_063.png",
+          "glare_strength": 1.0,
+          "time_s": 1.05
+        },
+        {
+          "aircraft_position": "(-25.09428, 37.35534, 24.90572)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_064.png",
+          "glare_strength": 1.0,
+          "time_s": 1.06666666666667
+        },
+        {
+          "aircraft_position": "(-25.11785, 37.35534, 24.88215)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_065.png",
+          "glare_strength": 1.0,
+          "time_s": 1.08333333333333
+        },
+        {
+          "aircraft_position": "(-25.14142, 37.35534, 24.85858)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_066.png",
+          "glare_strength": 1.0,
+          "time_s": 1.1
+        },
+        {
+          "aircraft_position": "(-25.16499, 37.35534, 24.83501)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_067.png",
+          "glare_strength": 1.0,
+          "time_s": 1.11666666666667
+        },
+        {
+          "aircraft_position": "(-25.18856, 37.35534, 24.81144)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_068.png",
+          "glare_strength": 1.0,
+          "time_s": 1.13333333333333
+        },
+        {
+          "aircraft_position": "(-25.21213, 37.35534, 24.78787)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_069.png",
+          "glare_strength": 1.0,
+          "time_s": 1.15
+        },
+        {
+          "aircraft_position": "(-25.2357, 37.35534, 24.7643)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_070.png",
+          "glare_strength": 1.0,
+          "time_s": 1.16666666666667
+        },
+        {
+          "aircraft_position": "(-25.25927, 37.35534, 24.74073)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_071.png",
+          "glare_strength": 1.0,
+          "time_s": 1.18333333333333
+        },
+        {
+          "aircraft_position": "(-25.28284, 37.35534, 24.71716)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_072.png",
+          "glare_strength": 1.0,
+          "time_s": 1.2
+        },
+        {
+          "aircraft_position": "(-25.30641, 37.35534, 24.69359)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_073.png",
+          "glare_strength": 1.0,
+          "time_s": 1.21666666666667
+        },
+        {
+          "aircraft_position": "(-25.32998, 37.35534, 24.67002)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_074.png",
+          "glare_strength": 1.0,
+          "time_s": 1.23333333333333
+        },
+        {
+          "aircraft_position": "(-25.35355, 37.35534, 24.64645)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_075.png",
+          "glare_strength": 1.0,
+          "time_s": 1.25
+        },
+        {
+          "aircraft_position": "(-25.37712, 37.35534, 24.62288)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_076.png",
+          "glare_strength": 1.0,
+          "time_s": 1.26666666666667
+        },
+        {
+          "aircraft_position": "(-25.40069, 37.35534, 24.59931)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_077.png",
+          "glare_strength": 1.0,
+          "time_s": 1.28333333333333
+        },
+        {
+          "aircraft_position": "(-25.42426, 37.35534, 24.57574)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_078.png",
+          "glare_strength": 1.0,
+          "time_s": 1.3
+        },
+        {
+          "aircraft_position": "(-25.44783, 37.35534, 24.55217)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_079.png",
+          "glare_strength": 1.0,
+          "time_s": 1.31666666666667
+        },
+        {
+          "aircraft_position": "(-25.47141, 37.35534, 24.52859)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_080.png",
+          "glare_strength": 1.0,
+          "time_s": 1.33333333333333
+        },
+        {
+          "aircraft_position": "(-25.49497, 37.35534, 24.50503)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_081.png",
+          "glare_strength": 1.0,
+          "time_s": 1.35
+        },
+        {
+          "aircraft_position": "(-25.51855, 37.35534, 24.48145)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_082.png",
+          "glare_strength": 1.0,
+          "time_s": 1.36666666666667
+        },
+        {
+          "aircraft_position": "(-25.54211, 37.35534, 24.45789)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_083.png",
+          "glare_strength": 1.0,
+          "time_s": 1.38333333333333
+        },
+        {
+          "aircraft_position": "(-25.56569, 37.35534, 24.43431)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_084.png",
+          "glare_strength": 1.0,
+          "time_s": 1.4
+        },
+        {
+          "aircraft_position": "(-25.58926, 37.35534, 24.41074)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_085.png",
+          "glare_strength": 1.0,
+          "time_s": 1.41666666666667
+        },
+        {
+          "aircraft_position": "(-25.61283, 37.35534, 24.38717)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_086.png",
+          "glare_strength": 1.0,
+          "time_s": 1.43333333333333
+        },
+        {
+          "aircraft_position": "(-25.6364, 37.35534, 24.3636)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_087.png",
+          "glare_strength": 1.0,
+          "time_s": 1.45
+        },
+        {
+          "aircraft_position": "(-25.65997, 37.35534, 24.34003)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_088.png",
+          "glare_strength": 1.0,
+          "time_s": 1.46666666666667
+        },
+        {
+          "aircraft_position": "(-25.68354, 37.35534, 24.31646)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_089.png",
+          "glare_strength": 1.0,
+          "time_s": 1.48333333333333
+        },
+        {
+          "aircraft_position": "(-25.70711, 37.35534, 24.29289)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_090.png",
+          "glare_strength": 1.0,
+          "time_s": 1.5
+        },
+        {
+          "aircraft_position": "(-25.73068, 37.35534, 24.26932)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_091.png",
+          "glare_strength": 1.0,
+          "time_s": 1.51666666666667
+        },
+        {
+          "aircraft_position": "(-25.75425, 37.35534, 24.24575)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_092.png",
+          "glare_strength": 1.0,
+          "time_s": 1.53333333333333
+        },
+        {
+          "aircraft_position": "(-25.77782, 37.35534, 24.22218)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_093.png",
+          "glare_strength": 1.0,
+          "time_s": 1.55
+        },
+        {
+          "aircraft_position": "(-25.80139, 37.35534, 24.19861)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_094.png",
+          "glare_strength": 1.0,
+          "time_s": 1.56666666666667
+        },
+        {
+          "aircraft_position": "(-25.82496, 37.35534, 24.17504)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_095.png",
+          "glare_strength": 1.0,
+          "time_s": 1.58333333333333
+        },
+        {
+          "aircraft_position": "(-25.84853, 37.35534, 24.15147)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_096.png",
+          "glare_strength": 1.0,
+          "time_s": 1.6
+        },
+        {
+          "aircraft_position": "(-25.8721, 37.35534, 24.1279)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_097.png",
+          "glare_strength": 1.0,
+          "time_s": 1.61666666666667
+        },
+        {
+          "aircraft_position": "(-25.89567, 37.35534, 24.10433)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_098.png",
+          "glare_strength": 1.0,
+          "time_s": 1.63333333333333
+        },
+        {
+          "aircraft_position": "(-25.91924, 37.35534, 24.08076)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_099.png",
+          "glare_strength": 1.0,
+          "time_s": 1.65
+        },
+        {
+          "aircraft_position": "(-25.94281, 37.35534, 24.05719)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_100.png",
+          "glare_strength": 1.0,
+          "time_s": 1.66666666666667
+        },
+        {
+          "aircraft_position": "(-25.96638, 37.35534, 24.03362)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_101.png",
+          "glare_strength": 1.0,
+          "time_s": 1.68333333333333
+        },
+        {
+          "aircraft_position": "(-25.98995, 37.35534, 24.01005)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_102.png",
+          "glare_strength": 1.0,
+          "time_s": 1.7
+        },
+        {
+          "aircraft_position": "(-26.01352, 37.35534, 23.98648)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_103.png",
+          "glare_strength": 1.0,
+          "time_s": 1.71666666666667
+        },
+        {
+          "aircraft_position": "(-26.03709, 37.35534, 23.96291)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_104.png",
+          "glare_strength": 1.0,
+          "time_s": 1.73333333333333
+        },
+        {
+          "aircraft_position": "(-26.06066, 37.35534, 23.93934)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_105.png",
+          "glare_strength": 1.0,
+          "time_s": 1.75
+        },
+        {
+          "aircraft_position": "(-26.08423, 37.35534, 23.91577)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_106.png",
+          "glare_strength": 1.0,
+          "time_s": 1.76666666666667
+        },
+        {
+          "aircraft_position": "(-26.1078, 37.35534, 23.8922)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_107.png",
+          "glare_strength": 1.0,
+          "time_s": 1.78333333333333
+        },
+        {
+          "aircraft_position": "(-26.13137, 37.35534, 23.86863)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_108.png",
+          "glare_strength": 1.0,
+          "time_s": 1.8
+        },
+        {
+          "aircraft_position": "(-26.15494, 37.35534, 23.84506)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_109.png",
+          "glare_strength": 1.0,
+          "time_s": 1.81666666666667
+        },
+        {
+          "aircraft_position": "(-26.17851, 37.35534, 23.82149)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_110.png",
+          "glare_strength": 1.0,
+          "time_s": 1.83333333333333
+        },
+        {
+          "aircraft_position": "(-26.20208, 37.35534, 23.79792)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_111.png",
+          "glare_strength": 1.0,
+          "time_s": 1.85
+        },
+        {
+          "aircraft_position": "(-26.22565, 37.35534, 23.77435)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_112.png",
+          "glare_strength": 1.0,
+          "time_s": 1.86666666666667
+        },
+        {
+          "aircraft_position": "(-26.24922, 37.35534, 23.75078)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_113.png",
+          "glare_strength": 1.0,
+          "time_s": 1.88333333333333
+        },
+        {
+          "aircraft_position": "(-26.27279, 37.35534, 23.72721)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_114.png",
+          "glare_strength": 1.0,
+          "time_s": 1.9
+        },
+        {
+          "aircraft_position": "(-26.29636, 37.35534, 23.70364)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_115.png",
+          "glare_strength": 1.0,
+          "time_s": 1.91666666666667
+        },
+        {
+          "aircraft_position": "(-26.31993, 37.35534, 23.68007)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_116.png",
+          "glare_strength": 1.0,
+          "time_s": 1.93333333333333
+        },
+        {
+          "aircraft_position": "(-26.3435, 37.35534, 23.6565)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_117.png",
+          "glare_strength": 1.0,
+          "time_s": 1.95
+        },
+        {
+          "aircraft_position": "(-26.36707, 37.35534, 23.63293)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_118.png",
+          "glare_strength": 1.0,
+          "time_s": 1.96666666666667
+        },
+        {
+          "aircraft_position": "(-26.39064, 37.35534, 23.60936)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_119.png",
+          "glare_strength": 1.0,
+          "time_s": 1.98333333333333
+        },
+        {
+          "aircraft_position": "(-26.41421, 37.35534, 23.58579)",
+          "camera_position": "(0.0, 2.0, 0.0)",
+          "exposure": 0.600000023841858,
+          "file": "glare_aircraft_120.png",
+          "glare_strength": 1.0,
+          "time_s": 2.0
+        }
+      ],
+      "p95_ms": 450.538,
+      "p99_ms": 454.095,
+      "primitives": 438376.0,
+      "shadow_draws": 0,
+      "timing_valid": false,
+      "video_memory": 189630318.0,
+      "visible_draws": 332
+    }
+  },
+  "driver": "3.3.0 NVIDIA 610.88",
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "height": 1080,
+  "renderer": "gl_compatibility",
+  "width": 1920
+}

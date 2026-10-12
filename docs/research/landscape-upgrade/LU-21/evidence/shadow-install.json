@@ -1,0 +1,27 @@
+[
+  {
+    "path": "app/scenery/population.gd",
+    "before": "213f259d95994d8997b7ec26f6bf552b253ef143f6b997fedbc6812776119314",
+    "after": "0540a6363f2d9b1b41395ab46bee393234f7ecfd33f50f8b2697d050f43de3a5"
+  },
+  {
+    "path": "app/scenery/scenery.gd",
+    "before": "95e2bffb199f4b4eba2e56a290656ac0be5baebdfaebc575928ceaba0f2ee6cb",
+    "after": "7d8b1689ee92e201f40c285ceca23fdda0387882cdddf7219a9ff85710bb277c"
+  },
+  {
+    "path": "app/render/field_projected_shadows.gd",
+    "before": "ab1d025bc47c5144780556e347aecb7e565a91659081d563d834db91ff8f70dc",
+    "after": "b4f9ca3dcade669b8989928230a93c6d4c2fee82bb142c87700a97839664ebb3"
+  },
+  {
+    "path": "app/tests/test_field_projected_shadows.gd",
+    "before": "2ae4d947c65d887651f4f42aed3b13e95e6209ca82c5ea31bbec16a2f9209b51",
+    "after": "424ac0c8c2daacf7db3f5deae484e690ceb1c565fdcd1eaaf2a843e528e9b6ce"
+  },
+  {
+    "path": "app/tests/test_time_of_day_scenery_update.gd",
+    "before": "6fdc6e1ce42629cf99cc7cca49f99d367e32e31e6d541e5a11397582c8aff812",
+    "after": "e5d9f2f3110671a3b35eb303adb8c4c6ac719cd2d0f161aeb50d9e2810842ece"
+  }
+]

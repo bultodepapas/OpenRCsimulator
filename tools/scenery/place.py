@@ -284,6 +284,19 @@ def build():
     groups.append({"id": "access-track", "type": "track", "zone": "countryside", "surface": "dirt", "collides": False,
                    "width": q(3.2, "m", "estimated", "Single-lane farm track"),
                    "points": q([[grid(n), grid(e)] for n, e in track], "m", "estimated", "Through the L6b SSW gap (az 210 deg)")})
+    # Quiet pedestrian treads join the existing parking apron, the open central pavilion doorway,
+    # and the front bay of the east pits shelter. Both start in the car-park ground batch cell.
+    worn_width = q(0.9, "m", "estimated", "Single-person worn-grass connector")
+    groups.append({"id": "worn-parking-door", "type": "track", "zone": "countryside", "surface": "worn", "collides": False,
+                   "width": worn_width,
+                   "points": q([[-33.0, -34.0], [-30.0, -25.0], [-26.0, -16.0], [-23.0, -12.0],
+                                [-20.0, -10.0], [-18.0, -12.0], [-13.8, -12.0], [-13.8, -0.25], [-19.0, -0.25]],
+                               "m", "estimated", "Worn pedestrian path from the car park to the pavilion's central door")})
+    groups.append({"id": "worn-door-pits", "type": "track", "zone": "countryside", "surface": "worn", "collides": False,
+                   "width": dict(worn_width),
+                   "points": q([[-19.0, -0.25], [-18.5, 3.0], [-17.5, 6.0], [-15.0, 8.0],
+                                [-13.8, 9.0], [-13.8, 31.0], [-15.5, 31.0]],
+                               "m", "estimated", "Worn pedestrian path around the flower border to the east shelter's open front bay")})
     # --- the countryside, in front ---
     bales = []
     for row in range(6):

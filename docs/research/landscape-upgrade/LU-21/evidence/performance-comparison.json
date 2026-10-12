@@ -1,0 +1,126 @@
+{
+  "day": {
+    "aerial_overview": {
+      "before_p95_ms": 3.571,
+      "after_p95_ms": 4.069,
+      "delta_p95_ms": 0.4979999999999998,
+      "visible_draws": 126,
+      "primitives": 452861.0,
+      "video_memory_bytes": 193041858.0
+    },
+    "car_park": {
+      "before_p95_ms": 2.855,
+      "after_p95_ms": 3.05,
+      "delta_p95_ms": 0.19499999999999984,
+      "visible_draws": 61,
+      "primitives": 379301.0,
+      "video_memory_bytes": 193041858.0
+    },
+    "cars_5m": {
+      "before_p95_ms": 2.32,
+      "after_p95_ms": 2.475,
+      "delta_p95_ms": 0.15500000000000025,
+      "visible_draws": 53,
+      "primitives": 363787.0,
+      "video_memory_bytes": 193041858.0
+    },
+    "people_5m": {
+      "before_p95_ms": 2.274,
+      "after_p95_ms": 2.425,
+      "delta_p95_ms": 0.1509999999999998,
+      "visible_draws": 78,
+      "primitives": 393357.0,
+      "video_memory_bytes": 193041858.0
+    },
+    "pilot_5m": {
+      "before_p95_ms": 2.758,
+      "after_p95_ms": 2.952,
+      "delta_p95_ms": 0.19399999999999995,
+      "visible_draws": 98,
+      "primitives": 431015.0,
+      "video_memory_bytes": 193041858.0
+    },
+    "pilot_north": {
+      "before_p95_ms": 2.72,
+      "after_p95_ms": 2.504,
+      "delta_p95_ms": -0.2160000000000002,
+      "visible_draws": 56,
+      "primitives": 358757.0,
+      "video_memory_bytes": 184747458.0
+    },
+    "postcard_club": {
+      "before_p95_ms": 3.236,
+      "after_p95_ms": 3.667,
+      "delta_p95_ms": 0.4309999999999996,
+      "visible_draws": 115,
+      "primitives": 449918.0,
+      "video_memory_bytes": 193041858.0
+    },
+    "postcard_pavilion": {
+      "before_p95_ms": 2.94,
+      "after_p95_ms": 2.816,
+      "delta_p95_ms": -0.12400000000000011,
+      "visible_draws": 91,
+      "primitives": 420252.0,
+      "video_memory_bytes": 193041858.0
+    },
+    "postcard_pits": {
+      "before_p95_ms": 2.594,
+      "after_p95_ms": 2.654,
+      "delta_p95_ms": 0.06000000000000005,
+      "visible_draws": 109,
+      "primitives": 409810.0,
+      "video_memory_bytes": 193041858.0
+    },
+    "seated_5m": {
+      "before_p95_ms": 2.715,
+      "after_p95_ms": 2.883,
+      "delta_p95_ms": 0.16800000000000015,
+      "visible_draws": 80,
+      "primitives": 395203.0,
+      "video_memory_bytes": 193041858.0
+    }
+  },
+  "night": {
+    "postcard_club": {
+      "before_p95_ms": 3.114,
+      "after_p95_ms": 3.363,
+      "delta_p95_ms": 0.2490000000000001,
+      "visible_draws": 115,
+      "primitives": 460076.0,
+      "video_memory_bytes": 185072702.0
+    },
+    "postcard_pavilion": {
+      "before_p95_ms": 2.501,
+      "after_p95_ms": 2.732,
+      "delta_p95_ms": 0.23100000000000032,
+      "visible_draws": 91,
+      "primitives": 430410.0,
+      "video_memory_bytes": 185072702.0
+    },
+    "runway_east_far": {
+      "before_p95_ms": 2.611,
+      "after_p95_ms": 3.01,
+      "delta_p95_ms": 0.3989999999999996,
+      "visible_draws": 130,
+      "primitives": 481453.0,
+      "video_memory_bytes": 185072702.0
+    },
+    "runway_inside": {
+      "before_p95_ms": 2.347,
+      "after_p95_ms": 2.391,
+      "delta_p95_ms": 0.04400000000000004,
+      "visible_draws": 49,
+      "primitives": 323245.0,
+      "video_memory_bytes": 185072702.0
+    },
+    "runway_threshold": {
+      "before_p95_ms": 2.812,
+      "after_p95_ms": 2.877,
+      "delta_p95_ms": 0.06499999999999995,
+      "visible_draws": 105,
+      "primitives": 454679.0,
+      "video_memory_bytes": 185072702.0
+    }
+  }
+}

@@ -2,6 +2,9 @@
 ## Visual backdrop at 3.5–10 km. Terrain contact in the flying field remains the GP sampler.
 extends RefCounted
 
+const Atmosphere := preload("res://render/atmosphere.gd")
+const HAZE_SHADER := preload("res://render/landscape_upgrade/ridge_haze.gdshader")
+
 const COLUMNS := 128
 const ROWS := 48
 const EAST_MIN := -9500.0
@@ -19,14 +22,13 @@ static func height_at(north: float, east: float) -> float:
 	var gullies := 0.78 + 0.14 * sin(east * 0.004 + north * 0.0012) + 0.08 * sin(east * 0.009 - north * 0.004)
 	return maxf(0.0, edge * (90.0 + peaks * ridge * gullies))
 
-static func build() -> Node3D:
+static func build(lighting: Dictionary = {}) -> Node3D:
 	var root := Node3D.new()
 	root.name = "DistantRidges"
-	var material := StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	material.vertex_color_is_srgb = true
-	material.roughness = 1.0
-	material.metallic_specular = 0.12
+	var material := ShaderMaterial.new()
+	material.shader = HAZE_SHADER
+	Atmosphere.update_ground_material(material, lighting)
+	root.set_meta("lighting_material", material)
 	for chunk in 4:
 		var vertices := PackedVector3Array()
 		var normals := PackedVector3Array()

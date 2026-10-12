@@ -4,6 +4,7 @@ extends Node
 
 const Projected = preload("res://render/projected_shadow.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
+const Scenery = preload("res://scenery/scenery.gd")
 const MAX_SCENERY_RANGE := 100.0 # artistic near-field budget, metres from pilot
 const MAX_MAPS := 16
 const MAX_TARGET_PIXELS := 8 * 1024 * 1024 # <=64 MiB nominal RGBA8 + 32-bit depth
@@ -40,6 +41,8 @@ static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary) 
 	var scenery := field_node.get_node_or_null("Scenery") as Node3D
 	if scenery != null:
 		var pilot := Vector2(float(field.pilot.east), -float(field.pilot.north))
+		var population := scenery.get_node_or_null("Population") as Node3D
+		var candidate_cells: Array[MeshInstance3D] = []
 		for node in scenery.get_children():
 			if not node is MeshInstance3D or not str(node.name).begins_with("cell_"):
 				continue
@@ -47,7 +50,11 @@ static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary) 
 			var centre := box.get_center()
 			if box.size.y < 0.08 or Vector2(centre.x, centre.z).distance_to(pilot) > MAX_SCENERY_RANGE:
 				continue
-			if manager.add_caster(node):
+			candidate_cells.append(node)
+		var owners := population_cell_owners(candidate_cells, population, pilot)
+		for node in candidate_cells:
+			var shape := collect_cell_shape(node, population, pilot, MAX_SCENERY_RANGE, 0.04, owners)
+			if manager.add_caster(node, shape):
 				var old := scenery.get_node_or_null(NodePath(str(node.name).replace("cell_", "shadows_"))) as MeshInstance3D
 				if old != null:
 					old.visible = false
@@ -63,10 +70,10 @@ static func apply_lighting(field_node: Node3D, lighting: Dictionary) -> void:
 		manager.apply(lighting)
 
 
-func add_caster(model: Node3D) -> bool:
+func add_caster(model: Node3D, collected_shape: Dictionary = {}) -> bool:
 	if projectors.size() >= MAX_MAPS:
 		return false
-	var shape := Projected.collect(model, 0.04)
+	var shape: Dictionary = collected_shape if not collected_shape.is_empty() else Projected.collect(model, 0.04)
 	if shape.is_empty():
 		return false
 	var longest := maxf(shape.bounds.size.x, shape.bounds.size.z)
@@ -80,9 +87,135 @@ func add_caster(model: Node3D) -> bool:
 	add_child(projector)
 	projector.setup(model, shape, resolution, Viewport.MSAA_DISABLED)
 	projector.set_meta("soft_height", maxf(shape.bounds.size.y * 0.5, 0.0))
+	projector.set_meta("population_placements", int(shape.get("population_placements", 0)))
+	projector.set_meta("population_triangles", int(shape.get("population_triangles", 0)))
 	projectors.append(projector)
 	target_pixels += resolution * resolution
 	return true
+
+
+## Add only nearby human MultiMesh instances to their existing static cell caster.
+## This runs once during field assembly; it does not expand vehicle meshes or rebuild per frame.
+static func population_cell_owners(cells: Array[MeshInstance3D], population: Node3D,
+		pilot_xz: Vector2, max_range_m: float = MAX_SCENERY_RANGE) -> Dictionary:
+	var owners: Dictionary = {}
+	if population == null or cells.is_empty():
+		return owners
+	var cells_by_key: Dictionary = {}
+	for cell in cells:
+		var parts := str(cell.name).split("_")
+		if parts.size() == 3:
+			cells_by_key[Vector2i(int(parts[1]), int(parts[2]))] = cell
+	var seen: Dictionary = {}
+	for child in population.get_children():
+		if not child is MultiMeshInstance3D:
+			continue
+		var asset := str(child.get_meta("source_asset", ""))
+		if asset not in ["standing", "sitting", "pilot"]:
+			continue
+		var placements: Array = child.get_meta("placements", [])
+		for i in placements.size():
+			var id := "%s:%d" % [asset, i]
+			if seen.has(id):
+				continue
+			seen[id] = true
+			var placement: Dictionary = placements[i]
+			var placement_xf: Transform3D = placement.get("transform", Transform3D.IDENTITY)
+			var pos := placement_xf.origin
+			if Vector2(pos.x, pos.z).distance_to(pilot_xz) > max_range_m:
+				continue
+			var native_key := Scenery._cell(-pos.z, pos.x)
+			if cells_by_key.has(native_key):
+				owners[id] = native_key
+				continue
+			var best_key := Vector2i.ZERO
+			var best_distance := INF
+			for key: Vector2i in cells_by_key:
+				var cell := cells_by_key[key] as MeshInstance3D
+				var centre := cell.mesh.get_aabb().get_center()
+				var distance := Vector2(centre.x - pos.x, centre.z - pos.z).length_squared()
+				if distance < best_distance:
+					best_distance = distance
+					best_key = key
+			owners[id] = best_key
+	return owners
+
+
+static func collect_cell_shape(cell: MeshInstance3D, population: Node3D, pilot_xz: Vector2,
+		max_range_m: float = MAX_SCENERY_RANGE, min_height_m: float = 0.04,
+		owner_by_placement: Dictionary = {}) -> Dictionary:
+	var shape := Projected.collect(cell, min_height_m)
+	if shape.is_empty() or population == null:
+		return shape
+	var cell_parts := str(cell.name).split("_")
+	if cell_parts.size() != 3:
+		return shape
+	var cell_key := Vector2i(int(cell_parts[1]), int(cell_parts[2]))
+	var vertices: PackedVector3Array = shape.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].duplicate()
+	var selected: Dictionary = {}
+	var elevated: Dictionary = {}
+	var extra_triangles := 0
+	for child in population.get_children():
+		if not child is MultiMeshInstance3D or not child.visible:
+			continue
+		var source_asset := str(child.get_meta("source_asset", ""))
+		if source_asset not in ["standing", "sitting", "pilot"]:
+			continue
+		var mm := (child as MultiMeshInstance3D).multimesh
+		if mm == null or mm.mesh == null:
+			continue
+		var placements: Array = child.get_meta("placements", [])
+		var transforms: Array = child.get_meta("instance_transforms", [])
+		var count: int = mini(mm.instance_count, mini(placements.size(), transforms.size()))
+		if count == 0:
+			continue
+		var faces := mm.mesh.get_faces()
+		if faces.is_empty():
+			continue
+		var relative_to_cell: Transform3D = cell.transform.affine_inverse() * population.transform * child.transform
+		for i in count:
+			var placement: Dictionary = placements[i]
+			var placement_xf: Transform3D = placement.get("transform", Transform3D.IDENTITY)
+			var pos := placement_xf.origin
+			var placement_id := "%s:%d" % [source_asset, i]
+			var owner: Vector2i = owner_by_placement.get(placement_id, Scenery._cell(-pos.z, pos.x))
+			if owner != cell_key or Vector2(pos.x, pos.z).distance_to(pilot_xz) > max_range_m:
+				continue
+			selected[placement_id] = true
+			if float(placement.get("foot_height", 0.0)) > 0.001:
+				elevated[placement_id] = true
+			var instance_to_cell: Transform3D = relative_to_cell * transforms[i]
+			for first in range(0, faces.size(), 3):
+				var a: Vector3 = instance_to_cell * faces[first]
+				var b: Vector3 = instance_to_cell * faces[first + 1]
+				var c: Vector3 = instance_to_cell * faces[first + 2]
+				if maxf(a.y, maxf(b.y, c.y)) <= min_height_m:
+					continue
+				vertices.append(a)
+				vertices.append(b)
+				vertices.append(c)
+				extra_triangles += 1
+	if extra_triangles == 0:
+		shape["population_placements"] = 0
+		shape["population_elevated_placements"] = 0
+		shape["population_triangles"] = 0
+		return shape
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	var merged := ArrayMesh.new()
+	merged.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var bounds := AABB(vertices[0], Vector3.ZERO)
+	for vertex in vertices:
+		bounds = bounds.expand(vertex)
+	return {
+		mesh = merged,
+		bounds = bounds,
+		triangles = vertices.size() / 3,
+		population_placements = selected.size(),
+		population_elevated_placements = elevated.size(),
+		population_triangles = extra_triangles,
+	}
 
 
 func _ready() -> void:

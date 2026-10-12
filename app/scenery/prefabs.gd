@@ -25,10 +25,10 @@ const CATALOG := {
 	"bale_stack": {size = Vector3(2.5, 1.85, 2.4), tier = "standard", shadow = true, kind = "estimated", source = "Big square bales 2.4 × 1.2 × 0.9 m, two high"},
 	"shade_tree": {size = Vector3(8.0, 10.5, 8.0), tier = "standard", shadow = true, variable = true, kind = "estimated", source = "Broadleaf shade tree by the car row (photo)"},
 	"bush": {size = Vector3(1.6, 0.85, 1.6), tier = "ornament", shadow = false, variable = true, kind = "estimated", source = "Garden shrub"},
-	"flower_clump": {size = Vector3(0.62, 0.42, 0.62), tier = "ornament", shadow = false, variable = true, kind = "estimated", source = "Flower-border clump"},
-	"person_standing": {size = Vector3(0.6, 1.78, 0.35), tier = "ornament", shadow = true, kind = "estimated", source = "Adult 1.62–1.88 m"},
-	"person_sitting": {size = Vector3(0.55, 1.3, 0.75), tier = "ornament", shadow = false, kind = "estimated", source = "Seated adult"},
-	"person_pilot": {size = Vector3(0.6, 1.78, 0.45), tier = "ornament", shadow = true, kind = "estimated", source = "Pilot holding a transmitter"},
+	"flower_clump": {size = Vector3(0.45, 0.40, 0.45), tier = "ornament", shadow = false, variable = true, kind = "estimated", source = "Compact flower-border bouquet (visual estimate)"},
+	"person_standing": {size = Vector3(0.65, 1.78, 0.36), tier = "ornament", shadow = true, kind = "estimated", source = "LU-21 MPFB posed mesh envelope; uniform adult scale"},
+	"person_sitting": {size = Vector3(0.61, 1.444, 0.75), tier = "ornament", shadow = false, kind = "estimated", source = "LU-21 Anrico sitting03; seat-contact height 0.4742 m plus 0.006 m fitting offset"},
+	"person_pilot": {size = Vector3(0.67, 1.78, 0.45), tier = "ornament", shadow = true, kind = "estimated", source = "LU-21 MPFB pilot pose with transmitter; uniform adult scale"},
 	"avanti_cradle": {size = Vector3(0.7, 0.48, 1.63), tier = "standard", shadow = true, kind = "estimated",
 		source = "Original padded trestle cradle for the gear-up Avanti S fleet snapshot; visual support estimate"},
 	"barn": {size = Vector3(10.8, 7.5, 14.8), tier = "landmark", shadow = false, kind = "estimated", source = "Gambrel barn 10 × 14 m"},
@@ -87,15 +87,18 @@ static func _pit_shelter(k: MeshKit, seed: int) -> Array:
 	var front_h := 3.2
 	var back_h := 2.7
 	var post := _c("wood")
-	k.block(Vector3(length + 0.6, 0.1, depth + 0.6), Vector3(0, 0, 0), _c("concrete"), _c("concrete"))
+	# The slab top catches a little more light than its exposed edge; this uses the
+	# existing top-face colour channel and adds no surface or draw.
+	k.block(Vector3(length + 0.6, 0.1, depth + 0.6), Vector3(0, 0, 0), _c("concrete"), _c("concrete").lightened(0.06))
 	# Fine saw cuts divide the existing slab without adding a raised border.
 	for joint in 4:
 		var joint_x := -length * 0.5 + length * (joint + 1) / 5.0
 		k.block(Vector3(0.014, 0.004, depth + 0.5), Vector3(joint_x, 0.1, 0), _c("concrete_dark"))
 	for i in 9:
 		var x := -length * 0.5 + i * length / 8.0
-		k.block(Vector3(0.16, front_h, 0.16), Vector3(x, 0.1, -depth * 0.5 + 0.1), post)
-		k.block(Vector3(0.16, back_h, 0.16), Vector3(x, 0.1, depth * 0.5 - 0.1), post)
+		var timber := post.lightened(0.04 + 0.08 * Palette.hash01(seed, i, 31))
+		k.block(Vector3(0.16, front_h, 0.16), Vector3(x, 0.1, -depth * 0.5 + 0.1), timber, timber.lightened(0.025))
+		k.block(Vector3(0.16, back_h, 0.16), Vector3(x, 0.1, depth * 0.5 - 0.1), timber, timber.lightened(0.025))
 		# knee braces and a rafter
 		k.beam(Vector3(x, front_h - 0.6, -depth * 0.5 + 0.1), Vector3(x + 0.5, front_h + 0.05, -depth * 0.5 + 0.1), 0.08, _c("wood_dark"))
 		k.beam(Vector3(x, front_h + 0.12, -depth * 0.5), Vector3(x, back_h + 0.12, depth * 0.5), 0.1, _c("wood_dark"))
@@ -232,6 +235,7 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 		k.xf = saved * Transform3D(Basis(Vector3.UP, side * PI / 2.0), Vector3.ZERO)
 		_window(k, Vector3(0, 1.1, -w * 0.5 - 0.02), 1.2, 0.9, false, true)
 	k.xf = saved
+	_pavilion_wall_course(k, w, d)
 	k.hip_roof(w, d, h + 0.15, 1.8, 0.5, _c("roof_slate"))
 	# Eave boards follow the existing hip roof, staying inside its overhang.
 	var eave_x := w * 0.5 + 0.5 - 0.05
@@ -272,6 +276,26 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 	_bench(k)
 	k.xf = bs
 	return []
+
+
+## A quiet plaster base course separates the pavilion wall from its concrete plinth.
+## It is part of the same prefab cell mesh and sits below the windows and door panels.
+static func _pavilion_wall_course(k: MeshKit, w: float, d: float) -> void:
+	var y0 := 0.49
+	var y1 := 0.63
+	var color := _c("wall_white").darkened(0.09)
+	var x0 := -w * 0.5 + 0.1
+	var x1 := w * 0.5 - 0.1
+	var z_front := -d * 0.5 - 0.006
+	var z_back := d * 0.5 + 0.006
+	k.quad(Vector3(x0, y0, z_front), Vector3(x1, y0, z_front), Vector3(x1, y1, z_front), Vector3(x0, y1, z_front), color)
+	k.quad(Vector3(x1, y0, z_back), Vector3(x0, y0, z_back), Vector3(x0, y1, z_back), Vector3(x1, y1, z_back), color)
+	var z0 := -d * 0.5 + 0.1
+	var z1 := d * 0.5 - 0.1
+	var x_left := -w * 0.5 - 0.006
+	var x_right := w * 0.5 + 0.006
+	k.quad(Vector3(x_right, y0, z0), Vector3(x_right, y0, z1), Vector3(x_right, y1, z1), Vector3(x_right, y1, z0), color)
+	k.quad(Vector3(x_left, y0, z1), Vector3(x_left, y0, z0), Vector3(x_left, y1, z0), Vector3(x_left, y1, z1), color)
 
 
 static func _window(k: MeshKit, c: Vector3, w: float, h: float, back: bool, detailed: bool = false) -> void:
@@ -409,13 +433,52 @@ static func _bale_stack(k: MeshKit) -> void:
 
 
 static func _flower_clump(k: MeshKit, seed: int, theme: String) -> void:
-	k.ellipsoid(Vector3(0, 0.12, 0), Vector3(0.68, 0.3, 0.68), Palette.veg("stem", theme), seed, 7, 3, 0.15)
+	# A compact border bouquet: visible stems, paired leaves and cupped petals replace the old green cushion mound.
+	# Geometry stays in this cell's existing mesh and within the flower-clump catalog footprint.
+	var stem := Palette.veg("stem", theme)
+	var leaf := Palette.veg("leaf", theme)
 	var species: Array = Palette.FLOWERS.keys()
-	var col: Color = Palette.FLOWERS[species[int(Palette.hash01(seed, 9) * species.size()) % species.size()]]
-	for i in 7:
-		var a := TAU * i / 7.0 + Palette.hash01(seed, i) * 0.6
-		var r := 0.12 + 0.15 * Palette.hash01(seed, i, 2)
-		k.blob(Vector3(cos(a) * r, 0.3 + 0.1 * Palette.hash01(seed, i, 3), sin(a) * r), Vector3(0.11, 0.07, 0.11), col, seed + i, 0.06)
+	for i in 6:
+		var a := TAU * (float(i) / 6.0 + 0.04 * (Palette.hash01(seed, i, 1) - 0.5))
+		var r := 0.025 + 0.085 * Palette.hash01(seed, i, 2)
+		var base := Vector3(cos(a) * r, 0.012, sin(a) * r)
+		var lean := a + 0.28 * (Palette.hash01(seed, i, 3) - 0.5)
+		var height := 0.25 + 0.11 * Palette.hash01(seed, i, 4)
+		var head := base + Vector3(cos(lean) * 0.035, height, sin(lean) * 0.035)
+		k.beam(base, head, 0.012, stem)
+
+		var attach := base.lerp(head, 0.48)
+		var leaf_angle := a + (0.85 if i % 2 == 0 else -0.85)
+		var leaf_dir := Vector3(cos(leaf_angle), 0.0, sin(leaf_angle))
+		var tip := attach + leaf_dir * (0.08 + 0.04 * Palette.hash01(seed, i, 5)) + Vector3(0, 0.035, 0)
+		var side := Vector3(-leaf_dir.z, 0.0, leaf_dir.x) * 0.013
+		var p0 := attach - side * 0.55
+		var p1 := tip - side * 0.10
+		var p2 := tip + side * 0.10
+		var p3 := attach + side * 0.55
+		k.quad(p0, p1, p2, p3, leaf)
+		k.quad(p3, p2, p1, p0, leaf.darkened(0.08)) # back face stays visible from the path
+
+		var index := int(Palette.hash01(seed, i, 6) * species.size()) % species.size()
+		var petal: Color = Palette.FLOWERS[species[index]]
+		if theme == "autumn":
+			petal = Palette.vegetation(petal, theme)
+		var center := head + Vector3(0, 0.008, 0)
+		for petal_index in 4:
+			var pa := TAU * float(petal_index) / 4.0 + 0.18 * float(i % 3)
+			var root_a := center + Vector3(cos(pa - 0.42) * 0.020, 0.0, sin(pa - 0.42) * 0.020)
+			var outer := center + Vector3(cos(pa) * 0.075, 0.028, sin(pa) * 0.075)
+			var root_b := center + Vector3(cos(pa + 0.42) * 0.020, 0.0, sin(pa + 0.42) * 0.020)
+			if (outer - root_a).cross(root_b - root_a).y < 0.0:
+				k.tri(root_a, root_b, outer, petal)
+				k.tri(root_a, outer, root_b, petal)
+			else:
+				k.tri(root_a, outer, root_b, petal)
+				k.tri(root_a, root_b, outer, petal)
+		var pollen_a := center + Vector3(0.012, 0.008, 0.0)
+		var pollen_b := center + Vector3(-0.006, 0.008, 0.010)
+		var pollen_c := center + Vector3(-0.006, 0.008, -0.010)
+		k.tri(pollen_a, pollen_c, pollen_b, Color("#d7b64a"))
 
 
 # ---------------- the Avanti display cradle ----------------

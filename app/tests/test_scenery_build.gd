@@ -7,6 +7,7 @@ const Scenery = preload("res://scenery/scenery.gd")
 const Loader = preload("res://scenery/scenery_loader.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
 const Models = preload("res://scenery/models.gd")
+const Population = preload("res://scenery/population.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
@@ -14,7 +15,7 @@ const FieldBuilder = preload("res://render/field.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
-const BUDGET_TRIANGLES := 250000 # the whole scenery, all views together; per-view primitives are checked by the captures (≤ 150 k)
+const BUDGET_TRIANGLES := 600000 # all scenery and population surfaces, counting indexed triangles and every MultiMesh instance
 const BUDGET_BUILD_MS := 400.0 # generous on the shared CI/VM CPU; the plan's 150 ms target is reported, not gated here
 
 var _failures := 0
@@ -61,17 +62,28 @@ func _test_off_is_noop() -> void:
 		OS.set_environment("OPENRC_SCENERY", previous_scenery)
 
 
+func _mesh_triangles(mesh: Mesh) -> int:
+	if mesh == null:
+		return 0
+	var total := 0
+	for surface in mesh.get_surface_count():
+		var indices: int = mesh.surface_get_array_index_len(surface)
+		var vertices: int = mesh.surface_get_array_len(surface)
+		total += (indices if indices > 0 else vertices) / 3
+	return total
+
+
 func _triangles(root: Node) -> int:
 	var n := 0
 	for c in root.get_children():
 		if c is MeshInstance3D and (c as MeshInstance3D).mesh:
-			var m := (c as MeshInstance3D).mesh
-			for s in m.get_surface_count():
-				n += m.surface_get_array_len(s) / 3
+			n += _mesh_triangles((c as MeshInstance3D).mesh)
 		elif c is MultiMeshInstance3D:
 			var mm := (c as MultiMeshInstance3D).multimesh
-			n += mm.instance_count * mm.mesh.surface_get_array_len(0) / 3
-		n += _triangles(c) if c.get_child_count() > 0 else 0
+			if mm != null and mm.mesh != null:
+				n += mm.instance_count * _mesh_triangles(mm.mesh)
+		if c.get_child_count() > 0:
+			n += _triangles(c)
 	return n
 
 
@@ -81,7 +93,7 @@ func _test_build() -> void:
 	print("     stats: ", stats)
 	_check("instances built (> 120)", int(stats.instances) > 120)
 	_check("the parked fleet: 4 aircraft", int(stats.fleet) == 4)
-	var motion_counts := {rotor = 0, flag = 0, crown = 0, bush_tips = 0, person = 0}
+	var motion_counts := {rotor = 0, flag = 0, crown = 0, bush_tips = 0}
 	var motion_node: Node = root.get_node("Motion")
 	for part: Node in motion_node.get_children():
 		for kind: String in motion_counts:
@@ -91,10 +103,22 @@ func _test_build() -> void:
 		str(motion_counts))
 	_check("moving shade crowns and shrub tips are present", motion_counts.crown == 10 and motion_counts.bush_tips == 6,
 		str(motion_counts))
-	_check("only a bounded subset of people sways", motion_counts.person >= 2 and motion_counts.person <= 9,
+	_check("legacy Motion retains only the 21 rotor, flag, crown, and shrub nodes",
+		motion_node.get_child_count() == 21 and motion_counts.rotor + motion_counts.flag + motion_counts.crown + motion_counts.bush_tips == 21,
 		str(motion_counts))
 	_check("motion stats count every emitted animated mesh", int(stats.motion) == motion_node.get_child_count(),
 		"stats=%d nodes=%d" % [int(stats.motion), motion_node.get_child_count()])
+	var population: Node3D = root.get_node_or_null("Population") as Node3D
+	_check("population batching retains all 24 placements (11 cars + 13 people)",
+		population != null and int(stats.get("population", -1)) == 24
+		and int(population.get_meta("instances", -1)) == 24,
+		"stats=%s metadata=%s" % [stats.get("population", -1), population.get_meta("instances", -1) if population != null else -1])
+	var moving_people := int(stats.get("moving_people", -1))
+	_check("only 2–9 people receive shader-driven motion", moving_people >= 2 and moving_people <= 9,
+		"moving_people=%d" % moving_people)
+	_check("population triangle stats match indexed MultiMesh geometry",
+		population != null and int(stats.get("population_triangles", -1)) == _triangles(population),
+		"stats=%s rendered=%s" % [stats.get("population_triangles", -1), _triangles(population) if population != null else -1])
 	_check("contact shadows for the near props", int(stats.shadows) > 50)
 	_check("wildflowers placed", int(stats.flowers) > 2000)
 	_check("compact cells (≤ 64 merged meshes)", int(stats.cells) <= 64)
@@ -155,6 +179,10 @@ func _test_catalog_sizes() -> void:
 				for v: Vector3 in part_kit.verts:
 					box = box.expand(v + part.pivot)
 		var want: Vector3 = spec.size
+		if id.begins_with("person_"):
+			# These production IDs now render the imported posed mesh; legacy
+			# procedural body proportions have their separate population regression.
+			box = Population._source(Population.ASSETS[id]).bounds
 		var tol := 0.3 if spec.get("variable", false) else 0.1
 		var ok := true
 		for i in 3:
@@ -217,7 +245,7 @@ func _test_tiers() -> void:
 	for q: String in ["low", "balanced", "high"]:
 		var r := Scenery.build(_field, _scenery, {audio = false, birds = false, theme = "", quality = q})
 		counts[q] = r.get_meta("stats")
-		motion_counts[q] = {rotor = 0, flag = 0, crown = 0, bush_tips = 0, person = 0}
+		motion_counts[q] = {rotor = 0, flag = 0, crown = 0, bush_tips = 0}
 		for part: Node in r.get_node("Motion").get_children():
 			for kind: String in motion_counts[q]:
 				if str(part.name).begins_with(kind + "_"):
@@ -227,11 +255,12 @@ func _test_tiers() -> void:
 	_check("tiers: low keeps no ornamental flowers", int(counts.low.flowers) == 0)
 	_check("tiers: low retains the 4 rotors, flag and 10 standard tree crowns",
 		motion_counts.low.rotor == 4 and motion_counts.low.flag == 1 and motion_counts.low.crown == 10
-		and motion_counts.low.bush_tips == 0 and motion_counts.low.person == 0, str(motion_counts.low))
-	_check("tiers: high retains the same landmarks plus ornamental people and shrub tips",
+		and motion_counts.low.bush_tips == 0 and int(counts.low.moving_people) == 0, str(motion_counts.low))
+	_check("tiers: high retains landmarks, shrub tips, and bounded population motion",
 		motion_counts.high.rotor == 4 and motion_counts.high.flag == 1 and motion_counts.high.crown == 10
-		and motion_counts.high.bush_tips == 6 and motion_counts.high.person >= 2,
-		str(motion_counts.high))
+		and motion_counts.high.bush_tips == 6 and int(counts.high.moving_people) >= 2
+		and int(counts.high.moving_people) <= 9,
+		"%s moving_people=%d" % [motion_counts.high, int(counts.high.moving_people)])
 	_check("tiers: balanced keeps a fixed half of the flowers", absf(float(counts.balanced.flowers) / float(counts.high.flowers) - 0.5) < 0.08)
 
 

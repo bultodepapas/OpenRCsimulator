@@ -9,6 +9,7 @@ const Models = preload("res://scenery/models.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
+const Population = preload("res://scenery/population.gd")
 const Scenery = preload("res://scenery/scenery.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 
@@ -31,6 +32,7 @@ func _initialize() -> void:
 	if loaded.ok:
 		_test_catalog_fleet(loaded.scenery.groups)
 		_test_parking_and_people(loaded.scenery.groups)
+		_test_population_mapping()
 		_test_cradle_support()
 		_test_prefab_proportions()
 		_test_animated_parts(field, loaded.scenery)
@@ -79,9 +81,39 @@ func _test_parking_and_people(groups: Array) -> void:
 		cars.placements.size() == 11 and headings.size() >= 5,
 		"distinct heading bands=%d" % headings.size())
 	var person_count := 0
+	var person_prefabs: Dictionary = {}
 	for id: String in ["pilots", "pits-people", "seated", "veranda-people"]:
-		person_count += _group(groups, id).get("placements", []).size()
+		var group := _group(groups, id)
+		person_count += group.get("placements", []).size()
+		var prefab := str(group.get("prefab", ""))
+		if not prefab.is_empty():
+			person_prefabs[prefab] = int(person_prefabs.get(prefab, 0)) + group.get("placements", []).size()
 	_check("all 13 existing people placements remain in the layout", person_count == 13, str(person_count))
+	_check("all three population person types occur in those 13 placements",
+		person_prefabs.keys().size() == 3 and person_prefabs.has("person_standing")
+		and person_prefabs.has("person_sitting") and person_prefabs.has("person_pilot"), str(person_prefabs))
+	var population_people := 0
+	for prefab: String in person_prefabs:
+		population_people += int(person_prefabs[prefab])
+	_check("every default person placement is covered by the population source map",
+		population_people == 13 and person_prefabs.keys().all(func(id: String) -> bool:
+			return Population.ASSETS.has(id) and Population.handles(id)), str(person_prefabs))
+
+
+func _test_population_mapping() -> void:
+	var car_ids := ["car_sedan", "car_hatch", "car_suv", "car_sport"]
+	var car_sources: Dictionary = {}
+	for id: String in car_ids:
+		var asset := str(Population.ASSETS.get(id, ""))
+		car_sources[asset] = true
+		_check("%s uses the production population batch" % id,
+			Models.CATALOG.has(id) and Population.handles(id) and not asset.is_empty(), asset)
+	_check("the four legacy car IDs resolve to exactly three replacement body styles",
+		car_sources.size() == 3 and car_sources.has("sedan") and car_sources.has("hatch")
+		and car_sources.has("crossover"), str(car_sources.keys()))
+	for id: String in ["person_standing", "person_sitting", "person_pilot"]:
+		_check("%s uses a production population batch" % id,
+			Population.ASSETS.has(id) and Population.handles(id), str(Population.ASSETS.get(id, "missing")))
 
 
 func _test_cradle_support() -> void:
@@ -153,13 +185,19 @@ func _test_animated_parts(field: Dictionary, scenery: Dictionary) -> void:
 		for kind: String in counts:
 			if str(node.name).begins_with(kind + "_"):
 				counts[kind] += 1
-		if str(node.name).begins_with("person_"):
-			_check("person animation uses a shared mesh shader, no per-person script", node.get_script() == null)
+	var stats: Dictionary = root.get_meta("stats")
+	var population: Node3D = root.get_node_or_null("Population") as Node3D
+	var moving_people := int(stats.get("moving_people", -1))
 	_check("scenery retains the original rotor and flag count", counts.rotor == 4 and counts.flag == 1, str(counts))
 	_check("tree and shrub tip motions match 10 shade trees and 6 shrubs",
 		counts.crown == 10 and counts.bush_tips == 6, str(counts))
-	_check("bounded subset animates; 13 body meshes do not all animate",
-		counts.person >= 2 and counts.person <= 9, str(counts))
+	_check("people animate through the bounded population shader, not per-person Motion nodes",
+		counts.person == 0 and moving_people >= 2 and moving_people <= 9,
+		"legacy nodes=%d population moving=%d" % [counts.person, moving_people])
+	_check("the production population batches all 24 default placements",
+		population != null and int(stats.get("population", -1)) == 24
+		and int(population.get_meta("instances", -1)) == 24,
+		"stats=%d node=%d" % [int(stats.get("population", -1)), int(population.get_meta("instances", -1)) if population != null else -1])
 	_check("added motion stays below 40 moving draws", motion.get_child_count() <= 40,
 		"moving mesh count=%d" % motion.get_child_count())
 	root.free()

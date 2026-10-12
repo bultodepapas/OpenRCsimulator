@@ -1,0 +1,194 @@
+[
+  {
+    "test": "test_field_projected_shadows.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.8764788109983783,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_projected_shadows.gd"
+    ]
+  },
+  {
+    "test": "test_landscape_gravel.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6309713410155382,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_landscape_gravel.gd"
+    ]
+  },
+  {
+    "test": "test_landscape_vegetation.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.2075748080096673,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_landscape_vegetation.gd"
+    ]
+  },
+  {
+    "test": "test_replay_policy.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 7.515220675006276,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_replay_policy.gd"
+    ]
+  },
+  {
+    "test": "test_scenery_build.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.3946182660001796,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_scenery_build.gd"
+    ]
+  },
+  {
+    "test": "test_landscape_population_assets.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8123166840232443,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_landscape_population_assets.gd"
+    ]
+  },
+  {
+    "test": "test_landscape_population.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6306976689957082,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_landscape_population.gd"
+    ]
+  },
+  {
+    "test": "test_time_of_day_scenery_update.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.3742534150078427,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_time_of_day_scenery_update.gd"
+    ]
+  },
+  {
+    "test": "test_time_of_day_render_update.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.227843953995034,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_time_of_day_render_update.gd"
+    ]
+  },
+  {
+    "test": "test_world_field_lights.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 4.557049085997278,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_world_field_lights.gd"
+    ]
+  },
+  {
+    "test": "test_landscape_checkpoint.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.015873772004852,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_landscape_checkpoint.gd"
+    ]
+  },
+  {
+    "test": "test_landscape_runtime.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.8790295889775734,
+    "command": [
+      "/var/tmp/openrc-lu21-final-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/var/tmp/openrc-lu21-final-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_landscape_runtime.gd"
+    ]
+  }
+]

@@ -178,8 +178,18 @@ func _test_field_integration() -> void:
 	var cell_projectors := 0
 	var matched_legacy := 0
 	var pilot_hits := [false, false]
+	var population_placements := 0
+	var population_triangles := 0
 	var max_resolution := 0
 	var pixel_sum := 0
+	var pilot_xz := Vector2(float(field.pilot.east), -float(field.pilot.north))
+	var population := scenery_root.get_node_or_null("Population") as Node3D
+	var projected_cells: Array[MeshInstance3D] = []
+	for projector: Node in projectors:
+		var projected_source := projector.get("source") as Node3D
+		if projected_source != null and str(projected_source.name).begins_with("cell_"):
+			projected_cells.append(projected_source as MeshInstance3D)
+	var population_owners := FieldShadows.population_cell_owners(projected_cells, population, pilot_xz)
 	for projector: Node in projectors:
 		var source := projector.get("source") as Node3D
 		var viewport := projector.get("viewport") as SubViewport
@@ -195,9 +205,15 @@ func _test_field_integration() -> void:
 		if legacy != null:
 			matched_legacy += 1
 			_check("near %s legacy shadow batch is hidden" % suffix, not legacy.visible)
-		var shape: Dictionary = Projected.collect(source, 0.04)
+		var shape: Dictionary = FieldShadows.collect_cell_shape(source, population, pilot_xz,
+			FieldShadows.MAX_SCENERY_RANGE, 0.04, population_owners)
 		if shape.is_empty():
 			continue
+		population_placements += int(shape.get("population_placements", 0))
+		population_triangles += int(shape.get("population_triangles", 0))
+		_check("projected caster uses the merged cell and population shape",
+			int(projector.get("triangle_count")) == int(shape.triangles)
+				and int(projector.get_meta("population_placements", 0)) == int(shape.get("population_placements", 0)))
 		var vertices: PackedVector3Array = shape.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
 		for v: Vector3 in vertices:
 			if v.y < 1.45:
@@ -207,7 +223,11 @@ func _test_field_integration() -> void:
 			if Vector2(v.x - 16.0, v.z - 0.5).length() < 0.55:
 				pilot_hits[1] = true
 	_check("near scenery cells are projected", cell_projectors > 0)
-	_check("pilot and people geometry survives cell collection", pilot_hits[0] and pilot_hits[1], str(pilot_hits))
+	_check("pilot and people geometry survives cell collection", pilot_hits[0] and pilot_hits[1],
+		"hits=%s population_placements=%d triangles=%d" % [str(pilot_hits), population_placements, population_triangles])
+	_check("nearby human faces are merged without new projector maps",
+		population_placements >= 2 and population_triangles > 0
+			and projectors.size() == cue_projectors + cell_projectors)
 	_check("near projected cells hide matching legacy batches", matched_legacy > 0,
 		"matched=%d cells=%d" % [matched_legacy, cell_projectors])
 	_check("map count and each 256/512/1024 target stay bounded",
@@ -217,10 +237,33 @@ func _test_field_integration() -> void:
 		pixel_sum == int(manager.get("target_pixels")) and pixel_sum <= FieldShadows.MAX_TARGET_PIXELS,
 		"pixels=%d budget=%d reported=%d" % [pixel_sum, FieldShadows.MAX_TARGET_PIXELS, int(manager.get("target_pixels"))])
 
-	# The old batches for casters beyond the projected near-field radius must remain visible.
+	var population_contacts := scenery_root.get_node_or_null("PopulationContacts") as MeshInstance3D
+	var population_groups: Array = scenery_root.get_meta("directional_population_shadow_groups", [])
 	var groups: Dictionary = scenery_root.get_meta("directional_shadow_groups")
+	var separate_groups := not population_groups.is_empty()
+	var vehicle_groups := 0
+	var legacy_population_groups := 0
+	for source_group: Dictionary in population_groups:
+		vehicle_groups += 1 if str(source_group.mode) == "vehicle" else 0
+	for key: Vector2i in groups:
+		for source_group: Dictionary in groups[key]:
+			legacy_population_groups += 1 if str(source_group.mode) in ["person", "vehicle"] else 0
+	var veranda_patch := false
+	if population_contacts != null and population_contacts.mesh != null and population_contacts.mesh.get_surface_count() > 0:
+		var contact_vertices: PackedVector3Array = population_contacts.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+		for vertex: Vector3 in contact_vertices:
+			if absf(vertex.y - 0.154) < 0.001 and Vector2(vertex.x + 2.5, vertex.z - 17.5).length() < 0.01:
+				veranda_patch = true
+		_check("population contact batch preserves the raised veranda foot patch and uses shared shade material",
+			population_contacts != null and population_contacts.mesh != null
+				and population_contacts.mesh.get_surface_count() > 0 and veranda_patch
+				and population_contacts.mesh.surface_get_material(0) == scenery_root.get_meta("directional_shadow_material"))
+	_check("people and cars use a separate compact shadow batch outside legacy cell groups",
+		separate_groups and vehicle_groups > 0 and legacy_population_groups == 0,
+		"population=%d vehicles=%d legacy=%d" % [population_groups.size(), vehicle_groups, legacy_population_groups])
+
+	# The old batches for casters beyond the projected near-field radius must remain visible.
 	var far_legacy := 0
-	var pilot_xz := Vector2(float(field.pilot.east), -float(field.pilot.north))
 	for key: Vector2i in groups:
 		var name := "shadows_%d_%d" % [key.x, key.y]
 		var batch := scenery_root.get_node_or_null(NodePath(name)) as MeshInstance3D
@@ -307,6 +350,18 @@ func _test_field_integration() -> void:
 		all_restored = all_restored and (projector.get("receiver") as MeshInstance3D).visible
 		all_restored = all_restored and (projector.get("viewport") as SubViewport).render_target_update_mode == SubViewport.UPDATE_ONCE
 	_check("positive strength re-enables receivers and schedules fresh maps", all_restored)
+	var population_mesh_before := population_contacts.mesh if population_contacts != null else null
+	var shifted_sun := daylight.duplicate(true)
+	shifted_sun.sun_azimuth_deg = float(daylight.sun_azimuth_deg) + 70.0
+	var population_prepare := Scenery.prepare_lighting(field_node, shifted_sun)
+	var population_batch_present := false
+	for replacement: Dictionary in population_prepare.get("batches", []):
+		population_batch_present = population_batch_present or replacement.get("node") == population_contacts
+	_check("population contact geometry joins the scenery lighting transaction",
+		population_contacts != null and population_batch_present and bool(population_prepare.get("geometry_changed", false)))
+	var population_commit := Scenery.commit_lighting(field_node, population_prepare)
+	_check("committing a new sun replaces population car shadows while retaining the contact batch",
+		population_commit and population_contacts != null and population_contacts.mesh != population_mesh_before)
 	field_node.free()
 
 

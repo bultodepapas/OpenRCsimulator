@@ -14,7 +14,7 @@ void vertex() {
 	v_col = mix(leaf, INSTANCE_CUSTOM.rgb, 1.0 - COLOR.a);
 	vec3 origin = (MODEL_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 	float ph = fract(origin.x * 0.137 + origin.z * 0.719); // per-plant phase from its position, no RNG
-	float h = clamp(VERTEX.y / 0.4, 0.0, 1.0);
+	float h = clamp(VERTEX.y / 0.42, 0.0, 1.0);
 	float wind = length(wind_vec);
 	float sway = (0.012 + 0.006 * min(wind, 10.0)) * h * h; // metres, estimated
 	VERTEX.x += sway * sin(TAU * fract(0.5 * sim_clock + ph)); // 0.5 Hz = 512/1024
