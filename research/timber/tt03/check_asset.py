@@ -3,7 +3,7 @@
 artifact describes the same bytes.
 
 Checks (all must hold):
-  * app/assets/aircraft/turbo-timber-evolution/timber.glb has the GLB SHA-256 of source-manifest.json (TT-01);
+  * app/assets/aircraft/turbo-lumber-evolution/timber.glb has the GLB SHA-256 of source-manifest.json (TT-01);
   * its LICENSE.txt is the delivery's LICENSE.txt (same hash) until decision D1 replaces it;
   * the committed timber.glb.import sidecar exists, imports as a PackedScene and points at the GLB;
   * mesh-measurements.json, geometry.json and timber_geometry.gd carry the same GLB hash / visual revision;
@@ -18,8 +18,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-ASSET_DIR = ROOT / "app/assets/aircraft/turbo-timber-evolution"
-SOURCE_DIR = ROOT / "assets/aircraft/turbo-timber-evolution"
+ASSET_DIR = ROOT / "app/assets/aircraft/turbo-lumber-evolution"
+SOURCE_DIR = ROOT / "assets/aircraft/turbo-lumber-evolution"
 MODEL = ROOT / "app/aircraft/timber_model.gd"
 GEOMETRY_GD = ROOT / "app/aircraft/timber_geometry.gd"
 
@@ -48,7 +48,7 @@ def main() -> None:
         problems.append("missing committed sidecar timber.glb.import")
     else:
         text = sidecar.read_text(encoding="utf-8")
-        if 'type="PackedScene"' not in text or 'source_file="res://assets/aircraft/turbo-timber-evolution/timber.glb"' not in text:
+        if 'type="PackedScene"' not in text or 'source_file="res://assets/aircraft/turbo-lumber-evolution/timber.glb"' not in text:
             problems.append("timber.glb.import does not import the GLB as a PackedScene")
     measurements = json.loads((SOURCE_DIR / "mesh-measurements.json").read_text(encoding="utf-8"))
     if measurements["glb_sha256"] != glb_hash:

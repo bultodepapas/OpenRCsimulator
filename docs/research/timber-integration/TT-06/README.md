@@ -1,12 +1,12 @@
 # TT-06 — catalog preview entry and the shared test sweep
 
-2026-10-12 · **Status: complete (software checks); owner sign-off of the shared edits pending.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Guide: [asset README](../../../../assets/aircraft/turbo-timber-evolution/README.md).
+2026-10-12 · **Status: complete (software checks); owner sign-off of the shared edits pending.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Guide: [asset README](../../../../assets/aircraft/turbo-lumber-evolution/README.md).
 
 ## Change
 
 | File | Change |
 | --- | --- |
-| `app/app_state/aircraft_catalog.gd` | Fifth entry `eflite-turbo-timber-evolution` ("E-flite Turbo Timber Evolution", PREVIEW, `data = ""`, status note "Preview only: electric propulsion and flight data are not simulated yet."); `flyable_entries()` and `flyable_ids()` return the entries that carry data, in menu order |
+| `app/app_state/aircraft_catalog.gd` | Fifth entry `turbo-lumber-evolution` ("E-flite Turbo Timber Evolution", PREVIEW, `data = ""`, status note "Preview only: electric propulsion and flight data are not simulated yet."); `flyable_entries()` and `flyable_ids()` return the entries that carry data, in menu order |
 | `app/render/airplane.gd` | `TIMBER_ID`, `Timber` preload; `build()` dispatches to `timber_model.gd`; `datum()` is `(0, 0)` (the imported scene sits at D0); `apply_surfaces()` routes the Timber (and the Avanti) to their degree-based `apply_surfaces` |
 | `app/i18n/es.po` | Spanish summary and status note |
 | `app/tests/test_aircraft_catalog.gd` | Five IDs, four flyable, wrap on the last ID, adapter list with `TIMBER_ID`; a preview may carry a real propeller (`has_propeller == propeller.visible`) |
@@ -26,8 +26,8 @@ Two tests not in the plan's list also enumerated the catalog: `test_landscape_po
 ```bash
 # targeted (all exit 0): test_aircraft_catalog, test_projected_shadow, test_world_field_lights, test_landscape_population,
 # test_scenery_build, test_aircraft_render_contract, test_ui_aircraft, test_crash_wreck (163 checks, 0 failed)
-"$(app/get-godot.sh)" --headless --path app -- --aircraft=eflite-turbo-timber-evolution --trace=/dev/null --t=1   # exit 1: "preview only, no flight data (use --scripted)"
-"$(app/get-godot.sh)" --headless --path app -- --aircraft=eflite-turbo-timber-evolution --scripted --frametimes=/tmp/ft.json --warmup=0 --t=1   # route scripted-fixed, 134 frames, 0 physics ticks
+"$(app/get-godot.sh)" --headless --path app -- --aircraft=turbo-lumber-evolution --trace=/dev/null --t=1   # exit 1: "preview only, no flight data (use --scripted)"
+"$(app/get-godot.sh)" --headless --path app -- --aircraft=turbo-lumber-evolution --scripted --frametimes=/tmp/ft.json --warmup=0 --t=1   # route scripted-fixed, 134 frames, 0 physics ticks
 bash app/test.sh   # full suite, see the result line below
 ```
 
@@ -35,4 +35,4 @@ Full `app/test.sh` result (2026-10-12): the suite cannot complete on this tree f
 
 ## Limits
 
-The preview flies only the scripted visual circle; Fly is refused in Home and on the direct route. No physics, trace, trim, sound or ground behaviour exists for the Timber (TT-07…TT-12). The parked fleet and the crash twin keep their four-aircraft behaviour until TT-13/TT-13b. Home and Spanish strings are verified by `test_ui_aircraft.gd`; [home-timber-en.png](home-timber-en.png) and [home-timber-es.png](home-timber-es.png) (`app/tests/capture_ui.gd --screen=home --aircraft=eflite-turbo-timber-evolution --lang=en|es`, Xvfb) show the card with "Aircraft 5 of 5" / "Avión 5 de 5", the preview note, Fly disabled and the model in the backdrop. In the field, the scripted visual circle was captured through the app's own capture route (`-- --aircraft=eflite-turbo-timber-evolution --scripted --capture --t=2.5 --out=…`): [field-scripted-circle-closeup.png](field-scripted-circle-closeup.png) with `--inspect` (close-up camera, scenery behind); the same route from the pilot position (no `--inspect`, t = 4 s) shows the airplane as the small dot the circle's distance implies and is not kept here.
+The preview flies only the scripted visual circle; Fly is refused in Home and on the direct route. No physics, trace, trim, sound or ground behaviour exists for the Timber (TT-07…TT-12). The parked fleet and the crash twin keep their four-aircraft behaviour until TT-13/TT-13b. Home and Spanish strings are verified by `test_ui_aircraft.gd`; [home-timber-en.png](home-timber-en.png) and [home-timber-es.png](home-timber-es.png) (`app/tests/capture_ui.gd --screen=home --aircraft=turbo-lumber-evolution --lang=en|es`, Xvfb) show the card with "Aircraft 5 of 5" / "Avión 5 de 5", the preview note, Fly disabled and the model in the backdrop. In the field, the scripted visual circle was captured through the app's own capture route (`-- --aircraft=turbo-lumber-evolution --scripted --capture --t=2.5 --out=…`): [field-scripted-circle-closeup.png](field-scripted-circle-closeup.png) with `--inspect` (close-up camera, scenery behind); the same route from the pilot position (no `--inspect`, t = 4 s) shows the airplane as the small dot the circle's distance implies and is not kept here.

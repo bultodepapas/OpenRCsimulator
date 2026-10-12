@@ -10,6 +10,8 @@ const BuildInfo := preload("res://app_state/build_info.gd")
 
 ## A release newer than the running build is published and not hidden (UpdateCheck.notice): once per tag.
 signal update_available(info: Dictionary)
+## The release announced earlier no longer applies (a fresh answer says nothing is newer): Home hides the card.
+signal update_withdrawn
 ## The check finished (`status` as stored in the cache: "200 ok", "304 not modified", "http 403", ...).
 signal check_finished(status: String)
 
@@ -19,6 +21,8 @@ var state_path: String = UpdateCheck.STATE_PATH
 var running_version := ""
 ## -1 reads the system clock; tests set a time.
 var now_unix := -1
+## Seconds before a stalled answer counts as a transport error; tests shorten it.
+var timeout_s: float = UpdateCheck.TIMEOUT_S
 var state: Dictionary = UpdateCheck.default_state()
 var _announced_tag := ""
 var _http: HTTPRequest
@@ -31,7 +35,7 @@ func _init() -> void:
 func _ready() -> void:
 	if running_version == "":
 		running_version = BuildInfo.current().parsed.semver
-	state = UpdateCheck.load_state(state_path)
+	state = UpdateCheck.state_for(UpdateCheck.load_state(state_path), running_version) # another build's cache never answers for this one
 	_announce()
 	if UpdateCheck.due(state, _now()):
 		_start()
@@ -46,8 +50,11 @@ func hide(tag: String) -> void:
 func _start() -> void:
 	_http = HTTPRequest.new()
 	_http.name = "Request"
-	_http.use_threads = true # the TLS handshake and the download stay off the frame that draws Home
-	_http.timeout = UpdateCheck.TIMEOUT_S
+	# Never use_threads: the worker reads in blocking mode, so a peer that accepts and then stays silent makes the
+	# 10 s timeout (and quitting the app) wait forever on the thread join (UI-16-R1 review). Unthreaded, HTTPRequest
+	# resolves, handshakes and reads a little per frame: Home keeps drawing and the timeout really fires.
+	_http.use_threads = false
+	_http.timeout = timeout_s
 	_http.body_size_limit = UpdateCheck.MAX_BODY_BYTES
 	add_child(_http)
 	_http.request_completed.connect(_on_completed)
@@ -64,7 +71,7 @@ func _on_completed(result: int, code: int, response_headers: PackedStringArray, 
 		_finish("304 not modified", true) # the cached latest release still stands
 		return
 	if code != 200:
-		_finish("http %d" % code, false)
+		_finish("http %d" % code, true) # GitHub answered (rate limit, moved, down): be polite and wait a day
 		return
 	var releases: Variant = UpdateCheck.parse_response(body)
 	if releases == null:
@@ -75,11 +82,13 @@ func _on_completed(result: int, code: int, response_headers: PackedStringArray, 
 	state.latest_tag = latest.get("tag", "")
 	state.latest_url = latest.get("url", "")
 	state.latest_published = latest.get("published", "")
+	state.latest_prerelease = latest.get("prerelease", false) == true
+	state.for_version = running_version
 	_finish("200 ok", true)
 
 
-## `checked` true means GitHub answered: the next check waits a day. A failure keeps the previous date so the next
-## launch tries again.
+## `checked` true means the server answered (200, 304 or an error status): the next check waits a day. A transport
+## failure keeps the previous date so the next launch tries again.
 func _finish(status: String, checked: bool) -> void:
 	state.last_status = status
 	if checked:
@@ -96,7 +105,12 @@ func _finish(status: String, checked: bool) -> void:
 
 func _announce() -> void:
 	var info := UpdateCheck.notice(running_version, state)
-	if info.is_empty() or info.tag == _announced_tag:
+	if info.is_empty():
+		if _announced_tag != "":
+			_announced_tag = ""
+			update_withdrawn.emit()
+		return
+	if info.tag == _announced_tag:
 		return
 	_announced_tag = info.tag
 	update_available.emit(info)

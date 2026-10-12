@@ -1,4 +1,4 @@
-# Inspector for the Turbo Timber Evolution imported model (TT-03 review views). Builds the airplane with its own builder
+# Inspector for the Turbo Lumber Evolution imported model (TT-03 review views). Builds the airplane with its own builder
 # (not via render/airplane.gd), resets controls, attitude, propeller and gear for every capture and records the camera
 # in manifest.json. Distances scale with the measured span so a regenerated geometry keeps framing the airplane.
 # Run (needs a display, e.g. xvfb-run): godot --path app --rendering-driver opengl3 \

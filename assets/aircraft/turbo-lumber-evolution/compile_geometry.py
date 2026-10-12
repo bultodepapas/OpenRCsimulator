@@ -32,7 +32,7 @@ def as_godot_json(value):
 def validate(d):
     assert d["schema"] == "openrc-timber-geometry v1" and d["units"] == "m"
     assert d["axes"] == {"nose": "-Z", "right": "+X", "up": "+Y"}
-    assert d["catalog_id"] == "eflite-turbo-timber-evolution"
+    assert d["catalog_id"] == "turbo-lumber-evolution"
     assert d["datum"]["position"] == [0.0, 0.0, 0.0]
     arts = d["articulations"]
     assert sorted(arts) == sorted(ARTICULATION_NODES), sorted(arts)
@@ -58,8 +58,8 @@ def main():
     args = parser.parse_args()
     data = json.loads((HERE / "geometry.json").read_text(encoding="utf-8"))
     validate(data)
-    output = "# Generated, do not edit. Source: assets/aircraft/turbo-timber-evolution/geometry.json (revision %s).\n" % data["revision"]
-    output += "# Regenerate with: python3 assets/aircraft/turbo-timber-evolution/compile_geometry.py\n"
+    output = "# Generated, do not edit. Source: assets/aircraft/turbo-lumber-evolution/geometry.json (revision %s).\n" % data["revision"]
+    output += "# Regenerate with: python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py\n"
     output += "# Visual preview geometry of the author's r1 export (see DATA.evidence); not flyable.\n"
     output += "extends RefCounted\n\nconst DATA := "
     output += json.dumps(as_godot_json(data), ensure_ascii=False, indent="\t") + "\n"

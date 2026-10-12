@@ -23,7 +23,7 @@ const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
 const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
 const P51_ID := "p51d-mustang-120"
-const TIMBER_ID := "eflite-turbo-timber-evolution"
+const TIMBER_ID := "turbo-lumber-evolution"
 
 
 static func _mat(color: Color) -> StandardMaterial3D:

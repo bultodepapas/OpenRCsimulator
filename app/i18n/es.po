@@ -413,6 +413,9 @@ msgstr "Acrobático de ala baja · 1,63 m · glow .61"
 msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
 msgstr "Reactor deportivo · 2,00 m · turbina JetCat P100-RX"
 
+msgid "Turbo Lumber Evolution"
+msgstr "Turbo Tronco Evolución"
+
 msgid "High-wing STOL · 1.55 m · 4S electric"
 msgstr "STOL de ala alta · 1,55 m · eléctrico 4S"
 
@@ -598,3 +601,6 @@ msgstr "Abre la página de la versión en tu navegador."
 
 msgid "Hides this notice until a newer version is published."
 msgstr "Oculta este aviso hasta que se publique una versión más nueva."
+
+msgid "Could not open the browser (error %d)."
+msgstr "No se pudo abrir el navegador (error %d)."

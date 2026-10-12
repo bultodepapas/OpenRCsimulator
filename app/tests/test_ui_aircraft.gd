@@ -13,7 +13,7 @@ const PREFS := "user://test_ui_aircraft_settings.cfg"
 const STIK := "jensen-das-ugly-stik-60"
 const EXTRA := "gp-extra-300s-60"
 const AVANTI := "sebart-avanti-s-a200-p100rx"
-const TIMBER := "eflite-turbo-timber-evolution"
+const TIMBER := "turbo-lumber-evolution"
 const P51 := "p51d-mustang-120"
 
 var _failures := 0

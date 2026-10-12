@@ -38,7 +38,7 @@ static func parse_version(text: String) -> Dictionary:
 	if parts.size() != 3 or (dash >= 0 and pre == ""):
 		return out
 	for p in parts:
-		if not _is_digits(p):
+		if not _is_digits(p) or p.length() > 18: # beyond 18 digits int() saturates and prints an engine error
 			return out
 	var ids := PackedStringArray()
 	if pre != "":
@@ -105,8 +105,9 @@ static func newest(releases: Variant, running: Dictionary) -> Dictionary:
 	return best
 
 
-## What Home shows, from the cached state: {} unless the cached latest release is newer than `running_text` and
-## was not hidden. Returns { tag, version (text without "v"), url (trusted page), published }.
+## What Home shows, from the cached state: {} unless the cached latest release is newer than `running_text`, was
+## not hidden, and is not a prerelease offered to a release build (the cache may come from another build; see
+## `for_version`). Returns { tag, version (text without "v"), url (trusted page), published }.
 static func notice(running_text: String, state: Dictionary) -> Dictionary:
 	var running := parse_version(running_text)
 	var latest := parse_version(str(state.get("latest_tag", "")))
@@ -114,17 +115,44 @@ static func notice(running_text: String, state: Dictionary) -> Dictionary:
 		return {}
 	if str(state.get("latest_tag", "")) == str(state.get("hidden_tag", "")):
 		return {}
-	var url := str(state.get("latest_url", ""))
+	var is_pre: bool = state.get("latest_prerelease", false) == true or not latest.prerelease.is_empty()
+	if is_pre and running.prerelease.is_empty():
+		return {}
 	return {
 		tag = latest.text,
-		version = latest.text.trim_prefix("v"),
-		url = url if url.begins_with(TRUSTED_PAGE_PREFIX) else RELEASES_PAGE,
+		version = latest.text.trim_prefix("v").trim_prefix("V"),
+		url = trusted_page(str(state.get("latest_url", ""))),
 		published = str(state.get("latest_published", "")),
 	}
 
 
+## `url` when it is a plain https page of the project (no whitespace or control characters: the string goes to
+## the OS as it is), else the releases page.
+static func trusted_page(url: String) -> String:
+	if not url.begins_with(TRUSTED_PAGE_PREFIX) or url.length() > 512:
+		return RELEASES_PAGE
+	for c in url:
+		if c <= " " or c >= "\u007f" or c == "\"" or c == "'" or c == "\\":
+			return RELEASES_PAGE
+	return url
+
+
+## `for_version` is the running build the cache was computed for: the selection (and the ETag that would keep it
+## through 304 answers) belongs to that build's channel, so another build starts from a fresh answer.
 static func default_state() -> Dictionary:
-	return { last_check_unix = 0, etag = "", latest_tag = "", latest_url = "", latest_published = "", hidden_tag = "", last_status = "" }
+	return { last_check_unix = 0, etag = "", for_version = "", latest_tag = "", latest_url = "", latest_published = "",
+		latest_prerelease = false, hidden_tag = "", last_status = "" }
+
+
+## The state another build left behind, kept only where it still applies (the hidden tag and the status line).
+static func state_for(state: Dictionary, running_text: String) -> Dictionary:
+	if str(state.get("for_version", "")) == running_text:
+		return state
+	var fresh := default_state()
+	fresh.for_version = running_text
+	fresh.hidden_tag = str(state.get("hidden_tag", ""))
+	fresh.last_status = str(state.get("last_status", ""))
+	return fresh
 
 
 ## The cache file; anything unreadable, of another format or of a wrong type falls back to the default value
@@ -139,7 +167,7 @@ static func load_state(path: String) -> Dictionary:
 	var last: Variant = cfg.get_value("check", "last_check_unix", 0)
 	if typeof(last) == TYPE_INT and last >= 0:
 		state.last_check_unix = last
-	for key in ["etag", "last_status"]:
+	for key in ["etag", "for_version", "last_status"]:
 		var v: Variant = cfg.get_value("check", key, "")
 		if typeof(v) == TYPE_STRING:
 			state[key] = v
@@ -150,6 +178,9 @@ static func load_state(path: String) -> Dictionary:
 			var v: Variant = cfg.get_value("latest", key, "")
 			if typeof(v) == TYPE_STRING:
 				state["latest_" + key] = v
+		var pre: Variant = cfg.get_value("latest", "prerelease", false)
+		if typeof(pre) == TYPE_BOOL:
+			state.latest_prerelease = pre
 	var hidden: Variant = cfg.get_value("latest", "hidden_tag", "")
 	if typeof(hidden) == TYPE_STRING:
 		state.hidden_tag = hidden
@@ -161,10 +192,12 @@ static func save_state(path: String, state: Dictionary) -> Error:
 	cfg.set_value("meta", "format", STATE_FORMAT)
 	cfg.set_value("check", "last_check_unix", int(state.get("last_check_unix", 0)))
 	cfg.set_value("check", "etag", str(state.get("etag", "")))
+	cfg.set_value("check", "for_version", str(state.get("for_version", "")))
 	cfg.set_value("check", "last_status", str(state.get("last_status", "")))
 	cfg.set_value("latest", "tag", str(state.get("latest_tag", "")))
 	cfg.set_value("latest", "url", str(state.get("latest_url", "")))
 	cfg.set_value("latest", "published", str(state.get("latest_published", "")))
+	cfg.set_value("latest", "prerelease", state.get("latest_prerelease", false) == true)
 	cfg.set_value("latest", "hidden_tag", str(state.get("hidden_tag", "")))
 	return cfg.save(path)
 

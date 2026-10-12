@@ -1,10 +1,10 @@
 # TT-03 — the r1 GLB in the app and the isolated viewer
 
-2026-10-12 · **Status: complete; owner review of the captures pending.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Guide: [asset README](../../../../assets/aircraft/turbo-timber-evolution/README.md). Captures: [captures/](captures/) with `manifest.json` (camera records and PNG hashes of all 60 views of the `all` suite: 12 review views, 36 orbit views, 12 pilot-distance views; ten PNGs kept here).
+2026-10-12 · **Status: complete; owner review of the captures pending.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Guide: [asset README](../../../../assets/aircraft/turbo-lumber-evolution/README.md). Captures: [captures/](captures/) with `manifest.json` (camera records and PNG hashes of all 60 views of the `all` suite: 12 review views, 36 orbit views, 12 pilot-distance views; ten PNGs kept here).
 
 ## Asset and import
 
-`app/assets/aircraft/turbo-timber-evolution/timber.glb` is the r1 `export/aircraft.glb` byte for byte (SHA-256 `fb7586f190…`, checked by `research/timber/tt03/check_asset.py --check` against TT-01's manifest, together with the copied `LICENSE.txt`, the committed `timber.glb.import` sidecar and the revision strings of the generated artifacts). The sidecar keeps Godot 4.7.2's default scene-import settings (LODs, shadow meshes and compressed vertex attributes on). The importer produces a `PackedScene` whose root (`timber`, identity) has one child `TurboTimberEvolution` with 15 `MeshInstance3D`, 36 surfaces, 64,291 triangles, 10 `StandardMaterial3D` resources (one alpha-blend glass, two emissive lenses), no animation, camera or light.
+`app/assets/aircraft/turbo-lumber-evolution/timber.glb` is the r1 `export/aircraft.glb` byte for byte (SHA-256 `fb7586f190…`, checked by `research/timber/tt03/check_asset.py --check` against TT-01's manifest, together with the copied `LICENSE.txt`, the committed `timber.glb.import` sidecar and the revision strings of the generated artifacts). The sidecar keeps Godot 4.7.2's default scene-import settings (LODs, shadow meshes and compressed vertex attributes on). The importer produces a `PackedScene` whose root (`timber`, identity) has one child `TurboTimberEvolution` with 15 `MeshInstance3D`, 36 surfaces, 64,291 triangles, 10 `StandardMaterial3D` resources (one alpha-blend glass, two emissive lenses), no animation, camera or light.
 
 Fresh-clone import: in two disposable copies of `app/` without `.godot/`, `--import` exited 0 both with and without the Timber asset, and a second run exited 0 (this checkout's first import after copying the file aborted at editor-layout teardown after a complete import; it did not recur). `app/test.sh` runs the import first, so a clean CI checkout regenerates `.godot/imported/`.
 
@@ -13,7 +13,7 @@ Vertex precision: on this import `Mesh.get_faces()` returns positions that diffe
 ## Checks
 
 ```bash
-bash app/test.sh   # section "Turbo Timber Evolution asset identity and generated geometry" and "model contract"
+bash app/test.sh   # section "Turbo Lumber Evolution asset identity and generated geometry" and "model contract"
 "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_timber.gd
 # timber preview r1-fb7586f19029: 15 meshes, 36 surfaces, 64291 triangles, extent 1.5479 x 0.4340 x 1.1166 m
 # PASS 283 checks

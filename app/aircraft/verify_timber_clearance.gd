@@ -1,4 +1,4 @@
-# TT-05: clearances of each Turbo Timber Evolution control surface against the fixed airframe at the manual high-rate
+# TT-05: clearances of each Turbo Lumber Evolution control surface against the fixed airframe at the manual high-rate
 # throws (geometry.json controls) and at the authored hinge limits, with the Extra's generic mesh-pair checker (EX-04).
 # The pass criterion is no penetration (no edge crossing a triangle, no vertex inside); the gap is reported because the
 # author's hinge coves hold the control-surface noses 0.0-0.1 mm from the skin (seam contact), unlike the 3 mm gaps of

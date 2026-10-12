@@ -1,17 +1,17 @@
-# Generated, do not edit. Source: assets/aircraft/turbo-timber-evolution/geometry.json (revision r1-fb7586f19029).
-# Regenerate with: python3 assets/aircraft/turbo-timber-evolution/compile_geometry.py
+# Generated, do not edit. Source: assets/aircraft/turbo-lumber-evolution/geometry.json (revision r1-fb7586f19029).
+# Regenerate with: python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py
 # Visual preview geometry of the author's r1 export (see DATA.evidence); not flyable.
 extends RefCounted
 
 const DATA := {
 	"schema": "openrc-timber-geometry v1",
 	"revision": "r1-fb7586f19029",
-	"catalog_id": "eflite-turbo-timber-evolution",
+	"catalog_id": "turbo-lumber-evolution",
 	"source_alias": "eflite_turbo_timber_evolution",
 	"status": "visual preview geometry of the author's r1 export; dimensions measured on the Godot-imported scene, ranges and installation angles estimated by the author; not calibrated, not flyable",
-	"generator": "assets/aircraft/turbo-timber-evolution/build_geometry.py",
+	"generator": "assets/aircraft/turbo-lumber-evolution/build_geometry.py",
 	"inputs": {
-		"manifest": "assets/aircraft/turbo-timber-evolution/source-manifest.json",
+		"manifest": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
 		"glb_sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5",
 		"metadata_sha256": "7e0afb84661c1dfb9eb050ce6d8fc088707ddcd0dbd97928f6420ef0886ca047",
 		"measurements": {
@@ -19,7 +19,7 @@ const DATA := {
 			"godot": "4.7.2-stable (official)",
 			"format": "openrc-timber-mesh-measurements v1"
 		},
-		"manual": "assets/aircraft/turbo-timber-evolution/manual.json",
+		"manual": "assets/aircraft/turbo-lumber-evolution/manual.json",
 		"hardware_revision": {
 			"value": "EFL105250B / EFL105275B (2024 B revision: 70 A Avian Smart Lite ESC, heavier gear springs)",
 			"kind": "manual",
@@ -1410,7 +1410,7 @@ const DATA := {
 			"value": 0.328223,
 			"unit": "m2",
 			"kind": "derived",
-			"source": "assets/aircraft/turbo-timber-evolution/build_geometry.py: trapezoid integral of the measured chord over the span, fuselage carry-through at the panel chord, rounded tips from the tip slices (r1 CAD: 0.329 m2)"
+			"source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: trapezoid integral of the measured chord over the span, fuselage carry-through at the panel chord, rounded tips from the tip slices (r1 CAD: 0.329 m2)"
 		},
 		"area_rectangular": {
 			"value": 0.330533,
@@ -2093,7 +2093,7 @@ const DATA := {
 			"value": 0.076104,
 			"unit": "m2",
 			"kind": "derived",
-			"source": "assets/aircraft/turbo-timber-evolution/build_geometry.py: planform between the fitted edges from the centreline to the tip, both sides (r1 CAD: 0.0756 m2)"
+			"source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: planform between the fitted edges from the centreline to the tip, both sides (r1 CAD: 0.0756 m2)"
 		},
 		"elevator_chord_aft_of_hinge_root": {
 			"value": 0.064615,
@@ -2342,7 +2342,7 @@ const DATA := {
 			"value": 0.024964,
 			"unit": "m2",
 			"kind": "derived",
-			"source": "assets/aircraft/turbo-timber-evolution/build_geometry.py: trapezoid between root_y and top_y"
+			"source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: trapezoid between root_y and top_y"
 		},
 		"rudder_chord_aft_of_hinge": {
 			"value": 0.095099,

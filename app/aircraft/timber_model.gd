@@ -1,6 +1,6 @@
-# TT-03/TT-05: Turbo Timber Evolution visual model built from the author's r1 glTF export (assets/aircraft/
-# turbo-timber-evolution/timber.glb, imported by Godot's scene importer) and the generated timber_geometry.gd
-# (source assets/aircraft/turbo-timber-evolution/geometry.json). Visual preview only; not flyable until TT-07/08.
+# TT-03/TT-05: Turbo Lumber Evolution visual model built from the author's r1 glTF export (assets/aircraft/
+# turbo-lumber-evolution/timber.glb, imported by Godot's scene importer) and the generated timber_geometry.gd
+# (source assets/aircraft/turbo-lumber-evolution/geometry.json). Visual preview only; not flyable until TT-07/08.
 # Axes: metres, +X right, +Y up, -Z nose; the imported root sits at the datum D0 (symmetry plane x root LE x thrust axis).
 #
 # The imported pivots keep the author's convention (local +X = hinge axis, angle 0 = rest basis). Surfaces are posed
@@ -12,7 +12,7 @@
 extends RefCounted
 
 const TimberGeometry := preload("res://aircraft/timber_geometry.gd")
-const SCENE := preload("res://assets/aircraft/turbo-timber-evolution/timber.glb")
+const SCENE := preload("res://assets/aircraft/turbo-lumber-evolution/timber.glb")
 const VISUAL_REVISION := "r1-fb7586f19029" # must equal TimberGeometry.DATA.revision (verify_timber.gd, check_asset.py)
 ## Hinges driven by apply_surfaces(): command key -> hinge keys.
 const SURFACE_HINGES := {aileron_right = ["aileron_right"], aileron_left = ["aileron_left"], elevator = ["elevator"], rudder = ["rudder"]}
