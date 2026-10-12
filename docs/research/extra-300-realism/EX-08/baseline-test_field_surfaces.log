@@ -1,0 +1,78 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads  []
+ok   default field uses one ground pass  consolidated=true children=["rough", "treeline", "NearGrass", "windsock", "pilot_station", "flightline_barrier", "FlightCueShadows", "Scenery", "ProjectedFieldShadows"]
+ok   default runway rectangle is retained in the shader data  [(0.0, -15.0, 50.0, 6.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)]
+ok   overlapping custom rectangles validate  []
+ERROR: scenery: field: expected 'field-surfaces-test' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_priority_ignores_json_order (res://tests/test_field_surfaces.gd:54)
+       [3] _run (res://tests/test_field_surfaces.gd:17)
+ok   reordered rectangles remain valid  []
+ERROR: scenery: field: expected 'field-surfaces-test' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_priority_ignores_json_order (res://tests/test_field_surfaces.gd:64)
+       [3] _run (res://tests/test_field_surfaces.gd:17)
+ok   mown then runway priority is stable when JSON surfaces reorder
+ok   shifted NED field validates  []
+ERROR: scenery: field: expected 'field-surfaces-test' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_shifted_ned_coordinates (res://tests/test_field_surfaces.gd:94)
+       [3] _run (res://tests/test_field_surfaces.gd:18)
+ok   east maps to render x and north maps to negative render z  (-795.0, -1260.0, -595.0, -1160.0)
+ok   shader declarations and loop use the GDScript surface capacity  32
+ok   exact shader capacity is valid field data  []
+ERROR: scenery: field: expected 'field-surfaces-test' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_capacity_and_shader_arrays_agree (res://tests/test_field_surfaces.gd:139)
+       [3] _run (res://tests/test_field_surfaces.gd:19)
+ok   exactly 32 rectangles are packed without truncation  count=32
+ok   valid runway outside rough is accepted by the L5 format  []
+ERROR: scenery: field: expected 'field-surfaces-test' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_outside_rough_falls_back_whole_field (res://tests/test_field_surfaces.gd:115)
+       [3] _run (res://tests/test_field_surfaces.gd:20)
+ok   uncontained runway uses complete legacy planes without partial shader merge  children=["rough", "mown", "runway", "NearGrass"]
+ok   field without rough remains valid L5 field data  []
+ERROR: scenery: field: expected 'field-surfaces-test' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_missing_rough_falls_back (res://tests/test_field_surfaces.gd:159)
+       [3] _run (res://tests/test_field_surfaces.gd:21)
+ok   far runway without a rough mesh stays in the legacy render path
+ok   more than the shader capacity remains valid L5 field data  []
+ERROR: scenery: field: expected 'field-surfaces-test' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_surface_overflow_falls_back_whole_field (res://tests/test_field_surfaces.gd:174)
+       [3] _run (res://tests/test_field_surfaces.gd:22)
+ok   overflow falls back for the entire field instead of truncating rectangles  children=35
+ok   runway crossing the L7 flat-ring boundary remains valid field data  []
+ERROR: scenery: groups[18][0] round_bale at (79.0, 68.5): flight_box item outside the flight box
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_overlay_outside_flat_horizon_falls_back (res://tests/test_field_surfaces.gd:214)
+       [3] _run (res://tests/test_field_surfaces.gd:23)
+ok   overlay crossing into raised terrain keeps the legacy overlay
+19 checks, 0 failed

@@ -115,7 +115,11 @@ func _run() -> void:
 	_check("the flight's camera is the one in use", root.get_viewport().get_camera_3d() == app.flight._camera)
 
 	var saved: Dictionary = Preferences.load_from(PREFS)
-	_check("Fly saves the selected default start choice", FileAccess.file_exists(PREFS) and saved.start_choice == "airborne")
+	_check("Fly saves the selected default runway start", FileAccess.file_exists(PREFS) and saved.start_choice == "runway")
+	_check("fresh Home flight uses gentle turbulent wind", saved.weather_config == Preferences.DEFAULTS.weather_config
+		and app.flight.session.weather_configuration() == saved.weather_config)
+	_check("fresh Home flight has passing evening and latency diagnostics", saved.time_of_day == "evening"
+		and app.flight._field_world_lighting and app.flight.get_node_or_null("LatencyPatch") != null)
 	app.queue_free()
 	await process_frame
 	for path in [PREFS, PREFS + ".bad"]:

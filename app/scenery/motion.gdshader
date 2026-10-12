@@ -8,7 +8,7 @@ render_mode cull_back;
 global uniform float sim_clock;
 global uniform vec3 wind_vec;
 
-uniform int mode = 0;          // 0: rotor about local +Z; 1: flag waving along local +X
+uniform int mode = 0;          // 0: rotor; 1: flag; 2: subtle person sway; 3: wind-flexed leaves
 uniform float rate = 0.25;     // rotor turns per second (multiple of 1/1024)
 uniform float phase = 0.0;     // fraction of a turn / wave
 uniform float idle_wind = 3.0; // m/s the flag shows while the simulation has no wind (a gentle breeze, estimated)
@@ -22,7 +22,7 @@ void vertex() {
 		mat2 r = mat2(vec2(cos(a), sin(a)), vec2(-sin(a), cos(a)));
 		VERTEX.xy = r * VERTEX.xy;
 		NORMAL.xy = r * NORMAL.xy;
-	} else {
+	} else if (mode == 1) {
 		float wind = max(length(wind_vec), idle_wind);
 		float x = max(VERTEX.x, 0.0);
 		float amp = 0.035 + 0.012 * clamp(wind, 0.0, 15.0); // metres per metre from the hoist, estimated
@@ -33,6 +33,22 @@ void vertex() {
 		VERTEX.y -= 0.04 * x * x * max(0.0, 1.0 - wind / 8.0); // droops a little in light wind
 		vec3 tangent = normalize(vec3(1.0, 0.0, amp * (s + k * x * cos(k * x - w))));
 		NORMAL = normalize(vec3(-tangent.z, 0.0, tangent.x)) * sign(NORMAL.z + 1e-4);
+	} else if (mode == 2) {
+		float w = TAU * fract(rate * sim_clock + phase);
+		float wind = clamp(length(wind_vec), 0.0, 10.0);
+		float reach = clamp(length(VERTEX) / 0.75, 0.0, 1.0);
+		float amp = 0.008 + 0.001 * wind; // metres at the hand, bounded for relaxed idling
+		VERTEX.x += amp * reach * sin(w);
+		VERTEX.z += amp * 0.35 * reach * cos(w + 0.7);
+	} else {
+		float w = TAU * fract(rate * sim_clock + phase);
+		float wind = max(length(wind_vec), 0.3);
+		float amp = 0.012 + 0.006 * clamp(wind, 0.0, 8.0); // < 6 cm crown travel at the strongest modeled wind
+		float height = clamp(max(VERTEX.y / 6.0, length(VERTEX.xz) / 0.7), 0.0, 1.0);
+		float s = sin(w);
+		vec2 dir = vec2(cos(TAU * phase), sin(TAU * phase));
+		VERTEX.xz += dir * amp * height * height * s;
+		VERTEX.y += amp * 0.04 * height * cos(w);
 	}
 }
 

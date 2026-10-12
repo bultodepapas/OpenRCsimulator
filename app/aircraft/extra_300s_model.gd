@@ -1,4 +1,4 @@
-# EX-02 visual preview of the Great Planes Extra 300S .60 (GPMA0236). Not flyable yet: no physics data.
+# EX-02/EX-06 model of the Great Planes Extra 300S .60 (GPMA0236), flyable with experimental physics.
 # Coordinates/provenance live in generated extra_300s_geometry.gd. Native Godot geometry, no importer.
 # Interface matches the Stik builder: build() -> {root, propeller, hinges, gear}; hinge nodes carry only the
 # commanded deflection, their static parent frames carry the swept hinge-line orientation.
@@ -7,7 +7,7 @@ extends RefCounted
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Finish := preload("res://aircraft/extra_300s_finish.gd")
 const D: Dictionary = Geometry.DATA
-const VISUAL_REVISION := "gp-extra-300s-60-ex04-pilot"
+const VISUAL_REVISION := "gp-extra-300s-60-ex06-installation"
 const RED := Color("c4182a") # = appearance.json colors.red (verify_extra checks it)
 const WHITE := Color("f1efe8")
 const GLASS := Color("1c2733")
@@ -621,7 +621,7 @@ static func _pant(label: String, center_x: float, parent: Node3D) -> void:
 static func _propeller(root: Node3D) -> Node3D:
 	var p: Dictionary = D.propeller
 	var s: Dictionary = D.spinner
-	# Thrust frame: plan side/top notes (2 deg right, 0.5 deg down). Visual only; physics thrust is EX-06.
+	# Thrust frame: plan side/top notes (2 deg right, 0.5 deg down), shared with EX-06 physics.
 	var thrust := Node3D.new()
 	thrust.name = "thrust_frame"
 	thrust.position = Vector3(0, 0, s.back_z)

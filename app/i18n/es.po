@@ -77,6 +77,9 @@ msgstr "Turbulencia"
 msgid "Calm"
 msgstr "Calma"
 
+msgid "Gentle breeze"
+msgstr "Brisa suave"
+
 msgid "%s m/s from %03.0f°"
 msgstr "%s m/s desde %03.0f°"
 

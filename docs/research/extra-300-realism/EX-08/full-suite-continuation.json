@@ -1,0 +1,1304 @@
+[
+  {
+    "name": "test_atmosphere_flight.gd",
+    "exit": 1,
+    "engine_errors": true,
+    "seconds": 3.23
+  },
+  {
+    "name": "test_attached_flow.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.0
+  },
+  {
+    "name": "test_avanti_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.55
+  },
+  {
+    "name": "test_build_info.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16
+  },
+  {
+    "name": "test_checkpoint.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09
+  },
+  {
+    "name": "test_checkpoint_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_contact_policy.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.52
+  },
+  {
+    "name": "test_continuous_state.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_controls.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.18
+  },
+  {
+    "name": "test_controls_reference.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16
+  },
+  {
+    "name": "test_crash.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.67
+  },
+  {
+    "name": "test_crash_audio.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_crash_effects.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_crash_integration.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 8.01
+  },
+  {
+    "name": "test_crash_pose.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.91
+  },
+  {
+    "name": "test_crash_severity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.27
+  },
+  {
+    "name": "test_crash_snapshot.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.63
+  },
+  {
+    "name": "test_crash_wreck.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 35.22
+  },
+  {
+    "name": "test_damping_regimes.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44
+  },
+  {
+    "name": "test_downwash_lag.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.21
+  },
+  {
+    "name": "test_dynamics.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.43
+  },
+  {
+    "name": "test_e2e_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 9.78
+  },
+  {
+    "name": "test_e2e_radio.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.95
+  },
+  {
+    "name": "test_electric_battery_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.64
+  },
+  {
+    "name": "test_electric_battery_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 19.69
+  },
+  {
+    "name": "test_electric_battery_step.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_electric_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.62
+  },
+  {
+    "name": "test_electric_dynamics.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_electric_event_localization.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.52
+  },
+  {
+    "name": "test_electric_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.99
+  },
+  {
+    "name": "test_electric_motor.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_electric_motor_compact.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_electric_propulsion.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.8
+  },
+  {
+    "name": "test_electric_runway.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 17.77
+  },
+  {
+    "name": "test_electric_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 7.14
+  },
+  {
+    "name": "test_electric_stop.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_electric_supply.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_engine_audio.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.83
+  },
+  {
+    "name": "test_engine_sound.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_engine_voice.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.24
+  },
+  {
+    "name": "test_envelope.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.67
+  },
+  {
+    "name": "test_envelope_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.9
+  },
+  {
+    "name": "test_extra_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.99
+  },
+  {
+    "name": "test_extra_installation.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53
+  },
+  {
+    "name": "test_far_forest.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_field_integration.gd",
+    "exit": 0,
+    "engine_errors": true,
+    "seconds": 3.05
+  },
+  {
+    "name": "test_field_loader.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.62
+  },
+  {
+    "name": "test_field_projected_shadows.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "seconds": 1.55
+  },
+  {
+    "name": "test_field_surfaces.gd",
+    "exit": 0,
+    "engine_errors": true,
+    "seconds": 2.38
+  },
+  {
+    "name": "test_flight_cue_shadows.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_flightline_barrier.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.24
+  },
+  {
+    "name": "test_flightline_barrier_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.24
+  },
+  {
+    "name": "test_frame_samples.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_frames.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_golden.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.83
+  },
+  {
+    "name": "test_ground_contact.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.27
+  },
+  {
+    "name": "test_ground_friction.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 12.15
+  },
+  {
+    "name": "test_ground_physics.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53
+  },
+  {
+    "name": "test_ground_start_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.72
+  },
+  {
+    "name": "test_ground_stiction.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 20.05
+  },
+  {
+    "name": "test_ground_surfaces.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 7.05
+  },
+  {
+    "name": "test_ground_terrain.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09
+  },
+  {
+    "name": "test_gyro.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.36
+  },
+  {
+    "name": "test_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.32
+  },
+  {
+    "name": "test_horizon.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.91
+  },
+  {
+    "name": "test_hull_crossing.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.62
+  },
+  {
+    "name": "test_induced_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.71
+  },
+  {
+    "name": "test_input_report.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16
+  },
+  {
+    "name": "test_input_report_cli.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 10.38
+  },
+  {
+    "name": "test_input_report_e2e.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.71
+  },
+  {
+    "name": "test_integrator.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.8
+  },
+  {
+    "name": "test_landing_maneuver.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 60.33
+  },
+  {
+    "name": "test_landing_variations.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 40.08
+  },
+  {
+    "name": "test_latency_patch.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.55
+  },
+  {
+    "name": "test_latency_patch_cli.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 19.79
+  },
+  {
+    "name": "test_latency_patch_route.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.68
+  },
+  {
+    "name": "test_math3d.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_modes.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.71
+  },
+  {
+    "name": "test_near_grass.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.77
+  },
+  {
+    "name": "test_p51_envelope.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 14.56
+  },
+  {
+    "name": "test_p51_ground.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 11.32
+  },
+  {
+    "name": "test_p51_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 7.51
+  },
+  {
+    "name": "test_physical_envelope.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.62
+  },
+  {
+    "name": "test_pilot_aids.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.18
+  },
+  {
+    "name": "test_pilot_station.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.27
+  },
+  {
+    "name": "test_pilot_station_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_projected_shadow.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.19
+  },
+  {
+    "name": "test_propeller_wake.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44
+  },
+  {
+    "name": "test_propulsion.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.34
+  },
+  {
+    "name": "test_propulsion_scalar.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.91
+  },
+  {
+    "name": "test_pullup_invariants.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.43
+  },
+  {
+    "name": "test_rc_axis_history.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_rc_calibration.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_rc_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_rc_profile_validation.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.24
+  },
+  {
+    "name": "test_rc_rearm.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_replay_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 6.48
+  },
+  {
+    "name": "test_replay_policy.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.32
+  },
+  {
+    "name": "test_rigid_body.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.34
+  },
+  {
+    "name": "test_rk_stage_time.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_rotor_coupling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44
+  },
+  {
+    "name": "test_rudder_authority.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.81
+  },
+  {
+    "name": "test_runway_checkpoint_metadata.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81
+  },
+  {
+    "name": "test_runway_start.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.48
+  },
+  {
+    "name": "test_scenery_ambience.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.19
+  },
+  {
+    "name": "test_scenery_build.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.28
+  },
+  {
+    "name": "test_scenery_loader.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.62
+  },
+  {
+    "name": "test_scenery_scenario.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.3
+  },
+  {
+    "name": "test_scenery_trace.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.52
+  },
+  {
+    "name": "test_servo.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.62
+  },
+  {
+    "name": "test_session_guards.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.63
+  },
+  {
+    "name": "test_shader_clock.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16
+  },
+  {
+    "name": "test_shaft_coupled.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.65
+  },
+  {
+    "name": "test_shaft_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.75
+  },
+  {
+    "name": "test_shaft_equilibrium.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.43
+  },
+  {
+    "name": "test_shaft_refinement.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.2
+  },
+  {
+    "name": "test_simulation.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26
+  },
+  {
+    "name": "test_slipstream_downwash.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.72
+  },
+  {
+    "name": "test_slipstream_scalar.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.27
+  },
+  {
+    "name": "test_soundscape.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44
+  },
+  {
+    "name": "test_spin.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.3
+  },
+  {
+    "name": "test_stall_solver.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.37
+  },
+  {
+    "name": "test_start_choice.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.9
+  },
+  {
+    "name": "test_strip_induced.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 15.69
+  },
+  {
+    "name": "test_swirl_accuracy.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.46
+  },
+  {
+    "name": "test_swirl_optimization.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.0
+  },
+  {
+    "name": "test_swirl_torque.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53
+  },
+  {
+    "name": "test_tail_downwash.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.34
+  },
+  {
+    "name": "test_takeoff_roll.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.71
+  },
+  {
+    "name": "test_time_of_day_checkpoint.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.68
+  },
+  {
+    "name": "test_time_of_day_checkpoint_v2.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.24
+  },
+  {
+    "name": "test_time_of_day_clock.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.24
+  },
+  {
+    "name": "test_time_of_day_config.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16
+  },
+  {
+    "name": "test_time_of_day_edit.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.19
+  },
+  {
+    "name": "test_time_of_day_render.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.9
+  },
+  {
+    "name": "test_time_of_day_render_update.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.89
+  },
+  {
+    "name": "test_time_of_day_scenery_update.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.71
+  },
+  {
+    "name": "test_time_of_day_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.02
+  },
+  {
+    "name": "test_time_of_day_solar.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_time_of_day_timeline.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_touchdown.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.71
+  },
+  {
+    "name": "test_trace.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.65
+  },
+  {
+    "name": "test_trace_metadata.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.91
+  },
+  {
+    "name": "test_tree_assets.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.24
+  },
+  {
+    "name": "test_tree_wind.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.24
+  },
+  {
+    "name": "test_treeline.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.8
+  },
+  {
+    "name": "test_treeline_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_trim.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.28
+  },
+  {
+    "name": "test_trim_density.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.62
+  },
+  {
+    "name": "test_trim_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.43
+  },
+  {
+    "name": "test_turbine.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.43
+  },
+  {
+    "name": "test_turbulence_flight.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.83
+  },
+  {
+    "name": "test_ui_aircraft.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.07
+  },
+  {
+    "name": "test_ui_atmosphere.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "seconds": 7.33
+  },
+  {
+    "name": "test_ui_field_world_time_of_day.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "seconds": 4.53
+  },
+  {
+    "name": "test_ui_flight_capture.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.15
+  },
+  {
+    "name": "test_ui_help.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 9.68
+  },
+  {
+    "name": "test_ui_home.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "seconds": 3.04
+  },
+  {
+    "name": "test_ui_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.84
+  },
+  {
+    "name": "test_ui_language.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.53
+  },
+  {
+    "name": "test_ui_pause.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 20.67
+  },
+  {
+    "name": "test_ui_runway.gd",
+    "exit": 1,
+    "engine_errors": true,
+    "seconds": 12.55
+  },
+  {
+    "name": "test_ui_screen_stack.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 10.41
+  },
+  {
+    "name": "test_ui_time_of_day.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 9.84
+  },
+  {
+    "name": "test_ui_time_of_day_pause.gd",
+    "exit": 1,
+    "engine_errors": true,
+    "seconds": 3.89
+  },
+  {
+    "name": "test_ui_turbulence.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "seconds": 5.85
+  },
+  {
+    "name": "test_ui_weather.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "seconds": 5.49
+  },
+  {
+    "name": "test_ui_weather_sliders.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.84
+  },
+  {
+    "name": "test_visual_checkpoint.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_visual_evidence.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16
+  },
+  {
+    "name": "test_visual_timeline.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_wash_profile.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81
+  },
+  {
+    "name": "test_wash_transport.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.37
+  },
+  {
+    "name": "test_wheel_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81
+  },
+  {
+    "name": "test_wildlife.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.43
+  },
+  {
+    "name": "test_wind_field.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15
+  },
+  {
+    "name": "test_wind_flight.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.51
+  },
+  {
+    "name": "test_wind_hud.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.19
+  },
+  {
+    "name": "test_wind_trace.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.0
+  },
+  {
+    "name": "test_wind_turbulence.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.82
+  },
+  {
+    "name": "test_windsock.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.19
+  },
+  {
+    "name": "test_windsock_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_wing_polar.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81
+  },
+  {
+    "name": "test_wing_polar_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.93
+  },
+  {
+    "name": "test_world_ephemeris.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16
+  },
+  {
+    "name": "test_world_field_lights.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.23
+  },
+  {
+    "name": "test_world_flow.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.2
+  },
+  {
+    "name": "test_world_sky.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_world_stars.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25
+  },
+  {
+    "name": "test_yaw_damping.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.34
+  },
+  {
+    "name": "echo \"== H7: exact one-ulp math sensitivity and golden branch signatures\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 11.96
+  },
+  {
+    "name": "echo \"== L5: invalid field files fail before Home or flight can start\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 9.07
+  },
+  {
+    "name": "echo \"== aircraft model contract (aircraft/verify_model.gd, owned by the model team)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.95
+  },
+  {
+    "name": "echo \"== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 6.77
+  },
+  {
+    "name": "echo \"== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.04
+  },
+  {
+    "name": "echo \"== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.38
+  },
+  {
+    "name": "echo \"== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 24.16
+  },
+  {
+    "name": "echo \"== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.45
+  },
+  {
+    "name": "echo \"== C7-R1: trace completion, finite samples and failure exits\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 53.13
+  },
+  {
+    "name": "echo \"== D8b-R2: synthetic polar fixtures and explicit experimental flight route\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 18.66
+  },
+  {
+    "name": "echo \"== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 30.87
+  },
+  {
+    "name": "echo \"== M5-W04a: seeded turbulence trace oracle and complete-state FPS independence\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 29.39
+  },
+  {
+    "name": "echo \"== M5-ATM: independent atmosphere, EAS and environment replay checks\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 33.64
+  },
+  {
+    "name": "echo \"== TOD-09a: independent Gregorian clock fixtures stay current\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.03
+  },
+  {
+    "name": "echo \"== TOD-05/07: selected time, visual context and unchanged flight physics\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 73.25
+  },
+  {
+    "name": "echo \"== G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 34.63
+  },
+  {
+    "name": "echo \"== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 9.66
+  },
+  {
+    "name": "echo \"== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.05
+  },
+  {
+    "name": "echo \"== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.28
+  },
+  {
+    "name": "echo \"== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.7
+  },
+  {
+    "name": "echo \"== VQ-01b: scripted logger disables input and identifies its route\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.34
+  },
+  {
+    "name": "echo \"== VQ-01b: invalid logger options and output write failures fail the process\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 8.81
+  },
+  {
+    "name": "echo \"== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 6.94
+  },
+  {
+    "name": "echo \"== E0b5: experimental wash transport at 30/60/144 fps\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.19
+  },
+  {
+    "name": "echo \"== E0b6p: distributed swirl at 30/60/144 fps\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 7.95
+  },
+  {
+    "name": "echo \"== E5a: generated Extra taildragger contacts, P-51 review and session refinement\"",
+    "exit": 1,
+    "engine_errors": false,
+    "seconds": 2.33
+  },
+  {
+    "name": "echo \"== E5b: tail-up pitch threshold, rigid tail lift and synthetic resistance patches\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 71.78
+  }
+]

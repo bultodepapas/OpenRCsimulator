@@ -130,7 +130,8 @@ func _run() -> void:
 			sim.step()
 		var weather_saved: Dictionary = flight.checkpoint()
 		var expected_format: String = "openrc-flight-checkpoint v3" if condition == "hot-high" else "openrc-flight-checkpoint v2"
-		check("real physical format " + condition, weather_saved.physics.format == expected_format)
+		check("real physical format " + condition, weather_saved.physics.format == "openrc-flight-checkpoint v7"
+			and weather_saved.physics.physics_format == expected_format)
 		check("paired weather restore " + condition, flight.restore_checkpoint(weather_saved).ok
 			and var_to_bytes(flight.session.checkpoint()) == var_to_bytes(weather_saved.physics))
 		check("bare weather fallback " + condition, flight.restore_checkpoint(weather_saved.physics).get("context_status") == "legacy_missing_visual"
@@ -152,7 +153,8 @@ func _run() -> void:
 	for _tick: int in 12:
 		shaft_flight.session.sim.step()
 	var shaft_saved: Dictionary = shaft_flight.checkpoint()
-	check("real v4 physical checkpoint", shaft_saved.physics.format == "openrc-flight-checkpoint v4")
+	check("real v4 physical checkpoint", shaft_saved.physics.format == "openrc-flight-checkpoint v7"
+		and shaft_saved.physics.physics_format == "openrc-flight-checkpoint v4")
 	check("coupled shaft paired restoration exact", shaft_flight.restore_checkpoint(shaft_saved).ok
 		and var_to_bytes(shaft_flight.session.checkpoint()) == var_to_bytes(shaft_saved.physics))
 	check("coupled shaft bare fallback exact", shaft_flight.restore_checkpoint(shaft_saved.physics).get("context_status") == "legacy_missing_visual"

@@ -76,6 +76,7 @@ func _ready() -> void:
 	if wants_direct_flight(user_args):
 		# The engine starts in the OS locale (es_ES on a Spanish system): automation is always English.
 		TranslationServer.set_locale("en")
+		Conditions.session_preset = "" # no interactive sky choice may leak into a later technical route
 		start_flight()
 		return
 	has_home = true
@@ -201,6 +202,7 @@ func start_flight() -> void:
 	flight.weather_config = chosen_weather.duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	flight.interactive_start = has_home
+	flight.latency_marker_enabled = has_home and bool(preferences.get("latency_marker", Preferences.DEFAULTS.latency_marker))
 	add_child(flight)
 	if has_home and not flight.startup_error.is_empty():
 		var reason: String = flight.startup_error

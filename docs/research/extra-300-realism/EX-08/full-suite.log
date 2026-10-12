@@ -1,0 +1,235 @@
+== import resource dependencies
+== AS-01/02: versioned aircraft contract and migration stay current
+Schema is current: /home/bulto/.cache/openrc-extra-ex06-20261011/app/data/schema/openrc-aircraft-v2.schema.json
+parameter register is current
+app/data/aircraft/jensen_ugly_stik_60.json: jensen-das-ugly-stik-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/gp_extra_300s_60.json: gp-extra-300s-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/p51d_mustang_120.json: p51d-mustang-120 v2, glow_prop, prescribed_fuel
+app/data/aircraft/sebart_avanti_s_a200.json: sebart-avanti-s-a200-p100rx v2, turbine, prescribed_fuel
+app/data/aircraft/synthetic_stik_electric_4s.json: synthetic_stik_electric_4s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_6s.json: synthetic_stik_electric_6s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_4s_battery.json: synthetic_stik_electric_4s_battery v2, electric_prop, ocv_resistance
+app/data/aircraft/synthetic_stik_electric_6s_battery.json: synthetic_stik_electric_6s_battery v2, electric_prop, ocv_resistance
+test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity (__main__.AircraftMigration.test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity) ... ok
+test_check_requires_v2_source_instead_of_upgrading_v1_in_memory (__main__.AircraftMigration.test_check_requires_v2_source_instead_of_upgrading_v1_in_memory) ... ok
+test_legacy_omissions_become_only_the_reviewed_explicit_defaults (__main__.AircraftMigration.test_legacy_omissions_become_only_the_reviewed_explicit_defaults) ... ok
+test_unknown_id_format_and_legacy_conflicts_fail_closed (__main__.AircraftMigration.test_unknown_id_format_and_legacy_conflicts_fail_closed) ... ok
+test_v2_conflicts_are_rejected_without_mutation (__main__.AircraftMigration.test_v2_conflicts_are_rejected_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.126s
+
+OK
+== L6b offline tree placement matches committed positions
+{
+  "seed_near": 610602,
+  "seed_far": 610607,
+  "near_count": 480,
+  "far_count": 1200,
+  "near_positions_sha256": "9b42b61ff36e5df25ef0245702e4d75965ea805f81de56a1c353fd1f0c722875",
+  "far_positions_sha256": "7c8ee96a60c22241ea1f58f0fdadcba6c010e540c6d9f0fe82b7bbe10d9b442c",
+  "positions_sha256": "772d1207da670718c575c20e5b6246d8d2e6e7cdf70e006e006642c9e95ff2f3",
+  "clusters": [
+    {
+      "sector": 0,
+      "north_m": 878.75,
+      "east_m": 240.5,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 1,
+      "north_m": 567.0,
+      "east_m": 1256.5,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 2,
+      "north_m": -143.25,
+      "east_m": 1084.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 3,
+      "north_m": -954.25,
+      "east_m": 512.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 4,
+      "north_m": -1323.25,
+      "east_m": -29.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 5,
+      "north_m": -620.75,
+      "east_m": -1012.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 6,
+      "north_m": 438.75,
+      "east_m": -551.25,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 7,
+      "north_m": 929.5,
+      "east_m": -92.25,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 6,
+      "north_m": 777.5,
+      "east_m": -1177.0,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 3,
+      "north_m": -1187.5,
+      "east_m": 760.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 0,
+      "north_m": 1162.0,
+      "east_m": 369.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 5,
+      "north_m": -428.0,
+      "east_m": -811.0,
+      "count": 100,
+      "radius_m": 55.0
+    }
+  ]
+}
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.142s
+
+OK
+== L11a offline grass placement matches committed offsets
+{"rows":6000,"seed":610707,"rows_sha256":"5d5345f1fdf447a9e77e2a53112556e9ae888751694a63aeb92782d1a5b2ee34"}
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.200s
+
+OK
+== L9e packed turf data matches its deterministic generator
+turf data 2287341 bytes; SHA256 76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e
+== L7 offline hill profile matches committed heights
+profile is deterministic and current: /home/bulto/.cache/openrc-extra-ex06-20261011/app/data/fields/horizon.json
+== FW-21/FW-24 sky table and star list match their generators
+sky table current
+star list current
+== E0b2: Stik hub and neutral tail geometry stay current
+E0b2: hub and three neutral tail footprints match source/runtime geometry
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK
+== E0b3b: neutral Stik wash profiles stay current
+E0b3b: geometry report and test fixture match 3 exact projected-area profiles
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.002s
+
+OK
+== float64 guard: no 32-bit math types in simulation code
+== H6: transcendental calls stay behind math3d
+all physics/sim transcendental calls route through math3d
+isolated injection rejected
+== shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)
+== parse check: every script
+== test_aero.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+23 checks, 0 failed
+== test_aero_flow.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H4 local flow: 10000 byte-exact comparisons, 0 failed
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H12 local loads: 10001 byte-exact comparisons (7305 stalled, 2000 zero-flow), 0 failed
+== test_air_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_air_density.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+29 checks, 0 failed
+== test_aircraft_catalog.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default is the Ugly Stik and it is in the catalog  
+ok   four aircraft, unique IDs  ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx"]
+ok   unknown ID: no entry, cannot fly  
+ok   step wraps both ways  
+ok   the render adapter knows every catalog ID by the same name  
+ok   jensen-das-ugly-stik-60: builds root/propeller/hinges  
+ok   jensen-das-ugly-stik-60: surfaces deflect and return through the shared adapter  
+ok   jensen-das-ugly-stik-60: data loads  
+ok   jensen-das-ugly-stik-60: the data file is this aircraft (id matches)  jensen-das-ugly-stik-60
+ok   jensen-das-ugly-stik-60: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   jensen-das-ugly-stik-60: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   gp-extra-300s-60: builds root/propeller/hinges  
+ok   gp-extra-300s-60: surfaces deflect and return through the shared adapter  
+ok   gp-extra-300s-60: data loads  
+ok   gp-extra-300s-60: the data file is this aircraft (id matches)  gp-extra-300s-60
+ok   gp-extra-300s-60: span of the built model matches the data within 1 %  model 1.6236 m, data 1.6256 m
+ok   gp-extra-300s-60: CG lands on the root chord in the visual model  model point (0.0, -0.023952, -0.00614), LE z -0.1088, chord 0.3885
+ok   p51d-mustang-120: builds root/propeller/hinges  
+ok   p51d-mustang-120: surfaces deflect and return through the shared adapter  
+ok   p51d-mustang-120: data loads  
+ok   p51d-mustang-120: the data file is this aircraft (id matches)  p51d-mustang-120
+ok   p51d-mustang-120: span of the built model matches the data within 1 %  model 2.8225 m, data 2.8200 m
+ok   p51d-mustang-120: CG lands on the root chord in the visual model  model point (0.0, -0.071146, 0.177763), LE z 0.0000, chord 0.6664
+ok   sebart-avanti-s-a200-p100rx: builds root/propeller/hinges  
+ok   sebart-avanti-s-a200-p100rx: surfaces deflect and return through the shared adapter  
+ok   sebart-avanti-s-a200-p100rx: data loads  
+ok   sebart-avanti-s-a200-p100rx: the data file is this aircraft (id matches)  sebart-avanti-s-a200-p100rx
+ok   sebart-avanti-s-a200-p100rx: span of the built model matches the data within 1 %  model 2.0000 m, data 2.0000 m
+ok   sebart-avanti-s-a200-p100rx: CG lands on the root chord in the visual model  model point (0.0, 0.00513, 0.24), LE z 0.0000, chord 0.4591
+ok   Extra: loaded CG = dry manual station plus prescribed fuel within 1 mm  z -0.00614 m, expected -0.00614 m
+ok   Extra: physics throws = the model's manual high rates  { "aileron": 17.600665, "elevator": 23.921943, "rudder": 30.026071 } vs { &"aileron": 17.6006649098975, &"elevator": 23.92194317248, &"rudder": 30.0260709855021 }
+ok   Extra: tapered wing roots = measured geometry  
+ok   Extra: equal-area strips move inboard on the tapered wing  outer strip at 0.638 m of 0.813
+ok   flight scene: Extra model and Extra physics together  
+ok   flight scene: trimmed at the Extra's start speed  17.0
+ok   flight scene: trace header names the Extra and its speed  trimmed level flight (engine running) across view at 17.0 m/s (D5: six-axis trim, calm air)
+36 checks, 0 failed
+== test_aircraft_contract.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+AS aircraft contract: 1907 checks, 0 failures
+== test_aircraft_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b2: 15 propulsion cases equal numerically; 7 signed-zero byte differences
+87 checks, 0 failed
+== test_aircraft_render_contract.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AS render contract: 170 checks, 0 failures
+== test_atmosphere.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL engine shadows off by default 
+46 checks, 1 failed

@@ -22,6 +22,8 @@ func _v(c: Color) -> Vector3:
 
 
 func _initialize() -> void:
+	# UI-06d: the calibrated L1-L4 comparison selects its original shadow-off reference explicitly.
+	Atmosphere.engine_shadows = false
 	# A standalone field/pack can build ground before any sky has registered the cloud global.
 	var ground: ShaderMaterial = Ground.grass_material()
 	var env := Atmosphere.environment()
@@ -48,8 +50,8 @@ func _initialize() -> void:
 			"%s vs %s" % [mat.get_shader_parameter("sun_dir"), sun.transform.basis.z])
 	_check("ground fog density = engine fog density", absf(ground.get_shader_parameter("beta") - env.fog_density) < 1e-9)
 
-	# L3: engine shadows are off by default; turned on, the light is compensated and the haze's sun term is unchanged.
-	_check("engine shadows off by default", not sun.shadow_enabled and Atmosphere.light_energy() == Spec.ATMOSPHERE.sun_energy)
+	# L3: the off reference and the on path retain the same haze sun term.
+	_check("engine shadows explicitly off for the reference", not sun.shadow_enabled and Atmosphere.light_energy() == Spec.ATMOSPHERE.sun_energy)
 	var product_off: float = Atmosphere.light_energy() * Atmosphere.sun_scatter()
 	Atmosphere.engine_shadows = true
 	var sun2 := Atmosphere.create_sun(holder)

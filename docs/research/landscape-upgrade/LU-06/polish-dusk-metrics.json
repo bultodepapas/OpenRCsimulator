@@ -1,0 +1,73 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "arguments": {
+    "cases": "postcard_club",
+    "frames": "30",
+    "height": "1080",
+    "out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/landscape-upgrade/polish-dusk",
+    "time_of_day": "sunset",
+    "width": "1920"
+  },
+  "cases": {
+    "postcard_club": {
+      "draws": 75.0,
+      "exposure": 1.84526002407074,
+      "frame_ms_raw": [
+        4.735,
+        2.581,
+        2.671,
+        3.145,
+        2.972,
+        2.884,
+        2.807,
+        2.508,
+        3.048,
+        2.423,
+        2.299,
+        2.436,
+        3.15,
+        2.586,
+        2.772,
+        2.401,
+        2.486,
+        2.816,
+        2.64,
+        2.406,
+        2.732,
+        2.914,
+        2.451,
+        3.04,
+        2.72,
+        2.748,
+        3.099,
+        3.403,
+        2.678,
+        2.467
+      ],
+      "glare_strength": 0.0,
+      "glare_visible": true,
+      "median_ms": 2.732,
+      "p95_ms": 3.403,
+      "p99_ms": 4.735,
+      "primitives": 406876.0,
+      "shadow_draws": 0,
+      "video_memory": 167786674.0,
+      "visible_draws": 75
+    }
+  },
+  "driver": "3.3.0 NVIDIA 610.88",
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "height": 1080,
+  "renderer": "gl_compatibility",
+  "width": 1920
+}

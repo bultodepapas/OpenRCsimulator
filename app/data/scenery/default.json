@@ -337,6 +337,21 @@
    }
   },
   {
+   "id": "avanti-cradle",
+   "type": "instances",
+   "zone": "pits",
+   "collides": false,
+   "prefab": "avanti_cradle",
+   "placements": {
+    "value": [
+     [-17.6, 38.5, 345.0]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Padded trestles directly under the catalog Avanti snapshot, which is an in-air-start model with gear retracted"
+   }
+  },
+  {
    "id": "cars",
    "type": "instances",
    "zone": "parking",
@@ -349,21 +364,21 @@
    ],
    "placements": {
     "value": [
-     [-38.0, -21.0, 180.4],
-     [-38.0, -18.5, 178.7],
-     [-38.0, -15.75, 177.7],
-     [-38.0, -13.25, 177.1],
-     [-38.0, -10.5, 181.4],
-     [-38.25, -8.0, 179.5],
-     [-38.0, -2.75, 177.7],
-     [-38.0, 0.0, 179.4],
-     [-38.0, 2.25, 177.5],
-     [-41.0, -28.5, 95],
-     [-37.5, -31.0, 200]
+     [-37.75, -21.0, 181],
+     [-38.5, -17.25, 174],
+     [-37.5, -13.0, 190],
+     [-38.25, -8.25, 183],
+     [-37.25, -3.75, 171],
+     [-38.5, 0.5, 192],
+     [-37.5, 4.5, 177],
+     [-44.0, -32.5, 96],
+     [-40.5, -26.0, 106],
+     [-44.0, 0.0, 82],
+     [-44.0, 6.5, 101]
     ],
     "unit": "m, m, deg",
     "kind": "estimated",
-    "source": "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated; 2.6 m bays (SC-01 photo estimate)"
+    "source": "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated; informal offset row and canted end spaces (estimated from the reference photo)"
    }
   },
   {
@@ -377,10 +392,10 @@
      [-33.5, -24.0],
      [-33.5, 5.5],
      [-35.0, 7.0],
-     [-42.5, 7.0],
-     [-43.5, 5.5],
-     [-43.5, -34.5],
-     [-42.0, -36.0],
+     [-44.5, 7.0],
+     [-45.5, 5.5],
+     [-45.5, -34.5],
+     [-44.0, -36.0],
      [-35.0, -36.0],
      [-33.5, -34.0]
     ],

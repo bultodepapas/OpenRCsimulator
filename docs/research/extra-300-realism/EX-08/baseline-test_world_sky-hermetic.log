@@ -1,0 +1,16 @@
+COMMAND: wsl.exe --exec env XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-world-sky-20261011/data XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-world-sky-20261011/config XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-world-sky-20261011/cache /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/extra-realism-baseline/app --script res://tests/test_world_sky.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Unknown time of day 'teatime' (dawn, sunrise, morning, noon, afternoon, golden_hour, sunset, blue_hour, night, night_dark); using the fixed sun
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] resolve (res://render/world/conditions.gd:108)
+         [1] _initialize (res://tests/test_world_sky.gd:50)
+WARNING: Bad --time '25h' (HH:MM); using the fixed sun
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] resolve (res://render/world/conditions.gd:103)
+         [1] _initialize (res://tests/test_world_sky.gd:51)
+FAIL legacy haze scatter unchanged 
+38 checks, 1 failed
+BASELINE_EXIT=1

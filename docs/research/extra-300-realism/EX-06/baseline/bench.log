@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+physics: 390.8 µs per tick (best of 3 × 2400 ticks; budget 500 µs on the owner's slowest machine)
+
+| regime (µs per call) | Air.compute | Aero.loads | Propulsion.loads | Ground.loads | Dynamics.loads | session loads | RB.derivative | RK4 overhead |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| trimmed | 2.1 | 14.6 | 4.8 | 0.8 | 25.9 | 50.3 | 2.2 | 6.3 |
+| stalled | 2.0 | 24.9 | 5.3 | 1.3 | 35.0 | 58.8 | 2.1 | 5.8 |
+| ground | 2.0 | 13.2 | 4.6 | 8.3 | 25.7 | 87.0 | 2.1 | 5.8 |
+
+stalled flight: 331.6 µs per tick (best of 3 × 2400 ticks from α 15°)

@@ -13,6 +13,8 @@ const FieldProjectedShadows = preload("res://render/field_projected_shadows.gd")
 const FlightCueShadows = preload("res://render/flight_cue_shadows.gd")
 const Windsock = preload("res://render/windsock.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SC-02a: on by default; explicit scenery-off remains a no-op.
+const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
+const DistantRidges = preload("res://render/landscape_upgrade/ridges.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
 const GROUND_SUBDIVISIONS := 63
@@ -68,6 +70,8 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	if not field.get("flight_cues", []).is_empty():
 		result.add_child(FlightCueShadows.build(field.flight_cues, lighting.has("solar")))
 	Scenery.attach(result, field, lighting)
+	if LandscapeOptions.enabled() and field.get("id", "") == "default":
+		result.add_child(DistantRidges.build())
 	FieldProjectedShadows.attach(result, field, lighting)
 	result.set_meta("lighting_materials", materials)
 	result.set_meta("lighting_snapshot", lighting.duplicate(true))

@@ -1,0 +1,40 @@
+COMMAND: wsl.exe --exec env XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-home-20261011/data XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-home-20261011/config XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-home-20261011/cache /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/extra-realism-baseline/app --script res://tests/test_ui_home.gd
+XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-home-20261011/data
+XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-home-20261011/config
+XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-home-20261011/cache
+--- output ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   Home shown, no flight scene, no simulation
+ok   Home backdrop: our airplane, its camera current
+ok   contrast: Fly normal text 5.38:1 >= 4.5
+ok   contrast: Fly hover text 6.06:1 >= 4.5
+ok   contrast: Fly pressed text 7.38:1 >= 4.5
+ok   contrast: Quit normal text 10.42:1 >= 4.5
+ok   contrast: Quit hover text 8.34:1 >= 4.5
+ok   contrast: Quit pressed text 12.17:1 >= 4.5
+ok   Fly inherits Button's focus outline, without fill
+ok   contrast: focus outline on panel 9.04:1 >= 3
+ok   contrast: every Home label >= 4.5:1 on its surface (worst 7.74, "High-wing sport trainer · 1.52 m · .61 glow")
+ok   smallest text is 18.0 px tall (>= 17 at 1280x720)
+ok   initial focus on Fly
+ok   focus outline visible (keyboard focus)
+ok   Down -> Language
+ok   Right -> Help
+ok   Right -> Quit
+ok   Up -> Fly
+ok   navigating did not start a flight
+ok   Quit requests closing the app
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Enter on Fly starts the flight
+ok   double Enter -> exactly one flight session
+ok   Home and its backdrop freed after Fly
+ok   the flight's camera is the one in use
+FAIL Fly saves the selected default start choice 
+1 failed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+BASELINE_EXIT=1

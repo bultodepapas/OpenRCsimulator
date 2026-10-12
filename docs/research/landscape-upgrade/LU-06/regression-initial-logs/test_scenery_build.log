@@ -1,0 +1,121 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   switch off: the field has no Scenery node
+ok   switch off: the field owns the contiguous L7 ground independently of scenery
+     stats: { &"instances": 129, &"skipped": 0, &"shadows": 79, &"motion": 28, &"flowers": 2970, &"fleet": 4, &"theme": "temperate", &"quality": "high", &"timing_ms": { "instances": 40.635, "fleet": 9.009, "patch": 0.126, "track": 0.158, "hedge": 13.972, "fence": 2.993, "flowers": 7.391, "meshes": 14.91 }, &"cells": 48, &"build_ms": 89.328 }
+ok   instances built (> 120)
+ok   the parked fleet: 4 aircraft
+ok   moving parts preserve 4 rotors + 1 flag
+ok   moving shade crowns and shrub tips are present
+ok   only a bounded subset of people sways
+ok   motion stats count every emitted animated mesh
+ok   contact shadows for the near props
+ok   wildflowers placed
+ok   compact cells (≤ 64 merged meshes)
+ok   one surface per cell (one shared material)
+     triangles: 148950, build 89.3 ms
+ok   triangles within the scenery budget (250000)
+ok   build time under 400 ms on this CPU
+ok   two builds are byte-identical (no RNG, no clock)
+ok   pit_shelter size 28.85 × 3.48 × 5.91 m matches the catalog (29.0, 3.45, 5.8)
+ok   pit_shelter has evidence (kind and source)
+ok   pavilion size 10.00 × 4.65 × 9.70 m matches the catalog (10.0, 4.6, 9.6)
+ok   pavilion has evidence (kind and source)
+ok   shed size 3.40 × 2.85 × 2.80 m matches the catalog (3.4, 3.0, 2.9)
+ok   shed has evidence (kind and source)
+ok   picnic_table size 1.80 × 0.79 × 1.55 m matches the catalog (1.8, 0.76, 1.6)
+ok   picnic_table has evidence (kind and source)
+ok   bench size 1.80 × 0.85 × 0.50 m matches the catalog (1.8, 0.85, 0.5)
+ok   bench has evidence (kind and source)
+ok   flagpole size 0.50 × 8.09 × 0.50 m matches the catalog (0.5, 8.1, 0.5)
+ok   flagpole has evidence (kind and source)
+ok   club_sign size 2.50 × 2.20 × 0.12 m matches the catalog (2.5, 2.2, 0.14)
+ok   club_sign has evidence (kind and source)
+ok   round_bale size 1.21 × 1.20 × 1.17 m matches the catalog (1.2, 1.2, 1.2)
+ok   round_bale has evidence (kind and source)
+ok   bale_stack size 2.44 × 1.82 × 2.40 m matches the catalog (2.5, 1.85, 2.4)
+ok   bale_stack has evidence (kind and source)
+ok   shade_tree size 6.29 × 9.65 × 6.26 m matches the catalog (8.0, 10.5, 8.0)
+ok   shade_tree has evidence (kind and source)
+ok   bush size 1.55 × 0.98 × 1.51 m matches the catalog (1.6, 0.85, 1.6)
+ok   bush has evidence (kind and source)
+ok   flower_clump size 0.58 × 0.42 × 0.64 m matches the catalog (0.62, 0.42, 0.62)
+ok   flower_clump has evidence (kind and source)
+ok   person_standing size 0.68 × 1.62 × 0.32 m matches the catalog (0.6, 1.78, 0.35)
+ok   person_standing has evidence (kind and source)
+ok   person_sitting size 0.56 × 1.18 × 0.69 m matches the catalog (0.55, 1.3, 0.75)
+ok   person_sitting has evidence (kind and source)
+ok   person_pilot size 0.56 × 1.62 × 0.48 m matches the catalog (0.6, 1.78, 0.45)
+ok   person_pilot has evidence (kind and source)
+ok   avanti_cradle size 0.70 × 0.48 × 1.63 m matches the catalog (0.7, 0.48, 1.63)
+ok   avanti_cradle has evidence (kind and source)
+ok   barn size 10.70 × 7.30 × 14.70 m matches the catalog (10.8, 7.5, 14.8)
+ok   barn has evidence (kind and source)
+ok   silo size 5.40 × 14.90 × 5.49 m matches the catalog (5.6, 15.0, 5.6)
+ok   silo has evidence (kind and source)
+ok   farmhouse size 9.80 × 7.40 × 7.80 m matches the catalog (10.0, 7.2, 8.0)
+ok   farmhouse has evidence (kind and source)
+ok   tractor size 2.35 × 2.33 × 3.51 m matches the catalog (2.35, 2.35, 3.6)
+ok   tractor has evidence (kind and source)
+ok   turbine size 6.40 × 81.60 × 11.00 m matches the catalog (6.4, 81.6, 11.0)
+ok   turbine has evidence (kind and source)
+ok   pylon size 16.12 × 30.03 × 6.18 m matches the catalog (17.0, 30.0, 6.0)
+ok   pylon has evidence (kind and source)
+ok   church size 8.60 × 32.00 × 23.40 m matches the catalog (9.0, 32.0, 25.0)
+ok   church has evidence (kind and source)
+ok   village_house size 8.44 × 7.60 × 9.27 m matches the catalog (9.0, 8.0, 11.0)
+ok   village_house has evidence (kind and source)
+ok   model car_sedan loads
+ok   model car_sedan is 1.88 × 1.38 × 4.38 m (catalog (1.88, 1.41, 4.4))
+ok   model car_sedan rests on the ground
+ok   model car_sedan normals are unit length
+ok   model car_hatch loads
+ok   model car_hatch is 2.13 × 1.48 × 4.30 m (catalog (2.13, 1.49, 4.3))
+ok   model car_hatch rests on the ground
+ok   model car_hatch normals are unit length
+ok   model car_suv loads
+ok   model car_suv is 2.36 × 1.71 × 4.68 m (catalog (2.36, 1.71, 4.7))
+ok   model car_suv rests on the ground
+ok   model car_suv normals are unit length
+ok   model car_sport loads
+ok   model car_sport is 1.85 × 1.23 × 4.30 m (catalog (1.96, 1.25, 4.3))
+ok   model car_sport rests on the ground
+ok   model car_sport normals are unit length
+ok   model cow loads
+ok   model cow is 0.59 × 1.35 × 2.40 m (catalog (0.59, 1.35, 2.4))
+ok   model cow rests on the ground
+ok   model cow normals are unit length
+ok   model sheep loads
+ok   model sheep is 0.49 × 0.96 × 1.30 m (catalog (0.49, 0.96, 1.3))
+ok   model sheep rests on the ground
+ok   model sheep normals are unit length
+ok   model fleet_stik loads
+ok   model fleet_stik is 1.51 × 0.44 × 1.32 m (catalog (1.52, 0.44, 1.33))
+ok   model fleet_stik rests on the ground
+ok   model fleet_stik normals are unit length
+ok   model fleet_extra loads
+ok   model fleet_extra is 1.62 × 0.55 × 1.38 m (catalog (1.62, 0.55, 1.39))
+ok   model fleet_extra rests on the ground
+ok   model fleet_extra normals are unit length
+ok   model fleet_p51 loads
+ok   model fleet_p51 is 2.82 × 0.91 × 2.45 m (catalog (2.82, 0.95, 2.46))
+ok   model fleet_p51 rests on the ground
+ok   model fleet_p51 normals are unit length
+ok   model fleet_avanti loads
+ok   model fleet_avanti is 2.00 × 0.63 × 2.22 m (catalog (2.0, 0.63, 2.22))
+ok   model fleet_avanti rests on the ground
+ok   model fleet_avanti normals are unit length
+ok   car_sedan marks its paint for per-car colours
+ok   car_hatch marks its paint for per-car colours
+ok   car_suv marks its paint for per-car colours
+ok   car_sport marks its paint for per-car colours
+ok   all 81886 cell triangles wind clockwise toward their normal (Godot front faces)
+ok   tiers: low < balanced < high instances
+ok   tiers: low keeps no ornamental flowers
+ok   tiers: low retains the 4 rotors, flag and 10 standard tree crowns
+ok   tiers: high retains the same landmarks plus ornamental people and shrub tips
+ok   tiers: balanced keeps a fixed half of the flowers
+ok   themes recolour vegetation
+ok   summer is paler and drier (lower saturation)
+ok   a themed build reports its theme
+all scenery build checks passed

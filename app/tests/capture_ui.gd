@@ -110,6 +110,9 @@ func _run() -> void:
 		prefs.first_flight_hint_seen = true
 		prefs.aircraft = aircraft
 		prefs.start_choice = start_choice
+		prefs.time_of_day = "day" # UI-06d: explicit original reference conditions, independent of gameplay defaults
+		prefs.weather_config = WeatherSettings.defaults()
+		prefs.latency_marker = false
 		if weather_preset != "":
 			var flight_weather: Dictionary = WeatherSettings.preset(weather_preset)
 			if flight_weather.is_empty():

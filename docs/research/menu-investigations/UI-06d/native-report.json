@@ -1,0 +1,86 @@
+{
+  "crashed": false,
+  "diagnostic_panel": true,
+  "engine_shadows": true,
+  "fault": "",
+  "hud": true,
+  "latency_marker": true,
+  "latency_status": "waiting for radio",
+  "marker_hidden_with_overlays": true,
+  "scenery": {
+    "audio": true,
+    "birds": true,
+    "enabled": true,
+    "file": "res://data/scenery/default.json",
+    "file_explicit": false,
+    "quality": "high",
+    "theme": ""
+  },
+  "scenery_stats": {
+    "build_ms": 95.554,
+    "cells": 48,
+    "fleet": 4,
+    "flowers": 2970,
+    "instances": 129,
+    "motion": 28,
+    "quality": "high",
+    "shadows": 79,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "fence": 3.138,
+      "fleet": 0.596,
+      "flowers": 11.158,
+      "hedge": 14.13,
+      "instances": 47.369,
+      "meshes": 18.719,
+      "patch": 0.135,
+      "track": 0.193
+    }
+  },
+  "start_choice": "runway",
+  "sun_moved": true,
+  "sun_shadow_enabled": true,
+  "tick": 1224,
+  "weather": {
+    "format": "openrc-weather v2",
+    "from_deg": 90.0,
+    "gust_delay_s": 3.0,
+    "gust_duration_s": 4.0,
+    "gust_mps": 0.6,
+    "gust_period_s": 14.0,
+    "gust_up_mps": 0.15,
+    "speed_mps": 1.5,
+    "turbulence_rms_mps": [
+      0.15,
+      0.15,
+      0.08
+    ],
+    "turbulence_seed": 20261011,
+    "turbulence_tau_s": 3.0
+  },
+  "wind_after": [
+    0.0801472654769693,
+    -2.26542389488814,
+    -0.102231845434896
+  ],
+  "wind_before": [
+    -0.0529375307559786,
+    -1.62700011178124,
+    0.0309966710577116
+  ],
+  "world": {
+    "preset": "golden_hour",
+    "time_of_day": true,
+    "time_scale": 20.0,
+    "when": {
+      "day": 21,
+      "hour": 21.1199910481771,
+      "latitude_deg": 40.0,
+      "longitude_deg": -3.7,
+      "month": 6,
+      "utc_offset_h": 2.0,
+      "year": 2026
+    }
+  }
+}

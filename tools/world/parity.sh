@@ -17,6 +17,7 @@ mkdir -p "$OUT"
 export LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=1
 # SC-02a: pin the original bare-field baseline; scenery views and the scenario opt in explicitly.
 export OPENRC_SCENERY=off
+export OPENRC_SCENERY_BIRDS=off OPENRC_ENGINE_SHADOWS=off
 if command -v xvfb-run > /dev/null; then
   DISPLAY_RUN=(xvfb-run -a -s "-screen 0 1920x1080x24")
 elif [ -n "${DISPLAY:-}" ]; then

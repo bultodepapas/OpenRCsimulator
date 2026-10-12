@@ -1,5 +1,7 @@
 # SC-02a: complete scenery by default
 
+**Historical default audit:** the off-default inventory below predates [UI-06d](../../menu-investigations/UI-06d/README.md), which activates the gameplay profile and flight diagnostics. The captures and regression evidence remain those of SC-02a.
+
 **Status (2026-10-11): implemented; native Windows and all five scenery tests pass. Full app suite stops at a separately reproduced baseline atmosphere failure.**
 
 The owner requested default-on scenery after two Windows launches showed the bare field. `Scenery.options()` now falls back to `on`. CLI options still override the environment; `--scenery=off` or `OPENRC_SCENERY=off` remains available. Home and flight use the same resolver. Birds retain their separate off default.

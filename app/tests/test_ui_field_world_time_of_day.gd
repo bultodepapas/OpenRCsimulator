@@ -41,13 +41,13 @@ func _run() -> void:
 
 func _preference_cases() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
-	_check("no preferences -> day", Preferences.load_from(PREFS).time_of_day == "day")
+	_check("no preferences -> passing evening", Preferences.load_from(PREFS).time_of_day == "evening")
 	for invalid: Variant in ["midnight", 3, true, "noon"]: # noon is a command-line preset, not a Home choice
 		var cfg := ConfigFile.new()
 		cfg.set_value("meta", "schema", 1)
 		cfg.set_value("flight", "time_of_day", invalid)
 		cfg.save(PREFS)
-		_check("invalid time %s -> day" % str(invalid), Preferences.load_from(PREFS).time_of_day == "day")
+		_check("invalid time %s -> passing evening" % str(invalid), Preferences.load_from(PREFS).time_of_day == "evening")
 	var p := Preferences.load_from(PREFS)
 	p.time_of_day = "night"
 	_check("time choice round-trips", Preferences.save_to(PREFS, p) == OK and Preferences.load_from(PREFS).time_of_day == "night")

@@ -1,0 +1,105 @@
+COMMAND: wsl.exe --exec env XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-runway-20261011/data XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-runway-20261011/config XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-runway-20261011/cache /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/extra-realism-baseline/app --script res://tests/test_ui_runway.gd
+XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-runway-20261011/data
+XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-runway-20261011/config
+XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-runway-20261011/cache
+--- output ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL no preferences -> airborne start 
+ok   write old preferences without a start choice
+FAIL old schema-1 preferences without start choice -> airborne 
+ok   write invalid start preference taxi
+ok   invalid start preference taxi -> airborne
+ok   write invalid start preference 7
+ok   invalid start preference 7 -> airborne
+ok   write invalid start preference true
+ok   invalid start preference true -> airborne
+ok   runway preference is valid for the Stik
+ok   runway preference for the Extra is sanitized
+ok   future schema reads a valid runway choice and stays read-only
+ok   future schema refuses save without changing its bytes
+ok   save failure is reported for a path below an existing file
+ok   seed preferences with the first-flight hint suppressed
+ok   Home defaults to air; the Stik can choose runway
+ok   Home starts focused on Fly
+ok   Up from Fly focuses the start selector
+ok   a real Enter event selects runway
+ok   changing start choice does not save it
+ok   radio axis cannot navigate Home or change the start
+ok   Extra disables runway and sanitizes the selected choice
+ok   aircraft change persists the sanitized start
+ok   returning to Stik does not restore unsupported runway
+ok   runway can be selected again on the supported Stik
+ok   selection is still not persisted before Fly
+ok   Down from the selector returns focus to Fly
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly creates one flight and removes Home
+ok   Fly saves the selected runway choice
+ok   main and session receive the selected choice
+ok   runway launch succeeded without fallback
+ok   trace metadata identifies the launch choice
+ok   R restarts on runway
+ok   pause navigation reaches Restart
+ok   Pause Restart retains runway
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 1), point speed 0.0 m/s at detected tick) - [R] restart
+ok   ground contact enters the crash hold
+ok   crash recovery restarts on runway
+ok   pause navigation reaches End
+ok   flight -> Home preserves runway and saves no active session
+ok   Home focus returns to Fly
+ok   fake radio still cannot move Home focus or selection
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home -> flight again uses runway
+radio connected: ui-runway-fake|1209:4f54|Fake EdgeTX (default profile)
+ok   fake radio connects while preserving runway launch
+ok   fake radio throttle low arms the transmitter
+ok   radio roll reaches flight controls with solved trim
+ok   radio throttle reaches full power after arming
+ok   P resumes a manually controlled runway flight
+failsafe: radio disconnected
+ok   manual radio flight can end back at Home
+ok   write Spanish airborne preferences
+ok   saved Spanish Home defaults to airborne
+ok   Spanish Home focuses the start selector
+ok   real Spanish Home event selects runway without saving
+ok   Down returns focus to Fly after choosing runway
+ok   rejected runway launch leaves Home active and no session behind
+ok   rejection clears Fly latch and keeps Fly usable
+ok   rejection displays a Spanish reason
+ok   rejected start does not save or overwrite the preference file
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly can be retried after rejection
+ok   retry starts the selected runway choice
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future preferences still show valid runway choice
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   future-schema settings do not block the flight
+ok   failed save reason stays on the flight
+ok   failed save reason remains visible on returned Home
+ok   future preference bytes are preserved after failed save
+ok   alternate field fixture is valid
+ok   write runway preference for alternate-field probe
+ERROR: scenery: field: expected 'alternate' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] build (res://render/world/world.gd:101)
+       [3] _init (res://ui/home_scene.gd:59)
+       [4] show_home (res://app_root.gd:105)
+       [5] _ready (res://app_root.gd:88)
+       [6] _new_app (res://tests/test_ui_runway.gd:335)
+       [7] _alternate_field_and_aircraft_sanitization (res://tests/test_ui_runway.gd:307)
+       [8] _run (res://tests/test_ui_runway.gd:48)
+       [9] _future_preferences_save_failure (res://tests/test_ui_runway.gd:297)
+       [10] _close_app (res://tests/test_ui_runway.gd:344)
+ok   runway is disabled outside the existing default field
+ok   write runway preference before aircraft sanitization
+ok   changing to gp-extra-300s-60 sanitizes runway
+ok   changing to p51d-mustang-120 sanitizes runway
+ok   changing to sebart-avanti-s-a200-p100rx sanitizes runway
+ok   switching back to the Stik does not restore runway
+2 UI runway checks failed
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+BASELINE_EXIT=1

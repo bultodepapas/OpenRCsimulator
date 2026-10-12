@@ -1,0 +1,73 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "arguments": {
+    "cases": "postcard_pavilion",
+    "frames": "30",
+    "height": "1080",
+    "out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/landscape-upgrade/polish-tod",
+    "time-of-day": "00:00",
+    "width": "1920"
+  },
+  "cases": {
+    "postcard_pavilion": {
+      "draws": 42.0,
+      "exposure": 0.600000023841858,
+      "frame_ms_raw": [
+        1.693,
+        1.572,
+        1.513,
+        1.911,
+        1.656,
+        1.715,
+        1.627,
+        1.761,
+        1.53,
+        1.795,
+        1.636,
+        1.51,
+        1.482,
+        1.511,
+        1.686,
+        1.435,
+        1.666,
+        1.692,
+        1.706,
+        1.381,
+        1.954,
+        1.621,
+        1.376,
+        1.715,
+        1.417,
+        2.153,
+        1.435,
+        1.61,
+        1.746,
+        1.556
+      ],
+      "glare_strength": 0.0,
+      "glare_visible": false,
+      "median_ms": 1.636,
+      "p95_ms": 1.954,
+      "p99_ms": 2.153,
+      "primitives": 187844.0,
+      "shadow_draws": 0,
+      "video_memory": 159064646.0,
+      "visible_draws": 42
+    }
+  },
+  "driver": "3.3.0 NVIDIA 610.88",
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "height": 1080,
+  "renderer": "gl_compatibility",
+  "width": 1920
+}

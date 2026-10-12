@@ -4,6 +4,7 @@ set -euo pipefail
 export PYTHONDONTWRITEBYTECODE=1
 # SC-02a: retain the existing landscape baselines; scenery captures select their layer explicitly.
 export OPENRC_SCENERY=off
+export OPENRC_SCENERY_BIRDS=off OPENRC_ENGINE_SHADOWS=off
 HERE="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$HERE/captures/field" # untracked in git: a fresh clone does not have it
 # Captures are outputs, not game textures: keep the editor from importing and duplicating every PNG.

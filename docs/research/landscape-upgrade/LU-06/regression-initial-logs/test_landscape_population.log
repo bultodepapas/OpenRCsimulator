@@ -1,0 +1,39 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default population data validates
+ok   parked fleet IDs exactly match the flight catalog in order
+ok   baked fleet source map exactly covers the flight catalog
+ok   jensen-das-ugly-stik-60 resolves to a baked display model
+ok   gp-extra-300s-60 resolves to a baked display model
+ok   p51d-mustang-120 resolves to a baked display model
+ok   sebart-avanti-s-a200-p100rx resolves to a baked display model
+ok   all four catalog car styles are used across 11 parking places
+ok   parked cars have a staggered, rotated layout
+ok   all 13 existing people placements remain in the layout
+ok   gear-up Avanti display cradle aligns with its catalog snapshot
+ok   Avanti cradle has padded trestle geometry
+ok   Avanti's lifted snapshot clears the cradle without a visible gap
+     person_standing measured full mesh bounds: (0.684191, 1.619435, 0.320324)
+ok   person_standing has adult-scale head-to-foot proportions
+ok   person_standing has a plausible body width
+ok   person_standing geometry includes garments and limbs
+     person_sitting measured full mesh bounds: (0.559372, 1.181665, 0.691962)
+ok   person_sitting has adult-scale head-to-foot proportions
+ok   person_sitting has a plausible body width
+ok   person_sitting geometry includes garments and limbs
+     person_pilot measured full mesh bounds: (0.556433, 1.619435, 0.475768)
+ok   person_pilot has adult-scale head-to-foot proportions
+ok   person_pilot has a plausible body width
+ok   person_pilot geometry includes garments and limbs
+ok   person animation uses a shared mesh shader, no per-person script
+ok   person animation uses a shared mesh shader, no per-person script
+ok   person animation uses a shared mesh shader, no per-person script
+ok   person animation uses a shared mesh shader, no per-person script
+ok   person animation uses a shared mesh shader, no per-person script
+ok   person animation uses a shared mesh shader, no per-person script
+ok   person animation uses a shared mesh shader, no per-person script
+ok   scenery retains the original rotor and flag count
+ok   tree and shrub tip motions match 10 shade trees and 6 shrubs
+ok   bounded subset animates; 13 body meshes do not all animate
+ok   added motion stays below 40 moving draws
+all landscape population checks passed

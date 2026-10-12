@@ -1,0 +1,66 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok production flight installs a nonempty collision world
+ok production inventory includes vehicle
+CRASH at 77.1 m/s (sink -11.1 m/s, vehicle impact (vehicle:cars:00:car_hatch), normal speed 76.1 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: vehicle
+ok contact is with requested object type: vehicle
+ok scenery starts existing crash director: vehicle
+ok secondary contacts are present and bounded: vehicle
+ok wall/tree normal reaches severity report: vehicle
+ok impact presentation preserves altitude: vehicle
+ok engine secondary collision shapes answer ray query: vehicle
+ok pause holds crash effect age: vehicle
+ok reset removes scenery contacts and restores aircraft: vehicle
+ok reset clears contact state and retains world identity: vehicle
+ok production inventory includes building
+CRASH at 78.1 m/s (sink -5.8 m/s, building impact (building:pavilion:00:pavilion), normal speed 77.8 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: building
+ok contact is with requested object type: building
+ok scenery starts existing crash director: building
+ok secondary contacts are present and bounded: building
+ok wall/tree normal reaches severity report: building
+ok impact presentation preserves altitude: building
+ok engine secondary collision shapes answer ray query: building
+ok pause holds crash effect age: building
+ok reset removes scenery contacts and restores aircraft: building
+ok reset clears contact state and retains world identity: building
+ok production inventory includes tree_trunk
+CRASH at 76.3 m/s (sink -14.7 m/s, tree trunk impact (tree:shade-tree:shade-trees:00:trunk), normal speed 74.6 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: tree_trunk
+ok contact is with requested object type: tree_trunk
+ok scenery starts existing crash director: tree_trunk
+ok secondary contacts are present and bounded: tree_trunk
+ok wall/tree normal reaches severity report: tree_trunk
+ok impact presentation preserves altitude: tree_trunk
+ok engine secondary collision shapes answer ray query: tree_trunk
+ok pause holds crash effect age: tree_trunk
+ok reset removes scenery contacts and restores aircraft: tree_trunk
+ok reset clears contact state and retains world identity: tree_trunk
+ok production inventory includes lamp
+CRASH at 76.2 m/s (sink -15.3 m/s, lamp impact (lamp:flood_east:pole), normal speed 71.7 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: lamp
+ok contact is with requested object type: lamp
+ok scenery starts existing crash director: lamp
+ok secondary contacts are present and bounded: lamp
+ok wall/tree normal reaches severity report: lamp
+ok impact presentation preserves altitude: lamp
+ok engine secondary collision shapes answer ray query: lamp
+ok pause holds crash effect age: lamp
+ok reset removes scenery contacts and restores aircraft: lamp
+ok reset clears contact state and retains world identity: lamp
+ok production inventory includes parked_aircraft
+CRASH at 79.2 m/s (sink -1.7 m/s, parked aircraft impact (fleet:fleet:02:p51d-mustang-120), normal speed 77.9 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: parked_aircraft
+ok contact is with requested object type: parked_aircraft
+ok scenery starts existing crash director: parked_aircraft
+ok secondary contacts are present and bounded: parked_aircraft
+ok wall/tree normal reaches severity report: parked_aircraft
+ok impact presentation preserves altitude: parked_aircraft
+ok engine secondary collision shapes answer ray query: parked_aircraft
+ok pause holds crash effect age: parked_aircraft
+ok reset removes scenery contacts and restores aircraft: parked_aircraft
+ok reset clears contact state and retains world identity: parked_aircraft
+56 checks, 0 failures

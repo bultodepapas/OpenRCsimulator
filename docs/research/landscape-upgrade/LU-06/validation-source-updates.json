@@ -1,0 +1,18 @@
+{
+  "app/sim/scenery_collision.gd": {
+    "before": "51dc63440de8f2c6981ef4719d49b1db16825ecf44344d70eef03e20ac64c6f3",
+    "after": "fe4aac96ea43249bc2616c6c3658303e4ce26e10bf85e40b9a4f3f6c864c5e68"
+  },
+  "app/tests/test_landscape_collision.gd": {
+    "before": "b0b8bc550201f443e0115811041baea74a192756ef94ce2bffcaefbdc2b10e2d",
+    "after": "808865cf5175fa891ad8e0b1745e8ea7e944b761611b413a1a020246b886d1c6"
+  },
+  "app/tests/capture_landscape_upgrade.gd": {
+    "before": "cdad136bb63cc159dfa45173e7a8df131540e441f695081eba5c91c10a28e4ab",
+    "after": "bab5055be8f73479e01d957296be3653e0a9c0426d0819dcf4b09a5d0349d1c5"
+  },
+  "app/assets/landscape/UPGRADE_CREDITS.md": {
+    "before": "d0a27937aaa8567ca2cf83594d1ae913eb803b3feaf3f3ec7f154d98e672ffb1",
+    "after": "0a2c424579631a35a7cd5dfbc713e0c55acf0dd672591594371b9fe814b09f05"
+  }
+}

@@ -65,12 +65,19 @@ func _initialize() -> void:
 			"model point %s, LE z %.4f, chord %.4f" % [cg, datum.x, root_chord])
 		airplane.root.free()
 
-	# Extra specifics: the data's CG is the manual's balance point = the model's CG station (z 0); the throws are the
-	# model team's manual-rate conversion (no drift between visual clearance checks and flight data).
+	# Extra specifics: the manual's EMPTY-TANK balance point is model z 0. The loaded CG moves when the prescribed
+	# fuel is added (EX-06). The throws remain the model team's manual-rate conversion.
 	var extra: Dictionary = AircraftData.load_file(Catalog.entry(AirplaneBuilder.EXTRA_ID).data).model
 	var datum := AirplaneBuilder.datum(AirplaneBuilder.EXTRA_ID)
 	var cg := Frames.cg_in_model_frame(extra.cg_le, datum.x, datum.y)
-	_check("Extra: CG at the model's CG station (manual 4-1/8 in at rib 2D) within 1 mm", absf(cg.z) < 0.001, "z %.5f m" % cg.z)
+	var raw_extra: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(AirplaneBuilder.EXTRA_ID).data))
+	var fuel_model_moment := 0.0
+	for component: Dictionary in raw_extra.inventory:
+		if component.name == "fuel (half tank)":
+			fuel_model_moment += float(component.mass.value) * (float(component.position.value[0]) + datum.x)
+	var expected_loaded_z: float = fuel_model_moment / extra.mass_kg # Dry mass has zero moment about model z=0.
+	_check("Extra: loaded CG = dry manual station plus prescribed fuel within 1 mm",
+		absf(cg.z - expected_loaded_z) < 0.001 and cg.z < 0.0, "z %.5f m, expected %.5f m" % [cg.z, expected_loaded_z])
 	var manual := Extra.manual_throws_deg()
 	var same := true
 	for k in manual:

@@ -43,10 +43,16 @@ static func _visibility_from_args() -> float:
 ## only the uniform haze (fog_sun_scatter = 0), which affects near objects by a few percent at most.
 static var state: Dictionary = {}
 
-## Engine (PSSM) sun shadows: off by default. In Compatibility they double every lit object's draw calls, clip white
-## surfaces and shift hues (the shadowed light is blended in sRGB after tonemapping: Godot #90259); the sun shadow is
-## the planar projected silhouette (render/shadow.gd) instead. `--engine_shadows` turns them on for comparison (L3).
-static var engine_shadows := false
+## UI-06d: engine (PSSM) shadows are on for interactive worlds at the owner's request.
+## The existing Compatibility cost/color limitations remain (L3); reference captures select off explicitly.
+static var engine_shadows: bool = engine_shadows_enabled()
+
+
+static func engine_shadows_enabled(args: Dictionary = {}, interactive: bool = true) -> bool:
+	var fallback := OS.get_environment("OPENRC_ENGINE_SHADOWS")
+	if fallback.is_empty():
+		fallback = "on" if interactive else "off"
+	return ["on", "1", "true", "yes"].has(str(args.get("engine_shadows", fallback)).to_lower())
 
 
 ## Defaults preserve the fixed daylight; an explicit scene snapshot takes precedence over the flowing FW state.

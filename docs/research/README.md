@@ -29,6 +29,8 @@ The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-ord
 
 ## Entry points per track
 
+[Landscape upgrade — LU-00–06](landscape-upgrade/README.md): integrated terrain backdrop, population, day/night fixtures, occlusion-aware glare, float64 scenery contacts, native screenshots, measured budgets and source/license review. Requested plan: [LANDSCAPE_UPGRADE_PLAN](../../LANDSCAPE_UPGRADE_PLAN.md).
+
 ### Ground physics
 
 [GP-00–05](ground-physics/README.md): per-wheel grass terrain, wheel spin and suspension, aircraft profiles, trace/replay integration and measured numerical acceptance. The root [ground physics plan](../../GROUND_PHYSICS_PLAN.md) records the pre-implementation research, ownership and remaining physical/performance gates.
@@ -36,6 +38,10 @@ The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-ord
 ### Aircraft standardization
 
 [AS-00–05](aircraft-standardization/README.md): four-aircraft audit, v2 contract and schema, explicit module capabilities, source migration, authoring template and in-engine verification. The root [standardization plan](../../AIRCRAFT_STANDARDIZATION_PLAN.md) owns this foundation before aircraft feature expansion.
+
+### Extra 300S flight realism
+
+[EX-06/08/09](extra-300-realism/README.md): complete behavior audit, manual empty-tank balance correction, physical/visual thrust installation, manual control rates, before/after flight and ground probes, numerical refinement, regression results and remaining physical qualification gates. The [scoped realism plan](../EXTRA-300-REALISM-PLAN.md) preserves the experimental status and distinguishes model consistency from measured flight fidelity.
 
 ### Turbo Timber Evolution
 
@@ -207,6 +213,8 @@ Experimental Stik runway delivery: [UI-06a session and trace contract](menu-inve
 [UI-06a-R1](menu-investigations/UI-06a-R1/README.md) repairs checkpoint replay headers that inherited the destination flight's launch origin; physics-only checkpoints now declare that origin unknown.
 
 [UI-06c-R1](menu-investigations/UI-06c-R1/README.md) refreshes the three-platform packages after that repair, verifies each compiled pack and repeats the native Linux runway smoke against a frozen source snapshot.
+
+[UI-06d](menu-investigations/UI-06d/README.md) activates the owner-requested interactive profile: Stik runway start, gentle wind/gusts/turbulence, passing evening, birds, engine shadows and visible diagnostics; retains native captures and focused UI/runtime verification.
 
 [menu-investigations/README.md](menu-investigations/README.md): 25 numbered investigations (01-22, 24, 25; number 23 is a probe only, explained in the README), Godot probes under `probes/`, a contrast checker and `sources.json`. Start with [02 input focus and radio isolation](menu-investigations/02-input-focus-radio-isolation.md). Plan: [MENU-PLAN](../MENU-PLAN.md).
 

@@ -43,6 +43,7 @@ func _run() -> void:
 func _preferences_contract() -> void:
 	_remove_prefs()
 	var prefs: Dictionary = Preferences.load_from(PREFS)
+	prefs.weather_config = WeatherSettings.defaults() # the following assertion is the explicit v1 persistence case
 	_check("v1 preferences retain outer schema 1", Preferences.save_to(PREFS, prefs) == OK
 		and _saved_schema() == 1)
 	var v2: Dictionary = WeatherSettings.preset("turbulent")

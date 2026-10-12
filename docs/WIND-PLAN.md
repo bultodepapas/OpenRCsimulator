@@ -4,6 +4,8 @@
 
 Owns `app/physics/wind_*.gd`, wind session/trace integration, weather preferences/dialog, wind tests and `research/wind/`. Coordinate simulation, menu and landscape interfaces with their tracks. The owner explicitly selected this larger playable wind slice on 2026-10-09; it advances the former deferred proposal without closing Gate 2/PT2.
 
+**Interactive default update (2026-10-11, [UI-06d](research/menu-investigations/UI-06d/README.md)):** new preferences use the appended `gentle-practice` v2 preset: 1.5 m/s from 090°, 0.6 m/s horizontal and 0.15 m/s upward gust increments, RMS [0.15, 0.15, 0.08] m/s with 3 s correlation time. These are estimated practice settings. Explicit saved choices and canonical/direct-route calm defaults retain their existing meaning.
+
 This replaces the 2026-10-05 proposal after auditing the current code. Its detailed historical design remains available with `git show 6973e42:docs/WIND-PLAN.md`; primary physics, runtime and future-tool investigations remain in the linked knowledge base. Do not treat its old "ground contact is a crash" or "RK4 has no stage time" statements as current behavior.
 
 ## Delivered slice

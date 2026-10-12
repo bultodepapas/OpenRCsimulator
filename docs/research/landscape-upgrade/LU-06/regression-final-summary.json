@@ -1,0 +1,103 @@
+[
+  {
+    "test": "test_field_integration.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.2729259629995795
+  },
+  {
+    "test": "test_field_projected_shadows.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.1884174440056086
+  },
+  {
+    "test": "test_field_surfaces.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.5797668930026703
+  },
+  {
+    "test": "test_replay_policy.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 6.399455145001411
+  },
+  {
+    "test": "test_scenery_trace.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 9.270671054997365
+  },
+  {
+    "test": "test_world_sky.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.25047184999857564
+  },
+  {
+    "test": "test_landscape_scenery_eligibility.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.3434093210089486
+  },
+  {
+    "test": "test_landscape_population.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.4372378140105866
+  },
+  {
+    "test": "test_scenery_build.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.3658258889918216
+  },
+  {
+    "test": "test_landscape_collision_setup.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.9971356710011605
+  },
+  {
+    "test": "test_landscape_runtime.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.403666703001363
+  },
+  {
+    "test": "test_landscape_checkpoint.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.7170653259963728
+  },
+  {
+    "test": "test_world_flow.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.3032240989996353
+  },
+  {
+    "test": "test_world_field_lights.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.4230217459989944
+  },
+  {
+    "test": "test_visual_checkpoint.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2504409860121086
+  },
+  {
+    "test": "test_time_of_day_checkpoint.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.1461712989985244
+  },
+  {
+    "test": "app/test.sh E5a/E5b tail",
+    "exit": 0,
+    "failed": false
+  }
+]

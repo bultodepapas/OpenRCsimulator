@@ -54,11 +54,11 @@ func _run() -> void:
 func _preferences_cases() -> void:
 	_cleanup()
 	var p: Dictionary = Preferences.load_from(PREFS)
-	_check("no preferences -> airborne start", p.start_choice == AIRBORNE)
+	_check("no preferences -> runway start", p.start_choice == RUNWAY)
 
 	_check("write old preferences without a start choice", _write_preferences(PREFS, 1, "en", STIK, AIRBORNE, false) == OK)
 	p = Preferences.load_from(PREFS)
-	_check("old schema-1 preferences without start choice -> airborne", p.start_choice == AIRBORNE)
+	_check("old schema-1 preferences without start choice -> current runway default", p.start_choice == RUNWAY)
 
 	for invalid: Variant in ["taxi", 7, true]:
 		var cfg: ConfigFile = ConfigFile.new()

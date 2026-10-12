@@ -9,6 +9,22 @@ const FORMAT := "openrc-weather v1"
 const TURBULENCE_FORMAT := "openrc-weather v2"
 const TURBULENCE_KEYS := ["turbulence_rms_mps", "turbulence_tau_s", "turbulence_seed"]
 
+## UI-06d: estimated gentle practice conditions requested by the owner, not measured site weather.
+## East wind is a light headwind for the default field's eastbound runway start. RMS is N/E/D in m/s.
+const GENTLE_PRACTICE := {
+	"format": TURBULENCE_FORMAT,
+	"speed_mps": 1.5,
+	"from_deg": 90.0,
+	"gust_mps": 0.6,
+	"gust_up_mps": 0.15,
+	"gust_duration_s": 4.0,
+	"gust_period_s": 14.0,
+	"gust_delay_s": 3.0,
+	"turbulence_rms_mps": [0.15, 0.15, 0.08],
+	"turbulence_tau_s": 3.0,
+	"turbulence_seed": 20261011,
+}
+
 const REQUIRED_KEYS := [
 	"format", "speed_mps", "from_deg", "gust_mps", "gust_up_mps",
 	"gust_duration_s", "gust_period_s", "gust_delay_s",
@@ -140,6 +156,7 @@ static func presets() -> Array[Dictionary]:
 		atmosphere_mode = "custom", field_elevation_m = 1500.0, temperature_c = 35.0, relative_humidity_pct = 50.0})})
 	out.append({id = "cool-dense", label = "Cool dense air", config = upgrade_atmosphere(defaults(), {
 		atmosphere_mode = "custom", temperature_c = 5.0})})
+	out.append({id = "gentle-practice", label = "Gentle breeze", config = GENTLE_PRACTICE.duplicate(true)})
 	return out
 
 

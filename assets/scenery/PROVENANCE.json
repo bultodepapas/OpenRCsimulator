@@ -131,7 +131,7 @@
   },
   {
    "output": "app/data/scenery/models/fleet_extra.json",
-   "output_sha256": "9920c2b286ca0613df34b41ffcc9e26d0f1ae6b7b8747db54e18f57787984057",
+   "output_sha256": "80afd7e94d33436f2ecec4567917a9235202fd847b59e948a5b823653d6d58f8",
    "id": "fleet_extra",
    "author": "OpenRC Simulator model teams",
    "license": "project license (repository)",
@@ -147,7 +147,8 @@
     1.38
    ],
    "triangles": 2465,
-   "generator": "tools/scenery/bake_fleet.gd"
+   "generator": "tools/scenery/bake_fleet.gd",
+   "rebaked": "2026-10-11 LU-02: current catalog aircraft builder, no source aircraft edits"
   },
   {
    "output": "app/data/scenery/models/fleet_p51.json",

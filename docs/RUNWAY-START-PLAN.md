@@ -1,12 +1,14 @@
 # Experimental runway start
 
-2026-10-08 · Revision 4 · Step prefix: **UI-06a…c** (repairs use `-R` suffixes)
+2026-10-08 · Revision 5 (2026-10-11) · Step prefix: **UI-06a…d** (repairs use `-R` suffixes)
 
-**Status: UI-06a…c complete (software delivery, 2026-10-08).** Owner flight and physical validation remain pending. This scoped part of [MENU-PLAN UI-06](MENU-PLAN.md) owns the steps below. Other UI-06 field/scenario work remains deferred. It enables a manual Stik pilot experiment toward [PT2](../ROADMAP.md), without closing Gate 2 or accepting takeoff/landing realism.
+**Status: UI-06a…c complete (software delivery, 2026-10-08); UI-06d active launch defaults complete (2026-10-11).** Owner flight and physical validation remain pending. This scoped part of [MENU-PLAN UI-06](MENU-PLAN.md) owns the steps below. Other UI-06 field/scenario work remains deferred. It enables a manual Stik pilot experiment toward [PT2](../ROADMAP.md), without closing Gate 2 or accepting takeoff/landing realism.
 
 Ownership: UI owns `app/app_root.gd`, `app/ui/`, `app/app_state/`, `app/i18n/` and UI tests; coordinate `app/main.gd`, `app/sim/flight_session.gd`, trace metadata and simulation tests with the physics line. Reuse the current field and aircraft data. Evidence is retained in `docs/research/menu-investigations/UI-06a/`, `UI-06b/`, `UI-06c/` and `UI-06a-R1/`.
 
 ## Delivery rationale
+
+**UI-06d (2026-10-11):** the owner requested gameplay options and diagnostics on with gentle moving air. The interactive default is now a Stik runway start, gentle weather, passing evening, birds, engine shadows and the live marker; saved explicit choices retain priority. This selects existing functionality, without force-law or aircraft-data tuning. [Evidence and limits](research/menu-investigations/UI-06d/README.md). The earlier UI-06a…c delivery and its airborne defaults remain historical proof for that release.
 
 This slice exposes a player-controlled runway launch using the existing [GroundStart](../app/physics/ground_start.gd) threshold and idle-equilibrium solver. [Runway tests](../app/tests/test_runway_start.gd), E3c2a/b circuit/review tools and E4a/b replay/sensitivity supplied the prior software evidence. Home now passes both aircraft and start choice; direct CLI routes keep the existing airborne behavior.
 

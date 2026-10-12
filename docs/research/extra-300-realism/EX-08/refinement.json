@@ -1,0 +1,237 @@
+{
+  "envelope": {
+    "own_trim_hands_off_30s": {
+      "alt_m": 5.645262035613996e-12,
+      "speed_mps": 4.050093593832571e-13,
+      "p_radps": 5.89225007312794e-14,
+      "q_radps": 8.503062390021329e-16,
+      "r_radps": 3.4600725765312156e-13
+    },
+    "roll_negative_low": {
+      "alt_m": 0.013495007351849608,
+      "speed_mps": 0.0030794686331852006,
+      "p_radps": 3.013704588667593e-05,
+      "q_radps": 3.622040766032564e-05,
+      "r_radps": 9.83982297890762e-05
+    },
+    "roll_negative_high": {
+      "alt_m": 0.028025888546771682,
+      "speed_mps": 0.004467397932089057,
+      "p_radps": 9.237078005402966e-07,
+      "q_radps": 5.523233031490271e-06,
+      "r_radps": 9.63885021164736e-06
+    },
+    "roll_positive_low": {
+      "alt_m": 0.01524809349317735,
+      "speed_mps": 0.00345339428883662,
+      "p_radps": 9.034794820256264e-06,
+      "q_radps": 6.347722459154603e-05,
+      "r_radps": 6.118115162934146e-05
+    },
+    "roll_positive_high": {
+      "alt_m": 0.028085833211498823,
+      "speed_mps": 0.00451950889993924,
+      "p_radps": 2.412445264944607e-05,
+      "q_radps": 2.289282847511842e-06,
+      "r_radps": 3.7417612346459656e-05
+    },
+    "pitch_negative_low": {
+      "alt_m": 0.00433650011084552,
+      "speed_mps": 0.001904036463042047,
+      "p_radps": 3.172400391271424e-07,
+      "q_radps": 8.071066349973899e-05,
+      "r_radps": 2.7134948001293624e-05
+    },
+    "pitch_negative_high": {
+      "alt_m": 0.008117285768946658,
+      "speed_mps": 0.0006059745306394859,
+      "p_radps": 9.298373555149952e-07,
+      "q_radps": 4.896055904535235e-05,
+      "r_radps": 2.204885813350847e-06
+    },
+    "pitch_positive_low": {
+      "alt_m": 0.007036966361312125,
+      "speed_mps": 0.0028353021265417055,
+      "p_radps": 2.9510386767676866e-05,
+      "q_radps": 0.00010655935001030459,
+      "r_radps": 8.555468919424492e-05
+    },
+    "pitch_positive_high": {
+      "alt_m": 0.007642813779440871,
+      "speed_mps": 0.003058732104673112,
+      "p_radps": 6.215539488689352e-06,
+      "q_radps": 0.00012372462927412453,
+      "r_radps": 1.2705253208955547e-05
+    },
+    "yaw_negative_low": {
+      "alt_m": 0.00024403971865183394,
+      "speed_mps": 0.00013650035916690229,
+      "p_radps": 4.3329444479563335e-05,
+      "q_radps": 5.590087299013049e-06,
+      "r_radps": 0.00011784638367409034
+    },
+    "yaw_negative_high": {
+      "alt_m": 0.00032388649472636644,
+      "speed_mps": 1.8741186508464125e-05,
+      "p_radps": 6.185433407034178e-05,
+      "q_radps": 1.4776021812483442e-05,
+      "r_radps": 0.00012362541534356383
+    },
+    "yaw_positive_low": {
+      "alt_m": 1.4892731428517436e-05,
+      "speed_mps": 1.611435277126816e-05,
+      "p_radps": 4.035732843428192e-05,
+      "q_radps": 1.2532368921412511e-05,
+      "r_radps": 0.00010155329539588559
+    },
+    "yaw_positive_high": {
+      "alt_m": 4.065192030111575e-06,
+      "speed_mps": 0.00021471255474203588,
+      "p_radps": 5.1616905168748103e-05,
+      "q_radps": 2.1411949598440505e-06,
+      "r_radps": 3.513711312223226e-05
+    },
+    "throttle_full_step_and_return": {
+      "alt_m": 0.0021308021503188,
+      "speed_mps": 0.0007572285765284903,
+      "p_radps": 4.9333312934454754e-05,
+      "q_radps": 0.00010403209429044047,
+      "r_radps": 0.00017854254867352704
+    },
+    "banked_turn_and_counter_roll_recovery": {
+      "alt_m": 0.009153044660759058,
+      "speed_mps": 0.0004611117547810295,
+      "p_radps": 1.591712174994417e-05,
+      "q_radps": 4.245861428586739e-05,
+      "r_radps": 0.00012211321324578917
+    },
+    "guided_30deg_turn_left": {
+      "alt_m": 7.143070392601203e-05,
+      "speed_mps": 5.030019719143297e-05,
+      "p_radps": 1.4412923601817202e-07,
+      "q_radps": 9.525623088187628e-06,
+      "r_radps": 1.357059095828065e-07
+    },
+    "guided_30deg_turn_right": {
+      "alt_m": 0.00017139887022210587,
+      "speed_mps": 5.968678819456841e-05,
+      "p_radps": 8.200497048480211e-07,
+      "q_radps": 1.1742930346402697e-05,
+      "r_radps": 1.8221149355708913e-07
+    },
+    "full_power_climb_input": {
+      "alt_m": 0.004773768688664859,
+      "speed_mps": 0.005020435882482133,
+      "p_radps": 6.745481494171979e-05,
+      "q_radps": 0.000270447923573669,
+      "r_radps": 6.0595355594439404e-05
+    },
+    "power_off_full_up_stall": {
+      "alt_m": 0.007317199292188548,
+      "speed_mps": 0.000311718334573996,
+      "p_radps": 1.9882857136753335e-17,
+      "q_radps": 0.00011047514292997218,
+      "r_radps": 8.489320711026869e-17
+    },
+    "running_engine_idle_descent": {
+      "alt_m": 0.0024377026131077173,
+      "speed_mps": 0.00012090689608079686,
+      "p_radps": 6.0131315583883405e-06,
+      "q_radps": 1.4943386303506445e-06,
+      "r_radps": 4.0539874539252674e-05
+    },
+    "engine_off_glide_approach": {
+      "alt_m": 3.410605131648481e-11,
+      "speed_mps": 0.0,
+      "p_radps": 0.0,
+      "q_radps": 1.2051690828549469e-19,
+      "r_radps": 0.0
+    },
+    "spin_left_rudder": {
+      "alt_m": 0.010431796090870193,
+      "speed_mps": 0.008191082029163965,
+      "p_radps": 1.5150119993950772e-06,
+      "q_radps": 0.0003008777005718555,
+      "r_radps": 0.0002597533933862972
+    },
+    "spin_right_rudder": {
+      "alt_m": 0.009995136405905214,
+      "speed_mps": 0.00830304040604446,
+      "p_radps": 1.00063645409737e-05,
+      "q_radps": 0.0003155908944401098,
+      "r_radps": 0.00018978508874442634
+    },
+    "inverted_hands_off_7s": {
+      "alt_m": 2.3874235921539366e-12,
+      "speed_mps": 5.684341886080802e-14,
+      "p_radps": 7.639515160476268e-17,
+      "q_radps": 3.027810152717732e-15,
+      "r_radps": 2.5637491366149735e-15
+    }
+  },
+  "ground": {
+    "parked-engine-off": {
+      "elapsed_s": 0.0,
+      "ground_distance_m": 6.774631485569754e-09,
+      "liftoff_time_s": 0.0,
+      "liftoff_speed_mps": 0.0,
+      "touchdown_time_s": 0.0,
+      "touchdown_sink_mps": 0.0,
+      "crash_agrees": true
+    },
+    "parked-engine-idle": {
+      "elapsed_s": 0.0,
+      "ground_distance_m": 1.3456813913181875e-08,
+      "liftoff_time_s": 0.0,
+      "liftoff_speed_mps": 0.0,
+      "touchdown_time_s": 0.0,
+      "touchdown_sink_mps": 0.0,
+      "crash_agrees": true
+    },
+    "taxi-left-rudder": {
+      "elapsed_s": 0.0,
+      "ground_distance_m": 3.423831456572657e-06,
+      "liftoff_time_s": 0.0,
+      "liftoff_speed_mps": 0.0,
+      "touchdown_time_s": 0.0,
+      "touchdown_sink_mps": 0.0,
+      "crash_agrees": true
+    },
+    "taxi-right-rudder": {
+      "elapsed_s": 0.0,
+      "ground_distance_m": 4.926567429563988e-06,
+      "liftoff_time_s": 0.0,
+      "liftoff_speed_mps": 0.0,
+      "touchdown_time_s": 0.0,
+      "touchdown_sink_mps": 0.0,
+      "crash_agrees": true
+    },
+    "takeoff-unguided": {
+      "elapsed_s": 0.002083333333333215,
+      "ground_distance_m": 6.643362569747069e-05,
+      "liftoff_time_s": 0.0,
+      "liftoff_speed_mps": 2.1279281078534495e-05,
+      "touchdown_time_s": 0.0,
+      "touchdown_sink_mps": 0.0,
+      "crash_agrees": true
+    },
+    "takeoff-feedback-guided": {
+      "elapsed_s": 0.0,
+      "ground_distance_m": 8.157921193330253e-05,
+      "liftoff_time_s": 0.0,
+      "liftoff_speed_mps": 0.00011595279094578359,
+      "touchdown_time_s": 0.0,
+      "touchdown_sink_mps": 0.0,
+      "crash_agrees": true
+    },
+    "approach-flare-touchdown": {
+      "elapsed_s": 0.002083333333333215,
+      "ground_distance_m": 0.011869836300462566,
+      "liftoff_time_s": 0.0,
+      "liftoff_speed_mps": 0.0,
+      "touchdown_time_s": 0.002083333333333215,
+      "touchdown_sink_mps": 0.011251656431253032,
+      "crash_agrees": true
+    }
+  }
+}

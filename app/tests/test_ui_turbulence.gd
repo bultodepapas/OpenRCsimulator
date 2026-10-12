@@ -60,7 +60,8 @@ func _config_contract() -> void:
 func _preferences_contract() -> void:
 	_remove_prefs()
 	var prefs: Dictionary = Preferences.load_from(PREFS)
-	_check("fresh preferences keep v1 weather defaults", prefs.weather_config == WeatherSettings.defaults())
+	_check("fresh preferences use the gentle turbulent breeze", prefs.weather_config == WeatherSettings.GENTLE_PRACTICE)
+	prefs.weather_config = WeatherSettings.defaults() # explicit calm fixture still verifies v1 persistence
 	_check("legacy weather preferences save", Preferences.save_to(PREFS, prefs) == OK)
 	var schema_file: ConfigFile = ConfigFile.new()
 	_check("legacy v1 weather stays in outer schema 1", schema_file.load(PREFS) == OK
@@ -85,6 +86,9 @@ func _preferences_contract() -> void:
 
 func _dialog_flow() -> void:
 	_remove_prefs()
+	var legacy_prefs := Preferences.DEFAULTS.duplicate(true)
+	legacy_prefs.weather_config = WeatherSettings.defaults()
+	_check("write explicit calm fixture for legacy editor checks", Preferences.save_to(PREFS, legacy_prefs) == OK)
 	var app: Node = await _app()
 	var dialog: CanvasLayer = await _open_weather(app)
 	var panel: Control = dialog.find_children("WeatherPanel", "PanelContainer", true, false)[0]

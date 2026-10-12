@@ -1,0 +1,748 @@
+{
+  "air_density_kg_m3": 1.225,
+  "aircraft_id": "gp-extra-300s-60",
+  "cases": [
+    {
+      "engine_running": false,
+      "metrics": {
+        "crash": false,
+        "crash_reason": "",
+        "crash_speed_mps": 0.0,
+        "elapsed_s": 8.0,
+        "final_contact_count": 3,
+        "final_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "final_engine_rpm": 0.0,
+        "final_heading_deg": 89.51546299126375,
+        "final_speed_mps": 0.00025163900827701303,
+        "final_state_ned_body": [
+          15.001878427456742,
+          -47.0009218729256,
+          -0.20192064266975332,
+          -0.00011189156960345009,
+          -0.00022445790823880094,
+          -2.052107617492153e-05,
+          0.7068310449142582,
+          -0.06739854443730299,
+          0.06635865954748721,
+          0.7010305545810478,
+          0.00019162648776579777,
+          2.901135463963791e-06,
+          -0.0010353045927270377
+        ],
+        "finite": true,
+        "ground_distance_m": 0.0021576624001782823,
+        "heading_change_deg": -0.4845370087362551,
+        "initial_contact_count": 3,
+        "initial_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "initial_engine_rpm": 0.0,
+        "initial_heading_deg": 90.0,
+        "initial_speed_mps": 0.0,
+        "liftoff_distance_m": 0.0,
+        "liftoff_speed_mps": 0.0,
+        "liftoff_time_s": -1.0,
+        "max_abs_yaw_command": 0.0,
+        "max_abs_yaw_servo": 0.007173615519621623,
+        "max_contact_count": 3,
+        "max_cross_track_m": 0.0018784274567416048,
+        "max_engine_rpm": 0.0,
+        "max_heading_error_deg": 0.4845370087362551,
+        "max_left_yaw_command": 0.0,
+        "max_right_yaw_command": 0.0,
+        "max_speed_mps": 0.0009304235934389427,
+        "minimum_ned_height_m": 0.20192064266975332,
+        "runway_axis_displacement_m": -0.0009218729256019741,
+        "simulation_fault": "",
+        "steps": 1920,
+        "tail_up_time_s": -1.0,
+        "total_path_distance_m": 0.0021576624001782823,
+        "touchdown_sink_mps": 0.0,
+        "touchdown_speed_mps": 0.0,
+        "touchdown_time_s": -1.0,
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"tail\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_values_mps": [
+          -0.0002816079051016309,
+          5.5422069695634184e-05,
+          -0.00011577338592897334
+        ]
+      },
+      "name": "parked-engine-off"
+    },
+    {
+      "engine_running": true,
+      "metrics": {
+        "crash": false,
+        "crash_reason": "",
+        "crash_speed_mps": 0.0,
+        "elapsed_s": 8.0,
+        "final_contact_count": 3,
+        "final_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "final_engine_rpm": 2800.0,
+        "final_heading_deg": 89.65577889317504,
+        "final_speed_mps": 0.007747931957392276,
+        "final_state_ned_body": [
+          15.002183503921067,
+          -46.93732142819792,
+          -0.20229734055653892,
+          0.0076143679062711175,
+          -0.00017716504243065064,
+          0.001421430108049443,
+          0.7060706278323966,
+          -0.06645681022078048,
+          0.06466218456186622,
+          0.7020445589671156,
+          0.00020655674262052518,
+          3.6462668261735696e-06,
+          -0.0005016254264286506
+        ],
+        "finite": true,
+        "ground_distance_m": 0.06294467478845182,
+        "heading_change_deg": -0.3442211068249619,
+        "initial_contact_count": 3,
+        "initial_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "initial_engine_rpm": 2800.0,
+        "initial_heading_deg": 90.0,
+        "initial_speed_mps": 0.0,
+        "liftoff_distance_m": 0.0,
+        "liftoff_speed_mps": 0.0,
+        "liftoff_time_s": -1.0,
+        "max_abs_yaw_command": 0.0,
+        "max_abs_yaw_servo": 0.007173615519621623,
+        "max_contact_count": 3,
+        "max_cross_track_m": 0.0021835039210671386,
+        "max_engine_rpm": 2800.0,
+        "max_heading_error_deg": 0.3442211068249619,
+        "max_left_yaw_command": 0.0,
+        "max_right_yaw_command": 0.0,
+        "max_speed_mps": 0.016909656366970432,
+        "minimum_ned_height_m": 0.20193181886457073,
+        "runway_axis_displacement_m": 0.06267857180208125,
+        "simulation_fault": "",
+        "steps": 1920,
+        "tail_up_time_s": -1.0,
+        "total_path_distance_m": 0.06294467478845182,
+        "touchdown_sink_mps": 0.0,
+        "touchdown_speed_mps": 0.0,
+        "touchdown_time_s": -1.0,
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"tail\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_values_mps": [
+          0.007661526868991947,
+          0.007831971100734195,
+          0.007745622346324452
+        ]
+      },
+      "name": "parked-engine-idle"
+    },
+    {
+      "engine_running": true,
+      "metrics": {
+        "crash": false,
+        "crash_reason": "",
+        "crash_speed_mps": 0.0,
+        "elapsed_s": 6.0,
+        "final_contact_count": 3,
+        "final_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "final_engine_rpm": 3801.8799994889628,
+        "final_heading_deg": 16.299167785569523,
+        "final_speed_mps": 1.661974020823431,
+        "final_state_ned_body": [
+          17.270740891232574,
+          -43.58672484375964,
+          -0.20264056439664802,
+          1.6321498301840558,
+          0.09396903176393238,
+          0.29902240516641804,
+          0.9858152304033418,
+          -0.005196879013058328,
+          0.0917452560775121,
+          0.14044262864458756,
+          0.08408872923414432,
+          -0.01070123109950868,
+          -0.4865013359646414
+        ],
+        "finite": true,
+        "ground_distance_m": 4.395089024111167,
+        "heading_change_deg": -73.70083221443048,
+        "initial_contact_count": 3,
+        "initial_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "initial_engine_rpm": 2800.0,
+        "initial_heading_deg": 90.0,
+        "initial_speed_mps": 0.0,
+        "liftoff_distance_m": 0.0,
+        "liftoff_speed_mps": 0.0,
+        "liftoff_time_s": -1.0,
+        "max_abs_yaw_command": 0.65,
+        "max_abs_yaw_servo": 0.6428263844803784,
+        "max_contact_count": 3,
+        "max_cross_track_m": 2.270740891232574,
+        "max_engine_rpm": 3801.8799994889628,
+        "max_heading_error_deg": 73.70083221443048,
+        "max_left_yaw_command": -0.65,
+        "max_right_yaw_command": 0.0,
+        "max_speed_mps": 1.661974020823431,
+        "minimum_ned_height_m": 0.20193181886457073,
+        "runway_axis_displacement_m": 3.41327515624036,
+        "simulation_fault": "",
+        "steps": 1440,
+        "tail_up_time_s": -1.0,
+        "total_path_distance_m": 4.395089024111167,
+        "touchdown_sink_mps": 0.0,
+        "touchdown_speed_mps": 0.0,
+        "touchdown_time_s": -1.0,
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"tail\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_values_mps": [
+          1.570033816051084,
+          1.727194530764744,
+          1.7217000434210221
+        ]
+      },
+      "name": "taxi-left-rudder"
+    },
+    {
+      "engine_running": true,
+      "metrics": {
+        "crash": false,
+        "crash_reason": "",
+        "crash_speed_mps": 0.0,
+        "elapsed_s": 6.0,
+        "final_contact_count": 3,
+        "final_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "final_engine_rpm": 3801.8799994889628,
+        "final_heading_deg": 165.79076511329734,
+        "final_speed_mps": 1.6684796498840457,
+        "final_state_ned_body": [
+          12.682382748797215,
+          -43.62618462666733,
+          -0.20294451880684566,
+          1.6373957399552501,
+          -0.10745551692346418,
+          0.30201464324813415,
+          0.12209069719399053,
+          -0.092463901423193,
+          -0.00016910710581105696,
+          0.9882025399659091,
+          -0.1371189653390407,
+          0.000824669846739872,
+          0.4991898379427659
+        ],
+        "finite": true,
+        "ground_distance_m": 4.40784642608175,
+        "heading_change_deg": 75.79076511329735,
+        "initial_contact_count": 3,
+        "initial_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "initial_engine_rpm": 2800.0,
+        "initial_heading_deg": 90.0,
+        "initial_speed_mps": 0.0,
+        "liftoff_distance_m": 0.0,
+        "liftoff_speed_mps": 0.0,
+        "liftoff_time_s": -1.0,
+        "max_abs_yaw_command": 0.65,
+        "max_abs_yaw_servo": 0.6571736155196216,
+        "max_contact_count": 3,
+        "max_cross_track_m": 2.317617251202785,
+        "max_engine_rpm": 3801.8799994889628,
+        "max_heading_error_deg": 75.79076511329735,
+        "max_left_yaw_command": 0.0,
+        "max_right_yaw_command": 0.65,
+        "max_speed_mps": 1.6684796498840457,
+        "minimum_ned_height_m": 0.20193181886457073,
+        "runway_axis_displacement_m": 3.3738153733326683,
+        "simulation_fault": "",
+        "steps": 1440,
+        "tail_up_time_s": -1.0,
+        "total_path_distance_m": 4.40784642608175,
+        "touchdown_sink_mps": 0.0,
+        "touchdown_speed_mps": 0.0,
+        "touchdown_time_s": -1.0,
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"tail\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_values_mps": [
+          1.7381550756538742,
+          1.5742546028293902,
+          1.7345647077147992
+        ]
+      },
+      "name": "taxi-right-rudder"
+    },
+    {
+      "engine_running": true,
+      "metrics": {
+        "crash": false,
+        "crash_reason": "",
+        "crash_speed_mps": 0.0,
+        "elapsed_s": 4.15,
+        "final_contact_count": 0,
+        "final_contacts": [],
+        "final_engine_rpm": 11148.96512630605,
+        "final_heading_deg": 89.12088947522307,
+        "final_speed_mps": 24.937668626244683,
+        "final_state_ned_body": [
+          14.420127718163059,
+          -4.87331500971668,
+          -0.6777551590263002,
+          24.892919462649427,
+          -0.13889366703816466,
+          1.4868038497711822,
+          0.7069447995844871,
+          -0.08854771851390615,
+          0.0002012077588652314,
+          0.7017038630375848,
+          -0.08633559405704633,
+          0.1709521948772559,
+          -0.04605021903126186
+        ],
+        "finite": true,
+        "ground_distance_m": 24.949094823588478,
+        "heading_change_deg": -0.8791105247769312,
+        "initial_contact_count": 3,
+        "initial_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "initial_engine_rpm": 2800.0,
+        "initial_heading_deg": 90.0,
+        "initial_speed_mps": 0.0,
+        "liftoff_distance_m": 24.94273404386178,
+        "liftoff_speed_mps": 20.30354822187927,
+        "liftoff_time_s": 3.3958333333333335,
+        "max_abs_yaw_command": 0.0,
+        "max_abs_yaw_servo": 0.007173615519621623,
+        "max_contact_count": 3,
+        "max_cross_track_m": 0.6158650231741878,
+        "max_engine_rpm": 11148.96512630605,
+        "max_heading_error_deg": 2.6050927860489232,
+        "max_left_yaw_command": 0.0,
+        "max_right_yaw_command": 0.0,
+        "max_speed_mps": 24.937668626244683,
+        "minimum_ned_height_m": 0.20193181886457073,
+        "runway_axis_displacement_m": 42.12668499028332,
+        "simulation_fault": "",
+        "stall_estimate_mps": 10.338110947578516,
+        "steps": 996,
+        "tail_up_time_s": 1.9916666666666667,
+        "total_path_distance_m": 42.142177952241646,
+        "touchdown_sink_mps": 0.0,
+        "touchdown_speed_mps": 0.0,
+        "touchdown_time_s": -1.0,
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"tail\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_values_mps": [
+          19.891962334945216,
+          15.278615263584436,
+          7.878595998999014
+        ]
+      },
+      "name": "takeoff-unguided"
+    },
+    {
+      "engine_running": true,
+      "metrics": {
+        "crash": false,
+        "crash_reason": "",
+        "crash_speed_mps": 0.0,
+        "elapsed_s": 3.625,
+        "final_contact_count": 0,
+        "final_contacts": [],
+        "final_engine_rpm": 11148.715215489761,
+        "final_heading_deg": 89.68734266945702,
+        "final_speed_mps": 21.796414503006456,
+        "final_state_ned_body": [
+          15.084435962559905,
+          -17.229337663298836,
+          -0.6133889000534936,
+          21.752399996369604,
+          -0.13734080605567442,
+          1.377649116357942,
+          0.7074762930142713,
+          -0.04676958027640824,
+          0.035240477756573046,
+          0.7043067583880209,
+          0.013809632954831614,
+          0.03132627629812178,
+          -0.0018499456792284168
+        ],
+        "finite": true,
+        "ground_distance_m": 15.415423700479465,
+        "heading_change_deg": -0.31265733054297806,
+        "initial_contact_count": 3,
+        "initial_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "initial_engine_rpm": 2800.0,
+        "initial_heading_deg": 90.0,
+        "initial_speed_mps": 0.0,
+        "liftoff_distance_m": 15.41513886557739,
+        "liftoff_speed_mps": 16.25348639147876,
+        "liftoff_time_s": 2.875,
+        "max_abs_yaw_command": 0.03220228488633114,
+        "max_abs_yaw_servo": 0.026412908539197047,
+        "max_contact_count": 3,
+        "max_cross_track_m": 0.08443596255990289,
+        "max_engine_rpm": 11148.715215489761,
+        "max_heading_error_deg": 0.5004329785096298,
+        "max_left_yaw_command": -0.03220228488633114,
+        "max_right_yaw_command": 0.019239293019575422,
+        "max_speed_mps": 21.796414503006456,
+        "minimum_ned_height_m": 0.20193181886457073,
+        "runway_axis_displacement_m": 29.770662336701164,
+        "simulation_fault": "",
+        "stall_estimate_mps": 10.338110947578516,
+        "steps": 870,
+        "tail_up_time_s": 1.9916666666666667,
+        "total_path_distance_m": 29.77802269402374,
+        "touchdown_sink_mps": 0.0,
+        "touchdown_speed_mps": 0.0,
+        "touchdown_time_s": -1.0,
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"tail\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_values_mps": [
+          15.81983915064563,
+          13.904292618515226,
+          7.897472255906863
+        ]
+      },
+      "name": "takeoff-feedback-guided"
+    },
+    {
+      "approach_start_east_m": 145.0,
+      "approach_start_height_m": 7.599127996040975,
+      "approach_target_gamma_deg": -3.0,
+      "approach_target_speed_mps": 12.922638684473144,
+      "engine_running": true,
+      "flare_nose_attitude_target_deg": 5.0,
+      "flare_observation_definition": "minimum sampled CG height below NED datum is under the configured 1.5 m flare trigger",
+      "flare_observed": true,
+      "flare_trigger_height_m": 1.5,
+      "metrics": {
+        "crash": false,
+        "crash_reason": "",
+        "crash_speed_mps": 0.0,
+        "elapsed_s": 15.475,
+        "final_contact_count": 3,
+        "final_contacts": [
+          "main_left",
+          "main_right",
+          "tail"
+        ],
+        "final_engine_rpm": 2800.001618533623,
+        "final_heading_deg": -89.82787050934698,
+        "final_speed_mps": 8.408609500214288,
+        "final_state_ned_body": [
+          16.692668860505496,
+          -36.33387822883895,
+          -0.2134862566560946,
+          8.26825923364561,
+          0.0015788933003398967,
+          1.5299021143275877,
+          0.7052302816399189,
+          0.0642455715474692,
+          0.06442019619470914,
+          -0.7031164873026765,
+          -0.017396539130920916,
+          -0.01559578858632845,
+          -0.0007563597680591299
+        ],
+        "finite": true,
+        "ground_distance_m": 34.48551642159775,
+        "heading_change_deg": 0.17212949065302416,
+        "initial_contact_count": 0,
+        "initial_contacts": [],
+        "initial_engine_rpm": 2800.0,
+        "initial_heading_deg": -90.0,
+        "initial_speed_mps": 12.922638684473144,
+        "liftoff_distance_m": 0.0,
+        "liftoff_speed_mps": 0.0,
+        "liftoff_time_s": -1.0,
+        "max_abs_yaw_command": 0.0312866550100414,
+        "max_abs_yaw_servo": 0.023063020140674205,
+        "max_contact_count": 3,
+        "max_cross_track_m": 1.6926688605054845,
+        "max_engine_rpm": 3974.2873472574497,
+        "max_heading_error_deg": 0.5585854166690303,
+        "max_left_yaw_command": -0.0312866550100414,
+        "max_right_yaw_command": 0.0,
+        "max_speed_mps": 12.922638684473144,
+        "minimum_ned_height_m": 0.1859905477431115,
+        "runway_axis_displacement_m": 181.33387822883896,
+        "simulation_fault": "",
+        "stall_estimate_mps": 10.338110947578516,
+        "steps": 3714,
+        "tail_up_time_s": 11.475,
+        "total_path_distance_m": 181.5601451459847,
+        "touchdown_sink_mps": 1.3215109445260926,
+        "touchdown_speed_mps": 12.434109411732114,
+        "touchdown_time_s": 11.475,
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"tail\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_values_mps": [
+          8.432001970991614,
+          8.431458140439249,
+          8.431760051541756
+        ]
+      },
+      "name": "approach-flare-touchdown",
+      "touchdown_sink_mps": 1.3215109445260926,
+      "touchdown_speed_mps": 12.434109411732114,
+      "touchdown_target_east_m": 0.0,
+      "touchdown_time_s": 11.475
+    }
+  ],
+  "dt_s": 0.004166666666666667,
+  "evidence_kind": "simulator prediction; not physical validation",
+  "field_id": "default",
+  "format": "openrc-extra-ground-probe v1",
+  "generated_utc": "2026-10-12T00:02:34",
+  "ground_rest_setup": {
+    "actual_minus_ground_start_loads_body_N_Nm": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "actual_session_angular_accel_max_radps2": 0.0663962426579276,
+    "actual_session_body_angular_acceleration_radps2": [
+      0.012726837446751101,
+      0.00011680451226927918,
+      -0.0663962426579276
+    ],
+    "actual_session_body_linear_acceleration_mps2": [
+      -0.01077037671759351,
+      -0.013117944964209385,
+      -0.0020875438630287846
+    ],
+    "actual_session_constrained_component_guard": 1e-06,
+    "actual_session_constrained_component_max_mps2_radps2": 5.5087878703119486e-14,
+    "actual_session_contact_terrain": [
+      {
+        "compression_m": 0.021027887286424796,
+        "contact": "main_left",
+        "normal_load_N": 14.166615451335426,
+        "surface_point_ned_m": [
+          15.159569662940745,
+          -46.865335678430206,
+          0.021472707864220036
+        ],
+        "terrain_height_up_m": -0.00044457125266053545,
+        "terrain_normal_ned": [
+          0.0028821444769441366,
+          -0.003925121822480179,
+          -0.9999881432606554
+        ],
+        "terrain_slope_east": 0.003925168362178333,
+        "terrain_slope_north": -0.0028821786501851366
+      },
+      {
+        "compression_m": 0.02102566916644718,
+        "contact": "main_right",
+        "normal_load_N": 14.16512109042699,
+        "surface_point_ned_m": [
+          14.839570158107191,
+          -46.865441654199564,
+          0.02091982865792183
+        ],
+        "terrain_height_up_m": 0.00010586791227942718,
+        "terrain_normal_ned": [
+          0.0012183743812335238,
+          0.001059364829193319,
+          -0.9999986966541637
+        ],
+        "terrain_slope_east": -0.0010593662099138577,
+        "terrain_slope_north": -0.0012183759691987703
+      },
+      {
+        "compression_m": 0.02097314455469069,
+        "contact": "tail",
+        "normal_load_N": 4.661190752322384,
+        "surface_point_ned_m": [
+          14.999885203309775,
+          -47.81642886748222,
+          0.021003968884763122
+        ],
+        "terrain_height_up_m": -3.072386637176462e-05,
+        "terrain_normal_ned": [
+          -0.0029913790858999948,
+          0.0007948618150252438,
+          -0.9999952099114572
+        ],
+        "terrain_slope_east": -0.0007948656225019552,
+        "terrain_slope_north": 0.0029913934149393188
+      }
+    ],
+    "actual_session_continuous_size": 3,
+    "actual_session_reset_ok": true,
+    "actual_session_rest_loads_body_N_Nm": [
+      6.1747325005772185,
+      0.012870109895873422,
+      -32.40980251765484,
+      0.0031404677517331567,
+      3.6438977849329035e-05,
+      -0.03043824547823088
+    ],
+    "actual_session_translation_accel_max_mps2": 0.013117944964209385,
+    "actual_session_unconstrained_horizontal_acceleration_world_mps2": [
+      0.01312159707466014,
+      -0.010966449941218275
+    ],
+    "actual_session_unconstrained_yaw_acceleration_world_radps2": -0.06760508171565595,
+    "actual_session_world_angular_acceleration_radps2": [
+      -1.7138200580912866e-14,
+      -5.5087878703119486e-14,
+      -0.06760508171565595
+    ],
+    "actual_session_world_linear_acceleration_mps2": [
+      0.01312159707466014,
+      -0.010966449941218275,
+      3.809019072376074e-15
+    ],
+    "engine_rpm": 0.0,
+    "geometry_initial_down_guess_m": -0.20208214594114676,
+    "geometry_initial_pitch_guess_deg": 10.862431373816813,
+    "ground_start_body_angular_acceleration_radps2": [
+      0.012726837446751101,
+      0.00011680451226927918,
+      -0.0663962426579276
+    ],
+    "ground_start_body_linear_acceleration_mps2": [
+      -0.01077037671759351,
+      -0.013117944964209385,
+      -0.0020875438630287846
+    ],
+    "ground_start_initial_wind_ned_mps": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "ground_start_max_abs_equilibrium_residual_mixed_mps2_radps2": 5.5087878703119486e-14,
+    "ground_start_solver_iterations": 3,
+    "ground_start_solver_loads_body_N_Nm": [
+      6.1747325005772185,
+      0.012870109895873422,
+      -32.40980251765484,
+      0.0031404677517331567,
+      3.6438977849329035e-05,
+      -0.03043824547823088
+    ],
+    "ground_start_world_angular_acceleration_radps2": [
+      -1.7138200580912866e-14,
+      -5.5087878703119486e-14,
+      -0.06760508171565595
+    ],
+    "ground_start_world_linear_acceleration_mps2": [
+      0.01312159707466014,
+      -0.010966449941218275,
+      3.809019072376074e-15
+    ],
+    "rest_pose_method": "GroundStart Stage 1 engine-off 3-DOF Newton solve on the unmodified model with no anchors; no stiction clone, anchor creation, or idle stage",
+    "session_anchor_count": 0,
+    "session_downwash_cl": null,
+    "session_downwash_index": -1,
+    "session_initial_wind_ned_mps": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "session_wheel_speeds_mps": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "solved_cg_height_above_ned_datum_m": 0.20193181886457073,
+    "solved_contact_names": [
+      "main_left",
+      "main_right",
+      "tail"
+    ],
+    "solved_pitch_deg": 10.850829816132666,
+    "solved_roll_deg": -0.10079484031564397,
+    "solver_model": "loaded Extra model, unmodified",
+    "wheel_count": 3,
+    "wheel_index_in_continuous": 0
+  },
+  "model_data_sha256": "e47ccf28eae249e1454a00e4dfade0fc045ddab70b2c622d2d3c0986cd3644a5",
+  "model_derived_1g_stall_estimate_mps": 10.338110947578516,
+  "model_target_idle_rpm": 2800.0,
+  "physical_validation": false,
+  "runway_heading_rad": 1.5707963267948966,
+  "runway_start_east_m": -47.0,
+  "runway_start_north_m": 15.0,
+  "scenario_settings": {
+    "controller_values_are_probe_settings": true,
+    "guided_rotation_gate_mps": 11.371922042336369,
+    "guided_shallow_climb_attitude_deg": 7.0,
+    "landing_approach_speed_mps": 12.922638684473144,
+    "landing_path_angle_deg": 3.0,
+    "landing_touchdown_target_east_m": 0.0,
+    "takeoff_throttle_ramp_s": 1.5,
+    "taxi_throttle_command": 0.12,
+    "taxi_yaw_commands": [
+      -0.65,
+      0.65
+    ]
+  },
+  "stall_estimate_source": "EX-05 model CLmax and wing area; estimated aerodynamic input, not flight measurement",
+  "tick_rate_hz": 240,
+  "wheel_profile": [
+    {
+      "brake_availability": "none",
+      "brake_torque_nm": 0.0,
+      "contact": "main_left",
+      "inertia_kg_m2": 2.44025e-05,
+      "inertia_source": "Uniform solid-disk estimate, 0.040 kg rotating wheel mass; the generated 0.20 kg main gear item also includes strap and two pants",
+      "radius_m": 0.034925,
+      "radius_source": "research/extra-300/ex05/derive_physics.py: 2-3/4 in main wheels / 2; wheel size is source-derived, contact mechanics remain provisional",
+      "spin_relaxation_s": 0.03
+    },
+    {
+      "brake_availability": "none",
+      "brake_torque_nm": 0.0,
+      "contact": "main_right",
+      "inertia_kg_m2": 2.44025e-05,
+      "inertia_source": "Uniform solid-disk estimate, 0.040 kg rotating wheel mass; the generated 0.20 kg main gear item also includes strap and two pants",
+      "radius_m": 0.034925,
+      "radius_source": "research/extra-300/ex05/derive_physics.py: 2-3/4 in main wheels / 2; wheel size is source-derived, contact mechanics remain provisional",
+      "spin_relaxation_s": 0.03
+    },
+    {
+      "brake_availability": "none",
+      "brake_torque_nm": 0.0,
+      "contact": "tail",
+      "inertia_kg_m2": 8.0645e-07,
+      "inertia_source": "Uniform solid-disk estimate, 0.010 kg rotating wheel mass; the generated 0.030 kg tail assembly also includes wire",
+      "radius_m": 0.0127,
+      "radius_source": "research/extra-300/ex05/derive_physics.py: 1 in tail wheel / 2",
+      "spin_relaxation_s": 0.03
+    }
+  ]
+}

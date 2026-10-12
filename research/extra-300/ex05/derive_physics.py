@@ -117,10 +117,11 @@ sweep_hc = math.atan2(hc(semi) - hc(0), semi)
 note("reference", "quarter-chord sweep (deg)", math.degrees(sweep_qc), "aft positive; |sweep| < 1 deg: strips sit on one line")
 note("reference", "half-chord sweep (deg)", math.degrees(sweep_hc), "")
 
-# Plan CG: 4-1/8 in aft of the rib-2D LE (manual p43) = model z 0 (EX-01, 4.116 in read on the plan).
-cg_z_model = 0.0
-cg_mac = (cg_z_model - mac_le_z) / mac
-note("balance", "CG (% MAC)", 100 * cg_mac, "manual p43 balance point; range +-3/8 in")
+# Manual p43 setup datum: 4-1/8 in aft of the rib-2D LE, at model z 0 (EX-01 reads 4.116 in).
+# This is the EMPTY-TANK balance target; the prescribed half-tank fuel is added after solving ballast.
+cg_target_model_z = 0.0
+cg_target_mac = (cg_target_model_z - mac_le_z) / mac
+note("balance", "manual empty-tank target (% MAC)", 100 * cg_target_mac, "manual p43 first-flight balance point; range +-3/8 in")
 
 # Fuselage (geometry.json stations: [z, half width, top y, bottom y, ...]).
 st = g["fuselage_stations"]
@@ -187,12 +188,9 @@ x_arp = note("aero", "wing-body ac = ARP (model z)", x_ac_w - dx_f, f"wing ac at
 arp_y = W["chord_plane_y"]
 l_h = xh_ac - x_arp
 Cma = note("aero", "Cma about ARP (1/rad, c_ref)", -slope_h * Sh / S * l_h / c_ref, "tail only: the ARP is the wing-body ac")
-Cma_cg = Cma + CLa * (cg_z_model - x_arp) / c_ref
 x_np = x_arp - Cma / CLa * c_ref
-sm = note("aero", "static margin at plan CG (% MAC)", 100 * (x_np - cg_z_model) / mac, f"neutral point at model z {x_np:.4f} ({100 * (x_np - mac_le_z) / mac:.1f} % MAC)")
-note("aero", "Cma about the CG (1/rad, c_ref)", Cma_cg, "what the pilot feels")
 
-# Incidence: wing 0 deg to the thrust line, stab -0.5 deg (geometry.json, side-view note).
+# Incidence: wing 0 deg to the nominal datum axis, stab -0.5 deg (geometry.json, side-view note).
 i_h = math.radians(T["stab_incidence_deg"])
 inc_eff = note("aero", "tail effective incidence (rad)", i_h / (1 - deps), "i_h / (1 - deps/dalpha): symmetric wing, eps0 = 0")
 CL0 = note("aero", "CL0", slope_h * Sh / S * inc_eff, "symmetric wing at 0 deg + tail incidence")
@@ -238,7 +236,6 @@ items = [
     ("engine mount and bolts", 0.06, "estimated", "glass-filled beam mount", le(fw - 0.02, -0.005), None, "estimated", "on the firewall"),
     ("cowl", 0.09, "estimated", "ABS/fiberglass cowl of a .60 kit", le((g["spinner"]["back_z"] + g["cowl_rear_z"]) / 2, -0.01), [0.24, 0.15, 0.17], "measured", "between the spinner back and the cowl rear (geometry.json)"),
     ("fuel tank 12 oz (empty)", 0.06, "estimated", "manual p3 GPMQ4105", le(fw + 0.07), None, "estimated", "behind the firewall, on the thrust line"),
-    ("fuel (half tank)", 0.146, "estimated", "12 oz tank = 355 ml, half at 0.82 g/ml glow fuel; flight state: half tank (no consumption model, G4)", le(fw + 0.07), None, "estimated", "same as the tank"),
     ("receiver battery 4.8 V", 0.11, "estimated", "1100 mAh NiMH pack", le(fw + 0.05, -0.07), None, "estimated", "under the tank (manual: location shown on the plans)"),
     ("receiver and switch", 0.04, "estimated", "typical 7-ch receiver + switch harness", le(0.0, -0.05), None, "estimated", "under the wing saddle"),
     ("fuselage servos (3: elevator, rudder, throttle)", 0.135, "estimated", "manual p3: five standard servos ~45 g", le(0.12, -0.03), None, "estimated", "servo tray behind the wing LE"),
@@ -253,23 +250,37 @@ items = [
     ("fin and rudder, covered", 0.07, "estimated", "sheeted built-up fin", le(fin_cz, fin_cy), [0.22, 0.01, 0.3], "derived", "area centroid of the fin polygon"),
     ("pushrods, horns, hardware", 0.1, "estimated", "clevises, horns, pushrods, screws: rough sum", le(0.3), None, "estimated", "spread along the fuselage"),
 ]
+fuel_item = ("fuel (half tank)", 0.146, "estimated", "12 oz tank = 355 ml, half at 0.82 g/ml glow fuel; prescribed flight state (no consumption model, G4)", le(fw + 0.07), None, "estimated", "same as the tank")
 mass0 = sum(i[1] for i in items)
 mom0 = [sum(i[1] * i[4][k] for i in items) for k in range(3)]
-x_target = cg_z_model - LE0
+x_target = cg_target_model_z - LE0
 x_cg0 = mom0[0] / mass0
 nose = x_cg0 > x_target
 xb = le(g["spinner"]["back_z"] - 0.01)[0] if nose else le(0.85)[0]
 mb = mass0 * (x_target - x_cg0) / (xb - x_target)
 ballast_pos = [xb, 0.0, 0.0 if nose else 0.02]
-note("balance", "inventory without balancing mass (kg, CG x_aft m)", [mass0, x_cg0], f"target CG x_aft {x_target:.4f}")
-note("balance", "balancing mass (kg)", mb, ("spinner/nose weight" if nose else "tail weight") + " that puts the CG on the manual's balance point")
+note("balance", "dry inventory before balancing mass (kg, CG x_aft m)", [mass0, x_cg0], f"manual empty-tank target x_aft {x_target:.4f}")
+note("balance", "virtual balancing mass (kg)", mb, ("spinner/nose weight" if nose else "tail weight") + " that puts the dry inventory on the manual p43 empty-tank balance point")
 items.append(("virtual reference-build balancing mass", mb, "derived",
-              f"{SCRIPT}: m = M (x_CG - x0) / (x_ballast - x_CG) for the manual p43 balance point; a virtual reference build, NOT measured hardware or a ballast recommendation (manual: balance with the receiver battery first)",
+              f"{SCRIPT}: m = M (x_CG - x0) / (x_ballast - x_CG) on the dry inventory for manual p43 empty-tank balance; virtual reference build, NOT measured hardware or a ballast recommendation (manual: balance with the receiver battery first)",
               ballast_pos, [0.025, 0.025, 0.025], "estimated", "spinner weight position (manual p43)" if nose else "stick-on tail weight position (manual p43)"))
-mass = mass0 + mb
+dry_mass = mass0 + mb
+dry_cg = [sum(i[1] * i[4][k] for i in items) / dry_mass for k in range(3)]
+note("balance", "dry balanced reference (kg, CG x_aft m)", [dry_mass, dry_cg[0]], "manual p43 target with empty tank; virtual ballast is derived from the estimated inventory")
+
+# The flight reference adds the same fixed half-tank fuel only after the manual's dry balance condition is met.
+items.append(fuel_item)
+mass = sum(i[1] for i in items)
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
-note("balance", "flight mass (kg)", mass, f"dry {mass - 0.146:.3f} kg = {(mass - 0.146) / LB:.2f} lb vs manual 7-7.5 lb; RCM build 124 oz = {124 * OZ:.3f} kg RTF")
-note("balance", "flight CG (le frame)", cg, "z: below the thrust line by the inventory")
+cg_model_z, cg_model_y = cg[0] + LE0, cg[2]
+cg_loaded_mac = (cg_model_z - mac_le_z) / mac
+dry_cg_model_z = dry_cg[0] + LE0
+dry_cg_mac = (dry_cg_model_z - mac_le_z) / mac
+note("balance", "loaded half-tank reference (kg, CG x_aft m, CG % MAC)", [mass, cg[0], 100 * cg_loaded_mac], "derived after adding fixed half-tank fuel to the dry manual-balanced inventory; no fuel burn")
+sm = note("aero", "static margin at loaded half-tank CG (% MAC)", 100 * (x_np - cg_model_z) / mac,
+     f"neutral point at model z {x_np:.4f} ({100 * (x_np - mac_le_z) / mac:.1f} % MAC); loaded half-tank CG {100 * cg_loaded_mac:.2f} % MAC")
+Cma_cg = Cma + CLa * (cg_model_z - x_arp) / c_ref
+note("aero", "Cma about the loaded CG (1/rad, c_ref)", Cma_cg, "tail about the wing-body ac; transferred to derived loaded half-tank CG")
 
 # Inertia (same box + parallel-axis model as the loader) for the report.
 def inertia(pt):
@@ -289,7 +300,6 @@ V_start = note("aero", "start speed (m/s)", round(1.6 * Vs), "1.6 x the 1-g stal
 CL_ref = note("aero", "CL_ref", mass * G0 / (0.5 * RHO * V_start ** 2 * S), "level flight at the start speed; CL-dependent cross terms are frozen there")
 
 # --- Lateral-directional --------------------------------------------------------------------------------------
-cg_model_z, cg_model_y = cg[0] + LE0, cg[2]
 l_v = xv_ac - cg_model_z
 z_v = fin_cy - cg_model_y
 AR_v = note("lateral", "fin effective AR", 1.55 * h_v * h_v / Sv, "geometric h2/Sv x 1.55 end-plate factor (fuselage + stab, DATCOM range 1.4-1.7)")
@@ -397,7 +407,7 @@ def gear_contact(name, position, stiffness, travel, steering=0.0):
 
 
 landing_gear = {
-    "description": "E5a: fixed main wheels and rudder-linked tail wheel using E1/E2 point spring-damper/tyre contacts. Provisional mechanics; no caster, brakes or stiction anchors. Wheel-circle contact geometry remains E6a.",
+    "description": "E5a: fixed main wheels and rudder-linked tail wheel. File-backed GP-02 wheel profiles supply per-contact radius, inertia and rim-speed dynamics; terrain-aware contact and wheel-radius corrections are active. E5a spring, damping, tyre and steering values remain provisional; no caster, brakes or stiction anchors.",
     "contacts": [gear_contact("main_left", main_pos[0], k_main, 0.08),
                  gear_contact("main_right", main_pos[1], k_main, 0.08),
                  gear_contact("tail", tail_pos, k_tail, 0.05, -25.0)],
@@ -405,6 +415,35 @@ landing_gear = {
     "side_friction": q(0.8, "1", "borrowed", "E5a: same provisional JSBSim c172x coefficient used by Stik and P-51 E2 fixtures; no Extra tyre measurement."),
     "peak_slip_angle": q(6.0, "deg", "borrowed", "E5a: same provisional 6 degree peak-slip regularization as Stik/P-51 E2; no Extra tyre measurement."),
 }
+
+# --- EX-06: physical installation from the rendered thrust frame --------------------------------------------
+prop_geometry = g["propeller"]
+down_deg = float(prop_geometry["down_thrust_deg"])
+right_deg = float(prop_geometry["right_thrust_deg"])
+down_rad, right_rad = math.radians(down_deg), math.radians(right_deg)
+prop_delta = float(prop_geometry["z"]) - float(g["spinner"]["back_z"])
+# Godot Node3D.rotation uses default YXZ order on the visual thrust frame. Apply its pivot and
+# rotation Vector3(-down, -right, 0) to the propeller child at local z=prop_delta.
+prop_hub_model = [
+    -prop_delta * math.cos(down_rad) * math.sin(right_rad),
+    prop_delta * math.sin(down_rad),
+    float(g["spinner"]["back_z"]) + prop_delta * math.cos(down_rad) * math.cos(right_rad),
+]
+prop_hub_le = le(prop_hub_model[2], prop_hub_model[1], prop_hub_model[0])
+prop_hub_offset = [prop_hub_le[k] - cg[k] for k in range(3)]
+prop_axis_body_fr = [
+    math.cos(down_rad) * math.cos(right_rad),
+    math.cos(down_rad) * math.sin(right_rad),
+    math.sin(down_rad),
+]
+if abs(sum(v * v for v in prop_axis_body_fr) - 1.0) > 1e-12:
+    raise ValueError("EX-06: transformed propeller shaft axis is not unit length")
+note("propulsion", "propeller shaft axis (body FRD)", prop_axis_body_fr,
+     f"geometry.json thrust frame: {down_deg:g} deg down, {right_deg:g} deg right; [cos(down)cos(right), cos(down)sin(right), sin(down)]")
+note("propulsion", "propeller hub (model right, up, aft m)", prop_hub_model,
+     "geometry.json propeller child transformed by the visual thrust_frame pivot/rotation (default YXZ)")
+note("propulsion", "propeller hub offset from loaded CG (LE frame)", prop_hub_offset,
+     "transformed propeller hub [x_aft,y_right,z_up] minus the derived loaded inventory CG")
 
 # --- Assemble ----------------------------------------------------------------------------------------------------
 stik = legacy_input(json.load(open(STIK)))
@@ -452,7 +491,7 @@ data = {
     "id": "gp-extra-300s-60",
     "description": "Great Planes Extra 300S .60 (GPMA0236), 64 in span, O.S. .61FX glow. EXPERIMENTAL first physics estimate (EX-05), generated by " + SCRIPT + "; not flight-identified. Visual geometry lives in assets/aircraft/extra-300s-60/geometry.json.",
     "frames": {
-        "le_frame": "positions in metres from the wing leading edge at the centreline (the measured trapezoid's root LE, model z " + f"{LE0}" + "): [x_aft, y_right, z_up]; z = 0 on the thrust line (spinner axis)",
+        "le_frame": "positions in metres from the wing leading edge at the centreline (the measured trapezoid's root LE, model z " + f"{LE0}" + "): [x_aft, y_right, z_up]; z = 0 on the nominal spinner-axis datum; physical shaft angles are propulsion.propeller.thrust_angles",
         "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up",
     },
     "reference": {
@@ -466,10 +505,10 @@ data = {
     },
     "start": {"level_speed": q(float(V_start), "m/s", "derived", D("1.6 x the 1-g stall at the flight mass and CL_max, rounded"))},
     "balance": {
-        "plan_cg": q(cg, "m", "manual", "4-1/8 in aft of the LE at rib 2D (" + MANUAL + " p43) = model z 0 (EX-01 read 4.116 in on the plan); z from the inventory (derived)"),
+        "plan_cg": q(cg, "m", "derived", "loaded inventory CG after virtual balance at the manual p43 4-1/8 in dry, empty-tank datum (model z 0; EX-01 read 4.116 in), then adding the prescribed fixed half-tank fuel; not a measured airplane"),
         "firewall": q(le(fw), "m", "measured", "firewall station, " + GEO_SRC),
-        "configuration": "virtual-balanced-reference-v1",
-        "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the manual's point, NOT a measured airplane")),
+        "configuration": "virtual-balanced-dry-manual-p43-plus-fixed-half-tank-v1",
+        "cg_tolerance": q(0.001, "m", "estimated", D("dry virtual reference build balanced to the manual p43 empty-tank point, then fixed half-tank fuel added; NOT a measured airplane")),
     },
     "inventory": [
         dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
@@ -527,7 +566,7 @@ data = {
                 "position": q(le(xv_ac, fin_cy), "m", "derived", D("fin ac: quarter chord at the area-centroid height")),
                 "lift_slope": q(slope_v, "1/rad", "derived", D("Helmbold (end-plated AR) x DATCOM sidewash/eta")),
                 "control_effectiveness": q(ce_v, "1", "derived", D("thin-airfoil tau x 0.8 / sidewash factor")),
-                "incidence": q(0.0, "rad", "estimated", "symmetric fin; the plan's 2 deg right thrust is not modelled (EX-06)"),
+                "incidence": q(0.0, "rad", "estimated", "symmetric fin; propulsion installation angles are separate"),
             },
         },
     },
@@ -535,8 +574,11 @@ data = {
     "landing_gear": landing_gear,
 }
 p = data["propulsion"]
-p["description"] = "Same O.S. MAX-61FX and APC 12x6 data as the Ugly Stik (manual p3 prototype engine). AXIAL thrust: the plan's 2 deg right and 0.5 deg down thrust are not modelled yet (EX-06); the visual model shows a 12x8 stand-in."
-p["propeller"]["thrust_line_offset"] = q([0.0, 0.0, -cg[2]], "m", "derived", D("spinner axis relative to the inventory CG; [x_aft, y_right, z_up] from the CG"))
+p["description"] = "O.S. MAX-61FX prototype engine (manual p3); APC 12x6 Sport nominal propeller using borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived right/down shaft angles and visual propeller hub are applied; exact prototype propeller remains unidentified."
+p["propeller"]["thrust_angles"] = q([down_deg, right_deg], "deg", "manual",
+    "Original plan thrust-frame notes transcribed in " + GEO_SRC + "; ordered [down, right] to match the v2 propulsion contract")
+p["propeller"]["thrust_line_offset"] = q(prop_hub_offset, "m", "derived",
+    D("visual thrust_frame pivot/rotation and propeller child transform to actual hub; hub minus loaded inventory CG in [x_aft,y_right,z_up]"))
 p["propeller"]["rotating_inertia"] = dict(p["propeller"]["rotating_inertia"], source=p["propeller"]["rotating_inertia"]["source"] + " (2-1/2 in spinner here, within the estimate)")
 
 # The loader's exact consistency rules (aircraft_data.gd _surfaces) must hold: recompute them from the rounded file.
@@ -570,7 +612,7 @@ EX-08 flies the envelope, EX-09 looks for an independent contrast.
 
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit compatibility-default leaves added, {parity['numeric_differences']} differences.
 
-Flight mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, static margin {sm:.1f} % MAC, 1-g stall {Vs:.1f} m/s, start {V_start} m/s.
+Dry empty-tank reference {dry_mass:.3f} kg at {100 * dry_cg_mac:.2f} % MAC (manual target {100 * cg_target_mac:.2f} % MAC); loaded half-tank reference {mass:.3f} kg at {100 * cg_loaded_mac:.2f} % MAC, static margin at loaded CG {sm:.2f} % MAC, 1-g stall {Vs:.2f} m/s, start {V_start} m/s.
 Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}°.
 
 ## Intermediate quantities
@@ -583,13 +625,13 @@ Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {thro
 
 ## Known simplifications
 
-- Axial thrust: 2° right and 0.5° down thrust of the plan are not modelled (EX-06). Same propeller data as the Stik (APC 12x6, UIUC 11x6 measurement).
+- The plan-derived 2° right / 0.5° down thrust axis and actual propeller hub are now applied through `thrust_angles` and the CG-relative hub offset. The physics names an APC 12×6 Sport, but the Ct/Cp tables remain a borrowed UIUC APC 11×6 proxy; the exact prototype propeller is unknown.
 - Fuselage directional destabilization is omitted (v1 contract: Cnb equals the fin term), as for the Stik.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
-- No propwash or fuel burn. E5a adds fixed taildragger ground contact; stiffness, damping, tyre forces, steering ratio and collapse thresholds remain provisional. No caster, brakes or stiction anchors; the parked idle state may creep. Point contacts rotate with the airframe; wheel-circle geometry remains E6a. Visual wheels do not animate suspension or steering in this step.
+- No propwash or fuel burn. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. Extra has no caster, brakes or stiction anchors, and no Extra takeoff/landing handling acceptance yet.
 """
 
 if "--check" in sys.argv:
@@ -603,4 +645,4 @@ else:
     OUT.write_text(text)
     REPORT.write_text(report)
     print(f"wrote {OUT.relative_to(ROOT)} and {REPORT.relative_to(ROOT)}")
-    print(f"mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, SM {sm:.1f} % MAC, stall {Vs:.1f} m/s, start {V_start} m/s")
+    print(f"dry {dry_mass:.3f} kg / {100 * dry_cg_mac:.2f} % MAC; loaded {mass:.3f} kg / {100 * cg_loaded_mac:.2f} % MAC; SM {sm:.2f} % MAC, stall {Vs:.2f} m/s, start {V_start} m/s")
