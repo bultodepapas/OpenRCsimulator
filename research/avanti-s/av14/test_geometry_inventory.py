@@ -14,6 +14,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[3]
 GENERATOR = ROOT / "research/avanti-s/av06/derive_physics.py"
 GEOMETRY = ROOT / "assets/aircraft/avanti-s-a200/geometry.json"
+GENERATED_JSON = ROOT / "app/data/aircraft/sebart_avanti_s_a200.json"
 
 
 def load_generator():
@@ -35,7 +36,7 @@ def integrate_piecewise_tail(rows: list[list[float]], chord_scale: float = 1.0) 
     station-to-station chord and leading edge are linear; the mass line is at
     leading edge + 45% chord, matching the documented AV-06 placement rule.
     """
-    area = moment_y = moment_x = 0.0
+    area = moment_y = moment_x = moment_c2 = 0.0
     for a, b in zip(rows, rows[1:]):
         y0, le0, te0, _ = a
         y1, le1, te1, _ = b
@@ -49,7 +50,8 @@ def integrate_piecewise_tail(rows: list[list[float]], chord_scale: float = 1.0) 
         area += segment_area
         moment_y += span_first
         moment_x += le_chord_integral + 0.45 * chord_squared_integral
-    return area, moment_y / area, moment_x / area, chord_squared_integral / chord_scale ** 2
+        moment_c2 += chord_squared_integral
+    return area, moment_y / area, moment_x / area, moment_c2 / (chord_scale * area)
 
 
 def sampled_tail_centroid(rows: list[list[float]], chord_scale: float, resolution: int) -> tuple[float, float, float]:
@@ -65,6 +67,23 @@ def sampled_tail_centroid(rows: list[list[float]], chord_scale: float, resolutio
 def inventory_cg(parts: list[tuple]) -> list[float]:
     total = sum(part[1] for part in parts)
     return [sum(part[1] * part[4][axis] for part in parts) / total for axis in range(3)]
+
+
+def find_quantity(node, key: str):
+    if isinstance(node, dict):
+        value = node.get(key)
+        if isinstance(value, dict) and {"value", "unit", "kind", "source"}.issubset(value):
+            return value
+        for child in node.values():
+            found = find_quantity(child, key)
+            if found is not None:
+                return found
+    elif isinstance(node, list):
+        for child in node:
+            found = find_quantity(child, key)
+            if found is not None:
+                return found
+    return None
 
 
 def inventory_tensor(parts: list[tuple], point: list[float]) -> list[float]:
@@ -130,12 +149,14 @@ class GeometryInventoryTests(unittest.TestCase):
         geometry = json.loads(GEOMETRY.read_text(encoding="utf-8"))
         tail_rows = geometry["tail"]["stations"]
         chord_scale = AV06.v("airframe.stab_chord_scale")
-        expected_area, expected_y, expected_x, chord_squared_over_area = integrate_piecewise_tail(tail_rows, chord_scale)
+        base_area, base_y, _, _ = integrate_piecewise_tail(tail_rows)
+        expected_area, expected_y, expected_x, _ = integrate_piecewise_tail(tail_rows, chord_scale)
 
-        self.assertAlmostEqual(expected_area, 0.07038, places=10)
+        self.assertAlmostEqual(base_area, 0.07038, places=10)
+        self.assertAlmostEqual(expected_y, base_y, places=10)
         self.assertAlmostEqual(AV06.th_area, expected_area, places=9)
         self.assertAlmostEqual(AV06.th_y, expected_y, delta=3e-6)
-        self.assertAlmostEqual(AV06.th_z, expected_x, delta=1e-5)
+        self.assertAlmostEqual(AV06.th_z, expected_x, delta=1e-6)
 
         area_60, y_60, x_60 = sampled_tail_centroid(tail_rows, chord_scale, 60)
         area_240, y_240, x_240 = sampled_tail_centroid(tail_rows, chord_scale, 240)
@@ -146,30 +167,32 @@ class GeometryInventoryTests(unittest.TestCase):
         self.assertLess(error_240, error_60)
         self.assertGreater(error_60 / error_240, 10.0)
 
-        scaled_area, scaled_y, scaled_x, scaled_c2_over_area = integrate_piecewise_tail(tail_rows, 1.1)
-        _, scale_1_area, scale_1_x, _ = integrate_piecewise_tail(tail_rows, 1.0)
-        self.assertAlmostEqual(scaled_area, 1.1 * expected_area / chord_scale, places=10)
-        self.assertAlmostEqual(scaled_y, scale_1_area, places=10)
-        self.assertAlmostEqual(scaled_x - scale_1_x, 0.45 * 0.1 * scaled_c2_over_area, places=12)
+        scaled_area, scaled_y, scaled_x, _ = integrate_piecewise_tail(tail_rows, 1.1)
+        _, scale_1_y, scale_1_x, base_c2_over_area = integrate_piecewise_tail(tail_rows, 1.0)
+        self.assertAlmostEqual(scaled_area, 1.1 * base_area, places=10)
+        self.assertAlmostEqual(scaled_y, scale_1_y, places=10)
+        self.assertAlmostEqual(scaled_x - scale_1_x, 0.45 * 0.1 * base_c2_over_area, places=12)
         area_scaled_sample, y_scaled_sample, x_scaled_sample = sampled_tail_centroid(tail_rows, 1.1, 60)
         self.assertAlmostEqual(area_scaled_sample, scaled_area, places=12)
         self.assertAlmostEqual(y_scaled_sample, scaled_y, delta=3e-6)
-        self.assertAlmostEqual(x_scaled_sample, scaled_x, delta=1e-5)
+        self.assertAlmostEqual(x_scaled_sample, scaled_x, delta=1e-6)
 
-        tail_parts = [part for part in AV06.items if part[0].startswith("stab half ")]
+        generated = json.loads(GENERATED_JSON.read_text(encoding="utf-8"))
+        tail_parts = [part for part in generated["inventory"] if part["name"].startswith("stab half ")]
         self.assertEqual(len(tail_parts), 2)
         for part in tail_parts:
-            self.assertAlmostEqual(part[4][0], expected_x, places=6)
-            self.assertAlmostEqual(abs(part[4][1]), expected_y, places=6)
+            position = part["position"]["value"]
+            self.assertAlmostEqual(position[0], AV06.th_z, delta=1e-6)
+            self.assertAlmostEqual(abs(position[1]), AV06.th_y, delta=1e-6)
 
     def test_servo_pairs_preserve_mass_and_have_local_tensor(self):
         groups = {
-            "aileron servo": (0.13, 0.75, 1.50),
-            "flap servo": (0.15, 0.35, 0.70),
-            "elevator servo": (0.13, 0.125, 0.25),
+            "aileron servo": (0.13, 0.75, 1.50, 0.35, 0.0),
+            "flap servo": (0.15, 0.35, 0.70, 0.33, 0.0),
+            "elevator servo": (0.13, 0.125, 0.25, 0.95, 0.06),
         }
         total_delta = 0.0
-        for name, (pair_mass, half_span, old_box_span) in groups.items():
+        for name, (pair_mass, half_span, old_box_span, expected_x, expected_z) in groups.items():
             pair = [part for part in AV06.items if part[0].startswith(name + " ")]
             self.assertEqual(len(pair), 2, name)
             self.assertAlmostEqual(sum(part[1] for part in pair), pair_mass, places=12)
@@ -178,6 +201,8 @@ class GeometryInventoryTests(unittest.TestCase):
             self.assertAlmostEqual(lateral[0], -half_span, places=12)
             self.assertAlmostEqual(lateral[1], half_span, places=12)
             for part in pair:
+                self.assertAlmostEqual(part[4][0], expected_x, places=12)
+                self.assertAlmostEqual(part[4][2], expected_z, places=12)
                 self.assertEqual(part[5], [0.03, 0.03, 0.03])
 
             new_y_second_moment = sum(
@@ -187,6 +212,9 @@ class GeometryInventoryTests(unittest.TestCase):
             total_delta += new_y_second_moment - old_y_second_moment
 
         self.assertAlmostEqual(total_delta, 0.06238491666666667, places=12)
+        for name in ("rudder servo", "nose steering servo"):
+            item = next(part for part in AV06.items if part[0] == name)
+            self.assertEqual(item[2], "estimated")
 
     def test_full_inventory_tensor_has_physical_principal_moments(self):
         parts = AV06.items
@@ -218,6 +246,30 @@ class GeometryInventoryTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_generated_provenance_keeps_estimates_and_model_limits_explicit(self):
+        generated = json.loads(GENERATED_JSON.read_text(encoding="utf-8"))
+        inputs = json.loads((ROOT / "research/avanti-s/av06/inputs.json").read_text(encoding="utf-8"))
+        cg_source = inputs["airframe"]["cg_aft_of_root_le"]["source"]
+        self.assertIn("no fuel-state qualifier", cg_source)
+        self.assertIn("half-tank state is separately declared", cg_source)
+
+        for part in generated["inventory"]:
+            if "servo" in part["name"]:
+                self.assertEqual(part["mass"]["kind"], "estimated", part["name"])
+
+        cd0 = find_quantity(generated, "CD0")
+        governor = find_quantity(generated, "governor_tau")
+        fuel_flow = find_quantity(generated, "fuel_flow")
+        self.assertIsNotNone(cd0)
+        self.assertIn("M=0.34", cd0["source"])
+        self.assertIn("derivation.md", cd0["source"])
+        self.assertIsNotNone(governor)
+        self.assertEqual(governor["value"], 0.4)
+        self.assertEqual(governor["kind"], "measured")
+        self.assertIn("not a universal ECU step response", governor["source"])
+        self.assertIsNotNone(fuel_flow)
+        self.assertIn("no current runtime consumer", fuel_flow["source"])
 
 
 if __name__ == "__main__":

@@ -39,8 +39,8 @@ NU = 1.46e-5
 SCRIPT = "research/avanti-s/av06/derive_physics.py"
 GEO_SRC = "assets/aircraft/avanti-s-a200/geometry.json (AV-02 visual blockout, estimated)"
 
-g = json.load(open(GEOMETRY))
-IN = globals().get("IN_OVERRIDE") or json.load(open(INPUTS))  # sensitivity.py injects modified inputs
+g = json.loads(GEOMETRY.read_text(encoding="utf-8"))
+IN = globals().get("IN_OVERRIDE") or json.loads(INPUTS.read_text(encoding="utf-8"))  # sensitivity.py injects modified inputs
 log = []
 # Wing station along the fuselage (inputs airframe.wing_forward_shift): every fuselage-attached part (fuselage, canopy,
 # tail, fin, installation, fuselage items) moves aft by this much relative to the wing and its leading-edge datum, i.e.
@@ -390,7 +390,7 @@ for k in movable:
                          f"placed to balance: the batteries and electronics together at model z {z_bal:.3f} (bay {z_lo}..{z_hi} m)")
 note("balance", "batteries/electronics station (model z)", z_bal, f"{m_mov:.2f} kg moved within {z_lo}..{z_hi} m to approach the manual CG" + (" (at the bay limit)" if z_bal in (z_lo, z_hi) else ""))
 dry = sum(i[1] for i in items[:-1])
-note("balance", "dry inventory (kg)", dry, f"manual: {v('airframe.dry_mass')} kg RTF dry with P100")
+note("balance", "pre-balance dry components (kg)", dry, f"inventory before virtual balance mass; SebArt manual reference is {v('airframe.dry_mass')} kg complete RTF dry with P100")
 mass0 = sum(i[1] for i in items)
 x_cg0 = sum(i[1] * i[4][0] for i in items) / mass0
 note("balance", "inventory CG without balancing mass (model z)", x_cg0, f"target {cg_z:.3f}")
@@ -405,6 +405,8 @@ if mb > 1e-6:
 mass = sum(i[1] for i in items)
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
 cg[1] = 0.0
+note("balance", "dry flight mass including virtual balance (kg)", mass - fuel_kg,
+     f"component inventory plus virtual reference-build mass; manual complete RTF dry reference {v('airframe.dry_mass')} kg")
 note("balance", "flight mass (kg)", mass, f"dry {mass - fuel_kg:.3f} kg + fuel {fuel_kg:.3f} kg")
 note("balance", "flight CG (le frame)", cg, "z from the inventory")
 
@@ -587,7 +589,7 @@ L_D = 1 / (2 * math.sqrt(CD0 * k_ind))
 note("performance", "best glide L/D", L_D, f"at {math.sqrt(2 * mass * G0 / (RHO * S) * math.sqrt(k_ind / CD0)):.1f} m/s")
 
 # --- Assemble ---------------------------------------------------------------------------------------------------------
-stik = legacy_input(json.load(open(STIK)))
+stik = legacy_input(json.loads(STIK.read_text(encoding="utf-8")))
 D = lambda how: f"{SCRIPT}: {how}"
 coeff = lambda value, unit, kind, how: q(float(value), unit, kind, D(how) if kind == "derived" else how)
 coefficients = {

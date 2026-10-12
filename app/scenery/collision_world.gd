@@ -12,8 +12,10 @@ const CELL_SIZE_M := 32.0
 const MAX_BIN_REFERENCES := 250000
 const TREE_TRUNK_RADIUS_M := 0.18 # estimated gameplay envelope; visual source is a tree card, not a trunk mesh
 const TREE_TRUNK_HEIGHT_FRACTION := 0.34
-const TREE_CROWN_RADIUS_FRACTION := 0.18
-const TREE_CROWN_HALF_LENGTH_FRACTION := 0.16 # centerline half-length; capsule tips add radius
+const FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS := [0.2294921875, 0.1708984375, 0.2900390625] # raw atlas ratios at alpha 0.5
+const FIELD_TREE_CARD_FRAME_SIZE_M := 1.125001 # source frame size multiplied by Treeline.identity.height in shader
+const FIELD_TREE_WIND_LEAN_M := 0.24 # maximum lean in render/tree_wind.gdshaderinc (L15b)
+const TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTION := 0.34 # preserve old crown y envelope around its measured center
 const TREE_CROWN_CENTER_FRACTION := 0.66
 
 const BUILDINGS: Array[String] = ["pavilion", "shed", "barn", "silo", "farmhouse", "church", "village_house"]
@@ -96,7 +98,8 @@ static func _add_field_trees(proxies: Array[Dictionary], field: Dictionary) -> v
 			var north := pilot_north + local_north
 			var east := pilot_east + local_east
 			var tree: Dictionary = Treeline.identity(local_north, local_east)
-			_add_tree_proxies(proxies, "%s:%04d" % [tree_id, index], north, east, base_down, float(tree.height))
+			_add_field_tree_proxies(proxies, "%s:%04d" % [tree_id, index], north, east,
+				base_down, float(tree.height), int(tree.species), float(tree.yaw))
 
 
 static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary) -> void:
@@ -135,6 +138,8 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary) -> voi
 			var heading := float(placement.get("heading", 0.0))
 			if prefab == "pit_shelter":
 				_add_pit_shelter(proxies, "%s:%02d" % [group_id, index], north, east, heading)
+			elif prefab == "pavilion":
+				_add_pavilion(proxies, "%s:%02d" % [group_id, index], north, east, heading)
 			elif prefab == "avanti_cradle":
 				_add_avanti_cradle(proxies, "%s:%02d" % [group_id, index], north, east, heading)
 			elif prefab == "shade_tree":
@@ -178,17 +183,22 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary) -> voi
 				_add_pylon(proxies, group_id, index, north, east, heading)
 
 
-static func _add_tree_proxies(proxies: Array[Dictionary], id: String, north: float, east: float, base_down: float, height: float) -> void:
-	var trunk_radius := 0.34 if id.begins_with("shade-tree:") else TREE_TRUNK_RADIUS_M
-	var trunk_half_length := maxf(0.0, (height * TREE_TRUNK_HEIGHT_FRACTION - 2.0 * trunk_radius) * 0.5)
+static func _add_field_tree_proxies(proxies: Array[Dictionary], id: String, north: float, east: float,
+		base_down: float, height: float, species: int, yaw: float) -> void:
+	var trunk_half_length := maxf(0.0, (height * TREE_TRUNK_HEIGHT_FRACTION - 2.0 * TREE_TRUNK_RADIUS_M) * 0.5)
 	_add_capsule(proxies, "tree:%s:trunk" % id, "tree_trunk", "trunk", "hard_terminal",
-		north, east, base_down - height * TREE_TRUNK_HEIGHT_FRACTION * 0.5, trunk_radius, trunk_half_length)
-	var crown_radius := height * TREE_CROWN_RADIUS_FRACTION
-	if id.begins_with("shade-tree:"):
-		crown_radius = 4.0
-	_add_capsule(proxies, "tree:%s:crown" % id, "tree_foliage", "crown", "soft_foliage_impulse",
-		north, east, base_down - height * TREE_CROWN_CENTER_FRACTION, crown_radius,
-		height * TREE_CROWN_HALF_LENGTH_FRACTION)
+		north, east, base_down - height * TREE_TRUNK_HEIGHT_FRACTION * 0.5,
+		TREE_TRUNK_RADIUS_M, trunk_half_length)
+	var species_index := clampi(species, 0, FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS.size() - 1)
+	var horizontal_half_extent := height * FIELD_TREE_CARD_FRAME_SIZE_M \
+		* float(FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS[species_index]) + FIELD_TREE_WIND_LEAN_M
+	var vertical_half_extent := height * TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTION
+	# The box bounds every occupied atlas row, including near the top and the broad low Pine crown.
+	# It deliberately encloses the gaps between the crossed cards; wind is a further radial .24 m allowance.
+	_add_box_at_down(proxies, "tree:%s:crown" % id, "tree_foliage", "crown", "soft_foliage_impulse",
+		north, east, base_down - height * TREE_CROWN_CENTER_FRACTION,
+		horizontal_half_extent * 2.0, vertical_half_extent * 2.0, horizontal_half_extent * 2.0,
+		rad_to_deg(-yaw))
 
 
 static func _add_shade_tree_proxies(proxies: Array[Dictionary], id: String, north: float, east: float,
@@ -320,6 +330,44 @@ static func _add_pit_shelter(proxies: Array[Dictionary], id: String, north: floa
 	var roof := _placement_point(north, east, heading, 0.0, 0.0)
 	_add_box_at_down(proxies, "building:%s:roof" % id, "building", "shelter_roof", "hard_terminal",
 		roof[0], roof[1], -3.22, 29.0, 0.14, 6.6, heading)
+
+
+static func _add_pavilion(proxies: Array[Dictionary], id: String, north: float, east: float, heading: float) -> void:
+	# Match the open front veranda in Prefabs._pavilion: slab, main shell, posts, rails,
+	# built-in bench and thin roof bounds. The two center step bays stay open.
+	_add_local_box(proxies, "building:%s:pavilion:slab" % id, "building", "pavilion_slab", "hard_terminal",
+		north, east, heading, 0.0, 0.075, -1.3, 10.0, 0.15, 9.6)
+	_add_local_box(proxies, "building:%s:pavilion:main" % id, "building", "pavilion_main", "hard_terminal",
+		north, east, heading, 0.0, 1.5, 0.0, 9.0, 2.7, 6.0)
+	# The prefab's hip roof spans x ±5, z ±3.5 and y 2.85–4.65. This AABB
+	# conservatively covers the pitched surfaces and the volume below their slopes.
+	_add_local_box(proxies, "building:%s:pavilion:main_roof" % id, "building", "pavilion_main_roof", "hard_terminal",
+		north, east, heading, 0.0, 3.75, 0.0, 10.0, 1.8, 7.0)
+	for post_index: int in 4:
+		var local_x: float = [-4.2, -1.4, 1.4, 4.2][post_index]
+		_add_local_box(proxies, "building:%s:pavilion:porch_post:%02d" % [id, post_index], "building", "pavilion_porch_post",
+			"hard_terminal", north, east, heading, local_x, 1.375, -5.85, 0.14, 2.45, 0.14)
+	# The fascia reaches y=2.48; include it in the conservative thin porch-roof AABB.
+	_add_local_box(proxies, "building:%s:pavilion:porch_roof" % id, "building", "pavilion_porch_roof", "hard_terminal",
+		north, east, heading, 0.0, 2.715, -4.6, 9.4, 0.47, 3.2)
+	# The prefab's built-in bench is a seat, two feet and a narrow sloped back; this
+	# small AABB contains that measured envelope without extending into the step bay.
+	_add_local_box(proxies, "building:%s:pavilion:bench" % id, "building", "pavilion_bench", "hard_terminal",
+		north, east, heading, -2.8, 0.575, -3.455, 1.8, 0.85, 0.49)
+	for segment_index: int in 2:
+		var segment: Array = [[-4.2, -1.4], [1.4, 4.2]][segment_index]
+		var rail_start := _placement_point(north, east, heading, float(segment[0]), -5.85)
+		var rail_end := _placement_point(north, east, heading, float(segment[1]), -5.85)
+		_add_line_box(proxies, "building:%s:pavilion:porch_rail:%d" % [id, segment_index], "building", "pavilion_porch_rail",
+			"hard_terminal", rail_start, rail_end, 0.06, 0.06, -0.95)
+
+
+static func _add_local_box(proxies: Array[Dictionary], id: String, kind: String, part: String, response: String,
+		north: float, east: float, heading: float, local_x: float, center_up: float, local_z: float,
+		width: float, height: float, length: float) -> void:
+	var center: PackedFloat64Array = _placement_point(north, east, heading, local_x, local_z)
+	_add_box_at_down(proxies, id, kind, part, response, center[0], center[1], -center_up,
+		width, height, length, heading)
 
 
 static func _add_avanti_cradle(proxies: Array[Dictionary], id: String, north: float, east: float,

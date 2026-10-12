@@ -42,7 +42,8 @@ func _run() -> void:
 		for proxy: Dictionary in world.get("proxies", []):
 			if proxy.kind != kind:
 				continue
-			if kind == "building" and proxy.part != "pavilion":
+			# LU-14 replaces the old enclosing pavilion proxy with structural parts.
+			if kind == "building" and proxy.part != "pavilion_main":
 				continue
 			if kind == "lamp" and proxy.part != "flood_pole":
 				continue

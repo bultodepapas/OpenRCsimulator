@@ -925,7 +925,7 @@
    "value": 0.4,
    "unit": "s",
    "kind": "measured",
-   "source": "P100 local small-signal throttle-to-thrust corner near 0.4 Hz in multi-sine tests; tau = 1/(2 pi fc) = 0.398 s, rounded to 0.4 s. Applied as an RPM-governor lag through the assumed static throttle-to-RPM map; not a universal ECU step response (Many et al., DGLR 550281 sec. 3; docs/research/avanti-s-av05-turbine-dynamics.md section 4)"
+   "source": "P100 local small-signal throttle-to-thrust corner near 0.4 Hz in multi-sine tests; tau = 1/(2 pi fc) = 0.398 s, rounded to 0.4 s. Applied as an RPM-governor lag through the assumed static throttle-to-thrust law and P100 thrust-vs-RPM map; not a universal ECU step response (Many et al., DGLR 550281 sec. 3; docs/research/avanti-s-av05-turbine-dynamics.md section 4)"
   },
   "installed_factor": {
    "value": 0.92,
