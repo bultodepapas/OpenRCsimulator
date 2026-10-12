@@ -25,6 +25,8 @@ func _initialize() -> void:
 
 func _test_reference_is_frozen() -> void:
 	var source := FileAccess.get_file_as_string("res://tests/fixtures/scenery_collision_reference.gd")
+	# Git may use CRLF on Windows; pin code content in the baseline's LF form.
+	source = source.replace("\r\n", "\n")
 	var hash := HashingContext.new()
 	hash.start(HashingContext.HASH_SHA256)
 	hash.update(source.to_utf8_buffer())

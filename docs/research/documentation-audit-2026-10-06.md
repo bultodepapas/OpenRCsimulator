@@ -8,7 +8,7 @@ Revisión senior de toda la documentación del repositorio (ocho documentos raí
 
 ## 1. El alma del proyecto, en una frase
 
-Un simulador de aeromodelismo de código abierto visto desde el piloto, hecho por un piloto RC para que la radio en la mano y el avión en la pantalla se sientan como los reales; se construye en pasos pequeños con prueba objetiva, con cada número etiquetado por su evidencia, distinguiendo verificar de validar, parando en puertas donde decide el propietario y guardando toda la investigación en el repositorio. Está escrito en [docs/README.md § What this project is](../README.md#what-this-project-is).
+Un simulador de aeromodelismo de código abierto visto desde el piloto, hecho por un piloto RC para que la radio en la mano y el avión en la pantalla se sientan como los reales; se construye en pasos pequeños con prueba objetiva, con cada número etiquetado por su evidencia, distinguiendo verificar de validar, parando en puertas donde decide el propietario y guardando toda la investigación en el repositorio. Está escrito en [docs/README.md § What this project is](../README.md#start-here).
 
 ## 2. Hallazgos
 

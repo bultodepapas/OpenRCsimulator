@@ -1,6 +1,6 @@
 # D1-R2 — strict shaft power-table validation
 
-2026-10-06 · **Status: implemented and verified.** Scope: [D1-R2](../../../../ROADMAP.md#audit-repairs).
+2026-10-06 · **Status: implemented and verified.** Scope: [D1-R2](../../../../ROADMAP.md#milestones-from-here-each-one-ends-in-a-build-the-owner-flies).
 
 ## Confirmed defect
 

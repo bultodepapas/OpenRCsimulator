@@ -6,7 +6,7 @@ Parent: [time-of-day plan](../../../TIME-OF-DAY-PLAN.md) · Prior step: [TOD-08b
 
 ## Why the clock comes first
 
-TOD-09a should establish deterministic solar time before changing the renderer. Derive the instant from an integer simulation tick and an explicit civil anchor, fixed UTC offset and rate, as specified in the [plan](../../../TIME-OF-DAY-PLAN.md#performance-and-capture-policy). Do not derive it from `_process(delta)`, operating-system time, or wrapped `sim_clock`. The current [visual timeline](../../../../app/environment/visual_timeline.gd) is fixed-time (`rate = 0`) with ordered edits; it cannot yet represent progression.
+TOD-09a should establish deterministic solar time before changing the renderer. Derive the instant from an integer simulation tick and an explicit civil anchor, fixed UTC offset and rate, as specified in the [plan](../../../TIME-OF-DAY-PLAN.md#open-steps-and-acceptance). Do not derive it from `_process(delta)`, operating-system time, or wrapped `sim_clock`. The current [visual timeline](../../../../app/environment/visual_timeline.gd) is fixed-time (`rate = 0`) with ordered edits; it cannot yet represent progression.
 
 The production [Main loop](../../../../app/main.gd#L337) currently advances shader and cloud clocks from simulation time, but retains one `_lighting` snapshot for the Sun, environment, materials, and airplane shadow. Paused simulation time holds in the existing render loop ([pause handling](../../../../app/main.gd#L349)); restart and calendar rollover still need an explicit clock contract and evidence. TOD-09a is that state prerequisite, not a visible-lighting change.
 

@@ -1,6 +1,6 @@
 # D1-R3 — landing-gear support polygon
 
-2026-10-07 · **Status: implemented and verified.** Scope: [D1-R3](../../../../ROADMAP.md#audit-repairs); prerequisite of E3b2 (runway start).
+2026-10-07 · **Status: implemented and verified.** Scope: [D1-R3](../../../../ROADMAP.md#milestones-from-here-each-one-ends-in-a-build-the-owner-flies); prerequisite of E3b2 (runway start).
 
 ## Confirmed defect
 

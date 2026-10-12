@@ -1,6 +1,6 @@
 # C7-R1 — Complete, finite flight-trace acceptance
 
-2026-10-06 · **Status: implemented and verified.** Implements [ROADMAP C7-R1](../../../../ROADMAP.md#audit-repairs). Baseline: `v0.1.0-rc4` (`bf16ab9`). The [audit](../../project-audit-2026-10-06/README.md#confirmed-bug-the-appexport-trimmed-flight-acceptance-can-pass-without-a-flight-or-with-nan-results) remains the historical finding.
+2026-10-06 · **Status: implemented and verified.** Implements [ROADMAP C7-R1](../../../../ROADMAP.md#milestones-from-here-each-one-ends-in-a-build-the-owner-flies). Baseline: `v0.1.0-rc4` (`bf16ab9`). The [audit](../../project-audit-2026-10-06/README.md#confirmed-bug-the-appexport-trimmed-flight-acceptance-can-pass-without-a-flight-or-with-nan-results) remains the historical finding.
 
 ## Change
 

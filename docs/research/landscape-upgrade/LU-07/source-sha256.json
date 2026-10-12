@@ -1,0 +1,110 @@
+{
+  "date": "2026-10-12",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "renderer": "gl_compatibility",
+  "starting_commit": "df36b44",
+  "head_at_recording": "7eeedf33a93e3aae6d986bbdd4f74f6bb0f85729",
+  "scope": "Selected implementation, tests, capture tools, plan and credits for LU-07\u201310. This is not a complete immutable repository snapshot; independent developers are active. Text hashes canonicalize CRLF to LF only.",
+  "files": [
+    {
+      "path": "app/scenery/vegetation.gd",
+      "bytes_at_recording": 6147,
+      "sha256_lf": "bead7292799f14d96f9bc52595a1d85c44b66f203d5043f77d88ca824b37ae67"
+    },
+    {
+      "path": "app/scenery/ground_features.gd",
+      "bytes_at_recording": 18616,
+      "sha256_lf": "f20ea930398173592daf221adec5435754007fb2444bd169f3f3f6a46a6c4a26"
+    },
+    {
+      "path": "app/scenery/prefabs.gd",
+      "bytes_at_recording": 31434,
+      "sha256_lf": "d52598813397c40f41a65ed32231e6be3cc5aa2fa012cccf56858a18f05a703c"
+    },
+    {
+      "path": "app/render/landscape_upgrade/airfield_lighting.gd",
+      "bytes_at_recording": 27614,
+      "sha256_lf": "65de53096d8d514caa83c0c66ec32ac73687a9831dc5c6471dd73649af967c68"
+    },
+    {
+      "path": "app/render/landscape_upgrade/runway_marker.gdshader",
+      "bytes_at_recording": 3607,
+      "sha256_lf": "1fac3e4653c456a97caf4aee6d29585b8391ec9f96665ab66817ec4207635c6c"
+    },
+    {
+      "path": "app/sim/scenery_collision.gd",
+      "bytes_at_recording": 27296,
+      "sha256_lf": "28f86a717133db4cec53f7456c82d0a6187727fcbc99d7dd5bef097b392513a4"
+    },
+    {
+      "path": "app/tests/fixtures/scenery_collision_reference.gd",
+      "bytes_at_recording": 25980,
+      "sha256_lf": "fe4aac96ea43249bc2616c6c3658303e4ce26e10bf85e40b9a4f3f6c864c5e68"
+    },
+    {
+      "path": "app/tests/test_landscape_collision_oracle.gd",
+      "bytes_at_recording": 9234,
+      "sha256_lf": "aa23f0868d99c945b6838982c11afa79eb06717635c75174e957be8948cac601"
+    },
+    {
+      "path": "app/tests/benchmark_landscape_collision.gd",
+      "bytes_at_recording": 8542,
+      "sha256_lf": "3d8d96627c7ea74dce386ee11b4d31e69cd87c5cab81359c18eaff60a89ce824"
+    },
+    {
+      "path": "app/tests/test_landscape_tree_bounds.gd",
+      "bytes_at_recording": 1818,
+      "sha256_lf": "fb7ea5b9697c69a6e5baf2b081037b569aebf44e9c6bcf5e8ce112acd787292a"
+    },
+    {
+      "path": "app/tests/test_scenery_ground_lu08.gd",
+      "bytes_at_recording": 5346,
+      "sha256_lf": "81e26134c60e24a0db73c64a6f4abcd87aacf2c0c1b6e7a47243f4e45e37b052"
+    },
+    {
+      "path": "app/tests/test_landscape_marker_optics.gd",
+      "bytes_at_recording": 12630,
+      "sha256_lf": "26bcd63d771015119d0c3a9cfc78856961523dafbf1571d27804f8002ec99760"
+    },
+    {
+      "path": "app/tests/test_time_of_day_render_update.gd",
+      "bytes_at_recording": 22461,
+      "sha256_lf": "adabe9217addf952995703e083261b909fc58ad421433fd57981c6e6a624ab83"
+    },
+    {
+      "path": "app/tests/capture_landscape_upgrade.gd",
+      "bytes_at_recording": 8734,
+      "sha256_lf": "6a0055e237a85f4381ff24ebd1729b61fae33d10778f3ee759908cfd8f56b85e"
+    },
+    {
+      "path": "app/tests/test_landscape_runtime.gd",
+      "bytes_at_recording": 5831,
+      "sha256_lf": "1212a1637804f47ea83353a6ec8fa73ef1230a2d805a2784247012c51a5a1a4d"
+    },
+    {
+      "path": "app/assets/landscape/UPGRADE_CREDITS.md",
+      "bytes_at_recording": 5663,
+      "sha256_lf": "782c1847fbef88b5b190e829d991c9034a2c9c90aa8efb9193ca9ce3c5b774d2"
+    },
+    {
+      "path": "tools/landscape/verify_markers.py",
+      "bytes_at_recording": 2321,
+      "sha256_lf": "cee6638af85dc0e86fc37a8fcfe3ed0fd20060c94063cb12f0fb5dd774df126a"
+    },
+    {
+      "path": "tools/landscape/verify_glare.py",
+      "bytes_at_recording": 2736,
+      "sha256_lf": "111ca873892363fc7c1198cb85e540d98a1656c81536a5fdc96b90b29991607e"
+    },
+    {
+      "path": "tools/landscape/README.md",
+      "bytes_at_recording": 4043,
+      "sha256_lf": "23674ccea9045f00fd5a8500c3c831e6d8c0d11d6c902a05b1652123e327ca3b"
+    },
+    {
+      "path": "LANDSCAPE_UPGRADE_PLAN.md",
+      "bytes_at_recording": 18435,
+      "sha256_lf": "863b163bc142d93e4cacd6bc8f0a7ee8f5147c0f7a5e23305be008ee800a4e5e"
+    }
+  ]
+}
