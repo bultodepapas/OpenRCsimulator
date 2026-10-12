@@ -43,10 +43,19 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+IGNORED_DIRS = {"__pycache__", ".git"}
+IGNORED_SUFFIXES = {".pyc", ".pyo", ".swp"}
+IGNORED_NAMES = {".DS_Store", "Thumbs.db"}
+
+
 def file_table() -> list:
+    """Every delivery file, except caches and editor leftovers that running the delivery's own scripts can create."""
     rows = []
     for path in sorted(p for p in DELIVERY.rglob("*") if p.is_file()):
-        rows.append({"path": path.relative_to(DELIVERY).as_posix(), "bytes": path.stat().st_size, "sha256": sha256(path)})
+        rel = path.relative_to(DELIVERY)
+        if IGNORED_DIRS & set(rel.parts[:-1]) or path.suffix in IGNORED_SUFFIXES or path.name in IGNORED_NAMES or path.name.endswith("~"):
+            continue
+        rows.append({"path": rel.as_posix(), "bytes": path.stat().st_size, "sha256": sha256(path)})
     return rows
 
 

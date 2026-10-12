@@ -47,7 +47,10 @@ func _initialize() -> void:
 		if e.status == Catalog.PREVIEW:
 			_check("%s: preview has no data and cannot fly" % id, e.data == "" and not Catalog.can_fly(id))
 			# A preview may carry a real propeller (the Timber's imported rotor): the catalog, not the model, refuses flight.
-			_check("%s: preview declares its propeller honestly" % id, airplane.get("has_propeller", true) == airplane.propeller.visible)
+			# has_propeller must agree with the geometry under the node, and the node is shown exactly when it has some.
+			var prop_meshes: int = airplane.propeller.find_children("*", "MeshInstance3D", true, false).size()
+			_check("%s: preview declares its propeller honestly (%d meshes)" % [id, prop_meshes],
+				airplane.get("has_propeller", false) == (prop_meshes > 0) and airplane.propeller.visible == (prop_meshes > 0))
 			airplane.root.free()
 			continue
 		var data := AircraftData.load_file(e.data)

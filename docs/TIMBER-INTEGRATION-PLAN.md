@@ -210,3 +210,4 @@ Keep parser/runtime errors fatal and use timeouts for probes. Record new Timber 
 3. Can the author deliver a reproducible rebuild (correct cache/path commands, failing verifier) and photo-calibrated nose correction as r2?
 4. Which exact pack, motor resistance/no-load current, rotor inertia and propeller map can be measured (EL5/VAL-7)? Missing measurements limit labels, not honest experimental work.
 5. Which unassisted (PNP or AS3X-identified) flight observations can be collected for TT-16?
+6. Propeller sense across the catalog (TT-05 review): the Timber turns clockwise seen from behind, as the simulator's rotor convention and the author declare; the Stik, Extra and P-51 propeller nodes turn the opposite way for the same `propeller.rotation.z`. The model owner decides whether to mirror the three procedural propellers; the contract is stated in `render/airplane.gd`.
