@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf
+DIAG extreme reset: start_error=atmosphere trim refused: did not converge (|residual| 0.16638981173064932) pause_reason=atmosphere trim refused: did not converge (|residual| 0.16638981173064932) flyable=false
+FAIL reset recomputes a fresh trim for the extreme density
+SCRIPT ERROR: Invalid access to property or key 'format' on a base object of type 'Dictionary'.
+          at: _failure_recovery (res://tests/test_atmosphere_flight.gd:186)
+M5-ATM flight: 137 checks, 1 failed
+exit_code=1

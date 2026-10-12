@@ -53,7 +53,8 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 	if flight.downwash_index() >= 0:
 		aux[flight.downwash_index()] = flight._wing_cl(state, aux)
 	flight.sim.aux = aux
-	flight.sim.continuous = flight._settled_wash(state, aux)
+	# EX-08: preserve the current wash/shaft/wheel layout, including GP rim-speed states.
+	flight.sim.continuous = flight._settled_continuous(state, aux)
 	flight.sim.reset(state)
 	flight.sim.set_paused(false)
 	var rows: Array = []

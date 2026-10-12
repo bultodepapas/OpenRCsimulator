@@ -19,20 +19,12 @@ const DEFAULTS := {
 	language = "en",
 	first_flight_hint_seen = false,
 	aircraft = Catalog.DEFAULT_ID,
-	start_choice = "airborne",
+	start_choice = "runway",
 	# The FW Home preset remains an additive schema-1 field; selecting astronomical lighting clears it to "day".
-	time_of_day = "day",
-	# Keep calm preferences in v1. Opening settings or editing only wind does not migrate a legacy weather object.
-	weather_config = {
-		"format": "openrc-weather v1",
-		"speed_mps": 0.0,
-		"from_deg": 0.0,
-		"gust_mps": 0.0,
-		"gust_up_mps": 0.0,
-		"gust_duration_s": 4.0,
-		"gust_period_s": 12.0,
-		"gust_delay_s": 2.0,
-	},
+	time_of_day = "evening",
+	# UI-06d: only fresh interactive preferences use gentle moving air; technical routes remain calm by default.
+	weather_config = WeatherSettings.GENTLE_PRACTICE,
+	latency_marker = true,
 	# A separate, visual-only selection. Its default preserves the original fixed daylight image.
 	lighting_config = TimeOfDay.DEFAULTS,
 	lighting_invalid = false,
@@ -69,8 +61,14 @@ static func load_from(path: String) -> Dictionary:
 	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
 		prefs.aircraft = aircraft
 	var start_choice: Variant = cfg.get_value("flight", "start_choice", DEFAULTS.start_choice)
-	if typeof(start_choice) == TYPE_STRING and start_choice == "runway" and prefs.aircraft == Catalog.DEFAULT_ID:
-		prefs.start_choice = start_choice
+	# Existing explicit airborne choices remain valid, and unsupported aircraft never inherit the runway default.
+	prefs.start_choice = "airborne"
+	if typeof(start_choice) == TYPE_STRING:
+		if start_choice == "airborne" or (start_choice == "runway" and prefs.aircraft == Catalog.DEFAULT_ID):
+			prefs.start_choice = start_choice
+	var latency_marker: Variant = cfg.get_value("flight", "latency_marker", DEFAULTS.latency_marker)
+	if typeof(latency_marker) == TYPE_BOOL:
+		prefs.latency_marker = latency_marker
 	var time_of_day: Variant = cfg.get_value("flight", "time_of_day", DEFAULTS.time_of_day)
 	if typeof(time_of_day) == TYPE_STRING and Conditions.HOME_CHOICES.has(time_of_day):
 		prefs.time_of_day = time_of_day
@@ -85,6 +83,7 @@ static func load_from(path: String) -> Dictionary:
 			prefs.lighting_config = checked_lighting.config.duplicate(true)
 		else:
 			prefs.lighting_invalid = true
+			prefs.time_of_day = "day" # invalid explicit lighting always recovers to the documented legacy daylight
 			prefs.note = _append_note(prefs.note, "invalid time-of-day settings; using legacy daylight")
 	return prefs
 
@@ -92,6 +91,8 @@ static func load_from(path: String) -> Dictionary:
 static func save_to(path: String, prefs: Dictionary) -> Error:
 	if not prefs.get("writable", true):
 		return ERR_FILE_NO_PERMISSION
+	if typeof(prefs.get("latency_marker", DEFAULTS.latency_marker)) != TYPE_BOOL:
+		return ERR_INVALID_DATA
 	var checked_weather := WeatherSettings.validate(prefs.get("weather_config", DEFAULTS.weather_config))
 	if not checked_weather.ok:
 		return ERR_INVALID_DATA
@@ -111,6 +112,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))
 	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
 	cfg.set_value("flight", "time_of_day", time_of_day)
+	cfg.set_value("flight", "latency_marker", prefs.get("latency_marker", DEFAULTS.latency_marker))
 	cfg.set_value("flight", "weather_config", checked_weather.config.duplicate(true))
 	if checked_lighting.config != TimeOfDay.defaults():
 		cfg.set_value("flight", "lighting_config", checked_lighting.config.duplicate(true))

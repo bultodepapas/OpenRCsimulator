@@ -54,6 +54,11 @@ func _preferences_file() -> void:
 	p.language = "es"
 	_check("save", Preferences.save_to(PREFS, p) == OK)
 	_check("load what was saved", Preferences.load_from(PREFS).language == "es")
+	p.latency_marker = false
+	_check("diagnostic marker opt-out persists", Preferences.save_to(PREFS, p) == OK
+		and not Preferences.load_from(PREFS).latency_marker)
+	p.latency_marker = "off"
+	_check("diagnostic preference rejects the wrong type", Preferences.save_to(PREFS, p) == ERR_INVALID_DATA)
 	_write("[meta]\nschema=1\n[ui]\nlanguage=\"fr\"\n")
 	_check("unsupported language -> English", Preferences.load_from(PREFS).language == "en")
 	_write("[meta]\nschema=1\n[ui]\nlanguage=7\n")

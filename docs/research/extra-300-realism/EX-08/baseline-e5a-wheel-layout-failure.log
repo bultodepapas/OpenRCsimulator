@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL coast_left at 240 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL coast_left at 480 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL coast_left at 960 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL coast_right at 240 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL coast_right at 480 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL coast_right at 960 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL idle at 240 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL idle at 480 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL idle at 960 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL pulse at 240 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL pulse at 480 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+FAIL pulse at 960 Hz completes without crash/fault simulation fault: reset rejected: aircraft returned nonfinite or malformed loads reset rejected: aircraft returned nonfinite or malformed loads
+12 checks, 12 failed

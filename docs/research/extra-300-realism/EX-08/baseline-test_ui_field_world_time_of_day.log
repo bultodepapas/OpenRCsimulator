@@ -1,0 +1,40 @@
+COMMAND: wsl.exe --exec env XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-field-world-time-of-day-20261011/data XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-field-world-time-of-day-20261011/config XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-field-world-time-of-day-20261011/cache /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/extra-realism-baseline/app --script res://tests/test_ui_field_world_time_of_day.gd
+XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-field-world-time-of-day-20261011/data
+XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-field-world-time-of-day-20261011/config
+XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-field-world-time-of-day-20261011/cache
+--- output ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL no preferences -> day 
+FAIL invalid time midnight -> day 
+FAIL invalid time 3 -> day 
+FAIL invalid time true -> day 
+FAIL invalid time noon -> day 
+ok   time choice round-trips
+ok   the button cycles every choice and wraps to day
+ok   choice day is day, a solvable preset or a flowing start
+ok   choice dawn is day, a solvable preset or a flowing start
+ok   choice golden_hour is day, a solvable preset or a flowing start
+ok   choice sunset is day, a solvable preset or a flowing start
+ok   choice blue_hour is day, a solvable preset or a flowing start
+ok   choice evening is day, a solvable preset or a flowing start
+ok   choice night is day, a solvable preset or a flowing start
+ok   choice night_dark is day, a solvable preset or a flowing start
+ok   session choice applies without arguments
+ok   arguments win over the session choice
+ok   day keeps the fixed sun
+ok   Home shows the saved choice
+ok   the backdrop is night: stars and field lights
+ok   the button advances and wraps to day
+ok   day backdrop: calibrated fixed sun, no stars
+ok   one backdrop, drawn under the menu
+ok   Home keeps the keyboard focus
+ok   choice saved at once
+ok   Spanish label
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly uses the chosen hour
+ok   the flight has the dusk field lights
+5 UI time-of-day checks failed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+BASELINE_EXIT=1

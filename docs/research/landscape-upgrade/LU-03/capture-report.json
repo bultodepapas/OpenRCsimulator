@@ -1,0 +1,60 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "arguments": {
+    "cases": "postcard_club,pilot_north",
+    "frames": "4",
+    "out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/landscape-upgrade/night-fw-lu03-gain",
+    "time_of_day": "night"
+  },
+  "cases": {
+    "pilot_north": {
+      "draws": 64.0,
+      "exposure": 1987.79345703125,
+      "frame_ms_raw": [
+        1.557,
+        1.66,
+        1.549,
+        1.77
+      ],
+      "glare_strength": 0.0,
+      "glare_visible": false,
+      "median_ms": 1.66,
+      "p95_ms": 1.77,
+      "p99_ms": 1.77,
+      "primitives": 361575.0,
+      "video_memory": 113408674.0
+    },
+    "postcard_club": {
+      "draws": 74.0,
+      "exposure": 1987.79345703125,
+      "frame_ms_raw": [
+        1.787,
+        1.653,
+        1.756,
+        1.658
+      ],
+      "glare_strength": 0.0,
+      "glare_visible": false,
+      "median_ms": 1.756,
+      "p95_ms": 1.787,
+      "p99_ms": 1.787,
+      "primitives": 406802.0,
+      "video_memory": 113408674.0
+    }
+  },
+  "driver": "3.3.0 NVIDIA 610.88",
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "height": 720,
+  "renderer": "gl_compatibility",
+  "width": 1280
+}

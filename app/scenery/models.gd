@@ -53,6 +53,10 @@ const FLEET := {"fleet_stik": "jensen-das-ugly-stik-60", "fleet_extra": "gp-extr
 
 static var _cache := {}
 
+## LU-02: the gear-up Avanti sits on the padded display cradle; other models rest on their wheels.
+static func parked_base_height(model_id: String) -> float:
+	return 0.48 if model_id == "fleet_avanti" else 0.0
+
 
 ## {pos, nrm, col} flat-shaded arrays for a model, or {} when the file is missing or invalid.
 static func arrays(id: String) -> Dictionary:

@@ -21,6 +21,114 @@ OUT = ROOT / "app/data/scenery/default.json"
 EYE_M = 1.7
 
 
+def catalog_fleet_ids():
+    """Use the flight selector as authority and require every id to have a baked fleet source."""
+    catalog_text = (ROOT / "app/app_state/aircraft_catalog.gd").read_text()
+    entries = catalog_text.split("const ENTRIES := [", 1)[1].split("\n]", 1)[0]
+    catalog_ids = re.findall(r'^\s*id\s*=\s*"([^"]+)"', entries, re.MULTILINE)
+    models_text = (ROOT / "app/scenery/models.gd").read_text()
+    fleet_match = re.search(r"const FLEET := \{([^}]+)\}", models_text, re.DOTALL)
+    if fleet_match is None:
+        raise ValueError("app/scenery/models.gd has no FLEET source map")
+    source_ids = [value for _key, value in re.findall(r'"([^"]+)"\s*:\s*"([^"]+)"', fleet_match.group(1))]
+    if not catalog_ids:
+        raise ValueError("app/app_state/aircraft_catalog.gd has no readable catalog ids")
+    if len(source_ids) != len(set(source_ids)) or set(source_ids) != set(catalog_ids):
+        missing = sorted(set(catalog_ids) - set(source_ids))
+        stale = sorted(set(source_ids) - set(catalog_ids))
+        raise ValueError("parked fleet source map must match the flight catalog (missing=%s stale=%s)" % (missing, stale))
+    return catalog_ids
+
+
+def catalog_car_sizes():
+    """Read the baked render footprints so parking clearance follows model geometry."""
+    models_text = (ROOT / "app/scenery/models.gd").read_text()
+    sizes = {}
+    for model_id in ("car_sedan", "car_hatch", "car_suv", "car_sport"):
+        match = re.search(r'^\s*"' + model_id + r'"\s*:\s*\{size = Vector3\(([^,]+),\s*([^,]+),\s*([^)]+)\)',
+                          models_text, re.MULTILINE)
+        if match is None:
+            raise ValueError("app/scenery/models.gd has no footprint for " + model_id)
+        sizes[model_id] = (float(match.group(1)), float(match.group(3)))
+    return sizes
+
+
+def loader_seed(text):
+    """Mirror scenery_loader.gd's deterministic FNV-1a choice for a multi-prefab group."""
+    h = 2166136261
+    for byte in text.encode("utf-8"):
+        h = ((h ^ byte) * 16777619) & 0xFFFFFFFF
+    return h
+
+
+def car_polygon(north, east, heading_deg, size):
+    """The model's XZ footprint transformed by scenery.gd's heading and NED placement."""
+    half_width, half_length = size[0] * 0.5, size[1] * 0.5
+    angle = math.radians(heading_deg)
+    c, s = math.cos(angle), math.sin(angle)
+    center_x, center_z = east, -north
+    return [(center_x + x * c - z * s, center_z + x * s + z * c)
+            for x, z in ((-half_width, -half_length), (half_width, -half_length),
+                         (half_width, half_length), (-half_width, half_length))]
+
+
+def _cross(a, b, c):
+    return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+
+def _on_segment(p, a, b):
+    return (min(a[0], b[0]) - 1e-9 <= p[0] <= max(a[0], b[0]) + 1e-9
+            and min(a[1], b[1]) - 1e-9 <= p[1] <= max(a[1], b[1]) + 1e-9)
+
+
+def _segments_intersect(a, b, c, d):
+    ab_c, ab_d = _cross(a, b, c), _cross(a, b, d)
+    cd_a, cd_b = _cross(c, d, a), _cross(c, d, b)
+    return ((ab_c * ab_d < 0 and cd_a * cd_b < 0)
+            or (abs(ab_c) < 1e-9 and _on_segment(c, a, b))
+            or (abs(ab_d) < 1e-9 and _on_segment(d, a, b))
+            or (abs(cd_a) < 1e-9 and _on_segment(a, c, d))
+            or (abs(cd_b) < 1e-9 and _on_segment(b, c, d)))
+
+
+def _point_segment_distance(point, a, b):
+    dx, dz = b[0] - a[0], b[1] - a[1]
+    length2 = dx * dx + dz * dz
+    t = max(0.0, min(1.0, ((point[0] - a[0]) * dx + (point[1] - a[1]) * dz) / length2))
+    return math.hypot(point[0] - a[0] - t * dx, point[1] - a[1] - t * dz)
+
+
+def polygon_gap(a, b):
+    """Exact Euclidean edge gap between two convex rectangular footprints."""
+    for i in range(4):
+        for j in range(4):
+            if _segments_intersect(a[i], a[(i + 1) % 4], b[j], b[(j + 1) % 4]):
+                return 0.0
+    return min([_point_segment_distance(point, b[j], b[(j + 1) % 4])
+                for point in a for j in range(4)]
+               + [_point_segment_distance(point, a[j], a[(j + 1) % 4])
+                  for point in b for j in range(4)])
+
+
+def check_car_clearance(rows, choices, sizes, minimum_gap=0.30, obstacles=()):
+    """Refuse overlapping or too-close parked vehicles using the loader's actual chosen models."""
+    footprints = []
+    for i, row in enumerate(rows):
+        model_id = choices[loader_seed("cars/%d" % i) % len(choices)]
+        footprints.append((model_id, car_polygon(row[0], row[1], row[2], sizes[model_id])))
+    for i, (model_a, polygon_a) in enumerate(footprints):
+        for name, polygon_b in obstacles:
+            gap = polygon_gap(polygon_a, polygon_b)
+            if gap + 1e-6 < minimum_gap:
+                raise ValueError("parked car %d (%s) intersects %s clearance: %.3f m" % (i, model_a, name, gap))
+        for j in range(i + 1, len(footprints)):
+            model_b, polygon_b = footprints[j]
+            gap = polygon_gap(polygon_a, polygon_b)
+            if gap + 1e-6 < minimum_gap:
+                raise ValueError("parked cars %d (%s) and %d (%s) have only %.3f m clearance; need %.2f m" %
+                                 (i, model_a, j, model_b, gap, minimum_gap))
+
+
 def q(value, unit, kind, source):
     return {"value": value, "unit": unit, "kind": kind, "source": source}
 
@@ -95,8 +203,11 @@ def build():
     groups = []
     report = []
 
-    def inst(gid, zone, prefabs, rows, kind, source):
-        rows = [[grid(n), grid(e), round(hd % 360, 1)] for n, e, hd in rows]
+    def inst(gid, zone, prefabs, rows, kind, source, snap=True):
+        if snap:
+            rows = [[grid(n), grid(e), round(hd % 360, 1)] for n, e, hd in rows]
+        else:
+            rows = [[round(n, 2), round(e, 2), round(hd % 360, 1)] for n, e, hd in rows]
         g = {"id": gid, "type": "instances", "zone": zone, "collides": False}
         if len(prefabs) == 1:
             g["prefab"] = prefabs[0]
@@ -131,22 +242,38 @@ def build():
          "estimated", "Club members in the pits")
     inst("seated", "spectators", ["person_sitting"], [(-16.5, -14.0, 0), (-16.5, 11.5, 0), (-16.5, 14.5, 0)], "estimated", "Spectators on the benches")
     inst("veranda-people", "club", ["person_standing"], [(-17.4, -2.6, 10), (-17.8, 1.4, 350), (-16.4, 4.2, 30)], "estimated", "On the veranda steps")
-    # parked fleet under the shelters, noses toward the field
+    # Park every flight-catalog aircraft from its existing baked scenery snapshot.
+    fleet_aircraft = catalog_fleet_ids()
+    fleet_slots = [(-17.6, -38.0, 15.0), (-17.6, -24.0, 350.0), (-17.8, 24.0, 10.0), (-17.6, 38.5, 345.0)]
+    if len(fleet_slots) != len(fleet_aircraft):
+        raise ValueError("update fleet_slots for the %d catalog aircraft before generating scenery" % len(fleet_aircraft))
     groups.append({"id": "fleet", "type": "fleet", "zone": "pits", "collides": False,
-                   "aircraft": ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx"],
-                   "placements": q([[-17.6, -38.0, 15.0, 0], [-17.6, -24.0, 350.0, 1], [-17.8, 24.0, 10.0, 2], [-17.6, 38.5, 345.0, 3]],
+                   "aircraft": fleet_aircraft,
+                   "placements": q([[n, e, heading, i] for i, (n, e, heading) in enumerate(fleet_slots)],
                                    "m, m, deg, index", "estimated", "Under the pit shelters, as in the photo")})
-    # the car row: nose-in toward the trees (BMFA: park near trees or a hedge), with one empty bay
-    cars = []
-    for i in range(10):
-        if i == 6:
-            continue
-        cars.append((-38.0 + (h01(i, 3) - 0.5) * 0.4, -21.0 + i * 2.6 + (h01(i, 4) - 0.5) * 0.3, 180 + (h01(i, 5) - 0.5) * 8))
-    cars += [(-41.0, -28.5, 95), (-37.5, -31.0, 200)]
-    inst("cars", "parking", ["car_sedan", "car_hatch", "car_suv", "car_sport"], cars, "estimated",
-         photo + "; 2.6 m bays (SC-01 photo estimate)")
+    avanti_i = fleet_aircraft.index("sebart-avanti-s-a200-p100rx")
+    avanti_n, avanti_e, avanti_heading = fleet_slots[avanti_i]
+    inst("avanti-cradle", "pits", ["avanti_cradle"], [(avanti_n, avanti_e, avanti_heading)], "estimated",
+         "Padded trestles directly under the catalog Avanti snapshot, which is an in-air-start model with gear retracted",
+         snap=False)
+    # Informal gravel parking: a loose, staggered row, an open gap, and canted spaces near the ends.
+    # Vehicle positions are estimates; the four existing body styles rotate through the same 11 places.
+    cars = [
+        (-37.8, -21.0, 181), (-38.5, -17.2, 174), (-37.5, -13.0, 190),
+        (-38.2, -8.2, 183), (-37.3, -3.8, 171), (-38.6, 0.5, 192), (-37.6, 4.6, 177),
+        (-44.0, -32.4, 96), (-40.6, -25.9, 106), (-44.0, 0.0, 82), (-44.0, 6.5, 101),
+    ]
+    car_choices = ["car_sedan", "car_hatch", "car_suv", "car_sport"]
+    car_rows = [[grid(n), grid(e), round(hd % 360, 1)] for n, e, hd in cars]
+    shed_row = next(g for g in groups if g["id"] == "shed")["placements"]["value"][0]
+    prefab_text = (ROOT / "app/scenery/prefabs.gd").read_text(encoding="utf-8")
+    shed_size = re.search(r'"shed":\s*\{size = Vector3\(([^,]+),\s*([^,]+),\s*([^)]+)\)', prefab_text)
+    shed_polygon = car_polygon(*shed_row, (float(shed_size.group(1)), float(shed_size.group(3))))
+    check_car_clearance(car_rows, car_choices, catalog_car_sizes(), obstacles=[("shed", shed_polygon)])
+    inst("cars", "parking", car_choices, car_rows, "estimated",
+         photo + "; informal offset row and canted end spaces (estimated from the reference photo)")
     groups.append({"id": "car-park", "type": "patch", "zone": "parking", "surface": "gravel", "collides": False,
-                   "points": q([[-33.5, -24.0], [-33.5, 5.5], [-35.0, 7.0], [-42.5, 7.0], [-43.5, 5.5], [-43.5, -34.5], [-42.0, -36.0], [-35.0, -36.0], [-33.5, -34.0]],
+                   "points": q([[-33.5, -24.0], [-33.5, 5.5], [-35.0, 7.0], [-44.5, 7.0], [-45.5, 5.5], [-45.5, -34.5], [-44.0, -36.0], [-35.0, -36.0], [-33.5, -34.0]],
                                "m", "estimated", "Gravel strip under the car row")})
     # access track: through the treeline's designed SSW gap (azimuth 210 deg, tools/trees/place.py GAPS)
     track = [(-38.0, -36.5), (-46.0, -46.0), (-62.0, -55.0), (-100.0, -70.0)]

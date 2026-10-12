@@ -1,0 +1,10 @@
+{
+  "format": "openrc-landscape-delivery-audit v1",
+  "documents_checked": 14,
+  "images_checked": 40,
+  "derivatives_checked": 10,
+  "export_preset_credit_entries": 3,
+  "runtime_sources_match": true,
+  "errors": [],
+  "ok": true
+}

@@ -16,9 +16,17 @@ const Stars := preload("res://render/world/stars.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const Exposure := preload("res://render/world/exposure.gd")
+const LandscapeOptions := preload("res://render/landscape_upgrade/options.gd")
+const SunGlare := preload("res://render/landscape_upgrade/sun_glare.gd")
+const AirfieldLighting := preload("res://render/landscape_upgrade/airfield_lighting.gd")
+const SceneryLayer := preload("res://scenery/scenery.gd")
+const SceneryLoader := preload("res://scenery/scenery_loader.gd")
 
 ## The club switches its field lights on at dusk (FW-31…34): sun below this elevation in time-of-day mode.
 const FIELD_LIGHTS_BELOW_SUN_DEG := 3.0
+## LU-03: explicit TOD uses fixed SDR exposure rather than FW eye adaptation. View-light gain is an
+## appearance estimate; the helper applies the same bounded displayed energy in either lighting path.
+const SNAPSHOT_LOCAL_LIGHT_GAIN := 1000.0
 ## Eye adaptation to what the camera looks at (FW-23): the exposure follows the light falling on the view target (the
 ## airplane) in log space, fast toward light and slow back to dark, on simulation time so pauses and replays hold it.
 ## Rates are game estimates (real dark adaptation takes minutes). A first call, a restart or a jump > MAX_STEP_S snaps.
@@ -72,7 +80,8 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		Atmosphere.state.tonemapper = "agx" if start_el < FLOW_AGX_BELOW_SUN_DEG else "aces"
 	# FW-31…34: at dusk the club lights come on (with time flowing they are built at once and switched by the sun).
 	var lights := {}
-	if not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG):
+	var upgraded_lights: bool = LandscapeOptions.enabled() and field.get("id", "") == "default"
+	if upgraded_lights or (not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG)):
 		var loaded := FieldLights.load_from()
 		if loaded.ok:
 			lights = loaded.lights
@@ -90,8 +99,11 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		Exposure.set_value(Atmosphere.state.exposure)
 	var world_environment := WorldEnvironment.new()
 	var environment := Atmosphere.environment(lighting)
+	Exposure.set_value(environment.tonemap_exposure) # reset shader exposure when moving between FW and SDR snapshot worlds
 	world_environment.environment = environment
 	parent.add_child(world_environment)
+	if LandscapeOptions.enabled():
+		SunGlare.attach(parent, environment)
 
 	var field_node: Node3D = null
 	var t0 := Time.get_ticks_usec()
@@ -111,13 +123,25 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	var lights_node: Node3D = null
 	if not lights.is_empty():
 		lights_node = FieldLights.build(lights) # FW-31…34: visual only
-		lights_node.visible = float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
+		lights_node.visible = upgraded_lights or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
 		parent.add_child(lights_node)
+	var airfield_lighting: Node3D = null
+	if upgraded_lights:
+		var scenery := {}
+		var scenery_options := SceneryLayer.options()
+		if scenery_options.enabled:
+			var loaded_scenery := SceneryLoader.load_from(str(scenery_options.file), field)
+			if loaded_scenery.ok:
+				scenery = loaded_scenery.scenery
+		airfield_lighting = AirfieldLighting.build(field, lights, scenery)
+		parent.add_child(airfield_lighting)
+		airfield_lighting.bind_environment(environment, lights_node, SNAPSHOT_LOCAL_LIGHT_GAIN if not lighting.is_empty() else 1.0)
 	if flowing:
 		_flow = {when = conditions.when.duplicate(), time_scale = float(conditions.time_scale), step = 0,
 			environment = environment, sun = sun, stars = stars, lights_node = lights_node,
 			materials = haze_materials(parent), tonemapper = Atmosphere.state.tonemapper,
-			start_lst = float(Atmosphere.state.lst_deg), latitude = float(conditions.when.latitude_deg)}
+			start_lst = float(Atmosphere.state.lst_deg), latitude = float(conditions.when.latitude_deg), upgraded_lights = upgraded_lights,
+			airfield_lighting = airfield_lighting}
 	return {environment = environment, world_environment = world_environment, field = field_node, field_build_ms = field_build_ms, sun = sun,
 		conditions = conditions, sky = Atmosphere.state}
 
@@ -139,6 +163,8 @@ static func view_exposure(target: Vector3, ground_share := 0.0) -> float:
 	var extra := 0.0
 	if not _lights.is_empty():
 		extra = FieldLights.illuminance_point(_lights, target) + clampf(ground_share, 0.0, 1.0) * ADAPT_GROUND_WEIGHT * _ground_light
+		if LandscapeOptions.enabled():
+			extra *= AirfieldLighting._night_factor({sun_elevation_deg = float(Atmosphere.state.sun_elevation_deg)})
 	return float(SkyState.adapt(Atmosphere.state, extra).exposure)
 
 
@@ -231,7 +257,7 @@ static func flow_to(clock_s: float) -> bool:
 	Atmosphere.apply_light(_flow.sun)
 	for m: ShaderMaterial in _flow.materials:
 		Atmosphere._set_haze_uniforms(m)
-	if _flow.lights_node != null:
+	if _flow.lights_node != null and not _flow.get("upgraded_lights", false):
 		(_flow.lights_node as Node3D).visible = float(state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
 	if _flow.stars != null:
 		var lat: float = _flow.latitude
@@ -239,6 +265,8 @@ static func flow_to(clock_s: float) -> bool:
 	if not is_equal_approx(env.tonemap_exposure, state.exposure) and _adapt_clock < 0.0:
 		env.tonemap_exposure = state.exposure # no view target adapts it (e.g. evidence views)
 		Exposure.set_value(state.exposure)
+	if _flow.get("airfield_lighting") != null:
+		_flow.airfield_lighting.apply_lighting({sun_elevation_deg = float(state.sun_elevation_deg)})
 	return true
 
 

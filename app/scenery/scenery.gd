@@ -6,6 +6,7 @@
 extends RefCounted
 
 const Loader = preload("res://scenery/scenery_loader.gd")
+const FieldLoader = preload("res://data/field_loader.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
 const Models = preload("res://scenery/models.gd")
@@ -23,6 +24,8 @@ const FAR_CELL_M := 400.0
 const FAR_M := 400.0
 const SHADOW_RANGE_M := 300.0
 const QUALITIES: Array[String] = ["low", "balanced", "high"]
+static var _default_layout_geometry_ready: bool = false
+static var _default_layout_geometry: PackedByteArray = PackedByteArray()
 
 
 ## The switch and options. CLI (after --) wins, then the environment, then the defaults. On by default (SC-02a).
@@ -42,8 +45,9 @@ static func options() -> Dictionary:
 		theme = get.call("scenery_theme", "OPENRC_SCENERY_THEME", ""),
 		quality = get.call("scenery_quality", "OPENRC_SCENERY_QUALITY", "high"),
 		audio = on.call(get.call("scenery_audio", "OPENRC_SCENERY_AUDIO", "on")),
-		birds = on.call(get.call("scenery_birds", "OPENRC_SCENERY_BIRDS", "off")),
+		birds = on.call(get.call("scenery_birds", "OPENRC_SCENERY_BIRDS", "on")),
 		file = get.call("scenery_file", "OPENRC_SCENERY_FILE", Loader.DEFAULT_PATH),
+		file_explicit = args.has("scenery_file") or not OS.get_environment("OPENRC_SCENERY_FILE").is_empty(),
 	}
 
 
@@ -51,10 +55,103 @@ static func enabled() -> bool:
 	return options().enabled
 
 
+## Use the bundled layout only for the default field's normalized spatial geometry.
+## Explicit files always proceed to Loader validation, including field-id and placement checks.
+static func layout_file_applies(field: Dictionary, opts: Dictionary) -> bool:
+	if bool(opts.get("file_explicit", false)):
+		return true
+	if str(opts.get("file", Loader.DEFAULT_PATH)) != Loader.DEFAULT_PATH:
+		return false
+	if str(field.get("id", "")) != "default":
+		return false
+	var expected: PackedByteArray = _bundled_layout_geometry()
+	if expected.is_empty():
+		return false
+	return _layout_geometry(field) == expected
+
+
+static func _bundled_layout_geometry() -> PackedByteArray:
+	if not _default_layout_geometry_ready:
+		_default_layout_geometry_ready = true
+		var loaded: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+		if loaded.get("ok", false):
+			_default_layout_geometry = _layout_geometry(loaded.field)
+	return _default_layout_geometry
+
+
+static func _layout_geometry(field: Dictionary) -> PackedByteArray:
+	var pilot_value: Variant = field.get("pilot", null)
+	var surfaces_value: Variant = field.get("surfaces", null)
+	var objects_value: Variant = field.get("objects", null)
+	if typeof(pilot_value) != TYPE_DICTIONARY or typeof(surfaces_value) != TYPE_ARRAY \
+			or typeof(objects_value) != TYPE_ARRAY:
+		return PackedByteArray()
+	var pilot: Dictionary = pilot_value
+	var pilot_spatial: Array[float] = []
+	for key: String in ["north", "east", "down"]:
+		var value: Variant = pilot.get(key, null)
+		if not _finite_number(value):
+			return PackedByteArray()
+		pilot_spatial.append(float(value))
+	var surfaces: Array = []
+	for surface_value: Variant in surfaces_value:
+		if typeof(surface_value) != TYPE_DICTIONARY:
+			return PackedByteArray()
+		var surface: Dictionary = surface_value
+		var surface_id: Variant = surface.get("id", null)
+		var surface_type: Variant = surface.get("type", null)
+		if typeof(surface_id) != TYPE_STRING or typeof(surface_type) != TYPE_STRING:
+			return PackedByteArray()
+		var dimensions: Array[float] = []
+		for key: String in ["center_north", "center_east", "length_east_west", "width_north_south"]:
+			var value: Variant = surface.get(key, null)
+			if not _finite_number(value):
+				return PackedByteArray()
+			dimensions.append(float(value))
+		surfaces.append([str(surface_id), str(surface_type), dimensions])
+	surfaces.sort_custom(func(a: Array, b: Array) -> bool: return str(a[0]) < str(b[0]))
+	var objects: Array = []
+	for object_value: Variant in objects_value:
+		if typeof(object_value) != TYPE_DICTIONARY:
+			return PackedByteArray()
+		var field_object: Dictionary = object_value
+		var object_id: Variant = field_object.get("id", null)
+		var object_type: Variant = field_object.get("type", null)
+		var positions_value: Variant = field_object.get("positions", null)
+		if typeof(object_id) != TYPE_STRING or typeof(object_type) != TYPE_STRING \
+				or typeof(positions_value) != TYPE_ARRAY:
+			return PackedByteArray()
+		var positions: Array = []
+		for point_value: Variant in positions_value:
+			if typeof(point_value) != TYPE_ARRAY or (point_value as Array).size() < 2:
+				return PackedByteArray()
+			var point: Array = point_value
+			var coordinates: Array[float] = []
+			for coordinate: Variant in point:
+				if not _finite_number(coordinate):
+					return PackedByteArray()
+				coordinates.append(float(coordinate))
+			positions.append(coordinates)
+		positions.sort_custom(func(a: Array, b: Array) -> bool:
+			if float(a[0]) == float(b[0]):
+				return float(a[1]) < float(b[1])
+			return float(a[0]) < float(b[0]))
+		objects.append([str(object_id), str(object_type), positions])
+	objects.sort_custom(func(a: Array, b: Array) -> bool: return str(a[0]) < str(b[0]))
+	return var_to_bytes([str(field.get("runway", "")), pilot_spatial, surfaces, objects])
+
+
+static func _finite_number(value: Variant) -> bool:
+	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and is_finite(float(value))
+
+
 ## Called by render/field.gd after it built the field. No-op when the switch is off.
 static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}) -> void:
 	var opts := options()
 	if not opts.enabled:
+		return
+	# The implicit bundle is only for a matching default spatial layout; explicit files still validate fully.
+	if not layout_file_applies(field, opts):
 		return
 	var loaded := Loader.load_from(str(opts.file), field)
 	if not loaded.ok:
@@ -175,7 +272,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						continue
 					var kit := _kit(cells, _cell(pl.north, pl.east))
 					kit.xf = Transform3D.IDENTITY
-					kit.append_arrays(arr.pos, arr.nrm, arr.col, _placement_xf(pl.north, pl.east, pl.heading))
+					var parked_xf := _placement_xf(pl.north, pl.east, pl.heading)
+					parked_xf.origin.y += Models.parked_base_height(model_id)
+					kit.append_arrays(arr.pos, arr.nrm, arr.col, parked_xf)
 					stats.fleet += 1
 			"hedge", "fence":
 				var pts: Array = group.points
@@ -354,7 +453,7 @@ static func _xz(ne: Vector2) -> Vector2:
 static func _motion_node(part: Dictionary, xf: Transform3D, seed: int) -> MeshInstance3D:
 	var mat := ShaderMaterial.new()
 	mat.shader = MOTION_SHADER
-	mat.set_shader_parameter("mode", 0 if part.kind == "rotor" else 1)
+	mat.set_shader_parameter("mode", int(part.get("motion_mode", 0 if part.kind == "rotor" else 1)))
 	mat.set_shader_parameter("rate", float(part.get("rate", 0.0)))
 	mat.set_shader_parameter("phase", float(part.get("phase", Palette.hash01(seed, 77))))
 	var kit: MeshKit = part.kit

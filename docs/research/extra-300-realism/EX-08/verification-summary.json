@@ -1,0 +1,113 @@
+{
+  "complete_coverage": true,
+  "green": false,
+  "unit_files": 199,
+  "unit_passes": 186,
+  "unit_failures": 13,
+  "tail_sections": 27,
+  "tail_passes": 27,
+  "isolated_ui_files": 16,
+  "remaining_failures": [
+    {
+      "name": "test_atmosphere.gd",
+      "exit": 1,
+      "engine_errors": false,
+      "evidence": "full-suite.log"
+    },
+    {
+      "name": "test_atmosphere_flight.gd",
+      "exit": 1,
+      "engine_errors": true,
+      "seconds": 3.23,
+      "evidence": "full-suite-continuation.log"
+    },
+    {
+      "name": "test_field_integration.gd",
+      "exit": 0,
+      "engine_errors": true,
+      "seconds": 3.05,
+      "evidence": "full-suite-continuation.log"
+    },
+    {
+      "name": "test_field_projected_shadows.gd",
+      "exit": 1,
+      "engine_errors": false,
+      "seconds": 1.55,
+      "evidence": "full-suite-continuation.log"
+    },
+    {
+      "name": "test_field_surfaces.gd",
+      "exit": 0,
+      "engine_errors": true,
+      "seconds": 2.38,
+      "evidence": "full-suite-continuation.log"
+    },
+    {
+      "name": "test_ui_atmosphere.gd",
+      "exit": 1,
+      "engine_errors": false,
+      "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-vrlb7l66",
+      "evidence": "isolated-ui.log"
+    },
+    {
+      "name": "test_ui_field_world_time_of_day.gd",
+      "exit": 1,
+      "engine_errors": false,
+      "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-77vzdgh9",
+      "evidence": "isolated-ui.log"
+    },
+    {
+      "name": "test_ui_home.gd",
+      "exit": 1,
+      "engine_errors": false,
+      "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-itnvin6a",
+      "evidence": "isolated-ui.log"
+    },
+    {
+      "name": "test_ui_runway.gd",
+      "exit": 1,
+      "engine_errors": true,
+      "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-hfrrzv04",
+      "evidence": "isolated-ui.log"
+    },
+    {
+      "name": "test_ui_time_of_day_pause.gd",
+      "exit": 1,
+      "engine_errors": true,
+      "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-70nk93p1",
+      "evidence": "isolated-ui.log"
+    },
+    {
+      "name": "test_ui_turbulence.gd",
+      "exit": 1,
+      "engine_errors": false,
+      "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-1rmpqvck",
+      "evidence": "isolated-ui.log"
+    },
+    {
+      "name": "test_ui_weather.gd",
+      "exit": 1,
+      "engine_errors": false,
+      "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-zwkx_epw",
+      "evidence": "isolated-ui.log"
+    },
+    {
+      "name": "test_world_sky.gd",
+      "exit": 1,
+      "engine_errors": false,
+      "seconds": 0.25,
+      "evidence": "full-suite-continuation.log"
+    }
+  ],
+  "preflight": "Resource import, generator checks, float64 guard, transcendental/shader checks and all-script parse completed before unit loop.",
+  "extra_installation_checks": 17,
+  "extra_handling_checks": 12,
+  "extra_ground_research_checks": 84,
+  "airborne_cases": 24,
+  "ground_cases": 7,
+  "probe_rates_hz": [
+    240,
+    480
+  ],
+  "note": "All remaining failed files reproduce on frozen baseline; see regression-triage.md. This combines the initial suite, continuation, isolated UI repetition and corrected E5a rerun, not an uninterrupted green test.sh invocation."
+}

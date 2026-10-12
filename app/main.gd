@@ -28,6 +28,7 @@ const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd") # legacy atmosphere fixture only
 const FieldLoader = preload("res://data/field_loader.gd")
 const FieldBuilder = preload("res://render/field.gd")
+const SceneryCollisionSetup = preload("res://scenery/collision_setup.gd")
 const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Hud := preload("res://render/hud.gd")
@@ -98,6 +99,8 @@ func _render_wind(time_s: float) -> Vector3:
 		return Vector3.ZERO
 	return Frames.ned_to_render(Array(session.wind_at(time_s)))
 var interactive_start: bool = false
+## UI-06d: Home injects the saved diagnostic choice; technical launches retain their explicit marker flag.
+var latency_marker_enabled: bool = false
 var startup_error: String = ""
 var _airplane: Dictionary
 var _camera: Camera3D
@@ -165,7 +168,10 @@ func _ready() -> void:
 	lighting_config = selected_light.config.duplicate(true)
 	_lighting = TimeOfDayLighting.snapshot(lighting_config)
 	_visual_timeline = VisualTimeline.create(lighting_config).timeline
-	var latency_options: Dictionary = LatencyPatch.options(args)
+	var latency_args: Dictionary = args.duplicate()
+	if interactive_start and latency_marker_enabled:
+		latency_args["latency-patch"] = true
+	var latency_options: Dictionary = LatencyPatch.options(latency_args)
 	if not latency_options.ok:
 		printerr(latency_options.error)
 		set_process(false)
@@ -252,7 +258,7 @@ func _ready() -> void:
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
 		_look_height = float(args.get("look_alt", field.pilot.eye_height))
-	Atmosphere.engine_shadows = args.has("engine_shadows") # comparison only (L3); before the sun is built
+	Atmosphere.engine_shadows = Atmosphere.engine_shadows_enabled(args, interactive_start)
 	_build_world()
 	_shadow_mode = str(args.get("shadow", "sun"))
 	if args.has("hide_airplane"):
@@ -300,6 +306,17 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
+	if not _scripted and _capture_scene_id() == "field":
+		var obstacles := SceneryCollisionSetup.build(field)
+		if not obstacles.ok or not session.set_collision_world(obstacles.world):
+			startup_error = "Scenery collision inventory refused: " + "; ".join(obstacles.errors)
+			printerr(startup_error)
+			session.free()
+			session = null
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_DATA)
+			return
 	session.start_choice = start_choice
 	var conditions: Dictionary = _weather_options(args)
 	if not conditions.ok or not session.setup_weather(conditions.config):
@@ -595,6 +612,9 @@ func set_overlays_visible(on: bool) -> void:
 			n = n.get_parent()
 		if n != null:
 			n.visible = on
+	var latency_marker := get_node_or_null("LatencyPatch") as CanvasLayer
+	if latency_marker != null:
+		latency_marker.visible = on
 
 
 ## TOD-08a: paired technical replay checkpoint; native Variant encoding preserves physics bits.

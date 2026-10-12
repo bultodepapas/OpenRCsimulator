@@ -1,0 +1,119 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field file is readable
+ok   loader accepts intentional rough/mown/runway overlap
+ERROR: scenery: field: expected 'integration-overlap' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_builder_contract (res://tests/test_field_integration.gd:89)
+       [3] _run (res://tests/test_field_integration.gd:42)
+       [4] _initialize (res://tests/test_field_integration.gd:30)
+ERROR: scenery: field: expected 'integration-overlap' (the loaded field's id)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _test_builder_contract (res://tests/test_field_integration.gd:90)
+       [3] _run (res://tests/test_field_integration.gd:42)
+       [4] _initialize (res://tests/test_field_integration.gd:30)
+ok   builder leaves normalized input unchanged
+ok   builder consolidates contained surfaces into the rough ground pass
+ok   field builder owns no camera, environment, session or collision nodes
+ok   rough rectangle keeps its dimensions and datum
+ok   one ground material stores both colored rectangles
+ok   surface kinds are priority ordered and retain their rectangles
+ok   separate field builds own their material and grass texture
+ok   two builds create independent trees, meshes, materials and grass textures
+ok   custom field copy is derived from the default
+ok   write only the user:// custom field copy
+ok   customized field copy remains valid
+ok   save test-only preferences
+ERROR: scenery: groups[19] point (242.0, -300.0): 1.8 m tall inside the flight box (max 1.5 m)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] build (res://render/world/world.gd:101)
+       [3] _init (res://ui/home_scene.gd:59)
+       [4] show_home (res://app_root.gd:105)
+       [5] _ready (res://app_root.gd:88)
+ERROR: scenery: groups[20] point (242.0, 72.0): 1.8 m tall inside the flight box (max 1.5 m)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] build (res://render/world/world.gd:101)
+       [3] _init (res://ui/home_scene.gd:59)
+       [4] show_home (res://app_root.gd:105)
+       [5] _ready (res://app_root.gd:88)
+ERROR: scenery: groups[35]: flower at (39.5, -51.5) on the runway
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] build (res://render/world/world.gd:101)
+       [3] _init (res://ui/home_scene.gd:59)
+       [4] show_home (res://app_root.gd:105)
+       [5] _ready (res://app_root.gd:88)
+ok   interactive route opens Home with no flight
+ok   Home built the field from the injected file
+ok   Home composition follows the custom pilot station and eye height
+ok   Home consumes custom runway center and dimensions
+ok   Home initially focuses Fly
+ERROR: scenery: groups[19] point (242.0, -300.0): 1.8 m tall inside the flight box (max 1.5 m)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _build_field (res://main.gd:812)
+       [3] build (res://render/world/world.gd:99)
+       [4] _build_world (res://main.gd:793)
+       [5] _ready (res://main.gd:261)
+       [6] start_flight (res://app_root.gd:205)
+       [7] _on_fly (res://ui/home.gd:441)
+ERROR: scenery: groups[20] point (242.0, 72.0): 1.8 m tall inside the flight box (max 1.5 m)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _build_field (res://main.gd:812)
+       [3] build (res://render/world/world.gd:99)
+       [4] _build_world (res://main.gd:793)
+       [5] _ready (res://main.gd:261)
+       [6] start_flight (res://app_root.gd:205)
+       [7] _on_fly (res://ui/home.gd:441)
+ERROR: scenery: groups[35]: flower at (39.5, -51.5) on the runway
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:62)
+       [1] build (res://render/field.gd:70)
+       [2] _build_field (res://main.gd:812)
+       [3] build (res://render/world/world.gd:99)
+       [4] _build_world (res://main.gd:793)
+       [5] _ready (res://main.gd:261)
+       [6] start_flight (res://app_root.gd:205)
+       [7] _on_fly (res://ui/home.gd:441)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   activating Home Fly creates the flight
+ok   flight built the same custom field geometry and materials
+ok   Home and flight hold separate field trees and mutable resources
+ok   transition leaves exactly one field, camera and WorldEnvironment
+ok   field shadow masks own isolated 3D worlds
+ok   the flight camera and environment are the active ones
+ok   the flight owns exactly one session
+ok   Home nodes are gone after the transition
+ok   custom pilot station and eye height reach the flight camera metadata
+ok   camera aim uses custom pilot coordinates and eye height
+ok   review camera defaults to the field's eye height
+ok   review altitude override stays above the field's pilot station
+ok   app did not mutate either field JSON file
+ok   field error screen shows every validation detail
+ok   field error screen focuses its Quit button
+ok   English error title is available
+ok   imported Spanish field error strings translate
+ok   error panel controls render the Spanish title and Quit label
+ok   the repository default field JSON was never changed
+ok   the app only read the temporary customized field JSON
+all field integration checks passed

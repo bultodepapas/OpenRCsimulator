@@ -1,0 +1,98 @@
+[
+  {
+    "name": "test_ui_aircraft.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-n00_g2m8"
+  },
+  {
+    "name": "test_ui_atmosphere.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-vrlb7l66"
+  },
+  {
+    "name": "test_ui_field_world_time_of_day.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-77vzdgh9"
+  },
+  {
+    "name": "test_ui_flight_capture.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-9wlx66so"
+  },
+  {
+    "name": "test_ui_help.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-rtfd5tf2"
+  },
+  {
+    "name": "test_ui_home.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-itnvin6a"
+  },
+  {
+    "name": "test_ui_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-pfpivmxn"
+  },
+  {
+    "name": "test_ui_language.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-tha1pni7"
+  },
+  {
+    "name": "test_ui_pause.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-296f4q3q"
+  },
+  {
+    "name": "test_ui_runway.gd",
+    "exit": 1,
+    "engine_errors": true,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-hfrrzv04"
+  },
+  {
+    "name": "test_ui_screen_stack.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-d9bae307"
+  },
+  {
+    "name": "test_ui_time_of_day.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-oovmas30"
+  },
+  {
+    "name": "test_ui_time_of_day_pause.gd",
+    "exit": 1,
+    "engine_errors": true,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-70nk93p1"
+  },
+  {
+    "name": "test_ui_turbulence.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-1rmpqvck"
+  },
+  {
+    "name": "test_ui_weather.gd",
+    "exit": 1,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-zwkx_epw"
+  },
+  {
+    "name": "test_ui_weather_sliders.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "xdg_directory": "/home/bulto/.cache/openrc-extra-ex06-20261011/.tools/ex06-after-ui-fox084sm"
+  }
+]

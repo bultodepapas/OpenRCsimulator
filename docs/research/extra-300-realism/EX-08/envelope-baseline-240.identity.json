@@ -1,0 +1,19 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\extra-realism-baseline\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\extra-300\\ex06\\envelope_probe.gd",
+    "--",
+    "--hz=240",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\extra-300-realism\\EX-08\\envelope-baseline-240.json"
+  ],
+  "exit_code": 0,
+  "probe_sha256": "e25b4ca8342cc6902453ed51ecaf797d4d751d74a7b979eba7543f5831362b3e",
+  "aircraft_sha256": "16d387b027957f2fdf247f3b577523093a24a79e8b59230a3b5bdd358cb8d0b8",
+  "wheel_profiles_sha256": "91fc52dc3269180113d8880aad10fae538c3b7d55ab37808eabfcfa6f4c8420d"
+}

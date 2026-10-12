@@ -81,7 +81,20 @@ func _test_build() -> void:
 	print("     stats: ", stats)
 	_check("instances built (> 120)", int(stats.instances) > 120)
 	_check("the parked fleet: 4 aircraft", int(stats.fleet) == 4)
-	_check("moving parts: 4 rotors + 1 flag", int(stats.motion) == 5)
+	var motion_counts := {rotor = 0, flag = 0, crown = 0, bush_tips = 0, person = 0}
+	var motion_node: Node = root.get_node("Motion")
+	for part: Node in motion_node.get_children():
+		for kind: String in motion_counts:
+			if str(part.name).begins_with(kind + "_"):
+				motion_counts[kind] += 1
+	_check("moving parts preserve 4 rotors + 1 flag", motion_counts.rotor == 4 and motion_counts.flag == 1,
+		str(motion_counts))
+	_check("moving shade crowns and shrub tips are present", motion_counts.crown == 10 and motion_counts.bush_tips == 6,
+		str(motion_counts))
+	_check("only a bounded subset of people sways", motion_counts.person >= 2 and motion_counts.person <= 9,
+		str(motion_counts))
+	_check("motion stats count every emitted animated mesh", int(stats.motion) == motion_node.get_child_count(),
+		"stats=%d nodes=%d" % [int(stats.motion), motion_node.get_child_count()])
 	_check("contact shadows for the near props", int(stats.shadows) > 50)
 	_check("wildflowers placed", int(stats.flowers) > 2000)
 	_check("compact cells (≤ 64 merged meshes)", int(stats.cells) <= 64)
@@ -131,10 +144,16 @@ func _test_catalog_sizes() -> void:
 	for id: String in Prefabs.CATALOG:
 		var spec: Dictionary = Prefabs.CATALOG[id]
 		var k := MeshKit.new()
-		Prefabs.build(id, k, 1234, "temperate")
+		var moving: Array = Prefabs.build(id, k, 1234, "temperate")
 		var box := AABB(k.verts[0], Vector3.ZERO)
 		for v: Vector3 in k.verts:
 			box = box.expand(v)
+		# Person catalogs describe the full body, including the selected shader-driven arm.
+		if id.begins_with("person_"):
+			for part: Dictionary in moving:
+				var part_kit: MeshKit = part.kit
+				for v: Vector3 in part_kit.verts:
+					box = box.expand(v + part.pivot)
 		var want: Vector3 = spec.size
 		var tol := 0.3 if spec.get("variable", false) else 0.1
 		var ok := true
@@ -194,13 +213,25 @@ func _test_winding() -> void:
 
 func _test_tiers() -> void:
 	var counts := {}
+	var motion_counts := {}
 	for q: String in ["low", "balanced", "high"]:
 		var r := Scenery.build(_field, _scenery, {audio = false, birds = false, theme = "", quality = q})
 		counts[q] = r.get_meta("stats")
+		motion_counts[q] = {rotor = 0, flag = 0, crown = 0, bush_tips = 0, person = 0}
+		for part: Node in r.get_node("Motion").get_children():
+			for kind: String in motion_counts[q]:
+				if str(part.name).begins_with(kind + "_"):
+					motion_counts[q][kind] += 1
 		r.free()
 	_check("tiers: low < balanced < high instances", int(counts.low.instances) < int(counts.balanced.instances) and int(counts.balanced.instances) < int(counts.high.instances))
 	_check("tiers: low keeps no ornamental flowers", int(counts.low.flowers) == 0)
-	_check("tiers: every landmark survives low (rotors and flag)", int(counts.low.motion) == int(counts.high.motion))
+	_check("tiers: low retains the 4 rotors, flag and 10 standard tree crowns",
+		motion_counts.low.rotor == 4 and motion_counts.low.flag == 1 and motion_counts.low.crown == 10
+		and motion_counts.low.bush_tips == 0 and motion_counts.low.person == 0, str(motion_counts.low))
+	_check("tiers: high retains the same landmarks plus ornamental people and shrub tips",
+		motion_counts.high.rotor == 4 and motion_counts.high.flag == 1 and motion_counts.high.crown == 10
+		and motion_counts.high.bush_tips == 6 and motion_counts.high.person >= 2,
+		str(motion_counts.high))
 	_check("tiers: balanced keeps a fixed half of the flowers", absf(float(counts.balanced.flowers) / float(counts.high.flowers) - 0.5) < 0.08)
 
 

@@ -1,0 +1,67 @@
+{
+  "app/assets/landscape/UPGRADE_CREDITS.md": {
+    "before_normalized": "0a2c424579631a35a7cd5dfbc713e0c55acf0dd672591594371b9fe814b09f05",
+    "after_original": "6d8431dc5dc6e18148f47a37aafe2d69c15ff9e858ac273682e50e4a69fa2ea3",
+    "after_normalized": "6d8431dc5dc6e18148f47a37aafe2d69c15ff9e858ac273682e50e4a69fa2ea3"
+  },
+  "app/export_presets.cfg": {
+    "before_normalized": "6fbbaeaaa3f6255c5660afa96df97e2218d5c1aeb37abbac4ae02e03af9f7578",
+    "after_original": "e617ad76ae0dba5ad5f1821b68fd5b76bbc98c382b47ce78cf35e52c33282984",
+    "after_normalized": "52a50d072c4538dc74fded81418fa46e668b2b57244638ab5c5653da4f9e00e3"
+  },
+  "app/render/crash/director.gd": {
+    "before_normalized": "ee0dd8accca002c694a36d1636fb2191c267e63df7c3f9962fe90636494539de",
+    "after_original": "056315695097f9122b160aec4994bc889f532483a1392e22769dd2a47e752f74",
+    "after_normalized": "056315695097f9122b160aec4994bc889f532483a1392e22769dd2a47e752f74"
+  },
+  "app/scenery/collision_setup.gd": {
+    "before_normalized": "ebfe08908697e021ead7d7567ee18af43b49ab135b4d1705917aa192601522c8",
+    "after_original": "01fd70e0d6ce80d1a540fbd1a09a450695968a0b933f0a7a227653d0b461a233",
+    "after_normalized": "01fd70e0d6ce80d1a540fbd1a09a450695968a0b933f0a7a227653d0b461a233"
+  },
+  "app/scenery/people.gd": {
+    "before_normalized": "d52255b0d9771e3ffe5c19b74db3800fa027e7d4e6103b1ad81dbfef14b2cd98",
+    "after_original": "cfe60240888ca710b33356d7856b9bcac34f4fa8d160e4fa8382ac195f001d1b",
+    "after_normalized": "cfe60240888ca710b33356d7856b9bcac34f4fa8d160e4fa8382ac195f001d1b"
+  },
+  "app/scenery/scenery.gd": {
+    "before_normalized": "b6e5950feb2476bdaaeb58fcd46bd6a81ac8684e56cd89c4270f09a3571ba6fd",
+    "after_original": "16a537b9f7ce01bbde38add63ebb7988280b85c5fe6210a485ffb30d5e86a410",
+    "after_normalized": "2054cab6dc0bb6e08a0860fa8407c03ac7a89c886d300808c78f5115ae9a1b01"
+  },
+  "app/tests/test_field_projected_shadows.gd": {
+    "before_normalized": "e8df9e4ba182323eeedc8be667e4691cf485466cbc6ad62c5bf9d1d79d909ad0",
+    "after_original": "2ae4d947c65d887651f4f42aed3b13e95e6209ca82c5ea31bbec16a2f9209b51",
+    "after_normalized": "0f9c4ced3ac9738f881a904733ac239643d5b8b780047f7f455b8100f2110db2"
+  },
+  "app/tests/test_landscape_collision_session.gd.uid": {
+    "before_normalized": "3f5744e3e3414fb2efab0c83467e5be27c29acf4c5cd2103c20249c51721f784",
+    "after_original": "7ee0d4ea1460f778420a601beffe1b1b6d351dad130590e79b5cf2cb36ad2cbf",
+    "after_normalized": "7ee0d4ea1460f778420a601beffe1b1b6d351dad130590e79b5cf2cb36ad2cbf"
+  },
+  "app/tests/test_landscape_population.gd": {
+    "before_normalized": "3c50f7a5547e4d0aac9714c0b351f5d0b1d8d799080997740ad4c0f3e3207ace",
+    "after_original": "929f75e7d3dba6584d82f15a1b5766cb3a899c6a9c9e1d9e399c7bba105890ca",
+    "after_normalized": "929f75e7d3dba6584d82f15a1b5766cb3a899c6a9c9e1d9e399c7bba105890ca"
+  },
+  "app/tests/test_landscape_scenery_eligibility.gd": {
+    "before_normalized": null,
+    "after_original": "697f4cde86a81a272094f9b4513e5d2f88fbaaf5f2ffa9399b30ca46dfed65a5",
+    "after_normalized": "697f4cde86a81a272094f9b4513e5d2f88fbaaf5f2ffa9399b30ca46dfed65a5"
+  },
+  "app/tests/test_landscape_scenery_eligibility.gd.uid": {
+    "before_normalized": null,
+    "after_original": "2f0a71215e1770461a996413e72d71f1ebdfee59710ce4d9a9d393c82708037a",
+    "after_normalized": "2f0a71215e1770461a996413e72d71f1ebdfee59710ce4d9a9d393c82708037a"
+  },
+  "app/tests/test_scenery_trace.gd": {
+    "before_normalized": "3539efc2d2e999e1153db863698ffec7f9cb2c0d69d99384308dbc2feb3e1f18",
+    "after_original": "e9d6643b58b55edcb7898e48c1fc548012967f32b4a5d54748e86273f56c3164",
+    "after_normalized": "e9d6643b58b55edcb7898e48c1fc548012967f32b4a5d54748e86273f56c3164"
+  },
+  "app/tests/test_world_sky.gd": {
+    "before_normalized": "0308a388fdc700a3d5711ffa1db2c8b153428fa05a652028fb0ce8fcc68fe5c0",
+    "after_original": "fdd4ff78136ce218f0067651e4c170e47ec30f27709a097eae7f4e3d64455270",
+    "after_normalized": "fdd4ff78136ce218f0067651e4c170e47ec30f27709a097eae7f4e3d64455270"
+  }
+}

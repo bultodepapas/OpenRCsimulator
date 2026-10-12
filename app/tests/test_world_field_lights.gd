@@ -13,6 +13,7 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const Frames := preload("res://render/frames.gd")
 const Exposure := preload("res://render/world/exposure.gd")
+const LandscapeOptions := preload("res://render/landscape_upgrade/options.gd")
 
 var _failures := 0
 var _count := 0
@@ -159,7 +160,7 @@ func _initialize() -> void:
 	World.update(legacy_env, 1.0, Vector3.ZERO, lit)
 	_check("fixed sun: no adaptation", is_equal_approx(legacy_env.tonemap_exposure, 0.6), "%f, state %s" % [legacy_env.tonemap_exposure, str(Atmosphere.state.keys())])
 
-	# World: legacy builds no lights; night builds stars, lights; noon builds none.
+	# LU-03: fixture hardware persists by day with zero energy; stars retain the FW night contract.
 	var field: Dictionary = FieldLoader.load_from().field
 	for case: Array in [[{time_of_day = false}, false], [Conditions.resolve(PackedStringArray(["--time_of_day=noon"])), false],
 			[Conditions.resolve(PackedStringArray(["--time_of_day=night"])), true]]:
@@ -167,7 +168,9 @@ func _initialize() -> void:
 		World.build(holder, field, Callable(), case[0])
 		var has_lights := holder.get_node_or_null("FieldLights") != null
 		var has_stars := holder.get_node_or_null("Stars") != null
-		_check("world %s: field lights %s, stars %s" % [case[0].get("preset", "legacy"), case[1], case[1]], has_lights == case[1] and has_stars == case[1])
+		_check("world %s: hardware and stars" % case[0].get("preset", "legacy"), has_lights == (LandscapeOptions.enabled() or case[1]) and has_stars == case[1])
+		if has_lights:
+			_check("field emission follows time", ((holder.get_node("FieldLights/flood_west") as SpotLight3D).light_energy > 0.0) == bool(case[1]))
 		holder.free()
 	Atmosphere.state = {}
 	print("%d checks, %d failed" % [_count, _failures])

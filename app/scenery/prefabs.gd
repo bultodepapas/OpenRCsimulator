@@ -6,6 +6,8 @@ extends RefCounted
 
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
+const People = preload("res://scenery/people.gd")
+const Vegetation = preload("res://scenery/vegetation.gd")
 
 ## id → size (w × h × l, m), tier (landmark | standard | ornament), shadow, evidence. `size` is the expected bounding box
 ## of the built mesh within ±10 % (test). Flight-box props must stay ≤ 1.5 m tall (loader rule).
@@ -27,6 +29,8 @@ const CATALOG := {
 	"person_standing": {size = Vector3(0.6, 1.78, 0.35), tier = "ornament", shadow = true, kind = "estimated", source = "Adult 1.62–1.88 m"},
 	"person_sitting": {size = Vector3(0.55, 1.3, 0.75), tier = "ornament", shadow = false, kind = "estimated", source = "Seated adult"},
 	"person_pilot": {size = Vector3(0.6, 1.78, 0.45), tier = "ornament", shadow = true, kind = "estimated", source = "Pilot holding a transmitter"},
+	"avanti_cradle": {size = Vector3(0.7, 0.48, 1.63), tier = "standard", shadow = true, kind = "estimated",
+		source = "Original padded trestle cradle for the gear-up Avanti S fleet snapshot; visual support estimate"},
 	"barn": {size = Vector3(10.8, 7.5, 14.8), tier = "landmark", shadow = false, kind = "estimated", source = "Gambrel barn 10 × 14 m"},
 	"silo": {size = Vector3(5.6, 15.0, 5.6), tier = "landmark", shadow = false, kind = "estimated", source = "Farm silo, 14 m min (SC-13: tall parts carry the farmstead)"},
 	"farmhouse": {size = Vector3(10.0, 7.2, 8.0), tier = "standard", shadow = false, kind = "estimated", source = "Two-storey farmhouse"},
@@ -51,12 +55,13 @@ static func build(id: String, kit: MeshKit, seed: int, theme: String) -> Array:
 		"club_sign": _club_sign(kit)
 		"round_bale": _round_bale(kit, seed)
 		"bale_stack": _bale_stack(kit)
-		"shade_tree": _shade_tree(kit, seed, theme)
-		"bush": _bush(kit, seed, theme)
+		"shade_tree": return Vegetation.shade_tree(kit, seed, theme)
+		"bush": return Vegetation.bush(kit, seed, theme)
 		"flower_clump": _flower_clump(kit, seed, theme)
-		"person_standing": _person(kit, seed, "standing")
-		"person_sitting": _person(kit, seed, "sitting")
-		"person_pilot": _person(kit, seed, "pilot")
+		"person_standing": return People.build(kit, seed, "standing")
+		"person_sitting": return People.build(kit, seed, "sitting")
+		"person_pilot": return People.build(kit, seed, "pilot")
+		"avanti_cradle": _avanti_cradle(kit)
 		"barn": _barn(kit)
 		"silo": _silo(kit)
 		"farmhouse": _farmhouse(kit)
@@ -313,36 +318,6 @@ static func _bale_stack(k: MeshKit) -> void:
 				k.box(Vector3(1.22, 0.02, 0.03), c + Vector3(0, 0.9, s), _c("hay_ring"), true)
 
 
-static func _shade_tree(k: MeshKit, seed: int, theme: String) -> void:
-	var h := 9.0 + 1.5 * Palette.hash01(seed, 1)
-	var trunk_h := h * 0.42
-	k.cylinder(0.34, 0.22, trunk_h, 7, Vector3.ZERO, _c("trunk"))
-	for i in 3: # main limbs, hidden inside the crown
-		var a := TAU * (i / 3.0 + Palette.hash01(seed, i, 2) * 0.2)
-		k.beam(Vector3(0, trunk_h * 0.8, 0), Vector3(cos(a) * 1.3, trunk_h + 1.6, sin(a) * 1.3), 0.18, _c("trunk"))
-	var leaf := Palette.veg("leaf", theme)
-	var light := Palette.veg("leaf_light", theme)
-	var dark := Palette.veg("leaf_dark", theme)
-	# a broad dome: one big central mass and a ring of overlapping lumps, lighter on top
-	k.ellipsoid(Vector3(0, trunk_h + 2.6, 0), Vector3(6.4, 4.6, 6.4), leaf.lerp(dark, 0.35), seed, 9, 4)
-	var n := 6
-	for i in n:
-		var a := TAU * (i / float(n) + Palette.hash01(seed, i, 3) * 0.12)
-		var r := 2.0 + 0.5 * Palette.hash01(seed, i, 4)
-		var y := trunk_h + 2.0 + 1.8 * Palette.hash01(seed, i, 5)
-		var s := 2.8 + 0.9 * Palette.hash01(seed, i, 6)
-		var tint := leaf.lerp(light, Palette.hash01(seed, i, 8) * 0.6)
-		k.ellipsoid(Vector3(cos(a) * r, y, sin(a) * r), Vector3(s, s * 0.85, s), tint, seed + i, 7, 3)
-	k.ellipsoid(Vector3(0.3, h - 1.7, -0.2), Vector3(3.8, 2.8, 3.8), light, seed + 17, 8, 3)
-
-
-static func _bush(k: MeshKit, seed: int, theme: String) -> void:
-	var c := Palette.veg("hedge", theme)
-	for i in 3:
-		var a := TAU * i / 3.0 + Palette.hash01(seed, i) * 1.0
-		k.ellipsoid(Vector3(cos(a) * 0.32, 0.45, sin(a) * 0.32), Vector3(1.1, 0.95, 1.1), c.lerp(Palette.veg("hedge_light", theme), 0.3 * i), seed + i, 7, 3, 0.1)
-
-
 static func _flower_clump(k: MeshKit, seed: int, theme: String) -> void:
 	k.ellipsoid(Vector3(0, 0.12, 0), Vector3(0.68, 0.3, 0.68), Palette.veg("stem", theme), seed, 7, 3, 0.15)
 	var species: Array = Palette.FLOWERS.keys()
@@ -353,59 +328,19 @@ static func _flower_clump(k: MeshKit, seed: int, theme: String) -> void:
 		k.blob(Vector3(cos(a) * r, 0.3 + 0.1 * Palette.hash01(seed, i, 3), sin(a) * r), Vector3(0.11, 0.07, 0.11), col, seed + i, 0.06)
 
 
-# ---------------- people ----------------
+# ---------------- the Avanti display cradle ----------------
 
-## Low-poly people with real proportions (leg 0.47 H, torso 0.30 H, head 0.13 H). Pose "pilot": transmitter at chest,
-## head up. Seeded height, clothes and skin.
-static func _person(k: MeshKit, seed: int, pose: String) -> void:
-	var height := 1.62 + 0.26 * Palette.hash01(seed, 1)
-	var s := height / 1.75
-	var shirt: Color = Palette.pick(Palette.SHIRTS, seed, 2)
-	var trousers: Color = Palette.pick(Palette.TROUSERS, seed, 3)
-	var skin: Color = Palette.pick(Palette.SKIN, seed, 4)
-	var shoes := _c("box_black")
-	var hip := 0.86 * s
-	var shoulder := 1.42 * s
-	if pose == "sitting":
-		var seat := 0.45
-		for x: float in [-0.1, 0.1]:
-			k.block(Vector3(0.13, seat, 0.13) * Vector3(s, 1, s), Vector3(x * s, 0, -0.42 * s), trousers)
-			k.box(Vector3(0.13 * s, 0.13 * s, 0.45 * s), Vector3(x * s, seat + 0.06, -0.2 * s), trousers, true)
-			k.box(Vector3(0.12 * s, 0.07, 0.24 * s), Vector3(x * s, 0.035, -0.5 * s), shoes, true)
-		hip = seat + 0.06
-		shoulder = hip + 0.56 * s
-	else:
-		for x: float in [-0.1, 0.1]:
-			k.block(Vector3(0.14 * s, hip, 0.15 * s), Vector3(x * s, 0, 0), trousers)
-			k.box(Vector3(0.13 * s, 0.07, 0.26 * s), Vector3(x * s, 0.035, -0.05 * s), shoes, true)
-	k.block(Vector3(0.38 * s, shoulder - hip, 0.22 * s), Vector3(0, hip, 0), shirt, shirt.lightened(0.08))
-	var neck := shoulder + 0.05 * s
-	k.block(Vector3(0.1 * s, 0.07 * s, 0.1 * s), Vector3(0, shoulder, 0), skin)
-	var tilt := -0.35 if pose == "pilot" else 0.0
-	var head_c := Vector3(0, neck + 0.12 * s, 0.02 * s * tilt)
-	k.blob(head_c, Vector3(0.21, 0.25, 0.23) * s, skin, seed, 0.06)
-	if Palette.hash01(seed, 6) < 0.45:
-		var hat: Color = Palette.pick(Palette.HATS, seed, 7)
-		k.box(Vector3(0.22 * s, 0.08 * s, 0.24 * s), head_c + Vector3(0, 0.1 * s, 0), hat, true)
-		k.box(Vector3(0.2 * s, 0.02, 0.12 * s), head_c + Vector3(0, 0.07 * s, -0.16 * s), hat, true) # peak
-	else:
-		k.box(Vector3(0.22 * s, 0.06 * s, 0.23 * s), head_c + Vector3(0, 0.1 * s, 0.01), Palette.pick([Color("#3b2a1e"), Color("#6b4a2b"), Color("#a08060"), Color("#1e1e1e"), Color("#b0b0aa")], seed, 8), true)
-	var sh := shoulder - 0.04 * s
-	for side: float in [-1.0, 1.0]:
-		var top := Vector3(side * 0.24 * s, sh, 0)
-		var hand: Vector3
-		if pose == "pilot":
-			hand = Vector3(side * 0.12 * s, shoulder - 0.3 * s, -0.3 * s)
-		elif pose == "sitting":
-			hand = Vector3(side * 0.22 * s, hip + 0.12, -0.25 * s)
-		else:
-			hand = Vector3(side * 0.27 * s, hip - 0.04 * s, 0.02)
-		k.beam(top, hand, 0.08 * s, shirt.darkened(0.08))
-		k.blob(hand, Vector3(0.07, 0.08, 0.07) * s, skin, seed + int(side), 0.03)
-	if pose == "pilot": # the transmitter, with its antenna
-		var tx := Vector3(0, shoulder - 0.28 * s, -0.36 * s)
-		k.box(Vector3(0.22, 0.17, 0.08), tx, _c("box_black"), true)
-		k.beam(tx + Vector3(0.07, 0.08, 0), tx + Vector3(0.12, 0.3, 0.05), 0.012, _c("steel_dark"))
+static func _avanti_cradle(k: MeshKit) -> void:
+	var steel := _c("steel_dark")
+	var foam := _c("foam")
+	for z: float in [-0.62, 0.62]:
+		# Two padded trestles lift the gear-up airframe clear of the gravel.
+		k.beam(Vector3(-0.31, 0.02, z - 0.16), Vector3(0.0, 0.40, z), 0.055, steel)
+		k.beam(Vector3(0.31, 0.02, z + 0.16), Vector3(0.0, 0.40, z), 0.055, steel)
+		k.beam(Vector3(0.31, 0.02, z - 0.16), Vector3(0.0, 0.40, z), 0.055, steel)
+		k.beam(Vector3(-0.31, 0.02, z + 0.16), Vector3(0.0, 0.40, z), 0.055, steel)
+		k.block(Vector3(0.70, 0.07, 0.34), Vector3(0.0, 0.40, z), foam, foam.lightened(0.12))
+		k.box(Vector3(0.52, 0.035, 0.18), Vector3(0.0, 0.46, z), _c("box_black"), true)
 
 
 # ---------------- the farmstead ----------------

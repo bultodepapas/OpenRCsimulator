@@ -94,6 +94,8 @@ The complete map of research reports and experiment families is in [docs/researc
 
 Visual scripts under `tools/` generally create evidence in a caller-selected output directory. Read the family README before rerunning: many checks need an empty directory, fixed renderer, or a baseline app snapshot. The full app capture run records a manifest so old images cannot silently enter a new result. Since SC-02a, normal launches include scenery by default; `app/capture.sh` and `tools/world/parity.sh` explicitly retain scenery-off landscape references while their scenery-specific comparisons and runway scenario select scenery on.
 
+UI-06d adds default birds, interactive engine shadows, gentle practice weather, passing evening and the live latency marker. Reference capture tools explicitly choose bird/shadow off; the UI flight fixture chooses fixed day, calm and marker off. Normal Home/Fly behavior is checked separately. [Profile and proof](research/menu-investigations/UI-06d/README.md).
+
 ## Native performance experiments
 
 Native code is research-only; the simulator's production path remains GDScript. These experiments build ignored local artifacts and compare against GDScript in isolated projects.

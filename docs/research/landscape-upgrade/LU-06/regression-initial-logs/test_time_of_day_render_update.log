@@ -1,0 +1,97 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field fixture loads
+ok   noon preset resolves
+ok   night preset resolves
+ok   dawn preset resolves
+ok   sunset preset resolves
+ok   fallback field owns a cloned runway material
+ok   actual rough, cloned runway and near-grass materials are bound
+ok   separate fields own separate lighting materials
+ok   initial legacy Environment values
+ok   initial legacy sky uniforms match a fresh build
+ok   initial legacy Sun light values match a fresh build
+ok   initial legacy bound material count matches a fresh build
+ok   initial legacy every rough, surface and near-grass uniform matches a fresh build
+ok   initial legacy fresh build did not move the cloud clock
+ok   noon staging succeeds
+ok   noon staging leaves field resources untouched
+ok   noon staging leaves the previous snapshot published
+ok   noon staged field commit reports change
+ok   noon preserves scene, material and non-shadow mesh identities
+ok   noon preserves Environment, Sky, sky material and Sun identity
+ok   noon preserves the cloud clock
+ok   noon Environment values
+ok   noon sky uniforms match a fresh build
+ok   noon Sun light values match a fresh build
+ok   noon bound material count matches a fresh build
+ok   noon every rough, surface and near-grass uniform matches a fresh build
+ok   noon fresh build did not move the cloud clock
+ok   noon leaves a second field's lighting unchanged
+ok   noon replaces only bounded scenery shadow meshes
+ok   night convenience update reports change
+ok   night preserves scene, material and non-shadow mesh identities
+ok   night preserves Environment, Sky, sky material and Sun identity
+ok   night preserves the cloud clock
+ok   night Environment values
+ok   night sky uniforms match a fresh build
+ok   night Sun light values match a fresh build
+ok   night bound material count matches a fresh build
+ok   night every rough, surface and near-grass uniform matches a fresh build
+ok   night fresh build did not move the cloud clock
+ok   night leaves a second field's lighting unchanged
+ok   night replaces only bounded scenery shadow meshes
+ok   night ground has no direct solar radiance
+ok   night scenery shadow meshes are empty
+ok   same night snapshot is a field no-op
+ok   dawn staging succeeds
+ok   dawn staging leaves field resources untouched
+ok   dawn staging leaves the previous snapshot published
+ok   dawn staged field commit reports change
+ok   dawn preserves scene, material and non-shadow mesh identities
+ok   dawn preserves Environment, Sky, sky material and Sun identity
+ok   dawn preserves the cloud clock
+ok   dawn Environment values
+ok   dawn sky uniforms match a fresh build
+ok   dawn Sun light values match a fresh build
+ok   dawn bound material count matches a fresh build
+ok   dawn every rough, surface and near-grass uniform matches a fresh build
+ok   dawn fresh build did not move the cloud clock
+ok   dawn leaves a second field's lighting unchanged
+ok   dawn replaces only bounded scenery shadow meshes
+ok   dusk staging succeeds
+ok   dusk staging leaves field resources untouched
+ok   dusk staging leaves the previous snapshot published
+ok   dusk staged field commit reports change
+ok   dusk preserves scene, material and non-shadow mesh identities
+ok   dusk preserves Environment, Sky, sky material and Sun identity
+ok   dusk preserves the cloud clock
+ok   dusk Environment values
+ok   dusk sky uniforms match a fresh build
+ok   dusk Sun light values match a fresh build
+ok   dusk bound material count matches a fresh build
+ok   dusk every rough, surface and near-grass uniform matches a fresh build
+ok   dusk fresh build did not move the cloud clock
+ok   dusk leaves a second field's lighting unchanged
+ok   dusk replaces only bounded scenery shadow meshes
+ok   legacy-again staging succeeds
+ok   legacy-again staging leaves field resources untouched
+ok   legacy-again staging leaves the previous snapshot published
+ok   legacy-again staged field commit reports change
+ok   legacy-again preserves scene, material and non-shadow mesh identities
+ok   legacy-again preserves Environment, Sky, sky material and Sun identity
+ok   legacy-again preserves the cloud clock
+ok   legacy-again Environment values
+ok   legacy-again sky uniforms match a fresh build
+ok   legacy-again Sun light values match a fresh build
+ok   legacy-again bound material count matches a fresh build
+ok   legacy-again every rough, surface and near-grass uniform matches a fresh build
+ok   legacy-again fresh build did not move the cloud clock
+ok   legacy-again leaves a second field's lighting unchanged
+ok   legacy-again replaces only bounded scenery shadow meshes
+ok   legacy recovers its exact original material values
+ok   all ground material resources retained
+ok   Sun and lighting resources do not alias another scene
+ok   global atmosphere defaults remain unchanged
+ok   scenery hook follows its configured opt-in state
+TOD-09b render update: 94 checks, 0 failed; scenery=true

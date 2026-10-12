@@ -40,6 +40,10 @@ func _run() -> void:
 
 
 func _interactive_pause_edit() -> void:
+	# This suite exercises the legacy/TOD paused editor, distinct from the flowing field-world Home preset.
+	var fixture := Preferences.DEFAULTS.duplicate(true)
+	fixture.time_of_day = "day"
+	_check("write the explicit fixed-day editor fixture", Preferences.save_to(PREFS, fixture) == OK)
 	var app: Node = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
 	app.preferences_path = PREFS

@@ -42,21 +42,21 @@ func _preferences_contract() -> void:
 	for path in [PREFS, PREFS + ".bad"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	var prefs := Preferences.load_from(PREFS)
-	_check("schema-1 defaults include a complete calm weather config", prefs.weather_config == WeatherSettings.defaults())
+	_check("fresh defaults include the gentle practice config", prefs.weather_config == WeatherSettings.GENTLE_PRACTICE)
 	prefs.weather_config.speed_mps = 3.0
-	_check("nested defaults are detached between loads", Preferences.load_from(PREFS).weather_config == WeatherSettings.defaults())
+	_check("nested defaults are detached between loads", Preferences.load_from(PREFS).weather_config == WeatherSettings.GENTLE_PRACTICE)
 
 	var cfg := ConfigFile.new()
 	cfg.set_value("meta", "schema", 1)
 	cfg.set_value("flight", "aircraft", "jensen-das-ugly-stik-60")
 	_check("old schema-1 file without weather remains readable", cfg.save(PREFS) == OK
-		and Preferences.load_from(PREFS).weather_config == WeatherSettings.defaults())
+		and Preferences.load_from(PREFS).weather_config == WeatherSettings.GENTLE_PRACTICE)
 
 	var malformed := WeatherSettings.defaults()
 	malformed["gust_period_s"] = 0.25
 	cfg.set_value("flight", "weather_config", malformed)
-	_check("invalid saved weather falls back to calm", cfg.save(PREFS) == OK
-		and Preferences.load_from(PREFS).weather_config == WeatherSettings.defaults())
+	_check("invalid saved weather falls back to gentle practice", cfg.save(PREFS) == OK
+		and Preferences.load_from(PREFS).weather_config == WeatherSettings.GENTLE_PRACTICE)
 	prefs = Preferences.load_from(PREFS)
 	prefs.weather_config["unknown"] = 1.0
 	_check("saving an invalid weather object is rejected", Preferences.save_to(PREFS, prefs) == ERR_INVALID_DATA)

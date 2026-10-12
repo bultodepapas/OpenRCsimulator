@@ -1,0 +1,11 @@
+{
+  "format": "openrc-landscape-pack-check v1",
+  "preset": "Windows",
+  "bytes": 16342272,
+  "sha256": "baa31d5f921aac9017a2e088805229d6274efdcce4d4c63a656d6c876b4eae3c",
+  "credits_sha256": "6d8431dc5dc6e18148f47a37aafe2d69c15ff9e858ac273682e50e4a69fa2ea3",
+  "empty_project_read_check": true,
+  "flight_trace_ticks": 60,
+  "flight_trace_duration_s": 0.25,
+  "limit": "Resource pack and headless packed flight verified; desktop installers and macOS execution not tested."
+}

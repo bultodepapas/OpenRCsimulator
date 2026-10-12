@@ -31,6 +31,10 @@ var modes := PackedInt64Array()
 ## pre_step(aux, inputs, dt) -> PackedFloat64Array: new aux values. Runs at the fixed tick, so it stays deterministic.
 var pre_step: Callable = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 	return a
+## Optional deterministic tick-boundary contact filter. Receives (previous_body, candidate_body, next_tick)
+## before state commit and trace emission, and returns the accepted 13-value float64 body state.
+## Empty by default; scenery remains outside the physics integrator.
+var post_step: Callable = Callable()
 ## rotor_momentum(aux) -> PackedFloat64Array: angular momentum of spinning parts in body axes (N·m·s), or empty.
 var rotor_momentum: Callable = func(_a: PackedFloat64Array) -> PackedFloat64Array:
 	return PackedFloat64Array()
@@ -242,6 +246,16 @@ func step() -> void:
 		aux = old_aux
 		_fail_safe("step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion")
 		return
+	var accepted_body_state: PackedFloat64Array = next_state.slice(0, RB.SIZE)
+	if post_step.is_valid():
+		var filtered: Variant = post_step.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1)
+		# post_step owns only the 13-value rigid body. Continuous states are integrated independently
+		# and remain the already-validated tail of next_state.
+		if not (filtered is PackedFloat64Array) or not state_is_valid(filtered):
+			aux = old_aux
+			_fail_safe("step rejected: post-step contact filter returned a malformed body state")
+			return
+		accepted_body_state = filtered.duplicate()
 	if not continuous.is_empty() and continuous_aux.is_valid():
 		var projected: Variant = continuous_aux.call(next_state.slice(RB.SIZE), aux.duplicate())
 		if not _array_is_finite(projected, aux.size()):
@@ -252,8 +266,7 @@ func step() -> void:
 	previous = state.duplicate()
 	if not continuous.is_empty():
 		continuous = next_state.slice(RB.SIZE)
-		next_state = next_state.slice(0, RB.SIZE)
-	state = next_state
+	state = accepted_body_state
 	last_loads = current_loads
 	tick += 1
 	step_usec = lerpf(step_usec, float(Time.get_ticks_usec() - started), 0.05) if step_usec > 0.0 else float(Time.get_ticks_usec() - started)

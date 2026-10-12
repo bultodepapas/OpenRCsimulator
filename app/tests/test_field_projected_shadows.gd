@@ -113,7 +113,7 @@ func _test_flowing_lighting(manager: Node, projectors: Array, lighting: Dictiona
 	var wind_before := ShaderClock.last_wind
 	manager.call("_process", 0.016)
 	var expected_direction := Atmosphere.shadow_direction()
-	var expected_opacity := 0.40 * 0.35
+	var expected_opacity := 0.40 * clampf(Atmosphere.light_energy() / float(Spec.ATMOSPHERE.sun_energy), 0.0, 1.0)
 	var refreshed := true
 	for projector: Node in projectors:
 		var mask := projector.get("mask_material") as ShaderMaterial
@@ -315,8 +315,11 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var previous_scenery_setting: String = OS.get_environment("OPENRC_SCENERY")
+	OS.set_environment("OPENRC_SCENERY", "off")
 	_test_root_mesh_and_flat_ground()
 	_test_target_budget_rejection()
 	await _test_field_integration()
+	OS.set_environment("OPENRC_SCENERY", previous_scenery_setting)
 	print("Field projected-shadow regression: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

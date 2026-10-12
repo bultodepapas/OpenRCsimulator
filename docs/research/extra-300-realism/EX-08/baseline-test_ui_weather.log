@@ -1,0 +1,59 @@
+COMMAND: wsl.exe --exec env XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-weather-20261011/data XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-weather-20261011/config XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-weather-20261011/cache /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/extra-realism-baseline/app --script res://tests/test_ui_weather.gd
+XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-weather-20261011/data
+XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-weather-20261011/config
+XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-weather-20261011/cache
+--- output ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL schema-1 defaults include a complete calm weather config 
+FAIL nested defaults are detached between loads 
+FAIL old schema-1 file without weather remains readable 
+FAIL invalid saved weather falls back to calm 
+ok   saving an invalid weather object is rejected
+ok   valid weather saves and reloads
+ok   future schema reads valid weather but becomes read-only
+ok   future schema settings are never overwritten
+ok   precision fixture valid
+ok   Home presents a weather button next to Fly
+ok   Tab from Fly reaches Weather without stealing aircraft arrow navigation
+ok   Weather is keyboard reachable next to Fly
+ok   radio axis cannot move Home focus
+ok   Enter opens a modal draft
+ok   weather dialog panel fits the 1280×720 base layout
+ok   all six requested weather fields are available
+ok   speed_mps field round-trips the complete float64
+ok   from_deg field round-trips the complete float64
+ok   gust_mps field round-trips the complete float64
+ok   gust_up_mps field round-trips the complete float64
+ok   gust_duration_s field round-trips the complete float64
+ok   gust_period_s field round-trips the complete float64
+ok   gust delay stays hidden from the form
+ok   radio axis cannot move modal focus
+ok   Esc cancels and returns focus to Weather
+ok   cancel leaves the original persisted config untouched
+ok   reopen begins from the committed precision values
+ok   out-of-range edit displays an error and stays in the draft
+ok   invalid draft does not change the committed config
+ok   Apply preserves every unedited value and hidden gust delay
+ok   Apply returns focus and closes the modal
+ok   preset fills the draft without changing saved preferences
+ok   Apply commits the chosen preset
+ok   Spanish localizes Home and the modal preset list
+ok   Spanish modal has no untranslated focusable or instructional text
+ok   future-schema UI fixture saves
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future schema Apply takes effect for this session
+ok   future schema save failure is visible on Home
+ok   future schema Apply leaves the original file byte-for-byte unchanged
+ok   non-calm Home-to-Fly fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   successful Fly passes the chosen config to main before adding the flight
+ok   session received the same weather configuration
+ok   successful Fly remembers the weather config
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route keeps the calm default
+ok   direct route leaves stored non-calm preference bytes alone
+4 UI weather checks failed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+BASELINE_EXIT=1

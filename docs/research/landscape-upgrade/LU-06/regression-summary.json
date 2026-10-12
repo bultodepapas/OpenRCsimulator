@@ -1,0 +1,1462 @@
+{
+  "format": "openrc-landscape-regression v1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "platform": "WSL Ubuntu Linux ext4; LF-normalized source copy",
+  "source_head": "b752ae6174935b7e6e9632011eb561a61cec2051",
+  "tests_passed": 207,
+  "tests_failed": 1,
+  "all_later_shell_gates_passed": true,
+  "full_suite_pass": false,
+  "method": "Initial app/test.sh gates + all remaining tests + focused final reruns. Full suite retains the Linux trim failure.",
+  "tests": [
+    {
+      "test": "test_aero.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_aero_flow.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_air_data.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_air_density.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_aircraft_catalog.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_aircraft_contract.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_aircraft_data.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_aircraft_render_contract.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_atmosphere.gd",
+      "exit": 0,
+      "failed": false,
+      "evidence": "full-suite-initial.log"
+    },
+    {
+      "test": "test_atmosphere_flight.gd",
+      "exit": 1,
+      "failed": true,
+      "evidence": "full-suite-initial.log",
+      "diagnosis": "atmosphere-baseline.md",
+      "native_checks": 140,
+      "native_failures": 0
+    },
+    {
+      "test": "test_attached_flow.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.0003617820038926,
+      "evidence": "regression-initial-logs/test_attached_flow.log"
+    },
+    {
+      "test": "test_avanti_handling.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 4.904113368000253,
+      "evidence": "regression-initial-logs/test_avanti_handling.log"
+    },
+    {
+      "test": "test_build_info.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15349754301132634,
+      "evidence": "regression-initial-logs/test_build_info.log"
+    },
+    {
+      "test": "test_checkpoint.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.1869971419946523,
+      "evidence": "regression-initial-logs/test_checkpoint.log"
+    },
+    {
+      "test": "test_checkpoint_integrity.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.24924710099003278,
+      "evidence": "regression-initial-logs/test_checkpoint_integrity.log"
+    },
+    {
+      "test": "test_contact_policy.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 4.2435692739964,
+      "evidence": "regression-initial-logs/test_contact_policy.log"
+    },
+    {
+      "test": "test_continuous_state.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.1596186899987515,
+      "evidence": "regression-initial-logs/test_continuous_state.log"
+    },
+    {
+      "test": "test_controls.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.0918939910043264,
+      "evidence": "regression-initial-logs/test_controls.log"
+    },
+    {
+      "test": "test_controls_reference.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.1548737850098405,
+      "evidence": "regression-initial-logs/test_controls_reference.log"
+    },
+    {
+      "test": "test_crash.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.763335988012841,
+      "evidence": "regression-initial-logs/test_crash.log"
+    },
+    {
+      "test": "test_crash_audio.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15943789399170782,
+      "evidence": "regression-initial-logs/test_crash_audio.log"
+    },
+    {
+      "test": "test_crash_effects.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15663089099689387,
+      "evidence": "regression-initial-logs/test_crash_effects.log"
+    },
+    {
+      "test": "test_crash_integration.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 8.758064836001722,
+      "evidence": "regression-initial-logs/test_crash_integration.log"
+    },
+    {
+      "test": "test_crash_pose.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 4.35296393900353,
+      "evidence": "regression-initial-logs/test_crash_pose.log"
+    },
+    {
+      "test": "test_crash_severity.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15566495699749794,
+      "evidence": "regression-initial-logs/test_crash_severity.log"
+    },
+    {
+      "test": "test_crash_snapshot.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.6213669150019996,
+      "evidence": "regression-initial-logs/test_crash_snapshot.log"
+    },
+    {
+      "test": "test_crash_wreck.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 35.119085543003166,
+      "evidence": "regression-initial-logs/test_crash_wreck.log"
+    },
+    {
+      "test": "test_damping_regimes.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.4435744939983124,
+      "evidence": "regression-initial-logs/test_damping_regimes.log"
+    },
+    {
+      "test": "test_downwash_lag.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.020777322992217,
+      "evidence": "regression-initial-logs/test_downwash_lag.log"
+    },
+    {
+      "test": "test_dynamics.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.43402583501301706,
+      "evidence": "regression-initial-logs/test_dynamics.log"
+    },
+    {
+      "test": "test_e2e_input.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 9.872604361997219,
+      "evidence": "regression-initial-logs/test_e2e_input.log"
+    },
+    {
+      "test": "test_e2e_radio.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.046122998013743,
+      "evidence": "regression-initial-logs/test_e2e_radio.log"
+    },
+    {
+      "test": "test_electric_battery_data.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.6200830959860468,
+      "evidence": "regression-initial-logs/test_electric_battery_data.log"
+    },
+    {
+      "test": "test_electric_battery_session.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 18.670779244988807,
+      "evidence": "regression-initial-logs/test_electric_battery_session.log"
+    },
+    {
+      "test": "test_electric_battery_step.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.244180330002564,
+      "evidence": "regression-initial-logs/test_electric_battery_step.log"
+    },
+    {
+      "test": "test_electric_data.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.5244737129978603,
+      "evidence": "regression-initial-logs/test_electric_data.log"
+    },
+    {
+      "test": "test_electric_dynamics.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.1518089930032147,
+      "evidence": "regression-initial-logs/test_electric_dynamics.log"
+    },
+    {
+      "test": "test_electric_event_localization.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.5242190040007699,
+      "evidence": "regression-initial-logs/test_electric_event_localization.log"
+    },
+    {
+      "test": "test_electric_input.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.0868703419982921,
+      "evidence": "regression-initial-logs/test_electric_input.log"
+    },
+    {
+      "test": "test_electric_motor.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.24660815400420688,
+      "evidence": "regression-initial-logs/test_electric_motor.log"
+    },
+    {
+      "test": "test_electric_motor_compact.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15477831300813705,
+      "evidence": "regression-initial-logs/test_electric_motor_compact.log"
+    },
+    {
+      "test": "test_electric_propulsion.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.806799376005074,
+      "evidence": "regression-initial-logs/test_electric_propulsion.log"
+    },
+    {
+      "test": "test_electric_runway.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 15.410088980992441,
+      "evidence": "regression-initial-logs/test_electric_runway.log"
+    },
+    {
+      "test": "test_electric_session.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 6.853362759007723,
+      "evidence": "regression-initial-logs/test_electric_session.log"
+    },
+    {
+      "test": "test_electric_stop.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.1637994540069485,
+      "evidence": "regression-initial-logs/test_electric_stop.log"
+    },
+    {
+      "test": "test_electric_supply.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15511561000312213,
+      "evidence": "regression-initial-logs/test_electric_supply.log"
+    },
+    {
+      "test": "test_engine_audio.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 5.732971588993678,
+      "evidence": "regression-initial-logs/test_engine_audio.log"
+    },
+    {
+      "test": "test_engine_sound.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15755586899467744,
+      "evidence": "regression-initial-logs/test_engine_sound.log"
+    },
+    {
+      "test": "test_engine_voice.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2514042260008864,
+      "evidence": "regression-initial-logs/test_engine_voice.log"
+    },
+    {
+      "test": "test_envelope.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.6778631639899686,
+      "evidence": "regression-initial-logs/test_envelope.log"
+    },
+    {
+      "test": "test_envelope_integrity.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.9991373429947998,
+      "evidence": "regression-initial-logs/test_envelope_integrity.log"
+    },
+    {
+      "test": "test_extra_handling.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 5.106691275010235,
+      "evidence": "regression-initial-logs/test_extra_handling.log"
+    },
+    {
+      "test": "test_extra_installation.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.5400073589989915,
+      "evidence": "regression-initial-logs/test_extra_installation.log"
+    },
+    {
+      "test": "test_far_forest.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2523843189992476,
+      "evidence": "regression-initial-logs/test_far_forest.log"
+    },
+    {
+      "test": "test_field_integration.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.2729259629995795,
+      "evidence": "regression-final-logs/test_field_integration.log"
+    },
+    {
+      "test": "test_field_loader.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.7320661339908838,
+      "evidence": "regression-initial-logs/test_field_loader.log"
+    },
+    {
+      "test": "test_field_projected_shadows.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.1884174440056086,
+      "evidence": "regression-final-logs/test_field_projected_shadows.log"
+    },
+    {
+      "test": "test_field_surfaces.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.5797668930026703,
+      "evidence": "regression-final-logs/test_field_surfaces.log"
+    },
+    {
+      "test": "test_flight_cue_shadows.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2531854130065767,
+      "evidence": "regression-initial-logs/test_flight_cue_shadows.log"
+    },
+    {
+      "test": "test_flightline_barrier.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2528514820005512,
+      "evidence": "regression-initial-logs/test_flightline_barrier.log"
+    },
+    {
+      "test": "test_flightline_barrier_data.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.24603311400278471,
+      "evidence": "regression-initial-logs/test_flightline_barrier_data.log"
+    },
+    {
+      "test": "test_frame_samples.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.1549193929968169,
+      "evidence": "regression-initial-logs/test_frame_samples.log"
+    },
+    {
+      "test": "test_frames.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.1542174219939625,
+      "evidence": "regression-initial-logs/test_frames.log"
+    },
+    {
+      "test": "test_golden.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.9214066159911454,
+      "evidence": "regression-initial-logs/test_golden.log"
+    },
+    {
+      "test": "test_ground_contact.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.381242977004149,
+      "evidence": "regression-initial-logs/test_ground_contact.log"
+    },
+    {
+      "test": "test_ground_friction.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 10.757679650007049,
+      "evidence": "regression-initial-logs/test_ground_friction.log"
+    },
+    {
+      "test": "test_ground_physics.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.5256900980020873,
+      "evidence": "regression-initial-logs/test_ground_physics.log"
+    },
+    {
+      "test": "test_ground_start_integrity.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8107434010016732,
+      "evidence": "regression-initial-logs/test_ground_start_integrity.log"
+    },
+    {
+      "test": "test_ground_stiction.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 19.792642427011742,
+      "evidence": "regression-initial-logs/test_ground_stiction.log"
+    },
+    {
+      "test": "test_ground_surfaces.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 5.276051817010739,
+      "evidence": "regression-initial-logs/test_ground_surfaces.log"
+    },
+    {
+      "test": "test_ground_terrain.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.0946034210064681,
+      "evidence": "regression-initial-logs/test_ground_terrain.log"
+    },
+    {
+      "test": "test_gyro.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.7692408250004519,
+      "evidence": "regression-initial-logs/test_gyro.log"
+    },
+    {
+      "test": "test_handling.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.4307667880057124,
+      "evidence": "regression-initial-logs/test_handling.log"
+    },
+    {
+      "test": "test_horizon.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8993199649994494,
+      "evidence": "regression-initial-logs/test_horizon.log"
+    },
+    {
+      "test": "test_hull_crossing.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.6202230719936779,
+      "evidence": "regression-initial-logs/test_hull_crossing.log"
+    },
+    {
+      "test": "test_induced_integrity.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8067027669894742,
+      "evidence": "regression-initial-logs/test_induced_integrity.log"
+    },
+    {
+      "test": "test_input_report.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.1582897110056365,
+      "evidence": "regression-initial-logs/test_input_report.log"
+    },
+    {
+      "test": "test_input_report_cli.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 11.03553943800216,
+      "evidence": "regression-initial-logs/test_input_report_cli.log"
+    },
+    {
+      "test": "test_input_report_e2e.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.7141457959951367,
+      "evidence": "regression-initial-logs/test_input_report_e2e.log"
+    },
+    {
+      "test": "test_integrator.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8047862419916783,
+      "evidence": "regression-initial-logs/test_integrator.log"
+    },
+    {
+      "test": "test_landing_maneuver.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 57.43521630199393,
+      "evidence": "regression-initial-logs/test_landing_maneuver.log"
+    },
+    {
+      "test": "test_landing_variations.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 28.613041280012112,
+      "evidence": "regression-initial-logs/test_landing_variations.log"
+    },
+    {
+      "test": "test_landscape_checkpoint.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.7170653259963728,
+      "evidence": "regression-final-logs/test_landscape_checkpoint.log"
+    },
+    {
+      "test": "test_landscape_collision.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.43510742200305685,
+      "evidence": "regression-initial-logs/test_landscape_collision.log"
+    },
+    {
+      "test": "test_landscape_collision_session.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.7133236870140536,
+      "evidence": "regression-initial-logs/test_landscape_collision_session.log"
+    },
+    {
+      "test": "test_landscape_collision_setup.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.9971356710011605,
+      "evidence": "regression-final-logs/test_landscape_collision_setup.log"
+    },
+    {
+      "test": "test_landscape_collision_world.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.1809556259977398,
+      "evidence": "regression-initial-logs/test_landscape_collision_world.log"
+    },
+    {
+      "test": "test_landscape_lighting.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.3407993259897921,
+      "evidence": "regression-initial-logs/test_landscape_lighting.log"
+    },
+    {
+      "test": "test_landscape_population.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.4372378140105866,
+      "evidence": "regression-final-logs/test_landscape_population.log"
+    },
+    {
+      "test": "test_landscape_runtime.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.403666703001363,
+      "evidence": "regression-final-logs/test_landscape_runtime.log"
+    },
+    {
+      "test": "test_landscape_scenery_eligibility.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.3434093210089486,
+      "evidence": "regression-final-logs/test_landscape_scenery_eligibility.log"
+    },
+    {
+      "test": "test_latency_patch.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.5537328680075007,
+      "evidence": "regression-initial-logs/test_latency_patch.log"
+    },
+    {
+      "test": "test_latency_patch_cli.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 21.07581492900499,
+      "evidence": "regression-initial-logs/test_latency_patch_cli.log"
+    },
+    {
+      "test": "test_latency_patch_route.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.1450070300052175,
+      "evidence": "regression-initial-logs/test_latency_patch_route.log"
+    },
+    {
+      "test": "test_math3d.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.24792072200216353,
+      "evidence": "regression-initial-logs/test_math3d.log"
+    },
+    {
+      "test": "test_modes.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8047236449929187,
+      "evidence": "regression-initial-logs/test_modes.log"
+    },
+    {
+      "test": "test_near_grass.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.947397119991365,
+      "evidence": "regression-initial-logs/test_near_grass.log"
+    },
+    {
+      "test": "test_p51_envelope.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 14.669989107002039,
+      "evidence": "regression-initial-logs/test_p51_envelope.log"
+    },
+    {
+      "test": "test_p51_ground.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 10.763835927995387,
+      "evidence": "regression-initial-logs/test_p51_ground.log"
+    },
+    {
+      "test": "test_p51_handling.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 7.413436691000243,
+      "evidence": "regression-initial-logs/test_p51_handling.log"
+    },
+    {
+      "test": "test_physical_envelope.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.6243563419993734,
+      "evidence": "regression-initial-logs/test_physical_envelope.log"
+    },
+    {
+      "test": "test_pilot_aids.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.27198375100852,
+      "evidence": "regression-initial-logs/test_pilot_aids.log"
+    },
+    {
+      "test": "test_pilot_station.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.2786741710006027,
+      "evidence": "regression-initial-logs/test_pilot_station.log"
+    },
+    {
+      "test": "test_pilot_station_data.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2596101119997911,
+      "evidence": "regression-initial-logs/test_pilot_station_data.log"
+    },
+    {
+      "test": "test_projected_shadow.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.089501221998944,
+      "evidence": "regression-initial-logs/test_projected_shadow.log"
+    },
+    {
+      "test": "test_propeller_wake.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.4362150719971396,
+      "evidence": "regression-initial-logs/test_propeller_wake.log"
+    },
+    {
+      "test": "test_propulsion.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.3419504670018796,
+      "evidence": "regression-initial-logs/test_propulsion.log"
+    },
+    {
+      "test": "test_propulsion_scalar.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.995457262994023,
+      "evidence": "regression-initial-logs/test_propulsion_scalar.log"
+    },
+    {
+      "test": "test_pullup_invariants.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.4399030790082179,
+      "evidence": "regression-initial-logs/test_pullup_invariants.log"
+    },
+    {
+      "test": "test_rc_axis_history.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.25572690699482337,
+      "evidence": "regression-initial-logs/test_rc_axis_history.log"
+    },
+    {
+      "test": "test_rc_calibration.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.16347349299758207,
+      "evidence": "regression-initial-logs/test_rc_calibration.log"
+    },
+    {
+      "test": "test_rc_input.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15399169000738766,
+      "evidence": "regression-initial-logs/test_rc_input.log"
+    },
+    {
+      "test": "test_rc_profile_validation.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.24792708399763796,
+      "evidence": "regression-initial-logs/test_rc_profile_validation.log"
+    },
+    {
+      "test": "test_rc_rearm.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15853507700376213,
+      "evidence": "regression-initial-logs/test_rc_rearm.log"
+    },
+    {
+      "test": "test_replay_integrity.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 5.094344343000557,
+      "evidence": "regression-initial-logs/test_replay_integrity.log"
+    },
+    {
+      "test": "test_replay_policy.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 6.399455145001411,
+      "evidence": "regression-final-logs/test_replay_policy.log"
+    },
+    {
+      "test": "test_rigid_body.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.3450921079929685,
+      "evidence": "regression-initial-logs/test_rigid_body.log"
+    },
+    {
+      "test": "test_rk_stage_time.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.24922432099992875,
+      "evidence": "regression-initial-logs/test_rk_stage_time.log"
+    },
+    {
+      "test": "test_rotor_coupling.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.4378627759870142,
+      "evidence": "regression-initial-logs/test_rotor_coupling.log"
+    },
+    {
+      "test": "test_rudder_authority.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 4.618631131990696,
+      "evidence": "regression-initial-logs/test_rudder_authority.log"
+    },
+    {
+      "test": "test_runway_checkpoint_metadata.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8144348860078026,
+      "evidence": "regression-initial-logs/test_runway_checkpoint_metadata.log"
+    },
+    {
+      "test": "test_runway_start.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.573878622002667,
+      "evidence": "regression-initial-logs/test_runway_start.log"
+    },
+    {
+      "test": "test_scenery_ambience.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.086120691994438,
+      "evidence": "regression-initial-logs/test_scenery_ambience.log"
+    },
+    {
+      "test": "test_scenery_build.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.3658258889918216,
+      "evidence": "regression-final-logs/test_scenery_build.log"
+    },
+    {
+      "test": "test_scenery_loader.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.6203497370006517,
+      "evidence": "regression-initial-logs/test_scenery_loader.log"
+    },
+    {
+      "test": "test_scenery_scenario.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.299758787994506,
+      "evidence": "regression-initial-logs/test_scenery_scenario.log"
+    },
+    {
+      "test": "test_scenery_trace.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 9.270671054997365,
+      "evidence": "regression-final-logs/test_scenery_trace.log"
+    },
+    {
+      "test": "test_servo.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8141401350003434,
+      "evidence": "regression-initial-logs/test_servo.log"
+    },
+    {
+      "test": "test_session_guards.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.7148756829992635,
+      "evidence": "regression-initial-logs/test_session_guards.log"
+    },
+    {
+      "test": "test_shader_clock.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.1532314049982233,
+      "evidence": "regression-initial-logs/test_shader_clock.log"
+    },
+    {
+      "test": "test_shaft_coupled.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.6480693720077397,
+      "evidence": "regression-initial-logs/test_shaft_coupled.log"
+    },
+    {
+      "test": "test_shaft_data.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.8338404280075338,
+      "evidence": "regression-initial-logs/test_shaft_data.log"
+    },
+    {
+      "test": "test_shaft_equilibrium.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.5307206860015867,
+      "evidence": "regression-initial-logs/test_shaft_equilibrium.log"
+    },
+    {
+      "test": "test_shaft_refinement.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.1115713979961583,
+      "evidence": "regression-initial-logs/test_shaft_refinement.log"
+    },
+    {
+      "test": "test_simulation.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15557008900213987,
+      "evidence": "regression-initial-logs/test_simulation.log"
+    },
+    {
+      "test": "test_slipstream_downwash.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8075137919950066,
+      "evidence": "regression-initial-logs/test_slipstream_downwash.log"
+    },
+    {
+      "test": "test_slipstream_scalar.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.3720969860005425,
+      "evidence": "regression-initial-logs/test_slipstream_scalar.log"
+    },
+    {
+      "test": "test_soundscape.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.43085947100189514,
+      "evidence": "regression-initial-logs/test_soundscape.log"
+    },
+    {
+      "test": "test_spin.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.202353649001452,
+      "evidence": "regression-initial-logs/test_spin.log"
+    },
+    {
+      "test": "test_stall_solver.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.2706427360099042,
+      "evidence": "regression-initial-logs/test_stall_solver.log"
+    },
+    {
+      "test": "test_start_choice.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.9074406760046259,
+      "evidence": "regression-initial-logs/test_start_choice.log"
+    },
+    {
+      "test": "test_strip_induced.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 13.828701548991376,
+      "evidence": "regression-initial-logs/test_strip_induced.log"
+    },
+    {
+      "test": "test_swirl_accuracy.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.462240892011323,
+      "evidence": "regression-initial-logs/test_swirl_accuracy.log"
+    },
+    {
+      "test": "test_swirl_optimization.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.9988557559991023,
+      "evidence": "regression-initial-logs/test_swirl_optimization.log"
+    },
+    {
+      "test": "test_swirl_torque.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.6252505399897927,
+      "evidence": "regression-initial-logs/test_swirl_torque.log"
+    },
+    {
+      "test": "test_tail_downwash.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.35118309200333897,
+      "evidence": "regression-initial-logs/test_tail_downwash.log"
+    },
+    {
+      "test": "test_takeoff_roll.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 4.717200963001233,
+      "evidence": "regression-initial-logs/test_takeoff_roll.log"
+    },
+    {
+      "test": "test_time_of_day_checkpoint.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.1461712989985244,
+      "evidence": "regression-final-logs/test_time_of_day_checkpoint.log"
+    },
+    {
+      "test": "test_time_of_day_checkpoint_v2.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2534829040087061,
+      "evidence": "regression-initial-logs/test_time_of_day_checkpoint_v2.log"
+    },
+    {
+      "test": "test_time_of_day_clock.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.3474506310012657,
+      "evidence": "regression-initial-logs/test_time_of_day_clock.log"
+    },
+    {
+      "test": "test_time_of_day_config.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2508359209896298,
+      "evidence": "regression-initial-logs/test_time_of_day_config.log"
+    },
+    {
+      "test": "test_time_of_day_edit.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 6.995440671991673,
+      "evidence": "regression-initial-logs/test_time_of_day_edit.log"
+    },
+    {
+      "test": "test_time_of_day_render.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.9086357709893491,
+      "evidence": "regression-initial-logs/test_time_of_day_render.log"
+    },
+    {
+      "test": "test_time_of_day_render_update.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 4.354759831010597,
+      "evidence": "regression-initial-logs/test_time_of_day_render_update.log"
+    },
+    {
+      "test": "test_time_of_day_scenery_update.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8097489500069059,
+      "evidence": "regression-initial-logs/test_time_of_day_scenery_update.log"
+    },
+    {
+      "test": "test_time_of_day_session.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.718614807992708,
+      "evidence": "regression-initial-logs/test_time_of_day_session.log"
+    },
+    {
+      "test": "test_time_of_day_solar.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2706692289939383,
+      "evidence": "regression-initial-logs/test_time_of_day_solar.log"
+    },
+    {
+      "test": "test_time_of_day_timeline.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2555126920051407,
+      "evidence": "regression-initial-logs/test_time_of_day_timeline.log"
+    },
+    {
+      "test": "test_touchdown.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8114394869917305,
+      "evidence": "regression-initial-logs/test_touchdown.log"
+    },
+    {
+      "test": "test_trace.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.7240283860010095,
+      "evidence": "regression-initial-logs/test_trace.log"
+    },
+    {
+      "test": "test_trace_metadata.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.9085317540011602,
+      "evidence": "regression-initial-logs/test_trace_metadata.log"
+    },
+    {
+      "test": "test_tree_assets.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.24982330400962383,
+      "evidence": "regression-initial-logs/test_tree_assets.log"
+    },
+    {
+      "test": "test_tree_wind.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.25240527199639473,
+      "evidence": "regression-initial-logs/test_tree_wind.log"
+    },
+    {
+      "test": "test_treeline.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 4.35144221498922,
+      "evidence": "regression-initial-logs/test_treeline.log"
+    },
+    {
+      "test": "test_treeline_data.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2504873780126218,
+      "evidence": "regression-initial-logs/test_treeline_data.log"
+    },
+    {
+      "test": "test_trim.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.1810344480036292,
+      "evidence": "regression-initial-logs/test_trim.log"
+    },
+    {
+      "test": "test_trim_density.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.6210376109956997,
+      "evidence": "regression-initial-logs/test_trim_density.log"
+    },
+    {
+      "test": "test_trim_integrity.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.45003526301297825,
+      "evidence": "regression-initial-logs/test_trim_integrity.log"
+    },
+    {
+      "test": "test_turbine.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.3531969739997294,
+      "evidence": "regression-initial-logs/test_turbine.log"
+    },
+    {
+      "test": "test_turbulence_flight.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.0275484529993264,
+      "evidence": "regression-initial-logs/test_turbulence_flight.log"
+    },
+    {
+      "test": "test_ui_aircraft.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 4.5402279700065264,
+      "evidence": "regression-initial-logs/test_ui_aircraft.log"
+    },
+    {
+      "test": "test_ui_atmosphere.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 7.984237588010728,
+      "evidence": "regression-initial-logs/test_ui_atmosphere.log"
+    },
+    {
+      "test": "test_ui_field_world_time_of_day.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 5.198042482006713,
+      "evidence": "regression-initial-logs/test_ui_field_world_time_of_day.log"
+    },
+    {
+      "test": "test_ui_flight_capture.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.5254140499891946,
+      "evidence": "regression-initial-logs/test_ui_flight_capture.log"
+    },
+    {
+      "test": "test_ui_help.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 9.946969340002397,
+      "evidence": "regression-initial-logs/test_ui_help.log"
+    },
+    {
+      "test": "test_ui_home.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.246493301994633,
+      "evidence": "regression-initial-logs/test_ui_home.log"
+    },
+    {
+      "test": "test_ui_input.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.2069001869967906,
+      "evidence": "regression-initial-logs/test_ui_input.log"
+    },
+    {
+      "test": "test_ui_language.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 5.099091279989807,
+      "evidence": "regression-initial-logs/test_ui_language.log"
+    },
+    {
+      "test": "test_ui_pause.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 22.264984923996963,
+      "evidence": "regression-initial-logs/test_ui_pause.log"
+    },
+    {
+      "test": "test_ui_runway.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 13.660631122009363,
+      "evidence": "regression-initial-logs/test_ui_runway.log"
+    },
+    {
+      "test": "test_ui_screen_stack.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 11.429462326996145,
+      "evidence": "regression-initial-logs/test_ui_screen_stack.log"
+    },
+    {
+      "test": "test_ui_time_of_day.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 10.959904970994103,
+      "evidence": "regression-initial-logs/test_ui_time_of_day.log"
+    },
+    {
+      "test": "test_ui_time_of_day_pause.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 6.404266284996993,
+      "evidence": "regression-initial-logs/test_ui_time_of_day_pause.log"
+    },
+    {
+      "test": "test_ui_turbulence.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 6.216186557998299,
+      "evidence": "regression-initial-logs/test_ui_turbulence.log"
+    },
+    {
+      "test": "test_ui_weather.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 6.216856184997596,
+      "evidence": "regression-initial-logs/test_ui_weather.log"
+    },
+    {
+      "test": "test_ui_weather_sliders.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.833863592997659,
+      "evidence": "regression-initial-logs/test_ui_weather_sliders.log"
+    },
+    {
+      "test": "test_visual_checkpoint.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.2504409860121086,
+      "evidence": "regression-final-logs/test_visual_checkpoint.log"
+    },
+    {
+      "test": "test_visual_evidence.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15742795600090176,
+      "evidence": "regression-initial-logs/test_visual_evidence.log"
+    },
+    {
+      "test": "test_visual_timeline.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.24711215001298115,
+      "evidence": "regression-initial-logs/test_visual_timeline.log"
+    },
+    {
+      "test": "test_wash_profile.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.814826500005438,
+      "evidence": "regression-initial-logs/test_wash_profile.log"
+    },
+    {
+      "test": "test_wash_transport.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.3764654979895568,
+      "evidence": "regression-initial-logs/test_wash_transport.log"
+    },
+    {
+      "test": "test_wheel_session.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.9106944350060076,
+      "evidence": "regression-initial-logs/test_wheel_session.log"
+    },
+    {
+      "test": "test_wildlife.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.3401388170022983,
+      "evidence": "regression-initial-logs/test_wildlife.log"
+    },
+    {
+      "test": "test_wind_field.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15584355099417735,
+      "evidence": "regression-initial-logs/test_wind_field.log"
+    },
+    {
+      "test": "test_wind_flight.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.693541437998647,
+      "evidence": "regression-initial-logs/test_wind_flight.log"
+    },
+    {
+      "test": "test_wind_hud.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.2806355979992077,
+      "evidence": "regression-initial-logs/test_wind_hud.log"
+    },
+    {
+      "test": "test_wind_trace.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.0873188819969073,
+      "evidence": "regression-initial-logs/test_wind_trace.log"
+    },
+    {
+      "test": "test_wind_turbulence.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.8289066939905751,
+      "evidence": "regression-initial-logs/test_wind_turbulence.log"
+    },
+    {
+      "test": "test_windsock.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.2793219400045928,
+      "evidence": "regression-initial-logs/test_windsock.log"
+    },
+    {
+      "test": "test_windsock_data.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.25501106899173465,
+      "evidence": "regression-initial-logs/test_windsock_data.log"
+    },
+    {
+      "test": "test_wing_polar.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.7248595179989934,
+      "evidence": "regression-initial-logs/test_wing_polar.log"
+    },
+    {
+      "test": "test_wing_polar_session.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 1.9235200109978905,
+      "evidence": "regression-initial-logs/test_wing_polar_session.log"
+    },
+    {
+      "test": "test_world_ephemeris.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.15132799299317412,
+      "evidence": "regression-initial-logs/test_world_ephemeris.log"
+    },
+    {
+      "test": "test_world_field_lights.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 3.4230217459989944,
+      "evidence": "regression-final-logs/test_world_field_lights.log"
+    },
+    {
+      "test": "test_world_flow.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 2.3032240989996353,
+      "evidence": "regression-final-logs/test_world_flow.log"
+    },
+    {
+      "test": "test_world_sky.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.25047184999857564,
+      "evidence": "regression-final-logs/test_world_sky.log"
+    },
+    {
+      "test": "test_world_stars.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.25481221699737944,
+      "evidence": "regression-initial-logs/test_world_stars.log"
+    },
+    {
+      "test": "test_yaw_damping.gd",
+      "exit": 0,
+      "failed": false,
+      "seconds": 0.3412167160131503,
+      "evidence": "regression-initial-logs/test_yaw_damping.log"
+    }
+  ]
+}

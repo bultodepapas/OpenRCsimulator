@@ -1,0 +1,92 @@
+{
+  "baseline": {
+    "mass_kg": 3.364321000000001,
+    "cg_le_m": [
+      0.10880010858060214,
+      0.0,
+      -0.02434498075540353
+    ],
+    "dry_mass_kg": 3.218321000000001,
+    "dry_cg_le_m": [
+      0.11532363928271913,
+      0.0,
+      -0.025449397372107992
+    ],
+    "inertia_diagonal_kgm2": [
+      0.1666199812701358,
+      0.31196549809071783,
+      0.45548882689141534
+    ],
+    "virtual_ballast_kg": 0.087321,
+    "estimated_1g_stall_mps": 10.338110947578516,
+    "thrust_angles_down_right_deg": [
+      0.0,
+      0.0
+    ],
+    "thrust_offset_le_from_cg_m": [
+      0.0,
+      0.0,
+      0.024345
+    ]
+  },
+  "after": {
+    "mass_kg": 3.4194690000000008,
+    "cg_le_m": [
+      0.10266031038737299,
+      0.0,
+      -0.023952353420955114
+    ],
+    "dry_mass_kg": 3.273469000000001,
+    "dry_cg_le_m": [
+      0.10880009827494927,
+      0.0,
+      -0.02502065240269572
+    ],
+    "inertia_diagonal_kgm2": [
+      0.1666578837322368,
+      0.3198672379310374,
+      0.46335840885296725
+    ],
+    "virtual_ballast_kg": 0.142469,
+    "estimated_1g_stall_mps": 10.42249777013528,
+    "thrust_angles_down_right_deg": [
+      0.5,
+      2.0
+    ],
+    "thrust_offset_le_from_cg_m": [
+      -0.368558,
+      0.00014,
+      0.023917
+    ]
+  },
+  "unchanged_aircraft_files": {
+    "jensen_ugly_stik_60.json": {
+      "equal_bytes": true,
+      "sha256": "987ca85cfc10388683fe024a0d3dd3ee26421bfafaf928b459b9604674c4c3da"
+    },
+    "p51d_mustang_120.json": {
+      "equal_bytes": true,
+      "sha256": "16b0bba3ba1df21dbc83b623e463634f8146ba2f71fbfd94ed50f6e98828b52e"
+    },
+    "sebart_avanti_s_a200.json": {
+      "equal_bytes": true,
+      "sha256": "91aeb89881242a4710045b6031afdf13ded09f4c9934a9cefb73484afbdcdeb5"
+    },
+    "synthetic_stik_electric_4s.json": {
+      "equal_bytes": true,
+      "sha256": "9a70e66f93a1bb9180b1f9256559a2d2de37d318fe14f3a687c1db2123a7523f"
+    },
+    "synthetic_stik_electric_4s_battery.json": {
+      "equal_bytes": true,
+      "sha256": "463c28a5f07412889d071a583d1b9336b229f5110187043a96a151a99bb235bb"
+    },
+    "synthetic_stik_electric_6s.json": {
+      "equal_bytes": true,
+      "sha256": "b63644862717f5d6743a9ddc3166b057d845f8d9b45b13ff36b8b4125ae352b9"
+    },
+    "synthetic_stik_electric_6s_battery.json": {
+      "equal_bytes": true,
+      "sha256": "f61ea7d6251345f0a578e9dff06cbf92de401d8d2627a2b40765cad1da1e8d64"
+    }
+  }
+}

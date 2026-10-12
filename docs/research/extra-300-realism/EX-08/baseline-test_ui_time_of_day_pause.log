@@ -1,0 +1,29 @@
+COMMAND: wsl.exe --exec env XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-time-of-day-pause-20261011/data XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-time-of-day-pause-20261011/config XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-time-of-day-pause-20261011/cache /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/extra-realism-baseline/app --script res://tests/test_ui_time_of_day_pause.gd
+XDG_DATA_HOME=/tmp/openrc-ex08-baseline-test-ui-time-of-day-pause-20261011/data
+XDG_CONFIG_HOME=/tmp/openrc-ex08-baseline-test-ui-time-of-day-pause-20261011/config
+XDG_CACHE_HOME=/tmp/openrc-ex08-baseline-test-ui-time-of-day-pause-20261011/cache
+--- output ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   interactive route starts on Home
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   pause menu offers a dedicated Time of day action
+ok   Down reaches Restart
+ok   next Down reaches Time of day
+FAIL time editor opens over the still-paused flight TimeOfDay
+SCRIPT ERROR: Cannot call method 'get' on a null value.
+          at: _interactive_pause_edit (res://tests/test_ui_time_of_day_pause.gd:70)
+          GDScript backtrace (most recent call first):
+              [0] _interactive_pause_edit (res://tests/test_ui_time_of_day_pause.gd:70)
+              [1] settle (res://tests/ui_driver.gd:55)
+ok   direct-route sentinel fixture opens
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+SCRIPT ERROR: Cannot call method 'get' on a null value.
+          at: _direct_route_never_touches_preferences (res://tests/test_ui_time_of_day_pause.gd:222)
+          GDScript backtrace (most recent call first):
+              [0] _direct_route_never_touches_preferences (res://tests/test_ui_time_of_day_pause.gd:222)
+              [1] settle (res://tests/ui_driver.gd:55)
+1 TOD-08b pause UI checks failed
+WARNING: 44 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+BASELINE_EXIT=1

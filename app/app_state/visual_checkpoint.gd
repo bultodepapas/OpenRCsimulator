@@ -6,11 +6,13 @@ const VisualTimeline: Script = preload("res://environment/visual_timeline.gd")
 
 const FORMAT: String = "openrc-visual-checkpoint v1"
 const FORMAT_PROGRESSING: String = "openrc-visual-checkpoint v2"
+const PHYSICS_FORMAT_COLLISION_WORLD: String = "openrc-flight-checkpoint v7"
 const TIMELINE_FORMAT_FIXED: String = "openrc-visual-timeline v1"
 const TIMELINE_FORMAT_PROGRESSING: String = "openrc-visual-timeline v2"
 const PHYSICS_FORMATS: Array[String] = [
 	"openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2",
 	"openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4",
+	"openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6",
 ]
 const PAIRED_FIELDS: Array[String] = ["format", "physics", "timeline", "field_identity", "payload_sha256"]
 const PAIRED_MARKERS: Array[String] = ["physics", "timeline", "field_identity", "payload_sha256"]
@@ -49,7 +51,7 @@ static func make(snapshot: Dictionary, timeline: Variant, field_identity: String
 	return {"ok": true, "checkpoint": checkpoint, "errors": errors}
 
 
-## Open a paired checkpoint or a physics-only v1-v4 checkpoint with explicit legacy context.
+## Open a paired checkpoint or a physics-only v1-v7 checkpoint with explicit legacy context.
 static func read(candidate: Variant, expected_field_identity: String) -> Dictionary:
 	if not _valid_identity(expected_field_identity):
 		return _failure_read(["expected_field_identity must be non-blank and at most 512 characters"])
@@ -65,7 +67,7 @@ static func read(candidate: Variant, expected_field_identity: String) -> Diction
 		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_FIXED)
 	if format_value == FORMAT_PROGRESSING:
 		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_PROGRESSING)
-	if not PHYSICS_FORMATS.has(str(format_value)):
+	if not PHYSICS_FORMATS.has(str(format_value)) and format_value != PHYSICS_FORMAT_COLLISION_WORLD:
 		return _failure_read(["unknown checkpoint format '%s'" % str(format_value)])
 	for marker: String in PAIRED_MARKERS:
 		if source.has(marker):
@@ -137,8 +139,18 @@ static func _physics_tick(raw: Variant) -> Dictionary:
 	if typeof(raw) != TYPE_DICTIONARY:
 		return {"ok": false, "errors": ["physics checkpoint must be an object"]}
 	var checkpoint: Dictionary = raw
-	if typeof(checkpoint.get("format", null)) != TYPE_STRING or not PHYSICS_FORMATS.has(str(checkpoint.get("format"))):
-		return {"ok": false, "errors": ["physics checkpoint format must be v1 through v4"]}
+	var format_value: Variant = checkpoint.get("format", null)
+	if typeof(format_value) != TYPE_STRING:
+		return {"ok": false, "errors": ["physics checkpoint format must be a string"]}
+	if format_value == PHYSICS_FORMAT_COLLISION_WORLD:
+		var physics_format: Variant = checkpoint.get("physics_format", null)
+		if typeof(physics_format) != TYPE_STRING or not PHYSICS_FORMATS.has(str(physics_format)):
+			return {"ok": false, "errors": ["v7 physics_format must be v1 through v6"]}
+		var collision_world_identity: Variant = checkpoint.get("collision_world_identity", null)
+		if typeof(collision_world_identity) != TYPE_STRING or not _is_sha256(str(collision_world_identity)):
+			return {"ok": false, "errors": ["v7 collision_world_identity must be a lowercase SHA-256"]}
+	elif not PHYSICS_FORMATS.has(str(format_value)):
+		return {"ok": false, "errors": ["physics checkpoint format must be v1 through v6 or v7"]}
 	var simulation: Variant = checkpoint.get("simulation", null)
 	if typeof(simulation) != TYPE_DICTIONARY:
 		return {"ok": false, "errors": ["physics checkpoint must contain a simulation object"]}

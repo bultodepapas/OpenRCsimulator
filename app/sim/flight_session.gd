@@ -224,6 +224,8 @@ const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
+const CollisionWorld := preload("res://scenery/collision_world.gd")
+const SceneryCollision := preload("res://sim/scenery_collision.gd")
 
 const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
@@ -307,6 +309,9 @@ var _deflection_cache := {}
 ## The field id the surfaces came from ("" = none: pavement), and why they could not be built ("" = fine).
 var ground_field_id := ""
 var surface_error := ""
+## Detached scalar proxy inventory; empty keeps the legacy no-world path byte-for-byte unchanged.
+var _collision_world: Dictionary = {}
+var _last_scenery_event: SceneryCollision.Event = null
 ## false: no aircraft physics (the Stage 0/1 scripted circle). The simulation is disabled; input still shapes commands.
 var physics_enabled := true
 
@@ -321,6 +326,8 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "") -> void:
 	expected_aircraft_id = expected_id
 	sim = Sim.new()
 	sim.modes = PackedInt64Array([1])
+	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
+		sim.post_step = Callable(self, "_resolve_collision_step")
 	sim.faulted.connect(_on_sim_faulted)
 	var prepared := _prepare_aircraft(AircraftData.load_file(path))
 	if prepared.ok:
@@ -425,6 +432,47 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 	ground_field_id = str(field.get("id", "?"))
 	_runway_field = field.duplicate(true)
 	return true
+
+
+## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
+func set_collision_world(world: Dictionary) -> bool:
+	if world.is_empty():
+		if sim != null and sim.tick > 0 and not _collision_world.is_empty():
+			return false
+		_collision_world = {}
+		_last_scenery_event = null
+		if sim != null:
+			sim.post_step = Callable()
+		return true
+	if typeof(world.get("format")) != TYPE_STRING or str(world.get("format")) != CollisionWorld.FORMAT \
+			or typeof(world.get("identity")) != TYPE_STRING or str(world.get("identity")).is_empty() \
+			or typeof(world.get("proxies")) != TYPE_ARRAY or typeof(world.get("bins")) != TYPE_DICTIONARY \
+			or typeof(world.get("cell_size_m")) not in [TYPE_FLOAT, TYPE_INT] or float(world.cell_size_m) != CollisionWorld.CELL_SIZE_M:
+		return false
+	var identity := str(world.identity)
+	var old_identity := str(_collision_world.get("identity", ""))
+	if sim != null and sim.tick > 0 and identity != old_identity:
+		return false
+	if world.proxies.is_empty():
+		_collision_world = {}
+		_last_scenery_event = null
+		if sim != null:
+			sim.post_step = Callable()
+		return true
+	_collision_world = world.duplicate(true)
+	_last_scenery_event = null
+	if sim != null:
+		sim.post_step = Callable(self, "_resolve_collision_step") if not _collision_world.proxies.is_empty() else Callable()
+	return true
+
+
+## Detached read view for crash wreck contacts and deterministic debugging.
+func collision_world() -> Dictionary:
+	return _collision_world.duplicate(true)
+
+
+func last_scenery_event() -> SceneryCollision.Event:
+	return _last_scenery_event
 
 
 ## Whether this flight can fly at all: valid aircraft and start, no simulation fault (menus disable Continue).
@@ -791,12 +839,58 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 	return false
 
 
-func _crash(impact: ImpactSnapshot.Snapshot) -> void:
+func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		next_tick: int) -> PackedFloat64Array:
+	if _collision_world.is_empty() or _collision_world.proxies.is_empty() or not aircraft.get("ok", false):
+		_last_scenery_event = null
+		return candidate
+	var scenery_hit: SceneryCollision.Event = SceneryCollision.first_hit(previous, candidate,
+		aircraft.model.crash_hull, _collision_world, next_tick, sim.mass, sim.inertia)
+	var ground_hit: ImpactSnapshot.Snapshot = null
+	var ground_fraction := INF
+	if touches_ground(candidate):
+		ground_hit = ImpactSnapshot.hull_contact(candidate, next_tick, aircraft.model.crash_hull, previous)
+		if ground_hit.point_index >= 0:
+			ground_fraction = ground_hit.crossing.fraction if ground_hit.crossing != null and ground_hit.crossing.available else 0.0
+	# Flat-ground contact wins a same-tick tie to preserve the existing ground-first policy.
+	if ground_hit != null and ground_hit.point_index >= 0 and (scenery_hit == null \
+			or ground_fraction <= scenery_hit.time_fraction + SceneryCollision.FRACTION_TIE):
+		_last_scenery_event = null
+		var contact_state := candidate
+		if ground_hit.crossing != null and ground_hit.crossing.available:
+			contact_state = SceneryCollision.state_at_fraction(previous, candidate, ground_fraction)
+			ground_hit.detected_state = contact_state.duplicate()
+		_crash(ground_hit, contact_state)
+		return contact_state
+	if scenery_hit == null:
+		_last_scenery_event = null
+		return candidate
+	_last_scenery_event = scenery_hit
+	var contact_state: PackedFloat64Array = scenery_hit.contact_state()
+	if scenery_hit.terminal:
+		scenery_hit.response_status = "terminal"
+		_crash(scenery_hit, contact_state)
+		return contact_state
+	var response: Dictionary = SceneryCollision.apply_response(contact_state, scenery_hit, sim.mass, sim.inertia)
+	if not response.get("ok", false):
+		scenery_hit.terminal = true
+		scenery_hit.response_status = "response_failed_terminal"
+		_crash(scenery_hit, contact_state)
+		return contact_state
+	scenery_hit.response_status = "dissipative_impulse"
+	scenery_hit.restitution = float(response.restitution)
+	scenery_hit.dissipated_energy_j = float(response.dissipated_energy_j)
+	return response.state
+
+
+func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = PackedFloat64Array()) -> void:
 	var why: String = impact.description()
-	var s: PackedFloat64Array = sim.state
+	var s: PackedFloat64Array = impact_state if not impact_state.is_empty() else sim.state
 	var speed := M.sqrt_(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var prev: PackedFloat64Array = sim.previous
 	var sink: float = (s[RB.POS + 2] - prev[RB.POS + 2]) / sim.dt()
+	if not impact_state.is_empty():
+		sink = M.q_rotate(RB._att(s), RB._slice3(s, RB.VEL))[2]
 	crash = { speed = speed, sink = sink, ticks_left = roundi(CRASH_HOLD_S / sim.dt()), why = why, impact = impact }
 	sim.set_paused(true)
 	pause_reason = "CRASH at %.1f m/s (sink %.1f m/s%s) - %s" % [speed, sink, "" if why.is_empty() else ", " + why, "restarting" if crash_auto_restart else "[R] restart"]
@@ -807,6 +901,7 @@ func reset() -> void:
 	_shaft_pending_reset = false
 	resetting.emit()
 	crash = {}
+	_last_scenery_event = null
 	if pause_reason.begins_with("CRASH"):
 		pause_reason = ""
 	start_error = ""
@@ -1606,6 +1701,9 @@ func trace_meta() -> Dictionary:
 		loads = "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
 		state_timing = "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
 	}
+	if not _collision_world.is_empty():
+		metadata.scenery_collision_model = "openrc-swept-landscape-contact v1"
+		metadata.collision_world_identity = str(_collision_world.identity)
 	if wheel_count() > 0:
 		var profile: Dictionary = model.get("wheel_profile", {})
 		metadata.metadata_schema = "openrc-flight-meta v6"
@@ -1711,6 +1809,10 @@ func checkpoint() -> Dictionary:
 		boundary.wheel_state_layout = wheel_state_layout()
 		boundary.wheel_profile_sha256 = str(aircraft.model.wheel_profile.get("profile_sha256", ""))
 		boundary.wheel_profile_input_sha256 = str(aircraft.model.wheel_profile.get("input_sha256", ""))
+	if not _collision_world.is_empty():
+		boundary.physics_format = str(boundary.format)
+		boundary.format = "openrc-flight-checkpoint v7"
+		boundary.collision_world_identity = str(_collision_world.identity)
 	return boundary
 
 
@@ -1730,6 +1832,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(BATTERY_LAYOUT if battery_is_dynamic() else "shaft-relative-rk4-locked-inertia-reaction-v1; wash-first,rpm-last")
 	if Propulsion.is_electric(aircraft.model.propulsion):
 		parts.append(electric_law())
+	if not _collision_world.is_empty():
+		parts.append("collision-world:" + str(_collision_world.identity))
 	config_hash.update(var_to_bytes(parts))
 	return config_hash.finish().hex_encode()
 
@@ -1738,25 +1842,34 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
-			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"] or typeof(candidate.get("configuration")) != TYPE_STRING \
+			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
 		return false
-	var electric: bool = Propulsion.is_electric(aircraft.model.propulsion)
-	if electric != (candidate.format in ["openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]) \
-			or (electric and candidate.get("electric_law") != electric_law()) \
-			or battery_is_dynamic() != (candidate.format == "openrc-flight-checkpoint v6"):
+	var physics_format: String = str(candidate.get("physics_format", candidate.get("format", "")))
+	if physics_format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]:
 		return false
-	if shaft_is_coupled() != (candidate.format in ["openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]) \
+	var has_collision_world := not _collision_world.is_empty()
+	if candidate.format == "openrc-flight-checkpoint v7":
+		if not has_collision_world or candidate.get("collision_world_identity", "") != _collision_world.identity:
+			return false
+	elif has_collision_world:
+		return false # Old snapshots do not identify the obstacles used by the deterministic tick filter.
+	var electric: bool = Propulsion.is_electric(aircraft.model.propulsion)
+	if electric != (physics_format in ["openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]) \
+			or (electric and candidate.get("electric_law") != electric_law()) \
+			or battery_is_dynamic() != (physics_format == "openrc-flight-checkpoint v6"):
+		return false
+	if shaft_is_coupled() != (physics_format in ["openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]) \
 			or (shaft_is_coupled() and candidate.get("shaft_integrator") != shaft_integrator()):
 		return false
 	var restored_weather: WeatherField = _weather
-	if candidate.format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]:
+	if physics_format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]:
 		var built: Dictionary = WeatherField.build(candidate.get("weather_config"))
 		if not built.ok:
 			return false
-		if candidate.format == "openrc-flight-checkpoint v2" and (built.field.is_calm() or built.field.has_atmosphere()):
+		if physics_format == "openrc-flight-checkpoint v2" and (built.field.is_calm() or built.field.has_atmosphere()):
 			return false
-		if candidate.format == "openrc-flight-checkpoint v3" and not built.field.has_atmosphere():
+		if physics_format == "openrc-flight-checkpoint v3" and not built.field.has_atmosphere():
 			return false
 		restored_weather = built.field
 	elif not weather_is_calm() or not atmosphere_is_reference() or candidate.has("weather_config"):
@@ -1812,6 +1925,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	}
 	input_enabled = false
 	crash = {}
+	_last_scenery_event = null
 	pause_reason = "checkpoint restored (recorded inputs)"
 	_deflection_key = PackedFloat64Array()
 	return true

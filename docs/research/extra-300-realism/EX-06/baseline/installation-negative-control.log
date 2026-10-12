@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Extra v2 file, wheel profile and model validate []
+FAIL dry tank balance at manual/plan station within 1 micrometre x=0.115323639 m
+ok   prescribed half tank unchanged 
+ok   loaded mass equals complete component inventory 
+ok   loaded CG equals inventory on all axes 
+ok   fuel forward of dry CG moves loaded balance forward 
+FAIL loaded balance is explicitly derived 
+FAIL plan right/down thrust is active in body FRD 
+FAIL actual visual shaft matches physical shaft max error 0.03489816561341286
+FAIL actual visual hub matches physical CG-relative arm max error 0.37469752560139985 m
+FAIL selected 12x6 visual installation 
+FAIL independent thrust and r-cross-F minus shaft torque at [0.0, 0.0, 0.0] 
+FAIL power produces right/down force and left torque reaction 
+FAIL independent thrust and r-cross-F minus shaft torque at [17.0, 1.0, -2.0] 
+FAIL power produces right/down force and left torque reaction 
+FAIL rotor angular momentum follows the installed shaft 
+ok   stopped engine has zero shaft loads and momentum 
+17 checks, 11 failed

@@ -20,6 +20,13 @@ const SURFACE_TRANSFER: Dictionary = {
 	"concrete": 1.0,
 	"water": 0.60,
 	"unknown": 0.90,
+	# LU-05 provisional transfer classes; estimates, not measured failure thresholds.
+	"tree_trunk": 0.80,
+	"tree_foliage": 0.12,
+	"building": 1.0,
+	"vehicle": 0.95,
+	"lamp": 0.45,
+	"parked_aircraft": 0.30,
 }
 const TANGENTIAL_TRANSFER: Dictionary = {
 	"grass": 0.15,
@@ -32,6 +39,12 @@ const TANGENTIAL_TRANSFER: Dictionary = {
 	"concrete": 0.35,
 	"water": 0.05,
 	"unknown": 0.20,
+	"tree_trunk": 0.25,
+	"tree_foliage": 0.08,
+	"building": 0.30,
+	"vehicle": 0.25,
+	"lamp": 0.10,
+	"parked_aircraft": 0.15,
 }
 
 # Relative exposure multipliers only; these are not failure limits.

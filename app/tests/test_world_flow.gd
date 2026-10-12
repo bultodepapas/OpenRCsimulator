@@ -12,6 +12,7 @@ const World := preload("res://render/world/world.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const LandscapeOptions := preload("res://render/landscape_upgrade/options.gd")
 
 var _failures := 0
 var _count := 0
@@ -43,7 +44,7 @@ func _initialize() -> void:
 	var lights: Node3D = holder.get_node_or_null("FieldLights")
 	var stars: Node3D = holder.get_node_or_null("Stars")
 	_check("flowing session builds stars and lights at once", lights != null and stars != null)
-	_check("lights off in golden hour", lights != null and not lights.visible)
+	_check("lights off in golden hour", lights != null and (is_zero_approx((lights.get_node("flood_west") as SpotLight3D).light_energy) if LandscapeOptions.enabled() else not lights.visible))
 	_check("one tonemapper for the session (AgX from a 6° start)", env.tonemap_mode == Environment.TONE_MAPPER_AGX)
 	var mats := World.haze_materials(holder)
 	_check("haze materials found (ground and grass)", mats.size() >= 2, str(mats.size()))
@@ -57,7 +58,7 @@ func _initialize() -> void:
 	World.flow_to(300.0) # 100 minutes of sky later
 	var night_el: float = Atmosphere.state.sun_elevation_deg
 	_check("golden hour reaches deep dusk", night_el < -6.0 and night_el < start_el, "%f -> %f" % [start_el, night_el])
-	_check("club lights on below 3°", lights.visible)
+	_check("club lights on below 3°", lights.visible and (lights.get_node("flood_west") as SpotLight3D).light_energy > 0.0)
 	_check("tonemapper unchanged", env.tonemap_mode == Environment.TONE_MAPPER_AGX and Atmosphere.state.tonemapper == "agx")
 	_check("haze materials follow the light", (mats[0] as ShaderMaterial).get_shader_parameter("sun_dir") == Atmosphere.sun_direction())
 	_check("environment follows the haze", env.fog_light_color.is_equal_approx(Color(Atmosphere.state.haze_lin.x, Atmosphere.state.haze_lin.y, Atmosphere.state.haze_lin.z).linear_to_srgb()))
@@ -87,7 +88,8 @@ func _initialize() -> void:
 	_check("explicit snapshot clears global sky state", Atmosphere.state.is_empty())
 	_check("snapshot composition owns one environment", snapshot_world.world_environment.environment == snapshot_world.environment)
 	_check("snapshot light uses the selected solar direction", (snapshot_world.sun as DirectionalLight3D).transform.basis.z.distance_to(Atmosphere.sun_direction(snapshot)) < 1e-4)
-	_check("snapshot composition does not inherit field-world stars or lights", snapshot_holder.get_node_or_null("Stars") == null and snapshot_holder.get_node_or_null("FieldLights") == null)
+	_check("snapshot composition has no stale stars", snapshot_holder.get_node_or_null("Stars") == null)
+	_check("snapshot field hardware follows upgrade setting", (snapshot_holder.get_node_or_null("FieldLights") != null) == LandscapeOptions.enabled())
 	snapshot_holder.free()
 	flowing_holder.free()
 	Atmosphere.state = {}

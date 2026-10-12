@@ -21,6 +21,6 @@ Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)).
 - `--scenery_theme=temperate|summer|autumn`
 - `--scenery_quality=low|balanced|high`
 - `--scenery_audio=off`
-- `--scenery_birds=on` (off by default)
+- `--scenery_birds=off` (birds are on by default since UI-06d)
 
 Each option has an `OPENRC_SCENERY_*` environment-variable twin.

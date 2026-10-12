@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   precision weather fixture saves
+ok   numeric wind sliders preserve the six line-edit controls
+ok   turbulence sliders omit the integer seed
+ok   Atmosphere has one linked slider for each custom field
+ok   wind slider uses its displayed range and precision
+ok   exact typed wind values do not snap to slider steps
+ok   untouched sliders preserve the entire source config
+ok   slider drag updates the paired exact-value field
+ok   Escape discards slider changes
+ok   valid precise text moves the thumb without quantizing the value field
+ok   Apply saves the precise text value rather than the slider step
+ok   dialog and paired controls fit the 800×600 viewport
+ok   slider focus advances to its precise line edit
+ok   wind slider receives keyboard focus
+ok   radio axis cannot move focus from a slider
+ok   arrow key changes only the focused wind slider
+ok   turbulence slider is in the tab focus ring
+ok   RMS slider updates its text and enables turbulence
+ok   seed remains a precise integer field without a slider
+ok   reference atmosphere sliders are inactive until custom mode
+ok   temperature slider updates the field and kernel preview
+ok   last atmosphere slider follows focus inside the 800×600 scroll body
+ok   last atmosphere slider advances to its exact line edit
+ok   humidity slider updates the visible value field
+ok   Spanish 800×600 tab 0 panel, slider and unit fit the viewport
+ok   Spanish 800×600 tab 1 panel, slider and unit fit the viewport
+ok   Spanish 800×600 tab 2 panel, slider and unit fit the viewport
+ok   Escape cancels edits from every tab
+all UI weather slider checks passed

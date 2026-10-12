@@ -49,11 +49,14 @@ func _initialize() -> void:
 	_check("no arguments → fixed sun", not Conditions.resolve(PackedStringArray()).time_of_day)
 	_check("unknown preset → fixed sun", not Conditions.resolve(PackedStringArray(["--time_of_day=teatime"])).time_of_day)
 	_check("bad clock → fixed sun", not Conditions.resolve(PackedStringArray(["--time=25h"])).time_of_day)
+	var original_engine_shadows: bool = Atmosphere.engine_shadows
+	Atmosphere.engine_shadows = false
 	Atmosphere.state = {}
 	var a: Dictionary = Spec.ATMOSPHERE
 	_check("legacy sun direction unchanged", Atmosphere.sun_direction() == SkyState.direction(a.sun_azimuth_deg, a.sun_elevation_deg))
 	_check("legacy shadow direction is the sun direction at 45°", Atmosphere.shadow_direction() == Atmosphere.sun_direction())
 	_check("legacy haze scatter unchanged", Atmosphere.sun_scatter() == a.sun_scatter)
+	Atmosphere.engine_shadows = original_engine_shadows
 
 	# Explicit clock and place.
 	var c := Conditions.resolve(PackedStringArray(["--time=21:30", "--date=2026-08-12", "--lat=42.3", "--lon=-3.7", "--utc_offset=2"]))

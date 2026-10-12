@@ -3,6 +3,8 @@
 Written **2026-10-07**, revision 6 (**2026-10-11**). Revision 5 records the implementation; revision 6 records the owner's default-on request. **Status: implemented, on by default (SC-02a); Gate SC readability/performance acceptance remains open.** SC-00…SC-17, SC-19a, SC-20, SC-23 and SC-25 are done; SC-18, SC-22 and SC-24 are partial (their missing parts belong to M5 wind, the menu track and VQ-06); SC-19b and SC-21 (optional) are not started. The normal launch shows the complete field; `OPENRC_SCENERY=off` or `-- --scenery=off` disables it. Evidence: [SC-01](research/scenery-implementation/SC-01/README.md), [SC-03](research/scenery-implementation/SC-03/README.md), [SC-02a](research/scenery-implementation/SC-02a/README.md).
 
 - **Step IDs:** `SC-00…SC-25`, gate **Gate SC**.
+
+**Current defaults (2026-10-11, [UI-06d](research/menu-investigations/UI-06d/README.md)):** scenery ambience and the decorative flock are on; the active launch profile adds gentle wind and passing evening. SC-20's original off-default capture evidence remains historical. Explicit bird-off remains available for reference captures.
 - **Owns:**
   - code: `app/scenery/`, `app/tests/test_scenery_*.gd`
   - data and runtime assets: `app/data/scenery/`, `app/assets/scenery/`

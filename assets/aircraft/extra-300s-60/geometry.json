@@ -485,7 +485,7 @@
   "z": -0.3747,
   "right_thrust_deg": 2.0,
   "down_thrust_deg": 0.5,
-  "pitch": 0.2032,
+  "pitch": 0.1524,
   "blades": 2,
   "hub_radius": 0.012,
   "blade": {
@@ -631,7 +631,7 @@
   "propeller": {
    "kind": "estimated",
    "source": "manual p3 refers to the engine instructions for prop size",
-   "method": "12x8 in two-blade visual stand-in (a common .61 sport size; the kit manual defers to the engine's instructions): blade angle atan(pitch / (2 pi r)), generic tapered planform with a rounded tip and a flat-bottom section. Plane 4 mm ahead of the spinner back. 2 deg right and 0.5 deg down thrust are plan notes, applied to the visual spinner/prop only; physics thrust stays axial until EX-06."
+   "method": "12x6 in two-blade reference installation matching EX-05 physics (EX-06); within the O.S. .61FX sport recommendation, not an identified prototype propeller. Blade angle atan(pitch / (2 pi r)), generic tapered planform with a rounded tip and a flat-bottom section; not measured APC blade geometry. Plane 4 mm ahead of the spinner back along the shaft. 2 deg right and 0.5 deg down thrust are plan notes, shared with physics through EX-06's derived shaft axis and hub."
   },
   "p47_two_view": {
    "kind": "estimated",

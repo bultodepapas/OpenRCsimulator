@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL incomplete cue set rolls back all partial projected maps projectors=7 children=7
+FAIL near -2_-1 legacy shadow batch is hidden 
+FAIL near -2_0 legacy shadow batch is hidden 
+FAIL near -1_-2 legacy shadow batch is hidden 
+FAIL near -1_-1 legacy shadow batch is hidden 
+FAIL near -1_0 legacy shadow batch is hidden 
+FAIL near -1_1 legacy shadow batch is hidden 
+FAIL near 0_-1 legacy shadow batch is hidden 
+FAIL hiding the Scenery ancestor hides the projected receiver 
+FAIL _process refreshes direction and energy-scaled opacity without mutating state or shader clock 
+Field projected-shadow regression: 53 checks, 10 failed
