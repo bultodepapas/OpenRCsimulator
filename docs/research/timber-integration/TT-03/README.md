@@ -1,6 +1,6 @@
 # TT-03 — the r1 GLB in the app and the isolated viewer
 
-2026-10-12 · **Status: complete; owner review of the captures pending.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Guide: [asset README](../../../../assets/aircraft/turbo-timber-evolution/README.md). Captures: [captures/](captures/) with `manifest.json` (camera records and PNG hashes of all 12 views; six PNGs kept here).
+2026-10-12 · **Status: complete; owner review of the captures pending.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Guide: [asset README](../../../../assets/aircraft/turbo-timber-evolution/README.md). Captures: [captures/](captures/) with `manifest.json` (camera records and PNG hashes of all 60 views of the `all` suite: 12 review views, 36 orbit views, 12 pilot-distance views; ten PNGs kept here).
 
 ## Asset and import
 
@@ -24,7 +24,8 @@ bash app/test.sh   # section "Turbo Timber Evolution asset identity and generate
 ## Captures (Compatibility renderer, llvmpipe under Xvfb)
 
 ```bash
-xvfb-run -a "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --script res://aircraft/inspect_timber.gd -- --output-dir=/tmp/timber-views   # 12 views in 4 s
+xvfb-run -a "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --script res://aircraft/inspect_timber.gd -- --output-dir=/tmp/timber-views                 # 12 review views in 4 s
+xvfb-run -a "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --script res://aircraft/inspect_timber.gd -- --output-dir=/tmp/timber-all --suite=all     # + orbit and pilot-distance views, 60 in 20 s
 ```
 
 | View | What to look at |
@@ -33,6 +34,8 @@ xvfb-run -a "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --script
 | `inspection_oblique_front_left.png` | Materials: red/white/black livery, glazing, foam tyres, metal, emissive nav lenses |
 | `inspection_oblique_rear_right_full.png` | Controls at the manual high rates and flaps at 35 mm: right aileron up, left down, elevator up, rudder right |
 | `inspection_gear_front.png` | Legs, axle bolts, cosmetic cables/springs, tailwheel wire |
+| `orbit_el+10_az210.png` | One of the 36 orbit views (10° elevation, from the rear-left quarter) |
+| `distance_020m_level_crossing.png`, `distance_020m_nose_toward_pilot.png`, `distance_050m_level_crossing.png` | Pilot eye on the ground, airplane crossing at 10 m height and 20 / 50 m distance, 50° field of view (the Stik/Extra readability geometry); the red/white livery reads at 20 m, the 50 m dot is the expected size (TT-13 judges readability) |
 
 Review notes from the capture set (software review, not the owner's): the livery, glazing (alpha 0.45) and emissive lenses render under Compatibility without visible z-fighting at these distances; decals sit 1–2.5 mm proud of the skin as documented by the author; the gear cables are static. TT-04 measures the frame cost and inspects decals at the pilot-view distances.
 

@@ -31,7 +31,7 @@ python3 assets/aircraft/turbo-timber-evolution/compile_geometry.py [--check]    
 python3 research/timber/tt03/check_asset.py --check                                      # app copy of the GLB = r1 bytes, revisions agree
 "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_timber.gd     # model contract (283 checks)
 "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_timber_clearance.gd  # control surfaces vs airframe at full throws
-xvfb-run -a "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --script res://aircraft/inspect_timber.gd -- --output-dir=/tmp/timber-views
+xvfb-run -a "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --script res://aircraft/inspect_timber.gd -- --output-dir=/tmp/timber-views [--suite=inspection|orbit|distance|all]
 ```
 
 | File | Role |
