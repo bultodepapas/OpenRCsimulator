@@ -1,0 +1,192 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "assets": {
+    "crossover": {
+      "120": {
+        "draws": 10.0,
+        "image": "crossover_120m.png",
+        "primitives": 17020.0
+      },
+      "15": {
+        "draws": 10.0,
+        "image": "crossover_15m.png",
+        "primitives": 20736.0
+      },
+      "40": {
+        "draws": 10.0,
+        "image": "crossover_40m.png",
+        "primitives": 17432.0
+      },
+      "5": {
+        "draws": 10.0,
+        "image": "crossover_5m.png",
+        "primitives": 24314.0
+      }
+    },
+    "hatch": {
+      "120": {
+        "draws": 10.0,
+        "image": "hatch_120m.png",
+        "primitives": 15964.0
+      },
+      "15": {
+        "draws": 10.0,
+        "image": "hatch_15m.png",
+        "primitives": 19800.0
+      },
+      "40": {
+        "draws": 10.0,
+        "image": "hatch_40m.png",
+        "primitives": 16624.0
+      },
+      "5": {
+        "draws": 10.0,
+        "image": "hatch_5m.png",
+        "primitives": 22034.0
+      }
+    },
+    "pilot": {
+      "120": {
+        "draws": 7.0,
+        "image": "pilot_120m.png",
+        "primitives": 1630.0
+      },
+      "15": {
+        "draws": 7.0,
+        "image": "pilot_15m.png",
+        "primitives": 4742.0
+      },
+      "40": {
+        "draws": 7.0,
+        "image": "pilot_40m.png",
+        "primitives": 2668.0
+      },
+      "5": {
+        "draws": 7.0,
+        "image": "pilot_5m.png",
+        "primitives": 7698.0
+      }
+    },
+    "sedan": {
+      "120": {
+        "draws": 10.0,
+        "image": "sedan_120m.png",
+        "primitives": 17037.0
+      },
+      "15": {
+        "draws": 10.0,
+        "image": "sedan_15m.png",
+        "primitives": 21495.0
+      },
+      "40": {
+        "draws": 10.0,
+        "image": "sedan_40m.png",
+        "primitives": 17437.0
+      },
+      "5": {
+        "draws": 10.0,
+        "image": "sedan_5m.png",
+        "primitives": 25501.0
+      }
+    },
+    "sitting": {
+      "120": {
+        "draws": 6.0,
+        "image": "sitting_120m.png",
+        "primitives": 1212.0
+      },
+      "15": {
+        "draws": 6.0,
+        "image": "sitting_15m.png",
+        "primitives": 4195.0
+      },
+      "40": {
+        "draws": 6.0,
+        "image": "sitting_40m.png",
+        "primitives": 1598.0
+      },
+      "5": {
+        "draws": 6.0,
+        "image": "sitting_5m.png",
+        "primitives": 7151.0
+      }
+    },
+    "standing": {
+      "120": {
+        "draws": 6.0,
+        "image": "standing_120m.png",
+        "primitives": 890.0
+      },
+      "15": {
+        "draws": 6.0,
+        "image": "standing_15m.png",
+        "primitives": 4194.0
+      },
+      "40": {
+        "draws": 6.0,
+        "image": "standing_40m.png",
+        "primitives": 2120.0
+      },
+      "5": {
+        "draws": 6.0,
+        "image": "standing_5m.png",
+        "primitives": 7150.0
+      }
+    }
+  },
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "height": 720,
+  "motion": {
+    "pilot": {
+      "changed": true,
+      "hashes": {
+        "moving": "6718d85bb3be42c35f17296878882e5e209a998f2b7a25f3c710c63fb138a431",
+        "paused": "6718d85bb3be42c35f17296878882e5e209a998f2b7a25f3c710c63fb138a431",
+        "reset": "9e0b41f5d56296e3fed77d3d14128c8e0bcb1006acb579942335f3e971328d0b",
+        "start": "9e0b41f5d56296e3fed77d3d14128c8e0bcb1006acb579942335f3e971328d0b",
+        "wrapped": "9e0b41f5d56296e3fed77d3d14128c8e0bcb1006acb579942335f3e971328d0b"
+      },
+      "pause_equal": true,
+      "reset_equal": true,
+      "wrap_equal": true
+    },
+    "sitting": {
+      "changed": true,
+      "hashes": {
+        "moving": "0479ca11a0c4eb510e0c74ecc72f6f956be9d307438e9d803672ab661e6743cc",
+        "paused": "0479ca11a0c4eb510e0c74ecc72f6f956be9d307438e9d803672ab661e6743cc",
+        "reset": "3e0289746d32cc56de67420c56c94e5232602734181f0ea258b9ecc9d1f0864d",
+        "start": "3e0289746d32cc56de67420c56c94e5232602734181f0ea258b9ecc9d1f0864d",
+        "wrapped": "3e0289746d32cc56de67420c56c94e5232602734181f0ea258b9ecc9d1f0864d"
+      },
+      "pause_equal": true,
+      "reset_equal": true,
+      "wrap_equal": true
+    },
+    "standing": {
+      "changed": true,
+      "hashes": {
+        "moving": "1e3a1824df4388eea2bcaa5ddba99032df9d9a0f2f8e1851076dbcb9d31ff697",
+        "paused": "1e3a1824df4388eea2bcaa5ddba99032df9d9a0f2f8e1851076dbcb9d31ff697",
+        "reset": "083b7a373af4cbcd9654b44cd5c698c9cb859c2b36b0dd4099571696fc2d788f",
+        "start": "083b7a373af4cbcd9654b44cd5c698c9cb859c2b36b0dd4099571696fc2d788f",
+        "wrapped": "083b7a373af4cbcd9654b44cd5c698c9cb859c2b36b0dd4099571696fc2d788f"
+      },
+      "pause_equal": true,
+      "reset_equal": true,
+      "wrap_equal": true
+    }
+  },
+  "renderer": "gl_compatibility",
+  "width": 1280
+}

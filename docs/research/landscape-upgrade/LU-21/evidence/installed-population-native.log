@@ -1,0 +1,117 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   car_sedan maps to a population vehicle source
+ok   car_hatch maps to a population vehicle source
+ok   car_suv maps to a population vehicle source
+ok   car_sport maps to a population vehicle source
+ok   four legacy vehicle IDs use the three reviewed body styles
+ok   person_standing maps to a population person source
+ok   person_sitting maps to a population person source
+ok   person_pilot maps to a population person source
+ok   sedan GLB imports as a PackedScene
+ok   sedan is baked geometry without a skeleton or animation player
+ok   sedan has no attached runtime scripts or processing callbacks
+ok   sedan contains visible mesh geometry
+ok   sedan stays within its source triangle cap (27517 <= 30000)
+ok   sedan retains usable textured surfaces and UVs
+ok   sedan retains unit-length imported normals on every surface
+ok   hatch GLB imports as a PackedScene
+ok   hatch is baked geometry without a skeleton or animation player
+ok   hatch has no attached runtime scripts or processing callbacks
+ok   hatch contains visible mesh geometry
+ok   hatch stays within its source triangle cap (26066 <= 30000)
+ok   hatch retains usable textured surfaces and UVs
+ok   hatch retains unit-length imported normals on every surface
+ok   crossover GLB imports as a PackedScene
+ok   crossover is baked geometry without a skeleton or animation player
+ok   crossover has no attached runtime scripts or processing callbacks
+ok   crossover contains visible mesh geometry
+ok   crossover stays within its source triangle cap (27002 <= 30000)
+ok   crossover retains usable textured surfaces and UVs
+ok   crossover retains unit-length imported normals on every surface
+ok   standing GLB imports as a PackedScene
+ok   standing is baked geometry without a skeleton or animation player
+ok   standing has no attached runtime scripts or processing callbacks
+ok   standing contains visible mesh geometry
+ok   standing stays within its source triangle cap (7332 <= 8000)
+ok   standing retains usable textured surfaces and UVs
+ok   standing retains unit-length imported normals on every surface
+ok   sitting GLB imports as a PackedScene
+ok   sitting is baked geometry without a skeleton or animation player
+ok   sitting has no attached runtime scripts or processing callbacks
+ok   sitting contains visible mesh geometry
+ok   sitting stays within its source triangle cap (7333 <= 8000)
+ok   sitting retains usable textured surfaces and UVs
+ok   sitting retains unit-length imported normals on every surface
+ok   pilot GLB imports as a PackedScene
+ok   pilot is baked geometry without a skeleton or animation player
+ok   pilot has no attached runtime scripts or processing callbacks
+ok   pilot contains visible mesh geometry
+ok   pilot stays within its source triangle cap (7880 <= 8000)
+ok   pilot retains usable textured surfaces and UVs
+ok   pilot retains unit-length imported normals on every surface
+ok   standing resolves shared shader textures
+ok   sitting resolves shared shader textures
+ok   pilot resolves shared shader textures
+ok   standing, sitting, and pilot reuse at least one PBR texture resource
+ok   default population layout validates
+ok   source layout contributes 11 cars and 13 people
+ok   scenery owns the population batch root
+ok   production batches all 24 placed vehicles and people
+ok   the three car styles and all three person assets are batched
+ok   pilot_0 uses one shared mesh per part with no node script
+ok   pilot_1 uses one shared mesh per part with no node script
+ok   pilot_2 uses one shared mesh per part with no node script
+ok   pilot_3 uses one shared mesh per part with no node script
+ok   pilot_4 uses one shared mesh per part with no node script
+ok   pilot_5 uses one shared mesh per part with no node script
+ok   pilot_6 uses one shared mesh per part with no node script
+ok   standing_0 uses one shared mesh per part with no node script
+ok   standing_1 uses one shared mesh per part with no node script
+ok   standing_2 uses one shared mesh per part with no node script
+ok   standing_3 uses one shared mesh per part with no node script
+ok   standing_4 uses one shared mesh per part with no node script
+ok   standing_5 uses one shared mesh per part with no node script
+ok   sitting_0 uses one shared mesh per part with no node script
+ok   sitting_1 uses one shared mesh per part with no node script
+ok   sitting_2 uses one shared mesh per part with no node script
+ok   sitting_3 uses one shared mesh per part with no node script
+ok   sitting_4 uses one shared mesh per part with no node script
+ok   sitting_5 uses one shared mesh per part with no node script
+ok   hatch_0 uses one shared mesh per part with no node script
+ok   crossover_0 uses one shared mesh per part with no node script
+ok   sedan_0 uses one shared mesh per part with no node script
+ok   pilot population batch count matches its source placements
+ok   standing population batch count matches its source placements
+ok   sitting population batch count matches its source placements
+ok   hatch population batch count matches its source placements
+ok   crossover population batch count matches its source placements
+ok   sedan population batch count matches its source placements
+ok   population triangle metadata includes every indexed mesh surface and instance
+ok   pilot:0 human bounds stay inside the catalog proxy and rest on the ground
+ok   pilot:1 human bounds stay inside the catalog proxy and rest on the ground
+ok   standing:0 human bounds stay inside the catalog proxy and rest on the ground
+ok   standing:1 human bounds stay inside the catalog proxy and rest on the ground
+ok   standing:2 human bounds stay inside the catalog proxy and rest on the ground
+ok   standing:3 human bounds stay inside the catalog proxy and rest on the ground
+ok   standing:4 human bounds stay inside the catalog proxy and rest on the ground
+ok   standing:5 human bounds stay inside the catalog proxy and rest on the ground
+ok   standing:6 human bounds stay inside the catalog proxy and rest on the ground
+ok   standing:7 human bounds stay inside the catalog proxy and rest on the ground
+ok   sitting:0 human bounds stay inside the catalog proxy and rest on the ground
+ok   sitting:1 human bounds stay inside the catalog proxy and rest on the ground
+ok   sitting:2 human bounds stay inside the catalog proxy and rest on the ground
+ok   hatch:0 fitted mesh bounds match its catalog collision envelope
+ok   hatch:1 fitted mesh bounds match its catalog collision envelope
+ok   hatch:2 fitted mesh bounds match its catalog collision envelope
+ok   hatch:3 fitted mesh bounds match its catalog collision envelope
+ok   hatch:4 fitted mesh bounds match its catalog collision envelope
+ok   crossover:0 fitted mesh bounds match its catalog collision envelope
+ok   crossover:1 fitted mesh bounds match its catalog collision envelope
+ok   crossover:2 fitted mesh bounds match its catalog collision envelope
+ok   crossover:3 fitted mesh bounds match its catalog collision envelope
+ok   sedan:0 fitted mesh bounds match its catalog collision envelope
+ok   sedan:1 fitted mesh bounds match its catalog collision envelope
+ok   bounded shader motion metadata stays between 2 and 9 people
+all population asset checks passed

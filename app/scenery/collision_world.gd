@@ -6,6 +6,7 @@ const Treeline := preload("res://render/treeline.gd")
 const Prefabs := preload("res://scenery/prefabs.gd")
 const Models := preload("res://scenery/models.gd")
 const Palette := preload("res://scenery/palette.gd")
+const SupportSurfaces := preload("res://scenery/support_surfaces.gd")
 
 const FORMAT := "openrc-collision-world v1"
 const CELL_SIZE_M := 32.0
@@ -29,8 +30,9 @@ static func build(field: Dictionary, scenery: Dictionary, lights: Dictionary = {
 	if not lights.is_empty() and typeof(lights.get("fixtures")) != TYPE_ARRAY:
 		return _failure("lights must be normalized before collision inventory construction")
 	var proxies: Array[Dictionary] = []
+	var support_surfaces := SupportSurfaces.build(scenery)
 	_add_field_trees(proxies, field)
-	_add_scenery(proxies, scenery)
+	_add_scenery(proxies, scenery, support_surfaces)
 	_add_lights(proxies, lights)
 	proxies.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.id) < str(b.id))
 	for proxy: Dictionary in proxies:
@@ -102,7 +104,8 @@ static func _add_field_trees(proxies: Array[Dictionary], field: Dictionary) -> v
 				base_down, float(tree.height), int(tree.species), float(tree.yaw))
 
 
-static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary) -> void:
+static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
+		support_surfaces: Array[Dictionary]) -> void:
 	for group_value: Variant in scenery.get("groups", []):
 		if typeof(group_value) != TYPE_DICTIONARY:
 			continue
@@ -167,7 +170,10 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary) -> voi
 					_add_box(proxies, "equipment:%s:%02d:%s" % [group_id, index, prefab], "equipment", prefab,
 						"hard_terminal", north, east, size.x, size.y, size.z, heading)
 			elif prefab in ["person_pilot", "person_standing", "person_sitting"]:
-				_add_person_proxy(proxies, group_id, index, prefab, north, east, heading)
+				var foot_height := SupportSurfaces.height_at(north, east, support_surfaces)
+				if prefab == "person_sitting":
+					foot_height += SupportSurfaces.SEATED_OFFSET_M
+				_add_person_proxy(proxies, group_id, index, prefab, north, east, heading, foot_height)
 			elif prefab == "bush":
 				_add_capsule(proxies, "vegetation:%s:%02d:bush" % [group_id, index], "tree_foliage", "bush",
 					"soft_foliage_impulse", north, east, -0.43, 0.80, 0.0)
@@ -291,11 +297,12 @@ static func _add_table_or_bench(proxies: Array[Dictionary], group_id: String, in
 
 
 static func _add_person_proxy(proxies: Array[Dictionary], group_id: String, index: int, prefab: String,
-		north: float, east: float, _heading: float) -> void:
+		north: float, east: float, _heading: float, foot_height_m: float = 0.0) -> void:
 	var size: Vector3 = Prefabs.CATALOG[prefab].size
-	var radius := 0.28 if prefab != "person_sitting" else 0.34
+	var radius := maxf(size.x, size.z) * 0.5
 	_add_capsule(proxies, "person:%s:%02d" % [group_id, index], "person", prefab, "soft_foliage_impulse",
-		north, east, -size.y * 0.5, radius, maxf(0.0, size.y * 0.5 - radius))
+		north, east, -(maxf(0.0, foot_height_m) + size.y * 0.5), radius,
+		maxf(0.0, size.y * 0.5 - radius))
 
 
 static func _add_pylon(proxies: Array[Dictionary], group_id: String, index: int, north: float, east: float,

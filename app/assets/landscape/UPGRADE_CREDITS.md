@@ -22,6 +22,14 @@ The detailed provenance files are authoritative for downloaded package identity,
 
 Maintained asset/tool alternatives, exact-version compatibility findings, redistribution restrictions, and reasons for retaining the existing assets are recorded in the [LU-00 resource review](../../../docs/research/landscape-upgrade/LU-00/resources.md). Final native renderer proof is in [LU-06](../../../docs/research/landscape-upgrade/LU-06/README.md).
 
+## LU-21 replacement population (2026-10-12)
+
+The parked passenger cars now use three original, unbranded **Innerscene** models: [sedan](https://www.innerscene.com/tools/library/3d-parts/white-four-door-sedan-1f271353), [hatchback](https://www.innerscene.com/tools/library/3d-parts/silver-five-door-compact-hatchback-6bf4a878), and [crossover](https://www.innerscene.com/tools/library/3d-parts/sage-five-door-crossover-suv-1db314ad). Their individual pages and [library terms, version 2026-09-24](https://www.innerscene.com/tools/library/terms) identify these assets as **CC0-1.0**, permitting modification and redistribution, including commercially, without attribution. Original GLBs, license evidence, and exact hashes are retained in the source distribution under `assets/scenery/population/`. Existing Quaternius car records above remain the provenance for retained legacy geometry.
+
+The clothed people derive from the **MakeHuman Community** CC0 system assets (male1591 proxy, middleage_caucasian_male skin, male_casualsuit04, shoes02, short01 hair, low-poly eyes and eyebrow001), standing02, and **Anrico's anrico_sitting03** pose. [System assets](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html), [system poses](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_poses.html), and [poses01](https://static.makehumancommunity.org/assets/assetpacks/poses01.html) list the selected content as CC0; the seated pose's internal metadata agrees. Credit is retained voluntarily. No Mixamo or ambiguously licensed community pose is included.
+
+Blender 5.2.2 and MPFB 2.0.18 are offline authoring tools. MPFB code is GPL-3.0-or-later; its separately licensed CC0 asset data and exported graphical output do not introduce a runtime plugin dependency. MPFB code is not distributed with this app. Original conversion scripts, bounded animation shader, transmitter geometry, terrain/material/light changes are project MIT work. Exact sources, transformations, shared-texture hashes, runtime file hashes, and native evidence: [LU-21](../../../docs/research/landscape-upgrade/LU-21/README.md), [source manifests](../../../assets/scenery/population/).
+
 ## Project permission notice
 
 This file is explicitly included in the Linux, Windows and macOS export presets. Repository-relative evidence links refer to the source distribution. The following notice applies to the original project contributions above.

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+gravel flat batches: 1; cells: 47
+landscape gravel: 6 checks, 1 failures
+FAIL: existing 48 scenery cells are retained

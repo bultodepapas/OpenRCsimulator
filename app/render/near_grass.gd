@@ -1,6 +1,7 @@
 ## L11a: fixed offline placement, clipped to the current field; opaque geometry only, no simulation nodes.
 extends RefCounted
 
+const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const Frames = preload("res://render/frames.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const SHADER: Shader = preload("res://render/near_grass.gdshader")
@@ -45,7 +46,9 @@ static func validated_rows(raw: Variant) -> Array:
 
 
 ## Rectangles come from the validated field; any mown/runway surface excludes the full clump footprint.
-static func accepts(north: float, east: float, field: Dictionary) -> bool:
+static func accepts(north: float, east: float, field: Dictionary, exclusions: Array = []) -> bool:
+	if GrassMask.excludes(north, east, exclusions):
+		return false
 	var on_rough: bool = false
 	for surface: Dictionary in field.surfaces:
 		var dn: float = absf(north - float(surface.center_north))
@@ -90,19 +93,19 @@ static func clump_mesh() -> ArrayMesh:
 
 
 ## Pure placement boundary, inspectable with the dummy renderer (MultiMesh transform readback is unavailable there).
-static func clipped_chunks(field: Dictionary, rows: Array) -> Array:
+static func clipped_chunks(field: Dictionary, rows: Array, exclusions: Array = []) -> Array:
 	var chunks: Array = [[], [], [], []]
 	for row: Array in rows:
 		var north: float = float(field.pilot.north) + float(row[0]) * 0.001
 		var east: float = float(field.pilot.east) + float(row[1]) * 0.001
-		if not accepts(north, east, field):
+		if not accepts(north, east, field, exclusions):
 			continue
 		var chunk: int = (0 if row[0] < 0 else 2) + (0 if row[1] < 0 else 1)
 		chunks[chunk].append([north, east, int(row[2]), int(row[3])])
 	return chunks
 
 
-static func build(field: Dictionary, ground: ShaderMaterial) -> Node3D:
+static func build(field: Dictionary, ground: ShaderMaterial, exclusions: Array = []) -> Node3D:
 	var result: Node3D = Node3D.new()
 	result.name = "NearGrass"
 	var file: FileAccess = FileAccess.open(DATA_PATH, FileAccess.READ)
@@ -123,7 +126,7 @@ static func build(field: Dictionary, ground: ShaderMaterial) -> Node3D:
 			material.set_shader_parameter(parameter, value)
 	var mesh: ArrayMesh = clump_mesh()
 	mesh.surface_set_material(0, material)
-	var chunks: Array = clipped_chunks(field, rows)
+	var chunks: Array = clipped_chunks(field, rows, exclusions)
 	var total: int = 0
 	for k: int in 4:
 		var points: Array = chunks[k]

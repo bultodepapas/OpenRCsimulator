@@ -1,0 +1,152 @@
+[
+  {
+    "path": "app/data/scenery/default.json",
+    "before": "6a526a88d9cb74a4acdcaef8272942380e931db60ae329f46219416c4ab6635b",
+    "after": "da1e511c7ff6a4ed223ac716f23f1c32d246a283ea4a6319d64927b0302d488b"
+  },
+  {
+    "path": "app/render/field.gd",
+    "before": "da7b68a0784b49b4f3659b31f6081f39957d2e1969d0d33836241828a6143795",
+    "after": "9383fac03402ce1e1fd8c26c950567efc9ef0c3089e3188317644fb5fa84da37"
+  },
+  {
+    "path": "app/render/grass_surface.gdshaderinc",
+    "before": "6e2facea11a07c68525dbec49ab325b309de943f2954b83c51b8338f28a95372",
+    "after": "3699a1e3fcb4b08aab1046a7a8369b1b798f599710b17f712b80bb204780d9d0"
+  },
+  {
+    "path": "app/render/near_grass.gd",
+    "before": "c4d5f2fd2a8f3681fe02f1b13f85140526c8c22484d7c672743cc366acdb3787",
+    "after": "0880ba351602621a24ca12016aaee7cb8418558d6096f911d19492f621e13882"
+  },
+  {
+    "path": "app/render/landscape_upgrade/airfield_lighting.gd",
+    "before": "65de53096d8d514caa83c0c66ec32ac73687a9831dc5c6471dd73649af967c68",
+    "after": "67c5f82ee691e43475564eab23dd8ca3f0977843ce2a00c59a86bd3053f9a6e5"
+  },
+  {
+    "path": "app/render/landscape_upgrade/ridges.gd",
+    "before": "c068047753306a64c810369817782fd2d990f50cbcc4203a1844a0fcde63a151",
+    "after": "a2c046c30e8459ecb890f0b85708ef1839ef88ec6ca884d78673e57ca935be3e"
+  },
+  {
+    "path": "app/render/landscape_upgrade/ridge_haze.gdshader",
+    "before": null,
+    "after": "7342579cc8125271eedc1739ac361e2b79d1009d8b3eaaf8d05ca2705640147c"
+  },
+  {
+    "path": "app/render/landscape_upgrade/scenery_grass_mask.gd",
+    "before": null,
+    "after": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e"
+  },
+  {
+    "path": "app/render/landscape_upgrade/window_glow.gdshader",
+    "before": "eb3a99939e90b4041c8f05d0a9a2705312e998838da5f96cd2566919f62c8524",
+    "after": "1c848057a461d187ffee17a0e20eb2479276f705da65bb1f83fa3f6da43ff557"
+  },
+  {
+    "path": "app/scenery/collision_world.gd",
+    "before": "5571df30bbb9ef0076fc5934a69120c9397dc51659206612952da2a70ff4bba7",
+    "after": "b18173d034b3e50d14f91f1ee5f4f610103fb6c8a072fc552c2191e5e12197d2"
+  },
+  {
+    "path": "app/scenery/flowers.gd",
+    "before": "d3a6342734897b6d32874d00be33134a1687cebc0b7af2702ae028401a9e410c",
+    "after": "d34e0df2360b9036daf7757d046c66fb6ed92c89d62564d2cbbafde4614fc773"
+  },
+  {
+    "path": "app/scenery/flowers.gdshader",
+    "before": "17229f85c45b01b2192af61802fbfebf7fed927353ceefdfdad52df0a9397de5",
+    "after": "9835c50557f34aaedb649068c041528d95d05ff6882fa0fa54e14dc2763633ce"
+  },
+  {
+    "path": "app/scenery/ground_features.gd",
+    "before": "29e68170e38ea0b7060c49d004642cd9835ea27eae92b94ad9ff6a1d206b91b4",
+    "after": "99ebcdaf518817a6704e0f6b8c7c31eea14b9e1d95f0643f75e3ed6d8d1e3c2d"
+  },
+  {
+    "path": "app/scenery/population.gd",
+    "before": null,
+    "after": "213f259d95994d8997b7ec26f6bf552b253ef143f6b997fedbc6812776119314"
+  },
+  {
+    "path": "app/scenery/population_person.gdshader",
+    "before": null,
+    "after": "3e2cb6f813409d889367c046762c6f6f9098be75c9646c6524962bc0cfcb97df"
+  },
+  {
+    "path": "app/scenery/prefabs.gd",
+    "before": "28f4030b22369ccda70373e538bb70b8da254b76fa02726b77e9be9d93bacbc1",
+    "after": "53765fd0e39d1a25f9a88106b11b4da79dad6a2081fe9032946a5aa876441a43"
+  },
+  {
+    "path": "app/scenery/scenery.gd",
+    "before": "2dc6103cf91a4729f045dca06e127d5a4e7cd52b72e0e7fc290b986312c8219d",
+    "after": "95e2bffb199f4b4eba2e56a290656ac0be5baebdfaebc575928ceaba0f2ee6cb"
+  },
+  {
+    "path": "app/scenery/support_surfaces.gd",
+    "before": null,
+    "after": "6899325c3ef7608dcac49cf50694a938295cee2accfe9890bb0e5607a89404b2"
+  },
+  {
+    "path": "app/scenery/vegetation.gd",
+    "before": "09c56552160521893f9f28073172da8202ccec2deee3d56936cb9597bb1b6768",
+    "after": "4fb1f83b5dba753da9f0d3c295722dd32775aa1d26880ce8cab39d85069ea0a6"
+  },
+  {
+    "path": "app/tests/capture_population_assets.gd",
+    "before": null,
+    "after": "20d25e7c5ed5d4335266ad2fed389cc6c85d743d24b2aa5029182bb132a6a5c8"
+  },
+  {
+    "path": "app/tests/test_landscape_collision_support.gd",
+    "before": null,
+    "after": "f8089ed77ac0f74c024f522423b5b56653d36fc0a316f8b780b6ccbbdbfd5616"
+  },
+  {
+    "path": "app/tests/test_landscape_ground_lu18.gd",
+    "before": null,
+    "after": "1cdee6ac23b7d58d9891e9da0207fc0f63c7dbae6ef7c2e2945c2587755788fb"
+  },
+  {
+    "path": "app/tests/test_landscape_horizon.gd",
+    "before": null,
+    "after": "58a133eb65556dfe1302f131eb19714053a4393c11485e632b539b9cf9a8460b"
+  },
+  {
+    "path": "app/tests/test_landscape_population.gd",
+    "before": "929f75e7d3dba6584d82f15a1b5766cb3a899c6a9c9e1d9e399c7bba105890ca",
+    "after": "4b80a00e0d605e6f8664bfb8c9939a3d8316bc64baf4491d3fd2318a1c75d637"
+  },
+  {
+    "path": "app/tests/test_landscape_population_assets.gd",
+    "before": null,
+    "after": "000d742aa5680910d64a2bcd50aef1bdecdbec8c7caacd8c3ff152369cc0dd01"
+  },
+  {
+    "path": "app/tests/test_landscape_scenery_grass_mask.gd",
+    "before": null,
+    "after": "01594685615fa32d5b79db27aff77df556eb0468097579a029b8ba2b6af097e2"
+  },
+  {
+    "path": "app/tests/test_landscape_tree_bounds.gd",
+    "before": "fb7ea5b9697c69a6e5baf2b081037b569aebf44e9c6bcf5e8ce112acd787292a",
+    "after": "4ba2689f484cee1591e37ae929982f60a64128077383166b545add6654a5e78d"
+  },
+  {
+    "path": "app/tests/test_landscape_vegetation.gd",
+    "before": null,
+    "after": "a0d5a17910bb2def098d3a3102436a8a92d6a0b59451760d69b322419d130d1d"
+  },
+  {
+    "path": "app/tests/test_scenery_build.gd",
+    "before": "5d6110bfc3d95b49f670ebabd49f1a55474c44c5f0174c6b3dcb76da9cda411b",
+    "after": "eb24226155e3c771bd8534085a13a715f7f0bce0f384d239311f88470be8e3e8"
+  },
+  {
+    "path": "app/tests/capture_landscape_upgrade.gd",
+    "before": "df2cbefc634585430c602faa887a403e4d35261c90822bf75f9d3937e6b05970",
+    "after": "c04e863d2c20d330cf7fad2dfeb2628e68d357143d2e33649f0a2cd39812652c"
+  }
+]

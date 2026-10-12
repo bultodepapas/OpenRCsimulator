@@ -1,0 +1,149 @@
+{
+  "format": "openrc-population-source-manifest-v1",
+  "step": "LU-21",
+  "observed_on": "2026-10-12",
+  "purpose": "Source and derived-artifact provenance for three parked passenger-car body styles. The recipe prepares assets only; the app retains its existing eleven parking placements.",
+  "license_evidence": {
+    "file": "LICENSES.md",
+    "sha256": "E8DA1C723E60AA7549405A8502BC56A864991407B7D130D581CDC0E55E1F384C",
+    "license": "CC0-1.0",
+    "terms_version": "2026-09-24"
+  },
+  "authoring": {
+    "tool": "Blender",
+    "version": "5.2.2 LTS",
+    "build": "d13f752e3b9c",
+    "renderer_dependency": "None; offline GLB preprocessing only",
+    "runtime_plugin_dependency": "None"
+  },
+  "conversion": {
+    "input_format": "glTF 2.0 binary (GLB)",
+    "output_format": "glTF 2.0 binary (GLB)",
+    "source_orientation": "Imported Blender Z-up geometry has the vehicle nose toward -X.",
+    "output_orientation": "Rotate geometry -90 degrees around Blender Z so Godot-space nose is -Z and vehicle length runs on Z.",
+    "glass_policy": "Do not decimate meshes assigned the exact source material glass.001; verify their source mesh counts and triangle counts remain unchanged.",
+    "close_policy": "Remove tire tread blocks and non-paint/lens parts at or below 0.02 m maximum bound. Selectively decimate per mesh using the LU-21 recipe in tools/scenery/population/preprocess_cars.py.",
+    "far_policy": "Remove tire tread blocks and non-paint/lens parts at or below 0.05 m maximum bound; remove remaining non-glass details that do not meet the far LOD reduction groups. Selectively decimate per mesh using the LU-21 recipe in tools/scenery/population/preprocess_cars.py.",
+    "join_policy": "Join reduced meshes into one mesh after per-part decimation; preserve the imported material slots and UVs.",
+    "output_names": {
+      "close": "innerscene-{id}-selective.glb",
+      "far": "innerscene-{id}-far.glb"
+    }
+  },
+  "sources": [
+    {
+      "id": "sedan",
+      "display_name": "White four-door sedan",
+      "source_file": "white-four-door-sedan.glb",
+      "source_page": "https://www.innerscene.com/tools/library/3d-parts/white-four-door-sedan-1f271353",
+      "download_url": "https://www.innerscene.com/api/library/white-four-door-sedan-1f271353/download",
+      "source": "Innerscene original model",
+      "description": "Original, unbranded model; page dimensions 4.867 x 2.230 x 1.450 m.",
+      "license": "CC0-1.0",
+      "source_bytes": 5063600,
+      "source_sha256": "0CD9FE7520255F93F0B1B56B6597100B058579AF980506C23E285ABD511C2845",
+      "source_meshes": 304,
+      "source_triangles": 132082,
+      "protected_glass_material": "glass.001",
+      "protected_glass_meshes": 6,
+      "protected_glass_triangles": 4032,
+      "outputs": {
+        "close": {
+          "file": "innerscene-sedan-selective.glb",
+          "expected": {
+            "triangles": 27517,
+            "surfaces": 10,
+            "bytes": 1114108,
+            "sha256": "221179C8036C3C3D199CD40C9A6A25051B4A4F408CAD3CE62A38A2373DC7A4E7"
+          }
+        },
+        "far": {
+          "file": "innerscene-sedan-far.glb",
+          "expected": {
+            "triangles": 10723,
+            "surfaces": 10,
+            "bytes": 446804,
+            "sha256": "E6978709A58931760C8C407D5B885C87F99A03DFCBA0E9DECC32F8FE62B27346"
+          }
+        }
+      },
+      "vendored_source": "source/cars/white-four-door-sedan.glb"
+    },
+    {
+      "id": "hatch",
+      "display_name": "Silver five-door compact hatchback",
+      "source_file": "silver-five-door-compact-hatchback.glb",
+      "source_page": "https://www.innerscene.com/tools/library/3d-parts/silver-five-door-compact-hatchback-6bf4a878",
+      "download_url": "https://www.innerscene.com/api/library/silver-five-door-compact-hatchback-6bf4a878/download",
+      "source": "Innerscene original model",
+      "description": "Original, unbranded model; page dimensions 4.281 x 2.160 x 1.490 m.",
+      "license": "CC0-1.0",
+      "source_bytes": 5044784,
+      "source_sha256": "B91FD6ABFA24F1056B408517CE4DDBCD8E3E92406625A85790756C05A9A5849E",
+      "source_meshes": 314,
+      "source_triangles": 130902,
+      "protected_glass_material": "glass.001",
+      "protected_glass_meshes": 8,
+      "protected_glass_triangles": 5376,
+      "outputs": {
+        "close": {
+          "file": "innerscene-hatch-selective.glb",
+          "expected": {
+            "triangles": 26066,
+            "surfaces": 10,
+            "bytes": 1032044,
+            "sha256": "DE30653293F70611BF72CC4D4E4EC391F7CC79EE733326EA7D6AE6553237184F"
+          }
+        },
+        "far": {
+          "file": "innerscene-hatch-far.glb",
+          "expected": {
+            "triangles": 11541,
+            "surfaces": 10,
+            "bytes": 456452,
+            "sha256": "CFCB053CA796956289AEB31CF6DC75388498CDC50D73F6F5F8F145933150F35A"
+          }
+        }
+      },
+      "vendored_source": "source/cars/silver-five-door-compact-hatchback.glb"
+    },
+    {
+      "id": "crossover",
+      "display_name": "Sage five-door crossover SUV",
+      "source_file": "sage-five-door-crossover-suv.glb",
+      "source_page": "https://www.innerscene.com/tools/library/3d-parts/sage-five-door-crossover-suv-1db314ad",
+      "download_url": "https://www.innerscene.com/api/library/sage-five-door-crossover-suv-1db314ad/download",
+      "source": "Innerscene original model",
+      "description": "Original, unbranded model; page dimensions 4.786 x 2.290 x 1.814 m.",
+      "license": "CC0-1.0",
+      "source_bytes": 5034660,
+      "source_sha256": "D8DE49CEF044F82816F9C1CB99597CB6FB6090AA90BEE1AB182C64856FE210D5",
+      "source_meshes": 317,
+      "source_triangles": 132132,
+      "protected_glass_material": "glass.001",
+      "protected_glass_meshes": 8,
+      "protected_glass_triangles": 5376,
+      "outputs": {
+        "close": {
+          "file": "innerscene-crossover-selective.glb",
+          "expected": {
+            "triangles": 27002,
+            "surfaces": 10,
+            "bytes": 1080584,
+            "sha256": "35F9185AFFC226448E22582B34F6427202B713903FB91C028E63E15B385A5401"
+          }
+        },
+        "far": {
+          "file": "innerscene-crossover-far.glb",
+          "expected": {
+            "triangles": 11579,
+            "surfaces": 9,
+            "bytes": 451988,
+            "sha256": "BE9EB2D859E2107497D6A0873F0FD2311690966668D07378FFCA5BC43AF2464B"
+          }
+        }
+      },
+      "vendored_source": "source/cars/sage-five-door-crossover-suv.glb"
+    }
+  ]
+}

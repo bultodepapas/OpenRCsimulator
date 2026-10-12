@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok a deterministic seed represents each broadleaf habit
+ok habit 0 stays inside the previous foliage envelope
+ok habit 0 keeps its single bounded mode-3 crown part
+ok habit 0 rebuild is byte-identical
+ok habit 0 crown normals remain finite and follow the deformed surface
+ok habit 1 stays inside the previous foliage envelope
+ok habit 1 keeps its single bounded mode-3 crown part
+ok habit 1 rebuild is byte-identical
+ok habit 1 crown normals remain finite and follow the deformed surface
+ok habit 2 stays inside the previous foliage envelope
+ok habit 2 keeps its single bounded mode-3 crown part
+ok habit 2 rebuild is byte-identical
+ok habit 2 crown normals remain finite and follow the deformed surface
+ok all three crown habits retain distinct geometry budgets
+ok crown construction remains seed-varied
+ok all 256 sampled trees keep the measured XZ, height and mode-3 wind envelope
+ok plant mesh uses 24 triangles and stays in the same small-plant budget
+ok petals remain species-colour marked while stems and leaves use vertex colour
+ok plant stays below 0.45 m with ground contact
+ok plant foliage remains inside its previous half-metre footprint
+ok flower positions remain grouped into the same sixty-metre chunks
+ok flower chunks still share one draw mesh and the existing sway AABB
+ok prefab flower border replaces its mound with six visible stems and petals
+ok prefab flower cluster stays within its old 154-triangle budget
+ok prefab flower cluster stays inside the old 0.62 m footprint and 0.42 m height
+ok flower stems touch the ground without a broad green base mound
+ok vegetation keeps ten moving crowns/six shrub tips; people move in their population batch
+ok 47 nonempty static cells remain after cars move to MultiMeshes
+ok wildflower instance population is unchanged
+ok whole scenery stays below the approved LU-21 triangle ceiling
+     LU-17 staged scenery triangles: 539383 (limit 600000)
+LU-17 vegetation: 30 checks, 0 failures

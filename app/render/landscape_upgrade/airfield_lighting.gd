@@ -415,6 +415,7 @@ func _window_and_lamp_glow(parent: Node3D) -> int:
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.mesh = quad
+	multimesh.use_custom_data = true
 	multimesh.instance_count = WINDOW_SPECS.size() + 2
 	for i in WINDOW_SPECS.size():
 		var spec: Dictionary = WINDOW_SPECS[i]
@@ -424,6 +425,7 @@ func _window_and_lamp_glow(parent: Node3D) -> int:
 		var scaled := orientation * Basis.from_scale(Vector3(size.x - 0.14, size.y - 0.14, 1.0))
 		var center: Vector3 = spec.center + outward * 0.145
 		multimesh.set_instance_transform(i, Transform3D(scaled, center))
+		multimesh.set_instance_custom_data(i, Color(1.0, 0.0, 0.0, 0.0))
 	for i in 2:
 		var front := Basis(Vector3.UP, PI)
 		var center := Vector3(-4.18 if i == 0 else 4.18, 2.05, -3.02) + Vector3(0.0, 0.0, -0.13)
@@ -446,8 +448,10 @@ func _add_veranda_omnis(parent: Node3D) -> void:
 		omni.position = Vector3(side * 4.18, 1.95, -3.32)
 		omni.light_color = Color("#ffd0a0")
 		omni.light_energy = 0.032
-		omni.omni_range = 6.5
-		omni.omni_attenuation = 1.5
+		# LU-19: overlap the existing sconces across the entry and veranda edge without
+		# extra lights or a higher exposure cap. Authored visibility estimate, not lux data.
+		omni.omni_range = 8.0
+		omni.omni_attenuation = 1.1
 		omni.light_specular = 0.05
 		omni.shadow_enabled = false
 		omni.set_meta("lu03_base_energy", omni.light_energy)

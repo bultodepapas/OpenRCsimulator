@@ -40,10 +40,17 @@ vec3 untiled(vec2 uv) {
 }
 
 // Large-scale tone in [−1, 1] and a dry-patch weight in [0, 1].
+// LU-18: procedural octaves have no mip chain. Integrate unresolved cells toward their mean
+// to prevent distant grazing-angle horizontal bands and shimmer; close detail stays unchanged.
+float filtered_vnoise(vec2 p) {
+	float footprint = max(length(dFdx(p)), length(dFdy(p)));
+	return mix(vnoise(p), 0.5, smoothstep(0.25, 0.9, footprint));
+}
+
 vec2 macro(vec2 p) {
 	// The spike's weights (report 01 §4): the 37 m octave carries the visible variation in the pilot's far band.
-	float m = 0.5 * vnoise(p / 37.0) + 0.35 * vnoise(p / 160.0 + 17.0) + 0.15 * vnoise(p / 9.0 + 5.0);
-	float dry = smoothstep(0.55, 0.85, vnoise(p / 60.0 + 3.0));
+	float m = 0.5 * filtered_vnoise(p / 37.0) + 0.35 * filtered_vnoise(p / 160.0 + 17.0) + 0.15 * filtered_vnoise(p / 9.0 + 5.0);
+	float dry = smoothstep(0.55, 0.85, filtered_vnoise(p / 60.0 + 3.0));
 	return vec2(m * 2.0 - 1.0, dry);
 }
 

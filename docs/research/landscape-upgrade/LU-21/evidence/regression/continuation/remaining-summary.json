@@ -1,0 +1,1279 @@
+[
+  {
+    "test": "test_attached_flow.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.098847630986711
+  },
+  {
+    "test": "test_avanti_handling.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.383652811986394
+  },
+  {
+    "test": "test_build_info.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.16028186501353048
+  },
+  {
+    "test": "test_checkpoint.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.1897426870127674
+  },
+  {
+    "test": "test_checkpoint_integrity.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.24895404401468113
+  },
+  {
+    "test": "test_contact_policy.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 4.250127559003886
+  },
+  {
+    "test": "test_continuous_state.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.24795857002027333
+  },
+  {
+    "test": "test_controls.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.085979989002226
+  },
+  {
+    "test": "test_controls_reference.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15288973599672318
+  },
+  {
+    "test": "test_crash.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.579340909025632
+  },
+  {
+    "test": "test_crash_audio.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.1662188110058196
+  },
+  {
+    "test": "test_crash_effects.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.174883553001564
+  },
+  {
+    "test": "test_crash_integration.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 10.149165753013222
+  },
+  {
+    "test": "test_crash_pose.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.001554306974867
+  },
+  {
+    "test": "test_crash_severity.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15515306702582166
+  },
+  {
+    "test": "test_crash_snapshot.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.7198018089984544
+  },
+  {
+    "test": "test_crash_wreck.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 35.22011323799961
+  },
+  {
+    "test": "test_damping_regimes.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.4358172329957597
+  },
+  {
+    "test": "test_downwash_lag.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.0210192819940858
+  },
+  {
+    "test": "test_dynamics.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.4371681429911405
+  },
+  {
+    "test": "test_e2e_input.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 10.153870233014459
+  },
+  {
+    "test": "test_e2e_radio.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.4286787419987377
+  },
+  {
+    "test": "test_electric_battery_data.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6267081589903682
+  },
+  {
+    "test": "test_electric_battery_session.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 18.758317847008584
+  },
+  {
+    "test": "test_electric_battery_step.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.25093467498663813
+  },
+  {
+    "test": "test_electric_data.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6260552440071478
+  },
+  {
+    "test": "test_electric_dynamics.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.1549023640109226
+  },
+  {
+    "test": "test_electric_event_localization.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.5274139600223862
+  },
+  {
+    "test": "test_electric_input.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.091604062996339
+  },
+  {
+    "test": "test_electric_motor.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2524483559827786
+  },
+  {
+    "test": "test_electric_motor_compact.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15875524398870766
+  },
+  {
+    "test": "test_electric_propulsion.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8180985819781199
+  },
+  {
+    "test": "test_electric_runway.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 15.50995901497663
+  },
+  {
+    "test": "test_electric_session.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 6.858924307016423
+  },
+  {
+    "test": "test_electric_stop.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15746773598948494
+  },
+  {
+    "test": "test_electric_supply.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.1577389189915266
+  },
+  {
+    "test": "test_engine_audio.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.646997098985594
+  },
+  {
+    "test": "test_engine_sound.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15602706000208855
+  },
+  {
+    "test": "test_engine_voice.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.24717149199568667
+  },
+  {
+    "test": "test_envelope.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.768906623998191
+  },
+  {
+    "test": "test_envelope_integrity.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.9042865500086918
+  },
+  {
+    "test": "test_extra_handling.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.087419329007389
+  },
+  {
+    "test": "test_extra_installation.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.5369089390151203
+  },
+  {
+    "test": "test_far_forest.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.25020873299217783
+  },
+  {
+    "test": "test_field_integration.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.137690842995653
+  },
+  {
+    "test": "test_field_loader.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6214737039990723
+  },
+  {
+    "test": "test_field_projected_shadows.gd",
+    "exit": 1,
+    "failed": true,
+    "seconds": 1.3723518080078065
+  },
+  {
+    "test": "test_field_surfaces.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.8605758089979645
+  },
+  {
+    "test": "test_flight_cue_shadows.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2490751869918313
+  },
+  {
+    "test": "test_flightline_barrier.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2535997000231873
+  },
+  {
+    "test": "test_flightline_barrier_data.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2548987700138241
+  },
+  {
+    "test": "test_frame_samples.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15784985999925993
+  },
+  {
+    "test": "test_frames.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15825903799850494
+  },
+  {
+    "test": "test_golden.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.0196955330029596
+  },
+  {
+    "test": "test_ground_contact.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.3688994620169979
+  },
+  {
+    "test": "test_ground_friction.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 10.667926136986353
+  },
+  {
+    "test": "test_ground_physics.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.5302619489957578
+  },
+  {
+    "test": "test_ground_start_integrity.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.7179502740036696
+  },
+  {
+    "test": "test_ground_stiction.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 18.48918750899611
+  },
+  {
+    "test": "test_ground_surfaces.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.190973089018371
+  },
+  {
+    "test": "test_ground_terrain.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.3874891089799348
+  },
+  {
+    "test": "test_gyro.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.5598280970007181
+  },
+  {
+    "test": "test_handling.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.231820360000711
+  },
+  {
+    "test": "test_horizon.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8148449510044884
+  },
+  {
+    "test": "test_hull_crossing.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.7157006810011808
+  },
+  {
+    "test": "test_induced_integrity.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.9043881119869184
+  },
+  {
+    "test": "test_input_report.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.1615218420047313
+  },
+  {
+    "test": "test_input_report_cli.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 11.689546181005426
+  },
+  {
+    "test": "test_input_report_e2e.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8144649129826576
+  },
+  {
+    "test": "test_integrator.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8075462039851118
+  },
+  {
+    "test": "test_landing_maneuver.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 54.86513037601253
+  },
+  {
+    "test": "test_landing_variations.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 27.9637211090012
+  },
+  {
+    "test": "test_landscape_architecture.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2573775999771897
+  },
+  {
+    "test": "test_landscape_checkpoint.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.7243577870249283
+  },
+  {
+    "test": "test_landscape_collision.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.5301529740099795
+  },
+  {
+    "test": "test_landscape_collision_coverage.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.4397186140122358
+  },
+  {
+    "test": "test_landscape_collision_oracle.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.3924620669858996
+  },
+  {
+    "test": "test_landscape_collision_session.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8104723999858834
+  },
+  {
+    "test": "test_landscape_collision_setup.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.9994280370010529
+  },
+  {
+    "test": "test_landscape_collision_support.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2546195189934224
+  },
+  {
+    "test": "test_landscape_collision_world.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.0948019119969103
+  },
+  {
+    "test": "test_landscape_gravel.gd",
+    "exit": 1,
+    "failed": true,
+    "seconds": 0.6231230339908507
+  },
+  {
+    "test": "test_landscape_ground_lu18.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.1802604400145356
+  },
+  {
+    "test": "test_landscape_horizon.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.2019634780008346
+  },
+  {
+    "test": "test_landscape_lighting.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.34531408798648044
+  },
+  {
+    "test": "test_landscape_marker_optics.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.24947529399651103
+  },
+  {
+    "test": "test_landscape_population.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6265515080012847
+  },
+  {
+    "test": "test_landscape_population_assets.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8111396399908699
+  },
+  {
+    "test": "test_landscape_runtime.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.5828998630167916
+  },
+  {
+    "test": "test_landscape_scenery_eligibility.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.4362199640017934
+  },
+  {
+    "test": "test_landscape_scenery_grass_mask.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.9252260090142954
+  },
+  {
+    "test": "test_landscape_tree_bounds.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.0182404039951507
+  },
+  {
+    "test": "test_landscape_twilight.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.16935208599898033
+  },
+  {
+    "test": "test_landscape_vegetation.gd",
+    "exit": 1,
+    "failed": true,
+    "seconds": 2.2152510049927514
+  },
+  {
+    "test": "test_latency_patch.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.653823058004491
+  },
+  {
+    "test": "test_latency_patch_cli.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 20.80698225798551
+  },
+  {
+    "test": "test_latency_patch_route.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.238770761003252
+  },
+  {
+    "test": "test_math3d.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15585648201522417
+  },
+  {
+    "test": "test_modes.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8122173399897292
+  },
+  {
+    "test": "test_near_grass.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.1312130599981174
+  },
+  {
+    "test": "test_p51_envelope.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 14.020053571992321
+  },
+  {
+    "test": "test_p51_ground.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 10.762912512989715
+  },
+  {
+    "test": "test_p51_handling.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 7.228606296994258
+  },
+  {
+    "test": "test_physical_envelope.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6216715089976788
+  },
+  {
+    "test": "test_pilot_aids.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.4788498349953443
+  },
+  {
+    "test": "test_pilot_station.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.7422727969824336
+  },
+  {
+    "test": "test_pilot_station_data.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2488535690063145
+  },
+  {
+    "test": "test_projected_shadow.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.089368065004237
+  },
+  {
+    "test": "test_propeller_wake.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.43910523800877854
+  },
+  {
+    "test": "test_propulsion.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.34563836597953923
+  },
+  {
+    "test": "test_propulsion_scalar.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.0004036939935759
+  },
+  {
+    "test": "test_pullup_invariants.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.44145428901538253
+  },
+  {
+    "test": "test_rc_axis_history.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2469107760116458
+  },
+  {
+    "test": "test_rc_calibration.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.1590416829858441
+  },
+  {
+    "test": "test_rc_input.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.1563522969954647
+  },
+  {
+    "test": "test_rc_profile_validation.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2542603999900166
+  },
+  {
+    "test": "test_rc_rearm.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15794359901337884
+  },
+  {
+    "test": "test_replay_integrity.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.098650044994429
+  },
+  {
+    "test": "test_replay_policy.gd",
+    "exit": 1,
+    "failed": true,
+    "seconds": 3.3224565139971673
+  },
+  {
+    "test": "test_rigid_body.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.3467169039940927
+  },
+  {
+    "test": "test_rk_stage_time.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.25367703899974003
+  },
+  {
+    "test": "test_rotor_coupling.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.43343268998432904
+  },
+  {
+    "test": "test_rudder_authority.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 4.623849483003141
+  },
+  {
+    "test": "test_runway_checkpoint_metadata.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8169331130047794
+  },
+  {
+    "test": "test_runway_start.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.5801565519941505
+  },
+  {
+    "test": "test_scenery_ambience.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.085697339993203
+  },
+  {
+    "test": "test_scenery_build.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.1081246589892544
+  },
+  {
+    "test": "test_scenery_ground_lu08.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.34036328201182187
+  },
+  {
+    "test": "test_scenery_loader.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6245529139996506
+  },
+  {
+    "test": "test_scenery_scenario.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.298870779981371
+  },
+  {
+    "test": "test_scenery_trace.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 9.549388254003134
+  },
+  {
+    "test": "test_servo.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.7180492829938885
+  },
+  {
+    "test": "test_session_guards.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.7240465070062783
+  },
+  {
+    "test": "test_shader_clock.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.1659976210212335
+  },
+  {
+    "test": "test_shaft_coupled.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.5576587840041611
+  },
+  {
+    "test": "test_shaft_data.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.83830857501016
+  },
+  {
+    "test": "test_shaft_equilibrium.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.43768738699145615
+  },
+  {
+    "test": "test_shaft_refinement.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.110511986014899
+  },
+  {
+    "test": "test_simulation.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15946644498035312
+  },
+  {
+    "test": "test_slipstream_downwash.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8143000600102823
+  },
+  {
+    "test": "test_slipstream_scalar.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.3783878929971252
+  },
+  {
+    "test": "test_soundscape.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.4409271140175406
+  },
+  {
+    "test": "test_spin.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.203956081997603
+  },
+  {
+    "test": "test_stall_solver.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.2727847709902562
+  },
+  {
+    "test": "test_start_choice.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.9047343609854579
+  },
+  {
+    "test": "test_strip_induced.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 12.897209384012967
+  },
+  {
+    "test": "test_swirl_accuracy.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.4604217140004039
+  },
+  {
+    "test": "test_swirl_optimization.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.9968413889873773
+  },
+  {
+    "test": "test_swirl_torque.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.5349985899811145
+  },
+  {
+    "test": "test_tail_downwash.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.33988824699190445
+  },
+  {
+    "test": "test_takeoff_roll.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 4.53648934001103
+  },
+  {
+    "test": "test_time_of_day_checkpoint.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.5204409529978875
+  },
+  {
+    "test": "test_time_of_day_checkpoint_v2.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2541137390071526
+  },
+  {
+    "test": "test_time_of_day_clock.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.25262120401021093
+  },
+  {
+    "test": "test_time_of_day_config.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2494629609864205
+  },
+  {
+    "test": "test_time_of_day_edit.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 6.864028240990592
+  },
+  {
+    "test": "test_time_of_day_render.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.1893871779902838
+  },
+  {
+    "test": "test_time_of_day_render_update.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.236859564000042
+  },
+  {
+    "test": "test_time_of_day_scenery_update.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.367235787998652
+  },
+  {
+    "test": "test_time_of_day_session.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.489849757985212
+  },
+  {
+    "test": "test_time_of_day_solar.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15929223099374212
+  },
+  {
+    "test": "test_time_of_day_timeline.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2509468419884797
+  },
+  {
+    "test": "test_touchdown.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.717369382007746
+  },
+  {
+    "test": "test_trace.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.726505164988339
+  },
+  {
+    "test": "test_trace_metadata.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.9045126900018658
+  },
+  {
+    "test": "test_tree_assets.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.25052674300968647
+  },
+  {
+    "test": "test_tree_wind.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.25238481297856197
+  },
+  {
+    "test": "test_treeline.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 4.728615992004052
+  },
+  {
+    "test": "test_treeline_data.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2503044059849344
+  },
+  {
+    "test": "test_trim.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.1834163489984348
+  },
+  {
+    "test": "test_trim_density.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.6231130539963488
+  },
+  {
+    "test": "test_trim_integrity.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.43735294599900953
+  },
+  {
+    "test": "test_turbine.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.34510893499827944
+  },
+  {
+    "test": "test_turbulence_flight.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.924701809999533
+  },
+  {
+    "test": "test_ui_aircraft.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 4.814384944009362
+  },
+  {
+    "test": "test_ui_atmosphere.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 9.191795632010326
+  },
+  {
+    "test": "test_ui_field_world_time_of_day.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.56172424799297
+  },
+  {
+    "test": "test_ui_flight_capture.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.479230880009709
+  },
+  {
+    "test": "test_ui_help.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 11.256842620001407
+  },
+  {
+    "test": "test_ui_home.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.7151040509925224
+  },
+  {
+    "test": "test_ui_input.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.3117810200201347
+  },
+  {
+    "test": "test_ui_language.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 5.749107004987309
+  },
+  {
+    "test": "test_ui_pause.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 24.972151608992135
+  },
+  {
+    "test": "test_ui_runway.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 15.741909083997598
+  },
+  {
+    "test": "test_ui_screen_stack.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 13.384716975007905
+  },
+  {
+    "test": "test_ui_time_of_day.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 12.452957106987014
+  },
+  {
+    "test": "test_ui_time_of_day_pause.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 6.318346799991559
+  },
+  {
+    "test": "test_ui_turbulence.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 6.962357276992407
+  },
+  {
+    "test": "test_ui_weather.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 6.872081389999948
+  },
+  {
+    "test": "test_ui_weather_sliders.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.22220752100111
+  },
+  {
+    "test": "test_visual_checkpoint.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2495676279941108
+  },
+  {
+    "test": "test_visual_evidence.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15555901499465108
+  },
+  {
+    "test": "test_visual_timeline.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.24971899899537675
+  },
+  {
+    "test": "test_wash_profile.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.8082233989844099
+  },
+  {
+    "test": "test_wash_transport.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.3685482489818241
+  },
+  {
+    "test": "test_wheel_session.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.9076869910059031
+  },
+  {
+    "test": "test_wildlife.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.349084599991329
+  },
+  {
+    "test": "test_wind_field.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.16175586602184922
+  },
+  {
+    "test": "test_wind_flight.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.6075674970052205
+  },
+  {
+    "test": "test_wind_hud.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.276000889018178
+  },
+  {
+    "test": "test_wind_trace.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.998672125977464
+  },
+  {
+    "test": "test_wind_turbulence.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.7211278000031598
+  },
+  {
+    "test": "test_windsock.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.5572297860053368
+  },
+  {
+    "test": "test_windsock_data.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.24820280299172737
+  },
+  {
+    "test": "test_wing_polar.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.718440587981604
+  },
+  {
+    "test": "test_wing_polar_session.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 1.8301159489783458
+  },
+  {
+    "test": "test_world_ephemeris.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.15451010499964468
+  },
+  {
+    "test": "test_world_field_lights.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 3.976405935973162
+  },
+  {
+    "test": "test_world_flow.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 2.959186412015697
+  },
+  {
+    "test": "test_world_sky.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2578024599933997
+  },
+  {
+    "test": "test_world_stars.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.2590815649891738
+  },
+  {
+    "test": "test_yaw_damping.gd",
+    "exit": 0,
+    "failed": false,
+    "seconds": 0.3508705499989446
+  },
+  {
+    "test": "app/test.sh post-GDScript tail",
+    "exit": 0,
+    "failed": false
+  }
+]

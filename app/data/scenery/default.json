@@ -441,6 +441,62 @@
    }
   },
   {
+   "id": "worn-parking-door",
+   "type": "track",
+   "zone": "countryside",
+   "surface": "worn",
+   "collides": false,
+   "width": {
+    "value": 0.9,
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Single-person worn-grass connector"
+   },
+   "points": {
+    "value": [
+     [-33.0, -34.0],
+     [-30.0, -25.0],
+     [-26.0, -16.0],
+     [-23.0, -12.0],
+     [-20.0, -10.0],
+     [-18.0, -12.0],
+     [-13.8, -12.0],
+     [-13.8, -0.25],
+     [-19.0, -0.25]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Worn pedestrian path from the car park to the pavilion's central door"
+   }
+  },
+  {
+   "id": "worn-door-pits",
+   "type": "track",
+   "zone": "countryside",
+   "surface": "worn",
+   "collides": false,
+   "width": {
+    "value": 0.9,
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Single-person worn-grass connector"
+   },
+   "points": {
+    "value": [
+     [-19.0, -0.25],
+     [-18.5, 3.0],
+     [-17.5, 6.0],
+     [-15.0, 8.0],
+     [-13.8, 9.0],
+     [-13.8, 31.0],
+     [-15.5, 31.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Worn pedestrian path around the flower border to the east shelter's open front bay"
+   }
+  },
+  {
    "id": "hay-bales",
    "type": "instances",
    "zone": "flight_box",

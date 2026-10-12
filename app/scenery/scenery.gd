@@ -10,8 +10,11 @@ const FieldLoader = preload("res://data/field_loader.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
 const Models = preload("res://scenery/models.gd")
+const Population = preload("res://scenery/population.gd")
+const SupportSurfaces = preload("res://scenery/support_surfaces.gd")
 const Palette = preload("res://scenery/palette.gd")
 const GroundFeatures = preload("res://scenery/ground_features.gd")
+const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const Flowers = preload("res://scenery/flowers.gd")
 const Ambience = preload("res://scenery/ambience.gd")
 const Birds = preload("res://scenery/birds.gd")
@@ -212,6 +215,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	var t0 := Time.get_ticks_usec()
 	var root := Node3D.new()
 	root.name = "Scenery"
+	root.set_meta("grass_exclusions", GrassMask.footprints(scenery))
 	var theme: String = opts.theme if Palette.THEMES.has(opts.theme) else scenery.theme
 	var quality: String = opts.quality if QUALITIES.has(opts.quality) else "high"
 	var opaque := opaque_material()
@@ -221,10 +225,14 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	shade.albedo_color.a = shadow_strength
 	var pilot := Vector2(float(field.pilot.north), float(field.pilot.east))
 	var cells := {}
+	var population_batches := {}
+	var support_surfaces := SupportSurfaces.build(scenery)
 	var ground_cells := {}
 	var gravel := ShaderMaterial.new()
 	gravel.shader = GRAVEL_SHADER
 	var shadow_cells := {}
+	var population_contact_kit := MeshKit.new()
+	var population_shadow_groups: Array[Dictionary] = []
 	var shadow_groups: Dictionary = {}
 	var stats := {instances = 0, skipped = 0, shadows = 0, motion = 0, flowers = 0, fleet = 0, theme = theme, quality = quality}
 	var motion_parent := Node3D.new()
@@ -242,8 +250,15 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						stats.skipped += 1
 						continue
 					var xf := _placement_xf(pl.north, pl.east, pl.heading)
-					var kit := _kit(cells, _cell(pl.north, pl.east))
-					if Prefabs.CATALOG.has(prefab):
+					var kit: MeshKit = null
+					if not Population.handles(prefab):
+						kit = _kit(cells, _cell(pl.north, pl.east))
+					if Population.handles(prefab):
+						var foot_height := SupportSurfaces.height_at(pl.north, pl.east, support_surfaces) if prefab.begins_with("person_") else 0.0
+						if prefab == "person_sitting":
+							foot_height += SupportSurfaces.SEATED_OFFSET_M
+						Population.queue(population_batches, prefab, xf, pl.seed, spec.size, foot_height)
+					elif Prefabs.CATALOG.has(prefab):
 						kit.xf = xf
 						var moving: Array = Prefabs.build(prefab, kit, pl.seed, theme)
 						kit.xf = Transform3D.IDENTITY
@@ -261,12 +276,26 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					var mode: Variant = spec.get("shadow", false)
 					if mode != false and Vector2(pl.north, pl.east).distance_to(pilot) <= SHADOW_RANGE_M:
 						var shadow_cell: Vector2i = _cell(pl.north, pl.east)
-						if not shadow_groups.has(shadow_cell):
-							shadow_groups[shadow_cell] = []
 						var shadow_mode: String = "solid" if mode == true else str(mode)
-						shadow_groups[shadow_cell].append({transform = xf, size = spec.size, mode = shadow_mode})
+						var shadow_xf := xf
+						if prefab.begins_with("car_"):
+							shadow_mode = "vehicle"
+						elif prefab.begins_with("person_"):
+							shadow_mode = "person"
+							shadow_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
+						var shadow_source := {transform = shadow_xf, size = spec.size, mode = shadow_mode}
+						var population_shadow := shadow_mode == "person" or shadow_mode == "vehicle"
+						if population_shadow:
+							# These props live in MultiMeshes, outside the static cell mask.
+							# Keep their compact contact/hull shadow in its own batch.
+							population_shadow_groups.append(shadow_source)
+						else:
+							if not shadow_groups.has(shadow_cell):
+								shadow_groups[shadow_cell] = []
+							shadow_groups[shadow_cell].append(shadow_source)
 						if shadow_strength > 0.0:
-							GroundFeatures.contact_shadow(_kit(shadow_cells, shadow_cell), xf, spec.size, shadow_mode, sun)
+							var contact_kit: MeshKit = population_contact_kit if population_shadow else _kit(shadow_cells, shadow_cell)
+							GroundFeatures.contact_shadow(contact_kit, shadow_xf, spec.size, shadow_mode, sun)
 							stats.shadows += 1
 			"fleet": # baked snapshots (tools/scenery/bake_fleet.gd): merged into the shelter's cell, ~5 k triangles each
 				for pl: Dictionary in group.placements:
@@ -310,6 +339,11 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					root.add_child(node)
 					stats.flowers += node.multimesh.instance_count
 		timing[group.type] = float(timing.get(group.type, 0.0)) + (Time.get_ticks_usec() - g0) / 1000.0
+	var population := Population.build(population_batches)
+	root.add_child(population)
+	stats.population = population.get_meta("instances", 0)
+	stats.population_triangles = population.get_meta("triangles", 0)
+	stats.moving_people = population.get_meta("moving_people", 0)
 	var m0 := Time.get_ticks_usec()
 	var keys := cells.keys()
 	keys.sort()
@@ -333,6 +367,13 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(mi)
 		shadow_nodes[key] = mi
+	var population_shadow_node: MeshInstance3D = null
+	if not population_shadow_groups.is_empty():
+		population_shadow_node = MeshInstance3D.new()
+		population_shadow_node.name = "PopulationContacts"
+		population_shadow_node.mesh = population_contact_kit.to_mesh(shade)
+		population_shadow_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		root.add_child(population_shadow_node)
 	if opts.get("audio", false):
 		root.add_child(Ambience.player())
 	if opts.get("birds", false):
@@ -345,6 +386,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	root.set_meta("directional_shadow_material", shade)
 	root.set_meta("directional_shadow_groups", shadow_groups)
 	root.set_meta("directional_shadow_nodes", shadow_nodes)
+	root.set_meta("directional_population_shadow_groups", population_shadow_groups)
+	root.set_meta("directional_population_shadow_node", population_shadow_node)
 	root.set_meta("directional_shadow_signature", _shadow_signature(sun, shadow_strength))
 	root.set_meta("directional_shadow_strength", shadow_strength)
 	return root
@@ -360,6 +403,8 @@ static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictio
 	var material: StandardMaterial3D = root.get_meta("directional_shadow_material") as StandardMaterial3D
 	var nodes: Dictionary = root.get_meta("directional_shadow_nodes")
 	var groups: Dictionary = root.get_meta("directional_shadow_groups")
+	var population_groups: Array = root.get_meta("directional_population_shadow_groups", [])
+	var population_node: MeshInstance3D = root.get_meta("directional_population_shadow_node") as MeshInstance3D
 	var sun: Vector3 = Atmosphere.sun_direction(lighting)
 	var strength: float = Atmosphere.shadow_strength(lighting)
 	var signature: Dictionary = _shadow_signature(sun, strength)
@@ -377,6 +422,13 @@ static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictio
 					GroundFeatures.contact_shadow(kit, source.transform, source.size, source.mode, sun)
 			triangles += kit.triangle_count()
 			prepared_batches.append({node = nodes[key], mesh = kit.to_mesh(material)})
+		if population_node != null:
+			var population_kit := MeshKit.new()
+			if strength > 0.0:
+				for source: Dictionary in population_groups:
+					GroundFeatures.contact_shadow(population_kit, source.transform, source.size, source.mode, sun)
+			triangles += population_kit.triangle_count()
+			prepared_batches.append({node = population_node, mesh = population_kit.to_mesh(material)})
 	return {
 		ok = true,
 		changed = geometry_changed or strength_changed,

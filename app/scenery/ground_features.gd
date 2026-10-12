@@ -16,7 +16,9 @@ const PATCH_TILE_SIZE_M := 1.1
 const PATCH_TILE_JITTER_M := 0.12
 const PATCH_AGGREGATE_TILE_M := 0.36
 const PATCH_AGGREGATE_RATE := 0.05
-const PATCH_EDGE_WOBBLE_M := 0.16
+const PATCH_EDGE_WOBBLE_M := 0.28
+const GRAVEL_SHOULDER_M := 0.55
+const PATCH_SHOULDER_M := 0.9
 const PATCH_FIELD_GRASS_COLOR := Color("#657545") # matches Spec.GRASS for a feathered shoulder edge
 
 
@@ -26,20 +28,66 @@ const PATCH_FIELD_GRASS_COLOR := Color("#657545") # matches Spec.GRASS for a fea
 static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: String, theme: String) -> void:
 	var dirt := Palette.col("dirt") if surface == "dirt" else Palette.col("gravel")
 	var crown := Palette.vegetation(Palette.col("worn_grass"), theme)
-	# lanes across the width (fractions of the half-width): edge, rut, crown, rut, edge
-	var lanes := [[-1.0, -0.62, dirt.lightened(0.06)], [-0.62, -0.22, dirt], [-0.22, 0.22, crown], [0.22, 0.62, dirt], [0.62, 1.0, dirt.lightened(0.06)]]
-	var offs := _miter_normals(pts)
-	for i in pts.size() - 1:
+	var route := _round_track_corners(pts, width, 0.994 if surface == "worn" else 0.94)
+	var lanes: Array
+	if surface == "worn":
+		# A quiet, single pedestrian tread. Its lower lift lets an existing slab or gravel apron cover the join.
+		var edge := crown.lerp(PATCH_FIELD_GRASS_COLOR, 0.28)
+		var tread := crown.darkened(0.06)
+		lanes = [[-1.0, -0.62, edge], [-0.62, 0.62, tread], [0.62, 1.0, edge]]
+	else:
+		# lanes across the width (fractions of the half-width): edge, rut, crown, rut, edge
+		lanes = [[-1.0, -0.62, dirt.lightened(0.06)], [-0.62, -0.22, dirt], [-0.22, 0.22, crown], [0.22, 0.62, dirt], [0.62, 1.0, dirt.lightened(0.06)]]
+	var offs := _miter_normals(route)
+	var lift := LIFT_WORN if surface == "worn" else LIFT_SURFACE
+	for i in route.size() - 1:
 		for lane: Array in lanes:
 			var a0: float = lane[0]
 			var a1: float = lane[1]
 			var c: Color = lane[2]
 			var tone := 0.94 + 0.1 * Palette.hash01(i, int(a0 * 10.0))
-			var p00 := pts[i] + offs[i] * a0 * width * 0.5
-			var p01 := pts[i] + offs[i] * a1 * width * 0.5
-			var p10 := pts[i + 1] + offs[i + 1] * a0 * width * 0.5
-			var p11 := pts[i + 1] + offs[i + 1] * a1 * width * 0.5
-			_flat_quad(k, p00, p10, p11, p01, LIFT_SURFACE, c * Color(tone, tone, tone))
+			var p00 := route[i] + offs[i] * a0 * width * 0.5
+			var p01 := route[i] + offs[i] * a1 * width * 0.5
+			var p10 := route[i + 1] + offs[i + 1] * a0 * width * 0.5
+			var p11 := route[i + 1] + offs[i + 1] * a1 * width * 0.5
+			_flat_quad(k, p00, p10, p11, p01, lift, c * Color(tone, tone, tone))
+
+
+## Clip sharp polyline corners with a bounded quadratic arc; endpoints and route intent stay fixed.
+## `straight_dot` selects the minimum heading change that merits rounding without trig or frame state.
+static func _round_track_corners(pts: PackedVector2Array, width: float, straight_dot: float) -> PackedVector2Array:
+	if pts.size() < 3 or width <= 0.0:
+		return pts
+	var out := PackedVector2Array([pts[0]])
+	for i in range(1, pts.size() - 1):
+		var corner := pts[i]
+		var incoming_delta := corner - pts[i - 1]
+		var outgoing_delta := pts[i + 1] - corner
+		var incoming_length := incoming_delta.length()
+		var outgoing_length := outgoing_delta.length()
+		if incoming_length <= 1e-5 or outgoing_length <= 1e-5:
+			continue
+		var incoming := incoming_delta / incoming_length
+		var outgoing := outgoing_delta / outgoing_length
+		var turn_dot := incoming.dot(outgoing)
+		if turn_dot >= straight_dot or turn_dot <= -0.96:
+			out.append(corner)
+			continue
+		var cut := minf(width * 2.5, minf(incoming_length, outgoing_length) * 0.25)
+		if cut <= 0.01:
+			out.append(corner)
+			continue
+		var entry := corner - incoming * cut
+		var exit := corner + outgoing * cut
+		if out[out.size() - 1].distance_squared_to(entry) > 1e-10:
+			out.append(entry)
+		for step in range(1, 4):
+			var t := float(step) / 4.0
+			var one_minus_t := 1.0 - t
+			out.append(entry * (one_minus_t * one_minus_t) + corner * (2.0 * one_minus_t * t) + exit * (t * t))
+		out.append(exit)
+	out.append(pts[pts.size() - 1])
+	return out
 
 
 ## Per-point offset directions with miter scaling, so consecutive segments share their joint edge exactly.
@@ -73,24 +121,29 @@ static func patch(k: MeshKit, poly: PackedVector2Array, surface: String, theme: 
 	var worn := Palette.vegetation(Palette.col("worn_grass"), theme)
 	var base: Color = {"gravel": Palette.col("gravel"), "dirt": Palette.col("dirt"), "worn": worn}[surface]
 	var alt: Color = {"gravel": Palette.col("gravel_dark"), "dirt": Palette.col("dirt").darkened(0.12), "worn": worn.darkened(0.1)}[surface]
-	var ring := Geometry2D.offset_polygon(poly, 0.9, Geometry2D.JOIN_ROUND)
+	var shoulder := GRAVEL_SHOULDER_M if surface == "gravel" else PATCH_SHOULDER_M
+	var wobble := PATCH_EDGE_WOBBLE_M if surface == "gravel" else 0.16
+	var hash_scale := 0.65 if surface == "gravel" else 1.5
+	var ring := Geometry2D.offset_polygon(poly, shoulder, Geometry2D.JOIN_ROUND)
 	if not ring.is_empty():
-		var outline := _roughen_outline(ring[0], seed)
+		var outline := _roughen_outline(ring[0], seed, wobble, hash_scale)
 		# Start at the apron material, then feather toward the field grass across the worn shoulder.
-		_grid_fill(k, outline, LIFT_WORN, base, base.lerp(worn, 0.28), seed, poly, 0.9, PATCH_FIELD_GRASS_COLOR, 1.0, true, false, true)
-	_grid_fill(k, poly, LIFT_SURFACE, base, alt, seed + 1, poly, 1.15, worn, 0.48, false, surface == "gravel")
+		_grid_fill(k, outline, LIFT_WORN, base, base.lerp(worn, 0.28), seed, poly, shoulder, PATCH_FIELD_GRASS_COLOR, 1.0, true, false, true)
+	var inner_edge_width := 0.62 if surface == "gravel" else 1.15
+	var inner_edge_strength := 0.28 if surface == "gravel" else 0.48
+	_grid_fill(k, poly, LIFT_SURFACE, base, alt, seed + 1, poly, inner_edge_width, worn, inner_edge_strength, false, surface == "gravel")
 	if surface == "gravel":
 		# LU-12: mask only this patch; shared flat batches may also contain tracks.
 		# Fade the grain through the worn shoulder. No alpha blending or extra draw.
 		for i in range(first_vertex, k.verts.size()):
 			var p := Vector2(k.verts[i].x, k.verts[i].z)
-			var mask := 1.0 if Geometry2D.is_point_in_polygon(p, poly) else 1.0 - smoothstep(0.0, 0.9, _edge_distance(p, poly))
+			var mask := 1.0 if Geometry2D.is_point_in_polygon(p, poly) else 1.0 - smoothstep(0.0, shoulder, _edge_distance(p, poly))
 			k.cols[i].a = 1.0 - 0.5 * mask
 
 
 
 ## Break the outer edge gently, at a bounded fraction of the worn shoulder width.
-static func _roughen_outline(poly: PackedVector2Array, seed: int) -> PackedVector2Array:
+static func _roughen_outline(poly: PackedVector2Array, seed: int, wobble_m: float, hash_scale: float) -> PackedVector2Array:
 	var centre := Vector2.ZERO
 	for p: Vector2 in poly:
 		centre += p
@@ -102,8 +155,8 @@ static func _roughen_outline(poly: PackedVector2Array, seed: int) -> PackedVecto
 		var steps := maxi(1, int(ceil(a.distance_to(b) / PATCH_TILE_SIZE_M)))
 		for step in steps:
 			var p := a.lerp(b, float(step) / steps)
-			var tone := Palette.hash01(int(floor(p.x * 1.5)), int(floor(p.y * 1.5)), seed + 401)
-			out.append(p + (p - centre).normalized() * ((tone - 0.5) * PATCH_EDGE_WOBBLE_M * 2.0))
+			var tone := Palette.hash01(int(floor(p.x * hash_scale)), int(floor(p.y * hash_scale)), seed + 401)
+			out.append(p + (p - centre).normalized() * ((tone - 0.5) * wobble_m * 2.0))
 	return out
 
 
@@ -273,6 +326,31 @@ static func _tri_colored(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, ca: Col
 ## "solid" (the footprint swept along the sun to its height), "roof" (only the roof outline, cast from `size.y`),
 ## "crown" (a disc of the crown, cast from 70 % of the height, plus the trunk's line).
 static func contact_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: String, sun: Vector3) -> void:
+	if mode == "person":
+		# A bounded contact patch on the real support plane, including veranda slabs.
+		var center := Vector2(t.origin.x, t.origin.z)
+		var lift := t.origin.y + 0.004 if t.origin.y > 0.0 else LIFT_SHADOW
+		for step in 12:
+			var a := TAU * float(step) / 12.0
+			var b := TAU * float(step + 1) / 12.0
+			var da := t.basis * Vector3(cos(a) * size.x * 0.62, 0.0, sin(a) * size.z * 0.66)
+			var db := t.basis * Vector3(cos(b) * size.x * 0.62, 0.0, sin(b) * size.z * 0.66)
+			_emit_fill_triangle(k, center, center + Vector2(da.x, da.z), center + Vector2(db.x, db.z),
+				Color(0, 0, 0, 0.65), Color(0, 0, 0, 0), Color(0, 0, 0, 0), lift)
+		return
+	if mode == "vehicle":
+		# Estimated tire patches stay in the existing scene-local shadow batch.
+		for side: float in [-1.0, 1.0]:
+			for axle: float in [-1.0, 1.0]:
+				var center3 := t * Vector3(side * size.x * 0.37, 0.0, axle * size.z * 0.31)
+				var center2 := Vector2(center3.x, center3.z)
+				for step in 8:
+					var a := TAU * float(step) / 8.0
+					var b := TAU * float(step + 1) / 8.0
+					var da: Vector3 = t.basis * Vector3(cos(a) * 0.20, 0.0, sin(a) * 0.29)
+					var db: Vector3 = t.basis * Vector3(cos(b) * 0.20, 0.0, sin(b) * 0.29)
+					_shadow_tri(k, center2, center2 + Vector2(da.x, da.z), center2 + Vector2(db.x, db.z),
+						Color(0, 0, 0, 0.68), Color(0, 0, 0, 0), Color(0, 0, 0, 0))
 	var cast := shadow_cast(sun)
 	var hw := size.x * 0.5
 	var hl := size.z * 0.5

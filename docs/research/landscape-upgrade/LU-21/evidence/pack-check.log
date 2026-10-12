@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+pack asset sedan: true
+pack asset hatch: true
+pack asset crossover: true
+pack asset standing: true
+pack asset sitting: true
+pack asset pilot: true
+Population resources load and exported credits match source: true

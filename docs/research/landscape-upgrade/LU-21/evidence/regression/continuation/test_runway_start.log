@@ -1,0 +1,25 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads
+ok   threshold: west end + 3 m, runway centre line, heading east  { &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+ok   west-bound threshold: east end − 3 m, heading west
+ok   a field without a runway has no threshold
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Stik session on the field
+ok   runway start solves and resets
+ok   every wheel starts stuck, engine idling at closed throttle
+ok   anchors hold the idle thrust: Σ horizontal = 0 within 1e-9 N  thrust 2.6019 N, ground north 0.0008298385809887565 N, east -2.600880 N
+ok   solve converged (residual < 1e-11 in 6 iterations) and is the session's start
+ok   each wheel leans past its anchor by ≈ T/Σk = 2.446 mm (within 5 %)  2.4466–2.5429 mm
+ok   nose load 10.0865 N matches the world side-view moment balance 10.0878 N within 0.5 %
+ok   terrain-projected ground support balances weight and vertical thrust within 1e-9 N  support 28.365011864 N, expected 28.365011864 N
+ok   after 1 s: |v| < 1e-6 m/s  max 2.8940680239819715e-14 m/s
+ok   after 1 s: ΣN = m·g within 0.3 % (the idle thrust, tilted by the nose-down lean, adds 0.0679 N)  28.36067 N vs 28.29276 N
+ok   after 1 s: attitude within 0.1° of the solve  0°
+ok   10 s at idle: |v| and |ω| < 1e-6 throughout, moved < 1 µm, anchors unchanged  v 4.0903788504694736e-14, ω 6.965525811439827e-14, 0 m
+ok   west-bound runway start solves
+ok   gp-extra-300s-60 (no stiction data) is refused and keeps its normal flying start
+ok   p51d-mustang-120 (no stiction data) is refused and keeps its normal flying start
+19 checks, 0 failed
+runway start needs valid aircraft data, trim, and stiction gear
+runway start needs valid aircraft data, trim, and stiction gear

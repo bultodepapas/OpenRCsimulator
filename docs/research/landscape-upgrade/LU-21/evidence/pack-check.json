@@ -1,0 +1,53 @@
+{
+  "pack_bytes": 21664192,
+  "pack_sha256": "1f78891de761bc917fe18c326f07aaeb7b225b1279f0ac48333cd3a7c366747c",
+  "credits_sha256": "d0b04f5764be259db52475fabcb0843317f9e63049cfb390f7eba503cf1ddb66",
+  "models_loaded": 6,
+  "finite_trimmed_ticks": 60,
+  "note": "Manual Windows resource pack, not a release installer; loaded from an empty project.",
+  "commands": [
+    {
+      "label": "export-pack",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--export-pack",
+        "Windows",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\landscape-lu16\\population-review.pck"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "pack-check",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\landscape-lu16\\pack-empty",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\scenery\\population\\check_pack.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\landscape-lu16\\population-review.pck",
+        "d0b04f5764be259db52475fabcb0843317f9e63049cfb390f7eba503cf1ddb66"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "pack-flight",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\landscape-lu16\\pack-empty",
+        "--main-pack",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\landscape-lu16\\population-review.pck",
+        "--",
+        "--trace=C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\landscape-lu16\\pack-flight.csv",
+        "--t=0.25"
+      ],
+      "exit": 0
+    }
+  ]
+}

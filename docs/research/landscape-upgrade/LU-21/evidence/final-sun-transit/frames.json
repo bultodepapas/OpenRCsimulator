@@ -1,0 +1,496 @@
+{
+  "frames": [
+    {
+      "file": "glare_aircraft_000.png",
+      "sha256": "bd1a6e291928d294376260f199313e1823d30f441ad55064958ae32fc87b0272"
+    },
+    {
+      "file": "glare_aircraft_001.png",
+      "sha256": "67f0cec916d186db7c0ca7c329beb31a24c6354c03eda7354d089c801b72f834"
+    },
+    {
+      "file": "glare_aircraft_002.png",
+      "sha256": "45c6ed8e0c67934a27302c14383768199f4cd9cdeb449cfe163e1ecee900197e"
+    },
+    {
+      "file": "glare_aircraft_003.png",
+      "sha256": "995188cd3e7d6d6d6a1404cfb8612981f6bd0e77f1746ed95697b9b41a36360c"
+    },
+    {
+      "file": "glare_aircraft_004.png",
+      "sha256": "603a385c588ca21c56c898eb22dc033c311fe04d40df9cfa219206db2dc7b1d2"
+    },
+    {
+      "file": "glare_aircraft_005.png",
+      "sha256": "c3a0977dd51473b69bb9a04f641c249c2afd04bbf314d63248e4697932f79632"
+    },
+    {
+      "file": "glare_aircraft_006.png",
+      "sha256": "5bb3c72e2fddb994d38bd60d2730f265a8d7b02717217bbe6ad920653532dee8"
+    },
+    {
+      "file": "glare_aircraft_007.png",
+      "sha256": "415a8ea32836a9a684d3a3bbc79ed72e286d9fa9eaa226e1b7f18d53db6b703c"
+    },
+    {
+      "file": "glare_aircraft_008.png",
+      "sha256": "0f814554773dc67e8a5e8595acc4d6d8efb30cb10c2b8e611f9088dd6eb1f0c6"
+    },
+    {
+      "file": "glare_aircraft_009.png",
+      "sha256": "dd6234b5e575f35615f914feef9c3da02b07ee841b9317a0ac0492303ff4fa57"
+    },
+    {
+      "file": "glare_aircraft_010.png",
+      "sha256": "1e99897a0a24735e46c7f3618f783ba174b5fb7bcae5b92075883ab2222da6ea"
+    },
+    {
+      "file": "glare_aircraft_011.png",
+      "sha256": "f19eb4660040b480909febf3026a6e6836334741982bf6b7dd698b1bdcb1775a"
+    },
+    {
+      "file": "glare_aircraft_012.png",
+      "sha256": "dedb914007033fd855c89f6ab17b38f67781d52bd7307237083138241900c0f8"
+    },
+    {
+      "file": "glare_aircraft_013.png",
+      "sha256": "f88aabde250c721d64da6662a3210f46800a6e8de7933c19564aa176759b61ff"
+    },
+    {
+      "file": "glare_aircraft_014.png",
+      "sha256": "9e41c6a748e13232d1ca3f24b2b26409dfbb2cdf6e834ed953da42c1e29107e2"
+    },
+    {
+      "file": "glare_aircraft_015.png",
+      "sha256": "9571ccd86796a415c658a0e60cd9ed94a99d4e77e2d501f7e5afd6b7b5f9337f"
+    },
+    {
+      "file": "glare_aircraft_016.png",
+      "sha256": "21e71b13ac33dbf9299a9bd716b12370c9aa6dbbaa347efa4e245773bb321077"
+    },
+    {
+      "file": "glare_aircraft_017.png",
+      "sha256": "71f6b8702ca21ee17d7c3661ee46652e4410b746f4659e2bf34654117ef782cd"
+    },
+    {
+      "file": "glare_aircraft_018.png",
+      "sha256": "57cc4d3e2425895ee30f1461596cca3575afda9d7f9ec320e1ac2bd5822ab56f"
+    },
+    {
+      "file": "glare_aircraft_019.png",
+      "sha256": "188fcea96b1d9b751d688019ac987d01b35d9c00b8cc23d3dff62654a1e22f26"
+    },
+    {
+      "file": "glare_aircraft_020.png",
+      "sha256": "5eecca6e447c83792f134f1643cf1cc989c85070230559dd3d07a0363da94697"
+    },
+    {
+      "file": "glare_aircraft_021.png",
+      "sha256": "b508e24d63649ad106b8a4ea84cb60a783934793d259084325eaa6f07fd34f05"
+    },
+    {
+      "file": "glare_aircraft_022.png",
+      "sha256": "80135133c5b9f535f439508624942011bac883b3e75df4f21a62ec0e846d1e8b"
+    },
+    {
+      "file": "glare_aircraft_023.png",
+      "sha256": "8134c7e76185873d3fe1e4f20e2cf8a865c8dc2b498a334dda0e94a88e6eefc2"
+    },
+    {
+      "file": "glare_aircraft_024.png",
+      "sha256": "6ea1ea2db83faaeb2bc6044abb20503fe43999aad1724140936f19e6b0793645"
+    },
+    {
+      "file": "glare_aircraft_025.png",
+      "sha256": "4d3e12d58d2c4ea75d581b3ce569ca1fb280aaa25d514559eb7c4a60b8ccfd8d"
+    },
+    {
+      "file": "glare_aircraft_026.png",
+      "sha256": "93a28c1549f97ce81a6ac8e60db57d74130255f080e9728bfe28c94b55989cc7"
+    },
+    {
+      "file": "glare_aircraft_027.png",
+      "sha256": "d1a0c5666755e78f3c5b6d8dbcd2284f3f317f736f0f11f6fc9e8d9548e9f471"
+    },
+    {
+      "file": "glare_aircraft_028.png",
+      "sha256": "5d74e9a9f6e96292a70d70df078e1e645c8294ff26984c84b9ed5c759a01d92a"
+    },
+    {
+      "file": "glare_aircraft_029.png",
+      "sha256": "e139f9578942d0ebf2f5a1fbecd28c9dadee8fa264871ead01a8b1dae4a6ab62"
+    },
+    {
+      "file": "glare_aircraft_030.png",
+      "sha256": "5a7db5c84192ca53f0e9de3d8d816cbc8ff9fc2d5d8bae26c85d48aeb2f6f7aa"
+    },
+    {
+      "file": "glare_aircraft_031.png",
+      "sha256": "88d14b39006e8225f72d31a9690eeaa62fabc0894ec29deff8f48cfae201fac1"
+    },
+    {
+      "file": "glare_aircraft_032.png",
+      "sha256": "757fbc016102e276df989afa040dbe715717f9f58e46ff6e97436c795a5d2065"
+    },
+    {
+      "file": "glare_aircraft_033.png",
+      "sha256": "9f25291fc8c65ac02edd13f511c15a7b1b65035a4bf764e69c5808197cf0dc3b"
+    },
+    {
+      "file": "glare_aircraft_034.png",
+      "sha256": "afb6c29e42bb1c493fe84f3ab9f1abb4f879a97aeb3a6a4887c805eea26f56df"
+    },
+    {
+      "file": "glare_aircraft_035.png",
+      "sha256": "08256ac5b1251d78f222e9a18dea2049cbf44880497390c30f4afc809ee78db0"
+    },
+    {
+      "file": "glare_aircraft_036.png",
+      "sha256": "b3024b645a7f6c896ad95c916899a5721e771773355c34e3c5cf05f372b328e9"
+    },
+    {
+      "file": "glare_aircraft_037.png",
+      "sha256": "bca4e5277c6dff0bb992f4bd2cad67db7c3a655bdbb2512ae7a2030a7fce32c4"
+    },
+    {
+      "file": "glare_aircraft_038.png",
+      "sha256": "fdb0c42f85f62b19df78c80ef06c4eeee9c8d262c0ad702877b82176fac49f60"
+    },
+    {
+      "file": "glare_aircraft_039.png",
+      "sha256": "e2aa02555cdd519fb5eb1c58d22f35f57c276d8097e1787f9c7b78ca9be84e54"
+    },
+    {
+      "file": "glare_aircraft_040.png",
+      "sha256": "66487d1239b6197c8fd81ce1705a16bb3bbbcc3791a0368feaf844ba99add6b1"
+    },
+    {
+      "file": "glare_aircraft_041.png",
+      "sha256": "7ba47010e3578bf2a2ba49865148789d8be83e1e1a4d978bffa878b5616dd815"
+    },
+    {
+      "file": "glare_aircraft_042.png",
+      "sha256": "53e58b0c64a5ffae159268935d8a3cf8cc7849443aa859ee76767da432c907a3"
+    },
+    {
+      "file": "glare_aircraft_043.png",
+      "sha256": "fe373ed564cc85f7767c407e5206a6d03f22a395ae365b715446c80db514aced"
+    },
+    {
+      "file": "glare_aircraft_044.png",
+      "sha256": "381a227cb99962c467a43b2e1126ddf8939d28d267b6493388b0b2fac48fa3b8"
+    },
+    {
+      "file": "glare_aircraft_045.png",
+      "sha256": "4cbf92a9966a97a7442ba87a785c9c329b3a6e172aa0af5e049fcf3b47db6b45"
+    },
+    {
+      "file": "glare_aircraft_046.png",
+      "sha256": "fe21599de490f19c111bb6826937bfd52531122c58b4f2aaeadb7845c28e2228"
+    },
+    {
+      "file": "glare_aircraft_047.png",
+      "sha256": "a57717af187bc741a8d87cd971753678588e2df3d96b4fc046794e855ddd76b9"
+    },
+    {
+      "file": "glare_aircraft_048.png",
+      "sha256": "79fb2a41c1f2f9e28fdb0219c79a796aeef3feaedd3d57ba96fd0290902d42dc"
+    },
+    {
+      "file": "glare_aircraft_049.png",
+      "sha256": "b181be671ab42569a856bf362d5eea2daa0d1dade7f5f088d05ae82337c43121"
+    },
+    {
+      "file": "glare_aircraft_050.png",
+      "sha256": "64db82ba77b79a86cdede31317ef73e12e30abcffd294c5f7ce159f0171dba31"
+    },
+    {
+      "file": "glare_aircraft_051.png",
+      "sha256": "2566df93dc408b9c9c5fbcde37dfb0a5922b91522aa7e312274512ae892cce6e"
+    },
+    {
+      "file": "glare_aircraft_052.png",
+      "sha256": "b24dc4b21b18c3be52084efc6ca8930366b371dc16a376924194c60ece1fd738"
+    },
+    {
+      "file": "glare_aircraft_053.png",
+      "sha256": "ff02bf485e5fa5cb876be7f03ca1ffb4b8c0109b977327a36e663bcf941c7e1a"
+    },
+    {
+      "file": "glare_aircraft_054.png",
+      "sha256": "1acdc73487b71b6bbadb288f6eef2007aac560f54256ec32120037f204665a13"
+    },
+    {
+      "file": "glare_aircraft_055.png",
+      "sha256": "92bee252dccfdd1e178e42bb1eb6dc25d681529f6727e8f586d6e60a7ea8fa9b"
+    },
+    {
+      "file": "glare_aircraft_056.png",
+      "sha256": "faac1c738515d5e90105fa7b7d45482943035364c3b0c7954f9c0cd2bcbd7b56"
+    },
+    {
+      "file": "glare_aircraft_057.png",
+      "sha256": "69a436016e36fc8ac97f7358955fe230be4514316cce7813e3e26520f2a278df"
+    },
+    {
+      "file": "glare_aircraft_058.png",
+      "sha256": "6214b9ec9591b9ef0f6ac7f8c91bea3fe319f4b97db59294ef5eda7932f1b03d"
+    },
+    {
+      "file": "glare_aircraft_059.png",
+      "sha256": "e117c0cb883f1f411d47079653411e6b2ca5e15843833a8c68ed0fc8c940803d"
+    },
+    {
+      "file": "glare_aircraft_060.png",
+      "sha256": "545ca31306a8f110d187a2230a217da093403fe3263e38b961389a8d3307907b"
+    },
+    {
+      "file": "glare_aircraft_061.png",
+      "sha256": "278a176151f243e578bfaa953f668e6df8cd0030f2fada4b4cea218100fe2904"
+    },
+    {
+      "file": "glare_aircraft_062.png",
+      "sha256": "9b3b653e90daf6ac188d7134ca1e70648e2745cd5648ff6580adaf2ba27ca16a"
+    },
+    {
+      "file": "glare_aircraft_063.png",
+      "sha256": "9e94c304fac480e52b4d076413054a4d9a7c89fc100bfacb2a8186feb1864456"
+    },
+    {
+      "file": "glare_aircraft_064.png",
+      "sha256": "28625d60cc78ce30badb579da5103b7288c60205e34881c85ba55596176d2096"
+    },
+    {
+      "file": "glare_aircraft_065.png",
+      "sha256": "5885eb1326bedc686d0a24f2decf0b7d65475f562f774b2265acfb8b5195c594"
+    },
+    {
+      "file": "glare_aircraft_066.png",
+      "sha256": "1a1a5f2c2c4ddd29c211b4090577f3c1003efc02d339256e0f437cacfd4011d4"
+    },
+    {
+      "file": "glare_aircraft_067.png",
+      "sha256": "09d76e883393a1412a3ffda2a43d9702242ad8db9aeb2e43960bd7090603792a"
+    },
+    {
+      "file": "glare_aircraft_068.png",
+      "sha256": "30f92fe711a3856f6f4138e80bae3c3994491aec2eb28f7c8a37dbbe4bcccdf7"
+    },
+    {
+      "file": "glare_aircraft_069.png",
+      "sha256": "4cd5201e64cc1109b156b593dfc7c8ce9f049d16fbba31abfff60c2fcf694ae8"
+    },
+    {
+      "file": "glare_aircraft_070.png",
+      "sha256": "4386546c4cf793fe012c7b96e09df86db1c99c2ec33fb1529f1bd4609f36cf31"
+    },
+    {
+      "file": "glare_aircraft_071.png",
+      "sha256": "87736b084176ef270194685716e972a1f5471e6cc5ac3b88a773fa7e6053ee99"
+    },
+    {
+      "file": "glare_aircraft_072.png",
+      "sha256": "b55ce961df0bac69e1423bd45dac43f0341756af7ef9e7b0c86dd8042a80da2c"
+    },
+    {
+      "file": "glare_aircraft_073.png",
+      "sha256": "9279589a00b2bdce1d446fa0e3b56238fb08d01864fc491d3ccf69f8ee7e56cd"
+    },
+    {
+      "file": "glare_aircraft_074.png",
+      "sha256": "c2a388482bd7cb5900fb431031e1364fcfa8a2c77ed0b64c153248e19584d743"
+    },
+    {
+      "file": "glare_aircraft_075.png",
+      "sha256": "fbe8b671761bd0949037ecb60d1a2820bfd4e7dd8152ecfdbe88cb131b042ead"
+    },
+    {
+      "file": "glare_aircraft_076.png",
+      "sha256": "a2c243ccc6abdf427e8a32fb54d63cf59885225864d1fa35c66abd896947af52"
+    },
+    {
+      "file": "glare_aircraft_077.png",
+      "sha256": "3cc309c28a8c3dc1c67eec8eaaa58e05b1e9c66ece95cb0b27a2b94411fdd75f"
+    },
+    {
+      "file": "glare_aircraft_078.png",
+      "sha256": "b78ce16d0334717799409c87c57eede9532082588d31eb781c9e64b87122c3fa"
+    },
+    {
+      "file": "glare_aircraft_079.png",
+      "sha256": "c8ef2abdf8da95e28054212a6dd8435ee6e3e8232f90698bf6a083019f9556bc"
+    },
+    {
+      "file": "glare_aircraft_080.png",
+      "sha256": "97e233216b3c65b5bd6fc7b0a69ecbb946b798fe129b7a217ea2bcf1dde363e0"
+    },
+    {
+      "file": "glare_aircraft_081.png",
+      "sha256": "c838dbb1cd2cc807cbe78561fa83d1cebd5b5af197f03ebebb603b7af1af4a82"
+    },
+    {
+      "file": "glare_aircraft_082.png",
+      "sha256": "3c72b9000469457a929918c55a67c00e58fe1f8b3b7dfa747b5ac13aefd859f9"
+    },
+    {
+      "file": "glare_aircraft_083.png",
+      "sha256": "31109e21757a288d6282c2f8dbc7730cc5b56f1d42b740437a30be4cfd5874f5"
+    },
+    {
+      "file": "glare_aircraft_084.png",
+      "sha256": "c1b8264589054b066fab57b1fc6fe0741b98449cbc3394120a3716d649605494"
+    },
+    {
+      "file": "glare_aircraft_085.png",
+      "sha256": "42936e84db1eb8a00e4f78f7921bea5a921b799eac197d44eca922698d6fc666"
+    },
+    {
+      "file": "glare_aircraft_086.png",
+      "sha256": "6dc033ee2657281a5a2cf2a406646d736e4c70bb31933665a2481afdb455b306"
+    },
+    {
+      "file": "glare_aircraft_087.png",
+      "sha256": "77a4a41488a5a569e51d4f750b2e6f787c54854d27dbd22535512d6f535e089d"
+    },
+    {
+      "file": "glare_aircraft_088.png",
+      "sha256": "6b526a45f19ce7c582f611492b3a7c6e06973349c7bf783b65515d4891464580"
+    },
+    {
+      "file": "glare_aircraft_089.png",
+      "sha256": "273c8cd48e7dd64eafbeab1d901f0a780939ef7aaaeb2f37016ac3f5c859fb65"
+    },
+    {
+      "file": "glare_aircraft_090.png",
+      "sha256": "085abd888cc91f5fe103fbe04412f08557398315b03b0e8d7ad48dfc94d5e723"
+    },
+    {
+      "file": "glare_aircraft_091.png",
+      "sha256": "4f69632a371a7fe867ba575e22f1716672c2ba2362a04c648ab09f0e85fbe83c"
+    },
+    {
+      "file": "glare_aircraft_092.png",
+      "sha256": "ee9795c98879df73306874664fd57bece0c179ed8face4cc91b75d7a6842cb9b"
+    },
+    {
+      "file": "glare_aircraft_093.png",
+      "sha256": "98237016e432706d3bf7ecc77b1bea0deb81489fc79c6f2c6b8c762bcd0e1b30"
+    },
+    {
+      "file": "glare_aircraft_094.png",
+      "sha256": "74a5d4161d70b81dcaa8a55e39e74ccda9c9e5a1e7cc1995512106eafeb0965e"
+    },
+    {
+      "file": "glare_aircraft_095.png",
+      "sha256": "f0c0a125eb8630c8d332231a835effdf7d6b99f95cf514e04ba33fd2129ca66f"
+    },
+    {
+      "file": "glare_aircraft_096.png",
+      "sha256": "e261a88de00d6a7b2bc58fa189abf32c6a3527700a9eef77191642228d0878dd"
+    },
+    {
+      "file": "glare_aircraft_097.png",
+      "sha256": "762ff9bc8fffc20bdde87514a19dc77e984a90c0db257bca32766710c9ad70a5"
+    },
+    {
+      "file": "glare_aircraft_098.png",
+      "sha256": "317c178e67385d32828c826abf8662e9c7a4c919dd22f73efd2968d704131dd8"
+    },
+    {
+      "file": "glare_aircraft_099.png",
+      "sha256": "9cbaf22e716b4d66e56bfa7209601393b6edd5f85b108d10a32d6bb0f4f37556"
+    },
+    {
+      "file": "glare_aircraft_100.png",
+      "sha256": "6e51338bc2a05bd457e46d891ab66ef895c98ba17bf6a6379a85bd2799e62684"
+    },
+    {
+      "file": "glare_aircraft_101.png",
+      "sha256": "ca4b5c59195b8e7012eb279bb0ac0f680a6c1401a1d102fcdd3377579e20faa9"
+    },
+    {
+      "file": "glare_aircraft_102.png",
+      "sha256": "6d96ef74fa31a7bdead3d71e8e516e61149b446d961e67c3878c5ed841089ace"
+    },
+    {
+      "file": "glare_aircraft_103.png",
+      "sha256": "19e0449accaec7e801ce6071a2a5f223b513d395a700a229a98e422fcb2923f6"
+    },
+    {
+      "file": "glare_aircraft_104.png",
+      "sha256": "b73b8c1612d59eb0182d64c0d52f11b160dc971e8fb23bba444f98a501a485b2"
+    },
+    {
+      "file": "glare_aircraft_105.png",
+      "sha256": "4d6e0f5a315b7976b8e2e07487867e17c7e601685891ccd83ee7fbb56fab13e1"
+    },
+    {
+      "file": "glare_aircraft_106.png",
+      "sha256": "20d2143e7f047514b99001f1486ba424fe0299da88f102f1f3a9e2dc4aad4185"
+    },
+    {
+      "file": "glare_aircraft_107.png",
+      "sha256": "10a8a35db423871e40af1307b5adeeeb4b166d88e11a1d7d5825981c2c9bfc7d"
+    },
+    {
+      "file": "glare_aircraft_108.png",
+      "sha256": "663529cb8568680041ca25025df5e53b6bab10afd482c39670d6d9f662fdb213"
+    },
+    {
+      "file": "glare_aircraft_109.png",
+      "sha256": "121ff1bad17f3e8adc1d2a107d3636d7e1241df320a94e49c936f88e5c885970"
+    },
+    {
+      "file": "glare_aircraft_110.png",
+      "sha256": "813dcf48d54b7f254dd24322556c236e35339c83e584fc52209553de4fc6b5b8"
+    },
+    {
+      "file": "glare_aircraft_111.png",
+      "sha256": "fef5c82f7bd79583ea407a1da5d996a57eb54f34484a0cf5f4945de1dcb63c78"
+    },
+    {
+      "file": "glare_aircraft_112.png",
+      "sha256": "fec7969637ee9768f1872bba2346d38cab60b958f04a1b569b68a493637f525f"
+    },
+    {
+      "file": "glare_aircraft_113.png",
+      "sha256": "ad2d3fa8a26ed72d4b0a4682ea8610a4da127393a240944a7760d055e6dd9cf1"
+    },
+    {
+      "file": "glare_aircraft_114.png",
+      "sha256": "225cb4eab2535749aac2287114db0018974a679784c70d1e7eb5c4f73dadda92"
+    },
+    {
+      "file": "glare_aircraft_115.png",
+      "sha256": "9b589a8a429fafe2c366698250b4b9d06732ba49a7645a4dcbcd68f491bb1f5b"
+    },
+    {
+      "file": "glare_aircraft_116.png",
+      "sha256": "5955a26ef7e0b504b742ec482c20215ba7ca3169066d7509711cdd6c85ddf7a7"
+    },
+    {
+      "file": "glare_aircraft_117.png",
+      "sha256": "0583fa0e97c2d7a86c7da2b5c318c6630e9a7a4411c104a668d3963dd74f1aaa"
+    },
+    {
+      "file": "glare_aircraft_118.png",
+      "sha256": "a1e0b6c95200619398cb4d704c55da85976ed8670a8d8905654f3dfb6d09e8c8"
+    },
+    {
+      "file": "glare_aircraft_119.png",
+      "sha256": "0446daa0ef7a18ebfeae59b0c7ceb6b2e78b7c5a816dd7912165920de1b80c57"
+    },
+    {
+      "file": "glare_aircraft_120.png",
+      "sha256": "c512b2e441372a35807910a81fe6e7961e39dbfb1d0e3401e72ef3467c28df07"
+    }
+  ],
+  "retained_pngs": [
+    0,
+    30,
+    60,
+    90,
+    120
+  ],
+  "note": "All 121 frames were captured and hashed; five unedited anchor images retained. Raw timing is invalid because PNG readback occurs every frame."
+}
