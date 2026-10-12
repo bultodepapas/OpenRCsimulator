@@ -13,8 +13,8 @@ const PREVIEW := "preview"
 
 const DEFAULT_ID := "jensen-das-ugly-stik-60"
 
-## In menu order. `name` is a proper name (never translated; the Timber's fictional name is the one exception, es.po carries
-## its Spanish form); `summary` and `status_note` are English source strings
+## In menu order. `name` is a proper name (never translated; the Timber's fictional name is the one exception: es.po carries
+## its Spanish form and ui/home.gd passes names through tr()); `summary` and `status_note` are English source strings
 ## (tr() at the call site). `data` is "" for a preview. render/airplane.gd builds each ID with the model team's builder
 ## and knows its datum; tests/test_aircraft_catalog.gd checks that every ID builds and every flyable one trims.
 const ENTRIES := [

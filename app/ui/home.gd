@@ -131,7 +131,7 @@ func _init() -> void:
 	card.theme_type_variation = "Card"
 	var card_lines := VBoxContainer.new()
 	card_lines.add_theme_constant_override("separation", 4)
-	aircraft_name_label = _label("", "CardTitle", false) # a proper name: never translated
+	aircraft_name_label = _label("", "CardTitle", false) # a proper name: not auto-translated; set_aircraft() passes it through tr() for the one fictional name with a catalog entry (TT-06)
 	aircraft_name_label.name = "AircraftName"
 	aircraft_name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART # long names and translations wrap, never widen the column
 	card_lines.add_child(aircraft_name_label)
@@ -246,7 +246,7 @@ func set_aircraft(id: String) -> void:
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
 	var had_focus := fly_button.has_focus()
-	aircraft_name_label.text = e.name
+	aircraft_name_label.text = tr(e.name) # proper names have no catalog entry and pass through; the Timber's fictional name has one
 	aircraft_summary_label.text = e.summary
 	aircraft_status_label.text = e.status_note
 	limits_label.visible = flyable
