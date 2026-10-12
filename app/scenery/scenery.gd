@@ -17,6 +17,7 @@ const Ambience = preload("res://scenery/ambience.gd")
 const Birds = preload("res://scenery/birds.gd")
 const Frames = preload("res://render/frames.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
+const GRAVEL_SHADER: Shader = preload("res://scenery/gravel.gdshader")
 const MOTION_SHADER: Shader = preload("res://scenery/motion.gdshader")
 
 const CELL_M := 40.0
@@ -220,6 +221,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	shade.albedo_color.a = shadow_strength
 	var pilot := Vector2(float(field.pilot.north), float(field.pilot.east))
 	var cells := {}
+	var ground_cells := {}
+	var gravel := ShaderMaterial.new()
+	gravel.shader = GRAVEL_SHADER
 	var shadow_cells := {}
 	var shadow_groups: Dictionary = {}
 	var stats := {instances = 0, skipped = 0, shadows = 0, motion = 0, flowers = 0, fleet = 0, theme = theme, quality = quality}
@@ -293,7 +297,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 				for p: Vector2 in group.points:
 					poly.append(_xz(p))
 				var first: Vector2 = group.points[0]
-				var kit := _kit(cells, _cell(first.x, first.y) + Vector2i(0, 7777)) # its own cell: flat, drawn once
+				var key := _cell(first.x, first.y) + Vector2i(0, 7777)
+				ground_cells[key] = true
+				var kit := _kit(cells, key) # its own cell: flat, drawn once
 				if group.type == "track":
 					GroundFeatures.track(kit, poly, group.width, group.surface, theme)
 				else:
@@ -313,7 +319,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 			continue
 		var mi := MeshInstance3D.new()
 		mi.name = "cell_%d_%d" % [key.x, key.y]
-		mi.mesh = kit.to_mesh(opaque)
+		mi.mesh = kit.to_mesh(gravel if ground_cells.has(key) else opaque)
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(mi)
 	var shadow_nodes: Dictionary = {}

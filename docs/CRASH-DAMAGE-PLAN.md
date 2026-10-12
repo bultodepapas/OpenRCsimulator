@@ -4,7 +4,7 @@
 
 **Status:** CR-01 diagnostics remain partial. Owner-prioritized experimental crash audio, particles, severity estimate, wreck presentation, ground marks and fire are implemented in bounded slices. Physical failure thresholds, calibrated damage, damaged flight and Gate CR remain open.
 
-**Owns:** crash research and presentation boundaries listed in the [track registry](README.md#step-id-namespaces). Physics-side contact and state changes are implemented with the physics owner; aircraft geometry and crash UI remain with model and menu owners.
+**Owns:** crash research and presentation boundaries listed in the [track registry](README.md#tracks-plans-and-step-ids). Physics-side contact and state changes are implemented with the physics owner; aircraft geometry and crash UI remain with model and menu owners.
 
 ## Current behavior
 

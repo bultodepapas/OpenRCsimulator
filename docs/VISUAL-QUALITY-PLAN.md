@@ -20,7 +20,7 @@ VQ-04a derives an opaque projected silhouette from each aircraft's visible mesh 
 | VQ-03 | Optional horizon-aware camera composition experiment. | Open; reject it if tracking delay or readability worsens. |
 | VQ-04b | Compare native shadow maps with the projected silhouette. | Open and optional; keep the existing projection if colour, contact or cost regresses. |
 | VQ-05 | Derive propeller blur from live RPM and the existing auxiliary source. | Open; pause, crash, reset and captures must agree without changing traces. |
-| VQ-06a/b | Apply renderer quality settings and expose saved presets through the menu. | Open with UI-02/UI-07 dependencies; include repeated apply, invalid settings, restore and frame-time evidence. |
+| VQ-06a/b | Apply renderer quality settings and expose saved presets through the menu. | Open with the UI-22…24 theme/display/Settings work; include repeated apply, invalid settings, restore and frame-time evidence. |
 | VQ-07 | Compare Forward+ in an isolated build. | Open; no renderer migration or Ultra preset until colour, shaders, export and recovery are measured. |
 
 ## Evidence and acceptance

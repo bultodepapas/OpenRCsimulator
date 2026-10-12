@@ -2,7 +2,7 @@
 
 **Status:** generated, report-only. This does not validate the owner's Stik or close Gate 2.
 
-Engine: `4.7.2-stable (official)`. Input inventory SHA-256: `14dc9973a4d8357323c92f993381099c014b5a360b047e0f340e87265c551691`.
+Engine: `4.7.2-stable (official)`. Input inventory SHA-256: `f49fae75d37f8684ecd0d67ea78a3914d5084a4b2273bd9ecfe62af62d875c5a`.
 
 Regenerate: `python3 research/validation/dashboard.py`; verify freshness: append `--check`.
 
@@ -25,7 +25,7 @@ Ratios are simulation / reference. Bands are estimated class-comparison screens,
 
 Source: [primary document](https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content); Lie, Synthetic Air Data Estimation Method, Appendix D, Tables D.1-D.2 and section D.3, printed pp. 85–86. Provenance: **inherited_derivation**.
 
-The modal scalars come from the rounded repository derivation in RESEARCH.md, D8b, not values printed verbatim in the thesis. Its matrix extraction/eigenvalue calculation has not been independently reproduced in VAL-3. Frequencies 1.30/0.57 Hz are converted to rad/s; roll tau 0.116 s is inverted. Damping 0.55/0.31 is retained without a diagnostic band. Treat these provisional derived rows as historical context.
+The modal scalars come from the rounded repository derivation in docs/research/initial-notebook.md, D8b, not values printed verbatim in the thesis. Its matrix extraction/eigenvalue calculation has not been independently reproduced in VAL-3. Frequencies 1.30/0.57 Hz are converted to rad/s; roll tau 0.116 s is inverted. Damping 0.55/0.31 is retained without a diagnostic band. Treat these provisional derived rows as historical context.
 
 Retains D8b fixed Stik speed 13.8 m/s and already Froude-scaled modal scalars for 1.524 m span. The old scaling used rounded lengths (about 0.79 ratio); this is not full dynamic similarity or a new equal-CL solve. Relative density, airfoil and trim differ. Re-derivation is required if the target span changes.
 

@@ -10,6 +10,17 @@ Run repository commands from the root unless a command says otherwise.
 
 The checked CI environment is Ubuntu 24.04 x86_64. The main command scripts are Bash/Linux tools: install Git, Bash, curl, unzip, `sha512sum`, GNU coreutils, util-linux and Python 3, then run `app/get-godot.sh`. It downloads the pinned Godot 4.7.2 Linux binary, verifies its SHA-512, and stores it in ignored `.tools/`. `app/test.sh` and `research/test-tools.sh` need no display. `app/capture.sh` also needs Xvfb, Mesa/OpenGL, Python venv support and pip 22.3 or newer; `app/tests/visual-env.sh` creates the hashed CPython 3.12 environment in `.tools/visual-venv`. `app/export.sh` needs `zip` and the verified export templates; the first template download is about 1.28 GB and installs under `$XDG_DATA_HOME/godot/export_templates/4.7.2.stable` or `~/.local/share/godot/export_templates/4.7.2.stable`.
 
+For the first Linux/WSL source run:
+
+```sh
+git -c core.autocrlf=false clone https://github.com/bultodepapas/OpenRCsimulator.git
+cd OpenRCsimulator
+"$(app/get-godot.sh)" --headless --path app --editor --import
+"$(app/get-godot.sh)" --path app
+```
+
+The last command needs a display. Import resources before standalone scripts on a fresh checkout; the normal test/capture runners perform their own import. On macOS, install the matching Godot build and open `app/project.godot` in the editor.
+
 On Windows, `app/get-godot.sh`, `app/test.sh`, `app/capture.sh` and `app/export.sh` are not PowerShell scripts. Clone inside WSL2 Ubuntu on its Linux filesystem with LF checkout (`git -c core.autocrlf=false clone <repository-url>`) for the complete test, capture and export workflow. Copying a Windows CRLF checkout can make Bash reject scripts before tests start. For a native Windows interactive run, install the matching Godot 4.7.2 Windows build and set its path in PowerShell:
 
 ```powershell

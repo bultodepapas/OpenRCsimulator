@@ -39,7 +39,7 @@
     },
     "aero_reference_point": {
       "value": [
-        0.20681,
+        0.206331,
         0.0,
         0.0
       ],
@@ -62,7 +62,7 @@
       "value": [
         0.24,
         0.0,
-        0.00513
+        0.005153
       ],
       "unit": "m",
       "kind": "manual",
@@ -155,8 +155,8 @@
       },
       "position": {
         "value": [
-          0.866774,
-          -0.187059,
+          1.014561,
+          -0.21895,
           0.065
         ],
         "unit": "m",
@@ -184,8 +184,8 @@
       },
       "position": {
         "value": [
-          0.866774,
-          0.187059,
+          1.014561,
+          0.21895,
           0.065
         ],
         "unit": "m",
@@ -871,27 +871,27 @@
       }
     },
     {
-      "name": "aileron servos (2)",
+      "name": "aileron servo left",
       "mass": {
-        "value": 0.13,
+        "value": 0.065,
         "unit": "kg",
-        "kind": "manual",
-        "source": "JR DS8411 ~65 g each (manual p.2 servo list)"
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
       },
       "position": {
         "value": [
           0.35,
-          0.0,
+          -0.75,
           0.0
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "mid-aileron, y +-0.75"
+        "source": "mid-aileron, lateral center y -0.75 m from the centerline"
       },
       "size": {
         "value": [
           0.03,
-          1.5,
+          0.03,
           0.03
         ],
         "unit": "m",
@@ -900,27 +900,56 @@
       }
     },
     {
-      "name": "flap servos (2)",
+      "name": "aileron servo right",
       "mass": {
-        "value": 0.15,
+        "value": 0.065,
         "unit": "kg",
-        "kind": "manual",
-        "source": "JR DS8911 ~75 g each (manual p.2)"
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.35,
+          0.75,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "mid-aileron, lateral center y +0.75 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "flap servo left",
+      "mass": {
+        "value": 0.075,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 75 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8911 model but gives no servo mass"
       },
       "position": {
         "value": [
           0.33,
-          0.0,
+          -0.35,
           0.0
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "mid-flap, y +-0.35"
+        "source": "mid-flap, lateral center y -0.35 m from the centerline"
       },
       "size": {
         "value": [
           0.03,
-          0.7,
+          0.03,
           0.03
         ],
         "unit": "m",
@@ -929,27 +958,85 @@
       }
     },
     {
-      "name": "elevator servos (2)",
+      "name": "flap servo right",
       "mass": {
-        "value": 0.13,
+        "value": 0.075,
         "unit": "kg",
-        "kind": "manual",
-        "source": "JR DS8411 ~65 g each (manual p.2)"
+        "kind": "estimated",
+        "source": "Approx. 75 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8911 model but gives no servo mass"
       },
       "position": {
         "value": [
-          0.95,
-          0.0,
-          0.06
+          0.33,
+          0.35,
+          0.0
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "stab roots"
+        "source": "mid-flap, lateral center y +0.35 m from the centerline"
       },
       "size": {
         "value": [
           0.03,
-          0.25,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "elevator servo left",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.95,
+          -0.125,
+          0.06
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "stab-root servo, lateral center y -0.125 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "elevator servo right",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.95,
+          0.125,
+          0.06
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "stab-root servo, lateral center y +0.125 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
           0.03
         ],
         "unit": "m",
@@ -1105,7 +1192,7 @@
     {
       "name": "virtual reference-build balancing mass",
       "mass": {
-        "value": 0.396299,
+        "value": 0.345089,
         "unit": "kg",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: m = M (x_CG - x0) / (x_ballast - x_CG) for the manual balance point; a virtual reference build, NOT measured hardware"
@@ -1313,13 +1400,13 @@
         "source": "research/avanti-s/av06/derive_physics.py: symmetric sections; wing and tail incidences at zero body alpha"
       },
       "CLa": {
-        "value": 4.630203,
+        "value": 4.628553,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: Helmbold wing with half-chord sweep + downwashed tail"
       },
       "CLq": {
-        "value": 6.59514,
+        "value": 6.248243,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: tail volume + DATCOM wing term"
@@ -1379,7 +1466,7 @@
         "source": "research/avanti-s/av06/derive_physics.py: fin + DATCOM body"
       },
       "CYp": {
-        "value": -0.157644,
+        "value": -0.157629,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: fin above the CG"
@@ -1397,19 +1484,19 @@
         "source": "research/avanti-s/av06/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.140235,
+        "value": -0.140061,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: wing sweep at CL_ref + dihedral + wing-body + fin"
       },
       "Clp": {
-        "value": -0.606895,
+        "value": -0.606891,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.125311,
+        "value": 0.12496,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: CL_ref/4 + fin"
@@ -1439,37 +1526,37 @@
         "source": "research/avanti-s/av06/derive_physics.py: tail incidence about the ARP; symmetric wing section"
       },
       "Cma": {
-        "value": -0.844769,
+        "value": -0.850788,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: tail about the wing-body ac (Munk-Multhopp fuselage); the CG transfer gives the static margin"
       },
       "Cmq": {
-        "value": -7.383414,
+        "value": -7.549994,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: tail damping about the CG x1.1 for wing/fuselage"
       },
       "Cmde": {
-        "value": -0.943876,
+        "value": -0.954598,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: elevator lift x tail arm from the ARP"
       },
       "Cmda_each": {
-        "value": -0.148526,
+        "value": -0.149056,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: aileron lift increment at its thin-airfoil centre, arm from the ARP"
       },
       "Cnb": {
-        "value": 0.2021855454946897,
+        "value": 0.20234374859627607,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": 0.005799,
+        "value": 0.005968,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: -CL_ref/8 + fin"
@@ -1481,19 +1568,19 @@
         "source": "research/avanti-s/av06/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
       },
       "Cnda_right": {
-        "value": 0.013704,
+        "value": 0.013645,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson)"
       },
       "Cnda_left": {
-        "value": -0.013704,
+        "value": -0.013645,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: adverse yaw"
       },
       "Cndr": {
-        "value": -0.09803249233073723,
+        "value": -0.09810919931938482,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: rudder side force x fin arm from the ARP (must equal the vertical surface)"
@@ -1501,7 +1588,7 @@
     },
     "surfaces": {
       "wing_aileron_effectiveness": {
-        "value": 0.27592,
+        "value": 0.276018,
         "unit": "1",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: |Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips"
@@ -1561,7 +1648,7 @@
         },
         "position": {
           "value": [
-            0.959833,
+            0.967908,
             0.0,
             0.065
           ],
@@ -1570,13 +1657,13 @@
           "source": "research/avanti-s/av06/derive_physics.py: quarter chord of the stab MAC"
         },
         "lift_slope": {
-          "value": 1.679047,
+          "value": 1.672016,
           "unit": "1/rad",
           "kind": "derived",
           "source": "research/avanti-s/av06/derive_physics.py: Helmbold x eta x (1 - deps/dalpha), DATCOM downwash"
         },
         "control_effectiveness": {
-          "value": 1.117318,
+          "value": 1.122017,
           "unit": "1",
           "kind": "derived",
           "source": "research/avanti-s/av06/derive_physics.py: thin-airfoil tau x flap correction / (1 - deps/dalpha)"
@@ -1627,7 +1714,7 @@
     },
     "reference_coefficients": {
       "CLadot": {
-        "value": 1.659165,
+        "value": 1.684616,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: 2 eta CLa_h Sh/S l_h/c deps/dalpha"
@@ -1822,7 +1909,7 @@
         ],
         "unit": "rpm, kg/s",
         "kind": "estimated",
-        "source": "linear in thrust between the catalog's 80 and 390 ml/min at 0.80 kg/l (the catalog's own kg/min); telemetry only; docs/research/avanti-s-av05-turbine-dynamics.md section 2"
+        "source": "linear-in-thrust estimate from the catalog's 80 and 390 ml/min at 0.80 kg/l endpoints; retained for planned AV-10 fuel burn, with no current runtime consumer; docs/research/avanti-s-av05-turbine-dynamics.md section 2"
       },
       "throttle_map": {
         "value": [
@@ -1921,7 +2008,7 @@
         "value": 0.4,
         "unit": "s",
         "kind": "measured",
-        "source": "P100 small-signal corner ~0.4 Hz from multi-sine tests (tau ~0.4 s); docs/research/avanti-s-av05-turbine-dynamics.md section 4"
+        "source": "P100 local small-signal throttle-to-thrust corner near 0.4 Hz in multi-sine tests; tau = 1/(2 pi fc) = 0.398 s, rounded to 0.4 s. Applied as an RPM-governor lag through the assumed static throttle-to-RPM map; not a universal ECU step response (Many et al., DGLR 550281 sec. 3; docs/research/avanti-s-av05-turbine-dynamics.md section 4)"
       },
       "installed_factor": {
         "value": 0.92,
@@ -1967,7 +2054,7 @@
       "value": [
         0.9285,
         0.0,
-        -0.01013
+        -0.010153
       ],
       "unit": "m",
       "kind": "derived",
@@ -1977,7 +2064,7 @@
       "value": [
         -0.33,
         0.0,
-        -0.03313
+        -0.033153
       ],
       "unit": "m",
       "kind": "derived",
