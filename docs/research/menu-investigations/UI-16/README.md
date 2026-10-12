@@ -45,7 +45,7 @@ Updating stays manual: the release page carries the three ZIPs, `SHA256SUMS` and
 | Exported Linux build, `OPENRC_UPDATE_URL` at a local static list with an added rc8 | Card **0.1.0-rc8** ([screen](ui-home-update-export-fake-rc8.jpg)); the server log shows the single `GET /releases?per_page=10`; cache `latest tag v0.1.0-rc8` |
 | **After UI-16-R1** (unthreaded request, frame-counted timeout): exported Linux build `v0.1.0-rc6-67-gf0d1442-dirty`, real GitHub API, same Xvfb procedure | Card **0.1.0-rc7** again ([screen](ui-home-update-export-real-rc7-r1.jpg)); [cache](export-real-update_check-r1.cfg) records `200 ok`, the ETag, `for_version 0.1.0-rc6+67.gf0d1442.dirty`, `latest v0.1.0-rc7`, `prerelease true` |
 
-The captures show the card at x = 821 on a 1280-wide Home (right of the 440 px column), the Spanish sentence on one line, and the same card at 1080p without scaling (UI-23 owns scaling). The exported-build screens also show, unrelated to UI-16, that the UI-06d default weather summary (`1.5 m/s · 090° +0.6 + Turbulence · Evening, time passing`) widens Home's column past its 440 px panel; that belongs to the menu track's layout work (UI-25).
+The captures show the card at x = 821 on a 1280-wide Home (right of the 440 px column), the Spanish sentence on one line, and the same card at 1080p without scaling (UI-23 owns scaling). The exported-build screens also showed, unrelated to UI-16, that the UI-06d default weather summary widened Home's column past its 440 px panel; repaired in [UI-06d-R1](../UI-06d-R1/README.md).
 
 ## UI-16-R1 · Independent review and audit (2026-10-12)
 
@@ -64,7 +64,7 @@ A second agent reviewed the code without the author's conclusions, with read-onl
 
 Found correct by the review: API names and Callable use, signal names, SemVer table, selection rules on fresh answers, cache typing and fallbacks, request lifecycle and `_announced_tag`, privacy (what leaves the machine), the preference and theme hooks, translation and test isolation. The reviewer's probes live outside the repository.
 
-Observations outside UI-16 from the audit pictures, for the menu track (UI-25): the P-51 and Avanti status notes push the CONTROLS legend below 720 px, and the UI-06d default weather summary widens the column past its panel.
+Observations outside UI-16 from the audit pictures: the P-51 and Avanti status notes pushed the CONTROLS legend below 720 px, and the UI-06d default weather summary widened the column past its panel. Both were repaired the same day in [UI-06d-R1](../UI-06d-R1/README.md).
 
 ## Limits and next steps
 

@@ -40,6 +40,8 @@
 
 ## Preferences and localization
 
+- **A Button's minimum width follows its text; a translation or a dynamic summary widens the column silently.** Home's Weather button grew to 478 px (516 px in Spanish) with the default conditions and the English Language/Help/Quit row needed 375 px of 360, so the panel widened under its fade; long aircraft notes pushed the keyboard legend off a 720p window. Wrap (`autowrap_mode`) or clip (`clip_text` + ellipsis) button texts, give a column that can overflow a `ScrollContainer`, and measure every aircraft × language × window size in a headless layout test (Home inside a window-sized frame Control, six frames to settle). Enable `follow_focus` only after those frames: following the first focus while wrapped labels settle scrolled the title away. [UI-06d-R1](../research/menu-investigations/UI-06d-R1/README.md).
+
 - **Translation occurs at draw time.** `Label.text` retains the source string; inspect `atr(text)` for the displayed translation. Rebuild dynamic phrases on translation changes and test actual layout in both languages. Set the default locale explicitly: the OS locale otherwise changes a fresh launch. [UI-01d tests](../../app/tests/test_ui_language.gd), [UI-05 tests](../../app/tests/test_ui_aircraft.gd).
 
 - **Widgets can change values without emitting signals.** `SpinBox.set_value_no_signal()` still quantizes to its step, and pending editor text may differ from `value` until applied. Keep a precise draft model and commit editors explicitly. Reading an absent ConfigFile key needs a default sentinel to avoid an engine error. [Wind UI investigations](../research/wind-investigations/README.md), [language tests](../../app/tests/test_ui_language.gd).

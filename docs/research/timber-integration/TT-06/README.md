@@ -15,7 +15,8 @@
 | `app/tests/test_crash_pose.gd`, `test_crash_integration.gd`, `bench_regimes.gd`, `bench_wind.gd` | Flyable IDs only: `main.gd` refuses a preview flight scene with exit 1 unless `--scripted` |
 | `app/tests/test_landscape_population.gd` | The parked fleet matches the **flyable** catalog (a preview has no baked snapshot; TT-13b decides) |
 | `app/tests/test_crash_wreck.gd` | Builds every catalog model (the Timber included); for a preview, C4 requires detached groups but not an immediate release: the imported airframe is one mesh (wing, fuselage, tail), so there is no wing/engine group with zero delay. Splitting it for the crash twin is TT-13's decision |
-| `app/tests/test_ui_aircraft.gd` | Counter 1 of 5; after the Avanti the Timber card shows "Preview", Fly disabled, no limits label, backdrop shows the model, arrows wrap; Spanish counter "Avión 4 de 5" |
+| `app/tests/test_ui_aircraft.gd` | Counter 1 of 5; after the Avanti the Timber card shows "Preview", Fly disabled, no limits label, backdrop shows the model, arrows wrap; Spanish counter "Avión 4 de 5"; in Spanish the Timber card reads "Turbo Tronco Evolución" while the Avanti keeps its proper name |
+| `app/ui/home.gd` | The aircraft name label stays non-auto-translated, but `set_aircraft()` passes the name through `tr()`: proper names have no catalog entry and pass unchanged, the Timber's fictional name has one (menu owner) |
 | `app/aircraft/timber_model.gd` | Clears `scene_file_path` on the built root so `Node.duplicate()` copies the wrapped tree (the crash twin re-instantiated the GLB and lost the moved pivots) |
 | `tools/scenery/place.py` | `catalog_fleet_ids()` skips PREVIEW entries, as `Catalog.flyable_ids()` does, so the generated `app/data/scenery/default.json` is unchanged and `test_scenery_loader.gd` keeps passing (scenery owner) |
 
