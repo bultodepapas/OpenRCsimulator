@@ -19,7 +19,7 @@ Status: current documentation and ownership index, checked 2026-10-12. Runtime c
 | Published build contents | [Release notes](releases/); fixed per tag |
 | README images and licenses | [Media provenance](media/README.md) |
 
-Current source and published rc7 differ. Follow FIRST-LAUNCH for that distinction; historical reports are not current operating instructions.
+The rc8 download is described by its release notes and FIRST-LAUNCH; historical reports are not current operating instructions.
 
 ## Tracks, plans and step IDs
 
@@ -48,7 +48,7 @@ This registry owns file boundaries and prefixes. Each linked guide/plan owns its
 | Coupled shaft / electric propulsion | [Shaft guide](PROPULSION-CORE-PLAN.md), [electric plan](ELECTRIC-PROPULSION-PLAN.md) | G2a/G2b, EL1…6 | Main physics; Timber data stays TT | Powertrain kernels, state/trace integration, electric tests/research | [Propulsion research](research/propulsion/) |
 | Desktop delivery | [Active desktop plan](DESKTOP-DELIVERY-PLAN.md) | DT-00…13; Gate DT | Export/CI maintainer; UI-23 implements display | Desktop-delivery research; installers and delivery tooling remain proposed | [Desktop research](research/README.md#desktop-delivery) |
 | Smoke | [Unimplemented proposal](SMOKE-PLAN.md) | SM-00…09 | Model exhaust anchor, controls and wind | Research only; no aircraft-smoke runtime module | [Smoke research](research/smoke-investigations/README.md) |
-| Releases | [Notes by tag](releases/) | v* tags; PT1 | CI/export maintainers | `docs/releases/`, export build identity and packaging | [rc7 qualification](research/release-readiness/PT1-rc7/README.md) |
+| Releases | [Notes by tag](releases/) | v* tags; PT1 | CI/export maintainers | `docs/releases/`, export build identity and packaging | [rc8 qualification](research/release-readiness/PT1-rc8/README.md) |
 
 ## Step-ID namespaces
 
