@@ -1,0 +1,556 @@
+{
+  "check_count": 39,
+  "checks": [
+    {
+      "actual": "4.7.2-stable (official)",
+      "name": "after-day: pinned Godot engine",
+      "passed": true,
+      "requirement": "engine string starts with 4.7.2"
+    },
+    {
+      "actual": "gl_compatibility",
+      "name": "after-day: Compatibility renderer",
+      "passed": true,
+      "requirement": "gl_compatibility"
+    },
+    {
+      "actual": [
+        1920,
+        1080
+      ],
+      "name": "after-day: 1920x1080 capture",
+      "passed": true,
+      "requirement": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "actual": "4.7.2-stable (official)",
+      "name": "flat-day: pinned Godot engine",
+      "passed": true,
+      "requirement": "engine string starts with 4.7.2"
+    },
+    {
+      "actual": "gl_compatibility",
+      "name": "flat-day: Compatibility renderer",
+      "passed": true,
+      "requirement": "gl_compatibility"
+    },
+    {
+      "actual": [
+        1920,
+        1080
+      ],
+      "name": "flat-day: 1920x1080 capture",
+      "passed": true,
+      "requirement": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "actual": {
+        "after": {
+          "adapter": "NVIDIA GeForce RTX 3090",
+          "engine": "4.7.2-stable (official)",
+          "engine_hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "height": 1080,
+          "renderer": "gl_compatibility",
+          "width": 1920
+        },
+        "before": {
+          "adapter": "NVIDIA GeForce RTX 3090",
+          "engine": "4.7.2-stable (official)",
+          "engine_hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "height": 1080,
+          "renderer": "gl_compatibility",
+          "width": 1920
+        }
+      },
+      "name": "day material pair: engine and renderer matched",
+      "passed": true,
+      "requirement": "same engine string/hash and renderer"
+    },
+    {
+      "actual": {
+        "after": [
+          1920,
+          1080
+        ],
+        "before": [
+          1920,
+          1080
+        ]
+      },
+      "name": "day material pair: report resolution matched",
+      "passed": true,
+      "requirement": "same report resolution"
+    },
+    {
+      "actual": {
+        "absolute_delta": 0.0,
+        "after": 0.600000023841858,
+        "before": 0.600000023841858
+      },
+      "name": "day material pair: gravel_close exposure matched",
+      "passed": true,
+      "requirement": "absolute delta <= 0.001"
+    },
+    {
+      "actual": {
+        "after": 14.0,
+        "before": 14.0
+      },
+      "name": "day material pair: gravel_close draw count unchanged",
+      "passed": true,
+      "requirement": "exactly equal reported draw counts"
+    },
+    {
+      "actual": {
+        "absolute_delta": 0.0,
+        "after": 0.600000023841858,
+        "before": 0.600000023841858
+      },
+      "name": "day material pair: car_park exposure matched",
+      "passed": true,
+      "requirement": "absolute delta <= 0.001"
+    },
+    {
+      "actual": {
+        "after": 29.0,
+        "before": 29.0
+      },
+      "name": "day material pair: car_park draw count unchanged",
+      "passed": true,
+      "requirement": "exactly equal reported draw counts"
+    },
+    {
+      "actual": {
+        "absolute_delta": 0.0,
+        "after": 0.600000023841858,
+        "before": 0.600000023841858
+      },
+      "name": "day material pair: gravel_far exposure matched",
+      "passed": true,
+      "requirement": "absolute delta <= 0.001"
+    },
+    {
+      "actual": {
+        "after": 88.0,
+        "before": 88.0
+      },
+      "name": "day material pair: gravel_far draw count unchanged",
+      "passed": true,
+      "requirement": "exactly equal reported draw counts"
+    },
+    {
+      "actual": {
+        "image": [
+          1920,
+          1080
+        ],
+        "report": [
+          1920,
+          1080
+        ]
+      },
+      "name": "day material pair: gravel_close image/report size matched",
+      "passed": true,
+      "requirement": "image dimensions equal capture report dimensions"
+    },
+    {
+      "actual": {
+        "byte_identical": false,
+        "changed_fraction_max_channel_ge_1": 0.31383969907407405,
+        "changed_fraction_max_channel_ge_2": 0.2883072916666667,
+        "changed_fraction_max_channel_ge_8": 0.16440393518518517,
+        "height": 1080,
+        "max_channel_delta_max": 38,
+        "max_channel_delta_p95": 17,
+        "mean_abs_rgb": 2.7676615547839507,
+        "width": 1920
+      },
+      "name": "day material pair: gravel_close visual detail/attenuation",
+      "passed": true,
+      "requirement": "mean absolute RGB delta >= 1.0 and >=10% pixels have max-channel delta >=8"
+    },
+    {
+      "actual": {
+        "image": [
+          1920,
+          1080
+        ],
+        "report": [
+          1920,
+          1080
+        ]
+      },
+      "name": "day material pair: car_park image/report size matched",
+      "passed": true,
+      "requirement": "image dimensions equal capture report dimensions"
+    },
+    {
+      "actual": {
+        "byte_identical": false,
+        "changed_fraction_max_channel_ge_1": 0.17274305555555555,
+        "changed_fraction_max_channel_ge_2": 0.1423017939814815,
+        "changed_fraction_max_channel_ge_8": 0.05270158179012346,
+        "height": 1080,
+        "max_channel_delta_max": 36,
+        "max_channel_delta_p95": 8,
+        "mean_abs_rgb": 1.004647633744856,
+        "width": 1920
+      },
+      "name": "day material pair: car_park visual detail/attenuation",
+      "passed": true,
+      "requirement": "mean absolute RGB delta >= 0.5 and >=3% pixels have max-channel delta >=8"
+    },
+    {
+      "actual": {
+        "image": [
+          1920,
+          1080
+        ],
+        "report": [
+          1920,
+          1080
+        ]
+      },
+      "name": "day material pair: gravel_far image/report size matched",
+      "passed": true,
+      "requirement": "image dimensions equal capture report dimensions"
+    },
+    {
+      "actual": {
+        "byte_identical": true,
+        "changed_fraction_max_channel_ge_1": 0.0,
+        "changed_fraction_max_channel_ge_2": 0.0,
+        "changed_fraction_max_channel_ge_8": 0.0,
+        "height": 1080,
+        "max_channel_delta_max": 0,
+        "max_channel_delta_p95": 0,
+        "mean_abs_rgb": 0.0,
+        "width": 1920
+      },
+      "name": "day material pair: gravel_far visual detail/attenuation",
+      "passed": true,
+      "requirement": "mean absolute RGB delta <= 0.02 and <=0.1% pixels have max-channel delta >=2"
+    },
+    {
+      "actual": "4.7.2-stable (official)",
+      "name": "before-aircraft: pinned Godot engine",
+      "passed": true,
+      "requirement": "engine string starts with 4.7.2"
+    },
+    {
+      "actual": "gl_compatibility",
+      "name": "before-aircraft: Compatibility renderer",
+      "passed": true,
+      "requirement": "gl_compatibility"
+    },
+    {
+      "actual": [
+        1920,
+        1080
+      ],
+      "name": "before-aircraft: 1920x1080 capture",
+      "passed": true,
+      "requirement": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "actual": "4.7.2-stable (official)",
+      "name": "after-sunset: pinned Godot engine",
+      "passed": true,
+      "requirement": "engine string starts with 4.7.2"
+    },
+    {
+      "actual": "gl_compatibility",
+      "name": "after-sunset: Compatibility renderer",
+      "passed": true,
+      "requirement": "gl_compatibility"
+    },
+    {
+      "actual": [
+        1920,
+        1080
+      ],
+      "name": "after-sunset: 1920x1080 capture",
+      "passed": true,
+      "requirement": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "actual": {
+        "aircraft": [
+          1920,
+          1080
+        ],
+        "background": [
+          1920,
+          1080
+        ],
+        "report": [
+          1920,
+          1080
+        ]
+      },
+      "name": "before-aircraft: image/report size matched",
+      "passed": true,
+      "requirement": "both images match capture report dimensions"
+    },
+    {
+      "actual": {
+        "aircraft": [
+          1920,
+          1080
+        ],
+        "background": [
+          1920,
+          1080
+        ],
+        "report": [
+          1920,
+          1080
+        ]
+      },
+      "name": "after-sunset: image/report size matched",
+      "passed": true,
+      "requirement": "both images match capture report dimensions"
+    },
+    {
+      "actual": {
+        "after": {
+          "adapter": "NVIDIA GeForce RTX 3090",
+          "engine": "4.7.2-stable (official)",
+          "engine_hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "height": 1080,
+          "renderer": "gl_compatibility",
+          "width": 1920
+        },
+        "before": {
+          "adapter": "NVIDIA GeForce RTX 3090",
+          "engine": "4.7.2-stable (official)",
+          "engine_hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "height": 1080,
+          "renderer": "gl_compatibility",
+          "width": 1920
+        }
+      },
+      "name": "twilight aircraft/background exposure: engine and renderer matched",
+      "passed": true,
+      "requirement": "same engine string/hash and renderer"
+    },
+    {
+      "actual": {
+        "after": [
+          1920,
+          1080
+        ],
+        "before": [
+          1920,
+          1080
+        ]
+      },
+      "name": "twilight aircraft/background exposure: report resolution matched",
+      "passed": true,
+      "requirement": "same report resolution"
+    },
+    {
+      "actual": {
+        "absolute_delta": 0.0001707077026300574,
+        "after": 1.84536802768707,
+        "before": 1.84519731998444
+      },
+      "name": "twilight aircraft/background exposure: twilight_aircraft exposure matched",
+      "passed": true,
+      "requirement": "absolute delta <= 0.001"
+    },
+    {
+      "actual": {
+        "after": 144.0,
+        "before": 144.0
+      },
+      "name": "twilight aircraft/background exposure: twilight_aircraft draw count unchanged",
+      "passed": true,
+      "requirement": "exactly equal reported draw counts"
+    },
+    {
+      "actual": {
+        "absolute_delta": 0.0,
+        "after": 1.84536802768707,
+        "before": 1.84536802768707
+      },
+      "name": "twilight aircraft/background exposure: twilight_background exposure matched",
+      "passed": true,
+      "requirement": "absolute delta <= 0.001"
+    },
+    {
+      "actual": {
+        "after": 44.0,
+        "before": 44.0
+      },
+      "name": "twilight aircraft/background exposure: twilight_background draw count unchanged",
+      "passed": true,
+      "requirement": "exactly equal reported draw counts"
+    },
+    {
+      "actual": {
+        "absolute_delta": 0.0001707077026300574,
+        "aircraft": 1.84519731998444,
+        "background": 1.84536802768707
+      },
+      "name": "before-aircraft: aircraft and background exposure matched",
+      "passed": true,
+      "requirement": "absolute delta <= 0.001"
+    },
+    {
+      "actual": {
+        "absolute_delta": 0.0,
+        "aircraft": 1.84536802768707,
+        "background": 1.84536802768707
+      },
+      "name": "after-sunset: aircraft and background exposure matched",
+      "passed": true,
+      "requirement": "absolute delta <= 0.001"
+    },
+    {
+      "actual": 78,
+      "name": "before-aircraft: aircraft mask isolates silhouette",
+      "passed": true,
+      "requirement": "40..200 ROI pixels pass max-channel RGB delta >=8 (not a sky-wide mask)"
+    },
+    {
+      "actual": 79,
+      "name": "after-sunset: aircraft mask isolates silhouette",
+      "passed": true,
+      "requirement": "40..200 ROI pixels pass max-channel RGB delta >=8 (not a sky-wide mask)"
+    },
+    {
+      "actual": {
+        "after": 66.6877012658228,
+        "after_over_before": 1.1607368520923131,
+        "before": 57.452902564102565
+      },
+      "name": "twilight: after sunset retains aircraft contrast",
+      "passed": true,
+      "requirement": "mean absolute encoded Rec.709 luma contrast after / before >= 0.95"
+    }
+  ],
+  "day_materials": {
+    "candidate": "after-day",
+    "cases": {
+      "car_park": {
+        "draws": {
+          "after_day": 29.0,
+          "flat_day": 29.0
+        },
+        "image_delta": {
+          "byte_identical": false,
+          "changed_fraction_max_channel_ge_1": 0.17274305555555555,
+          "changed_fraction_max_channel_ge_2": 0.1423017939814815,
+          "changed_fraction_max_channel_ge_8": 0.05270158179012346,
+          "height": 1080,
+          "max_channel_delta_max": 36,
+          "max_channel_delta_p95": 8,
+          "mean_abs_rgb": 1.004647633744856,
+          "width": 1920
+        },
+        "passed": true
+      },
+      "gravel_close": {
+        "draws": {
+          "after_day": 14.0,
+          "flat_day": 14.0
+        },
+        "image_delta": {
+          "byte_identical": false,
+          "changed_fraction_max_channel_ge_1": 0.31383969907407405,
+          "changed_fraction_max_channel_ge_2": 0.2883072916666667,
+          "changed_fraction_max_channel_ge_8": 0.16440393518518517,
+          "height": 1080,
+          "max_channel_delta_max": 38,
+          "max_channel_delta_p95": 17,
+          "mean_abs_rgb": 2.7676615547839507,
+          "width": 1920
+        },
+        "passed": true
+      },
+      "gravel_far": {
+        "draws": {
+          "after_day": 88.0,
+          "flat_day": 88.0
+        },
+        "image_delta": {
+          "byte_identical": true,
+          "changed_fraction_max_channel_ge_1": 0.0,
+          "changed_fraction_max_channel_ge_2": 0.0,
+          "changed_fraction_max_channel_ge_8": 0.0,
+          "height": 1080,
+          "max_channel_delta_max": 0,
+          "max_channel_delta_p95": 0,
+          "mean_abs_rgb": 0.0,
+          "width": 1920
+        },
+        "passed": true
+      }
+    },
+    "reference": "flat-day"
+  },
+  "evidence_root": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\landscape-upgrade\\LU-11",
+  "failed_check_count": 0,
+  "result": "pass",
+  "schema_version": 1,
+  "twilight": {
+    "after_sunset": {
+      "aircraft_mask_fraction": 0.0079,
+      "aircraft_mask_pixels": 79,
+      "mean_abs_encoded_rec709_luma_contrast": 66.6877012658228,
+      "roi_pixel_count": 10000,
+      "roi_xyxy": [
+        910,
+        490,
+        1010,
+        590
+      ]
+    },
+    "before_aircraft": {
+      "aircraft_mask_fraction": 0.0078,
+      "aircraft_mask_pixels": 78,
+      "mean_abs_encoded_rec709_luma_contrast": 57.452902564102565,
+      "roi_pixel_count": 10000,
+      "roi_xyxy": [
+        910,
+        490,
+        1010,
+        590
+      ]
+    },
+    "contrast_ratio_after_over_before": 1.1607368520923131,
+    "draws": {
+      "after-sunset": {
+        "twilight_aircraft": 144.0,
+        "twilight_background": 44.0
+      },
+      "before-aircraft": {
+        "twilight_aircraft": 144.0,
+        "twilight_background": 44.0
+      }
+    },
+    "exposures": {
+      "after_sunset": {
+        "twilight_aircraft": 1.84536802768707,
+        "twilight_background": 1.84536802768707
+      },
+      "before_aircraft": {
+        "twilight_aircraft": 1.84519731998444,
+        "twilight_background": 1.84536802768707
+      }
+    }
+  }
+}

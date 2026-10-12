@@ -1,0 +1,259 @@
+{
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "command": "Godot --headless --path app --script res://tests/test_<test>.gd",
+  "results": [
+    {
+      "test": "landscape_architecture",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.328,
+      "result": [
+        "all architecture checks passed"
+      ]
+    },
+    {
+      "test": "landscape_gravel",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.688,
+      "result": [
+        "landscape gravel: 6 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "landscape_twilight",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.328,
+      "result": [
+        "landscape twilight: 394 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "scenery_ground_lu08",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.516,
+      "result": [
+        "LU08 scenery ground checks passed"
+      ]
+    },
+    {
+      "test": "scenery_build",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 2.656,
+      "result": [
+        "all scenery build checks passed"
+      ]
+    },
+    {
+      "test": "landscape_population",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.703,
+      "result": [
+        "all landscape population checks passed"
+      ]
+    },
+    {
+      "test": "landscape_tree_bounds",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 1.047,
+      "result": [
+        "LU08 trees: 192 seeded/theme builds, deterministic replay, finite bounds incl. 6cm wind; max static triangles=1131 size=(7.628463, 9.992744, 7.669644) unique shapes=64 failures=0"
+      ]
+    },
+    {
+      "test": "landscape_collision_coverage",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.625,
+      "result": [
+        "landscape collision coverage: 54 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "landscape_collision",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.797,
+      "result": [
+        "landscape collision: 51 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "landscape_collision_oracle",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 3.375,
+      "result": [
+        "landscape collision oracle: 326 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "landscape_collision_world",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 1.718,
+      "result": [
+        "landscape collision production: 0 failures"
+      ]
+    },
+    {
+      "test": "landscape_collision_setup",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 1.391,
+      "result": [
+        "landscape collision setup: 22 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "landscape_collision_session",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 1.156,
+      "result": [
+        "landscape collision session: 25 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "landscape_checkpoint",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 1.078,
+      "result": [
+        "landscape checkpoint: 18 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "checkpoint_integrity",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.329,
+      "result": [
+        "H8-R1 checkpoint integrity: 149 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "checkpoint",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 1.796,
+      "result": [
+        "H8 checkpoints: 90 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "visual_checkpoint",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.313,
+      "result": [
+        "40 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "landscape_scenery_eligibility",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.609,
+      "result": [
+        "landscape scenery eligibility: 7 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "landscape_lighting",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.625,
+      "result": [
+        "45 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "landscape_marker_optics",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.407,
+      "result": [
+        "LU-09: 32 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "world_sky",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.296,
+      "result": [
+        "38 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "world_flow",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 3.563,
+      "result": [
+        "26 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "time_of_day_render",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 1.422,
+      "result": [
+        "203 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "time_of_day_render_update",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 4.672,
+      "result": [
+        "TOD-09b render update: 94 checks, 0 failed; scenery=true"
+      ]
+    },
+    {
+      "test": "time_of_day_scenery_update",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 1.64,
+      "result": [
+        "25 scenery lighting checks, 0 failed"
+      ]
+    },
+    {
+      "test": "time_of_day_checkpoint",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 4.735,
+      "result": [
+        "TOD-08a Main: 48 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "time_of_day_checkpoint_v2",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 0.312,
+      "result": [
+        "36 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "scenery_trace",
+      "passed": true,
+      "exit_code": 0,
+      "elapsed_s": 13.375,
+      "result": [
+        "all scenery trace checks passed"
+      ]
+    }
+  ],
+  "passed": true
+}

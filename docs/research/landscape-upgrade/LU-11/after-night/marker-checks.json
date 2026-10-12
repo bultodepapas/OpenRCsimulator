@@ -1,0 +1,86 @@
+{
+  "checks": {
+    "visible_core": true,
+    "intermediate_fade": true,
+    "daylight_off": true,
+    "opaque_occlusion": true,
+    "fixed_exposure": true,
+    "runway_threshold_directional_color": true,
+    "runway_inside_directional_color": true,
+    "runway_east_far_directional_color": true
+  },
+  "samples": {
+    "marker_clear": {
+      "sum_rgb": 31680,
+      "peak_rgb": [
+        130,
+        183,
+        153
+      ],
+      "lamp_factor": 1.0,
+      "exposure": 3206.92724609375
+    },
+    "marker_half": {
+      "sum_rgb": 24448,
+      "peak_rgb": [
+        89,
+        152,
+        119
+      ],
+      "lamp_factor": 0.5,
+      "exposure": 3206.92724609375
+    },
+    "marker_occluded": {
+      "sum_rgb": 0,
+      "peak_rgb": [
+        0,
+        0,
+        0
+      ],
+      "lamp_factor": 1.0,
+      "exposure": 3206.92724609375
+    },
+    "marker_off": {
+      "sum_rgb": 0,
+      "peak_rgb": [
+        0,
+        0,
+        0
+      ],
+      "lamp_factor": 0.0,
+      "exposure": 3206.92724609375
+    },
+    "runway_east_far": {
+      "sum_rgb": 1813,
+      "peak_rgb": [
+        130,
+        182,
+        153
+      ],
+      "lamp_factor": 1.0,
+      "exposure": 3206.92724609375
+    },
+    "runway_inside": {
+      "sum_rgb": 1928,
+      "peak_rgb": [
+        193,
+        136,
+        127
+      ],
+      "lamp_factor": 1.0,
+      "exposure": 3206.92724609375
+    },
+    "runway_threshold": {
+      "sum_rgb": 31680,
+      "peak_rgb": [
+        130,
+        183,
+        153
+      ],
+      "lamp_factor": 1.0,
+      "exposure": 3206.92724609375
+    }
+  },
+  "passed": true,
+  "note": "Encoded RGB comparison, not linear radiance or photometric calibration; raw engine PNGs."
+}

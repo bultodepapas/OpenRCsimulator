@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-12",
+  "baseline": "8b2020f",
+  "observed_head": "09e3ac0660eef395743c76aa2f1cadcaad385da4",
+  "note": "Source content identity; concurrent developers may commit during delivery. Text hashes normalize CRLF to LF without modifying the working tree.",
+  "files": {
+    "app/scenery/prefabs.gd": {
+      "sha256": "1960f37afc949ffeb943f0bb48de087367c68db477b25e8a3097ee1e1b362902",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/scenery/scenery.gd": {
+      "sha256": "83f16d1c7e564c9d86315e071c41a1342c344875d62306684d95d05103c0378e",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/scenery/ground_features.gd": {
+      "sha256": "f899d7bdd77c80f6b6ec980dbc73549c887b91f3fc232bab5d162a978bc6c4dd",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/scenery/gravel.gdshader": {
+      "sha256": "4349ffb34e450382882f11912fd0ec5d65d05e7e8fb4810ac23de0b0af8857a1",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/scenery/collision_world.gd": {
+      "sha256": "5571df30bbb9ef0076fc5934a69120c9397dc51659206612952da2a70ff4bba7",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/render/world/sky_state.gd": {
+      "sha256": "e7c805ecce864aa115d0c4837eed9f6da76b59bd3342e7a5c78527ce7833b711",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/render/landscape_upgrade/twilight_palette.gd": {
+      "sha256": "a19098324e298c26dd46c73224cb8aca5dda5b0dd4ba83aaa3ebddadb727cb78",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/render/cloud_field.gdshaderinc": {
+      "sha256": "d81a737759b3cf63249a99afcfca708ffa3e0c0442c31b7ff8ac136e049b4cce",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/render/tree_assets.gd": {
+      "sha256": "bff775b4451b8e80a7ab69e6c9790ad00f5ee696bee582eaffb1869baf68d68d",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/render/tree_wind.gdshaderinc": {
+      "sha256": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/render/treeline.gdshader": {
+      "sha256": "1729b1b30aa6055dc68473937a7ce32ba3b010f1777e8dcf1c684498e838555a",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/tests/capture_landscape_upgrade.gd": {
+      "sha256": "5100baee4d80141ef5c3d9fdd91d6169190041e51bb279f05b941573d6da82ce",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/tests/test_landscape_runtime.gd": {
+      "sha256": "aa24e429077ae91e5a6c17bece58c79c3792a09a16e87d2f15861b1e04a28c5c",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/tests/test_landscape_architecture.gd": {
+      "sha256": "b0823f229b7e96493281c050fe0cf110d6c16d51152856fb463cb07405e7fdb9",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/tests/test_landscape_gravel.gd": {
+      "sha256": "0474182745d63c9ddcb5df3c6eadd15564347ddabb21ea1948457f0bed37c52f",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/tests/test_landscape_twilight.gd": {
+      "sha256": "1daf114573c6f05edca158c5ffc939daad5b4bd0e9ede394a41a37ab512aabdd",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/tests/test_landscape_collision_coverage.gd": {
+      "sha256": "7760a3e39dcfc482ec0b03ca229cbc2bf89b95504cf2b20f724bfaf16a7b2899",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/tests/test_landscape_collision.gd": {
+      "sha256": "d6314bea2c6b58d8b5a56d165c4e36e2a05cf790cfc7604d24272da7583749a1",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/tests/fixtures/landscape_twilight_reference.json": {
+      "sha256": "98932702892973fcb3bf85d1084c5aa697b5182c3c0303860d816efb5e7b4605",
+      "encoding": "CRLF-to-LF"
+    },
+    "tools/landscape/verify_materials.py": {
+      "sha256": "5056852eee10bea3596c8d20e708dd90d53f17893453449813200a474e6eafcc",
+      "encoding": "CRLF-to-LF"
+    },
+    "tools/landscape/verify_markers.py": {
+      "sha256": "cee6638af85dc0e86fc37a8fcfe3ed0fd20060c94063cb12f0fb5dd774df126a",
+      "encoding": "CRLF-to-LF"
+    },
+    "tools/landscape/verify_glare.py": {
+      "sha256": "111ca873892363fc7c1198cb85e540d98a1656c81536a5fdc96b90b29991607e",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/assets/landscape/UPGRADE_CREDITS.md": {
+      "sha256": "bae2f51fada46c4e8bfc31571cf76f1cf24b8409762c157ec3a36bf0d6678649",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/export_presets.cfg": {
+      "sha256": "52a50d072c4538dc74fded81418fa46e668b2b57244638ab5c5653da4f9e00e3",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/data/scenery/default.json": {
+      "sha256": "ffdaaf280752b0a173f8114ec95249b1bab806863a32e0d7946dbfc20bfaff81",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/assets/landscape/trees/catalog.json": {
+      "sha256": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+      "encoding": "CRLF-to-LF"
+    },
+    "app/assets/landscape/trees/atlas.png": {
+      "sha256": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+      "encoding": "raw"
+    }
+  }
+}

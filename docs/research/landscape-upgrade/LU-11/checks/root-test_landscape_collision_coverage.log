@@ -1,0 +1,57 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok tree asset catalog loads
+ok tree atlas image loads for occupied-alpha measurement
+ok deterministic identity search finds all field-tree species
+ok CommonTree_1 alpha half-width is measured from occupied atlas pixels
+ok CommonTree_1 frame multiplier matches the card builder
+ok CommonTree_1 bound does not use the transparent full-card width
+ok CommonTree_3 alpha half-width is measured from occupied atlas pixels
+ok CommonTree_3 frame multiplier matches the card builder
+ok CommonTree_3 bound does not use the transparent full-card width
+ok Pine_1 alpha half-width is measured from occupied atlas pixels
+ok Pine_1 frame multiplier matches the card builder
+ok Pine_1 bound does not use the transparent full-card width
+ok field-tree wind allowance matches the renderer
+ok species CommonTree_1 world builds
+ok species CommonTree_1 retains a solid trunk
+ok species CommonTree_1 crown uses a yaw-safe conservative box
+ok species CommonTree_1 crown has measured horizontal and preserved vertical extents
+ok species CommonTree_1 tree identity includes wind allowance
+ok species CommonTree_1 now responds beyond the former 0.18-height radius
+ok species CommonTree_1 query outside the conservative crown square stays clear
+ok species CommonTree_1 crown remains covered off-axis at its widest occupied alpha height
+ok species CommonTree_1 crown remains covered off-axis at its topmost occupied alpha height
+ok species CommonTree_3 world builds
+ok species CommonTree_3 retains a solid trunk
+ok species CommonTree_3 crown uses a yaw-safe conservative box
+ok species CommonTree_3 crown has measured horizontal and preserved vertical extents
+ok species CommonTree_3 tree identity includes wind allowance
+ok species CommonTree_3 now responds beyond the former 0.18-height radius
+ok species CommonTree_3 query outside the conservative crown square stays clear
+ok species CommonTree_3 crown remains covered off-axis at its widest occupied alpha height
+ok species CommonTree_3 crown remains covered off-axis at its topmost occupied alpha height
+ok species Pine_1 world builds
+ok species Pine_1 retains a solid trunk
+ok species Pine_1 crown uses a yaw-safe conservative box
+ok species Pine_1 crown has measured horizontal and preserved vertical extents
+ok species Pine_1 tree identity includes wind allowance
+ok species Pine_1 now responds beyond the former 0.18-height radius
+ok species Pine_1 query outside the conservative crown square stays clear
+ok species Pine_1 crown remains covered off-axis at its widest occupied alpha height
+ok species Pine_1 crown remains covered off-axis at its topmost occupied alpha height
+ok pavilion collision inventory builds
+ok pavilion identity is stable for a repeated build
+ok pavilion geometry change updates checkpoint world identity
+ok pavilion uses eleven bounded parts instead of a filled air envelope
+ok pavilion slab bounds match its ten-by-nine-point-six metre mesh
+ok pavilion main block and pitched roof have separate bounds
+ok porch roof stays a thin conservative bound over the measured overhang
+ok built-in pavilion bench receives a low-obstacle proxy
+ok all four porch posts and two interrupted top rails remain separate
+ok center porch step bay remains open to an aircraft at 1.2 m
+ok porch corner support post is collidable
+ok porch low rail is collidable
+ok porch floor slab is collidable from above
+ok porch roof underside is independently collidable
+landscape collision coverage: 54 checks, 0 failures
