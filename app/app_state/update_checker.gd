@@ -21,8 +21,12 @@ var state_path: String = UpdateCheck.STATE_PATH
 var running_version := ""
 ## -1 reads the system clock; tests set a time.
 var now_unix := -1
-## Seconds before a stalled answer counts as a transport error; tests shorten it.
+## Seconds of processed frames before a stalled answer counts as a transport error; tests shorten it. Counted by
+## _process with each frame capped at MAX_FRAME_S: a wall clock would expire during the long first frames of a
+## cold start (shader compilation, scenery) before the request had a chance to run (seen on an exported build).
 var timeout_s: float = UpdateCheck.TIMEOUT_S
+const MAX_FRAME_S := 0.05
+var _active_s := 0.0
 var state: Dictionary = UpdateCheck.default_state()
 var _announced_tag := ""
 var _http: HTTPRequest
@@ -30,6 +34,7 @@ var _http: HTTPRequest
 
 func _init() -> void:
 	name = "UpdateChecker"
+	set_process(false)
 
 
 func _ready() -> void:
@@ -54,13 +59,25 @@ func _start() -> void:
 	# 10 s timeout (and quitting the app) wait forever on the thread join (UI-16-R1 review). Unthreaded, HTTPRequest
 	# resolves, handshakes and reads a little per frame: Home keeps drawing and the timeout really fires.
 	_http.use_threads = false
-	_http.timeout = timeout_s
+	_http.timeout = 0.0 # the engine's timeout is wall clock; ours counts processed frames (_process)
+	_active_s = 0.0
+	set_process(true)
 	_http.body_size_limit = UpdateCheck.MAX_BODY_BYTES
 	add_child(_http)
 	_http.request_completed.connect(_on_completed)
 	var err := _http.request(url, UpdateCheck.headers(state.etag, running_version, OS.get_name()))
 	if err != OK:
 		_finish("request error %d" % err, false)
+
+
+func _process(delta: float) -> void:
+	if _http == null:
+		set_process(false)
+		return
+	_active_s += minf(delta, MAX_FRAME_S)
+	if _active_s >= timeout_s:
+		_http.cancel_request() # unthreaded: a plain socket close, nothing to join
+		_finish("transport error %d" % HTTPRequest.RESULT_TIMEOUT, false)
 
 
 func _on_completed(result: int, code: int, response_headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -97,6 +114,7 @@ func _finish(status: String, checked: bool) -> void:
 	if _http != null:
 		_http.queue_free()
 		_http = null
+	set_process(false)
 	if not checked:
 		print("update check: ", status)
 	_announce()

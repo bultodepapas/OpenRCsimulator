@@ -6,9 +6,9 @@
 
 | File | Change |
 | --- | --- |
-| `app/app_state/aircraft_catalog.gd` | Fifth entry `turbo-lumber-evolution` ("E-flite Turbo Timber Evolution", PREVIEW, `data = ""`, status note "Preview only: electric propulsion and flight data are not simulated yet."); `flyable_entries()` and `flyable_ids()` return the entries that carry data, in menu order |
+| `app/app_state/aircraft_catalog.gd` | Fifth entry `turbo-lumber-evolution` (name "Turbo Lumber Evolution", Spanish "Turbo Tronco Evolución" through `es.po`: the fictional name the owner chose on 2026-10-12 so the product carries no manufacturer trademark; PREVIEW, `data = ""`, status note "Preview only: electric propulsion and flight data are not simulated yet."); `flyable_entries()` and `flyable_ids()` return the entries that carry data, in menu order. The entry was first registered as `eflite-turbo-timber-evolution` and renamed the same day together with the asset folders `*/aircraft/turbo-timber-evolution/` → `turbo-lumber-evolution/`; the delivery folder and the internal codename "Timber" are unchanged |
 | `app/render/airplane.gd` | `TIMBER_ID`, `Timber` preload; `build()` dispatches to `timber_model.gd`; `datum()` is `(0, 0)` (the imported scene sits at D0); `apply_surfaces()` routes the Timber (and the Avanti) to their degree-based `apply_surfaces` |
-| `app/i18n/es.po` | Spanish summary and status note |
+| `app/i18n/es.po` | Spanish name, summary and status note |
 | `app/tests/test_aircraft_catalog.gd` | Five IDs, four flyable, wrap on the last ID, adapter list with `TIMBER_ID`; a preview may carry a real propeller (`has_propeller == propeller.visible`) |
 | `app/tests/test_projected_shadow.gd`, `test_world_field_lights.gd` | `TIMBER_ID` in the explicit lists (shadow footprint and night kit on the imported mesh) |
 | `app/tests/test_aircraft_contract.gd`, `test_trace_metadata.gd`, `test_contact_policy.gd`, `test_aero_flow.gd`, `test_slipstream_scalar.gd`, `test_strip_induced.gd`, `test_wash_transport.gd`, `test_propulsion_scalar.gd`, `test_attached_flow.gd`, `test_aircraft_render_contract.gd`, `test_shaft_data.gd` | Iterate `flyable_entries()` / `flyable_ids()` (one line each): previews carry no data file. `test_contact_policy` compares its screened list with `flyable_ids()` |

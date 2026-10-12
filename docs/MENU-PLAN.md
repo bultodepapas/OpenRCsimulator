@@ -41,7 +41,7 @@ The update notice (UI-16) reads that identity. On the interactive route of an ex
 | UI-06a-R1 / c-R1 | Checkpoint launch-attribution repair and refreshed package proof | [Repair](research/menu-investigations/UI-06a-R1/README.md), [export](research/menu-investigations/UI-06c-R1/README.md) |
 | UI-06d | Current interactive defaults, existing options enabled without physics tuning | [Default profile evidence](research/menu-investigations/UI-06d/README.md) |
 | UI-20/21 | Shell audit and shared-screen refactor with unchanged visual/flight results | [Audit](research/menu-investigations/UI-20/README.md), [implementation](research/menu-investigations/UI-21/README.md) |
-| UI-16 | Update notice: once-a-day GitHub release check in exported builds, top-right card with Download/Hide, `[updates] check` opt-out; manual download | [Rules and checker](../app/tests/test_update_check.gd), [card and route](../app/tests/test_ui_update_notice.gd), [evidence](research/menu-investigations/UI-16/README.md) |
+| UI-16, UI-16-R1 | Update notice: once-a-day GitHub release check in exported builds, top-right card with Download/Hide, `[updates] check` opt-out; manual download; R1 repairs from the independent review (unthreaded request, per-build cache) | [Rules and checker](../app/tests/test_update_check.gd), [card and route](../app/tests/test_ui_update_notice.gd), [evidence](research/menu-investigations/UI-16/README.md) |
 
 Original research and executed engine probes: [menu investigations](research/menu-investigations/README.md). They are dated evidence; current code supersedes their older catalog, pause and layout descriptions.
 

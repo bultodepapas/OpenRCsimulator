@@ -5968,7 +5968,7 @@
       "radius": 0.058002
     }
   },
-  "scene": "res://assets/aircraft/turbo-timber-evolution/timber.glb",
+  "scene": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
   "scene_root": {
     "children": 1,
     "identity": true,

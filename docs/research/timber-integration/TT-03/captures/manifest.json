@@ -1,5 +1,5 @@
 {
-  "aircraft_id": "eflite-turbo-timber-evolution",
+  "aircraft_id": "turbo-lumber-evolution",
   "asset_sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5",
   "captures": [
     {
@@ -1984,7 +1984,7 @@
     }
   ],
   "format": "openrc-capture-manifest v1",
-  "geometry_sha256": "8f8baa5c54f2a436ce625b1a461e971256e2d912cb28bd2d5ef5e8cab63035e3",
+  "geometry_sha256": "79a4ff031974af22b778525731bfa5497007402df565ab303df9aaa3aa95c6e4",
   "image_size": [
     1280,
     720
@@ -2005,7 +2005,7 @@
     ]
   },
   "limits": "Prepared views for geometry and material review of the imported r1 model under the Compatibility renderer; not a pilot readability test.",
-  "model_sha256": "288ed7c36438bba53125705897623a73e60518259bcd1e6a395cf11a409391a9",
+  "model_sha256": "6b4376c18fa10a6674a0e7ecb0f862a17154f0386d61d6ceea32307429188c5d",
   "ortho_size_m": 1.8574944,
   "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
   "rendering_method": "gl_compatibility",
