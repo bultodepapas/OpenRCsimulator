@@ -13,7 +13,7 @@ const IMAGE_SIZE := Vector2i(1280, 720)
 const SKY := Color("#9bcef0")
 const PLAN_UP := Vector3(0, 0, -1) # plan views: nose at the top of the image
 const NEUTRAL := {roll = 0.0, pitch = 0.0, yaw = 0.0, flap = 0.0}
-const FULL := {roll = 1.0, pitch = 1.0, yaw = 1.0, flap = 35.0}
+const FULL := {roll = 1.0, pitch = 1.0, yaw = 1.0, flap = 36.6} # flap: manual 35 mm converted (geometry.json controls.flap.full_deg); checked in views()
 const PILOT_FOV_DEG := 50.0 # same field of view as the Stik and Extra inspectors' flight-distance views
 const FLIGHT_DISTANCES_M := [20.0, 50.0, 100.0]
 
@@ -61,6 +61,7 @@ static func views(suite: String) -> Array:
 	var c := orbit_center()
 	var far := s * 2.5
 	var out := []
+	assert(absf(float(FULL.flap) - float(D.controls.flap.full_deg.value)) < 0.1, "FULL.flap must be the manual full-flap conversion")
 	if suite in ["inspection", "all"]:
 		out += [
 			_view("inspection_front", Vector3(0, 0, -far), Vector3.ZERO, "ortho"),
@@ -168,7 +169,7 @@ func _run() -> void:
 		"ortho_size_m": ortho_size_m(),
 		"span_m": span(),
 		"throws_deg": throws,
-		"throws_source": "manual millimetres converted at the assumed stations (geometry.json controls); flaps 35 mm = full",
+		"throws_source": "manual millimetres converted at the assumed stations (geometry.json controls); full flap = 35 mm = %.1f deg" % float(D.controls.flap.full_deg.value),
 		"light": {"sun_rotation_deg": [-50, -35, 0], "sun_energy": 1.1, "ambient": [0.75, 0.78, 0.82], "ambient_energy": 0.55, "sky": SKY.to_html(false)},
 		"renderer": RenderingServer.get_video_adapter_name(),
 		"rendering_method": RenderingServer.get_current_rendering_method(),

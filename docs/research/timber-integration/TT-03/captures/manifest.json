@@ -212,7 +212,7 @@
         -0.882309794425964
       ],
       "controls": {
-        "flap": 35.0,
+        "flap": 36.6,
         "pitch": 1.0,
         "roll": 1.0,
         "yaw": 1.0
@@ -220,7 +220,7 @@
       "file": "inspection_oblique_front_left_full.png",
       "fov_deg": 40.0,
       "ortho_size_m": null,
-      "png_sha256": "a12f68a9a948748f221b67a7f42f79e941ee9b45fb2155a48762145a4ab910e4",
+      "png_sha256": "003efcef4fa7cc408bc6192a6e4f35bcd09aad9abc4964a0de2de112c1ba743c",
       "projection": "persp",
       "target_m": [
         0.0,
@@ -245,7 +245,7 @@
         1.51695382595062
       ],
       "controls": {
-        "flap": 35.0,
+        "flap": 36.6,
         "pitch": 1.0,
         "roll": 1.0,
         "yaw": 1.0
@@ -253,7 +253,7 @@
       "file": "inspection_oblique_rear_right_full.png",
       "fov_deg": 40.0,
       "ortho_size_m": null,
-      "png_sha256": "c9c32f1627ae3df483e574cc40feca9cee5d961f5b0de2642a191478f793d3ee",
+      "png_sha256": "36468f466106604f042629f25fdae964bf313854867749b72cf0cf8371f8bb4d",
       "projection": "persp",
       "target_m": [
         0.0,
@@ -2017,6 +2017,6 @@
     "elevator": 17.806,
     "rudder": 18.15
   },
-  "throws_source": "manual millimetres converted at the assumed stations (geometry.json controls); flaps 35 mm = full",
+  "throws_source": "manual millimetres converted at the assumed stations (geometry.json controls); full flap = 35 mm = 36.6 deg",
   "visual_revision": "r1-fb7586f19029"
 }

@@ -153,6 +153,11 @@ func _run() -> void:
 		var world := Timber.relative(root, node)
 		_check("%s world pivot = constants" % name, world.origin.distance_to(_v3(a.pivot)) < POSITION_TOLERANCE_M, str(world.origin))
 		_check("%s world axis = constants" % name, (world.basis.x - _v3(a.axis)).length() < REST_TOLERANCE, str(world.basis.x))
+		# The whole world basis, wrapped or not: the declared parent's world basis times the imported rest basis.
+		var declared_parent := root.find_child(String(a.parent), true, false) as Node3D
+		var expected_basis := Timber.relative(root, declared_parent).basis * _basis_of(a.rest_basis)
+		_check("%s world basis = declared parent x rest" % name, (world.basis.x - expected_basis.x).length() < REST_TOLERANCE
+			and (world.basis.y - expected_basis.y).length() < REST_TOLERANCE and (world.basis.z - expected_basis.z).length() < REST_TOLERANCE, str(world.basis))
 		var extras: Dictionary = node.get_meta("extras", {})
 		_check("%s glTF extras agree" % name, extras.get("articulation", "") == name and extras.get("positive", "") == String(a.positive)
 			and (a.range_deg == null or (absf(float(extras.get("min_deg", NAN)) - float(a.range_deg[0])) < 1e-9 and absf(float(extras.get("max_deg", NAN)) - float(a.range_deg[1])) < 1e-9)), str(extras))

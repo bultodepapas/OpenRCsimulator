@@ -2,6 +2,10 @@
 # One adapter for every catalog aircraft (app_state/aircraft_catalog.gd): build(id) dispatches to the model team's
 # builder for that ID; with no argument it is the Ugly Stik, as before. Every build returns at least
 # { root, propeller, hinges, aircraft_id } and keeps the `airplane`, `propeller` and `*_hinge` node names.
+# `propeller.rotation.z` is the spin phase main.gd accumulates from the rotor speed (positive). The Timber's wrapper
+# turns +θ clockwise seen from behind, the simulator's rotor sense (sim/flight_session.gd, physics/dynamics.gd); the
+# Stik, Extra and P-51 propeller nodes are root-aligned (+Z aft), so the same +θ turns them counter-clockwise seen from
+# behind. The model owner decides which way the three procedural propellers should turn (TT-05 review finding).
 extends RefCounted
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")

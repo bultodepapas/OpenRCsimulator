@@ -260,6 +260,13 @@ def main():
     for name, a in arts.items():
         p = pivots[name]
         rng = a["range"]
+        if name in APP_SIGN:
+            # app_sign assumes the author's axis directions: hinge +X for ailerons/flaps/elevator (positive = trailing
+            # edge down), +Y for the rudder (positive = trailing edge right). A flipped r2 axis must fail here, not later.
+            axis_index = 1 if name == "rudder_hinge" else 0
+            if p["root_axis_x"][axis_index] <= 0.9:
+                sys.exit("%s: measured hinge axis %s no longer points along +%s; review APP_SIGN before regenerating"
+                         % (name, p["root_axis_x"], "Y" if axis_index else "X"))
         articulations[name] = {
             "node": a["node"], "parent": p["parent"], "mesh_node": a["mesh_node"], "members": a["members_description"],
             "pivot": p["root_origin"], "axis": p["root_axis_x"],
