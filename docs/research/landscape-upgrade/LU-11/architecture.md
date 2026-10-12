@@ -1,6 +1,6 @@
 # Pavilion and shelter architecture details
 
-Status: implementation and bounds verification complete; matched native image review remains with LU-14. Evidence date: 2026-10-12.
+Status: implementation, bounds verification and lead native review complete. Evidence date: 2026-10-12.
 
 The LU-07 daylight views show the pavilion's broad, plain facade and roof edge, and the two pit shelters' exposed sheet ends ([pavilion](../LU-07/day/postcard_pavilion.png), [club](../LU-07/day/postcard_club.png)). Their existing prefab meshes are original vertex-coloured geometry emitted through [`MeshKit`](../../../../app/scenery/mesh_kit.gd) and the shared [`Palette`](../../../../app/scenery/palette.gd). The static prefabs are appended to their existing cell mesh; the renderer makes one surface per cell.
 
@@ -15,4 +15,4 @@ The baseline was commit `8b2020f`, prefab blob `b6e4a28c9b7c8a6f73a2095066d76c07
 
 These observed bounds are asymmetric, especially the pavilion's front veranda. The test checks min and max per axis instead of assuming that the AABB is centred at the prefab origin.
 
-The focused [`test_landscape_architecture.gd`](../../../../app/tests/test_landscape_architecture.gd) passes on Godot 4.7.2 with the production project path. It verifies the measured bounds, repeat-build determinism, no moving parts, one batched surface per prefab, and the default-layout triangle cap. The same source and test passed in an isolated draft before installation, including a Godot editor scan. Native before/after image review and scene-level performance remain in the lead-owned LU-14 integration run; this report makes no visual or timing acceptance claim.
+The focused [`test_landscape_architecture.gd`](../../../../app/tests/test_landscape_architecture.gd) passes nine checks on Godot 4.7.2 with the production project path. It verifies the measured bounds, repeat-build determinism, no moving parts, one batched surface per prefab, and the default-layout triangle cap. The same source and test passed in an isolated draft before installation, including a Godot editor scan. The lead reviewed matched pavilion/club images in daylight, sunset and night: doors, roof edges and gutters add restrained construction detail without enlarging the silhouettes. Existing lit window inserts partly cover the new transoms. Scene-level measurements and native images are in the [integration report](README.md).

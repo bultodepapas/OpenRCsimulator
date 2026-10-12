@@ -1,6 +1,12 @@
 # Landscape upgrade tools
 
-Status: LU-06 native evidence tooling, 2026-10-11. Target: pinned Godot 4.7.2 Compatibility.
+Status: LU-06–14 native evidence tooling, updated 2026-10-12. Target: pinned Godot 4.7.2 Compatibility.
+
+LU-11–14 adds `gravel_close`, `gravel_far`, `twilight_aircraft`, and `twilight_background` views. `--gravel_detail=off` keeps the new shader but zeros its detail strength for pixel comparisons; `--gravel_detail=legacy` restores the original opaque material for a timing comparison. Run those performance pairs sequentially without competing engine/test jobs. `python tools/landscape/verify_materials.py --root <folder>` checks the `after-day`, `flat-day`, `before-aircraft`, and `after-sunset` reports and PNGs. The before-aircraft baseline was captured before the twilight change; keep it with the evidence. The checker measures encoded image contrast, not physical luminance or pilot recognition.
+
+The 13-state twilight reference in `app/tests/fixtures/landscape_twilight_reference.json` records its baseline commit, source hash and engine. Its vector fields also retain little-endian float32 bytes: decimal JSON round trips in this engine did not preserve every tiny source-vector value. The regression compares exact unaffected vectors and a 2 ppm tolerance on affected linear luminance and scalar values. Do not regenerate this reference merely to make an unintended sky change pass.
+
+Compatibility's viewport shadow-draw counter returned zero even in native shadow-enabled captures; those reports retain the raw values. Treat the reported visible/total counts conservatively as renderer counters, not independently measured shadow-pass accounting. [Material/architecture pass and complete raw evidence](../../docs/research/landscape-upgrade/LU-11/README.md).
 
 LU-07–10 continuation (2026-10-12): additional views `pit_service`, `runway_west`, `runway_east_far`, `runway_inside`. Run native capture **without `--headless`**: it waits on `RenderingServer.frame_post_draw`, which a headless renderer does not supply. Always use an absolute `--out` path.
 

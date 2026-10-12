@@ -1,0 +1,257 @@
+{
+  "command": "Godot_v4.7.2-stable_win64_console.exe --path app --script res://tests/capture_landscape_upgrade.gd --",
+  "captures": [
+    {
+      "folder": "before-day",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "car_park,postcard_club,postcard_pavilion,pilot_north",
+        "engine_shadows": "off",
+        "frames": "600",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/before-day",
+        "scenery": "on",
+        "soundscape": "off",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "before-sunset",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_club,postcard_pavilion,pilot_north",
+        "engine_shadows": "off",
+        "frames": "600",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/before-sunset",
+        "scenery": "on",
+        "soundscape": "off",
+        "time_of_day": "sunset",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "before-night",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_pavilion,runway_threshold",
+        "engine_shadows": "off",
+        "frames": "600",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/before-night",
+        "scenery": "on",
+        "soundscape": "off",
+        "time_of_day": "night",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "before-aircraft",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "twilight_aircraft,twilight_background",
+        "engine_shadows": "off",
+        "frames": "30",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/before-aircraft",
+        "scenery": "on",
+        "soundscape": "off",
+        "time_of_day": "sunset",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "after-day",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "car_park,postcard_club,postcard_pavilion,pilot_north,postcard_pits,gravel_close,gravel_far",
+        "engine_shadows": "off",
+        "frames": "600",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/after-day",
+        "scenery": "on",
+        "soundscape": "off",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "after-sunset",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_club,postcard_pavilion,pilot_north,twilight_aircraft,twilight_background",
+        "engine_shadows": "off",
+        "frames": "600",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/after-sunset",
+        "scenery": "on",
+        "soundscape": "off",
+        "time_of_day": "sunset",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "after-night",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_pavilion,runway_threshold,runway_inside,runway_east_far,marker_clear,marker_half,marker_off,marker_occluded",
+        "engine_shadows": "off",
+        "frames": "600",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/after-night",
+        "scenery": "on",
+        "soundscape": "off",
+        "time_of_day": "night",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "flat-day",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "car_park,gravel_close,gravel_far",
+        "engine_shadows": "off",
+        "frames": "600",
+        "gravel_detail": "off",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/flat-day",
+        "scenery": "on",
+        "soundscape": "off",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "legacy-day",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "car_park,gravel_close,postcard_club",
+        "engine_shadows": "off",
+        "frames": "600",
+        "gravel_detail": "legacy",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/legacy-day",
+        "scenery": "on",
+        "soundscape": "off",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "paired-day",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "car_park,gravel_close,postcard_club",
+        "engine_shadows": "off",
+        "frames": "600",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/paired-day",
+        "scenery": "on",
+        "soundscape": "off",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "golden-hour",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_pavilion,pilot_north",
+        "engine_shadows": "off",
+        "frames": "30",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/golden-hour",
+        "scenery": "on",
+        "soundscape": "off",
+        "time_of_day": "golden_hour",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "blue-hour",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_pavilion,pilot_north",
+        "engine_shadows": "off",
+        "frames": "30",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/blue-hour",
+        "scenery": "on",
+        "soundscape": "off",
+        "time_of_day": "blue_hour",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "dawn",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_pavilion,pilot_north",
+        "engine_shadows": "off",
+        "frames": "30",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/dawn",
+        "scenery": "on",
+        "soundscape": "off",
+        "time_of_day": "dawn",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "glare",
+      "width": 1280,
+      "height": 720,
+      "args": {
+        "cases": "glare_clear,glare_off,glare_blocked,glare_blocked_off,glare_partial,glare_partial_off,glare_aircraft,glare_aircraft_off,glare_aircraft_left,glare_aircraft_left_off,glare_aircraft_right,glare_aircraft_right_off,glare_side,glare_side_off,glare_night,glare_night_off,glare_cloud,glare_cloud_off,glare_low_exposure,glare_low_exposure_off,glare_half",
+        "engine_shadows": "off",
+        "frames": "30",
+        "height": "720",
+        "out": "<absolute-evidence-root>/glare",
+        "scenery": "on",
+        "soundscape": "off",
+        "width": "1280"
+      }
+    },
+    {
+      "folder": "tod-night",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_pavilion,runway_threshold",
+        "engine_shadows": "off",
+        "frames": "30",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/tod-night",
+        "scenery": "on",
+        "soundscape": "off",
+        "time-of-day": "00:00",
+        "width": "1920"
+      }
+    },
+    {
+      "folder": "shadows-day",
+      "width": 1920,
+      "height": 1080,
+      "args": {
+        "cases": "postcard_pavilion,twilight_aircraft",
+        "engine_shadows": "on",
+        "frames": "600",
+        "height": "1080",
+        "out": "<absolute-evidence-root>/shadows-day",
+        "scenery": "on",
+        "soundscape": "off",
+        "width": "1920"
+      }
+    }
+  ],
+  "note": "Run one at a time, without --headless. Before folders require baseline 8b2020f source; before-aircraft used the new fixed camera harness with baseline sky_state. runtime-final uses test_landscape_runtime.gd with --out=<absolute-folder> --soundscape=off."
+}
