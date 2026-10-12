@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: player guide checked against current source on 2026-10-12. [rc7 release notes](releases/v0.1.0-rc7.md) describe the published download; [current source](#current-source) has newer defaults and features. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: player guide checked against current source on 2026-10-12. [rc8 release notes](releases/v0.1.0-rc8.md) describe the download; [flight setup](#current-source) explains its defaults and features. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download a platform ZIP and `SHA256SUMS` from [rc7](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc7). Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Download a platform ZIP and `SHA256SUMS` from [rc8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc8). Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`
@@ -24,7 +24,7 @@ These test builds have no trusted developer signing/notarization. If macOS refus
 
 Home selects the aircraft, language, launch, weather and lighting. Menus use keyboard or mouse; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
 
-In **rc7**, Fly defaults to trimmed airborne flight. The Stik can also start at idle near the runway threshold by selecting **Runway (experimental)**. Other catalog aircraft start airborne. Restart uses the selected launch. Current-source defaults are [below](#current-source).
+In **rc8**, new preferences select the Stik at idle near the runway threshold, gentle wind and passing evening. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. Other flight-capable catalog aircraft start airborne. Saved choices take precedence; Restart uses the selected launch. Details are [below](#current-source).
 
 **Esc** opens Pause; losing window focus also pauses. Continue resumes explicitly. Pause can restart, return to Home or quit. The direct CLI route has no Home to return to.
 
@@ -65,7 +65,7 @@ Current source includes per-wheel spin/contact and approximate static tree/prop 
 
 **Updates.** While Home is open, an exported build asks GitHub once a day whether a newer release is published: one anonymous HTTPS request to `api.github.com` carrying only the app version and the OS name. A newer version shows a small card at the top right. **Download** opens the release page in your browser, where the three ZIPs, `SHA256SUMS` and the release notes are; **Hide** silences that version until a newer one exists. Updating is manual: download the ZIP for your platform and replace the extracted folder; settings and calibration live in your user data folder and are kept. To turn the check off, set `check=false` under `[updates]` in `settings.cfg` (Windows `%APPDATA%\Godot\app_userdata\OpenRC Simulator\`, macOS `~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/`, Linux `~/.local/share/godot/app_userdata/OpenRC Simulator/`). Builds run from the source tree do not check.
 
-The Extra, P-51 and Avanti remain experimental. Avanti starts airborne with gear and flaps up. Electric development fixtures and the external Timber asset are not selectable catalog aircraft.
+The Extra, P-51 and Avanti remain experimental. Avanti starts airborne with gear and flaps up. Electric development fixtures are not selectable catalog aircraft. Turbo Lumber Evolution is a selectable visual preview; Fly is unavailable until its flight data and propulsion are integrated.
 
 ## 5. Measure frame times (for the landscape work)
 
