@@ -14,4 +14,6 @@ Focused pinned-Linux checks pass: atmosphere flight **142/142**, trim **14/14** 
 
 The v2 agreement runner also retained a scratch-directory default absent in fresh CI checkouts. Its default now resolves the checked-out `app/`; the CI command passes **62 cases**.
 
+A clean Linux suite also reached the landing test's 60-second runner deadline without an assertion failure. Its unchanged four-flight workload passes **28/28** in **81.91 s** (prior [CR-01b measurement](../../crash-damage-investigations/CR-01b/README.md): **75.51 s**). Only this test receives a bounded 180-second runner deadline; every test and assertion remains enabled, and other Godot invocations retain 60 seconds.
+
 Local offline-tool regressions and all eleven CI geometry/physics/Timber generator commands pass. Full app/capture/export qualification is required before publication; no test skips or golden-flight replacements are authorized by this release.
