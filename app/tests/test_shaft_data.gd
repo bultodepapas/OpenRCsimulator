@@ -31,7 +31,7 @@ func _initialize() -> void:
 	# Preserve the historical D1-R2 dotted diagnostics; catalog positives remain v2.
 	_raw = AD.legacy_v1_input(JSON.parse_string(FileAccess.get_file_as_string(P51)))
 	var original: Dictionary = _raw.propulsion.engine.shaft.power_curve
-	for entry in Catalog.ENTRIES:
+	for entry in Catalog.flyable_entries(): # TT-06: previews carry no data file
 		var result: Dictionary = AD.load_file(entry.data)
 		_check("current aircraft loads: " + entry.id, result.ok, str(result.errors))
 

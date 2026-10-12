@@ -23,7 +23,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	for aircraft_id: String in Catalog.ids():
+	for aircraft_id: String in Catalog.flyable_ids(): # TT-06: a preview refuses the flight scene (main.gd)
 		await _test_aircraft(aircraft_id)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)

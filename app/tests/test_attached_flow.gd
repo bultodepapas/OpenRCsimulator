@@ -19,7 +19,7 @@ func _initialize() -> void:
 	var windy := 0
 	var stalled := 0
 	var no_envelope := 0
-	for id in Catalog.ids():
+	for id in Catalog.flyable_ids(): # TT-06: previews carry no data file
 		var flight := Flight.new()
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)

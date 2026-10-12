@@ -413,6 +413,12 @@ msgstr "Acrobático de ala baja · 1,63 m · glow .61"
 msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
 msgstr "Reactor deportivo · 2,00 m · turbina JetCat P100-RX"
 
+msgid "High-wing STOL · 1.55 m · 4S electric"
+msgstr "STOL de ala alta · 1,55 m · eléctrico 4S"
+
+msgid "Preview only: electric propulsion and flight data are not simulated yet."
+msgstr "Solo vista previa: la propulsión eléctrica y los datos de vuelo aún no se simulan."
+
 msgid "Flight model under evaluation."
 msgstr "Modelo de vuelo en evaluación."
 
@@ -577,3 +583,18 @@ msgstr "Atardecer, el tiempo pasa"
 
 msgid "End this flight to change its time-of-day settings."
 msgstr "Finaliza este vuelo para cambiar sus ajustes de hora del día."
+
+msgid "Update available: %s"
+msgstr "Nueva versión disponible: %s"
+
+msgid "Download"
+msgstr "Descargar"
+
+msgid "Hide"
+msgstr "Ocultar"
+
+msgid "Opens the release page in your browser."
+msgstr "Abre la página de la versión en tu navegador."
+
+msgid "Hides this notice until a newer version is published."
+msgstr "Oculta este aviso hasta que se publique una versión más nueva."

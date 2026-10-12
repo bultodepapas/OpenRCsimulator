@@ -18,6 +18,8 @@ const LANGUAGES := { "en": "English", "es": "Español" }
 const DEFAULTS := {
 	language = "en",
 	first_flight_hint_seen = false,
+	# UI-16: Home may ask GitHub once a day whether a newer release is published ([updates] check in the file).
+	check_updates = true,
 	aircraft = Catalog.DEFAULT_ID,
 	start_choice = "runway",
 	# The FW Home preset remains an additive schema-1 field; selecting astronomical lighting clears it to "day".
@@ -57,6 +59,9 @@ static func load_from(path: String) -> Dictionary:
 	var hint_seen: Variant = cfg.get_value("ui", "first_flight_hint_seen", DEFAULTS.first_flight_hint_seen)
 	if typeof(hint_seen) == TYPE_BOOL:
 		prefs.first_flight_hint_seen = hint_seen
+	var check_updates: Variant = cfg.get_value("updates", "check", DEFAULTS.check_updates)
+	if typeof(check_updates) == TYPE_BOOL:
+		prefs.check_updates = check_updates
 	var aircraft: Variant = cfg.get_value("flight", "aircraft", DEFAULTS.aircraft)
 	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
 		prefs.aircraft = aircraft
@@ -109,6 +114,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("meta", "schema", schema)
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
+	cfg.set_value("updates", "check", prefs.get("check_updates", DEFAULTS.check_updates))
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))
 	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
 	cfg.set_value("flight", "time_of_day", time_of_day)

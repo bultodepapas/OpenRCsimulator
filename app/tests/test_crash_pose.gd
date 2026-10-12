@@ -47,7 +47,7 @@ func _run() -> void:
 	_check("ordinary pose comparison rejects a nonfinite attitude", not _ordinary_pose_equal(
 		{pos = Vector3.ZERO, basis = Basis.IDENTITY},
 		{pos = Vector3.ZERO, basis = Basis(Vector3(NAN, 0, 0), Vector3.UP, Vector3.BACK)}))
-	for entry: Dictionary in Catalog.ENTRIES:
+	for entry: Dictionary in Catalog.flyable_entries(): # TT-06: a preview refuses the flight scene (main.gd)
 		var flight: Node = load("res://main.tscn").instantiate()
 		flight.aircraft_id = entry.id
 		flight.crash_effects_enabled = false # CR-01 diagnostic pose and legacy timer fixture

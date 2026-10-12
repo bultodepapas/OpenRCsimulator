@@ -115,6 +115,18 @@ echo "== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, h
 run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti visual contract failed (see above)"; exit 1; fi
 
+echo "== Turbo Timber Evolution asset identity and generated geometry (TT-01/02/03: manifest, mesh measurements, geometry, constants)"
+python3 "$HERE/../research/timber/tt01/manifest.py" --check || exit 1
+run --script "$HERE/../research/timber/tt02/measure_mesh.gd" -- --out="$HERE/../assets/aircraft/turbo-timber-evolution/mesh-measurements.json" --check 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|differ" "$LOG"; then echo "Timber mesh measurements are stale or the importer changed (see above)"; exit 1; fi
+python3 "$HERE/../assets/aircraft/turbo-timber-evolution/build_geometry.py" --check || exit 1
+python3 "$HERE/../assets/aircraft/turbo-timber-evolution/compile_geometry.py" --check || exit 1
+python3 "$HERE/../research/timber/tt03/check_asset.py" --check || exit 1
+
+echo "== Turbo Timber Evolution model contract (aircraft/verify_timber.gd, TT-03/TT-05: imported scene, pivots, signs, propeller, gear)"
+run --script res://aircraft/verify_timber.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Timber model contract failed (see above)"; exit 1; fi
+
 echo "== C7-R1: trace completion, finite samples and failure exits"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
 

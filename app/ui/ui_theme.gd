@@ -53,6 +53,11 @@ static func build() -> Theme:
 	badge.content_margin_top = 1
 	badge.content_margin_bottom = 1
 	t.set_stylebox("panel", "Badge", badge)
+	t.set_type_variation("Notice", "PanelContainer") # UI-16: the update card, a quiet outlined block over the backdrop
+	var notice := _box(CARD, 16)
+	notice.set_border_width_all(1)
+	notice.border_color = EDGE
+	t.set_stylebox("panel", "Notice", notice)
 	t.set_type_variation("KeyCap", "PanelContainer")
 	var key := _box(KEYCAP.bg, 0)
 	key.set_border_width_all(1)

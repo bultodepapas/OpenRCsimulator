@@ -85,7 +85,7 @@ func _initialize() -> void:
 	airplane.root.free()
 
 	# FW-62: under-wing strips on every catalog aircraft, traced on its own lowest vertices.
-	for id: String in [AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.P51_ID]:
+	for id: String in [AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.TIMBER_ID]:
 		var plane: Dictionary = AirplaneBuilder.build(id)
 		var pts := AircraftLights.vertices(plane.root)
 		var half := AircraftLights.span_half(pts)

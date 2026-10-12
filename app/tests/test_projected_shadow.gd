@@ -234,6 +234,7 @@ func _test_neutral_geometry_on_catalog_models() -> void:
 		AirplaneBuilder.EXTRA_ID,
 		AirplaneBuilder.P51_ID,
 		AirplaneBuilder.AVANTI_ID,
+		AirplaneBuilder.TIMBER_ID,
 	]
 	for id: String in ids:
 		var airplane: Dictionary = AirplaneBuilder.build(id)

@@ -75,7 +75,13 @@ func _check_aircraft(entry: Dictionary) -> void:
 	severity.erase("component")
 	wreck.start(pose, incoming, angular, severity)
 	var started: Dictionary = wreck.stats()
-	_check(String(entry.id) + " C4 releases progressive real submeshes", int(started.detached_group_count) >= 1 and int(started.active_body_count) > 1 and int(started.active_body_count) <= 24)
+	if String(entry.status) == AircraftCatalog.PREVIEW:
+		# TT-06: the Timber preview is one imported airframe mesh (wing, fuselage and tail together) with tail, gear
+		# and propeller pivots, so C4 has no wing/engine group to release at once; its tail/gear/propeller groups
+		# detach on their delays. Splitting the airframe for the crash twin is TT-13's decision.
+		_check(String(entry.id) + " C4 (preview, merged airframe) marks delayed groups for release", int(started.detached_group_count) >= 1 and int(started.active_body_count) >= 1 and int(started.active_body_count) <= 24)
+	else:
+		_check(String(entry.id) + " C4 releases progressive real submeshes", int(started.detached_group_count) >= 1 and int(started.active_body_count) > 1 and int(started.active_body_count) <= 24)
 	_check(String(entry.id) + " C4 core remains visually present", wreck._twin.visible and _visible_mesh_count(wreck._twin) > 0)
 	_check(String(entry.id) + " separation energy is bounded by normal impact energy", float(started.scatter_energy_j) <= float(started.normal_impact_energy_estimate_j) * 0.12 + 0.001)
 	_check(String(entry.id) + " secondary impact strength is documented in joules", String(started.secondary_impact_strength_unit) == "J")

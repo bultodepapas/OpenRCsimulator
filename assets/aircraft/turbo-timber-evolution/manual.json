@@ -1,0 +1,34 @@
+{
+  "description": "Hand-edited manufacturer anchors for the Turbo Timber Evolution 1.5 m, B revision (EFL105250B). Values and page numbers come from docs/research/timber-integration/TT-00/sources.md; the manual itself is not in the repository. build_geometry.py reads this file; every number keeps its kind and source.",
+  "hardware_revision": {"value": "EFL105250B / EFL105275B (2024 B revision: 70 A Avian Smart Lite ESC, heavier gear springs)", "kind": "manual", "source": "TT-00 sources.md, Horizon Hobby product pages; the r1 mesh revision is unconfirmed by its author"},
+  "span_m": {"value": 1.555, "unit": "m", "kind": "manual", "source": "EFL105250B manual p.3 (1,555 mm)"},
+  "length_m": {"value": 1.04, "unit": "m", "kind": "manual", "source": "EFL105250B manual p.3 (1,040 mm); measurement endpoints not stated"},
+  "mass_empty_kg": {"value": 1.86, "unit": "kg", "kind": "manual", "source": "EFL105250B manual p.3 (1,860 g without battery)"},
+  "mass_flying_kg": {"value": 2.19, "unit": "kg", "kind": "manual", "source": "EFL105250B manual p.3 (2,190 g with the recommended 4S 3,200 mAh pack)"},
+  "cg_aft_of_root_le_m": {"value": 0.06, "unit": "m", "kind": "manual", "source": "EFL105250B manual p.13: 60 +/- 5 mm aft of the wing-root leading edge, slats off"},
+  "cg_tolerance_m": {"value": 0.005, "unit": "m", "kind": "manual", "source": "EFL105250B manual p.13"},
+  "throws_mm": {
+    "aileron": {"high": 33, "low": 25},
+    "elevator": {"high": 20, "low": 15},
+    "rudder": {"high": 30, "low": 20},
+    "flap": {"half": 20, "full": 35},
+    "unit": "mm",
+    "kind": "manual",
+    "source": "EFL105250B manual p.14 (quick-start setup): linear trailing-edge travel from neutral, symmetric up/down; the flap settings carry 16 %/30 % down-elevator mixes that are setup values, not geometry"
+  },
+  "throw_measurement": {
+    "convention": "straight-line distance between the neutral and deflected trailing-edge positions, d = 2 r sin(theta / 2), r = perpendicular distance from the hinge axis to the trailing edge at the station",
+    "stations": {
+      "aileron": "inboard end of the aileron (first clean slice outboard of its inner edge)",
+      "elevator": "elevator root beside the fuselage (first clean stabilizer slice)",
+      "rudder": "aft-most rudder vertex (the rudder chord is constant)",
+      "flap": "inboard end of the flap (first clean slice outboard of the wing root)"
+    },
+    "kind": "estimated",
+    "source": "the manual states millimetres but not the spanwise station; E-flite setup sheets measure at the widest point of the surface next to the fuselage. Angles over the whole span are reported as a range so the assumption stays visible"
+  },
+  "propeller": {"value": "11 x 7.3 three-blade, part EFL5962", "diameter_m": 0.2794, "pitch_m": 0.18542, "blades": 3, "kind": "manual", "source": "EFL105250B manual p.13 and Horizon part EFL5962"},
+  "motor": {"value": "brushless outrunner 800 Kv, 14-pole, SPM-1012", "kv": 800, "kind": "manual", "source": "EFL105250B manual p.3"},
+  "battery": {"value": "4S 3,200 mAh 30C recommended (3S-4S, 2,200-5,000 mAh compatible)", "kind": "manual", "source": "EFL105250B manual p.3"},
+  "servos": {"value": "six 9 g metal-gear servos (2 ailerons, 2 flaps, elevator, rudder)", "kind": "manual", "source": "EFL105250B manual p.3 equipment table"}
+}

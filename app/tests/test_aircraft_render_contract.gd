@@ -16,7 +16,7 @@ func check(label: String, ok: bool) -> void:
 		printerr("FAIL AS render: " + label)
 
 func _initialize() -> void:
-	for entry: Dictionary in Catalog.ENTRIES:
+	for entry: Dictionary in Catalog.flyable_entries(): # TT-06: previews carry no data file
 		var loaded: Dictionary = AD.load_file(entry.data)
 		check(entry.id + " loads", loaded.ok)
 		if not loaded.ok:

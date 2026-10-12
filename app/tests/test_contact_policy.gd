@@ -512,7 +512,7 @@ func _sum_stiffness(gear: Dictionary) -> float:
 
 func _screen_catalog_contacts() -> void:
 	var scanned_ids := PackedStringArray()
-	for entry in Catalog.ENTRIES:
+	for entry in Catalog.flyable_entries(): # TT-06: previews carry no data file
 		var aircraft_id: String = entry.id
 		scanned_ids.append(aircraft_id)
 		var loaded := AD.load_file(entry.data)
@@ -578,4 +578,4 @@ func _screen_catalog_contacts() -> void:
 			"mass %.4f kg, contacts %d, ωmax %.4f rad/s, ρ240 %.6f, heave ρ240 %.6f, subsets %d" % [
 				model.mass_kg, contacts.size(), modes.omega_max, modes.rho_240, modes.scalar_rho_240, full_mask])
 		_results.append(screen)
-	_check("H11 screens every aircraft in the current catalog", scanned_ids == Catalog.ids(), str(scanned_ids))
+	_check("H11 screens every flyable aircraft in the current catalog", scanned_ids == Catalog.flyable_ids(), str(scanned_ids))

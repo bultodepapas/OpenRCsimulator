@@ -1,6 +1,6 @@
 # Product shell and menus
 
-Status: current shell and UI-00…06 delivery checked 2026-10-12. Owner: menu track; prefix UI-. The shared-screen refactor UI-20/21 is delivered; active UI-22…29 work lives in [MENU-REDESIGN-PLAN](MENU-REDESIGN-PLAN.md). Pilot, accessibility and display acceptance remain open.
+Status: current shell, UI-00…06 and UI-16 delivery checked 2026-10-12. Owner: menu track; prefix UI-. The shared-screen refactor UI-20/21 is delivered; active UI-22…29 work lives in [MENU-REDESIGN-PLAN](MENU-REDESIGN-PLAN.md). Pilot, accessibility and display acceptance remain open.
 
 Owns `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/`, build-info export integration and UI tests. Coordinate simulation holds/recording with physics, world construction with rendering, weather with M5-W/ATM, lighting with TOD/FW and display settings with DT.
 
@@ -28,6 +28,8 @@ Runway selection belongs to `FlightSession`, so R, Pause Restart and crash reset
 
 The build-info plugin writes `build_info.json` into exports without changing the source tree. The full identity uses Git description/commit/dirty state; platform version fields use numeric `config/version`. The plugin itself is excluded from packs. [Build/export contract](TOOLS.md#release-sequence).
 
+The update notice (UI-16) reads that identity. On the interactive route of an exported build, `app_state/update_checker.gd` asks GitHub's list-releases endpoint at most once a day (cache `user://update_check.cfg`, ETag reused), `app_state/update_check.gd` orders the tags by SemVer and never offers a prerelease to a release build, and Home shows `ui/update_notice.gd` at its top right without moving the column or the focus. Download opens the release page in the browser; updating stays manual. Development runs check only when `OPENRC_UPDATE_URL` names a source; `[updates] check=false` in the settings turns the check off. [UI-16 evidence](research/menu-investigations/UI-16/README.md).
+
 ## Delivery evidence
 
 | Step | Delivered result | Evidence |
@@ -39,6 +41,7 @@ The build-info plugin writes `build_info.json` into exports without changing the
 | UI-06a-R1 / c-R1 | Checkpoint launch-attribution repair and refreshed package proof | [Repair](research/menu-investigations/UI-06a-R1/README.md), [export](research/menu-investigations/UI-06c-R1/README.md) |
 | UI-06d | Current interactive defaults, existing options enabled without physics tuning | [Default profile evidence](research/menu-investigations/UI-06d/README.md) |
 | UI-20/21 | Shell audit and shared-screen refactor with unchanged visual/flight results | [Audit](research/menu-investigations/UI-20/README.md), [implementation](research/menu-investigations/UI-21/README.md) |
+| UI-16 | Update notice: once-a-day GitHub release check in exported builds, top-right card with Download/Hide, `[updates] check` opt-out; manual download | [Rules and checker](../app/tests/test_update_check.gd), [card and route](../app/tests/test_ui_update_notice.gd), [evidence](research/menu-investigations/UI-16/README.md) |
 
 Original research and executed engine probes: [menu investigations](research/menu-investigations/README.md). They are dated evidence; current code supersedes their older catalog, pause and layout descriptions.
 
