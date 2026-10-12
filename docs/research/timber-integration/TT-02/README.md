@@ -1,16 +1,16 @@
 # TT-02 — datum, measurements and discrepancies of the imported r1 model
 
-2026-10-12 · **Status: measurements complete; the owner's silhouette overlay is pending.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Generated outputs: [mesh-measurements.json](../../../../assets/aircraft/turbo-timber-evolution/mesh-measurements.json), [geometry.json](../../../../assets/aircraft/turbo-timber-evolution/geometry.json); guide: [asset README](../../../../assets/aircraft/turbo-timber-evolution/README.md).
+2026-10-12 · **Status: measurements complete; the owner's silhouette overlay is pending.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Generated outputs: [mesh-measurements.json](../../../../assets/aircraft/turbo-lumber-evolution/mesh-measurements.json), [geometry.json](../../../../assets/aircraft/turbo-lumber-evolution/geometry.json); guide: [asset README](../../../../assets/aircraft/turbo-lumber-evolution/README.md).
 
 ## Method
 
-`research/timber/tt02/measure_mesh.gd` instantiates the scene Godot imports from `app/assets/aircraft/turbo-timber-evolution/timber.glb` (byte-identical to the r1 export, TT-01 hash) and measures it in the root frame: node tree and pivot rest transforms (parent and root frames, plus the glTF `extras` the importer stores on every pivot), per-surface vertex extremes, mesh extents, wheel and propeller radii about their own axles, and plane slices of the white/red/black skin and the control-surface meshes (wing: planes x = const every 10 mm; tail: x = const; fin: y = const; fuselage: z = const). Every slice records its extents and its fore/aft points (leading and trailing edges). Vertices come from `surface_get_arrays()`; see TT-03 for why `get_faces()` is not used for metrology. The script writes 6-decimal values and runs deterministically in 0.8 s; `--check` fails when the importer or the asset changes.
+`research/timber/tt02/measure_mesh.gd` instantiates the scene Godot imports from `app/assets/aircraft/turbo-lumber-evolution/timber.glb` (byte-identical to the r1 export, TT-01 hash) and measures it in the root frame: node tree and pivot rest transforms (parent and root frames, plus the glTF `extras` the importer stores on every pivot), per-surface vertex extremes, mesh extents, wheel and propeller radii about their own axles, and plane slices of the white/red/black skin and the control-surface meshes (wing: planes x = const every 10 mm; tail: x = const; fin: y = const; fuselage: z = const). Every slice records its extents and its fore/aft points (leading and trailing edges). Vertices come from `surface_get_arrays()`; see TT-03 for why `get_faces()` is not used for metrology. The script writes 6-decimal values and runs deterministically in 0.8 s; `--check` fails when the importer or the asset changes.
 
 `build_geometry.py` then combines `r1/metadata.json` (by manifest hash), the measurements and the hand-edited manufacturer anchors `manual.json` into `geometry.json` with `{value, unit, kind, source}` on every headline quantity; `compile_geometry.py` emits the Godot constant.
 
 ```bash
-"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/timber/tt02/measure_mesh.gd" -- --out="$PWD/assets/aircraft/turbo-timber-evolution/mesh-measurements.json"
-python3 assets/aircraft/turbo-timber-evolution/build_geometry.py
+"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/timber/tt02/measure_mesh.gd" -- --out="$PWD/assets/aircraft/turbo-lumber-evolution/mesh-measurements.json"
+python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py
 # wrote geometry.json (revision r1-fb7586f19029, span 1.5479 m, chord 0.2135 m, area 0.3282 m2, tail 0.0761 m2, fin 0.0250 m2)
 ```
 

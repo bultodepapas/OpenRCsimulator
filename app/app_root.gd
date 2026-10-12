@@ -134,7 +134,7 @@ func show_home() -> void:
 	home.help_requested.connect(open_help)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
-	home.update_download_requested.connect(func(url: String) -> void: open_url.call(url))
+	home.update_download_requested.connect(_on_update_download)
 	home.update_hidden.connect(_on_update_hidden)
 	screens.push("home", home)
 	home.set_note(_settings_note)
@@ -261,8 +261,8 @@ func _on_first_flight_hint_done() -> void:
 ## UI-16: one update check per launch, only on the interactive route, only in exported builds (a development run
 ## checks when OPENRC_UPDATE_URL names a source) and only while the preference allows it. Home never waits for it.
 func _start_update_check() -> void:
-	if not bool(preferences.get("check_updates", true)):
-		return
+	if home == null or not bool(preferences.get("check_updates", true)):
+		return # no Home (field errors) or the player said no
 	var url := update_check_url
 	if url == "":
 		url = OS.get_environment("OPENRC_UPDATE_URL")
@@ -270,11 +270,15 @@ func _start_update_check() -> void:
 			url = UpdateCheck.RELEASES_URL
 	if url == "":
 		return
+	if not (url.begins_with("https://") or url.begins_with("http://")):
+		print("update check: ignoring a source that is not http(s): ", url)
+		return
 	update_checker = UpdateChecker.new()
 	update_checker.url = url
 	update_checker.state_path = update_state_path
 	update_checker.running_version = update_running_version
 	update_checker.update_available.connect(_on_update_available)
+	update_checker.update_withdrawn.connect(_on_update_withdrawn)
 	add_child(update_checker)
 
 
@@ -288,6 +292,20 @@ func _on_update_hidden(tag: String) -> void:
 	_update_info = {}
 	if update_checker != null:
 		update_checker.hide(tag)
+
+
+## A fresh answer says nothing newer is published: the card from the cache goes away.
+func _on_update_withdrawn() -> void:
+	_update_info = {}
+	if home != null:
+		home.hide_update()
+
+
+## Download: the release page in the browser. The player is told when the OS could not open one.
+func _on_update_download(url: String) -> void:
+	var err: Variant = open_url.call(url)
+	if err is int and err != OK and home != null:
+		home.set_note(tr("Could not open the browser (error %d).") % err)
 
 
 func _notification(what: int) -> void:

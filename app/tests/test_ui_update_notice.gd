@@ -88,6 +88,7 @@ func _card() -> void:
 	_check("Right reaches Hide", ui.focus_name() == "Hide", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	_check("Enter on Hide hides the card and names the version", hidden == ["v0.1.0-rc8"] and not notice.visible, str(hidden))
+	_check("Hide gives the keyboard back to Fly", ui.focus_name() == "Fly", ui.focus_name())
 	home.show_update({ tag = "v0.1.0-rc9", version = "0.1.0-rc9", url = RC8.url, published = "" })
 	await ui.settle()
 	_check("a newer release shows the same card again", notice.visible and notice.label.text == "Update available: 0.1.0-rc9")
@@ -134,6 +135,20 @@ func _route() -> void:
 	notice.download_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("Download opens the release page through app_root", opened == ["https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc7"], str(opened))
+	app.open_url = func(_url: String) -> Error: return ERR_CANT_OPEN
+	notice.download_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("a browser that cannot open is reported on Home", app.home.note_label.visible
+		and app.home.note_label.text == "Could not open the browser (error %d)." % ERR_CANT_OPEN, app.home.note_label.text)
+	app.home.set_note("")
+	# A fresh answer with nothing newer withdraws the card; a later announcement shows it again (app_root wiring).
+	var info: Dictionary = { tag = "v0.1.0-rc7", version = "0.1.0-rc7", url = "https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc7", published = "" }
+	app.update_checker.update_withdrawn.emit()
+	await ui.settle()
+	_check("withdrawn: card hidden and forgotten", not notice.visible and app._update_info.is_empty())
+	app.update_checker.update_available.emit(info)
+	await ui.settle()
+	_check("announced again: card back", notice.visible and app._update_info == info)
 	# Fly, then End flight: Home is rebuilt and the notice comes back.
 	app.home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
@@ -181,9 +196,10 @@ func _new_app() -> Node:
 	return app
 
 
-## Serves the fake API until Home shows the card (or 20 s pass).
+## Serves the fake API until Home shows the card (or 15 s of wall clock pass).
 func _wait_notice(app: Node, server: FakeReleases) -> Control:
-	for i in range(1200):
+	var started := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - started < 15000:
 		server.poll()
 		await process_frame
 		if app.home != null and app.home.update_notice != null and app.home.update_notice.visible:

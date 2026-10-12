@@ -333,7 +333,7 @@ func show_update(info: Dictionary) -> void:
 	if update_notice == null:
 		update_notice = UpdateNotice.new()
 		update_notice.download_requested.connect(func(url: String) -> void: update_download_requested.emit(url))
-		update_notice.hide_requested.connect(func(tag: String) -> void: update_hidden.emit(tag))
+		update_notice.hide_requested.connect(_on_update_hidden)
 		add_child(update_notice)
 	update_notice.show_release(info)
 
@@ -341,6 +341,12 @@ func show_update(info: Dictionary) -> void:
 func hide_update() -> void:
 	if update_notice != null:
 		update_notice.visible = false
+
+
+## Hide leaves no focused control behind: the keyboard goes back to Fly (or the next arrow for a preview).
+func _on_update_hidden(tag: String) -> void:
+	update_hidden.emit(tag)
+	(fly_button if not fly_button.disabled else next_button).grab_focus()
 
 
 ## The interface language in use, as a Preferences.LANGUAGES code ("en" when the locale is not one of ours).

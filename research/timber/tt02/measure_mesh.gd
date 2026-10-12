@@ -1,5 +1,5 @@
-# TT-02: measure the Turbo Timber Evolution r1 model as Godot imports it (the runtime asset), never from Blender.
-# Writes assets/aircraft/turbo-timber-evolution/mesh-measurements.json: scene structure, pivot rest transforms,
+# TT-02: measure the Turbo Lumber Evolution r1 model as Godot imports it (the runtime asset), never from Blender.
+# Writes assets/aircraft/turbo-lumber-evolution/mesh-measurements.json: scene structure, pivot rest transforms,
 # per-mesh/per-surface extents and extreme vertices, planform slices of the wing, tail, fin and fuselage, wheel and
 # propeller radii. build_geometry.py turns these numbers (plus r1/metadata.json) into geometry.json.
 # Run from the repository root after `--import`:
@@ -7,7 +7,7 @@
 # --check regenerates the measurements and fails (exit 1) when they differ from the file: the importer or the asset changed.
 extends SceneTree
 
-const SCENE_PATH := "res://assets/aircraft/turbo-timber-evolution/timber.glb"
+const SCENE_PATH := "res://assets/aircraft/turbo-lumber-evolution/timber.glb"
 const PIVOTS := ["aileron_left_hinge", "aileron_right_hinge", "flap_left_hinge", "flap_right_hinge", "elevator_hinge",
 	"rudder_hinge", "tailwheel_steer", "tailwheel_axle", "thrust_frame", "propeller_spin", "gear_left_suspension",
 	"gear_right_suspension", "wheel_left_axle", "wheel_right_axle"]

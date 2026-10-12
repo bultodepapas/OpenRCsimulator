@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""TT-02: build geometry.json for the Turbo Timber Evolution from three provenance-bearing inputs.
+"""TT-02: build geometry.json for the Turbo Lumber Evolution from three provenance-bearing inputs.
 
   * the author's r1 metadata.json (pivots, axes, rest transforms, ranges, landmarks, component stations), identified by
     SHA-256 through source-manifest.json (TT-01);
@@ -11,8 +11,8 @@ Model axes: metres, +X right, +Y up, -Z nose; the datum D0 (origin) is the symme
 station x the thrust-axis height, exactly as the r1 export. Structural positions for the aircraft contract convert as
 [x_aft, y_right, z_up] = [z_model, x_model, y_model].
 
-    python3 assets/aircraft/turbo-timber-evolution/build_geometry.py          # writes geometry.json
-    python3 assets/aircraft/turbo-timber-evolution/build_geometry.py --check  # fails if geometry.json is stale
+    python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py          # writes geometry.json
+    python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py --check  # fails if geometry.json is stale
 """
 import hashlib
 import json
@@ -26,8 +26,8 @@ MANIFEST = HERE / "source-manifest.json"
 MEASUREMENTS = HERE / "mesh-measurements.json"
 MANUAL = HERE / "manual.json"
 TARGET = HERE / "geometry.json"
-CATALOG_ID = "eflite-turbo-timber-evolution"
-SCRIPT = "assets/aircraft/turbo-timber-evolution/build_geometry.py"
+CATALOG_ID = "turbo-lumber-evolution"
+SCRIPT = "assets/aircraft/turbo-lumber-evolution/build_geometry.py"
 MEASURED = "research/timber/tt02/measure_mesh.gd on the Godot-imported r1 scene (mesh-measurements.json)"
 AUTHOR = "r1/metadata.json (author's CAD export)"
 CLEAN_WING_Y_EXTENT = 0.05  # a slice with more vertical extent than this contains the fuselage, not a wing section
@@ -409,10 +409,10 @@ def main():
         "status": "visual preview geometry of the author's r1 export; dimensions measured on the Godot-imported scene, ranges and installation angles estimated by the author; not calibrated, not flyable",
         "generator": SCRIPT,
         "inputs": {
-            "manifest": "assets/aircraft/turbo-timber-evolution/source-manifest.json",
+            "manifest": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
             "glb_sha256": manifest["key_files"]["glb"]["sha256"], "metadata_sha256": manifest["key_files"]["metadata"]["sha256"],
             "measurements": {"generator": mm["generator"], "godot": mm["godot"], "format": mm["format"]},
-            "manual": "assets/aircraft/turbo-timber-evolution/manual.json",
+            "manual": "assets/aircraft/turbo-lumber-evolution/manual.json",
             "hardware_revision": man["hardware_revision"],
         },
         "units": "m",

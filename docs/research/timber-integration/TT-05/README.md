@@ -1,6 +1,6 @@
 # TT-05 — articulation of the imported model: signs, propeller sense, gear wrappers, clearances
 
-2026-10-12 · **Status: complete.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Code: `app/aircraft/timber_model.gd`, checks in `app/aircraft/verify_timber.gd` (runs in `app/test.sh`) and `app/aircraft/verify_timber_clearance.gd` (evidence only, about 10 min). Guide: [asset README](../../../../assets/aircraft/turbo-timber-evolution/README.md).
+2026-10-12 · **Status: complete.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Code: `app/aircraft/timber_model.gd`, checks in `app/aircraft/verify_timber.gd` (runs in `app/test.sh`) and `app/aircraft/verify_timber_clearance.gd` (evidence only, about 10 min). Guide: [asset README](../../../../assets/aircraft/turbo-lumber-evolution/README.md).
 
 ## Design
 

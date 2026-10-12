@@ -4,7 +4,7 @@
   "generator": "research/timber/tt01/manifest.py",
   "delivery_root": "Timber turbo evolution/turbo_timber_evolution/r1",
   "source_alias": "eflite_turbo_timber_evolution",
-  "catalog_id": "eflite-turbo-timber-evolution",
+  "catalog_id": "turbo-lumber-evolution",
   "delivery_revision": "r1",
   "visual_revision": "r1-fb7586f19029",
   "terms": "NOT SET (r1 LICENSE.txt: internal evaluation only); owner decision D1 pending, blocks TT-17 packaging",

@@ -1,6 +1,7 @@
 # UI-16: the update check without the internet: version precedence, the release to offer, the cache file, the
 # once-a-day rule, and the checker node end to end against a local fake of the GitHub Releases API (200, 304 with
-# the ETag, a hidden version, a newly published one, and an offline machine).
+# the ETag, a hidden version, a newly published one, a withdrawn one, another build's cache, a 403, a server that
+# accepts and never answers, and an offline machine). UI-16-R1 added the last five after the independent review.
 # Run: godot --headless --path . --script res://tests/test_update_check.gd
 extends SceneTree
 
@@ -42,7 +43,7 @@ func _versions() -> void:
 	_check("parse v0.1.0-rc7", p.ok and p.major == 0 and p.minor == 1 and p.patch == 0 and p.prerelease == PackedStringArray(["rc7"]), str(p))
 	p = UpdateCheck.parse_version("0.1.0-rc7+5.gabc1234.dirty")
 	_check("build metadata is dropped", p.ok and p.prerelease == PackedStringArray(["rc7"]), str(p))
-	for bad in ["", "1.2", "v1.2.3.4", "1.2.3-", "abc", "1.2.3-rc_1", "1.2.x", "+1.2.3", "1.-2.3"]:
+	for bad in ["", "1.2", "v1.2.3.4", "1.2.3-", "abc", "1.2.3-rc_1", "1.2.x", "+1.2.3", "1.-2.3", "v99999999999999999999.0.0", "1.0000000000000000000.0"]:
 		_check("rejects \"%s\"" % bad, not UpdateCheck.parse_version(bad).ok)
 	# Ascending, as the project tags (rc7 < rc10) and as SemVer 2.0 §11 orders its own examples.
 	var ascending := ["0.0.9", "0.1.0-alpha", "0.1.0-alpha.1", "0.1.0-alpha.beta", "0.1.0-beta", "0.1.0-beta.2",
@@ -104,6 +105,29 @@ func _selection() -> void:
 	n = UpdateCheck.notice("0.1.0-rc6", state)
 	_check("a newer version shows again; an untrusted page URL falls back to the releases page",
 		n.get("tag", "") == "v0.1.0-rc8" and n.url == UpdateCheck.RELEASES_PAGE, str(n))
+	state.latest_url = "https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc8 rm -rf"
+	_check("a page URL with whitespace falls back too", UpdateCheck.notice("0.1.0-rc6", state).url == UpdateCheck.RELEASES_PAGE)
+	state.latest_url = "https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc8"
+	state.latest_tag = "V0.1.0-rc8"
+	_check("a capital V tag shows without it", UpdateCheck.notice("0.1.0-rc6", state).version == "0.1.0-rc8")
+	# Another build's cache: a release build must not be offered the prerelease an rc build cached (UI-16-R1 review).
+	state.latest_tag = "v0.2.0-rc1"
+	state.latest_prerelease = true
+	_check("a cached prerelease is never offered to a release build", UpdateCheck.notice("0.1.0", state).is_empty()
+		and not UpdateCheck.notice("0.1.0-rc7", state).is_empty())
+	state.latest_tag = "v0.2.0-rc1"
+	state.latest_prerelease = false # the flag was lost: the tag itself still says prerelease
+	_check("the tag's own identifiers count as prerelease", UpdateCheck.notice("0.1.0", state).is_empty())
+	var other := UpdateCheck.default_state()
+	other.for_version = "0.1.0-rc6"
+	other.etag = "W/\"x\""
+	other.latest_tag = "v0.1.0-rc7"
+	other.hidden_tag = "v0.1.0-rc5"
+	other.last_check_unix = T0
+	_check("state_for: the same build keeps its cache", UpdateCheck.state_for(other, "0.1.0-rc6") == other)
+	var fresh := UpdateCheck.state_for(other, "0.1.0-rc7")
+	_check("state_for: another build starts fresh, keeping only the hidden tag", fresh.for_version == "0.1.0-rc7"
+		and fresh.etag == "" and fresh.latest_tag == "" and fresh.last_check_unix == 0 and fresh.hidden_tag == "v0.1.0-rc5", str(fresh))
 
 
 func _state_file() -> void:
@@ -112,9 +136,11 @@ func _state_file() -> void:
 	var state := UpdateCheck.default_state()
 	state.last_check_unix = T0
 	state.etag = "W/\"abc\""
+	state.for_version = "0.1.0-rc6"
 	state.latest_tag = "v0.1.0-rc7"
 	state.latest_url = "https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc7"
 	state.latest_published = "2026-10-11T20:14:00Z"
+	state.latest_prerelease = true
 	state.hidden_tag = "v0.1.0-rc6"
 	state.last_status = "200 ok"
 	_check("save", UpdateCheck.save_state(STATE, state) == OK)
@@ -217,11 +243,43 @@ func _checker() -> void:
 		and r.notices.size() == 1 and r.notices[0].tag == "v0.1.0-rc8", str(r))
 	_check("launch 5: the new ETag is cached", UpdateCheck.load_state(STATE).etag == "W/\"fixture-2\"")
 	r.checker.queue_free()
-	# Running rc8 itself: nothing to say (from the cache, no request).
-	r = await _launch(server, "0.1.0-rc8", T0 + 51 * 3600)
-	_check("launch 6 (running rc8): no notice", r.notices.is_empty() and server.requests.size() == 3, str(r))
+	# The list changes so that nothing newer than rc6 remains: the card announced from the cache is withdrawn.
+	var older: Array = JSON.parse_string(fixture).filter(func(r: Dictionary) -> bool: return r.tag_name != "v0.1.0-rc7")
+	server.publish(JSON.stringify(older), "W/\"fixture-3\"")
+	r = await _launch(server, "0.1.0-rc6", T0 + 75 * 3600)
+	_check("launch 6 (rc8 and rc7 gone): the cached rc8 shows at once, then the fresh answer withdraws it",
+		r.notices.size() == 1 and r.notices[0].tag == "v0.1.0-rc8" and r.withdrawn == 1 and r.status == "200 ok"
+		and UpdateCheck.load_state(STATE).latest_tag == "v0.1.0-rc6", str(r))
 	r.checker.queue_free()
-	# A development build (plain 0.1.0, no prerelease) would be offered nothing from this list either.
+	# Another build (rc8) with rc6's cache: the cache is not for it, so a fresh request without the ETag, nothing to say.
+	r = await _launch(server, "0.1.0-rc8", T0 + 76 * 3600)
+	_check("launch 7 (running rc8, cache from rc6): fresh request without ETag, no notice", server.requests.size() == 5
+		and not server.requests[4].contains("If-None-Match") and r.status == "200 ok" and r.notices.is_empty() and r.withdrawn == 0
+		and UpdateCheck.load_state(STATE).for_version == "0.1.0-rc8", str(r))
+	r.checker.queue_free()
+	# GitHub answers an error status (rate limit): recorded, waits a day, no notice.
+	server.status_code = 403
+	_remove(STATE)
+	r = await _launch(server, "0.1.0-rc6", T0 + 100 * 3600)
+	st = UpdateCheck.load_state(STATE)
+	_check("http 403: recorded, the next check waits a day, no notice", r.status == "http 403" and r.notices.is_empty()
+		and st.last_check_unix == T0 + 100 * 3600 and st.last_status == "http 403", str(r) + " " + str(st))
+	r.checker.queue_free()
+	r = await _launch(server, "0.1.0-rc6", T0 + 101 * 3600)
+	_check("an hour after a 403: no request", r.status == "" and server.requests.size() == 6, str(server.requests.size()))
+	r.checker.queue_free()
+	server.status_code = 200
+	# A peer that accepts and never answers (UI-16-R1 review): the timeout fires, frames keep running, no notice,
+	# and the next launch tries again. With use_threads this would hang the process on the thread join.
+	server.silent = true
+	_remove(STATE)
+	r = await _launch(server, "0.1.0-rc6", T0 + 130 * 3600, "", 2.0)
+	st = UpdateCheck.load_state(STATE)
+	_check("silent server: transport error %d (timeout) after about 2 s, frames kept running, retry next launch" % HTTPRequest.RESULT_TIMEOUT,
+		r.status == "transport error %d" % HTTPRequest.RESULT_TIMEOUT and r.elapsed_ms >= 1500 and r.elapsed_ms < 8000
+		and r.frames >= 60 and r.notices.is_empty() and st.last_check_unix == 0, "%s elapsed %d ms, %d frames" % [str(r), r.elapsed_ms, r.frames])
+	r.checker.queue_free()
+	server.silent = false
 	server.stop()
 	# Offline (a closed port): no notice, the cache keeps no date so the next launch tries again, no engine error.
 	_remove(STATE)
@@ -229,7 +287,7 @@ func _checker() -> void:
 	closed.listen(0, "127.0.0.1")
 	var closed_port := closed.get_local_port()
 	closed.stop()
-	r = await _launch(server, "0.1.0-rc6", T0 + 100 * 3600, "http://127.0.0.1:%d/releases" % closed_port)
+	r = await _launch(server, "0.1.0-rc6", T0 + 150 * 3600, "http://127.0.0.1:%d/releases" % closed_port)
 	st = UpdateCheck.load_state(STATE)
 	_check("offline: transport error reported, no notice, next launch checks again", r.status.begins_with("transport error")
 		and r.notices.is_empty() and st.last_check_unix == 0 and st.last_status == r.status, str(r) + " " + str(st))
@@ -238,23 +296,28 @@ func _checker() -> void:
 
 
 ## One launch of the checker; waits for its request (if any) while serving the fake API.
-func _launch(server: FakeReleases, version: String, now: int, url := "") -> Dictionary:
-	var out := { notices = [], status = "", checker = null }
+func _launch(server: FakeReleases, version: String, now: int, url := "", timeout_s := 0.0) -> Dictionary:
+	var out := { notices = [], withdrawn = 0, status = "", checker = null, frames = 0, elapsed_ms = 0 }
 	var checker := UpdateChecker.new()
 	checker.url = url if url != "" else server.url()
 	checker.state_path = STATE
 	checker.running_version = version
 	checker.now_unix = now
+	if timeout_s > 0.0:
+		checker.timeout_s = timeout_s
 	checker.update_available.connect(func(info: Dictionary) -> void: out.notices.append(info))
+	checker.update_withdrawn.connect(func() -> void: out.withdrawn += 1)
 	checker.check_finished.connect(func(status: String) -> void: out.status = status)
 	out.checker = checker
 	root.add_child(checker)
 	await process_frame
-	var frames := 0
-	while checker.get_node_or_null("Request") != null and frames < 1500: # 25 s at 60 fps, well past the 10 s timeout
+	var started := Time.get_ticks_msec()
+	# Wall-clock cap (frame counts are not seconds headless): 15 s, past the longest timeout used here.
+	while checker.get_node_or_null("Request") != null and Time.get_ticks_msec() - started < 15000:
 		server.poll()
 		await process_frame
-		frames += 1
+		out.frames += 1
+	out.elapsed_ms = Time.get_ticks_msec() - started
 	server.poll()
 	await process_frame
 	return out

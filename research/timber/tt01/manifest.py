@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""TT-01: freeze the identity of the Turbo Timber Evolution r1 delivery.
+"""TT-01: freeze the identity of the Turbo Lumber Evolution r1 delivery.
 
 Hashes every file of `Timber turbo evolution/turbo_timber_evolution/r1/` (the author's game delivery, tracked in git)
-and writes assets/aircraft/turbo-timber-evolution/source-manifest.json: the SHA-256 and size of each file, the
+and writes assets/aircraft/turbo-lumber-evolution/source-manifest.json: the SHA-256 and size of each file, the
 key files by role, the visual revision string (r1 plus the first 12 hex digits of the GLB hash) and the git commit
 that last touched the delivery. Downstream generators (build_geometry.py, check_asset.py, compile_geometry.py)
 read this manifest to prove that they describe these exact bytes.
@@ -21,7 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 DELIVERY = ROOT / "Timber turbo evolution/turbo_timber_evolution/r1"
-TARGET = ROOT / "assets/aircraft/turbo-timber-evolution/source-manifest.json"
+TARGET = ROOT / "assets/aircraft/turbo-lumber-evolution/source-manifest.json"
 KEY_FILES = {
     "glb": "export/aircraft.glb",
     "demo_glb": "export/aircraft_demo.glb",
@@ -83,7 +83,7 @@ def build() -> dict:
         "generator": "research/timber/tt01/manifest.py",
         "delivery_root": DELIVERY.relative_to(ROOT).as_posix(),
         "source_alias": metadata["aircraft"]["id"],
-        "catalog_id": "eflite-turbo-timber-evolution",
+        "catalog_id": "turbo-lumber-evolution",
         "delivery_revision": revision,
         "visual_revision": "%s-%s" % (revision, glb_hash[:12]),
         "terms": "NOT SET (r1 LICENSE.txt: internal evaluation only); owner decision D1 pending, blocks TT-17 packaging",

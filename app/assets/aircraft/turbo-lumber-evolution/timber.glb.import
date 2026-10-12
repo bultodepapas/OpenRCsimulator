@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://kt72l0x8mmmc"
-path="res://.godot/imported/timber.glb-94f944c39946d877da01c4a0fa43c26b.scn"
+path="res://.godot/imported/timber.glb-449a28c452d4e5961641c23545d6074c.scn"
 
 [deps]
 
-source_file="res://assets/aircraft/turbo-timber-evolution/timber.glb"
-dest_files=["res://.godot/imported/timber.glb-94f944c39946d877da01c4a0fa43c26b.scn"]
+source_file="res://assets/aircraft/turbo-lumber-evolution/timber.glb"
+dest_files=["res://.godot/imported/timber.glb-449a28c452d4e5961641c23545d6074c.scn"]
 
 [params]
 

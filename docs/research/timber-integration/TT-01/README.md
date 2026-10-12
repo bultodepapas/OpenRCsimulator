@@ -1,17 +1,17 @@
 # TT-01 — freeze the r1 source and its identity
 
-2026-10-12 · **Status: complete.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Asset guide: [assets/aircraft/turbo-timber-evolution/README.md](../../../../assets/aircraft/turbo-timber-evolution/README.md).
+2026-10-12 · **Status: complete.** Owning plan: [Timber integration](../../../TIMBER-INTEGRATION-PLAN.md). Asset guide: [assets/aircraft/turbo-lumber-evolution/README.md](../../../../assets/aircraft/turbo-lumber-evolution/README.md).
 
 ## What was done
 
-- `research/timber/tt01/manifest.py` hashes every file of the tracked delivery `Timber turbo evolution/turbo_timber_evolution/r1/` and writes `assets/aircraft/turbo-timber-evolution/source-manifest.json`: 38 files, 12,301,268 bytes, key files by role (GLB, demo GLB, metadata, export map, verification, Blender scene, licence, readme, changelog), the visual revision `r1-fb7586f19029` and the informational git commit `28cd5c6`.
+- `research/timber/tt01/manifest.py` hashes every file of the tracked delivery `Timber turbo evolution/turbo_timber_evolution/r1/` and writes `assets/aircraft/turbo-lumber-evolution/source-manifest.json`: 38 files, 12,301,268 bytes, key files by role (GLB, demo GLB, metadata, export map, verification, Blender scene, licence, readme, changelog), the visual revision `r1-fb7586f19029` and the informational git commit `28cd5c6`.
 - The 38 hashes are identical to the independent [TT-00-R1 binary audit](../TT-00-R1/glb-audit.json) (checked with a one-off Python comparison of both tables).
 - The asset README records origin, author, hardware revision, loadout, catalog ID and source alias, the terms status and the r2 request list.
 
 ## Command and result
 
 ```bash
-python3 research/timber/tt01/manifest.py            # wrote assets/aircraft/turbo-timber-evolution/source-manifest.json (38 files, 12301268 bytes, visual revision r1-fb7586f19029)
+python3 research/timber/tt01/manifest.py            # wrote assets/aircraft/turbo-lumber-evolution/source-manifest.json (38 files, 12301268 bytes, visual revision r1-fb7586f19029)
 python3 research/timber/tt01/manifest.py --check    # Timber r1 delivery: 38 files, 12301268 bytes, visual revision r1-fb7586f19029: identical to the manifest
 ```
 

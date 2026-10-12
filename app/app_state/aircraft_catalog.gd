@@ -13,7 +13,8 @@ const PREVIEW := "preview"
 
 const DEFAULT_ID := "jensen-das-ugly-stik-60"
 
-## In menu order. `name` is a proper name (never translated); `summary` and `status_note` are English source strings
+## In menu order. `name` is a proper name (never translated; the Timber's fictional name is the one exception, es.po carries
+## its Spanish form); `summary` and `status_note` are English source strings
 ## (tr() at the call site). `data` is "" for a preview. render/airplane.gd builds each ID with the model team's builder
 ## and knows its datum; tests/test_aircraft_catalog.gd checks that every ID builds and every flyable one trims.
 const ENTRIES := [
@@ -50,9 +51,10 @@ const ENTRIES := [
 		data = "res://data/aircraft/sebart_avanti_s_a200.json",
 	},
 	{
-		# TT-06: the author's r1 glTF model (assets/aircraft/turbo-timber-evolution); electric physics data arrives with TT-07.
-		id = "eflite-turbo-timber-evolution",
-		name = "E-flite Turbo Timber Evolution",
+		# TT-06: the author's r1 glTF model (assets/aircraft/turbo-lumber-evolution), inspired by the E-flite Turbo Timber
+		# Evolution; fictional name (Spanish "Turbo Tronco Evolución" in es.po). Electric physics data arrives with TT-07.
+		id = "turbo-lumber-evolution",
+		name = "Turbo Lumber Evolution",
 		summary = "High-wing STOL · 1.55 m · 4S electric",
 		status = PREVIEW,
 		status_note = "Preview only: electric propulsion and flight data are not simulated yet.",

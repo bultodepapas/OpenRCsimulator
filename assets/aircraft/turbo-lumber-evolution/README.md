@@ -1,6 +1,6 @@
-# Turbo Timber Evolution 1.5 m (E-flite, B revision): visual geometry, preview
+# Turbo Lumber Evolution ("Timber"): visual geometry, preview
 
-The **visual model** of the fifth catalog aircraft. The runtime asset is the author's r1 glTF game delivery, imported by Godot's scene importer; nothing is modelled procedurally. No physics data exists yet (TT-07), so the aircraft is a preview: it builds, poses and renders, and cannot fly. Plan and step status: [TIMBER-INTEGRATION-PLAN](../../../docs/TIMBER-INTEGRATION-PLAN.md).
+The **visual model** of the fifth catalog aircraft, shown as "Turbo Lumber Evolution" ("Turbo Tronco Evolución" in Spanish): a fictional name for a model inspired by the E-flite Turbo Timber Evolution 1.5 m, drawn by its author from photographs without manufacturer plans or artwork. "Timber" remains the internal codename of the track. The runtime asset is the author's r1 glTF game delivery, imported by Godot's scene importer; nothing is modelled procedurally. No physics data exists yet (TT-07), so the aircraft is a preview: it builds, poses and renders, and cannot fly. Plan and step status: [TIMBER-INTEGRATION-PLAN](../../../docs/TIMBER-INTEGRATION-PLAN.md).
 
 ## Origin, terms and identity
 
@@ -9,10 +9,10 @@ The **visual model** of the fifth catalog aircraft. The runtime asset is the aut
 | Source delivery | `Timber turbo evolution/turbo_timber_evolution/r1/` (tracked in git, commit `28cd5c6`): 38 files, 12,301,268 bytes, hashed in [source-manifest.json](source-manifest.json) (TT-01) |
 | Author | Estudiante 4 (Innovaitors SAS) with Claude as a modelling assistant, from the owner's photographs and general knowledge of the type; parametric CAD (build123d) exported with Blender 5.2.2, see the delivery `README.md` and `LICENSE.txt` |
 | Visual revision | `r1-fb7586f19029` (delivery revision plus the first 12 hex digits of the GLB SHA-256); `VISUAL_REVISION` in `timber_model.gd` and `geometry.json → revision` must match it |
-| Catalog ID / source alias | `eflite-turbo-timber-evolution` / `eflite_turbo_timber_evolution` (the author's id) |
+| Catalog ID / source alias | `turbo-lumber-evolution` / `eflite_turbo_timber_evolution` (the author's id) |
 | Hardware reference | E-flite Turbo Timber Evolution 1.5 m, B revision (EFL105250B / EFL105275B): 800 Kv SPM-1012 motor, 70 A ESC, EFL5962 11×7.3 three-blade propeller, 4S 3,200 mAh pack ([manual anchors](manual.json), [sources](../../../docs/research/timber-integration/TT-00/sources.md)) |
 | Configuration | Wheels installed, flaps present and up, no slats, no floats; nav/strobe lenses as emissive materials |
-| Terms | The delivery `LICENSE.txt` (copied verbatim to `app/assets/aircraft/turbo-timber-evolution/LICENSE.txt`) says its redistribution terms are not yet set. The owner's position (2026-10-12): the model is inspired by the aircraft and drawn from photographs, with no manufacturer plans or artwork, and the in-game name and livery will be chosen later. Setting the text is a naming decision (D1), not a blocker for development. |
+| Terms | The delivery `LICENSE.txt` (copied verbatim to `app/assets/aircraft/turbo-lumber-evolution/LICENSE.txt`) says its redistribution terms are not yet set. The owner's position (2026-10-12): the model is inspired by the aircraft and drawn from photographs, with no manufacturer plans or artwork, and the in-game name and livery will be chosen later. Setting the text is a naming decision (D1), not a blocker for development. |
 
 ## Frames and datum
 
@@ -25,9 +25,9 @@ From the repository root (Godot needs an `--import` first on a fresh clone; `app
 ```bash
 python3 research/timber/tt01/manifest.py --check                                         # delivery bytes = manifest
 "$(app/get-godot.sh)" --headless --path app --script "$PWD/research/timber/tt02/measure_mesh.gd" \
-  -- --out="$PWD/assets/aircraft/turbo-timber-evolution/mesh-measurements.json" [--check]  # measure the imported scene
-python3 assets/aircraft/turbo-timber-evolution/build_geometry.py [--check]              # metadata + measurements + manual -> geometry.json
-python3 assets/aircraft/turbo-timber-evolution/compile_geometry.py [--check]            # geometry.json -> app/aircraft/timber_geometry.gd
+  -- --out="$PWD/assets/aircraft/turbo-lumber-evolution/mesh-measurements.json" [--check]  # measure the imported scene
+python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py [--check]              # metadata + measurements + manual -> geometry.json
+python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py [--check]            # geometry.json -> app/aircraft/timber_geometry.gd
 python3 research/timber/tt03/check_asset.py --check                                      # app copy of the GLB = r1 bytes, revisions agree
 "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_timber.gd     # model contract (283 checks)
 "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_timber_clearance.gd  # control surfaces vs airframe at full throws
@@ -41,7 +41,7 @@ xvfb-run -a "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --script
 | [mesh-measurements.json](mesh-measurements.json) | Generated by `research/timber/tt02/measure_mesh.gd` from the Godot-imported scene: nodes, pivots, extents, extreme vertices, planform slices, radii |
 | [geometry.json](geometry.json) | Generated by [build_geometry.py](build_geometry.py): the authoritative geometry with `{value, unit, kind, source}` on every headline quantity |
 | `app/aircraft/timber_geometry.gd` | Generated by [compile_geometry.py](compile_geometry.py): `DATA` constant for the builder and the checks |
-| `app/assets/aircraft/turbo-timber-evolution/timber.glb` (+ `.import`, `LICENSE.txt`) | Byte-identical copy of the r1 `export/aircraft.glb`; the committed sidecar keeps the default scene-import settings |
+| `app/assets/aircraft/turbo-lumber-evolution/timber.glb` (+ `.import`, `LICENSE.txt`) | Byte-identical copy of the r1 `export/aircraft.glb`; the committed sidecar keeps the default scene-import settings |
 | `app/aircraft/timber_model.gd` | Builder: `build()`, `apply_surfaces()`, `set_flaps()`, `apply_controls()`, `manual_throws_deg()` |
 | `app/aircraft/verify_timber.gd`, `verify_timber_clearance.gd`, `inspect_timber.gd` | Model contract, clearance sweep and review captures |
 

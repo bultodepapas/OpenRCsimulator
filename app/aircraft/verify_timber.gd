@@ -1,4 +1,4 @@
-# TT-03/TT-05 contract checks for the Turbo Timber Evolution imported model (headless; visual preview, not flyable).
+# TT-03/TT-05 contract checks for the Turbo Lumber Evolution imported model (headless; visual preview, not flyable).
 # Proves that the scene Godot imports is the frozen r1 asset (hash, counts, pivots, landmarks), that the builder's
 # wrappers leave every world transform untouched, and that surfaces, propeller and wheels move in the app's signs with
 # witness vertices. Run: godot --headless --path app --script res://aircraft/verify_timber.gd
@@ -7,7 +7,7 @@ extends SceneTree
 const Commands := preload("res://input/commands.gd")
 const Timber := preload("res://aircraft/timber_model.gd")
 const TimberGeometry := preload("res://aircraft/timber_geometry.gd")
-const GLB_PATH := "res://assets/aircraft/turbo-timber-evolution/timber.glb"
+const GLB_PATH := "res://assets/aircraft/turbo-lumber-evolution/timber.glb"
 const HINGE_NAMES := ["flap_left", "flap_right", "aileron_left", "aileron_right", "elevator", "rudder"]
 ## Pivots that the builder moves under an identity wrapper (their parent name changes, their world transform must not).
 const WRAPPED := ["propeller_spin", "wheel_left_axle", "wheel_right_axle", "tailwheel_axle", "tailwheel_steer"]
