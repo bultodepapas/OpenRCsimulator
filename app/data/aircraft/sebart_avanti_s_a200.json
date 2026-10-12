@@ -66,7 +66,7 @@
       ],
       "unit": "m",
       "kind": "manual",
-      "source": "240 mm aft of the root LE (SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); photo-manual p.91 step 181); z from the inventory (derived)"
+      "source": "240 mm aft of the root LE (SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); the manual gives no fuel-state qualifier, and this model's half-tank state is separately declared under fuel.fraction; photo-manual p.91 step 181); z from the inventory (derived)"
     },
     "firewall": {
       "value": [
@@ -156,7 +156,7 @@
       "position": {
         "value": [
           1.014561,
-          -0.21895,
+          -0.218953,
           0.065
         ],
         "unit": "m",
@@ -185,7 +185,7 @@
       "position": {
         "value": [
           1.014561,
-          0.21895,
+          0.218953,
           0.065
         ],
         "unit": "m",
@@ -1049,8 +1049,8 @@
       "mass": {
         "value": 0.075,
         "unit": "kg",
-        "kind": "manual",
-        "source": "JR DS8911 ~75 g (manual p.2)"
+        "kind": "estimated",
+        "source": "Approx. 75 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8911 model but gives no servo mass"
       },
       "position": {
         "value": [
@@ -1078,8 +1078,8 @@
       "mass": {
         "value": 0.065,
         "unit": "kg",
-        "kind": "manual",
-        "source": "JR DS8411 ~65 g (manual p.2)"
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
       },
       "position": {
         "value": [
@@ -1427,7 +1427,7 @@
         "value": 0.035151,
         "unit": "1",
         "kind": "derived",
-        "source": "research/avanti-s/av06/derive_physics.py: component drag build-up at 29 m/s, gear UP, flaps up, see derivation.md"
+        "source": "research/avanti-s/av06/derive_physics.py: estimated component drag build-up at 29 m/s (about Mach 0.09), gear UP/flaps up; fixed M=0.34 wing form-factor multiplier, assumed transition fractions and tail form factor; full basis and item areas in research/avanti-s/av06/derivation.md, CD0 model basis"
       },
       "CL_minD": {
         "value": 0.0,
@@ -2008,7 +2008,7 @@
         "value": 0.4,
         "unit": "s",
         "kind": "measured",
-        "source": "P100 local small-signal throttle-to-thrust corner near 0.4 Hz in multi-sine tests; tau = 1/(2 pi fc) = 0.398 s, rounded to 0.4 s. Applied as an RPM-governor lag through the assumed static throttle-to-RPM map; not a universal ECU step response (Many et al., DGLR 550281 sec. 3; docs/research/avanti-s-av05-turbine-dynamics.md section 4)"
+        "source": "P100 local small-signal throttle-to-thrust corner near 0.4 Hz in multi-sine tests; tau = 1/(2 pi fc) = 0.398 s, rounded to 0.4 s. Applied as an RPM-governor lag through the assumed static throttle-to-thrust law and P100 thrust-vs-RPM map; not a universal ECU step response (Many et al., DGLR 550281 sec. 3; docs/research/avanti-s-av05-turbine-dynamics.md section 4)"
       },
       "installed_factor": {
         "value": 0.92,

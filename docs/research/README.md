@@ -32,6 +32,10 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 [EX-06/08/09 realism audit](extra-300-realism/README.md) links the manual/source audit, corrections, behavior matrix, regression results and remaining physical gaps. The [Extra 300S plan](../EXTRA-300-PLAN.md) owns aircraft implementation; the research records realism findings and remaining physical gaps.
 
+### Avanti S flight realism
+
+[AV-14…17 realism investigation](avanti-realism/README.md) records the A200/P100-RX source audit, geometry and mass-property corrections, full-session behavior checks, and remaining physical-validation gaps. The [Avanti plan](../AVANTI-S-PLAN.md) owns pending aircraft work.
+
 ### Turbo Timber Evolution
 
 [TT-00](timber-integration/TT-00/README.md) starts the CAD/import and code-seam review. Follow-ups are in [TT-00-R1](timber-integration/TT-00-R1/README.md); the [integration plan](../TIMBER-INTEGRATION-PLAN.md) owns the model and electric-flight handoff.

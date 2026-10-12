@@ -7,7 +7,7 @@ not flight identification. Flaps up and gear up; in-air start only.
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: 494 original leaves preserved, 1 relocated CLadot leaves, 36 explicit compatibility-default leaves added, 0 differences.
 
 Flight mass 11.705 kg (fuel 1.28 kg), CG 240 mm aft of the root LE = 33.6 % MAC, static margin 8.5 % MAC.
-Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = 0.686737, 2.4642, 3.05824, 0, -0.0297665, 0 kg·m²; principal moments = 0.686363, 2.4642, 3.05862 kg·m².
+Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = 0.686737, 2.4642, 3.05824, 0, -0.0297665, 0 kg·m²; principal moments = 0.686364, 2.4642, 3.05862 kg·m².
 1-g stall 17.7 m/s clean, start 29 m/s, maximum level speed 73.4 m/s (264 km/h).
 Throws (manual high rate): aileron 30.0° up / 25.0° down, elevator ±30.0°, rudder ±30.0°.
 
@@ -67,9 +67,10 @@ Throws (manual high rate): aileron 30.0° up / 25.0° down, elevator ±30.0°, r
 | controls | aileron tau | 0.5363 | chord fraction 0.31, span 0.55-0.95 m |
 | aero | Clda_right (1/rad) | -0.1433 | strip theory over the aileron span |
 | balance | batteries/electronics station (model z) | 0.3 | 0.90 kg moved within -0.8..0.3 m to approach the manual CG (at the bay limit) |
-| balance | dry inventory (kg) | 10.08 | manual: 10.5 kg RTF dry with P100 |
+| balance | pre-balance dry components (kg) | 10.08 | inventory before virtual balance mass; SebArt manual reference is 10.5 kg complete RTF dry with P100 |
 | balance | inventory CG without balancing mass (model z) | 0.2139 | target 0.240 |
 | balance | balancing mass (kg) | 0.3451 | tail weight that puts the CG on the manual's point |
+| balance | dry flight mass including virtual balance (kg) | 10.43 | component inventory plus virtual reference-build mass; manual complete RTF dry reference 10.5 kg |
 | balance | flight mass (kg) | 11.71 | dry 10.425 kg + fuel 1.280 kg |
 | balance | flight CG (le frame) | 0.24, 0, 0.005153 | z from the inventory |
 | balance | Jxx Jyy Jzz Jxy Jxz Jyz (kg m2) | 0.6867, 2.464, 3.058, 0, -0.02977, 0 | component boxes + parallel axis; products use the runtime body-FRD convention |
