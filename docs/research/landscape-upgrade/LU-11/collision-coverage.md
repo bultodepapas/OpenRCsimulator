@@ -6,7 +6,7 @@ The collision inventory now widens the three field-tree crown proxies from occup
 
 ## Field tree crowns
 
-`TreeAssets.card_mesh` builds a card at the catalog's `frame_size_m`. The production treeline shader adjusts for species frame-size ratio and then multiplies the vertex by `Treeline.identity(...).height`; all current catalog entries use `1.125001 m`. The atlas card geometry is therefore `1.125001 × tree height`, before yaw and the bounded wind bend. The tree asset material uses alpha scissor `0.5`, matching the collision measurement threshold.
+[`TreeAssets.card_mesh`](../../../../app/render/tree_assets.gd) builds a card at the catalog's `frame_size_m`. The production [treeline shader](../../../../app/render/treeline.gdshader) adjusts for species frame-size ratio and then multiplies the vertex by `Treeline.identity(...).height`; all current catalog entries use `1.125001 m`. The [atlas](../../../../app/assets/landscape/trees/atlas.png) card geometry is therefore `1.125001 × tree height`, before yaw and the bounded wind bend. The tree asset material uses alpha scissor `0.5`, matching the collision measurement threshold. The bounded lean source is [`tree_wind.gdshaderinc`](../../../../app/render/tree_wind.gdshaderinc).
 
 An image scan of each 512 × 512 species tile finds these largest occupied half-widths at alpha ≥ 0.5:
 
@@ -22,7 +22,7 @@ The regression reads the current atlas and catalog at runtime, checks the formul
 
 ## Pavilion
 
-`Prefabs._pavilion` uses a ground-center origin and a front veranda toward local `−Z`. The collision inventory now has eleven proxies: the measured slab, wall block, a separate conservative AABB around the pitched main roof, four veranda posts, the thin porch-roof envelope, the built-in bench, and two interrupted top-rail segments. The central step bays stay open. The roof boxes intentionally include some empty space below the slopes; the two separate roof parts avoid turning the open veranda into a solid envelope.
+[`Prefabs._pavilion`](../../../../app/scenery/prefabs.gd) uses a ground-center origin and a front veranda toward local `−Z`. The collision inventory now has eleven proxies: the measured slab, wall block, a separate conservative AABB around the pitched main roof, four veranda posts, the thin porch-roof envelope, the built-in bench, and two interrupted top-rail segments. The central step bays stay open. The roof boxes intentionally include some empty space below the slopes; the two separate roof parts avoid turning the open veranda into a solid envelope.
 
 Coverage checks compare proxy dimensions and offsets against the prefab recipe, then sweep through an open 1.2 m porch bay and independently contact a post, low rail, slab, and porch-roof underside. Repeated world builds retain a stable identity, while moving the pavilion changes it. The existing session regression covers mismatched checkpoint refusal and reset retaining the installed world identity.
 
