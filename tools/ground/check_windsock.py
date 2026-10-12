@@ -164,6 +164,8 @@ def main():
         command = ['xvfb-run', '-a', '-s', '-screen 0 960x540x24', str(godot), '--path', str(app),
                    '--resolution', '960x540', '--rendering-driver', 'opengl3', '--audio-driver', 'Dummy',
                    '--script', str(CAPTURE), '--', f'--out={out / name}', f'--cue={args.cue}']
+        # Keep this geometry ablation scoped to cue meshes; projected shadows are checked separately.
+        command.append('--field-shadows=off')
         if name == 'scenery':
             command.append('--scenery=on')
         commands[name] = command
