@@ -1,0 +1,7 @@
+== L5: invalid field files fail before Home or flight can start
+test_headless_invalid_fields_fail_both_routes (__main__.FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 9.866s
+
+OK

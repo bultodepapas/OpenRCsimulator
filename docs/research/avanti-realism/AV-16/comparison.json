@@ -1,0 +1,1635 @@
+{
+  "interpretation": "Predicted model changes and numerical refinement, not measured aircraft acceptance.",
+  "refinement_rule": "Steady speed/RPM 1%; smooth pulse axis peak/speed and throttle endpoint 5%. Denominator floors are 1 m/s, 1 RPM and 0.1 rad/s. Nonlinear and stochastic cases are descriptive.",
+  "refinement_checks": [
+    {
+      "revision": "baseline",
+      "id": "level_trim_22",
+      "metric": "speed_mps.end",
+      "at_240": 22.0,
+      "at_480": 22.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "level_trim_22",
+      "metric": "engine_rpm.end",
+      "at_240": 84893.29140316274,
+      "at_480": 84893.29140316274,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "level_trim_22",
+      "metric": "speed_mps.end",
+      "at_240": 21.999999999999996,
+      "at_480": 21.999999999999996,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "level_trim_22",
+      "metric": "engine_rpm.end",
+      "at_240": 84790.15636001035,
+      "at_480": 84790.15636001035,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "level_trim_29",
+      "metric": "speed_mps.end",
+      "at_240": 28.999999999937167,
+      "at_480": 28.999999999937245,
+      "normalization_floor": 1.0,
+      "relative_difference": 2.695162101164833e-15,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "level_trim_29",
+      "metric": "engine_rpm.end",
+      "at_240": 92143.70205703568,
+      "at_480": 92143.70205703568,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "level_trim_29",
+      "metric": "speed_mps.end",
+      "at_240": 28.999999999936925,
+      "at_480": 28.999999999936957,
+      "normalization_floor": 1.0,
+      "relative_difference": 1.102566314112897e-15,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "level_trim_29",
+      "metric": "engine_rpm.end",
+      "at_240": 92100.64449136991,
+      "at_480": 92100.64449136991,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "level_trim_45",
+      "metric": "speed_mps.end",
+      "at_240": 45.0,
+      "at_480": 45.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "level_trim_45",
+      "metric": "engine_rpm.end",
+      "at_240": 115264.68695751007,
+      "at_480": 115264.68695751007,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "level_trim_45",
+      "metric": "speed_mps.end",
+      "at_240": 45.0,
+      "at_480": 45.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "level_trim_45",
+      "metric": "engine_rpm.end",
+      "at_240": 115251.81721725108,
+      "at_480": 115251.81721725108,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "level_trim_65",
+      "metric": "speed_mps.end",
+      "at_240": 65.0,
+      "at_480": 65.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "level_trim_65",
+      "metric": "engine_rpm.end",
+      "at_240": 143314.09523992587,
+      "at_480": 143314.09523992587,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "level_trim_65",
+      "metric": "speed_mps.end",
+      "at_240": 65.0,
+      "at_480": 65.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "level_trim_65",
+      "metric": "engine_rpm.end",
+      "at_240": 143309.76772597354,
+      "at_480": 143309.76772597354,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "engine_off_glide_21",
+      "metric": "speed_mps.end",
+      "at_240": 21.0,
+      "at_480": 21.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "engine_off_glide_21",
+      "metric": "engine_rpm.end",
+      "at_240": 0.0,
+      "at_480": 0.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "engine_off_glide_21",
+      "metric": "speed_mps.end",
+      "at_240": 21.0,
+      "at_480": 21.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "engine_off_glide_21",
+      "metric": "engine_rpm.end",
+      "at_240": 0.0,
+      "at_480": 0.0,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "roll_normal_negative",
+      "metric": "p_radps.max_abs",
+      "at_240": 3.081211657228868,
+      "at_480": 3.081190627750293,
+      "normalization_floor": 0.1,
+      "relative_difference": 6.825114416993306e-06,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "roll_normal_negative",
+      "metric": "speed_mps.end",
+      "at_240": 46.95512488406108,
+      "at_480": 46.94715331052225,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0001697988690836801,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "roll_normal_negative",
+      "metric": "p_radps.max_abs",
+      "at_240": 3.0977789800509865,
+      "at_480": 3.0977239798288694,
+      "normalization_floor": 0.1,
+      "relative_difference": 1.775504288802651e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "roll_normal_negative",
+      "metric": "speed_mps.end",
+      "at_240": 46.845672415991196,
+      "at_480": 46.83771021138984,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.00016999559896118096,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "roll_high_negative",
+      "metric": "p_radps.max_abs",
+      "at_240": 6.571525081866661,
+      "at_480": 6.57155679515214,
+      "normalization_floor": 0.1,
+      "relative_difference": 4.825840583462505e-06,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "roll_high_negative",
+      "metric": "speed_mps.end",
+      "at_240": 36.05040756841873,
+      "at_480": 36.04962529094257,
+      "normalization_floor": 1.0,
+      "relative_difference": 2.1700016847374792e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "roll_high_negative",
+      "metric": "p_radps.max_abs",
+      "at_240": 6.5797361060451305,
+      "at_480": 6.579777356040418,
+      "normalization_floor": 0.1,
+      "relative_difference": 6.269208372108109e-06,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "roll_high_negative",
+      "metric": "speed_mps.end",
+      "at_240": 36.27232234709008,
+      "at_480": 36.2714986931928,
+      "normalization_floor": 1.0,
+      "relative_difference": 2.2708019435651385e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "roll_normal_positive",
+      "metric": "p_radps.max_abs",
+      "at_240": 3.1183082139147302,
+      "at_480": 3.1182990445387953,
+      "normalization_floor": 0.1,
+      "relative_difference": 2.9405056423435748e-06,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "roll_normal_positive",
+      "metric": "speed_mps.end",
+      "at_240": 46.897872950538975,
+      "at_480": 46.88989063752557,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.00017023526617098087,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "roll_normal_positive",
+      "metric": "p_radps.max_abs",
+      "at_240": 3.134603254358832,
+      "at_480": 3.134550004041249,
+      "normalization_floor": 0.1,
+      "relative_difference": 1.6988185709052693e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "roll_normal_positive",
+      "metric": "speed_mps.end",
+      "at_240": 46.78739824499751,
+      "at_480": 46.779426614562865,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.00017040889578079124,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "roll_high_positive",
+      "metric": "p_radps.max_abs",
+      "at_240": 6.598299754646246,
+      "at_480": 6.598361349964549,
+      "normalization_floor": 0.1,
+      "relative_difference": 9.334941667460185e-06,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "roll_high_positive",
+      "metric": "speed_mps.end",
+      "at_240": 36.120944915398624,
+      "at_480": 36.120198489028965,
+      "normalization_floor": 1.0,
+      "relative_difference": 2.066506832418889e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "roll_high_positive",
+      "metric": "p_radps.max_abs",
+      "at_240": 6.606717722862198,
+      "at_480": 6.606722021936097,
+      "normalization_floor": 0.1,
+      "relative_difference": 6.507120905611405e-07,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "roll_high_positive",
+      "metric": "speed_mps.end",
+      "at_240": 36.311126977814574,
+      "at_480": 36.310345943482794,
+      "normalization_floor": 1.0,
+      "relative_difference": 2.1509966690917497e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "pitch_normal_negative",
+      "metric": "q_radps.max_abs",
+      "at_240": 2.3250145120143255,
+      "at_480": 2.325075282222217,
+      "normalization_floor": 0.1,
+      "relative_difference": 2.613687752662972e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "pitch_normal_negative",
+      "metric": "speed_mps.end",
+      "at_240": 42.577006750714524,
+      "at_480": 42.574307847392845,
+      "normalization_floor": 1.0,
+      "relative_difference": 6.339277038521719e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "pitch_normal_negative",
+      "metric": "q_radps.max_abs",
+      "at_240": 2.3287336723149408,
+      "at_480": 2.3288218776695624,
+      "normalization_floor": 0.1,
+      "relative_difference": 3.787552644854241e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "pitch_normal_negative",
+      "metric": "speed_mps.end",
+      "at_240": 42.55574266315671,
+      "at_480": 42.55301757356997,
+      "normalization_floor": 1.0,
+      "relative_difference": 6.403986702067039e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "pitch_high_negative",
+      "metric": "q_radps.max_abs",
+      "at_240": 3.678873333302555,
+      "at_480": 3.6789921217608934,
+      "normalization_floor": 0.1,
+      "relative_difference": 3.228831549695756e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "pitch_high_negative",
+      "metric": "speed_mps.end",
+      "at_240": 36.09272575618081,
+      "at_480": 36.0848043179727,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.00021952282568342302,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "pitch_high_negative",
+      "metric": "q_radps.max_abs",
+      "at_240": 3.6886839714925617,
+      "at_480": 3.688767755071679,
+      "normalization_floor": 0.1,
+      "relative_difference": 2.271316186875921e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "pitch_high_negative",
+      "metric": "speed_mps.end",
+      "at_240": 36.02387952314952,
+      "at_480": 36.01587516388719,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.00022224530782347026,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "pitch_normal_positive",
+      "metric": "q_radps.max_abs",
+      "at_240": 1.8947009242710515,
+      "at_480": 1.89467241095136,
+      "normalization_floor": 0.1,
+      "relative_difference": 1.5049208257189737e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "pitch_normal_positive",
+      "metric": "speed_mps.end",
+      "at_240": 27.168388710061922,
+      "at_480": 27.165353218171468,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.00011174130025387499,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "pitch_normal_positive",
+      "metric": "q_radps.max_abs",
+      "at_240": 1.8992399112246228,
+      "at_480": 1.899243874640484,
+      "normalization_floor": 0.1,
+      "relative_difference": 2.0868388279182002e-06,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "pitch_normal_positive",
+      "metric": "speed_mps.end",
+      "at_240": 27.103764070119038,
+      "at_480": 27.100723601434726,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.00011219142075417974,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "pitch_high_positive",
+      "metric": "q_radps.max_abs",
+      "at_240": 3.0642922308748384,
+      "at_480": 3.0643998123502927,
+      "normalization_floor": 0.1,
+      "relative_difference": 3.5106866610789564e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "pitch_high_positive",
+      "metric": "speed_mps.end",
+      "at_240": 26.769134330997392,
+      "at_480": 26.760129121453062,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.00033651592275431834,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "pitch_high_positive",
+      "metric": "q_radps.max_abs",
+      "at_240": 3.0738694830055,
+      "at_480": 3.0739625736164,
+      "normalization_floor": 0.1,
+      "relative_difference": 3.0283586306231316e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "pitch_high_positive",
+      "metric": "speed_mps.end",
+      "at_240": 26.690714304919712,
+      "at_480": 26.68168369310723,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0003384573446095412,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "yaw_normal_negative",
+      "metric": "r_radps.max_abs",
+      "at_240": 1.1407644297628075,
+      "at_480": 1.1407739136770698,
+      "normalization_floor": 0.1,
+      "relative_difference": 8.313579183972768e-06,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "yaw_normal_negative",
+      "metric": "speed_mps.end",
+      "at_240": 30.0548380717858,
+      "at_480": 30.053730900698465,
+      "normalization_floor": 1.0,
+      "relative_difference": 3.68397218632211e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "yaw_normal_negative",
+      "metric": "r_radps.max_abs",
+      "at_240": 1.1253088200208836,
+      "at_480": 1.1253517393577532,
+      "normalization_floor": 0.1,
+      "relative_difference": 3.813859735455894e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "yaw_normal_negative",
+      "metric": "speed_mps.end",
+      "at_240": 30.04730802360807,
+      "at_480": 30.04619506292604,
+      "normalization_floor": 1.0,
+      "relative_difference": 3.7041651353913826e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "yaw_high_negative",
+      "metric": "r_radps.max_abs",
+      "at_240": 1.408881865647555,
+      "at_480": 1.4089976940284326,
+      "normalization_floor": 0.1,
+      "relative_difference": 8.220622458676564e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "yaw_high_negative",
+      "metric": "speed_mps.end",
+      "at_240": 30.310236067495122,
+      "at_480": 30.308784277126687,
+      "normalization_floor": 1.0,
+      "relative_difference": 4.7899986853997456e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "yaw_high_negative",
+      "metric": "r_radps.max_abs",
+      "at_240": 1.3901367017237478,
+      "at_480": 1.3902056407709384,
+      "normalization_floor": 0.1,
+      "relative_difference": 4.95891004674677e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "yaw_high_negative",
+      "metric": "speed_mps.end",
+      "at_240": 30.298640941838457,
+      "at_480": 30.297203373847747,
+      "normalization_floor": 1.0,
+      "relative_difference": 4.744886757272799e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "yaw_normal_positive",
+      "metric": "r_radps.max_abs",
+      "at_240": 1.1405797383109504,
+      "at_480": 1.1405789442548044,
+      "normalization_floor": 0.1,
+      "relative_difference": 6.961869232700974e-07,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "yaw_normal_positive",
+      "metric": "speed_mps.end",
+      "at_240": 30.525987159595022,
+      "at_480": 30.524678183734512,
+      "normalization_floor": 1.0,
+      "relative_difference": 4.28825441707029e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "yaw_normal_positive",
+      "metric": "r_radps.max_abs",
+      "at_240": 1.1251153823105184,
+      "at_480": 1.1251491206005293,
+      "normalization_floor": 0.1,
+      "relative_difference": 2.9985616477971205e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "yaw_normal_positive",
+      "metric": "speed_mps.end",
+      "at_240": 30.51291481820749,
+      "at_480": 30.51160233251455,
+      "normalization_floor": 1.0,
+      "relative_difference": 4.3015954345460406e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "yaw_high_positive",
+      "metric": "r_radps.max_abs",
+      "at_240": 1.4090942428910775,
+      "at_480": 1.4091986535143597,
+      "normalization_floor": 0.1,
+      "relative_difference": 7.409219631438102e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "yaw_high_positive",
+      "metric": "speed_mps.end",
+      "at_240": 30.79861868263071,
+      "at_480": 30.79696613424499,
+      "normalization_floor": 1.0,
+      "relative_difference": 5.3659453938329745e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "yaw_high_positive",
+      "metric": "r_radps.max_abs",
+      "at_240": 1.3902959332151181,
+      "at_480": 1.3903783461760586,
+      "normalization_floor": 0.1,
+      "relative_difference": 5.9273766142237054e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "yaw_high_positive",
+      "metric": "speed_mps.end",
+      "at_240": 30.780301955571485,
+      "at_480": 30.778671665681053,
+      "normalization_floor": 1.0,
+      "relative_difference": 5.296816926150636e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "throttle_up_step_22",
+      "metric": "engine_rpm.end",
+      "at_240": 84893.99791733672,
+      "at_480": 84893.99851288444,
+      "normalization_floor": 1.0,
+      "relative_difference": 7.015192298014009e-09,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "throttle_up_step_22",
+      "metric": "speed_mps.end",
+      "at_240": 10.35967838721973,
+      "at_480": 10.3532797516698,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.000618029813103228,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "throttle_up_step_22",
+      "metric": "engine_rpm.end",
+      "at_240": 84790.86554730583,
+      "at_480": 84790.8661663056,
+      "normalization_floor": 1.0,
+      "relative_difference": 7.300311857955734e-09,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "throttle_up_step_22",
+      "metric": "speed_mps.end",
+      "at_240": 10.234025164549832,
+      "at_480": 10.227902695888256,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0005986045080422917,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "idle_descent_approach_22",
+      "metric": "engine_rpm.end",
+      "at_240": 44000.00000000035,
+      "at_480": 44000.0000000007,
+      "normalization_floor": 1.0,
+      "relative_difference": 7.937408306381793e-15,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "idle_descent_approach_22",
+      "metric": "speed_mps.end",
+      "at_240": 22.228357664807188,
+      "at_480": 22.227602439301236,
+      "normalization_floor": 1.0,
+      "relative_difference": 3.397692162318838e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "idle_descent_approach_22",
+      "metric": "engine_rpm.end",
+      "at_240": 44000.00000000035,
+      "at_480": 44000.0000000007,
+      "normalization_floor": 1.0,
+      "relative_difference": 7.937408306381793e-15,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "idle_descent_approach_22",
+      "metric": "speed_mps.end",
+      "at_240": 22.15643214373601,
+      "at_480": 22.155692798938805,
+      "normalization_floor": 1.0,
+      "relative_difference": 3.3370421043160204e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "idle_to_full_go_around_input_22",
+      "metric": "engine_rpm.end",
+      "at_240": 153999.99642494746,
+      "at_480": 153999.996435205,
+      "normalization_floor": 1.0,
+      "relative_difference": 6.660733030256783e-11,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "idle_to_full_go_around_input_22",
+      "metric": "speed_mps.end",
+      "at_240": 24.436375978321248,
+      "at_480": 24.43687569295833,
+      "normalization_floor": 1.0,
+      "relative_difference": 2.0449203219023268e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "idle_to_full_go_around_input_22",
+      "metric": "engine_rpm.end",
+      "at_240": 153999.9964248499,
+      "at_480": 153999.99643510827,
+      "normalization_floor": 1.0,
+      "relative_difference": 6.661281089418617e-11,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "idle_to_full_go_around_input_22",
+      "metric": "speed_mps.end",
+      "at_240": 24.679868958353904,
+      "at_480": 24.68036450783023,
+      "normalization_floor": 1.0,
+      "relative_difference": 2.0078693577210035e-05,
+      "band": 0.05,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "inverted_hands_off_35",
+      "metric": "speed_mps.end",
+      "at_240": 34.999999997490285,
+      "at_480": 34.99999999749048,
+      "normalization_floor": 1.0,
+      "relative_difference": 5.481329676256645e-15,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "baseline",
+      "id": "inverted_hands_off_35",
+      "metric": "engine_rpm.end",
+      "at_240": 100689.80265110503,
+      "at_480": 100689.80265110503,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "inverted_hands_off_35",
+      "metric": "speed_mps.end",
+      "at_240": 34.999999997762544,
+      "at_480": 34.99999999776248,
+      "normalization_floor": 1.0,
+      "relative_difference": 1.827109892071349e-15,
+      "band": 0.01,
+      "passed": true
+    },
+    {
+      "revision": "candidate",
+      "id": "inverted_hands_off_35",
+      "metric": "engine_rpm.end",
+      "at_240": 100665.45278345064,
+      "at_480": 100665.45278345064,
+      "normalization_floor": 1.0,
+      "relative_difference": 0.0,
+      "band": 0.01,
+      "passed": true
+    }
+  ],
+  "refinement_passed": true,
+  "changes": [
+    {
+      "id": "level_trim_22",
+      "speed_end_baseline_mps": 22.0,
+      "speed_end_candidate_mps": 21.999999999999996,
+      "altitude_change_baseline_m": 0.0,
+      "altitude_change_candidate_m": 0.0,
+      "max_rate_baseline_radps": 1.0259484175736529e-16,
+      "max_rate_candidate_radps": 4.972506252964281e-16,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "level_trim_29",
+      "speed_end_baseline_mps": 28.999999999937167,
+      "speed_end_candidate_mps": 28.999999999936925,
+      "altitude_change_baseline_m": 9.93679805105785e-10,
+      "altitude_change_candidate_m": 1.0113581083714962e-09,
+      "max_rate_baseline_radps": 1.058254430189018e-12,
+      "max_rate_candidate_radps": 1.0682050828491448e-12,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "level_trim_45",
+      "speed_end_baseline_mps": 45.0,
+      "speed_end_candidate_mps": 45.0,
+      "altitude_change_baseline_m": 0.0,
+      "altitude_change_candidate_m": 0.0,
+      "max_rate_baseline_radps": 7.485080164654332e-17,
+      "max_rate_candidate_radps": 2.4808464290499246e-17,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "level_trim_65",
+      "speed_end_baseline_mps": 65.0,
+      "speed_end_candidate_mps": 65.0,
+      "altitude_change_baseline_m": 0.0,
+      "altitude_change_candidate_m": 0.0,
+      "max_rate_baseline_radps": 4.013506121402938e-16,
+      "max_rate_candidate_radps": 4.2150328005365013e-16,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "engine_off_glide_21",
+      "speed_end_baseline_mps": 21.0,
+      "speed_end_candidate_mps": 21.0,
+      "altitude_change_baseline_m": -40.26020469116702,
+      "altitude_change_candidate_m": -40.22809823548414,
+      "max_rate_baseline_radps": 1.0910950254588055e-16,
+      "max_rate_candidate_radps": 5.209241799557107e-17,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "roll_normal_negative",
+      "speed_end_baseline_mps": 46.95512488406108,
+      "speed_end_candidate_mps": 46.845672415991196,
+      "altitude_change_baseline_m": -77.59610955786954,
+      "altitude_change_candidate_m": -76.96961198148864,
+      "max_rate_baseline_radps": 3.081211657228868,
+      "max_rate_candidate_radps": 3.0977789800509865,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "roll_high_negative",
+      "speed_end_baseline_mps": 36.05040756841873,
+      "speed_end_candidate_mps": 36.27232234709008,
+      "altitude_change_baseline_m": -28.135105978815574,
+      "altitude_change_candidate_m": -29.059020864004992,
+      "max_rate_baseline_radps": 6.571525081866661,
+      "max_rate_candidate_radps": 6.5797361060451305,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "roll_normal_positive",
+      "speed_end_baseline_mps": 46.897872950538975,
+      "speed_end_candidate_mps": 46.78739824499751,
+      "altitude_change_baseline_m": -77.22746962483225,
+      "altitude_change_candidate_m": -76.59814577967208,
+      "max_rate_baseline_radps": 3.1183082139147302,
+      "max_rate_candidate_radps": 3.134603254358832,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "roll_high_positive",
+      "speed_end_baseline_mps": 36.120944915398624,
+      "speed_end_candidate_mps": 36.311126977814574,
+      "altitude_change_baseline_m": -28.462180852379333,
+      "altitude_change_candidate_m": -29.251395644402066,
+      "max_rate_baseline_radps": 6.598299754646246,
+      "max_rate_candidate_radps": 6.606717722862198,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "pitch_normal_negative",
+      "speed_end_baseline_mps": 42.577006750714524,
+      "speed_end_candidate_mps": 42.55574266315671,
+      "altitude_change_baseline_m": -68.71773179004452,
+      "altitude_change_candidate_m": -68.76766801006335,
+      "max_rate_baseline_radps": 2.3250145120143255,
+      "max_rate_candidate_radps": 2.3287336723149408,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "pitch_high_negative",
+      "speed_end_baseline_mps": 36.09272575618081,
+      "speed_end_candidate_mps": 36.02387952314952,
+      "altitude_change_baseline_m": -67.63755746153072,
+      "altitude_change_candidate_m": -67.49844510622313,
+      "max_rate_baseline_radps": 3.678873333302555,
+      "max_rate_candidate_radps": 3.6886839714925617,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "pitch_normal_positive",
+      "speed_end_baseline_mps": 27.168388710061922,
+      "speed_end_candidate_mps": 27.103764070119038,
+      "altitude_change_baseline_m": -7.695840723995332,
+      "altitude_change_candidate_m": -7.642009896321298,
+      "max_rate_baseline_radps": 1.8947009242710515,
+      "max_rate_candidate_radps": 1.8992399112246228,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "pitch_high_positive",
+      "speed_end_baseline_mps": 26.769134330997392,
+      "speed_end_candidate_mps": 26.690714304919712,
+      "altitude_change_baseline_m": -29.50044506593065,
+      "altitude_change_candidate_m": -29.48686653426043,
+      "max_rate_baseline_radps": 3.0642922308748384,
+      "max_rate_candidate_radps": 3.0738694830055,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "yaw_normal_negative",
+      "speed_end_baseline_mps": 30.0548380717858,
+      "speed_end_candidate_mps": 30.04730802360807,
+      "altitude_change_baseline_m": -4.389143961160045,
+      "altitude_change_candidate_m": -4.364919024573879,
+      "max_rate_baseline_radps": 1.1407644297628075,
+      "max_rate_candidate_radps": 1.1253088200208836,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "yaw_high_negative",
+      "speed_end_baseline_mps": 30.310236067495122,
+      "speed_end_candidate_mps": 30.298640941838457,
+      "altitude_change_baseline_m": -5.587858379898194,
+      "altitude_change_candidate_m": -5.546976022580139,
+      "max_rate_baseline_radps": 1.408881865647555,
+      "max_rate_candidate_radps": 1.3901367017237478,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "yaw_normal_positive",
+      "speed_end_baseline_mps": 30.525987159595022,
+      "speed_end_candidate_mps": 30.51291481820749,
+      "altitude_change_baseline_m": -5.908463525242382,
+      "altitude_change_candidate_m": -5.86573392722886,
+      "max_rate_baseline_radps": 1.149187750713793,
+      "max_rate_candidate_radps": 1.1455949948938071,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "yaw_high_positive",
+      "speed_end_baseline_mps": 30.79861868263071,
+      "speed_end_candidate_mps": 30.780301955571485,
+      "altitude_change_baseline_m": -7.169927153195999,
+      "altitude_change_candidate_m": -7.106759910568741,
+      "max_rate_baseline_radps": 1.4090942428910775,
+      "max_rate_candidate_radps": 1.3902959332151181,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "throttle_up_step_22",
+      "speed_end_baseline_mps": 10.35967838721973,
+      "speed_end_candidate_mps": 10.234025164549832,
+      "altitude_change_baseline_m": 56.57217073181789,
+      "altitude_change_candidate_m": 56.82874279768487,
+      "max_rate_baseline_radps": 2.1515180037154416,
+      "max_rate_candidate_radps": 2.133385337531584,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "idle_descent_approach_22",
+      "speed_end_baseline_mps": 22.228357664807188,
+      "speed_end_candidate_mps": 22.15643214373601,
+      "altitude_change_baseline_m": -38.69724743315976,
+      "altitude_change_candidate_m": -38.559483659031116,
+      "max_rate_baseline_radps": 0.05164901690369932,
+      "max_rate_candidate_radps": 0.05122210020579822,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "idle_to_full_go_around_input_22",
+      "speed_end_baseline_mps": 24.436375978321248,
+      "speed_end_candidate_mps": 24.679868958353904,
+      "altitude_change_baseline_m": 95.03941784162265,
+      "altitude_change_candidate_m": 95.32227477662781,
+      "max_rate_baseline_radps": 0.47805072143926963,
+      "max_rate_candidate_radps": 0.4691695765962687,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "guided_30deg_turn_left",
+      "speed_end_baseline_mps": 28.959835651328977,
+      "speed_end_candidate_mps": 28.959574743745122,
+      "altitude_change_baseline_m": -2.040999112605107,
+      "altitude_change_candidate_m": -2.0456437971810146,
+      "max_rate_baseline_radps": 1.325115974703475,
+      "max_rate_candidate_radps": 1.332749932326646,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "cross_control_slip_left",
+      "speed_end_baseline_mps": 39.48584146129112,
+      "speed_end_candidate_mps": 39.51501112440334,
+      "altitude_change_baseline_m": -41.57525905310135,
+      "altitude_change_candidate_m": -41.71169833882624,
+      "max_rate_baseline_radps": 1.0557903017307597,
+      "max_rate_candidate_radps": 1.0386686167441515,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "guided_30deg_turn_right",
+      "speed_end_baseline_mps": 28.98024390322445,
+      "speed_end_candidate_mps": 28.979716655788042,
+      "altitude_change_baseline_m": -2.1577649015481484,
+      "altitude_change_candidate_m": -2.1612340508974626,
+      "max_rate_baseline_radps": 1.3254593738834413,
+      "max_rate_candidate_radps": 1.333033424156911,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "cross_control_slip_right",
+      "speed_end_baseline_mps": 39.1539472043816,
+      "speed_end_candidate_mps": 39.18854776689622,
+      "altitude_change_baseline_m": -40.23616160910629,
+      "altitude_change_candidate_m": -40.39335198426181,
+      "max_rate_baseline_radps": 1.0557822985674037,
+      "max_rate_candidate_radps": 1.0386576805707333,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "high_pitch_stall_entry_idle_24",
+      "speed_end_baseline_mps": 26.97493868689379,
+      "speed_end_candidate_mps": 26.641314227028467,
+      "altitude_change_baseline_m": -59.97433089629999,
+      "altitude_change_candidate_m": -59.57183102407515,
+      "max_rate_baseline_radps": 2.319998726036888,
+      "max_rate_candidate_radps": 3.164784053558283,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "high_pitch_stall_entry_full_power_24",
+      "speed_end_baseline_mps": 27.117126825173273,
+      "speed_end_candidate_mps": 26.94416677007164,
+      "altitude_change_baseline_m": -8.23979914422847,
+      "altitude_change_candidate_m": -8.08941100920049,
+      "max_rate_baseline_radps": 2.411486033341087,
+      "max_rate_candidate_radps": 2.4202600022654464,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "stall_rotation_response_left_rudder",
+      "speed_end_baseline_mps": 43.8576248304315,
+      "speed_end_candidate_mps": 43.16763900032957,
+      "altitude_change_baseline_m": -139.5719353911848,
+      "altitude_change_candidate_m": -135.53631105571685,
+      "max_rate_baseline_radps": 3.390474951976564,
+      "max_rate_candidate_radps": 3.2455084474832914,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": {
+        "entry_alpha_deg_2p5_to_4s": {
+          "max": 48.00877466540575,
+          "max_abs": 48.00877466540575,
+          "mean": 38.9999311819296,
+          "min": 21.568903583905655,
+          "samples": 361
+        },
+        "entry_altitude_m_2p5_to_4s": {
+          "max": 493.5284628185928,
+          "max_abs": 493.5284628185928,
+          "mean": 484.7859431437865,
+          "min": 474.8936904124296,
+          "samples": 361
+        },
+        "entry_r_sign_aligned_max_rad_s": -0.48077379497678313,
+        "entry_yaw_rate_rad_s_2p5_to_4s": {
+          "max": 0.6361813877120959,
+          "max_abs": 0.6361813877120959,
+          "mean": 0.5622126489779837,
+          "min": 0.48077379497678313,
+          "samples": 361
+        },
+        "post_recovery_yaw_rate_rad_s_7_to_8s": {
+          "max": 0.9388777442471505,
+          "max_abs": 0.9388777442471505,
+          "mean": 0.05542027558180417,
+          "min": -0.542461560950763,
+          "samples": 241
+        },
+        "recovery_r_sign_aligned_max_abs_rad_s": 1.5953373015117247,
+        "recovery_yaw_rate_rad_s_4_to_4p9s": {
+          "max": 1.5953373015117247,
+          "max_abs": 1.5953373015117247,
+          "mean": 1.1215334986839582,
+          "min": 0.4961096029073236,
+          "samples": 217
+        },
+        "yaw_sign": -1
+      }
+    },
+    {
+      "id": "stall_rotation_response_right_rudder",
+      "speed_end_baseline_mps": 41.21590760238893,
+      "speed_end_candidate_mps": 41.1660179511929,
+      "altitude_change_baseline_m": -127.11637268108097,
+      "altitude_change_candidate_m": -128.00944941030582,
+      "max_rate_baseline_radps": 4.466019945479112,
+      "max_rate_candidate_radps": 4.551952307073794,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": {
+        "entry_alpha_deg_2p5_to_4s": {
+          "max": 47.52420197261007,
+          "max_abs": 47.52420197261007,
+          "mean": 39.217711038608144,
+          "min": 23.321412620258933,
+          "samples": 361
+        },
+        "entry_altitude_m_2p5_to_4s": {
+          "max": 493.64642646049845,
+          "max_abs": 493.64642646049845,
+          "mean": 485.1680527694107,
+          "min": 475.5655029548607,
+          "samples": 361
+        },
+        "entry_r_sign_aligned_max_rad_s": -0.4479851955876204,
+        "entry_yaw_rate_rad_s_2p5_to_4s": {
+          "max": -0.4479851955876204,
+          "max_abs": 0.6099229462881399,
+          "mean": -0.5333586507793238,
+          "min": -0.6099229462881399,
+          "samples": 361
+        },
+        "post_recovery_yaw_rate_rad_s_7_to_8s": {
+          "max": 0.40970728746205987,
+          "max_abs": 0.40970728746205987,
+          "mean": 0.047468104394405755,
+          "min": -0.18805978671958826,
+          "samples": 241
+        },
+        "recovery_r_sign_aligned_max_abs_rad_s": 1.6370138035078148,
+        "recovery_yaw_rate_rad_s_4_to_4p9s": {
+          "max": -0.5549780580420863,
+          "max_abs": 1.6370138035078148,
+          "mean": -1.1743151645226468,
+          "min": -1.6370138035078148,
+          "samples": 217
+        },
+        "yaw_sign": 1
+      }
+    },
+    {
+      "id": "pitch_loop_input_negative_50",
+      "speed_end_baseline_mps": 54.337092891806115,
+      "speed_end_candidate_mps": 53.61029779863904,
+      "altitude_change_baseline_m": -284.6022113090869,
+      "altitude_change_candidate_m": -271.1621484340515,
+      "max_rate_baseline_radps": 14.345749361074073,
+      "max_rate_candidate_radps": 13.353181725418134,
+      "candidate_trajectory": {
+        "available": true,
+        "body_q_integral_abs_peak_deg": 1959.339609005383,
+        "body_q_integral_deg": -1959.339609005383,
+        "endpoint_distance_from_start_m": 383.1649605888075,
+        "interpretation": "Body q integral is descriptive. The independent path metric unwraps atan2(-world-down velocity, velocity along the initial vertical plane); cross-track distance and velocity describe plane departure. None alone proves a completed loop.",
+        "max_abs_cross_track_m": 25.45400271474323,
+        "max_abs_cross_velocity_mps": 17.93311903208903,
+        "max_altitude_m": 500.00320589872774,
+        "min_altitude_m": 228.83785156594848,
+        "min_ground_speed_mps": 48.161624873039166,
+        "vertical_plane_heading_ned": [
+          1.4210854715202004e-16,
+          1.0
+        ],
+        "world_velocity_flight_path_turn_deg": -64.9723925179412,
+        "world_velocity_flight_path_turn_max_deg": 0.09822182429010604,
+        "world_velocity_flight_path_turn_min_deg": -70.13647045487508
+      },
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "pitch_loop_input_positive_50",
+      "speed_end_baseline_mps": 44.82402252322605,
+      "speed_end_candidate_mps": 42.518529414648484,
+      "altitude_change_baseline_m": -59.17468188810585,
+      "altitude_change_candidate_m": -49.13642028913006,
+      "max_rate_baseline_radps": 9.59584057321186,
+      "max_rate_candidate_radps": 9.471711100582942,
+      "candidate_trajectory": {
+        "available": true,
+        "body_q_integral_abs_peak_deg": 445.61496754256683,
+        "body_q_integral_deg": 425.6597789620397,
+        "endpoint_distance_from_start_m": 272.96882970232014,
+        "interpretation": "Body q integral is descriptive. The independent path metric unwraps atan2(-world-down velocity, velocity along the initial vertical plane); cross-track distance and velocity describe plane departure. None alone proves a completed loop.",
+        "max_abs_cross_track_m": 10.399460875473519,
+        "max_abs_cross_velocity_mps": 17.803984596397427,
+        "max_altitude_m": 532.3998421484,
+        "min_altitude_m": 450.86357971086994,
+        "min_ground_speed_mps": 31.48719260845533,
+        "vertical_plane_heading_ned": [
+          1.4210854715202004e-16,
+          1.0
+        ],
+        "world_velocity_flight_path_turn_deg": -45.871904191115675,
+        "world_velocity_flight_path_turn_max_deg": 39.10386902962347,
+        "world_velocity_flight_path_turn_min_deg": -50.259858052252085
+      },
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "inverted_hands_off_35",
+      "speed_end_baseline_mps": 34.999999997490285,
+      "speed_end_candidate_mps": 34.999999997762544,
+      "altitude_change_baseline_m": 4.951328946845024e-08,
+      "altitude_change_candidate_m": 4.737481162919721e-08,
+      "max_rate_baseline_radps": 5.576426147673101e-11,
+      "max_rate_candidate_radps": 5.3401856146238743e-11,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "environment_gentle-practice",
+      "speed_end_baseline_mps": 26.99573146438699,
+      "speed_end_candidate_mps": 26.995671599094216,
+      "altitude_change_baseline_m": 1.256331054006182,
+      "altitude_change_candidate_m": 1.2538635651427512,
+      "max_rate_baseline_radps": 0.026787475373848707,
+      "max_rate_candidate_radps": 0.02701415071279044,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "environment_gusty",
+      "speed_end_baseline_mps": 32.82183059791766,
+      "speed_end_candidate_mps": 32.83994940022538,
+      "altitude_change_baseline_m": -0.6801958259573553,
+      "altitude_change_candidate_m": -0.724907092271792,
+      "max_rate_baseline_radps": 0.057398111539707246,
+      "max_rate_candidate_radps": 0.05661047946152782,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    },
+    {
+      "id": "environment_hot-high",
+      "speed_end_baseline_mps": 28.999999999999996,
+      "speed_end_candidate_mps": 28.999999999999996,
+      "altitude_change_baseline_m": 0.0,
+      "altitude_change_candidate_m": 0.0,
+      "max_rate_baseline_radps": 1.0009035950718924e-16,
+      "max_rate_candidate_radps": 2.937297792193534e-16,
+      "candidate_trajectory": null,
+      "candidate_spin_windows": null
+    }
+  ],
+  "baseline_setup": {
+    "available": true,
+    "cg_le_m": [
+      0.24000000442316075,
+      0.0,
+      0.005130245666599667
+    ],
+    "field_id": "default",
+    "high_throw_deg": {
+      "aileron": 30.0,
+      "aileron_down": 25.0,
+      "elevator": 30.0,
+      "rudder": 30.0
+    },
+    "inertia_kgm2": [
+      0.6205080090168581,
+      2.4403703023007526,
+      2.96817103691004,
+      0.0,
+      -0.026903818757347216,
+      0.0
+    ],
+    "mass_kg": 11.756299,
+    "normal_command_fraction": {
+      "pitch": 0.5,
+      "roll": 0.5,
+      "yaw": 0.8
+    },
+    "normal_rate_note": "manual normal-rate fractions of normalized full throw; transmitter expo is not modeled or applied twice",
+    "start_speed_mps": 29.0,
+    "start_trim": {
+      "aero_surface_angles_deg": {
+        "aileron_te_down_positive": 0.0,
+        "elevator_te_down_positive": -1.759118006651283,
+        "rudder_te_left_positive": 0.0
+      },
+      "alpha_deg": 4.063426124524856,
+      "beta_deg": 0.0,
+      "gamma_deg": 0.0,
+      "iterations": 4,
+      "message": "trimmed",
+      "mode": "level",
+      "ok": true,
+      "pilot_trim_commands": {
+        "pitch": 0.0586372668883761,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "residual_l2": 2.880703977819661e-11,
+      "rpm": 92143.70205703568,
+      "speed_mps": 29.0,
+      "throttle": 0.08616850556827785
+    },
+    "weather": {
+      "format": "openrc-weather v1",
+      "from_deg": 0.0,
+      "gust_delay_s": 2.0,
+      "gust_duration_s": 4.0,
+      "gust_mps": 0.0,
+      "gust_period_s": 12.0,
+      "gust_up_mps": 0.0,
+      "speed_mps": 0.0
+    }
+  },
+  "candidate_setup": {
+    "available": true,
+    "cg_le_m": [
+      0.23999999812047576,
+      0.0,
+      0.0051526905946635716
+    ],
+    "field_id": "default",
+    "high_throw_deg": {
+      "aileron": 30.0,
+      "aileron_down": 25.0,
+      "elevator": 30.0,
+      "rudder": 30.0
+    },
+    "inertia_kgm2": [
+      0.6867368212942112,
+      2.464195907088704,
+      3.0582418174038604,
+      0.0,
+      -0.029766453327479202,
+      0.0
+    ],
+    "mass_kg": 11.705088999999994,
+    "normal_command_fraction": {
+      "pitch": 0.5,
+      "roll": 0.5,
+      "yaw": 0.8
+    },
+    "normal_rate_note": "manual normal-rate fractions of normalized full throw; transmitter expo is not modeled or applied twice",
+    "start_speed_mps": 29.0,
+    "start_trim": {
+      "aero_surface_angles_deg": {
+        "aileron_te_down_positive": 0.0,
+        "elevator_te_down_positive": -1.73111795074931,
+        "rudder_te_left_positive": 0.0
+      },
+      "alpha_deg": 4.045306225222302,
+      "beta_deg": 0.0,
+      "gamma_deg": 0.0,
+      "iterations": 4,
+      "message": "trimmed",
+      "mode": "level",
+      "ok": true,
+      "pilot_trim_commands": {
+        "pitch": 0.05770393169164367,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "residual_l2": 2.932950807159374e-11,
+      "rpm": 92100.64449136991,
+      "speed_mps": 29.0,
+      "throttle": 0.08596411580227241
+    },
+    "weather": {
+      "format": "openrc-weather v1",
+      "from_deg": 0.0,
+      "gust_delay_s": 2.0,
+      "gust_duration_s": 4.0,
+      "gust_mps": 0.0,
+      "gust_period_s": 12.0,
+      "gust_up_mps": 0.0,
+      "speed_mps": 0.0
+    }
+  },
+  "candidate_linearized_modes": [
+    {
+      "downwash_lag_root_per_s": null,
+      "dutch_roll": {
+        "f_hz": 0.8433508001037462,
+        "zeta": 0.19079661590000793
+      },
+      "message": "ok",
+      "phugoid": {
+        "f_hz": 0.07825143512133105,
+        "zeta": 0.02835299724291905
+      },
+      "projection_note": "Trimmed level Jacobian with throttle, shaft RPM, and control deflections frozen; reported longitudinal/lateral diagonal-block projections omit cross-axis coupling and are not full coupled/gyro eigenvalues.",
+      "roll_tau_s": 0.0615398438244994,
+      "short_period": {
+        "f_hz": 0.6595700973024748,
+        "zeta": 0.6645547244523852
+      },
+      "speed_mps": 22.0,
+      "spiral_tau_s": -14.496133642199721,
+      "success": true
+    },
+    {
+      "downwash_lag_root_per_s": null,
+      "dutch_roll": {
+        "f_hz": 1.0889461846100796,
+        "zeta": 0.17009056971259848
+      },
+      "message": "ok",
+      "phugoid": {
+        "f_hz": 0.06001408886072431,
+        "zeta": 0.08993501961497095
+      },
+      "projection_note": "Trimmed level Jacobian with throttle, shaft RPM, and control deflections frozen; reported longitudinal/lateral diagonal-block projections omit cross-axis coupling and are not full coupled/gyro eigenvalues.",
+      "roll_tau_s": 0.0460168214834663,
+      "short_period": {
+        "f_hz": 0.8739181008654567,
+        "zeta": 0.6545528590697834
+      },
+      "speed_mps": 29.0,
+      "spiral_tau_s": -26.734696062531466,
+      "success": true
+    },
+    {
+      "downwash_lag_root_per_s": null,
+      "dutch_roll": {
+        "f_hz": 1.66142251404282,
+        "zeta": 0.15438097325209887
+      },
+      "message": "ok",
+      "phugoid": {
+        "f_hz": 0.03815618213605943,
+        "zeta": 0.2500973560153317
+      },
+      "projection_note": "Trimmed level Jacobian with throttle, shaft RPM, and control deflections frozen; reported longitudinal/lateral diagonal-block projections omit cross-axis coupling and are not full coupled/gyro eigenvalues.",
+      "roll_tau_s": 0.0293655186813401,
+      "short_period": {
+        "f_hz": 1.358383392853233,
+        "zeta": 0.6504029300569822
+      },
+      "speed_mps": 45.0,
+      "spiral_tau_s": -62.019003381000125,
+      "success": true
+    },
+    {
+      "downwash_lag_root_per_s": null,
+      "dutch_roll": {
+        "f_hz": 2.384797811029626,
+        "zeta": 0.14879196207297452
+      },
+      "message": "ok",
+      "phugoid": {
+        "f_hz": 0.025324125956492038,
+        "zeta": 0.5431972992596413
+      },
+      "projection_note": "Trimmed level Jacobian with throttle, shaft RPM, and control deflections frozen; reported longitudinal/lateral diagonal-block projections omit cross-axis coupling and are not full coupled/gyro eigenvalues.",
+      "roll_tau_s": 0.020257050213889495,
+      "short_period": {
+        "f_hz": 1.96512083378202,
+        "zeta": 0.6488587636727763
+      },
+      "speed_mps": 65.0,
+      "spiral_tau_s": -110.6671036859647,
+      "success": true
+    }
+  ]
+}

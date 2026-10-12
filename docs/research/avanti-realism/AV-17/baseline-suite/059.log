@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Stik data loads  []
+ok   loader: breakaway 1.25; anchor springs Σk = m·ω² split by static load share (nose 0.268), c = 2ζ·√(k·m·share)  k [385.657262670729, 385.657262670729, 292.233363068912]
+ok   anchor yaw mode about the CG also satisfies ω·dt < 0.1 at 240 Hz  ω·dt 0.043
+ok   loader refuses a breakaway factor above 2
+ok   without breakaway_factor: no anchor fields (E2 exactly)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   session on the default field
+ok   session aux carries three anchor floats per wheel  14
+ok   at rest every sliding wheel sticks, its anchor at the wheel (no stored energy)
+ok   stuck at rest with zero deflection: the same load as E2 at rest (no tangential force either way)  [0.0, 0.0, -28.2570142934195, 0.0, -0.21635662996224, 0.0] vs [0.0, 0.0, -28.2570142934195, 0.0, -0.21635662996224, 0.0]
+ok   1 mm along the wheels: the anchors pull back Σk·1 mm  -1.063548 N vs -1.063548 N
+ok   98 % of the smallest hold distance keeps every anchor (2.977 mm; largest 3.452 mm)
+ok   102 % of the largest hold distance releases every wheel
+ok   wheels off the ground (within reach) release their anchors
+ok   past the hold inside a stage: the stuck force is clamped at Σ breakaway·C_rr·N = 3.5321 N  -3.532127 N
+ok   a sliding wheel faster than STICK_SPEED stays sliding
+ok   60 s parked at idle on the mown runway: drift < 2 mm, every wheel still stuck  0.0876 mm
+ok   reference: the E2 law alone creeps centimetres in 10 s at idle  99.4 mm
+ok   breakaway: held at 2.92 N, rolled at 3.09 N; quasi-static prediction 3.11 N within the bracket ±5 % (all wheels at once would be 3.54 N)
+ok   unclamped anchor ring-down: total energy never rises (KE + PE + gear + anchor springs)  max rise -0.0000000488566 J
+ok   240 vs 480 Hz: the same ring-down within 1 µm after 1 s (tick-independent anchor springs)  1.397907567479706e-09 m
+ok   checkpoint taken with stuck anchors
+ok   restore and replay 200 ticks: state and anchors byte-identical
+ok   restore refuses an anchor flag that is neither stuck nor sliding
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   airborne trimmed flight (960 ticks): state and loads byte-identical with and without stiction
+ok   full throttle: every anchor releases within 1 s and the roll accelerates past 5 m/s in 3 s  released 0.07 s, 24.0 m/s
+25 checks, 0 failed

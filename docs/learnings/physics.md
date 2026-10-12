@@ -110,6 +110,8 @@ Flight response can identify a combination such as roll damping divided by roll 
 
 Preserve the source's loading condition when deriving balance. Solving a fuel-loaded inventory against an empty-tank CG target made the Extra's actual dry reference about 6.5 mm aft of the intended station. Solve the dry constraint first, add prescribed consumables, then derive loaded CG, inertia and dependent terms. Check dry and loaded moments independently; a test asserting that the loaded CG equals the dry visual datum preserves the original error. ([EX-06 audit and correction](../research/extra-300-realism/README.md))
 
+A fuel-loading sweep must retain the same hardware and ballast. Re-running a balance solver for each tank level silently compares different builds; mixing that result's stall/climb estimates with a separately fixed-build CG creates an internally inconsistent table. Derive mass, CG and all reported performance quantities from one inventory per loading case, and state omitted trim-drag effects. ([AV-15 sensitivity correction and independent checks](../research/avanti-realism/README.md))
+
 Equal mass and CG do not establish the correct inertia. A symmetric pair separated by distance L contributes M·L²/4 about its center, whereas a uniform box spanning the gap contributes M·L²/12. Store paired hardware at its separate estimated centers with local component envelopes. Check the tensor delta independently and test principal-moment inequalities, including cross inertia. The P-51 correction increased roll inertia by 13.2% while preserving mass, CG and steady coefficients. ([P51-15 inventory audit](../research/p51-realism/P51-15/physics-audit.md))
 
 ### Test derivatives across blends and against time-domain motion

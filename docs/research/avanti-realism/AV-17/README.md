@@ -1,0 +1,29 @@
+# AV-17 integration evidence
+
+2026-10-12 · Status: software investigation complete; the uninterrupted suite remains red on a reproduced baseline atmosphere failure. All physical numbers remain model predictions.
+
+Use the `lifecycle-*-native.json` reports as the final lifecycle evidence: baseline and candidate, each at 240 and 480 Hz, five cases per run. Every case passes. The full 240-tick session replay uses small nonzero three-axis inputs and increased throttle, `var_to_bytes/bytes_to_var`, and exact final checkpoint bytes. Crash restart also compares native checkpoint bytes and exact rigid-body state after 1.5 seconds of callbacks. The five cases include deliberate engine-off glide, unsupported runway refusal/zero wheel state, and actual AirplaneBuilder hinge signs, differential travel, neutral return and inactive flaps.
+
+Earlier `lifecycle-candidate-240*` revisions are retained as probe-development evidence, not additional acceptance runs. The first attempt read global Node3D transforms during SceneTree initialization; deferred execution corrected that probe error. Attempts to restore JSON revealed the existing documented contract: JSON is diagnostic output, and loses types and some float64 bits. The final probe separately reports that observation and uses the supported native checkpoint format. Final hashes digest the actual native bytes; v7/v8 intermediate hash fields instead digested their hexadecimal text. The later `*-final.json` reports precede that metadata correction and the byte-exact crash-restart check; use `*-native.json`.
+
+The initial native `crash-pose-diagnostic.log` lacked imported scene assets and is not usable app verification. The imported LF checkout's [diagnostic](crash-pose-diagnostic-linux.log) isolated the actual regression-test issue: zero position difference and 2.22 × 10⁻¹⁶ render-basis difference from ordinary interpolation's quaternion normalization. The corrected assertion preserves exact current/previous state and exact held crash pose, bounds only ordinary-pose basis roundoff at 10⁻¹², and rejects a 10⁻⁶ rad attitude error. Both [baseline](crash-pose-baseline-final.log) and [candidate](crash-pose-candidate-final.log) pass 86 checks. No production rendering or simulation code changed for this issue.
+
+[Candidate manifest](candidate-manifest.json) records the four-file app overlay used for flight matrices/full-suite execution. The later crash-pose test correction was run separately against both imported snapshots. Reports preserve their input identities; final consolidation must distinguish this test-only follow-up from the frozen physics configuration.
+
+## Whole-app checks
+
+Both isolated LF checkouts use the pinned Godot 4.7.2 Linux build and separate user-data directories. The [baseline results](baseline-suite/results.json) and [candidate results](candidate-suite/results.json) each contain 230 recorded commands: the uninterrupted `app/test.sh` attempt followed by 229 diagnostic continuation commands. The original attempt fails in both at `test_atmosphere_flight.gd`'s extreme-density reset and subsequent access to a missing `format` key (`_failure_recovery`, line 184). The error and resource-exit report are preserved in [baseline](baseline-suite/000.log) and [candidate](candidate-suite/000.log); continuing does not make either attempt green.
+
+All 229 baseline continuation commands pass. The candidate passes 228 and reports the three Avanti render-basis assertions in the old crash-pose test; the reviewed fix passes all 86 checks on both versions as linked above, including the non-finite-attitude rejection. There are no other candidate-only failures. All scripts parse, the float64 guard and strict data/schema checks pass, and no goldens were re-recorded. The final test-only follow-up does not change any flight matrix's physics inputs.
+
+Selected candidate records: [47 Avanti handling checks](candidate-suite/002.log), [27 turbine checks](candidate-suite/163.log), [137 Avanti geometry/hinge checks](candidate-suite/210.log), and [all four real-app trimmed traces](candidate-suite/219.log), each 720 ticks/3 s with finite samples. The other three model contracts and frame-rate independence checks also pass. The final lifecycle probe was copied into the LF checkout and [passed on Linux](lifecycle-candidate-240-linux-native.json) as well as Windows; this establishes repeatability within each engine run, not cross-platform bit identity.
+
+## Cost and reproducibility
+
+[Alternating timing](timing/results.json) ran after this task's other simulation jobs ended: baseline/candidate/candidate/baseline, each benchmark taking the best of three 2,400-tick samples. Trim costs were 258.6 / 264.5 / 244.9 / 242.3 µs per `Simulation.step`; stalled-trajectory costs were 250.6 / 247.1 / 248.1 / 246.3 µs. The two order-balanced trim pairs change +2.28% and +1.07%; neither exceeds the 5% investigation threshold. There is no observed repeatable >5% regression.
+
+These are host observations, not a target-machine or full-frame performance pass. An unrelated Godot process from another workspace was still active and was preserved. The benchmark excludes the external session callback and renderer; its no-gear “ground” component row does not exercise Avanti landing gear. The average of these best-of-three observations is 250.45 → 254.70 µs trimmed and 248.45 → 247.60 µs stalled; it is not a latency percentile or optimization claim.
+
+[Reviewed source hashes](reviewed-source-manifest.json) include the final crash-pose test and research tools. The frozen four app files match the current reviewed files exactly; all six generator/input/oracle files match the LF overlay after newline normalization. Local report links and `git diff --check` pass. Concurrent landscape work is outside these snapshot comparisons.
+
+Return to the [audit, numerical changes and physical limitations](../README.md).

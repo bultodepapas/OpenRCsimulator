@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   the field has a runway threshold
+ok   the runway start solves (E3b2)
+ok   still while idling (max 0.00000000000004 m/s)
+ok   lifts off between 4 and 8 s (5.46 s)
+ok   airborne and climbing at 12 s (42.3 m)
+ok   runway heading held within 5° (1.14°)
+ok   every phase flown
+all scenery scenario checks passed

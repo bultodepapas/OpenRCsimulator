@@ -1,0 +1,264 @@
+{
+	"aircraft_id": "sebart-avanti-s-a200-p100rx",
+	"cases": [
+		{
+			"available": true,
+			"complete": true,
+			"engine_off_after_tick": true,
+			"engine_off_at_reset": true,
+			"engine_was_forced_on_before_reset": true,
+			"error": "",
+			"id": "engine_off_glide_reset",
+			"mode": "glide",
+			"ok": true,
+			"one_tick_state_changed": true,
+			"reset_tick": 0,
+			"rpm_after_one_tick": 0.0,
+			"rpm_at_reset": 0.0,
+			"simulation_fault": "",
+			"speed_mps": 21.0,
+			"start_throttle": 0.0
+		},
+		{
+			"available": true,
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"checkpoint_json_diagnostic": {
+				"authoritative_format": false,
+				"available": true,
+				"canonical_json_text_roundtrip_exact": false,
+				"contract": "Simulation.checkpoint() documents var_to_bytes/bytes_to_var as the float64-preserving format; JSON/CSV are diagnostics.",
+				"max_abs_numeric_delta": 1.4551915228366852e-11,
+				"max_abs_numeric_delta_by_field": {
+					"aux": 1.4551915228366852e-11,
+					"dt": 3.469446951953614e-18,
+					"gravity": 0.0,
+					"inertia": 3.469446951953614e-18,
+					"inputs": 0.0,
+					"last_loads": 1.4210854715202004e-14,
+					"mass": 0.0,
+					"modes": 0.0,
+					"previous": 6.938893903907228e-18,
+					"state": 6.938893903907228e-18,
+					"stop_at_tick": 0.0,
+					"tick": 0.0
+				},
+				"numeric_exact_by_field": {
+					"aux": false,
+					"dt": false,
+					"gravity": true,
+					"inertia": false,
+					"inputs": true,
+					"last_loads": false,
+					"mass": true,
+					"modes": true,
+					"previous": false,
+					"state": false,
+					"stop_at_tick": true,
+					"tick": true
+				},
+				"numeric_values_exact": false,
+				"type_mismatches": [
+					"simulation.tick: int -> float",
+					"simulation.stop_at_tick: int -> float",
+					"simulation.state: PackedFloat64Array -> Array",
+					"simulation.previous: PackedFloat64Array -> Array",
+					"simulation.aux: PackedFloat64Array -> Array",
+					"simulation.inputs: PackedFloat64Array -> Array",
+					"simulation.last_loads: PackedFloat64Array -> Array",
+					"simulation.inertia: PackedFloat64Array -> Array",
+					"simulation.modes: PackedInt64Array -> Array"
+				],
+				"typed_numeric_checkpoint_exact": false
+			},
+			"checkpoint_json_diagnostic_sha256": "5026cc4214d99f91045ae8820f34c927cdb00dbee5861d4b91c95edf23be7a1f",
+			"checkpoint_replay_s": 0.5,
+			"checkpoint_replay_ticks": 240,
+			"checkpoint_transport": "var_to_bytes/bytes_to_var; app/sim/simulation.gd documents JSON/CSV as diagnostics because native Variant bytes preserve float64 bits",
+			"complete": true,
+			"error": "",
+			"final_checkpoint_sha256_first_branch": "556d4a5a0402cc836dc78c9b13212aabda56500238524e7caba97dde4e7f9938",
+			"final_checkpoint_sha256_replay": "556d4a5a0402cc836dc78c9b13212aabda56500238524e7caba97dde4e7f9938",
+			"final_state_max_abs_delta": 0.0,
+			"id": "checkpoint_native_replay_240",
+			"native_checkpoint_byte_roundtrip_exact": true,
+			"native_checkpoint_bytes_sha256": "585f9aeec471ce73f12c67a2c097b5fef05e0f6a6630b61d13bdde8c60cd593d",
+			"native_checkpoint_replay_exact": true,
+			"ok": true,
+			"simulation_fault": "",
+			"simulation_tick": 240
+		},
+		{
+			"available": true,
+			"complete": true,
+			"countdown_s": 1.5,
+			"countdown_ticks_at_detection": 720,
+			"countdown_ticks_expected": 720,
+			"countdown_ticks_waited": 720,
+			"crash_detected": true,
+			"crash_reason": "CRASH at 29.0 m/s (sink 0.0 m/s, airframe contact (hull point 3), point speed 29.0 m/s at detected tick) - restarting",
+			"error": "",
+			"fixture": "valid trimmed start repositioned only in NED down until FlightSession.touches_ground() accepted the gear-up crash_hull; no landing gear or runway fixture",
+			"hull_contact_depth_m": 0.0,
+			"id": "crash_hold_restart",
+			"ok": true,
+			"restart_full_simulation_checkpoint_exact": true,
+			"restart_state_max_abs_delta": 0.0,
+			"restart_tick": 0,
+			"simulation_fault": ""
+		},
+		{
+			"airborne_reset_recovered": true,
+			"anchor_count": 0,
+			"available": true,
+			"command_deflection_channels": [
+				"aileron_right",
+				"aileron_left",
+				"elevator",
+				"rudder"
+			],
+			"complete": true,
+			"error": "",
+			"flap_capability": "not_simulated",
+			"flap_claim": "FlightSession exposes no flap command and the loaded aircraft declares flaps not_simulated; visual flap hinges/setter are not evidence of simulated flap behavior.",
+			"gear_capability": "locked_up",
+			"gear_claim": "No Avanti runway, taxi, takeoff, or landing mechanics are exercised; zero wheel contacts/anchors are confirmed from the loaded model and session API.",
+			"gear_collapsed": false,
+			"gear_compressions_count": 0,
+			"id": "unsupported_ground_contract",
+			"landing_gear_section_empty": true,
+			"ok": true,
+			"persistent_runway_refusal_reason": "runway start is supported only for 'jensen-das-ugly-stik-60' (got 'sebart-avanti-s-a200-p100rx')",
+			"persistent_runway_selection_refused": true,
+			"runway_helper_fallback_state_max_abs_delta": 0.0,
+			"runway_helper_refused_and_restored_airborne_start": true,
+			"runway_helper_returned_true": false,
+			"session_surface_channels": [
+				"roll",
+				"pitch",
+				"yaw",
+				"throttle"
+			],
+			"wheel_count": 0
+		},
+		{
+			"adapter": "res://render/airplane.gd AirplaneBuilder.build/apply_surfaces with FlightSession servo outputs and Commands.hinge_rotations",
+			"aircraft_id": "sebart-avanti-s-a200-p100rx",
+			"available": true,
+			"complete": true,
+			"error": "",
+			"final_neutral_witness_max_delta_m": 0.0,
+			"id": "rendered_adapter_differential_hinges",
+			"negative_actual_servo_surfaces": {
+				"pitch": 0.05770393169164367,
+				"roll": -1.0,
+				"throttle": 0.08596411580227241,
+				"yaw": 0.0
+			},
+			"negative_neutral_return": {
+				"max_normalized_surface_delta": 0.0,
+				"ok": true,
+				"returned_actual_surfaces": {
+					"pitch": 0.05770393169164367,
+					"roll": 0.0,
+					"throttle": 0.08596411580227241,
+					"yaw": 0.0
+				},
+				"target_actual_surfaces": {
+					"pitch": 0.05770393169164367,
+					"roll": 0.0,
+					"throttle": 0.08596411580227241,
+					"yaw": 0.0
+				},
+				"ticks": 240
+			},
+			"negative_pulse_flaps_remained_at_rest": true,
+			"negative_roll_differential_up_exceeds_down": true,
+			"negative_roll_left_up": true,
+			"negative_roll_right_down": true,
+			"negative_surface_deflections_deg": {
+				"aileron_left": 30.0,
+				"aileron_right": -25.0,
+				"elevator": 1.7311179507493102,
+				"rudder": 0.0
+			},
+			"no_crash_or_fault": true,
+			"ok": true,
+			"positive_actual_servo_surfaces": {
+				"pitch": 0.5577039316916437,
+				"roll": 1.0,
+				"throttle": 0.08596411580227241,
+				"yaw": 0.5
+			},
+			"positive_elevator_both_halves_up": true,
+			"positive_neutral_return": {
+				"max_normalized_surface_delta": 0.0,
+				"ok": true,
+				"returned_actual_surfaces": {
+					"pitch": 0.05770393169164367,
+					"roll": 0.0,
+					"throttle": 0.08596411580227241,
+					"yaw": 0.0
+				},
+				"target_actual_surfaces": {
+					"pitch": 0.05770393169164367,
+					"roll": 0.0,
+					"throttle": 0.08596411580227241,
+					"yaw": 0.0
+				},
+				"ticks": 240
+			},
+			"positive_neutral_witness_max_delta_m": 0.0,
+			"positive_pulse_flaps_remained_at_rest": true,
+			"positive_roll_differential_up_exceeds_down": true,
+			"positive_roll_left_down": true,
+			"positive_roll_right_up": true,
+			"positive_rudder_trailing_edge_right": true,
+			"positive_surface_deflections_deg": {
+				"aileron_left": -25.0,
+				"aileron_right": 30.0,
+				"elevator": 16.73111795074931,
+				"rudder": 15.0
+			}
+		}
+	],
+	"completed": true,
+	"dt_s": 0.0020833333333333333,
+	"errors": [],
+	"evidence_kind": "software and experimental-model prediction",
+	"physical_validation": false,
+	"probe": "AV-17 FlightSession lifecycle and rendered control-adapter contracts",
+	"schema": "openrc-avanti-lifecycle-probe-v1",
+	"scope": "JSON checkpoint restore/replay, glide engine-off reset, terminal hull crash hold/restart, unsupported runway/gear/flaps observations, and actual rendered hinges; no ground fixture or landing claim",
+	"setup": {
+		"anchor_count": 0,
+		"field_id": "default",
+		"flap_capability": "not_simulated",
+		"gear_capability": "locked_up",
+		"landing_gear_section_empty": true,
+		"trim": {
+			"aero_surface_angles_deg": {
+				"aileron_te_down_positive": 0.0,
+				"elevator_te_down_positive": -1.73111795074931,
+				"rudder_te_left_positive": 0.0
+			},
+			"alpha_deg": 4.045306225222302,
+			"beta_deg": 0.0,
+			"gamma_deg": 0.0,
+			"iterations": 4,
+			"message": "trimmed",
+			"mode": "level",
+			"ok": true,
+			"pilot_trim_commands": {
+				"pitch": 0.05770393169164367,
+				"roll": 0.0,
+				"yaw": 0.0
+			},
+			"residual_l2": 2.932950807159374e-11,
+			"rpm": 92100.64449136991,
+			"speed_mps": 29.0,
+			"throttle": 0.08596411580227241
+		},
+		"wheel_count": 0
+	},
+	"tick_hz": 480
+}

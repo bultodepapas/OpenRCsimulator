@@ -1,0 +1,1612 @@
+[
+  {
+    "name": "app/test.sh uninterrupted attempt",
+    "exit": 1,
+    "engine_errors": true,
+    "seconds": 194.94,
+    "log": "000.log"
+  },
+  {
+    "name": "test_attached_flow.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09,
+    "log": "001.log"
+  },
+  {
+    "name": "test_avanti_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.09,
+    "log": "002.log"
+  },
+  {
+    "name": "test_build_info.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "003.log"
+  },
+  {
+    "name": "test_checkpoint.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.19,
+    "log": "004.log"
+  },
+  {
+    "name": "test_checkpoint_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "005.log"
+  },
+  {
+    "name": "test_contact_policy.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.25,
+    "log": "006.log"
+  },
+  {
+    "name": "test_continuous_state.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15,
+    "log": "007.log"
+  },
+  {
+    "name": "test_controls.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09,
+    "log": "008.log"
+  },
+  {
+    "name": "test_controls_reference.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "009.log"
+  },
+  {
+    "name": "test_crash.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.58,
+    "log": "010.log"
+  },
+  {
+    "name": "test_crash_audio.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "011.log"
+  },
+  {
+    "name": "test_crash_effects.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "012.log"
+  },
+  {
+    "name": "test_crash_integration.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 9.4,
+    "log": "013.log"
+  },
+  {
+    "name": "test_crash_pose.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.63,
+    "log": "014.log"
+  },
+  {
+    "name": "test_crash_severity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "015.log"
+  },
+  {
+    "name": "test_crash_snapshot.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.63,
+    "log": "016.log"
+  },
+  {
+    "name": "test_crash_wreck.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 35.12,
+    "log": "017.log"
+  },
+  {
+    "name": "test_damping_regimes.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.54,
+    "log": "018.log"
+  },
+  {
+    "name": "test_downwash_lag.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.02,
+    "log": "019.log"
+  },
+  {
+    "name": "test_dynamics.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44,
+    "log": "020.log"
+  },
+  {
+    "name": "test_e2e_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 9.96,
+    "log": "021.log"
+  },
+  {
+    "name": "test_e2e_radio.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.24,
+    "log": "022.log"
+  },
+  {
+    "name": "test_electric_battery_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.63,
+    "log": "023.log"
+  },
+  {
+    "name": "test_electric_battery_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 18.76,
+    "log": "024.log"
+  },
+  {
+    "name": "test_electric_battery_step.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "025.log"
+  },
+  {
+    "name": "test_electric_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.63,
+    "log": "026.log"
+  },
+  {
+    "name": "test_electric_dynamics.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "027.log"
+  },
+  {
+    "name": "test_electric_event_localization.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53,
+    "log": "028.log"
+  },
+  {
+    "name": "test_electric_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.28,
+    "log": "029.log"
+  },
+  {
+    "name": "test_electric_motor.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "030.log"
+  },
+  {
+    "name": "test_electric_motor_compact.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "031.log"
+  },
+  {
+    "name": "test_electric_propulsion.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.82,
+    "log": "032.log"
+  },
+  {
+    "name": "test_electric_runway.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 15.6,
+    "log": "033.log"
+  },
+  {
+    "name": "test_electric_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 7.04,
+    "log": "034.log"
+  },
+  {
+    "name": "test_electric_stop.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15,
+    "log": "035.log"
+  },
+  {
+    "name": "test_electric_supply.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15,
+    "log": "036.log"
+  },
+  {
+    "name": "test_engine_audio.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.55,
+    "log": "037.log"
+  },
+  {
+    "name": "test_engine_sound.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15,
+    "log": "038.log"
+  },
+  {
+    "name": "test_engine_voice.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "039.log"
+  },
+  {
+    "name": "test_envelope.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.67,
+    "log": "040.log"
+  },
+  {
+    "name": "test_envelope_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.9,
+    "log": "041.log"
+  },
+  {
+    "name": "test_extra_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.09,
+    "log": "042.log"
+  },
+  {
+    "name": "test_extra_installation.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53,
+    "log": "043.log"
+  },
+  {
+    "name": "test_far_forest.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "044.log"
+  },
+  {
+    "name": "test_field_integration.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.05,
+    "log": "045.log"
+  },
+  {
+    "name": "test_field_loader.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.62,
+    "log": "046.log"
+  },
+  {
+    "name": "test_field_projected_shadows.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.18,
+    "log": "047.log"
+  },
+  {
+    "name": "test_field_surfaces.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.67,
+    "log": "048.log"
+  },
+  {
+    "name": "test_flight_cue_shadows.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "049.log"
+  },
+  {
+    "name": "test_flightline_barrier.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "050.log"
+  },
+  {
+    "name": "test_flightline_barrier_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "051.log"
+  },
+  {
+    "name": "test_frame_samples.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "052.log"
+  },
+  {
+    "name": "test_frames.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "053.log"
+  },
+  {
+    "name": "test_golden.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.02,
+    "log": "054.log"
+  },
+  {
+    "name": "test_ground_contact.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.37,
+    "log": "055.log"
+  },
+  {
+    "name": "test_ground_friction.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 10.58,
+    "log": "056.log"
+  },
+  {
+    "name": "test_ground_physics.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53,
+    "log": "057.log"
+  },
+  {
+    "name": "test_ground_start_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.72,
+    "log": "058.log"
+  },
+  {
+    "name": "test_ground_stiction.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 18.48,
+    "log": "059.log"
+  },
+  {
+    "name": "test_ground_surfaces.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.28,
+    "log": "060.log"
+  },
+  {
+    "name": "test_ground_terrain.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.28,
+    "log": "061.log"
+  },
+  {
+    "name": "test_gyro.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.56,
+    "log": "062.log"
+  },
+  {
+    "name": "test_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.14,
+    "log": "063.log"
+  },
+  {
+    "name": "test_horizon.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.9,
+    "log": "064.log"
+  },
+  {
+    "name": "test_hull_crossing.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.72,
+    "log": "065.log"
+  },
+  {
+    "name": "test_induced_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81,
+    "log": "066.log"
+  },
+  {
+    "name": "test_input_report.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.15,
+    "log": "067.log"
+  },
+  {
+    "name": "test_input_report_cli.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 11.41,
+    "log": "068.log"
+  },
+  {
+    "name": "test_input_report_e2e.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.82,
+    "log": "069.log"
+  },
+  {
+    "name": "test_integrator.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81,
+    "log": "070.log"
+  },
+  {
+    "name": "test_landing_maneuver.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 57.99,
+    "log": "071.log"
+  },
+  {
+    "name": "test_landing_variations.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 31.51,
+    "log": "072.log"
+  },
+  {
+    "name": "test_landscape_checkpoint.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.01,
+    "log": "073.log"
+  },
+  {
+    "name": "test_landscape_collision.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.64,
+    "log": "074.log"
+  },
+  {
+    "name": "test_landscape_collision_oracle.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.4,
+    "log": "075.log"
+  },
+  {
+    "name": "test_landscape_collision_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.82,
+    "log": "076.log"
+  },
+  {
+    "name": "test_landscape_collision_setup.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.19,
+    "log": "077.log"
+  },
+  {
+    "name": "test_landscape_collision_world.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.19,
+    "log": "078.log"
+  },
+  {
+    "name": "test_landscape_lighting.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.37,
+    "log": "079.log"
+  },
+  {
+    "name": "test_landscape_marker_optics.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "080.log"
+  },
+  {
+    "name": "test_landscape_population.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.56,
+    "log": "081.log"
+  },
+  {
+    "name": "test_landscape_runtime.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.2,
+    "log": "082.log"
+  },
+  {
+    "name": "test_landscape_scenery_eligibility.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44,
+    "log": "083.log"
+  },
+  {
+    "name": "test_landscape_tree_bounds.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.72,
+    "log": "084.log"
+  },
+  {
+    "name": "test_latency_patch.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.76,
+    "log": "085.log"
+  },
+  {
+    "name": "test_latency_patch_cli.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 21.93,
+    "log": "086.log"
+  },
+  {
+    "name": "test_latency_patch_route.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.71,
+    "log": "087.log"
+  },
+  {
+    "name": "test_math3d.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "088.log"
+  },
+  {
+    "name": "test_modes.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.1,
+    "log": "089.log"
+  },
+  {
+    "name": "test_near_grass.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.52,
+    "log": "090.log"
+  },
+  {
+    "name": "test_p51_envelope.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 15.88,
+    "log": "091.log"
+  },
+  {
+    "name": "test_p51_ground.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 11.23,
+    "log": "092.log"
+  },
+  {
+    "name": "test_p51_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 7.97,
+    "log": "093.log"
+  },
+  {
+    "name": "test_physical_envelope.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.63,
+    "log": "094.log"
+  },
+  {
+    "name": "test_pilot_aids.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.51,
+    "log": "095.log"
+  },
+  {
+    "name": "test_pilot_station.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.48,
+    "log": "096.log"
+  },
+  {
+    "name": "test_pilot_station_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "097.log"
+  },
+  {
+    "name": "test_projected_shadow.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09,
+    "log": "098.log"
+  },
+  {
+    "name": "test_propeller_wake.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.43,
+    "log": "099.log"
+  },
+  {
+    "name": "test_propulsion.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44,
+    "log": "100.log"
+  },
+  {
+    "name": "test_propulsion_scalar.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09,
+    "log": "101.log"
+  },
+  {
+    "name": "test_pullup_invariants.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44,
+    "log": "102.log"
+  },
+  {
+    "name": "test_rc_axis_history.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "103.log"
+  },
+  {
+    "name": "test_rc_calibration.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "104.log"
+  },
+  {
+    "name": "test_rc_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.17,
+    "log": "105.log"
+  },
+  {
+    "name": "test_rc_profile_validation.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "106.log"
+  },
+  {
+    "name": "test_rc_rearm.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "107.log"
+  },
+  {
+    "name": "test_replay_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.56,
+    "log": "108.log"
+  },
+  {
+    "name": "test_replay_policy.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.51,
+    "log": "109.log"
+  },
+  {
+    "name": "test_rigid_body.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.34,
+    "log": "110.log"
+  },
+  {
+    "name": "test_rk_stage_time.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "111.log"
+  },
+  {
+    "name": "test_rotor_coupling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53,
+    "log": "112.log"
+  },
+  {
+    "name": "test_rudder_authority.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.91,
+    "log": "113.log"
+  },
+  {
+    "name": "test_runway_checkpoint_metadata.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.9,
+    "log": "114.log"
+  },
+  {
+    "name": "test_runway_start.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.58,
+    "log": "115.log"
+  },
+  {
+    "name": "test_scenery_ambience.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09,
+    "log": "116.log"
+  },
+  {
+    "name": "test_scenery_build.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.84,
+    "log": "117.log"
+  },
+  {
+    "name": "test_scenery_ground_lu08.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.35,
+    "log": "118.log"
+  },
+  {
+    "name": "test_scenery_loader.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.63,
+    "log": "119.log"
+  },
+  {
+    "name": "test_scenery_scenario.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.4,
+    "log": "120.log"
+  },
+  {
+    "name": "test_scenery_trace.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 10.11,
+    "log": "121.log"
+  },
+  {
+    "name": "test_servo.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81,
+    "log": "122.log"
+  },
+  {
+    "name": "test_session_guards.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.72,
+    "log": "123.log"
+  },
+  {
+    "name": "test_shader_clock.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "124.log"
+  },
+  {
+    "name": "test_shaft_coupled.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.66,
+    "log": "125.log"
+  },
+  {
+    "name": "test_shaft_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.74,
+    "log": "126.log"
+  },
+  {
+    "name": "test_shaft_equilibrium.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53,
+    "log": "127.log"
+  },
+  {
+    "name": "test_shaft_refinement.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.39,
+    "log": "128.log"
+  },
+  {
+    "name": "test_simulation.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "129.log"
+  },
+  {
+    "name": "test_slipstream_downwash.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81,
+    "log": "130.log"
+  },
+  {
+    "name": "test_slipstream_scalar.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.37,
+    "log": "131.log"
+  },
+  {
+    "name": "test_soundscape.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.44,
+    "log": "132.log"
+  },
+  {
+    "name": "test_spin.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.3,
+    "log": "133.log"
+  },
+  {
+    "name": "test_stall_solver.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.56,
+    "log": "134.log"
+  },
+  {
+    "name": "test_start_choice.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.0,
+    "log": "135.log"
+  },
+  {
+    "name": "test_strip_induced.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 13.08,
+    "log": "136.log"
+  },
+  {
+    "name": "test_swirl_accuracy.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.46,
+    "log": "137.log"
+  },
+  {
+    "name": "test_swirl_optimization.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.01,
+    "log": "138.log"
+  },
+  {
+    "name": "test_swirl_torque.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.53,
+    "log": "139.log"
+  },
+  {
+    "name": "test_tail_downwash.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.34,
+    "log": "140.log"
+  },
+  {
+    "name": "test_takeoff_roll.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.9,
+    "log": "141.log"
+  },
+  {
+    "name": "test_time_of_day_checkpoint.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.32,
+    "log": "142.log"
+  },
+  {
+    "name": "test_time_of_day_checkpoint_v2.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "143.log"
+  },
+  {
+    "name": "test_time_of_day_clock.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.35,
+    "log": "144.log"
+  },
+  {
+    "name": "test_time_of_day_config.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "145.log"
+  },
+  {
+    "name": "test_time_of_day_edit.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 6.6,
+    "log": "146.log"
+  },
+  {
+    "name": "test_time_of_day_render.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09,
+    "log": "147.log"
+  },
+  {
+    "name": "test_time_of_day_render_update.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.33,
+    "log": "148.log"
+  },
+  {
+    "name": "test_time_of_day_scenery_update.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09,
+    "log": "149.log"
+  },
+  {
+    "name": "test_time_of_day_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.5,
+    "log": "150.log"
+  },
+  {
+    "name": "test_time_of_day_solar.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "151.log"
+  },
+  {
+    "name": "test_time_of_day_timeline.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.27,
+    "log": "152.log"
+  },
+  {
+    "name": "test_touchdown.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.84,
+    "log": "153.log"
+  },
+  {
+    "name": "test_trace.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.72,
+    "log": "154.log"
+  },
+  {
+    "name": "test_trace_metadata.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.01,
+    "log": "155.log"
+  },
+  {
+    "name": "test_tree_assets.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.37,
+    "log": "156.log"
+  },
+  {
+    "name": "test_tree_wind.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "157.log"
+  },
+  {
+    "name": "test_treeline.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.92,
+    "log": "158.log"
+  },
+  {
+    "name": "test_treeline_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.35,
+    "log": "159.log"
+  },
+  {
+    "name": "test_trim.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.28,
+    "log": "160.log"
+  },
+  {
+    "name": "test_trim_density.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.63,
+    "log": "161.log"
+  },
+  {
+    "name": "test_trim_integrity.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.56,
+    "log": "162.log"
+  },
+  {
+    "name": "test_turbine.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.36,
+    "log": "163.log"
+  },
+  {
+    "name": "test_turbulence_flight.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.02,
+    "log": "164.log"
+  },
+  {
+    "name": "test_ui_aircraft.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 6.06,
+    "log": "165.log"
+  },
+  {
+    "name": "test_ui_atmosphere.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 9.28,
+    "log": "166.log"
+  },
+  {
+    "name": "test_ui_field_world_time_of_day.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.76,
+    "log": "167.log"
+  },
+  {
+    "name": "test_ui_flight_capture.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.08,
+    "log": "168.log"
+  },
+  {
+    "name": "test_ui_help.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 10.9,
+    "log": "169.log"
+  },
+  {
+    "name": "test_ui_home.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.52,
+    "log": "170.log"
+  },
+  {
+    "name": "test_ui_input.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.12,
+    "log": "171.log"
+  },
+  {
+    "name": "test_ui_language.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.48,
+    "log": "172.log"
+  },
+  {
+    "name": "test_ui_pause.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 23.92,
+    "log": "173.log"
+  },
+  {
+    "name": "test_ui_runway.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 15.62,
+    "log": "174.log"
+  },
+  {
+    "name": "test_ui_screen_stack.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 13.5,
+    "log": "175.log"
+  },
+  {
+    "name": "test_ui_time_of_day.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 12.1,
+    "log": "176.log"
+  },
+  {
+    "name": "test_ui_time_of_day_pause.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 6.78,
+    "log": "177.log"
+  },
+  {
+    "name": "test_ui_turbulence.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 7.07,
+    "log": "178.log"
+  },
+  {
+    "name": "test_ui_weather.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 6.6,
+    "log": "179.log"
+  },
+  {
+    "name": "test_ui_weather_sliders.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.03,
+    "log": "180.log"
+  },
+  {
+    "name": "test_visual_checkpoint.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "181.log"
+  },
+  {
+    "name": "test_visual_evidence.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "182.log"
+  },
+  {
+    "name": "test_visual_timeline.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.25,
+    "log": "183.log"
+  },
+  {
+    "name": "test_wash_profile.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81,
+    "log": "184.log"
+  },
+  {
+    "name": "test_wash_transport.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.38,
+    "log": "185.log"
+  },
+  {
+    "name": "test_wheel_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.01,
+    "log": "186.log"
+  },
+  {
+    "name": "test_wildlife.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.46,
+    "log": "187.log"
+  },
+  {
+    "name": "test_wind_field.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.27,
+    "log": "188.log"
+  },
+  {
+    "name": "test_wind_flight.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.36,
+    "log": "189.log"
+  },
+  {
+    "name": "test_wind_hud.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.28,
+    "log": "190.log"
+  },
+  {
+    "name": "test_wind_trace.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.09,
+    "log": "191.log"
+  },
+  {
+    "name": "test_wind_turbulence.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.81,
+    "log": "192.log"
+  },
+  {
+    "name": "test_windsock.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.57,
+    "log": "193.log"
+  },
+  {
+    "name": "test_windsock_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.27,
+    "log": "194.log"
+  },
+  {
+    "name": "test_wing_polar.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.73,
+    "log": "195.log"
+  },
+  {
+    "name": "test_wing_polar_session.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.12,
+    "log": "196.log"
+  },
+  {
+    "name": "test_world_ephemeris.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.16,
+    "log": "197.log"
+  },
+  {
+    "name": "test_world_field_lights.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 3.79,
+    "log": "198.log"
+  },
+  {
+    "name": "test_world_flow.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.77,
+    "log": "199.log"
+  },
+  {
+    "name": "test_world_sky.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "200.log"
+  },
+  {
+    "name": "test_world_stars.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.26,
+    "log": "201.log"
+  },
+  {
+    "name": "test_yaw_damping.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.35,
+    "log": "202.log"
+  },
+  {
+    "name": "echo \"== H7: exact one-ulp math sensitivity and golden branch signatures\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 13.31,
+    "log": "203.log"
+  },
+  {
+    "name": "echo \"== L5: invalid field files fail before Home or flight can start\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 10.9,
+    "log": "204.log"
+  },
+  {
+    "name": "echo \"== aircraft model contract (aircraft/verify_model.gd, owned by the model team)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.97,
+    "log": "205.log"
+  },
+  {
+    "name": "echo \"== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 6.97,
+    "log": "206.log"
+  },
+  {
+    "name": "echo \"== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.03,
+    "log": "207.log"
+  },
+  {
+    "name": "echo \"== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.28,
+    "log": "208.log"
+  },
+  {
+    "name": "echo \"== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 25.0,
+    "log": "209.log"
+  },
+  {
+    "name": "echo \"== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.45,
+    "log": "210.log"
+  },
+  {
+    "name": "echo \"== C7-R1: trace completion, finite samples and failure exits\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 62.08,
+    "log": "211.log"
+  },
+  {
+    "name": "echo \"== D8b-R2: synthetic polar fixtures and explicit experimental flight route\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 22.47,
+    "log": "212.log"
+  },
+  {
+    "name": "echo \"== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 43.28,
+    "log": "213.log"
+  },
+  {
+    "name": "echo \"== M5-W04a: seeded turbulence trace oracle and complete-state FPS independence\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 39.96,
+    "log": "214.log"
+  },
+  {
+    "name": "echo \"== M5-ATM: independent atmosphere, EAS and environment replay checks\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 46.03,
+    "log": "215.log"
+  },
+  {
+    "name": "echo \"== TOD-09a: independent Gregorian clock fixtures stay current\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.04,
+    "log": "216.log"
+  },
+  {
+    "name": "echo \"== TOD-05/07: selected time, visual context and unchanged flight physics\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 96.85,
+    "log": "217.log"
+  },
+  {
+    "name": "echo \"== G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 50.78,
+    "log": "218.log"
+  },
+  {
+    "name": "echo \"== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 12.14,
+    "log": "219.log"
+  },
+  {
+    "name": "echo \"== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 0.06,
+    "log": "220.log"
+  },
+  {
+    "name": "echo \"== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 1.47,
+    "log": "221.log"
+  },
+  {
+    "name": "echo \"== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 5.16,
+    "log": "222.log"
+  },
+  {
+    "name": "echo \"== VQ-01b: scripted logger disables input and identifies its route\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 2.54,
+    "log": "223.log"
+  },
+  {
+    "name": "echo \"== VQ-01b: invalid logger options and output write failures fail the process\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 10.41,
+    "log": "224.log"
+  },
+  {
+    "name": "echo \"== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 8.66,
+    "log": "225.log"
+  },
+  {
+    "name": "echo \"== E0b5: experimental wash transport at 30/60/144 fps\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 4.0,
+    "log": "226.log"
+  },
+  {
+    "name": "echo \"== E0b6p: distributed swirl at 30/60/144 fps\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 8.71,
+    "log": "227.log"
+  },
+  {
+    "name": "echo \"== E5a: generated Extra taildragger contacts, P-51 review and session refinement\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 18.06,
+    "log": "228.log"
+  },
+  {
+    "name": "echo \"== E5b: tail-up pitch threshold, rigid tail lift and synthetic resistance patches\"",
+    "exit": 0,
+    "engine_errors": false,
+    "seconds": 77.24,
+    "log": "229.log"
+  }
+]

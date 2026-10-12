@@ -1,0 +1,29 @@
+{
+  "base_commit": "8b2020f4cc929bec62585deeea0d356b7c8af9df",
+  "scope": "Final reviewed source identities. The frozen app overlay manifest governs flight/suite inputs; final crash-pose test runs separately against the same runtime. Native identity files record exact executed probe revisions.",
+  "sha256": {
+    "app/data/aircraft/sebart_avanti_s_a200.json": "e5d0e039426f9a9ba0db11aad6319018c21fb15a6271baec1842e943fec87c57",
+    "app/physics/turbine.gd": "6f7cb1a5dcd4c757c6b8663fde7b1f921db51c45161facb39664c41dae5f9662",
+    "app/test.sh": "fdb26f3c6cf702024c99b09fe6384cb70a7d0c3b3c93429bda1d775bed273687",
+    "app/tests/test_avanti_handling.gd": "2d355065fbc22d5e4c8d14c36d7c9bcfd2b10a78b02796d69eab2a9f5adc02bc",
+    "app/tests/test_crash_pose.gd": "6265716d0a64524c3178e03efda97c373bf367bac55e00fcb92656f932975119",
+    "assets/aircraft/avanti-s-a200/geometry.json": "1fd48b554c5860e8aca060eeb4df2304ad9580f4e596eedddd856faaedd9c458",
+    "research/avanti-s/av06/derivation.md": "ba244a8829df227bd531cb382e481c587da4c27a95f19ae0ca04dd3065ed7b4d",
+    "research/avanti-s/av06/derive_physics.py": "660749fed76af1304e338e5177e5f1bd0ddc932fa61db7184c97308d860881b0",
+    "research/avanti-s/av06/inputs.json": "67b045d72e199089c1cc8bfbbcaf4750c626167670adc5d7b5df089042fc1cd9",
+    "research/avanti-s/av06/sensitivity.py": "c9b2aece0716b94c4d2e5cf0504ca64c457d8e440745b9df85490f6b67951333",
+    "research/avanti-s/av14/README.md": "a572d52e856b3bd3324616ce6d9232b6bbabfd4c8307838bbe66de941e56f263",
+    "research/avanti-s/av14/compare_results.py": "43214abedd8d42fc668a875f82c373b82926ed79be339bf6b513a5d0ca380653",
+    "research/avanti-s/av14/crash_pose_diagnostic.gd": "4e0cf390e972b5b0fd4b4587849e85517344e8a9988e6066afffb58f993f8a32",
+    "research/avanti-s/av14/envelope_probe.gd": "614c57db70b74c3b90c071f113016108dbce0a80815a431f3394d1e1f5d75201",
+    "research/avanti-s/av14/lifecycle_probe.gd": "47fb5ab19b8f8c1f5a21051f595689131ca3ca2d8acffb61fbf37192b90315de",
+    "research/avanti-s/av14/pitch_sweep_probe.gd": "c404853cc6f6cadf567fbb3b5afb07cc97cbbff8192644cae51b8ee4f9574880",
+    "research/avanti-s/av14/plot_pitch_sweep.py": "34467ddd14a75460f29b36799e4dde5ecb05317282c7b79f29f13f2405805783",
+    "research/avanti-s/av14/run_benchmarks.py": "55f44b988acc9dcd1a91779077268e662b9a61c483b75c3af87a5450c224aefe",
+    "research/avanti-s/av14/run_probe.py": "7ed47a591d2cc6de178d2b61636202850420e8780df7e0047e0ab9f49bae04c8",
+    "research/avanti-s/av14/test_geometry_inventory.py": "238d2cdc4227e732d5e059fc613e6b269cb11d7188a12b206d47142b63bb5ee8",
+    "research/avanti-s/av14/test_sensitivity.py": "48a85919672e01ce8d452352a9e6f3befff672c9acf9937da59ff76cf3699b96",
+    "research/extra-300/ex06/envelope_probe.gd": "e25b4ca8342cc6902453ed51ecaf797d4d751d74a7b979eba7543f5831362b3e",
+    "research/p51/p51-15/envelope_probe.gd": "3dc85835b96317f106e5e7773e6734aef79ec50a3c1ac4aa25936d8c7e59faac"
+  }
+}

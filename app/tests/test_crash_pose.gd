@@ -25,10 +25,28 @@ func _state(down: float) -> PackedFloat64Array:
 func _pose_equal(a: Dictionary, b: Dictionary) -> bool:
 	return a.pos == b.pos and a.basis == b.basis
 
+func _ordinary_pose_equal(a: Dictionary, b: Dictionary) -> bool:
+	# Ordinary interpolation normalizes the quaternion, even when both states are equal.
+	# AV-17: the corrected Avanti trim exposes a 2.22e-16 basis residual near zero.
+	# Retain exact position and simulation-state checks; only allow roundoff in this basis.
+	if a.pos != b.pos:
+		return false
+	for axis in 3:
+		var delta: float = (a.basis[axis] - b.basis[axis]).length()
+		if not is_finite(delta) or delta > 1e-12:
+			return false
+	return true
+
 func _observation(sim: Node) -> Array:
 	return [sim.state.duplicate(),sim.previous.duplicate(),sim.aux.duplicate(),sim.continuous.duplicate(),sim.inputs.duplicate(),sim.tick,sim.paused]
 
 func _run() -> void:
+	_check("ordinary pose comparison rejects a real attitude change", not _ordinary_pose_equal(
+		{pos = Vector3.ZERO, basis = Basis.IDENTITY},
+		{pos = Vector3.ZERO, basis = Basis(Vector3.RIGHT, 1e-6)}))
+	_check("ordinary pose comparison rejects a nonfinite attitude", not _ordinary_pose_equal(
+		{pos = Vector3.ZERO, basis = Basis.IDENTITY},
+		{pos = Vector3.ZERO, basis = Basis(Vector3(NAN, 0, 0), Vector3.UP, Vector3.BACK)}))
 	for entry: Dictionary in Catalog.ENTRIES:
 		var flight: Node = load("res://main.tscn").instantiate()
 		flight.aircraft_id = entry.id
@@ -86,7 +104,7 @@ func _run() -> void:
 		_check(entry.id+" pose remains through final held tick", session.crash.ticks_left == 1 and _pose_equal(held_pose,flight._current_pose()))
 		session._physics_process(session.sim.dt())
 		flight._process(1.0/60.0)
-		_check(entry.id+" automatic restart clears crossing pose", session.crash.is_empty() and session.sim.state == start and _pose_equal(flight._last_render_pose,flight._pose_of(start)))
+		_check(entry.id+" automatic restart clears crossing pose", session.crash.is_empty() and session.sim.state == start and session.sim.previous == start and _ordinary_pose_equal(flight._last_render_pose,flight._pose_of(start)))
 		# A pre-existing contact has an unavailable estimate and must use observed pose.
 		session.sim.previous = _state(.1)
 		session.sim.state = _state(.4)
@@ -97,7 +115,7 @@ func _run() -> void:
 		# Legacy/missing snapshot has only the detected simulation state to display.
 		session.crash.erase("impact")
 		_check(entry.id+" missing snapshot uses current tick pose", _pose_equal(flight._current_pose(),flight._pose_of(session.sim.state)))
-		_check(entry.id+" checkpoint restore clears crash pose", session.restore_checkpoint(checkpoint) and session.crash.is_empty() and _pose_equal(flight._current_pose(),flight._pose_of(start)))
+		_check(entry.id+" checkpoint restore clears crash pose", session.restore_checkpoint(checkpoint) and session.crash.is_empty() and session.sim.state == start and session.sim.previous == start and _ordinary_pose_equal(flight._current_pose(),flight._pose_of(start)))
 		# Synthetic/scripted review routes keep their existing priority.
 		flight._visual_pose = {pos=Vector3(1,2,3),basis=Basis.IDENTITY}
 		_check(entry.id+" synthetic pose precedence unchanged", _pose_equal(flight._current_pose(),flight._visual_pose))
@@ -114,7 +132,7 @@ func _run() -> void:
 		_check(entry.id+" manual-reset precondition is active crossing", not session.crash.is_empty() and session.crash.impact.crossing.available)
 		session.reset()
 		flight._process(1.0/60.0)
-		_check(entry.id+" manual reset restores ordinary pose", session.crash.is_empty() and _pose_equal(flight._last_render_pose,flight._pose_of(start)))
+		_check(entry.id+" manual reset restores ordinary pose", session.crash.is_empty() and session.sim.state == start and session.sim.previous == start and _ordinary_pose_equal(flight._last_render_pose,flight._pose_of(start)))
 		session.sim.previous = _state(-5)
 		session.sim.state = _state(-4)
 		var ordinary: Dictionary = flight._pose_of(session.sim.interpolated(Engine.get_physics_interpolation_fraction()))

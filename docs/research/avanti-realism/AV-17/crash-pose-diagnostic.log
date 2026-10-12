@@ -1,0 +1,3244 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Unable to open file: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_crash_pose.gd:33)
+ERROR: Failed loading resource: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_crash_pose.gd:33)
+ERROR: Failed loading resource: res://assets/landscape/turf/detail.png.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_crash_pose.gd:33)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/turf/detail.png".
+   at: GDScript::reload (res://render/ground.gd:8)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_crash_pose.gd:33)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "TURF_DETAIL" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://render/ground.gd:8)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_crash_pose.gd:33)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://main.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_crash_pose.gd:33)
+ERROR: Failed to load script "res://main.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_crash_pose.gd:33)
+SCRIPT ERROR: Invalid call. Nonexistent function 'grass_material' in base 'GDScript'.
+   at: build (res://render/field.gd:27)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/field.gd:27)
+       [1] _build_field (res://main.gd:827)
+       [2] build (res://render/world/world.gd:111)
+       [3] _build_world (res://main.gd:808)
+       [4] _ready (res://main.gd:262)
+       [5] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] _build_field (res://main.gd:828)
+       [1] build (res://render/world/world.gd:111)
+       [2] _build_world (res://main.gd:808)
+       [3] _ready (res://main.gd:262)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: Cannot open file 'res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/motor_combustion.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: motor_combustion
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/motor_propeller.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: motor_propeller
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/airframe.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: airframe
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wind_low.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: wind_low
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wind_high.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: wind_high
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_04.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_05.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_06.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_04.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+SCRIPT ERROR: Cannot call method 'get_length' on a null value.
+   at: configure (res://audio/soundscape.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:73)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   jensen-das-ugly-stik-60 actual hull crash has an available crossing
+ok   jensen-das-ugly-stik-60 rendered CG and attitude use crossing
+ok   jensen-das-ugly-stik-60 model origin preserves crossing CG
+ok   jensen-das-ugly-stik-60 rendered hull point lies on ground plane
+ok   jensen-das-ugly-stik-60 shadow uses crossing pose
+ok   jensen-das-ugly-stik-60 camera targets crossing CG inspect=false
+ok   jensen-das-ugly-stik-60 camera targets crossing CG inspect=true
+ok   jensen-das-ugly-stik-60 rendering preserves simulation state
+ok   jensen-das-ugly-stik-60 menu hold freezes countdown and pose
+ok   jensen-das-ugly-stik-60 Continue cannot resume an active crash
+ok   jensen-das-ugly-stik-60 pose remains through final held tick
+ok   jensen-das-ugly-stik-60 automatic restart clears crossing pose
+CRASH at 8.5 m/s (sink 72.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   jensen-das-ugly-stik-60 unavailable crossing uses detected pose
+ok   jensen-das-ugly-stik-60 absent crossing uses detected pose
+ok   jensen-das-ugly-stik-60 missing snapshot uses current tick pose
+ok   jensen-das-ugly-stik-60 checkpoint restore clears crash pose
+ok   jensen-das-ugly-stik-60 synthetic pose precedence unchanged
+ok   jensen-das-ugly-stik-60 scripted pose precedence unchanged
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   jensen-das-ugly-stik-60 manual-reset precondition is active crossing
+ok   jensen-das-ugly-stik-60 manual reset restores ordinary pose
+ok   jensen-das-ugly-stik-60 ordinary pose retains interpolation
+SCRIPT ERROR: Invalid call. Nonexistent function 'grass_material' in base 'GDScript'.
+   at: build (res://render/field.gd:27)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/field.gd:27)
+       [1] _build_field (res://main.gd:827)
+       [2] build (res://render/world/world.gd:111)
+       [3] _build_world (res://main.gd:808)
+       [4] _ready (res://main.gd:262)
+       [5] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] _build_field (res://main.gd:828)
+       [1] build (res://render/world/world.gd:111)
+       [2] _build_world (res://main.gd:808)
+       [3] _ready (res://main.gd:262)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/motor_combustion.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: motor_combustion
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/motor_propeller.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: motor_propeller
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/airframe.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: airframe
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wind_low.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: wind_low
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wind_high.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: wind_high
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_04.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_05.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_06.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_04.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+SCRIPT ERROR: Cannot call method 'get_length' on a null value.
+   at: configure (res://audio/soundscape.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:73)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   gp-extra-300s-60 actual hull crash has an available crossing
+ok   gp-extra-300s-60 rendered CG and attitude use crossing
+ok   gp-extra-300s-60 model origin preserves crossing CG
+ok   gp-extra-300s-60 rendered hull point lies on ground plane
+ok   gp-extra-300s-60 shadow uses crossing pose
+ok   gp-extra-300s-60 camera targets crossing CG inspect=false
+ok   gp-extra-300s-60 camera targets crossing CG inspect=true
+ok   gp-extra-300s-60 rendering preserves simulation state
+ok   gp-extra-300s-60 menu hold freezes countdown and pose
+ok   gp-extra-300s-60 Continue cannot resume an active crash
+ok   gp-extra-300s-60 pose remains through final held tick
+ok   gp-extra-300s-60 automatic restart clears crossing pose
+CRASH at 8.5 m/s (sink 72.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   gp-extra-300s-60 unavailable crossing uses detected pose
+ok   gp-extra-300s-60 absent crossing uses detected pose
+ok   gp-extra-300s-60 missing snapshot uses current tick pose
+ok   gp-extra-300s-60 checkpoint restore clears crash pose
+ok   gp-extra-300s-60 synthetic pose precedence unchanged
+ok   gp-extra-300s-60 scripted pose precedence unchanged
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   gp-extra-300s-60 manual-reset precondition is active crossing
+ok   gp-extra-300s-60 manual reset restores ordinary pose
+ok   gp-extra-300s-60 ordinary pose retains interpolation
+SCRIPT ERROR: Out of bounds get index '0' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:208)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '1' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:209)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '2' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:210)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '3' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:221)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '4' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:222)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '5' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '6' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '7' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '8' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '9' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '10' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '11' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '12' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:248)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '13' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:248)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Invalid call. Nonexistent function 'grass_material' in base 'GDScript'.
+   at: build (res://render/field.gd:27)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/field.gd:27)
+       [1] _build_field (res://main.gd:827)
+       [2] build (res://render/world/world.gd:111)
+       [3] _build_world (res://main.gd:808)
+       [4] _ready (res://main.gd:262)
+       [5] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] _build_field (res://main.gd:828)
+       [1] build (res://render/world/world.gd:111)
+       [2] _build_world (res://main.gd:808)
+       [3] _ready (res://main.gd:262)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/motor_combustion.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: motor_combustion
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/motor_propeller.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: motor_propeller
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/airframe.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: airframe
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wind_low.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: wind_low
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wind_high.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: wind_high
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_04.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_05.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_06.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_04.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+SCRIPT ERROR: Cannot call method 'get_length' on a null value.
+   at: configure (res://audio/soundscape.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:73)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.1 m/s at detected tick) - restarting
+ok   p51d-mustang-120 actual hull crash has an available crossing
+ok   p51d-mustang-120 rendered CG and attitude use crossing
+ok   p51d-mustang-120 model origin preserves crossing CG
+ok   p51d-mustang-120 rendered hull point lies on ground plane
+ok   p51d-mustang-120 shadow uses crossing pose
+ok   p51d-mustang-120 camera targets crossing CG inspect=false
+ok   p51d-mustang-120 camera targets crossing CG inspect=true
+ok   p51d-mustang-120 rendering preserves simulation state
+ok   p51d-mustang-120 menu hold freezes countdown and pose
+ok   p51d-mustang-120 Continue cannot resume an active crash
+ok   p51d-mustang-120 pose remains through final held tick
+ok   p51d-mustang-120 automatic restart clears crossing pose
+CRASH at 8.5 m/s (sink 72.0 m/s, airframe contact (hull point 2), point speed 8.1 m/s at detected tick) - restarting
+ok   p51d-mustang-120 unavailable crossing uses detected pose
+ok   p51d-mustang-120 absent crossing uses detected pose
+ok   p51d-mustang-120 missing snapshot uses current tick pose
+ok   p51d-mustang-120 checkpoint restore clears crash pose
+ok   p51d-mustang-120 synthetic pose precedence unchanged
+ok   p51d-mustang-120 scripted pose precedence unchanged
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.1 m/s at detected tick) - restarting
+ok   p51d-mustang-120 manual-reset precondition is active crossing
+ok   p51d-mustang-120 manual reset restores ordinary pose
+ok   p51d-mustang-120 ordinary pose retains interpolation
+SCRIPT ERROR: Out of bounds get index '0' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:208)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '1' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:209)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '2' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:210)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '3' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:221)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '4' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:222)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '5' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '6' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '7' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '8' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '9' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '10' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '11' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '12' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:248)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '13' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:248)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Invalid call. Nonexistent function 'grass_material' in base 'GDScript'.
+   at: build (res://render/field.gd:27)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/field.gd:27)
+       [1] _build_field (res://main.gd:827)
+       [2] build (res://render/world/world.gd:111)
+       [3] _build_world (res://main.gd:808)
+       [4] _ready (res://main.gd:262)
+       [5] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] _build_field (res://main.gd:828)
+       [1] build (res://render/world/world.gd:111)
+       [2] _build_world (res://main.gd:808)
+       [3] _ready (res://main.gd:262)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/motor_turbine.wav-d266a7bc027cc81554b5e9ef38f62daa.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/motor_turbine.wav-d266a7bc027cc81554b5e9ef38f62daa.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/motor_turbine.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: motor_turbine
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:50)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/motor_propeller.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: motor_propeller
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:51)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/airframe.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: airframe
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:52)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wind_low.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: wind_low
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:53)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wind_high.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: wind_high
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:54)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/foliage.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:114)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Missing soundscape source: foliage
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _voice (res://audio/soundscape.gd:116)
+       [1] configure (res://audio/soundscape.gd:56)
+       [2] configure (res://audio/flight_audio.gd:25)
+       [3] _ready (res://main.gd:377)
+       [4] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_04.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_05.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/birds_06.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:60)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/bird_04.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:62)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/owl_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_01.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_02.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Cannot open file 'res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+ERROR: Failed loading resource: res://assets/audio/soundscape/wildlife/dog_03.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:67)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+SCRIPT ERROR: Cannot call method 'get_length' on a null value.
+   at: configure (res://audio/soundscape.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/soundscape.gd:73)
+       [1] configure (res://audio/flight_audio.gd:25)
+       [2] _ready (res://main.gd:377)
+       [3] _run (res://tests/test_crash_pose.gd:36)
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   sebart-avanti-s-a200-p100rx actual hull crash has an available crossing
+ok   sebart-avanti-s-a200-p100rx rendered CG and attitude use crossing
+ok   sebart-avanti-s-a200-p100rx model origin preserves crossing CG
+ok   sebart-avanti-s-a200-p100rx rendered hull point lies on ground plane
+ok   sebart-avanti-s-a200-p100rx shadow uses crossing pose
+ok   sebart-avanti-s-a200-p100rx camera targets crossing CG inspect=false
+ok   sebart-avanti-s-a200-p100rx camera targets crossing CG inspect=true
+ok   sebart-avanti-s-a200-p100rx rendering preserves simulation state
+ok   sebart-avanti-s-a200-p100rx menu hold freezes countdown and pose
+ok   sebart-avanti-s-a200-p100rx Continue cannot resume an active crash
+ok   sebart-avanti-s-a200-p100rx pose remains through final held tick
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _pose_equal (C:/DEVELOPMENT/OpenRCsimulator/research/avanti-s/av14/crash_pose_diagnostic.gd:11)
+       [1] _run (res://tests/test_crash_pose.gd:89)
+AV17_POSE_DELTA position_m=%.17g basis_axis=%.17g
+FAIL sebart-avanti-s-a200-p100rx automatic restart clears crossing pose
+CRASH at 8.5 m/s (sink 72.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   sebart-avanti-s-a200-p100rx unavailable crossing uses detected pose
+ok   sebart-avanti-s-a200-p100rx absent crossing uses detected pose
+ok   sebart-avanti-s-a200-p100rx missing snapshot uses current tick pose
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _pose_equal (C:/DEVELOPMENT/OpenRCsimulator/research/avanti-s/av14/crash_pose_diagnostic.gd:11)
+       [1] _run (res://tests/test_crash_pose.gd:100)
+AV17_POSE_DELTA position_m=%.17g basis_axis=%.17g
+FAIL sebart-avanti-s-a200-p100rx checkpoint restore clears crash pose
+ok   sebart-avanti-s-a200-p100rx synthetic pose precedence unchanged
+ok   sebart-avanti-s-a200-p100rx scripted pose precedence unchanged
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   sebart-avanti-s-a200-p100rx manual-reset precondition is active crossing
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _pose_equal (C:/DEVELOPMENT/OpenRCsimulator/research/avanti-s/av14/crash_pose_diagnostic.gd:11)
+       [1] _run (res://tests/test_crash_pose.gd:117)
+AV17_POSE_DELTA position_m=%.17g basis_axis=%.17g
+FAIL sebart-avanti-s-a200-p100rx manual reset restores ordinary pose
+ok   sebart-avanti-s-a200-p100rx ordinary pose retains interpolation
+SCRIPT ERROR: Out of bounds get index '0' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:208)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '1' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:209)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '2' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:210)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '3' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:221)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '4' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:222)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '5' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '6' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '7' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '8' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:229)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '9' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '10' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '11' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:245)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '12' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:248)
+       [2] _process (res://audio/flight_audio.gd:81)
+SCRIPT ERROR: Out of bounds get index '13' (on base: 'PackedFloat64Array')
+   at: _level (res://audio/soundscape.gd:254)
+   GDScript backtrace (most recent call first):
+       [0] _level (res://audio/soundscape.gd:254)
+       [1] update_sound (res://audio/soundscape.gd:248)
+       [2] _process (res://audio/flight_audio.gd:81)
+84 checks, 3 failed
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

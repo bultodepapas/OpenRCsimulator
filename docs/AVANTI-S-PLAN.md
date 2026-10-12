@@ -1,6 +1,6 @@
 # Avanti S turbine jet: plan
 
-2026-10-12 · Revision 7 · **Status: AV-14 audit and implementation plan reviewed before code changes; AV-15…17 corrections and verification in progress. The catalog aircraft remains experimental. Planform metrology, turbine presentation, flap/gear simulation, fuel burn, independent validation and delivery remain open.**
+2026-10-12 · Revision 8 · **Status: AV-14…16 audit and bounded corrections complete; AV-17 integration evidence recorded, with the uninterrupted suite still failing a reproduced baseline atmosphere test. The catalog aircraft remains experimental. Planform metrology, turbine presentation, flap/gear simulation, fuel burn, independent validation and delivery remain open.**
 
 Step-ID prefix `AV-`. Owned paths: `assets/aircraft/avanti-s-a200/`, `app/aircraft/avanti_s_*`, `app/aircraft/verify_avanti.gd`, `app/physics/turbine.gd`, `app/data/aircraft/sebart_avanti_s_a200.json` (generated), `app/tests/test_turbine.gd`, `app/tests/test_avanti_handling.gd`, `research/avanti-s/`, `docs/research/avanti-s-*`.
 
@@ -38,7 +38,7 @@ Same flow as the other aircraft: declarative geometry → generated data with `{
 
 ## 4. Known limits of the experimental model
 
-The geometry is a photo blockout (wing 0.702 m², no published area); the neutral point is anchored on the manual's aft CG (260 mm at 3 % MAC); 0.40 kg of virtual tail weight balances the estimated inventory; spool constants are ±40 %; the P100 rotation sense is assumed. The full list, the shared changes it needs and what the tests do not prove are in the [model report](research/avanti-s-av06-physics-model.md).
+The geometry is a photo blockout (wing 0.702 m², no published area); the neutral point is anchored on the manual's aft CG (260 mm at 3 % MAC); 0.345 kg of virtual tail weight balances the corrected estimated inventory (AV-15); spool constants are ±40 %; the P100 rotation sense is assumed. The current limits and evidence are in the [AV-14…17 report](research/avanti-realism/README.md); the [AV-05…07 report](research/avanti-s-av06-physics-model.md) is historical.
 
 ## 5. Next actions
 
@@ -82,3 +82,14 @@ Pre-code review completed 2026-10-12: the lead reviewed all three audit findings
 Changing estimated mass distribution and aerodynamic reference stations can alter nonlinear stall/rotation even when CG is held. The neutral-point anchor, airfoil/polar, 8% installed thrust loss, throttle law and spool schedules are not matched-build flight identification. Fuel loading at the manual CG is not specified; other Avanti variants do not resolve it. A scenario's controller can conceal stability problems, so include open-loop cases and record input clipping. Rendering, real-radio handling and low-end-machine acceptance require separate evidence.
 
 Primary starting references: [SebArt original A200 manual](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf), [JetCat 2017 catalog](https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf), [P100 identification, Many et al.](https://www.dglr.de/publikationen/2022/550281.pdf), [NASA momentum thrust equation](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/thrust-force/), [NASA NDARC geometry, pp. 128–130](https://rotorcraft.arc.nasa.gov/Publications/files/Johnson_1085_TN21612_NASA%20TP-2009-215402-app7.pdf). The latter distinguishes geometric MAC from the lift-weighted aerodynamic center; the actual swept-wing loading remains modeled. Source-specific findings and proposed corrections are retained in the AV-14 audits before implementation.
+
+### Recorded outcome, 2026-10-12
+
+| Step | Result and remaining gate |
+| --- | --- |
+| AV-14 | Complete: three Luna/max audits reviewed, primary variant evidence checked, consumer paths and unsupported systems identified, baseline frozen before implementation. |
+| AV-15 | Complete: exposed-tail integration, geometric MAC station and separated-servo inertia corrected through the generator; provenance and fixed-build sensitivity corrected. Twelve independent mathematical checks pass; generated data and strict Godot validation pass. |
+| AV-16 | Software investigation complete: 34 cases × two revisions × two rates, all complete and finite; 84/84 selected refinement bands pass. Eight-input pitch sweep separates body rotation from path geometry. Five lifecycle cases pass on both revisions at both rates, including exact native checkpoint replay and crash reset, plus Linux replay. Physical aerobatic/stall/spin validation remains open. |
+| AV-17 | Evidence recorded: 47 handling, 27 turbine and 86 corrected crash-pose checks; all four model contracts, actual app trim and FPS independence pass. Both full-suite attempts stop at the same baseline extreme-density reset failure; diagnostic continuation finds no remaining candidate-only failure after the test-only render-roundoff correction. Alternating host timing stays below the 5% regression trigger. A green uninterrupted suite, target-machine/render performance and pilot acceptance remain unclaimed. |
+
+Integration review rejected an intermediate tail-centroid helper that ignored the authored chord-scale sweep, retained the consistent strip-domain fix, and verified the full inertia tensor independently. Lifecycle review replaced an unsupported JSON replay assumption with the production native-byte format and added a non-finite render-basis negative check. No turbine schedule, polar limit, arbitrary stability term, gear/flap behavior or structural limiter was retuned. [Final report, exact deltas, sources, plots and reproduction evidence](research/avanti-realism/README.md).

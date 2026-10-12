@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   golden roll_15 replays (600 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 6.938893903907228e-18, rate 2.220446049250313e-16 rad/s; auxiliary/discrete ok
+ok   golden pull_throttle replays (720 ticks): worst error: position 3.552713678800501e-15 m, velocity 4.440892098500626e-16 m/s, attitude 5.551115123125783e-17, rate 2.220446049250313e-16 rad/s; auxiliary/discrete ok
+ok   golden rudder_doublet replays (720 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 1.3877787807814457e-17, rate 6.938893903907228e-18 rad/s; auxiliary/discrete ok
+ok   golden glide_15 replays (1200 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 8.673617379884035e-18, rate 4.0389678347315804e-28 rad/s; auxiliary/discrete ok
+4 golden flights, 0 failed
