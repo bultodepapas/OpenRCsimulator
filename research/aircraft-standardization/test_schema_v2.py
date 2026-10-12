@@ -23,8 +23,8 @@ from jsonschema import Draft202012Validator
 ROOT = Path(__file__).resolve().parents[2]
 LOADER_PROBE = ROOT / "research" / "aircraft-data" / "schema" / "loader_probe.gd"
 LEGACY_V1 = Path(__file__).with_name("fixtures") / "legacy-stik-v1.json"
-DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.7.2-stable_win64_console.exe"
-DEFAULT_APP = ROOT / ".tools" / "as-integration" / "app"
+DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.7.2-stable_linux.x86_64"
+DEFAULT_APP = ROOT / "app"
 EXPECTED_FLEET = {
     "jensen_ugly_stik_60",
     "gp_extra_300s_60",
@@ -361,7 +361,7 @@ def report_path(path: Path) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--app", type=Path, default=DEFAULT_APP,
-                        help="app snapshot to validate (defaults to .tools/as-integration/app)")
+                        help="app snapshot to validate (defaults to the repository app/)")
     parser.add_argument("--godot", type=Path,
                         default=Path(os.environ.get("OPENRC_TEST_GODOT", DEFAULT_GODOT)))
     parser.add_argument("--timeout", type=int, default=300)
