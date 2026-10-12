@@ -13,7 +13,7 @@ var failures := 0
 func _initialize() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 44117
-	for id in Catalog.ids():
+	for id in Catalog.flyable_ids(): # TT-06: previews carry no data file
 		var flight := Flight.new()
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)
@@ -60,7 +60,7 @@ func _check_local_loads() -> void:
 	var load_failures := 0
 	var stalled := 0
 	var zero_flow := 0
-	for id in Catalog.ids():
+	for id in Catalog.flyable_ids(): # TT-06: previews carry no data file
 		var flight := Flight.new()
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)

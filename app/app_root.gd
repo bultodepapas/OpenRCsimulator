@@ -21,6 +21,9 @@ const HelpScreen := preload("res://ui/help_screen.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const TimeOfDayDialog := preload("res://ui/time_of_day_dialog.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
+const UpdateChecker := preload("res://app_state/update_checker.gd")
+const UpdateCheck := preload("res://app_state/update_check.gd")
+const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
@@ -58,6 +61,14 @@ var has_home := false
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
 var _settings_note: String = ""
+## UI-16 update notice seams. `update_check_url` "" means the default policy (_start_update_check); tests point it
+## at a local server, give the cache its own file and name the running version. `open_url` is what Download calls.
+var update_check_url := ""
+var update_state_path: String = UpdateCheck.STATE_PATH
+var update_running_version := ""
+var open_url: Callable = OS.shell_open
+var update_checker: Node
+var _update_info := {}
 
 
 func _ready() -> void:
@@ -87,6 +98,7 @@ func _ready() -> void:
 	if preferences.get("lighting_invalid", false):
 		_settings_note = tr("Invalid saved time-of-day settings; using legacy daylight.")
 	show_home()
+	_start_update_check()
 
 
 ## Any user argument selects the technical/direct route (`-- --quick-flight` is the documented shortcut).
@@ -122,8 +134,12 @@ func show_home() -> void:
 	home.help_requested.connect(open_help)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
+	home.update_download_requested.connect(func(url: String) -> void: open_url.call(url))
+	home.update_hidden.connect(_on_update_hidden)
 	screens.push("home", home)
 	home.set_note(_settings_note)
+	if not _update_info.is_empty():
+		home.show_update(_update_info) # the notice survives a flight: Home is rebuilt after End flight
 
 
 ## Applies a language at once and remembers it. A failed save keeps the language for this session and says so.
@@ -240,6 +256,38 @@ func start_flight() -> void:
 func _on_first_flight_hint_done() -> void:
 	preferences.first_flight_hint_seen = true
 	Preferences.save_to(preferences_path, preferences) # a failed save only means the hint shows again next time
+
+
+## UI-16: one update check per launch, only on the interactive route, only in exported builds (a development run
+## checks when OPENRC_UPDATE_URL names a source) and only while the preference allows it. Home never waits for it.
+func _start_update_check() -> void:
+	if not bool(preferences.get("check_updates", true)):
+		return
+	var url := update_check_url
+	if url == "":
+		url = OS.get_environment("OPENRC_UPDATE_URL")
+		if url == "" and BuildInfo.current().source == "export":
+			url = UpdateCheck.RELEASES_URL
+	if url == "":
+		return
+	update_checker = UpdateChecker.new()
+	update_checker.url = url
+	update_checker.state_path = update_state_path
+	update_checker.running_version = update_running_version
+	update_checker.update_available.connect(_on_update_available)
+	add_child(update_checker)
+
+
+func _on_update_available(info: Dictionary) -> void:
+	_update_info = info
+	if home != null:
+		home.show_update(info)
+
+
+func _on_update_hidden(tag: String) -> void:
+	_update_info = {}
+	if update_checker != null:
+		update_checker.hide(tag)
 
 
 func _notification(what: int) -> void:

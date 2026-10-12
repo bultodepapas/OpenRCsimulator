@@ -45,7 +45,7 @@ The renderer composes the field, sky, lighting and scenery. Physical weather con
 | `research/` | Reproducible experiments, derivations and measurement reducers |
 | `docs/` | Current guides, active plans, evidence and sources; [map](docs/README.md) |
 | `prototypes/stage0/` | Frozen bake-off specification, comparison and three.js prototype |
-| `Timber turbo evolution/` | External Timber authoring delivery; not a runtime aircraft |
+| `Timber turbo evolution/` | External Timber authoring delivery (read-only source); its r1 GLB is copied to `app/assets/aircraft/turbo-timber-evolution/` and built by `app/aircraft/timber_model.gd` as the catalog's PREVIEW entry (no flight data yet) |
 
 ## Limits and upgrades
 

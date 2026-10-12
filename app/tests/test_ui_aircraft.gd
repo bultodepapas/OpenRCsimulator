@@ -1,7 +1,7 @@
 # UI-05 / EX-11 / AV-03: choosing the aircraft on Home with real key events (tests/ui_driver.gd). The card and the
 # backdrop follow the choice, the choice is remembered, Fly starts exactly that airplane (model and physics), and a
-# stale or broken preference falls back to the default. Since AV-07 the catalog has no preview entry: the Avanti flies
-# (experimental), so the "a preview cannot be flown" path has no real entry to drive here.
+# stale or broken preference falls back to the default. Since TT-06 the Timber is the catalog's preview entry, so the
+# "a preview cannot be flown" path is driven by a real entry again (Fly disabled, arrows keep working).
 # Run: godot --headless --path . --script res://tests/test_ui_aircraft.gd
 extends SceneTree
 
@@ -13,6 +13,7 @@ const PREFS := "user://test_ui_aircraft_settings.cfg"
 const STIK := "jensen-das-ugly-stik-60"
 const EXTRA := "gp-extra-300s-60"
 const AVANTI := "sebart-avanti-s-a200-p100rx"
+const TIMBER := "eflite-turbo-timber-evolution"
 const P51 := "p51d-mustang-120"
 
 var _failures := 0
@@ -54,7 +55,7 @@ func _run() -> void:
 	var home: Control = app.home
 	_check("default: the Ugly Stik on the card and in the backdrop", home.aircraft_id == STIK and home.aircraft_name_label.text == Catalog.entry(STIK).name
 		and app.home_scene.airplane.aircraft_id == STIK)
-	_check("default: Fly enabled and focused, counter 1 of 4", not home.fly_button.disabled and ui.focus_name() == "Fly" and home.aircraft_count_label.text == "Aircraft 1 of 4",
+	_check("default: Fly enabled and focused, counter 1 of 5", not home.fly_button.disabled and ui.focus_name() == "Fly" and home.aircraft_count_label.text == "Aircraft 1 of 5",
 		home.aircraft_count_label.text)
 
 	# Right from Fly reaches the next arrow; Enter there shows the Extra.
@@ -76,17 +77,25 @@ func _run() -> void:
 	_check("Avanti: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
 	_check("choosing the Avanti never starts a flight", app.flight == null)
 
-	# Wraps to the Stik; Left goes back to the Avanti. Spanish texts follow the language.
+	# The Timber preview (TT-06): shown on the card and in the backdrop, Fly disabled, the arrow keeps focus.
+	await ui.tap(KEY_ENTER)
+	_check("Timber: shown, preview, Fly disabled", home.aircraft_id == TIMBER and home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Preview") and not home.limits_label.visible, home.aircraft_status_label.text)
+	_check("Timber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
+	_check("Timber: counter 5 of 5", home.aircraft_count_label.text == "Aircraft 5 of 5", home.aircraft_count_label.text)
+	# Wraps to the Stik; Left twice goes back to the Avanti. Spanish texts follow the language.
 	await ui.tap(KEY_ENTER)
 	_check("next wraps around to the Ugly Stik", home.aircraft_id == STIK)
 	await ui.tap(KEY_LEFT)
 	await ui.tap(KEY_ENTER)
-	_check("previous arrow goes back to the Avanti", home.aircraft_id == AVANTI, home.aircraft_id)
+	_check("previous arrow goes back to the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
+	await ui.tap(KEY_ENTER)
+	_check("previous again: the Avanti", home.aircraft_id == AVANTI, home.aircraft_id)
 	app.set_language("es")
 	await ui.settle()
 	# Labels keep the English source and translate when drawn (auto-translate), so read them the way they are drawn.
 	var status: Label = home.aircraft_status_label
-	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 4 de 4" and status.can_auto_translate()
+	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 4 de 5" and status.can_auto_translate()
 		and status.atr(status.text).begins_with("Experimental: primera estimación física (turbina") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
 		"%s / %s" % [home.aircraft_count_label.text, status.atr(status.text)])
 	app.set_language("en")

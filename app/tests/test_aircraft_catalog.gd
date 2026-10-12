@@ -26,11 +26,13 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	_check("default is the Ugly Stik and it is in the catalog", Catalog.DEFAULT_ID == AirplaneBuilder.STIK_ID and Catalog.has(Catalog.DEFAULT_ID))
-	_check("four aircraft, unique IDs", Catalog.ids().size() == 4 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 4, str(Catalog.ids()))
+	_check("five aircraft, unique IDs", Catalog.ids().size() == 5 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 5, str(Catalog.ids()))
+	_check("four flyable entries, the Timber preview skipped explicitly", Catalog.flyable_ids().size() == 4 and not Catalog.flyable_ids().has(AirplaneBuilder.TIMBER_ID)
+		and Catalog.flyable_entries().all(func(e): return e.data != "" and e.status != Catalog.PREVIEW), str(Catalog.flyable_ids()))
 	_check("unknown ID: no entry, cannot fly", Catalog.entry("nope").is_empty() and not Catalog.can_fly("nope"))
-	_check("step wraps both ways", Catalog.step(Catalog.ids()[3], 1) == Catalog.ids()[0] and Catalog.step(Catalog.ids()[0], -1) == Catalog.ids()[3])
+	_check("step wraps both ways", Catalog.step(Catalog.ids()[-1], 1) == Catalog.ids()[0] and Catalog.step(Catalog.ids()[0], -1) == Catalog.ids()[-1])
 	_check("the render adapter knows every catalog ID by the same name",
-		[AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.AVANTI_ID] == Array(Catalog.ids()))
+		[AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID] == Array(Catalog.ids()))
 
 	for id in Catalog.ids():
 		var e := Catalog.entry(id)
@@ -44,7 +46,8 @@ func _initialize() -> void:
 		_check("%s: surfaces deflect and return through the shared adapter" % id, true)
 		if e.status == Catalog.PREVIEW:
 			_check("%s: preview has no data and cannot fly" % id, e.data == "" and not Catalog.can_fly(id))
-			_check("%s: preview has no spinning propeller" % id, not airplane.get("has_propeller", true) and not airplane.propeller.visible)
+			# A preview may carry a real propeller (the Timber's imported rotor): the catalog, not the model, refuses flight.
+			_check("%s: preview declares its propeller honestly" % id, airplane.get("has_propeller", true) == airplane.propeller.visible)
 			airplane.root.free()
 			continue
 		var data := AircraftData.load_file(e.data)

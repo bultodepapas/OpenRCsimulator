@@ -38,7 +38,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Turbo Timber Evolution
 
-[TT-00](timber-integration/TT-00/README.md) starts the CAD/import and code-seam review. Follow-ups are in [TT-00-R1](timber-integration/TT-00-R1/README.md); the [integration plan](../TIMBER-INTEGRATION-PLAN.md) owns the model and electric-flight handoff.
+[TT-00](timber-integration/TT-00/README.md) starts the CAD/import and code-seam review; [TT-00-R1](timber-integration/TT-00-R1/README.md) reviews the r1 delivery. [TT-01](timber-integration/TT-01/README.md) freezes the r1 bytes, [TT-02](timber-integration/TT-02/README.md) measures the imported scene and resolves the forward-extent discrepancy, [TT-03](timber-integration/TT-03/README.md) puts the GLB in the app with its model contract and captures, [TT-05](timber-integration/TT-05/README.md) proves the articulation signs, propeller sense, gear wrappers and clearances, and [TT-06](timber-integration/TT-06/README.md) registers the catalog preview entry with the shared test sweep. The [integration plan](../TIMBER-INTEGRATION-PLAN.md) owns the model and electric-flight handoff.
 
 ### Desktop delivery
 

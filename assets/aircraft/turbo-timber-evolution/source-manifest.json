@@ -1,0 +1,253 @@
+{
+  "format": "openrc-timber-source-manifest v1",
+  "step": "TT-01",
+  "generator": "research/timber/tt01/manifest.py",
+  "delivery_root": "Timber turbo evolution/turbo_timber_evolution/r1",
+  "source_alias": "eflite_turbo_timber_evolution",
+  "catalog_id": "eflite-turbo-timber-evolution",
+  "delivery_revision": "r1",
+  "visual_revision": "r1-fb7586f19029",
+  "terms": "NOT SET (r1 LICENSE.txt: internal evaluation only); owner decision D1 pending, blocks TT-17 packaging",
+  "git_commit_informational": "28cd5c6aa63118f869588ffb160ae0362b4bd999",
+  "key_files": {
+    "glb": {
+      "path": "export/aircraft.glb",
+      "sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5",
+      "bytes": 1692540
+    },
+    "demo_glb": {
+      "path": "export/aircraft_demo.glb",
+      "sha256": "aefc81f6d8e669f7db3be2ca2a374ed74313fec85ccdc5d6bd8f45b0ea570cc2",
+      "bytes": 1708076
+    },
+    "metadata": {
+      "path": "metadata.json",
+      "sha256": "7e0afb84661c1dfb9eb050ce6d8fc088707ddcd0dbd97928f6420ef0886ca047",
+      "bytes": 43076
+    },
+    "export_map": {
+      "path": "export-map.json",
+      "sha256": "1f4eecbc9950ab2f1bb8dcc76554f80394855fa55ea309a0839e152bc5229e45",
+      "bytes": 11940
+    },
+    "verification": {
+      "path": "verification.json",
+      "sha256": "4bc73f00d912c125066cc921c9845ef5de920584a16470d51becb07ce60ee511",
+      "bytes": 18448
+    },
+    "blend": {
+      "path": "source/aircraft.blend",
+      "sha256": "2c2787984b4cfce7ad5bb8eecd8eef64f2b2eb5bc4ba39210cd78a3c8e02f3f6",
+      "bytes": 1264314
+    },
+    "license": {
+      "path": "LICENSE.txt",
+      "sha256": "76879725d59b894c59a3300eb999e76347b0b61b7e6ce171dcd2a2ef82dcda57",
+      "bytes": 1327
+    },
+    "readme": {
+      "path": "README.md",
+      "sha256": "939ffdb09206196a1708af9599efbfb68808d00266bbb72fdd7442735ef20a4e",
+      "bytes": 8102
+    },
+    "changelog": {
+      "path": "CHANGELOG.md",
+      "sha256": "cc89fe4e613ea1aae34c5a1334929b1588a23ef078c332dad7fd34a39848540e",
+      "bytes": 1971
+    }
+  },
+  "file_count": 38,
+  "total_bytes": 12301268,
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 1971,
+      "sha256": "cc89fe4e613ea1aae34c5a1334929b1588a23ef078c332dad7fd34a39848540e"
+    },
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1327,
+      "sha256": "76879725d59b894c59a3300eb999e76347b0b61b7e6ce171dcd2a2ef82dcda57"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8102,
+      "sha256": "939ffdb09206196a1708af9599efbfb68808d00266bbb72fdd7442735ef20a4e"
+    },
+    {
+      "path": "export/aircraft.glb",
+      "bytes": 1692540,
+      "sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5"
+    },
+    {
+      "path": "export/aircraft_demo.glb",
+      "bytes": 1708076,
+      "sha256": "aefc81f6d8e669f7db3be2ca2a374ed74313fec85ccdc5d6bd8f45b0ea570cc2"
+    },
+    {
+      "path": "export-map.json",
+      "bytes": 11940,
+      "sha256": "1f4eecbc9950ab2f1bb8dcc76554f80394855fa55ea309a0839e152bc5229e45"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 43076,
+      "sha256": "7e0afb84661c1dfb9eb050ce6d8fc088707ddcd0dbd97928f6420ef0886ca047"
+    },
+    {
+      "path": "previews/control_extremes.png",
+      "bytes": 1385669,
+      "sha256": "d1a88e3890ab2254d6128156bcdd42bf93864c6343f0dfe57e2a3d9fb8c3c6dc"
+    },
+    {
+      "path": "previews/front.png",
+      "bytes": 919877,
+      "sha256": "cfd39b0b6c0a0079f11ce56afeb7bbfb6b1df68e52d6dc1a867e9da3eb9fa12a"
+    },
+    {
+      "path": "previews/side_right.png",
+      "bytes": 979631,
+      "sha256": "0d0c91ead62b26f129ee61f293c907525307a8993cfcc09b8be754679a08f5d4"
+    },
+    {
+      "path": "previews/three_quarter.png",
+      "bytes": 1046610,
+      "sha256": "237c13d0fa1156745c3d2fba9ebc1585f44a72b24128067abc18afe100a7b54c"
+    },
+    {
+      "path": "previews/three_quarter_rear.png",
+      "bytes": 1016783,
+      "sha256": "6c70ce47d9aa1e323ea5e1dc05ecc227c9f18356679636fc257986d900f4f114"
+    },
+    {
+      "path": "previews/top.png",
+      "bytes": 1012149,
+      "sha256": "1a5c696d3a51047de984d64565fcafa8f82dc0648f53c48ff44f1e47489ffbea"
+    },
+    {
+      "path": "previews/underside.png",
+      "bytes": 1000054,
+      "sha256": "463fb6265d2459948016637dd047827baa98b4a296378ce61ebe9ed1933193af"
+    },
+    {
+      "path": "source/aircraft.blend",
+      "bytes": 1264314,
+      "sha256": "2c2787984b4cfce7ad5bb8eecd8eef64f2b2eb5bc4ba39210cd78a3c8e02f3f6"
+    },
+    {
+      "path": "source/reference/PRESENTATION_MODEL.txt",
+      "bytes": 153,
+      "sha256": "07a2ed4535530dc5ef1cb32137580cdb798074eb5a6f2fc2079f2687fa110382"
+    },
+    {
+      "path": "source/reference/analisis_v12.json",
+      "bytes": 2077,
+      "sha256": "c63c7f2fb582f48885eee4a47ddfe87fd736dc7d864a1feb2e4fa4c73e380867"
+    },
+    {
+      "path": "source/reference/auditoria2_v12.json",
+      "bytes": 1881,
+      "sha256": "21faa7d961853ac636453875eb5d8afc89156f11d700cc138b9885ae9d346943"
+    },
+    {
+      "path": "source/reference/auditoria_tren_v12.json",
+      "bytes": 1320,
+      "sha256": "41af7ea63ce89c59a971811ea896510f681605870a2bd1fe3d7d6d84d9545e5f"
+    },
+    {
+      "path": "source/reference/retessellation_report.json",
+      "bytes": 4591,
+      "sha256": "832fea8f1dc268fd36ca3405fea916eb7f3b924fcebbb12ef67673dc570598fb"
+    },
+    {
+      "path": "source/scripts/analisis_mecanico.py",
+      "bytes": 10780,
+      "sha256": "7bdebd43661ee1d430e364ccb6c84ee8f2edc1f9191ccdd077928b3e288fe3e0"
+    },
+    {
+      "path": "source/scripts/auditoria2.py",
+      "bytes": 6603,
+      "sha256": "aad44dafd484b1b3ca31d7c4b96bfa2d062f743de8a5c7548d3438ed1e8e7ff4"
+    },
+    {
+      "path": "source/scripts/auditoria_tren.py",
+      "bytes": 4251,
+      "sha256": "c0ef90a389a51788b7f801d7378d39708212b49b8bfc7e3d22e7f968b212e923"
+    },
+    {
+      "path": "source/scripts/documenta.py",
+      "bytes": 20011,
+      "sha256": "10ea9e8fc9bddb838a302b9eb8f61a58c5085b6f0855c8ee64123106d917011e"
+    },
+    {
+      "path": "source/scripts/escena_blender_v12.py",
+      "bytes": 9981,
+      "sha256": "f8a6a41334faac2539fc77697e9318686b1dbd1695fa7efca732e8d5f5b69897"
+    },
+    {
+      "path": "source/scripts/exporta_juego.py",
+      "bytes": 19844,
+      "sha256": "514ec3ac62e6ef347406ec1cd201cf1dad421b4e5601f3ef4dc35b9fd4f00b5d"
+    },
+    {
+      "path": "source/scripts/helice_spinner.py",
+      "bytes": 7387,
+      "sha256": "64b2dc6d803a5ff476b794cd60e84681e752bd1ce7d07eaf0948e27cfb6dbc55"
+    },
+    {
+      "path": "source/scripts/hoja_mandos.py",
+      "bytes": 1018,
+      "sha256": "5060522dd56a053833fd3c3f2683f24270e4b72b5feed2d5756ea9c00de4bdc1"
+    },
+    {
+      "path": "source/scripts/mapa.py",
+      "bytes": 5746,
+      "sha256": "347e37b861d29b7fa75c25e4d0373c40baef4ac0418a5a8956877e70e0d135c9"
+    },
+    {
+      "path": "source/scripts/modelo_v12.py",
+      "bytes": 46528,
+      "sha256": "c08714c29a69c713a3b38ffe675f35badd72b78f2166288b0f2224c299557573"
+    },
+    {
+      "path": "source/scripts/retesela.py",
+      "bytes": 2869,
+      "sha256": "373a4c9efddf6e1f01a4cbad6fa15fbf10c39bf6cda06768705bec7ca5062845"
+    },
+    {
+      "path": "source/scripts/rig_mandos.py",
+      "bytes": 6709,
+      "sha256": "66124d20794dca85002ff98f77f990b469525374b8f0e871e5b559e71e590836"
+    },
+    {
+      "path": "source/scripts/rig_tren.py",
+      "bytes": 6217,
+      "sha256": "3f910066ada91d8babec44a6a112acfb62413fe881705f59043f0537469888f7"
+    },
+    {
+      "path": "source/scripts/rig_v7.py",
+      "bytes": 2687,
+      "sha256": "85a63b8177906d19b30ce1327f1ef3dba8466c7a591f30511c14cf7d479e659a"
+    },
+    {
+      "path": "source/scripts/tren_aterrizaje_v12.py",
+      "bytes": 12483,
+      "sha256": "1202f2852c95ffbeaae6bcdfa9c5df23d3dbf76326f0cb24ab7ff00fe8aae1ab"
+    },
+    {
+      "path": "source/scripts/verifica_glb.py",
+      "bytes": 17565,
+      "sha256": "eeb735d4680aba82f882c2fd2fa930766a0cb3386097eabb5f9ca9210d9e6cef"
+    },
+    {
+      "path": "textures/.keep",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 18448,
+      "sha256": "4bc73f00d912c125066cc921c9845ef5de920584a16470d51becb07ce60ee511"
+    }
+  ]
+}

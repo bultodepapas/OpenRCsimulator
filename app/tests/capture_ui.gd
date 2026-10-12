@@ -6,6 +6,7 @@
 #   [--weather-focus=period|seed|humidity] captures the last field after keyboard-follow scrolling.
 #   [--weather=<id>] (alias: --weather-preset=<id>) supplies a real preset to Home, Weather or Flight routes.
 #   [--aircraft=<catalog id>] [--start=airborne|runway]
+#   [--update=<tag>] shows the UI-16 update notice for that release tag on the standalone Home.
 # Software rendering proves layout and focus drawing, not GPU quality or legibility on the pilot's monitor.
 extends SceneTree
 
@@ -17,6 +18,7 @@ const VisualEvidence := preload("res://render/visual_evidence.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const UpdateCheck := preload("res://app_state/update_check.gd")
 const TARGET_FLIGHT_TIME_S: float = 1.5
 const FLIGHT_PREFERENCES_PATH: String = "user://capture_ui_flight_settings.cfg"
 const WEATHER_PREFERENCES_PATH: String = "user://capture_ui_weather_settings.cfg"
@@ -37,6 +39,7 @@ func _run() -> void:
 	var weather_preset: String = ""
 	var requested_size: Vector2i = Vector2i.ZERO
 	var show_weather_error: bool = false
+	var update_tag: String = ""
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--aircraft="):
 			aircraft = arg.trim_prefix("--aircraft=")
@@ -56,6 +59,8 @@ func _run() -> void:
 			weather_preset = arg.trim_prefix("--weather-preset=")
 		elif arg.begins_with("--weather="):
 			weather_preset = arg.trim_prefix("--weather=")
+		elif arg.begins_with("--update="):
+			update_tag = arg.trim_prefix("--update=")
 		elif arg.begins_with("--size="):
 			var dimensions: PackedStringArray = arg.trim_prefix("--size=").split("x")
 			if dimensions.size() == 2 and dimensions[0].is_valid_int() and dimensions[1].is_valid_int():
@@ -319,6 +324,9 @@ func _run() -> void:
 					quit(ERR_INVALID_PARAMETER)
 					return
 			home_ui.set_weather_config(weather_config)
+			if update_tag != "":
+				home_ui.show_update({ tag = update_tag, version = update_tag.trim_prefix("v"),
+					url = UpdateCheck.RELEASES_PAGE + "/tag/" + update_tag, published = "" })
 			home_control = home_ui
 			root.add_child(home_ui)
 		if screen != "home":

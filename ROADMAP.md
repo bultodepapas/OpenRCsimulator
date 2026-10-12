@@ -16,7 +16,7 @@ Follow [AGENTS](AGENTS.md) and [CONTRIBUTING](CONTRIBUTING.md): one small workin
 - **Extra:** [experimental model and realism guide](docs/EXTRA-300-PLAN.md); independent flight calibration remains open.
 - **Avanti:** [experimental turbine guide/plan](docs/AVANTI-S-PLAN.md); current configuration is airborne, gear and flaps up.
 - **P-51:** [P51-PLAN](docs/P51-PLAN.md) owns the experimental model and generated physics; [realism implementation](docs/P51-REALISM-PLAN.md) owns P51-15…18, the full-envelope audit and paired-hardware inertia correction; [visual plan](docs/P51-PLAN.md) owns appearance acceptance.
-- **Timber:** [source integration plan](docs/TIMBER-INTEGRATION-PLAN.md); external-model reviews exist, but no runtime catalog aircraft is integrated.
+- **Timber:** [integration plan](docs/TIMBER-INTEGRATION-PLAN.md); the r1 visual asset is frozen, measured, imported, articulated and listed as a catalog preview (TT-01…03, TT-05, TT-06: Fly refused, scripted circle only); electric physics data (TT-07) is next.
 - **Product shell:** [implemented menus](docs/MENU-PLAN.md); UI-20/21 refactor delivered, UI-22…29 [redesign](docs/MENU-REDESIGN-PLAN.md) remains proposed.
 - **Field/readability:** [landscape step registry](docs/LANDSCAPE-PLAN.md) and [visual guide](docs/VISUAL-QUALITY-PLAN.md); Gate L needs pilot/target-display evidence.
 - **Landscape integration:** [active LU plan](LANDSCAPE_UPGRADE_PLAN.md) preserves the continuing LU-07…10 work and its separate cost/acceptance gates.

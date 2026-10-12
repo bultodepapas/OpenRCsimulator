@@ -22,10 +22,22 @@ EYE_M = 1.7
 
 
 def catalog_fleet_ids():
-    """Use the flight selector as authority and require every id to have a baked fleet source."""
+    """Use the flight selector as authority and require every flyable id to have a baked fleet source.
+
+    PREVIEW entries (status = PREVIEW, data = "") are visual-only aircraft without a parked snapshot yet (TT-06; a
+    snapshot is the scenery owner's TT-13b decision), mirroring Catalog.flyable_ids() in the app.
+    """
     catalog_text = (ROOT / "app/app_state/aircraft_catalog.gd").read_text()
     entries = catalog_text.split("const ENTRIES := [", 1)[1].split("\n]", 1)[0]
-    catalog_ids = re.findall(r'^\s*id\s*=\s*"([^"]+)"', entries, re.MULTILINE)
+    catalog_ids = []
+    for block in re.findall(r"\{(.*?)\n\t\}", entries, re.DOTALL):
+        ids = re.findall(r'^\s*id\s*=\s*"([^"]+)"', block, re.MULTILINE)
+        if not ids:
+            continue
+        preview = re.search(r"^\s*status\s*=\s*PREVIEW\b", block, re.MULTILINE) or re.search(r'^\s*data\s*=\s*""', block, re.MULTILINE)
+        if preview:
+            continue
+        catalog_ids.append(ids[0])
     models_text = (ROOT / "app/scenery/models.gd").read_text()
     fleet_match = re.search(r"const FLEET := \{([^}]+)\}", models_text, re.DOTALL)
     if fleet_match is None:

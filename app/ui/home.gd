@@ -19,6 +19,7 @@ const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const UpdateNotice := preload("res://ui/update_notice.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
@@ -34,6 +35,9 @@ signal start_requested(choice: String)
 signal weather_requested(from: Control)
 ## The player chose another FW Home preset; the owner rebuilds the backdrop and remembers it.
 signal time_requested(preset: String)
+## UI-16: the player pressed Download on the update notice (a trusted release page URL) or hid it (its tag).
+signal update_download_requested(url: String)
+signal update_hidden(tag: String)
 
 const SIDEBAR_WIDTH := 440
 
@@ -62,6 +66,8 @@ var aircraft_name_label: Label
 var aircraft_summary_label: Label
 var aircraft_status_label: Label
 var limits_label: Label
+## UI-16: the update card (ui/update_notice.gd), created the first time show_update() is called.
+var update_notice: Control
 var _fly_sent := false
 
 
@@ -319,6 +325,22 @@ func _fill_legend() -> void:
 func set_note(text: String) -> void:
 	note_label.text = text
 	note_label.visible = text != ""
+
+
+## UI-16: a small card at the top right over the backdrop (outside the column, so nothing moves) saying that the
+## release in `info` (app_state/update_check.gd notice) is published. It never takes the focus from Fly.
+func show_update(info: Dictionary) -> void:
+	if update_notice == null:
+		update_notice = UpdateNotice.new()
+		update_notice.download_requested.connect(func(url: String) -> void: update_download_requested.emit(url))
+		update_notice.hide_requested.connect(func(tag: String) -> void: update_hidden.emit(tag))
+		add_child(update_notice)
+	update_notice.show_release(info)
+
+
+func hide_update() -> void:
+	if update_notice != null:
+		update_notice.visible = false
 
 
 ## The interface language in use, as a Preferences.LANGUAGES code ("en" when the locale is not one of ours).

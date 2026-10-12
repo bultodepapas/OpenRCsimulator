@@ -13,11 +13,13 @@ const ExtraGeometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Avanti := preload("res://aircraft/avanti_s_model.gd")
 const P51 := preload("res://aircraft/p51d_model.gd")
 const P51Geometry := preload("res://aircraft/p51d_geometry.gd")
+const Timber := preload("res://aircraft/timber_model.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
 const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
 const P51_ID := "p51d-mustang-120"
+const TIMBER_ID := "eflite-turbo-timber-evolution"
 
 
 static func _mat(color: Color) -> StandardMaterial3D:
@@ -37,6 +39,8 @@ static func build(id := STIK_ID) -> Dictionary:
 			airplane = Avanti.build()
 		P51_ID:
 			airplane = P51.build()
+		TIMBER_ID:
+			airplane = Timber.build()
 		_:
 			push_error("render/airplane.gd: unknown aircraft '%s'" % id)
 			return {}
@@ -61,16 +65,24 @@ static func datum(id: String) -> Vector2:
 			# geometry.json: z = 0 at the root leading edge beside the fuselage, y = 0 on the root wing mid-plane; the
 			# physics le frame (AV-06) uses the same origin, and its thrust line sits where the data file says.
 			return Vector2(0.0, 0.0)
+		TIMBER_ID:
+			# The imported r1 scene sits at its datum D0: symmetry plane x root leading edge x thrust-axis height
+			# (geometry.json datum); a future data file (TT-07) measures from the same point.
+			return Vector2(0.0, 0.0)
 	return Vector2.ZERO
 
 
 ## Hinge rotations from input/commands.gd hinge_rotations(). Stik, Extra and P-51: wing rest frames carry the dihedral
-## (Stik) or the swept hinge line (Extra); the hinge rotates only in its own frame. The Avanti drives its own
-## axis/rest hinges from the same deflections in degrees.
+## (Stik) or the swept hinge line (Extra); the hinge rotates only in its own frame. The Avanti and the Timber drive
+## their own axis/rest hinges from the same deflections in degrees.
 static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
-	if airplane.get("aircraft_id", STIK_ID) == AVANTI_ID:
-		Avanti.apply_surfaces(airplane, surface_degrees(rotations))
-		return
+	match airplane.get("aircraft_id", STIK_ID):
+		AVANTI_ID:
+			Avanti.apply_surfaces(airplane, surface_degrees(rotations))
+			return
+		TIMBER_ID:
+			Timber.apply_surfaces(airplane, surface_degrees(rotations))
+			return
 	for surface_name in rotations:
 		var r: Dictionary = rotations[surface_name]
 		airplane.hinges[surface_name].rotation = Vector3(r.x, r.y, 0)
@@ -89,8 +101,8 @@ static func surface_degrees(rotations: Dictionary) -> Dictionary:
 
 
 ## Optional visual gear state from simulation; angles in radians around model axes. Each aircraft has its own wheels
-## (Stik: left, right, nose; Extra: left, right, tail; Avanti: none yet). Positive wheel rotation is around +X;
-## positive steering is around +Y.
+## (Stik: left, right, nose; Extra, P-51 and Timber: left, right, tail; Avanti: none yet). Positive wheel rotation is
+## around +X; positive steering is around +Y.
 static func apply_gear(airplane: Dictionary, wheel_angles: Dictionary, steering_rad: float) -> void:
 	var gear: Dictionary = airplane.get("gear", {})
 	for key in ["left", "right", "nose", "tail"]:

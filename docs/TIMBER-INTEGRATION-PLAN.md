@@ -1,200 +1,212 @@
-# Turbo Timber Evolution — external-model integration plan
+# Turbo Timber Evolution — fifth catalog aircraft: integration plan
 
-2026-10-12 · Revision 3 · Step prefix: **TT-** · Owned paths: `assets/aircraft/turbo-timber-evolution/`, `research/timber/`, `app/assets/aircraft/turbo-timber-evolution/`, `app/aircraft/timber_*.gd`, generated `app/data/aircraft/eflite_turbo_timber_evolution.json`, `app/tests/test_timber_*.gd` and `docs/research/timber-integration/`; shared changes stay with their owners.
+2026-10-12 · Revision 4 · Step prefix: **TT-** · Owned paths: `assets/aircraft/turbo-timber-evolution/`, `research/timber/`, `app/assets/aircraft/turbo-timber-evolution/`, `app/aircraft/timber_*.gd`, `app/aircraft/verify_timber.gd`, `app/aircraft/inspect_timber.gd`, generated `app/data/aircraft/eflite_turbo_timber_evolution.json`, `app/tests/test_timber_*.gd`, `docs/research/timber-integration/`. Shared changes stay with their owners (§6).
 
-**Status: TT-00 and TT-00-R1 reviews complete. The r1 GLB is suitable for an isolated viewer; application integration has not started. Asset provenance, reproducible source generation, mass properties and hardware identity remain open.**
+**Status: TT-00, TT-00-R1, TT-01, TT-02, TT-03 and TT-05 complete (2026-10-12): the r1 asset is frozen by hash, measured on the imported scene, copied into `app/`, built by `timber_model.gd` with proven signs, propeller sense and gear wrappers, and checked by `verify_timber.gd` (283 checks) in `app/test.sh`. TT-06 (2026-10-12) registers the PREVIEW catalog entry, the `render/airplane.gd` dispatch and the `flyable_ids()` test sweep (21 shared files, every targeted test green). Owner reviews pending: the silhouette overlay (TT-02), the capture set (TT-03) and the shared-test edits (TT-06). Next step: TT-07 (first physics dataset).**
 
-Independent aircraft track. This plan owns Timber work; it does not change ROADMAP priorities or the other aircraft developers' plans. Research: [TT-00 evidence](research/timber-integration/TT-00/README.md), [primary sources](research/timber-integration/TT-00/sources.md), [runtime seams](research/timber-integration/TT-00/code-audit.md).
+Independent aircraft track; it does not change ROADMAP priorities. Evidence: [TT-00](research/timber-integration/TT-00/README.md), [primary sources](research/timber-integration/TT-00/sources.md), [code seams](research/timber-integration/TT-00/code-audit.md), [r1 review](research/timber-integration/TT-00-R1/README.md), [r1 contract review](research/timber-integration/TT-00-R1/contract-review.md). Shared dependencies: [electric propulsion](ELECTRIC-PROPULSION-PLAN.md) and its [EL1f handoff](research/propulsion/EL1f/README.md), [aircraft contract](../AIRCRAFT_CONTRACT.md), [integrated ground model](research/ground-physics/GP-05/README.md). The v12 Blender/CAD analysis, the millimetre CAD mapping and the presentation-pose warnings of Revision 3 are retained in TT-00; r1 supersedes them with explicit frames.
 
-Latest delivery: [r1 review](research/timber-integration/TT-00-R1/README.md). Independent binary checks confirm a neutral 64,291-triangle GLB, 36 surfaces and 13 consistent articulation pivots. r1 supplies the proposed handoff structure; reconstruction paths, mass evidence, length and redistribution terms remain open. The earlier package inventory and dimensional audit are retained in [TT-00 evidence](research/timber-integration/TT-00/README.md).
+## 0. Facts verified for Revision 4
 
-## 1. Recommended delivery
-
-Integrate the supplied **Turbo Timber Evolution** through a curated Blender → GLB → Godot pipeline and a small aircraft-specific adapter. Keep the existing custom float64 flight simulator as the sole authority for motion. The first deliverable is an isolated neutral viewer, followed by articulation; the next is a catalog preview; the third is an experimental electric airplane starting in flight. Ground handling and flap/STOL behavior follow with their own evidence.
-
-The folder is substantially more useful than a static mesh: it contains a Blender scene with stored rig relationships (not yet evaluated), CAD geometry, per-part meshes, hinge/gear metadata and partial construction scripts. It is not a complete physical specification. The biggest implementation dependencies are **electric propulsion** and **flight flaps**, both shared capabilities whose development must be coordinated with the physics and input owners.
-
-Baseline proposal: wheels installed, flaps up, slats off, one documented battery, no receiver stabilization, in-air start. Confirm the hardware revision before producing physics data. The manufacturer's B revision is the research reference, not an assertion that the supplied geometry depicts that exact revision. A viewer needs no decision about the battery or ESC.
-
-Deferred: floats/water, thrust reverse, SAFE/AS3X emulation, battery thermal/degradation models, flexible wings, articulated multibody suspension, detachable damage and a general plugin system for aircraft. These are independent features, not conditions for seeing or testing this model.
-
-## 2. Source status
-
-The earlier v12 Blender, STEP, STL and sidecar audit is preserved in [TT-00](research/timber-integration/TT-00/README.md). The current r1 GLB has no external texture or buffer dependencies and imports independently, but it does not make the supplied reconstruction scripts reproducible. Its stated 1.46 kg mass is far below the documented 2.19 kg B-revision aircraft; the actual hardware revision and 76.6 mm length discrepancy remain unresolved. Redistribution permission is limited to internal evaluation. Do not derive flight data from these mass properties or distribute the asset until its source, configuration and terms are settled.
-
-## 3. Ownership and resource organization
-
-The incoming source package remains intact as an external handoff. TT-01 must record its accepted hashes, origin, license, hardware revision and selected loadout before creating derived assets.
-
-Proposed paths below do not exist until their implementation step:
-
-```text
-assets/aircraft/turbo-timber-evolution/
-  README.md                 # origin, license, chosen hardware/configuration
-  source-manifest.json       # immutable source hashes and authoring tool identity
-  source/                   # accepted original .blend, .step, sidecar, scripts
-  authoring/                # curated Blender export scene; original stays intact
-  geometry.json             # datum, anchors, areas, contacts, uncertainty
-  export-map.json           # source names → runtime roles; exclusions
-research/timber/
-  tt00/                     # read-only inventory scripts delivered now
-  tt02/                     # datum/measurement and coordinate checks
-  tt03/                     # export/simplification script and tool lock
-  tt07/                     # mass/aerodynamic derivation and --check
-app/assets/aircraft/turbo-timber-evolution/
-  timber.glb                # curated runtime artifact, no authoring tools needed
-app/aircraft/
-  timber_model.gd            # builder and pose adapter
-  timber_geometry.gd        # generated numeric visual anchors
-  verify_timber.gd           # model/pose contract checks
-app/data/aircraft/
-  eflite_turbo_timber_evolution.json  # generated, only after physics readiness
-app/tests/test_timber_*.gd   # aircraft-specific verification
-docs/research/timber-integration/TT-<step>/
-  README.md                 # command, configuration, result, limitations
-```
-
-Timber owns only its new named paths. Shared changes stay small and pass through their owners:
-
-| Owner | Shared integration request | When |
-| --- | --- | --- |
-| Aircraft/render adapter owner | Add `build`, `datum` and surface dispatch for one ID; preserve `airplane`, `propeller`, `*_hinge` contracts | TT-06 |
-| Menu owner | Catalog preview/experimental metadata, selection persistence, translated status strings and eventual flap controls | TT-06, TT-10, TT-14 |
-| Physics owner | Electric propulsion schema/trim/session/telemetry; Timber data; contacts; later flap dynamics | TT-08–11, TT-14 |
-| Visual/audio owner | Electric sound, shadow mask, capture scenario and measured render cost | TT-12–13 |
-| Test/export maintainer | Required Timber checks, per-ID packaged smoke, clean-import packaging | TT-10, TT-17 |
-
-Do not edit existing aircraft geometry, regenerate their data, or re-record their goldens as part of Timber integration. Re-read current code and `git status` before each shared patch. Keep drafts outside `app/`; its harness parses every script. Do not move the incoming folder until references are searched and the accepted source snapshot is stable. If storage or ignore rules change, prove the resulting pipeline from a fresh clone with authoring assets acquired by the documented method.
-
-## 4. Authoring and runtime contract
-
-For this and future external aircraft handoffs, record the asset revision/hash, author and redistribution terms, intended hardware/loadout, tool/export versions, units, axes and neutral datum. Include asymmetric landmarks, stable moving-part names, pivot/parent/axis/rest pose/range, and the evidence source for each dimension. Keep the editable master separate from a curated runtime export; split fixed from rotating parts, preserve moving markings and horns, and verify a fresh export/import against the stated landmarks. Do not infer flight mass or aerodynamic data from rendered geometry.
-
-These fields are a proposed intake convention, not an app-facing schema. Agree the smallest useful sample before requesting a full-detail delivery.
-
-### Source selection and export
-
-Prefer an explicit `.glb` artifact: direct `.blend` imports invoke Blender during Godot import, coupling every clean checkout and CI build to the DCC installation. Use a pinned Blender build compatible with this 5.2 file, its exporter and export settings; record the executable hash. No Blender application was available for TT-00, so successful open, driver evaluation and GLB export are still TT-01/03 work. [Godot import documentation](https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html)
-
-Export a named aircraft collection only. Exclude `Suelo`, reflectors, studio cameras/lights, `CG_estimado`, `CG_rango_recomendado`, controller empties and presentation actions. Retain semantic pivots even when visual hardware is simplified. Do not export a sampled control animation that fights live servo poses. Preserve the detailed source for future close inspection.
-
-Blender's driver and constraint relationships are not the runtime flight controller. Establish the neutral, uncompressed aircraft pose explicitly; rebuild the small required kinematic relationships in the render adapter. Linkage animation can be deferred after surfaces work. Reimport must never overwrite hand-authored gameplay behavior: keep that behavior in the wrapper/adapter, not generated imported scenes.
-
-Merge fixed geometry only when it shares material and motion. Keep separate ailerons, flaps, elevator, rudder, rotor and wheels. Reduce springs to a coarse visual representation; omit hidden electronics/hardware in the flight asset. Preserve markings that distinguish top/bottom and left/right. Check smooth normals, winding, thin decals, transparency, roughness and emission under the project's Compatibility renderer. No extra real-time lights are needed merely because the source includes LED materials.
-
-Proposed first optimization targets, **engineering budgets, not measurements**: at most 100k visible triangles and 40 aircraft mesh surfaces/draw submissions in the close-view baseline. Revise against measured silhouette loss and the project's target-machine frame budget; importer LOD alone does not remove object/material overhead. Measure actual draw calls and frame times rather than equating Blender object counts with runtime cost.
-
-### Units, datum and pose
-
-The sidecar/STL frame is inferred as millimetres, +X aft, +Y right, +Z up. The app model frame is metres, +X right, +Y up, +Z aft. Candidate direct CAD mapping is:
-
-```text
-model_position_m = 0.001 * (source_y, source_z, source_x)
-model_axis       = normalize(source_dy, source_dz, source_dx)
-```
-
-This is a proper axis permutation, not a reflection. The Blender object translations are already in metres; its scene has metric units and scale length 1. Do not apply the CAD millimetre conversion to Blender a second time. Standard Blender→glTF conversion adds another axis mapping, so verify the complete chain with asymmetric markers rather than applying this formula blindly to GLB nodes.
-
-The stored Blender root already has a 0.253613 m vertical offset and 0.171404 rad Y rotation (~9.82°), consistent with a posed ground presentation. Remove the presentation pose from the curated aircraft root; keep the physical gear positions in the aircraft frame. Audit parent inverse matrices and rest transforms during evaluated export. Source gear code places the wheel at X=250 mm while the exported manifest gives X=8 mm: the inferred 242 mm datum shift must be explicit before using both in one measurement pipeline.
-
-Derive root leading edge, thrust origin, CG frame, root chord, span and wheel contacts in one `geometry.json`. Compare independent landmarks before exporting generated constants. Suggested conversion tolerances: 0.5 mm at pivots/contacts and 1 mm at external landmarks after round-trip; these prove conversion fidelity, not fidelity to the real kit. Resolve the manual-length discrepancy separately.
-
-### Moving-part mapping
-
-| Source role | Runtime role and behavior |
+| Fact (2026-10-12) | Consequence for the plan |
 | --- | --- |
-| `TurboTimber_Evolution` | neutral root named `airplane`; visual root follows simulated pose relative to the model CG |
-| `Bisagra_aleron_der/izq` | `aileron_right_hinge` / `aileron_left_hinge`; retain separate rest frames with opposite dihedral components |
-| `Bisagra_elevador`, `Bisagra_timon` | `elevator_hinge`, `rudder_hinge`; all moving markings and horns follow their surface |
-| `Bisagra_flap_der/izq` | independent optional flap hinges; both retracted in the initial flight configuration |
-| `Eje_motor` | fixed tilted shaft frame; new child `propeller` rotates around local Z for the existing render call |
-| `Eje_rueda_der/izq/cola` | wheel-spin pivots aligned with the adapter's local X contract; tail spin nested under steering |
+| `Timber turbo evolution/` is tracked in git (156 files, commits `054b6f8` and `28cd5c6`), including `r1/export/aircraft.glb` (1,692,540 bytes), `metadata.json`, the v12 `.blend` and STEP. | Source bytes are already frozen by git; TT-01 records hashes and terms, it does not re-import. `LICENSE.txt` still says "internal evaluation only, terms NOT YET SET" inside a public MIT repository: the owner sets the terms (decision D1) before a packaged build ships the mesh. Add no further bulk sources. TT-01 froze the 38 r1 files by SHA-256 ([manifest](../assets/aircraft/turbo-timber-evolution/source-manifest.json)); the owner regards the terms as a later naming decision (inspired model, no plans or artwork used). |
+| Godot 4.7.2 headless `--import` turns `aircraft.glb` into a PackedScene: 15 mesh nodes, 36 surfaces, 10 materials, 13 pivots with the documented parents and rest rotations; two instances are independent ([report](research/timber-integration/TT-00-R1/godot-report.json)). | The editor importer is the runtime path (§3); consumers need no Blender. |
+| Two probe checks failed: the `wheel_left_axle`/`wheel_right_axle` rest quaternions (±90° about Y, float32) did not pass the quaternion composition check, and the imported forward extent is z = −0.291326 m against the metadata spinner tip at −0.283461 m (7.9 mm). **Resolved by TT-02:** no vertex reaches −0.2913 m; the probe measured transformed axis-aligned bounding boxes, and the 2°/2° tilted rotor's box corners stick out 7.9 mm. The vertex forward extent is the spinner tip at −0.283461 m. | The adapter composes `Basis(axis, angle) * rest`, never quaternion inverses (TT-05, done). Metrology reads `surface_get_arrays()`: `get_faces()` differs by up to 28 µm on this import ([TT-03](research/timber-integration/TT-03/README.md)). |
+| glTF `extras` **do** arrive in the default 4.7.2 import as one `extras` Dictionary per node (`articulation`, `axis_local`, `positive`, `min_deg`, `max_deg`, …); the TT-00-R1 probe looked for separate meta keys. | Axes, rest transforms, ranges, landmarks and contacts still come from generated `timber_geometry.gd` (reviewable, hash-chained to `metadata.json`); `verify_timber.gd` cross-checks the imported extras against the constants. |
+| The live pose path writes `propeller.rotation.z` ([main.gd](../app/main.gd#L850)); r1 spins `propeller_spin` about local +X inside the fixed, tilted `thrust_frame`. r1 ailerons/elevator are positive trailing-edge **down**; the app's `surface_degrees()` is positive **up**; rudder is right-positive in both. | The builder inserts a `propeller` wrapper whose local Z is the thrust axis and negates aileron/elevator (§3). |
+| `FlightSession` selects `coupled-rk4` itself for `electric_prop` ([flight_session.gd](../app/sim/flight_session.gd#L568)); the loader accepts electric `thrust_angles` (±10°), requires `rotating_inertia` in (0, 0.1] kg·m² and a positive-definite carrier tensor; `trace.gd`, trace metadata and `check_trimmed_flight.py` already accept both electric laws. | TT-08 adds no session mechanics: it supplies Timber data and per-aircraft test branches. |
+| Eight tests load every catalog entry's data without a preview guard (`test_aircraft_contract`, `test_trace_metadata`, `test_contact_policy`, `test_aero_flow`, `test_slipstream_scalar`, `test_strip_induced`, `test_wash_transport`, `test_propulsion_scalar`); three enumerate the four IDs explicitly (`test_aircraft_catalog` asserts 4, `test_projected_shadow`, `test_world_field_lights`). | A PREVIEW entry (TT-06) requires the mechanical test sweep in §6 in the same change. |
+| Runway start is Stik-only in three places: `FlightSession.RUNWAY_AIRCRAFT_ID`, `home.gd` start choice, `app_root.gd` preference reset. Wheel profiles (`app/data/ground/wheel_profiles.json`) are keyed by catalog ID; an unprofiled deployed gear reports `legacy_fallback`. | TT-11 is a policy extension with the physics, ground and menu owners, not a Timber-only change. |
+| `flight_audio.gd` drives the placeholder combustion timbre for every non-turbine kind and defaults `max_rpm` to 12000 when the data has none; the night kit (`AircraftLights.attach`) places nav/strobe sprites and under-wing strips from vertices; r1 already has emissive nav-light lenses. | TT-12 adds an electric voice; TT-13 decides which night lights show (decision D5). |
+| The UIUC import sources hold no three-blade propeller; the manuals publish no motor R/I0, rotor inertia or Ct/Cp. | TT-07 ships labeled borrowed/estimated propulsion data; EL5/VAL-7 measurements remain the only path to physical claims. |
 
-The source's `Eje_motor` parents the propeller **and motor mount/bank**. Do not rotate that entire group. Keep fixed supports outside the rotor; blades, spinner and appropriate rotating hardware belong under `propeller`. The outer frame preserves the authored down/right thrust angle while `_airplane.propeller.rotation.z` drives spin. Angles remain provisional until measured.
+## 1. Target configuration
 
-Add an explicit Timber branch in `AirplaneBuilder.apply_surfaces()` that delegates to `Timber.apply_surfaces()` using a documented `{node, axis, rest}` hinge record and deflections from `surface_degrees()`. The generic direct-Euler path must not handle Timber. Use axis/rest transforms like the existing Avanti adapter; avoid flattening the Timber's tilted hinges to generic Euler axes. The sidecar's aileron member lists omit horns, while Blender parents those horns to the hinges: reconcile both sources in `export-map.json`. Do not let separately exported paint/hardware remain behind as a surface moves. Instantiate two airplanes to prove that changing one pose cannot mutate the other's node state.
+| Item | Decision (default unless the owner changes it) | Source |
+| --- | --- | --- |
+| Catalog ID / data file | `eflite-turbo-timber-evolution` / `app/data/aircraft/eflite_turbo_timber_evolution.json`; r1's `eflite_turbo_timber_evolution` is recorded as the source alias | Catalog convention: hyphenated IDs, underscored file names |
+| Reference hardware | E-flite Turbo Timber Evolution 1.5 m, B revision (EFL105250B class): 800 Kv SPM-1012 motor, Avian 70 A ESC, EFL5962 11×7.3 three-blade propeller, 4S 3200 mAh 30C pack class | [EL1a reference](research/propulsion/EL1a/timber-reference.md) |
+| Manual anchors | Span 1.555 m, length 1.040 m, 1.860 kg empty / 2.190 kg with pack, CG 60 ± 5 mm aft of the root LE (slats off); throws in **mm**: aileron ±33/±25, elevator ±20/±15, rudder ±30/±20; flaps 20/35 mm with 16 %/30 % down-elevator mix | [B manual](research/timber-integration/TT-00/sources.md) pages 3, 13, 14 |
+| r1 geometry used | Span 1.5479 m, length 1.1166 m (+76.6 mm), wing area 0.329 m², MAC 0.213 m, wheel radii 0.058/0.014 m, track 0.264 m, thrust origin (0, 0, −0.2515) m with 2° down/2° right, datum D0 = symmetry plane × root LE × thrust-axis height | `r1/metadata.json` |
+| Configuration | Wheels installed, flaps up (`flaps: not_simulated`), no slats, no floats, receiver assist off, in-air start at the generator's speed (1.6× the 1-g stall, about 14–15 m/s), fixed-voltage pack law first | §4 |
+| Labels | PREVIEW at TT-06; EXPERIMENTAL from TT-10; FLYABLE only after Gate TT-C | Catalog semantics |
+| Out of scope | Floats/water, thrust reverse, SAFE/AS3X emulation, battery thermal, flexible wings, multibody suspension, detachable damage, a generic aircraft plugin | Revision 3 deferrals unchanged |
 
-## 5. Physics readiness
+## 2. How the fifth aircraft plugs into the app
 
-### Data and evidence
+| Seam | Today | Timber change | Owner |
+| --- | --- | --- | --- |
+| Catalog | `aircraft_catalog.gd` ENTRIES: ID → name, summary, status, status note, data path | Fifth entry; new `flyable_ids()` helper used by tests | Menu |
+| Render adapter | `render/airplane.gd` dispatches `build`, `datum`, `apply_surfaces`; Avanti branch drives axis/rest hinges | `TIMBER_ID` branch for all three; `apply_gear` keys `left`, `right`, `tail`, `steering` | Model/render |
+| Builder | Procedural builders per aircraft | `timber_model.gd` instantiates the imported GLB scene under a root named `airplane` and returns `{root, propeller, hinges, gear, has_propeller, data, aircraft_id}` | Timber |
+| Geometry constants | `*_geometry.gd` generated from `assets/aircraft/<id>/geometry.json` | Same: `build_geometry.py` (from `metadata.json`) → `geometry.json` → `compile_geometry.py` → `timber_geometry.gd`, both with `--check` | Timber |
+| Physics data | Generated `openrc-aircraft v2` per aircraft (`derive_physics.py --check` in `test.sh`) | `research/timber/tt07/derive_physics.py` + `inputs.json` → electric v2 file | Timber; physics owner reviews |
+| Electric propulsion | EL1b–e/EL2a software, synthetic Stik fixtures | First catalog `electric_prop` aircraft; fixed-voltage law | Timber data; EL owner for any kernel change |
+| Trace/tests | Per-aircraft handling tests; catalog-wide loops | `test_timber_handling.gd`; branches in trace-metadata and enumerating tests | Timber + test owners |
+| Ground | Contacts in data; wheel profiles by ID; runway policy Stik-only | Three contacts from TT-07; profile and policy in TT-11 | Physics/GP/menu |
+| Audio | Combustion timbre, P-51 blade count special case | Electric voice keyed on `Propulsion.is_electric()`; three blades | Audio |
+| Shadow / night kit / crash | Vertex-based, work on any `MeshInstance3D` tree | Verified per entry by existing catalog-wide tests; night-light duplication decided | Visual/crash |
+| Scenery fleet | Four baked parked snapshots (`Models.FLEET`, `bake_fleet.gd`) | Optional fifth snapshot, separate step | Scenery |
+| Export | `all_resources` + explicit JSON/LICENSE include filter; Linux smoke flies the default aircraft | Asset LICENSE in the filter; pack probe for the imported scene and JSON; Timber launch from the exported binary | Export maintainer |
 
-Hardware/loadout is one explicit configuration: revision, battery type/mass/position, propeller, slats, flap state and receiver-assist state. The current manual is a baseline: 2.190 kg with the recommended 4S 3200 mAh pack, CG 60 ± 5 mm behind root LE without slats, 800 Kv motor and three-blade 11×7.3 propeller. These values are from the B revision; the older manual differs in mass and ESC. [Source comparison](research/timber-integration/TT-00/sources.md)
+## 3. Asset and adapter design
 
-The package's 674 g component sum omits much of the structure. Neither that sum nor uniformly dense CAD solids gives flight mass or inertia. Build a component mass ledger, reconcile the total to the selected configuration, estimate structural distribution, and retain uncertainty bounds. Require positive-definite physically plausible inertia in the simulator's sign convention. Use the existing weighing/inertia tools when real measurements become available.
+**Runtime asset.** `app/assets/aircraft/turbo-timber-evolution/timber.glb` is a byte-identical copy of the accepted r1 `export/aircraft.glb`, with its committed `timber.glb.import` sidecar and a `LICENSE.txt`. Godot's scene importer (already run by `app/test.sh` and `app/export.sh` through `--import`) produces the PackedScene; `research/timber/tt03/check_asset.py --check` fails `test.sh` when the copy's SHA-256 differs from `assets/aircraft/turbo-timber-evolution/source-manifest.json`. The demo GLB, previews, Blender scene and scripts stay in the delivery folder; nothing under `app/` depends on them. If the importer ever proves nondeterministic or too costly, the fallback is the scenery pattern (`tools/scenery/bake_models.gd`: bake to a project-owned JSON mesh format); do not pursue it without a measured reason.
 
-Derive wing/tail areas, aerodynamic reference chord, spans, incidence, dihedral, CG and lever arms from measured geometry with stated definitions. Treat camber/polars, drag, damping derivatives and stall behavior as estimated or borrowed unless independently measured. Geometry does not determine a trustworthy post-stall polar. Parameter sweeps must cover uncertain CG, inertia, stall behavior, drag and propulsion; keep the label experimental until independent evidence exists.
+**Builder (`timber_model.gd`).** `build()` instantiates the scene, renames the imported root to `airplane`, sets `visual_revision` and `asset_sha256` metadata, and resolves every node by name from `TimberGeometry.DATA.articulations`. Hinge records follow the Avanti shape: `{node, axis, rest, range_deg, positive}` with `axis` = the pivot's local +X expressed in the parent frame and `rest` = the imported basis; `_set_hinge(h, deg)` sets `node.basis = h.rest if deg == 0 else Basis(h.axis, deg_to_rad(deg)) * h.rest`, so zero restores the rest basis exactly. `apply_surfaces(airplane, surfaces_deg)` consumes `AirplaneBuilder.surface_degrees()` (degrees, trailing edge up/right) and negates ailerons and elevator; `set_flaps(airplane, deg)` poses both flap hinges, clamped to the authored 0…40°, and is not called by the live path until TT-14. Horns and markings stay with their surfaces because r1 parents them that way; the builder never reparents meshes except the propeller.
 
-The manual expresses throws in **millimetres**, while `escena.json` stores **degrees** and a 0.7 differential. Compute trailing-edge displacement at the manual's defined station by rotating the actual hinge geometry, then solve for the angle. Do not copy 33 mm as 33°, assume the authored 22° is correct, or turn a transmitter compensation percentage directly into elevator degrees. Resolve rates/expo/mixing at one stage so an EdgeTX radio and the simulator do not apply them twice.
+**Propeller.** The builder creates `propeller` (Node3D) as a child of `thrust_frame`, with a basis that maps local +Z onto the frame's +X thrust axis and preserves the declared clockwise-from-behind sense, then reparents `propeller_spin` under it with its rest transform. `main.gd` keeps writing `propeller.rotation.z`; `verify_timber.gd` proves the sense with a blade-tip witness vertex. `has_propeller = true`; the spinner, blades, backplate and outrunner bell rotate; the mount stays fixed.
 
-Every app numeric value uses `{value, unit, kind, source}`. Generated data must have a deterministic `--check`, source hashes and a derivation report. Invalid/unready data must refuse flight, never silently fall back to Ugly Stik values.
+**Gear and wheels.** `gear = {left, right, tail, steering}` maps to `wheel_left_axle`, `wheel_right_axle`, `tailwheel_axle` and `tailwheel_steer`. The adapter's `apply_gear` contract rotates wheels about local X and steering about local Y; r1's axles already use local +X, and `tailwheel_steer` needs a rest-aware wrapper or an axis-aware record so positive steering agrees with the simulator's signed tail-steering convention (checked in TT-11). Suspension pivots are exposed as `suspension_left/right` but remain at rest; cosmetic gear cables stay static. Rolling and strut animation are presentation-only decisions owned by the ground track (`render/ground_gear.gd`).
 
-### Shared electric capability
+**Datum and frames.** Model axes are metres, +X right, +Y up, −Z nose; r1 is exported in that frame with D0 at the origin, so `AirplaneBuilder.datum(TIMBER_ID) = Vector2(0, 0)` exactly as for the Avanti, provided the physics generator uses D0 as its leading-edge datum (§4). Structural positions convert to the contract's `[x_aft, y_right, z_up]` as `[z_sim, x_sim, y_sim]`.
 
-Today the loader accepts `glow_prop` and `turbine`; it does not implement an electric powertrain. Coordinate with ROADMAP **EL1–EL6** and the physics owner rather than creating a separate Timber solver. The minimal first-flight capability is an explicit electric motor/ESC model with a stated ideal/fixed battery voltage, proper shaft load and the selected propeller. A later model may add voltage sag, capacity and cutoff. Nominal 14.8 V is not a measured loaded voltage, and Kv alone is not a thrust model.
+**Materials and lights.** Ten Principled materials, one alpha-blend glass, two emissive nav lenses, no textures. TT-03 checks them under the Compatibility renderer in the inspector views; TT-13 decides whether the emissive lenses replace the night kit's tip sprites (decision D5). No extra real-time lights.
 
-The [Electric Propulsion Plan](ELECTRIC-PROPULSION-PLAN.md) now defines that shared integration sequence. On 2026-10-10 the owner delegated the reference choice: EL uses the currently listed EFL105250B BNF hardware with a 4S 3200 mAh pack class. [Revision/evidence matrix](research/propulsion/EL1a/timber-reference.md). This choice does not identify the delivered mesh's revision or close TT-01/07. EL1a's synthetic source tests do not enable flight; TT-08 needs the loader, trim and coupled session steps EL1b–e, plus Timber's own motor/prop data. Unaided validation must also resolve the BNF's active AS3X controller.
+**Revision identity.** `VISUAL_REVISION` in `timber_model.gd` must equal `TimberGeometry.DATA.revision`, and both are derived from the r1 revision string plus the GLB SHA-256. Swapping in an r2 asset regenerates `geometry.json` and the constants, re-runs `verify_timber.gd` and `test_aircraft_catalog.gd`, and records a new source-manifest entry; nothing is hand-edited.
 
-Reuse the existing propulsion research and state contract. Measure or bound winding resistance, no-load current, propeller thrust/torque and transient response; test units, motor power balance, throttle-zero behavior and numerical convergence. The stock three-blade propeller cannot silently borrow the Stik's APC two-blade table. If a borrowed prop map is necessary for an experiment, record the mismatch and uncertainty; do not call it validation. [Existing propulsion research](research/roadmap-investigations/05-propulsion-engines-motors.md)
+## 4. Data pipeline design
 
-A Timber preview can ship while electric work is pending. A powered experimental flight depends on shared electric support passing its own tests. Do not present a glow-engine surrogate as a flyable electric Timber. Optional offline power-off analysis remains a research scenario, not the product baseline.
+**Inputs with provenance.** `assets/aircraft/turbo-timber-evolution/geometry.json` is built from `r1/metadata.json` (by hash) by `build_geometry.py`: datum, landmarks, articulations (pivot, axis, rest, range), ground contact points at neutral, thrust frame, dimensions, wing/tail/fin planform stations and chords measured from the mesh, each with `{value, unit, kind, source}`. `research/timber/tt07/inputs.json` adds the manual values (mass, CG, throws, propeller, pack, servos), the selected estimates (airfoil lift limits, drag build-up factors, motor R/I0, rotor inertia, contact stiffness rule) and their sources. Both files are edited by hand; everything downstream is generated.
 
-### Ground and high-lift stages
+**Generator.** `research/timber/tt07/derive_physics.py` follows the Avanti/P-51 pattern (same textbook methods, same `migrate.py` helpers, `--check` freshness, `derivation.md` report, `sensitivity.py` for every `estimated` input) and writes the v2 file with:
 
-Use the existing contact model with **three contacts** derived from left/right main wheels and tail wheel. The two 2D `contactos_mm` entries alone are insufficient. Wheel radius and placement inform geometry; spring rates, damping, travel, friction and steering behavior need independent estimates or measurements. The crossed spring geometry does not directly supply an equivalent vertical spring constant. First use fixed visual struts and honest point-contact dynamics. Wheel spin is an inspector-only feature in the first flight/ground baseline: the live app has no wheel-angle simulation state and does not call `apply_gear()`. TT-11 must wire tailwheel steering from the same signed contact command into the render adapter, including a check against the existing taildragger steering convention; leave rolling angles zero. A later visual-wheel feature must define velocity/radius integration, pose interpolation, pause/restart behavior and state ownership before enabling rolling. Strut deflection driven by simulation compression is also deferred; neither is evidence of multibody suspension physics.
+- `capabilities`: `controls conventional`, `gear fixed_taildragger`, `propulsion_layout single_tractor`, `energy fixed_voltage`, `damage terminal_hull`, `flaps not_simulated`.
+- `inventory` reconciled to **2.190 kg** at the manual CG (60 mm, D0 datum) with a declared virtual balancing mass, as the other four aircraft do. Component masses are class estimates placed at r1 component stations; the r1 1.46 kg ledger is never the total. The tensor is summed from boxes with the parallel-axis theorem and must pass the electric carrier check.
+- `reference`: span from the manual (1.555 m; the 1.5479 m mesh including lenses stays within the catalog test's 1 %), area/MAC/chords from the mesh planform, root chord consistent with the catalog CG-on-root-chord test.
+- `controls.max_throw` in degrees obtained by rotating the actual hinge geometry until the trailing-edge displacement at the manual's measurement station equals the high-rate millimetres; the authored 22°/30° angles are cross-checks, not inputs. Servo full-throw time from the 9 g metal-gear class, labeled estimated.
+- `propulsion` (`electric_prop`): motor `kv 800` (manual), `resistance_ohm` and `no_load_current_a` estimated for a 2815/14-pole 800 Kv outrunner with a stated range; battery `fixed_voltage 14.8 V` labeled estimated (nominal, not loaded); ESC `ideal_motoring`/`identity`; propeller diameter 0.2794 m, `thrust_angles [2, 2]`, `thrust_line_offset` from the hub (0, 0, −0.2515) relative to the CG, `rotating_inertia` estimated for prop + spinner + bell; `ct_table`/`cp_table` borrowed with an explicit three-blade mismatch note (§5 TT-07).
+- `landing_gear`: three contacts at the r1 wheel bottoms (wheel centre minus radius), stiffness by the E1 rule (heave ω·dt 0.09 at 240 Hz, split by static load), damping ratio 0.3, travel and breakaway estimated, tail `max_steering` ±30° with the signed convention; no brakes.
+- `start.level_speed` derived (1.6× stall), `plausibility.mass_range` from the manual pair, `crash_hull` from mesh extremes.
 
-Flaps require more than `set_flaps()`: pilot/auxiliary input, deterministic servo state, traces/restart, lift/drag/pitch increments, affected strips, stall changes and downwash/tail response. Coordinate with Avanti AV-09 and the input owner. Test symmetry, flap deployment in flight, trim at each setting, go-around, stall progression and recovery. Slats need distinct geometry and aerodynamic evidence; filenames currently identify supports, not full slats. No STOL distance claim until a matched configuration is validated.
+**Checks.** `python3 research/aircraft-data/schema/check.py`, the loader probe, `derive_physics.py --check` in `app/test.sh`, and a `test_timber_data.gd` unit test for the mm→degree throw solver and contact placement. Invalid or unready data refuses flight; nothing falls back to another aircraft.
 
-SAFE/AS3X are receiver control behavior, distinct from airframe dynamics. First acceptance uses assist-off references. A stabilized BNF flight video is not direct evidence for unassisted aerodynamic damping. Future assist work needs explicit modes and identified gains/limits; do not claim proprietary controller equivalence.
+## 5. Step register
 
-## 6. Steps and exit proofs
+Each row is one bounded, independently reviewable change with an evidence folder `docs/research/timber-integration/TT-<id>/README.md` (command, configuration, result, limitations). Sizes: S ≤ 1 day, M 2–3 days, L ≥ 1 week. Shared patches are listed in §6 and land in the same change as the step that needs them.
 
-Each row is one bounded change, with an evidence folder named for its ID. Shared prerequisites remain owned by their existing tracks. TT-00 and TT-00-R1 are complete source reviews; app integration has not started.
+| ID | Work | Proof / exit condition | Depends | Size | Status |
+| --- | --- | --- | --- | --- | --- |
+| TT-00 | Inventory, sources, code seams, plan | Hashes, counts, references, risks | — | — | Complete 2026-10-08 |
+| TT-00-R1 | Independent review of delivery r1 | Binary GLB audit, Godot import probe, contract review; mass/length/license issues recorded | TT-00 | — | Complete 2026-10-08 |
+| TT-01 | **Freeze source and terms.** Write `assets/aircraft/turbo-timber-evolution/README.md` (origin, author, chosen terms, hardware revision, loadout, alias) and `source-manifest.json` (SHA-256 of `aircraft.glb`, `metadata.json`, `export-map.json`, `aircraft.blend`, scripts; git commit). Record the r2 request list (reproducible paths, failing verifier, nose length, mass ledger). | Manifest reproduces from `research/timber/tt01/manifest.py --check`; terms text present or D1 explicitly deferred with the release block noted; no app change | Owner decision D1 | S | Complete 2026-10-12 ([TT-01](research/timber-integration/TT-01/README.md)): 38 files hashed, identical to the TT-00-R1 audit; D1 recorded as a later naming decision |
+| TT-02 | **Datum, measurements, discrepancies.** `build_geometry.py` → `geometry.json`: landmarks, planform stations (root/tip chords, LE sweep, tail/fin outlines, hinge lines, aileron/flap spans), wheel bottoms, thrust frame. Identify the vertex at z = −0.2913 m; bound the +76.6 mm length (owner's silhouette overlay of the r1 side/top previews on the manual three-view first, metrology second); compute throw angles from the manual millimetres. | `geometry.json` with evidence fields; `--check`; overlay images and a discrepancy table in TT-02 evidence; planform area within 2 % of r1's 0.329 m² or the difference explained | TT-01 | M | Complete 2026-10-12 ([TT-02](research/timber-integration/TT-02/README.md)): `measure_mesh.gd` on the imported scene, area 0.328 m² (−0.24 %), −0.2913 m was an AABB artefact, throws converted; owner overlay pending |
+| TT-03 | **GLB in the app and isolated viewer.** Copy `timber.glb` + `.import` + LICENSE into `app/assets/aircraft/turbo-timber-evolution/`; `compile_geometry.py` → `timber_geometry.gd`; `timber_model.gd` (`build`, datum, no articulation yet); `verify_timber.gd` (root `airplane`, 13 named pivots found, rest bases within 1e-5 rad of the constants, landmarks within 0.5 mm, span within 1 % of 1.555 m, 15 meshes/36 surfaces, no AnimationPlayer/camera/light, deterministic double build, two-instance isolation); `inspect_timber.gd` six views through the shared harness. `check_asset.py --check`. | `app/test.sh` section passes; six Xvfb captures reviewed by the owner (overlay first); materials acceptable under Compatibility | TT-02 | M | Complete 2026-10-12 ([TT-03](research/timber-integration/TT-03/README.md)): fresh-clone import exits 0, 283-check contract in `test.sh`, 12 captures (6 kept); owner capture review pending |
+| TT-04 | **Materials and measured cost (conditional reduction).** r1 is already under the 100 k-triangle/40-surface budget; measure draw submissions and frame time with `--frametimes` on the reference host at 20/50/100 m, fix z-fighting/decal/transparency issues under Compatibility. Reduce geometry only if the measurement exceeds the project frame budget. | Cost table in evidence; before/after captures for any material change; silhouette unchanged | TT-03 | S | Planned |
+| TT-05 | **Articulation.** Hinge records, `apply_surfaces` with sign conversion, `set_flaps`, propeller wrapper, gear keys, `apply_controls` for the inspector. Extend `verify_timber.gd`: neutral/extreme/combined poses move trailing-edge witness vertices in the manual's directions, horns/markings follow, mount stays fixed, prop sense clockwise from behind, wheels spin forward about local X, zero restores rest exactly, second instance unchanged. Clearance sweep at full throws (model_clearance pattern). | Verify script passes; inspector capture of control extremes; no mesh intersection at full throws or the intersection is documented | TT-03 | M | Complete 2026-10-12 ([TT-05](research/timber-integration/TT-05/README.md)): two-level Euler wrappers for propeller and gear, signs/sense/wheels proven with witness vertices in `verify_timber.gd`; `verify_timber_clearance.gd` sweep recorded in the evidence |
+| TT-06 | **Catalog preview.** Catalog entry (PREVIEW, `data = ""`), `flyable_ids()` helper; `render/airplane.gd` `TIMBER_ID` in `build`, `datum`, `apply_surfaces`; §6 test sweep (guards and ID lists); `es.po` strings; Home shows the Timber, Fly refused, `--aircraft=eflite-turbo-timber-evolution --scripted` flies the visual circle. | `test_aircraft_catalog.gd` (count 5), `test_ui_*`, `capture_ui`; full `app/test.sh`; Home capture with the Timber card | TT-05; menu + model owners | S | Complete 2026-10-12 ([TT-06](research/timber-integration/TT-06/README.md)): entry, dispatch, `flyable_ids()` sweep over 19 tests plus the fleet and crash-wreck tests the plan had not listed; `test_ui_aircraft.gd` drives the preview card; Home capture with the card recorded |
+| TT-07 | **First physics dataset.** `inputs.json`, `derive_physics.py`, `sensitivity.py`, `derivation.md`, generated JSON (§4). Propeller map: search UIUC volumes 1–4 for a measured three-blade 11-inch-class table and import it with `uiuc-import/import_table.py` under a pinned manifest; if none exists, borrow the closest two-blade 11×7 table and label the mismatch with a thrust/torque sensitivity row. `test_timber_data.gd`. | Schema check, loader probe `ok: true`, `--check` in `test.sh`, tensor positive-definite and carrier check, mass 2.190 ± 0.001 kg, CG 60 ± 1 mm, sensitivity table for every estimate | TT-02; EL1f inputs | L | Planned |
+| TT-08 | **Electric session integration.** The catalog entry receives its data path and the EXPERIMENTAL status in this change (the catalog has no "data present but not selectable" state; TT-10 is the product-shell acceptance of that entry). Per-aircraft branches: `test_trace_metadata.gd` expects `electric-fixed-bus-coupled-stop-v1` and no wheel-profile metadata (or the TT-11 profile); `test.sh` trace smoke by ID; `flight_audio.gd` reads `max_rpm` from the no-load context instead of the 12000 default. | `--aircraft=… --trace` passes `check_trimmed_flight.py` for 3 s; 30/60/144 fps fixed-step hashes identical; checkpoint/restart exact; all other aircraft traces unchanged | TT-06, TT-07 | M | Planned |
+| TT-09 | **First trimmed flight.** `test_timber_handling.gd` (Avanti pattern): loads/trims at its start speed, electric law active, mass/span/inertia windows, hands-off 30 s bounded, throttle step raises RPM and current finitely, static full-throttle current below the 70 A rating as plausibility, roll rate against the strip prediction, glide, stall and recovery, loop, zero-throttle rotor stop event, 240/480 Hz agreement bands fixed before tuning. | Test passes; traces and the tolerance sheet in evidence; no coefficient tuned to pass | TT-08 | M | Planned |
+| TT-10 | **Experimental flight in the app.** Status EXPERIMENTAL with an honest status note ("electric, estimated motor/propeller data, flaps up, in-air start"); Home/select/fly/pause/restart/end/reselect; keyboard and fake-radio e2e; preference persistence. | `test_e2e_input.gd`/`test_e2e_radio.gd` cases for the ID; UI captures; no session leak across reselects | TT-09; menu owner | S | Planned |
+| TT-11 | **Three-point ground configuration.** Wheel profile entry (GP owner); runway policy extended from one ID to a qualified list in `flight_session.gd`, `home.gd`, `app_root.gd`; tailwheel steering wired through `apply_gear` with the signed convention checked against the Stik taildragger tests; `test_timber_ground.gd` (static load sum, sag, taxi, steering, touchdown, bounce, prop-strike, timestep). Rolling/strut visuals stay static unless `ground_gear.gd` already animates them. | Tests pass; `test_start_choice.gd`/`test_runway_start.gd` updated for the list; contact-policy screen row; trace metadata v6 with the profile | TT-09; physics, GP, menu owners | L | Planned |
+| TT-12 | **Electric sound.** Motor/propeller voice in the audio track (blade-pass harmonics, no combustion buzz), idle/stop/pause behaviour, three blades. | Signal test for the electric voice; A/B capture with the Stik unchanged | TT-10; audio owner | M | Planned |
+| TT-13 | **Visibility, shadow, night, performance.** Pilot-view captures at 20/50/100 m and attitude cases through `inspect_model.gd`; projected-shadow and night-kit tests include the ID; decision D5 applied; target-machine frame cost. Optional TT-13b: parked-fleet snapshot (`bake_fleet.gd`, scenery owner). | Captures reviewed by the owner; `test_projected_shadow.gd`, `test_world_field_lights.gd`, `test_crash_wreck.gd` pass; cost table | TT-04, TT-10 | M | Planned |
+| TT-14 | **Flight flaps (shared capability).** Pilot/auxiliary input, servo state, trace/restart, lift/drag/pitch increments and stall changes, elevator mix; Timber calibration at 20/35 mm. | Input → servo → forces → render agreement; per-setting trim; manual displacement checks; Avanti AV-09 shares the capability | TT-09; physics + input owners | L | Blocked by shared work |
+| TT-15 | **Wheels/flaps approach and STOL envelope.** Matched-loadout takeoff/landing runs, go-around, sensitivity. | Traces; no slat/float claim | TT-11, TT-14 | M | Planned |
+| TT-16 | **Independent physical validation.** Weighed mass/CG/inertia, bench motor/prop data (EL5), matched flight observations, owner radio playtest. | Error/uncertainty table; unresolved discrepancies listed | TT-09; TT-15 for ground claims | L | Needs hardware |
+| TT-17 | **Packaged experimental release.** Asset LICENSE in `export_presets.cfg` include filter; pack probe proves the imported Timber scene and JSON are in all three packs; exported Linux binary flies `--aircraft=eflite-turbo-timber-evolution --trace`; clean-clone import. | `export.sh` additions pass; release note lists the experimental label and limits | TT-10, TT-12, TT-13; D1 set; export maintainer | S | Planned |
+| TT-18 | Slats, floats, reverse, assists | Separate agreed scope | TT-15, TT-16 | — | Deferred |
 
-| ID | Step / deliverable | Dependencies | Proof / exit condition | Status (date) |
-| --- | --- | --- | --- | --- |
-| TT-00 | Inventory, source research, code seams and this plan | Supplied folder | Hash manifest; static Blender/STL counts; official references; integration risks recorded | Complete (2026-10-08) |
-| TT-00-R1 | Review external game delivery r1 against the handoff contract in §4 | TT-00; new r1 package | Independent GLB/metadata audit, source-pipeline review and isolated Godot import/pose evidence; source, mass, dimensional and license issues recorded | Complete (2026-10-08) |
-| TT-01 | Freeze accepted source and identify variant/loadout | Owner/model-author facts | Stable hashes, asset-origin/license record, exact Blender build, successful visual open, original preserved; missing CAD inputs listed | Planned |
-| TT-02 | Normalize datum and measure anchors | TT-01 | Axis-marker test; span/length discrepancy resolved or explicitly bounded; hinge/CG/contact tables; no double scaling | Planned |
-| TT-03 | Minimal curated GLB and isolated Godot viewer | TT-02 | Clean Blender reimport and Godot import; neutral assembled model in six views; required nodes/materials survive export; consumer needs no Blender | Planned |
-| TT-04 | Reduce CAD detail and clean materials | TT-03 | Before/after mesh/surface counts, identical critical anchors, silhouette comparisons; no visible missing parts or coplanar flicker | Planned |
-| TT-05 | Articulate controls, rotor and wheels in viewer | TT-03; TT-04 for accepted asset | Neutral/extreme/combined poses, sign and pivot checks, attached horns/markings, stationary motor mount, two-instance isolation; reimport repeatable | Planned |
-| TT-06 | Register one preview ID, proposed `eflite-turbo-timber-evolution` | TT-04/05; model/menu owners | Catalog → correct builder/datum; preview cannot fly; scripted preview works; existing aircraft still resolve | Planned |
-| TT-07 | Derive first mass/inertia/aerodynamic dataset | TT-02 and selected configuration | Provenance-complete generated inputs; reconciled mass; valid inertia; sensitivity report; throws measured at defined stations | Planned |
-| TT-08 | Connect shared electric capability to Timber configuration | TT-07; physics EL1/state/trim readiness | Loader/trim/shaft/session tests; declared voltage/prop limits; finite state and timestep convergence; all old propulsion cases unchanged | Planned |
-| TT-09 | First isolated trimmed electric flight | TT-05/07/08 | 30 s level trace, commanded turns/climb/glide, finite bounded response, repeatable restart; tolerance sheet fixed before tuning | Planned |
-| TT-10 | Expose experimental in-air flight in the app | TT-06/09; menu/test owners | Home/select/fly/pause/restart/end/reselect; keyboard and fake radio; identity/hash/propulsion metadata correct; no sessions leak | Planned |
-| TT-11 | Three-point ground configuration | TT-09; contact owner | Static load sum, compression/damping, taxi/steering and tailwheel render sync, touchdown, bounce/prop-strike behavior and timestep checks; rolling/strut visuals explicitly static | Planned |
-| TT-12 | Electric sound and presentation completion | TT-10; audio/visual owner | Appropriate motor/prop sound, idle/stop/pause behavior; no generic combustion buzz; prop spin respects tilted frame | Planned |
-| TT-13 | Pilot visibility, shadow and performance | TT-04/10; visual owner | Ground-pilot captures at 20/50/100 m, top/bottom/turn attitudes; correct extents/shadow; human orientation check and target-machine cost | Planned |
-| TT-14 | Shared flight-flap capability and Timber calibration | TT-09; physics/input owners; Avanti AV-09 coordination | Input → servo → forces → render/trace agreement; restart/pause; per-setting trim, lift/drag/pitch behavior; manual displacement checks | Planned |
-| TT-15 | Wheels/flaps approach and STOL envelope | TT-11/14 | Matched-loadout takeoff/landing runs, stall/go-around/recovery traces, sensitivity; no unsupported slat/float claims | Planned |
-| TT-16 | Independent physical validation | TT-09; TT-15 for ground/STOL claims | Real mass/CG, propulsion data and matched flight observations; error/uncertainty table; owner radio playtest; unresolved discrepancies listed | Planned |
-| TT-17 | Packaged experimental release | TT-10/12/13; export owner | Full regression suite; clean-clone import/export; packaged Timber smoke plus current aircraft; no source-folder/caches required | Planned |
-| TT-18 | Optional slats/advanced configurations | TT-15/16; separately agreed scope | Geometry and data specific to each variant; independent comparisons; water/reverse/assists remain separate capability work | Deferred |
+TT-07 runs in parallel with TT-03…TT-05 once TT-02 is accepted. TT-12 and TT-13 run in parallel after TT-10. TT-17 may ship the flaps-up, in-air experimental baseline before TT-11/14/15/16 and must not advertise the missing capabilities. Order of shared integration: **preview → own data → electric session → experimental flight → ground → sound/visual → release**.
 
-TT-07 can advance alongside the visual work after TT-02. TT-17 may release the documented flaps-up, in-air experimental baseline before TT-11/14–16. It must not advertise the incomplete capabilities. Shared integration order is **preview → electric readiness → own data/trim → experimental flight → ground/flaps → independent validation**.
+### Implementation notes for the next steps
 
-## 7. Acceptance, evidence and stop conditions
+- **TT-01.** The owner and the model's author choose the terms; the LICENSE text itself suggests CC BY 4.0 for the mesh and MIT for the scripts. Record the exact r1 revision string and the GLB hash as the visual revision. Do not move or rename the delivery folder: `research/timber/tt00*` scripts and TT-00 evidence reference its path.
+- **TT-02.** Measure from the imported scene (Godot headless script in `research/timber/tt02/`), not from Blender, so the numbers describe the runtime asset. Keep the r1 length; shortening the nose is an r2 request. Put the discrepancy and its effect on motor/battery stations into the TT-07 sensitivity table rather than correcting geometry to protect an estimated CG.
+- **TT-03.** Commit the `.import` sidecar with default scene-import settings (LOD generation on is fine; `get_faces()` and the night kit read surface arrays). Verify from a fresh clone that `--import` regenerates `.godot/imported/` and that the scene is in the pack (TT-17 repeats this on the export).
+- **TT-05 (done).** Do not read quaternions back for checks; compare `Basis` columns and witness vertices. The aileron hinges carry ±2° rest rotations (dihedral); the gear suspensions carry ±90° rest rotations; the propeller wrapper must not disturb `thrust_frame`. The app writes Euler properties (`propeller.rotation.z`, `gear[*].rotation.x`, `gear.steering.rotation.y`), which replace a node's whole basis: every such node needs a mount carrying the rest basis plus an identity child that receives the rotation (`timber_model.gd _wrap`, `_wrap_propeller`); the exposed gear nodes rotate about root-aligned axes, so `render/ground_gear.gd`'s "+X axle, forward = −X" convention holds without a Timber branch.
+- **TT-06.** A PREVIEW entry with `data = ""` is valid catalog semantics already covered by `test_aircraft_catalog.gd`; the eight loops in §6 use `Catalog.flyable_ids()` so previews are skipped explicitly rather than silently.
+- **TT-07.** Reuse `research/avanti-s/av06/derive_physics.py` structure, not its numbers. Everything borrowed from the Stik file is limited to shared conventions and provisional local-surface limits, as the Avanti generator does. The electric branch has no `max_rpm`; derive the no-load RPM at 14.8 V for audio and plausibility. State in `description` that this is the B-revision loadout and that the mesh revision is unconfirmed.
+- **TT-08.** The session already refuses a split integrator for electric and reports `electric-fixed-bus-coupled-stop-v1`; the trace gains the electric columns automatically. The smoke in `test.sh` greps the ID in the trace header like the other aircraft.
+- **TT-11.** Generalize the runway policy as a constant list of qualified IDs in one place (`FlightSession`), consumed by Home and the preference reset; do not copy the Stik ID into Timber code.
 
-**Gate TT-A — asset:** correct units and datum, curated hierarchy, signs/limits, materials, no studio content, reproducible export and reimport. Required review: model/render owner. Stop if root transforms, hinge membership or source revisions disagree.
+## 6. Shared files touched (exact, minimal)
 
-**Gate TT-B — experimental flight:** electric support verified, dataset attributed, stable trim, input/arming/pause/restart safe, correct trace identity, no other-aircraft regressions. Required review: physics and menu owners. Stop if any successful flight depends on another aircraft's data, undocumented coefficients or silently saturated propulsion tables.
+| File | Change | Step | Owner |
+| --- | --- | --- | --- |
+| `app/app_state/aircraft_catalog.gd` | Fifth ENTRY; `static func flyable_ids()` | TT-06, TT-08, TT-10, TT-11 | Menu |
+| `app/render/airplane.gd` | `TIMBER_ID`, preload, `build`/`datum`/`apply_surfaces` branches | TT-06 | Model/render |
+| `app/tests/test_aircraft_catalog.gd` | Count 5; adapter ID list | TT-06 | Model |
+| `app/tests/test_projected_shadow.gd`, `test_world_field_lights.gd` | Add the ID to the explicit lists | TT-06 | Visual/world |
+| `app/tests/test_aircraft_contract.gd`, `test_trace_metadata.gd`, `test_contact_policy.gd`, `test_aero_flow.gd`, `test_slipstream_scalar.gd`, `test_strip_induced.gd`, `test_wash_transport.gd`, `test_propulsion_scalar.gd`, `test_attached_flow.gd`, `test_aircraft_render_contract.gd`, `test_shaft_data.gd`, `test_crash_pose.gd`, `test_crash_integration.gd`, `bench_regimes.gd`, `bench_wind.gd` | Iterate `Catalog.flyable_ids()` / `flyable_entries()` (one line each; done) | TT-06 | Physics/crash tests |
+| `app/tests/test_landscape_population.gd`, `test_crash_wreck.gd`, `test_ui_aircraft.gd`, `tools/scenery/place.py` | Fleet = flyable catalog (placer skips previews); preview C4 rule; five-card Home walk (done) | TT-06 | Scenery, crash, menu |
+| `app/tests/test_trace_metadata.gd` | Electric law branch; `PROFILED_AIRCRAFT` after TT-11 | TT-08, TT-11 | Physics |
+| `app/test.sh`, `.github/workflows/ci.yml` | Sections: manifest/measurement/geometry/asset `--check` and `verify_timber.gd` (done, TT-03); `derive_physics.py --check`, trace smoke by ID | TT-03 (done), TT-07, TT-08 | Test maintainer |
+| `app/i18n/es.po` | Summary/status strings | TT-06, TT-10 | Menu |
+| `app/audio/flight_audio.gd`, `app/render/engine_sound.gd` | Electric voice and `max_rpm` source | TT-08, TT-12 | Audio |
+| `app/data/ground/wheel_profiles.json` | Timber profile | TT-11 | GP |
+| `app/sim/flight_session.gd`, `app/ui/home.gd`, `app/app_root.gd` | Runway-qualified ID list | TT-11 | Physics, menu |
+| `app/export_presets.cfg`, `app/export.sh` | Asset LICENSE in include filters; pack probe and Timber launch smoke | TT-17 | Export maintainer |
+| `app/scenery/models.gd`, `app/data/scenery/models/fleet_timber.json`, `default.json` fleet group | Optional parked snapshot | TT-13b | Scenery |
+| `docs/README.md`, `ROADMAP.md`, `STACK.md`, `README.md` | Registry owned paths, "Where we are", layout row, aircraft list | TT-06, TT-10, TT-17 | Docs owner with the track lead |
 
-**Gate TT-C — field/physical acceptance:** matched-configuration independent data, credible ground/flap envelope, owner radio playtest and target-machine performance. Numerical tests alone do not authorize a realism claim. Owner records the result; failed or missing evidence keeps the aircraft experimental.
+Re-read `git status` before each shared patch; stage only the listed hunks. Do not edit other aircraft geometry, regenerate their data or re-record their goldens.
 
-For each integrated step: run its narrow verifier, generated-data `--check` where applicable, then `app/test.sh`. Keep parser/runtime errors fatal and use timeouts for probes. Goldens verify repeatability; record new Timber goldens only after reviewing trajectories and never use them as physical truth. Test pause/resume and identical inputs at 30/60/144 fps through the actual session path.
+## 7. Verification commands
 
-Reserve external observations before tuning. Predeclare mass/CG, voltage, atmosphere, initial speed, inputs, measurement uncertainty and tolerances for each physical comparison. Prefer weight/CG and static propulsion first, then trimmed speed, glide, roll response and stall/approach. Distinguish model-derived targets from independent measurements in every report.
+```bash
+# TT-01/02/03/05: source identity, measurements, generated constants, model contract (all but the last two run in app/test.sh)
+python3 research/timber/tt01/manifest.py --check
+"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/timber/tt02/measure_mesh.gd" -- --out="$PWD/assets/aircraft/turbo-timber-evolution/mesh-measurements.json" --check
+python3 assets/aircraft/turbo-timber-evolution/build_geometry.py --check
+python3 assets/aircraft/turbo-timber-evolution/compile_geometry.py --check
+python3 research/timber/tt03/check_asset.py --check
+"$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_timber.gd
+"$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_timber_clearance.gd      # minutes: evidence, not test.sh
+xvfb-run -a "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --script res://aircraft/inspect_timber.gd -- --output-dir=/tmp/timber-views
 
-On a GLB/path/import change, test a fresh clone and a packaged build: neither `.godot` cache, Blender, STEP/STL inputs nor the incoming folder may be required at runtime. Inspect export contents and launch the packaged Timber ID explicitly; the existing default-aircraft smoke does not prove this one ships correctly.
+# TT-07: data contract
+python3 research/timber/tt07/derive_physics.py --check
+python3 research/aircraft-data/schema/check.py app/data/aircraft/eflite_turbo_timber_evolution.json
+"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/aircraft-data/schema/loader_probe.gd" -- /tmp/timber-manifest.json
 
-## 8. Open facts to resolve during implementation
+# TT-08/09/10: flight through the real session
+"$(app/get-godot.sh)" --headless --path app -- --aircraft=eflite-turbo-timber-evolution --trace=/tmp/timber.csv --t=3
+python3 app/tests/check_trimmed_flight.py /tmp/timber.csv --duration=3
+"$(app/get-godot.sh)" --headless --path app --script res://tests/test_timber_handling.gd
+"$(app/get-godot.sh)" --path app -- --quick-flight --aircraft=eflite-turbo-timber-evolution
 
-1. Which hardware revision and battery does the author intend? Are slats absent deliberately? Baseline remains provisional until TT-01.
-2. What explains the length discrepancy, and what datum shift generated the sidecar? Do not rescale before TT-02 resolves this.
-3. Can the full CAD generator, original photo references and prior mechanical-analysis outputs be recovered? Their absence does not block the viewer.
-4. Which asset redistribution terms apply? Record them before distributing source/assets with the repository; local inspection and planning are already useful.
-5. Which motor/propeller, mass/inertia and assist-off flight measurements can be collected? Missing measurements limit confidence and labeling, not honest experimental work.
+# Every integrated step
+bash app/test.sh
+```
 
-**Next: TT-01.** Freeze the source and terms, choose the hardware/loadout, and document the reproducible source-generation gaps. Then resolve or bound TT-02 dimensions before importing the curated r1 GLB in TT-03. Axis/name/sign conversion belongs in the simulator adapter. Electric propulsion, flight flaps and ground behavior remain later shared prerequisites.
+Keep parser/runtime errors fatal and use timeouts for probes. Record new Timber goldens only after reviewing trajectories; they verify repeatability, never physical truth. Test pause/resume and identical inputs at 30/60/144 fps through the actual session path.
+
+## 8. Gates
+
+**Gate TT-A — asset (after TT-05):** correct units and datum, curated hierarchy, signs and limits proven by witness vertices, materials acceptable under Compatibility, no studio content, deterministic import from a fresh clone. Review: model/render owner. Stop if root transforms, hinge membership or source hashes disagree.
+
+**Gate TT-B — experimental flight (after TT-10):** electric support verified on Timber data, every number attributed, stable trim, input/arming/pause/restart safe, correct trace identity and law, no regression in the other four aircraft. Review: physics and menu owners. Stop if any flight depends on another aircraft's data, undocumented coefficients or silently saturated propulsion tables.
+
+**Gate TT-C — physical acceptance (after TT-16):** matched-configuration measurements, credible ground/flap envelope, owner radio playtest, target-machine performance. Numerical tests alone do not authorize a realism claim; failed or missing evidence keeps the aircraft experimental.
+
+## 9. Decisions required from the owner
+
+| # | Decision | Recommended default |
+| --- | --- | --- |
+| D1 | Redistribution terms for the r1 mesh, scripts and documentation (the author's package suggests CC BY 4.0 mesh / MIT scripts) | Owner (2026-10-12): the model is inspired, drawn from photographs without plans or artwork; the in-game name and the licence text are a later naming decision. The copied `LICENSE.txt` stays verbatim until then; TT-17 writes the chosen text |
+| D2 | Catalog ID | `eflite-turbo-timber-evolution` |
+| D3 | Hardware revision for the physics reference | B revision (EFL105250B); the mesh revision stays "unconfirmed" in the description |
+| D4 | Nose-length policy | Keep r1 geometry; request r2; bound the effect in sensitivity |
+| D5 | Night lights | Prefer the model's emissive lenses for nav lights and keep the kit's strobes/landing light/strips |
+| D6 | Preview stage | Register the PREVIEW entry at TT-06 so the Timber appears in Home before its physics exists |
+| D7 | Runway start qualification | Only after TT-11 passes its ground tests; until then in-air start only |
+
+## 10. Risks
+
+- **Rights and distribution.** The mesh is already public in the repository history while its terms are unset. Setting terms is a decision, not code; a packaged release before D1 would distribute an asset with no licence.
+- **Dimensional ambiguity.** The +76.6 mm length and the 7.9 mm forward-extent discrepancy are unresolved; physics stations ahead of the wing inherit them. Sensitivity rows keep this visible.
+- **Propulsion evidence.** A borrowed two-blade map cannot validate a three-blade 11×7.3; motor losses and pack voltage are estimates. The experimental label stays until EL5/VAL-7 data exist.
+- **Shared-test churn.** TT-06 touches eleven tests mechanically; coordinate the sweep with their owners in one reviewable change.
+- **Performance.** A 64 k-triangle, 36-surface imported model is heavier than the procedural aircraft; TT-04/TT-13 must measure on the target machine, not assume.
+- **Assist-off reference.** A BNF keeps AS3X active; no stabilized flight video is evidence for the unassisted model.
+
+## 11. Open facts
+
+1. Which revision does the delivered mesh depict, and are slats absent deliberately? Baseline stays provisional until the author confirms.
+2. ~~Which vertex produces the −0.2913 m forward extent~~ (none: an AABB artefact, TT-02); what explains the nose length? r2 answers it.
+3. Can the author deliver a reproducible rebuild (correct cache/path commands, failing verifier) and photo-calibrated nose correction as r2?
+4. Which exact pack, motor resistance/no-load current, rotor inertia and propeller map can be measured (EL5/VAL-7)? Missing measurements limit labels, not honest experimental work.
+5. Which unassisted (PNP or AS3X-identified) flight observations can be collected for TT-16?

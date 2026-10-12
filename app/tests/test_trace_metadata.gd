@@ -57,7 +57,7 @@ func _initialize() -> void:
 	session.setup()
 	root.add_child(session)
 	var recorder: RefCounted = Recorder.new(session.sim)
-	for entry in Catalog.ENTRIES:
+	for entry in Catalog.flyable_entries(): # TT-06: previews carry no data file
 		session.aircraft_path = entry.data
 		_check("reload " + entry.id, session.reload().begins_with("aircraft reloaded:"))
 		var meta: Dictionary = session.trace_meta()

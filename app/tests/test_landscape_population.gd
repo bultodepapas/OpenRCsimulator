@@ -49,12 +49,12 @@ func _group(groups: Array, id: String) -> Dictionary:
 
 func _test_catalog_fleet(groups: Array) -> void:
 	var fleet := _group(groups, "fleet")
-	var catalog_ids := Array(AircraftCatalog.ids())
+	var catalog_ids := Array(AircraftCatalog.flyable_ids()) # TT-06: a preview has no parked snapshot (TT-13b decides)
 	var model_ids: Array = Models.FLEET.values()
 	var unique_models: Dictionary = {}
 	for id: String in model_ids:
 		unique_models[id] = true
-	_check("parked fleet IDs exactly match the flight catalog in order",
+	_check("parked fleet IDs exactly match the flyable flight catalog in order",
 		fleet.get("aircraft", []) == catalog_ids and fleet.get("aircraft", []).size() == 4,
 		"flight=%s parked=%s" % [catalog_ids, fleet.get("aircraft", [])])
 	_check("baked fleet source map exactly covers the flight catalog",

@@ -37,7 +37,7 @@ func at(value: Dictionary, path: Array) -> Dictionary:
 
 func _initialize() -> void:
 	var paths: Array[String] = []
-	for entry: Dictionary in Catalog.ENTRIES:
+	for entry: Dictionary in Catalog.flyable_entries(): # TT-06: previews carry no data file
 		paths.append(entry.data)
 	for suffix: String in ["4s", "6s", "4s_battery", "6s_battery"]:
 		paths.append("res://data/aircraft/synthetic_stik_electric_%s.json" % suffix)

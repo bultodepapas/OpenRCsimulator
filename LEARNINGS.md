@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-12 · TT-02/03/05 — imported meshes: measure arrays, never trust transformed boxes, wrap Euler-driven pivots
+
+Three surprises from the first glTF aircraft. A probe reported a vertex 7.9 mm ahead of the spinner because it transformed each mesh's axis-aligned bounding box; the tilted propeller's box corners stuck out and no vertex was there. Measure extents from transformed vertices, and read them with `surface_get_arrays()`: `Mesh.get_faces()` returned positions up to 28 µm off on this import with or without vertex compression. Godot's `rotation.x/z` setters replace a node's whole basis, so an imported pivot with a rest rotation cannot be driven by them; give it a mount that carries the rest basis and an identity child that takes the Euler angle, and prove the sense with a witness vertex. [TT-02](docs/research/timber-integration/TT-02/README.md), [TT-03](docs/research/timber-integration/TT-03/README.md), [TT-05](docs/research/timber-integration/TT-05/README.md).
+
 ## 2026-10-07 · VAL-6a — reduce swing tests about a common axis
 
 Subtract loaded and empty-rig compound inertia about the shared pivot before shifting the object to its CG; the two configuration CGs usually differ. Combine sensitivities of reused measurements before squaring uncertainty contributions. A stationary first derivative can hide second-order height uncertainty. Preserve the net pivot result: a rigid-mass axis shift does not resolve aerodynamic added-inertia transfer. [Equations, limits and verification](docs/research/validation/VAL-6a/README.md).

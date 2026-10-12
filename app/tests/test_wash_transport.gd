@@ -50,7 +50,7 @@ func _initialize() -> void:
 		_response(data.model, speed)
 	_session_checks()
 	_refinement()
-	for id: String in Catalog.ids():
+	for id: String in Catalog.flyable_ids(): # TT-06: previews carry no data file
 		var legacy: Node = Flight.new()
 		legacy.setup(Catalog.entry(id).data)
 		var wheel_state := PackedFloat64Array()

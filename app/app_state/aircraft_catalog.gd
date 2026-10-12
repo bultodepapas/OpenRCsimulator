@@ -49,6 +49,15 @@ const ENTRIES := [
 		status_note = "Experimental: first physics estimate (turbine, kit and owner data), not yet flight-tested. Flaps up, gear up: in-air start only.",
 		data = "res://data/aircraft/sebart_avanti_s_a200.json",
 	},
+	{
+		# TT-06: the author's r1 glTF model (assets/aircraft/turbo-timber-evolution); electric physics data arrives with TT-07.
+		id = "eflite-turbo-timber-evolution",
+		name = "E-flite Turbo Timber Evolution",
+		summary = "High-wing STOL · 1.55 m · 4S electric",
+		status = PREVIEW,
+		status_note = "Preview only: electric propulsion and flight data are not simulated yet.",
+		data = "",
+	},
 ]
 
 
@@ -61,6 +70,19 @@ static func ids() -> PackedStringArray:
 
 static func has(id: String) -> bool:
 	return ids().has(id)
+
+
+## Entries that carry flight data (never a PREVIEW): what physics, trace and session tests may load.
+static func flyable_entries() -> Array:
+	return ENTRIES.filter(func(e: Dictionary) -> bool: return e.status != PREVIEW and e.data != "")
+
+
+## IDs of flyable_entries(), in menu order. Previews are skipped explicitly, never silently substituted.
+static func flyable_ids() -> PackedStringArray:
+	var out := PackedStringArray()
+	for e in flyable_entries():
+		out.append(e.id)
+	return out
 
 
 ## The entry for `id`, or {} when unknown (callers must refuse it, never substitute another airplane).

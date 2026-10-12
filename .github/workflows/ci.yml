@@ -62,6 +62,9 @@ jobs:
           python3 assets/aircraft/p51d-mustang-120/compile_geometry.py --check
           python3 research/extra-300/ex05/derive_physics.py --check
           python3 research/p51/p51-05/derive_physics.py --check
+          python3 research/timber/tt01/manifest.py --check
+          python3 assets/aircraft/turbo-timber-evolution/build_geometry.py --check
+          python3 assets/aircraft/turbo-timber-evolution/compile_geometry.py --check
       - name: Offline measurement and validation tool regressions
         run: research/test-tools.sh
       - run: app/test.sh

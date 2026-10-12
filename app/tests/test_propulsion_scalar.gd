@@ -18,7 +18,7 @@ func _initialize() -> void:
 	var tilted_crossflow := 0
 	var still_air := 0
 	var stopped := 0
-	for id in Catalog.ids():
+	for id in Catalog.flyable_ids(): # TT-06: previews carry no data file
 		var flight := Flight.new()
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)
