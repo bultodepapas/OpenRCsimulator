@@ -98,7 +98,16 @@ func _run() -> void:
 	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 4 de 5" and status.can_auto_translate()
 		and status.atr(status.text).begins_with("Experimental: primera estimación física (turbina") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
 		"%s / %s" % [home.aircraft_count_label.text, status.atr(status.text)])
+	# The Timber's fictional name is the one translated aircraft name (TT-06); the other names pass through tr() unchanged.
+	app.set_aircraft(TIMBER)
+	await ui.settle()
+	_check("Spanish: the Timber card shows its Spanish name", home.aircraft_name_label.text == "Turbo Tronco Evolución", home.aircraft_name_label.text)
+	app.set_aircraft(AVANTI)
+	await ui.settle()
+	_check("Spanish: a proper name stays as written", home.aircraft_name_label.text == Catalog.entry(AVANTI).name, home.aircraft_name_label.text)
 	app.set_language("en")
+	await ui.settle()
+	_check("English: the Timber card shows its English name", Catalog.entry(TIMBER).name == "Turbo Lumber Evolution" and tr(Catalog.entry(TIMBER).name) == "Turbo Lumber Evolution")
 	await _close(app)
 
 	# A new start remembers the Avanti (Fly enabled) ...
