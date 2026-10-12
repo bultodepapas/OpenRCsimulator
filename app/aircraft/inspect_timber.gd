@@ -2,7 +2,9 @@
 # (not via render/airplane.gd), resets controls, attitude, propeller and gear for every capture and records the camera
 # in manifest.json. Distances scale with the measured span so a regenerated geometry keeps framing the airplane.
 # Run (needs a display, e.g. xvfb-run): godot --path app --rendering-driver opengl3 \
-#   --script res://aircraft/inspect_timber.gd -- --output-dir=/new/dir [--suite=inspection|orbit|all] [--size=WIDTHxHEIGHT]
+#   --script res://aircraft/inspect_timber.gd -- --output-dir=/new/dir [--suite=inspection|orbit|distance|all] [--size=WIDTHxHEIGHT]
+# Suites: inspection (12 review views), orbit (12 azimuths x 3 elevations), distance (pilot-view size at 20/50/100 m
+# with level, banked and nose-on attitudes, the Extra inspector's pilot eye and 50 deg field of view).
 extends SceneTree
 
 const Timber := preload("res://aircraft/timber_model.gd")
@@ -12,6 +14,8 @@ const SKY := Color("#9bcef0")
 const PLAN_UP := Vector3(0, 0, -1) # plan views: nose at the top of the image
 const NEUTRAL := {roll = 0.0, pitch = 0.0, yaw = 0.0, flap = 0.0}
 const FULL := {roll = 1.0, pitch = 1.0, yaw = 1.0, flap = 35.0}
+const PILOT_FOV_DEG := 50.0 # same field of view as the Stik and Extra inspectors' flight-distance views
+const FLIGHT_DISTANCES_M := [20.0, 50.0, 100.0]
 
 var _camera: Camera3D
 var _airplane: Dictionary
@@ -41,8 +45,8 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 
-static func _view(name: String, position: Vector3, target: Vector3, projection := "persp", controls := NEUTRAL, fov := 40.0, up := Vector3.UP) -> Dictionary:
-	return {name = name, position = position, target = target, projection = projection, controls = controls, fov = fov, up = up}
+static func _view(name: String, position: Vector3, target: Vector3, projection := "persp", controls := NEUTRAL, fov := 40.0, up := Vector3.UP, attitude := Vector3.ZERO) -> Dictionary:
+	return {name = name, position = position, target = target, projection = projection, controls = controls, fov = fov, up = up, attitude_deg = attitude}
 
 
 static func _orbit_position(azimuth_deg: float, elevation_deg: float, distance: float) -> Vector3:
@@ -76,6 +80,17 @@ static func views(suite: String) -> Array:
 		for elevation in [-25.0, 10.0, 40.0]:
 			for azimuth in range(0, 360, 30):
 				out.append(_view("orbit_el%+03d_az%03d" % [int(elevation), azimuth], _orbit_position(azimuth, elevation, s * 1.1), c))
+	if suite in ["distance", "all"]:
+		for d in FLIGHT_DISTANCES_M:
+			var tag := "%03dm" % int(d)
+			# Pilot standing on the ground, airplane at 10 m height crossing; attitude applied to the airplane root.
+			var eye := Vector3(0, -10.0 + 1.7, -d)
+			out += [
+				_view("distance_%s_level_crossing" % tag, eye, Vector3.ZERO, "persp", NEUTRAL, PILOT_FOV_DEG, Vector3.UP, Vector3(0, -90, 0)),
+				_view("distance_%s_roll_minus60" % tag, eye, Vector3.ZERO, "persp", NEUTRAL, PILOT_FOV_DEG, Vector3.UP, Vector3(0, -90, -60)),
+				_view("distance_%s_roll_plus60" % tag, eye, Vector3.ZERO, "persp", NEUTRAL, PILOT_FOV_DEG, Vector3.UP, Vector3(0, -90, 60)),
+				_view("distance_%s_nose_toward_pilot" % tag, eye, Vector3.ZERO, "persp", NEUTRAL, PILOT_FOV_DEG, Vector3.UP, Vector3(0, 0, 0)),
+			]
 	return out
 
 
@@ -117,7 +132,7 @@ func _run() -> void:
 		Timber.apply_controls(_airplane, view.controls.roll, view.controls.pitch, view.controls.yaw, view.controls.flap)
 		_airplane.propeller.rotation = Vector3.ZERO
 		for key in ["left", "right", "tail", "steering"]: _airplane.gear[key].rotation = Vector3.ZERO
-		_airplane.root.rotation = Vector3.ZERO
+		_airplane.root.rotation_degrees = view.attitude_deg
 		_camera.projection = Camera3D.PROJECTION_ORTHOGONAL if view.projection == "ortho" else Camera3D.PROJECTION_PERSPECTIVE
 		_camera.size = ortho_size_m()
 		_camera.fov = view.fov
@@ -136,6 +151,7 @@ func _run() -> void:
 			"camera_position_m": [view.position.x, view.position.y, view.position.z], "target_m": [view.target.x, view.target.y, view.target.z],
 			"up": [up.x, up.y, up.z], "ortho_size_m": ortho_size_m() if view.projection == "ortho" else null,
 			"fov_deg": view.fov if view.projection == "persp" else null, "controls": view.controls,
+			"attitude_deg": [view.attitude_deg.x, view.attitude_deg.y, view.attitude_deg.z],
 			"png_sha256": FileAccess.get_sha256(path),
 		})
 		print("Captured %s" % path)
