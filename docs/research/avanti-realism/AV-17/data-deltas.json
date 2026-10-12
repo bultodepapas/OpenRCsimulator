@@ -1,0 +1,487 @@
+{
+  "quantity_changes": [
+    {
+      "path": "/aero/coefficients/CLa",
+      "before": 4.630203,
+      "after": 4.628553,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/CLq",
+      "before": 6.59514,
+      "after": 6.248243,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/CYp",
+      "before": -0.157644,
+      "after": -0.157629,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Clb",
+      "before": -0.140235,
+      "after": -0.140061,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Clp",
+      "before": -0.606895,
+      "after": -0.606891,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Clr",
+      "before": 0.125311,
+      "after": 0.12496,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cma",
+      "before": -0.844769,
+      "after": -0.850788,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cmda_each",
+      "before": -0.148526,
+      "after": -0.149056,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cmde",
+      "before": -0.943876,
+      "after": -0.954598,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cmq",
+      "before": -7.383414,
+      "after": -7.549994,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cnb",
+      "before": 0.2021855454946897,
+      "after": 0.20234374859627607,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cnda_left",
+      "before": -0.013704,
+      "after": -0.013645,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cnda_right",
+      "before": 0.013704,
+      "after": 0.013645,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cndr",
+      "before": -0.09803249233073723,
+      "after": -0.09810919931938482,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/coefficients/Cnp",
+      "before": 0.005799,
+      "after": 0.005968,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/reference_coefficients/CLadot",
+      "before": 1.659165,
+      "after": 1.684616,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/surfaces/horizontal/control_effectiveness",
+      "before": 1.117318,
+      "after": 1.122017,
+      "unit": "1"
+    },
+    {
+      "path": "/aero/surfaces/horizontal/lift_slope",
+      "before": 1.679047,
+      "after": 1.672016,
+      "unit": "1/rad"
+    },
+    {
+      "path": "/aero/surfaces/horizontal/position",
+      "before": [
+        0.959833,
+        0.0,
+        0.065
+      ],
+      "after": [
+        0.967908,
+        0.0,
+        0.065
+      ],
+      "unit": "m"
+    },
+    {
+      "path": "/aero/surfaces/wing_aileron_effectiveness",
+      "before": 0.27592,
+      "after": 0.276018,
+      "unit": "1"
+    },
+    {
+      "path": "/balance/plan_cg",
+      "before": [
+        0.24,
+        0.0,
+        0.00513
+      ],
+      "after": [
+        0.24,
+        0.0,
+        0.005153
+      ],
+      "unit": "m"
+    },
+    {
+      "path": "/inventory/stab half left with elevator/position",
+      "before": [
+        0.866774,
+        -0.187059,
+        0.065
+      ],
+      "after": [
+        1.014561,
+        -0.218953,
+        0.065
+      ],
+      "unit": "m"
+    },
+    {
+      "path": "/inventory/stab half right with elevator/position",
+      "before": [
+        0.866774,
+        0.187059,
+        0.065
+      ],
+      "after": [
+        1.014561,
+        0.218953,
+        0.065
+      ],
+      "unit": "m"
+    },
+    {
+      "path": "/inventory/virtual reference-build balancing mass/mass",
+      "before": 0.396299,
+      "after": 0.345089,
+      "unit": "kg"
+    },
+    {
+      "path": "/propulsion/intake_offset",
+      "before": [
+        -0.33,
+        0.0,
+        -0.03313
+      ],
+      "after": [
+        -0.33,
+        0.0,
+        -0.033153
+      ],
+      "unit": "m"
+    },
+    {
+      "path": "/propulsion/thrust_line_offset",
+      "before": [
+        0.9285,
+        0.0,
+        -0.01013
+      ],
+      "after": [
+        0.9285,
+        0.0,
+        -0.010153
+      ],
+      "unit": "m"
+    },
+    {
+      "path": "/reference/aero_reference_point",
+      "before": [
+        0.20681,
+        0.0,
+        0.0
+      ],
+      "after": [
+        0.206331,
+        0.0,
+        0.0
+      ],
+      "unit": "m"
+    }
+  ],
+  "inventory_removed": [
+    {
+      "name": "aileron servos (2)",
+      "mass": {
+        "value": 0.13,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "JR DS8411 ~65 g each (manual p.2 servo list)"
+      },
+      "position": {
+        "value": [
+          0.35,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "mid-aileron, y +-0.75"
+      },
+      "size": {
+        "value": [
+          0.03,
+          1.5,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "elevator servos (2)",
+      "mass": {
+        "value": 0.13,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "JR DS8411 ~65 g each (manual p.2)"
+      },
+      "position": {
+        "value": [
+          0.95,
+          0.0,
+          0.06
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "stab roots"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.25,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "flap servos (2)",
+      "mass": {
+        "value": 0.15,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "JR DS8911 ~75 g each (manual p.2)"
+      },
+      "position": {
+        "value": [
+          0.33,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "mid-flap, y +-0.35"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.7,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    }
+  ],
+  "inventory_added": [
+    {
+      "name": "elevator servo right",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.95,
+          0.125,
+          0.06
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "stab-root servo, lateral center y +0.125 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "aileron servo left",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.35,
+          -0.75,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "mid-aileron, lateral center y -0.75 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "flap servo right",
+      "mass": {
+        "value": 0.075,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 75 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8911 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.33,
+          0.35,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "mid-flap, lateral center y +0.35 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "flap servo left",
+      "mass": {
+        "value": 0.075,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 75 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8911 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.33,
+          -0.35,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "mid-flap, lateral center y -0.35 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "elevator servo left",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.95,
+          -0.125,
+          0.06
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "stab-root servo, lateral center y -0.125 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "aileron servo right",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+      },
+      "position": {
+        "value": [
+          0.35,
+          0.75,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "mid-aileron, lateral center y +0.75 m from the centerline"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    }
+  ]
+}

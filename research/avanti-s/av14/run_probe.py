@@ -66,7 +66,12 @@ def main():
                     or flight.get('rows', 0) != flight.get('expected_rows', -1):
                 raise SystemExit('Incomplete or invalid flight: ' + case.get('id', '?'))
     else:
-        if data.get('tick_hz') != args.hz or not data.get('completed'):
+        expected_ids = {'engine_off_glide_reset', 'checkpoint_native_replay_240',
+                        'crash_hold_restart', 'unsupported_ground_contract',
+                        'rendered_adapter_differential_hinges'}
+        if data.get('tick_hz') != args.hz or not data.get('completed') \
+                or len(data['cases']) != 5 or {c.get('id') for c in data['cases']} != expected_ids \
+                or any(not all(c.get(k) for k in ['available', 'complete', 'ok']) for c in data['cases']):
             raise SystemExit('Lifecycle incomplete or wrong tick rate')
     print(f'{args.probe}: {len(data["cases"])} cases, {args.hz} Hz, {time.monotonic()-start:.1f}s; {output}')
 

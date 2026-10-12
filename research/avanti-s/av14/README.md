@@ -16,6 +16,8 @@ python3 research/avanti-s/av14/run_probe.py --godot "$GODOT" --app app --probe l
 
 Repeat the envelope and lifecycle commands at 480 Hz. Use the same probe scripts for both app versions. The envelope reuses the P-51 full-session/reducer pattern and Extra's trim/trace helpers, with Avanti-specific identity and scenarios. World-flight-path metrics are independent of the body-pitch integral. Turbulent cases are descriptive; changing timestep may change the sampled stochastic realization.
 
+Lifecycle replay uses native Variant bytes, as required by the production checkpoint contract; JSON is diagnostic output. Use the evidence files ending in `-native.json` for the final lifecycle result. `pitch_sweep` is an additional runner probe choice for the eight signed elevator inputs. Recreate the saved trajectory figure with `python3 research/avanti-s/av14/plot_pitch_sweep.py` (Matplotlib 3.11.1).
+
 Run `run_benchmarks.py --godot "$GODOT" --baseline "$BASELINE_APP" --candidate app --out timing` only with other simulation jobs stopped. It alternates baseline/candidate/candidate/baseline trim and stalled costs. The recorded host observation is not a low-end hardware guarantee.
 
 Full checks: `app/test.sh` in an isolated LF checkout. The existing `research/p51/p51-15/run_suite.py` can preserve a failing full-suite log and continue the remaining checks for diagnosis; its continued result is still a failing suite. Use independent user-data directories and record unrelated baseline failures explicitly.

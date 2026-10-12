@@ -1,0 +1,3 @@
+== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)
+extra preview: 32 meshes, 19502 triangles, extent 1.624 x 0.552 x 1.386 m
+verify_extra: 123 checks, 0 failures

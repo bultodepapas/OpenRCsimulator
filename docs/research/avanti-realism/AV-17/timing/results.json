@@ -1,0 +1,96 @@
+{
+  "platform": "Windows-10-10.0.26100-SP0",
+  "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+  "order": [
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline"
+  ],
+  "runs": [
+    {
+      "revision": "baseline",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\avanti-realism-baseline\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/bench_physics.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx"
+      ],
+      "exit": 0,
+      "log": "0-baseline.log",
+      "engine_errors": false,
+      "data_sha256": "91aeb89881242a4710045b6031afdf13ded09f4c9934a9cefb73484afbdcdeb5",
+      "trim_us": 258.6,
+      "stalled_us": 250.6
+    },
+    {
+      "revision": "candidate",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\avanti-realism-candidate\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/bench_physics.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx"
+      ],
+      "exit": 0,
+      "log": "1-candidate.log",
+      "engine_errors": false,
+      "data_sha256": "e5d0e039426f9a9ba0db11aad6319018c21fb15a6271baec1842e943fec87c57",
+      "trim_us": 264.5,
+      "stalled_us": 247.1
+    },
+    {
+      "revision": "candidate",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\avanti-realism-candidate\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/bench_physics.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx"
+      ],
+      "exit": 0,
+      "log": "2-candidate.log",
+      "engine_errors": false,
+      "data_sha256": "e5d0e039426f9a9ba0db11aad6319018c21fb15a6271baec1842e943fec87c57",
+      "trim_us": 244.9,
+      "stalled_us": 248.1
+    },
+    {
+      "revision": "baseline",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\avanti-realism-baseline\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/bench_physics.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx"
+      ],
+      "exit": 0,
+      "log": "3-baseline.log",
+      "engine_errors": false,
+      "data_sha256": "91aeb89881242a4710045b6031afdf13ded09f4c9934a9cefb73484afbdcdeb5",
+      "trim_us": 242.3,
+      "stalled_us": 246.3
+    }
+  ]
+}

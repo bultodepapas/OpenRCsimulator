@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   trim α at 15 m/s within 4.26° ± 0.5  4.26°
+ok   hands-off 5 s: altitude and speed hold  Δalt 0 m
+ok   roll_15 coordinated: roll rate 144°/s ± 7 % (single-axis prediction)  145.3°/s
+ok   roll_15 feet still: adverse yaw slows roll; coordination reduces sideslip  131.5°/s (90 % of coordinated)
+ok   roll_20 coordinated: roll rate 192°/s ± 7 % (single-axis prediction)  190.1°/s
+ok   roll_20 feet still: adverse yaw slows roll; coordination reduces sideslip  184.9°/s (97 % of coordinated)
+ok   glide L/D at 15 m/s = 9.11 ± 2 %  L/D 9.11
+ok   pull + throttle: climbs  28.1 m
+ok   right rudder first: yaw rate goes right first  1.33 rad/s
+9 checks, 0 failed

@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok oracle retains baseline detector marker
+ok oracle matches committed baseline SHA-256
+ok oracle has independent full contacts implementation
+ok differential fixture world builds
+ok reference aircraft hull loads
+ok differential includes actual contacts
+oracle_differential sweeps=160; cases_with_hits=41; contacts=53; proxies=206; bins=32
+landscape collision oracle: 326 checks, 0 failures
