@@ -11,7 +11,8 @@
 #    (optional data fitted to a cycle model; absent = 0, the plain law F = k_inst·F_static − ṁ0·u). Densities scale
 #    with σ = ρ/ρ0.
 #  - Rotor: angular momentum I_rot·ω along the shaft, signed by the rotation sense (gyroscopic coupling).
-# Not modelled: start-up sequence, flameout, fuel burn (mass is fixed, AV-10), EGT, ram rise of ṁ, inlet distortion.
+# Not modelled: start-up/shutdown sequence, flameout, fuel burn (mass fixed, AV-10), EGT or inlet distortion.
+# AV-14: transient mounting torque and exhaust swirl are unverified; rotor gyro is the only shaft moment modeled.
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
@@ -105,7 +106,8 @@ static func thrust(rpm: float, u: float, prop: Dictionary, rho: float) -> float:
 
 ## Body loads about the CG [Fx, Fy, Fz, Mx, My, Mz] for air-relative body velocity v_air. Gross thrust along the fixed
 ## nozzle axis through the thrust line; the captured air's momentum −ṁ·v_air at the intakes (forward-moving air only:
-## flying backwards the ram term is dropped). No reaction torque (the spool's torques balance inside the engine).
+## flying backwards the ram term is dropped). No mounting reaction torque is modeled. A transient term would require
+## the open-system angular-momentum balance (rotor plus inlet/exhaust flux), not rotor acceleration alone; see AV-14.
 static func loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
 	if rpm < STOPPED_RPM:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -124,6 +126,6 @@ static func rotor_momentum(rpm: float, prop: Dictionary) -> PackedFloat64Array:
 	return M.scale(prop.axis, float(prop.rotor_inertia) * float(prop.rotor_sense) * rpm * TAU / 60.0)
 
 
-## Fuel flow (kg/s) at shaft rpm, for telemetry and the endurance check (mass stays fixed until AV-10).
+## Fuel-flow map (kg/s), reserved for AV-10; no current flight-state consumer. Mass stays fixed.
 static func fuel_flow(rpm: float, prop: Dictionary) -> float:
 	return 0.0 if rpm < STOPPED_RPM else table(prop.fuel_flow, rpm)

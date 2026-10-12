@@ -88,6 +88,10 @@ static func _pit_shelter(k: MeshKit, seed: int) -> Array:
 	var back_h := 2.7
 	var post := _c("wood")
 	k.block(Vector3(length + 0.6, 0.1, depth + 0.6), Vector3(0, 0, 0), _c("concrete"), _c("concrete"))
+	# Fine saw cuts divide the existing slab without adding a raised border.
+	for joint in 4:
+		var joint_x := -length * 0.5 + length * (joint + 1) / 5.0
+		k.block(Vector3(0.014, 0.004, depth + 0.5), Vector3(joint_x, 0.1, 0), _c("concrete_dark"))
 	for i in 9:
 		var x := -length * 0.5 + i * length / 8.0
 		k.block(Vector3(0.16, front_h, 0.16), Vector3(x, 0.1, -depth * 0.5 + 0.1), post)
@@ -114,6 +118,11 @@ static func _pit_shelter(k: MeshKit, seed: int) -> Array:
 		k.beam(Vector3(x, yf + 0.02, z0), Vector3(x, yb + 0.02, z1), 0.035, _c("roof_metal").lightened(0.06))
 	k.quad(Vector3(-hx, yf - 0.22, z0), Vector3(hx, yf - 0.22, z0), Vector3(hx, yf, z0), Vector3(-hx, yf, z0), _c("trim")) # fascia
 	k.beam(Vector3(-hx, yb - 0.12, z1 + 0.05), Vector3(hx, yb - 0.12, z1 + 0.05), 0.12, _c("roof_metal_dark")) # gutter
+	# Sloped barge boards and short gutter returns finish the open roof ends.
+	for side: float in [-1.0, 1.0]:
+		var end_x := side * (hx - 0.05)
+		k.beam(Vector3(end_x, yf + 0.02, z0 + 0.02), Vector3(end_x, yb + 0.02, z1 - 0.02), 0.035, _c("roof_metal_dark"))
+		k.beam(Vector3(end_x, yb - 0.12, z1 - 0.06), Vector3(end_x, yb - 0.12, z1 + 0.05), 0.06, _c("roof_metal_dark"))
 	# Furniture under the roof: tables along the back, stands, boxes, chairs, coolers. Seeded variety.
 	for i in 6:
 		var tx := -length * 0.5 + 2.4 + i * 4.6
@@ -201,24 +210,42 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 	var d := 6.0
 	var h := 2.7
 	k.block(Vector3(w + 1.0, 0.15, d + 3.6), Vector3(0, 0, -1.3), _c("concrete"), _c("concrete"))
+	# Two fine joints break the broad porch slab into realistic pours.
+	for joint_x: float in [-1.7, 1.7]:
+		k.block(Vector3(0.012, 0.003, 2.7), Vector3(joint_x, 0.15, -4.55), _c("concrete_dark"))
 	k.block(Vector3(w, h, d), Vector3(0, 0.15, 0), _c("wall_white"))
 	k.block(Vector3(w + 0.04, 0.3, d + 0.04), Vector3(0, 0.15, 0), _c("concrete_dark")) # plinth
 	for sx: float in [-1.0, 1.0]: # corner trims
 		for sz: float in [-1.0, 1.0]:
 			k.block(Vector3(0.14, h, 0.14), Vector3(sx * w * 0.5, 0.15, sz * d * 0.5), _c("trim"))
 	var f := -d * 0.5 - 0.02
-	_window(k, Vector3(-2.8, 1.05, f), 1.5, 1.05, false)
-	_window(k, Vector3(2.8, 1.05, f), 1.5, 1.05, false)
-	_door(k, Vector3(0, 0.15, f), 1.0, 2.1, _c("door_green"), false)
+	_window(k, Vector3(-2.8, 1.05, f), 1.5, 1.05, false, true)
+	_window(k, Vector3(2.8, 1.05, f), 1.5, 1.05, false, true)
+	_door(k, Vector3(0, 0.15, f), 1.0, 2.1, _c("door_green"), false, true)
+	# Flush, slightly wider concrete threshold at the existing entry.
+	k.block(Vector3(1.14, 0.035, 0.16), Vector3(0, 0.15, f - 0.06), _c("concrete_dark"))
 	var b := d * 0.5 + 0.02
-	_window(k, Vector3(-2.2, 1.3, b), 1.0, 0.7, true)
-	_window(k, Vector3(2.2, 1.3, b), 1.0, 0.7, true)
+	_window(k, Vector3(-2.2, 1.3, b), 1.0, 0.7, true, true)
+	_window(k, Vector3(2.2, 1.3, b), 1.0, 0.7, true, true)
 	var saved := k.xf
 	for side: float in [-1.0, 1.0]: # side windows: rotate the frame
 		k.xf = saved * Transform3D(Basis(Vector3.UP, side * PI / 2.0), Vector3.ZERO)
-		_window(k, Vector3(0, 1.1, -w * 0.5 - 0.02), 1.2, 0.9, false)
+		_window(k, Vector3(0, 1.1, -w * 0.5 - 0.02), 1.2, 0.9, false, true)
 	k.xf = saved
 	k.hip_roof(w, d, h + 0.15, 1.8, 0.5, _c("roof_slate"))
+	# Eave boards follow the existing hip roof, staying inside its overhang.
+	var eave_x := w * 0.5 + 0.5 - 0.05
+	var eave_z := d * 0.5 + 0.5 - 0.05
+	var fascia_y := h + 0.15 - 0.05
+	var fascia_col := _c("roof_slate").darkened(0.14)
+	for side: float in [-1.0, 1.0]:
+		k.beam(Vector3(-eave_x, fascia_y, side * eave_z), Vector3(eave_x, fascia_y, side * eave_z), 0.1, fascia_col)
+		k.beam(Vector3(side * eave_x, fascia_y, -eave_z), Vector3(side * eave_x, fascia_y, eave_z), 0.1, fascia_col)
+	# Rear rain leaders sit on the wall beneath the existing eave and return to the gutter.
+	for side: float in [-1.0, 1.0]:
+		var pipe_x := side * 4.28
+		k.beam(Vector3(pipe_x, 0.16, d * 0.5 + 0.045), Vector3(pipe_x, h + 0.03, d * 0.5 + 0.045), 0.045, _c("steel_dark"))
+		k.beam(Vector3(pipe_x, h + 0.03, d * 0.5 + 0.045), Vector3(pipe_x, h + 0.03, d * 0.5 + 0.43), 0.045, _c("steel_dark"))
 	# veranda: mono-pitch roof on four posts in front
 	var vz0 := -d * 0.5
 	var vz1 := -d * 0.5 - 3.0
@@ -228,6 +255,10 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 		Vector3(w * 0.5 + 0.2, 2.62, vz1 - 0.2), _c("roof_metal_dark"))
 	k.quad(Vector3(-w * 0.5 - 0.2, 2.58, vz1 - 0.2), Vector3(w * 0.5 + 0.2, 2.58, vz1 - 0.2), Vector3(w * 0.5 + 0.2, 2.91, vz0),
 		Vector3(-w * 0.5 - 0.2, 2.91, vz0), _c("wood_light"))
+	# The veranda's front fascia and slim side barge trim close the exposed sheet edges.
+	k.beam(Vector3(-4.62, 2.64, vz1 - 0.16), Vector3(4.62, 2.64, vz1 - 0.16), 0.08, _c("wood_light"))
+	for side: float in [-1.0, 1.0]:
+		k.beam(Vector3(side * 4.62, 2.62, vz1 - 0.16), Vector3(side * 4.62, 2.95, vz0 + 0.08), 0.055, _c("wood_light"))
 	k.beam(Vector3(-w * 0.5 - 0.2, 2.55, vz1 + 0.15), Vector3(w * 0.5 + 0.2, 2.55, vz1 + 0.15), 0.14, _c("trim"))
 	# railing between the posts, open at the steps in the middle
 	for seg: Array in [[-4.2, -1.4], [1.4, 4.2]]:
@@ -243,7 +274,7 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 	return []
 
 
-static func _window(k: MeshKit, c: Vector3, w: float, h: float, back: bool) -> void:
+static func _window(k: MeshKit, c: Vector3, w: float, h: float, back: bool, detailed: bool = false) -> void:
 	var s := 1.0 if back else -1.0 # the wall's outward normal along z
 	var z := c.z
 	var g := _c("glass")
@@ -260,15 +291,41 @@ static func _window(k: MeshKit, c: Vector3, w: float, h: float, back: bool) -> v
 	k.box(Vector3(t, h, 0.06), Vector3(c.x + w * 0.5 + t * 0.5, c.y + h * 0.5, z + s * 0.02), trim, true)
 	k.box(Vector3(0.04, h, 0.04), Vector3(c.x, c.y + h * 0.5, z + s * 0.02), trim, true) # mullion
 	k.box(Vector3(w + 0.3, 0.06, 0.16), Vector3(c.x, c.y - 0.1, z + s * 0.08), trim, true) # sill
+	if detailed:
+		# A simple transom divides the glass into readable upper and lower sashes.
+		k.box(Vector3(w - 0.16, 0.035, 0.045), Vector3(c.x, c.y + h * 0.58, z + s * 0.035), trim.darkened(0.06), true)
 
 
-static func _door(k: MeshKit, base: Vector3, w: float, h: float, col: Color, back: bool) -> void:
+static func _door(k: MeshKit, base: Vector3, w: float, h: float, col: Color, back: bool, detailed: bool = false) -> void:
 	var s := 1.0 if back else -1.0
 	k.box(Vector3(w, h, 0.05), base + Vector3(0, h * 0.5, s * 0.02), col, true)
 	k.box(Vector3(w + 0.16, 0.08, 0.07), base + Vector3(0, h + 0.04, s * 0.03), _c("trim"), true)
 	k.box(Vector3(0.08, h, 0.07), base + Vector3(-w * 0.5 - 0.04, h * 0.5, s * 0.03), _c("trim"), true)
 	k.box(Vector3(0.08, h, 0.07), base + Vector3(w * 0.5 + 0.04, h * 0.5, s * 0.03), _c("trim"), true)
 	k.box(Vector3(0.06, 0.06, 0.06), base + Vector3(w * 0.35, 1.0, s * 0.06), _c("steel"), true)
+	if detailed:
+		# Two shallow raised panels and slim edge moulding keep the entry legible at club scale.
+		var panel_w := w * 0.58
+		var panel_h := h * 0.26
+		var panel_z := base.z + s * 0.052
+		var frame_z := base.z + s * 0.056
+		for fraction: float in [0.30, 0.70]:
+			var cy := base.y + h * fraction
+			k.box(Vector3(panel_w, panel_h, 0.012), Vector3(base.x, cy, panel_z), col.darkened(0.12), true)
+			var half_w := panel_w * 0.5
+			var half_h := panel_h * 0.5
+			var left := base.x - half_w
+			var right := base.x + half_w
+			var bottom := cy - half_h
+			var top := cy + half_h
+			var frame_col := col.lightened(0.16)
+			k.beam(Vector3(left, bottom, frame_z), Vector3(left, top, frame_z), 0.018, frame_col)
+			k.beam(Vector3(right, bottom, frame_z), Vector3(right, top, frame_z), 0.018, frame_col)
+			k.beam(Vector3(left, bottom, frame_z), Vector3(right, bottom, frame_z), 0.018, frame_col)
+			k.beam(Vector3(left, top, frame_z), Vector3(right, top, frame_z), 0.018, frame_col)
+		# Three small hinge plates align on the latch edge opposite the handle.
+		for hinge_y: float in [0.42, 1.02, 1.72]:
+			k.box(Vector3(0.045, 0.12, 0.012), base + Vector3(-w * 0.42, hinge_y, s * 0.045), _c("steel"), true)
 
 
 static func _shed(k: MeshKit) -> void:

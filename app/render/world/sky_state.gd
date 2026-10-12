@@ -8,6 +8,7 @@
 # The moon lights the same atmosphere, scaled by its brightness relative to the sun (phase law below).
 extends RefCounted
 
+const TwilightPalette := preload("res://render/landscape_upgrade/twilight_palette.gd")
 const Spec := preload("res://spec.gd")
 const Frames := preload("res://render/frames.gd")
 
@@ -145,6 +146,10 @@ static func state(sky: Dictionary) -> Dictionary:
 	var zenith: Vector3 = k_zenith * (s.zenith + tint * m.zenith) + floor_zenith
 	var haze: Vector3 = k_haze * (s.haze + tint * m.haze) + _lin(a.haze) * NIGHT_FLOOR
 
+	# LU-13: luminance-preserving diffuse palette; astronomy/direct sun stay authoritative.
+	zenith = TwilightPalette.diffuse(zenith, sun_el, TwilightPalette.ZENITH_TINT, 0.94)
+	haze = TwilightPalette.diffuse(haze, sun_el, TwilightPalette.HAZE_TINT, 0.78)
+
 	# One directional light: the brighter of sun and moon (the engine's fog scatter and the planar shadow follow it).
 	var sun_rgb: Vector3 = k_sun * s.sun
 	var moon_l := MOON_LIGHT_COLOR.srgb_to_linear()
@@ -168,6 +173,8 @@ static func state(sky: Dictionary) -> Dictionary:
 	# Lit cloud: mostly the light reaching the deck (clouds stay lit after sunset), a little skylight.
 	var cloud_rel: Vector3 = _ratio(s.cloud + tint * m.cloud, anchor.cloud)
 	var cloud: Vector3 = _lin(a.cloud_color) * (cloud_rel * 0.8 + Vector3.ONE * 0.2 * _lum(zenith) / _lum(_lin(a.zenith)))
+
+	cloud = TwilightPalette.diffuse(cloud, sun_el, TwilightPalette.CLOUD_TINT, 0.30)
 
 	# Ambient colour (see AMBIENT_ZENITH_SHARE): anchored to the engine's effective calibrated ambient.
 	var mix_legacy := _lin(a.zenith) * AMBIENT_ZENITH_SHARE + _lin(a.haze) * (1.0 - AMBIENT_ZENITH_SHARE)

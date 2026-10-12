@@ -10,7 +10,12 @@ const Ridges := preload("res://render/landscape_upgrade/ridges.gd")
 const Postcards := preload("res://scenery/postcards.gd")
 const LightingConfig := preload("res://environment/time_of_day_config.gd")
 const SnapshotLighting := preload("res://render/time_of_day_lighting.gd")
+const SceneryMaterials := preload("res://scenery/scenery.gd")
 const FLEET_VIEWS := {
+	"gravel_close": {eye = [-35.0, -8.0, -1.2], at = [-39.0, -12.0, -0.04], fov = 45.0},
+	"gravel_far": {eye = [-39.0, -15.0, -240.0], at = [-38.9, -15.0, 0.0], fov = 55.0},
+	"twilight_aircraft": {eye = [0.0, 0.0, -1.7], at = [120.0, 0.0, -13.0], fov = 38.0},
+	"twilight_background": {eye = [0.0, 0.0, -1.7], at = [120.0, 0.0, -13.0], fov = 38.0},
 	"parked_stik": {eye = [-16.3, -35.7, -1.7], at = [-17.6, -38.0, -0.5], fov = 55.0},
 	"parked_extra": {eye = [-16.3, -21.7, -1.7], at = [-17.6, -24.0, -0.5], fov = 55.0},
 	"parked_p51": {eye = [-16.3, 27.5, -2.1], at = [-17.8, 24.0, -0.8], fov = 60.0},
@@ -49,6 +54,20 @@ func _run() -> void:
 	var built := World.build(parent, loaded.field, Callable(), {}, snapshot)
 	if built.field.get_node_or_null("DistantRidges") == null:
 		parent.add_child(Ridges.build())
+	# LU-12 isolated material A/B. Same world, geometry and draws, no production setting.
+	if str(args.get("gravel_detail", "on")) in ["off", "legacy"]:
+		var pending: Array[Node] = [parent]
+		while not pending.is_empty():
+			var item: Node = pending.pop_back()
+			pending.append_array(item.get_children())
+			if item is MeshInstance3D and item.mesh != null:
+				for surface in item.mesh.get_surface_count():
+					var material: Material = item.mesh.surface_get_material(surface)
+					if material is ShaderMaterial and material.shader.resource_path == "res://scenery/gravel.gdshader":
+						if str(args.gravel_detail) == "legacy":
+							item.mesh.surface_set_material(surface, SceneryMaterials.opaque_material())
+						else:
+							material.set_shader_parameter("detail_strength", 0.0)
 	var camera := Camera3D.new()
 	camera.far = 21000
 	camera.near = 0.1
@@ -123,6 +142,10 @@ func _run() -> void:
 				FLEET_VIEWS[case] if FLEET_VIEWS.has(case) else Postcards.VIEWS[case]
 			camera.fov = view.fov
 			camera.look_at_from_position(Frames.ned_to_render(view.eye), Frames.ned_to_render(view.at))
+			if case == "twilight_aircraft":
+				aircraft.root.visible = true
+				aircraft.root.position = Frames.ned_to_render([120.0, 0.0, -13.0])
+				aircraft.root.basis = Basis(Vector3.UP, PI / 3.0) * Basis(Vector3.FORWARD, PI / 7.0)
 			if case == "marker_occluded":
 				blocker.visible = true
 				blocker.position = Frames.ned_to_render([15.0, 55.0, -0.7])

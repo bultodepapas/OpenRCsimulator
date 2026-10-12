@@ -138,10 +138,11 @@ def strips(rows, chord_scale=1.0, n=60):
 
 
 def planform(st):
-    area = sum(c * dy for _, _, c, _, dy in st)
-    mac = sum(c * c * dy for _, _, c, _, dy in st) / area
-    mac_le = sum(c * c * z * dy for _, z, c, _, dy in st) / sum(c * c * dy for _, _, c, _, dy in st)
-    y_mac = sum(c * y * dy for y, _, c, _, dy in st) / area  # area centroid of the semi-span
+    area = sum(chord * dy for _, _, chord, _, dy in st)
+    mac = sum(chord * chord * dy for _, _, chord, _, dy in st) / area
+    # The geometric leading edge of the MAC is area weighted; chord-squared weighting is only for MAC length.
+    mac_le = sum(chord * le_z * dy for _, le_z, chord, _, dy in st) / area
+    y_mac = sum(chord * y * dy for y, _, chord, _, dy in st) / area  # area centroid of the semi-span
     return 2 * area, mac, mac_le, y_mac
 
 
@@ -337,9 +338,11 @@ ex_z = sum((z + 0.42 * c) * c * dy for _, z, c, _, dy in exposed) / ex_area
 for side, sign in (("left", -1.0), ("right", 1.0)):
     items.append((f"wing panel {side}, covered, with flap and aileron", float(ST["wing_panel"]["value"]), ST["wing_panel"]["kind"], ST["wing_panel"]["source"],
                   le(ex_z, ex_y * math.tan(dihedral), sign * ex_y), [mac, semi - Wg["stations"][0][0], 0.05], "derived", "42 % chord at the exposed panel's area centroid (geometry.json)"))
-th_area = sum(c * dy for _, _, c, _, dy in tst if _ >= Tg["stations"][0][0])
-th_y = sum(c * y * dy for y, _, c, _, dy in tst if y >= Tg["stations"][0][0]) / th_area
-th_z = sum((z + 0.45 * c) * c * dy for y, z, c, _, dy in tst if y >= Tg["stations"][0][0]) / th_area
+tail_root_y = Tg["stations"][0][0]
+exposed_tail = [(y, le_z, chord, height, dy) for y, le_z, chord, height, dy in tst if y >= tail_root_y]
+th_area = sum(chord * dy for _, _, chord, _, dy in exposed_tail)
+th_y = sum(chord * y * dy for y, _, chord, _, dy in exposed_tail) / th_area
+th_z = sum((le_z + 0.45 * chord) * chord * dy for _, le_z, chord, _, dy in exposed_tail) / th_area
 for side, sign in (("left", -1.0), ("right", 1.0)):
     items.append((f"stab half {side} with elevator", float(ST["stab_half"]["value"]), ST["stab_half"]["kind"], ST["stab_half"]["source"],
                   le(th_z, h_stab, sign * th_y), [mach, bh / 2, 0.02], "derived", "45 % chord at the stab half's area centroid (geometry.json)"))
@@ -407,17 +410,42 @@ note("balance", "flight CG (le frame)", cg, "z from the inventory")
 
 
 def inertia(pt):
-    j = [0.0] * 3
+    # Full symmetric tensor order matches aircraft_data.inertia_about():
+    # [Jxx, Jyy, Jzz, Jxy, Jxz, Jyz].
+    j = [0.0] * 6
     for it in items:
         m, p, s = it[1], it[4], it[5] or [0, 0, 0]
         x, y, z = -(p[0] - pt[0]), p[1] - pt[1], -(p[2] - pt[2])
         j[0] += m * (y * y + z * z) + m * (s[1] ** 2 + s[2] ** 2) / 12
         j[1] += m * (x * x + z * z) + m * (s[0] ** 2 + s[2] ** 2) / 12
         j[2] += m * (x * x + y * y) + m * (s[0] ** 2 + s[1] ** 2) / 12
+        j[3] -= m * x * y
+        j[4] -= m * x * z
+        j[5] -= m * y * z
     return j
 
 
-J = note("balance", "Jxx Jyy Jzz (kg m2)", inertia(cg), "component boxes + parallel axis")
+def principal_moments(tensor):
+    """Eigenvalues of the symmetric inertia tensor, sorted ascending (kg m2)."""
+    xx, yy, zz, xy, xz, yz = tensor
+    mean = (xx + yy + zz) / 3.0
+    p1 = xy * xy + xz * xz + yz * yz
+    if p1 < 1e-30:
+        return sorted((xx, yy, zz))
+    p2 = (xx - mean) ** 2 + (yy - mean) ** 2 + (zz - mean) ** 2 + 2.0 * p1
+    p = math.sqrt(p2 / 6.0)
+    b00, b11, b22 = (xx - mean) / p, (yy - mean) / p, (zz - mean) / p
+    b01, b02, b12 = xy / p, xz / p, yz / p
+    determinant = b00 * b11 * b22 + 2.0 * b01 * b02 * b12 - b00 * b12 * b12 - b11 * b02 * b02 - b22 * b01 * b01
+    phi = math.acos(max(-1.0, min(1.0, determinant / 2.0))) / 3.0
+    first = mean + 2.0 * p * math.cos(phi)
+    third = mean + 2.0 * p * math.cos(phi + 2.0 * math.pi / 3.0)
+    second = 3.0 * mean - first - third
+    return sorted((first, second, third))
+
+
+J = note("balance", "Jxx Jyy Jzz Jxy Jxz Jyz (kg m2)", inertia(cg), "component boxes + parallel axis; products use the runtime body-FRD convention")
+I_principal = note("balance", "principal moments (kg m2)", principal_moments(J), "eigenvalues of the full symmetric inventory tensor; positive values check arithmetic, not physical validation")
 
 CL_max = note("aero", "CL_max (clean)", v("aero.CL_max"), src("aero.CL_max")[1])
 Vs = note("aero", "1-g stall (m/s)", math.sqrt(2 * mass * G0 / (RHO * S * CL_max)), "flight mass, CL_max, flaps up")
@@ -481,7 +509,15 @@ parts = {
 for k_, item in IN["drag_items"].items():
     parts[k_] = item["value"]
 D_q = sum(parts.values()) * v("aero.excrescence_factor")
-CD0 = note("drag", "CD0", D_q / S, "skin friction x form factors (Raymer ch. 12) + items, x excrescence factor: " + ", ".join(f"{k_} {x:.4f} m2" for k_, x in parts.items()))
+cd0_how = (
+    f"estimated Raymer build-up at V_start={V_start:.0f} m/s (about Mach 0.09), "
+    "cf_mix laminar fractions 0.15 wing/tails and 0.05 fuselage, fixed wing Raymer Mach multiplier evaluated at M=0.34, "
+    "tail form factor 1.12, listed item drag areas, then "
+    f"x excrescence factor {v('aero.excrescence_factor'):.2f}; "
+    "not matched to measured local Re/Mach or Avanti flight data. Components: "
+    + ", ".join(f"{name} {value:.4f} m2" for name, value in parts.items())
+)
+CD0 = note("drag", "CD0", D_q / S, cd0_how)
 e_osw = note("drag", "Oswald e", v("aero.oswald_e"), src("aero.oswald_e")[1])
 k_ind = 1 / (math.pi * e_osw * AR)
 
@@ -561,7 +597,7 @@ coefficients = {
     "CLq": coeff(CLq, "1/rad", "derived", "tail volume + DATCOM wing term"),
     "CLde": coeff(CLde, "1/rad", "derived", "tail slope x elevator effectiveness"),
     "CLda_each": coeff(CLda_each, "1/rad", "derived", "strip theory over the aileron span"),
-    "CD0": coeff(CD0, "1", "derived", f"component drag build-up at {V_start:.0f} m/s, gear UP, flaps up, see derivation.md"),
+    "CD0": coeff(CD0, "1", "derived", f"estimated component drag build-up at {V_start:.0f} m/s (about Mach 0.09), gear UP/flaps up; fixed M=0.34 wing form-factor multiplier, assumed transition fractions and tail form factor; full basis and item areas in research/avanti-s/av06/derivation.md, CD0 model basis"),
     "CL_minD": q(0.0, "1", "estimated", "symmetric sections: minimum drag at zero lift"),
     "k_induced": coeff(k_ind, "1", "derived", f"1/(pi e AR), e {e_osw} estimated"),
     "CDda_each": q(stik["aero"]["coefficients"]["CDda_each"]["value"], "1/rad", "borrowed", "OpenFlightSim UltraStick25e (via the Stik data file); second-order control drag"),
@@ -747,12 +783,17 @@ not flight identification. Flaps up and gear up; in-air start only.
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit compatibility-default leaves added, {parity['numeric_differences']} differences.
 
 Flight mass {mass:.3f} kg (fuel {fuel_kg:.2f} kg), CG {cg_z * 1000:.0f} mm aft of the root LE = {100 * (cg_z - mac_le) / mac:.1f} % MAC, static margin {sm:.1f} % MAC.
+Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = {", ".join(f"{x:.6g}" for x in J)} kg·m²; principal moments = {", ".join(f"{x:.6g}" for x in I_principal)} kg·m².
 1-g stall {Vs:.1f} m/s clean, start {V_start:.0f} m/s, maximum level speed {V_max:.1f} m/s ({V_max * 3.6:.0f} km/h).
 Throws (manual high rate): aileron {v('controls.aileron_up')}° up / {v('controls.aileron_down')}° down, elevator ±{v('controls.elevator')}°, rudder ±{v('controls.rudder')}°.
 
 ## Intermediate quantities
 
 {chr(10).join(rows)}
+
+## CD0 model basis
+
+The clean-airframe coefficient is an estimate, not an Avanti flight measurement matched to local Reynolds number or Mach number. The build-up evaluates skin friction at the 29 m/s start-speed condition (about Mach 0.09), assumes laminar fractions of 0.15 on wing/tails and 0.05 on the fuselage, retains the fixed wing-form-factor Mach multiplier evaluated at M=0.34, uses a tail form factor of 1.12, adds the listed intake/canopy item drag areas, and multiplies the sum by the 1.15 excrescence estimate. These assumptions yield the reported CD0; they are kept visible so the value is not read as a matched-condition measurement.
 
 ## Coefficients written (c_ref = S/b; moments about the ARP = wing-body ac)
 

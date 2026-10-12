@@ -12,7 +12,7 @@
 - L9 has filtered turf and field surfaces. L9e is engineering-verified; L9b's visual review and L9c's perceived stripe shimmer still need acceptance. Near grass is a separate opaque layer with no collision.
 - L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
 - L14 static obstacle contacts now use the shared float64 LU-05 collision world, built from field, scenery and light data. Its inventory includes field-tree trunk/crown proxies and nearby structures, vehicles, parked aircraft, lights and field objects. The [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) records coverage and limits. Proxy sizes, foliage responses and impact thresholds are gameplay estimates, not sourced structural strength; the nearby-query cost gate remains open.
-- L15b tree sway and L15d cloud-shadow rendering are implemented. Their wind integration remains with M5.
+- L15b tree sway and L15d cloud-shadow rendering are implemented. Their physical wind integration remains with M5. Dynamic wind and foliage sound is delivered by [AUD-01…05](AUDIO-PLAN.md), rather than pending L15e work.
 
 The static collision world does not supply a heightfield. Until L12 terrain is implemented, distant visual ridges remain non-colliding. L14's current proxies also do not make trees deform, break or hold a wreck.
 
@@ -23,8 +23,8 @@ The static collision world does not supply a heightfield. Until L12 terrain is i
 | L6c | Owner readability review against trees and near grass. | Numbers and blinded kit are prepared; owner score pending. See [L6c evidence](research/visual-quality-implementation/L6c/README.md). |
 | L9a/b/c | Ground parity, macro variation, field-surface transitions and stripe shimmer. | L9b is implemented with review pending; L9c engineering checks pass but perceptual acceptance is open. L9a remains in the visual sequence. |
 | L11b | Accept or revise the reused bushes and flowers. | Gate SC/readability decision; implementation remains in the scenery layer. |
-| L12a/b/c, L13a/b | Add the float64 terrain sampler, matching near/far mesh and generated relief. | Not implemented. Physics and rendering must share the same grid; do not treat visual hills as physical slopes. |
-| L15a/c/e | Add windsock, grass/bush/flag response and wind sound from M5. | Pending shared wind service and measured visual/audio behavior. |
+| L12a/b/c, L13a/b | Add the larger terrain grid, matching near/far mesh and generated relief. | Not implemented. GP already provides per-wheel float64 micro-relief and matching normal cues; it does not supply a displaced landscape heightfield. Do not treat visual hills as physical slopes. |
+| L15a/c | Extend calibrated windsock, grass/bush/flag response from M5. | Physical cue/advection acceptance remains open; wind/foliage audio is delivered by AUD. |
 | L15b/d | Connect the verified rendering to M5 wind. | Rendering is complete; integration remains open. |
 
 L8 (near 3D tree models), L9d (photo grass), L16–18 (photo sky, owner's field and Terrain3D), and L20 (sky-grid aid) are optional and start only if a gate justifies them. L19's time-of-day work is owned by [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md).

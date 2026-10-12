@@ -1,8 +1,7 @@
 # AV-07: the SebArt Avanti S (A200) with its JetCat P100-RX flown through the real session loop.
-# Two kinds of check: (1) consistency, predictions computed from the aircraft's own data file (trim, roll rate, spool
-# times, glide), which verify the implementation; (2) envelope, ranges taken from the research reports (stall,
-# maximum speed, spool time, inertia window), which contrast the estimate with outside evidence. Neither identifies
-# the airplane: no flight data of an Avanti exists (docs/research/avanti-s-av06-airframe-data.md).
+# Consistency and broad plausibility checks of an experimental model. Model-derived predictions and borrowed
+# research ranges do not identify this aircraft. AV-16 requires complete finite traces through the session callback;
+# its research matrix separately measures flight-path geometry and both-sign responses.
 # Run: godot --headless --path . --script res://tests/test_avanti_handling.gd
 extends SceneTree
 
@@ -13,6 +12,8 @@ const Trim := preload("res://physics/trim.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const Recorder := preload("res://sim/recorder.gd")
+const Trace := preload("res://sim/trace.gd")
 
 const DATA := "res://data/aircraft/sebart_avanti_s_a200.json"
 const ID := "sebart-avanti-s-a200-p100rx"
@@ -31,7 +32,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	var session := FlightSession.new()
-	session.setup(DATA)
+	session.setup(DATA, ID)
 	root.add_child(session)
 	_check("Avanti data loads and trims at its own start speed", session.aircraft.ok and session.start.get("ok", false), "%s %s" % [session.start.get("V", "?"), session.start.get("message", "")])
 	if not session.aircraft.ok or not session.start.get("ok", false):
@@ -70,7 +71,7 @@ func _initialize() -> void:
 
 	var hands_off := func(_t: float, _s: PackedFloat64Array) -> Dictionary: return Maneuvers._hands_off()
 	# Hands-off 30 s at the start: the six-axis trim holds.
-	var hold: RefCounted = Maneuvers.fly(session, { mode = "level", speed = v0, duration = 30.0, sticks = hands_off })
+	var hold: RefCounted = _fly(session, { mode = "level", speed = v0, duration = 30.0, sticks = hands_off })
 	var last: int = hold.row_count() - 1
 	_check("hands-off 30 s: altitude within 2 m, speed within 0.3 m/s, finite", _finite(hold) and absf(hold.value(last, "alt_m") - hold.value(0, "alt_m")) < 2.0 and absf(hold.value(last, "speed_mps") - v0) < 0.3,
 		"Δalt %.4f m, Δspeed %.5f m/s" % [hold.value(last, "alt_m") - hold.value(0, "alt_m"), hold.value(last, "speed_mps") - v0])
@@ -79,7 +80,7 @@ func _initialize() -> void:
 	# data's own schedule (integrated here at the tick); envelope 2–4.5 s (P100 traces and models, AV-05 report).
 	var up := { mode = "level", speed = v0, altitude = 150.0, duration = 6.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
 		return Maneuvers._pulse(t, 0.0, 6.0, { throttle_delta = 1.0 }) }
-	var ut: RefCounted = Maneuvers.fly(session, up)
+	var ut: RefCounted = _fly(session, up)
 	var target := _rpm_for_thrust_fraction(prop, 0.95)
 	var t_flown := _first_time(ut, "engine_rpm", target, dt)
 	var t_predicted := _spool_time(st.rpm, 1.0, target, prop, dt)
@@ -96,7 +97,7 @@ func _initialize() -> void:
 	for v in [v0, 45.0]:
 		var roll := { mode = "level", speed = v, altitude = 150.0, duration = 3.0, sticks = func(t: float, s: PackedFloat64Array) -> Dictionary:
 			return Maneuvers._coordinated(Maneuvers._pulse(t, 0.25, 1.75, { roll = 0.5 }), s) }
-		var tr: RefCounted = Maneuvers.fly(session, roll)
+		var tr: RefCounted = _fly(session, roll)
 		var swing: float = 0.5 * (float(model.controls.throw_rad.aileron) + float(model.controls.throw_rad.aileron_down))
 		var predicted := rad_to_deg(-float(a.Clda_left) * swing / float(a.Clp) * 2.0 * v / float(model.reference.b))
 		var p := rad_to_deg(_max(tr, "p_radps"))
@@ -104,7 +105,7 @@ func _initialize() -> void:
 
 	# Maximum level speed: the trim holds full throttle just below it and needs more than full throttle just above.
 	var vmax := _vmax(model)
-	_check("maximum level speed 60–80 m/s (manual: tested to 250 km/h = 69 m/s)", vmax > 60.0 and vmax < 80.0, "%.1f m/s (%.0f km/h)" % [vmax, vmax * 3.6])
+	_check("predicted maximum level speed 60–80 m/s (model regression, not a safe-speed limit)", vmax > 60.0 and vmax < 80.0, "%.1f m/s (%.0f km/h)" % [vmax, vmax * 3.6])
 
 	# Glide: power-off trim at 21 m/s; L/D in the sport-jet range 8–12 and finite.
 	var gl := Trim.solve("glide", 21.0, model, G, model.controls.throw_rad)
@@ -114,7 +115,7 @@ func _initialize() -> void:
 	# (D − T_idle)·V/m. Measured over 1.5–2.5 s, while the airplane is still near its trimmed state, ± 15 %.
 	var chop := { mode = "level", speed = v0, altitude = 150.0, duration = 2.5, sticks = func(_t: float, _s: PackedFloat64Array) -> Dictionary:
 		return { roll = 0.0, pitch = 0.0, yaw = 0.0, throttle_delta = -1.0 } }
-	var ct: RefCounted = Maneuvers.fly(session, chop)
+	var ct: RefCounted = _fly(session, chop)
 	var r0 := roundi(1.5 / dt)
 	var r1: int = ct.row_count() - 1
 	var e_rate: float = (_energy(ct, r1) - _energy(ct, r0)) / ((r1 - r0) * dt)
@@ -125,27 +126,26 @@ func _initialize() -> void:
 	_check("idle glide energy loss = (D − T_idle)·V/m ± 15 %% (%.1f m²/s³)" % e_pred, absf(e_rate - e_pred) < 0.15 * absf(e_pred) and _finite(ct), "%.1f m²/s³" % e_rate)
 	_check("idle: the clean jet keeps its energy, deceleration-equivalent below 1.5 m/s²", -e_rate / vm < 1.5, "%.2f m/s²" % (-e_rate / vm))
 
-	# Pattern loop: full throttle and 0.25 stick (7.5° of elevator) from 50 m/s (180 km/h) at 150 m; 360° of pitch
-	# within 8 s, never below the 1-g stall. (A hard 0.6 pull from 40 m/s bleeds the energy of a 0.74 thrust/weight jet
-	# and stalls over the top, as on the real airplane with a P100: owners call it marginal.)
+	# Open-loop pitch input from 50 m/s. Integrated body q is a rotation diagnostic, not proof of a planar loop.
+	# Speed above the 1-g estimate does not rule out accelerated stall; AV-16 records independent path geometry.
 	var loop := { mode = "level", speed = 50.0, altitude = 150.0, duration = 8.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
 		return Maneuvers._pulse(t, 0.2, 8.0, { pitch = 0.25, throttle_delta = 1.0 }) }
-	var lt: RefCounted = Maneuvers.fly(session, loop)
+	var lt: RefCounted = _fly(session, loop)
 	var turned := 0.0
 	var loop_time := NAN
 	for r in lt.row_count():
 		turned += float(lt.value(r, "q_radps")) * dt
 		if is_nan(loop_time) and turned >= TAU:
 			loop_time = r * dt
-	_check("pattern loop at 0.25 stick from 50 m/s: 360° within 8 s, finite", turned >= TAU and _finite(lt), "%.0f° (%.1f s)" % [rad_to_deg(turned), loop_time])
-	_check("inside loop: faster than the 1-g stall over the top", _min(lt, "speed_mps", 0.0, loop_time) > _stall_speed(model), "min %.1f m/s (stall %.1f)" % [_min(lt, "speed_mps", 0.0, loop_time), _stall_speed(model)])
+	_check("pitch-input body-q integral exceeds 360° within 8 s, finite", turned >= TAU and _finite(lt), "%.0f° (%.1f s); not loop proof" % [rad_to_deg(turned), loop_time])
+	_check("pitch-input minimum speed exceeds clean 1-g estimate (not an accelerated-stall test)", _min(lt, "speed_mps", 0.0, loop_time) > _stall_speed(model), "min %.1f m/s (1-g estimate %.1f)" % [_min(lt, "speed_mps", 0.0, loop_time), _stall_speed(model)])
 
 	# Clean stall: 1-g stall speed 16–19.5 m/s (aero research: 17.2–17.9 m/s); power-off full up passes the stall start.
 	var vs := _stall_speed(model)
 	_check("clean 1-g stall speed 16–19.5 m/s", vs > 16.0 and vs < 19.5, "%.1f m/s" % vs)
 	var stall := { mode = "glide", speed = 24.0, altitude = 150.0, duration = 4.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
 		return Maneuvers._pulse(t, 0.25, 4.0, { pitch = 1.0 }) }
-	var sl: RefCounted = Maneuvers.fly(session, stall)
+	var sl: RefCounted = _fly(session, stall)
 	var alpha_max := -1e30
 	for r in sl.row_count():
 		alpha_max = maxf(alpha_max, atan2(float(sl.value(r, "w_mps")), float(sl.value(r, "u_mps"))))
@@ -160,7 +160,7 @@ func _initialize() -> void:
 			c = { roll = 0.0, pitch = 0.0, yaw = -1.0, throttle_delta = 0.0 }
 		c.throttle_delta = -1.0
 		return c }
-	var sp: RefCounted = Maneuvers.fly(session, spin)
+	var sp: RefCounted = _fly(session, spin)
 	var alpha_entry := -1e30
 	for r in range(roundi(1.0 / dt), roundi(4.0 / dt)):
 		alpha_entry = maxf(alpha_entry, atan2(float(sp.value(r, "w_mps")), float(sp.value(r, "u_mps"))))
@@ -168,7 +168,7 @@ func _initialize() -> void:
 		"α %.0f°, |ω| %.2f rad/s" % [rad_to_deg(alpha_entry), _max_rate(sp, 1.0, 4.0)])
 	var r_end: int = sp.row_count() - 1
 	var alpha_end := atan2(float(sp.value(r_end, "w_mps")), float(sp.value(r_end, "u_mps")))
-	_check("spin recovery: 2–3 s after recovery α < 10° and |ω| < 0.6 rad/s, finite", absf(alpha_end) < deg_to_rad(10.0) and _max_rate(sp, 7.0, 8.0) < 0.6 and _finite(sp),
+	_check("commanded stall-rotation recovery: terminal α < 10° and |ω| < 0.6 rad/s, finite", absf(alpha_end) < deg_to_rad(10.0) and _max_rate(sp, 7.0, 8.0) < 0.6 and _finite(sp),
 		"α %.1f°, |ω| %.2f rad/s" % [rad_to_deg(alpha_end), _max_rate(sp, 7.0, 8.0)])
 	_check("spin: height lost below 200 m", 300.0 - sp.value(r_end, "alt_m") < 200.0, "%.0f m" % (300.0 - sp.value(r_end, "alt_m")))
 
@@ -176,6 +176,7 @@ func _initialize() -> void:
 	var h := Dynamics.rotor_momentum(model, float(prop.max_rpm))
 	_check("spool angular momentum 0.3–1.0 N·m·s at full rpm (AV-05 estimate 0.56)", absf(h[0]) > 0.3 and absf(h[0]) < 1.0, "%.3f N·m·s" % h[0])
 
+	_check("trace guard rejects an empty trace", not _finite(Trace.new()))
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -231,7 +232,7 @@ func _energy(trace: RefCounted, r: int) -> float:
 func _max_rate(trace: RefCounted, t0: float, t1: float) -> float:
 	var m := 0.0
 	for r in trace.row_count():
-		if r / 240.0 >= t0 and r / 240.0 <= t1:
+		if trace.value(r, "t_s") >= t0 and trace.value(r, "t_s") <= t1:
 			m = maxf(m, sqrt(pow(float(trace.value(r, "p_radps")), 2) + pow(float(trace.value(r, "q_radps")), 2) + pow(float(trace.value(r, "r_radps")), 2)))
 	return m
 
@@ -241,8 +242,10 @@ func _stall_speed(model: Dictionary) -> float:
 
 
 func _finite(trace: RefCounted) -> bool:
+	if trace.row_count() < 2 or not trace.is_continuous():
+		return false
 	for r in trace.row_count():
-		for column in ["alt_m", "speed_mps", "p_radps", "q_radps", "r_radps"]:
+		for column in trace.columns():
 			if not is_finite(trace.value(r, column)):
 				return false
 	return true
@@ -257,17 +260,45 @@ func _max(trace: RefCounted, column: String) -> float:
 
 func _min(trace: RefCounted, column: String, t0: float, t1: float) -> float:
 	var m := 1e30
-	var dt := 1.0 / 240.0
 	for r in trace.row_count():
-		if r * dt >= t0 and (is_nan(t1) or r * dt <= t1):
+		if trace.value(r, "t_s") >= t0 and (is_nan(t1) or trace.value(r, "t_s") <= t1):
 			m = minf(m, trace.value(r, column))
 	return m
 
 
 func _max_abs(trace: RefCounted, column: String, t0: float, t1: float) -> float:
 	var m := 0.0
-	var dt := 1.0 / 240.0
 	for r in trace.row_count():
-		if r * dt >= t0 and r * dt <= t1:
+		if trace.value(r, "t_s") >= t0 and trace.value(r, "t_s") <= t1:
 			m = maxf(m, absf(trace.value(r, column)))
 	return m
+
+
+## AV-16: the full session callback supplies the flat-ground hull check that Maneuvers.fly omits.
+func _fly(session: Node, maneuver: Dictionary) -> RefCounted:
+	session.input_enabled = false
+	var trim: Dictionary = session.trim_at(maneuver.speed, maneuver.mode)
+	_check("maneuver trim succeeds", trim.get("ok", false), str(trim.get("message", "")))
+	if not trim.get("ok", false):
+		return Trace.new()
+	session.set_start_altitude(float(maneuver.get("altitude", 150.0)))
+	session.reset()
+	var rec := Recorder.new(session.sim, session.electrical_state)
+	rec.start(session.trace_meta())
+	var steps := roundi(float(maneuver.duration) / session.sim.dt())
+	for _i in steps:
+		var sticks: Dictionary = maneuver.sticks.call(session.sim.time(), session.sim.state)
+		session.commands = {roll = sticks.roll, pitch = sticks.pitch, yaw = sticks.yaw,
+			throttle = clampf(float(session.start.throttle) + sticks.throttle_delta, 0.0, 1.0)}
+		session.sim.inputs = session._inputs()
+		session._physics_process(session.sim.dt())
+		if not session.crash.is_empty() or not session.sim.fault_reason.is_empty() or session.sim.paused:
+			break
+		session.sim.step()
+	session._physics_process(0.0)
+	rec.detach()
+	_check("maneuver trace complete, continuous and finite; no crash/fault/pause",
+		rec.trace.row_count() == steps + 1 and _finite(rec.trace)
+		and session.crash.is_empty() and session.sim.fault_reason.is_empty() and not session.sim.paused,
+		"%d/%d rows; %s" % [rec.trace.row_count(), steps + 1, session.sim.fault_reason])
+	return rec.trace

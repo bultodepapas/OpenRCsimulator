@@ -69,6 +69,7 @@ static func _flat_quad(k: MeshKit, a: Vector2, b: Vector2, c: Vector2, d: Vector
 
 ## A gravel / dirt / worn patch (render XZ polygon) with a worn-grass ring, so it does not end in a hard line.
 static func patch(k: MeshKit, poly: PackedVector2Array, surface: String, theme: String, seed: int) -> void:
+	var first_vertex := k.verts.size()
 	var worn := Palette.vegetation(Palette.col("worn_grass"), theme)
 	var base: Color = {"gravel": Palette.col("gravel"), "dirt": Palette.col("dirt"), "worn": worn}[surface]
 	var alt: Color = {"gravel": Palette.col("gravel_dark"), "dirt": Palette.col("dirt").darkened(0.12), "worn": worn.darkened(0.1)}[surface]
@@ -78,6 +79,14 @@ static func patch(k: MeshKit, poly: PackedVector2Array, surface: String, theme: 
 		# Start at the apron material, then feather toward the field grass across the worn shoulder.
 		_grid_fill(k, outline, LIFT_WORN, base, base.lerp(worn, 0.28), seed, poly, 0.9, PATCH_FIELD_GRASS_COLOR, 1.0, true, false, true)
 	_grid_fill(k, poly, LIFT_SURFACE, base, alt, seed + 1, poly, 1.15, worn, 0.48, false, surface == "gravel")
+	if surface == "gravel":
+		# LU-12: mask only this patch; shared flat batches may also contain tracks.
+		# Fade the grain through the worn shoulder. No alpha blending or extra draw.
+		for i in range(first_vertex, k.verts.size()):
+			var p := Vector2(k.verts[i].x, k.verts[i].z)
+			var mask := 1.0 if Geometry2D.is_point_in_polygon(p, poly) else 1.0 - smoothstep(0.0, 0.9, _edge_distance(p, poly))
+			k.cols[i].a = 1.0 - 0.5 * mask
+
 
 
 ## Break the outer edge gently, at a bounded fraction of the worn shoulder width.

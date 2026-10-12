@@ -1,14 +1,12 @@
-# README gallery media
+# Presentation media provenance
 
-These are actual Godot renders of the current catalog models, captured from source commit `a6a3abf`. The four aircraft stills and animated tour use a separate studio camera with a neutral three-light setup and dark background. The tour changes the camera angle; it does not represent flown maneuvers. Aircraft geometry, materials and controls are unchanged.
+Status: retained render evidence from source commit `a6a3abf`; these images describe that snapshot, not current flight parameters. The four aircraft stills and animated tour use a separate studio camera with a neutral three-light setup and dark background. The tour changes the camera angle; it does not represent flown maneuvers. Aircraft geometry, materials and controls are unchanged.
 
-`flight.png` is the real application at a fixed 1.5 seconds of trimmed Stik flight, using the close-up camera and production field. Its capture sidecar is `flight.json`.
+`flight.png`, used by the root README, is the real application at a fixed 1.5 seconds of trimmed Stik flight, using the close-up camera and production field. Its capture sidecar is `flight.json`.
 
 `manifest.json` records model bounds, catalog status, engine/renderer, animation dimensions and SHA-256 hashes. The GIF contains 96 frames at 640×360, lasts 10.56 seconds and stays below 2 MB. Four static 960×540 views provide an alternative to the animation. No external stock imagery or generated airplane artwork is used.
 
 ## Reproduce
-
-The three `download-*.svg` files are source-authored platform download buttons for the root README. They use text and a simple download arrow, contain no external fonts/scripts, and are project artwork under the MIT license. Their links and release version live in the README, so the artwork does not need regenerating for a release.
 
 From the repository root on Linux with Xvfb and Mesa:
 
@@ -31,4 +29,4 @@ LP_NUM_THREADS=1 "$(app/tests/visual-env.sh)" app/tests/capture_runner.py \
 
 The packager uses the existing pinned Pillow dependency. Animation frame PNGs remain in the temporary output directory; only the GIF, four stills, flight screenshot and provenance are committed. Refresh this note's source commit when recapturing.
 
-Validation: all four renders inspected; animation decodes with 96 frames; six media hashes match the manifest; README links and images resolve. GitHub's Markdown renderer preserves the gallery tables and collapsible controls/development sections. llvmpipe supplies these captures; they make no hardware-performance claim.
+The original capture review inspected all four aircraft and decoded the 96-frame animation. The six media hashes are recorded in the manifest. The stills and tour retain the earlier catalog presentation; the current README uses the flight image. llvmpipe supplied the captures, which make no hardware-performance claim.

@@ -1,0 +1,50 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Avanti data loads and trims at its own start speed  29.0 trimmed
+ok   data id and turbine propulsion  sebart-avanti-s-a200-p100rx
+ok   ram recovery present: thrust at 70 m/s, full rpm, 85–92 % of static  0.891
+ok   mass: 10.5 kg dry (manual) + half of the 3.2 l tank, 11–12.5 kg  11.76 kg
+ok   span 2.00 m (manual)  
+ok   inertia within the research window (Ixx 0.55–0.90, Iyy 1.9–2.6, Izz 2.9–3.6 kg·m²)  0.621 2.440 2.968
+ok   trim: throttle 5–30 % at the start speed (cruise on little thrust)  8.6 %
+ok   trim: elevator within a quarter of the throw  0.059
+ok   trim: no aileron or rudder (no propeller torque, no slipstream)  0.0 0.0
+ok   trim: rpm = the ECU demand for the trim throttle  92144 rpm
+ok   differential ailerons 30° up / 25° down  30.0 / -25.0
+ok   maneuver trim succeeds  trimmed
+ok   maneuver trace complete, continuous and finite; no crash/fault/pause  7201/7201 rows; 
+ok   hands-off 30 s: altitude within 2 m, speed within 0.3 m/s, finite  Δalt 0.0000 m, Δspeed -0.00000 m/s
+ok   maneuver trim succeeds  trimmed
+ok   maneuver trace complete, continuous and finite; no crash/fault/pause  1441/1441 rows; 
+ok   spool-up in flight follows the data's schedule (95 % thrust at 1.75 s)  1.746 s
+ok   spool-up idle → 95 % thrust within 2–4.5 s (P100 evidence)  3.60 s
+ok   thrust lags the throttle: speed gain in the first 0.5 s below 1 m/s  0.28 m/s
+ok   spool-down max → 5 % thrust faster than spool-up, within 0.8–2.5 s  1.61 s
+ok   maneuver trim succeeds  trimmed
+ok   maneuver trace complete, continuous and finite; no crash/fault/pause  721/721 rows; 
+ok   coordinated roll, D/R 50 % at 29 m/s: 188°/s ± 7 % (single-axis prediction)  188.4°/s
+ok   maneuver trim succeeds  trimmed
+ok   maneuver trace complete, continuous and finite; no crash/fault/pause  721/721 rows; 
+ok   coordinated roll, D/R 50 % at 45 m/s: 292°/s ± 7 % (single-axis prediction)  281.6°/s
+ok   predicted maximum level speed 60–80 m/s (model regression, not a safe-speed limit)  73.3 m/s (264 km/h)
+ok   power-off glide trims; L/D 8–12  L/D 9.34
+ok   maneuver trim succeeds  trimmed
+ok   maneuver trace complete, continuous and finite; no crash/fault/pause  601/601 rows; 
+ok   idle glide energy loss = (D − T_idle)·V/m ± 15 % (-31.8 m²/s³)  -30.5 m²/s³
+ok   idle: the clean jet keeps its energy, deceleration-equivalent below 1.5 m/s²  1.11 m/s²
+ok   maneuver trim succeeds  trimmed
+ok   maneuver trace complete, continuous and finite; no crash/fault/pause  1921/1921 rows; 
+ok   pitch-input body-q integral exceeds 360° within 8 s, finite  438° (6.0 s); not loop proof
+ok   pitch-input minimum speed exceeds clean 1-g estimate (not an accelerated-stall test)  min 32.1 m/s (1-g estimate 17.8)
+ok   clean 1-g stall speed 16–19.5 m/s  17.8 m/s
+ok   maneuver trim succeeds  trimmed
+ok   maneuver trace complete, continuous and finite; no crash/fault/pause  961/961 rows; 
+ok   full-up power-off: α passes the stall start, finite  α max 79.3° (stall start 10.3°)
+ok   maneuver trim succeeds  trimmed
+ok   maneuver trace complete, continuous and finite; no crash/fault/pause  1921/1921 rows; 
+ok   spin entry: deeply stalled and rotating (α > 25°, |ω| > 0.7 rad/s)  α 67°, |ω| 1.39 rad/s
+ok   commanded stall-rotation recovery: terminal α < 10° and |ω| < 0.6 rad/s, finite  α 4.2°, |ω| 0.44 rad/s
+ok   spin: height lost below 200 m  136 m
+ok   spool angular momentum 0.3–1.0 N·m·s at full rpm (AV-05 estimate 0.56)  0.564 N·m·s
+ok   trace guard rejects an empty trace  
+47 checks, 0 failed

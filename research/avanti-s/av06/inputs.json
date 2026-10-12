@@ -23,7 +23,7 @@
    "value": 0.24,
    "unit": "m",
    "kind": "manual",
-   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); photo-manual p.91 step 181"
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); the manual gives no fuel-state qualifier, and this model's half-tank state is separately declared under fuel.fraction; photo-manual p.91 step 181"
   },
   "mass_range": {
    "value": [
@@ -446,67 +446,132 @@
    "position_source": "forward fuselage"
   },
   {
-   "name": "aileron servos (2)",
+   "name": "aileron servo left",
    "mass": {
-    "value": 0.13,
+    "value": 0.065,
     "unit": "kg",
-    "kind": "manual",
-    "source": "JR DS8411 ~65 g each (manual p.2 servo list)"
+    "kind": "estimated",
+    "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
    },
    "position_model": [
     0.35,
     0.0,
-    0.0
+    -0.75
    ],
    "position_kind": "estimated",
-   "position_source": "mid-aileron, y +-0.75",
+   "position_source": "mid-aileron, lateral center y -0.75 m from the centerline",
    "size": [
     0.03,
-    1.5,
+    0.03,
     0.03
    ],
    "attached": "wing"
   },
   {
-   "name": "flap servos (2)",
+   "name": "aileron servo right",
    "mass": {
-    "value": 0.15,
+    "value": 0.065,
     "unit": "kg",
-    "kind": "manual",
-    "source": "JR DS8911 ~75 g each (manual p.2)"
+    "kind": "estimated",
+    "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+   },
+   "position_model": [
+    0.35,
+    0.0,
+    0.75
+   ],
+   "position_kind": "estimated",
+   "position_source": "mid-aileron, lateral center y +0.75 m from the centerline",
+   "size": [
+    0.03,
+    0.03,
+    0.03
+   ],
+   "attached": "wing"
+  },
+  {
+   "name": "flap servo left",
+   "mass": {
+    "value": 0.075,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "Approx. 75 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8911 model but gives no servo mass"
    },
    "position_model": [
     0.33,
     0.0,
-    0.0
+    -0.35
    ],
    "position_kind": "estimated",
-   "position_source": "mid-flap, y +-0.35",
+   "position_source": "mid-flap, lateral center y -0.35 m from the centerline",
    "size": [
     0.03,
-    0.7,
+    0.03,
     0.03
    ],
    "attached": "wing"
   },
   {
-   "name": "elevator servos (2)",
+   "name": "flap servo right",
    "mass": {
-    "value": 0.13,
+    "value": 0.075,
     "unit": "kg",
-    "kind": "manual",
-    "source": "JR DS8411 ~65 g each (manual p.2)"
+    "kind": "estimated",
+    "source": "Approx. 75 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8911 model but gives no servo mass"
+   },
+   "position_model": [
+    0.33,
+    0.0,
+    0.35
+   ],
+   "position_kind": "estimated",
+   "position_source": "mid-flap, lateral center y +0.35 m from the centerline",
+   "size": [
+    0.03,
+    0.03,
+    0.03
+   ],
+   "attached": "wing"
+  },
+  {
+   "name": "elevator servo left",
+   "mass": {
+    "value": 0.065,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
    },
    "position_model": [
     0.95,
     0.06,
-    0.0
+    -0.125
    ],
    "position_kind": "estimated",
-   "position_source": "stab roots",
+   "position_source": "stab-root servo, lateral center y -0.125 m from the centerline",
    "size": [
     0.03,
-    0.25,
+    0.03,
+    0.03
+   ]
+  },
+  {
+   "name": "elevator servo right",
+   "mass": {
+    "value": 0.065,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
+   },
+   "position_model": [
+    0.95,
+    0.06,
+    0.125
+   ],
+   "position_kind": "estimated",
+   "position_source": "stab-root servo, lateral center y +0.125 m from the centerline",
+   "size": [
+    0.03,
+    0.03,
     0.03
    ]
   },
@@ -515,8 +580,8 @@
    "mass": {
     "value": 0.075,
     "unit": "kg",
-    "kind": "manual",
-    "source": "JR DS8911 ~75 g (manual p.2)"
+    "kind": "estimated",
+    "source": "Approx. 75 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8911 model but gives no servo mass"
    },
    "position_model": [
     0.85,
@@ -531,8 +596,8 @@
    "mass": {
     "value": 0.065,
     "unit": "kg",
-    "kind": "manual",
-    "source": "JR DS8411 ~65 g (manual p.2)"
+    "kind": "estimated",
+    "source": "Approx. 65 g per unit is a modeling estimate; the SebArt manual p.2 lists the DS8411 model but gives no servo mass"
    },
    "position_model": [
     -0.62,
@@ -761,7 +826,7 @@
    ],
    "unit": "rpm, kg/s",
    "kind": "estimated",
-   "source": "linear in thrust between the catalog's 80 and 390 ml/min at 0.80 kg/l (the catalog's own kg/min); telemetry only; docs/research/avanti-s-av05-turbine-dynamics.md section 2"
+   "source": "linear-in-thrust estimate from the catalog's 80 and 390 ml/min at 0.80 kg/l endpoints; retained for planned AV-10 fuel burn, with no current runtime consumer; docs/research/avanti-s-av05-turbine-dynamics.md section 2"
   },
   "throttle_map": {
    "value": [
@@ -860,7 +925,7 @@
    "value": 0.4,
    "unit": "s",
    "kind": "measured",
-   "source": "P100 small-signal corner ~0.4 Hz from multi-sine tests (tau ~0.4 s); docs/research/avanti-s-av05-turbine-dynamics.md section 4"
+   "source": "P100 local small-signal throttle-to-thrust corner near 0.4 Hz in multi-sine tests; tau = 1/(2 pi fc) = 0.398 s, rounded to 0.4 s. Applied as an RPM-governor lag through the assumed static throttle-to-RPM map; not a universal ECU step response (Many et al., DGLR 550281 sec. 3; docs/research/avanti-s-av05-turbine-dynamics.md section 4)"
   },
   "installed_factor": {
    "value": 0.92,

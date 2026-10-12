@@ -1,6 +1,6 @@
 # Avanti S turbine jet: plan
 
-2026-10-12 · Revision 6 · **Status: the Avanti S flies in the catalog as experimental. The visual blockout and commanded-surface rig are integrated; planform metrology, turbine presentation, flap/gear simulation, fuel burn, independent validation and delivery remain open.**
+2026-10-12 · Revision 7 · **Status: AV-14 audit and implementation plan reviewed before code changes; AV-15…17 corrections and verification in progress. The catalog aircraft remains experimental. Planform metrology, turbine presentation, flap/gear simulation, fuel burn, independent validation and delivery remain open.**
 
 Step-ID prefix `AV-`. Owned paths: `assets/aircraft/avanti-s-a200/`, `app/aircraft/avanti_s_*`, `app/aircraft/verify_avanti.gd`, `app/physics/turbine.gd`, `app/data/aircraft/sebart_avanti_s_a200.json` (generated), `app/tests/test_turbine.gd`, `app/tests/test_avanti_handling.gd`, `research/avanti-s/`, `docs/research/avanti-s-*`.
 
@@ -43,3 +43,42 @@ The geometry is a photo blockout (wing 0.702 m², no published area); the neutra
 ## 5. Next actions
 
 Keep AV-01 geometry provisional until calibrated A200 planform, tail and equipment locations are available. Coordinate AV-09's flap/gear input and aerodynamics with the physics and input owners; the current `set_flaps()` method only poses the visual hinges. AV-10 fuel burn, AV-05b ECU states, AV-08 sound/finish, independent physical validation (AV-11), and clean export acceptance (AV-12) remain separate steps.
+
+## 6. AV-14…17 realism investigation and correction
+
+Written before implementation. The user's focus is the Avanti's complete RC flight behavior. Baseline `8b2020f4cc929bec62585deeea0d356b7c8af9df`, pinned Godot 4.7.2: 30 handling and 27 turbine checks pass. The app snapshot and sources are frozen independently of concurrent landscape/docs/validation work. Evidence lives in `docs/research/avanti-realism/AV-14/`; reproducible tools belong in `research/avanti-s/av14/`.
+
+### Ownership and architecture
+
+The lead owns integration, this plan, the evidence/tools, bounded AV-06 source/data corrections and Avanti test changes. Three Luna/max audits cover airframe/primary sources, turbine/consumers, and controls/lifecycle/coverage, with separate report files. Contributions require lead review. Existing model/render, shared propulsion, input, crash and scenery owners retain their paths; no external owner acknowledgement is implied. Inspect shared-file status before edits. No production change starts until the audit findings and this plan are reviewed.
+
+Retain the v2 contract, source generator, float64 session state and existing hinges. Correct demonstrated equations or provenance through the authored source; derive dependent quantities together. Keep uncertainty explicit instead of inventing measured Avanti behavior. The original A200/P100-RX identity excludes EDF, XS, Krill and BL data. No new aircraft-ID physics branch, guessed drag limiter, hidden stability assistance or partially active gear/flap module.
+
+### Audit findings and decisions to verify
+
+| Area | Evidence / decision |
+| --- | --- |
+| Tail mass placement | AV-06's exposed-tail area filter reuses `_` as the tuple's height while moments filter span; it includes the concealed center strip. Correct the domain consistently and independently integrate an analytic fixture. Current mass centroid is 0.8668 m aft; the consistent exposed-panel calculation gives 1.0146 m. Recompute virtual balance/inertia and disclose the resulting mass change. |
+| Swept planform reference | MAC length correctly uses chord squared, but its leading-edge station also uses chord squared rather than area weighting. Review the geometric/constant-section-lift definition with independent trapezoid moments; distinguish it from a measured finite-wing aerodynamic center. Preserve the declared stability anchor, exposing its uncertainty. |
+| Inventory | Paired aileron/flap/elevator servos span empty space as uniform boxes. Separate estimated hardware centers and local envelopes, retaining pair masses and longitudinal/vertical assumptions. Main gear is already separated. Unknown battery/electronics distribution remains an explicit approximation. |
+| Propulsion and environment | Audit thrust/rpm tables, ECU demand, acceleration/deceleration, installed loss, ram drag/normal force, gyro signs, atmosphere and off-state consumers. Keep identified-vs-borrowed-vs-estimated evidence distinct. Add sensitivity evidence before any numerical retuning. |
+| Controls and aero | Review differential throws, normalized servo time, trim saturation, damping, all-axis/both-sign response, high/normal rates, glide/climb, stalls/spins and inverted behavior. Manual radio expo is not a measured aerodynamic parameter or an instruction to apply expo twice. |
+| Lifecycle / ground | Existing handling uses `Maneuvers.fly()` and skips session crash checks. Add Avanti-specific full-session test/probe coverage, reset/fault/finite/trace completion guards, replay and deliberate hull impact. Gear/flaps are inactive; proper takeoff, landing and braking remain unimplemented. Probe approach energy and supported terrain/crash behavior without claiming gear-down landing acceptance. |
+| Performance claims | Existing loop check integrates body pitch rate; that alone cannot prove a planar loop. Predicted level maximum exceeds the manual's 250 km/h tested-speed guidance; it is not a validated structural or operational envelope. No unsupported flutter/breakup model will be fabricated. |
+
+### Phases and measurable acceptance
+
+| ID | Work | Acceptance |
+| --- | --- | --- |
+| AV-14 | Trace source → loader → control/force/animation/lifecycle consumers; verify primary sources and baseline | Three reviewed audits, dated primary URLs and variant/loading limits, baseline hashes/logs. Identify every changed input's consumer and separate unsupported systems from valid zero states. |
+| AV-15 | Correct confirmed geometry/inventory/provenance defects in generator/inputs | Analytic area/first-moment fixture independent of implementation; paired-mass/tensor oracle and physical principal moments; generator `--check`; strict v2 Godot validation. Document each intentional numerical delta and unchanged assumptions; never compensate with arbitrary coefficient tuning. |
+| AV-16 | Full flight, propulsion and lifecycle probes | Same baseline/candidate matrix at 240/480 Hz: multiple trim speeds, normal/high all-axis both signs, turbine step/idle energy/go-around input, glide/approach, guided turns/slips, stall/commanded recovery, pitch-loop inputs, inverted trim, wind/density. Require expected rows, continuous finite state, no unintended crash/fault, exact checkpoint/restart. Use ≤1% selected steady and ≤5% selected smooth refinement bands; report nonlinear events and unmatched stochastic realizations individually. Define any geometric loop proof explicitly. |
+| AV-17 | Integration and cost | Avanti/turbine tests, all four model contracts, affected shared checks and `app/test.sh` in an isolated LF checkout; reproduce unrelated failures on baseline. Same-host alternating trim/stalled timing, investigate repeatable >5% regression. Final source/hash/link review; results and remaining physical gaps in the evidence entry point. |
+
+### Risks and research basis
+
+Pre-code review completed 2026-10-12: the lead reviewed all three audit findings. Adopt the consistent exposed-tail domain, area-weighted geometric MAC leading-edge station, and separated servo pairs at the existing estimated lateral centers (±0.75/0.35/0.125 m), with 0.03 m local envelopes. Preserve the stability anchor and all turbine numerical schedules. Qualify the 0.4 s governor provenance as a local small-signal equivalent; do not add a turbine spool reaction moment without an open-system angular-momentum balance. Correct the fuel sensitivity table so a fixed build changes fuel without secretly rebalancing hardware. The manual leaves CG fuel loading unspecified. Root owns handling-test/runner integration and comment-only turbine clarification; the airframe agent owns AV-06 generator/inputs and an independent geometry/inertia oracle; propulsion owns the sensitivity tool/oracle; coverage owns only the two AV-14 flight/lifecycle probes. Reviewed reports: [airframe](research/avanti-realism/AV-14/airframe-audit.md), [propulsion](research/avanti-realism/AV-14/propulsion-audit.md), [coverage](research/avanti-realism/AV-14/coverage-audit.md).
+
+Changing estimated mass distribution and aerodynamic reference stations can alter nonlinear stall/rotation even when CG is held. The neutral-point anchor, airfoil/polar, 8% installed thrust loss, throttle law and spool schedules are not matched-build flight identification. Fuel loading at the manual CG is not specified; other Avanti variants do not resolve it. A scenario's controller can conceal stability problems, so include open-loop cases and record input clipping. Rendering, real-radio handling and low-end-machine acceptance require separate evidence.
+
+Primary starting references: [SebArt original A200 manual](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf), [JetCat 2017 catalog](https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf), [P100 identification, Many et al.](https://www.dglr.de/publikationen/2022/550281.pdf), [NASA momentum thrust equation](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/thrust-force/), [NASA NDARC geometry, pp. 128–130](https://rotorcraft.arc.nasa.gov/Publications/files/Johnson_1085_TN21612_NASA%20TP-2009-215402-app7.pdf). The latter distinguishes geometric MAC from the lift-weighted aerodynamic center; the actual swept-wing loading remains modeled. Source-specific findings and proposed corrections are retained in the AV-14 audits before implementation.

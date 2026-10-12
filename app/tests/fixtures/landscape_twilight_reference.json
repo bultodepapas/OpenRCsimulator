@@ -1,0 +1,1335 @@
+{
+  "engine": "4.7.2-stable (official)",
+  "rows": [
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": -25.0
+        }
+      },
+      "state": {
+        "adapt_y": 4.35486850943956e-08,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          2.57689478644352e-08,
+          2.96204358818386e-08,
+          3.22999049728878e-08
+        ],
+        "cloud_lin": [
+          8.87923157222303e-09,
+          9.0466123481292e-09,
+          9.30110832797482e-09
+        ],
+        "exposure": 90000.0,
+        "gain": 150000.0,
+        "haze_lin": [
+          2.92039210592066e-08,
+          3.84075597992251e-08,
+          4.2343657469246e-08
+        ],
+        "light_color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "light_dir": [
+          -0.640856385231018,
+          -0.422618269920349,
+          0.640856385231018
+        ],
+        "light_elevation_deg": -25.0,
+        "light_energy": 0.0,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.0176862939750845,
+        "lobe_k": 39.8631,
+        "lobe_lin": [
+          1.18007079802362e-12,
+          1.39132967842161e-13,
+          1.04915677721592e-14
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.640856385231018,
+          -0.422618269920349,
+          0.640856385231018
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": -25.0,
+        "tonemapper": "agx",
+        "zenith_lin": [
+          3.80926890031219e-09,
+          6.92158064197201e-09,
+          1.45885321600758e-08
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "hFrdMgdw/jIfugoz",
+        "cloud_lin": "RosYMmxrGzK1yh8y",
+        "haze_lin": "Gtz6Mo/1JDNY3TUz",
+        "light_dir": "Kg8kv2xh2L4qDyQ/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "iBSmK1mmHCrR/zwo",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "Kg8kv2xh2L4qDyQ/",
+        "zenith_lin": "r+KCMd7S7TELoXoy"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": -12.0
+        }
+      },
+      "state": {
+        "adapt_y": 2.88747236158763e-05,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          3.35291417741246e-07,
+          7.40944443577973e-08,
+          1.0561327457026e-07
+        ],
+        "cloud_lin": [
+          1.97505428900513e-07,
+          2.01228559149058e-07,
+          2.06889453124859e-07
+        ],
+        "exposure": 5524.06424825925,
+        "gain": 9206.77374709875,
+        "haze_lin": [
+          1.97219108599711e-07,
+          4.34102851443186e-08,
+          4.23514840974804e-08
+        ],
+        "light_color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "light_dir": [
+          -0.691654801368713,
+          -0.207911685109138,
+          0.691654801368713
+        ],
+        "light_elevation_deg": -12.0,
+        "light_energy": 0.0,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.0545057598751569,
+        "lobe_k": 7.71332,
+        "lobe_lin": [
+          0.000191141953109764,
+          2.31006670219358e-05,
+          1.88217677532521e-06
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.691654801368713,
+          -0.207911685109138,
+          0.691654801368713
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": -12.0,
+        "tonemapper": "agx",
+        "zenith_lin": [
+          3.23713578609386e-07,
+          9.63113251373215e-08,
+          1.91854979902928e-07
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "GgK0NNodnzODzeIz",
+        "cloud_lin": "4RFUNEkRWDRXJV40",
+        "haze_lin": "LcNTNB1yOjPz5TUz",
+        "light_dir": "ShAxv83mVL5KEDE/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "R21IOU7IwTcan/w1",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "ShAxv83mVL5KEDE/",
+        "zenith_lin": "28qtNLbTzjOyAE40"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": -10.0
+        }
+      },
+      "state": {
+        "adapt_y": 0.000185063960999869,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          2.61179820881807e-06,
+          5.02019872783421e-07,
+          1.01820967302046e-06
+        ],
+        "cloud_lin": [
+          1.6187034361792e-06,
+          1.6492173244842e-06,
+          1.69561258189788e-06
+        ],
+        "exposure": 1160.22801141306,
+        "gain": 1933.7133523551,
+        "haze_lin": [
+          1.78909886017209e-06,
+          1.5713581547061e-07,
+          4.41783214455427e-08
+        ],
+        "light_color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "light_dir": [
+          -0.696364283561707,
+          -0.173648193478584,
+          0.696364283561707
+        ],
+        "light_elevation_deg": -10.0,
+        "light_energy": 0.0,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.0517355732863915,
+        "lobe_k": 4.91329,
+        "lobe_lin": [
+          0.00112238363362849,
+          0.000177510708454065,
+          1.49226525536506e-05
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.696364283561707,
+          -0.173648193478584,
+          0.696364283561707
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": -10.0,
+        "tonemapper": "agx",
+        "zenith_lin": [
+          2.1423604721349e-06,
+          8.58027931371907e-07,
+          2.39585324379732e-06
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "WkYvNovCBjVrqYg1",
+        "cloud_lin": "OkLZNa1a3TXOlOM1",
+        "haze_lin": "+CDwNSq5KDSUvj0z",
+        "light_dir": "7kQyv9XQMb7uRDI/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "8hyTOisiOjlOXHo3",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "7kQyv9XQMb7uRDI/",
+        "zenith_lin": "ecUPNjtTZjVyyCA2"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": -8.0
+        }
+      },
+      "state": {
+        "adapt_y": 0.000806353001172647,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          1.92784918908728e-05,
+          5.97242978983559e-06,
+          1.16893170343246e-05
+        ],
+        "cloud_lin": [
+          8.96175424713874e-06,
+          9.13069015950896e-06,
+          9.38755147217307e-06
+        ],
+        "exposure": 336.986520665229,
+        "gain": 561.644201108715,
+        "haze_lin": [
+          1.66391546372324e-05,
+          5.38704807695467e-06,
+          8.84550445334753e-06
+        ],
+        "light_color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "light_dir": [
+          -0.700225293636322,
+          -0.139173105359077,
+          0.700225293636322
+        ],
+        "light_elevation_deg": -8.0,
+        "light_energy": 0.0,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.0811736927139295,
+        "lobe_k": 3.49769,
+        "lobe_lin": [
+          0.00478131277486682,
+          0.000784190255217254,
+          7.66562880016863e-05
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.700225293636322,
+          -0.139173105359077,
+          0.700225293636322
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": -8.0,
+        "tonemapper": "agx",
+        "zenith_lin": [
+          1.06635316114989e-05,
+          4.93133393320022e-06,
+          1.49975430758786e-05
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "P7ihN8hmyDY8HUQ3",
+        "cloud_lin": "cVoWNwQwGTc6fx03",
+        "haze_lin": "UJSLN2TCtDYnZxQ3",
+        "light_dir": "90Ezv2WDDr73QTM/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "j6ycOx6STTqIwqA4",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "90Ezv2WDDr73QTM/",
+        "zenith_lin": "hecyN9Z3pTb1nXs3"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": -4.0
+        }
+      },
+      "state": {
+        "adapt_y": 0.0110901920762146,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.00162447814363986,
+          0.000787982542533427,
+          0.00138941511977464
+        ],
+        "cloud_lin": [
+          0.00139883009251207,
+          0.00142519909422845,
+          0.001465292298235
+        ],
+        "exposure": 37.2687551012516,
+        "gain": 62.1145918354194,
+        "haze_lin": [
+          0.00089998816838488,
+          0.00058527902001515,
+          0.00111045211087912
+        ],
+        "light_color": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "light_dir": [
+          -0.705384314060211,
+          -0.0697564706206322,
+          0.705384314060211
+        ],
+        "light_elevation_deg": -4.0,
+        "light_energy": 0.0,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.220276259564952,
+        "lobe_k": 1.93553,
+        "lobe_lin": [
+          0.0510705597698689,
+          0.0107579892501235,
+          0.00140836939681321
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.705384314060211,
+          -0.0697564706206322,
+          0.705384314060211
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": -4.0,
+        "tonemapper": "agx",
+        "zenith_lin": [
+          0.00165168335661292,
+          0.000838829029817134,
+          0.00169404980260879
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "cezUOp2QTjoJHbY6",
+        "cloud_lin": "81i3Or/NujoND8A6",
+        "haze_lin": "L+1rOmltGTqXjJE6",
+        "light_dir": "EZQ0v3vcjr0RlDQ/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "XS9RPUdCMDwJmbg6",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "EZQ0v3vcjr0RlDQ/",
+        "zenith_lin": "TH3YOt3kWzrhCt46"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": 0.5
+        }
+      },
+      "state": {
+        "adapt_y": 0.397034257166393,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.155965834856033,
+          0.0396774336695671,
+          0.0260219182819128
+        ],
+        "cloud_lin": [
+          0.229748666286469,
+          0.0696916803717613,
+          0.0320233665406704
+        ],
+        "exposure": 1.84534766501319,
+        "gain": 3.07557944168865,
+        "haze_lin": [
+          0.175921365618706,
+          0.043653666973114,
+          0.0213593281805515
+        ],
+        "light_color": [
+          1.0,
+          0.380191087722778,
+          0.0214302856475115,
+          1.0
+        ],
+        "light_dir": [
+          -0.707079887390137,
+          0.00872653629630804,
+          0.707079887390137
+        ],
+        "light_elevation_deg": 0.5,
+        "light_energy": 0.183206543326378,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.0850486727192073,
+        "lobe_k": 6.47275,
+        "lobe_lin": [
+          1.79063677787781,
+          0.31623312830925,
+          0.0158831384032965
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.707079887390137,
+          0.00872653629630804,
+          0.707079887390137
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": 0.5,
+        "tonemapper": "aces",
+        "zenith_lin": [
+          0.0243073031306267,
+          0.0209632162004709,
+          0.0308842975646257
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "grUfPs6EIj3rK9U8",
+        "cloud_lin": "PENrPoO6jj3vKgM9",
+        "haze_lin": "uyQ0PjDOMj3C+a48",
+        "light_dir": "MAM1v7/5DjwwAzU/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "ljPlP0/poT5bHYI8",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "MAM1v7/5DjwwAzU/",
+        "zenith_lin": "HCDHPA27qzwRAf08"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": 4.0
+        }
+      },
+      "state": {
+        "adapt_y": 1.15852718565562,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.394385188817978,
+          0.220069482922554,
+          0.103314429521561
+        ],
+        "cloud_lin": [
+          0.490887969732285,
+          0.282150417566299,
+          0.134465619921684
+        ],
+        "exposure": 0.750606758729502,
+        "gain": 1.25101126454917,
+        "haze_lin": [
+          0.461134552955627,
+          0.288239419460297,
+          0.115389831364155
+        ],
+        "light_color": [
+          1.0,
+          0.639452755451202,
+          0.295873075723648,
+          1.0
+        ],
+        "light_dir": [
+          -0.705384314060211,
+          0.0697564706206322,
+          0.705384314060211
+        ],
+        "light_elevation_deg": 4.0,
+        "light_energy": 0.531360507011414,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.0923773102483315,
+        "lobe_k": 13.6182,
+        "lobe_lin": [
+          3.31224393844604,
+          1.18086731433868,
+          0.18710295855999
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.705384314060211,
+          0.0697564706206322,
+          0.705384314060211
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": 4.0,
+        "tonemapper": "aces",
+        "zenith_lin": [
+          0.0370322503149509,
+          0.0470978990197182,
+          0.0767386481165886
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "2+zJPuVZYT6EltM9",
+        "cloud_lin": "q1X7PgV2kD5bsQk+",
+        "haze_lin": "1BnsPh6Ukz6BUew9",
+        "light_dir": "EZQ0v3vcjj0RlDQ/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "zvtTQKkmlz/rlz8+",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "EZQ0v3vcjj0RlDQ/",
+        "zenith_lin": "Ia8XPbrpQD0nKZ09"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": 6.0
+        }
+      },
+      "state": {
+        "adapt_y": 1.41340095868686,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.462873846292496,
+          0.317155599594116,
+          0.176312237977982
+        ],
+        "cloud_lin": [
+          0.574683606624603,
+          0.389172583818436,
+          0.225362792611122
+        ],
+        "exposure": 0.635141927553746,
+        "gain": 1.05856987925624,
+        "haze_lin": [
+          0.542906761169434,
+          0.421777188777924,
+          0.216350600123405
+        ],
+        "light_color": [
+          1.0,
+          0.711055219173431,
+          0.416583269834518,
+          1.0
+        ],
+        "light_dir": [
+          -0.703233182430267,
+          0.104528464376926,
+          0.703233182430267
+        ],
+        "light_elevation_deg": 6.0,
+        "light_energy": 0.644415020942688,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.106538039134387,
+        "lobe_k": 39.8631,
+        "lobe_lin": [
+          3.35952496528625,
+          1.44406867027283,
+          0.334058701992035
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.703233182430267,
+          0.104528464376926,
+          0.703233182430267
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": 6.0,
+        "tonemapper": "aces",
+        "zenith_lin": [
+          0.0409253686666489,
+          0.0583090372383595,
+          0.101812638342381
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "zf3sPjhioj4yizQ+",
+        "cloud_lin": "dx4TP6FBxz6BxWY+",
+        "haze_lin": "8PsKPy7z1z4Di10+",
+        "light_dir": "Fwc0vwUT1j0XBzQ/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "dQJXQD7XuD++Cas+",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "Fwc0vwUT1j0XBzQ/",
+        "zenith_lin": "XKEnPXXVbj0lg9A9"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": 10.0
+        }
+      },
+      "state": {
+        "adapt_y": 1.55225901131606,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.535057425498962,
+          0.452790379524231,
+          0.319317132234573
+        ],
+        "cloud_lin": [
+          0.674983739852905,
+          0.542272388935089,
+          0.396116018295288
+        ],
+        "exposure": 0.6,
+        "gain": 1.0,
+        "haze_lin": [
+          0.628542840480804,
+          0.608409881591797,
+          0.420613795518875
+        ],
+        "light_color": [
+          1.0,
+          0.790792763233185,
+          0.56972461938858,
+          1.0
+        ],
+        "light_dir": [
+          -0.696364283561707,
+          0.173648193478584,
+          0.696364283561707
+        ],
+        "light_elevation_deg": 10.0,
+        "light_energy": 0.777914106845856,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.162464322487743,
+        "lobe_k": 39.8631,
+        "lobe_lin": [
+          2.6329140663147,
+          1.38493549823761,
+          0.467972278594971
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.696364283561707,
+          0.173648193478584,
+          0.696364283561707
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": 10.0,
+        "tonemapper": "aces",
+        "zenith_lin": [
+          0.0458500161767006,
+          0.0738623961806297,
+          0.141216233372688
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "hvkIPyTU5z6JfaM+",
+        "cloud_lin": "vMssP13SCj+4z8o+",
+        "haze_lin": "L+ggP8DAGz+xWtc+",
+        "light_dir": "7kQyv9XQMT7uRDI/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "qoEoQJFFsT8Qmu8+",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "7kQyv9XQMT7uRDI/",
+        "zenith_lin": "Os07PStFlz39mhA+"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": 12.0
+        }
+      },
+      "state": {
+        "adapt_y": 1.53276228997444,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.554029881954193,
+          0.497538626194,
+          0.378507345914841
+        ],
+        "cloud_lin": [
+          0.706861555576324,
+          0.596181273460388,
+          0.466442614793777
+        ],
+        "exposure": 0.6,
+        "gain": 1.0,
+        "haze_lin": [
+          0.650714457035065,
+          0.669643998146057,
+          0.505897462368011
+        ],
+        "light_color": [
+          1.0,
+          0.814619898796082,
+          0.619104206562042,
+          1.0
+        ],
+        "light_dir": [
+          -0.691654801368713,
+          0.207911685109138,
+          0.691654801368713
+        ],
+        "light_elevation_deg": 12.0,
+        "light_energy": 0.819372534751892,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 0.215073433064757,
+        "lobe_k": 39.8631,
+        "lobe_lin": [
+          2.1809253692627,
+          1.21730053424835,
+          0.457094937562943
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.691654801368713,
+          0.207911685109138,
+          0.691654801368713
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": 12.0,
+        "tonemapper": "aces",
+        "zenith_lin": [
+          0.0476493798196316,
+          0.0795024707913399,
+          0.156417861580849
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "59QNP2K9/j63y8E+",
+        "cloud_lin": "4fQ0P1afGD+R0e4+",
+        "haze_lin": "OZUmP8ptKz9/ggE/",
+        "light_dir": "ShAxv83mVD5KEDE/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "SJQLQIHQmz9ZCOo+",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "ShAxv83mVD5KEDE/",
+        "zenith_lin": "/ytDPTHSoj0BLCA+"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": 25.0
+        }
+      },
+      "state": {
+        "adapt_y": 1.40926311716533,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.578765153884888,
+          0.613996803760529,
+          0.588946580886841
+        ],
+        "cloud_lin": [
+          0.812224507331848,
+          0.783867657184601,
+          0.744383037090302
+        ],
+        "exposure": 0.636708065191503,
+        "gain": 1.06118010865251,
+        "haze_lin": [
+          0.674678444862366,
+          0.822089314460754,
+          0.801769554615021
+        ],
+        "light_color": [
+          1.0,
+          0.883835434913635,
+          0.772215127944946,
+          1.0
+        ],
+        "light_dir": [
+          -0.640856385231018,
+          0.422618269920349,
+          0.640856385231018
+        ],
+        "light_elevation_deg": 25.0,
+        "light_energy": 0.944074153900146,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 1.42571059673511,
+        "lobe_k": 39.8631,
+        "lobe_lin": [
+          0.560909509658813,
+          0.374523162841797,
+          0.190829291939735
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.640856385231018,
+          0.422618269920349,
+          0.640856385231018
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": 25.0,
+        "tonemapper": "aces",
+        "zenith_lin": [
+          0.05740861967206,
+          0.104557573795319,
+          0.221470266580582
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "9CkUP+UuHT80xRY/",
+        "cloud_lin": "8u1PP42rSD/jjz4/",
+        "haze_lin": "urcsP3J0Uj/FQE0/",
+        "light_dir": "Kg8kv2xh2D4qDyQ/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "xJcPP4DBvz7BaEM+",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "Kg8kv2xh2D4qDyQ/",
+        "zenith_lin": "TSVrPUgi1j0ayWI+"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": 45.0
+        }
+      },
+      "state": {
+        "adapt_y": 1.51249312353086,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.515378952026367,
+          0.592408716678619,
+          0.645998239517212
+        ],
+        "cloud_lin": [
+          0.887923181056976,
+          0.904661238193512,
+          0.93011087179184
+        ],
+        "exposure": 0.6,
+        "gain": 1.0,
+        "haze_lin": [
+          0.584078431129456,
+          0.768151223659515,
+          0.84687328338623
+        ],
+        "light_color": [
+          1.0,
+          0.91372549533844,
+          0.843137323856354,
+          1.0
+        ],
+        "light_dir": [
+          -0.5,
+          0.70710676908493,
+          0.5
+        ],
+        "light_elevation_deg": 45.0,
+        "light_energy": 0.999999940395355,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 1.5707963267949,
+        "lobe_k": 39.8631,
+        "lobe_lin": [
+          0.111595831811428,
+          0.0855640321969986,
+          0.0540853068232536
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.5,
+          0.70710676908493,
+          0.5
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": 45.0,
+        "tonemapper": "aces",
+        "zenith_lin": [
+          0.0761853829026222,
+          0.13843160867691,
+          0.29177063703537
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "4O8DPxmoFz8kYCU/",
+        "cloud_lin": "705jP+GXZz+/G24/",
+        "haze_lin": "KoYVP4+lRD+wzFg/",
+        "light_dir": "AAAAv/MENT8AAAA/",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "W4zkPTI8rz2OiF09",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "AAAAv/MENT8AAAA/",
+        "zenith_lin": "FQecPQTBDT72YpU+"
+      }
+    },
+    {
+      "sky": {
+        "lst_deg": 0.0,
+        "moon": {
+          "azimuth_deg": 0.0,
+          "elevation_deg": -30.0,
+          "illuminated": 0.0,
+          "phase_angle_deg": 180.0
+        },
+        "sun": {
+          "azimuth_deg": 225.0,
+          "elevation_deg": 73.0
+        }
+      },
+      "state": {
+        "adapt_y": 1.61556420828697,
+        "adapt_y_anchor": 1.51249307967114,
+        "ambient_lin": [
+          0.415962189435959,
+          0.502714455127716,
+          0.601962089538574
+        ],
+        "cloud_lin": [
+          0.951488494873047,
+          0.988518178462982,
+          1.0462064743042
+        ],
+        "exposure": 0.6,
+        "gain": 1.0,
+        "haze_lin": [
+          0.44525408744812,
+          0.611490428447723,
+          0.727533757686615
+        ],
+        "light_color": [
+          1.0,
+          0.925686895847321,
+          0.872409164905548,
+          1.0
+        ],
+        "light_dir": [
+          -0.206738024950027,
+          0.956304788589478,
+          0.206738024950027
+        ],
+        "light_elevation_deg": 73.0,
+        "light_energy": 1.02275216579437,
+        "light_source": "sun",
+        "lobe_dir": [
+          -0.707106828689575,
+          0.0,
+          0.707106828689575
+        ],
+        "lobe_height": 1.5707963267949,
+        "lobe_k": 39.8631,
+        "lobe_lin": [
+          0.0201086029410362,
+          0.0183399859815836,
+          0.0143992686644197
+        ],
+        "lst_deg": 0.0,
+        "moon_azimuth_deg": 0.0,
+        "moon_dir": [
+          0.0,
+          -0.5,
+          -0.866025388240814
+        ],
+        "moon_elevation_deg": -30.0,
+        "moon_illuminated": 0.0,
+        "moon_lin": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sun_azimuth_deg": 225.0,
+        "sun_dir": [
+          -0.206738024950027,
+          0.956304788589478,
+          0.206738024950027
+        ],
+        "sun_disc": 1.0,
+        "sun_elevation_deg": 73.0,
+        "tonemapper": "aces",
+        "zenith_lin": [
+          0.100722290575504,
+          0.178009256720543,
+          0.364296734333038
+        ]
+      },
+      "vector_float32_le": {
+        "ambient_lin": "//jUPuWxAD8wGho/",
+        "cloud_lin": "wJRzP4cPfT8Y6oU/",
+        "haze_lin": "WPjjPqOKHD+nPzo/",
+        "light_dir": "IrNTvmTQdD8is1M+",
+        "lobe_dir": "9AQ1vwAAAAD0BDU/",
+        "lobe_lin": "zLqkPL09ljzp6ms8",
+        "moon_dir": "AAAAAAAAAL/Xs12/",
+        "moon_lin": "AAAAAAAAAAAAAAAA",
+        "sun_dir": "IrNTvmTQdD8is1M+",
+        "zenith_lin": "fUfOPQ9INj4ahbo+"
+      }
+    }
+  ],
+  "source_commit": "8b2020f",
+  "source_path": "app/render/world/sky_state.gd",
+  "source_sha256_lf": "a3937bba27fe5dac1270a7c769b607b433b25cae5ea2f9c26d4a7e36c4d05895",
+  "generator": "Godot SkyState.state(synthetic sky) at 13 listed elevations; Vector3 components also stored as little-endian float32 base64 to preserve exact baseline bits."
+}
