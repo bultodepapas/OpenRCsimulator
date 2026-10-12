@@ -5,6 +5,8 @@ import importlib.util
 
 from check import FLEET, ROOT, read_json
 
+NO_GEAR_FIXTURE_ID = 'schema-contract-no-gear-fixture'
+
 
 @dataclass
 class Case:
@@ -105,12 +107,15 @@ def build_cases():
     p51 = fleet['p51d_mustang_120']
     jet = fleet['sebart_avanti_s_a200']
 
-    def change(label, raw, path, value=None, *, delete=False, valid=False, physical=False):
+    def change(label, raw, path, value=None, *, delete=False, valid=False, physical=False,
+               aircraft_id=None):
         data = deepcopy(raw)
         if delete:
             del at(data, path[:-1])[path[-1]]
         else:
             at(data, path[:-1])[path[-1]] = value
+        if aircraft_id is not None:
+            data['id'] = aircraft_id
         cases.append(Case(label, data, valid or physical, valid))
 
     for path in [('reference',), ('inventory',), ('aero',), ('aero', 'surfaces', 'horizontal'),
@@ -139,9 +144,11 @@ def build_cases():
 
     # Optional/metadata positive controls guard against over-restrictive schemas.
     for path in [('landing_gear',), ('inventory', 0, 'size'), ('aero', 'conventions')]:
-        change('optional-absent:' + str(path), stik, path, delete=True, valid=True)
+        change('optional-absent:' + str(path), stik, path, delete=True, valid=True,
+               aircraft_id=NO_GEAR_FIXTURE_ID if path == ('landing_gear',) else None)
     for value in [None, {}]:
-        change('optional-gear:' + repr(value), stik, ('landing_gear',), value, valid=True)
+        change('optional-gear:' + repr(value), stik, ('landing_gear',), value, valid=True,
+               aircraft_id=NO_GEAR_FIXTURE_ID)
     for path in [('landing_gear', 'contacts', 0, 'max_steering'),
                  ('landing_gear', 'breakaway_factor'),
                  ('aero', 'surfaces', 'horizontal', 'downwash_gradient')]:
