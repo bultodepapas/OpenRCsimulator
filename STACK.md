@@ -9,7 +9,7 @@ Status: current implementation, checked 2026-10-12. Runtime settings live in [pr
 | Engine/language | Official Godot 4.7.2-stable; GDScript |
 | Rendering | Compatibility, `opengl3`; 1280×720 default viewport, 4× MSAA |
 | Simulation | Custom float64 six-degree-of-freedom solver and RK4 at 240 Hz; Godot rigid-body nodes do not solve flight |
-| Aircraft | Strict JSON `openrc-aircraft v2`, per-quantity units/evidence/source, derived mass/CG/inertia; [contract](AIRCRAFT_CONTRACT.md) |
+| Aircraft | Catalog JSON `openrc-aircraft v2` with strict validation, per-quantity units/evidence/source and derived mass/CG/inertia; historical v1 is explicit compatibility; [contract](AIRCRAFT_CONTRACT.md) |
 | Input | Physical keyboard keys and raw joystick axes, device calibration and throttle arming |
 | Product shell | Home, Help, pause and conditions editors; shared screen stack; English source text and Spanish gettext catalog |
 | Audio | Positional engine sources plus wind/foliage/wildlife soundscape; original PCM assets and procedural mixing |

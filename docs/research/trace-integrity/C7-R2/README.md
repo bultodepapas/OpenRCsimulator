@@ -1,6 +1,6 @@
 # C7-R2 — active flight metadata
 
-2026-10-06 · **Status: implemented and verified.** Scope: [C7-R2](../../../../ROADMAP.md#audit-repairs).
+2026-10-06 · **Status: implemented and verified.** Scope: [C7-R2](../../../../ROADMAP.md#milestones-from-here-each-one-ends-in-a-build-the-owner-flies).
 
 ## Verified defect
 

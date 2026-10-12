@@ -23,7 +23,7 @@ fullscreen transaction, cross-platform DPI model, focus pause, and close handlin
 3. Apple's HIG recommends system fullscreen and letting people choose when to enter it. The desktop plan explicitly requests fullscreen on first
    interactive launch; keep that as a product decision and test a quick, visible exit/recovery path rather than treating it as Apple's default
    recommendation. [Going full screen](https://developer.apple.com/design/human-interface-guidelines/going-full-screen), [desktop
-   plan](../../../DESKTOP-DELIVERY-PLAN.md#product-decisions-proposed-for-implementation).
+   plan](../../../DESKTOP-DELIVERY-PLAN.md#accepted-step-register).
 4. Godot's public `get_display_safe_area()` is implemented for Android/iOS; other platforms fall back to `screen_get_usable_rect()`.
    `get_display_cutouts()` reports Android cutouts and returns empty elsewhere, so neither API exposes a Mac camera-housing shape. [DisplayServer
    4.7](https://docs.godotengine.org/en/4.7/classes/class_displayserver.html#class-displayserver-method-get-display-safe-area),

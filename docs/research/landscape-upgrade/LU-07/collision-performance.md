@@ -12,9 +12,11 @@ The first-hit API still returns the first result from the stable full-contact co
 
 ## Differential evidence
 
-`tests/fixtures/scenery_collision_reference.gd` is the full detector copied byte-for-byte from starting commit `df36b44`; the test pins its SHA-256 as `FE4AAC96EA43249BC2616C6C3658303E4CE26E10BF85E40B9A4F3F6C864C5E68`. The optimized detector was compared against it with the production eight-point Ugly Stik crash hull and a deterministic 206-proxy world. Across 160 sweeps (including 32 m cell-boundary paths, high-speed travel, mixed obstacle types, and 180-degree attitude changes), all event fields and contact states matched exactly. The fixture produced 53 contacts in 41 cases; `first_hit()` also matched the oracle’s first full-contact event in all 160 cases. A mutation check that removed all envelope candidates was detected by the differential test.
+`tests/fixtures/scenery_collision_reference.gd` is the full detector copied from starting commit `df36b44`; the test pins its SHA-256 as `FE4AAC96EA43249BC2616C6C3658303E4CE26E10BF85E40B9A4F3F6C864C5E68` after canonicalizing CRLF to LF for Windows checkouts. No other content is normalized. The optimized detector was compared against it with the production eight-point Ugly Stik crash hull and a deterministic 206-proxy world. Across 160 sweeps (including 32 m cell-boundary paths, high-speed travel, mixed obstacle types, and 180-degree attitude changes), all event fields and contact states matched exactly. The fixture produced 53 contacts in 41 cases; `first_hit()` also matched the oracle’s first full-contact event in all 160 cases. A mutation check that removed all envelope candidates was detected by the differential test.
 
 Focused validation passed: detector (51 checks), differential oracle (326 checks), collision session/checkpoint identity (25), collision setup (22), collision-world production test, landscape checkpoint (18), checkpoint integrity (149), and generic checkpoint tests (90). The float64 guard and transcendental-call check passed. Existing session behavior and checkpoint schema are untouched by this detector-only change.
+
+Final portability checks reran all 326 oracle checks with the original LF fixture and with a CRLF copy in an isolated staging project: both passed. Only the fingerprint input canonicalizes line endings; the fixture and collision implementation are unchanged. [LF log](checks/test_landscape_collision_oracle_lf.log), [CRLF log](checks/test_landscape_collision_oracle_crlf.log).
 
 ## Paired native benchmark
 

@@ -36,7 +36,7 @@ python3 app/tests/check_wind_trace.py /tmp/ou.csv --duration=3
 app/test.sh
 ```
 
-A complete `openrc-weather v2` JSON file supports custom conditions via `--weather-file=path.json`. V1 keys remain required; additional keys are `turbulence_rms_mps`, `turbulence_tau_s`, `turbulence_seed`. Bounds are in [WIND-PLAN](../../../WIND-PLAN.md#m5-w04a-turbulence-contract).
+A complete `openrc-weather v2` JSON file supports custom conditions via `--weather-file=path.json`. V1 keys remain required; additional keys are `turbulence_rms_mps`, `turbulence_tau_s`, `turbulence_seed`. Bounds are in [WIND-PLAN](../../../WIND-PLAN.md#implemented-contract).
 
 ## Cost method and limitations
 

@@ -70,7 +70,7 @@ The fixtures do not identify the Timber or any measured battery. The model has n
 
 - Identified Timber pack/load data and physical acceptance: **Pending.**
 
-See the [electric propulsion plan](../../../ELECTRIC-PROPULSION-PLAN.md#battery-and-esc-growth) for EL2a dependencies and later ESC, polarization, and thermal steps.
+See the [electric propulsion plan](../../../ELECTRIC-PROPULSION-PLAN.md#current-software-contract) for EL2a dependencies and later ESC, polarization, and thermal steps.
 
 ## Performance
 

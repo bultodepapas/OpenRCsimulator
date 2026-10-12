@@ -1587,7 +1587,7 @@ The most useful next software experiment remains a small visible airplane with i
 
 ## Plan review #3: radio input, full-envelope flight, release, and measured flight modes
 
-Research and measurements for [plan review #3](../../ROADMAP.md#plan-review-3-2026-10-05-senior-review-before-d6) (2026-10-05). Evidence tags as above. **Source read** means the Godot 4.7.2-stable source tag, an official document, or a paper was opened. **Measured** means we ran it on the simulator here. Short names: G = `https://github.com/godotengine/godot/blob/4.7.2-stable/`, E = `https://github.com/EdgeTX/edgetx/blob/main/radio/src/`.
+Research and measurements for [plan review #3](#plan-review-3-radio-input-full-envelope-flight-release-and-measured-flight-modes) (2026-10-05). Evidence tags as above. **Source read** means the Godot 4.7.2-stable source tag, an official document, or a paper was opened. **Measured** means we ran it on the simulator here. Short names: G = `https://github.com/godotengine/godot/blob/4.7.2-stable/`, E = `https://github.com/EdgeTX/edgetx/blob/main/radio/src/`.
 
 ### Measured on our simulator
 

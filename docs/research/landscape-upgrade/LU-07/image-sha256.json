@@ -1,0 +1,237 @@
+{
+  "date": "2026-10-12",
+  "hash_mode": "raw file bytes",
+  "image_count": 46,
+  "files": [
+    {
+      "path": "before-day/car_park.png",
+      "bytes": 1469581,
+      "sha256": "d70224441dd7d7f6e0f20c3f4226a4a9e9f63fde1faf26319fe438b6e08c4991"
+    },
+    {
+      "path": "before-day/postcard_club.png",
+      "bytes": 2139201,
+      "sha256": "b360432d91c8bcb9ef29ab9ce2b5bf029a4fc6a1738cf871a7bdfc308922954c"
+    },
+    {
+      "path": "before-night/runway_threshold.png",
+      "bytes": 305332,
+      "sha256": "c44242b04a3d7932e374d13df14d3e4efa2da4127e9320a6cbd6c2574050ba18"
+    },
+    {
+      "path": "day/aerial_overview.png",
+      "bytes": 2498363,
+      "sha256": "91459ec14f8b74ac0714a3bf1712344f3597543e3cf36fc1162425bcc9e28429"
+    },
+    {
+      "path": "day/car_park.png",
+      "bytes": 1525963,
+      "sha256": "1e9653fd550be7c3560939fb479b0dbc703f19423ca8965953befb426a4ff744"
+    },
+    {
+      "path": "day/pilot_north.png",
+      "bytes": 1907204,
+      "sha256": "65e03dd3a741ea3a5484a790f565eea54e218efc5fb0b50b988d5d88faa89225"
+    },
+    {
+      "path": "day/pit_service.png",
+      "bytes": 1153035,
+      "sha256": "4424e639b7f353fd07247748dc5ad199317938a23853d86949864c6f587d4d71"
+    },
+    {
+      "path": "day/postcard_club.png",
+      "bytes": 2145211,
+      "sha256": "11a8a2b5be28116d022004205a9272dc862a632889a5a9178d0e464432e170c2"
+    },
+    {
+      "path": "day/postcard_pavilion.png",
+      "bytes": 1746084,
+      "sha256": "fa0b9e82c2799a4cb2d1185710424c0c1305d5dc61edc3eff3dd0d4d70d6c498"
+    },
+    {
+      "path": "dusk/postcard_club.png",
+      "bytes": 1489475,
+      "sha256": "7148f27c2e72cbe4fc27bb9266eee4274c20fa07e2dfa2c340a7cea31e739827"
+    },
+    {
+      "path": "dusk/postcard_pavilion.png",
+      "bytes": 1346455,
+      "sha256": "8a812302c7b1de21f269abb753b0d5249e465bc8308ab3aca181bae593fd8d1b"
+    },
+    {
+      "path": "dusk/runway_threshold.png",
+      "bytes": 1476904,
+      "sha256": "451fff879d2a94c210116ee17729fcafc088a28c17f0bd0bd2dd009796beb152"
+    },
+    {
+      "path": "glare/glare_aircraft.png",
+      "bytes": 518515,
+      "sha256": "da8444d0563f77fad4bf476c424743cbacfc54dcf34d2f94059013ad2478ad9c"
+    },
+    {
+      "path": "glare/glare_aircraft_left.png",
+      "bytes": 538477,
+      "sha256": "8b5d07e148fdb5434a65a1b56e07ad18b6c7675c9de64ed8a3a106007a75b321"
+    },
+    {
+      "path": "glare/glare_aircraft_left_off.png",
+      "bytes": 510179,
+      "sha256": "49ae61640ec992cc9b84a725f811e16980bb8a8c3a74b89df327285b8c0a9757"
+    },
+    {
+      "path": "glare/glare_aircraft_off.png",
+      "bytes": 510037,
+      "sha256": "bb304c88672227788a1f7fbac54b755a10a6547587b42b04d7dd33e658c41404"
+    },
+    {
+      "path": "glare/glare_aircraft_right.png",
+      "bytes": 538430,
+      "sha256": "9fbc894dc50adad3329da55e94c82be8ac0330b61127f35f873f36634992bbdc"
+    },
+    {
+      "path": "glare/glare_aircraft_right_off.png",
+      "bytes": 510158,
+      "sha256": "5224170c3070f680192ab135fb8a0003c732e976bf8eb8e1502f90a989510cf5"
+    },
+    {
+      "path": "glare/glare_blocked.png",
+      "bytes": 507691,
+      "sha256": "312415113fed4bd95c409a1b198d6d1ace78722e386a26f5832e9bbffcf72eff"
+    },
+    {
+      "path": "glare/glare_blocked_off.png",
+      "bytes": 507691,
+      "sha256": "312415113fed4bd95c409a1b198d6d1ace78722e386a26f5832e9bbffcf72eff"
+    },
+    {
+      "path": "glare/glare_clear.png",
+      "bytes": 537554,
+      "sha256": "68b6ebe91422bf749063654f715c5c3c525217b59e3b9e0b1ae3613f6d08edfa"
+    },
+    {
+      "path": "glare/glare_cloud.png",
+      "bytes": 238796,
+      "sha256": "8f63d832ec046ee0593a1efe17b77ee484af2457dc055f272930e19083b2b15a"
+    },
+    {
+      "path": "glare/glare_cloud_off.png",
+      "bytes": 238796,
+      "sha256": "8f63d832ec046ee0593a1efe17b77ee484af2457dc055f272930e19083b2b15a"
+    },
+    {
+      "path": "glare/glare_half.png",
+      "bytes": 524888,
+      "sha256": "8209c2dc5a3fb8d308869812591d9fa83478a8ce7e2ede113f8a78a855dadb18"
+    },
+    {
+      "path": "glare/glare_low_exposure.png",
+      "bytes": 451888,
+      "sha256": "e8eb34f39c112673df89eb0673d38488920f32186af3eb43d35699bc801704ec"
+    },
+    {
+      "path": "glare/glare_low_exposure_off.png",
+      "bytes": 430263,
+      "sha256": "edec61b58756dda45e9a81c07e1cd4e704e4afb1a888c6441616e33647bcf746"
+    },
+    {
+      "path": "glare/glare_night.png",
+      "bytes": 484345,
+      "sha256": "d07838aa174a7a9cf256cec73582a4ef72fd5b9879f2bef32c66cdd4f649406c"
+    },
+    {
+      "path": "glare/glare_night_off.png",
+      "bytes": 484345,
+      "sha256": "d07838aa174a7a9cf256cec73582a4ef72fd5b9879f2bef32c66cdd4f649406c"
+    },
+    {
+      "path": "glare/glare_off.png",
+      "bytes": 509228,
+      "sha256": "ab8a50309a1780ce493d6471f7efdadc369263c7b25a35bd9948a1f01693994a"
+    },
+    {
+      "path": "glare/glare_partial.png",
+      "bytes": 519162,
+      "sha256": "4a44b826367968de244dea24a0c86f17aade30ce2487d3ec905b8c7fa2f82709"
+    },
+    {
+      "path": "glare/glare_partial_off.png",
+      "bytes": 507956,
+      "sha256": "e1fb360815d60b9deb5798117d5ec128474fbc7a031ca3fad8dca27a0ebe0e9b"
+    },
+    {
+      "path": "glare/glare_side.png",
+      "bytes": 565770,
+      "sha256": "3eff927a00379ce1a5fc2c4b0ff4a581b99e594cbbea79f7ea1028035d8b6caf"
+    },
+    {
+      "path": "glare/glare_side_off.png",
+      "bytes": 565770,
+      "sha256": "3eff927a00379ce1a5fc2c4b0ff4a581b99e594cbbea79f7ea1028035d8b6caf"
+    },
+    {
+      "path": "night/marker_clear.png",
+      "bytes": 305323,
+      "sha256": "fa68232bffe21d78798223518352bb6bd27ec4fdca159823de5009fc71ff4592"
+    },
+    {
+      "path": "night/marker_half.png",
+      "bytes": 296319,
+      "sha256": "909ccef0a2bcc045655e8243153dcd76addbd394fcb3619d777ae3ccc3d03940"
+    },
+    {
+      "path": "night/marker_occluded.png",
+      "bytes": 110190,
+      "sha256": "f0d74e29866c1bd15ca8f28b2145f70f9671f8082d938043f8285b2362386df5"
+    },
+    {
+      "path": "night/marker_off.png",
+      "bytes": 254639,
+      "sha256": "e583e600b9cface6045160dcb7d8562f4cebf95ce1fd82d9e9c056342ebbbe0b"
+    },
+    {
+      "path": "night/pilot_north.png",
+      "bytes": 505475,
+      "sha256": "4cc0f13d5f86fd8d5bbc4ff26397961692acf066f8c914e0efada3a7854d14ce"
+    },
+    {
+      "path": "night/postcard_club.png",
+      "bytes": 322382,
+      "sha256": "6d17d7ae8411f3c83cbc0f6c10bdcdc0368f4b88580da9050afbed1cdb48f50f"
+    },
+    {
+      "path": "night/runway_east_far.png",
+      "bytes": 242566,
+      "sha256": "d8df2923f9b9049e3f2bef9c98f8640cf1eff61bc4f8df6404f829bfabcde947"
+    },
+    {
+      "path": "night/runway_inside.png",
+      "bytes": 1073108,
+      "sha256": "9fb8d51b0086c7a9d9d7ff79863e4a2b764f78c65848469f9a5c93482b08541e"
+    },
+    {
+      "path": "night/runway_threshold.png",
+      "bytes": 305323,
+      "sha256": "fa68232bffe21d78798223518352bb6bd27ec4fdca159823de5009fc71ff4592"
+    },
+    {
+      "path": "night/runway_west.png",
+      "bytes": 298846,
+      "sha256": "ae29752867c0c9607a2a22138a0085c8121226b2e3a14c2fb747dd2dab8eede3"
+    },
+    {
+      "path": "tod-night/postcard_club.png",
+      "bytes": 312178,
+      "sha256": "f2b32ab4a0d36165a82fde77f40c87ca78227c16cb74ac3036971bd389c25a22"
+    },
+    {
+      "path": "tod-night/postcard_pavilion.png",
+      "bytes": 89121,
+      "sha256": "8dbb3fbadbf960a76b867b53d5b22bc250e44b375171d987aa0e331910e41dbd"
+    },
+    {
+      "path": "tod-night/runway_threshold.png",
+      "bytes": 116274,
+      "sha256": "e1abfb490eef9f26855b66a51d795dc6e7be7425cee2ee26c4e9571caeea186d"
+    }
+  ]
+}

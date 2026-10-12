@@ -19,7 +19,7 @@ An open-source RC airplane simulator for a USB transmitter, gamepad or keyboard,
 | [P-51D Mustang 1/4](docs/P51-PLAN.md) | 2.82 m, 120 cc gasoline, taildragger | Experimental |
 | [SebArt Avanti S](docs/AVANTI-S-PLAN.md) | 2.00 m, JetCat P100-RX turbine | Experimental; airborne, flaps and gear up |
 
-Current source includes six-degree-of-freedom flight, stalls/spins, servos, propeller and turbine dynamics, wheel contact, wind/gusts/turbulence, field atmosphere, selectable lighting, scenery, audio and crash presentation. Static scenery collision proxies are implemented; structural damage and obstacle response remain approximate. Takeoff/landing, controller compatibility and target-machine performance require further acceptance. Electric configurations are development fixtures; Turbo Timber is not in the flyable catalog.
+Current source includes six-degree-of-freedom flight, stalls/spins, servos, propeller and turbine dynamics, wheel contact, wind/gusts/turbulence, field atmosphere, selectable lighting, scenery, audio and crash presentation. Static scenery collision proxies and wreck presentation use engineering estimates; flyable structural damage remains unimplemented. Takeoff/landing, controller compatibility and target-machine performance require further acceptance. Electric configurations are development fixtures; Turbo Timber is not in the flyable catalog.
 
 ## Develop and contribute
 

@@ -1,6 +1,6 @@
 # Fuentes de recursos y búsqueda antes de crear
 
-2026-10-06. Integra el [segundo catálogo aportado](asset-sources-user-input-2026-10-06.txt) en el [plan visual §6](../VISUAL-QUALITY-PLAN.md#6-herramientas-bibliotecas-y-recursos). Complementa la [selección de plugins anterior](visual-quality-supplement-2026-10-06.md). Fuentes consultadas, sin descargar packs, importar contenido ni instalar herramientas.
+2026-10-06. Integra el [segundo catálogo aportado](asset-sources-user-input-2026-10-06.txt) en el [plan visual §6](../VISUAL-QUALITY-PLAN.md#evidence-and-acceptance). Complementa la [selección de plugins anterior](visual-quality-supplement-2026-10-06.md). Fuentes consultadas, sin descargar packs, importar contenido ni instalar herramientas.
 
 Integridad: copia del adjunto byte a byte; SHA-256 `ec315527c036aa51c0c2b241274f12799663eded8977a0e7d57c06617d99fcdf`. El texto de entrada conserva las recomendaciones recibidas; las decisiones vigentes están aquí y en el plan.
 
