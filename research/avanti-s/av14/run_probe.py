@@ -18,15 +18,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--godot', type=Path, required=True)
     parser.add_argument('--app', type=Path, required=True)
-    parser.add_argument('--probe', choices=['envelope', 'lifecycle'], required=True)
+    parser.add_argument('--probe', choices=['envelope', 'lifecycle', 'pitch_sweep'], required=True)
     parser.add_argument('--hz', type=int, choices=[240, 480], default=240)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     app, output = args.app.resolve(), args.output.resolve()
     script = Path(__file__).resolve().with_name(args.probe + '_probe.gd')
-    scripts = [Path(__file__).resolve(), script,
+    scripts = list(dict.fromkeys([Path(__file__).resolve(), script, script.with_name('envelope_probe.gd'),
                script.parents[2] / 'extra-300/ex06/envelope_probe.gd',
-               script.parents[2] / 'p51/p51-15/envelope_probe.gd']
+               script.parents[2] / 'p51/p51-15/envelope_probe.gd']))
     if output.exists():
         raise SystemExit('Use a fresh evidence path; output exists.')
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -55,12 +55,13 @@ def main():
         raise SystemExit('Wrong aircraft or probe errors: ' + str(data.get('errors')))
     if not data.get('cases'):
         raise SystemExit('Missing cases')
-    if args.probe == 'envelope':
-        if data.get('physics_hz') != args.hz or len(data['cases']) != 34:
+    if args.probe in ['envelope', 'pitch_sweep']:
+        expected = 34 if args.probe == 'envelope' else 8
+        if data.get('physics_hz') != args.hz or len(data['cases']) != expected:
             raise SystemExit('Incomplete flight matrix or wrong tick rate')
         for case in data['cases']:
             flight = case.get('flight', {})
-            if not case.get('available') or case.get('simulation_fault') or case.get('crash') \
+            if not case.get('available') or not case.get('complete') or case.get('simulation_fault') or case.get('crash') \
                     or not flight.get('trace_continuous') or flight.get('nonfinite_scalar_count') != 0 \
                     or flight.get('rows', 0) != flight.get('expected_rows', -1):
                 raise SystemExit('Incomplete or invalid flight: ' + case.get('id', '?'))
