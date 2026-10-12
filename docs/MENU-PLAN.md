@@ -1,6 +1,6 @@
 # Product shell and menus
 
-Status: current shell, UI-00…06 and UI-16 delivery checked 2026-10-12. Owner: menu track; prefix UI-. The shared-screen refactor UI-20/21 is delivered; active UI-22…29 work lives in [MENU-REDESIGN-PLAN](MENU-REDESIGN-PLAN.md). Pilot, accessibility and display acceptance remain open.
+Status: current shell, UI-00…06, UI-06d-R1 and UI-16 delivery checked 2026-10-12. Owner: menu track; prefix UI-. The shared-screen refactor UI-20/21 is delivered; active UI-22…29 work lives in [MENU-REDESIGN-PLAN](MENU-REDESIGN-PLAN.md). Pilot, accessibility and display acceptance remain open.
 
 Owns `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/`, build-info export integration and UI tests. Coordinate simulation holds/recording with physics, world construction with rendering, weather with M5-W/ATM, lighting with TOD/FW and display settings with DT.
 
@@ -20,7 +20,7 @@ Player instructions and controls: [FIRST-LAUNCH](FIRST-LAUNCH.md). Developer com
 
 ## Architecture and saved state
 
-`app_root.gd` owns the route, accepted preferences, Home backdrop and current flight. `ScreenStack` owns screen membership, top-screen activation, layered input isolation, named holds and focus restoration. `Screen` supplies shared modal/sidebar behavior; `Widgets` creates common controls. Existing CanvasLayer wrappers and public test views remain stable. [UI-21 implementation and parity](research/menu-investigations/UI-21/README.md).
+`app_root.gd` owns the route, accepted preferences, Home backdrop and current flight. Home's column scrolls inside its 440 px panel when a long aircraft note or translation needs more height (UI-06d-R1); its buttons wrap or clip their texts rather than widen the column. `ScreenStack` owns screen membership, top-screen activation, layered input isolation, named holds and focus restoration. `Screen` supplies shared modal/sidebar behavior; `Widgets` creates common controls. Existing CanvasLayer wrappers and public test views remain stable. [UI-21 implementation and parity](research/menu-investigations/UI-21/README.md).
 
 `user://settings.cfg` is a validated ConfigFile. Schema 4 is the highest supported settings version; saves use the lowest compatible schema for the selected weather/lighting profile, while also retaining the diagnostic-marker preference. Legacy schemas remain readable. Unreadable files are retained as `.bad`; newer schemas are read where valid and never overwritten. Language, aircraft, launch, weather and lighting persist through the interactive route. Radio calibration has its own file. A refused launch returns to Home with its reason; it does not save a successful launch choice.
 
@@ -41,6 +41,7 @@ The update notice (UI-16) reads that identity. On the interactive route of an ex
 | UI-06a-R1 / c-R1 | Checkpoint launch-attribution repair and refreshed package proof | [Repair](research/menu-investigations/UI-06a-R1/README.md), [export](research/menu-investigations/UI-06c-R1/README.md) |
 | UI-06d | Current interactive defaults, existing options enabled without physics tuning | [Default profile evidence](research/menu-investigations/UI-06d/README.md) |
 | UI-20/21 | Shell audit and shared-screen refactor with unchanged visual/flight results | [Audit](research/menu-investigations/UI-20/README.md), [implementation](research/menu-investigations/UI-21/README.md) |
+| UI-06d-R1 | Home's column stays inside its 440 px panel (wrapped/clipped button texts) and scrolls instead of pushing the legend off a 720p window; the first-run Home fits 720p in EN/ES | [Layout test](../app/tests/test_ui_home_layout.gd), [evidence](research/menu-investigations/UI-06d-R1/README.md) |
 | UI-16, UI-16-R1 | Update notice: once-a-day GitHub release check in exported builds, top-right card with Download/Hide, `[updates] check` opt-out; manual download; R1 repairs from the independent review (unthreaded request, per-build cache) | [Rules and checker](../app/tests/test_update_check.gd), [card and route](../app/tests/test_ui_update_notice.gd), [evidence](research/menu-investigations/UI-16/README.md) |
 
 Original research and executed engine probes: [menu investigations](research/menu-investigations/README.md). They are dated evidence; current code supersedes their older catalog, pause and layout descriptions.

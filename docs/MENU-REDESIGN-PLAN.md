@@ -92,7 +92,7 @@ Each step leaves a usable app, passes `app/test.sh`, states its proof in the com
 | UI-28 (S) | Motion, toasts and optional UI sounds, all behind `UiMotion.enabled` | UI-21, UI-24 | Tests and captures unchanged with motion off; p95 frame time in menus unchanged on the owner's machine with motion on; no sound while a flight is paused | Proposed |
 | UI-29 (S) | Proof and hand-over: capture matrix compared with `compare_captures.py`, export smoke of Home/Settings on the three platforms, owner playtest script, FIRST-LAUNCH and README screenshots, MENU-PLAN rows marked superseded | UI-22…28 | All of the above green in a clean clone; playtest confusions recorded | Proposed |
 
-UI-16 (delivered 2026-10-12, [MENU-PLAN](MENU-PLAN.md#delivery-evidence)) added the update-notice card outside this order. UI-24 exposes its `[updates] check` preference under About; UI-28 restyles the card with the toast vocabulary and motion. The daily GitHub check, the version rules and the manual download stay as delivered.
+UI-16 (delivered 2026-10-12, [MENU-PLAN](MENU-PLAN.md#delivery-evidence)) added the update-notice card outside this order, and UI-06d-R1 made Home's column scroll inside its panel with wrapped button texts; UI-25 still owns the final Home rows and real estate. UI-24 exposes its `[updates] check` preference under About; UI-28 restyles the card with the toast vocabulary and motion. The daily GitHub check, the version rules and the manual download stay as delivered.
 
 Order: UI-21 first (no visible change, removes the growth cost), then UI-22 and UI-23 in parallel (theme and display are independent), then UI-24 → 25 → 26 → 27 → 28 → 29. The visible result arrives with UI-22/23; the product feel with UI-25/27.
 

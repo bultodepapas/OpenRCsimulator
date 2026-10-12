@@ -1,5 +1,6 @@
 # Spanish interface texts for OpenRC Simulator (UI-01d). English is the source language: msgid is the English text.
-# Product, aircraft and field proper names are not translated. Keep placeholders (%s) and whole sentences.
+# Product, aircraft and field proper names are not translated (the one exception is the Timber's fictional name,
+# "Turbo Lumber Evolution", which ui/home.gd passes through tr()). Keep placeholders (%s) and whole sentences.
 # Add a language: copy this file to <code>.po, translate msgstr, list it in project.godot
 # (internationalization/locale/translations) and in app_state/preferences.gd LANGUAGES.
 msgid ""

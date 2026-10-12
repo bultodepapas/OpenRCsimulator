@@ -2,7 +2,10 @@
 # Top to bottom: the name and build stage; the aircraft selector and what Fly starts (next to Fly); Fly; Language,
 # Help and Quit; how to control. The aircraft come from app_state/aircraft_catalog.gd; a preview can be looked at but
 # not flown (Fly is disabled and the card says why).
-# Built in code with containers, so it reflows instead of using absolute positions. Texts are English source
+# Built in code with containers, so it reflows instead of using absolute positions. UI-06d-R1: the column never
+# grows wider than its 440 px panel (long button texts wrap or clip) and scrolls when a long aircraft note or a
+# translation needs more than the window's height; the first-run Home (Stik, default conditions) fits at 720p.
+# Texts are English source
 # strings: Labels and Buttons translate themselves when the locale changes (res://i18n/*.po); sentences built at
 # runtime use tr() and are rebuilt on NOTIFICATION_TRANSLATION_CHANGED. Proper names are never translated.
 extends "res://ui/screen.gd"
@@ -69,6 +72,9 @@ var limits_label: Label
 ## UI-16: the update card (ui/update_notice.gd), created the first time show_update() is called.
 var update_notice: Control
 var _fly_sent := false
+## UI-06d-R1: frames before the column's scroll follows the keyboard focus (see _process).
+var _settle_frames := 3
+var _scroll: ScrollContainer
 
 
 func _init() -> void:
@@ -76,8 +82,8 @@ func _init() -> void:
 	kind = Kind.SIDEBAR
 	theme = UiTheme.build() # on this screen's top Control: Window.theme would not reach CanvasLayers
 	var sidebar_style: StyleBoxFlat = theme.get_stylebox("panel", "Sidebar") as StyleBoxFlat
-	sidebar_style.content_margin_top = 36
-	sidebar_style.content_margin_bottom = 24
+	sidebar_style.content_margin_top = 24
+	sidebar_style.content_margin_bottom = 16
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -88,11 +94,24 @@ func _init() -> void:
 	sidebar.custom_minimum_size.x = SIDEBAR_WIDTH
 	add_child(sidebar)
 	fade(SIDEBAR_WIDTH)
+	# The column scrolls (wheel, or following the keyboard focus) when the card and the legend need more height than
+	# the window gives; no bar is drawn. With room to spare the column fills the panel and its spacers work as before.
+	var scroll := ScrollContainer.new()
+	scroll.name = "Scroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	scroll.follow_focus = false # until the layout settles (_process): see _settle_frames
+	sidebar.add_child(scroll)
+	_scroll = scroll
 	var column := VBoxContainer.new()
+	column.name = "Column"
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 0)
-	sidebar.add_child(column)
+	scroll.add_child(column)
 
 	var title := _label("OpenRC Simulator", "TitleLabel", false)
+	title.add_theme_font_size_override("font_size", 32) # UI-06d-R1: the column's height budget at 720p
 	column.add_child(title)
 	var stage := HBoxContainer.new()
 	stage.add_theme_constant_override("separation", 10)
@@ -130,7 +149,7 @@ func _init() -> void:
 	card.name = "AircraftCard"
 	card.theme_type_variation = "Card"
 	var card_lines := VBoxContainer.new()
-	card_lines.add_theme_constant_override("separation", 4)
+	card_lines.add_theme_constant_override("separation", 2)
 	aircraft_name_label = _label("", "CardTitle", false) # a proper name: not auto-translated; set_aircraft() passes it through tr() for the one fictional name with a catalog entry (TT-06)
 	aircraft_name_label.name = "AircraftName"
 	aircraft_name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART # long names and translations wrap, never widen the column
@@ -153,7 +172,7 @@ func _init() -> void:
 	card_lines.add_child(start_button)
 	card.add_child(card_lines)
 	column.add_child(card)
-	column.add_child(_gap(18))
+	column.add_child(_gap(12))
 
 	fly_button = _button("FLY", "PrimaryButton")
 	fly_button.name = "Fly"
@@ -165,13 +184,18 @@ func _init() -> void:
 	fly_row.add_child(fly_button)
 	weather_button = _button("", "")
 	weather_button.name = "Weather"
-	weather_button.custom_minimum_size = Vector2(170, 66)
-	weather_button.add_theme_font_size_override("font_size", 17)
+	weather_button.custom_minimum_size = Vector2(190, 66)
+	weather_button.add_theme_font_size_override("font_size", 14) # three lines (title, wind, turbulence) within the Fly row
+	# The summary wraps inside the button instead of widening the column (a Button's minimum width follows its text
+	# unless it wraps or clips); the tooltip carries the complete conditions.
+	weather_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	weather_button.clip_text = true
+	weather_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	weather_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # the compact dynamic summary is built with tr()
 	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
 	fly_row.add_child(weather_button)
 	column.add_child(fly_row)
-	column.add_child(_gap(12))
+	column.add_child(_gap(10))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
 	language_button = _button("", "")
@@ -179,23 +203,28 @@ func _init() -> void:
 	language_button.add_theme_font_size_override("font_size", 16)
 	language_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); language names stay as they are
 	language_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	language_button.clip_text = true # takes what Help and Quit leave; a long language name is trimmed, never the column widened
+	language_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	language_button.pressed.connect(func() -> void: language_requested.emit(next_language(current_language())))
 	row.add_child(language_button)
 	help_button = _button("Help", "")
 	help_button.name = "Help"
-	help_button.custom_minimum_size.x = 92
+	help_button.custom_minimum_size.x = 80
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
 	row.add_child(help_button)
 	quit_button = _button("Quit", "")
 	quit_button.name = "Quit"
-	quit_button.custom_minimum_size.x = 92
+	quit_button.custom_minimum_size.x = 80
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	row.add_child(quit_button)
 	column.add_child(row)
-	column.add_child(_gap(12))
+	column.add_child(_gap(10))
 	time_button = _button("", "")
 	time_button.name = "TimeOfDay"
 	time_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
+	time_button.add_theme_font_size_override("font_size", 17) # "Hora del día: Atardecer, el tiempo pasa" fits the column
+	time_button.clip_text = true
+	time_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	time_button.pressed.connect(func() -> void: time_requested.emit(Conditions.next_home_choice(time_of_day)))
 	column.add_child(time_button)
 	note_label = _label("", "SecondaryLabel", false)
@@ -205,15 +234,15 @@ func _init() -> void:
 	column.add_child(_spacer())
 
 	column.add_child(_label("CONTROLS", "SectionLabel"))
-	column.add_child(_gap(8))
+	column.add_child(_gap(6))
 	control_label = _label("", "SecondaryLabel", false) # built with tr()
 	control_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(control_label)
-	column.add_child(_gap(10))
+	column.add_child(_gap(6))
 	keys_legend = GridContainer.new()
 	keys_legend.columns = 2
 	keys_legend.add_theme_constant_override("h_separation", 18)
-	keys_legend.add_theme_constant_override("v_separation", 8)
+	keys_legend.add_theme_constant_override("v_separation", 6)
 	_fill_legend()
 	column.add_child(keys_legend)
 	set_aircraft(aircraft_id) # the card is never empty; the owner sets the saved choice before adding Home
@@ -236,6 +265,19 @@ func _ready() -> void:
 	_update_texts()
 	# Keyboard focus starts on Fly, visible (on the next arrow when the saved aircraft is a preview: Fly is disabled).
 	(fly_button if not fly_button.disabled else next_button).grab_focus.call_deferred()
+	set_process(true)
+
+
+## The column opens at the top. Wrapped labels settle over a few frames; following the first focus during those
+## frames scrolled the title away with a long aircraft note (P-51, Avanti), so the scroll follows the focus only
+## after they have passed. Then this node stops processing.
+func _process(_delta: float) -> void:
+	_settle_frames -= 1
+	if _settle_frames > 0:
+		return
+	_scroll.scroll_vertical = 0
+	_scroll.follow_focus = true
+	set_process(false)
 
 
 ## Shows `id` on the card and enables Fly only for an aircraft that can fly. Unknown IDs fall back to the default
@@ -433,8 +475,8 @@ func _update_weather_text() -> void:
 	var lighting_brief: String = TimeOfDayControls.compact_summary_text(lighting_config)
 	if lighting_config.mode == "legacy":
 		lighting_summary = tr(Conditions.HOME_LABELS[time_of_day])
-		lighting_brief = tr(Conditions.HOME_LABELS[time_of_day])
-	weather_button.text = "%s\n%s · %s" % [tr("Weather"), summary, lighting_brief]
+		lighting_brief = "" # the Time of day button right below says it; repeating it only widened the column
+	weather_button.text = "%s\n%s" % [tr("Weather"), summary if lighting_brief == "" else "%s · %s" % [summary, lighting_brief]]
 	weather_button.tooltip_text = "%s\n%s\n%s" % [
 		tr("Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density."),
 		" · ".join(parts) if not parts.is_empty() else tr("Calm"),
@@ -481,7 +523,7 @@ static func _button(text: String, variation: String) -> Button:
 static func _arrow_button(button_name: String, direction: String) -> Button:
 	var b := _button("", "")
 	b.name = button_name
-	b.custom_minimum_size = Vector2(44, 40)
+	b.custom_minimum_size = Vector2(44, 36)
 	var arrow: Control = KeyCap.Arrow.new()
 	arrow.direction = direction
 	arrow.set_anchors_preset(Control.PRESET_FULL_RECT)
