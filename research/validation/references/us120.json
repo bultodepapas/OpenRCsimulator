@@ -6,7 +6,7 @@
     "url": "https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content",
     "locator": "Lie, Synthetic Air Data Estimation Method, Appendix D, Tables D.1-D.2 and section D.3, printed pp. 85–86",
     "status": "inherited_derivation",
-    "note": "The modal scalars come from the rounded repository derivation in RESEARCH.md, D8b, not values printed verbatim in the thesis. Its matrix extraction/eigenvalue calculation has not been independently reproduced in VAL-3. Frequencies 1.30/0.57 Hz are converted to rad/s; roll tau 0.116 s is inverted. Damping 0.55/0.31 is retained without a diagnostic band. Treat these provisional derived rows as historical context."
+    "note": "The modal scalars come from the rounded repository derivation in docs/research/initial-notebook.md, D8b, not values printed verbatim in the thesis. Its matrix extraction/eigenvalue calculation has not been independently reproduced in VAL-3. Frequencies 1.30/0.57 Hz are converted to rad/s; roll tau 0.116 s is inverted. Damping 0.55/0.31 is retained without a diagnostic band. Treat these provisional derived rows as historical context."
   },
   "conditions": {
     "speed_mps": 19.2,
@@ -31,7 +31,7 @@
       "value": 8.168140899333462,
       "unit": "rad/s",
       "kind": "derived",
-      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "source_locator": "docs/research/initial-notebook.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
       "uncertainty": null,
       "band": {
         "relative": 0.15,
@@ -46,7 +46,7 @@
       "value": 0.55,
       "unit": "1",
       "kind": "derived",
-      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "source_locator": "docs/research/initial-notebook.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
       "uncertainty": null,
       "band": null,
       "used_for_tuning": null,
@@ -57,7 +57,7 @@
       "value": 8.620689655172413,
       "unit": "1/s",
       "kind": "derived",
-      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "source_locator": "docs/research/initial-notebook.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
       "uncertainty": null,
       "band": {
         "relative": 0.1,
@@ -72,7 +72,7 @@
       "value": 3.581415625092364,
       "unit": "rad/s",
       "kind": "derived",
-      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "source_locator": "docs/research/initial-notebook.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
       "uncertainty": null,
       "band": {
         "relative": 0.15,
@@ -87,7 +87,7 @@
       "value": 0.31,
       "unit": "1",
       "kind": "derived",
-      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "source_locator": "docs/research/initial-notebook.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
       "uncertainty": null,
       "band": null,
       "used_for_tuning": null,

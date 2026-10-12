@@ -117,7 +117,8 @@ static func _pit_shelter(k: MeshKit, seed: int) -> Array:
 	# Furniture under the roof: tables along the back, stands, boxes, chairs, coolers. Seeded variety.
 	for i in 6:
 		var tx := -length * 0.5 + 2.4 + i * 4.6
-		_pit_table(k, Vector3(tx, 0.1, depth * 0.5 - 1.1), seed * 31 + i)
+		var service := "charger" if i == 1 else "fuel" if i == 4 else ""
+		_pit_table(k, Vector3(tx, 0.1, depth * 0.5 - 1.1), seed * 31 + i, service)
 	for i in 5:
 		var cx := -length * 0.5 + 4.2 + i * 5.3 + (Palette.hash01(seed, i, 7) - 0.5) * 1.2
 		if Palette.hash01(seed, i, 3) < 0.75:
@@ -133,7 +134,7 @@ static func _pit_shelter(k: MeshKit, seed: int) -> Array:
 	return []
 
 
-static func _pit_table(k: MeshKit, at: Vector3, seed: int) -> void:
+static func _pit_table(k: MeshKit, at: Vector3, seed: int, service: String = "") -> void:
 	var top := _c("wood_light") if Palette.hash01(seed, 1) < 0.6 else _c("tablecloth")
 	k.block(Vector3(2.4, 0.06, 0.8), at + Vector3(0, 0.74, 0), top)
 	for sx: float in [-1.1, 1.1]:
@@ -147,6 +148,38 @@ static func _pit_table(k: MeshKit, at: Vector3, seed: int) -> void:
 		k.block(Vector3(0.24, 0.1, 0.18), at + Vector3(0.8, 0.8, 0.15), _c("box_black"))
 	if Palette.hash01(seed, 4) < 0.5:
 		k.block(Vector3(0.5, 0.25, 0.3), at + Vector3(-0.9, 0.8, 0.2), Palette.pick([_c("box_orange"), _c("box_black"), _c("cooler_blue")], seed, 5))
+	match service:
+		"charger":
+			_battery_charger(k, at + Vector3(0, 0.8, 0), seed)
+		"fuel":
+			_fuel_jug(k, at + Vector3(0, 0.8, 0), seed)
+
+
+## Compact charger and LiPo pack, kept in the gap between the table's two foam cradles.
+static func _battery_charger(k: MeshKit, at: Vector3, seed: int) -> void:
+	var case: Color = Palette.pick([_c("box_black"), _c("steel_dark")], seed, 17)
+	k.block(Vector3(0.27, 0.14, 0.22), at, case, _c("steel"))
+	k.block(Vector3(0.11, 0.045, 0.014), at + Vector3(-0.03, 0.065, -0.116), _c("fabric_green"))
+	k.block(Vector3(0.022, 0.026, 0.014), at + Vector3(0.07, 0.04, -0.116), _c("fuel_red"))
+	k.block(Vector3(0.022, 0.026, 0.014), at + Vector3(0.10, 0.04, -0.116), _c("fuel_green"))
+	var pack := at + Vector3(0.235, 0, 0.01)
+	k.block(Vector3(0.14, 0.08, 0.13), pack, _c("box_black"), _c("tablecloth"))
+	k.beam(at + Vector3(0.13, 0.09, 0.02), pack + Vector3(-0.07, 0.06, -0.025), 0.009, _c("fuel_red"))
+	k.beam(at + Vector3(0.13, 0.075, 0.04), pack + Vector3(-0.07, 0.045, 0.005), 0.009, _c("steel_dark"))
+
+
+## Small moulded fuel can with a raised handle, filler neck and cap.
+static func _fuel_jug(k: MeshKit, at: Vector3, seed: int) -> void:
+	var body: Color = Palette.pick([_c("fuel_red"), _c("fuel_green")], seed, 29)
+	k.block(Vector3(0.16, 0.19, 0.13), at, body, body.darkened(0.1))
+	var left := at + Vector3(-0.045, 0.17, 0.02)
+	var right := at + Vector3(0.045, 0.17, 0.02)
+	k.beam(left, left + Vector3(0, 0.09, 0), 0.016, body.darkened(0.1))
+	k.beam(right, right + Vector3(0, 0.09, 0), 0.016, body.darkened(0.1))
+	k.beam(left + Vector3(0, 0.09, 0), right + Vector3(0, 0.09, 0), 0.016, body)
+	var neck := at + Vector3(0.035, 0.19, -0.025)
+	k.cylinder(0.023, 0.023, 0.035, 8, neck, body.lightened(0.12))
+	k.cylinder(0.031, 0.031, 0.012, 8, neck + Vector3(0, 0.035, 0), _c("wood_light"))
 
 
 static func _folding_chair(k: MeshKit, at: Vector3, yaw: float, seed: int) -> void:

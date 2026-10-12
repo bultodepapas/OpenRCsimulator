@@ -22,4 +22,4 @@ Si `renders-final` ya existe, conservarlo y elegir otro directorio para una comp
 
 El ajuste se niega a usar otra geometría que la identificada por las muestras. Al refinar el modelo, congelar estas cámaras y renderizar con `--compare-geometry`; no volver a encuadrar silenciosamente. El render exige también que el hash de las muestras coincida con el registrado en la cámara.
 
-[Informe y límites](../../../docs/research/avanti-s-new-angles.md) · [Galería local](../../../references/avanti-s/new-angles/index.html).
+[Informe y límites](../../../docs/research/avanti-s-new-angles.md) · Galería local (local only: `references/avanti-s/new-angles/index.html`).

@@ -1,7 +1,7 @@
 {
   "format": "openrc-aircraft v2",
   "id": "p51d-mustang-120",
-  "description": "P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class: Chad Veich 1/4 plans, Jerry Bates 1/4, FokkeRC 1/4 short kit): 2.820 m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by research/p51/p51-05/derive_physics.py (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4, cross-checked against NACA flight data (neutral point, zero-lift angle, rigging) and RC-class data (built weight, throws, propeller and engine anchors); flown through its envelope by tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps and retracts are not simulated (gear DOWN). Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
+  "description": "P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class: Chad Veich 1/4 plans, Jerry Bates 1/4, FokkeRC 1/4 short kit): 2.820 m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by research/p51/p51-05/derive_physics.py (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4 and documented NACA/RC-class sources; exercised by scripted tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps and retracts are not simulated (gear DOWN). Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
   "frames": {
     "le_frame": "positions in metres from the wing leading edge at the centreline (model z 0): [x_aft, y_right, z_up]; z = 0 on the thrust line (spinner axis)",
     "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up"
@@ -407,27 +407,27 @@
       }
     },
     {
-      "name": "aileron servos (2)",
+      "name": "aileron servo left",
       "mass": {
-        "value": 0.16,
+        "value": 0.08,
         "unit": "kg",
         "kind": "estimated",
-        "source": "two 20-25 kg·cm servos ~80 g"
+        "source": "one of two estimated 20-25 kg·cm servos (~80 g each)"
       },
       "position": {
         "value": [
           0.12,
-          0.0,
+          -1.10905,
           -0.1682
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "one per aileron, mid-aileron span"
+        "source": "one servo at the aileron span midpoint y = -(0.8438 + 1.3743)/2 m; individual servo envelope estimated"
       },
       "size": {
         "value": [
           0.03,
-          1.9,
+          0.02,
           0.04
         ],
         "unit": "m",
@@ -436,27 +436,56 @@
       }
     },
     {
-      "name": "flap servos (2)",
+      "name": "aileron servo right",
       "mass": {
-        "value": 0.16,
+        "value": 0.08,
         "unit": "kg",
         "kind": "estimated",
-        "source": "two 20-25 kg·cm servos ~80 g"
+        "source": "one of two estimated 20-25 kg·cm servos (~80 g each)"
+      },
+      "position": {
+        "value": [
+          0.12,
+          1.10905,
+          -0.1682
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "one servo at the aileron span midpoint y = +(0.8438 + 1.3743)/2 m; individual servo envelope estimated"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.02,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "flap servo left",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "one of two estimated 20-25 kg·cm servos (~80 g each)"
       },
       "position": {
         "value": [
           0.3,
-          0.0,
+          -0.46225,
           -0.1682
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "one per flap"
+        "source": "one servo at the flap span midpoint y = -(0.1249 + 0.7996)/2 m; individual servo envelope estimated"
       },
       "size": {
         "value": [
           0.03,
-          0.8,
+          0.02,
           0.04
         ],
         "unit": "m",
@@ -465,27 +494,85 @@
       }
     },
     {
-      "name": "elevator servos (2)",
+      "name": "flap servo right",
       "mass": {
-        "value": 0.16,
+        "value": 0.08,
         "unit": "kg",
         "kind": "estimated",
-        "source": "two servos in the tail"
+        "source": "one of two estimated 20-25 kg·cm servos (~80 g each)"
+      },
+      "position": {
+        "value": [
+          0.3,
+          0.46225,
+          -0.1682
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "one servo at the flap span midpoint y = +(0.1249 + 0.7996)/2 m; individual servo envelope estimated"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.02,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "elevator servo left",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "one of two estimated tail servos (~80 g each)"
       },
       "position": {
         "value": [
           1.2328,
-          0.0,
+          -0.15,
           0.0875
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "in the stab roots"
+        "source": "one servo near the left stabilizer root; ±0.15 m retains the former 0.30 m paired-box half-width; mounting station is inferred, not measured"
       },
       "size": {
         "value": [
           0.04,
-          0.3,
+          0.02,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "elevator servo right",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "one of two estimated tail servos (~80 g each)"
+      },
+      "position": {
+        "value": [
+          1.2328,
+          0.15,
+          0.0875
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "one servo near the right stabilizer root; ±0.15 m retains the former 0.30 m paired-box half-width; mounting station is inferred, not measured"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.02,
           0.04
         ],
         "unit": "m",
@@ -552,27 +639,56 @@
       }
     },
     {
-      "name": "main retracts, struts and wheels (2 sides)",
+      "name": "main gear assembly left",
       "mass": {
-        "value": 2.0,
+        "value": 1.0,
         "unit": "kg",
         "kind": "estimated",
-        "source": "two electric/pneumatic giant-scale retracts (0.5 kg each), oleo struts (0.25 each), 6 in wheels with hubs (0.2 each), gear doors"
+        "source": "half of estimated 2.00 kg paired retract/strut/wheel/door inventory"
       },
       "position": {
         "value": [
           0.025,
-          0.0,
+          -0.451,
           -0.2965
         ],
         "unit": "m",
-        "kind": "measured",
-        "source": "axle station from geometry.json; mass centred mid-strut"
+        "kind": "estimated",
+        "source": "left assembly lateral center -track/2 = -0.4510 m from geometry.json; x/z retain the estimated combined mid-strut center; individual envelope estimated"
       },
       "size": {
         "value": [
           0.12,
-          0.902,
+          0.1,
+          0.2566
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "main gear assembly right",
+      "mass": {
+        "value": 1.0,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "half of estimated 2.00 kg paired retract/strut/wheel/door inventory"
+      },
+      "position": {
+        "value": [
+          0.025,
+          0.451,
+          -0.2965
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "right assembly lateral center +track/2 = +0.4510 m from geometry.json; x/z retain the estimated combined mid-strut center; individual envelope estimated"
+      },
+      "size": {
+        "value": [
+          0.12,
+          0.1,
           0.2566
         ],
         "unit": "m",
@@ -1033,26 +1149,26 @@
         "value": 18.0,
         "unit": "deg",
         "kind": "estimated",
-        "source": "asin(kit mm / local chord): Hangar 9 HAN4770 high rates (aileron 22 mm up, elevator 25 mm, rudder 55 mm) scaled by span 2.82/2.26 = 1.25; CARF (2.54 m) high rate: aileron 12.7 mm, elevator 19 mm up, rudder 51 mm"
+        "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329)"
       },
       "elevator": {
         "value": 15.0,
         "unit": "deg",
         "kind": "estimated",
-        "source": "asin(kit mm / local chord): Hangar 9 HAN4770 high rates (aileron 22 mm up, elevator 25 mm, rudder 55 mm) scaled by span 2.82/2.26 = 1.25; CARF (2.54 m) high rate: aileron 12.7 mm, elevator 19 mm up, rudder 51 mm"
+        "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329)"
       },
       "rudder": {
         "value": 30.0,
         "unit": "deg",
         "kind": "estimated",
-        "source": "asin(kit mm / local chord): Hangar 9 HAN4770 high rates (aileron 22 mm up, elevator 25 mm, rudder 55 mm) scaled by span 2.82/2.26 = 1.25; CARF (2.54 m) high rate: aileron 12.7 mm, elevator 19 mm up, rudder 51 mm"
+        "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329)"
       }
     },
     "servo_full_throw_time": {
       "value": 0.18,
       "unit": "s",
       "kind": "estimated",
-      "source": "giant-scale high-torque servos: 0.15-0.20 s per 60 deg at 6-7 V"
+      "source": "placeholder: one normalized command from neutral to this aircraft's full modeled throw in 0.18 s; actual servo speed, voltage/load, horn geometry and linkage ratio are unknown, so a published no-load rate per 60 deg cannot determine surface rate"
     }
   },
   "aero": {
@@ -1062,7 +1178,7 @@
         "value": 1.021297,
         "unit": "1",
         "kind": "estimated",
-        "source": "15 % laminar section clmax ~1.3 at Re 7e5 x 0.9 for the wing, flaps up; no polar identified"
+        "source": "three equal-area strips: Schrenk loading and NACA TN 1945 66(2)-415 clmax(Re), including extrapolated 3e5 endpoint and 0.05 painted-finish decrement; flaps up; no P-51 model polar"
       },
       "CL_min": {
         "value": -0.85,
@@ -1148,7 +1264,7 @@
         "value": 0.073249,
         "unit": "1",
         "kind": "derived",
-        "source": "research/p51/p51-05/derive_physics.py: 1/(pi e AR), e 0.80 estimated"
+        "source": "research/p51/p51-05/derive_physics.py: 1/(pi e AR), e 0.75 estimated"
       },
       "CDda_each": {
         "value": 0.0151,
@@ -1232,7 +1348,7 @@
         "value": -0.066816,
         "unit": "1",
         "kind": "derived",
-        "source": "research/p51/p51-05/derive_physics.py: wing Cm_ac (parabolic camber) + tail at zero body alpha, about the ARP"
+        "source": "research/p51/p51-05/derive_physics.py: wing Cm_ac from the UIUC NAA 45-100 camber lines using thin-airfoil theory x0.8 correction, plus tail at zero body alpha, about the ARP"
       },
       "Cma": {
         "value": -0.895896,
@@ -1262,7 +1378,7 @@
         "value": 0.1394867577485912,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/p51/p51-05/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
+        "source": "research/p51/p51-05/derive_physics.py: vertical-fin contribution only; shared surface-consistency rule requires Cnb to equal the modeled vertical surface"
       },
       "Cnp": {
         "value": -0.024817,
@@ -1538,7 +1654,7 @@
           ],
           "unit": "rpm, W",
           "kind": "derived",
-          "source": "research/p51/p51-05/derive_physics.py: installed full-throttle brake power: generic two-stroke torque shape (estimated; no DA-120 dyno curve published) scaled to the measured anchor, a 28x10 at 6550 rpm static (Mejzlik 28x10 Cp 0.0238 -> 6901 W)"
+          "source": "research/p51/p51-05/derive_physics.py: installed full-throttle brake power: generic two-stroke torque shape (estimated; no DA-120 dyno curve published) scaled to a secondary reported anchor, a 28x10 at 6550 rpm static; no retained instrumented test record (Mejzlik 28x10 Cp 0.0238 -> 6901 W)"
         },
         "friction_torque": {
           "value": [

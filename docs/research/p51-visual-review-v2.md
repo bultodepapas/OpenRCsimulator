@@ -1,6 +1,6 @@
 # P-51D Mustang 1/4 · revisión visual 2 (cierre de V01-V10)
 
-**Fecha:** 2026-10-06 · **Modelo:** `app/aircraft/p51d_model.gd` (`p51d-mustang-120-v1`, 132 mallas, 52.693 triángulos) · **Plan:** [P51-VISUAL-PLAN](../P51-VISUAL-PLAN.md) · **Revisión anterior:** [v1](p51-visual-review-v1.md)
+**Fecha:** 2026-10-06 · **Modelo:** `app/aircraft/p51d_model.gd` (`p51d-mustang-120-v1`, 132 mallas, 52.693 triángulos) · **Plan:** [P51-VISUAL-PLAN](../P51-PLAN.md) · **Revisión anterior:** [v1](p51-visual-review-v1.md)
 
 Cierra la revisión visual 1 (18 hallazgos) tras ejecutar los pasos V01-V08 y V10 del plan. V09 (esquema de colores) sigue bloqueado por la decisión del propietario; V11 es este informe.
 

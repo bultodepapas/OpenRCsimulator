@@ -15,6 +15,10 @@ const FLEET_VIEWS := {
 	"parked_extra": {eye = [-16.3, -21.7, -1.7], at = [-17.6, -24.0, -0.5], fov = 55.0},
 	"parked_p51": {eye = [-16.3, 27.5, -2.1], at = [-17.8, 24.0, -0.8], fov = 60.0},
 	"parked_avanti": {eye = [-13.5, 39.5, -1.8], at = [-17.6, 38.5, -0.8], fov = 44.0},
+	"runway_west": {eye = [15.0, -72.0, -2.2], at = [15.0, 51.0, -0.35], fov = 40.0},
+	"runway_east_far": {eye = [15.0, 180.0, -6.0], at = [15.0, 0.0, -0.35], fov = 32.0},
+	"runway_inside": {eye = [15.0, 15.0, -1.5], at = [15.0, 51.0, -0.35], fov = 40.0},
+	"pit_service": {eye = [-15.0, -36.0, -1.8], at = [-19.9, -38.0, -1.02], fov = 30.0},
 }
 var args := {}
 
@@ -63,6 +67,7 @@ func _run() -> void:
 	parent.add_child(blocker)
 	blocker.visible = false
 	var sky: ShaderMaterial = built.environment.sky.sky_material
+	var lighting_helper := parent.get_node_or_null("AirfieldLighting")
 	var sun: Vector3 = sky.get_shader_parameter("disc_dir")
 	var original_disc: float = sky.get_shader_parameter("sun_disc")
 	var original_cloud: float = sky.get_shader_parameter("cloud_coverage")
@@ -72,6 +77,8 @@ func _run() -> void:
 		arguments = args, cases = {}}
 	var cases := str(args.get("cases", "pilot_north,postcard_club,glare_clear,glare_off,glare_blocked,glare_aircraft,glare_side,glare_night")).split(",")
 	for case: String in cases:
+		if lighting_helper != null:
+			lighting_helper.set_process(not case.begins_with("marker_"))
 		aircraft.root.visible = false
 		blocker.visible = false
 		flare.intensity = 1.0
@@ -112,11 +119,20 @@ func _run() -> void:
 			if case in ["glare_night", "glare_night_off"]:
 				sky.set_shader_parameter("sun_disc", 0.0)
 		else:
-			var view: Dictionary = FLEET_VIEWS[case] if FLEET_VIEWS.has(case) else Postcards.VIEWS[case]
+			var view: Dictionary = Postcards.VIEWS.runway_threshold if case.begins_with("marker_") else \
+				FLEET_VIEWS[case] if FLEET_VIEWS.has(case) else Postcards.VIEWS[case]
 			camera.fov = view.fov
 			camera.look_at_from_position(Frames.ned_to_render(view.eye), Frames.ned_to_render(view.at))
+			if case == "marker_occluded":
+				blocker.visible = true
+				blocker.position = Frames.ned_to_render([15.0, 55.0, -0.7])
+				blocker.basis = camera.basis
 		for i in 60:
 			World.update(built.environment, 1.5, Vector3.ZERO, camera.position + -camera.basis.z * 30.0, camera)
+			if case.begins_with("marker_") and lighting_helper != null:
+				# Hold sky/exposure fixed to isolate the lamp fade and real opaque-depth occlusion.
+				var elevation := 3.0 if case == "marker_off" else -0.5 if case == "marker_half" else -4.0
+				lighting_helper.apply_lighting({sun_elevation_deg = elevation})
 			await process_frame
 			await RenderingServer.frame_post_draw
 		var frames := []
@@ -137,7 +153,9 @@ func _run() -> void:
 			video_memory = Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED),
 			frame_ms_raw = raw_frames, median_ms = frames[frames.size()/2], p95_ms = frames[mini(frames.size()-1, ceili(frames.size()*0.95)-1)],
 			p99_ms = frames[mini(frames.size()-1, ceili(frames.size()*0.99)-1)],
-			glare_visible = flare.visible, glare_strength = flare.get_meta("strength", 0.0), exposure = built.environment.tonemap_exposure}
+			glare_visible = flare.visible, glare_strength = flare.get_meta("strength", 0.0), exposure = built.environment.tonemap_exposure,
+			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,
+			marker_center_px = camera.unproject_position(Frames.ned_to_render([15.0, 51.0, -0.35]))}
 	var file := FileAccess.open(out.path_join("report.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "  "))
 	print("LU native capture complete: ", out)

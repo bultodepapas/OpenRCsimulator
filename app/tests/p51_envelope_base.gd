@@ -4,6 +4,7 @@
 extends SceneTree
 
 const FlightSession := preload("res://sim/flight_session.gd")
+const Sim := preload("res://sim/simulation.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
 const Ground := preload("res://physics/ground_contact.gd")
@@ -95,14 +96,36 @@ func _wheels_down(s: PackedFloat64Array) -> int:
 ## { t, s, rpm, cmd }), crashed (String or ""), state }; rows are sampled every `every` ticks.
 func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable, every := 12) -> Dictionary:
 	session.reset()
+	if not session.is_flyable() or not session.sim.fault_reason.is_empty():
+		var reset_reason := str(session.pause_reason)
+		if reset_reason.is_empty():
+			reset_reason = str(session.sim.fault_reason)
+		if reset_reason.is_empty():
+			reset_reason = "session is not flyable"
+		return { rows = [], crashed = "session reset failed: " + reset_reason, state = session.sim.state.duplicate() }
+	if session.anchor_count() > 0 or session._weather.has_turbulence():
+		return { rows = [], crashed = "P-51 fixture does not initialize anchored stiction or turbulent weather state", state = session.sim.state.duplicate() }
 	session.engine_running = rpm > 0.0
 	session.commands = { roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0 }
 	var first: Dictionary = pilot.call(0.0, state)
 	session.commands = first
 	session.sim.inputs = session._inputs()
 	var i: PackedFloat64Array = session.sim.inputs
-	session.sim.aux = PackedFloat64Array([rpm, i[0], i[1], i[2]])
-	session.sim.reset(state)
+	# Keep the layout installed by FlightSession.reset(): the P-51 currently has the
+	# legacy four slots, while coupled shaft/wash/wheel configurations append state.
+	var aux: PackedFloat64Array = session.sim.aux.duplicate()
+	if aux.size() < 4:
+		return { rows = [], crashed = "session reset failed: auxiliary layout has fewer than four base slots", state = session.sim.state.duplicate() }
+	aux[0] = rpm
+	aux[1] = i[0]
+	aux[2] = i[1]
+	aux[3] = i[2]
+	if session.downwash_index() >= 0:
+		aux[session.downwash_index()] = session._wing_cl(state, aux, 0.0)
+	session.sim.aux = aux
+	session.sim.continuous = session._settled_continuous(state, aux)
+	if not session.sim.reset(state):
+		return { rows = [], crashed = "simulation reset failed: " + session.sim.fault_reason, state = session.sim.state.duplicate() }
 	session.sim.set_paused(false)
 	var dt: float = session.sim.dt()
 	var rows := []
@@ -117,9 +140,18 @@ func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable,
 		if not session.crash.is_empty():
 			crashed = session.pause_reason
 			break
+		if not session.sim.fault_reason.is_empty():
+			crashed = "simulation fault: " + session.sim.fault_reason
+			break
+		if not Sim.state_is_valid(session.sim.state):
+			crashed = "simulation produced an invalid state"
+			break
 		if k % every == 0:
 			rows.append({ t = t, s = s.duplicate(), rpm = session.sim.aux[0], cmd = session.commands.duplicate() })
 		session.sim.step()
+		if not session.sim.fault_reason.is_empty():
+			crashed = "simulation fault: " + session.sim.fault_reason
+			break
 	return { rows = rows, crashed = crashed, state = session.sim.state.duplicate() }
 
 
@@ -134,6 +166,8 @@ func park() -> PackedFloat64Array:
 	var s := RB.make_state(M.v3(THRESHOLD[0], THRESHOLD[1], down), M.v3(0, 0, 0), M.q_from_euler(PI / 2.0, pitch, 0.0), M.v3(0, 0, 0))
 	var idle: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, 1.225)
 	var settle := fly(s, idle, 3.0, func(_t, _s): return { roll = 0.0, pitch = 1.0, yaw = 0.0, throttle = 0.0 })
+	assert(settle.crashed.is_empty(), "P-51 parked fixture settle crashed: %s" % settle.crashed)
+	assert(Sim.state_is_valid(settle.state), "P-51 parked fixture settle returned an invalid state")
 	var out: PackedFloat64Array = settle.state
 	out[RB.POS] = THRESHOLD[0]
 	out[RB.POS + 1] = THRESHOLD[1]
@@ -256,6 +290,7 @@ func _takeoff() -> void:
 	var free := takeoff(false, 3.0)
 	var heading_change := rad_to_deg(wrapf(_euler(free.state)[0] - PI / 2.0, -PI, PI))
 	print("info takeoff without rudder: heading %+.1f° after 3 s, crashed '%s'" % [heading_change, free.crashed])
+	_check("rudder-free takeoff sample completes 3 s without crash", free.crashed == "", free.crashed)
 	_check("takeoff run without rudder swings LEFT (torque, slipstream swirl, P-factor, gyro)", heading_change < -3.0, "%+.1f°" % heading_change)
 	var to := takeoff(true)
 	print("info takeoff: liftoff %.1f s, %.0f m, %.1f m/s (Vs %.1f); tail up %.1f s; max heading error %.1f°, runway offset %.1f m, bank %.1f°, max right rudder %.2f" %

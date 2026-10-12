@@ -1,5 +1,5 @@
 # D10-R1: rudder authority and recovery through the real flight-session paths.
-# The 15 m/s doublet limits are estimated engineering screens from docs/RUDDER-REPAIR-PLAN.md, not flight data.
+# The 15 m/s doublet limits are estimated engineering screens from docs/research/ugly-stik-rudder-audit.md, not flight data.
 # Other amplitudes, pulse lengths, and speeds are numerical/route samples only; they have no doublet limits.
 # Run: godot --headless --path . --script res://tests/test_rudder_authority.gd
 extends SceneTree
@@ -10,9 +10,9 @@ const Recorder := preload("res://sim/recorder.gd")
 const Trace := preload("res://sim/trace.gd")
 
 const REFERENCE_HZ := 240
-const BETA_LIMIT_DEG := 25.0 # estimated screen in RUDDER-REPAIR-PLAN.md
-const YAW_RATE_LIMIT_DEG_S := 120.0 # estimated screen in RUDDER-REPAIR-PLAN.md
-const RELEASE_YAW_RATE_LIMIT_DEG_S := 15.0 # at 1.5 s after release; estimated screen in RUDDER-REPAIR-PLAN.md
+const BETA_LIMIT_DEG := 25.0 # estimated screen in docs/research/ugly-stik-rudder-audit.md
+const YAW_RATE_LIMIT_DEG_S := 120.0 # estimated screen in docs/research/ugly-stik-rudder-audit.md
+const RELEASE_YAW_RATE_LIMIT_DEG_S := 15.0 # at 1.5 s after release; estimated screen in docs/research/ugly-stik-rudder-audit.md
 const AUDITED_BORROWED_CNDR := -0.1811 # old borrowed datum, documented in docs/research/ugly-stik-rudder-audit.md
 const FINITE_COLUMNS := Trace.COLUMNS
 const DEVICE_ID := 61

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok coupled-rk4 smooth full-session RPM refinement: errors [0.0000013108388, 0.00000008016241, 0.00000000495675] rpm, ratios [16.352288134151, 16.1723853211009]
+ok split smooth full-session RPM refinement: errors [0.95313114384999, 0.45801204735926, 0.21300630508767] rpm, ratios [2.08101762681879, 2.15022765251358]
+G2 refinement: 2 checks, 0 failed

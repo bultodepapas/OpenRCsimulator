@@ -155,8 +155,12 @@ func _run() -> void:
 	_check("Sun and lighting resources do not alias another scene", live_sun.get_instance_id() != isolated_sun.get_instance_id()
 		and live_environment.sky.sky_material.get_instance_id() != other_environment.sky.sky_material.get_instance_id())
 	_check("global atmosphere defaults remain unchanged", var_to_bytes(Spec.ATMOSPHERE) == original_atmosphere)
-	_check("scenery hook follows its configured opt-in state",
-		(live_field.get_node_or_null("Scenery") != null) == Scenery.enabled())
+	# The 25 km fallback surface above deliberately changes the field layout. Since LU-06,
+	# an implicit bundled scenery file applies only to matching default spatial geometry.
+	var scenery_options := Scenery.options()
+	var expected_scenery: bool = scenery_options.enabled and Scenery.layout_file_applies(field, scenery_options)
+	_check("scenery hook respects both its switch and field-layout eligibility",
+		(live_field.get_node_or_null("Scenery") != null) == expected_scenery)
 
 	live_sun.free()
 	isolated_sun.free()

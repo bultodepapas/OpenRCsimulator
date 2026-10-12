@@ -1,6 +1,6 @@
 # Extra 300S RC realism audit and corrections
 
-2026-10-11 · EX-06/EX-08/EX-09 · **Status: audit and bounded corrections complete; engine evidence recorded. Physical acceptance and baseline application failures remain open.** Owner: [realism plan](../../EXTRA-300-REALISM-PLAN.md).
+2026-10-11 · EX-06/EX-08/EX-09 · **Status: audit and bounded corrections complete; engine evidence recorded. Physical acceptance and baseline application failures remain open.** Owner: [realism plan](../../EXTRA-300-PLAN.md).
 
 The audit targets the Great Planes GPMA0236 64 in Extra 300S with an O.S. .61FX. Three evidence-backed inconsistencies were corrected: balancing the fuel-loaded inventory against an empty-tank datum, omitting the installed thrust angles from physics, and showing 12×8 blade pitch while selecting 12×6 in physics. Aerodynamic estimates were not fitted to make a scripted maneuver pass. The aircraft remains experimental.
 

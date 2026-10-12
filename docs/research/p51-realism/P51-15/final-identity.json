@@ -1,0 +1,32 @@
+{
+  "sha256": {
+    "baseline": "16b0bba3ba1df21dbc83b623e463634f8146ba2f71fbfd94ed50f6e98828b52e",
+    "candidate": "5e834505914e1490af5028728c2165ad714434439c5060df3317600dbbd660f3",
+    "final": "6c20c5c3ce330612bdf81441c7d6fbd30e19d7dd2b1d63a1c78c843f9e2ba5ee"
+  },
+  "final_source_hashes": {
+    "app\\test.sh": "ff6c2ad26a93ba70ab79d2dd50e0b6a278c08314f6f1a91dc0e41d8a0eff311b",
+    "app\\tests\\p51_envelope_base.gd": "dafd59d27cd9da11dc5b4da33f9de4d7abbdef802eaf2bdd836a7ee510c62d95",
+    "research\\p51\\p51-05\\derive_physics.py": "cc96aef42dead626ff003582457e5b1fb3302a9a8efcdd86e61527acd659304d",
+    "research\\p51\\p51-05\\derivation.md": "4c7210c53cc9539215ee96d00ec2532a8c383cac4f2d11af3d100fc2a5f33750",
+    "research\\p51\\p51-15\\check_evidence_identity.py": "2dc1940ba543e325a2af587979c69a94be2a6cc3d9dce92fb26d31c7f65d4f11",
+    "research\\p51\\p51-15\\run_benchmarks.py": "bd1f25d916c0b0925337a14fafd992def1262713bd2c08b31e231f0eddd3f3d7",
+    "research\\p51\\p51-15\\run_probe.py": "52fd279984188c9319c41256215aef62d5190e45bfafc2626ee74ab47519c92c",
+    "research\\p51\\p51-15\\run_suite.py": "1653f3ee09355e474a1d53f7c4389b313b192d6e774006e64a9bcc51dd72591b",
+    "research\\p51\\p51-15\\test_inventory.py": "606d55bd2ae1631cce5c1947af15145cacfb6c379b281035b31ac4291d5db833",
+    "research\\p51\\p51-15\\verify_native.py": "a4f10453a94b69f3157b8891ff98bc851a725ac7ade438f3fc4cbd06384c1a47",
+    "research\\p51\\p51-15\\bench_ground.gd": "e809c8e560209cd584762151909241a3e7d16a85bf467df55bb675c85aa8b6d2",
+    "research\\p51\\p51-15\\check_ground_failure.gd": "c098428d13b37c4b057bea6699360667f765ca09634588b626559e7d48a9f9f7",
+    "research\\p51\\p51-15\\envelope_probe.gd": "3dc85835b96317f106e5e7773e6734aef79ec50a3c1ac4aa25936d8c7e59faac",
+    "research\\p51\\p51-15\\ground_probe.gd": "0cfd192e1e72cd82d2a3235bf527ff88e703bec5ce1daca1a6e30acd9ca4b13b"
+  },
+  "frozen_to_final_source_edits": [
+    [
+      "$.propulsion.engine.shaft.power_curve.source",
+      "research/p51/p51-05/derive_physics.py: installed full-throttle brake power: generic two-stroke torque shape (estimated; no DA-120 dyno curve published) scaled to the measured anchor, a 28x10 at 6550 rpm static (Mejzlik 28x10 Cp 0.0238 -> 6901 W)",
+      "research/p51/p51-05/derive_physics.py: installed full-throttle brake power: generic two-stroke torque shape (estimated; no DA-120 dyno curve published) scaled to a secondary reported anchor, a 28x10 at 6550 rpm static; no retained instrumented test record (Mejzlik 28x10 Cp 0.0238 -> 6901 W)"
+    ]
+  ],
+  "no_non_string_changes_outside_inventory": true,
+  "frozen_to_final_only_source_text_changed": true
+}

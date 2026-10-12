@@ -65,7 +65,7 @@ Simulated deployed contacts and menu runway-start eligibility are separate. The 
 
 ## Concurrent ground-profile interface
 
-Observed during AS integration on 2026-10-11; implementation and qualification belong to [GP-03](../../../../GROUND_PHYSICS_PLAN.md). The AS source schema remains closed: these fields live in the separately versioned `openrc-wheel-profiles v1` file, not duplicated in aircraft JSON. [`wheel_profiles.gd`](../../../../app/physics/wheel_profiles.gd) binds the exact aircraft ID and all unique contact names after file-backed aircraft derivation. Applied profiles augment normalized contacts and retain provenance. Invalid data fails the load; absent profiles report `legacy_fallback`, while aircraft without gear report `no_gear` and cannot receive a profile.
+Observed during AS integration on 2026-10-11; implementation and qualification belong to [GP-03](../../ground-physics/GP-05/README.md). The AS source schema remains closed: these fields live in the separately versioned `openrc-wheel-profiles v1` file, not duplicated in aircraft JSON. [`wheel_profiles.gd`](../../../../app/physics/wheel_profiles.gd) binds the exact aircraft ID and all unique contact names after file-backed aircraft derivation. Applied profiles augment normalized contacts and retain provenance. Invalid data fails the load; absent profiles report `legacy_fallback`, while aircraft without gear report `no_gear` and cannot receive a profile.
 
 | Input | Meaning and consumer | Admitted range / dependency |
 | --- | --- | --- |

@@ -2,18 +2,28 @@ class_name AirfieldLighting
 extends Node3D
 
 ## LU-03: scene-local fixture hardware and club windows. Existing FieldLights owns every runway/windsock
-## SpotLight3D and sprite; this node only adds mesh detail, two veranda Omnis, and their dusk driver.
+## SpotLight3D; this node adds mesh detail, two veranda Omnis, the dusk driver, and two batched runway marker optics.
 
 const Frames := preload("res://render/frames.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 const WINDOW_SHADER: Shader = preload("res://render/landscape_upgrade/window_glow.gdshader")
+const RUNWAY_MARKER_SHADER: Shader = preload("res://render/landscape_upgrade/runway_marker.gdshader")
 
 const LIGHTS_ON_ELEVATION_DEG := 3.0
 const FULL_NIGHT_ELEVATION_DEG := -4.0
 const RUNWAY_SPOT_DISPLAY_CAP := 24.0 # per runway flood, scene-linear after current view exposure; art-directed, not a lux claim.
 const AUXILIARY_SPOT_DISPLAY_CAP := 0.6 # windsock flood; lower local display cap, not a lux claim.
 const VERANDA_OMNI_DISPLAY_CAP := 0.12 # per light, scene-linear after current view exposure; art-directed, not a lux claim.
+const RUNWAY_MARKER_DISPLAY_CAP := 1.0 # bounded screen contribution after exposure; art-directed, not a photometric claim.
+const RUNWAY_MARKER_CORE_MIN_PX := 2.5 # practical optical core estimate, measured in the active viewport.
+const RUNWAY_MARKER_HALO_MIN_PX := 6.5 # subdued glow diameter estimate; no bloom/post-process dependency.
+const RUNWAY_MARKER_CAMERA_OFFSET_M := 0.075 # offsets the optical face by approximately the existing lens radius.
+const RUNWAY_MARKER_READABILITY_GAIN_FLOOR := 0.0025 # art-directed floor for a 50 mm light source at the far field.
+const RUNWAY_MARKER_FADE_START_M := 300.0 # estimated useful field distance; no photometric claim.
+const RUNWAY_MARKER_FADE_END_M := 600.0 # fade the readability aid outside the field.
+const RUNWAY_EDGE_ROW := "runway_edge_stakes"
+const RUNWAY_THRESHOLD_ROW := "threshold_stakes"
 const FLOOD_HOUSING := Color("#41484a")
 const FLOOD_SHADE := Color("#303638")
 const METAL_DARK := Color("#373c3b")
@@ -99,8 +109,14 @@ func apply_lighting(snapshot: Dictionary) -> void:
 	for binding: Dictionary in _sprite_bindings:
 		var material: ShaderMaterial = binding.material
 		if is_instance_valid(material):
-			material.set_shader_parameter("radiance", minf(float(binding.radiance) * _sdr_local_gain,
-				float(binding.display_cap) / exposure) * factor)
+			if not str(binding.marker_row).is_empty():
+				# Marker optics apply inverse-square size gain, dusk-aware display cap, and range fade in the shader.
+				# Keep authored radiance intact until after sizing; pre-capping here attenuates twice.
+				material.set_shader_parameter("radiance", float(binding.radiance) * _sdr_local_gain * factor)
+				material.set_shader_parameter("night_factor", factor)
+			else:
+				material.set_shader_parameter("radiance", minf(float(binding.radiance) * _sdr_local_gain,
+					float(binding.display_cap) / exposure) * factor)
 	for omni: OmniLight3D in _omnis:
 		if is_instance_valid(omni):
 			var base_energy := float(omni.get_meta("lu03_base_energy", 0.0))
@@ -167,13 +183,45 @@ func _bind_field_lights(field_lights_node: Node3D) -> void:
 				var material := mesh.surface_get_material(surface) as ShaderMaterial
 				if material == null or material.get_shader_parameter("radiance") == null:
 					continue
+				var marker_row := _runway_marker_row(candidate.name)
+				if not marker_row.is_empty():
+					material = _runway_marker_material(material, marker_row)
+					mesh.surface_set_material(surface, material)
 				if not material.has_meta("lu03_base_radiance"):
 					material.set_meta("lu03_base_radiance", float(material.get_shader_parameter("radiance")))
 				_sprite_bindings.append({"material": material,
 					"radiance": float(material.get_meta("lu03_base_radiance")),
-					"display_cap": maxf(float(material.get_shader_parameter("display_cap")), 0.0)})
+					"display_cap": maxf(float(material.get_shader_parameter("display_cap")), 0.0),
+					"marker_row": marker_row})
 	_last_night_factor = -1.0
 	_last_exposure = -1.0
+	set_meta("bound_sprite_materials", _sprite_bindings.size())
+
+
+static func _runway_marker_row(node_name: String) -> String:
+	if node_name == RUNWAY_EDGE_ROW or node_name == RUNWAY_THRESHOLD_ROW:
+		return node_name
+	return ""
+
+
+static func _runway_marker_material(source: ShaderMaterial, row_name: String) -> ShaderMaterial:
+	var material := source
+	# Keep one material per existing row. Rebinding recognizes this shader and does not clone or duplicate it.
+	if material.shader != RUNWAY_MARKER_SHADER:
+		material = source.duplicate() as ShaderMaterial
+		material.shader = RUNWAY_MARKER_SHADER
+		material.set_shader_parameter("edge_color", Color("#f2d3a2"))
+		material.set_shader_parameter("threshold_green", Color("#22e66d"))
+		material.set_shader_parameter("threshold_red", Color("#ff453c"))
+		material.set_shader_parameter("core_min_px", RUNWAY_MARKER_CORE_MIN_PX)
+		material.set_shader_parameter("halo_min_px", RUNWAY_MARKER_HALO_MIN_PX)
+		material.set_shader_parameter("camera_offset_m", RUNWAY_MARKER_CAMERA_OFFSET_M)
+		material.set_shader_parameter("readability_gain_floor", RUNWAY_MARKER_READABILITY_GAIN_FLOOR)
+		material.set_shader_parameter("distance_fade_start_m", RUNWAY_MARKER_FADE_START_M)
+		material.set_shader_parameter("distance_fade_end_m", RUNWAY_MARKER_FADE_END_M)
+		material.set_shader_parameter("display_cap", RUNWAY_MARKER_DISPLAY_CAP)
+	material.set_shader_parameter("threshold_mode", row_name == RUNWAY_THRESHOLD_ROW)
+	return material
 
 
 static func _spot_display_cap(spot: SpotLight3D) -> float:
@@ -251,7 +299,10 @@ func _add_marker_row(surface: SurfaceTool, fx: Dictionary) -> int:
 	var cap_bottom := maxf(height - cap_height, 0.04)
 	var shaft_height := maxf(cap_bottom - 0.045, 0.02)
 	var lamp := Color(str(fx.get("color", "#e9d5a8"))) if fx.has("color") else FieldLights.kelvin_color(float(fx.get("color_temperature", 3000.0)))
-	var lens := Color(lerpf(0.27, lamp.r, 0.52), lerpf(0.28, lamp.g, 0.52), lerpf(0.27, lamp.b, 0.52))
+	# Threshold face color is supplied per view by the batched optics shader (green outward, red inward).
+	# Keep its small physical lens neutral so a fixed green cap does not contradict the directional cue.
+	var lens := Color("#5f5b52") if str(fx.get("id", "")) == RUNWAY_THRESHOLD_ROW else \
+		Color(lerpf(0.27, lamp.r, 0.52), lerpf(0.28, lamp.g, 0.52), lerpf(0.27, lamp.b, 0.52))
 	for point: Variant in points:
 		if not (point is Array) or (point as Array).size() < 2:
 			continue

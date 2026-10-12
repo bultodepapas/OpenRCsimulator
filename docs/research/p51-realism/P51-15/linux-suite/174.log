@@ -1,0 +1,52 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   legacy calm defaults remain v1
+ok   turbulence practice preset is valid v2
+ok   preset carries NED RMS, tau, and integer seed
+ok   non-integral v2 seed is rejected
+ok   out-of-range turbulence RMS is rejected
+ok   fresh preferences use the gentle turbulent breeze
+ok   legacy weather preferences save
+ok   legacy v1 weather stays in outer schema 1
+ok   v2 weather saves through preferences
+ok   v2 weather reloads through preferences
+ok   v2 weather uses outer schema 2 for old-reader protection
+ok   future preferences read valid v2 weather as read-only
+ok   future v2 preferences cannot be overwritten
+ok   write explicit calm fixture for legacy editor checks
+ok   two-tab dialog fits the 1024×720 base layout
+ok   Wind & Gusts starts selected with all existing controls
+ok   initial legacy config displays turbulence off with zero RMS
+ok   legacy dialog exposes default tau and seed without migrating
+ok   untouched Apply preserves legacy v1 weather
+ok   wind-only edit updates wind and stays v1
+ok   Enable fills the authored practice RMS values
+ok   active-tab focus ring excludes hidden wind fields
+ok   keyboard focus scrolls the turbulence body to the seed field
+ok   cancel discards turbulence draft and returns Home focus
+ok   positive RMS activates turbulence
+ok   Apply saves v2 turbulence values and exact uint32 seed
+ok   Home summary shows turbulence settings
+ok   seed accepts only ASCII digits and rejects a sign
+ok   tau bounds reject invalid edits without committing
+ok   restoring exact seed and tau values applies cleanly
+ok   Turbulence practice is appended after existing presets
+ok   preset Apply commits the validated v2 practice config
+ok   high-precision v2 fixture saves
+ok   precise fields display shortest round-tripping decimals
+ok   untouched high-precision v2 values survive Apply exactly
+ok   Spanish localizes both tabs, turbulence labels, and preset
+ok   Spanish localizes the RMS field label
+ok   future-v2 fixture writes
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future schema applies v2 changes to this session
+ok   future v2 schema save failure appears on Home
+ok   future v2 preferences stay byte-for-byte unchanged
+ok   flight-handoff v2 fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home-to-Fly passes v2 weather to the session
+ok   Home-to-Fly remembers v2 settings
+ok   direct-route v2 fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route keeps calm weather and leaves v2 preferences intact
+all UI turbulence checks passed

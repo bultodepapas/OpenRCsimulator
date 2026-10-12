@@ -1,14 +1,12 @@
 # Turbo Timber Evolution — external-model integration plan
 
-2026-10-08 · Revision 2 · Step prefix: **TT-**
+2026-10-12 · Revision 3 · Step prefix: **TT-** · Owned paths: `assets/aircraft/turbo-timber-evolution/`, `research/timber/`, `app/assets/aircraft/turbo-timber-evolution/`, `app/aircraft/timber_*.gd`, generated `app/data/aircraft/eflite_turbo_timber_evolution.json`, `app/tests/test_timber_*.gd` and `docs/research/timber-integration/`; shared changes stay with their owners.
 
-**Status: TT-00 complete; r1 delivery review TT-00-R1 in progress. Application integration has not started.**
+**Status: TT-00 and TT-00-R1 reviews complete. The r1 GLB is suitable for an isolated viewer; application integration has not started. Asset provenance, reproducible source generation, mass properties and hardware identity remain open.**
 
 Independent aircraft track. This plan owns Timber work; it does not change ROADMAP priorities or the other aircraft developers' plans. Research: [TT-00 evidence](research/timber-integration/TT-00/README.md), [primary sources](research/timber-integration/TT-00/sources.md), [runtime seams](research/timber-integration/TT-00/code-audit.md).
 
-External model-author communication: [Blender aircraft delivery letter](BLENDER-AIRCRAFT-HANDOFF.md), covering Timber corrections and a reusable handoff convention for future models.
-
-Latest delivery: [r1 review](research/timber-integration/TT-00-R1/README.md). Independent binary checks confirm a neutral 64,291-triangle GLB, 36 surfaces and 13 consistent articulation pivots. r1 supplies the proposed handoff structure; reconstruction paths, mass evidence, length and redistribution terms remain open. The v12 inventory below is historical and must not be mistaken for the current export.
+Latest delivery: [r1 review](research/timber-integration/TT-00-R1/README.md). Independent binary checks confirm a neutral 64,291-triangle GLB, 36 surfaces and 13 consistent articulation pivots. r1 supplies the proposed handoff structure; reconstruction paths, mass evidence, length and redistribution terms remain open. The earlier package inventory and dimensional audit are retained in [TT-00 evidence](research/timber-integration/TT-00/README.md).
 
 ## 1. Recommended delivery
 
@@ -20,29 +18,13 @@ Baseline proposal: wheels installed, flaps up, slats off, one documented battery
 
 Deferred: floats/water, thrust reverse, SAFE/AS3X emulation, battery thermal/degradation models, flexible wings, articulated multibody suspension, detachable damage and a general plugin system for aircraft. These are independent features, not conditions for seeing or testing this model.
 
-## 2. Original v12 package inventory
+## 2. Source status
 
-Snapshot and hashes: [inventory.json](research/timber-integration/TT-00/inventory.json). Sizes below are decimal; counts describe the audited source, not a Godot runtime import.
-
-| Resource | Finding | Decision |
-| --- | --- | --- |
-| `turbo_timber_evolution_v12.blend` | 32.5 MB; header identifies Blender 5.2; 171 objects, 130 mesh datablocks, 20 materials; seven cameras, two lights; two actions; 26 objects with drivers, ten with constraints | Primary authoring candidate. Open with a verified compatible Blender build; make a curated export copy. Preserve the original. |
-| `turbo_timber_evolution_v12.step` | 41.2 MB; Open CASCADE/build123d AP214 header | Measurement/repair reference. Keep out of `res://`; do not make CAD a runtime dependency. |
-| `turbo_timber_evolution_v12_step.zip` | 9.34 MB; contains the byte-identical STEP | Delivery archive only; avoid maintaining two canonical CAD copies. |
-| 112 STL parts | 1,134,030 triangles; every part has a material label in `escena.json` | Fallback geometry and measurement inputs. Do not ship the complete CAD tessellation. |
-| `piezas_stl_v12/escena.json` | Seven hinge definitions, six linkage records, contacts, gear pivots, component placeholders, motor angles and control limits | Convert into a versioned manifest with units, frames and evidence. Cross-check against Blender; do not treat it as app physics JSON. |
-| `tren_aterrizaje_v12.py` | build123d gear construction from photo-derived dimensions; different longitudinal datum from the exported sidecar | Useful design intent and parametric repair source. Requires a pinned CAD environment and missing full-airframe context for faithful regeneration. |
-| `auditoria_tren.py` | Clearance/geometry audit requiring external `.brep` cache, `ok.json` and `analisis.json` | Preserve as a reference. Missing inputs prevent reproducing its original results; it does not validate spring stiffness or real landing dynamics. |
-
-No GLB, standalone image texture files, explicit asset license, full aircraft generator, aerodynamic polar or installed propulsion measurements were found. Blender contains only the `Render Result` image datablock; this is not an evaluated shader/export audit.
-
-**Concrete cleanup targets:** springs contain 765,356 triangles (67.5% of all STL triangles); slat supports add 103,736. There are 26 exactly zero-area STL triangles. The Blender mesh datablocks total 1,432,290 stored faces, including studio/helper content; this count is not the runtime triangle count. Optimize the springs and small hardware before reducing the wing/tail silhouette.
-
-**Dimensional discrepancy:** assembled STL bounds suggest 1,548.1 mm span and 1,116.2 mm longitudinal extent. The current manual gives 1,555 mm span and 1,040 mm length. Span differs by −0.45%, length by +7.3%. Establish matching endpoints, poses and revision before any scaling. Scaling the whole aircraft to fix length would spoil the span. [Manufacturer reference and limits](research/timber-integration/TT-00/sources.md)
+The earlier v12 Blender, STEP, STL and sidecar audit is preserved in [TT-00](research/timber-integration/TT-00/README.md). The current r1 GLB has no external texture or buffer dependencies and imports independently, but it does not make the supplied reconstruction scripts reproducible. Its stated 1.46 kg mass is far below the documented 2.19 kg B-revision aircraft; the actual hardware revision and 76.6 mm length discrepancy remain unresolved. Redistribution permission is limited to internal evaluation. Do not derive flight data from these mass properties or distribute the asset until its source, configuration and terms are settled.
 
 ## 3. Ownership and resource organization
 
-Current delivery writes only this plan, its evidence/scripts and additive documentation-index entries. The supplied folder remains intact because it is the external handoff and was changing during initial inspection. TT-01 freezes its accepted hashes before creating derived assets.
+The incoming source package remains intact as an external handoff. TT-01 must record its accepted hashes, origin, license, hardware revision and selected loadout before creating derived assets.
 
 Proposed paths below do not exist until their implementation step:
 
@@ -85,6 +67,10 @@ Timber owns only its new named paths. Shared changes stay small and pass through
 Do not edit existing aircraft geometry, regenerate their data, or re-record their goldens as part of Timber integration. Re-read current code and `git status` before each shared patch. Keep drafts outside `app/`; its harness parses every script. Do not move the incoming folder until references are searched and the accepted source snapshot is stable. If storage or ignore rules change, prove the resulting pipeline from a fresh clone with authoring assets acquired by the documented method.
 
 ## 4. Authoring and runtime contract
+
+For this and future external aircraft handoffs, record the asset revision/hash, author and redistribution terms, intended hardware/loadout, tool/export versions, units, axes and neutral datum. Include asymmetric landmarks, stable moving-part names, pivot/parent/axis/rest pose/range, and the evidence source for each dimension. Keep the editable master separate from a curated runtime export; split fixed from rotating parts, preserve moving markings and horns, and verify a fresh export/import against the stated landmarks. Do not infer flight mass or aerodynamic data from rendered geometry.
+
+These fields are a proposed intake convention, not an app-facing schema. Agree the smallest useful sample before requesting a full-detail delivery.
 
 ### Source selection and export
 
@@ -162,15 +148,15 @@ SAFE/AS3X are receiver control behavior, distinct from airframe dynamics. First 
 
 ## 6. Steps and exit proofs
 
-Each row is one bounded change, with an evidence folder named for its ID. Shared prerequisites remain owned by their existing tracks. All rows except TT-00 are planned.
+Each row is one bounded change, with an evidence folder named for its ID. Shared prerequisites remain owned by their existing tracks. TT-00 and TT-00-R1 are complete source reviews; app integration has not started.
 
 | ID | Step / deliverable | Dependencies | Proof / exit condition | Status (date) |
 | --- | --- | --- | --- | --- |
 | TT-00 | Inventory, source research, code seams and this plan | Supplied folder | Hash manifest; static Blender/STL counts; official references; integration risks recorded | Complete (2026-10-08) |
-| TT-00-R1 | Review external game delivery r1 against the handoff letter | TT-00; new r1 package | Independent GLB/metadata audit, source-pipeline review and isolated Godot import/pose evidence | In progress (2026-10-08) |
+| TT-00-R1 | Review external game delivery r1 against the handoff contract in §4 | TT-00; new r1 package | Independent GLB/metadata audit, source-pipeline review and isolated Godot import/pose evidence; source, mass, dimensional and license issues recorded | Complete (2026-10-08) |
 | TT-01 | Freeze accepted source and identify variant/loadout | Owner/model-author facts | Stable hashes, asset-origin/license record, exact Blender build, successful visual open, original preserved; missing CAD inputs listed | Planned |
 | TT-02 | Normalize datum and measure anchors | TT-01 | Axis-marker test; span/length discrepancy resolved or explicitly bounded; hinge/CG/contact tables; no double scaling | Planned |
-| TT-03 | Minimal curated GLB and isolated Godot viewer | TT-02 | Clean import without Blender installed on consumer; neutral assembled model in six views; required nodes/materials survive export | Planned |
+| TT-03 | Minimal curated GLB and isolated Godot viewer | TT-02 | Clean Blender reimport and Godot import; neutral assembled model in six views; required nodes/materials survive export; consumer needs no Blender | Planned |
 | TT-04 | Reduce CAD detail and clean materials | TT-03 | Before/after mesh/surface counts, identical critical anchors, silhouette comparisons; no visible missing parts or coplanar flicker | Planned |
 | TT-05 | Articulate controls, rotor and wheels in viewer | TT-03; TT-04 for accepted asset | Neutral/extreme/combined poses, sign and pivot checks, attached horns/markings, stationary motor mount, two-instance isolation; reimport repeatable | Planned |
 | TT-06 | Register one preview ID, proposed `eflite-turbo-timber-evolution` | TT-04/05; model/menu owners | Catalog → correct builder/datum; preview cannot fly; scripted preview works; existing aircraft still resolve | Planned |
@@ -211,4 +197,4 @@ On a GLB/path/import change, test a fresh clone and a packaged build: neither `.
 4. Which asset redistribution terms apply? Record them before distributing source/assets with the repository; local inspection and planning are already useful.
 5. Which motor/propeller, mass/inertia and assist-off flight measurements can be collected? Missing measurements limit confidence and labeling, not honest experimental work.
 
-**Next concrete step after the r1 review:** close TT-01 provenance/configuration and reproducible-generation gaps, resolve or bound TT-02 dimensional discrepancies, and reuse r1’s curated GLB for TT-03. Axis/name/sign adaptation belongs in the simulator adapter. Electric propulsion and flight flaps remain later shared prerequisites.
+**Next: TT-01.** Freeze the source and terms, choose the hardware/loadout, and document the reproducible source-generation gaps. Then resolve or bound TT-02 dimensions before importing the curated r1 GLB in TT-03. Axis/name/sign conversion belongs in the simulator adapter. Electric propulsion, flight flaps and ground behavior remain later shared prerequisites.

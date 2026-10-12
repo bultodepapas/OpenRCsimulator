@@ -6,7 +6,7 @@
 
 Esto identifica el mecanismo en el simulador; **no determina todavía el coeficiente correcto del Ugly Stik real**. El usuario no había precisado dispositivo, velocidad ni maniobra al realizar esta auditoría. No se dispone de su traza: el escenario reproducido es una explicación fuerte del síntoma, no una reproducción certificada de su vuelo particular.
 
-Solo se añaden investigación y plan. Ningún parámetro de producción, golden ni script de `app/` se modifica. [Plan de reparación](../RUDDER-REPAIR-PLAN.md).
+Solo se añaden investigación y plan. Ningún parámetro de producción, golden ni script de `app/` se modifica. [Plan de reparación](flight-repair-implementation.md).
 
 ## Reproducción y límites
 

@@ -1,0 +1,57 @@
+# P-51D RC flight realism
+
+2026-10-12 · Revision 2 · **Status: P51-15…18 audit, bounded correction and verification complete; physical acceptance remains experimental.** Prefix: P51-. This plan owns P51-15…18, following [P51-PLAN](P51-PLAN.md) and the completed [aircraft contract](../AIRCRAFT_CONTRACT.md). Revision 1 completed the audit and implementation plan before code changes; this revision records execution.
+
+## Objective and ownership
+
+Audit all flight behavior of the 2.82 m, 120 cc P-51D and correct demonstrable implementation errors. Preserve its explicitly estimated reference build and experimental status. RC measurements, numerical checks and full-size historical evidence are different kinds of evidence. Passing a scripted flight is not physical validation.
+
+The lead owns this plan, `research/p51/p51-15/`, `docs/research/p51-realism/`, narrow edits to the P51-05 generator and generated physics/report, and P-51 test changes. Three bounded Luna/max tasks audit configuration/consumers, primary sources, and ground/lifecycle coverage. The lead reviews each contribution and integrates it. Existing model, ground, crash, UI, weather and scenery teams retain their paths. No external developer endpoint is available; this records an ownership reservation, not their acknowledgement. Check the shared checkout before every shared-document edit and preserve concurrent work.
+
+## Findings from the baseline audit
+
+Baseline: clean commit `df36b44`; Godot 4.7.2 official, native Windows. Existing handling/envelope/ground tests pass 15 + 15 + 11 checks. Current observations differ from historical reports: power-off/on stall 15.3/14.1 m/s; takeoff 37 m; wheel landing sink 1.15 m/s and rollout 140 m. Save reproducible logs before changes. Graph searches returned no P-51 definitions and only AGENTS text; actual source reads are authoritative here.
+
+| System and path | Finding / decision |
+| --- | --- |
+| Source → geometry → physics → `AircraftData` → `FlightSession` | Generated v2 data obeys the shared contract. Change the generator, never the generated JSON alone. Keep SI/LE/FRD conventions and float64 simulation state. |
+| Mass and inertia, P51-05 inventory | Paired servos and main gear are collapsed into centerline uniform boxes spanning the pair. A pair has parallel-axis inertia from two separated masses, not the intrinsic inertia of a continuous slab. Split these entries, retaining their total mass, longitudinal/vertical centers and symmetric lateral CG; state which positions and local envelopes are estimates. Independently verify the tensor and resulting roll/transient changes. |
+| Aero/control provenance | Several exported descriptions are stale: Oswald 0.80 vs implemented 0.75; parabolic vs integrated camber; CLmax formula; mm-converted vs selected degree throws. Correct provenance without silently retuning coefficients. Solved rudder trim does not implement a fixed fin incidence; remove that claim and document the omitted effect. |
+| Trim and stability | Full-size wing/stab rigging produces about 6.12° up elevator at 25 m/s. Neutral point 34.2% MAC is calibrated to full-size XP-51 evidence. Reynolds similarity is not established. Keep these explicit hypotheses; do not tune them merely to make a regression pass. |
+| Propulsion | DA-120 manufacturer lists two/three-blade propellers; the selected four-blade 26×12 remains an unmeasured BEM extrapolation. Torque-curve shape, static RPM anchor and windmilling drag need measurements. Split shaft integration is the current default; coupled RK4 exists as an explicit simulation option. Audit and compare transients without changing other aircraft defaults. |
+| Gear, terrain and lifecycle | Fixed/locked-down taildragger, no brakes, prescribed half-tank fuel. Production runway start explicitly permits only Ugly Stik and requires stiction. P-51 ground tests construct a pose; they do not prove a selectable runway launch. Current helper writes four aux slots and does not check every reset/fault; preserve current complete continuous state and fail honestly on invalid starts. |
+| Controls, animation, damage | Shared input/servo/hinge conventions and terminal hull crash are used; geometry remains source-owned. Audit throw signs, stop/reset/replay and terrain contact. No flaps/retract animation may claim a force effect while those modules are inactive. |
+
+## Architecture and physical decisions
+
+1. Keep authored data, derived tensor/coefficients and runtime state separate under [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md). No new capability, magic aircraft-ID physics branch or unsupported coefficient is needed for the bounded corrections.
+2. Represent paired hardware as two inventory components at opposite lateral positions. The existing loader computes the complete symmetric inertia tensor with the parallel-axis theorem. Preserve the estimated flight mass and CG target; verify inertia positivity and triangle inequalities. Local component envelopes must describe each item, not the empty space between items.
+3. Use current session initialization for probes, and retain all continuous state slots (wash, shaft and wheels when enabled). Test reset success, fault state, trace timing and finite results. No silent fallback to a different aircraft/start.
+4. Audit upright/inverted trim, speed/climb/glide, left/right rolls, turns/slips, pitch/yaw response, loop trajectory, stall/spin entry and recovery, throttle steps, wind/density sensitivity, takeoff/landing/rollout, crash/restart and exact replay. Guided maneuvers are labelled as such. Integrated body pitch rate alone does not establish a closed planar loop.
+5. Document planned flaps/retracts, fin incidence, fuel burn/CG travel, measured tires/oleos, wash transport and calibrated propeller/engine maps as gaps. Do not expand features during this correction pass.
+
+## Phases and acceptance
+
+| Step | Work | Measurable acceptance |
+| --- | --- | --- |
+| P51-15 | Freeze baseline, independent source/consumer audit and references | Hash the tested app and research scripts; retain primary URLs and evidence limits. Trace every changed parameter to its loader/force/animation consumer. Review all three audit contributions. |
+| P51-16 | Correct paired inertia and quantity provenance through generator | Generator `--check` passes; mass/CG unchanged within JSON quantization (10 micrograms / 1 micrometre), independent separated-pair tensor oracle passes, positive-definite physical inertia; no other aircraft numeric edits. Document intentional inertia and transient changes. |
+| P51-17 | Repair test initialization and extend flight/lifecycle evidence | Engine errors and setup/fault failures fail the runner. Exercise all above behaviors at 240 Hz and compare selected ground/stall/control/throttle cases at 480 Hz. Predeclare comparison bands (1% steady metrics; 5% smooth transient metrics; event/near-stall differences reported individually). Never widen a physical band merely to pass. Capture crash/reset/checkpoint proof. |
+| P51-18 | Integration and performance verification | Run P-51 checks, schema/generator checks, all four model contracts, affected shared physics/lifecycle checks and `app/test.sh` in an isolated LF checkout with separate user-data directories. Attribute unrelated failures by reproducing on baseline. Measure trim/stalled/ground tick cost on the same host; investigate >5% repeatable regression, retain timing variability. Review final diff and document all remaining gaps. |
+
+## Execution and acceptance disposition
+
+| Step | Status and proof |
+| --- | --- |
+| P51-15 | Complete. Three Luna/max contributions reviewed; [source audit](research/p51-realism/P51-15/sources.md), [physics audit](research/p51-realism/P51-15/physics-audit.md), [ground audit](research/p51-realism/P51-15/ground-audit.md), frozen app manifests and per-run identities retained. No external owner acknowledgement is claimed. |
+| P51-16 | Complete. Split paired hardware; roll/yaw inertia +0.449604 kg·m², mass/CG and all aero/propulsion numeric values retained. Independent tensor oracle, generator freshness and final v2 data/contract checks pass. Source labels corrected without numerical retuning. |
+| P51-17 | Complete. 39 scenarios × two revisions × two rates; all finite/complete. Selected steady/smooth metrics meet the stated bands. Nonlinear stalls/spins, unequal trim-offset input clipping, stochastic weather and contact-only landing path sensitivity are reported individually. Exact replay and crash restart pass. Four stricter ground reruns reproduce the original reports; an injected finite-crash negative control fails correctly. |
+| P51-18 | Verification complete with explicit exceptions. Native P-51 42 checks and all four model contracts pass. Fresh LF full-suite attempt plus continuation: 206/208 unit scripts, 27/27 downstream groups pass; two failures reproduce on baseline. Nine final provenance/CI checks pass. Alternating performance runs show no repeatable >5% regression, but both versions exceed the existing 500 µs target. Real-pilot/target-hardware physical acceptance remains open. [Integration and timings](research/p51-realism/P51-15/integration.md). |
+
+The root reviewed the final source/data diff, independent inertia math, all contributed reports, failure exits, input saturation and metric definitions. Parallel documentation consolidation changed shared plan files during the work; only narrow navigation additions were made and other tracks' edits were retained. The [audit/results entry point](research/p51-realism/README.md) and [tool instructions](../research/p51/p51-15/README.md) preserve the outcomes and remaining work.
+
+## Risks and references
+
+Changing inertia can alter nonlinear wing drop, spin recovery and ground yaw even with identical steady trim. Ground controllers can hide directional errors; include open-loop and both-sign cases. The soft gear is an explicit numerical approximation. A frozen baseline avoids attributing parallel work to this change. Real-radio/pilot feel, logged real-aircraft flights and low-end hardware acceptance cannot be replaced by headless tests.
+
+Primary starting references, accessed 2026-10-12: [Desert Aircraft DA-120 specifications](https://www.desertaircraft.com/products/da-120), [NACA XP-51 flying qualities](https://ntrs.nasa.gov/citations/19930092575), [NACA low-Re section investigation TN 1945](https://ntrs.nasa.gov/citations/19930082618), [Mejzlik propeller data](https://www.mejzlik.eu/propeller-data). The engine maker supports the engine class and recommended prop sizes, not the installed four-blade map. Historical aircraft data does not establish quarter-scale RC behavior. Retain source-specific findings in the evidence report.

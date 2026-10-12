@@ -1,10 +1,29 @@
 # Tooling index
 
-**Updated:** 2026-10-08
+**Updated:** 2026-10-12
 
-**Status:** Practical entrypoints for the current app, evidence reducers, visual tools and research experiments. Code defines behavior and accepted inputs; the owning plan records status, and each tool README describes its usage contract.
+**Status:** Canonical developer setup, command and tool index. Runtime code and data define behavior; owning plans record step status, and tool READMEs describe usage contracts.
 
-Run commands from the repository root unless a command says otherwise. `$(app/get-godot.sh)` resolves the pinned Godot 4.7.2 binary and downloads it to ignored `.tools/` when needed. Visual render checks use Xvfb and the pinned Python environment returned by `app/tests/visual-env.sh`. Generated captures and local source references are not committed.
+Run repository commands from the root unless a command says otherwise. Runtime code and data define behavior; the linked plan records work status, and each tool README gives its input and evidence contract.
+
+## Developer setup
+
+The checked CI environment is Ubuntu 24.04 x86_64. The main command scripts are Bash/Linux tools: install Git, Bash, curl, unzip, `sha512sum`, GNU coreutils, util-linux and Python 3, then run `app/get-godot.sh`. It downloads the pinned Godot 4.7.2 Linux binary, verifies its SHA-512, and stores it in ignored `.tools/`. `app/test.sh` and `research/test-tools.sh` need no display. `app/capture.sh` also needs Xvfb, Mesa/OpenGL, Python venv support and pip 22.3 or newer; `app/tests/visual-env.sh` creates the hashed CPython 3.12 environment in `.tools/visual-venv`. `app/export.sh` needs `zip` and the verified export templates; the first template download is about 1.28 GB and installs under `$XDG_DATA_HOME/godot/export_templates/4.7.2.stable` or `~/.local/share/godot/export_templates/4.7.2.stable`.
+
+On Windows, `app/get-godot.sh`, `app/test.sh`, `app/capture.sh` and `app/export.sh` are not PowerShell scripts. Use WSL2 Ubuntu with the checkout on its Linux filesystem for the complete test, capture and export workflow. For a native Windows interactive run, install the matching Godot 4.7.2 Windows build and set its path in PowerShell:
+
+```powershell
+$GodotWindows = 'C:\Tools\Godot_v4.7.2-stable_win64.exe'
+& $GodotWindows --path app
+```
+
+Native Windows checks for audio or GPU rendering are tool-specific; follow the platform instructions in [tools/audio](../tools/audio/README.md) and [tools/shadows](../tools/shadows/README.md). The `.nvmrc` pins Node 24 for the archived three.js build and the tree authoring pipeline; Node is not needed for the Godot app checks.
+
+To run the GitHub Actions app job locally, use Docker and `act` from the repository root:
+
+```sh
+act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app
+```
 
 ## App and release commands
 
@@ -14,32 +33,40 @@ Run commands from the repository root unless a command says otherwise. `$(app/ge
 | Run checks | `app/test.sh` | Headless parse, unit, app-route, model-contract, trace and frame-rate checks. It checks every GDScript in `app/`; a parse error fails the run. |
 | Offline tool regressions | `research/test-tools.sh` | Bounded reducer/importer/audit harness tests used by CI; synthetic fixtures do not close physical gates. |
 | Capture app visuals | `app/capture.sh` | Xvfb render set, image checks, traces, scenario comparisons and a complete run manifest under ignored `app/captures/`. |
-| Preview optional scenery | `app/run-landscape.sh` | Opens the app with `OPENRC_SCENERY=on`; scenery remains opt-in in the regular app. |
+| Launch the complete field | `app/run-landscape.sh` | Opens the app with scenery forced on, including when `OPENRC_SCENERY=off` is inherited. Scenery is on by default in regular launches; opt out with `OPENRC_SCENERY=off` or `-- --scenery=off`. |
+| Quick flight | `"$(app/get-godot.sh)" --path app -- --quick-flight` | Skips Home and starts a direct flight without reading or writing preferences. Defaults to the Ugly Stik; add `--aircraft=<catalog-id>` to select another aircraft from the [catalog](../app/app_state/aircraft_catalog.gd). |
+| Headless flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=/tmp/openrc-trace.csv --t=3` | Writes an `openrc-trace` CSV with an initial sample and one row per 240 Hz tick; active-model metadata is documented in [C7-R2](research/trace-integrity/C7-R2/README.md). |
+| Physics benchmark | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Measures simulation cost per tick; this is a performance measurement, not physical validation. |
+| Sensitivity sweep | `"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/sensitivity/sensitivity.gd"` | Reproducible parameter sensitivity table. This is a simulation study, not independent physical validation. |
 | Build release packages | `app/export.sh` | Windows, Linux and macOS builds, smoke checks, archives and SHA256SUMS in `dist/`; export templates are downloaded and verified as needed. |
 | Check the exported runway route | `python3 docs/research/menu-investigations/UI-06c/run_export_smoke.py --binary dist/linux/openrc-simulator.x86_64 --out /tmp/runway-export-review` | Linux/Xvfb native keyboard smoke, Recorder traces, export identity, CLI parity and isolated preferences. Requires X11/XTest and the pinned visual Python environment; [contract and pilot card](research/menu-investigations/UI-06c/README.md). This is software verification, not a pilot trial. |
-| Run the app | `$(app/get-godot.sh) --path app` | Opens the Godot app. See [AGENTS.md](../AGENTS.md) for controls and aircraft IDs. |
+| Run the app | `"$(app/get-godot.sh)" --path app` | Opens Home. See [first-launch controls](FIRST-LAUNCH.md) and the [aircraft catalog](../app/app_state/aircraft_catalog.gd). |
+
+The archived three.js bake-off is separate from the Godot app. Its CI recipe uses Node 24 from `.nvmrc`, runs `npm ci`, `npm run typecheck`, `npm test`, installs Chromium with `npx playwright install --with-deps chromium`, then runs `npm run capture` and `npm run e2e` from `prototypes/stage0/three/`.
 
 `app/capture.sh` composes focused checks from `tools/` and `app/tests/`. Use the focused command below when iterating on one visual feature; the complete capture run is broader and takes longer. `app/test.sh` is the normal software verification suite, not evidence that a model matches a real aircraft.
 
+The GitHub Actions `app` job (`.github/workflows/ci.yml`) runs aircraft-schema contract checks and generated-geometry/physics `--check` commands before `research/test-tools.sh`, `app/test.sh` and `app/capture.sh`. Use the `act` command above to reproduce that complete job locally; running `app/test.sh` alone does not run every generator check. Export is a separate conditional job.
+
 ## Release sequence
 
-1. Finish a small, committed change and review the selected diff. Retain per-step proof in `docs/research/`; stage explicit paths in the shared checkout.
-2. Run app, offline-tool, schema/generator and capture checks. Build with `app/export.sh` in an isolated checkout with enough output and temporary space; inspect failures before tagging.
-3. Add `docs/releases/<tag>.md`. The tag's numeric version must match `app/project.godot`; `git describe` supplies the complete package/build identity.
-4. Push the reviewed commit and `v*` tag to the repository. CI repeats checks, exports all platforms and publishes a prerelease with checksums. Tags without their own notes fail before packaging.
-5. Check the tagged workflow and download/verify its three ZIPs and `SHA256SUMS`. Keep native OS, radio, GPU and pilot acceptance separate from this software release proof.
+1. Review the selected diff and retain each step's proof under `docs/research/`; stage explicit paths in the shared checkout.
+2. Run the relevant app, offline-tool, schema/generator and capture checks. Build from an isolated Linux checkout with `app/export.sh`; it deletes and recreates the whole `dist/` directory, so do not keep unrelated files there.
+3. The export script takes no version argument. Add `docs/releases/<tag>.md`; a `vX.Y.Z` tag must match `app/project.godot`, while `git describe` supplies the full package/build identity.
+4. Push the reviewed commit and tag. CI runs app checks on pushes and pull requests; it exports on `main`, `v*` tags and manual dispatch. A `v*` tag publishes a GitHub prerelease after its own release notes pass.
+5. Check the tagged workflow and verify the three ZIPs and `dist/SHA256SUMS`. Export smoke tests cover the Linux binary and structural pack checks; native OS, radio, GPU and pilot acceptance remain separate evidence.
 
 ## Radio diagnostics
 
 | Step | Command | Inputs and limits |
 | --- | --- | --- |
-| [F1 input report](research/radio-input/F1/README.md) | `$(app/get-godot.sh) --path app -- --input-report=input-report.json --t=20` | Observe a connected radio and move every control. Produces `openrc-input-report v1`; the duration defaults to 10 s and is capped at 3600 s. It records Godot callback times, not hardware report intervals, RF state or stick-to-screen latency. An empty device list is a successful diagnostic. |
-| [F6a live marker](research/radio-input/F6a/README.md) | `$(app/get-godot.sh) --path app -- --latency-patch --latency-axis=0 --latency-threshold=0` | Starts a live flight and marks when the selected raw Godot axis crosses the threshold. Axis is 0–9; threshold must be strictly between −1 and +1 in raw-axis units. Film the stick reference and marker together using the F6a protocol. The marker is not a software latency estimate and does not include servo or aircraft response. |
+| [F1 input report](research/radio-input/F1/README.md) | `"$(app/get-godot.sh)" --path app -- --input-report=input-report.json --t=20` | Observe a connected radio and move every control. Produces `openrc-input-report v1`; the duration defaults to 10 s and is capped at 3600 s. It records Godot callback times, not hardware report intervals, RF state or stick-to-screen latency. An empty device list is a successful diagnostic. |
+| [F6a live marker](research/radio-input/F6a/README.md) | `"$(app/get-godot.sh)" --path app -- --latency-patch --latency-axis=0 --latency-threshold=0` | Starts a live flight and marks when the selected raw Godot axis crosses the threshold. Axis is 0–9; threshold must be strictly between −1 and +1 in raw-axis units. Film the stick reference and marker together using the F6a protocol. The marker is not a software latency estimate and does not include servo or aircraft response. |
 | [D6b-R2 calibration checks](research/radio-input/D6b-R2/README.md) | `python3 research/input/d6b-r2/verify.py --out /tmp/d6b-r2-proof` | Fresh output folder; pinned Godot and Python standard library. Runs the valid reader and seven intentional defects only in disposable projects; optional `--baseline` reproduces the old reader. Preserves connection-wide raw history for the latency marker. Software checks do not qualify physical controllers. |
-| [Wind/gust flight](research/wind-implementation/README.md) | `$(app/get-godot.sh) --path app -- --weather=gusty` | Home → Weather offers precise EN/ES editing and persistence. Technical presets/files/SI overrides bypass player settings. Uniform field and regular cosine pulses; authored practice conditions, not atmospheric validation. |
-| [Field atmosphere](research/atmosphere/M5-ATM-2/README.md) | `$(app/get-godot.sh) --path app -- --weather=hot-high` | Home → Weather → Atmosphere sets geometric field elevation, temperature, QNH and liquid-water RH. Produce `--trace=/tmp/air.csv --t=3`; verify with `python3 app/tests/check_atmosphere_trace.py /tmp/air.csv --duration=3`. Reference stays literal sea-level physics; custom atmosphere uses v6 telemetry. |
-| [Fixed time of day](research/time-of-day-investigations/TOD-05/README.md) | `$(app/get-godot.sh) --path app -- --time-of-day=05:45 --date=2026-03-20` | Home → Weather → Time of day offers exact local time, event presets and date/location/UTC offset. Direct routes use an explicit selection or legacy daylight, never preferences. `--lighting-config=/absolute/path.json` supplies the complete configuration; astronomical traces carry an optional frozen `visual_context` header. Flight physics and weather stay independent. |
-| [Seeded turbulence](research/wind-implementation/M5-W04a/README.md) | `$(app/get-godot.sh) --path app -- --weather=turbulent` | Home → Weather → Turbulence sets N/E/Up RMS, wall-time correlation and uint32 seed. Spatially uniform temporal practice approximation; exact local checkpoint/RNG replay. Use `--trace=/tmp/ou.csv --t=3` and the v4/v5 reader for diagnostics. |
+| [Wind/gust flight](research/wind-implementation/README.md) | `"$(app/get-godot.sh)" --path app -- --weather=gusty` | Home → Weather offers precise EN/ES editing and persistence. Technical presets/files/SI overrides bypass player settings. Uniform field and regular cosine pulses; authored practice conditions, not atmospheric validation. |
+| [Field atmosphere](research/atmosphere/M5-ATM-2/README.md) | `"$(app/get-godot.sh)" --path app -- --weather=hot-high` | Home → Weather → Atmosphere sets geometric field elevation, temperature, QNH and liquid-water RH. Produce `--trace=/tmp/air.csv --t=3`; verify with `python3 app/tests/check_atmosphere_trace.py /tmp/air.csv --duration=3`. Reference stays literal sea-level physics; custom atmosphere uses v6 telemetry. |
+| [Fixed time of day](research/time-of-day-investigations/TOD-05/README.md) | `"$(app/get-godot.sh)" --path app -- --time-of-day=05:45 --date=2026-03-20` | Home → Weather → Time of day offers exact local time, event presets and date/location/UTC offset. Direct routes use an explicit selection or legacy daylight, never preferences. `--lighting-config=/absolute/path.json` supplies the complete configuration; astronomical traces carry an optional frozen `visual_context` header. Flight physics and weather stay independent. |
+| [Seeded turbulence](research/wind-implementation/M5-W04a/README.md) | `"$(app/get-godot.sh)" --path app -- --weather=turbulent` | Home → Weather → Turbulence sets N/E/Up RMS, wall-time correlation and uint32 seed. Spatially uniform temporal practice approximation; exact local checkpoint/RNG replay. Use `--trace=/tmp/ou.csv --t=3` and the v4/v5 reader for diagnostics. |
 | [Wind trace v4/v5 check](research/wind-implementation/README.md) | `python3 app/tests/check_wind_trace.py /tmp/gust.csv --duration 5` | Produce with `--weather=gusty --trace=/tmp/gust.csv --t=5`. Checks finite continuous rows, requested duration, independent wind/rotation equations and state/k1 timing. Calm retains v3; old v3-only analysis tools reject windy v4/v5. V5 reconstructs seeded PCG32/normal53/OU from its exact first interval. |
 | [F6b video reducer](../research/radio-latency/README.md) | `python3 research/radio-latency/reduce.py research/radio-latency/example.synthetic.json research/radio-latency/example.synthetic.csv` | Requires a campaign manifest and annotation CSV. Real campaigns need original-clip hashes, verified acquisition cadence and retained frame annotations. It does not decode video or authenticate annotations; synthetic examples are not physical measurements. |
 
@@ -75,15 +102,18 @@ Immersive soundscape: [AUD tools](../tools/audio/README.md) regenerate and verif
 | [E5b nose-over verification](../research/ground-contact/e5b/README.md) | `python3 research/ground-contact/e5b/verify.py --out /tmp/e5b-verification --mutations` | Pinned Godot, Python standard library and Git; fresh output directory. Separates tail-up pitch-moment reversal from three-point tail unloading, with rigid-limit refinement, synthetic patch crossings and disposable-clone defects. No soft-ground calibration or crash acceptance. |
 | [E4b long-circuit sensitivity](research/ground-contact/E4b/README.md) | `python3 research/landing/e4b/measure.py --out /tmp/e4b-proof` | Requires Python standard library and pinned Godot; output directory must be new. Optional `--source` selects an isolated app snapshot and `--godot` selects the engine. It replays the frozen E4a tape in disposable copies and measures adjacent-float math sensitivity. It covers one calm, eastbound, wash-off Stik circuit on the executing platform. `ok: true` means the experiment completed, not that every perturbation stayed within tolerance. |
 | [VAL-3 modal dashboard](../research/validation/README.md) | `python3 research/validation/dashboard.py` or `python3 research/validation/dashboard.py --check` | Uses current Stik analysis and locally supplied modal reference JSON. Writes `dashboard.md` and `snapshot.json`; `--check` detects stale/tampered output. Red reference comparisons are diagnostic results, not software failures or aircraft acceptance. |
-| Sensitivity sweep | `$(app/get-godot.sh) --headless --path app --script "$PWD/research/sensitivity/sensitivity.gd"` | Reproducible parameter sensitivity table. This is a simulation study, not independent physical validation. |
 | Aircraft data derivation | See the aircraft step READMEs, e.g. [`P51-05`](../research/p51/p51-05/derivation.md), [`EX-05`](../research/extra-300/ex05/derivation.md), and [`AV-06`](../research/avanti-s/av06/derivation.md). | These scripts generate checked-in model/data outputs from documented measurements and assumptions. Regenerate them; do not hand-edit generated outputs. |
 
 The complete map of research reports and experiment families is in [docs/research/README.md](research/README.md). It distinguishes the committed report/evidence in `docs/research/` from reproducible scripts and data under root `research/`. Some aircraft scripts require local-only files under ignored `references/` and cannot be rerun from a fresh clone.
 
-## Visual and asset tools
+## Rendering, field, audio and asset tools
 
 | Tool family | Useful entrypoints | Inputs, dependencies and limits |
 | --- | --- | --- |
+| Soundscape | See [tools/audio/README.md](../tools/audio/README.md) for PCM generation, deterministic parity, playback capture and export-pack checks. | The Python generator uses pinned NumPy. Native WASAPI evidence is Windows-specific; a Dummy driver verifies software paths only. |
+| Landscape lighting and glare | See [tools/landscape/README.md](../tools/landscape/README.md) for production captures, glare image checks and source snapshots. | Requires pinned Godot 4.7.2; optional Pillow evidence dependencies are listed there. Results are tied to the recorded renderer and hardware. |
+| Projected shadows | See [tools/shadows/README.md](../tools/shadows/README.md) for native capture, parity and GPU profiles. | Requires a display and the pinned Godot build. Compare only the same hardware, resolution and scene; headless rendering cannot establish mask quality or GPU cost. |
+| Field world | See [tools/world/README.md](../tools/world/README.md) for fixed-world parity, sky/star generation and time-of-day captures. | The parity capture needs Xvfb or a display and uses llvmpipe. `app/test.sh` checks the generated sky table and star list. |
 | Trees | `python3 tools/trees/place.py --check`; `"$(app/tests/visual-env.sh)" tools/trees/check_review.py --app app --godot "$(app/get-godot.sh)" --out /tmp/tree-review` | Placement check compares generated field data. `check_review.py` uses Xvfb/OpenGL for the runtime MultiMesh and shader path. The source-to-atlas bake is documented in [tools/trees/README.md](../tools/trees/README.md); it needs Node 24 (`npm ci --prefix tools/trees`), pinned Godot and the visual environment, and writes only to a fresh `--out` directory. It does not update `app/` automatically. |
 | Grass | `python3 tools/grass/place.py --check`; `"$(app/tests/visual-env.sh)" tools/grass/check_grass.py --app app --godot "$(app/get-godot.sh)" --out /tmp/grass-review` | Generator verifies the committed visual-only clump layout; renderer check captures production A/B and requires Xvfb/OpenGL. For edge seams use the `check_grass_seam.py` command in the [README](../tools/grass/README.md). The layout is estimated and unsurveyed, not collision or terrain data. |
 | Horizon terrain | `python3 tools/terrain/gen_terrain.py --check`; `"$(app/tests/visual-env.sh)" tools/terrain/check_horizon.py --app app --godot "$(app/get-godot.sh)" --out /tmp/horizon-review` | The generator checks the visual hill profile in `app/data/fields/horizon.json`; the render checker needs Xvfb/OpenGL. This is a distant visual profile, not a full terrain grid or physics/collision surface. |

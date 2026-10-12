@@ -16,7 +16,7 @@ El servo y la varilla de gas son una instalación estática estimada porque la i
 
 ## Evidencia
 
-Fuentes de montaje: [plan visual](../UGLY-STIK-VISUAL-PLAN.md), [06 · instalación de servos](ugly-stik-visual-investigations/06-servo-installation.md) y [07 · cuernos y varillas](ugly-stik-visual-investigations/07-control-linkages.md). La hoja Jensen inspeccionada es `references/ugly-stik/calibration-v1/renders/jensen-2.png` (dos vistas inferiores). Los manuales de otros fabricantes respaldan solo la anatomía genérica de montaje, no una instalación concreta Jensen.
+Fuentes de montaje: [plan visual](../UGLY-STIK-PLAN.md), [06 · instalación de servos](ugly-stik-visual-investigations/06-servo-installation.md) y [07 · cuernos y varillas](ugly-stik-visual-investigations/07-control-linkages.md). La hoja Jensen inspeccionada es `references/ugly-stik/calibration-v1/renders/jensen-2.png` (dos vistas inferiores). Los manuales de otros fabricantes respaldan solo la anatomía genérica de montaje, no una instalación concreta Jensen.
 
 Prueba con el Godot 4.7.2 fijado: `verify_controls.gd` pasa **289 checks, 0 fallos**. Recorre 21 poses de ±20° para cada alerón/elevador y ±25° para timón, comprueba cierre y longitudes, transformación de raíz, extremos de cuerno, ausencia de asignaciones de nodos durante el barrido, y restauración de la pose neutral y de la rama del solver. Máximos observados: cierre `0.000000060 m`, error de longitud `0.000000060 m`; tolerancia de auditoría `0.25 mm`.
 

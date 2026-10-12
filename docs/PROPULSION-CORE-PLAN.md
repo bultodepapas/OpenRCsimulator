@@ -1,23 +1,27 @@
 # Coupled shaft dynamics
 
-2026-10-09 · Step prefix: **G2a / G2b** (main-line ROADMAP) · **Status: experimental P-51 implementation software verified; physical and performance acceptance remain open.**
+2026-10-12 · Revision 2 · Step prefix: **G2a / G2b** (main-line ROADMAP).
 
-The first slice integrates relative propeller shaft RPM with body state in RK4. Each stage uses its own RPM, air-relative axial inflow, field density and dry-air engine charge. It also solves the body/rotor angular-acceleration coupling and applies relative-spin reaction exactly once. Aircraft coefficients and generated model data are unchanged.
+**Status:** The opt-in P-51 coupled shaft route is software verified. Electric synthetic sessions now use the coupled route through [ELECTRIC-PROPULSION-PLAN](ELECTRIC-PROPULSION-PLAN.md). Production promotion, physical validation and the 500 µs tick target remain open.
 
-| Step | Delivery | Proof/status |
+## Implemented contract
+
+Coupled RK4 integrates body state and relative propeller RPM together. Each stage evaluates its own RPM, air-relative axial inflow, field density and engine charge. The solver reuses the body/rotor angular-acceleration balance and applies relative-spin reaction once. Propeller aerodynamic reaction is external; engine torque/friction exchange momentum internally. Rotor inertia is estimated model data; this does not validate an engine map or aircraft response.
+
+For the P-51 development route, select `-- --aircraft=p51d-mustang-120 --shaft-integrator=coupled-rk4`. Combustion aircraft keep `split` as the default. Electric propulsion requires coupled RK4 and rejects an explicit split route. A model needs valid propeller shaft/rotor data and positive carrier inertia; this plan adds no shaft data to aircraft and makes no physical electric conversion claim. Turbines still use their separate spool law.
+
+Continuous RPM is carried with the physics state and the accepted endpoint is mirrored to `aux[0]` for existing consumers. Stage evaluation does not change RNG or sampled modes. Body state, continuous RPM, mirror and clock commit or roll back together. Coupled checkpoints carry integration identity; restore requires a destination configured for the matching mode. Golden v1 remains outside this continuous-state experiment.
+
+## Step register
+
+| ID | Delivery and proof | Status |
 | --- | --- | --- |
-| G2a, experimental slice | Opt-in shaft/body RK4; stage-local propulsion, wake and rotor momentum; exact endpoint RPM telemetry | [Evidence](research/propulsion/G2a-RK4/README.md): 143-suite gate, 54 focused checks, seven CLI tests, 42 refinement runs and isolated mutations |
-| G2b, propeller slice | Fixed-axis relative-spin reaction with locked inertia and body axial acceleration | Simultaneous body/rotor balances, signs, steady limit and angular-momentum checks |
-| G2a/G2b promotion | Adopt coupling as the production default; validate actual aircraft response and per-tick cost | Open; experimental route remains explicit |
-| G2a-R1 stage cost | Reuse one aerodynamic evaluation across the coupled stage's loads and shaft derivative | [Verified](research/propulsion/G2a-R1/README.md): exact eight-case frozen-baseline parity, 143-suite gate, 43 joint/coupled checks; measured medians 730–765 µs/step (42–46% lower in matched coupled fixtures). 500 µs acceptance remains open |
-| G2b turbine | Signed spool/body acceleration coupling | Deferred to the turbine owner; no new turbine torque law |
+| G2a, experimental slice | Opt-in shaft/body RK4, stage-local propulsion/wake and endpoint RPM. [143-suite gate, 54 focused checks, seven CLI tests and 42 refinements](research/propulsion/G2a-RK4/README.md) | Complete — software |
+| G2b, propeller slice | Fixed-axis relative-spin reaction with locked inertia; simultaneous body/rotor balances, signs, steady limit and momentum checks. | Software verified |
+| G2a/G2b promotion | Make coupling the production default after aircraft response and per-tick acceptance. | Open |
+| G2a-R1 | Reuse one aerodynamic stage evaluation. [Exact eight-case parity, 143-suite gate and paired cost](research/propulsion/G2a-R1/README.md) | Complete — software; 500 µs gate open |
+| G2b turbine | Couple signed turbine spool/body acceleration. | Deferred to turbine owner |
 
-Use `-- --aircraft=p51d-mustang-120 --shaft-integrator=coupled-rk4`. `split` remains the default. Aircraft without shaft data and positive carrier inertia refuse the experiment. This does not create shaft data for glow or electric aircraft.
+G2a-R1 measured 730–765 µs per step in its documented fixtures, 42–46% below the matched coupled baseline. This remains above the 500 µs target and does not close the full-session performance gate. Electric-specific costs and acceptance are tracked in EL2a/Gate P.
 
-Electric source work follows [EL1–EL6](ELECTRIC-PROPULSION-PLAN.md). Its first stateless motor/ESC kernel is separate from this flight route; future electric integration must reuse the coupled solve and replace the existing combustion-specific source/friction assumptions explicitly.
-
-Continuous layout is axial wake increments first, then one relative shaft RPM; `aux[0]` mirrors the accepted endpoint for existing renderer/audio/CSV consumers. Sampled servos and turbulence retain their tick policy. The RK derivative never changes RNG/modes. Body, continuous RPM, aux mirror and clock commit together; faults roll back together. Coupled flight checkpoints use v4 with explicit integration identity and weather. Restoring requires a destination already configured for the same integration mode. Golden v1 excludes this continuous-state experiment.
-
-Propeller aerodynamic reaction is an external moment. Engine torque and bearing friction exchange momentum internally. The solver retains locked aircraft inertia and relative rotor momentum, includes gyroscopic precession once, and applies `−I*Omega_dot*axis` once. It also accounts for body angular acceleration along the shaft in `I*(Omega_dot + axis·omega_dot) = Q_engine_net − Q_prop`. [Primary-source notes](research/propulsion/G2a-RK4/sources.md) record the assumptions and derivation.
-
-The rotor is axisymmetric with a fixed shaft axis and constant estimated inertia. Current Ct/Cp and engine power tables retain their measured/derived/estimated provenance. Their slope changes, stopped-prop cutoff, reverse-spin omission and other sampled physics limit global convergence; numerical evidence does not validate an engine map or full dead-stick handling.
+The RK derivative uses `I*(Omega_dot + axis·omega_dot) = Q_engine_net − Q_prop`; rotor momentum, gyro precession and `−I*Omega_dot*axis` reaction are accounted for once. Current fixed-axis coupling, constant estimated rotor inertia, source/propeller tables, stopped-prop cutoff and reverse-spin limits bound the claim. [Derivation and assumptions](research/propulsion/G2a-RK4/sources.md); [electric source contract](ELECTRIC-PROPULSION-PLAN.md).

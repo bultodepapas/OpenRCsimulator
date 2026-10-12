@@ -16,6 +16,6 @@ python research/ground-physics/verify.py --app app --godot $godot --out <new-evi
 
 Airborne parity hashes all body, existing auxiliary, loads and inputs over 1200 ticks for four aircraft with calm/crosswind conditions; wheel slots are checked separately by `test_wheel_session.gd`. Benchmark after a warmup, alone on the host; report median and p95, never infer slow-machine acceptance. For a pre-GP baseline, replace the benchmark contact call with the old `Ground.loads` signature in a disposable copy; keep session workloads identical.
 
-See [evidence](../../docs/research/ground-physics/README.md) and [plan](../../GROUND_PHYSICS_PLAN.md).
+See [evidence](../../docs/research/ground-physics/README.md) and [plan](../../docs/research/ground-physics/GP-05/README.md).
 
 `profile_inventory.gd` exports resolved catalog parameters with `--out`. `session_acceleration.gd` takes `--support=<GP04-json>` and `--out`, runs full-session thrust/aero/crash behavior with neutral controls, and records terminal outcomes without asserting pilot acceptance. The visual gear probe checks the existing model pivots against the integrated wheel state.

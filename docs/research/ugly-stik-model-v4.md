@@ -1,6 +1,6 @@
 # Ugly Stik .61 — entrega visual v4
 
-2026-10-05 · `jensen-61-classic-red-v4` · Geometría base Jensen v3 conservada. [Plan y estado US-V01–08](../UGLY-STIK-VISUAL-PLAN.md).
+2026-10-05 · `jensen-61-classic-red-v4` · Geometría base Jensen v3 conservada. [Plan y estado US-V01–08](../UGLY-STIK-PLAN.md).
 
 La implementación integra el acabado rojo con cruces, motor de culata dorada, mofle con nervaduras, servos, transmisiones y herrajes en el constructor nativo de Godot. [Galería offline](../../research/ugly-stik/model-v4/review.html) · [Vista general](../../research/ugly-stik/model-v4/beauty/beauty-a-dark.png) · [Motor y mofle](../../research/ugly-stik/model-v4/details/engine-right.png) · [Servos](../../research/ugly-stik/model-v4/details/maintenance-servos.png).
 
@@ -98,6 +98,6 @@ research/ugly-stik/model-v4/capture-detail.sh
 
 El comando crea automáticamente una carpeta única en `app/captures/` y escribe todos los PNG, `manifest.json`, `capture.log` y `review.html`. La galería funciona offline, con filtros y ampliación; cada imagen enlaza su PNG completo. También acepta `--output-dir PATH` para un destino nuevo y rechaza sobrescrituras. Python estándar valida dimensiones y hashes antes de generar el HTML; no requiere Pillow. Los productos quedan locales e ignorados por Git, como las demás capturas de la app.
 
-[Galería generada en esta entrega](../../app/captures/ugly-stik-detail-2026-10-05/review.html) · [Motor tres cuartos](../../app/captures/ugly-stik-detail-2026-10-05/engine-three-quarter-right.png) · [Servos](../../app/captures/ugly-stik-detail-2026-10-05/maintenance-servos.png) · [Validación y hashes](ugly-stik-showcase-validation.json).
+Galería generada en esta entrega (local only: `app/captures/ugly-stik-detail-2026-10-05/review.html`) · Motor tres cuartos (local only: `app/captures/ugly-stik-detail-2026-10-05/engine-three-quarter-right.png`) · Servos (local only: `app/captures/ugly-stik-detail-2026-10-05/maintenance-servos.png`) · [Validación y hashes](ugly-stik-showcase-validation.json).
 
 Prueba: `app/test.sh` pasa, incluidas 807 comprobaciones del modelo y el estado físico idéntico a 30/60/144 FPS. Un clon limpio de un snapshot temporal de los tres archivos de implementación, sin caché de Godot ni carpeta de capturas, ejecutó el wrapper sin argumentos y reprodujo **28/28 PNG idénticos**. Las dos vistas `beauty` originales conservaron sus hashes y resolución. Chromium comprobó filtros, búsqueda, visor, navegación, PNG de 2560 px y anchura móvil sin desbordamiento. Las ocho vistas generales pasan la comprobación de geometría completa en cuadro; las macros recortan deliberadamente el resto del avión. Las vistas de mantenimiento identifican la piel oculta y mantienen los componentes en su posición de montaje.

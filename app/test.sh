@@ -20,6 +20,9 @@ python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --che
 python3 "$HERE/../research/aircraft-standardization/migrate.py" --check-known
 python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
 
+echo "== P51-16: separated hardware inventory and physical inertia stay consistent"
+python3 "$HERE/../research/p51/p51-15/test_inventory.py"
+
 echo "== L6b offline tree placement matches committed positions"
 python3 "$HERE/../tools/trees/place.py" --field "$HERE/data/fields/default.json" --check
 python3 "$HERE/../tools/trees/test_place.py"

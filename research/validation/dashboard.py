@@ -109,7 +109,7 @@ def fingerprint():
         paths.update(folder.rglob("*.gd"))
     paths.update(ROOT / p for p in ("app/spec.gd", "app/project.godot", "app/get-godot.sh", "app/tests/test_modes.gd", "app/data/aircraft/jensen_ugly_stik_60.json"))
     # Historical derivation cited by us120.json; edits require conscious regeneration.
-    paths.update(ROOT / p for p in ("RESEARCH.md", "research/sensitivity/sensitivity.gd"))
+    paths.update(ROOT / p for p in ("docs/research/initial-notebook.md", "research/sensitivity/sensitivity.gd"))
     paths.update(HERE.glob("*.py"))
     paths.add(HERE / "collect.gd")
     paths.update((HERE / "references").glob("*.json"))

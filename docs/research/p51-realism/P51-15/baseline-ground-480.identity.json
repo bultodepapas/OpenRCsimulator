@@ -1,0 +1,25 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-baseline\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\p51\\p51-15\\ground_probe.gd",
+    "--",
+    "--hz=480",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\p51-realism\\P51-15\\baseline-ground-480.json"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 30.10899999999674,
+  "sha256": {
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\p51\\p51-15\\run_probe.py": "064ddf4d8e8338e42160c54bbdd9b3d20d8ddc098663fb34963af914657d5704",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\p51\\p51-15\\ground_probe.gd": "922827761f1699efa7b9cb4878f6c499bd0a263ad24e1c1fed1a96175c8abc3d",
+    ".tools\\p51-realism-baseline\\app\\data\\aircraft\\p51d_mustang_120.json": "16b0bba3ba1df21dbc83b623e463634f8146ba2f71fbfd94ed50f6e98828b52e",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\extra-300\\ex06\\envelope_probe.gd": "e25b4ca8342cc6902453ed51ecaf797d4d751d74a7b979eba7543f5831362b3e",
+    ".tools\\p51-realism-baseline\\app\\tests\\p51_envelope_base.gd": "49458d90586ac57dc7f43aa2bf72de42ff503f66801330aa78f6395e19345ea6"
+  },
+  "unchanged_during_run": true
+}

@@ -2,7 +2,7 @@
 
 **Status:** curated developer reference. Lessons from building and testing this repository; historical measurements belong to their linked reports.
 
-Start here for mistakes worth avoiding. Commands and working rules live in [AGENTS](AGENTS.md), current work in the [plans](docs/README.md#tracks-plans-and-step-ids), and detailed experiments in the [research index](docs/research/README.md).
+Start here for mistakes worth avoiding. Commands live in [TOOLS](docs/TOOLS.md) and working rules in [AGENTS](AGENTS.md), current work in the [plans](docs/README.md#tracks-plans-and-step-ids), and detailed experiments in the [research index](docs/research/README.md).
 
 | When working on… | Read next |
 | --- | --- |

@@ -1,0 +1,105 @@
+[
+  {
+    "command": [
+      "python3",
+      "research/p51/p51-05/derive_physics.py",
+      "--check"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "00.log"
+  },
+  {
+    "command": [
+      "python3",
+      "research/p51/p51-15/test_inventory.py"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "01.log"
+  },
+  {
+    "command": [
+      "bash",
+      "-n",
+      "app/test.sh"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "02.log"
+  },
+  {
+    "command": [
+      "python3",
+      "research/aircraft-standardization/parameter_register.py",
+      "--check"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "03.log"
+  },
+  {
+    "command": [
+      "python3",
+      "research/aircraft-standardization/migrate.py",
+      "--check-known"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "04.log"
+  },
+  {
+    "command": [
+      "python3",
+      "research/aircraft-standardization/test_migrate.py"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "05.log"
+  },
+  {
+    "command": [
+      "/home/bulto/.cache/openrc-p51-p5115-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/home/bulto/.cache/openrc-p51-p5115-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_aircraft_data.gd"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "06.log"
+  },
+  {
+    "command": [
+      "/home/bulto/.cache/openrc-p51-p5115-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/home/bulto/.cache/openrc-p51-p5115-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_aircraft_contract.gd"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "07.log"
+  },
+  {
+    "command": [
+      "/home/bulto/.cache/openrc-p51-p5115-20261012/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/home/bulto/.cache/openrc-p51-p5115-20261012/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_aircraft_catalog.gd"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "log": "08.log"
+  }
+]

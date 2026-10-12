@@ -1,6 +1,6 @@
 # 05 · Perfil de hélice y conjunto del cubo
 
-Consulta web: 2026-10-05 · [Índice](README.md) · [Plan visual](../../UGLY-STIK-VISUAL-PLAN.md).
+Consulta web: 2026-10-05 · [Índice](README.md) · [Plan visual](../../UGLY-STIK-PLAN.md).
 
 **Pregunta ·** ¿Qué detalles visibles separan una hélice de modelismo de la pala prismática actual y aclaran la unión al eje sin elegir hélice comercial?
 

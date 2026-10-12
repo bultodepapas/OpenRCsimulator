@@ -1,6 +1,6 @@
 # Diez investigaciones: Godot y herramientas para el Ugly Stik .61
 
-2026-10-05 · Nueva ronda para la **revisión 4 del [plan visual](../../UGLY-STIK-VISUAL-PLAN.md)**. Complementa las [investigaciones de apariencia y montaje](../ugly-stik-visual-investigations/README.md); no las sustituye.
+2026-10-05 · Nueva ronda para la **revisión 4 del [plan visual](../../UGLY-STIK-PLAN.md)**. Complementa las [investigaciones de apariencia y montaje](../ugly-stik-visual-investigations/README.md); no las sustituye.
 
 Se investigaron documentación oficial, repositorios de los autores y especificaciones, contrastándolos con el constructor y los flujos de validación locales. Cada informe contiene pregunta, hallazgos con fuentes, decisión, límites y prueba propuesta. **Investigación completada; implementación y ensayos nuevos pendientes.** No se instalaron dependencias ni se modificó la aplicación en esta ronda.
 

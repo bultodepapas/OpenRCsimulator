@@ -7,7 +7,7 @@ app/data/aircraft/p51d_mustang_120.json (openrc-aircraft v2) and research/p51/p5
 
 Methods are textbook estimates, not flight identification: Helmbold/DATCOM lift slopes, tail-volume static and damping
 derivatives, strip theory for ailerons, roll damping and dihedral, a skin-friction drag build-up, a component inventory,
-and a blade-element/momentum propeller model for the 4-blade 28x10 (no measured table exists for that propeller).
+and a blade-element/momentum propeller model for the selected 4-blade 26x12 (no measured table exists for that propeller).
 Every number written carries its unit, evidence kind and source. Nothing here validates the airplane.
 
     python3 research/p51/p51-05/derive_physics.py           # writes the JSON and the report
@@ -172,7 +172,7 @@ kappa = note("aero", "section lift slope / 2pi", 0.86, "NACA 66(2)-415 at Re 0.7
 CLa_w = note("aero", "CLa wing (1/rad)", helmbold(AR, kappa, sweep_hc) * math.cos(dihedral) ** 2, "Helmbold/DATCOM x cos2(dihedral)")
 AR_h = bh * bh / Sh
 CLa_h = note("aero", "CLa horizontal (1/rad)", helmbold(AR_h, 0.9), f"Helmbold, AR {AR_h:.2f}")
-eta_h = note("aero", "tail dynamic pressure ratio", 0.9, "estimated; propwash not modelled (ROADMAP E0b)")
+eta_h = note("aero", "tail dynamic pressure ratio", 0.9, "estimated baseline free-stream ratio for coefficient derivation; runtime adds a separate propeller tail-slipstream increment (P51-12)")
 deps = note("aero", "d(eps)/d(alpha)", 2 * CLa_w / (math.pi * AR), "elliptic-wing downwash estimate")
 slope_h = note("aero", "effective tail slope (1/rad)", CLa_h * eta_h * (1 - deps), "CLa_h eta (1 - deps/dalpha)")
 CLa = note("aero", "CLa airplane (1/rad)", CLa_w + slope_h * Sh / S, "wing + tail (wing-body interference ~1 for d/b 0.08)")
@@ -196,7 +196,7 @@ for _ in range(80):
     mid_k = 0.5 * (lo_k + hi_k)
     lo_k, hi_k = (mid_k, hi_k) if neutral_point(mid_k)[0] > mac_le_z + NP_GLIDE * mac else (lo_k, mid_k)
 K_f = note("aero", "K_fus (per deg)", 0.5 * (lo_k + hi_k),
-           f"CALIBRATED: the fuselage, belly scoop and windmilling-propeller term that puts the power-off neutral point at the full-size airplane's measured stick-fixed glide value, {100 * NP_GLIDE:.1f} % MAC (NACA XP-51 flying-qualities report 1942, Table II, ntrs.nasa.gov/citations/19930092575; cruise 30.8, climb 30.6 % with power). Raymer Fig. 16.14 gives 0.005-0.015 for a wing at {100 * x_qc_root:.0f} % of the body; the geometry is the full-size airplane scaled, so the neutral point carries over (Re lowers both slopes alike)")
+           f"CALIBRATED hypothesis: the fuselage, belly scoop and windmilling-propeller term puts the power-off neutral point at the full-size airplane's measured stick-fixed glide value, {100 * NP_GLIDE:.1f} % MAC (NACA XP-51 flying-qualities report 1942, Table II, ntrs.nasa.gov/citations/19930092575; cruise 30.8, climb 30.6 % with power). Raymer Fig. 16.14 gives 0.005-0.015 for a wing at {100 * x_qc_root:.0f} % of the body. Geometric scaling does not establish Reynolds similarity or the RC neutral point; model-scale stability measurements are missing")
 _, x_arp, dx_f = neutral_point(K_f)
 note("aero", "wing-body ac = ARP (model z)", x_arp, f"wing ac at 25 % MAC {x_ac_w:.4f}, fuselage moves it {dx_f * 1000:.1f} mm forward")
 l_h = xh_ac - x_arp
@@ -220,7 +220,7 @@ eps0 = 2 * CL0_w / (math.pi * AR)
 i_h = math.radians(T["stab_incidence_deg"])
 inc_eff = note("aero", "tail effective incidence (rad)", (i_h - eps0) / (1 - deps), "(i_h - eps0) / (1 - deps/dalpha): the local tail model sees body alpha")
 CL0 = note("aero", "CL0", CL0_w + slope_h * Sh / S * inc_eff, "wing at its mean incidence with camber + tail at zero body alpha")
-Cm0 = note("aero", "Cm0 about ARP", cm_ac * mac / c_ref - slope_h * Sh / S * l_h / c_ref * inc_eff, "wing Cm_ac + tail at zero body alpha")
+Cm0 = note("aero", "Cm0 about ARP", cm_ac * mac / c_ref - slope_h * Sh / S * l_h / c_ref * inc_eff, "UIUC NAA 45-100 camber-line thin-airfoil wing Cm_ac x0.8 correction + tail at zero body alpha")
 
 # Controls (kit placeholder throws, degrees).
 # Throws (P51-09): degrees, high rate, from the Hangar 9 Mustang 1.50 manual (80 in; astramodel.cz/manualy/hangar9/
@@ -252,6 +252,10 @@ note("aero", "Clda_right (1/rad)", Clda, "strip theory")
 fw = g["firewall_z"]  # scaled full-size firewall: cowl/fuselage split only
 rc_fw = g["spinner"]["back_z"] + 0.25  # the model's engine box: a 120 cc twin on standoffs is ~0.25 m long from the spinner back
 cp_y = W["chord_plane_y"]
+aileron_mid = (W["aileron_inner"] + W["aileron_outer"]) / 2
+flap_mid = (W["flap_inner"] + W["flap_outer"]) / 2
+elevator_half_spacing = 0.30 / 2  # retain the former paired-box half-width; root mounting is inferred, not measured
+gear_half_track = GEAR["track"] / 2
 spinner_d_in = 2 * g["spinner"]["radius"] / IN
 items = [
     ("engine DA-120 with ignition module", 2.45, "manual", "DA-120: 2300 g engine, 2445 g with ignition (toni-clark.com/en/da-120); DLE-120 2.78-2.90 kg complete", le(g["spinner"]["back_z"] + 0.13), [0.16, 0.30, 0.16], "estimated", "crankshaft on the thrust line, crankcase ~0.13 m behind the spinner back"),
@@ -265,12 +269,16 @@ items = [
     ("ignition battery 2S LiFe", 0.15, "estimated", "1500-2100 mAh LiFe pack", le(rc_fw + 0.03, -0.08), None, "estimated", "below the tank, as far forward as the cowl allows"),
     ("receiver batteries 2S LiFe (2)", 0.30, "estimated", "two 2100 mAh LiFe packs (redundant)", le(rc_fw + 0.06, -0.09), None, "estimated", "forward fuselage floor, next to the ignition pack (warbird practice: everything heavy forward)"),
     ("receiver, switches, power distribution", 0.12, "estimated", "receiver, two switches, harnesses", le(0.25, -0.05), None, "estimated", "under the cockpit floor"),
-    ("aileron servos (2)", 0.16, "estimated", "two 20-25 kg·cm servos ~80 g", le(0.12, cp_y), [0.03, 1.9, 0.04], "estimated", "one per aileron, mid-aileron span"),
-    ("flap servos (2)", 0.16, "estimated", "two 20-25 kg·cm servos ~80 g", le(0.30, cp_y), [0.03, 0.8, 0.04], "estimated", "one per flap"),
-    ("elevator servos (2)", 0.16, "estimated", "two servos in the tail", le(T["stab_root_le_z"] - 0.05, T["stab_y"]), [0.04, 0.3, 0.04], "estimated", "in the stab roots"),
+    ("aileron servo left", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.12, cp_y, -aileron_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the aileron span midpoint y = -({W['aileron_inner']:.4f} + {W['aileron_outer']:.4f})/2 m; individual servo envelope estimated"),
+    ("aileron servo right", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.12, cp_y, aileron_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the aileron span midpoint y = +({W['aileron_inner']:.4f} + {W['aileron_outer']:.4f})/2 m; individual servo envelope estimated"),
+    ("flap servo left", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.30, cp_y, -flap_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the flap span midpoint y = -({W['flap_inner']:.4f} + {W['flap_outer']:.4f})/2 m; individual servo envelope estimated"),
+    ("flap servo right", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.30, cp_y, flap_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the flap span midpoint y = +({W['flap_inner']:.4f} + {W['flap_outer']:.4f})/2 m; individual servo envelope estimated"),
+    ("elevator servo left", 0.08, "estimated", "one of two estimated tail servos (~80 g each)", le(T["stab_root_le_z"] - 0.05, T["stab_y"], -elevator_half_spacing), [0.04, 0.02, 0.04], "estimated", "one servo near the left stabilizer root; ±0.15 m retains the former 0.30 m paired-box half-width; mounting station is inferred, not measured"),
+    ("elevator servo right", 0.08, "estimated", "one of two estimated tail servos (~80 g each)", le(T["stab_root_le_z"] - 0.05, T["stab_y"], elevator_half_spacing), [0.04, 0.02, 0.04], "estimated", "one servo near the right stabilizer root; ±0.15 m retains the former 0.30 m paired-box half-width; mounting station is inferred, not measured"),
     ("rudder servo and pull-pull", 0.10, "estimated", "one servo with cables", le(0.55, -0.02), None, "estimated", "aft of the cockpit"),
     ("throttle, choke servos and linkage", 0.08, "estimated", "two small servos", le(rc_fw + 0.05, 0.02), None, "estimated", "behind the model's firewall"),
-    ("main retracts, struts and wheels (2 sides)", 2.00, "estimated", "two electric/pneumatic giant-scale retracts (0.5 kg each), oleo struts (0.25 each), 6 in wheels with hubs (0.2 each), gear doors", le(GEAR["main_axle"][0], (GEAR["main_axle"][1] + cp_y) / 2), [0.12, GEAR["track"], cp_y - GEAR["main_axle"][1]], "measured", "axle station from geometry.json; mass centred mid-strut"),
+    ("main gear assembly left", 1.00, "estimated", "half of estimated 2.00 kg paired retract/strut/wheel/door inventory", le(GEAR["main_axle"][0], (GEAR["main_axle"][1] + cp_y) / 2, -gear_half_track), [0.12, 0.10, cp_y - GEAR["main_axle"][1]], "estimated", f"left assembly lateral center -track/2 = -{gear_half_track:.4f} m from geometry.json; x/z retain the estimated combined mid-strut center; individual envelope estimated"),
+    ("main gear assembly right", 1.00, "estimated", "half of estimated 2.00 kg paired retract/strut/wheel/door inventory", le(GEAR["main_axle"][0], (GEAR["main_axle"][1] + cp_y) / 2, gear_half_track), [0.12, 0.10, cp_y - GEAR["main_axle"][1]], "estimated", f"right assembly lateral center +track/2 = +{gear_half_track:.4f} m from geometry.json; x/z retain the estimated combined mid-strut center; individual envelope estimated"),
     ("tail wheel assembly (retractable)", 0.20, "estimated", "retractable tail wheel unit", le(GEAR["tail_axle"][0], GEAR["tail_axle"][1] + 0.04), None, "measured", "geometry.json tail axle"),
     ("wing panel, left, sheeted, with flap and aileron", 2.00, "estimated", "built-up sheeted/glassed 1.25 m panel of a 2.5 m warbird ARF (wings 4-5 kg a pair)", le(mac_le_z + 0.42 * mac, cp_y, -y_mac), [mac, semi, 0.07], "derived", "42 % MAC at the MAC span station"),
     ("wing panel, right, sheeted, with flap and aileron", 2.00, "estimated", "same as the left panel", le(mac_le_z + 0.42 * mac, cp_y, y_mac), [mac, semi, 0.07], "derived", "42 % MAC at the MAC span station"),
@@ -326,17 +334,21 @@ note("balance", "flight CG (le frame)", cg, "z: below the thrust line by the inv
 
 
 def inertia(pt):
-    j = [0.0] * 3
+    # Body FRD tensor [Jxx, Jyy, Jzz, Jxy, Jxz, Jyz], matching AircraftData.inertia_about().
+    j = [0.0] * 6
     for it in items:
         m, p, s = it[1], it[4], it[5] or [0, 0, 0]
         x, y, z = -(p[0] - pt[0]), p[1] - pt[1], -(p[2] - pt[2])
         j[0] += m * (y * y + z * z) + m * (s[1] ** 2 + s[2] ** 2) / 12
         j[1] += m * (x * x + z * z) + m * (s[0] ** 2 + s[2] ** 2) / 12
         j[2] += m * (x * x + y * y) + m * (s[0] ** 2 + s[1] ** 2) / 12
+        j[3] -= m * x * y
+        j[4] -= m * x * z
+        j[5] -= m * y * z
     return j
 
 
-note("balance", "Jxx Jyy Jzz (kg m2)", inertia(cg), "component boxes + parallel axis")
+note("balance", "Jxx Jyy Jzz Jxy Jxz Jyz (kg m2)", inertia(cg), "estimated component envelopes + parallel axis; full symmetric body FRD tensor")
 
 # --- Spanwise stall (P51-13) ----------------------------------------------------------------------------------------
 # Each of the simulation's equal-area strips stalls when its section reaches its own clmax. Additional loading by
@@ -371,7 +383,7 @@ strip_inc = [-washout * (e - eta_bar) + (CL_max - c_) / CLa_w for e, c_ in zip(s
 for i, (e, c_) in enumerate(zip(strip_eta, cl_star)):
     note("stall", f"strip {i + 1} (root to tip): eta, Re, cl/CL, CL*", [e, V_stall_guess * (cr + (ct - cr) * e) / NU, schrenk(e), c_], "")
 note("stall", "strip incidence offsets root to tip (deg)", [math.degrees(x) for x in strip_inc], f"washout part {[round(-W['washout_deg'] * (e - eta_bar), 2) for e in strip_eta]} deg; the most positive strip stalls first")
-CL_max = note("aero", "CL_max", CL_max, "mean of the strips' CL*: the wing stalls progressively around it (blend width below); full-size airplane 1.5 at Re 1.3e7 (NACA XP-51 report), the model's Re 2.5-7e5 lowers it")
+CL_max = note("aero", "CL_max", CL_max, "mean of three equal-area strip limits from Schrenk loading and the NACA TN 1945 66(2)-415 clmax(Re) table, with a painted-finish decrement; no P-51 model polar")
 Vs = note("aero", "1-g stall (m/s)", math.sqrt(2 * mass * G0 / (RHO * S * CL_max)), "flight mass, CL_max")
 V_start = note("aero", "start speed (m/s)", round(1.6 * Vs), "1.6 x the 1-g stall, rounded: the trimmed in-air start")
 CL_ref = note("aero", "CL_ref", mass * G0 / (0.5 * RHO * V_start ** 2 * S), "level flight at the start speed; CL-dependent cross terms are frozen there")
@@ -397,7 +409,7 @@ Cnb = slope_v * Sv / S * arm_v_arp / b
 Cndr = -CYdr * arm_v_arp / b
 Cldr = CYdr * (fin_cy - arp_y) / b
 note("lateral", "Cnb body, omitted (1/rad)", -0.001 * 1.4 * 57.3 * (0.6 * fus_len * fus_d / S) * (fus_len / b),
-     "DATCOM -K_N K_Rl (S_side/S)(L/b): destabilizing; not in v1 (Cnb must equal the fin term), same as the Stik and Extra")
+     "estimated DATCOM -K_N K_Rl (S_side/S)(L/b): destabilizing; not represented because the shared surface-consistency rule currently requires Cnb to equal the vertical-fin contribution")
 Clb_dihedral = note("lateral", "Clb dihedral (1/rad)", -CLa_w * dihedral * (1 + 2 * lam) / (6 * (1 + lam)), "strip theory: -CLa_w Gamma (1 + 2 lambda) / (6 (1 + lambda)); 5 deg geometric dihedral")
 dihedral_low = note("lateral", "Clb low-wing interference (1/rad)", 1.2 * math.sqrt(AR) * (-z_w / b) * (2 * fus_d / b),
                     "DATCOM: 1.2 sqrt(AR) (z_w/b)(2d/b), destabilizing for a low wing")
@@ -474,7 +486,7 @@ note("propulsion", "BEM Ct0 / Cp0 / J at zero thrust", [Ct0, Cp0, next(r[0] for 
 # --- Engine (shaft balance, P51-06) -----------------------------------------------------------------------------------
 # Full-throttle torque shape of a carburetted two-stroke twin (x = rpm / 6900): estimated, no DA-120 dyno curve is
 # published (desertaircraft.com gives 11.7 hp and 1300-6900 rpm only; UST magazine: the DA family has a flat, high
-# torque curve). Level set by the one measured anchor: a 28x10 turns 6550 rpm static on a DA-120 (Falcon spec;
+# torque curve). Level set by a secondary reported anchor: a 28x10 turns 6550 rpm static on a DA-120 (Falcon spec;
 # Mejzlik 28x10 6400-6850, DLE-120 6350-6450), where Mejzlik's 28x10 static Cp 0.0238 absorbs the engine's power.
 TORQUE_SHAPE = [(0.0, 0.70), (0.2, 0.75), (0.4, 0.85), (0.6, 0.95), (0.75, 1.0), (0.9, 0.97), (1.0, 0.92), (1.1, 0.80), (1.25, 0.55), (1.4, 0.25)]
 N_REF = 6900.0
@@ -482,7 +494,7 @@ shape = lambda rpm: next((a[1] + (b_[1] - a[1]) * (rpm / N_REF - a[0]) / (b_[0] 
 anc = mejz["anchor_28x10_2B"]
 n_anchor = anc["static_rpm_on_DA120"] / 60
 P_anchor = note("propulsion", "installed power at 6550 rpm (W)", anc["static_Cp"] * RHO * n_anchor ** 3 * anc["diameter_m"] ** 5,
-                "Mejzlik 28x10 static Cp 0.0238 at the measured 6550 rpm static on a DA-120 (" + anc["static_rpm_source"] + ")")
+                "Mejzlik 28x10 static Cp 0.0238 at a secondary reported 6550 rpm static on a DA-120; no retained instrumented test record (" + anc["static_rpm_source"] + ")")
 Q0 = P_anchor / (shape(anc["static_rpm_on_DA120"]) * 2 * math.pi * n_anchor)
 power_curve = [[float(r), Q0 * shape(r) * 2 * math.pi * r / 60] for r in range(1000, 9001, 500)]
 P_peak = note("propulsion", "installed peak power (W)", max(p_[1] for p_ in power_curve),
@@ -601,7 +613,7 @@ coefficients = {
     "CLda_each": coeff(CLda_each, "1/rad", "derived", "strip theory over the aileron span"),
     "CD0": coeff(CD0, "1", "derived", f"component drag build-up at {V_start} m/s with the gear DOWN (retracts not simulated), see derivation.md"),
     "CL_minD": coeff(CL0_w * 0.5, "1", "estimated", "cambered laminar section: minimum drag near half the zero-alpha wing lift"),
-    "k_induced": coeff(k_ind, "1", "derived", "1/(pi e AR), e 0.80 estimated"),
+    "k_induced": coeff(k_ind, "1", "derived", "1/(pi e AR), e 0.75 estimated"),
     "CDda_each": q(stik["aero"]["coefficients"]["CDda_each"]["value"], "1/rad", "borrowed", "OpenFlightSim UltraStick25e (via the Stik data file); second-order control drag"),
     "CDdr": q(stik["aero"]["coefficients"]["CDdr"]["value"], "1/rad", "borrowed", "OpenFlightSim UltraStick25e (via the Stik data file); second-order control drag"),
     "CDde": q(stik["aero"]["coefficients"]["CDde"]["value"], "1/rad", "borrowed", "OpenFlightSim UltraStick25e (via the Stik data file); second-order control drag"),
@@ -615,12 +627,12 @@ coefficients = {
     "Clda_right": coeff(Clda, "1/rad", "derived", "strip theory"),
     "Clda_left": coeff(-Clda, "1/rad", "derived", "strip theory"),
     "Cldr": coeff(Cldr, "1/rad", "derived", "rudder side force x fin height above the ARP"),
-    "Cm0": coeff(Cm0, "1", "derived", "wing Cm_ac (parabolic camber) + tail at zero body alpha, about the ARP"),
+    "Cm0": coeff(Cm0, "1", "derived", "wing Cm_ac from the UIUC NAA 45-100 camber lines using thin-airfoil theory x0.8 correction, plus tail at zero body alpha, about the ARP"),
     "Cma": coeff(Cma, "1/rad", "derived", "tail about the wing-body ac; the CG transfer gives the static margin"),
     "Cmq": coeff(Cmq, "1/rad", "derived", "tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"),
     "Cmde": coeff(Cmde, "1/rad", "derived", "elevator lift x tail arm from the ARP"),
     "Cmda_each": coeff(Cmda, "1/rad", "derived", "aileron lift increment at its thin-airfoil centre, arm from the ARP"),
-    "Cnb": coeff(Cnb, "1/rad", "derived", "fin only (v1 contract: equals the vertical surface)"),
+    "Cnb": coeff(Cnb, "1/rad", "derived", "vertical-fin contribution only; shared surface-consistency rule requires Cnb to equal the modeled vertical surface"),
     "Cnp": coeff(Cnp, "1/rad", "derived", "-CL_ref/8 + fin"),
     "Cnr": coeff(Cnr, "1/rad", "derived", "fin + wing profile drag + fuselage (-0.02 estimated)"),
     "Cnda_right": coeff(Cnda, "1/rad", "derived", "adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson, AR 5.8, taper 0.48)"),
@@ -633,7 +645,7 @@ canopy_top = max(g["canopy"]["top"], key=lambda p: p[1])
 data = {
     "format": "openrc-aircraft v1",
     "id": "p51d-mustang-120",
-    "description": f"{KIT_NAME}: {b:.3f} m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by {SCRIPT} (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4, cross-checked against NACA flight data (neutral point, zero-lift angle, rigging) and RC-class data (built weight, throws, propeller and engine anchors); flown through its envelope by tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps and retracts are not simulated (gear DOWN). Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
+    "description": f"{KIT_NAME}: {b:.3f} m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by {SCRIPT} (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4 and documented NACA/RC-class sources; exercised by scripted tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps and retracts are not simulated (gear DOWN). Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
     "frames": {
         "le_frame": "positions in metres from the wing leading edge at the centreline (model z 0): [x_aft, y_right, z_up]; z = 0 on the thrust line (spinner axis)",
         "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up",
@@ -675,13 +687,13 @@ data = {
         "inertia_reference": stik["plausibility"]["inertia_reference"],
     },
     "controls": {
-        "max_throw": {k: q(float(v), "deg", "estimated", "asin(kit mm / local chord): " + KIT["throws_note"]) for k, v in throws.items()},
-        "servo_full_throw_time": q(0.18, "s", "estimated", "giant-scale high-torque servos: 0.15-0.20 s per 60 deg at 6-7 V"),
+        "max_throw": {k: q(float(v), "deg", "estimated", THROWS_SRC) for k, v in throws.items()},
+        "servo_full_throw_time": q(0.18, "s", "estimated", "placeholder: one normalized command from neutral to this aircraft's full modeled throw in 0.18 s; actual servo speed, voltage/load, horn geometry and linkage ratio are unknown, so a published no-load rate per 60 deg cannot determine surface rate"),
     },
     "aero": {
         "source": f"Derived from the scaled geometry by {SCRIPT} (Helmbold/DATCOM, tail volume calibrated to the NACA glide neutral point, strip theory, Schrenk/Reynolds spanwise stall, drag build-up); report research/p51/p51-05/derivation.md. Not flight-identified on a real model.",
         "envelope": {
-            "CL_max": q(CL_max, "1", "estimated", "15 % laminar section clmax ~1.3 at Re 7e5 x 0.9 for the wing, flaps up; no polar identified"),
+            "CL_max": q(CL_max, "1", "estimated", "three equal-area strips: Schrenk loading and NACA TN 1945 66(2)-415 clmax(Re), including extrapolated 3e5 endpoint and 0.05 painted-finish decrement; flaps up; no P-51 model polar"),
             "CL_min": q(-0.85, "1", "estimated", "cambered section: inverted stall earlier than upright"),
             "stall_blend_width": q(6.0, "deg", "estimated", "NACA TN 1945: at Re 0.7-1e6 the 15 % 6-series stall is rounded (cl flat over ~4 deg, mild drop); which part of the span stalls first comes from the strip offsets (aero.surfaces.wing_station_incidence)"),
             "CD90": q(1.11 + 0.018 * AR, "1", "derived", "Viterna CDmax = 1.11 + 0.018 AR (NASA CR-1983)"),
@@ -725,7 +737,7 @@ data = {
             "lag_time_constant": q(0.6, "s", "estimated", "D5 lag model, unused while the shaft model is present (kept for the format)"),
             "shaft": {
                 "power_curve": {"value": [[r, round(w_, 1)] for r, w_ in power_curve], "unit": "rpm, W", "kind": "derived",
-                                "source": D("installed full-throttle brake power: generic two-stroke torque shape (estimated; no DA-120 dyno curve published) scaled to the measured anchor, a 28x10 at 6550 rpm static (Mejzlik 28x10 Cp 0.0238 -> %.0f W)" % P_anchor)},
+                                "source": D("installed full-throttle brake power: generic two-stroke torque shape (estimated; no DA-120 dyno curve published) scaled to a secondary reported anchor, a 28x10 at 6550 rpm static; no retained instrumented test record (Mejzlik 28x10 Cp 0.0238 -> %.0f W)" % P_anchor)},
                 "friction_torque": q(FRICTION, "N·m, N·m/krpm", "estimated", "friction and pumping ~12 % of the brake torque at 6900 rpm (YASim 8 %; research synthesis 10-15 %)"),
                 "idle_power": q(idle_power, "W", "derived", D(f"closed-throttle admitted power: holds {IDLE_RPM:.0f} rpm static")),
                 "peak_indicated_power": q(peak_ind, "W", "derived", D("brake + friction power at the curve's peak: the open throttle never limits")),
@@ -793,7 +805,7 @@ The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer.
 
 Flight mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, static margin {sm:.1f} % MAC, 1-g stall {Vs:.1f} m/s, start {V_start} m/s.
 Throws (Hangar 9 Mustang 1.50 manual, high rate): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}°.
-Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf), thrust/weight {thrust_static / (mass * G0):.2f}; flown performance (speeds, climb, glide, takeoff) is measured by `app/tests/test_p51_envelope.gd` and `test_p51_ground.gd` (P51-08, bands in `research/p51/p51-08/README.md`).
+Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf), thrust/weight {thrust_static / (mass * G0):.2f}; scripted envelope and ground tests exercise modeled speed, climb, glide, takeoff and landing against literature/RC-class bands. These are not physical measurements.
 
 ## Intermediate quantities
 
@@ -814,9 +826,9 @@ Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({th
 - Slipstream: tail only (fin, stab halves), no lag, no wing wash; wash factors borrowed from Selig 2010 (an RC 3D airplane), swirl factor estimated.
 - Propeller normal force and P-factor: McCormick's formulas (via Selig 2010); the near-static jet normal force is omitted.
 - Flaps fixed up; retracts fixed DOWN. No brakes. Tail-wheel spring softer than a real one (240 Hz explicit tick rule).
-- Fin offset (1 deg left on the full-size P-51B/D) is represented by the solved rudder trim (a constant fin angle; the v1 coefficient set has no Cn0).
+- A full-size report notes 1 deg left fin offset on P-51B/D. This model has no fixed fin-incidence/yaw-bias term; a rudder control trim does not represent that geometry, so the effect is omitted.
 - The neutral point is calibrated to the full-size glide value through one lumped fuselage/scoop/propeller term (K_fus {K_f:.3f}/deg, above Raymer's 0.005-0.015).
-- Fuselage directional destabilization is omitted (v1 contract: Cnb equals the fin term), as for the Stik and the Extra.
+- Fuselage directional destabilization is omitted because the shared surface-consistency rule requires Cnb to equal the modeled vertical-fin contribution.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.

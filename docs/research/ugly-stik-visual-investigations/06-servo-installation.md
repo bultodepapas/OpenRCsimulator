@@ -1,6 +1,6 @@
 # 06 · Carcasa y montaje de servos
 
-Consulta web: 2026-10-05 · [Índice](README.md) · [Plan visual](../../UGLY-STIK-VISUAL-PLAN.md).
+Consulta web: 2026-10-05 · [Índice](README.md) · [Plan visual](../../UGLY-STIK-PLAN.md).
 
 **Pregunta ·** ¿Qué piezas debe mostrar una instalación de servo creíble y qué escala usar para la carcasa sin atribuirle un servo concreto al Jensen?
 

@@ -24,6 +24,8 @@
 
 ## Rendering and visual evidence
 
+- **Apply optical fades after the exposure cap.** A lamp's distance fade applied before a saturated display cap can leave it bright until the last fraction of the fade range; pre-capping radiance before screen-size compensation can instead erase distant lamps. Size the source using the actual projection/viewport, cap the sized energy with the dusk factor, then apply range fading. Check real pixels against an opaque blocker: a passing shader-source test missed the fixture cap obscuring the optical core. ([LU-09 native evidence](../research/landscape-upgrade/LU-07/README.md), [pixel checks](../research/landscape-upgrade/LU-07/night/marker-checks.json))
+
 - **Make isolated GPU measurements independent of presentation.** Native capture trials stalled while awaiting automatic post-draw signals. An always-updating off-screen viewport with the automatic render loop disabled and explicit `force_draw(false)` completed reliably and matched the visible-window control pixel for pixel. Preserve raw viewport CPU/GPU samples, alternate revisions, and distinguish static shader cost from whole-app frame time and radiance refresh. Headless dummy rendering cannot provide this evidence. ([L4c](../research/visual-quality-implementation/L4c/README.md))
 
 - **A clock's restart selection is different from its current instant.** Rate edits preserve fractional ticks; explicit time selections reset them and establish the restart value. Validate each serialized transition against its predecessor, bind its frequency to the physics timestep, and reject unsupported histories before restoring physical state. A valid per-record config hash cannot detect a hidden time jump. ([TOD-09c1](../research/time-of-day-investigations/TOD-09c1/README.md))

@@ -2,7 +2,7 @@
 
 La herramienta ajusta únicamente la cámara del modelo AV-02 a tres fotos existentes y superpone un render RGBA sobre el original. No modifica la geometría, las fotos ni los recursos de la app.
 
-Abrir [el comparador local](../../../references/avanti-s/alignment/index.html). Incluye opacidad, contorno, parpadeo, solo foto/modelo, desplazamiento arrastrando, escala uniforme, giro y exportación JSON del ajuste manual.
+Abrir el comparador local (local only: `references/avanti-s/alignment/index.html`). Incluye opacidad, contorno, parpadeo, solo foto/modelo, desplazamiento arrastrando, escala uniforme, giro y exportación JSON del ajuste manual.
 
 Reproducción desde la raíz:
 

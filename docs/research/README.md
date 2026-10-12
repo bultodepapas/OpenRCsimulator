@@ -1,312 +1,137 @@
 # Research index
 
-`docs/research/` holds the reports that record what was investigated or measured for a step, and the evidence that proves it. This index lists the entry points per track so a newcomer reads two or three documents instead of scanning every evidence folder. New reports are written in English (AGENTS.md rule 7); most reports before 2026-10-06 are in Spanish and are translated when next revised. The [documentation map](../README.md) explains how the whole documentation fits together; [RESEARCH.md](../../RESEARCH.md) at the root is the earlier notebook (everything read before Gate 1 and for plan review #3) and is frozen.
+`docs/research/` contains investigation reports and step evidence. This index points to the best starting document for each topic; detailed test records remain beside their step. Write new research in English. Older Spanish reports are translated when revised. See the [documentation map](../README.md) for document roles and the [initial research notebook](initial-notebook.md) for pre-Gate 1 background.
 
 ## Two folders, one rule
 
-| Folder | Holds | Example |
+| Location | Purpose | Example |
 | --- | --- | --- |
-| `docs/research/` | Reports (`.md`), their sidecar data (`*-validation.json`, `*-metrics.json`, `sources.json`), probes and the evidence of a step (logs, PNG, JSON) | `visual-quality-implementation/L6b/README.md` and its 30 evidence files |
-| `research/` (repository root) | Scripts and data of reproducible experiments and of the aircraft measurement pipelines: measure, fit, render, derive | `research/extra-300/ex05/derive_physics.py` generates `app/data/aircraft/gp_extra_300s_60.json` |
+| `docs/research/` | Reports, sources, measurements, probes and step evidence | [VQ-04a](visual-quality-implementation/VQ-04a/README.md) |
+| root `research/` | Reproducible scripts, input data and aircraft measurement pipelines | [Extra 300S derivation](../../research/extra-300/ex05/derivation.md) |
 
-Aircraft tracks keep the report here and the scripts, picks and renders under `research/<aircraft>/<step>/`. Engine and feature tracks (menu, smoke, wind, landscape, visual quality, flight robustness) keep report, probes and evidence together here. Both are fine; what matters is that the report links the evidence and the evidence names the step.
-
-Some scripts under `research/` read the gitignored `references/` folder (plans, scans and photos with unknown licenses) and cannot be rerun from a fresh clone. Their reports say so; the measured numbers they produced are committed.
+Some tools use local-only material from `references/`; their reports say when a fresh clone cannot reproduce the original measurement. Commit the resulting evidence and source identity, not private reference files.
 
 ## Whole-project audit
 
-[Branch integration — 2026-10-10](branch-integration-2026-10-10.md) records the main/PT2 merge decisions and clean-checkout verification.
-
-[PT1h code/document reconciliation and rc6 verification](release-readiness/PT1h/README.md) records the 2026-10-08 integration audit. [Tool workflows](../TOOLS.md) index the current commands and distinguish synthetic checks from field measurements.
-
-[Project technical audit — 2026-10-06](project-audit-2026-10-06/README.md): independent code, physics, runtime, tests, export and roadmap review at `eaa8979`; verified findings, counterevidence, saved probes and a corrected dependency order. Supporting reports cover physics, runtime systems and roadmap/research.
-
-The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-order-and-release-gates) turns its recommendations into planned work; this does not mark the simulator findings fixed.
-
-## Development workflows
-
-[Graveacre AI-assisted asset workflow — 2026-10-09](graveacre-ai-workflow-2026-10-09.md): the Reddit post, its game/community links and official PixelLab/Retro Diffusion documentation; author claims, access limits and applications to our existing asset pipelines, visual review, parallel work and PT2 pilot feedback.
+- [Branch integration, 2026-10-10](branch-integration-2026-10-10.md) records merge decisions and clean-checkout checks.
+- [PT1h release-readiness audit](release-readiness/PT1h/README.md) reconciles code, documents and rc6 evidence; [tool workflows](../TOOLS.md) lists current commands and measurement limits.
+- [Project technical audit](project-audit-2026-10-06/README.md) reviews physics, runtime, tests, export and roadmap at its recorded commit. Its recommendations are planning input, not proof that issues are fixed.
+- [Graveacre asset workflow review](graveacre-ai-workflow-2026-10-09.md) records primary links, access limits and practical asset-pipeline findings.
 
 ## Entry points per track
 
-[Landscape upgrade — LU-00–06](landscape-upgrade/README.md): integrated terrain backdrop, population, day/night fixtures, occlusion-aware glare, float64 scenery contacts, native screenshots, measured budgets and source/license review. Requested plan: [LANDSCAPE_UPGRADE_PLAN](../../LANDSCAPE_UPGRADE_PLAN.md).
-
 ### Ground physics
 
-[GP-00–05](ground-physics/README.md): per-wheel grass terrain, wheel spin and suspension, aircraft profiles, trace/replay integration and measured numerical acceptance. The root [ground physics plan](../../GROUND_PHYSICS_PLAN.md) records the pre-implementation research, ownership and remaining physical/performance gates.
+[GP-00–05 evidence index](ground-physics/README.md) covers terrain, per-wheel contact, spin and suspension, profile/session integration, traces, numerical checks and remaining physical calibration. The [integrated ground model](ground-physics/GP-05/README.md) records current scope and open gates.
 
 ### Aircraft standardization
 
-[AS-00–05](aircraft-standardization/README.md): four-aircraft audit, v2 contract and schema, explicit module capabilities, source migration, authoring template and in-engine verification. The root [standardization plan](../../AIRCRAFT_STANDARDIZATION_PLAN.md) owns this foundation before aircraft feature expansion.
+[AS-00–05 evidence index](aircraft-standardization/README.md) covers the fleet audit, v2 contract/schema, source migration, authoring template and verification. The [aircraft data contract](../../AIRCRAFT_CONTRACT.md) defines current authoring; measured aircraft mass properties and physical validation remain separate work.
 
 ### Extra 300S flight realism
 
-[EX-06/08/09](extra-300-realism/README.md): complete behavior audit, manual empty-tank balance correction, physical/visual thrust installation, manual control rates, before/after flight and ground probes, numerical refinement, regression results and remaining physical qualification gates. The [scoped realism plan](../EXTRA-300-REALISM-PLAN.md) preserves the experimental status and distinguishes model consistency from measured flight fidelity.
+[EX-06/08/09 realism audit](extra-300-realism/README.md) links the manual/source audit, corrections, behavior matrix, regression results and remaining physical gaps. The [Extra 300S plan](../EXTRA-300-PLAN.md) owns aircraft implementation; the research records realism findings and remaining physical gaps.
 
 ### Turbo Timber Evolution
 
-[TT-00](timber-integration/TT-00/README.md): external Blender/CAD package inventory, reproducible STL and Blender DNA audits, official aircraft/import references and current code seams. The independent [Timber Integration Plan](../TIMBER-INTEGRATION-PLAN.md) owns TT- steps, the curated GLB pipeline, electric-flight prerequisites and later flap/ground validation.
+[TT-00](timber-integration/TT-00/README.md) starts the CAD/import and code-seam review. Follow-ups are in [TT-00-R1](timber-integration/TT-00-R1/README.md); the [integration plan](../TIMBER-INTEGRATION-PLAN.md) owns the model and electric-flight handoff.
 
 ### Desktop delivery
 
-[DT-00](desktop-delivery-investigations/DT-00/README.md): current launch/export audit, fullscreen and DPI/recovery contract, Windows installer and macOS signing/notarization research, measurement protocol and native acceptance limits. The separate [Desktop Delivery Plan](../DESKTOP-DELIVERY-PLAN.md) owns DT- steps and coordinates existing UI-07/09 and visual/physics work.
-
-[DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md): twelve follow-up investigations covering installer replacement, Mac trust, Linux runtime, fullscreen transactions, DPI/camera, native close/audio, provenance, native testing, performance statistics, settings durability, startup and installed USB radios. Isolated probes reproduce stale-reader settings loss and Git's untracked-file identity gap; revision 2 maps findings to phased acceptance.
-
-[DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md): twelve further investigations focused on Godot and Apple Silicon M1 onward: actual graphics driver, Retina/MSAA/memory, ProMotion, ARM64/dependencies/OS floor, Spaces/input, trust/updates, thermal soak, USB, CoreAudio, native CI, numerical physics and diagnostics. Static Mach-O inspection and a synthetic checker-contract probe inform revision 3; no native Mac performance is claimed.
+Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md) for platform, installer, display, performance and native-test research. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) tracks acceptance.
 
 ### Roadmap knowledge base (all phases)
 
-[roadmap-investigations/README.md](roadmap-investigations/README.md) (plan review #4, 2026-10-06): ten documents that do the research in advance for each phase. 01 numerics, architecture and performance · 02 aerodynamics at RC scale · 03 propeller and propwash · 04 ground handling and collisions · 05 propulsion (glow, gas, electric, turbine) · 06 radio, servos and latency · 07 atmosphere, wind and turbulence · 08 validation and flight testing · 09 aircraft data and pipeline · 10 audio, perception and presentation. Read the phase's document before starting a step.
+[Roadmap investigations](roadmap-investigations/README.md) collects pre-work research for numerics, aerodynamics, propulsion, ground handling, radio, weather, validation, aircraft data and presentation. Read the relevant phase brief before starting its implementation step.
 
 ### Crash and damage
 
-[crash-damage-investigations/README.md](crash-damage-investigations/README.md) indexes reports 01/02/04/05 and the pending material-threshold research (03, owned by CR-07). The [plan](../CRASH-DAMAGE-PLAN.md) starts with a typed contact snapshot and cause; effective-mass ranking is not structural validation.
+[Crash investigation index](crash-damage-investigations/README.md) covers contact diagnostics, structural-source work and presentation evidence. The [crash and damage guide](../CRASH-DAMAGE-PLAN.md) separates implemented experimental effects from structural validation and damaged-flight work.
 
 ### Flight model and simulation
 
-Responsive audio: [G3b](audio/G3b/README.md) qualifies the engine generator's latency, efficient wavetable synthesis, accepted-tick observation and pause/reset lifecycle. Software audio measurements remain separate from physical sound calibration and propagation.
+Use the [flight-model audit](flight-model-robustness-audit.md), [repair implementation record](flight-repair-implementation.md) and [D8b-R2 pull-up investigation](flight-robustness/D8b-R2/README.md) for the main handling history. Current implementation boundaries are in [STACK](../../STACK.md); the [roadmap](../../ROADMAP.md) owns remaining gates.
 
-Immersive audio: [AUD-01 sources/licenses](audio/AUD-01/sources.md), [AUD-02 original source library](audio/AUD-02/assets.md), [AUD-03 integration](audio/AUD-03/README.md), and [AUD-04 gameplay qualification](audio/AUD-04/README.md) cover the dynamic field and aircraft mix, speaker feedback, exact simulation parity, exported assets and measured budgets.
-
-[D8b-R2: high-speed Ugly Stik pull-up](flight-robustness/D8b-R2/README.md): keyboard/session reproduction, post-stall roll-feedback sweep, gyro/inertia ablations and timestep refinement. The [revision 3 repair plan](../UGLY-STIK-PULLUP-PLAN.md) incorporates [18 source-based investigations and four numerical investigations](flight-robustness/D8b-R2/research-index.md), plus an [optional polar implementation, 70-flight matrix and verification](flight-robustness/D8b-R2/implementation/README.md). Production polar selection and aircraft-specific validation remain open.
-
-Modal reference dashboard: [VAL-3](validation/VAL-3/README.md) provides strict US120/25e reference files, current Godot mode samples, estimated diagnostic bands, explicit unknown tuning history/uncertainty and a stale-output check. Actual Clp mutation and synthetic classification tests remain separate from aircraft validation.
-
-Metamorphic flight checks: [VAL-4](validation/VAL-4/README.md) exercises symmetry, Froude scaling and passive energy through actual session ticks, including servo/downwash timing. Three source mutations are rejected in disposable app copies; the shared simulation is unchanged.
-
-Scale-weighing reduction: [VAL-5a](validation/VAL-5a/README.md) provides offline tare-corrected mass and horizontal CG with calibration/datum covariance, strict input validation and synthetic verification. Real aircraft weighing remains VAL-5.
-
-Swing-test reduction: [VAL-6a](validation/VAL-6a/README.md) provides offline bifilar/compound inertia estimates, common-axis rig tare, shared-input uncertainty and a synthetic plank check. Real rig and aircraft measurements remain VAL-6.
-
-Static propeller readings: [VAL-7a](validation/VAL-7a/README.md) reduces matched thrust/RPM and optional torque into Ct, Cp and shaft power with uncertainty. Ideal-disc power stays distinct; real static tests and transient lag remain VAL-7.
-
-Propeller source normalization: [G1a1](propulsion/G1a1/README.md) imports exact-hash UIUC static/tunnel files as sorted knots with complete source-line provenance, explicit deduplication and unknown diameter/tunnel RPM retained. Four primary-source readbacks and synthetic defect checks verify the tool; matched intended-propeller evidence remains open.
-
-Propeller operating-range diagnostics: [G1b1](propulsion/G1b1/README.md) audits Ct/Cp queries from exact-input-identified traces, separating table extrapolation, documented source gaps, stopped/reverse flow and unknown coverage. Six session flights and direct engine-query comparisons verify the offline tool; online counters and matched-propeller validation remain open.
-
-Throttle-step readings: [VAL-7b](validation/VAL-7b/README.md) reduces recorded RPM crossings into lag/delay diagnostics, retaining residuals, sampling limits and provenance. [VAL-7c](validation/VAL-7c/README.md) adds explicit opt-in uncertainty with shared-input covariance and screens unresolved crossings; correlated acquisition models and physical measurements remain open.
-
-Ground-run video: [VAL-8a](validation/VAL-8a/README.md) reduces original capture-frame annotations and surveyed positions into duration, distance and mean along-runway ground speed, retaining shared-event/calibration uncertainty and exact input hashes. Physical flights and simulator comparisons remain VAL-8.
-
-Complete-roll video: [VAL-8b](validation/VAL-8b/README.md) reduces verified full-turn annotations to mean period and signed cycle-average rate with shared timing covariance and exact clip/input hashes. It does not infer instantaneous body rate or roll damping; physical observations remain open.
-
-| Read first | Then | Evidence |
-| --- | --- | --- |
-| [ugly-stik-rudder-audit.md](ugly-stik-rudder-audit.md) (the symptom: rudder over-authority) | [flight-model-robustness-audit.md](flight-model-robustness-audit.md) (the whole-model audit) → [flight-repair-implementation.md](flight-repair-implementation.md) (what was changed and tested, 2026-10-06) → [flight-robustness/repair-diagnostics.md](flight-robustness/repair-diagnostics.md) → [aero-consistency/D11d](aero-consistency/D11d/README.md) (D11d wing induced-flow map, 2026-10-07) → [aero-consistency/E0a2a](aero-consistency/E0a2a/README.md) (E0a2a tail downwash split, 2026-10-07) → [aero-consistency/E0a2b](aero-consistency/E0a2b/README.md) (E0a2b downwash lag, 2026-10-07) → [aero-consistency/D11f](aero-consistency/D11f/README.md) (D11f yaw damping) → [oracle data decision brief](aero-consistency/oracle-data-decision.md) → [aero-consistency/D11g](aero-consistency/D11g/README.md) (D11g the Stik's own rate derivatives; decision made) | [rudder-audit/](rudder-audit/) (19 experiments), [flight-robustness/](flight-robustness/) (probes, fuzz, eigenmodes, logs); [research/sensitivity/results.md](../../research/sensitivity/results.md) (D10 sweep and the UMN Ultra Stick 120 comparison); [research/flight-modes/](../../research/flight-modes/) (linearized modes) |
-
-Trace integrity: [C7-R1](trace-integrity/C7-R1/README.md) hardens CLI duration/failure exits and the trimmed-flight checker; records regression mutations and exported-flight comparisons. [C7-R2](trace-integrity/C7-R2/README.md) defines active-model headers, state layouts and recording-start auxiliary snapshots.
-
-Trim integrity: [D4-R2](trim-integrity/D4-R2/README.md) closes nonfinite false convergence and invalid linear-system acceptance, with exact fleet preservation and isolated regression evidence.
-
-Playable wind: [uniform wind and repeating gusts](wind-implementation/README.md) integrates four-aircraft air-relative physics, precise Home conditions, explicit v4 telemetry, v2 weather checkpoints, FPS reproducibility, EN/ES rendered proof and native Linux source/export parity. [M5-W04a](wind-implementation/M5-W04a/README.md) adds seeded temporal OU turbulence, float64 Gaussian sampling, exact RNG/filter rollback/replay, v5 telemetry and independent statistical/PCG checks. Atmosphere/pilot validation remains open.
-
-Field atmosphere: [M5-ATM-1 kernel](atmosphere/M5-ATM-1/kernel/README.md) and [M5-ATM-2/3 flight integration](atmosphere/M5-ATM-2/README.md) separate moist aerodynamic density from dry-air engine charge; include reference parity, trim/wake/runway consistency, v6 telemetry and exact environment replay. Uniform per-flight conditions and empirical power maps remain limited.
-
-Radio calibration: [D6b-R1](radio-input/D6b-R1/README.md) validates persisted channel mappings and device identity, rejects malformed profiles whole, preserves files on refused saves and verifies safe replug through the real scene.
-
-Calibration rearming: [D6b-R2](radio-input/D6b-R2/README.md) requires fresh finite low-throttle evidence after profile replacement, preserves raw-axis diagnostic history, and records private fault tests, real-session checks and paired event-cost observations.
-
-Radio diagnostics: [F1](radio-input/F1/README.md) adds a standalone input report with per-device connection history, axis ranges and observed callback spacing; includes fake-device and CLI proof. Actual USB timing and physical-radio compatibility remain separate measurements.
-
-Loader cost: [DATA-2b](aircraft-validation/DATA-2b/README.md) attributes the remaining startup cost and stops repeated induced-flow inversions after exact float64 midpoint stagnation; paired whole-model and refusal comparisons retain identical bytes.
-
-Steady shaft integrity: [G2-R1](propulsion/G2-R1/README.md) rejects unbracketed or nonfinite RPM equilibria and verifies unchanged fleet trims and flight endpoints.
-
-Coupled shaft dynamics: [G2a/G2b experiment](propulsion/G2a-RK4/README.md) integrates relative RPM with stage-local aircraft/wake loads and locked-inertia rotor reaction; preserves the default split route and records refinement, transactional replay and primary-source assumptions.
-
-Coupled-stage headroom: [G2a-R1](propulsion/G2a-R1/README.md) shares one pure evaluation between stage loads, shaft derivatives and rotor momentum; verifies exact frozen-baseline trajectories, complete payload validation and measured simulation-step cost.
-
-Electric propulsion: [EL1a](propulsion/EL1a/README.md) develops the reusable three-constant motor/ideal-ESC source, with primary-source equations, Timber B hardware/evidence boundaries, energy and analytic-transient verification. The [Electric Propulsion Plan](../ELECTRIC-PROPULSION-PLAN.md) owns EL1–EL6 integration and physical acceptance.
-
-Electric plan reinforcement: [EL1a-R1](propulsion/EL1a-R1/README.md) records twelve primary-source investigations covering parameter conventions, exact ESC modes, battery identifiability and total-current accounting, propeller coverage, transient measurement, numerical events, telemetry and uncertainty. The findings are incorporated into electric plan revision 2; physical calibration and aircraft integration remain open.
-
-Electric ground and maneuver qualification: [EL2a-E1](propulsion/EL2a-E1/README.md) records the zero-duty runway startup defect, source-specific rest initialization, parked/start/replay/depletion controls and the synthetic takeoff, stall/recovery and landing matrix.
-
-Electric implementation research: [EL1a-R2](propulsion/EL1a-R2/README.md) adds twelve investigations on Godot clock/precision/performance, schema and session ownership, checkpoints, motor timescales, rotor coupling, interpolation, headless/export gates, independent solvers and calibration. Revision 3 incorporates their code seams and acceptance checks; isolated runner, solver/event and identifiability probes are recorded without changing app physics.
-
-Electric integration: [EL1b](propulsion/EL1b/README.md) adds strict data/schema branches and two synthetic configurations; [EL1c](propulsion/EL1c/README.md) adds source dispatch and stable trim; [EL1d](propulsion/EL1d/README.md) couples rotor/body stopping, checkpoint v5 and trace v7 with independent numerical proofs. [EL1e](propulsion/EL1e/README.md) records eight 30-second flights, input/FPS and Linux-package checks. [EL1f](propulsion/EL1f/README.md) records the open Timber handoff; [EL2a](propulsion/EL2a/README.md) integrates synthetic OCV/resistance battery charge, energy and exhaustion events with checkpoint v6/CSV v8, independent numerical/flight checks and product proof; measured hardware and endurance remain open. [EL2a-P1](propulsion/EL2a-P1/README.md) records exact kernel/flight/event parity, real mutation controls and alternating performance measurements for the electric stage optimization. [EL2a-P2](propulsion/EL2a-P2/README.md) records bounded event localization, coincident-event ordering, independent references, five real defect controls and 67–90% lower paired event-tick medians; the 500 µs gate remains open.
-
-Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces finite numeric shaft tables, units and provenance; records malformed-input and session-reload checks. [D1-R3](aircraft-validation/D1-R3/README.md) replaces the gear bounding-box check with the resting-facet support polygon (taildraggers at their three-point attitude).
-
-Solved stall-envelope integrity: [D1-R4](aircraft-validation/D1-R4/README.md) rejects unreachable, nonfinite or collapsed derived transitions, preserves valid fleet models and verifies refused reloads and solver faults.
-
-Wing-strip calibration integrity: [D1-R5](aircraft-validation/D1-R5/README.md) rejects unreachable or nonfinite induced-flow calibration before deriving offsets/downwash, with exact fleet parity and failed-reload proof.
-
-Aircraft loading cost: [DATA-2a](aircraft-validation/DATA-2a/README.md) bounds the existing discrete stall-peak search while preserving exact solved angles and full loader results. Paired fleet timings improve approximately eightfold; DATA-2's 15 ms whole-load target remains open.
-
-Aircraft input identity: [DATA-3](aircraft-validation/DATA-3/README.md) hashes the exact loaded bytes, distinguishes semantic hashes in trace metadata v2 and defines explicit legacy/file-verification behavior. Includes late-digit/line-ending regressions, mutation proof and unchanged fleet traces.
-
-Aircraft structural preflight: [DATA-4a](aircraft-validation/DATA-4a/README.md) adds a v1 JSON Schema and CI checks against the real loader, including valid optional/null cases and malformed quantities. [DATA-4b](aircraft-validation/DATA-4b/README.md) adds numeric boundaries, feature combinations and a clean incidence-rejection diagnostic. Physical cross-field checks remain runtime-only; the bounded corpus does not close DATA-4's remaining mutation-equivalence coverage.
-
-Generated-output freshness: [DATA-1](aircraft-validation/DATA-1/README.md) adds the P-51 generation chain to CI, with five stale-copy rejection cases in a fresh clone.
-
-Simulation state and headroom: [H4/H5](simulation-state/H4-H5/README.md) profiles all aircraft and measures behavior-preserving optimizations; [H6](simulation-state/H6/README.md) enforces math routing; [H7](simulation-state/H7/README.md) checks adjacent-float sensitivity and branch decisions; [H8a](simulation-state/H8a/README.md) verifies RK stage time; [H8](simulation-state/H8/README.md) defines complete checkpoints and rollback; [H8-R1](simulation-state/H8-R1/README.md) verifies fresh-owner continuation and rejects invalid clocks/derived inverses before restoration; [H9](simulation-state/H9/README.md) defines stamped tolerance replay; [H9-R1](simulation-state/H9-R1/README.md) rejects nonfinite live state, overflowing clocks and mismatched checkpoint streams; [H10](simulation-state/H10/README.md) records the conditional interface decision; [H11](simulation-state/H11/README.md) bounds contact stability and accuracy. [Gate P](simulation-state/Gate-P/README.md) measures an isolated native slipstream kernel against the GDScript oracle and the whole-fleet budget; [H12](simulation-state/H12/README.md), [H13](simulation-state/H13/README.md) , [H14](simulation-state/H14/README.md) and [H15](simulation-state/H15/README.md) make local-strip aero, slipstream, tilted-shaft propulsion and the attached-flow path allocation-free with exact trajectories.
-
-M2 propwash: [E0b1](propwash/E0b1/README.md) independently verifies the existing ideal actuator-disc wake, its operating-point limits and conservation laws; [E0b2](propwash/E0b2/README.md) derives the Stik hub and neutral tail footprints with a freshness check; [E0b3a](propwash/E0b3a/README.md) reconciles the wash/free-tail law and session downwash lag; [E0b3b](propwash/E0b3b/README.md) adds exact neutral chord profiles, smooth occupancy and reverse-flow cutoff; production Stik remains off pending calibration and cost. The dense comparison records a large nonzero-swirl centroid error for E0b6. [E0b4](propwash/E0b4/README.md) records source-audited wash/coverage sensitivity, 581 fixed-condition checks and 33 mode solves; donor-model transfer is not Stik calibration. [E0b5](propwash/E0b5/README.md) adds a continuous axial-speed lag with RK-stage coupling, checkpoint/rollback proof and exact frame-rate hashes; geometry remains instantaneous and production stays off. [E0b6](propwash/E0b6/README.md) verifies distributed swirl, torque/sign/continuity and a source-audited uncertainty sweep; calibration and enabled-path performance remain open. [E0b6p](propwash/E0b6p/README.md) removes per-node force-helper allocations with exact sampled equivalence and a 3.76–4.31× correction speed-up; the whole-tick budget remains unmet. Its [complete native wake probe](propwash/E0b6p/native/README.md) preserves accuracy and trajectories, but still misses the whole-tick budget; production remains GDScript. The [whole-tick and native-phase attribution](propwash/E0b6p/attribution/README.md) verifies active timer equivalence, separates decoding from swirl computation and bounds the value of decoding work. The [single-lookup decoder](propwash/E0b6p/decoder/README.md) retains a measured local saving with exact load/flight output and 165 field-contract checks; whole-flight budget acceptance remains open. The [stage-local sharing comparison](propwash/E0b6p/stage-sharing/README.md) verifies 1,216 exact loads and 30 exact flights in both backends, but retains the candidate outside production because whole-tick gains are inconsistent and reverse cutoff regresses. The [prepared native-model experiment](propwash/E0b6p/prepared-model/README.md) adds copied model snapshots, generation-based invalidation and lifecycle refusal tests; two exact paired runs reduce active swirling cost, but 515–614 µs/tick still misses the budget and production remains unchanged. The [prepared-path attribution](propwash/E0b6p/prepared-cost/README.md) separates whole-tick adapter/non-wake cost and native static/dynamic validation, marshalling, axial loads and swirl; two exact trajectory runs and strict counter checks retain the budget and integration gates.
-
-The [nested aero/simulation attribution](propwash/E0b6p/dynamics-cost/README.md) separates wing/tail loads, validation, RK arithmetic, rigid-body work and callback/checkpoint costs. Two original-buffer comparisons and 24 rejected report corruptions select wing-loop lookup hoisting as the next experiment; production and acceptance gates remain unchanged. The [wing-loop experiment](propwash/E0b6p/wing-loops/README.md) then preserves exact loads and 30 trajectories in each of three runs, but retains the combined change outside production because whole-flight gains are inconsistent. The next test separates wing-helper lookup hoisting from induced-map row offsets.
-
-The [E0b7 field-observation preparation](propwash/E0b7/README.md) provides a nose-unloading/taxi-blip/takeoff-swing reducer and collection card with explicit sample error bounds, source hashes and calibration/held-out partitions. Synthetic and malformed-input checks verify the offline tool; actual observations, coefficient fitting and Stik wash enablement remain separate.
-
-M2 ground handling: [landing-gear-contact-e1.md](landing-gear-contact-e1.md) (E1 spring-damper gear contacts, 2026-10-06) → [ground-friction-e2.md](ground-friction-e2.md) (E2 tyre friction, nose-wheel steering, tip-over, figure-eight taxi, 2026-10-06) → [ground-surfaces-e3a.md](ground-surfaces-e3a.md) (E3a runway, mown and rough surfaces under the wheels, 2026-10-06) → [ground-contact/E3b1](ground-contact/E3b1/README.md) (E3b1 per-wheel stiction anchors, 2026-10-07) → [ground-contact/E3b2](ground-contact/E3b2/README.md) (E3b2 runway start in static equilibrium, 2026-10-07) → [ground-contact/E3b3](ground-contact/E3b3/README.md) (E3b3 takeoff roll against a 1-D model integral, 2026-10-07) → [ground-contact/E1b](ground-contact/E1b/README.md) (E1b continuous touchdown damping, 2026-10-07).
-
-Runway-start numerical integrity: [E3b2-R1](ground-contact/E3b2-R1/README.md) rejects nonfinite and wrong-sized Newton residuals, invalid operating inputs and linear-solve overflow while preserving valid static equilibria.
-
-Taildragger breadth: [E5a](ground-contact/E5a/README.md) reviews the existing P-51 contacts and adds generated Extra 300S wheel contacts, with static moment balance, steering/component ground-loop signs, real-session refinement and isolated fault detection. Independent pilot contrast remains open.
-
-Nose-over mechanics: [E5b](ground-contact/E5b/README.md) separates tail-up pitch reversal from three-point tail lift, verifies both against rigid contact moments, and exercises synthetic resistance patches. Numerical and fault-detection evidence does not calibrate real soft ground.
-
-Experimental landing baseline: [E3c1a](ground-contact/E3c1a/README.md) commands approach, flare and idle rollout through the real session; measures every wheel's contact speed and runway containment, stable stopping and 240/480 Hz refinement. Propwash acceptance, the full circuit and pilot validation remain separate.
-
-Experimental continuous circuit: [E3c2a](ground-contact/E3c2a/README.md) flies from an idling runway start through takeoff, the full pattern, the E3c1a landing handoff and an anchored idle stop; both headings, 240/480 Hz refinement, every-tick v3 trace and corruption checks. Rendered acceptance, physical measurements and PT2 remain open.
-
-Manual circuit trial: [PT2 preparation](ground-contact/PT2/README.md) identifies the frozen Linux build, provides launch/recording and diagnostic instructions, and retains fresh export-smoke evidence. Owner flight and independent physical acceptance remain pending.
-
-Rendered circuit review: [E3c2b](ground-contact/E3c2b/README.md) captures twelve recorded stages in production pilot/inspection views, checks actual poses, hinges, cameras and clocks, and preserves a repeatable [HTML kit](ground-contact/E3c2b/index.html). No dynamics replay or physical/readability acceptance is implied.
-
-Full-circuit regression: [E4a](ground-contact/E4a/README.md) replays a saved 28,861-tick experimental circuit from frozen applied controls with H9 tolerances, complete sampled state and real crash guards. Rolling-resistance and anchor-stiffness changes are detected; physical and release acceptance remain open.
-
-Full-circuit numerical sensitivity: [E4b](ground-contact/E4b/README.md) measures joint adjacent-float `sin`/`atan2` perturbations in both directions against E4a. Errors stay below 0.00401% of H9 tolerance with matching selected branches/modes; a deliberate branch change is detected despite identical state. Native-platform and physical acceptance remain open.
-
-Plans: [FLIGHT-MODEL-ROBUSTNESS-PLAN](../FLIGHT-MODEL-ROBUSTNESS-PLAN.md), [RUDDER-REPAIR-PLAN](../RUDDER-REPAIR-PLAN.md), ROADMAP M1.
+| Topic | Evidence entry points |
+| --- | --- |
+| Aerodynamics and wake | [D11d induced flow](aero-consistency/D11d/README.md), [E0a2a/b downwash](aero-consistency/E0a2b/README.md), [D11f yaw damping](aero-consistency/D11f/README.md), [D11g rate derivatives](aero-consistency/D11g/README.md), [E0b1 actuator-disc wake](propwash/E0b1/README.md), [E0b6 swirl](propwash/E0b6/README.md), [E0b6p cost work](propwash/E0b6p/README.md), [E0b7 observation preparation](propwash/E0b7/README.md) |
+| Simulation state, replay and cost | [H4–H5 profiling](simulation-state/H4-H5/README.md), [H8 checkpoints](simulation-state/H8/README.md), [H9 tolerance replay](simulation-state/H9/README.md), [H11 contacts](simulation-state/H11/README.md), [H12 local-strip aero](simulation-state/H12/README.md), [H13 slipstream](simulation-state/H13/README.md), [H14 tilted shaft](simulation-state/H14/README.md), [H15 attached flow](simulation-state/H15/README.md), [Gate P native-kernel comparison](simulation-state/Gate-P/README.md) |
+| Ground handling and circuits | [E5a taildragger breadth](ground-contact/E5a/README.md), [E3b2 runway equilibrium](ground-contact/E3b2/README.md), [E3c1a landing baseline](ground-contact/E3c1a/README.md), [E3c2a circuit](ground-contact/E3c2a/README.md), [E4a replay regression](ground-contact/E4a/README.md), [PT2 pilot preparation](ground-contact/PT2/README.md) |
+| Propulsion | [G1a1 propeller sources](propulsion/G1a1/README.md), [G1b1 operating range](propulsion/G1b1/README.md), [G2a coupled shaft](propulsion/G2a-RK4/README.md), [EL1a-R1 sources](propulsion/EL1a-R1/README.md), [EL1a-R2 implementation research](propulsion/EL1a-R2/README.md), [EL2a-P3 optimization](propulsion/EL2a-P3/README.md), [EL2a-E1 ground scenarios](propulsion/EL2a-E1/README.md); see the [electric propulsion plan](../ELECTRIC-PROPULSION-PLAN.md) |
+| Validation and data | [VAL-3 reference dashboard](validation/VAL-3/README.md), [VAL-5a weighing](validation/VAL-5a/README.md), [VAL-6a inertia](validation/VAL-6a/README.md), [VAL-7a propeller](validation/VAL-7a/README.md), [VAL-7b throttle](validation/VAL-7b/README.md), [VAL-7c uncertainty](validation/VAL-7c/README.md), [VAL-8a ground-run video](validation/VAL-8a/README.md), [VAL-8b roll video](validation/VAL-8b/README.md), [DATA-1 freshness](aircraft-validation/DATA-1/README.md), [DATA-4a schema checks](aircraft-validation/DATA-4a/README.md) |
+| Weather and input | [wind implementation](wind-implementation/README.md), [M5-W04a turbulence](wind-implementation/M5-W04a/README.md), [M5-ATM-1 density kernel](atmosphere/M5-ATM-1/kernel/README.md), [D6b-R2 calibration rearming](radio-input/D6b-R2/README.md), [F1 diagnostics](radio-input/F1/README.md), [F3b1 event cost](radio-input/F3b1/README.md), [F6a latency capture](radio-input/F6a/README.md), [F6b latency reduction](radio-input/F6b/README.md) |
+| Integrity checks | [C7-R2 trace metadata](trace-integrity/C7-R2/README.md), [D4-R2 trim integrity](trim-integrity/D4-R2/README.md), [DATA-3 input identity](aircraft-validation/DATA-3/README.md) |
 
 ### Ugly Stik
 
-| Topic | Read first | Then |
-| --- | --- | --- |
-| Sources and local references | [ugly-stik-resources.md](ugly-stik-resources.md) | [ugly-stik-sources.md](ugly-stik-sources.md), [ugly-stik-local-audit.md](ugly-stik-local-audit.md), [ugly-stik-new-files.md](ugly-stik-new-files.md) (with [-cad](ugly-stik-new-files-cad.md) and [-visual](ugly-stik-new-files-visual.md)), [aircraft-reference-index.md](aircraft-reference-index.md) (all aircraft) |
-| Ten investigations before modelling | [ugly-stik-investigations/README.md](ugly-stik-investigations/README.md) | 01-03 geometry, 04-06 components, 07 CAD, 08 plan metrology, 09 export, 10 screen readability; `evidence/` |
-| Model versions | [ugly-stik-model-v4.md](ugly-stik-model-v4.md) (current geometry v3 + finish v4) | [v1](ugly-stik-model-v1.md) ([rig](ugly-stik-model-v1-rig.md), [calibration](ugly-stik-model-v1-calibration.md), [visual](ugly-stik-model-v1-visual.md)), [v2](ugly-stik-model-v2.md), [review v2](ugly-stik-model-review-v2.md), [v3](ugly-stik-model-v3.md) ([metrology](ugly-stik-model-v3-metrology.md), [wing](ugly-stik-model-v3-wing.md), [installation](ugly-stik-model-v3-installation.md), [readability](ugly-stik-model-v3-readability.md)), [v4 controls](ugly-stik-model-v4-controls.md), [v4 equipment](ugly-stik-model-v4-equipment.md), [engine v5](ugly-stik-engine-v5.md) (+ [evidence](ugly-stik-engine-v5-evidence/)), [revalidation 2026-10-05](ugly-stik-revalidation-2026-10-05/) |
-| Finish and tooling | [ugly-stik-visual-photo-brief.md](ugly-stik-visual-photo-brief.md) | [ugly-stik-visual-investigations/](ugly-stik-visual-investigations/README.md) (01-10), [ugly-stik-tooling-investigations/](ugly-stik-tooling-investigations/README.md) (01-10) |
-
-Scripts, captures and galleries: [research/ugly-stik/](../../research/ugly-stik/) (`model-v1` … `model-v4`, [model-v4/README.md](../../research/ugly-stik/model-v4/README.md)). Plans: [UGLY-STIK-PLAN](../UGLY-STIK-PLAN.md), [UGLY-STIK-VISUAL-PLAN](../UGLY-STIK-VISUAL-PLAN.md).
+Start with the [source and local-reference map](ugly-stik-resources.md), [model investigations](ugly-stik-investigations/README.md), [current model record](ugly-stik-model-v4.md), and [engine v5 evidence](ugly-stik-engine-v5.md). Visual and authoring work is indexed under [visual investigations](ugly-stik-visual-investigations/README.md) and [tooling investigations](ugly-stik-tooling-investigations/README.md). See the [Ugly Stik plan](../UGLY-STIK-PLAN.md) and reproducible [model pipeline](../../research/ugly-stik/).
 
 ### Extra 300S
 
-| Read first | Then | Evidence |
-| --- | --- | --- |
-| [extra-300-family-research.md](extra-300-family-research.md) (which Extra and why) | [extra-300-resources.md](extra-300-resources.md), [extra-300-round2.md](extra-300-round2.md), [extra-300-photo-investigation.md](extra-300-photo-investigation.md), [extra-300-integration-audit.md](extra-300-integration-audit.md) (what a second aircraft needed from the app), [extra-300-model-v1.md](extra-300-model-v1.md) (metrology and preview), [extra-300-visual-review-v1.md](extra-300-visual-review-v1.md) | [research/extra-300/](../../research/extra-300/) (`ex01` metrology, `ex02` captures, [`ex05/derivation.md`](../../research/extra-300/ex05/derivation.md) physics) |
-
-Shared tooling investigations for the Extra and the Stik: [extra-aircraft-tooling/README.md](extra-aircraft-tooling/README.md). Plan: [EXTRA-300-PLAN](../EXTRA-300-PLAN.md).
+Read the [family research](extra-300-family-research.md), [integration audit](extra-300-integration-audit.md), [realism audit](extra-300-realism/README.md), and [generated physics derivation](../../research/extra-300/ex05/derivation.md). Shared authoring tools are in [extra-aircraft-tooling](extra-aircraft-tooling/README.md). The [EXTRA-300-PLAN](../EXTRA-300-PLAN.md) owns aircraft implementation.
 
 ### Avanti S
 
-| Read first | Then | Evidence |
-| --- | --- | --- |
-| [avanti-s-family-research.md](avanti-s-family-research.md) (variant and turbine) | [avanti-s-resources.md](avanti-s-resources.md), [avanti-s-turbine-research.md](avanti-s-turbine-research.md), [avanti-s-integration-audit.md](avanti-s-integration-audit.md), [avanti-s-av01-metrology.md](avanti-s-av01-metrology.md), [avanti-s-controls-and-installation.md](avanti-s-controls-and-installation.md), [avanti-s-geometry-followup.md](avanti-s-geometry-followup.md), [avanti-s-av02-preview.md](avanti-s-av02-preview.md); physics: [requirements](avanti-s-av05-physics-requirements.md) → [turbine dynamics](avanti-s-av05-turbine-dynamics.md), [airframe data](avanti-s-av06-airframe-data.md), [aero references](avanti-s-av06-aero-references.md) → **[physics model and validation](avanti-s-av06-physics-model.md)** | Contour refinement, in order: [transparency comparison](avanti-s-transparency-comparison.md) → [refinement](avanti-s-contour-refinement.md) → [v3](avanti-s-contour-refinement-v3.md) → [new angles](avanti-s-new-angles.md) ([sources](avanti-s-additional-angle-sources.md)) → [user profile](avanti-s-user-profile.md) → [refinement v4](avanti-s-refinement-v4.md) (latest). Scripts and viewers: [research/avanti-s/](../../research/avanti-s/) (`av01`, `av02`, `alignment`, `refinement`, `new-angles`, `user-profile`, `refinement-v4`) |
-
-Plan: [AVANTI-S-PLAN](../AVANTI-S-PLAN.md).
+Start with [family research](avanti-s-family-research.md), the [integration audit](avanti-s-integration-audit.md), and [AV-06 physics model](avanti-s-av06-physics-model.md). For appearance, see the [latest contour refinement](avanti-s-refinement-v4.md); generated measurements and viewers remain in [research/avanti-s](../../research/avanti-s/). The [Avanti S plan](../AVANTI-S-PLAN.md) owns implementation.
 
 ### P-51D
 
-| Read first | Then | Evidence |
-| --- | --- | --- |
-| [p51-family-research.md](p51-family-research.md) (why a 1/4-scale P-51D for 120 cc), [p51-flight-realism.md](p51-flight-realism.md) (physics cross-checked against NACA and RC-class data: sources, 22 corrections, flown envelope, open uncertainties) | [p51-silhouette-review-v1.md](p51-silhouette-review-v1.md) (dimensions measured by silhouettes over the AN 01-60-3 three-view and the owner's photo), [p51-visual-review-v1.md](p51-visual-review-v1.md) (shapes and details, 18 ranked findings), [p51-visual-review-v2.md](p51-visual-review-v2.md) (closure of V01-V10: before/after per step, status of the 18 findings, open items) | [research/p51/](../../research/p51/): [`p51-02/silhouette/README.md`](../../research/p51/p51-02/silhouette/README.md) (the silhouette method), [`p51-05/derivation.md`](../../research/p51/p51-05/derivation.md) (physics), [`p51-06`](../../research/p51/p51-06/README.md) (propeller calibration, engine anchor), [`p51-08`](../../research/p51/p51-08/README.md) (envelope bands), [`p51-13`](../../research/p51/p51-13/README.md) (section, spanwise stall) |
-
-Plans: [P51-PLAN](../P51-PLAN.md), [P51-VISUAL-PLAN](../P51-VISUAL-PLAN.md).
+Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p51-flight-realism.md), and the [P51-15 airborne results](p51-realism/P51-15/airborne-results.md) with its [ground results](p51-realism/P51-15/ground-results.md) and [source/physics audits](p51-realism/P51-15/physics-audit.md). Silhouette and finish reviews are [P51-02](../../research/p51/p51-02/silhouette/README.md), [visual review v1](p51-visual-review-v1.md) and [visual review v2](p51-visual-review-v2.md). See the [P-51 plan](../P51-PLAN.md), [realism plan](../P51-REALISM-PLAN.md), and [physics derivation](../../research/p51/p51-05/derivation.md).
 
 ### Menus and product shell
 
-Experimental Stik runway delivery: [UI-06a session and trace contract](menu-investigations/UI-06a/README.md), [UI-06b Home and preferences](menu-investigations/UI-06b/README.md), [UI-06c export proof and pilot card](menu-investigations/UI-06c/README.md). The [scoped runway plan](../RUNWAY-START-PLAN.md) owns completion; physical pilot acceptance remains separate.
-
-[UI-06a-R1](menu-investigations/UI-06a-R1/README.md) repairs checkpoint replay headers that inherited the destination flight's launch origin; physics-only checkpoints now declare that origin unknown.
-
-[UI-06c-R1](menu-investigations/UI-06c-R1/README.md) refreshes the three-platform packages after that repair, verifies each compiled pack and repeats the native Linux runway smoke against a frozen source snapshot.
-
-[UI-06d](menu-investigations/UI-06d/README.md) activates the owner-requested interactive profile: Stik runway start, gentle wind/gusts/turbulence, passing evening, birds, engine shadows and visible diagnostics; retains native captures and focused UI/runtime verification.
-
-[menu-investigations/README.md](menu-investigations/README.md): 25 numbered investigations (01-22, 24, 25; number 23 is a probe only, explained in the README), Godot probes under `probes/`, a contrast checker and `sources.json`. Start with [02 input focus and radio isolation](menu-investigations/02-input-focus-radio-isolation.md). Plan: [MENU-PLAN](../MENU-PLAN.md).
-
-[UI-20 shell audit](menu-investigations/UI-20/README.md) (2026-10-11): the current Home, pause, Help, first flight, Flight conditions and Time of day captured at 720p and 1080p in EN/ES, code measurements and an independent review; it grounds the [redesign plan](../MENU-REDESIGN-PLAN.md) (UI-21…29).
+[Menu investigations](menu-investigations/README.md) is the index for UI- and input-focused probes. Start with [UI-06d](menu-investigations/UI-06d/README.md) for the current interactive launch profile and [UI-20](menu-investigations/UI-20/README.md) for the shell audit. The [menu plan](../MENU-PLAN.md) and [redesign plan](../MENU-REDESIGN-PLAN.md) own follow-up work.
 
 ### Visual quality and landscape
 
-| Topic | Read first | Then |
-| --- | --- | --- |
-| Landscape research | [landscape-research.md](landscape-research.md) | [landscape-investigations/README.md](landscape-investigations/README.md) (01 sky … 11 wind ambience) |
-| Visual-quality direction and tools | [visual-quality-tools-2026-10-05.md](visual-quality-tools-2026-10-05.md) | [visual-quality-baseline-2026-10-05/](visual-quality-baseline-2026-10-05/README.md), [visual-quality-round2/](visual-quality-round2/README.md) (native rendering tricks, textures, profiling, a Godot probe), [visual-quality-supplement-2026-10-06.md](visual-quality-supplement-2026-10-06.md) (+ [plugins](visual-quality-supplement-plugins-2026-10-06.md)), the owner's input ([visual](visual-quality-user-input-2026-10-06.txt), [assets](asset-sources-user-input-2026-10-06.txt)) |
-| Asset sources | [asset-sources-catalog-2026-10-06.md](asset-sources-catalog-2026-10-06.md) | [asset-audio-animation-sources-2026-10-06.md](asset-audio-animation-sources-2026-10-06.md), [tree-resource-review-2026-10-06/](tree-resource-review-2026-10-06/README.md) |
-| Trials | [material trial](visual-quality-material-trial-2026-10-06.md), [nature trial](visual-quality-nature-trial-2026-10-06.md) | Projects under [research/visual-quality/](../../research/visual-quality/) |
-| Implementation evidence, one folder per step | [VQ-01a](visual-quality-implementation/VQ-01a/README.md), [VQ-01b](visual-quality-implementation/VQ-01b/README.md) (with [visual references](visual-quality-implementation/VQ-01b/REFERENCES.md)), [L5](visual-quality-implementation/L5/README.md), [L6a](visual-quality-implementation/L6a/README.md), [L6b](visual-quality-implementation/L6b/README.md), [L6c](visual-quality-implementation/L6c/README.md) | Each README states what was measured, how, and what it does not prove (software rendering verifies the protocol, not target-GPU performance) |
-| Phased improvement proposal (2026-10-07): ground colour and anti-tiling, tree shading, field surfaces, horizon, sky, near field | [landscape-improvement-2026-10-07/](landscape-improvement-2026-10-07/README.md) | Reports 01–04 inside; measured problems in [scenery 05](scenery-investigations/05-landscape-image-review.md); Phases 0–4 [implemented and measured](landscape-improvement-2026-10-07/implementation/README.md) |
-| L9c / improvement Phase 4 follow-up: field surfaces in the ground pass | [L9c evidence](visual-quality-implementation/L9c/README.md) | Bounded rectangle batch, custom-field fallback, edge/priority/repeat checks, unchanged physics/readability; shimmer acceptance open |
-| L9c-R1: stripe sampling reference | [L9c-R1 evidence](visual-quality-implementation/L9c-R1/README.md) | Stripe-only camera-motion error, 8×/16× references, fixed world-space inset, repeat and raw/zero-detail controls; bounded regression verified |
-| L9e: filtered turf microstructure | [L9e evidence](visual-quality-implementation/L9e/README.md) | Original packed blade/slope data, Compatibility filtering, fixed before/after views, native GPU budget and unchanged simulation |
-| L10a: calm windsock scale cue | [L10a evidence](visual-quality-implementation/L10a/README.md) | Sourced dimensions, validated optional field cue, calm cloth geometry, repeated/scenery captures, unchanged physics and exported-pack verification |
-| L10b: pilot station | [L10b evidence](visual-quality-implementation/L10b/README.md) | Bounded optional cue, open-rear geometry, grass exclusion, clear pilot threshold views, repeat/scenery captures and isolated regression |
-| L7 / improvement Phase 5: far forest, continuous visual hills and visibility presets | [L7 evidence](visual-quality-implementation/L7/README.md) | Integer profile, preserved near-tree identities, topology, capture A/B, readability and pack checks |
-| L4b / improvement Phase 6 and L15d rendering: sky and cloud shadows | [L4b evidence](visual-quality-implementation/L4b/README.md), [L15d](visual-quality-implementation/L15d/README.md) | Legacy parity, repeated production captures, density/projection probe, readability, pack checks and obsolete-output cleanup |
-| L11a / improvement Phase 7: near grass and reused flowers | [L11a evidence](visual-quality-implementation/L11a/README.md) | Integer placement, clipping, shared ground colour, local FLIP/seam mutation, wind/fade captures, unchanged readability and pack checks |
-| L15b / improvement Phase 8 preparation: rooted tree sway | [L15b evidence](visual-quality-implementation/L15b/README.md) | Repeated motion captures, calm parity, GPU root/wrap probes, expanded bounds, unchanged flight/readability and export checks; M5 integration pending |
+Current implementation guidance is in the [visual quality guide](../VISUAL-QUALITY-PLAN.md), [landscape guide](../LANDSCAPE-PLAN.md), and [landscape-upgrade plan](../../LANDSCAPE_UPGRADE_PLAN.md). Evidence entry points:
 
-Plans: [VISUAL-QUALITY-PLAN](../VISUAL-QUALITY-PLAN.md), [LANDSCAPE-PLAN](../LANDSCAPE-PLAN.md). Tree tooling: [tools/trees/README.md](../../tools/trees/README.md).
+- Direction, sources and baseline: [landscape research](landscape-research.md), [visual tools](visual-quality-tools-2026-10-05.md), [tree resources](tree-resource-review-2026-10-06/README.md), and [asset-source catalog](asset-sources-catalog-2026-10-06.md).
+- Readability and rendering: [VQ-01a/b capture protocol](visual-quality-implementation/VQ-01a/README.md), [L6c blinded owner kit](visual-quality-implementation/L6c/README.md), [VQ-04a projected silhouette](visual-quality-implementation/VQ-04a/README.md), [L9e filtered turf](visual-quality-implementation/L9e/README.md), and [L15b tree motion](visual-quality-implementation/L15b/README.md), [L15d cloud shadows](visual-quality-implementation/L15d/README.md).
+- Field details and upgrade evidence: [L10c barrier](visual-quality-implementation/L10c/README.md), [L10d contact cue](visual-quality-implementation/L10d/README.md), [landscape improvements](landscape-improvement-2026-10-07/README.md), [LU-00–07 upgrade evidence](landscape-upgrade/README.md), and [LU-05 collision report](landscape-upgrade/LU-05/collision-report.md).
+- Scenery source rationale: [field imagery](scenery-investigations/05-landscape-image-review.md), [tree review](tree-resource-review-2026-10-06/README.md), and the [landscape research index](landscape-investigations/README.md).
 
 ### Time of day
 
-[TOD-00](time-of-day-investigations/TOD-00/README.md): current rendering and session seams, [primary astronomy/Godot sources](time-of-day-investigations/TOD-00/primary-sources.md) and [integration audit](time-of-day-investigations/TOD-00/integration-audit.md). Follow-up evidence: [Compatibility radiance](time-of-day-investigations/TOD-01/README.md), [solar/configuration](time-of-day-investigations/TOD-02/README.md), [rendering estimates](time-of-day-investigations/TOD-03/README.md), [shadows](time-of-day-investigations/TOD-04/README.md), [CLI/recorded context](time-of-day-investigations/TOD-05/README.md), [Home editor](time-of-day-investigations/TOD-06/README.md), and [integration evidence](time-of-day-investigations/TOD-07/verification.md). [TOD-08a](time-of-day-investigations/TOD-08a/README.md) adds native paired checkpoints and fixed-time edit history. [TOD-08b](time-of-day-investigations/TOD-08b/README.md) adds paused editing and recorded time changes. [TOD-09a](time-of-day-investigations/TOD-09a/README.md) adds the exact tick-based solar clock and audits the prerequisites for moving scenery shadows. [TOD-09b](time-of-day-investigations/TOD-09b/README.md) updates scene lighting and scenery shadow batches in place; [independent-process verification](time-of-day-investigations/TOD-09b/pixel-verification.md) closes the exact pixel gate. [TOD-09c1](time-of-day-investigations/TOD-09c1/README.md) adds v2 progressing histories and checkpoints with exact phase, restart selection and physics-frequency binding; live progression remains TOD-09c2. Target-GPU and pilot acceptance remain separate. The [TIME-OF-DAY-PLAN](../TIME-OF-DAY-PLAN.md) scopes L19 into fixed selectable time first, then paused edits, progression and optional night lighting.
+The [time-of-day guide](../TIME-OF-DAY-PLAN.md) owns selectable time, editing and progression. Begin with [TOD-00 architecture and sources](time-of-day-investigations/TOD-00/README.md), then [TOD-09b lighting updates](time-of-day-investigations/TOD-09b/README.md) and [TOD-09c1 clock/checkpoint evidence](time-of-day-investigations/TOD-09c1/README.md). Primary field-world sources are in [2026-10-10 research](field-world/web-research-2026-10-10.md); the related world-flow and night kit are indexed below.
 
 ### Scenery and field life
 
-| Topic | Read first | Then |
-| --- | --- | --- |
-| Props, cars, buildings, people, animals: sources and licenses | [01 prop asset sources](scenery-investigations/01-prop-asset-sources.md) | [asset-sources-catalog-2026-10-06.md](asset-sources-catalog-2026-10-06.md) |
-| Flowers, bushes, motion, ambient sound, birds | [02 flora and ambience](scenery-investigations/02-flora-and-ambience.md) | [landscape 05 grass](landscape-investigations/05-grass-rendering.md), [11 wind ambience](landscape-investigations/11-wind-animation-ambience.md) |
-| Club layout rules (AMA, BMFA, DMFV, FAI), markings, shelters, photo references | [03 field layout references](scenery-investigations/03-rc-field-layout-references.md) | [landscape-research.md](landscape-research.md) |
-| Mesh merging, grounding, depth precision, motion, prior art | [04 Godot techniques and prior art](scenery-investigations/04-godot-techniques-and-prior-art.md) | — |
-| What the landscape looks like today, measured (for the landscape track) | [05 landscape image review](scenery-investigations/05-landscape-image-review.md) | — |
-| Implementation evidence, one folder per step | [SC-01](scenery-implementation/SC-01/README.md) (probe and style bake-off: merging, turbine depth, shadow quads, the ground bug, model sizes), [SC-02a](scenery-implementation/SC-02a/README.md) (owner-requested default-on field, native Windows default/off captures and runtime-default audit), [SC-03](scenery-implementation/SC-03/README.md) (the built scenery: captures, budgets, readability, tests), [SC-25](scenery-implementation/SC-25/README.md) (runway scenario: automatic takeoff captures, sync checks, run comparison) | Scripts in [research/scenery/sc01/](../../research/scenery/sc01/); llvmpipe numbers, not GPU performance |
-
-Plan: [SCENERY-PLAN](../SCENERY-PLAN.md).
+The [scenery guide](../SCENERY-PLAN.md) records current default-on behavior and open acceptance. Research starts with [prop sources](scenery-investigations/01-prop-asset-sources.md), [flora and ambience](scenery-investigations/02-flora-and-ambience.md), [field-layout references](scenery-investigations/03-rc-field-layout-references.md) and [Godot techniques](scenery-investigations/04-godot-techniques-and-prior-art.md). Implementation evidence: [SC-01](scenery-implementation/SC-01/README.md), [SC-02a](scenery-implementation/SC-02a/README.md), [SC-03](scenery-implementation/SC-03/README.md) and [SC-25](scenery-implementation/SC-25/README.md).
 
 ### Field world (time of day and night)
 
-| Topic | Read first | Then |
-| --- | --- | --- |
-| Official docs and forums checked for the night work (auto-exposure, light limits, AgX, Purkinje, FAA turbine lights, RC night kits) | [web research 2026-10-10](field-world/web-research-2026-10-10.md) | — |
-| One composer, parity harness | [FW-02](field-world/FW-02/README.md) | [tools/world](../../tools/world/README.md) |
-| Sun, moon, sidereal time | [FW-20](field-world/FW-20/README.md) | Meeus test cases in `app/tests/test_world_ephemeris.gd` |
-| Physical twilight sky, haze lobe, light and adaptation | [FW-23](field-world/FW-23/README.md) | `tools/world/sky_table.py` |
-| Stars, moon disc; Compatibility colour findings (ALBEDO linearisation, radiance exposure, ACES black point) | [FW-24](field-world/FW-24/README.md) | [LEARNINGS](../../LEARNINGS.md) |
-| Field floodlights, lamp sprites, aircraft night kit | [FW-35](field-world/FW-35/README.md) | [lights.json](../../app/data/fields/lights.json) |
+The [field-world guide](../FIELD-WORLD-PLAN.md) owns composition and night acceptance. Key evidence: [FW-02 parity](field-world/FW-02/README.md), [FW-20 ephemeris](field-world/FW-20/README.md), [FW-23 night rendering](field-world/FW-23/README.md), [FW-24 stars](field-world/FW-24/README.md), [FW-35 aircraft/field lights](field-world/FW-35/README.md), and the [world tools](../../tools/world/README.md).
 
-Plan: [FIELD-WORLD-PLAN](../FIELD-WORLD-PLAN.md).
+### Immersive audio
+
+The [audio guide](../AUDIO-PLAN.md) owns the current soundscape. Read [AUD-01 sources and licenses](audio/AUD-01/sources.md), [AUD-02 asset record](audio/AUD-02/assets.md), [AUD-03 integration](audio/AUD-03/README.md), [AUD-04 acceptance](audio/AUD-04/README.md), and [AUD-05 export qualification](audio/AUD-05/README.md). The earlier [G3b engine-audio research](audio/G3b/README.md) is a separate responsive-engine path.
 
 ### Smoke
 
-[rc-exhaust-smoke.md](rc-exhaust-smoke.md), then [smoke-investigations/README.md](smoke-investigations/README.md) (01-12) and the isolated emission experiment in [godot-evidence/](smoke-investigations/godot-evidence/README.md). Plan: [SMOKE-PLAN](../SMOKE-PLAN.md).
+The [smoke guide](../SMOKE-PLAN.md) records the unintegrated feature and its probe-first constraints. Research entry points are [exhaust smoke](rc-exhaust-smoke.md), [smoke investigations](smoke-investigations/README.md), and the [Godot emission probe](smoke-investigations/godot-evidence/README.md).
 
 ### Wind
 
-[wind-physics-primary-sources.md](wind-physics-primary-sources.md), [wind-godot-integration.md](wind-godot-integration.md) (code audit; written before the 2026-10-06 flight repair, re-read against `physics/dynamics.gd` before W01), [wind-investigations/README.md](wind-investigations/README.md) (01-12). Plan: [WIND-PLAN](../WIND-PLAN.md).
+The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begin with [primary sources](wind-physics-primary-sources.md), [implementation evidence](wind-implementation/README.md), [M5-W04a turbulence](wind-implementation/M5-W04a/README.md), and the [investigation index](wind-investigations/README.md). Atmospheric density research is in [M5-ATM-1](atmosphere/M5-ATM-1/kernel/README.md) and [M5-ATM-2/3](atmosphere/M5-ATM-2/README.md).
 
 ### Cross-aircraft
 
-[aircraft-reference-index.md](aircraft-reference-index.md): the index of the owner-supplied local references per aircraft identity (the files themselves are local only).
+[Aircraft reference index](aircraft-reference-index.md) maps the owner-supplied local references by aircraft identity; the source files themselves are local only.
 
 ## Naming
 
-Observed and kept:
-
 | Pattern | Use | Example |
 | --- | --- | --- |
-| `<track>-<topic>.md` | A report | `extra-300-integration-audit.md` |
-| `<track>-model-v<N>[-<part>].md` | A model revision and its parts | `ugly-stik-model-v3-wing.md` |
-| `<track>-<topic>-YYYY-MM-DD.md` | A dated snapshot that will be repeated | `visual-quality-tools-2026-10-05.md` |
-| `<track>-investigations/NN-<topic>.md` | Numbered research rounds, with a README that lists them | `landscape-investigations/04-trees-and-impostors.md` |
-| `<report>-validation.json`, `-metrics.json`, `-checks.json` | Sidecar data of a report, named after the report | `avanti-s-av02-validation.json` |
-| `<area>-implementation/<STEP-ID>/` | Evidence of one step, uppercase ID as in the plan | `visual-quality-implementation/L6b/` |
-| `research/<track>/<step-id>/` | Scripts and data of a step, lowercase | `research/extra-300/ex05/` |
+| `<track>-<topic>.md` | Topic report | `extra-300-integration-audit.md` |
+| `<track>-model-v<N>[-<part>].md` | Model revision | `ugly-stik-model-v3-wing.md` |
+| `<track>-<topic>-YYYY-MM-DD.md` | Dated snapshot | `visual-quality-tools-2026-10-05.md` |
+| `<track>-investigations/NN-<topic>.md` | Numbered research, indexed by its README | `landscape-investigations/04-trees-and-impostors.md` |
+| `<area>-implementation/<STEP-ID>/` | Step evidence | `visual-quality-implementation/L6b/` |
+| `research/<track>/<step-id>/` | Reproducible scripts and data | `research/extra-300/ex05/` |
 
 ## Adding research
 
-1. Write the report in `docs/research/` with the name pattern above, in one language, with date, sources (and their licenses), what was done, what came out, what it does not prove, and the command that reproduces it when one exists.
-2. Put the evidence next to it or in the step's evidence folder; put scripts and raw data under `research/<track>/<step>/`.
-3. Link the report from its plan and from this index. If it yields a reusable lesson, merge it into the appropriate topic following [LEARNINGS.md's criteria](../../LEARNINGS.md#keeping-this-useful), with a link to the step evidence.
-4. Write in English. Never link `references/` or `app/captures/` as if they were in the repository; write "local only" in plain text. Third-party files need a license that allows redistribution and a `sources.json` with author, URL, license and hash before they are committed.
-
-Latency measurement tooling: [F6a](radio-input/F6a/README.md) adds an optional live-flight raw-axis marker and a camera protocol; synthetic same-tick/state-equivalence tests and rendered captures support the tool. [F6b](radio-input/F6b/README.md) reduces per-condition frame annotations into median/p95 and explicit frame/cadence bounds, retaining exclusions and provenance. Physical F6 measurements remain open.
-
-Radio event cost: [F3b1](radio-input/F3b1/README.md) measures the actual handler and scene dispatch under a synthetic four-axis 1 kHz workload. Two bookkeeping alternatives were not adopted because their full-path timing did not improve consistently; exhaustive axis-history tests protect future optimization.
-
-- [L10c flightline barrier and complete-field review](visual-quality-implementation/L10c/README.md): estimated visual geometry, pilot runway clearance, deterministic cue/scenery captures and explicit launcher. [L10d contact grounding](visual-quality-implementation/L10d/README.md): one feathered mesh aligned with shared cue geometry.
+1. Put reports in `docs/research/` and scripts/raw data in root `research/<track>/<step>/`. Record date, sources and licenses, method, result, limits and reproduction command when available.
+2. Keep evidence beside the report or in its step folder. Link the report from the owning guide and this index; merge reusable lessons into [LEARNINGS.md](../../LEARNINGS.md#keeping-this-useful).
+3. Do not link local-only `references/` or ignored `app/captures/` as repository artifacts. Third-party assets need redistribution-compatible licenses and a `sources.json` with author, URL, license and hash.
