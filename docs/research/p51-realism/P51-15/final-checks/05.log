@@ -1,0 +1,10 @@
+test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity (__main__.AircraftMigration.test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity) ... ok
+test_check_requires_v2_source_instead_of_upgrading_v1_in_memory (__main__.AircraftMigration.test_check_requires_v2_source_instead_of_upgrading_v1_in_memory) ... ok
+test_legacy_omissions_become_only_the_reviewed_explicit_defaults (__main__.AircraftMigration.test_legacy_omissions_become_only_the_reviewed_explicit_defaults) ... ok
+test_unknown_id_format_and_legacy_conflicts_fail_closed (__main__.AircraftMigration.test_unknown_id_format_and_legacy_conflicts_fail_closed) ... ok
+test_v2_conflicts_are_rejected_without_mutation (__main__.AircraftMigration.test_v2_conflicts_are_rejected_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.128s
+
+OK

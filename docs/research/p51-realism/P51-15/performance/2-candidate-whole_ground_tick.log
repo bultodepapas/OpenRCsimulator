@@ -1,0 +1,3 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"aircraft":"p51d-mustang-120","best_microseconds_per_tick":967.922083333333,"hz":240,"microseconds_per_tick":[1019.02166666667,1040.25666666667,967.922083333333],"regime":"parked_idle","scope":"Simulation.step only; fixture setup and metric reduction excluded","ticks_per_trial":2400}

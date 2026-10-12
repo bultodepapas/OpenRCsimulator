@@ -1,6 +1,6 @@
 # Diez investigaciones web para la siguiente entrega visual
 
-2026-10-05 · **Diez preguntas investigadas; conclusiones incorporadas en la revisión 3 del [plan visual](../../UGLY-STIK-VISUAL-PLAN.md).** Son investigaciones nuevas sobre la apariencia y la implementación, complementarias a las [diez investigaciones iniciales](../ugly-stik-investigations/README.md).
+2026-10-05 · **Diez preguntas investigadas; conclusiones incorporadas en la revisión 3 del [plan visual](../../UGLY-STIK-PLAN.md).** Son investigaciones nuevas sobre la apariencia y la implementación, complementarias a las [diez investigaciones iniciales](../ugly-stik-investigations/README.md).
 
 Se consultaron páginas y manuales de fabricantes, documentación oficial Godot 4.7 y planos originales conservados por Outerzone. Cada informe distingue hallazgo, límite, propuesta y comprobación. Los datos comerciales aportan anatomía o materiales; no seleccionan automáticamente equipo para el Jensen. La observación local del inserto sobre bandas se identifica expresamente como tal.
 

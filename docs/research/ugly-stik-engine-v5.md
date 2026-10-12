@@ -27,10 +27,10 @@ Se conservan `shaft_y`, `firewall_z`, `prop_z`, diámetro/pivote de hélice, nod
 
 Se generaron once pares **antes/después a 2560 × 1440**, con cámaras, iluminación, poses, comandos y reglas de visibilidad iguales. El comparador rechaza diferencias en esos campos y valida dimensiones y SHA-256 de los PNG. Son renders reales del modelo Godot.
 
-- [Comparación local de once ángulos](../../app/captures/ugly-stik-engine-v5/comparison.html).
-- [Galería local de la revisión final](../../app/captures/ugly-stik-engine-v5/release/review.html).
-- [Detalle del cárter, cilindro y montaje](../../app/captures/ugly-stik-engine-v5/release/engine-three-quarter-left.png).
-- [Escape y unión de boquilla](../../app/captures/ugly-stik-engine-v5/release/engine-exhaust.png).
+- Comparación local de once ángulos (local only: `app/captures/ugly-stik-engine-v5/comparison.html`).
+- Galería local de la revisión final (local only: `app/captures/ugly-stik-engine-v5/release/review.html`).
+- Detalle del cárter, cilindro y montaje (local only: `app/captures/ugly-stik-engine-v5/release/engine-three-quarter-left.png`).
+- Escape y unión de boquilla (local only: `app/captures/ugly-stik-engine-v5/release/engine-exhaust.png`).
 
 Los enlaces anteriores apuntan a artefactos locales ignorados por git. Para producir una nueva galería del modelo actual, desde la raíz:
 

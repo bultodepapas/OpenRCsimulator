@@ -40,6 +40,7 @@ evidence and retried; it never enters the accepted timing summary.
 
 `--field-shadows=off` restores the old field contact/shadow path for technical
 comparisons. The existing aircraft `--shadow=off` remains independent. Scenery
-continues to require its existing `--scenery=on` opt-in.
+is on by default; use `--scenery=off` or `OPENRC_SCENERY=off` for an explicit
+scenery-free comparison. See the [scenery tools](../scenery/README.md).
 
 Evidence and limits: [VQ-04a](../../docs/research/visual-quality-implementation/VQ-04a/README.md).

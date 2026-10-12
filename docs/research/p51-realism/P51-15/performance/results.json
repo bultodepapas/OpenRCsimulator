@@ -1,0 +1,217 @@
+{
+  "platform": "Windows-10-10.0.26100-SP0",
+  "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+  "order": [
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline"
+  ],
+  "runs": [
+    {
+      "revision": "baseline",
+      "regime": "trim_stalled_components",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-baseline\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/bench_physics.gd",
+        "--",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "exit": 0,
+      "log": "0-baseline-trim_stalled_components.log",
+      "engine_errors": false,
+      "trim_us": 592.1,
+      "stalled_us": 606.1
+    },
+    {
+      "revision": "baseline",
+      "regime": "whole_ground_tick",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-baseline\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\p51\\p51-15\\bench_ground.gd"
+      ],
+      "exit": 0,
+      "log": "0-baseline-whole_ground_tick.log",
+      "engine_errors": false,
+      "ground": {
+        "aircraft": "p51d-mustang-120",
+        "best_microseconds_per_tick": 980.620416666667,
+        "hz": 240,
+        "microseconds_per_tick": [
+          1025.64458333333,
+          980.620416666667,
+          999.791666666667
+        ],
+        "regime": "parked_idle",
+        "scope": "Simulation.step only; fixture setup and metric reduction excluded",
+        "ticks_per_trial": 2400
+      }
+    },
+    {
+      "revision": "candidate",
+      "regime": "trim_stalled_components",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-candidate\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/bench_physics.gd",
+        "--",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "exit": 0,
+      "log": "1-candidate-trim_stalled_components.log",
+      "engine_errors": false,
+      "trim_us": 599.2,
+      "stalled_us": 623.1
+    },
+    {
+      "revision": "candidate",
+      "regime": "whole_ground_tick",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-candidate\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\p51\\p51-15\\bench_ground.gd"
+      ],
+      "exit": 0,
+      "log": "1-candidate-whole_ground_tick.log",
+      "engine_errors": false,
+      "ground": {
+        "aircraft": "p51d-mustang-120",
+        "best_microseconds_per_tick": 940.811666666667,
+        "hz": 240,
+        "microseconds_per_tick": [
+          940.811666666667,
+          1086.07666666667,
+          991.417083333333
+        ],
+        "regime": "parked_idle",
+        "scope": "Simulation.step only; fixture setup and metric reduction excluded",
+        "ticks_per_trial": 2400
+      }
+    },
+    {
+      "revision": "candidate",
+      "regime": "trim_stalled_components",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-candidate\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/bench_physics.gd",
+        "--",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "exit": 0,
+      "log": "2-candidate-trim_stalled_components.log",
+      "engine_errors": false,
+      "trim_us": 617.4,
+      "stalled_us": 604.6
+    },
+    {
+      "revision": "candidate",
+      "regime": "whole_ground_tick",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-candidate\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\p51\\p51-15\\bench_ground.gd"
+      ],
+      "exit": 0,
+      "log": "2-candidate-whole_ground_tick.log",
+      "engine_errors": false,
+      "ground": {
+        "aircraft": "p51d-mustang-120",
+        "best_microseconds_per_tick": 967.922083333333,
+        "hz": 240,
+        "microseconds_per_tick": [
+          1019.02166666667,
+          1040.25666666667,
+          967.922083333333
+        ],
+        "regime": "parked_idle",
+        "scope": "Simulation.step only; fixture setup and metric reduction excluded",
+        "ticks_per_trial": 2400
+      }
+    },
+    {
+      "revision": "baseline",
+      "regime": "trim_stalled_components",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-baseline\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/bench_physics.gd",
+        "--",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "exit": 0,
+      "log": "3-baseline-trim_stalled_components.log",
+      "engine_errors": false,
+      "trim_us": 589.6,
+      "stalled_us": 591.9
+    },
+    {
+      "revision": "baseline",
+      "regime": "whole_ground_tick",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\p51-realism-baseline\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\p51\\p51-15\\bench_ground.gd"
+      ],
+      "exit": 0,
+      "log": "3-baseline-whole_ground_tick.log",
+      "engine_errors": false,
+      "ground": {
+        "aircraft": "p51d-mustang-120",
+        "best_microseconds_per_tick": 1023.02166666667,
+        "hz": 240,
+        "microseconds_per_tick": [
+          1078.44333333333,
+          1047.50375,
+          1023.02166666667
+        ],
+        "regime": "parked_idle",
+        "scope": "Simulation.step only; fixture setup and metric reduction excluded",
+        "ticks_per_trial": 2400
+      }
+    }
+  ],
+  "ground_script_sha256": "e809c8e560209cd584762151909241a3e7d16a85bf467df55bb675c85aa8b6d2"
+}

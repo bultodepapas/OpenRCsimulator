@@ -1,6 +1,6 @@
 # 07 · Cuernos, clevis y varillas que cierran el mecanismo
 
-Consulta web: 2026-10-05 · Pasos US-V04/05 · [Plan visual](../../UGLY-STIK-VISUAL-PLAN.md).
+Consulta web: 2026-10-05 · Pasos US-V04/05 · [Plan visual](../../UGLY-STIK-PLAN.md).
 
 **Pregunta.** ¿Qué uniones deben aparecer y qué debe comprobar la animación para representar una transmisión RC creíble?
 

@@ -2,6 +2,12 @@
 
 Status: LU-06 native evidence tooling, 2026-10-11. Target: pinned Godot 4.7.2 Compatibility.
 
+LU-07–10 continuation (2026-10-12): additional views `pit_service`, `runway_west`, `runway_east_far`, `runway_inside`. Run native capture **without `--headless`**: it waits on `RenderingServer.frame_post_draw`, which a headless renderer does not supply. Always use an absolute `--out` path.
+
+Use `--time_of_day=night --cases=runway_threshold,runway_inside,runway_east_far,marker_clear,marker_half,marker_off,marker_occluded` to check marker optics. The `marker_` cases deliberately hold the sky/exposure fixed and override only the lamp solar-elevation input to test full/half/off light and a real opaque blocker. They are controlled fixtures, not photographs of different solar times. `python tools/landscape/verify_markers.py <folder>` checks the native pixels and writes `marker-checks.json`.
+
+The paired detector benchmark is `--headless --path app --script res://tests/benchmark_landscape_collision.gd`; its reference detector is pinned to the pre-refinement commit. Never run timing captures and benchmarks concurrently. [Refinement evidence](../../docs/research/landscape-upgrade/LU-07/README.md).
+
 `app/tests/capture_landscape_upgrade.gd` builds the production world. Set `--out=<absolute-directory>`, `--cases=<comma-separated-postcard-or-glare-cases>`, `--frames=600`, `--width=1920`, and `--height=1080` after Godot's `--`. It captures raw PNGs and frame intervals after 60 warmup frames. Scenery audio is disabled; it measures rendering, not live flight physics. FW presets use `--time_of_day=night|sunset`; explicit TOD uses `--time-of-day=00:00`. The report retains actual engine, renderer, dimensions, arguments, memory, draws and primitives.
 
 Glare cases: `glare_clear,glare_off,glare_blocked,glare_blocked_off,glare_partial,glare_partial_off,glare_aircraft,glare_aircraft_off,glare_aircraft_left,glare_aircraft_left_off,glare_aircraft_right,glare_aircraft_right_off,glare_side,glare_side_off,glare_night,glare_night_off,glare_cloud,glare_cloud_off,glare_low_exposure,glare_low_exposure_off,glare_half`.

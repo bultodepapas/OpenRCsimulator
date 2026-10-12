@@ -64,7 +64,7 @@ files; the project settings, camera, and UI plan cited here were read without ch
    keeps native GPU cost pending. Desktop work must reuse those cases and results; do not change aircraft span, FOV, auto-zoom
    target, or graphics quality under the label of DPI support. A different camera contract belongs with the visual/model owners
    and requires its own human evidence. [Ugly Stik readability plan](../../../../docs/UGLY-STIK-PLAN.md), [visual
-   plan](../../../../docs/UGLY-STIK-VISUAL-PLAN.md).
+   plan](../../../UGLY-STIK-PLAN.md).
 12. UI-09a already proposes a 100/150/200% user scale using `Window.content_scale_factor`, reflow, and a minimum captured text
    height. Desktop delivery should accept that UI contract across DPI and fullscreen combinations. Scaling CanvasItems must not
    silently change the 3D camera projection, simulation scale, RC input, or 240 Hz timing.

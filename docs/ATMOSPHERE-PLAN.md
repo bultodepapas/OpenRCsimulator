@@ -6,9 +6,9 @@ Owns `app/physics/atmosphere.gd`, weather-v3 atmosphere settings, shared density
 
 | Step | Delivery | Proof/status |
 | --- | --- | --- |
-| M5-ATM-1 | Strict field-level ISA/QNH, liquid-water Buck and ideal moist-air density; separate literal reference state | [Kernel and primary-source checks](research/atmosphere/M5-ATM-1/kernel/README.md), 29 checks; default density stays exactly 1.225 |
+| M5-ATM-1 | Strict field-level ISA/QNH, liquid-water Buck and ideal moist-air density; separate literal reference state | [Kernel and primary-source checks](research/atmosphere/M5-ATM-1/kernel/README.md), 29 checks; reference mode stays exactly 1.225 kg/m³, custom mode derives density from field conditions |
 | M5-ATM-2 | One density through trim, aero, propeller, shaft load, wash, runway, HUD and v6 traces; v3 environment checkpoints; EN/ES UI with precise linked sliders | [Integration evidence](research/atmosphere/M5-ATM-2/README.md): complete 140-suite gate, fleet equilibrium, restart/rollback/replay, independent telemetry, 25 captures, Linux/source parity and observed cost |
-| M5-ATM-3 | Explicit dry-air charge multiplier for the existing naturally aspirated shaft model; friction fixed | Estimated first-order correction; algebra/equilibrium tests, no measured altitude-engine acceptance. RPM-lag and turbine retain their own documented laws |
+| M5-ATM-3 | Apply dry-air charge ratio to the existing naturally aspirated shaft model; keep friction fixed | Implemented and software verified as an estimated first-order correction; no measured altitude-engine acceptance. RPM-lag and turbine retain their own current laws |
 | M5-ATM-3b | Measured per-powerplant environmental response | Pending; actual engine/ECU/fuel maps and held-out data |
 | M5-ATM-4 | Vertical sounding / in-flight density profile | Deferred; field density is uniform throughout the current flight |
 

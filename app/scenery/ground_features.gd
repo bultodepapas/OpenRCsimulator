@@ -12,6 +12,12 @@ const LIFT_SURFACE := 0.04
 const LIFT_SHADOW := 0.06
 const SHADOW_ALPHA := 0.34 # core darkness, estimated against the planar airplane shadow (shadow.gd uses 0.6 for a silhouette)
 const SHADOW_SOFT_M := 0.35 # soft edge width
+const PATCH_TILE_SIZE_M := 1.1
+const PATCH_TILE_JITTER_M := 0.12
+const PATCH_AGGREGATE_TILE_M := 0.36
+const PATCH_AGGREGATE_RATE := 0.05
+const PATCH_EDGE_WOBBLE_M := 0.16
+const PATCH_FIELD_GRASS_COLOR := Color("#657545") # matches Spec.GRASS for a feathered shoulder edge
 
 
 # ---------------- tracks and patches ----------------
@@ -63,28 +69,182 @@ static func _flat_quad(k: MeshKit, a: Vector2, b: Vector2, c: Vector2, d: Vector
 
 ## A gravel / dirt / worn patch (render XZ polygon) with a worn-grass ring, so it does not end in a hard line.
 static func patch(k: MeshKit, poly: PackedVector2Array, surface: String, theme: String, seed: int) -> void:
-	var ring := Geometry2D.offset_polygon(poly, 0.9, Geometry2D.JOIN_ROUND)
 	var worn := Palette.vegetation(Palette.col("worn_grass"), theme)
-	if not ring.is_empty():
-		_fill(k, ring[0], LIFT_WORN, worn, worn.darkened(0.08), seed)
 	var base: Color = {"gravel": Palette.col("gravel"), "dirt": Palette.col("dirt"), "worn": worn}[surface]
 	var alt: Color = {"gravel": Palette.col("gravel_dark"), "dirt": Palette.col("dirt").darkened(0.12), "worn": worn.darkened(0.1)}[surface]
-	_fill(k, poly, LIFT_SURFACE, base, alt, seed + 1)
+	var ring := Geometry2D.offset_polygon(poly, 0.9, Geometry2D.JOIN_ROUND)
+	if not ring.is_empty():
+		var outline := _roughen_outline(ring[0], seed)
+		# Start at the apron material, then feather toward the field grass across the worn shoulder.
+		_grid_fill(k, outline, LIFT_WORN, base, base.lerp(worn, 0.28), seed, poly, 0.9, PATCH_FIELD_GRASS_COLOR, 1.0, true, false, true)
+	_grid_fill(k, poly, LIFT_SURFACE, base, alt, seed + 1, poly, 1.15, worn, 0.48, false, surface == "gravel")
 
 
-## Triangulated fill with a per-vertex tone from a position hash (a soft mottling instead of a flat colour).
-static func _fill(k: MeshKit, poly: PackedVector2Array, lift: float, a: Color, b: Color, seed: int) -> void:
+## Break the outer edge gently, at a bounded fraction of the worn shoulder width.
+static func _roughen_outline(poly: PackedVector2Array, seed: int) -> PackedVector2Array:
+	var centre := Vector2.ZERO
+	for p: Vector2 in poly:
+		centre += p
+	centre /= maxi(1, poly.size())
+	var out := PackedVector2Array()
+	for i in poly.size():
+		var a := poly[i]
+		var b := poly[(i + 1) % poly.size()]
+		var steps := maxi(1, int(ceil(a.distance_to(b) / PATCH_TILE_SIZE_M)))
+		for step in steps:
+			var p := a.lerp(b, float(step) / steps)
+			var tone := Palette.hash01(int(floor(p.x * 1.5)), int(floor(p.y * 1.5)), seed + 401)
+			out.append(p + (p - centre).normalized() * ((tone - 0.5) * PATCH_EDGE_WOBBLE_M * 2.0))
+	return out
+
+
+## Clip slightly jittered 1.1 m grid cells to the patch. Triangles stay tile-sized instead of spanning the apron.
+## Edge blends create interleaved worn-grass and gravel tongues without overlays or new ground heights.
+static func _grid_fill(k: MeshKit, poly: PackedVector2Array, lift: float, a: Color, b: Color, seed: int,
+		edge_poly: PackedVector2Array, edge_width: float, edge_accent: Color, edge_strength: float,
+		accent_outside_only: bool, aggregates: bool, feather_to_field := false) -> void:
+	if poly.size() < 3:
+		return
+	var min_x := INF
+	var max_x := -INF
+	var min_z := INF
+	var max_z := -INF
+	for p: Vector2 in poly:
+		min_x = minf(min_x, p.x)
+		max_x = maxf(max_x, p.x)
+		min_z = minf(min_z, p.y)
+		max_z = maxf(max_z, p.y)
+	var start_x := int(floor(min_x / PATCH_TILE_SIZE_M)) - 1
+	var end_x := int(ceil(max_x / PATCH_TILE_SIZE_M)) + 1
+	var start_z := int(floor(min_z / PATCH_TILE_SIZE_M)) - 1
+	var end_z := int(ceil(max_z / PATCH_TILE_SIZE_M)) + 1
+	for gx in range(start_x, end_x):
+		for gz in range(start_z, end_z):
+			var tile := PackedVector2Array([
+				_grid_point(gx, gz, seed), _grid_point(gx + 1, gz, seed),
+				_grid_point(gx + 1, gz + 1, seed), _grid_point(gx, gz + 1, seed),
+			])
+			for clipped: PackedVector2Array in Geometry2D.intersect_polygons(tile, poly):
+				if aggregates and Palette.hash01(gx, gz, seed + 2081) < PATCH_AGGREGATE_RATE:
+					_fill_aggregate_tile(k, clipped, lift, a, b, seed + gx * 67 + gz * 131, edge_poly, edge_width, edge_accent, edge_strength)
+				else:
+					_emit_clipped_polygon(k, clipped, lift, a, b, seed, edge_poly, edge_width, edge_accent, edge_strength, accent_outside_only, feather_to_field)
+
+
+static func _fill_color(p: Vector2, a: Color, b: Color, seed: int, edge_poly: PackedVector2Array,
+		edge_width: float, edge_accent: Color, edge_strength: float, accent_outside_only: bool, feather_to_field := false) -> Color:
+	var x_cell := int(floor(p.x * 1.8))
+	var z_cell := int(floor(p.y * 1.8))
+	var tone := Palette.hash01(x_cell, z_cell, seed)
+	var result := a.lerp(b, 0.22 + tone * 0.52)
+	if edge_width <= 0.0 or edge_poly.size() < 3:
+		return result
+	var d := _edge_distance(p, edge_poly)
+	if accent_outside_only and Geometry2D.is_point_in_polygon(p, edge_poly):
+		return result
+	if feather_to_field:
+		# An irregular ramp avoids a continuous green outline while matching the field at the outer edge.
+		var ramp_noise := Palette.hash01(x_cell, z_cell, seed + 619)
+		var ramp := clampf(d / edge_width + (ramp_noise - 0.5) * 0.3, 0.0, 1.0)
+		ramp = ramp * ramp * (3.0 - 2.0 * ramp)
+		var field_shade := 0.86 + Palette.hash01(x_cell, z_cell, seed + 631) * 0.28
+		return result.lerp(PATCH_FIELD_GRASS_COLOR * field_shade, ramp)
+	if d >= edge_width:
+		return result
+	var speckle := clampf((Palette.hash01(x_cell, z_cell, seed + 173) - 0.48) / 0.52, 0.0, 1.0)
+	var blend := (1.0 - d / edge_width) * edge_strength * speckle
+	return result.lerp(edge_accent, blend)
+
+
+static func _grid_point(x: int, z: int, seed: int) -> Vector2:
+	var jx := (Palette.hash01(x, z, seed + 401) - 0.5) * PATCH_TILE_JITTER_M * 2.0
+	var jz := (Palette.hash01(x, z, seed + 977) - 0.5) * PATCH_TILE_JITTER_M * 2.0
+	return Vector2(x * PATCH_TILE_SIZE_M + jx, z * PATCH_TILE_SIZE_M + jz)
+
+
+## Replace a sparse subset of large gravel cells with 36 cm clipped color tiles for fine, non-floating aggregate.
+static func _fill_aggregate_tile(k: MeshKit, poly: PackedVector2Array, lift: float, a: Color, b: Color, seed: int,
+		edge_poly: PackedVector2Array, edge_width: float, edge_accent: Color, edge_strength: float) -> void:
+	var min_x := INF
+	var max_x := -INF
+	var min_z := INF
+	var max_z := -INF
+	var centre := Vector2.ZERO
+	for p: Vector2 in poly:
+		min_x = minf(min_x, p.x)
+		max_x = maxf(max_x, p.x)
+		min_z = minf(min_z, p.y)
+		max_z = maxf(max_z, p.y)
+		centre += p
+	centre /= maxi(1, poly.size())
+	var start_x := int(floor(min_x / PATCH_AGGREGATE_TILE_M)) - 1
+	var end_x := int(ceil(max_x / PATCH_AGGREGATE_TILE_M)) + 1
+	var start_z := int(floor(min_z / PATCH_AGGREGATE_TILE_M)) - 1
+	var end_z := int(ceil(max_z / PATCH_AGGREGATE_TILE_M)) + 1
+	for gx in range(start_x, end_x):
+		for gz in range(start_z, end_z):
+			var tile := PackedVector2Array([
+				_aggregate_grid_point(gx, gz, seed), _aggregate_grid_point(gx + 1, gz, seed),
+				_aggregate_grid_point(gx + 1, gz + 1, seed), _aggregate_grid_point(gx, gz + 1, seed),
+			])
+			for clipped: PackedVector2Array in Geometry2D.intersect_polygons(tile, poly):
+				var tone := Palette.hash01(gx, gz, seed + 503)
+				var col := _fill_color(centre, a, b, seed, edge_poly, edge_width, edge_accent, edge_strength, false)
+				if tone < 0.18:
+					col = col.lerp(a.lerp(b, 0.88), 0.68)
+				elif tone > 0.91:
+					col = col.lerp(a.lightened(0.08), 0.42)
+				_emit_solid_polygon(k, clipped, lift, col)
+
+
+static func _aggregate_grid_point(x: int, z: int, seed: int) -> Vector2:
+	var jitter := 0.055
+	var jx := (Palette.hash01(x, z, seed + 401) - 0.5) * jitter * 2.0
+	var jz := (Palette.hash01(x, z, seed + 977) - 0.5) * jitter * 2.0
+	return Vector2(x * PATCH_AGGREGATE_TILE_M + jx, z * PATCH_AGGREGATE_TILE_M + jz)
+
+
+static func _emit_solid_polygon(k: MeshKit, poly: PackedVector2Array, lift: float, col: Color) -> void:
 	var idx := Geometry2D.triangulate_polygon(poly)
 	for t in range(0, idx.size(), 3):
-		var pts: Array[Vector3] = []
-		var cs: Array[Color] = []
-		for j in 3:
-			var p := poly[idx[t + j]]
-			pts.append(Vector3(p.x, lift, p.y))
-			cs.append(a.lerp(b, Palette.hash01(int(p.x * 4.0), int(p.y * 4.0), seed)))
-		var up := (pts[1] - pts[0]).cross(pts[2] - pts[0]).y > 0.0
-		var o := PackedInt32Array([0, 1, 2]) if up else PackedInt32Array([0, 2, 1])
-		_tri_colored(k, pts[o[0]], pts[o[1]], pts[o[2]], cs[o[0]], cs[o[1]], cs[o[2]])
+		var p0 := poly[idx[t]]
+		var p1 := poly[idx[t + 1]]
+		var p2 := poly[idx[t + 2]]
+		_emit_fill_triangle(k, p0, p1, p2, col, col, col, lift)
+
+
+static func _emit_clipped_polygon(k: MeshKit, poly: PackedVector2Array, lift: float, a: Color, b: Color, seed: int,
+		edge_poly: PackedVector2Array, edge_width: float, edge_accent: Color, edge_strength: float, accent_outside_only: bool,
+		feather_to_field := false) -> void:
+	var idx := Geometry2D.triangulate_polygon(poly)
+	for t in range(0, idx.size(), 3):
+		var p0 := poly[idx[t]]
+		var p1 := poly[idx[t + 1]]
+		var p2 := poly[idx[t + 2]]
+		var c0 := _fill_color(p0, a, b, seed, edge_poly, edge_width, edge_accent, edge_strength, accent_outside_only, feather_to_field)
+		var c1 := _fill_color(p1, a, b, seed, edge_poly, edge_width, edge_accent, edge_strength, accent_outside_only, feather_to_field)
+		var c2 := _fill_color(p2, a, b, seed, edge_poly, edge_width, edge_accent, edge_strength, accent_outside_only, feather_to_field)
+		_emit_fill_triangle(k, p0, p1, p2, c0, c1, c2, lift)
+
+
+static func _edge_distance(p: Vector2, poly: PackedVector2Array) -> float:
+	var best := INF
+	for i in poly.size():
+		var a := poly[i]
+		var edge := poly[(i + 1) % poly.size()] - a
+		var t := clampf((p - a).dot(edge) / maxf(edge.length_squared(), 1e-8), 0.0, 1.0)
+		best = minf(best, p.distance_to(a + edge * t))
+	return best
+
+
+static func _emit_fill_triangle(k: MeshKit, a: Vector2, b: Vector2, c: Vector2, ca: Color, cb: Color, cc: Color, lift: float) -> void:
+	var pa := Vector3(a.x, lift, a.y)
+	var pb := Vector3(b.x, lift, b.y)
+	var pc := Vector3(c.x, lift, c.y)
+	if (pb - pa).cross(pc - pa).y > 0.0:
+		_tri_colored(k, pa, pb, pc, ca, cb, cc)
+	else:
+		_tri_colored(k, pa, pc, pb, ca, cc, cb)
 
 
 ## A triangle with per-corner colours, counter-clockwise from above (bypasses MeshKit.tri's single colour).

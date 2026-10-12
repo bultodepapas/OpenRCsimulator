@@ -1,6 +1,6 @@
 # 03 · Anatomía visible de un motor glow .61
 
-Consulta web: 2026-10-05 · [Índice](README.md) · [Plan visual](../../UGLY-STIK-VISUAL-PLAN.md).
+Consulta web: 2026-10-05 · [Índice](README.md) · [Plan visual](../../UGLY-STIK-PLAN.md).
 
 **Pregunta ·** ¿Qué rasgos del dibujo oficial de un .61 glow harán que el motor genérico del plan se lea como un motor de aeromodelo reconocible, sin elegir una marca para el Jensen?
 

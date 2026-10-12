@@ -1,6 +1,6 @@
 # 03 — Propeller aerodynamics, slipstream and propwash
 
-**Status:** research knowledge base, initially observed 2026-10-06; current implementation status reconciled against the project audit dated 2026-10-06. **Serves:** ROADMAP E0b (propwash on the tail), G1 (propeller table ingestion), M5 "swirl and wing-wash", 3D aerobatics (hover, torque roll), P-51 4-blade BEM table ([derive_physics.py](../../../research/p51/p51-05/derive_physics.py)), Extra EX-06 thrust axis. **Read with:** [ROADMAP E0b/G1, plan review #3 item 4](../../../ROADMAP.md), [RESEARCH.md: electric propulsion, APC/UIUC comparison, plan review #3 propwash](../../../RESEARCH.md), [propulsion.gd](../../../app/physics/propulsion.gd), [aero.gd](../../../app/physics/aero.gd), doc 02 (wing aerodynamics) and doc 05 (engine and shaft) in this folder.
+**Status:** research knowledge base, initially observed 2026-10-06; current implementation status reconciled against the project audit dated 2026-10-06. **Serves:** ROADMAP E0b (propwash on the tail), G1 (propeller table ingestion), M5 "swirl and wing-wash", 3D aerobatics (hover, torque roll), P-51 4-blade BEM table ([derive_physics.py](../../../research/p51/p51-05/derive_physics.py)), Extra EX-06 thrust axis. **Read with:** [ROADMAP E0b/G1, plan review #3 item 4](../../../ROADMAP.md), [RESEARCH.md: electric propulsion, APC/UIUC comparison, plan review #3 propwash](../initial-notebook.md), [propulsion.gd](../../../app/physics/propulsion.gd), [aero.gd](../../../app/physics/aero.gd), doc 02 (wing aerodynamics) and doc 05 (engine and shaft) in this folder.
 
 ## Summary
 
@@ -211,7 +211,7 @@ These are upper bounds: wing, fuselage and cowl recover part of the swirl (the "
 | JSBSim FGPropeller | v_i with sign handling; P-factor as thrust-point shift; Ct·Mach and Ct·rpm factor tables | LGPL-2.1+ | [source](https://raw.githubusercontent.com/JSBSim-Team/jsbsim/master/src/models/propulsion/FGPropeller.cpp) | read only; idea: separate Re correction table indexed by rpm |
 | Khan 2016 thesis | slipstream equations and coefficients, 4-state thruster logic | thesis (cite) | [McGill](https://mcgill.scholaris.ca/items/56b70b0e-1f76-48ba-b973-d3b841d659ed) | k_w calibration; reverse-flow cut |
 | Selig 2010 | complete RC-sim prop/wash recipe (FS One) | paper (cite) | [PDF](https://m-selig.web.engr.illinois.edu/pubs/Selig-2010-AIAA-2010-7638-PropAeroSim.pdf) | k_w(m), jet normal force, damping, lag |
-| PicaSim | momentum wash with lag, swirl, radial falloff | non-commercial (read, don't copy) | via [RESEARCH.md](../../../RESEARCH.md) | design reference |
+| PicaSim | momentum wash with lag, swirl, radial falloff | non-commercial (read, don't copy) | via [RESEARCH.md](../initial-notebook.md) | design reference |
 | YASim | analytic λ-curve propeller; **no fixed-wing propwash** (only rotor downwash in `Model.cpp`) | GPL | [Model.cpp](https://github.com/FlightGear/flightgear/blob/next/src/FDM/YASim/Model.cpp) | nothing to reuse |
 | P-51 BEM in repo | induced-velocity BEM, Prandtl tip loss, windmill branch | MIT (ours) | [derive_physics.py](../../../research/p51/p51-05/derive_physics.py) | generalize into a shared offline tool for G1c |
 
@@ -341,7 +341,7 @@ These are upper bounds: wing, fuselage and cowl recover part of the swirl (the "
 28. UASLab OpenFlightSim, UltraStick25e `AeroOpenFlight.xml` @ b020511 (MIT). https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/aircraft/UltraStick25e/AeroOpenFlight.xml — fetched (no provenance note in the file).
 29. Ron Jensen, JSBSim propeller NaN fix for induced velocity (FlightGear mirror commit). https://git.nayala.duckdns.org/fly/flightgear/commit/58e79013e3c1d412d8e1f8adc0c39a400484c5ae — search result only.
 30. Wageningen B-series four-quadrant propeller representation (van Lammeren et al., 1969; MARIN) — textbook knowledge, not fetched; **unverified here**.
-31. Repository: [RESEARCH.md](../../../RESEARCH.md) (APC/UIUC comparison, plan review #3 propwash, CRRCSim/PicaSim/YASim source reads), [compare_static_propeller.py](../../../research/compare_static_propeller.py), [P-51 derivation](../../../research/p51/p51-05/derivation.md), [jensen_ugly_stik_60.json](../../../app/data/aircraft/jensen_ugly_stik_60.json), [EXTRA-300-PLAN](../../EXTRA-300-PLAN.md) — read.
+31. Repository: [RESEARCH.md](../initial-notebook.md) (APC/UIUC comparison, plan review #3 propwash, CRRCSim/PicaSim/YASim source reads), [compare_static_propeller.py](../../../research/compare_static_propeller.py), [P-51 derivation](../../../research/p51/p51-05/derivation.md), [jensen_ugly_stik_60.json](../../../app/data/aircraft/jensen_ugly_stik_60.json), [EXTRA-300-PLAN](../../EXTRA-300-PLAN.md) — read.
 
 Calculations in this note (momentum table, Khan profile at the Stik's tail, swirl, lag, blade-element P-factor and normal force, static authority) were run with python3 in the session scratchpad. The formulas and inputs are given above so that they can be re-derived; the BEM uses the P-51 script's generic section, chord scaled ×1.4 to match the 12×6's static Ct 0.113.
 

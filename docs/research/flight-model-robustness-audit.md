@@ -4,7 +4,7 @@
 
 **Conclusión:** el síntoma extremo del rudder no se reproduce en los pulsos equivalentes de elevator y alerones, pero la debilidad que permitió conservarlo sí es transversal: validar signos, continuidad a velocidades angulares cero y reproducción de trayectorias no establece realismo. Además, aparecen defectos concretos en la envolvente con rotación y en el rechazo de una configuración sin trim. Reducir el rudder aisladamente cambia coordinación y recuperación de barrena.
 
-La física de producción permanece intacta. Se ejecutaron 26 vuelos de 3 s, dos maniobras de barrena de 8 s, un barrido estático de 925 estados y casos aislados de datos. [Resultados, estados finales y hashes](flight-robustness/results.json). El HEAD avanzó de `90374d2` a `83f2035` durante el trabajo compartido; los hashes de la física usada en la auditoría anterior permanecen iguales. [Plan de mejoras](../FLIGHT-MODEL-ROBUSTNESS-PLAN.md).
+La física de producción permanece intacta. Se ejecutaron 26 vuelos de 3 s, dos maniobras de barrena de 8 s, un barrido estático de 925 estados y casos aislados de datos. [Resultados, estados finales y hashes](flight-robustness/results.json). El HEAD avanzó de `90374d2` a `83f2035` durante el trabajo compartido; los hashes de la física usada en la auditoría anterior permanecen iguales. [Plan de mejoras](flight-repair-implementation.md).
 
 ## 1. Qué se extiende a los otros mandos
 

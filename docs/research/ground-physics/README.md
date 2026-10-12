@@ -2,7 +2,7 @@
 
 Status: implementation integrated; numerical verification recorded, physical calibration open, 2026-10-11. Owner: physics line. Prefix: GP-.
 
-[Plan](../../../GROUND_PHYSICS_PLAN.md) was completed before implementation. The pre-implementation SHA-256 was `c069c6961b976d6bf3d23c2aefcc6d7f80457ac36bd4f488beec49f2d4e93191`.
+The pre-implementation plan is consolidated into [GP-05](GP-05/README.md). The pre-implementation SHA-256 was `c069c6961b976d6bf3d23c2aefcc6d7f80457ac36bd4f488beec49f2d4e93191`.
 
 - [GP-01](GP-01/README.md): deterministic field micro-relief, analytical gradients and renderer cue.
 - [GP-02](GP-02/README.md): independent force, wheel spin, rolling resistance and braking checks.

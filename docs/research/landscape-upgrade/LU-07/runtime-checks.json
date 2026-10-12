@@ -1,0 +1,62 @@
+{
+  "cases": {
+    "building": {
+      "collision_bodies": 117,
+      "contact_height_m": 2.48797656831099,
+      "impact_fraction": 0.436019234833414,
+      "normal_speed_mps": 77.7940742019786,
+      "obstacle": "building:pavilion:00:pavilion",
+      "severity": 4,
+      "trace_tick": 15
+    },
+    "lamp": {
+      "collision_bodies": 109,
+      "contact_height_m": 4.9024162070217,
+      "impact_fraction": 0.337342606982789,
+      "normal_speed_mps": 71.659069813543,
+      "obstacle": "lamp:flood_east:pole",
+      "severity": 4,
+      "trace_tick": 30
+    },
+    "parked_aircraft": {
+      "collision_bodies": 109,
+      "contact_height_m": 0.683864623523411,
+      "impact_fraction": 0.374820768985891,
+      "normal_speed_mps": 77.9114483164854,
+      "obstacle": "fleet:fleet:02:p51d-mustang-120",
+      "severity": 4,
+      "trace_tick": 7
+    },
+    "tree_trunk": {
+      "collision_bodies": 103,
+      "contact_height_m": 2.62821498604422,
+      "impact_fraction": 0.461604276588908,
+      "normal_speed_mps": 74.5630078512404,
+      "obstacle": "tree:shade-tree:shade-trees:00:trunk",
+      "severity": 4,
+      "trace_tick": 29
+    },
+    "vehicle": {
+      "collision_bodies": 109,
+      "contact_height_m": 1.25706384580674,
+      "impact_fraction": 0.697124895083185,
+      "normal_speed_mps": 76.0814061903913,
+      "obstacle": "vehicle:cars:00:car_hatch",
+      "severity": 4,
+      "trace_tick": 23
+    }
+  },
+  "checks": 56,
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "failures": 0
+}

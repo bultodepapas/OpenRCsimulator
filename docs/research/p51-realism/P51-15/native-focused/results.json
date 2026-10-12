@@ -1,0 +1,93 @@
+[
+  {
+    "script": "tests/test_aircraft_data.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 1.078
+  },
+  {
+    "script": "tests/test_aircraft_contract.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 6.0
+  },
+  {
+    "script": "tests/test_aircraft_catalog.gd",
+    "exit": 0,
+    "engine_errors": true,
+    "assertion_failure": false,
+    "seconds": 3.734
+  },
+  {
+    "script": "tests/test_p51_handling.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 10.656
+  },
+  {
+    "script": "tests/test_p51_envelope.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 19.032
+  },
+  {
+    "script": "tests/test_p51_ground.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 14.765
+  },
+  {
+    "script": "tests/test_runway_start.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 3.203
+  },
+  {
+    "script": "tests/test_propulsion.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 0.578
+  },
+  {
+    "script": "aircraft/verify_model.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 2.61
+  },
+  {
+    "script": "aircraft/verify_extra.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 7.89
+  },
+  {
+    "script": "aircraft/verify_p51.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 1.782
+  },
+  {
+    "script": "aircraft/verify_p51_clearance.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 27.609
+  },
+  {
+    "script": "aircraft/verify_avanti.gd",
+    "exit": 0,
+    "engine_errors": false,
+    "assertion_failure": false,
+    "seconds": 0.672
+  }
+]

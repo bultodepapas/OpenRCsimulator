@@ -98,4 +98,4 @@ Reproduce a report from an isolated baseline or changed app snapshot with Godot 
 Godot_v4.7.2-stable_win64_console.exe --headless --path <snapshot>/app --audio-driver Dummy --script research/extra-300/ex06/envelope_probe.gd -- --hz=240 --output=<output.json>
 ```
 
-Use `--hz=480` for the refinement run. The three checked commands, worktree paths, exit codes and full artifact hashes are in the linked identity JSON files. The probe is [envelope_probe.gd](../../../../research/extra-300/ex06/envelope_probe.gd); the encompassing [Extra realism plan](../../../EXTRA-300-REALISM-PLAN.md) retains the open acceptance gates.
+Use `--hz=480` for the refinement run. The three checked commands, worktree paths, exit codes and full artifact hashes are in the linked identity JSON files. The probe is [envelope_probe.gd](../../../../research/extra-300/ex06/envelope_probe.gd); the encompassing [Extra realism plan](../../../EXTRA-300-PLAN.md) retains the open acceptance gates.

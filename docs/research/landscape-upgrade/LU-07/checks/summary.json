@@ -1,0 +1,168 @@
+{
+  "tests": [
+    {
+      "test": "test_landscape_tree_bounds",
+      "exit": 0,
+      "seconds": 0.871,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_population",
+      "exit": 0,
+      "seconds": 0.668,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_collision",
+      "exit": 0,
+      "seconds": 0.673,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_collision_oracle",
+      "exit": 0,
+      "seconds": 3.348,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_collision_session",
+      "exit": 0,
+      "seconds": 1.037,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_collision_setup",
+      "exit": 0,
+      "seconds": 1.321,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_collision_world",
+      "exit": 0,
+      "seconds": 1.698,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_checkpoint",
+      "exit": 0,
+      "seconds": 1.142,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_checkpoint_integrity",
+      "exit": 0,
+      "seconds": 0.305,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_checkpoint",
+      "exit": 0,
+      "seconds": 1.596,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_visual_checkpoint",
+      "exit": 0,
+      "seconds": 0.299,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_scenery_eligibility",
+      "exit": 0,
+      "seconds": 0.575,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_lighting",
+      "exit": 0,
+      "seconds": 0.495,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_landscape_marker_optics",
+      "exit": 0,
+      "seconds": 0.403,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_scenery_build",
+      "exit": 0,
+      "seconds": 2.526,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_scenery_ground_lu08",
+      "exit": 0,
+      "seconds": 0.594,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_scenery_loader",
+      "exit": 0,
+      "seconds": 1.894,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_scenery_trace",
+      "exit": 0,
+      "seconds": 14.851,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_time_of_day_checkpoint",
+      "exit": 0,
+      "seconds": 4.765,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_time_of_day_checkpoint_v2",
+      "exit": 0,
+      "seconds": 0.39,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_time_of_day_scenery_update",
+      "exit": 0,
+      "seconds": 1.404,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "test": "test_time_of_day_render_update",
+      "exit": 0,
+      "seconds": 4.754,
+      "errors": [],
+      "passed": true,
+      "rerun": "94/0 with --scenery=on and off; initial stale assertion retained in original log"
+    },
+    {
+      "test": "test_world_flow",
+      "exit": 0,
+      "seconds": 3.448,
+      "errors": [],
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "initial_passed": false
+}

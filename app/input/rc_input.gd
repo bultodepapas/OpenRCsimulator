@@ -1,6 +1,6 @@
 # RC transmitter / joystick / gamepad reader (D6a, D6b): raw axes → stick positions, with the safety rules a real
 # radio needs. A pure state machine: it never reads Input itself (the caller passes axis values and events), so
-# every rule is testable headless. Facts behind the rules (Godot 4.7.2 + EdgeTX source, RESEARCH.md plan review #3):
+# every rule is testable headless. Facts behind the rules (Godot 4.7.2 + EdgeTX source, docs/research/initial-notebook.md plan review #3):
 #   - Godot exposes axes 0–9 (JoyAxis.MAX = 10), in −1…+1, with no deadzone at get_joy_axis.
 #   - An axis reads 0.0 until it first MOVES (SDL sends no event before that), so a resting throttle reads as
 #     mid-throttle. Hence ARMING: the throttle stays at idle until the throttle axis has been seen (an event

@@ -7,65 +7,71 @@ const Palette = preload("res://scenery/palette.gd")
 
 
 static func shade_tree(k: MeshKit, seed: int, theme: String) -> Array:
-	var height: float = 9.35 + 0.95 * Palette.hash01(seed, 1)
-	var trunk_h: float = height * (0.355 + 0.025 * Palette.hash01(seed, 2))
-	var trunk: Color = Palette.col("trunk")
-	var leaf: Color = Palette.veg("leaf", theme)
-	var light: Color = Palette.veg("leaf_light", theme)
-	var dark: Color = Palette.veg("leaf_dark", theme)
-	var crown_shape := int(Palette.hash01(seed, 3) * 3.0)
-
-	# A tapering, gently irregular trunk and visible first-order limbs.
+	# LU-08: three crown habits share the existing conservative collision envelope.
+	# Botanical scale and colours are art estimates; no external mesh/texture dependency.
+	var habit := int(Palette.hash01(seed, 3) * 3.0)
+	var height := 9.25 + 0.75 * Palette.hash01(seed, 1)
+	var trunk_h := 3.1 + 0.45 * Palette.hash01(seed, 2)
+	var trunk := Palette.col("trunk")
+	var leaf := Palette.veg("leaf", theme).lerp(Palette.veg("leaf_light", theme), 0.12)
+	var light := Palette.veg("leaf_light", theme)
+	var dark := Palette.veg("leaf_dark", theme)
+	var lean := Vector3(0.42 * (Palette.hash01(seed, 4) - 0.5), 0.0,
+		0.42 * (Palette.hash01(seed, 5) - 0.5))
 	k.cylinder(0.34, 0.19, trunk_h, 9, Vector3.ZERO, trunk)
 	k.cylinder(0.36, 0.31, 0.20, 8, Vector3.ZERO, trunk.darkened(0.08), true, trunk.darkened(0.18))
-	var limb_count := 5
-	for i in limb_count:
-		var angle := TAU * (float(i) / limb_count + Palette.hash01(seed, i, 4) * 0.12)
-		var start_y: float = trunk_h * (0.62 + 0.16 * Palette.hash01(seed, i, 5))
-		var start := Vector3(0.0, start_y, 0.0)
-		var reach: float = 1.45 + 0.50 * Palette.hash01(seed, i, 6)
-		var end := Vector3(cos(angle) * reach, trunk_h + 1.35 + 0.55 * Palette.hash01(seed, i, 7), sin(angle) * reach)
-		var mid := start.lerp(end, 0.62) + Vector3(0.0, 0.12, 0.0)
-		k.beam(start, mid, 0.17, trunk)
-		k.beam(mid, end, 0.105, trunk.lightened(0.04))
-		var outer := Vector3(cos(angle) * (reach + 1.0), end.y + 0.35, sin(angle) * (reach + 1.0))
-		k.beam(end, outer, 0.065, trunk.lightened(0.06))
-
-	# Break the old continuous dome into overlapping, differently sized masses. The
-	# three crown recipes keep a recognizable broadleaf silhouette without cloning one tree.
-	var core_size := Vector3(5.0, 3.65, 5.0)
-	if crown_shape == 1:
-		core_size = Vector3(4.8, 4.3, 4.8) # taller crown
-	elif crown_shape == 2:
-		core_size = Vector3(5.3, 3.1, 4.7) # low spreading crown
-	var core_y: float = trunk_h + 2.55 + 0.20 * Palette.hash01(seed, 8)
-	k.ellipsoid(Vector3(0.0, core_y, 0.0), core_size, leaf.lerp(dark, 0.28), seed, 9, 4)
-	var lobes := 7
-	for i in lobes:
-		var angle := TAU * (float(i) / lobes + Palette.hash01(seed, i, 9) * 0.10)
-		var radius: float = 1.75 + 0.45 * Palette.hash01(seed, i, 10)
-		var y: float = trunk_h + 2.3 + 1.0 * Palette.hash01(seed, i, 11)
-		var width: float = 2.55 + 0.55 * Palette.hash01(seed, i, 12)
-		var depth: float = width * (0.82 + 0.22 * Palette.hash01(seed, i, 13))
-		var tint := leaf.lerp(light, 0.18 + 0.55 * Palette.hash01(seed, i, 14))
-		k.ellipsoid(Vector3(cos(angle) * radius, y, sin(angle) * radius),
-			Vector3(width, width * 0.77, depth), tint, seed + i + 1, 8, 3)
-	var crest := Vector3(0.35 * (Palette.hash01(seed, 15) - 0.5), height - 1.2, -0.25)
-	k.ellipsoid(crest, Vector3(2.6, 2.2, 2.5), light.lerp(leaf, 0.28), seed + 23, 8, 3)
-
-	# Flexible outer twigs and leaves sit in one small mesh. Their absolute positions
-	# are stored relative to the crown pivot; the renderer supplies the placement transform.
+	# Root flares ground the trunk without adding props around the parking spaces.
+	for i in 5:
+		var a := TAU * (float(i) / 5.0 + 0.09 * Palette.hash01(seed, i, 6))
+		k.beam(Vector3(0, 0.32, 0), Vector3(cos(a) * 0.48, 0.06, sin(a) * 0.48), 0.13, trunk)
+	var limbs := 4 + habit
+	for i in limbs:
+		var a := TAU * (float(i) / limbs + 0.08 * Palette.hash01(seed, i, 7))
+		var reach := 1.3 + 0.75 * Palette.hash01(seed, i, 8)
+		var start := Vector3(0, trunk_h * (0.64 + 0.15 * Palette.hash01(seed, i, 9)), 0)
+		var end := lean + Vector3(cos(a) * reach, 5.2 + 1.4 * Palette.hash01(seed, i, 10), sin(a) * reach)
+		var elbow := start.lerp(end, 0.55) + lean
+		k.beam(start, elbow, 0.19, trunk)
+		k.beam(elbow, end, 0.12, trunk.lightened(0.04))
+		# Forks terminate within foliage, avoiding bare spikes and detached crown islands.
+		var fork := end + Vector3(cos(a + 0.48) * 0.65, 0.75, sin(a + 0.48) * 0.65)
+		k.beam(end, fork, 0.065, trunk.lightened(0.05))
+	# Connected lower, middle and upper masses produce a tree rather than a ring of balls.
+	var lower_size := Vector3(5.5, 3.65, 5.2)
+	var upper_size := Vector3(3.65, 3.9, 3.5)
+	var crown_offset := Vector3(0.30, 0, -0.20)
+	if habit == 1: # upright, one dominant leader
+		lower_size = Vector3(4.6, 4.3, 4.8)
+		upper_size = Vector3(3.25, 4.4, 3.35)
+		crown_offset = Vector3(-0.45, 0, 0.20)
+	elif habit == 2: # spreading, off-centre crown
+		lower_size = Vector3(5.7, 3.1, 5.25)
+		upper_size = Vector3(4.05, 3.7, 3.6)
+		crown_offset = Vector3(0.55, 0, 0.30)
+	k.ellipsoid(lean + Vector3(0, 5.65, 0), lower_size, leaf.lerp(dark, 0.30), seed, 9, 5)
+	k.ellipsoid(lean + crown_offset + Vector3(0, height - upper_size.y * 0.5, 0),
+		upper_size, leaf, seed + 11, 9, 5)
+	for i in 10:
+		var a := TAU * (float(i) / 10.0 + 0.07 * Palette.hash01(seed, i, 11))
+		var radius := 1.75 + 0.42 * Palette.hash01(seed, i, 12)
+		if habit == 1:
+			radius *= 0.88
+		var y := 5.45 + 1.65 * Palette.hash01(seed, i, 13)
+		var size := 2.20 + 0.55 * Palette.hash01(seed, i, 14)
+		var center := lean + Vector3(cos(a) * radius, y, sin(a) * radius)
+		var tint := leaf.lerp(light, 0.12 + 0.28 * Palette.hash01(seed, i, 15))
+		k.ellipsoid(center, Vector3(size, size * (0.94 + 0.22 * habit), size * 0.94), tint, seed + i + 20, 7, 4)
+		# Smaller overlapping sprays break up the large planar crown silhouette.
+		var spray := center + Vector3(cos(a) * 0.60, 0.70, sin(a) * 0.60)
+		k.ellipsoid(spray, Vector3(1.35, 1.5, 1.3), tint.lerp(light, 0.12), seed + i + 40, 6, 3)
 	var tips := MeshKit.new()
-	var pivot := Vector3(0.0, trunk_h, 0.0)
+	var pivot := Vector3(0, trunk_h, 0)
 	for i in 4:
-		var angle := TAU * (float(i) / 4.0 + Palette.hash01(seed, i, 20) * 0.14)
-		var start := Vector3(cos(angle) * 1.85, trunk_h + 2.8, sin(angle) * 1.85)
-		var end := Vector3(cos(angle) * (3.05 + 0.22 * Palette.hash01(seed, i, 21)),
-			trunk_h + 3.25 + 0.55 * Palette.hash01(seed, i, 22),
-			sin(angle) * (3.05 + 0.22 * Palette.hash01(seed, i, 21)))
-		tips.beam(start - pivot, end - pivot, 0.07, trunk.lightened(0.05))
-		tips.ellipsoid(end - pivot, Vector3(1.45, 1.15, 1.45),
-			leaf.lerp(light, 0.35 + 0.35 * Palette.hash01(seed, i, 23)), seed + i + 31, 7, 3)
+		var a := TAU * (float(i) / 4.0 + Palette.hash01(seed, i, 20) * 0.14)
+		var start := Vector3(cos(a) * 2.0, 6.1, sin(a) * 2.0)
+		var end := Vector3(cos(a) * 3.05, 6.2 + 0.9 * Palette.hash01(seed, i, 22), sin(a) * 3.05)
+		tips.beam(start - pivot, end - pivot, 0.045, trunk)
+		tips.ellipsoid(end - pivot, Vector3(1.4, 1.55, 1.4), leaf.lerp(light, 0.32), seed + i + 31, 7, 4)
 	return [{kind = "crown", motion_mode = 3, kit = tips, pivot = pivot, axis = Vector3.UP,
 		rate = _rate(seed, 24), phase = Palette.hash01(seed, 25)}]
 

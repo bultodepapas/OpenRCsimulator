@@ -2,7 +2,7 @@
 
 **Status: Delivered and reviewed, 2026-10-11.** Software verification passed through the documented continuation/reruns; physical calibration and tight performance qualification remain open below. Owner: aircraft standardization lead. Prefix: AS-.
 
-The four catalog aircraft and four existing electric specimens now use `openrc-aircraft v2`. The [plan](../../../../AIRCRAFT_STANDARDIZATION_PLAN.md) was completed before implementation. The [contract](../../../../AIRCRAFT_CONTRACT.md), [versioned schema](../../../../app/data/schema/openrc-aircraft-v2.schema.json), [runtime preflight](../../../../app/physics/aircraft_contract.gd), [148-path consumer register](../AS-01/parameters.md) and [module semantics](../AS-01/module-semantics.md) form the authoring boundary. The normal catalog route checks version and selected aircraft identity before flight; historical v1 experiments remain explicitly supported.
+The four catalog aircraft and four existing electric specimens now use `openrc-aircraft v2`. The pre-implementation plan has been consolidated into the contract and this delivery record. The [contract](../../../../AIRCRAFT_CONTRACT.md), [versioned schema](../../../../app/data/schema/openrc-aircraft-v2.schema.json), [runtime preflight](../../../../app/physics/aircraft_contract.gd), [148-path consumer register](../AS-01/parameters.md) and [module semantics](../AS-01/module-semantics.md) form the authoring boundary. The normal catalog route checks version and selected aircraft identity before flight; historical v1 experiments remain explicitly supported.
 
 ## Delivered behavior
 
@@ -66,4 +66,4 @@ bash app/test.sh
 
 For an unregistered file, `research/aircraft-data/schema/loader_probe.gd` accepts one user argument: a JSON array of absolute aircraft-file paths. Run it with pinned Godot, `--headless --path app --script <absolute-probe-path> -- <manifest-path>`. Require every emitted `DATA4A` result to have `ok: true`; its process exit alone is not an acceptance result. Then exercise trim, controls, propulsion, ground and lifecycle in an aircraft-specific test before adding a catalog entry. Offline validation cannot replace Godot's coupled checks or physical measurement.
 
-Primary references and their applicability are retained in the [plan](../../../../AIRCRAFT_STANDARDIZATION_PLAN.md#as-00-findings-and-technical-basis), [physics audit](../AS-00/physics-audit.md) and quantity-level provenance. They define methods and conventions; they do not supply measured validation for these complete virtual builds.
+Primary references and their applicability are retained in the [contract](../../../../AIRCRAFT_CONTRACT.md), [physics audit](../AS-00/physics-audit.md) and quantity-level provenance. They define methods and conventions; they do not supply measured validation for these complete virtual builds.

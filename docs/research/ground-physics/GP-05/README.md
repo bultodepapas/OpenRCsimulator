@@ -46,7 +46,7 @@ Existing automated Stik takeoff and landing maneuvers remain meaningful compleme
 
 ## Integration and verification
 
-The [plan](../../../../GROUND_PHYSICS_PLAN.md) was completed before code; its original SHA-256 and audit state are in [initial-verification.json](initial-verification.json). Three bounded Luna-max tasks covered terrain, wheel/session configuration, and independent scenario verification. The lead reviewed and integrated their contributions from an isolated draft using guarded three-way merges.
+The original pre-implementation plan is consolidated into this delivery record; its original SHA-256 and audit state are in [initial-verification.json](initial-verification.json). Three bounded Luna-max tasks covered terrain, wheel/session configuration, and independent scenario verification. The lead reviewed and integrated their contributions from an isolated draft using guarded three-way merges.
 
 Concurrent crash/audio and aircraft-v2 work was preserved. The only textual merge conflict combined the new v6 wheel trace metadata assertion with the other track's actual aircraft-input-format assertion. The aircraft-contract comparison now applies the same wheel-profile step to both legacy and v2 derivations; it still compares the complete derived models. No generated aircraft JSON was edited by the ground track.
 
@@ -103,4 +103,4 @@ Independent real-aircraft rollout, drop, spin-up and taxi measurements were not 
 
 The visual probe also records an inherited 5 mm wheel-center/contact-reference offset on the Stik; Extra/P-51 mappings are approximately exact. Model geometry was preserved. The renderer steers about its model pivot rather than the local terrain normal, so millimeter-scale visual differences remain on bumps. See the [39-check visual probe and captures](../GP-03/README.md#integrated-visual-gear-check).
 
-Primary technical sources and their applicability limits are retained in the [plan](../../../../GROUND_PHYSICS_PLAN.md#primary-sources-accessed-2026-10-11): JSBSim contact architecture, FAA soft-field and tailwheel mechanisms, NACA wheel spin-up research, and version-specific Godot documentation. They support the mechanisms, not the provisional RC coefficients.
+Primary technical sources and their applicability limits are retained in the [plan](README.md): JSBSim contact architecture, FAA soft-field and tailwheel mechanisms, NACA wheel spin-up research, and version-specific Godot documentation. They support the mechanisms, not the provisional RC coefficients.

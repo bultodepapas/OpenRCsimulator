@@ -85,19 +85,38 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 		maxf(previous[RB.POS + 2], current[RB.POS + 2]) + max_hull_radius)
 	if swept_candidates.is_empty():
 		return result
-	var cell_size := float(world.cell_size_m)
+	# Each probe's padded sweep is contained in this whole-hull envelope. Query
+	# its bins once, then discard proxies that cannot overlap any probe in the tick.
+	# This keeps the old coarse empty-world gate above, including its reset/parity
+	# behavior, while avoiding a repeated bin lookup for every probe.
+	var broad_padding := _rotational_chord_padding(q_start, q_end, max_hull_radius)
+	var broad_min_n := minf(previous[RB.POS], current[RB.POS]) - max_hull_radius - broad_padding
+	var broad_max_n := maxf(previous[RB.POS], current[RB.POS]) + max_hull_radius + broad_padding
+	var broad_min_e := minf(previous[RB.POS + 1], current[RB.POS + 1]) - max_hull_radius - broad_padding
+	var broad_max_e := maxf(previous[RB.POS + 1], current[RB.POS + 1]) + max_hull_radius + broad_padding
+	var broad_min_d := minf(previous[RB.POS + 2], current[RB.POS + 2]) - max_hull_radius - broad_padding
+	var broad_max_d := maxf(previous[RB.POS + 2], current[RB.POS + 2]) + max_hull_radius + broad_padding
+	var broad_candidates: Array[int] = swept_candidates
+	if floori(broad_min_n / CELL_SIZE_M) < floori((minf(previous[RB.POS], current[RB.POS]) - max_hull_radius) / CELL_SIZE_M) \
+		or floori(broad_max_n / CELL_SIZE_M) > floori((maxf(previous[RB.POS], current[RB.POS]) + max_hull_radius) / CELL_SIZE_M) \
+		or floori(broad_min_e / CELL_SIZE_M) < floori((minf(previous[RB.POS + 1], current[RB.POS + 1]) - max_hull_radius) / CELL_SIZE_M) \
+		or floori(broad_max_e / CELL_SIZE_M) > floori((maxf(previous[RB.POS + 1], current[RB.POS + 1]) + max_hull_radius) / CELL_SIZE_M) \
+		or floori(broad_min_d / CELL_SIZE_M) < floori((minf(previous[RB.POS + 2], current[RB.POS + 2]) - max_hull_radius) / CELL_SIZE_M) \
+		or floori(broad_max_d / CELL_SIZE_M) > floori((maxf(previous[RB.POS + 2], current[RB.POS + 2]) + max_hull_radius) / CELL_SIZE_M):
+		broad_candidates = _candidate_indices(world, broad_min_n, broad_max_n, broad_min_e, broad_max_e,
+			broad_min_d, broad_max_d)
+	var overlapping_candidates: Array[int] = []
+	for proxy_index: int in broad_candidates:
+		if _aabb_overlap(world.proxies[proxy_index], broad_min_n, broad_max_n, broad_min_e, broad_max_e,
+			broad_min_d, broad_max_d):
+			overlapping_candidates.append(proxy_index)
 	var best_by_obstacle: Dictionary = {}
 	var p0: PackedFloat64Array = previous.slice(RB.POS, RB.POS + 3)
 	var p1: PackedFloat64Array = current.slice(RB.POS, RB.POS + 3)
 	for segment_index: int in subdivisions:
 		var fraction0 := float(segment_index) / float(subdivisions)
 		var fraction1 := float(segment_index + 1) / float(subdivisions)
-		var segment_candidates := _candidate_indices(world,
-			minf(p0[0], p1[0]) - max_hull_radius, maxf(p0[0], p1[0]) + max_hull_radius,
-			minf(p0[1], p1[1]) - max_hull_radius, maxf(p0[1], p1[1]) + max_hull_radius,
-			minf(p0[2], p1[2]) - max_hull_radius, maxf(p0[2], p1[2]) + max_hull_radius)
-		if segment_candidates.is_empty():
-			continue
+		# The whole-hull bin candidates are shared; each probe keeps its exact segment AABB gate below.
 		var q0 := _attitude_at(q_start, q_end, fraction0)
 		var q1 := _attitude_at(q_start, q_end, fraction1)
 		# Nlerp advances nonuniformly along large rotations. Bound this actual segment's
@@ -111,7 +130,6 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 			var b := M.add(_lerp3(p0, p1, fraction1), M.q_rotate(q1, body_point))
 			probe_start.append(a)
 			probe_end.append(b)
-		var probe_candidates := {}
 		for probe_at: int in probe_start.size():
 			var probe_a: PackedFloat64Array = probe_start[probe_at]
 			var probe_b: PackedFloat64Array = probe_end[probe_at]
@@ -121,17 +139,9 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 			var max_e := maxf(probe_a[1], probe_b[1]) + padding
 			var min_d := minf(probe_a[2], probe_b[2]) - padding
 			var max_d := maxf(probe_a[2], probe_b[2]) + padding
-			# Probe sweeps are tight, so they avoid walking every tree proxy in a neighboring 32 m bin.
-			var candidate_key := "%d,%d,%d:%d,%d,%d" % [floori(min_n / cell_size), floori(min_e / cell_size),
-				floori(min_d / cell_size), floori(max_n / cell_size), floori(max_e / cell_size),
-				floori(max_d / cell_size)]
-			var candidates: Array[int] = probe_candidates[candidate_key] if probe_candidates.has(candidate_key) \
-				else _candidate_indices(world, min_n, max_n, min_e, max_e, min_d, max_d)
-			if not probe_candidates.has(candidate_key):
-				probe_candidates[candidate_key] = candidates
 			var body_index := probe_at * 3
 			var body_point: PackedFloat64Array = hull.slice(body_index, body_index + 3)
-			for proxy_index: int in candidates:
+			for proxy_index: int in overlapping_candidates:
 				var proxy: Dictionary = world.proxies[proxy_index]
 				if not _aabb_overlap(proxy, min_n, max_n, min_e, max_e, min_d, max_d):
 					continue

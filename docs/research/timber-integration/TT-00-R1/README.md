@@ -2,7 +2,7 @@
 
 2026-10-08 · **Status: independent delivery review; no application integration.**
 
-Owning [plan](../../../TIMBER-INTEGRATION-PLAN.md), original [v12 audit](../TT-00/README.md), requested [handoff convention](../../../BLENDER-AIRCRAFT-HANDOFF.md). Incoming package: `Timber turbo evolution/turbo_timber_evolution/r1/`. The author's revision `r1` is distinct from this research step's `TT-00-R1` identifier.
+Owning [plan](../../../TIMBER-INTEGRATION-PLAN.md), original [v12 audit](../TT-00/README.md), requested [handoff convention](../../../TIMBER-INTEGRATION-PLAN.md). Incoming package: `Timber turbo evolution/turbo_timber_evolution/r1/`. The author's revision `r1` is distinct from this research step's `TT-00-R1` identifier.
 
 ## Assessment
 

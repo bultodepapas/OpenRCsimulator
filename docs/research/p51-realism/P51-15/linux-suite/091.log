@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+passive neutral aero: 0 / 925 states add energy; worst -42.862 W
+continuity across reversed flow: PASS
+seeded fixed-control envelope: 0/5000 positive power; finite=true
+rudder force and moments share the declared physical lever: true

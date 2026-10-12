@@ -1,6 +1,6 @@
 # Aircraft contract
 
-**Status: AS-01 implementation contract, 2026-10-11.** Revision 1. Authored format: `openrc-aircraft v2`. Convention: `openrc-le-frd-v1`. Owning [plan](AIRCRAFT_STANDARDIZATION_PLAN.md); [audit](docs/research/aircraft-standardization/AS-00/).
+**Status: current v2 authoring/runtime contract; AS-00–05 delivered, 2026-10-11.** Revision 1. Authored format: `openrc-aircraft v2`. Convention: `openrc-le-frd-v1`. [Audit](docs/research/aircraft-standardization/AS-00/), [migration and verification](docs/research/aircraft-standardization/AS-05/README.md).
 
 ## Scope and authority
 
@@ -122,4 +122,4 @@ Trace metadata records the real input format/hash, model ID, active propulsion/w
 4. Validate schema and Godot load/trim; run model/hinge, force, propulsion, ground, stall/control, lifecycle and performance checks. Compare state traces and force budgets. A passing self-consistency test is not physical validation.
 5. Register the catalog and visual adapter together, add aircraft-specific tests, and retain measured gaps. Manufacturer limits, independent measurements and qualified pilot feedback decide physical acceptance. Unsupported features require a contract extension before use.
 
-Use the [implementation plan](AIRCRAFT_STANDARDIZATION_PLAN.md) and AS evidence for exact commands, generated-output checks and current verification results. Never hand-edit a generated aircraft JSON.
+Use the [AS-05 authoring commands and verification](docs/research/aircraft-standardization/AS-05/README.md) for generated-output checks and documented results. The v2 migration preserved force equations and numeric calibration; it does not close physical or target-machine acceptance. Never hand-edit a generated aircraft JSON.

@@ -1,6 +1,6 @@
 # EX-06: Primary-source audit for the GPMA0236 Extra 300S .60
 
-Status: source audit complete. Numbers described as the baseline precede EX-06 implementation; see the [realism plan](../../../EXTRA-300-REALISM-PLAN.md) for execution status.
+Status: source audit complete. Numbers described as the baseline precede EX-06 implementation; see the [realism plan](../../../EXTRA-300-PLAN.md) for execution status.
 
 ## Scope and sources
 

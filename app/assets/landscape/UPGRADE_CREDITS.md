@@ -1,10 +1,12 @@
 # Landscape Upgrade Credits
 
-Status: LU-01–06 implementation credit record, 2026-10-11.
+Status: LU-01–10 implementation credit record, updated 2026-10-12.
 
 The upgrade adds original procedural ridges, people, vegetation detail, support cradles, fixture hardware, shallow clubhouse window inserts, a warm-glazing shader, and sun-glare code. These contributions by OpenRCsimulator contributors are distributed under the repository [MIT license](../../../LICENSE). No new third-party media or runtime dependency was added. The optional screenshot checker uses Pillow 12.3.0 under its MIT-CMU license; Pillow is an offline evidence tool and is not redistributed in the simulator ([versioned license, checked 2026-10-11](https://github.com/python-pillow/Pillow/blob/12.3.0/LICENSE)).
 
 The fixture visuals use display-aware caps: each runway SpotLight is limited to `24.0` scene-linear contribution after view exposure, the windsock SpotLight to `0.6`, and each veranda OmniLight to `0.12`. The FW path uses a local-light gain of `1`; an explicit static SDR lighting snapshot may use `1000` to keep local fittings visible at its fixed exposure. The gain is applied before the output caps and dusk factor. These are art-direction controls, not photometric lux measurements.
+
+LU-08/09 adds original connected tree crowns/root flares, gravel shoulder variation, miniature chargers/battery packs/fuel cans, and depth-tested runway-marker optics. It reuses existing batches and placements. Directional green arrival/red end cues reference [FAA AIM 2-1-4](https://www.faa.gov/air_traffic/publications/aim_html/chap2_section_1.html); no FAA media is redistributed and no airport-compliance claim is made. Marker core/halo sizes (2.5/6.5 pixels), the 0.0025 distant readability gain floor and 300–600 m fade are artistic estimates. The marker cap is 1.0 after view exposure, multiplied by dusk and range fades. All additions are original MIT project work, with no new third-party runtime asset or plugin. [Continued refinement research and proof](../../../docs/research/landscape-upgrade/LU-07/README.md).
 
 | Content used by the field | Creator / source | License and evidence |
 | --- | --- | --- |

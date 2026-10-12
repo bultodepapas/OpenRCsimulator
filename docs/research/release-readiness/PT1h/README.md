@@ -30,7 +30,7 @@ No generated aircraft/field data, force equations, golden trajectories or resour
 
 The Stik's production wash remains disabled. Current propeller provenance borrows an 11×6 table for a configured 12×6; runtime extrapolation/range counters and matched measurements remain open. The automated calm circuit is a verification fixture, not a pilot or physical validation result.
 
-The next bounded development slice is defined in [RUNWAY-START-PLAN](../../../RUNWAY-START-PLAN.md): session start/reset/trace contract, Home selection, then export and manual-pilot evidence. It is subsequent work, outside rc6.
+The next bounded development slice is defined in [RUNWAY-START-PLAN](../../../MENU-PLAN.md): session start/reset/trace contract, Home selection, then export and manual-pilot evidence. It is subsequent work, outside rc6.
 
 Legacy Spanish plans and earlier research remain preserved and explicitly identified by the map; new documentation is English. Translate a legacy plan when substantively revising its scope. Its old implementation diary is historical evidence, not a competing current-state ledger. No research was deleted or silently promoted to acceptance.
 

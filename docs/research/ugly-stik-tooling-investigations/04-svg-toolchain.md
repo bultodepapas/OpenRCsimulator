@@ -4,7 +4,7 @@
 
 ## Pregunta y estado local
 
-¿Qué ruta da cruces y filetes reproducibles con pocas dependencias? El plan mantiene el constructor del avión en Godot y plantea un SVG propio para el atlas rojo, blanco y negro. La aplicación fija Godot 4.7.2; la documentación consultada corresponde a la rama 4.7. El constructor actual crea mallas/materiales nativamente y todavía no importa SVG. [Plan visual](../../UGLY-STIK-VISUAL-PLAN.md) · [atlas y materiales](../ugly-stik-visual-investigations/09-materials-atlas.md) · [constructor actual](../../../app/aircraft/ugly_stik_model.gd).
+¿Qué ruta da cruces y filetes reproducibles con pocas dependencias? El plan mantiene el constructor del avión en Godot y plantea un SVG propio para el atlas rojo, blanco y negro. La aplicación fija Godot 4.7.2; la documentación consultada corresponde a la rama 4.7. El constructor actual crea mallas/materiales nativamente y todavía no importa SVG. [Plan visual](../../UGLY-STIK-PLAN.md) · [atlas y materiales](../ugly-stik-visual-investigations/09-materials-atlas.md) · [constructor actual](../../../app/aircraft/ugly_stik_model.gd).
 
 ## Hallazgos
 

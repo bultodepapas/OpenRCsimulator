@@ -42,7 +42,7 @@ La pausa es `sim.paused`, no una pausa automática de todos los nodos Godot. Los
 
 ## Research anterior que conserva valor
 
-- [RESEARCH: viento y térmicas](../../RESEARCH.md#wind-thermals-and-inexpensive-validation): distingue el campo de aire de las fuerzas, remite a JSBSim y al modelo de térmicas NASA. Útil como mapa, no como parámetros calibrados del campo RC.
+- [RESEARCH: viento y térmicas](initial-notebook.md#wind-thermals-and-inexpensive-validation): distingue el campo de aire de las fuerzas, remite a JSBSim y al modelo de térmicas NASA. Útil como mapa, no como parámetros calibrados del campo RC.
 - [Ambiente y viento](landscape-investigations/11-wind-animation-ambience.md): manga, vegetación, reloj y unidades. Su propuesta `wind_clock` quedó implementada como **`sim_clock`**. Su duda sobre registrar globals en runtime ya está resuelta por `ShaderClock.register`. No duplicar ese trabajo.
 - [Ajustes y versiones](menu-investigations/03-settings-content-versioning.md), [alma del menú](../MENU-PLAN.md): entrada rápida al vuelo y una sola física; preferencias separadas de calibración de radio.
 - [Auditoría Extra 300](extra-300-integration-audit.md), [plan Extra](../EXTRA-300-PLAN.md): futura geometría, datos y propulsión por avión. El clima debe ser común y su efecto depender de cada modelo.

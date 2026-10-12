@@ -1,6 +1,6 @@
 # 04 · Silenciador, presión y combustible
 
-Consulta web: 2026-10-05 · [Índice](README.md) · [Plan visual](../../UGLY-STIK-VISUAL-PLAN.md).
+Consulta web: 2026-10-05 · [Índice](README.md) · [Plan visual](../../UGLY-STIK-PLAN.md).
 
 **Pregunta ·** ¿Qué recorridos de tubos debe explicar el primer plano del motor sin confundir la presión del tanque, la alimentación de combustible y un cable de encendido?
 

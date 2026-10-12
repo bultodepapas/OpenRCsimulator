@@ -19,7 +19,7 @@ Option 2 of the brief now, option 3 later as held-out validation (DECISIONS.md, 
 
 ## Model
 
-- **Generator:** [`research/aero/d11g/derive_rate_derivatives.gd`](../../../../research/aero/d11g/derive_rate_derivatives.gd) measures the local strip model at the 15 m/s level trim (α 4.26°), about the CG, controls neutral, lag settled. [Output](output.txt). The values are flat across α 0–6° (Cmq −7.47…−7.48, Cnr −0.134…−0.131, CLq 3.08…2.91). Closed-form tail and fin formulas from the same data agree within 1% for Cmq, 6% for CLq and 0.4% for Cnr.
+- **Generator:** [`research/aero/d11g/derive_rate_derivatives.gd`](../../../../research/aero/d11g/derive_rate_derivatives.gd) measures the local strip model at the 15 m/s level trim (α 4.26°), about the CG, controls neutral, lag settled. The original console output was not committed; the reported values and regression evidence are retained below. The values are flat across α 0–6° (Cmq −7.47…−7.48, Cnr −0.134…−0.131, CLq 3.08…2.91). Closed-form tail and fin formulas from the same data agree within 1% for Cmq, 6% for CLq and 0.4% for Cnr.
 - **Lag in the oracle:** `Aero._global_loads` takes the lagged wing CL. Its static coefficients already contain the settled downwash; a lagged CL turns the tail angle by k_ε·(CL_wing − lag) on the free tail slope, at the tail's arm. That adds lift and pitching moment exactly as the local tail does. Settled, it adds nothing (byte-identical); NaN (trim, static solves) is the old path.
 - **Flight modes carry the lag:** `FlightModes.analyze` adds the lagged CL as a ninth state, ẋ = (CL_wing − x)·V/l (the session's lag in continuous form), and the longitudinal block becomes 5×5 with one more real root. Aircraft without the lag (Extra, P-51, Avanti) are unchanged.
 

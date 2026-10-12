@@ -1,6 +1,6 @@
 # Referencias visuales aportadas: acabado rojo con cruces
 
-2026-10-05 · Lectura directa de dos imágenes adjuntas por el propietario. Complementa el [plan visual](../UGLY-STIK-VISUAL-PLAN.md). Las fotos fijan la apariencia deseada; el plano Jensen y la geometría v3 siguen fijando la variante y escala del modelo .61.
+2026-10-05 · Lectura directa de dos imágenes adjuntas por el propietario. Complementa el [plan visual](../UGLY-STIK-PLAN.md). Las fotos fijan la apariencia deseada; el plano Jensen y la geometría v3 siguen fijando la variante y escala del modelo .61.
 
 ## Identificación de las imágenes
 

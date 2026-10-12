@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   empty table is the explicit flat terrain fixture
+ok   malformed tables fail closed with NAN, not silent flat terrain
+ok   validated fast path agrees with the fail-closed wrapper
+ok   non-finite query coordinates fail closed
+ok   source friction table and default field load  surface=[] field=[]
+ok   default physics surface table builds  []
+ok   outside rough envelope reaches 7 mm  0.007
+ok   runway relief remains within 1 mm and rough relief within 7 mm  runway=[0.00015966968647, 0.00068262188618, 0.00383492966728] rough=[0.00123553018016, 0.0170207624133, -0.00069144414717]
+ok   terrain is deterministic at a repeated wheel query
+ok   runway edge height is continuous  left=[0.00310446434129, 0.00099442407577, 0.02468998502483] right=[0.00310446632996, 0.00099427430319, 0.02469011998096]
+ok   runway edge feather analytic gradient agrees with central differences  reported=[0.01374100113958, -0.0121597177998] finite-difference=[0.0137409994997, -0.01215971512556]
+ok   runway, mown and rough regions produce finite relief
+ok   runway feather analytic gradient agrees with central differences  reported=[-0.00181034261527, -0.01329620485585] finite-difference=[-0.00181034289561, -0.01329620287157]
+ok   mown east feather analytic gradient agrees with central differences  reported=[-0.00902017575832, 0.01556854294462] finite-difference=[-0.00902017440287, 0.01556854002892]
+ok   rough interior analytic gradient agrees with central differences  reported=[0.02132549488022, -0.00175352137028] finite-difference=[0.02132549336593, -0.00175351876555]
+ok   nested runway/mown height stays continuous
+ok   ground shader terrain hook receives the same default runway rectangle  [(0.0, -15.0, 50.0, 6.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)]
+ok   renderer terrain profile matches physics estimates
+ok   failed renderer consolidation leaves terrain surface uniforms unchanged  before=[<null>, <null>, <null>] after=[<null>, <null>, <null>]
+ok   CPU mirror of shader masks, waves and NED slopes matches GroundTerrain  worst error=0.00000000013427 component=1 at north/east=(9.75, 0.0); physics=[-0.00086643308373, -0.00181034261527, -0.01329620485585] renderer=[-0.00086643308373, -0.001810342481, -0.01329620485585]
+ok   shader normal perturbation agrees with the terrain-gradient surface normal  gradient=[-0.00086643308373, -0.00181034261527, -0.01329620485585] normal=(0.013295, 0.99991, -0.00181)
+21 checks, 0 failed

@@ -1,6 +1,6 @@
 # EX-06/EX-08 Extra installation and flight probes
 
-Status: installation corrections and 31 behavior probes implemented and verified; physical qualification remains open. Owner: [realism plan](../../../docs/EXTRA-300-REALISM-PLAN.md).
+Status: installation corrections and 31 behavior probes implemented and verified; physical qualification remains open. Owner: [realism plan](../../../docs/EXTRA-300-PLAN.md).
 
 This work retains the GPMA0236 .60/O.S. .61FX reference build. The simulator's default control travel is the manual's **high rate**, with trim added by the session. For a transmitter's low-rate setup, use approximately 39.5% aileron, 58.9% elevator and 58.2% rudder of these angular maxima. Verify actual endpoints in input diagnostics; do not apply the reduction twice. The keyboard has no aircraft-specific dual-rate switch in this step.
 

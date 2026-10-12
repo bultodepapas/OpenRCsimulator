@@ -2,7 +2,7 @@
 
 **Status: AS-00–05 delivered, 2026-10-11.** Software verification passed with the documented reruns; physical calibration and tight performance qualification remain open.
 
-The owner-requested root [plan](../../../AIRCRAFT_STANDARDIZATION_PLAN.md) records scope, ownership, risks and acceptance. The [contract](../../../AIRCRAFT_CONTRACT.md) defines configuration, derived-model and runtime-state boundaries.
+The [contract](../../../AIRCRAFT_CONTRACT.md) defines configuration, derived-model and runtime-state boundaries. [AS-05](AS-05/README.md) records delivered scope, verification and remaining acceptance.
 
 | Evidence | Content |
 | --- | --- |

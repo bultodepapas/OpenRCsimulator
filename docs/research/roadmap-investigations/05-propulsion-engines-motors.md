@@ -1,6 +1,6 @@
 # 05 — Propulsion systems: glow and gas engines, electric motors with ESC and battery, and turbines
 
-**Status:** research knowledge base, initially observed 2026-10-06; current implementation status reconciled against the project audit dated 2026-10-06. **Serves:** ROADMAP M4 (G1–G4, PT4), the Avanti S turbine branch (AV-05, AV-10 in [AVANTI-S-PLAN](../../AVANTI-S-PLAN.md)), the P-51's 120 cc gas engine ([P51-PLAN](../../P51-PLAN.md), P51-06), engine smoke ([SMOKE-PLAN](../../SMOKE-PLAN.md)), and a proposed electric track (none in the roadmap today). **Read with:** [ROADMAP M4](../../../ROADMAP.md), [RESEARCH.md: Electric propulsion](../../../RESEARCH.md#electric-propulsion-distinguish-the-components-and-their-evidence), [avanti-s-turbine-research.md](../avanti-s-turbine-research.md), [ugly-stik-engine-v5.md](../ugly-stik-engine-v5.md) (visual only, no specs), [propulsion.gd](../../../app/physics/propulsion.gd).
+**Status:** research knowledge base, initially observed 2026-10-06; current implementation status reconciled against the project audit dated 2026-10-06. **Serves:** ROADMAP M4 (G1–G4, PT4), the Avanti S turbine branch (AV-05, AV-10 in [AVANTI-S-PLAN](../../AVANTI-S-PLAN.md)), the P-51's 120 cc gas engine ([P51-PLAN](../../P51-PLAN.md), P51-06), engine smoke ([SMOKE-PLAN](../../SMOKE-PLAN.md)), and a proposed electric track (none in the roadmap today). **Read with:** [ROADMAP M4](../../../ROADMAP.md), [RESEARCH.md: Electric propulsion](../initial-notebook.md#electric-propulsion-distinguish-the-components-and-their-evidence), [avanti-s-turbine-research.md](../avanti-s-turbine-research.md), [ugly-stik-engine-v5.md](../ugly-stik-engine-v5.md) (visual only, no specs), [propulsion.gd](../../../app/physics/propulsion.gd).
 
 ## Summary
 
@@ -376,4 +376,4 @@ The per-power-plant state block sketched here (`ω or N`, actuator, mode, fuel o
 30. Godot Engine docs, "AudioStreamGenerator" (stable), https://docs.godotengine.org/en/stable/classes/class_audiostreamgenerator.html, fetched.
 31. JetCat, catalog 2017 and RX manual 2011 (P100-RX figures), via [avanti-s-turbine-research.md](../avanti-s-turbine-research.md), fetched there.
 32. NASA Glenn, "Thrust equation", https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/thrust-force/, via the repo's turbine research, fetched there.
-33. UIUC Propeller Data Site; APC performance data; PyBaMM Thevenin; BLHeli: as cited in [RESEARCH.md](../../../RESEARCH.md#electric-propulsion-distinguish-the-components-and-their-evidence), fetched there.
+33. UIUC Propeller Data Site; APC performance data; PyBaMM Thevenin; BLHeli: as cited in [RESEARCH.md](../initial-notebook.md#electric-propulsion-distinguish-the-components-and-their-evidence), fetched there.
