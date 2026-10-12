@@ -260,6 +260,13 @@ func _ready() -> void:
 	weather_button.focus_neighbor_bottom = weather_button.get_path_to(language_button)
 	for button: Button in [language_button, help_button, quit_button]:
 		button.focus_neighbor_top = button.get_path_to(fly_button)
+		button.focus_neighbor_bottom = button.get_path_to(time_button)
+	# Left and right along the row are explicit too (UI-06d-R1): inside the scrolling column, geometry alone picked the
+	# full-width Time of day button as the right neighbour of Language when the window was small.
+	language_button.focus_neighbor_right = language_button.get_path_to(help_button)
+	help_button.focus_neighbor_left = help_button.get_path_to(language_button)
+	help_button.focus_neighbor_right = help_button.get_path_to(quit_button)
+	quit_button.focus_neighbor_left = quit_button.get_path_to(help_button)
 	time_button.focus_neighbor_top = time_button.get_path_to(language_button)
 	Input.joy_connection_changed.connect(_on_joy_changed)
 	_update_texts()
