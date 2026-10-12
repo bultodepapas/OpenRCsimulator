@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: player guide checked against current source on 2026-10-12. [rc8 release notes](releases/v0.1.0-rc8.md) describe the download; [flight setup](#current-source) explains its defaults and features. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: player guide checked against current source on 2026-10-12. [rc7 release notes](releases/v0.1.0-rc7.md) describe the published download; [current source](#current-source) has newer defaults and features. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download a platform ZIP and `SHA256SUMS` from [rc8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc8). Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Download a platform ZIP and `SHA256SUMS` from [rc7](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc7). Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`
@@ -24,7 +24,7 @@ These test builds have no trusted developer signing/notarization. If macOS refus
 
 Home selects the aircraft, language, launch, weather and lighting. Menus use keyboard or mouse; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
 
-In **rc8**, new preferences select the Stik at idle near the runway threshold, gentle wind and passing evening. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. Other flight-capable catalog aircraft start airborne. Saved choices take precedence; Restart uses the selected launch. Details are [below](#current-source).
+In **rc7**, Fly defaults to trimmed airborne flight. The Stik can also start at idle near the runway threshold by selecting **Runway (experimental)**. Other catalog aircraft start airborne. Restart uses the selected launch. Current-source defaults are [below](#current-source).
 
 **Esc** opens Pause; losing window focus also pauses. Continue resumes explicitly. Pause can restart, return to Home or quit. The direct CLI route has no Home to return to.
 

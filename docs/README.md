@@ -19,7 +19,7 @@ Status: current documentation and ownership index, checked 2026-10-12. Runtime c
 | Published build contents | [Release notes](releases/); fixed per tag |
 | README images and licenses | [Media provenance](media/README.md) |
 
-The rc8 download is described by its release notes and FIRST-LAUNCH; historical reports are not current operating instructions.
+Current source and published rc7 differ. Follow FIRST-LAUNCH for that distinction; historical reports are not current operating instructions.
 
 ## Tracks, plans and step IDs
 
