@@ -9,6 +9,8 @@ const SVG_PATH := "res://aircraft/livery.svg"
 static var _materials: Dictionary = {}
 static var _atlas: ImageTexture
 static var _normal_map: ImageTexture
+static var _grain: ImageTexture
+const GRAIN_SIZE := Vector2i(1024, 128)
 const NORMAL_MAP_SIZE := 1024
 # Slopes are stored ×GAIN for 8-bit precision; the material's normal_scale (1/GAIN) restores them (small-angle mix).
 const NORMAL_MAP_GAIN := 8.0
@@ -43,6 +45,9 @@ static func material(color: Color, profile: String = "skin") -> StandardMaterial
 		"rubber": mat.roughness = 0.95
 		"plastic": mat.roughness = 0.6
 		"wood": mat.roughness = 0.64
+		"varnished_wood":
+			# US-V09d: a sealed, varnished wooden propeller: dielectric gloss over the grain (estimate).
+			mat.roughness = 0.26
 	mat.resource_name = key
 	_materials[key] = mat
 	return mat
@@ -141,6 +146,60 @@ static func _bay_profile(supports: Array, size: int, column_x: Callable) -> Arra
 				value = Vector3(hi - lo, sin(PI * a), signf(x) * PI / (hi - lo) * cos(PI * a))
 		result.append(value)
 	return result
+
+# US-V09d: straight-grained propeller blank. U runs tip to tip across both blades (one piece of wood), V across the
+# chord. Grain lines follow the blade with slow waviness; values stay in 0.80..1.0 so the blade keeps the albedo the
+# propeller blur measures (its disc copies albedo_color). Deterministic hash noise; built once.
+static func grain() -> ImageTexture:
+	if _grain != null: return _grain
+	var data := PackedByteArray()
+	data.resize(GRAIN_SIZE.x * GRAIN_SIZE.y * 3)
+	for y in GRAIN_SIZE.y:
+		var v := (y + 0.5) / GRAIN_SIZE.y
+		for x in GRAIN_SIZE.x:
+			var u := (x + 0.5) / GRAIN_SIZE.x
+			var phase := v * 23.0 + 0.9 * _noise(u * 3.0, 1.7) + 0.25 * _noise(u * 17.0, v * 3.0 + 5.0)
+			var line := pow(absf(sin(PI * phase)), 6.0) # thin dark latewood lines
+			var figure := 0.5 + 0.5 * _noise(u * 40.0, v * 9.0 + 11.0) # fine pores and streaks
+			var value := clampf(1.0 - 0.13 * line - 0.07 * figure, 0.0, 1.0)
+			var i := (y * GRAIN_SIZE.x + x) * 3
+			data[i] = roundi(255.0 * value)
+			data[i + 1] = roundi(255.0 * (value * 0.985))
+			data[i + 2] = roundi(255.0 * (value * 0.96))
+	var image := Image.create_from_data(GRAIN_SIZE.x, GRAIN_SIZE.y, false, Image.FORMAT_RGB8, data)
+	image.generate_mipmaps()
+	_grain = ImageTexture.create_from_image(image)
+	return _grain
+
+
+# Smooth value noise in [-1, 1] from an integer hash (no RandomNumberGenerator state, identical on every run).
+static func _noise(x: float, y: float) -> float:
+	var ix := floori(x)
+	var iy := floori(y)
+	var fx := x - ix
+	var fy := y - iy
+	var sx := fx * fx * (3.0 - 2.0 * fx)
+	var sy := fy * fy * (3.0 - 2.0 * fy)
+	var a := lerpf(_hash(ix, iy), _hash(ix + 1, iy), sx)
+	var b := lerpf(_hash(ix, iy + 1), _hash(ix + 1, iy + 1), sx)
+	return lerpf(a, b, sy) * 2.0 - 1.0
+
+
+static func _hash(x: int, y: int) -> float:
+	var h := (x * 374761393 + y * 668265263) & 0x7fffffff
+	h = ((h ^ (h >> 13)) * 1274126177) & 0x7fffffff
+	return float(h ^ (h >> 16)) / float(0x7fffffff)
+
+
+static func propeller_wood(color: Color) -> StandardMaterial3D:
+	var key := "propeller-varnished-wood:" + color.to_html()
+	if _materials.has(key): return _materials[key]
+	var mat := material(color, "varnished_wood").duplicate() as StandardMaterial3D
+	mat.albedo_texture = grain()
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	mat.resource_name = key
+	_materials[key] = mat
+	return mat
 
 
 static func covering() -> StandardMaterial3D:
