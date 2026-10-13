@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading, throttle linkage, propeller and weathering (US-V09a–h)
+# Ugly Stik · covering, shading, linkage, propeller, weathering and gear flex (US-V09a–h, US-V10)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -99,6 +99,17 @@ Evidence (left `f64900a`, right US-V09e, engine shadows off; [hashes](ugly-stik-
   Mutations on a disposable copy (hatch mapped to dorsal, stab underside unpainted, stab spray mirrored) were each detected. `check_atlas.py` passes.
 
 Evidence (left `f64900a`, which predates US-V09e, so the pairs show e–h together; engine shadows off; [hashes](ugly-stik-finish-v6-evidence/v09fgh-SHA256SUMS)): [stab underside](ugly-stik-finish-v6-evidence/v09f-stab-under-ab.png), [hatch](ugly-stik-finish-v6-evidence/v09g-hatch-ab.png), [front belly](ugly-stik-finish-v6-evidence/v09h-belly-front-ab.png). Bench views: `stab_under`, `hatch`, `belly_front`.
+
+## US-V10 · landing-gear flex
+
+2026-10-13, at the owner's request ("gear with some flexibility like the real ones"). `render/ground_gear.gd` already lifts each wheel pivot by the physics contact compression along world up. The legs stayed rigid, so the leg end poked past the hub even at the 16–23 mm static sag. The Stik's main gear is a bent 0.090 in 2024-T3 aluminium strap (Jensen sheet 1); the nose gear is a wire leg.
+
+- **Shape:** `app/aircraft/ugly_stik_gear_flex.gd` bends each leg as a clamped cantilever whose tip follows the axle, N(t) = (3t² − t³)/2 along the leg from the fuselage clamp (0) to the axle (1). Axle hardware within 20 mm of the main axle (16 mm at the nose) moves rigidly, like the strap end clamped by the axle bolt. The main straps are now 12 segments, so the bend has interior vertices. The nose fork, which used to stay put while the wheel rose through it, now rides with its axle inside the steering frame.
+- **GPU deformation:** each leg carries three relative blend shapes, unit X, Y and Z, so any attitude-dependent "world up" maps onto the leg at zero CPU cost per frame. The node runs after `GroundGearMotion` (`process_priority` 10) and never writes simulation state. Compatibility 4.7.2 renders the blend shapes, confirmed in the bench and the production scene.
+- **Magnitudes:** the bend uses the physics compression unchanged: 18 mm static sag, about 0.10 m at a 2 m/s sink and 0.12 m maximum, from `jensen_ugly_stik_60.json`. That contact is the equivalent compliance of leg plus foam tyre, softened for the 240 Hz stability rule, so the drawn bend includes the tyre's share. The axle moves straight up as the contact does; a real strap also splays the track outward, which the contact model does not represent.
+- **Proof:** `app/tests/test_gear_flex.gd`, 18/0, rebuilds the deformed meshes on the CPU (base + Σ weight × blend offset). It checks that the clamp is fixed, the axle follows the wheel, mid-span equals 5/16 of the tip (an analytic value, independent of the code under test), the legs are independent, an attitude-tilted contact direction is honoured, a steered nose strut follows the axle in root space, the fork rides with its wheel, release restores the built legs, and the node is ordered after GroundGear. Mutations on a disposable copy (linear shape, no rigid axle hardware, wrong process order) were each detected. `verify_model` 818/0; render contract, propeller blur, projected shadows, crash and ground-contact tests pass.
+
+Evidence ([hashes](ugly-stik-finish-v6-evidence/v10-SHA256SUMS)): [bench, front view at 0 / 18 / 80 mm](ugly-stik-finish-v6-evidence/v10-gear-flex-0-18-80mm.png) (`capture.sh <dir> --view gear_front --gear-compression 0.08`); [production scene resting on the runway, before/after](ugly-stik-finish-v6-evidence/v10-runway-rest-ab.png) (physics compressions 0.017/0.016/0.023 m; a scratch script started `main.tscn` with `start_choice = "runway"`, because CLI launches are always airborne).
 
 ## Limits and open findings
 

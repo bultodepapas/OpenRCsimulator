@@ -4,6 +4,7 @@ extends RefCounted
 
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Finish := preload("res://aircraft/ugly_stik_finish.gd")
+const GearFlex := preload("res://aircraft/ugly_stik_gear_flex.gd")
 const D: Dictionary = Geometry.DATA
 
 const CASE_COLOR := Color("858d91")
@@ -764,7 +765,9 @@ static func _add_main_gear(root: Node3D, gear: Dictionary) -> void:
 		var center: Vector3 = Vector3(side * float(e.main_track) * 0.5, float(e.wheel_y), float(e.main_axle_z))
 		var root_z: float = float(e.main_axle_z) - 0.050
 		var root_point: Vector3 = Vector3(side * 0.025, _fuselage_height(root_z, false) + 0.004, root_z)
-		_bar(steel, root_point, center, 0.014, 0.0034)
+		# US-V10: twelve strap segments so the leg can take the bending shape (GearFlex).
+		for k in GearFlex.LEG_SEGMENTS:
+			_bar(steel, root_point.lerp(center, float(k) / GearFlex.LEG_SEGMENTS), root_point.lerp(center, float(k + 1) / GearFlex.LEG_SEGMENTS), 0.014, 0.0034)
 		_box(aluminum, Vector3(side * 0.026, root_point.y + 0.003, root_z + 0.002), Vector3(0.027, 0.006, 0.030))
 		for z_offset in [-0.009, 0.009]:
 			var bolt_pos: Vector3 = Vector3(side * 0.026, root_point.y + 0.0065, root_z + z_offset)
@@ -781,7 +784,13 @@ static func _add_main_gear(root: Node3D, gear: Dictionary) -> void:
 		root.add_child(pivot)
 		gear[label] = pivot
 		_add_wheel(pivot, "gear_" + label, float(e.main_wheel_diameter) * 0.5, 0.024, side)
-	_flush(root, "main_gear_structure", structure)
+	var main := _flush(root, "main_gear_structure", structure)
+	var legs: Array = []
+	for side in [-1.0, 1.0]:
+		var root_z: float = float(e.main_axle_z) - 0.050
+		legs.append({root = Vector3(side * 0.025, _fuselage_height(root_z, false) + 0.004, root_z),
+			tip = Vector3(side * float(e.main_track) * 0.5, float(e.wheel_y), float(e.main_axle_z)), side = side, rigid_radius = 0.02})
+	main.set_meta("flex_legs", legs)
 
 
 static func _add_nose_gear(root: Node3D, gear: Dictionary) -> void:
@@ -805,7 +814,8 @@ static func _add_nose_gear(root: Node3D, gear: Dictionary) -> void:
 		var bolt: Vector3 = Vector3(x_sign * 0.004, start.y + 0.003, start.z)
 		_cylinder(steel, bolt, bolt + Vector3(x_sign * 0.001, 0, 0), 0.0021, 0.0021, 6)
 		_washer(bright, bolt, Vector3.RIGHT, 0.0038, 0.0015, 0.0008, 8)
-	_flush(root, "nose_gear_strut", strut)
+	var strut_mesh := _flush(root, "nose_gear_strut", strut)
+	strut_mesh.set_meta("flex_leg", {root = start, tip = end, side = 0.0, rigid_radius = 0.016})
 
 	var steering := Node3D.new()
 	steering.name = "nose_steering_pivot"
@@ -835,7 +845,10 @@ static func _add_nose_gear(root: Node3D, gear: Dictionary) -> void:
 		_cylinder(fork_aluminum, Vector3(side * 0.012, -0.001, -0.002), Vector3(side * 0.012, 0.004, -0.002), 0.004, 0.004, 10)
 		_bar(fork_bright, Vector3(0, 0.047, 0.004), Vector3(side * 0.024, 0.048, 0.004), 0.003, 0.002)
 		_cylinder(fork_steel, Vector3(side * 0.012, 0.000, -0.002), Vector3(side * 0.012, 0.003, -0.002), 0.0024, 0.0024, 6)
-	_flush(steering, "nose_fork_and_steering_arm", fork)
+	var fork_mesh := _flush(steering, "nose_fork_and_steering_arm", fork)
+	# US-V10: the legs bend to meet the axle that the contact compression moves (GearFlex).
+	var main := root.find_child("main_gear_structure", false, false) as MeshInstance3D
+	GearFlex.attach(root, gear, main, main.get_meta("flex_legs"), strut_mesh, strut_mesh.get_meta("flex_leg"), fork_mesh)
 
 
 static func _fuselage_height(z: float, top: bool) -> float:

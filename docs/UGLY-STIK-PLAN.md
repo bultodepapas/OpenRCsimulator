@@ -39,6 +39,7 @@ The model contract and reproducible visual evidence pass. The completed work and
 | US-V09f | Oil spray on the right stab/elevator underside; stab undersides unwrapped into the atlas. [Finish v6 report](research/ugly-stik-finish-v6.md#us-v09fh--tail-spray-hatch-seams-and-field-wear) | Implemented 2026-10-13 |
 | US-V09g | Fuel-tank hatch seams traced from Jensen sheet 1 (front to station 1). [Finish v6 report](research/ugly-stik-finish-v6.md#us-v09fh--tail-spray-hatch-seams-and-field-wear) | Implemented 2026-10-13 |
 | US-V09h | Grass/soil spray behind the nose wheel, belly scuffs and tail-strike scrapes (`belly_wear.enabled`). [Finish v6 report](research/ugly-stik-finish-v6.md#us-v09fh--tail-spray-hatch-seams-and-field-wear) | Implemented 2026-10-13 |
+| US-V10 | Landing-gear flex: legs bend as clamped cantilevers to the axle the physics compression moves; nose fork rides with its wheel; GPU blend shapes. [Finish v6 report](research/ugly-stik-finish-v6.md#us-v10--landing-gear-flex) · `tests/test_gear_flex.gd` | Implemented 2026-10-13 |
 
 ## Limits and acceptance
 
