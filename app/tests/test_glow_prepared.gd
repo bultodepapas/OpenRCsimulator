@@ -35,6 +35,7 @@ func _initialize() -> void:
 		_test_source_parity(id, model, source_evaluator)
 		_test_lifecycle_parity(id, model, settings, lifecycle_evaluator)
 		_test_dynamic_refusals(id, model, settings, lifecycle_evaluator)
+		_test_unsupported_mixture(id, model, settings, source_evaluator, lifecycle_evaluator)
 		_test_provenance_rejection(id, model)
 		_test_snapshot_detachment(id, model, settings, lifecycle_evaluator)
 	print("NITRO prepared evaluator: %d checks, %d failed" % [_checks, _failures])
@@ -67,6 +68,28 @@ func _test_source_parity(id: String, model: Dictionary,
 					_check(id + " source exact parity %s" % str([rpm, admission, mixture, running]),
 						direct == prepared,
 						"direct=" + JSON.stringify(direct) + " prepared=" + JSON.stringify(prepared))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261013 if id == "os_max_55ax_candidate" else 20261014
+	var rpm_table: PackedFloat64Array = model.parameters.mechanical_torque_nm
+	var mixture_table: PackedFloat64Array = model.parameters.combustion_efficiency
+	var rpm_min: float = rpm_table[0]
+	var rpm_span: float = rpm_table[rpm_table.size() - 2] - rpm_min
+	var mixture_min: float = mixture_table[0]
+	var mixture_span: float = mixture_table[mixture_table.size() - 2] - mixture_min
+	for query_index: int in range(100):
+		var rpm: float = rpm_min + rpm_span * (0.01 + 0.98 * rng.randf())
+		var admission: float = rng.randf()
+		var mixture: float = mixture_min + mixture_span * rng.randf()
+		var density: float = 0.45 + 1.35 * rng.randf()
+		var running: bool = (query_index % 3) != 0
+		var firing_fraction: float = rng.randf()
+		var direct: Dictionary = Source.evaluate(model, rpm, admission, mixture, density,
+			running, firing_fraction)
+		var prepared: Dictionary = Source.evaluate_prepared(evaluator, rpm, admission, mixture,
+			density, running, firing_fraction)
+		_check(id + " source seeded interior query %d succeeds and matches exactly" % query_index,
+			direct.get("ok", false) and prepared.get("ok", false) and direct == prepared,
+			"direct=" + JSON.stringify(direct) + " prepared=" + JSON.stringify(prepared))
 
 
 func _test_lifecycle_parity(id: String, model: Dictionary, settings: Dictionary,
@@ -94,6 +117,42 @@ func _test_lifecycle_parity(id: String, model: Dictionary, settings: Dictionary,
 					_check(id + " lifecycle exact parity %s" % str([rpm, throttle, command_mixture, temperature]),
 						direct == prepared,
 						"direct=" + JSON.stringify(direct) + " prepared=" + JSON.stringify(prepared))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261023 if id == "os_max_55ax_candidate" else 20261024
+	var rpm_table: PackedFloat64Array = model.parameters.mechanical_torque_nm
+	var rpm_min: float = rpm_table[0]
+	var rpm_span: float = rpm_table[rpm_table.size() - 2] - rpm_min
+	for query_index: int in range(100):
+		var rpm: float = rpm_min + 1.0 + maxf(0.0, rpm_span - 1.0) * rng.randf()
+		var throttle: float = rng.randf()
+		var command_mixture: float = 2.5 * rng.randf()
+		var baseline_mixture: float = command_mixture if command_mixture > 0.0 else float(operation.nominal_mixture)
+		var admission: float = 0.05 + 0.95 * rng.randf()
+		var density: float = 0.45 + 1.35 * rng.randf()
+		var unit_source: Dictionary = Source.evaluate(model, rpm, admission, baseline_mixture,
+			density, true, 1.0)
+		if not unit_source.get("ok", false):
+			_check(id + " lifecycle seeded target flow %d is supported" % query_index, false,
+				str(unit_source.get("message", "unknown source error")))
+			continue
+		var unit_flow: float = float(unit_source.delivered_fuel_kg_s) / baseline_mixture
+		var values: PackedFloat64Array = Lifecycle.pack_state(initial)
+		values[0] = 0.005 + 0.025 * rng.randf()
+		values[1] = 260.0 + 330.0 * rng.randf()
+		values[2] = rng.randf()
+		values[3] = admission
+		values[4] = unit_flow * (3.0 * rng.randf())
+		values[5] = 2.0 * rng.randf()
+		var stage: Dictionary = Lifecycle.with_continuous_state(initial, values)
+		var ambient: float = 250.0 + 70.0 * rng.randf()
+		var cooling_speed: float = 40.0 * rng.randf()
+		var direct: Dictionary = Lifecycle.evaluate(model, settings, stage, rpm, throttle,
+			command_mixture, density, ambient, cooling_speed)
+		var prepared: Dictionary = Lifecycle.evaluate_prepared(evaluator, stage, rpm, throttle,
+			command_mixture, density, ambient, cooling_speed)
+		_check(id + " lifecycle seeded interior query %d succeeds and matches exactly" % query_index,
+			direct.get("ok", false) and prepared.get("ok", false) and direct == prepared,
+			"direct=" + JSON.stringify(direct) + " prepared=" + JSON.stringify(prepared))
 
 
 func _test_dynamic_refusals(id: String, model: Dictionary, settings: Dictionary,
@@ -114,6 +173,44 @@ func _test_dynamic_refusals(id: String, model: Dictionary, settings: Dictionary,
 	_check(id + " rejects nonfinite mixture", not invalid_mixture.get("ok", false))
 	_check(id + " rejects out-of-envelope RPM", not outside_rpm.get("ok", false))
 	_check(id + " rejects invalid ambient temperature", not invalid_temperature.get("ok", false))
+
+
+func _test_unsupported_mixture(id: String, model: Dictionary, settings: Dictionary,
+		source_evaluator: Source.PreparedEvaluator,
+		lifecycle_evaluator: Lifecycle.PreparedEvaluator) -> void:
+	var mixture_table: PackedFloat64Array = model.parameters.combustion_efficiency
+	var unsupported_mixture: float = mixture_table[mixture_table.size() - 2] + 1.0
+	var density: float = float(model.operation.reference_dry_density_kg_m3)
+	var direct_source: Dictionary = Source.evaluate(model, 6000.0, 0.7, unsupported_mixture,
+		density, true, 1.0)
+	var prepared_source: Dictionary = Source.evaluate_prepared(source_evaluator, 6000.0, 0.7,
+		unsupported_mixture, density, true, 1.0)
+	_check(id + " direct and prepared source reject unsupported mixture",
+		not direct_source.get("ok", false) and not prepared_source.get("ok", false))
+	var created: Dictionary = Lifecycle.create(model, settings, 0.02, 390.0, 6000.0, true)
+	if not created.get("ok", false):
+		_check(id + " unsupported lifecycle mixture fixture creates", false)
+		return
+	var direct_lifecycle: Dictionary = Lifecycle.evaluate(model, settings, created.state,
+		6000.0, 0.7, unsupported_mixture, density, 295.0, 10.0)
+	var prepared_lifecycle: Dictionary = Lifecycle.evaluate_prepared(lifecycle_evaluator,
+		created.state, 6000.0, 0.7, unsupported_mixture, density, 295.0, 10.0)
+	_check(id + " direct and prepared lifecycle reject unsupported mixture",
+		not direct_lifecycle.get("ok", false) and not prepared_lifecycle.get("ok", false),
+		"direct=" + JSON.stringify(direct_lifecycle) + " prepared=" + JSON.stringify(prepared_lifecycle))
+	var extreme_values: PackedFloat64Array = Lifecycle.pack_state(created.state)
+	extreme_values[3] = 1.0e-8
+	extreme_values[4] = 1.0e-3
+	var extreme_state: Dictionary = Lifecycle.with_continuous_state(created.state, extreme_values)
+	var extreme_direct: Dictionary = Lifecycle.evaluate(model, settings, extreme_state,
+		6000.0, 0.7, float(model.operation.nominal_mixture), density, 295.0, 10.0)
+	var extreme_prepared: Dictionary = Lifecycle.evaluate_prepared(lifecycle_evaluator,
+		extreme_state, 6000.0, 0.7, float(model.operation.nominal_mixture), density, 295.0, 10.0)
+	_check(id + " direct and prepared reject a rich actual mixture at near-closed air",
+		not extreme_direct.get("ok", false) and not extreme_prepared.get("ok", false)
+			and str(extreme_direct.get("message", "")).contains("combustion_efficiency")
+			and str(extreme_prepared.get("message", "")).contains("combustion_efficiency"),
+		"direct=" + JSON.stringify(extreme_direct) + " prepared=" + JSON.stringify(extreme_prepared))
 
 
 func _test_snapshot_detachment(id: String, model: Dictionary, settings: Dictionary,

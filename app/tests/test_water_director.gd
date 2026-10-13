@@ -33,11 +33,11 @@ func _run() -> void:
 	flight.name = "WaterDirectorFixture"
 	flight.set("crash_effects_enabled", false)
 	root.add_child(flight)
-	await process_frame
 	flight.set_process(false)
 	flight.session.set_physics_process(false)
 	flight.session.sim.set_physics_process(false)
 	flight.session.input_enabled = false
+	await process_frame
 	_check("production session accepts the normalized lake", flight.session.set_lake_context(loaded.lake))
 	var director: Variant = Director.new()
 	director.name = "WaterDirectorFixtureNode"

@@ -13,6 +13,7 @@ const Models = preload("res://scenery/models.gd")
 const Population = preload("res://scenery/population.gd")
 const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
 const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
+const ImportedHedge = preload("res://scenery/imported_hedge.gd")
 const SupportSurfaces = preload("res://scenery/support_surfaces.gd")
 const Palette = preload("res://scenery/palette.gd")
 const GroundFeatures = preload("res://scenery/ground_features.gd")
@@ -349,17 +350,12 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					kit.tag_damage(damage_first, "fence:%s:%s" % [group.id, piece.id])
 					kit.damage_ranges.back()["beam"] = piece
 			"hedge":
-				var pts: Array = group.points
-				for i in pts.size() - 1:
-					var a: Vector2 = pts[i]
-					var b: Vector2 = pts[i + 1]
-					var mid := (a + b) * 0.5
-					var kit := _kit(cells, _cell(mid.x, mid.y))
-					var seg := PackedVector2Array([_xz(a), _xz(b)])
-					if group.type == "hedge":
-						GroundFeatures.hedge(kit, seg, group.height, group.width, theme, group.seed + i * 17)
-					else:
-						GroundFeatures.fence(kit, seg, group.style, group.seed + i * 17)
+				var pts: Array[Vector2] = []
+				for point: Vector2 in group.points:
+					pts.append(_xz(point))
+				var hedge := ImportedHedge.build(pts, group.height, group.width, group.seed, quality)
+				hedge.name = "ImportedHedge_" + str(group.id)
+				root.add_child(hedge)
 			"track", "patch":
 				var poly := PackedVector2Array()
 				for p: Vector2 in group.points:

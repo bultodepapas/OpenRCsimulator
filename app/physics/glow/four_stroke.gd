@@ -49,8 +49,6 @@ static func _evaluate_impl(
 		firing_fraction: float,
 		prevalidated: bool
 	) -> Dictionary:
-	var result := _empty_result("")
-
 	if not is_finite(rpm) or rpm < 0.0:
 		return _empty_result("rpm must be finite and nonnegative")
 	if not is_finite(admission) or admission < 0.0 or admission > 1.0:
@@ -149,6 +147,32 @@ static func _evaluate_impl(
 			return _empty_result(str(valve_result["message"]))
 		valve_table = valve_result["values"]
 
+	return _calculate_validated(rpm, admission, mixture, dry_density_kg_m3,
+		displacement_m3, oil_fraction, stoich_air_fuel_ratio, fuel_lhv_j_kg,
+		intake_pressure_drop_pa, mechanical_table, combustion_table, indicated_table,
+		volumetric_table, pumping_table, valve_table, running, firing_fraction)
+
+
+static func _calculate_validated(
+		rpm: float,
+		admission: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		displacement_m3: float,
+		oil_fraction: float,
+		stoich_air_fuel_ratio: float,
+		fuel_lhv_j_kg: float,
+		intake_pressure_drop_pa: float,
+		mechanical_table: PackedFloat64Array,
+		combustion_table: PackedFloat64Array,
+		indicated_table: PackedFloat64Array,
+		volumetric_table: PackedFloat64Array,
+		pumping_table: PackedFloat64Array,
+		valve_table: PackedFloat64Array,
+		running: bool,
+		firing_fraction: float
+	) -> Dictionary:
+	var result := _empty_result("")
 	var cycle_frequency_hz: float = rpm / 120.0
 	var opportunity_frequency_hz: float = cycle_frequency_hz
 	var omega_rad_s: float = 2.0 * PI * rpm / 60.0

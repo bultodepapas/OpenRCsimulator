@@ -8,7 +8,7 @@ The editor compiles explicit user choices into validated aircraft data. It does 
 
 **Owns, proposed:** `app/aircraft_editor/`, `app/ui/aircraft_workshop/`, `app/data/aircraft_editor/`, `app/tests/test_aircraft_editor_*.gd`, `research/aircraft-editor/`, and this plan. Evidence belongs under `docs/research/aircraft-editor/` once it exists.
 
-**Coordinated boundaries:** aircraft contract/loader, `app/sim/flight_session.gd`, `app/main.gd`, catalog/preferences/app root, screen stack/localization, each visual builder, ground profiles, glow/electric/turbine systems, camera/HUD/audio/crash presentation. Those files retain their existing owners. Register interfaces before editing them; do not allocate concurrent work on the same integration file.
+**Coordinated boundaries:** aircraft contract/loader, `app/sim/flight_session.gd`, `app/main.gd`, catalog/preferences/app root, screen stack/localization, each visual builder, ground profiles, glow/electric/turbine systems, camera/HUD/audio/crash presentation. Those files retain their existing owners. The registry assigns the proposed `app/ui/aircraft_workshop/` subtree to AE; the menu track owns the surrounding shell, shared widgets and route integration. Register interfaces before editing them; do not allocate concurrent work on the same integration file.
 
 Authoritative prerequisites: [aircraft contract](../../AIRCRAFT_CONTRACT.md), [architecture](../../STACK.md), [tools and verification commands](../TOOLS.md), [track registry](../README.md#tracks-plans-and-step-ids), [current menus](../MENU-PLAN.md), [menu redesign](../MENU-REDESIGN-PLAN.md), and [glow installations](../GLOW-ENGINES.md).
 
@@ -18,7 +18,7 @@ Three entry choices use the same variant format and compiler:
 
 | Entry | Player intent | Default experience |
 | --- | --- | --- |
-| **Quick experiment** | "Give this Stik more power", "make it half size" | Six main controls: size, mass, power, balance, control travel and response; live before/after values |
+| **Quick experiment** | "Give this Stik more power", "make it half size" | Five main adjustments: size, mass, power, control travel and response; live before/after values and a CG display; component balance editing follows in V2 |
 | **Match my airplane** | "Mine weighs 3.4 kg, has this battery and this CG" | Guided actual dimensions, ready-to-fly mass, component positions, supported powerplant, throws and notes; measurements retain their evidence |
 | **Laboratory** | "What happens with a huge lightweight wing or a tiny fast airplane?" | Expanded numeric controls, linked scaling policies, parameter locks, diagnostics, comparison and bounded random recipes |
 
@@ -26,7 +26,7 @@ The views differ in complexity, not in numerical safety. Laboratory never overri
 
 Delivery groups:
 
-1. **V1, complete Stik loop:** create → adjust mass/power/scale → inspect → save → fly → pause → return to the same draft. Includes 50%, 100%, 150% and 200% scale targets, uniform scaling, basic controls and reference comparison.
+1. **V1, complete Stik loop:** create → adjust mass/power/scale → inspect → save → fly → pause → return to the same draft. Includes qualified 50%, 75%, 100%, 125%, 150% and 200% scale recipes, uniform airframe scaling, a declared virtual legacy propeller/suspension policy, basic controls and reference comparison. **Variant starts are airborne-only in V1**; AE-11 qualifies runway starts afterward.
 2. **V2, personal fleet:** component balance, real-aircraft wizard, wider catalog coverage, supported electric/shaft/glow/turbine adapters, saved revisions and portable variants.
 3. **V3, laboratory:** wider qualified ranges, performance experiments, deterministic recipes, advanced aerodynamic packages and cosmetic customization.
 
@@ -42,10 +42,14 @@ Current source is authoritative where older guide summaries differ. In particula
 | [aircraft_data.gd](../../app/physics/aircraft_data.gd) | `load_file()` hashes the bytes it parses; `validate_and_derive()` derives mass, CG, inertia and aero geometry | A compiler must create a complete candidate with provenance and an identity for its actual inputs |
 | [aircraft_contract.gd](../../app/physics/aircraft_contract.gd) | Closed v2 quantities, capabilities and modules; unknown fields fail | Keep editor recipe metadata outside v2; extend an owned contract before adding a physical feature |
 | [wheel_profiles.gd](../../app/physics/wheel_profiles.gd) | `load_file()` attaches ground profiles after aircraft derivation; in-memory validation does not | Carry and validate the correct effective wheel profile explicitly for a variant |
+| [glow/installation.gd](../../app/physics/glow/installation.gd) | Aircraft derivation attaches glow installations; both installation and engine profile paths are restricted to bundled `res://data/glow/<basename>.json` files | Add a scoped, hash-bound dependency-input seam before promising editable or portable glow installations; retain all existing semantic checks |
 | [flight_session.gd](../../app/sim/flight_session.gd) | `setup()`, `_prepare_aircraft()`, `_commit_aircraft()` and `reload()` validate, trim, reset and preserve accepted state on failure | Add a prepared-variant launch seam with complete rollback and explicit reference/variant identities |
 | Session starts | Airborne trim is required during preparation; runway starts use an explicit aircraft allowlist and the default field | Variant ancestry alone cannot authorize runway start; qualify effective geometry/profile/start together |
 | [airplane.gd](../../app/render/airplane.gd) | Existing builders and aircraft-specific datum/CG/propeller handling | A presentation descriptor must scale geometry, offsets and anchors coherently |
 | [app_root.gd](../../app/app_root.gd), `app/ui/`, `app/app_state/` | Home, aircraft selection, pause, settings data, modal holds and shared screens exist | Workshop screen, draft navigation, variant library and flight return context |
+| [preferences.gd](../../app/app_state/preferences.gd) | Settings schema 4 accepts only a static catalog ID for `flight.aircraft`; unknown IDs fall back | Add a separately validated variant selection; do not put custom UUIDs into the catalog-only key or reserve UI-24's proposed schema version |
+| [main.gd](../../app/main.gd) research route | `--experimental-aircraft-data` permits only an `aero.wing_polar` change for the default Stik | Keep its narrow research contract; the proposed variant CLI is a distinct resolved-input route |
+| [camera_rig.gd](../../app/render/camera/camera_rig.gd) | Pilot, chase, orbit and close-up flight views already exist | Reuse compatible framing helpers, but build a detached Workshop preview; a flight camera is not an existing aircraft editor |
 | [MENU-REDESIGN-PLAN](../MENU-REDESIGN-PLAN.md) | UI-20/21 delivered; general Settings/Hangar redesign is proposed | Reuse the current stack now; expose a route the future Hangar can call |
 | Checkpoints and traces | Model/configuration fingerprints; input-byte identity; specialized electric/glow/turbine state | Bind variant revision and all attachments; never replay a checkpoint against a changed variant |
 | Source pipelines | Aircraft/model tracks own generated geometry and physics JSON | Compile local variants into `user://`; leave generated `res://data/aircraft/` and source assets untouched |
@@ -63,6 +67,8 @@ Fleet adapter order:
 | `sebart-avanti-s-a200-p100rx` | Ventage Jet turbine, gear locked up, airborne-only route | Mass/controls, then qualified thrust/scale adapter; no runway option |
 
 All seven may appear in the Workshop library immediately. Unimplemented edit groups show a concise reason and their original values; they do not offer inert sliders.
+
+The base Stik has an exact wheel-profile registry entry. The two finite-glow Stiks currently use the documented `legacy_fallback`, so preserving that declared state is correct for their no-op variants; silently losing a profile from a base that had one is not. The [Stik asset guide](../../assets/aircraft/ugly-stik-60/README.md) and [model guide](../UGLY-STIK-PLAN.md) currently defer mini/giant variants. AE-07/08 therefore require the model owner's interface work; they do not assume an existing scale feature or hand-edit generated `ugly_stik_geometry.gd`.
 
 ## 3. Dedicated menu and navigation
 
@@ -108,7 +114,7 @@ The reference silhouette has two modes: **same metres**, which makes size change
 
 ### 3.3 Input and editing behavior
 
-- Mouse and keyboard work initially; Tab order follows the visible fields, Escape returns one screen, focused sliders accept arrows and numeric entry. Radio flight controls stay disarmed while editing. Gamepad menu support follows the shell's supported input path.
+- Mouse and keyboard work initially; Tab order follows the visible fields, Escape returns one screen, focused sliders accept arrows and numeric entry. Radio flight controls stay disarmed while editing. Gamepad menu navigation is not implemented in the current shell; it follows UI-12 and is not a V1 promise.
 - One slider drag is one undo operation. Undo/redo restores linked fields, lock states and the selected policy together. Reset field, reset section and restore base are distinct actions.
 - Parse localized decimal input at the UI boundary; store finite SI numbers. Accept the locale's decimal separator without treating a comma as a thousands separator. Store display units separately.
 - Show grams/kg, mm/cm/m, inches, degrees, seconds, W, RPM, N and optional lbf where appropriate. "Weight" controls mass; wing loading labels distinguish kg/m² or g/dm² from N/m².
@@ -129,7 +135,7 @@ Ranges below are **product targets for qualification**, not current loader guara
 | Balance | CG location shown in mm aft of LE and, where supported, %MAC; forward/aft adjustment | Move eligible components or add explicit ballast; recompute full tensor; never write only a CG scalar | Basic display V1; edits V2 |
 | Components | Battery/engine/fuel/receiver/ballast mass, position and box dimensions | Stable component keys, positive mass, symmetric moves for paired parts, validated support | V2 |
 | Power | More/less power, target thrust-to-weight or a supported hardware package | Family adapter reports requested and achieved output at a declared condition; §6 | Legacy V1; other families V2 |
-| Propeller | Compatible diameter/pitch/SKU package, rotor inertia summary | Diameter, mass, inertia, Ct/Cp or glow surrogate and visible blade change atomically; pitch alone is not a valid aerodynamic input | V2 |
+| Propeller | Automatic virtual geometric resize; later compatible diameter/pitch/SKU selector | V1's linked Stik resize is defined in §5.2; independent package selection changes diameter, mass, inertia, tables/surrogate and visible blade atomically; pitch alone is not an aerodynamic input | Automatic resize V1; independent packages V2 |
 | Engine response | Slower/faster spool or throttle response where supported | Existing lag/time fields; satisfy stiffness constraints; independent of transmitter expo | Legacy V1; family-specific V2 |
 | Battery | Compatible pack, capacity, initial SOC, mass and location | Preserve battery model semantics; finite pack and fixed bus remain visibly distinct | V2 |
 | Fuel | Initial fill, supported fuel/engine installation, tank placement where qualified | Finite glow mass/CG evolves; legacy/turbine prescribed fuel stays fixed unless its owning track adds finite fuel | V2 |
@@ -148,6 +154,8 @@ A beginner control such as **Gentler controls** applies a visible recipe of trav
 ### 4.1 Matching a real airplane
 
 The wizard asks for base shape, wingspan, ready-to-fly mass, measured CG, installed propulsion, battery/fuel state and actual throws. Unknown values remain inherited/estimated. Record measurement notes and the configuration in which the aircraft was weighed.
+
+This matches measurements **within a supported base-aircraft approximation**. A different planform, airfoil or fuselage is not reconstructed from wingspan/mass/CG. Show unmatched shape and aerodynamic data as inherited estimates; arbitrary geometry/airfoil authoring remains in §15.
 
 First fit total mass and CG using explicit adjustable components. Let the user choose "measured components" or "estimated distribution from the base". A fit cannot use negative ballast, move a component outside its allowed mount, or claim measured inertia from total mass and CG alone. A target that is impossible with locked components reports the conflict and offers an explicit unlock/change.
 
@@ -177,18 +185,23 @@ These are modeling choices, not manufacturing laws. Hardware adapters may lock m
 | Areas | Wing/tail/fin areas scale by `s²`; dimensionless aspect/taper ratios and geometric angles remain unchanged |
 | Inventory | Initial V1 uniform mass distribution: each mass scales by `r_m`; CG scales by `s`; regenerate the derived model |
 | Inertia | For uniform inventory scaling, the **entire six-entry tensor** scales by `r_m s²`, including products of inertia; component edits require a new sum |
+| V1 virtual legacy propeller | Diameter and rendered blade dimensions scale by `s`; the propeller inventory component follows `r_m`, its box dimensions follow `s`, and the separate rotor scalar follows `J_rotor' = J_rotor r_m s²`. Retain dimensionless Ct/Cp vs J as an explicit virtual similarity assumption. The legacy schema has no independent pitch parameter: do not invent one or infer tables from a name |
 | Propulsion application points | Reconstruct a fixed structural hub from the original CG-relative offset, transform it, then subtract the **new** CG; do the same for intake offsets. CG movement is not a physical engine movement |
 | Aerodynamics | Keep supported nondimensional coefficients only under the declared borrowed-similarity assumption; derive strips, tail/fin arms, induced maps, lift offsets and stall blends again |
 | Control travel | Degrees remain unchanged under geometric scaling; the scaled mesh uses the same normalized servo output |
 | Time constants | Default retains actual hardware timing. An explicit virtual-similarity recipe may propose scaled servo/engine/downwash timings, followed by stiffness checks; do not multiply every time field blindly |
-| Ground suspension | To keep normalized static sag: spring `k' = k r_m/s`; for the same damping ratio with uniformly scaled supported mass, `c' = c r_m/sqrt(s)`. Travel and wheel radius scale by `s`; solve support again |
-| Wheel dynamics | Radius/relaxation lengths scale geometrically; inertia derives from the chosen wheel mass/shape; compatible brake torque and tire profiles are validated together. Field friction remains field-owned |
+| Ground suspension | Geometric proposal: `k' = k r_m/s`, `c' = c r_m/sqrt(s)`, travel ×`s`. The V1 small-aircraft alternative below preserves the base suspension timescale instead; both are explicitly named policies, with support/clearance checked afterward |
+| Wheel dynamics | Radius scales by `s`; inertia follows wheel mass/shape (`r_m s²` for uniform V1 inventory). `spin_relaxation` is **seconds**, retained by default; it is not a length. Reference brake-torque proposal is ×`r_m s` only for compatible packages. Validate effective wheel mass and relaxation at the actual tick; field friction stays field-owned |
 | Presentation | Model vertices/transforms, pivots, shadow/blur geometry, contact overlays, exhaust anchors, camera mounts and crash section origins must agree in metres |
 | Evidence | Unchanged source values retain their evidence; transformed values become derived/estimated with base identity, policy and compiler version. A synthetic resized engine is not the manufacturer's named original |
 
 The suspension formulas are derived from `sag = load/k` and fixed damping ratio, not a tire-material similarity claim. They preserve a ground timescale proportional to `sqrt(s)`; only the geometric-density case shares that timescale with the standard gravity-based flight similarity. Qualify small models at the unchanged 240 Hz step.
 
-Plausibility ranges/reference inertia need a declared transformation too. A catalog mass range describes that catalog build; applying it literally to a giant variant is misleading. Preserve the original comparison in the manifest, derive a variant comparison where meaningful, and keep the loader's independent safety checks. This is not permission to erase warnings or expand numeric domains.
+**Known V1 blocker and selected remedy:** current Stik suspension has total stiffness 1560 N/m and mass 2.885058 kg, giving `omega*dt≈0.097` at 240 Hz. Geometric 50% suspension gives about 0.137 and fails the loader's strict `<0.1` gate, even for an airborne start. For V1's virtual scaled recipes use `a=max(s,1)`, `k'=k r_m/a`, `c'=c r_m/sqrt(a)` and `travel'=travel a`. Below 100% this retains base heave frequency, damping ratio, absolute static sag and travel; above 100% it matches the geometric proposal. The UI calls this **Virtual suspension, retain small-model response** and shows that the small aircraft has proportionally softer/longer-travel gear. It is not full geometric similarity. Preserve wheel `spin_relaxation=0.03 s` for the base Stik profile; halving it would fail `dt/tau≤0.25`. Validate per-contact support, travel, actual wheel/hull/prop clearance and all other bounds; AE-11 separately establishes whether a particular mini can start and land on the field. Do not modify the global timestep or silently soften user-selected hardware.
+
+**Variant plausibility policy:** the base Stik mass range is `[2.3,3.4] kg` and is a hard loader check. For a uniform virtual recipe compile it as `[2.3 r_m,3.4 r_m]`, with derived provenance, while separately asserting that the inventory sum equals the explicit target mass. Preserve the original range in the manifest and describe the new range as a compiler consistency band, not independent evidence for a real aircraft. Measured/component builds use an explicit justified range for that configuration. The current generic mass-range endpoints must remain within `[0.01,100] kg`; reject recipes outside that domain instead of clipping or widening it. Transform applicable reference-inertia comparisons consistently while retaining donor provenance. Thus 400% geometric-mass Stik remains a nonlaunchable example under today's bounds.
+
+The body tensor and propeller rotor inertia are different quantities. The current legacy/electric parser bounds the rotor scalar at `0.1 kg·m²`; applicable shaft/electric/glow carrier-inertia checks remain mandatory. The V1 virtual rotor law is an explicit constructed mass-distribution assumption, not a measured scaled crankshaft. A fixed hardware package instead retains its measured mass/inertia/diameter and triggers a new inventory fit and different power proposal.
 
 ### 5.3 Predicting the consequences
 
@@ -219,7 +232,7 @@ The current [Stik source](../../app/data/aircraft/jensen_ugly_stik_60.json) has 
 | Super Stik 200% | 3.048 m | 1.858060 m² | 11.540 kg | 23.080 kg |
 | Giant Stik 400%, laboratory target | 6.096 m | 7.432240 m² | 46.161 kg | 184.644 kg |
 
-At 200%, keeping wing loading gives `I'/I=16` and reference propeller power `P'/P=4`; geometric mass gives `I'/I=32` and `P'/P≈11.314`. Merely doubling power is neither policy. A custom 200%/6 kg Stik is another valid *intent*, subject to inventory and solver checks. The 400% row illustrates consequences; it does not promise that today's loader or field accepts 184.6 kg.
+At 200%, keeping wing loading gives `I_body'/I_body=16` and reference propeller power `P'/P=4`; geometric mass gives `I_body'/I_body=32` and `P'/P≈11.314`. These power ratios assume the V1 geometrically resized virtual propeller. With fixed prop diameter, a fourfold static thrust target instead needs RPM ×2 and static power ×8 under constant Ct/Cp. Merely doubling power is neither policy. A custom 200%/6 kg Stik is another valid *intent*, subject to inventory and solver checks. The 400% row illustrates consequences; it does not promise that today's loader or field accepts 184.6 kg.
 
 ## 6. Powerplant editing without ambiguous sliders
 
@@ -232,6 +245,8 @@ Every power page states its solver family, reference condition, requested change
 | Electric, Timber | Select a compatible motor/ESC/battery/prop package or edit supported physical fields; evaluate the actual voltage/current/torque solution | Capacity is not power; changing cell count affects voltage, mass, sag and stiffness. Do not promise ESC current limiting, braking, regeneration or thermal protection absent from the runtime law |
 | Finite glow 2T/4T | Select compatible installation/profile/prop packages; expose supported fill/mixture/installation adjustments with their own constraints | Installation files and engine profiles are dependencies, not decorative IDs. Geometry/torque/fuel/heat/mass changes need one coherent adapter; never obtain a 4T curve by scaling the 2T curve |
 | Turbine | Offer thrust and spool settings through an explicit synthetic or supported engine package, keeping RPM map, installed thrust, mass flow, intake/ram terms and rotor properties consistent | Do not rename thrust as shaft watts, silently add finite fuel or enable retracts. Existing airborne-only capability remains |
+
+For the V1 linked virtual resize, first propose `n_max'=n_max sqrt(r_m)/s²` and scale idle by the same factor, retaining the base idle/max ratio. A subsequent power-only multiplier `p` proposes a maximum-RPM factor `p^(1/3)` at the new diameter and retains that already resized idle; reject conflicting ranges. Retain base lag by default unless response is explicitly edited. Recompute achieved reference power/thrust, apply rotor/propeller/engine bounds, and call the actual trim solver. Preserve the exact original values through the no-op branch. The propeller is labeled virtual/borrowed, with no claim that an enlarged engine is an actual O.S. SKU.
 
 For finite-glow resizing, V2 first supports a resized airframe with **fixed qualified engine/prop hardware** and a refitted eligible inventory. Arbitrary scaled combustion hardware remains locked until its map/thermal/fuel/inertia transformation is qualified. For extreme fictional power, offer an explicitly named virtual powerplant conversion only as a separately validated future recipe; never change solver family invisibly.
 
@@ -284,14 +299,16 @@ validate recipe and resolve pinned dependencies
 → fit eligible inventory / target mass / CG
 → derive physical propulsion and control parameters
 → reconstruct datum-relative / CG-relative geometry
-→ validate and derive the full v2 model
-→ attach and validate effective wheel / glow / other dependencies
+→ validate and derive the full v2 model, including its glow installation if present
+→ attach and validate the effective wheel profile and remaining post-derive dependencies
 → check timestep and selected start with the real session path
 → prepare render and observer descriptors
 → publish a detached immutable candidate and diagnostics
 ```
 
 No step mutates a shared base dictionary or accepted flight. A failed later step returns no launchable candidate. Cached results are keyed by full recipe/base/dependency/compiler identities and test conditions; render-only changes do not invalidate physical estimates unnecessarily.
+
+Dependency resolution is an explicit implementation gate. Introduce a scoped loader input containing exact bytes for the effective aircraft and its declared dependencies; reuse existing pure semantic validators such as `GlowInstallation.prepare_value()`. The current function still reads a bundled profile, so installation **and** profile loading need coordinated input seams. Stock `load_file()` keeps its existing bundled behavior. A variant resolver may supply only manifest-declared bytes whose hashes match; it cannot globally replace resources, accept arbitrary filesystem paths or skip a failed attachment. Validate glow inside the existing aircraft derivation stage and wheels at their existing post-derive stage; do not attach a second glow module afterward.
 
 ### 8.1 Identity must not collapse into the base ID
 
@@ -303,6 +320,10 @@ Maintain distinct identifiers:
 - exact-byte hashes for base, recipe and materialized physical input, plus dependency hashes.
 - derived model/configuration fingerprint: the actual accepted solver inputs.
 - presentation fingerprint: scale, geometry adapter and cosmetics for captures.
+
+Separate the complete document hash from the physical-recipe hash. Rename, notes and paint can produce a saved revision without changing the effective physical bytes or model fingerprint. Trace metadata records the saved revision; checkpoint compatibility binds the variant ID, actual physical inputs/dependencies and solver configuration, rather than a cosmetic-only revision increment. The compiled v2 `id` is stable for that variant lineage; it does not embed its display name.
+
+Testing does not require overwriting the saved variant. Before an unsaved draft launches, freeze an immutable **trial snapshot** with a trial ID, exact recipe-byte hash, base/dependency hashes, compiler version and effective-input/configuration fingerprints. Trace metadata declares `draft_trial`, records the last saved parent revision only as ancestry, and identifies the snapshot actually flown. Restart, crash return and replay use that snapshot, never a mutable draft or the old saved revision. Retain the snapshot with its recording while the user edits or discards the working draft. Add the same provenance to diagnostics and captures.
 
 The current equality check among catalog selection, loaded model and visual ID is valuable. Replace it for variants with an equally strict **resolved descriptor**: expected effective-model ID plus explicitly allowed base visual adapter. Never pass an empty expected ID just to bypass the check, and never masquerade as the reference ID to obtain its wheel profile or runway permission.
 
@@ -360,6 +381,8 @@ The field remains in metres. Aircraft scaling does not change runway length, obs
 
 Create a render adapter that consumes the effective geometry and a base builder. A common scale wrapper is acceptable only after proving the correct datum/CG order. In general, transform a point as `p_world = pose + R (s p_base - cg_effective)` in consistent coordinates; the actual Godot builder offset must be included once. Scaling a node already offset by a base CG can scale the offset twice.
 
+Currently `main._render_pose()` overwrites the root transform through `Frames.root_transform()` every frame, and `Frames.cg_in_model_frame()` applies the builder datum. A one-time `root.scale` edit would be lost. Integrate the scale in a persistent geometry child or the explicit presentation transform, keep its scaled datum consistent, and verify the real flight path as well as the preview. Preserve the glow Stik adapters' existing diameter/spin behavior when mapping a custom variant ID to its visual base.
+
 Preserve `airplane`, `propeller` and every `*_hinge` name. Check witness vertices at neutral and both throw limits. A propeller package can have its own diameter independent of airframe scale; avoid multiplying its resize twice. Imported Timber pivots/rest transforms need the same care as the procedural builders.
 
 | Consumer | Required behavior |
@@ -403,6 +426,8 @@ A windless A/B trial uses the same field, atmosphere, initial energy state and c
 
 Recipes are transparent compiler inputs with a seed/version. They do not hide forces or add a separate arcade solver. Names suggest an experience; the metrics explain what actually changed.
 
+V1 ships Mini Stik, Super Stik, Heavy Giant and Featherweight only after their exact compiled recipes pass AE-10; they use the virtual legacy propeller/suspension policy and airborne starts. Cargo Trainer and Balance Classroom require AE-12, Gentle Sunday requires the supported control profile in AE-18, Battery Trade-off requires AE-15, and the engine comparison requires AE-16. Pocket Rocket, Same Weight Twice the Size and Sport/3D remain laboratory recipes until AE-20/22/23 characterize their valid envelope. No recipe name alone guarantees a speed, hover or endurance result.
+
 | Recipe | Initial intent | Observable comparison |
 | --- | --- | --- |
 | **Mini Stik 50** | 50% span, geometric mass proposal; compatible virtual legacy propeller/RPM | 0.762 m span, lower estimated lift speed, much lower inertia; small-scale aero caveat |
@@ -419,6 +444,8 @@ Recipes are transparent compiler inputs with a seed/version. They do not hide fo
 | **Two engines, one airframe** | Separate 2T and 4T installations on a common Stik ancestry | Different engine laws and hardware; match test conditions rather than force equal power |
 
 **Surprise me** comes after qualified bounds: choose a seed, lock the base and any protected settings, select gentle/sport/extreme intent, then generate at most a fixed number of candidates. Show the winning recipe before saving or flying. If none pass, return an explanation; do not relax the checks or search forever. **Change one thing** generates a small parameter sweep useful for learning which adjustment causes which effect.
+
+For a later **Slow flyer** or **Fast sport** label, AE-20 must report the actual supported trim-speed range and a bounded performance result before AE-22 publishes it. Publish the conditions and difference from the reference; an edited start speed or a higher power slider is insufficient. If maximum speed cannot be established within the supported domain, label the recipe by its physical changes (for example, "lighter, lower power") instead.
 
 ## 13. Proposed code boundaries
 
@@ -456,16 +483,16 @@ Every row is **pending**. Evidence columns define required proof, not completed 
 | AE-04 | Resolver and detached compiler skeleton with no-op variant; AE-02 | 100%/unchanged numeric model and fixed-command trajectory equal the base; separate variant metadata/identity; correct wheel profile preserved |
 | AE-05 | Uniform inventory mass adjustment and basic throw/servo edits; AE-04 | Mass/CG/full-tensor known answers; surface physics/visual agreement; invalid ranges block launch |
 | AE-06 | Legacy Stik virtual power adapter; AE-04 | Requested vs actual static power/thrust, RPM bounds, lag/idle behavior, torque consistency and low-power trim refusal |
-| AE-07 | Uniform scale compiler and linked policies; AE-05/06 | 0.5×/1×/2× geometric and constant-wing-loading known answers, ledger completeness, ground-profile transformations and 240 Hz preflight |
-| AE-08 | Stik preview/render/observer adapter; AE-07 | Neutral/hinge/prop/hull/contact alignment at three sizes, explicit comparison framing, shadow/blur/anchor proof and crash presentation gate |
-| AE-09 | Dedicated Workshop library, draft screen, six quick controls, undo/redo and EN/ES; AE-03/08 | 720p/1080p capture and keyboard journey, no clipped footer, stale validation ignored, controls cannot reach flight while editing |
-| AE-10 | Transactional variant launch, pause return, restart, F5 resolver and trace identity; AE-04/09 | Failure retains old flight/recording, success starts one new identity, save/test/relaunch works; **V1 release gate** |
+| AE-07 | Uniform airframe scale, virtual propeller/suspension and plausibility policies; AE-05/06 | All six exposed size presets under geometric and constant-wing-loading mass; rotor scalar/carrier checks, wheel effective-mass/relaxation, real loader and 240 Hz session acceptance; formula-only proof is insufficient |
+| AE-08 | Stik preview/render/observer adapter; AE-07 | Neutral/hinge/prop/hull/contact alignment at every exposed preset, explicit comparison framing, shadow/blur/anchor proof and crash presentation gate |
+| AE-09 | Dedicated Workshop library, draft screen, Home/Pause entry routes, five quick adjustment groups, CG display, undo/redo and EN/ES; AE-03/08 | 720p/1080p capture and keyboard journey, no clipped footer, stale validation ignored, controls cannot reach flight while editing |
+| AE-10 | Transactional variant launch, explicit trial pause/crash Return-to-Workshop routes, restart, F5 resolver and saved/draft trace identity; AE-04/09 | Failure retains old flight/recording; unsaved-edit → test → crash/restart/replay attributes the frozen trial; save/test/relaunch and all advertised airborne recipes work; **V1 release gate** |
 | AE-11 | Effective-model runway qualification for Stik variants; AE-10 | Static equilibrium/clearance, mini contact and giant field-fit cases; unsupported starts are disabled with a reason |
 | AE-12 | Component keys, ballast/mount constraints and target CG/mass fit; AE-05/10 | Independent first-moment/tensor oracles, impossible target/negative ballast rejection, fixed hub stays fixed after CG movement |
 | AE-13 | Match-my-airplane wizard and diagnostic comparison; AE-12 | A measured-mass/CG example round-trips with provenance; unknown data stays estimated; MAC/reference-chord distinction |
 | AE-14 | Extra adapter plus shaft/wake P-51 adapter; AE-01/12 | Separate no-op parity, scaled datum/tail/wake/load checks, topology and taildragger behavior; no blanket base-ID fallback |
 | AE-15 | Electric Timber packages and imported-geometry scaling; AE-01/12 | Motor/prop equilibrium, pack mass/energy/SOC, stiffness refusal, reset/replay, GLB hinge and prop-diameter checks |
-| AE-16 | Independent glow 2T and 4T installation adapters; AE-01/12 | Installation/profile/fuel-item integrity, wet-to-dry mass/CG/inertia, work/fuel accounting, thermal/reset/replay and explicit unsupported scaled-hardware cases |
+| AE-16 | Scoped installation/profile byte loading and independent glow 2T and 4T adapters; AE-01/12 | Installation/profile/fuel-item integrity, pinned dependency resolution, wet-to-dry mass/CG/inertia, work/fuel accounting, thermal/reset/replay and explicit unsupported scaled-hardware cases |
 | AE-17 | Turbine mass/control/thrust/scale adapter; AE-01/12 | Spool/ram/intake/gyro consistency, timestep checks, trace identity, airborne-only enforcement |
 | AE-18 | Full per-family controls, gear and compatible propeller package pages; AE-14…17 per family | Physical/render travel parity, no double radio shaping, wheel/profile/brake/prop package compatibility and rollback |
 | AE-19 | Data-only export/import, migration review and standalone variant CLI; AE-03/14…17 | Fresh-install round-trip, missing/newer/corrupt dependencies, path escape refusal, pinned originals preserved; **V2 gate** |
@@ -485,7 +512,7 @@ Use the repository's [canonical commands](../TOOLS.md), including `app/test.sh` 
 
 | Axis | Mandatory cases |
 | --- | --- |
-| Scale/policy | 0.5, 1.0, 2.0 × same-wing-loading, geometric and explicit mass; 0.25/4.0 later; rejected zero/negative/extreme/nonfinite inputs |
+| Scale/policy | Every exposed V1 button: 0.5, 0.75, 1.0, 1.25, 1.5, 2.0 × same-wing-loading, geometric and explicit mass fixtures; an offline 0.05-increment sweep plus coupled boundary cases; 0.25/4.0 later; rejected zero/negative/extreme/nonfinite inputs |
 | Mass/CG | Lighter/heavier, asymmetric component, forward/aft, unchanged CG, point mass vs finite box, all six inertia entries |
 | Power | Low/nominal/high, idle/max conflict, insufficient trim, unsupported prop table range, family-specific stiffness and energy cases |
 | Identity | Same name/different recipe; tiny numeric difference; changed base, wheel profile or glow file; renamed-only variant; stale cache; wrong visual family |
@@ -498,6 +525,7 @@ Proof requirements:
 
 - No-op reference numerical arrays and fixed-input trajectories remain identical; metadata may differ only in the declared variant namespace. Catalog source hashes and generated-output checks stay unchanged.
 - Independent analytic fixtures verify the scaling exponents, first moments, tensor products and suspension proposals; tests must not merely call the same helper twice.
+- Every continuous-slider value still undergoes exact candidate preflight. Preset/grid coverage is regression evidence, not proof that every mass/power/scale combination inside a rectangular UI range is valid. Assert the known mini heave failure under geometric suspension and its changed sag/timing under the selected virtual policy.
 - Invalid candidates cannot modify live model/state, selected aircraft, input-arming state, recordings, RNG, scenery damage or accepted presentation.
 - Replay checks cover the full state of each supported energy/propulsion family, not just aircraft pose. A different compiled identity rejects restoration.
 - Contact/spawn proof uses the actual session and selected field, including obstacles. An in-memory loader-only check cannot establish that wheel profiles reached the flight.
@@ -509,7 +537,7 @@ Proof requirements:
 ### 14.2 User acceptance journeys
 
 1. From Home, create **Super Stik 200**, choose same wing loading, increase virtual power, inspect original-size overlay, save and fly. Relaunch the app and find the same variant.
-2. Create **Mini Stik 50**, observe the smaller body/prop/hull and appropriate start; compare against the reference without an invisible camera-size normalization.
+2. Create **Mini Stik 50**, inspect the declared virtual propeller/suspension changes and smaller body/prop/hull, then use the qualified **airborne start**; compare against the reference without an invisible camera-size normalization. Runway operation requires AE-11.
 3. Enter actual mass and CG for a personal build; inspect which components changed and which parameters remain estimated.
 4. From a trial, pause, edit mass, fail a deliberately impossible CG target, retain the previous flight, fix the draft and launch successfully.
 5. Switch among legacy, electric, finite-glow and turbine variants; only supported options appear, finite energy resets/replays correctly, and no family silently becomes another solver.

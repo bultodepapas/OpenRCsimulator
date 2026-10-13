@@ -392,6 +392,18 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
+	# The accepted scene definition also owns the float64 contact surface. Never fly a refused lake.
+	var lake_context: Dictionary = _field_node.get_meta("lake_context", {}) if _field_node != null else {}
+	var lake_error: String = str(_field_node.get_meta("lake_error", "")) if _field_node != null else ""
+	if not lake_error.is_empty() or not session.set_lake_context(lake_context):
+		startup_error = "Lake configuration refused: " + lake_error
+		printerr(startup_error)
+		session.free()
+		session = null
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_DATA)
+		return
 	if not _scripted and _capture_scene_id() == "field":
 		var obstacles := SceneryCollisionSetup.build(field)
 		if not obstacles.ok or not session.set_collision_world(obstacles.world):
@@ -1001,6 +1013,8 @@ func _field_identity() -> String:
 	var hashing: HashingContext = HashingContext.new()
 	hashing.start(HashingContext.HASH_SHA256)
 	hashing.update(var_to_bytes(field))
+	if _field_node != null and _field_node.has_meta("lake_identity"):
+		hashing.update(str(_field_node.get_meta("lake_identity")).to_utf8_buffer())
 	return hashing.finish().hex_encode()
 
 

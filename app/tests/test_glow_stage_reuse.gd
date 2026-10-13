@@ -6,6 +6,8 @@ const Blade := preload("res://physics/glow/propeller.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const M := preload("res://physics/math3d.gd")
+const Session := preload("res://sim/flight_session.gd")
+const Flight := preload("res://physics/glow/flight.gd")
 var checks := 0
 var failures := 0
 
@@ -34,8 +36,32 @@ func _initialize() -> void:
 			var reference: PackedFloat64Array = Dynamics.loads_from_air(body, model, d, rpm, rho, air)
 			var combined: PackedFloat64Array = Dynamics.loads_from_air(body, model, d, rpm, rho, air, NAN, PackedFloat64Array(), NAN, reused)
 			_check(combined.to_byte_array() == reference.to_byte_array(), name + " total stage " + str(sample))
-	print("Glow stage reuse: %d byte-exact comparisons, %d failed" % [checks, failures])
+	_test_evaluator_identity()
+	print("Glow stage reuse: %d comparisons, %d failed (2000 byte-exact load checks)" % [checks, failures])
 	quit(1 if failures else 0)
+
+func _test_evaluator_identity() -> void:
+	var two := Session.new()
+	var four := Session.new()
+	two.setup("res://data/aircraft/stik_glow_55ax_2t.json")
+	four.setup("res://data/aircraft/stik_glow_fs64v_4t.json")
+	_check(two.is_flyable() and four.is_flyable(), "prepared session fixtures initialize")
+	if two.is_flyable() and four.is_flyable():
+		for owner: Node in [two, four]:
+			var expected: Dictionary = Flight.point(owner, owner.sim.state, owner.sim.continuous, 0.)
+			_check(expected.ok, "initialized prepared stage succeeds")
+			var alternate: Node = four if owner == two else two
+			var evaluator: Variant = owner.get_meta(Flight.EVALUATOR_META)
+			var identity: Variant = owner.get_meta(Flight.EVALUATOR_IDENTITY_META)
+			# Simulate a failed reload leaving an evaluator from another installation.
+			owner.set_meta(Flight.EVALUATOR_META, alternate.get_meta(Flight.EVALUATOR_META))
+			owner.set_meta(Flight.EVALUATOR_IDENTITY_META, alternate.get_meta(Flight.EVALUATOR_IDENTITY_META))
+			var fallback: Dictionary = Flight.point(owner, owner.sim.state, owner.sim.continuous, 0.)
+			_check(fallback == expected, "stale prepared installation falls back to correct validated source")
+			owner.set_meta(Flight.EVALUATOR_META, evaluator)
+			owner.set_meta(Flight.EVALUATOR_IDENTITY_META, identity)
+	two.free()
+	four.free()
 
 func _check(condition: bool, label: String) -> void:
 	checks += 1

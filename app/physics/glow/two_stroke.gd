@@ -44,8 +44,6 @@ static func _evaluate_impl(
 		firing_fraction: float,
 		prevalidated: bool
 	) -> Dictionary:
-	var result := _empty_result("")
-
 	if not is_finite(rpm) or rpm < 0.0:
 		return _empty_result("rpm must be finite and nonnegative")
 	if not is_finite(admission) or admission < 0.0 or admission > 1.0:
@@ -161,7 +159,8 @@ static func _calculate_validated(
 		running: bool,
 		firing_fraction: float
 	) -> Dictionary:
-	var result := _empty_result("")	var cycle_frequency_hz: float = rpm / 60.0
+	var result := _empty_result("")
+	var cycle_frequency_hz: float = rpm / 60.0
 	var opportunity_frequency_hz: float = cycle_frequency_hz
 	var omega_rad_s: float = 2.0 * PI * rpm / 60.0
 	var delivery_ratio: float = _sample(delivery_table, rpm)
