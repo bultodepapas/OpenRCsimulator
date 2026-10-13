@@ -2,6 +2,7 @@
 """Reproducibly check the livery SVG source, import, and stale-source guard."""
 
 import argparse
+import json
 import re
 import shutil
 import subprocess
@@ -123,7 +124,8 @@ def run_checks(root, log, godot_override=None):
             project,
             timeout=60,
         )
-        if "SVG editor/runtime raster match: true size=(1024, 1024)" not in output_text(comparison):
+        size = json.loads((root / "assets/aircraft/ugly-stik-60/appearance.json").read_text())["atlas_size_px"]
+        if "SVG editor/runtime raster match: true size=({0}, {0})".format(size) not in output_text(comparison):
             raise CheckFailure("SVG editor/runtime byte comparison did not report a match")
 
     # Recreate only the compiler's input/output topology in a disposable copy.
