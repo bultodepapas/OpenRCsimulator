@@ -1,6 +1,6 @@
 # Downloaded vegetation and nearby lake — implementation plan
 
-Date: 2026-10-13. **Status: planning only; implementation paused at the owner's request.** Owner: landscape integration lead. Steps: **LU-22–27**, continuing the [landscape track](../../LANDSCAPE_UPGRADE_PLAN.md). This revision supersedes this document's previous procedural-vegetation direction.
+Date: 2026-10-13. **Status: planning only; implementation paused at the owner's request.** Owner: landscape integration lead. Steps: **LU-22–27**, continuing the [landscape track](landscape-upgrade.md). This revision supersedes this document's previous procedural-vegetation direction.
 
 ## Owner's requirement and delivery order
 

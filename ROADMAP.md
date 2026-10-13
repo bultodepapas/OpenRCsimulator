@@ -19,7 +19,7 @@ Follow [AGENTS](AGENTS.md) and [CONTRIBUTING](CONTRIBUTING.md): one small workin
 - **Timber:** [integration plan](docs/TIMBER-INTEGRATION-PLAN.md); playable experimental electric aircraft with its own generated v2 data, airborne/runway starts and electric audio. [TT-07–12 baseline evidence](docs/research/timber-integration/TT-10/README.md) records software checks; flaps-up, prescribed-bus and physical-validation limits remain explicit.
 - **Product shell:** [implemented menus](docs/MENU-PLAN.md); UI-20/21 refactor delivered, UI-22…29 [redesign](docs/MENU-REDESIGN-PLAN.md) remains proposed.
 - **Field/readability:** [landscape step registry](docs/LANDSCAPE-PLAN.md) and [visual guide](docs/VISUAL-QUALITY-PLAN.md); Gate L needs pilot/target-display evidence.
-- **Landscape integration:** [active LU plan](LANDSCAPE_UPGRADE_PLAN.md) preserves the continuing LU-07…10 work and its separate cost/acceptance gates.
+- **Landscape integration:** [active LU plan](docs/plans/landscape-upgrade.md) preserves the continuing LU-07…10 work and its separate cost/acceptance gates.
 - **World/time:** [world guide](docs/FIELD-WORLD-PLAN.md) and [lighting/history guide](docs/TIME-OF-DAY-PLAN.md); selectable night and passing evening exist, with further lifecycle and owner acceptance open.
 - **Scenery:** [default-on field life](docs/SCENERY-PLAN.md), with static collision proxies; Gate SC readability/performance acceptance remains open.
 - **Audio:** [AUD-01…05 soundscape guide](docs/AUDIO-PLAN.md); acoustic calibration and target-platform timing remain separate limits.

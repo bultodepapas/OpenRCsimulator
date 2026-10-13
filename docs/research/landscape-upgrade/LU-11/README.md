@@ -1,6 +1,6 @@
 # LU-11–14 — materials, architecture and collision coverage
 
-Status: implemented, reviewed and validated, 2026-10-12. Nearby collision-query cost, low-end hardware and human flight acceptance remain open. Target: Godot **4.7.2.stable.official.ed1daf0bf**, **Compatibility / OpenGL 3.3**, Windows, NVIDIA RTX 3090 / driver 610.88. Baseline: `8b2020f`. [Owning plan](../../../../LANDSCAPE_UPGRADE_PLAN.md).
+Status: implemented, reviewed and validated, 2026-10-12. Nearby collision-query cost, low-end hardware and human flight acceptance remain open. Target: Godot **4.7.2.stable.official.ed1daf0bf**, **Compatibility / OpenGL 3.3**, Windows, NVIDIA RTX 3090 / driver 610.88. Baseline: `8b2020f`. [Owning plan](../../../plans/landscape-upgrade.md).
 
 The plan and ownership boundaries preceded application edits. Three Luna max agents reviewed resources, architecture and collision coverage; the lead reviewed their contributions, corrected the initial missing tree-card frame scale, integrated the changes and ran native verification. Concurrent aircraft, UI and other developers' changes were preserved. Source hashes identify this delivery independently of concurrent commits.
 

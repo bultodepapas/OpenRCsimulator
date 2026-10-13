@@ -1,6 +1,6 @@
 # LU-15 — image review and next upgrade selection
 
-Status: review complete; next implementation steps selected, 2026-10-12. Owner: environment integration lead. [Owning plan](../../../../LANDSCAPE_UPGRADE_PLAN.md). This pass changes documentation only.
+Status: review complete; next implementation steps selected, 2026-10-12. Owner: environment integration lead. [Owning plan](../../../plans/landscape-upgrade.md). This pass changes documentation only.
 
 ## Decision
 

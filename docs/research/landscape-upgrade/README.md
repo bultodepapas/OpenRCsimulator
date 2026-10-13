@@ -2,7 +2,7 @@
 
 Status: implementation and native evidence delivered through **LU-21**, updated 2026-10-12. Latest: real replacement cars and people plus horizon, vegetation, ground and lighting refinements. Known Linux extreme-density trim discrepancy and nearby collision cost remain open. Owner: environment integration lead.
 
-The requested [implementation plan](../../../LANDSCAPE_UPGRADE_PLAN.md) was written before application edits. The installed target is Godot **4.7.2**, Compatibility/OpenGL.
+The requested [implementation plan](../../plans/landscape-upgrade.md) was written before application edits. The installed target is Godot **4.7.2**, Compatibility/OpenGL.
 
 | Step | Evidence |
 | --- | --- |
