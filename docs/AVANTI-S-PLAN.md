@@ -8,6 +8,8 @@ Research: [family and choice](research/avanti-s-family-research.md) · [resource
 
 ## 1. Identity and scope
 
+The simulator displays this aircraft as **Ventage Jet**. Its catalog ID and source-aircraft provenance remain unchanged.
+
 **SebArt Avanti S Jet 2.2m ARF (A200 original): 2.00 m span, 2.22 m length, 10.5 kg RTF dry with a JetCat P100-RX** (2017 catalog, non-BL, fixed thrust tube). Catalog ID `sebart-avanti-s-a200-p100rx`. Chosen for its documentation and turbine identity, not for sales rank. Other variants (XS, Mini, FC/Krill 2.1 m, current "2.3 m", Freewing EDF) are never mixed into its numbers. The P100-RX-BL is a different documented revision; do not mix its RPM or response data into the 2017 configuration. The 10.5 kg value is dry, not the in-flight mass with fuel. Sources: [manual](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf), [JetCat 2017 catalog](https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf).
 
 Flight configuration (AV-07): in-air start at 29 m/s, turbine running, flaps up, gear up, half of the 3.2 l stock tank, CG 240 mm (the manual's beginner setting for a P100). Ground contact is a crash until AV-09. The [asset README](../assets/aircraft/avanti-s-a200/README.md) documents the generated geometry, seven hinge names, visual-only flap hook and build contract. The pilot camera, radio arming, pause, reset and recording rules are those of every aircraft.

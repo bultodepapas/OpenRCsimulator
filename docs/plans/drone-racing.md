@@ -20,7 +20,7 @@
 | Main line | `app/sim/simulation.gd`, `app/sim/flight_session.gd`, `app/sim/trace.gd`, `app/main.gd`, `app/tests/replay_policy.gd`, golden flights, `app/input/` |
 | Ground track | `app/physics/ground_contact.gd`, `app/physics/ground_start.gd` |
 | Electric propulsion (EL) | `app/physics/electric_motor.gd`, `electric_supply.gd`, `electric_battery_step.gd`, `electric_stop.gd` (reused; an ESC kind is added with the EL owner) |
-| Helicopter track (proposed) | `app/physics/rotorcraft/inflow.gd` (shared inflow kernel, §4.3), skid/leg contact mode, rotor-disc clearance ring |
+| Helicopter track (proposed) | Owns the first shared inflow kernel at `app/physics/rotorcraft/inflow.gd` (HELI-04); multirotor consumes it after its interface and reference tests are stable. Skid/leg contact and rotor-disc clearance remain separately coordinated seams. |
 | Catalog / menu track | `app/app_state/aircraft_catalog.gd`, `app/ui/`, `app/app_state/preferences.gd`, `app/i18n/es.po` |
 | Camera-views track | `app/render/pilot_camera.gd` today; `app/render/camera/` after CAM-02; FPV mount capability (CAM-13) |
 | Flight-overlays track | `app/render/overlays/` (an OSD overlay is added there) |
@@ -62,7 +62,7 @@ What makes it tractable now:
 - The electric propulsion kernels (three-constant motor, OCV/resistance pack with SOC, stop and exhaustion events) exist and are replayable ([electric plan](../ELECTRIC-PROPULSION-PLAN.md)).
 - The scenery collision world already sweeps the hull against boxes and capsules with response classes ([LU-05](../research/landscape-upgrade/LU-05/collision-report.md)), which is what gates need.
 - The camera plan already designs the onboard/FPV view, mounts and lens warp (CAM-11…13) and its rig (CAM-02) is in the tree; the overlays plan has the layer an OSD goes in.
-- A quad has no flapping, swashplate, governor or tail rotor: it is the simplest rotorcraft and the cheapest way to land the seams the helicopter will reuse (D13).
+- A quad has no flapping, swashplate, governor or tail rotor, so it can later exercise the shared rotorcraft kernel with a simpler airframe. The helicopter track lands that kernel first (D13); this plan remains a proposed third vehicle class.
 
 ## 2. What exists today (2026-10-13)
 
@@ -77,7 +77,7 @@ Line references are recorded in [DR-01 §13](../research/drone-racing/DR-01/READ
 | F5 | **Force assembly is single-rotor.** `Dynamics._components_from_air` sums `Aero.loads` (wing and tails required) plus one `Propulsion.loads` at one offset and axis; `rotor_momentum` is one vector. `RotorCoupling.response` solves one axis and one inertia. | [dynamics.gd:18-97](../../app/physics/dynamics.gd#L18), [propulsion.gd:519-538](../../app/physics/propulsion.gd#L519), [rotor_coupling.gd:13](../../app/physics/rotor_coupling.gd#L13) | One multirotor evaluate callback beside the airplane paths; N parallel rotors in the coupling. |
 | F6 | **The electric motor is one-quadrant.** `I = max(0, (d·V − E)/Rm)`, no regeneration or braking; the ESC is `ideal_motoring` with identity mapping; the pack closed form solves **one** motor. | [electric_motor.gd:27-50](../../app/physics/electric_motor.gd#L27), [electric_supply.gd:88-93](../../app/physics/electric_supply.gd#L88) | Add a `synchronous` ESC kind (bidirectional current) and a shared-bus solve for N motors (DR-05, D8). |
 | F7 | **The explicit-step envelope is `dt·kt²/(Rm·J·carrier) ≤ 0.25`.** A 2306 2450 KV motor with a 5-inch tri-blade sits at 0.10–0.26 depending on `Rm` and `J` (7 × 10⁻⁶–1 × 10⁻⁵ kg·m², estimated) ([DR-01 derived checks](../research/drone-racing/DR-01/README.md#derived-checks)). | [flight_session.gd:16,79-99](../../app/sim/flight_session.gd#L79) | Measure the real `J` and `Rm`; qualify the ratio per configuration with refinement evidence before relaxing it (DR-09). |
-| F8 | **The propeller law clamps reverse flow.** `coefficient()` returns the static value for `J ≤ 0`; there is no descent-through-wake, vortex-ring or in-plane force for electric props; `thrust_angles` are limited to ±10°, so a rotor axis along −z is impossible. | [propulsion.gd:30-46](../../app/physics/propulsion.gd#L30), [aircraft_data.gd:835,905](../../app/physics/aircraft_data.gd#L835) | A per-rotor blade-element + momentum law with VRS and windmill branches (DR-04); the airplane propeller stays as the static-point oracle. |
+| F8 | **The propeller law clamps reverse flow.** `coefficient()` returns the static value for `J ≤ 0`; there is no descent-through-wake, vortex-ring or in-plane force for electric props; `thrust_angles` are limited to ±10°, so a rotor axis along −z is impossible. | [propulsion.gd:30-46](../../app/physics/propulsion.gd#L30), [aircraft_data.gd:835,905](../../app/physics/aircraft_data.gd#L835) | DR-04 adds prop-specific blade and hub loads, using HELI-04's shared signed inflow and ground-effect kernel; the airplane propeller stays as the static-point oracle. |
 | F9 | **The loader is airplane-only.** v2 requires a wing of 0.3–4 m, 32 stable-airplane derivatives, tails, `start.level_speed` 5–60 m/s and control throws. | [aircraft_data.gd:181-241](../../app/physics/aircraft_data.gd#L181), [aircraft_data.gd:1276](../../app/physics/aircraft_data.gd#L1276), [aircraft_contract.gd:139](../../app/physics/aircraft_contract.gd#L139) | A separate multirotor derive path reusing the quantity, inventory, inertia and identity kernels (D5). |
 | F10 | **Trim is forward flight only**; hover is explicitly refused; session preparation refuses flight if trim fails; runway starts are limited to a qualified list (Stik and Timber since TT-11). | [trim.gd:60-63](../../app/physics/trim.gd#L60), [test_trim_integrity.gd:53](../../app/tests/test_trim_integrity.gd#L53), [flight_session.gd:236-241](../../app/sim/flight_session.gd#L236), [flight_session.gd:584-611](../../app/sim/flight_session.gd#L584) | A hover equilibrium (analytic) and a pad start on legs (DR-18). |
 | F11 | **Contacts use a rolling-tyre law with anchors**; without a gear module every hull touch is terminal. | [ground_contact.gd:73,179](../../app/physics/ground_contact.gd#L73), [flight_session.gd:958](../../app/sim/flight_session.gd#L958) | Four leg contacts with the isotropic friction mode the helicopter also needs (DR-19). |
@@ -115,7 +115,7 @@ Derived values for a typical 650 g, 5.1-inch tri-blade, 4S **race build** are li
 - hover current ≈ 3.5 A per motor; full throttle ≈ 24 A per motor, ≈ 95 A on the pack, ≈ 1.1 V sag at 12 mΩ
 - motor electromechanical time constant 16–28 ms; inflow time constant ≈ 2 ms
 - 0.7–2.1 rotor revolutions per 240 Hz tick; 2.7–8.3 revolutions per 60 fps frame
-- VRS descent window ≈ 3–10 m/s at low forward speed
+- Johnson-model predicted VRS window ≈ 3–10 m/s at low forward speed for the estimated race build; this is an extrapolation to 5-inch props, not validated small-prop data
 - frame drag ≈ 2.2 g at 44 m/s for a 0.012 m² drag area
 
 ## 4. Physics architecture
@@ -124,14 +124,14 @@ Derived values for a typical 650 g, 5.1-inch tri-blade, 4S **race build** are li
 
 The model is the standard quadrotor rigid-body model of the control literature, grown toward the blade-element detail that racing speeds need ([DR-01 §1–2](../research/drone-racing/DR-01/README.md)):
 
-- (a) **per-rotor blade-element + momentum thrust and torque** with quasi-static Glauert inflow, Johnson VRS/windmill branches and Cheeseman–Bennett ground effect
+- (a) **per-rotor blade-element thrust and torque** using the shared `rotorcraft/inflow.gd` momentum branches, Johnson VRS/windmill model, signed inflow derivative and ground-effect response (HELI-04); prop-specific blade loads stay in DR-04
 - (b) **per-rotor in-plane H-force and hub moment** from the advancing/retreating blade asymmetry, which is what makes a quad pitch up and slow down when the sticks are released at speed
 - (c) **four coupled motor-speed states** on one pack, with regenerative braking and an idle floor
 - (d) **a discrete flight controller** at the tick rate, with the pilot's rates imported one to one
 
 Accepted and rejected:
 
-- **Accepted:** all states are non-stiff at 240 Hz RK4. Motor dt/τ = 0.15–0.26 (§2 F7). Inflow is **quasi-static** because its time constant (≈ 2 ms at hover, 0.849/(4λΩ)) is below the tick; it is solved by a fixed five-pass iteration like the helicopter's tail rotor, not carried as a state. Body–controller coupled modes are far below Nyquist (120 Hz).
+- **Accepted:** the shared kernel is the source of truth for the rotorcraft inflow branches. Motor dt/τ = 0.15–0.26 (§2 F7). The estimated hover inflow time constant is ≈ 2 ms, so its treatment at a 4.17 ms tick needs an accuracy check: DR-03/04/09 compare the shared derivative with an algebraic steady solution under timestep refinement before choosing whether λ is integrated or treated quasi-statically. A time constant below one tick alone does not justify dropping the state. Body–controller coupled modes are far below Nyquist (120 Hz).
 - **Rejected: per-blade azimuth marching.** The rotor turns 250–750° per tick. Nothing in the body response needs blade azimuth.
 - **Rejected for now: full BEMT tables from measured prop geometry.** They are the right upgrade when a measured chord/pitch distribution and Re ≈ 10⁵ polars exist; the closed form is calibrated at the static point from measured bench data instead (DR-02/DR-04), and the table generator is a deferred step behind a capability.
 - **Deferred, behind capabilities:** rotor-to-rotor wake interaction; aerodynamic interaction with the frame (NeuroBEM shows it is the main residual at > 15 m/s); prop flex and stall at high rpm; motor thermal derating (EL4); turtle mode (bidirectional rotation).

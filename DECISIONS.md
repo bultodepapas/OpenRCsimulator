@@ -4,6 +4,7 @@ A small record of what we choose and why. The two guiding principles remain esta
 
 | Date | Decision | Reasoning | Status | Revisit when |
 | --- | --- | --- | --- | --- |
+| 2026-10-13 | **Start the helicopter track and shared drone foundations**, keeping airplane runtime paths unchanged. Begin with the MIT X-Cell configuration as the reference direction, independent inflow evidence and pure kernels before session integration. Register HELI/DR ownership; implement shared inflow under HELI first. | Owner requested helicopter implementation and useful advances for both vehicles. The helicopter plan supplies a published reference; the drone can reuse the inflow law without a second implementation. | Chosen (owner: "Procede con la implementcion del plan del helicoptero y revisa el plan del drone") | Published-source checks or kernel cost contradict the model. Visual assets, default pad/trainer choices and racing product defaults remain open. |
 | 2026-10-05 | Build an RC airplane simulator. | This is the project's purpose. | Established principle | — |
 | 2026-10-05 | Start with something very simple that works and shows a little airplane, then grow gradually. | Small working steps let us learn and shape the project through experience. | Established principle | — |
 | 2026-10-05 | Use an Ultra Stick / Ugly Stick-style .60 nitro airplane as the first model. | The project owner prefers this aircraft family and propulsion direction as a concrete starting point. Begin with a simple representation and refine it gradually. | Chosen direction | — |
