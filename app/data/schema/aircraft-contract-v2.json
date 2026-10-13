@@ -373,6 +373,7 @@
       "allowed": [
         "wing_aileron_effectiveness",
         "wing_station_incidence",
+        "wing_section_cm_ac",
         "attached_limit",
         "tail_local_limit",
         "tail_stall_end",

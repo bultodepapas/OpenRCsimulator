@@ -1498,6 +1498,12 @@
           "unit": "rad",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: (stab incidence - eps0) / (1 - deps/dalpha)"
+        },
+        "downwash_gradient": {
+          "value": 0.439098,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/p51/p51-05/derive_physics.py: d(eps)/d(alpha) at the tail: elliptic-wing estimate 2 CLa_w / (pi AR), the same value folded into lift_slope, control_effectiveness and incidence"
         }
       },
       "vertical": {

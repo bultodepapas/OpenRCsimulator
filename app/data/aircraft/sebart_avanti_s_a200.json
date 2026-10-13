@@ -1673,6 +1673,12 @@
           "unit": "rad",
           "kind": "derived",
           "source": "research/avanti-s/av06/derive_physics.py: (stab incidence - eps0) / (1 - deps/dalpha)"
+        },
+        "downwash_gradient": {
+          "value": 0.508799,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/avanti-s/av06/derive_physics.py: d(eps)/d(alpha) at the tail: DATCOM 4.44 [K_A K_lambda K_H sqrt(cos sweep)]^1.19, the same value folded into lift_slope, control_effectiveness and incidence"
         }
       },
       "vertical": {

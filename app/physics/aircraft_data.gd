@@ -626,6 +626,7 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 	# (α + strip_alpha_zero)·(1 − strip_row_sum[i]). Derived bookkeeping, not additional aircraft data.
 	envelope.strip_alpha_zero = alpha_s
 	envelope.strip_row_sum = row_sums
+	envelope.station_chords = chord # D11j: the strips' local chords (station order) for the section pitching moment
 	if horizontal.has("downwash_gradient"):
 		# E0a2: free tail law. Static tail lift is unchanged: free_slope·((1 − dε/dα)·α − k_ε·CL_w0 + i_free) equals
 		# lift_slope·(α + incidence), with CL_w = CLα_w·α + CL_w0 the local wing (D11d) and k_ε = (dε/dα)/CLα_w. The
@@ -1582,6 +1583,13 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 			for k in n:
 				per_station.append(inc[k])
 			out.station_incidence = per_station
+	# Optional (D11j): the wing section's pitching moment about its aerodynamic centre, a pure couple on every strip of
+	# the local wing (Aero._local_loads). The oracle's Cm0 carries the same camber moment, so with it the two regimes
+	# agree statically; absent = 0 = no couple (symmetric sections, or a Cm0 folded into the tail incidence).
+	if node.has("wing_section_cm_ac"):
+		var cm_ac = _q(errors, "aero.surfaces.wing_section_cm_ac", node.get("wing_section_cm_ac"), "1", -0.3, 0.1)
+		if cm_ac != null:
+			out.wing_cm_ac = float(cm_ac)
 	for name in ["horizontal", "vertical"]:
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name

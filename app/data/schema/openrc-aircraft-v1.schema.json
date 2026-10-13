@@ -1042,6 +1042,19 @@
                 }
               }
             },
+            "wing_section_cm_ac": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -0.3,
+                  "maximum": 0.1
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
             "horizontal": {
               "type": "object",
               "required": [

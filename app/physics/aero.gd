@@ -337,6 +337,10 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var strip_slope: float = env.get("strip_slope", cla)
 	var strip_cl0: PackedFloat64Array = env.get("strip_cl0", PackedFloat64Array())
 	var polar: Dictionary = env.get("wing_polar", {})
+	# D11j: the section's pitching moment about its aerodynamic centre as a pure couple per strip (q_i·S_i·c_i·Cm_ac);
+	# 0 (absent) adds no arithmetic, so aircraft without it stay byte-identical to the frozen oracle.
+	var cm_ac: float = surfaces.get("wing_cm_ac", 0.0)
+	var station_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array()) if cm_ac != 0.0 else PackedFloat64Array()
 	for i in stations:
 		var y: float = ys[i]
 		var arm_y: float = ay + y
@@ -400,6 +404,8 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		mx_sum += arm_y * fz - az * fy
 		my_sum += az * fx - ax * fz
 		mz_sum += ax * fy - arm_y * fx
+		if cm_ac != 0.0 and plane_speed > 1e-10:
+			my_sum += lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
 		if strip_diagnostics != null:
 			strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
 				alpha_effective_rad = (base - strip_cl0[i]) / strip_slope if coupled else effective,

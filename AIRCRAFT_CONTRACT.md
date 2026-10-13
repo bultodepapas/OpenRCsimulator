@@ -51,6 +51,7 @@ Explicit in every v2 file: start speed, planform, propulsion kind, capability se
 | `normal_force`, `pfactor_moment`, `slipstream` (combustion prop) | Corresponding force, moment or wake increment absent | Propulsion, slipstream, local aero |
 | `horizontal.downwash_gradient` | No dynamic downwash coupling | Loader/aero/session |
 | `wing_station_incidence` | Untwisted six-strip wing | Loader/local aero |
+| `aero.surfaces.wing_section_cm_ac` | No section pitching moment on the strips (symmetric sections, or a Cm0 the data folds into the tail incidence) | Loader → `Aero._local_loads` strip couple; the oracle's `Cm0` must carry the same camber moment |
 | `aero.wing_polar` | Existing analytic stall blend | WingPolar/local aero |
 | `aero.ground_effect` | No ground effect: loads independent of height above the field | GroundEffect → Aero strips/oracle and tail downwash; session terrain height |
 | Turbine `ram_flow`, `ram_jet` | No corresponding fitted ram correction | Turbine |

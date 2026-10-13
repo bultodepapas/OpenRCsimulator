@@ -713,6 +713,10 @@ data = {
                 "lift_slope": q(slope_h, "1/rad", "derived", D("Helmbold x eta x (1 - deps/dalpha), DATCOM downwash")),
                 "control_effectiveness": q(ce_h, "1", "derived", D("thin-airfoil tau x flap correction / (1 - deps/dalpha)")),
                 "incidence": q(inc_eff, "rad", "derived", D("(stab incidence - eps0) / (1 - deps/dalpha)")),
+                # E0a2c: the loader derives the free tail law from this (free slope CLa_h eta, physical elevator tau,
+                # downwash as the lagged wing lift); without it the local tail would use the downwashed slope for pitch
+                # rate and the inflated tau for its stall (docs/plans/elevator-flight-dynamics-repair.md).
+                "downwash_gradient": q(deps, "1", "derived", D("d(eps)/d(alpha) at the tail: DATCOM 4.44 [K_A K_lambda K_H sqrt(cos sweep)]^1.19, the same value folded into lift_slope, control_effectiveness and incidence")),
             },
             "vertical": {
                 "area": q(Sv, "m2", "derived", D("fin + rudder outline above the fuselage from " + GEO_SRC)),

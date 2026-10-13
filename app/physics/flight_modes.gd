@@ -61,16 +61,49 @@ static func analyze(model: Dictionary, V: float, g := 9.80665) -> Dictionary:
 	}
 	var lon := L.classify(L.eigenvalues(projected.longitudinal))
 	var lat := L.classify(L.eigenvalues(projected.lateral))
-	if lon.oscillatory.size() != 2 or lon.real.size() != (1 if lagged else 0) or lat.oscillatory.size() != 1 or lat.real.size() != 2:
+	if lat.oscillatory.size() != 1 or lat.real.size() != 2:
 		return { ok = false, message = "unexpected mode structure: longitudinal %s, lateral %s" % [lon, lat], trim = t,
 			full_jacobian = a, projected_jacobians = projected }
 	var hz := func(m: Dictionary) -> Dictionary: return { f_hz = m.wn / TAU, zeta = m.zeta }
+	var short_period: Dictionary
+	var phugoid: Dictionary
+	var lag_root := NAN
+	var overdamped := false
+	if lon.oscillatory.size() == 2 and lon.real.size() == (1 if lagged else 0):
+		short_period = hz.call(lon.oscillatory[0])
+		phugoid = hz.call(lon.oscillatory[1])
+		if lagged:
+			lag_root = lon.real[0]
+	elif lon.oscillatory.size() == 1 and lon.real.size() == (3 if lagged else 2):
+		# D8a-R2: an overdamped short period (two negative real roots). With the lag state its real root is the one
+		# nearest −V/l (test_modes.gd: 0.7–1.0× of it); the other two are the short period's, reported through the
+		# equivalent ω_n = √(λ₁λ₂) and ζ = −(λ₁ + λ₂)/(2ω_n) ≥ 1 so callers keep one shape.
+		var reals: Array = lon.real.duplicate()
+		if lagged:
+			var target: float = -V / float(model.surfaces.horizontal.downwash_lag_length)
+			var nearest := 0
+			for i in reals.size():
+				if absf(reals[i] - target) < absf(reals[nearest] - target):
+					nearest = i
+			lag_root = reals[nearest]
+			reals.remove_at(nearest)
+		if reals[0] >= 0.0 or reals[1] >= 0.0:
+			return { ok = false, message = "unexpected mode structure: longitudinal %s, lateral %s" % [lon, lat], trim = t,
+				full_jacobian = a, projected_jacobians = projected }
+		var wn: float = sqrt(reals[0] * reals[1])
+		short_period = { f_hz = wn / TAU, zeta = -(reals[0] + reals[1]) / (2.0 * wn), roots = reals }
+		phugoid = hz.call(lon.oscillatory[0])
+		overdamped = true
+	else:
+		return { ok = false, message = "unexpected mode structure: longitudinal %s, lateral %s" % [lon, lat], trim = t,
+			full_jacobian = a, projected_jacobians = projected }
 	return {
 		ok = true, message = "ok", trim = t,
 		full_jacobian = a,
 		projected_jacobians = projected,
 		projection_note = "4×4 modal estimates are diagonal-block projections; cross-axis couplings are omitted",
-		short_period = hz.call(lon.oscillatory[0]), phugoid = hz.call(lon.oscillatory[1]),
+		short_period = short_period, phugoid = phugoid,
+		short_period_overdamped = overdamped,
 		roll_tau = -1.0 / lat.real[0], dutch_roll = hz.call(lat.oscillatory[0]), spiral_tau = -1.0 / lat.real[1],
-		downwash_lag_root = lon.real[0] if lagged else NAN,
+		downwash_lag_root = lag_root,
 	}

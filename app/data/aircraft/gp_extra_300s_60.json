@@ -1149,6 +1149,12 @@
           "unit": "rad",
           "kind": "derived",
           "source": "research/extra-300/ex05/derive_physics.py: stab -0.5 deg / (1 - deps/dalpha)"
+        },
+        "downwash_gradient": {
+          "value": 0.473445,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/extra-300/ex05/derive_physics.py: d(eps)/d(alpha) at the tail: elliptic-wing estimate 2 CLa_w / (pi AR), the same value folded into lift_slope, control_effectiveness and incidence"
         }
       },
       "vertical": {
