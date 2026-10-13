@@ -7,6 +7,8 @@ const Prefabs := preload("res://scenery/prefabs.gd")
 const Models := preload("res://scenery/models.gd")
 const Palette := preload("res://scenery/palette.gd")
 const SupportSurfaces := preload("res://scenery/support_surfaces.gd")
+const FlightlineBarrier := preload("res://render/flightline_barrier.gd")
+const FenceParts := preload("res://scenery/fence_parts.gd")
 
 const FORMAT := "openrc-collision-world v1"
 const CELL_SIZE_M := 32.0
@@ -32,8 +34,10 @@ static func build(field: Dictionary, scenery: Dictionary, lights: Dictionary = {
 	var proxies: Array[Dictionary] = []
 	var support_surfaces := SupportSurfaces.build(scenery)
 	_add_field_trees(proxies, field)
+	_add_flightline_barrier(proxies, field)
 	_add_scenery(proxies, scenery, support_surfaces)
 	_add_lights(proxies, lights)
+	_assign_damage_profiles(proxies)
 	proxies.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.id) < str(b.id))
 	for proxy: Dictionary in proxies:
 		if not _proxy_is_valid(proxy):
@@ -46,7 +50,7 @@ static func build(field: Dictionary, scenery: Dictionary, lights: Dictionary = {
 	var identity_parts: Array = [FORMAT, CELL_SIZE_M]
 	for proxy: Dictionary in proxies:
 		identity_parts.append([
-			proxy.id, proxy.kind, proxy.part, proxy.shape, proxy.response_class,
+			proxy.id, proxy.kind, proxy.part, proxy.shape, proxy.response_class, proxy.damage_id, proxy.damage_profile,
 			proxy.north, proxy.east, proxy.down, proxy.radius, proxy.half_length,
 			proxy.half_x, proxy.half_down, proxy.half_z, proxy.sin_heading, proxy.cos_heading,
 			proxy.bounds_north_min, proxy.bounds_north_max, proxy.bounds_east_min, proxy.bounds_east_max,
@@ -134,6 +138,7 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 			_add_line_obstacles(proxies, group)
 			continue
 		for index: int in group.get("placements", []).size():
+			var first_proxy := proxies.size()
 			var placement: Dictionary = group.placements[index]
 			var prefab := str(placement.get("prefab", group.get("prefab", "")))
 			var north := float(placement.get("north", NAN))
@@ -188,6 +193,50 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 			elif prefab == "pylon":
 				_add_pylon(proxies, group_id, index, north, east, heading)
 
+			for proxy_index: int in range(first_proxy, proxies.size()):
+				proxies[proxy_index]["damage_id"] = "prop:%s:%02d" % [group_id, int(placement.get("source_index", index))]
+				if prefab == "shade_tree":
+					proxies[proxy_index].damage_id += ":" + str(proxies[proxy_index].part)
+
+
+## Gameplay material profiles, separate from the aircraft contact response and immutable world identity.
+static func _assign_damage_profiles(proxies: Array[Dictionary]) -> void:
+	for proxy: Dictionary in proxies:
+		if not proxy.has("damage_id"):
+			proxy.damage_id = str(proxy.id)
+		if proxy.has("damage_profile"):
+			continue
+		var profile := "none"
+		match str(proxy.kind):
+			"fence": profile = "wire" if proxy.part == "wire" else "wood"
+			"parked_aircraft", "aircraft_support": profile = "foam" if proxy.kind == "parked_aircraft" else "wood"
+			"equipment": profile = "straw" if proxy.part in ["round_bale", "bale_stack"] else "wood"
+			"fixture": profile = "wood" if proxy.part == "club_sign" else "metal"
+			"vehicle", "lamp": profile = "metal"
+			"building": profile = "masonry"
+			"tree_trunk": profile = "wood_mark"
+			"tree_foliage": profile = "foliage" if proxy.part == "bush" else "foliage_mark"
+		proxy.damage_profile = profile
+
+
+static func _add_flightline_barrier(proxies: Array[Dictionary], field: Dictionary) -> void:
+	for cue: Dictionary in field.get("flight_cues", []):
+		if str(cue.get("type", "")) != "flightline_barrier":
+			continue
+		var seen := {}
+		for part: Dictionary in FlightlineBarrier.parts(cue):
+			if seen.has(part.id):
+				continue
+			seen[part.id] = true
+			var size: Vector3 = part.size
+			var base: Vector3 = part.base
+			if part.profile == "metal":
+				size.y = float(cue.height)
+			_add_box_at_down(proxies, str(part.id), "fence", "barrier", "hard_terminal",
+				float(cue.north) - base.z, float(cue.east) + base.x, -(base.y + size.y * 0.5),
+				size.x, size.y, size.z, 0.0)
+			proxies.back()["damage_profile"] = str(part.profile)
+
 
 static func _add_field_tree_proxies(proxies: Array[Dictionary], id: String, north: float, east: float,
 		base_down: float, height: float, species: int, yaw: float) -> void:
@@ -233,24 +282,20 @@ static func _add_line_obstacles(proxies: Array[Dictionary], group: Dictionary) -
 			_add_line_box(proxies, "hedge:%s:%02d" % [group_id, index], "tree_foliage", "hedge",
 				"soft_foliage_impulse", points[index], points[index + 1], width, height, -height * 0.5)
 		return
-	var style := str(group.get("style", "wire"))
-	var rail_levels := PackedFloat64Array([0.35, 0.90]) if style == "rail" else PackedFloat64Array([0.25, 1.10])
-	for index: int in range(points.size() - 1):
-		var a: Vector2 = points[index]
-		var b: Vector2 = points[index + 1]
-		var length := a.distance_to(b)
-		if length <= 1.0e-9:
-			continue
-		var post_count := maxi(1, ceili(length / 4.0))
-		for post_index: int in range(post_count + 1):
-			var fraction := float(post_index) / float(post_count)
-			var n := lerpf(a.x, b.x, fraction)
-			var e := lerpf(a.y, b.y, fraction)
-			_add_box(proxies, "fence:%s:%02d:post:%02d" % [group_id, index, post_index], "fence", "post",
-				"hard_terminal", n, e, 0.10, height, 0.10, 0.0)
-		for level: int in rail_levels.size():
-			_add_line_box(proxies, "fence:%s:%02d:rail:%d" % [group_id, index, level], "fence", style,
-				"hard_terminal", a, b, 0.035, 0.035, -rail_levels[level])
+	var points_xz := PackedVector2Array()
+	for point: Vector2 in points:
+		points_xz.append(Vector2(point.y, -point.x))
+	for piece: Dictionary in FenceParts.build(points_xz, str(group.get("style", "wire")), int(group.get("seed", 0))):
+		var id := "fence:%s:%s" % [group_id, piece.id]
+		var a: Vector3 = piece.a
+		var b: Vector3 = piece.b
+		var center := (a + b) * 0.5
+		if piece.part == "post":
+			_add_box_at_down(proxies, id, "fence", "post", "hard_terminal", -center.z, center.x, -center.y,
+				float(piece.width) + absf(b.x - a.x), absf(b.y - a.y), float(piece.width), 0.0)
+		else:
+			_add_line_box(proxies, id, "fence", str(piece.part), "hard_terminal",
+				Vector2(-a.z, a.x), Vector2(-b.z, b.x), float(piece.width), float(piece.width), -center.y)
 
 
 static func _add_line_box(proxies: Array[Dictionary], id: String, kind: String, part: String,

@@ -75,10 +75,11 @@ func _check_aircraft(entry: Dictionary) -> void:
 	severity.erase("component")
 	wreck.start(pose, incoming, angular, severity)
 	var started: Dictionary = wreck.stats()
-	if String(entry.status) == AircraftCatalog.PREVIEW:
+	if String(entry.id) == "turbo-lumber-evolution":
 		# TT-06: the Timber preview is one imported airframe mesh (wing, fuselage and tail together) with tail, gear
 		# and propeller pivots, so C4 has no wing/engine group to release at once; its tail/gear/propeller groups
-		# detach on their delays. Splitting the airframe for the crash twin is TT-13's decision.
+		# detach on their delays. Catalog promotion does not change that geometry contract.
+		# Splitting the airframe for the crash twin is TT-13's decision.
 		_check(String(entry.id) + " C4 (preview, merged airframe) marks delayed groups for release", int(started.detached_group_count) >= 1 and int(started.active_body_count) >= 1 and int(started.active_body_count) <= 24)
 	else:
 		_check(String(entry.id) + " C4 releases progressive real submeshes", int(started.detached_group_count) >= 1 and int(started.active_body_count) > 1 and int(started.active_body_count) <= 24)

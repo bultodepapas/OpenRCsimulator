@@ -11,7 +11,7 @@ static func build_near(world: Dictionary, point_ned: PackedFloat64Array) -> Node
 	root.name = "SceneryWreckContacts"
 	if point_ned.size() != 3:
 		return root
-	var count := 0
+	var candidates: Array[Dictionary] = []
 	for proxy: Dictionary in world.get("proxies", []):
 		# Leaves do not become solid walls when an aircraft breaks up.
 		if str(proxy.get("response_class", "")) == "soft_foliage_impulse":
@@ -19,6 +19,15 @@ static func build_near(world: Dictionary, point_ned: PackedFloat64Array) -> Node
 		var margin := maxf(float(proxy.get("radius", 0.0)), maxf(float(proxy.get("half_x", 0.0)), float(proxy.get("half_z", 0.0))))
 		if absf(float(proxy.north) - point_ned[0]) > RANGE_M + margin or absf(float(proxy.east) - point_ned[1]) > RANGE_M + margin:
 			continue
+		candidates.append(proxy)
+	# Spend the bounded secondary-contact budget near the actual impact, rather than in inventory-ID order.
+	# The local fence bays add proxies; they must not evict the car/trunk/lamp that the wreck just struck.
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var da := _distance_squared(a, point_ned)
+		var db := _distance_squared(b, point_ned)
+		return str(a.id) < str(b.id) if da == db else da < db)
+	var count := 0
+	for proxy: Dictionary in candidates:
 		if count >= MAX_BODIES:
 			push_warning("Scenery wreck contact budget reached; farther secondary contacts omitted.")
 			break
@@ -48,3 +57,9 @@ static func build_near(world: Dictionary, point_ned: PackedFloat64Array) -> Node
 		count += 1
 	root.set_meta("bodies", count)
 	return root
+
+static func _distance_squared(proxy: Dictionary, point: PackedFloat64Array) -> float:
+	var north := maxf(0.0, maxf(float(proxy.bounds_north_min) - point[0], point[0] - float(proxy.bounds_north_max)))
+	var east := maxf(0.0, maxf(float(proxy.bounds_east_min) - point[1], point[1] - float(proxy.bounds_east_max)))
+	var down := maxf(0.0, maxf(float(proxy.bounds_down_min) - point[2], point[2] - float(proxy.bounds_down_max)))
+	return north * north + east * east + down * down

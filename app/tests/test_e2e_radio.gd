@@ -1,10 +1,11 @@
-# D6a end to end: a fake radio (device 15, injected InputEventJoypadMotion) flying the real main scene.
+# D6a / TT-10 end to end: a fake radio (device 15, injected InputEventJoypadMotion) flying the Timber's real session.
 # Arming, unshaped sticks, the unplug failsafe and the return to the keyboard.
 # Never calls Input.get_joy_guid on the fake device (that prints an engine error): device_info is replaced.
 # Run: godot --headless --path . --script res://tests/test_e2e_radio.gd
 extends SceneTree
 
 const ID := 15 # a real radio on the dev machine would take id 0
+const AIRCRAFT := "turbo-lumber-evolution"
 const PROFILES := "user://test_e2e_rc_calibration.cfg"
 
 var _failures := 0
@@ -55,6 +56,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_main = load("res://main.tscn").instantiate()
+	_main.aircraft_id = AIRCRAFT # select before _ready; never borrow another aircraft's physics
 	root.add_child(_main)
 	await _settle()
 	_session = _main.session
@@ -62,6 +64,8 @@ func _run() -> void:
 		return { guid = "fake", name = "Fake EdgeTX", vendor_id = 0x1209, product_id = 0x4f54 }
 	_session.profiles_path = PROFILES # never the pilot's real calibration file
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILES))
+	_check("direct radio test loads Timber electric physics", _session.aircraft.ok and _session.aircraft.model.id == AIRCRAFT
+		and _session.start.ok and _session.trace_meta().propulsion_model == "electric-fixed-bus-coupled-stop-v1")
 	_check("starts on the keyboard", not _session.radio.connected and _panel_has("input: keyboard"))
 
 	Input.joy_connection_changed.emit(ID, true)
@@ -87,6 +91,9 @@ func _run() -> void:
 	_motion(1, 1.0)
 	await _settle()
 	_check("elevator stick forward → pitch −1 (nose down)", _session.commands.pitch == -1.0)
+	_motion(3, 1.0)
+	await _settle()
+	_check("rudder stick commands the Timber yaw channel", _session.commands.yaw == 1.0, str(_session.commands))
 
 	Input.joy_connection_changed.emit(ID, false)
 	await _settle()

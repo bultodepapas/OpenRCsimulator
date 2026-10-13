@@ -9,6 +9,12 @@ var norms := PackedVector3Array()
 var cols := PackedColorArray()
 ## Current local-to-cell transform; set by callers (push/pop through `with`).
 var xf := Transform3D.IDENTITY
+## CR-17a: sorted, non-overlapping source ranges; retained only by damage-aware cell nodes.
+var damage_ranges: Array[Dictionary] = []
+
+func tag_damage(first: int, id: String) -> void:
+	if verts.size() > first and not id.is_empty():
+		damage_ranges.append({id = id, first = first, end = verts.size()})
 
 
 func is_empty() -> bool:

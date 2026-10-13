@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-12",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "renderer": "Compatibility/OpenGL",
+  "device": "NVIDIA GeForce RTX 3090; driver 610.88",
+  "native_gallery_before_reset_identical_bytes": true,
+  "gallery_sha256": {
+    "before.png": "5bdd1f3f392d3b5e8887d57a8c04d17c4518f54299d47d765cf86a2e4898359e",
+    "impact.png": "74ff6c3e4d3fb87592e646022e053de80ae18c5037f85edd353a1ddc13f3f048",
+    "after.png": "55f7da8ddb8423294aa069e0ec78f4ff47053fcd3a1403401245affd8d443061",
+    "reset.png": "5bdd1f3f392d3b5e8887d57a8c04d17c4518f54299d47d765cf86a2e4898359e"
+  },
+  "source_sha256": {
+    "app/scenery/collision_world.gd": "44fafc684774ed3bafc653af2c35c7e9178e2db48cdaa9315638e0e06d0ee6dd",
+    "app/scenery/collision_setup.gd": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb",
+    "app/scenery/fence_parts.gd": "3ba56c15aaba2802143ebf71233db59f44cc518bf9532dba048c60261db59001",
+    "app/scenery/damage_batches.gd": "58f0be70d5f6efba4db2cc5cf81e53d8450bab5446b124e86c7e7511707c57a1",
+    "app/scenery/scenery.gd": "6e536f5f686830dd8dafbc406e70d3bed0422bef1ef69c2f143f800b2df46736",
+    "app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "app/scenery/ground_features.gd": "48b9c9a1121fa5b386058afa601e9ebd067e971cdf80eb51fdcabeb7fe359a3e",
+    "app/render/flightline_barrier.gd": "06b8c0d3bbfda404886430575167cdd02438050fed3d6112b535591b7a1929d1",
+    "app/render/landscape_upgrade/scenery_bodies.gd": "b697cd3850929008ce66af7169ca44c9ef6385989792d49790c654eaebdc04a6",
+    "app/render/crash/scenery_damage.gd": "ed01ace30eb672612e68a8c7b1e9cd91e912708abb1d031d6ba89b6d2d225d58",
+    "app/render/crash/director.gd": "599ff808e9957a411abd036c3f5940d71e5ae84d4500b2fdc422304d18909bc2",
+    "app/sim/scenery_damage.gd": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48",
+    "app/sim/scenery_collision.gd": "894e2fb97de3bd87b9effe41c740662c3b9c65ca4149f03021f8b5001db75e91",
+    "app/sim/flight_session.gd": "e5125df8efd2a6b48637fe345acca7f816918d27c626f5023629cd20d1a3316f",
+    "app/main.gd": "20315eea7097b63c932db02548e197c7a83a0dd8e763559557543d943e9c5c16",
+    "app/tests/test_scenery_destruction.gd": "ea1ce67d64cc00184f31e9c3aa18004ad8916199465baedccb628f1d2d2123f9",
+    "app/tests/test_scenery_damage_session.gd": "42906c2278a2fc78201b721172135adbcbe884ce86e06d6828cf10a87e6a20c0",
+    "app/tests/test_scenery_destruction_runtime.gd": "1cfc51dd391d77f7039e0ae95b903e69f5a5c0d509928e6a074e2e12344ca4ee",
+    "app/tests/test_crash_wreck.gd": "0d59405e94e4812edd00109f47bb3478380e6f3055e6b98c48482b32d3df3eaa",
+    "app/physics/flight_modes.gd": "df5dc6cc84a14ddf5bd5c7f96e45c67f172fe71f09b6cb19343e84d5848d2418",
+    "research/crash-damage/cr17a/capture.gd": "28c506446c5114bfe774c38cc84e9ac0f439fd0548ceb1353ec4be0e913ecf04"
+  },
+  "scope": "Synthetic software/render verification; no physical material calibration or lower-end frame-time claim."
+}

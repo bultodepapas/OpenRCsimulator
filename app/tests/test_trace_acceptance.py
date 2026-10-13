@@ -9,7 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from check_trimmed_flight import check_coupled_metadata
+from check_trimmed_flight import check_coupled_metadata, check, check_fixed_bus_sample
 
 APP = Path(__file__).resolve().parents[1]
 CHECKER = APP / 'tests/check_trimmed_flight.py'
@@ -82,6 +82,7 @@ class TraceAcceptance(unittest.TestCase):
             ('gp-extra-300s-60', 'propeller-rpm-lag-v1', 'none', False),
             ('p51d-mustang-120', 'propeller-shaft-balance-v1', 'tail-slipstream-increment-v1', True),
             ('sebart-avanti-s-a200-p100rx', 'turbine-ecu-spool-v1', 'none', False),
+            ('turbo-lumber-evolution', 'electric-fixed-bus-coupled-stop-v1', 'none', False),
         ]
         for aircraft, propulsion, propwash, crossflow in cases:
             with self.subTest(aircraft=aircraft):
@@ -104,6 +105,29 @@ class TraceAcceptance(unittest.TestCase):
                                           '--aircraft-input', str(source)],
                                          capture_output=True, text=True, timeout=10)
                 self.assertEqual(checked.returncode, 0, checked.stderr)
+
+    def test_timber_electric_endpoint_equations_reject_corruption(self):
+        path = self.directory / 'timber-electric.csv'
+        result = self.run_app('--aircraft=turbo-lumber-evolution', '--trace=' + str(path), '--t=.05')
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('ERROR:', result.stdout)
+        self.assertIn('12 ticks', check(path, .05, 240))
+        lines = path.read_text().splitlines()
+        meta = dict(line[2:].split(': ', 1) for line in lines if line.startswith('# '))
+        row = next(csv.DictReader(line for line in lines if not line.startswith('#')))
+        sample = {key: float(value) for key, value in row.items()}
+        for column in ('motor_current_a', 'source_torque_nm', 'shaft_power_w',
+                       'copper_loss_w', 'rotational_loss_w', 'drive_bus_current_a'):
+            with self.subTest(column=column):
+                changed = dict(sample); changed[column] += 1
+                with self.assertRaisesRegex(ValueError, 'equation disagrees'):
+                    check_fixed_bus_sample(meta, changed)
+        for key, value in [('electric_configuration', '{}'), ('electric_sample_timing', 'k1'),
+                           ('propulsion_model', 'propeller-rpm-lag-v1')]:
+            with self.subTest(metadata=key):
+                changed = dict(meta); changed[key] = value
+                with self.assertRaises(ValueError):
+                    check_fixed_bus_sample(changed, sample)
 
     def test_missing_or_inconsistent_flight_metadata_fails(self):
         metadata = dict(line[2:].split(': ', 1) for line in self.meta)

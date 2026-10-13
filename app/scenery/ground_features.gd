@@ -6,6 +6,7 @@ extends RefCounted
 
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
+const FenceParts = preload("res://scenery/fence_parts.gd")
 
 const LIFT_WORN := 0.02
 const LIFT_SURFACE := 0.04
@@ -456,21 +457,5 @@ static func _hedge_tree(k: MeshKit, p: Vector2, seed: int, theme: String) -> voi
 
 ## Post-and-wire ("wire") or post-and-rail ("rail") fence along render-XZ points.
 static func fence(k: MeshKit, pts: PackedVector2Array, style: String, seed: int) -> void:
-	var spacing := 3.0 if style == "wire" else 2.5
-	var post := Palette.col("wood_grey") if style == "wire" else Palette.col("wood")
-	for i in pts.size() - 1:
-		var a := pts[i]
-		var b := pts[i + 1]
-		var seg := a.distance_to(b)
-		var n := maxi(1, int(round(seg / spacing)))
-		for s in n + (1 if i == pts.size() - 2 else 0):
-			var p := a.lerp(b, float(s) / n)
-			var lean := (Palette.hash01(seed, i * 1000 + s) - 0.5) * 0.06
-			var top := Vector3(p.x + lean, 1.25 if style == "wire" else 1.15, p.y)
-			k.beam(Vector3(p.x, 0, p.y), top, 0.1 if style == "wire" else 0.13, post.darkened(0.15 * Palette.hash01(seed, s, i)))
-		if style == "wire":
-			for y: float in [0.55, 0.85, 1.12]:
-				k.beam(Vector3(a.x, y, a.y), Vector3(b.x, y, b.y), 0.012, Palette.col("steel"))
-		else:
-			for y: float in [0.45, 0.95]:
-				k.beam(Vector3(a.x, y, a.y), Vector3(b.x, y, b.y), 0.08, post.lightened(0.05))
+	for piece: Dictionary in FenceParts.build(pts, style, seed):
+		k.beam(piece.a, piece.b, piece.width, piece.color)

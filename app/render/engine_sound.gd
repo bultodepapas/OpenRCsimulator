@@ -12,6 +12,31 @@ static func firing_frequency(rpm: float) -> float:
 	return maxf(rpm, 0.0) / 60.0
 
 
+## Reference used to normalize audio pitch and gain. Fixed-voltage electric
+## motors use the unloaded speed implied by their bus voltage and Kv.
+static func reference_rpm(propulsion: Dictionary) -> float:
+	var kind: String = str(propulsion.get("kind", "glow_prop"))
+	if kind == "electric_prop":
+		var motor: Dictionary = propulsion.get("motor", {})
+		var battery: Dictionary = propulsion.get("battery", {})
+		if str(battery.get("kind", "")) == "fixed_voltage":
+			var kv: float = _positive_number(motor.get("kv_rpm_per_volt", 0.0))
+			var voltage: float = _positive_number(battery.get("voltage_v", 0.0))
+			var no_load_rpm: float = kv * voltage
+			return no_load_rpm if is_finite(no_load_rpm) and no_load_rpm > 0.0 else 0.0
+		# The normalized OCV model stores Kv × maximum OCV in max_rpm.
+		return _positive_number(propulsion.get("max_rpm", 0.0))
+	var configured: float = _positive_number(propulsion.get("max_rpm", 12000.0))
+	return configured if configured > 0.0 else 12000.0
+
+
+static func _positive_number(value: Variant) -> float:
+	if typeof(value) not in [TYPE_INT, TYPE_FLOAT]:
+		return 0.0
+	var number: float = float(value)
+	return number if is_finite(number) and number > 0.0 else 0.0
+
+
 static func synthesize(phase: float, freq: float, amp: float, frames: int, rate := MIX_RATE) -> Array:
 	return Voice.synthesize(phase, freq, amp, frames, rate)
 

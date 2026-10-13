@@ -1,0 +1,1421 @@
+{
+  "format": "openrc-aircraft v2",
+  "id": "turbo-lumber-evolution",
+  "description": "EXPERIMENTAL TT-07: photograph-inspired r1 mesh (revision unconfirmed), B-reference 800 Kv/70 A/4S 3200 mAh/11x7.3 three-blade loadout. Estimated inventory, motor losses and borrowed two-blade propeller map. Wheels fixed, flaps up, slats absent, assists off; prescribed bus, no battery depletion. Not physical validation.",
+  "convention_id": "openrc-le-frd-v1",
+  "capabilities": {
+    "controls": "conventional",
+    "gear": "fixed_taildragger",
+    "propulsion_layout": "single_tractor",
+    "energy": "fixed_voltage",
+    "damage": "terminal_hull",
+    "flaps": "not_simulated"
+  },
+  "frames": {
+    "le_frame": "D0: [x_aft,y_right,z_up] = [model Z,model X,model Y], metres",
+    "body": "FRD about inventory CG"
+  },
+  "reference": {
+    "wing_area": {
+      "value": 0.328223,
+      "unit": "m2",
+      "kind": "derived",
+      "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: trapezoid integral of the measured chord over the span, fuselage carry-through at the panel chord, rounded tips from the tip slices (r1 CAD: 0.329 m2)"
+    },
+    "wing_span": {
+      "value": 1.555,
+      "unit": "m",
+      "kind": "manual",
+      "source": "EFL105250B manual p.3 (1,555 mm)"
+    },
+    "mean_chord": {
+      "value": 0.21107588424437299,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+    },
+    "aero_reference_point": {
+      "value": [
+        0.05271875,
+        0,
+        0.0964620621800532
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/timber/tt07/derive_physics.py: quarter chord at measured wing height, dihedral extrapolated to centreline D0"
+    },
+    "planform": "rectangular"
+  },
+  "balance": {
+    "plan_cg": {
+      "value": [
+        0.06,
+        0.0,
+        -0.00217579908675799
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/timber/tt07/derive_physics.py: manual longitudinal CG, inventory-derived vertical CG"
+    },
+    "firewall": {
+      "value": [
+        -0.19,
+        0,
+        0
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "TT-07 assumed motor mount station inside r1 cowl"
+    },
+    "configuration": "virtual-balanced-reference-v1",
+    "cg_tolerance": {
+      "value": 0.001,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "TT-07 reference build tolerance"
+    }
+  },
+  "inventory": [
+    {
+      "name": "wing, flaps, ailerons and wing servos",
+      "mass": {
+        "value": 0.456,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          0.1013,
+          0,
+          0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.213535,
+          1.45,
+          0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "fuselage foam, canopy and fittings",
+      "mass": {
+        "value": 0.605,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          0.2208,
+          0,
+          -0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.85,
+          0.12,
+          0.12
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "horizontal and vertical tail",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          0.7033,
+          0,
+          -0.012
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.15,
+          0.596,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "main gear and wheels",
+      "mass": {
+        "value": 0.135,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          0.012,
+          0,
+          -0.16
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.1,
+          0.263958,
+          0.16
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "tailwheel and fork",
+      "mass": {
+        "value": 0.012,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          0.7384,
+          0,
+          -0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.028,
+          0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "three-blade propeller and spinner",
+      "mass": {
+        "value": 0.032,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.251,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.05,
+          0.2,
+          0.2
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "800 Kv motor",
+      "mass": {
+        "value": 0.16,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.2125,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.05,
+          0.04,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "70 A ESC",
+      "mass": {
+        "value": 0.06,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.142,
+          0,
+          -0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.065,
+          0.035,
+          0.016
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "receiver",
+      "mass": {
+        "value": 0.012,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          0.118,
+          0,
+          -0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.025,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "elevator and rudder servos",
+      "mass": {
+        "value": 0.018,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          0.228,
+          0,
+          -0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.035,
+          0.03,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "wiring and navigation LEDs",
+      "mass": {
+        "value": 0.04,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          0.058,
+          0,
+          0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.16,
+          0.2,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "4S 3200 mAh battery",
+      "mass": {
+        "value": 0.33,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.052,
+          0,
+          -0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.14,
+          0.043,
+          0.032
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "name": "virtual reference-build balancing mass",
+      "mass": {
+        "value": 0.24999999999999978,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: residual of manual 2.190 kg minus estimated component inventory; NOT measured hardware"
+      },
+      "position": {
+        "value": [
+          -0.22099840000000012,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: residual moment needed for manual 60 mm CG; NOT measured ballast"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.04,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TT-07 virtual ballast envelope"
+      }
+    }
+  ],
+  "start": {
+    "level_speed": {
+      "value": 13.073890242907106,
+      "unit": "m/s",
+      "kind": "derived",
+      "source": "research/timber/tt07/derive_physics.py: 1.6 times clean 1-g stall from manual mass, measured model area and estimated CL_max"
+    }
+  },
+  "controls": {
+    "max_throw": {
+      "aileron": {
+        "value": 34.47472044218067,
+        "unit": "deg",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: 2 asin(manual displacement/(2 measured hinge radius)); TT-02 assumed measurement station"
+      },
+      "elevator": {
+        "value": 17.806082401415896,
+        "unit": "deg",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: 2 asin(manual displacement/(2 measured hinge radius)); TT-02 assumed measurement station"
+      },
+      "rudder": {
+        "value": 18.150365949381552,
+        "unit": "deg",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: 2 asin(manual displacement/(2 measured hinge radius)); TT-02 assumed measurement station"
+      }
+    },
+    "servo_full_throw_time": {
+      "value": 0.14,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "TT-07 inputs.json: 9 g metal-gear servo class full throw time s; not measured"
+    }
+  },
+  "aero": {
+    "source": "research/timber/tt07/derive_physics.py: geometry/textbook estimate, no identified Timber aerodynamics",
+    "conventions": {
+      "alpha_beta": "rad",
+      "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",
+      "elevator": "per radian, positive = trailing edge DOWN (dCm/dElev < 0)",
+      "aileron": "per radian per surface, positive = trailing edge DOWN; right and left listed separately",
+      "rudder": "per radian, positive = trailing edge LEFT (dCn/dRud < 0)",
+      "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|",
+      "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"
+    },
+    "coefficients": {
+      "CL0": {
+        "value": 0.2819728378466222,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CLa": {
+        "value": 4.811747142098018,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CLq": {
+        "value": 4.424235581727298,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CLde": {
+        "value": 0.48316814799910957,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CLda_each": {
+        "value": 0.3676471458332059,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CD0": {
+        "value": 0.043280254583012163,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CL_minD": {
+        "value": 0.3,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "k_induced": {
+        "value": 0.054009277081968926,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CDda_each": {
+        "value": 0.0151,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CDdr": {
+        "value": 0.0303,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CDde": {
+        "value": 0.0135,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CYb": {
+        "value": -0.2691424401360689,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CYp": {
+        "value": -0.015136192578246221,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CYr": {
+        "value": 0.10088947213358586,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "CYdr": {
+        "value": 0.08240972068148673,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Clb": {
+        "value": -0.05979583942111725,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Clp": {
+        "value": -0.7207273398413249,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Clr": {
+        "value": 0.16265864194819044,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Clda_right": {
+        "value": -0.13293754328328058,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Clda_left": {
+        "value": 0.13293754328328058,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cldr": {
+        "value": 7.310236149986264e-06,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cm0": {
+        "value": 0.023489158316673323,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cma": {
+        "value": -1.4022858855151474,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cmq": {
+        "value": -12.57667668397068,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cmde": {
+        "value": -1.3901587273534195,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cmda_each": {
+        "value": -0.05407626398512382,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cnb": {
+        "value": 0.051002617669520106,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cnp": {
+        "value": -0.078125,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cnr": {
+        "value": -0.05714320745961584,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cnda_right": {
+        "value": 0.02492578936561511,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cnda_left": {
+        "value": -0.02492578936561511,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      },
+      "Cndr": {
+        "value": -0.03527803754371294,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
+      }
+    },
+    "surfaces": {
+      "wing_aileron_effectiveness": {
+        "value": 0.22102166112630292,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      },
+      "wing_section_cm_ac": {
+        "value": -0.035,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Cambered section aerodynamic-centre pitching moment; unmeasured"
+      },
+      "attached_limit": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Local attached flow/oracle boundary degrees, established solver domain"
+      },
+      "tail_local_limit": {
+        "value": 12.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Tail attached flow angle limit degrees; provisional"
+      },
+      "tail_stall_end": {
+        "value": 24.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Tail flat-plate transition end degrees; provisional"
+      },
+      "tail_CD0": {
+        "value": 0.012,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Tail profile drag coefficient; provisional"
+      },
+      "tail_k": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Tail induced drag coefficient; provisional"
+      },
+      "tail_CD90": {
+        "value": 1.242606337764264,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      },
+      "horizontal": {
+        "area": {
+          "value": 0.076104,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: planform between the fitted edges from the centreline to the tip, both sides (r1 CAD: 0.0756 m2)"
+        },
+        "position": {
+          "value": [
+            0.66002075,
+            0,
+            -0.032
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "lift_slope": {
+          "value": 2.101996534116511,
+          "unit": "1/rad",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "control_effectiveness": {
+          "value": 0.991351864632601,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "incidence": {
+          "value": -0.041709867382132705,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "downwash_gradient": {
+          "value": 0.3736892409411888,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        }
+      },
+      "vertical": {
+        "area": {
+          "value": 0.024964,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: trapezoid between root_y and top_y"
+        },
+        "position": {
+          "value": [
+            0.71838474093931,
+            0,
+            0.09659999999999999
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "lift_slope": {
+          "value": 1.5664672780316038,
+          "unit": "1/rad",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "control_effectiveness": {
+          "value": 0.6916907240389664,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "incidence": {
+          "value": 0.0,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        }
+      }
+    },
+    "reference_coefficients": {
+      "CLadot": {
+        "value": 1.6532892362806728,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      }
+    },
+    "envelope": {
+      "CL_max": {
+        "value": 1.6,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Clean cambered foam wing peak lift; no slats/flaps; unmeasured"
+      },
+      "CL_min": {
+        "value": -1.25,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Inverted clean wing peak lift; unmeasured"
+      },
+      "stall_blend_width": {
+        "value": 10.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Attached-to-flat-plate stall blending width, degrees"
+      },
+      "CD90": {
+        "value": 1.242606337764264,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      },
+      "sideslip_blend": {
+        "value": [
+          15,
+          25
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TT-07 linear-to-sine sideslip blend"
+      }
+    }
+  },
+  "propulsion": {
+    "kind": "electric_prop",
+    "motor": {
+      "kv_rpm_per_volt": {
+        "value": 800,
+        "unit": "rpm/V",
+        "kind": "manual",
+        "source": "B-revision SPM-1012 motor rating, EFL105250B manual/Horizon specification; TT-00 sources"
+      },
+      "resistance_scope": "motor_winding_equivalent",
+      "resistance_ohm": {
+        "value": 0.08,
+        "unit": "ohm",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Equivalent BLDC winding resistance ohm, 2815-class 800 Kv; NOT measured SPM-1012"
+      },
+      "no_load_current_a": {
+        "value": 1.2,
+        "unit": "A",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: No-load equivalent friction current A; NOT measured SPM-1012"
+      },
+      "no_load_context": {
+        "voltage_v": {
+          "value": 14.8,
+          "unit": "V",
+          "kind": "estimated",
+          "source": "TT-07 inputs.json: 4S nominal fixed bus V, no pack sag/depletion; loaded voltage unmeasured"
+        },
+        "rpm": {
+          "value": 11763.2,
+          "unit": "rpm",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "temperature_c": {
+          "value": 25.0,
+          "unit": "°C",
+          "kind": "estimated",
+          "source": "TT-07 inputs.json: Context only, assumed winding temperature Celsius; no thermal model"
+        }
+      }
+    },
+    "battery": {
+      "kind": "fixed_voltage",
+      "voltage_v": {
+        "value": 14.8,
+        "unit": "V",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: 4S nominal fixed bus V, no pack sag/depletion; loaded voltage unmeasured"
+      }
+    },
+    "esc": {
+      "kind": "ideal_motoring",
+      "command_mapping": "identity"
+    },
+    "propeller": {
+      "diameter": {
+        "value": 0.2794,
+        "unit": "m",
+        "kind": "manual",
+        "source": "EFL5962 nominal 11-inch diameter; B-revision loadout"
+      },
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.1204
+          ],
+          [
+            0.373,
+            0.0933
+          ],
+          [
+            0.396,
+            0.0904
+          ],
+          [
+            0.417,
+            0.0877
+          ],
+          [
+            0.438,
+            0.0844
+          ],
+          [
+            0.462,
+            0.0803
+          ],
+          [
+            0.479,
+            0.0773
+          ],
+          [
+            0.501,
+            0.0731
+          ],
+          [
+            0.527,
+            0.0676
+          ],
+          [
+            0.549,
+            0.0629
+          ],
+          [
+            0.567,
+            0.0587
+          ],
+          [
+            0.594,
+            0.0526
+          ],
+          [
+            0.61,
+            0.0494
+          ],
+          [
+            0.638,
+            0.0432
+          ],
+          [
+            0.655,
+            0.0397
+          ],
+          [
+            0.68,
+            0.0348
+          ],
+          [
+            0.703,
+            0.0305
+          ],
+          [
+            0.723,
+            0.0267
+          ],
+          [
+            0.744,
+            0.0226
+          ],
+          [
+            0.766,
+            0.0184
+          ],
+          [
+            0.789,
+            0.0139
+          ],
+          [
+            0.81,
+            0.0099
+          ],
+          [
+            0.832,
+            0.0058
+          ],
+          [
+            0.852,
+            0.002
+          ],
+          [
+            0.876,
+            -0.0026
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC Volume 1 APC Sport 11x7 two-blade: static kt0473 at 5837.0 rpm and jb0480_6002 tunnel; SHA256 in adjacent manifests. Borrowed for EFL5962 11x7.3 three-blade, no same-propeller or RPM equivalence; nominal diameter reference unresolved.; explicit estimated mismatch multiplier 1.0; saturation outside J endpoints, unmeasured static-to-tunnel bridge"
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.0541
+          ],
+          [
+            0.373,
+            0.058
+          ],
+          [
+            0.396,
+            0.0578
+          ],
+          [
+            0.417,
+            0.0574
+          ],
+          [
+            0.438,
+            0.0568
+          ],
+          [
+            0.462,
+            0.0558
+          ],
+          [
+            0.479,
+            0.055
+          ],
+          [
+            0.501,
+            0.0536
+          ],
+          [
+            0.527,
+            0.0515
+          ],
+          [
+            0.549,
+            0.0496
+          ],
+          [
+            0.567,
+            0.0477
+          ],
+          [
+            0.594,
+            0.0447
+          ],
+          [
+            0.61,
+            0.0432
+          ],
+          [
+            0.638,
+            0.0399
+          ],
+          [
+            0.655,
+            0.038
+          ],
+          [
+            0.68,
+            0.0352
+          ],
+          [
+            0.703,
+            0.0328
+          ],
+          [
+            0.723,
+            0.0307
+          ],
+          [
+            0.744,
+            0.0281
+          ],
+          [
+            0.766,
+            0.0255
+          ],
+          [
+            0.789,
+            0.0224
+          ],
+          [
+            0.81,
+            0.0195
+          ],
+          [
+            0.832,
+            0.0166
+          ],
+          [
+            0.852,
+            0.0137
+          ],
+          [
+            0.876,
+            0.0102
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC Volume 1 APC Sport 11x7 two-blade: static kt0473 at 5837.0 rpm and jb0480_6002 tunnel; SHA256 in adjacent manifests. Borrowed for EFL5962 11x7.3 three-blade, no same-propeller or RPM equivalence; nominal diameter reference unresolved.; explicit estimated mismatch multiplier 1.0; saturation outside J endpoints, unmeasured static-to-tunnel bridge"
+      },
+      "rotating_inertia": {
+        "value": 0.00024,
+        "unit": "kg·m2",
+        "kind": "estimated",
+        "source": "TT-07 inputs.json: Propeller + spinner + outrunner bell inertia kg m2; 32 g prop envelope plus bell, unmeasured"
+      },
+      "thrust_angles": {
+        "value": [
+          2.0,
+          2.0
+        ],
+        "unit": "deg",
+        "kind": "measured",
+        "source": "TT-02 imported thrust_frame; authored angles estimated, hardware not measured"
+      },
+      "thrust_line_offset": {
+        "value": [
+          -0.3115,
+          0.0,
+          0.00217579908675799
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/timber/tt07/derive_physics.py: imported propeller hub minus inventory CG, structural axes"
+      }
+    }
+  },
+  "landing_gear": {
+    "contacts": [
+      {
+        "name": "main_left",
+        "position": {
+          "value": [
+            0.008,
+            -0.131979,
+            -0.256002
+          ],
+          "unit": "m",
+          "kind": "measured",
+          "source": "TT-02 imported r1 wheel centre minus radius; D0 frame"
+        },
+        "stiffness": {
+          "value": 447.51774262116214,
+          "unit": "N/m",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: E1 heave omega*dt rule, split by three-point static load share; assumed compliance"
+        },
+        "damping": {
+          "value": 10.844706670115213,
+          "unit": "N·s/m",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "max_compression": {
+          "value": 0.08,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation"
+        },
+        "max_steering": {
+          "value": 0.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "TT-07 tailwheel opposite rudder angle for positive right taxi yaw; mains unsteered"
+        }
+      },
+      {
+        "name": "main_right",
+        "position": {
+          "value": [
+            0.008,
+            0.131979,
+            -0.256002
+          ],
+          "unit": "m",
+          "kind": "measured",
+          "source": "TT-02 imported r1 wheel centre minus radius; D0 frame"
+        },
+        "stiffness": {
+          "value": 447.51774262116214,
+          "unit": "N/m",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: E1 heave omega*dt rule, split by three-point static load share; assumed compliance"
+        },
+        "damping": {
+          "value": 10.844706670115213,
+          "unit": "N·s/m",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "max_compression": {
+          "value": 0.08,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation"
+        },
+        "max_steering": {
+          "value": 0.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "TT-07 tailwheel opposite rudder angle for positive right taxi yaw; mains unsteered"
+        }
+      },
+      {
+        "name": "tail",
+        "position": {
+          "value": [
+            0.759,
+            0.0,
+            -0.126
+          ],
+          "unit": "m",
+          "kind": "measured",
+          "source": "TT-02 imported r1 wheel centre minus radius; D0 frame"
+        },
+        "stiffness": {
+          "value": 126.73091475767548,
+          "unit": "N/m",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: E1 heave omega*dt rule, split by three-point static load share; assumed compliance"
+        },
+        "damping": {
+          "value": 5.771038415945358,
+          "unit": "N·s/m",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "max_compression": {
+          "value": 0.08,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation"
+        },
+        "max_steering": {
+          "value": -30.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "TT-07 tailwheel opposite rudder angle for positive right taxi yaw; mains unsteered"
+        }
+      }
+    ],
+    "rolling_resistance": {
+      "value": 0.04,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "TT-07 inputs.json: Solid foam tyre dry pavement rolling coefficient; field modifies surface"
+    },
+    "side_friction": {
+      "value": 0.8,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "TT-07 inputs.json: Dry pavement side force friction coefficient; field modifies surface"
+    },
+    "peak_slip_angle": {
+      "value": 6.0,
+      "unit": "deg",
+      "kind": "estimated",
+      "source": "TT-07 inputs.json: Side-force peak slip angle degrees, assumed tyre curve"
+    },
+    "breakaway_factor": {
+      "value": 1.25,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "TT-07 inputs.json: Static-to-rolling resistance ratio; unmeasured"
+    }
+  },
+  "crash_hull": {
+    "value": [
+      [
+        0.028922,
+        -0.773956,
+        0.096984
+      ],
+      [
+        0.031077,
+        0.773956,
+        0.096985
+      ],
+      [
+        -0.283461,
+        0.001116,
+        -0.00112
+      ],
+      [
+        0.833099,
+        0.0,
+        0.027266
+      ],
+      [
+        0.77072,
+        -0.298,
+        -0.032
+      ],
+      [
+        0.77072,
+        0.298,
+        -0.032
+      ],
+      [
+        0.833099,
+        0,
+        0.178
+      ],
+      [
+        -0.2515,
+        0,
+        -0.140321
+      ],
+      [
+        -0.22,
+        0,
+        -0.035964
+      ],
+      [
+        -0.1,
+        0,
+        -0.051412
+      ],
+      [
+        0.02,
+        0,
+        -0.08151
+      ],
+      [
+        0.14,
+        0,
+        -0.094456
+      ],
+      [
+        0.26,
+        0,
+        -0.09783
+      ],
+      [
+        0.38,
+        0,
+        -0.094001
+      ],
+      [
+        0.5,
+        0,
+        -0.085653
+      ],
+      [
+        0.62,
+        0,
+        -0.078494
+      ]
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "research/timber/tt07/derive_physics.py: TT-02 imported extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"
+  },
+  "plausibility": {
+    "mass_range": {
+      "value": [
+        1.86,
+        2.4
+      ],
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "Manual 1.860 kg empty/2.190 kg with pack; widened upper reference-build limit"
+    },
+    "inertia_reference": {
+      "value": [
+        0.09427743602386326,
+        0.14650919390120823,
+        0.22048642862370163
+      ],
+      "unit": "kg·m2",
+      "kind": "derived",
+      "source": "research/timber/tt07/derive_physics.py: same inventory box estimate; self-reference is no independent plausibility evidence"
+    }
+  }
+}

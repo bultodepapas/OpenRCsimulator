@@ -24,7 +24,9 @@ static func build(field: Dictionary) -> Dictionary:
 			if group.type != "instances":
 				continue
 			var kept := []
-			for placement: Dictionary in group.placements:
+			for source_index: int in group.placements.size():
+				var placement: Dictionary = group.placements[source_index]
+				placement.source_index = source_index
 				var spec: Dictionary = Prefabs.CATALOG[placement.prefab] if Prefabs.CATALOG.has(placement.prefab) else Models.CATALOG[placement.prefab]
 				if Scenery.keep(spec.tier, placement.seed, quality):
 					kept.append(placement)

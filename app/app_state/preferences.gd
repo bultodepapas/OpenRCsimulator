@@ -4,6 +4,7 @@
 extends RefCounted
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const FlightSession := preload("res://sim/flight_session.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
@@ -69,7 +70,7 @@ static func load_from(path: String) -> Dictionary:
 	# Existing explicit airborne choices remain valid, and unsupported aircraft never inherit the runway default.
 	prefs.start_choice = "airborne"
 	if typeof(start_choice) == TYPE_STRING:
-		if start_choice == "airborne" or (start_choice == "runway" and prefs.aircraft == Catalog.DEFAULT_ID):
+		if start_choice == "airborne" or (start_choice == "runway" and FlightSession.runway_aircraft_supported(prefs.aircraft)):
 			prefs.start_choice = start_choice
 	var latency_marker: Variant = cfg.get_value("flight", "latency_marker", DEFAULTS.latency_marker)
 	if typeof(latency_marker) == TYPE_BOOL:

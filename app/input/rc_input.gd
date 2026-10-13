@@ -11,6 +11,7 @@
 # gamepads get a deadzone and expo, and their spring-centred throttle stick drives the throttle as a RATE.
 extends RefCounted
 
+const SmokeAux := preload("res://input/smoke_aux.gd")
 const AXES := 10 # Godot's JoyAxis.MAX
 ## Throttle at or below this (0…1) arms a radio.
 const ARM_THROTTLE := 0.05
@@ -58,6 +59,8 @@ var _seen := {} # axis index → true once an event arrived for it since connect
 ## Separate arming evidence: a finite low-throttle event under the active profile, not connection history.
 var _throttle_low_seen: bool = false
 var _rate_throttle := 0.0 # gamepad throttle (0…1), integrated from the stick
+## Separate presentation request for the smoke pump. It never enters sticks() or flight commands.
+var smoke_aux = SmokeAux.new()
 
 
 func _init() -> void:
@@ -72,7 +75,7 @@ func connect_device(id: int, info: Dictionary, saved := {}) -> void:
 	device_name = str(info.get("name", "joystick %d" % id))
 	device_key = key_for(id, info)
 	if not saved.is_empty():
-		profile = saved.duplicate(true)
+		profile = SmokeAux.sanitize_profile(saved)
 		profile_source = "calibrated"
 	elif info.get("known", false) and not looks_like_radio(device_name):
 		profile = GAMEPAD_PROFILE.duplicate(true)
@@ -80,6 +83,8 @@ func connect_device(id: int, info: Dictionary, saved := {}) -> void:
 	else:
 		profile = DEFAULT_PROFILE.duplicate(true)
 		profile_source = "default"
+	_configure_smoke_aux()
+	smoke_aux.connect_device(id)
 	armed = false
 	_throttle_low_seen = false
 	_rate_throttle = 0.0
@@ -102,8 +107,9 @@ static func looks_like_radio(name: String) -> bool:
 
 ## A new profile (e.g. a finished calibration). The throttle must be seen low again before it flies.
 func use_profile(p: Dictionary, source: String) -> void:
-	profile = p.duplicate(true)
+	profile = SmokeAux.sanitize_profile(p)
 	profile_source = source
+	_configure_smoke_aux()
 	armed = false
 	_throttle_low_seen = false
 	_rate_throttle = 0.0
@@ -111,6 +117,7 @@ func use_profile(p: Dictionary, source: String) -> void:
 
 func disconnect_device() -> void:
 	connected = false
+	smoke_aux.disconnect_device()
 	armed = false
 	_throttle_low_seen = false
 	_seen.clear()
@@ -121,10 +128,16 @@ func disconnect_device() -> void:
 func on_motion(id: int, axis: int, value: float) -> void:
 	if not connected or id != device_id or axis < 0 or axis >= AXES:
 		return
+	smoke_aux.on_motion(id, axis, value)
 	_seen[axis] = true
 	axes[axis] = value
 	if not armed and axis == int(profile.throttle.axis):
 		_throttle_low_seen = is_finite(value) and normalize_throttle(value, profile.throttle) <= ARM_THROTTLE
+
+
+## Button events are AUX-only. Flight channels remain the four calibrated axes.
+func on_button(id: int, button: int, pressed: bool) -> void:
+	smoke_aux.on_button(id, button, pressed)
 
 
 func is_rate_throttle() -> bool:
@@ -137,11 +150,16 @@ func has_axis_sample(axis: int) -> bool:
 
 
 ## Polls every axis once per physics tick. read_axis(device_id, axis) -> float, e.g. Input.get_joy_axis.
-func poll(read_axis: Callable, dt: float) -> void:
+func poll(read_axis: Callable, dt: float, read_button: Callable = Callable()) -> void:
 	if not connected:
 		return
 	for i in AXES:
 		axes[i] = clampf(read_axis.call(device_id, i), -1.0, 1.0)
+	var smoke_binding := _smoke_binding()
+	if smoke_binding.get("type", "") == "axis":
+		smoke_aux.sample_axis(axes[int(smoke_binding.axis)])
+	elif smoke_binding.get("type", "") == "button" and read_button.is_valid():
+		smoke_aux.sample_button(bool(read_button.call(device_id, int(smoke_binding.button))))
 	if is_rate_throttle():
 		# Spring-centred stick: the throttle starts at idle and moves at a rate, so it is safe from the start.
 		armed = true
@@ -195,6 +213,28 @@ func sticks() -> Dictionary:
 		yaw = _shaped(_stick("yaw")),
 		throttle = throttle_position() if armed else 0.0,
 	}
+
+
+## Independent 0…1 pump request for the smoke presentation layer.
+func smoke_amount() -> float:
+	return smoke_aux.amount()
+
+
+func smoke_is_armed() -> bool:
+	return smoke_aux.is_armed()
+
+
+func _configure_smoke_aux() -> void:
+	var axes_in_use := SmokeAux.flight_axes(profile)
+	smoke_aux.configure(_smoke_binding(), axes_in_use)
+
+
+func _smoke_binding() -> Dictionary:
+	var aux: Variant = profile.get("aux", {})
+	if typeof(aux) != TYPE_DICTIONARY:
+		return {}
+	var binding: Variant = aux.get("smoke", {})
+	return binding if typeof(binding) == TYPE_DICTIONARY else {}
 
 
 ## One line for the panel.

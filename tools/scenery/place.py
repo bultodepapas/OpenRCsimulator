@@ -22,10 +22,10 @@ EYE_M = 1.7
 
 
 def catalog_fleet_ids():
-    """Use the flight selector as authority and require every flyable id to have a baked fleet source.
+    """Use the flight selector as authority and validate the parked fleet's independent snapshot subset.
 
-    PREVIEW entries (status = PREVIEW, data = "") are visual-only aircraft without a parked snapshot yet (TT-06; a
-    snapshot is the scenery owner's TT-13b decision), mirroring Catalog.flyable_ids() in the app.
+    Parked snapshots are independent of the playable catalog: TT-08 can make an aircraft flyable before the optional
+    TT-13b scenery snapshot exists. PREVIEW entries (status = PREVIEW, data = "") are excluded from flyable ids.
     """
     catalog_text = (ROOT / "app/app_state/aircraft_catalog.gd").read_text()
     entries = catalog_text.split("const ENTRIES := [", 1)[1].split("\n]", 1)[0]
@@ -45,11 +45,14 @@ def catalog_fleet_ids():
     source_ids = [value for _key, value in re.findall(r'"([^"]+)"\s*:\s*"([^"]+)"', fleet_match.group(1))]
     if not catalog_ids:
         raise ValueError("app/app_state/aircraft_catalog.gd has no readable catalog ids")
-    if len(source_ids) != len(set(source_ids)) or set(source_ids) != set(catalog_ids):
-        missing = sorted(set(catalog_ids) - set(source_ids))
-        stale = sorted(set(source_ids) - set(catalog_ids))
-        raise ValueError("parked fleet source map must match the flight catalog (missing=%s stale=%s)" % (missing, stale))
-    return catalog_ids
+    if not source_ids:
+        raise ValueError("app/scenery/models.gd FLEET source map must contain at least one parked snapshot")
+    if len(source_ids) != len(set(source_ids)):
+        raise ValueError("app/scenery/models.gd FLEET source map contains duplicate parked snapshot ids")
+    invalid = sorted(set(source_ids) - set(catalog_ids))
+    if invalid:
+        raise ValueError("parked fleet snapshot ids must be flyable catalog entries (invalid=%s)" % invalid)
+    return source_ids
 
 
 def catalog_car_sizes():
@@ -254,7 +257,7 @@ def build():
          "estimated", "Club members in the pits")
     inst("seated", "spectators", ["person_sitting"], [(-16.5, -14.0, 0), (-16.5, 11.5, 0), (-16.5, 14.5, 0)], "estimated", "Spectators on the benches")
     inst("veranda-people", "club", ["person_standing"], [(-17.4, -2.6, 10), (-17.8, 1.4, 350), (-16.4, 4.2, 30)], "estimated", "On the veranda steps")
-    # Park every flight-catalog aircraft from its existing baked scenery snapshot.
+    # Park only aircraft with an existing snapshot; playable catalog entries can precede optional TT-13b snapshots.
     fleet_aircraft = catalog_fleet_ids()
     fleet_slots = [(-17.6, -38.0, 15.0), (-17.6, -24.0, 350.0), (-17.8, 24.0, 10.0), (-17.6, 38.5, 345.0)]
     if len(fleet_slots) != len(fleet_aircraft):

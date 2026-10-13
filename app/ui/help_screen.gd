@@ -58,10 +58,13 @@ func _init(return_focus: Control = null) -> void:
 	page.add_child(columns)
 	var left := _column(columns)
 	left.add_child(_text("WHILE FLYING", "SectionLabel"))
-	left.add_child(_key_table(Reference.SHORTCUTS))
+	# SM adds two shortcuts; use the available right column so Help still fits at 720p.
+	left.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return not (KEY_H in row[0] or KEY_J in row[0]))))
 	var right := _column(columns)
+	right.add_theme_constant_override("separation", 6)
 	right.add_child(_text("FLY", "SectionLabel"))
 	right.add_child(_key_table(Reference.FLIGHT))
+	right.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return KEY_H in row[0] or KEY_J in row[0]), 4, 145))
 	right.add_child(_text("Keys are shown as your keyboard layout prints them.", "SecondaryLabel", true))
 	right.add_child(_text("RADIO", "SectionLabel"))
 	right.add_child(_text("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it.", "SecondaryLabel", true))
@@ -115,9 +118,9 @@ func close() -> void:
 		get_child(0).close()
 
 
-func _key_table(rows: Array) -> GridContainer:
+func _key_table(rows: Array, columns := 2, description_width := 340) -> GridContainer:
 	var grid := GridContainer.new()
-	grid.columns = 2
+	grid.columns = columns
 	grid.add_theme_constant_override("h_separation", 14)
 	grid.add_theme_constant_override("v_separation", 4)
 	for row in rows:
@@ -128,7 +131,7 @@ func _key_table(rows: Array) -> GridContainer:
 			caps.add_child(KeyCap.for_key(key))
 		grid.add_child(caps)
 		var what := _text(row[1], "SecondaryLabel")
-		what.custom_minimum_size.x = 340
+		what.custom_minimum_size.x = description_width
 		what.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		grid.add_child(what)
 	return grid

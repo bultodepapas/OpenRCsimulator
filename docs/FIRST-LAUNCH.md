@@ -41,6 +41,8 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 | Z | Toggle auto-zoom |
 | V | Ground-shadow aid: sun / vertical / off |
 | K · Enter | Start calibration · advance its step |
+| H | Toggle the Stik smoke pump with keyboard controls |
+| J · Enter | Assign the active radio's smoke AUX · advance its step |
 | T | Start / save a flight trace |
 | F3 | Toggle performance numbers |
 | F5 | Reload the aircraft data file |
@@ -52,6 +54,8 @@ Letters refer to physical QWERTY positions; in-game Help shows your keyboard's l
 Connect in USB joystick mode with RF modules off. EdgeTX/OpenTX's Advanced joystick interface with at most eight axes is the starting configuration; mappings still depend on device, firmware and platform. The default channel order is AETR.
 
 Move throttle to low to arm. If channels or directions are wrong, press **K**, follow the on-screen steps with **Enter**, then move throttle away from low and back to low to rearm. Calibration is saved per radio. Unplugging pauses with idle throttle. Simulated-device tests do not certify your hardware.
+
+On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF, turn exactly one unused axis/button ON, then return it OFF, using Enter at each step. Buttons offer held-level or press-edge toggle. AETR axes cannot be assigned. The profile is saved per device; after assignment/reconnection, report OFF again before using smoke and rearm throttle before resuming. **H** controls the pump when no radio is connected. Ordinary glow exhaust is faint; the pump needs sufficient running RPM/throttle. Other aircraft currently have no configured smoke installation. [Feature and limits](SMOKE-PLAN.md).
 
 ## Current source
 
@@ -65,7 +69,7 @@ Current source includes per-wheel spin/contact and approximate static tree/prop 
 
 **Updates.** While Home is open, an exported build asks GitHub once a day whether a newer release is published: one anonymous HTTPS request to `api.github.com` carrying only the app version and the OS name. A newer version shows a small card at the top right. **Download** opens the release page in your browser, where the three ZIPs, `SHA256SUMS` and the release notes are; **Hide** silences that version until a newer one exists. Updating is manual: download the ZIP for your platform and replace the extracted folder; settings and calibration live in your user data folder and are kept. To turn the check off, set `check=false` under `[updates]` in `settings.cfg` (Windows `%APPDATA%\Godot\app_userdata\OpenRC Simulator\`, macOS `~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/`, Linux `~/.local/share/godot/app_userdata/OpenRC Simulator/`). Builds run from the source tree do not check.
 
-The Extra, P-51 and Avanti remain experimental. Avanti starts airborne with gear and flaps up. Electric development fixtures are not selectable catalog aircraft. Turbo Lumber Evolution is a selectable visual preview; Fly is unavailable until its flight data and propulsion are integrated.
+The Extra, P-51, Avanti and Turbo Lumber Evolution remain experimental. Avanti starts airborne with gear and flaps up. Turbo Lumber Evolution flies with fixed wheels, flaps up, assists off and a prescribed 4S bus; battery depletion is not modeled. Its motor losses and borrowed propeller map need matched hardware measurements. Synthetic electric development fixtures remain separate from the catalog.
 
 ## 5. Measure frame times (for the landscape work)
 

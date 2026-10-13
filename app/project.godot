@@ -16,6 +16,13 @@ config/features=PackedStringArray("4.7")
 window/size/viewport_width=1280
 window/size/viewport_height=720
 
+[input]
+
+smoke_pump={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":72)]
+}
+
 [physics]
 
 ; Simulation steps at a fixed 240 Hz. Up to 12 catch-up steps per frame keeps real time down to 20 fps;

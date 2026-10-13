@@ -3,6 +3,7 @@ extends RefCounted
 
 const Frames = preload("res://render/frames.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
+const DamageBatches = preload("res://scenery/damage_batches.gd")
 const POST_WIDTH_M: float = 0.08
 const POST_DEPTH_M: float = 0.08
 const FOOT_HEIGHT_M: float = 0.02
@@ -44,22 +45,21 @@ static func post_positions(cue: Dictionary) -> PackedVector3Array:
 	return result
 
 
-static func build(cue: Dictionary) -> Node3D:
-	var root: Node3D = Node3D.new()
-	root.name = str(cue.id)
-	root.position = Frames.ned_to_render([cue.north, cue.east, 0.0])
-	root.set_process(false)
-	var kit: RefCounted = MeshKit.new()
+## CR-17a: shared source dimensions; the gap and spaces between rails remain open.
+static func parts(cue: Dictionary) -> Array[Dictionary]:
+	var parts: Array[Dictionary] = []
 	var positions: PackedVector3Array = post_positions(cue)
 	var posts_per_bank: int = positions.size() / 2
 	var bay_count: int = posts_per_bank - 1
 	var height: float = float(cue.height)
 	var cap_base_y: float = height - CAP_HEIGHT_M
 	var post_body_height: float = height - FOOT_HEIGHT_M - CAP_HEIGHT_M
-	for position: Vector3 in positions:
-		kit.block(Vector3(POST_WIDTH_M, FOOT_HEIGHT_M, POST_DEPTH_M), Vector3(position.x, 0.0, 0.0), FOOTING)
-		kit.block(Vector3(POST_WIDTH_M, post_body_height, POST_DEPTH_M), Vector3(position.x, FOOT_HEIGHT_M, 0.0), STEEL)
-		kit.block(Vector3(POST_WIDTH_M, CAP_HEIGHT_M, POST_DEPTH_M), Vector3(position.x, cap_base_y, 0.0), STEEL.lightened(0.08))
+	for index: int in positions.size():
+		var position: Vector3 = positions[index]
+		var id := "barrier:%s:post:%02d" % [cue.id, index]
+		parts.append({id = id, size = Vector3(POST_WIDTH_M, FOOT_HEIGHT_M, POST_DEPTH_M), base = Vector3(position.x, 0.0, 0.0), color = FOOTING, profile = "metal"})
+		parts.append({id = id, size = Vector3(POST_WIDTH_M, post_body_height, POST_DEPTH_M), base = Vector3(position.x, FOOT_HEIGHT_M, 0.0), color = STEEL, profile = "metal"})
+		parts.append({id = id, size = Vector3(POST_WIDTH_M, CAP_HEIGHT_M, POST_DEPTH_M), base = Vector3(position.x, cap_base_y, 0.0), color = STEEL.lightened(0.08), profile = "metal"})
 	for bank: int in 2:
 		var bank_start: int = bank * posts_per_bank
 		for bay: int in bay_count:
@@ -70,11 +70,22 @@ static func build(cue: Dictionary) -> Node3D:
 			for slat: int in SLAT_COUNT:
 				var fraction: float = float(slat) / float(SLAT_COUNT - 1)
 				var centre_y: float = lerpf(FIRST_SLAT_CENTRE_M, height - TOP_SLAT_MARGIN_M, fraction)
-				kit.block(
-					Vector3(span, SLAT_HEIGHT_M, SLAT_DEPTH_M),
-					Vector3(centre_east, centre_y - SLAT_HEIGHT_M * 0.5, 0.0),
-					ORANGE
-				)
+				parts.append({id = "barrier:%s:rail:%d:%02d:%d" % [cue.id, bank, bay, slat],
+					size = Vector3(span, SLAT_HEIGHT_M, SLAT_DEPTH_M),
+					base = Vector3(centre_east, centre_y - SLAT_HEIGHT_M * 0.5, 0.0), color = ORANGE, profile = "wood"})
+	return parts
+
+
+static func build(cue: Dictionary) -> Node3D:
+	var root: Node3D = Node3D.new()
+	root.name = str(cue.id)
+	root.position = Frames.ned_to_render([cue.north, cue.east, 0.0])
+	root.set_process(false)
+	var kit := MeshKit.new()
+	for part: Dictionary in parts(cue):
+		var first := kit.verts.size()
+		kit.block(part.size, part.base, part.color)
+		kit.tag_damage(first, part.id)
 	var material: StandardMaterial3D = StandardMaterial3D.new()
 	material.vertex_color_use_as_albedo = true
 	material.roughness = 0.95
@@ -82,6 +93,7 @@ static func build(cue: Dictionary) -> Node3D:
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = "Barrier"
 	mesh_instance.mesh = kit.to_mesh(material)
+	DamageBatches.capture(mesh_instance, kit.damage_ranges)
 	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mesh_instance.set_process(false)
 	root.add_child(mesh_instance)

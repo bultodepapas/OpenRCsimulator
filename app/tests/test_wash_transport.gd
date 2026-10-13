@@ -55,8 +55,17 @@ func _initialize() -> void:
 		legacy.setup(Catalog.entry(id).data)
 		var wheel_state := PackedFloat64Array()
 		wheel_state.resize(legacy.wheel_count())
-		check(id + " production has only zero wheel state, no wash transport",
-			legacy._rotor_index() == 0 and legacy.sim.continuous == wheel_state)
+		if Prop.is_electric(legacy.aircraft.model.propulsion):
+			var expected := PackedFloat64Array([legacy.sim.aux[0]])
+			expected.append_array(wheel_state)
+			check(id + " fixed-bus electric has shaft RPM then zero wheel states, no wash transport",
+				legacy.shaft_is_coupled() and not legacy.battery_is_dynamic()
+				and legacy._rotor_index() == 0 and legacy.wheel_index() == 1
+				and legacy.wheel_count() == 3 and not W.enabled(legacy.aircraft.model.propulsion)
+				and legacy.sim.continuous == expected)
+		else:
+			check(id + " production has only zero wheel state, no wash transport",
+				legacy._rotor_index() == 0 and legacy.sim.continuous == wheel_state)
 		legacy.free()
 	print("E0b5 transport: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

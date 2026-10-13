@@ -73,6 +73,7 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `aero.surfaces.vertical.lift_slope` | 1/rad | ≥0.1, ≤6.3 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.vertical.position` | m | length 3…3, each(≥-2, ≤2) | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.wing_aileron_effectiveness` | 1 | ≥0.01, ≤1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
+| `aero.surfaces.wing_section_cm_ac` | 1 | ≥-0.3, ≤0.1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.wing_station_incidence` | rad | length 3…3, each(≥-0.2, ≤0.2) | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.wing_polar.negative` | deg, 1, 1, 1 | length 16…256, each(≥0, ≤90) | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
 | `aero.wing_polar.positive` | deg, 1, 1, 1 | length 16…256, each(≥0, ≤90) | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
@@ -166,4 +167,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 152 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 153 distinct quantity paths. Shared paths retain branch-dependent ranges.

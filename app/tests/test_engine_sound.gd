@@ -3,6 +3,7 @@
 extends SceneTree
 
 const Sound := preload("res://render/engine_sound.gd")
+const FlightAudio := preload("res://audio/flight_audio.gd")
 
 var _failures := 0
 var _count := 0
@@ -31,6 +32,25 @@ func _power(x: PackedFloat32Array, freq: float, rate: float) -> float:
 func _initialize() -> void:
 	var rate := Sound.MIX_RATE
 	_check("firing frequency = rpm / 60", Sound.firing_frequency(6000.0) == 100.0 and Sound.firing_frequency(-5.0) == 0.0)
+	var timber_motor: Dictionary = {
+		"kind": "electric_prop",
+		"motor": {"kv_rpm_per_volt": 800.0},
+		"battery": {"kind": "fixed_voltage", "voltage_v": 14.8},
+		"max_rpm": 12000.0,
+	}
+	_check("fixed-bus electric audio reference is Kv × voltage", Sound.reference_rpm(timber_motor) == 11840.0,
+		str(Sound.reference_rpm(timber_motor)))
+	var ocv_motor: Dictionary = {
+		"kind": "electric_prop",
+		"motor": {"kv_rpm_per_volt": 800.0},
+		"battery": {"kind": "ocv_resistance"},
+		"max_rpm": 13440.0,
+	}
+	_check("OCV electric fixture keeps its normalized reference RPM", Sound.reference_rpm(ocv_motor) == 13440.0)
+	_check("electric data without a reference does not use the combustion fallback",
+		Sound.reference_rpm({"kind": "electric_prop"}) == 0.0)
+	_check("Timber audio uses its three-blade propeller", FlightAudio.propeller_blade_count("turbo-lumber-evolution") == 3)
+	_check("other aircraft keep the two-blade default", FlightAudio.propeller_blade_count("jensen-ugly-stik-60") == 2)
 
 	# The buzz has its fundamental at rpm/60, not in between harmonics.
 	for rpm in [2800.0, 5139.0, 11149.0]:

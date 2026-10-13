@@ -228,14 +228,22 @@ const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
+const SceneryDamage := preload("res://sim/scenery_damage.gd")
 
 const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
-const RUNWAY_AIRCRAFT_ID := "jensen-das-ugly-stik-60"
+## Aircraft whose runway starts have passed the ground qualification gate (TT-11).
+const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution"]
 const RUNWAY_FIELD_ID := "default"
+
+
+static func runway_aircraft_supported(aircraft_id: String) -> bool:
+	return RUNWAY_AIRCRAFT_IDS.has(aircraft_id)
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
+## Emitted when the detached scenery damage state changes or a session reset/restore succeeds.
+signal scenery_damage_changed
 
 ## Auxiliary simulation state (advanced once per tick in _pre_step): engine rpm, then the servos' actual positions
 ## (roll, pitch, yaw in command units, −1…1 of each surface's throw, trims included).
@@ -316,6 +324,9 @@ var surface_error := ""
 ## Detached scalar proxy inventory; empty keeps the legacy no-world path byte-for-byte unchanged.
 var _collision_world: Dictionary = {}
 var _last_scenery_event: SceneryCollision.Event = null
+var _scenery_damage: Dictionary = {}
+var _pending_scenery_damage: Dictionary = {}
+var _pending_scenery_tick: int = -1
 ## false: no aircraft physics (the Stage 0/1 scripted circle). The simulation is disabled; input still shapes commands.
 var physics_enabled := true
 
@@ -333,6 +344,7 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "") -> void:
 	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
 		sim.post_step = Callable(self, "_resolve_collision_step")
 	sim.faulted.connect(_on_sim_faulted)
+	sim.stepped.connect(_on_sim_stepped)
 	var prepared := _prepare_aircraft(AircraftData.load_file(path))
 	if prepared.ok:
 		_commit_aircraft(prepared)
@@ -354,12 +366,20 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventJoypadMotion:
 		radio.on_motion(event.device, event.axis, event.axis_value)
+	elif event is InputEventJoypadButton:
+		radio.on_button(event.device, event.button_index, event.pressed)
 
 
 func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 	if is_connected and not radio.connected:
 		var info: Dictionary = device_info.call(device)
 		radio.connect_device(device, info, RcCalibration.load_profile(profiles_path, RcInput.key_for(device, info)))
+		if radio.profile.get("kind", "") == "gamepad":
+			var smoke_binding: Dictionary = RcCalibration.load_smoke_binding(profiles_path, radio.device_key)
+			if not smoke_binding.is_empty():
+				var gamepad_profile: Dictionary = radio.profile.duplicate(true)
+				gamepad_profile.aux = {smoke = smoke_binding}
+				radio.use_profile(gamepad_profile, "gamepad")
 		print("radio connected: %s (%s profile)" % [radio.device_key, radio.profile_source])
 	elif not is_connected and radio.connected and device == radio.device_id:
 		calibration = null
@@ -371,7 +391,7 @@ func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 func start_calibration() -> bool:
 	if not radio.connected:
 		return false
-	calibration = RcCalibration.new()
+	calibration = RcCalibration.new(radio.profile)
 	_failsafe("calibrating radio")
 	return true
 
@@ -443,8 +463,12 @@ func set_collision_world(world: Dictionary) -> bool:
 	if world.is_empty():
 		if sim != null and sim.tick > 0 and not _collision_world.is_empty():
 			return false
+		var had_world := not _collision_world.is_empty()
 		_collision_world = {}
 		_last_scenery_event = null
+		_clear_pending_scenery_damage()
+		if had_world:
+			_clear_scenery_damage()
 		if sim != null:
 			sim.post_step = Callable()
 		return true
@@ -458,21 +482,65 @@ func set_collision_world(world: Dictionary) -> bool:
 	if sim != null and sim.tick > 0 and identity != old_identity:
 		return false
 	if world.proxies.is_empty():
+		if sim != null and sim.tick > 0 and not old_identity.is_empty():
+			return false
 		_collision_world = {}
 		_last_scenery_event = null
+		_clear_pending_scenery_damage()
+		if identity != old_identity:
+			_clear_scenery_damage()
 		if sim != null:
 			sim.post_step = Callable()
 		return true
 	_collision_world = world.duplicate(true)
 	_last_scenery_event = null
+	if identity != old_identity:
+		_clear_pending_scenery_damage()
+		_clear_scenery_damage()
 	if sim != null:
 		sim.post_step = Callable(self, "_resolve_collision_step") if not _collision_world.proxies.is_empty() else Callable()
 	return true
 
 
 ## Detached read view for crash wreck contacts and deterministic debugging.
-func collision_world() -> Dictionary:
-	return _collision_world.duplicate(true)
+func collision_world(active_only: bool = false) -> Dictionary:
+	var view: Dictionary = _collision_world.duplicate(true)
+	if not active_only or view.is_empty() or _scenery_damage.is_empty():
+		return view
+	var active_proxies: Array[Dictionary] = []
+	for proxy: Dictionary in view.proxies:
+		if not SceneryDamage.id_is_broken(_scenery_damage, str(proxy.get("damage_id", ""))):
+			active_proxies.append(proxy)
+	if active_proxies.size() == view.proxies.size():
+		return view
+	view.proxies = active_proxies
+	view.bins = _collision_bins_for(active_proxies, float(view.cell_size_m))
+	return view
+
+
+func _collision_bins_for(proxies: Array[Dictionary], cell_size: float) -> Dictionary:
+	var bins: Dictionary = {}
+	for index: int in proxies.size():
+		var proxy: Dictionary = proxies[index]
+		var min_n: int = floori(float(proxy.bounds_north_min) / cell_size)
+		var max_n: int = floori(float(proxy.bounds_north_max) / cell_size)
+		var min_e: int = floori(float(proxy.bounds_east_min) / cell_size)
+		var max_e: int = floori(float(proxy.bounds_east_max) / cell_size)
+		var min_d: int = floori(float(proxy.bounds_down_min) / cell_size)
+		var max_d: int = floori(float(proxy.bounds_down_max) / cell_size)
+		for north_cell: int in range(min_n, max_n + 1):
+			for east_cell: int in range(min_e, max_e + 1):
+				for down_cell: int in range(min_d, max_d + 1):
+					var key := "%d,%d,%d" % [north_cell, east_cell, down_cell]
+					if not bins.has(key):
+						bins[key] = PackedInt64Array()
+					bins[key].append(index)
+	return bins
+
+
+## Detached damage snapshot for renderer state and checkpoint inspection.
+func scenery_damage() -> Dictionary:
+	return _scenery_damage.duplicate(true)
 
 
 func last_scenery_event() -> SceneryCollision.Event:
@@ -661,7 +729,55 @@ func _start_failure_reason() -> String:
 
 
 func _on_sim_faulted(reason: String) -> void:
+	_clear_pending_scenery_damage()
 	pause_reason = "simulation fault: " + reason
+
+
+func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
+		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	if _pending_scenery_tick != tick or _pending_scenery_damage.is_empty():
+		_clear_pending_scenery_damage()
+		return
+	for damage_id: String in _pending_scenery_damage:
+		_scenery_damage[damage_id] = _pending_scenery_damage[damage_id].duplicate(true)
+	_clear_pending_scenery_damage()
+	scenery_damage_changed.emit()
+
+
+func _stage_scenery_damage(event: SceneryCollision.Event) -> void:
+	if event == null or not SceneryDamage.profile_is_valid(event.damage_profile) \
+			or event.damage_profile == "none" or event.damage_id.is_empty() \
+			or not is_finite(event.impact_energy_j) or event.impact_energy_j < SceneryDamage.threshold_j(event.damage_profile):
+		return
+	var impact_state: String = SceneryDamage.impact_state(event.damage_profile, event.impact_energy_j)
+	if impact_state.is_empty() or SceneryDamage.id_is_broken(_scenery_damage, event.damage_id):
+		return
+	if _pending_scenery_tick != event.tick:
+		_clear_pending_scenery_damage()
+		_pending_scenery_tick = event.tick
+	_pending_scenery_damage[event.damage_id] = {
+		profile = event.damage_profile,
+		state = impact_state,
+		tick = event.tick,
+		energy_j = event.impact_energy_j,
+		point_ned = event.point_ned.duplicate(),
+		normal_ned = event.normal_ned.duplicate(),
+		velocity_ned = event.velocity_ned.duplicate(),
+		obstacle_id = event.obstacle_id,
+	}
+
+
+func _clear_pending_scenery_damage() -> void:
+	_pending_scenery_damage.clear()
+	_pending_scenery_tick = -1
+
+
+func _clear_scenery_damage(emit_if_empty: bool = false) -> void:
+	var changed := not _scenery_damage.is_empty()
+	_scenery_damage.clear()
+	_clear_pending_scenery_damage()
+	if changed or emit_if_empty:
+		scenery_damage_changed.emit()
 
 
 ## Re-trims at another condition ("level" at `speed`, or "glide" power-off) and makes it the start. For scripted
@@ -705,6 +821,7 @@ func reload() -> String:
 	var old_start_error: String = start_error
 	var old_launch_metadata: Dictionary = _launch_metadata.duplicate(true)
 	var old_paused: bool = sim.paused
+	var old_damage: Dictionary = _scenery_damage.duplicate(true)
 	_commit_aircraft(prepared)
 	reset()
 	if not sim.fault_reason.is_empty():
@@ -713,6 +830,9 @@ func reload() -> String:
 			return "aircraft reload failed during reset; simulation paused: %s" % reason
 		_commit_aircraft(old_flight)
 		if _restore_reload_checkpoint(old_snapshot):
+			_scenery_damage = old_damage
+			if not old_damage.is_empty():
+				scenery_damage_changed.emit()
 			commands = old_commands
 			raw = old_raw
 			crash = old_crash
@@ -756,8 +876,8 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 		return { ok = false, message = "aircraft data is invalid" }
 	var model: Dictionary = data.get("model", {})
 	var model_id: String = str(model.get("id", ""))
-	if model_id != RUNWAY_AIRCRAFT_ID:
-		return { ok = false, message = "runway start is supported only for '%s' (got '%s')" % [RUNWAY_AIRCRAFT_ID, model_id] }
+	if not runway_aircraft_supported(model_id):
+		return { ok = false, message = "runway start is supported only for qualified aircraft %s (got '%s')" % [str(RUNWAY_AIRCRAFT_IDS), model_id] }
 	var gear: Dictionary = model.get("landing_gear", {})
 	if gear.is_empty() or not gear.has("breakaway_factor") or gear.get("contacts", []).is_empty():
 		return { ok = false, message = "runway start needs landing gear with stiction data" }
@@ -846,11 +966,12 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 
 func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int) -> PackedFloat64Array:
+	_clear_pending_scenery_damage()
 	if _collision_world.is_empty() or _collision_world.proxies.is_empty() or not aircraft.get("ok", false):
 		_last_scenery_event = null
 		return candidate
 	var scenery_hit: SceneryCollision.Event = SceneryCollision.first_hit(previous, candidate,
-		aircraft.model.crash_hull, _collision_world, next_tick, sim.mass, sim.inertia)
+		aircraft.model.crash_hull, _collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)
 	var ground_hit: ImpactSnapshot.Snapshot = null
 	var ground_fraction := INF
 	if touches_ground(candidate):
@@ -871,6 +992,7 @@ func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloa
 		_last_scenery_event = null
 		return candidate
 	_last_scenery_event = scenery_hit
+	_stage_scenery_damage(scenery_hit)
 	var contact_state: PackedFloat64Array = scenery_hit.contact_state()
 	if scenery_hit.terminal:
 		scenery_hit.response_status = "terminal"
@@ -905,6 +1027,7 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 func reset() -> void:
 	_shaft_pending_reset = false
 	resetting.emit()
+	_clear_scenery_damage(true)
 	crash = {}
 	_last_scenery_event = null
 	if pause_reason.begins_with("CRASH"):
@@ -993,8 +1116,8 @@ func _reset_selected_runway_start() -> Dictionary:
 	if not aircraft.get("ok", false) or not start.get("ok", false):
 		return { ok = false, message = _start_failure_reason() }
 	var model_id: String = str(aircraft.model.get("id", ""))
-	if model_id != RUNWAY_AIRCRAFT_ID:
-		return { ok = false, message = "runway start is supported only for '%s' (got '%s')" % [RUNWAY_AIRCRAFT_ID, model_id] }
+	if not runway_aircraft_supported(model_id):
+		return { ok = false, message = "runway start is supported only for qualified aircraft %s (got '%s')" % [str(RUNWAY_AIRCRAFT_IDS), model_id] }
 	if _runway_field.is_empty():
 		return { ok = false, message = "runway start needs a loaded field" }
 	var field_id: String = str(_runway_field.get("id", ""))
@@ -1598,6 +1721,7 @@ func _ground_up(s: PackedFloat64Array) -> float:
 ## It does not change the persistent start_choice. Failure restores the normal trimmed start and returns false.
 func reset_on_runway(north: float, east: float, heading: float) -> bool:
 	resetting.emit()
+	_clear_scenery_damage(true)
 	crash = {}
 	if pause_reason.begins_with("CRASH"):
 		pause_reason = ""
@@ -1831,6 +1955,8 @@ func checkpoint() -> Dictionary:
 		boundary.physics_format = str(boundary.format)
 		boundary.format = "openrc-flight-checkpoint v7"
 		boundary.collision_world_identity = str(_collision_world.identity)
+		if not _scenery_damage.is_empty():
+			boundary.scenery_damage = _scenery_damage.duplicate(true)
 	return boundary
 
 
@@ -1851,6 +1977,9 @@ func _configuration_for_weather(field: WeatherField) -> String:
 	if Propulsion.is_electric(aircraft.model.propulsion):
 		parts.append(electric_law())
 	if not _collision_world.is_empty():
+		parts.append("scenery-damage-policy:" + SceneryDamage.POLICY_VERSION)
+		parts.append(SceneryDamage.THRESHOLDS_J)
+		parts.append(SceneryDamage.BROKEN_PROFILES)
 		parts.append("collision-world:" + str(_collision_world.identity))
 	config_hash.update(var_to_bytes(parts))
 	return config_hash.finish().hex_encode()
@@ -1863,6 +1992,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
 		return false
+	var snapshot: Dictionary = candidate.simulation
 	var physics_format: String = str(candidate.get("physics_format", candidate.get("format", "")))
 	if physics_format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]:
 		return false
@@ -1872,6 +2002,15 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			return false
 	elif has_collision_world:
 		return false # Old snapshots do not identify the obstacles used by the deterministic tick filter.
+	if candidate.format != "openrc-flight-checkpoint v7" and candidate.has("scenery_damage"):
+		return false
+	var restored_damage: Dictionary = {}
+	if candidate.has("scenery_damage"):
+		if typeof(candidate.scenery_damage) != TYPE_DICTIONARY:
+			return false
+		restored_damage = candidate.scenery_damage.duplicate(true)
+	if not _scenery_damage_is_valid(restored_damage, int(snapshot.get("tick", -1))):
+		return false
 	var electric: bool = Propulsion.is_electric(aircraft.model.propulsion)
 	if electric != (physics_format in ["openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]) \
 			or (electric and candidate.get("electric_law") != electric_law()) \
@@ -1902,7 +2041,6 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			return false
 	elif candidate.has("wheel_state_layout") or candidate.has("wheel_profile_sha256") or candidate.has("wheel_profile_input_sha256"):
 		return false
-	var snapshot: Dictionary = candidate.simulation
 	var turbulent: bool = restored_weather.has_turbulence()
 	var expected_aux: int = turbulence_index() + 7 if turbulent else (
 		turbulence_index() if _weather.has_turbulence() else sim.aux.size())
@@ -1930,6 +2068,8 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 		sim.aux = old_aux
 		sim.modes = old_modes
 		return false
+	_scenery_damage = restored_damage
+	_clear_pending_scenery_damage()
 	_weather = restored_weather
 	_weather_pending_reset = false
 	_shaft_pending_reset = false
@@ -1946,4 +2086,57 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	_last_scenery_event = null
 	pause_reason = "checkpoint restored (recorded inputs)"
 	_deflection_key = PackedFloat64Array()
+	scenery_damage_changed.emit()
+	return true
+
+
+func _scenery_damage_is_valid(damage: Dictionary, snapshot_tick: int) -> bool:
+	if snapshot_tick < 0:
+		return false
+	if damage.is_empty():
+		return true
+	var groups: Dictionary = {}
+	for proxy: Dictionary in _collision_world.get("proxies", []):
+		var damage_id: String = str(proxy.get("damage_id", ""))
+		if damage_id.is_empty():
+			continue
+		var profile: String = str(proxy.get("damage_profile", ""))
+		if not groups.has(damage_id):
+			groups[damage_id] = { profile = profile, mixed = false, obstacles = {} }
+		elif str(groups[damage_id].profile) != profile:
+			groups[damage_id].mixed = true
+		groups[damage_id].obstacles[str(proxy.get("id", ""))] = true
+	for raw_id: Variant in damage.keys():
+		if typeof(raw_id) != TYPE_STRING or str(raw_id).is_empty() or not groups.has(str(raw_id)):
+			return false
+		var record: Variant = damage[raw_id]
+		if typeof(record) != TYPE_DICTIONARY:
+			return false
+		var installed: Dictionary = groups[str(raw_id)]
+		if installed.mixed or typeof(record.get("profile")) != TYPE_STRING \
+				or not SceneryDamage.profile_is_valid(str(record.profile)) or str(record.profile) == "none" \
+				or str(record.profile) != str(installed.profile) \
+				or typeof(record.get("state")) != TYPE_STRING or typeof(record.get("tick")) != TYPE_INT \
+				or typeof(record.get("energy_j")) not in [TYPE_FLOAT, TYPE_INT] \
+				or typeof(record.get("obstacle_id")) != TYPE_STRING or str(record.obstacle_id).is_empty():
+			return false
+		var state: String = str(record.state)
+		var tick: int = int(record.tick)
+		var energy: float = float(record.energy_j)
+		if tick < 1 or tick > snapshot_tick or not is_finite(energy) \
+				or energy < SceneryDamage.threshold_j(str(record.profile)) \
+				or SceneryDamage.impact_state(str(record.profile), energy) != state \
+				or not installed.obstacles.has(str(record.obstacle_id)):
+			return false
+		for field: String in ["point_ned", "normal_ned", "velocity_ned"]:
+			var vector: Variant = record.get(field)
+			if typeof(vector) != TYPE_PACKED_FLOAT64_ARRAY or vector.size() != 3:
+				return false
+			for component: float in vector:
+				if not is_finite(component):
+					return false
+		var normal: PackedFloat64Array = record.normal_ned
+		var normal_length: float = M.norm(normal)
+		if not is_finite(normal_length) or normal_length <= 0.0:
+			return false
 	return true

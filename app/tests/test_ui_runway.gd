@@ -17,6 +17,7 @@ const BAD_FIELD := "user://test_ui_runway_bad_field.json"
 const ALT_FIELD := "user://test_ui_runway_alternate_field.json"
 const RADIO_PROFILES := "user://test_ui_runway_radio.cfg"
 const STIK := "jensen-das-ugly-stik-60"
+const TIMBER := "turbo-lumber-evolution"
 const EXTRA := "gp-extra-300s-60"
 const P51 := "p51d-mustang-120"
 const AVANTI := "sebart-avanti-s-a200-p100rx"
@@ -70,6 +71,8 @@ func _preferences_cases() -> void:
 
 	_check("runway preference is valid for the Stik", _write_preferences(PREFS, 1, "en", STIK, RUNWAY) == OK
 		and Preferences.load_from(PREFS).start_choice == RUNWAY)
+	_check("runway preference is valid for qualified Timber", _write_preferences(PREFS, 1, "en", TIMBER, RUNWAY) == OK
+		and Preferences.load_from(PREFS).aircraft == TIMBER and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	_check("runway preference for the Extra is sanitized", _write_preferences(PREFS, 1, "en", EXTRA, RUNWAY) == OK
 		and Preferences.load_from(PREFS).start_choice == AIRBORNE)
 
@@ -324,6 +327,13 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	await ui.settle()
 	_check("switching back to the Stik does not restore runway", home.get("start_choice") == AIRBORNE
 		and not home.get("start_button").disabled)
+	app.call("set_aircraft", TIMBER)
+	await ui.settle()
+	_check("qualified Timber enables the runway selector", home.get("aircraft_id") == TIMBER
+		and home.get("start_choice") == AIRBORNE and not home.get("start_button").disabled)
+	home.get("start_button").grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Home can select runway for qualified Timber", home.get("start_choice") == RUNWAY)
 	await _close_app(app)
 
 

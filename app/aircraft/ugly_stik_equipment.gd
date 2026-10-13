@@ -576,6 +576,10 @@ static func _add_engine(root: Node3D) -> void:
 	var assembly := _flush(root, "engine_assembly", blocks)
 	assembly.set_meta("intake_mouth", intake_end)
 	assembly.set_meta("intake_axis", intake_axis)
+	# SM-01: the optional exhaust interface is authored at the same hollow mouth as the mesh.
+	# Coordinates are model-local; this is a glow-oil trace and an optional presentation pump.
+	root.set_meta("exhausts", [{position = outlet_end, direction = (outlet_end - outlet_start).normalized(),
+		radius_m = 0.0029, kind = "glow_prop", pump = true}])
 	root.set_meta("engine_revision", "glow-61-detail-v5")
 
 

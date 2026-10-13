@@ -7,7 +7,8 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Trace := preload("res://sim/trace.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
-const PROFILED_AIRCRAFT := ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120"]
+const TIMBER := "turbo-lumber-evolution"
+const PROFILED_AIRCRAFT := ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", TIMBER]
 const WHEEL_LAYOUT_SUFFIX := "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 
 var _failures: int = 0
@@ -56,7 +57,7 @@ func _initialize() -> void:
 	session.input_enabled = false
 	session.setup()
 	root.add_child(session)
-	var recorder: RefCounted = Recorder.new(session.sim)
+	var recorder: RefCounted = Recorder.new(session.sim, session.electrical_state)
 	for entry in Catalog.flyable_entries(): # TT-06: previews carry no data file
 		session.aircraft_path = entry.data
 		_check("reload " + entry.id, session.reload().begins_with("aircraft reloaded:"))
@@ -86,6 +87,9 @@ func _initialize() -> void:
 		elif entry.id == "sebart-avanti-s-a200-p100rx":
 			_check("Avanti spool", meta.propulsion_model == "turbine-ecu-spool-v1")
 			_check("Avanti no propwash", meta.propwash_model == "none")
+		elif entry.id == TIMBER:
+			_check("Timber coupled electric motor", meta.propulsion_model == "electric-fixed-bus-coupled-stop-v1")
+			_check("Timber no unmodeled propwash", meta.propwash_model == "none")
 		else:
 			_check("Stik/Extra lag", meta.propulsion_model == "propeller-rpm-lag-v1")
 			_check("Stik/Extra no propwash", meta.propwash_model == "none")
@@ -96,6 +100,9 @@ func _initialize() -> void:
 		for _tick in 12:
 			session.sim.step()
 		recorder.start(session.trace_meta())
+		if entry.id == TIMBER:
+			_check("Timber trace carries endpoint-sampled motor current", recorder.trace.columns().has("motor_current_a")
+				and recorder.trace.columns().has("drive_bus_current_a"))
 		var snapshot: Dictionary = recorder.trace.meta.duplicate(true)
 		_check("mid-flight recording tick", snapshot.recording_start_tick == 12)
 		_check("mid-flight aux snapshot", _aux_matches(snapshot.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))

@@ -47,6 +47,14 @@ func _initialize() -> void:
 	_check("found the stick keys in keyboard.gd (%d)" % stick_keys.size(), stick_keys.size() == 8)
 	_check("found the shortcuts in main.gd (%d)" % shortcut_keys.size(), shortcut_keys.size() >= 10)
 	var handled := stick_keys + shortcut_keys
+	# Shortcuts implemented through Input Map must also have their default physical keys listed.
+	var shortcut_source := _function_body(FileAccess.get_file_as_string("res://main.gd"), "func _unhandled_input")
+	for action_match in RegEx.create_from_string("is_action_pressed\\(\"([^\"]+)\"\\)").search_all(shortcut_source):
+		for event: InputEvent in InputMap.action_get_events(action_match.get_string(1)):
+			if event is InputEventKey:
+				var key: int = event.physical_keycode if event.physical_keycode != KEY_NONE else event.keycode
+				if not key in handled:
+					handled.append(key)
 	var listed := Reference.all_keys()
 	var missing := handled.filter(func(k: int) -> bool: return not k in listed).map(func(k: int) -> String: return OS.get_keycode_string(k))
 	var stale := listed.filter(func(k: int) -> bool: return not k in handled).map(func(k: int) -> String: return OS.get_keycode_string(k))

@@ -110,7 +110,7 @@ func _start() -> void:
 		report["response_class"] = str(impact.response_class)
 		report["effective_mass_kg"] = float(impact.effective_mass_kg)
 		report["mass_basis"] = "rigid-body effective mass at the swept contact; material transfer remains estimated"
-		_scenery_contacts = SceneryBodies.build_near(flight.session.collision_world(), point)
+		_scenery_contacts = SceneryBodies.build_near(flight.session.collision_world(true), point)
 		add_child(_scenery_contacts)
 	report["trigger"] = impact.trigger
 	report["component_is_estimate"] = true

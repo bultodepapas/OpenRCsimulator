@@ -49,18 +49,24 @@ func _group(groups: Array, id: String) -> Dictionary:
 
 func _test_catalog_fleet(groups: Array) -> void:
 	var fleet := _group(groups, "fleet")
-	var catalog_ids := Array(AircraftCatalog.flyable_ids()) # TT-06: a preview has no parked snapshot (TT-13b decides)
+	var catalog_ids := Array(AircraftCatalog.flyable_ids())
+	var parked_ids: Array = fleet.get("aircraft", [])
 	var model_ids: Array = Models.FLEET.values()
 	var unique_models: Dictionary = {}
 	for id: String in model_ids:
 		unique_models[id] = true
-	_check("parked fleet IDs exactly match the flyable flight catalog in order",
-		fleet.get("aircraft", []) == catalog_ids and fleet.get("aircraft", []).size() == 4,
-		"flight=%s parked=%s" % [catalog_ids, fleet.get("aircraft", [])])
-	_check("baked fleet source map exactly covers the flight catalog",
-		model_ids.size() == catalog_ids.size() and unique_models.size() == model_ids.size()
-		and model_ids.all(func(id: String) -> bool: return catalog_ids.has(id)))
-	for id: String in catalog_ids:
+	var unique_parked: Dictionary = {}
+	for id: String in parked_ids:
+		unique_parked[id] = true
+	var parked_are_flyable: bool = not parked_ids.is_empty() and unique_parked.size() == parked_ids.size()
+	for id: String in parked_ids:
+		parked_are_flyable = parked_are_flyable and catalog_ids.has(id)
+	_check("parked snapshots are a nonempty unique subset of flyable aircraft",
+		parked_are_flyable, "flyable=%s parked=%s" % [catalog_ids, parked_ids])
+	_check("fleet placement IDs match the baked snapshot source map",
+		parked_ids == model_ids and model_ids.size() == unique_models.size(),
+		"parked=%s baked=%s" % [parked_ids, model_ids])
+	for id: String in parked_ids:
 		var model_id := str(Models.FLEET.find_key(id))
 		_check("%s resolves to a baked display model" % id,
 			not model_id.is_empty() and not Models.arrays(model_id).is_empty(), model_id)

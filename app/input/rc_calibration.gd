@@ -6,6 +6,7 @@
 extends RefCounted
 
 const RcInput := preload("res://input/rc_input.gd")
+const SmokeAux := preload("res://input/smoke_aux.gd")
 
 const STEPS := ["rest", "throttle", "roll", "pitch", "yaw"]
 const PROMPTS := {
@@ -28,10 +29,18 @@ var _lo := PackedFloat64Array()
 var _hi := PackedFloat64Array()
 var _first := PackedFloat64Array() # sign of each axis's first deflection beyond the threshold (0 = none yet)
 var _used := {}
+var _preserved_smoke: Dictionary = {}
+var aux_warning: String = ""
 
 
-func _init() -> void:
+func _init(existing_profile: Dictionary = {}) -> void:
 	profile = { kind = "radio" }
+	var clean := SmokeAux.sanitize_profile(existing_profile)
+	var aux: Variant = clean.get("aux", {})
+	if typeof(aux) == TYPE_DICTIONARY:
+		var smoke: Variant = aux.get("smoke", {})
+		if SmokeAux.valid_binding(smoke, SmokeAux.flight_axes(clean)):
+			_preserved_smoke = smoke.duplicate(true)
 	for a in [_rest, _lo, _hi, _first]:
 		a.resize(RcInput.AXES)
 
@@ -95,6 +104,8 @@ func advance(axes: PackedFloat64Array) -> bool:
 func _next() -> void:
 	step += 1
 	_reset_sweep()
+	if done():
+		_preserve_smoke_if_clear()
 
 
 func _reset_sweep() -> void:
@@ -106,7 +117,8 @@ func _reset_sweep() -> void:
 
 ## Saves a profile for a device. Sections are keyed by an MD5 of the device key (ConfigFile-safe).
 static func save_profile(path: String, device_key: String, p: Dictionary) -> Error:
-	if device_key.is_empty() or not valid(p):
+	var clean := SmokeAux.sanitize_profile(p)
+	if device_key.is_empty() or not valid(clean):
 		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
 	var err: Error = cfg.load(path)
@@ -114,7 +126,7 @@ static func save_profile(path: String, device_key: String, p: Dictionary) -> Err
 		return err # Do not overwrite other devices when the existing file cannot be read.
 	var section := device_key.md5_text()
 	cfg.set_value(section, "device_key", device_key)
-	cfg.set_value(section, "profile", p)
+	cfg.set_value(section, "profile", clean)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path).get_base_dir())
 	return cfg.save(path)
 
@@ -131,7 +143,52 @@ static func load_profile(path: String, device_key: String) -> Dictionary:
 	if typeof(identity) != TYPE_STRING or identity != device_key:
 		return {}
 	var p = cfg.get_value(section, "profile", {})
-	return p if valid(p) else {}
+	return SmokeAux.sanitize_profile(p) if valid(p) else {}
+
+
+## Saves only the optional smoke binding in the existing per-device section.
+## Gamepad AUX never enters or weakens the radio flight-profile schema.
+static func save_smoke_binding(path: String, device_key: String, binding: Variant) -> Error:
+	if device_key.is_empty() or not SmokeAux.valid_binding(binding):
+		return ERR_INVALID_DATA
+	var cfg := ConfigFile.new()
+	var err: Error = cfg.load(path)
+	if err != OK and err != ERR_FILE_NOT_FOUND:
+		return err # Never overwrite another device's settings when storage is unreadable.
+	var section := device_key.md5_text()
+	if cfg.has_section(section):
+		var identity: Variant = cfg.get_value(section, "device_key", "")
+		if typeof(identity) != TYPE_STRING or identity != device_key:
+			return ERR_INVALID_DATA
+	cfg.set_value(section, "device_key", device_key)
+	cfg.set_value(section, "smoke_binding", binding.duplicate(true))
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path).get_base_dir())
+	return cfg.save(path)
+
+
+## The device's valid smoke binding, or {} if it is unknown or storage is unreadable/corrupt.
+static func load_smoke_binding(path: String, device_key: String) -> Dictionary:
+	if device_key.is_empty():
+		return {}
+	var cfg := ConfigFile.new()
+	if cfg.load(path) != OK:
+		return {}
+	var section := device_key.md5_text()
+	var identity: Variant = cfg.get_value(section, "device_key", "")
+	if typeof(identity) != TYPE_STRING or identity != device_key:
+		return {}
+	var binding: Variant = cfg.get_value(section, "smoke_binding", {})
+	return binding.duplicate(true) if SmokeAux.valid_binding(binding) else {}
+
+
+func _preserve_smoke_if_clear() -> void:
+	if _preserved_smoke.is_empty():
+		return
+	if SmokeAux.valid_binding(_preserved_smoke, SmokeAux.flight_axes(profile)):
+		profile.aux = { smoke = _preserved_smoke.duplicate(true) }
+		return
+	aux_warning = "Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment."
+	push_warning(aux_warning)
 
 
 ## Persisted wizard profiles are radios; the built-in gamepad rate profile is not a calibration.

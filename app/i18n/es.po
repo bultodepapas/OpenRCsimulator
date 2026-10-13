@@ -420,8 +420,8 @@ msgstr "Turbo Tronco Evolución"
 msgid "High-wing STOL · 1.55 m · 4S electric"
 msgstr "STOL de ala alta · 1,55 m · eléctrico 4S"
 
-msgid "Preview only: electric propulsion and flight data are not simulated yet."
-msgstr "Solo vista previa: la propulsión eléctrica y los datos de vuelo aún no se simulan."
+msgid "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off."
+msgstr "Experimental: motor eléctrico estimado y datos de otra hélice. Tren fijo, flaps arriba y asistencias desactivadas."
 
 msgid "Flight model under evaluation."
 msgstr "Modelo de vuelo en evaluación."
@@ -447,8 +447,8 @@ msgstr "Inicio: en el aire"
 msgid "Start: runway (experimental)"
 msgstr "Inicio: pista (experimental)"
 
-msgid "Starts at idle on the runway. Experimental ground handling."
-msgstr "Motor al ralentí en pista. Rodaje experimental."
+msgid "Starts on the runway. Experimental ground handling."
+msgstr "Empieza en pista. Rodaje experimental."
 
 msgid "Could not start flight: %s"
 msgstr "No se pudo iniciar el vuelo: %s"
@@ -605,3 +605,84 @@ msgstr "Oculta este aviso hasta que se publique una versión más nueva."
 
 msgid "Could not open the browser (error %d)."
 msgstr "No se pudo abrir el navegador (error %d)."
+
+# SM-03/04 smoke controls and guided assignment.
+msgid "Stik smoke pump (keyboard controls)"
+msgstr "Bomba de humo del Stik (teclado)"
+
+msgid "Assign the active radio's smoke AUX"
+msgstr "Asignar AUX de humo de la radio"
+
+msgid "Button: pump while held"
+msgstr "Botón: humo mientras se mantiene pulsado"
+
+msgid "Button: toggle on press"
+msgstr "Botón: alternar al pulsar"
+
+msgid "Move exactly one unused control. Multiple controls are ambiguous; try again."
+msgstr "Mueve un solo control libre. Varios controles son ambiguos; inténtalo de nuevo."
+
+msgid "The axis needs a larger OFF-to-ON sweep. Try again."
+msgstr "El eje necesita más recorrido entre apagado y encendido. Inténtalo de nuevo."
+
+msgid "This assignment conflicts with the flight controls or has invalid endpoints."
+msgstr "La asignación coincide con un mando de vuelo o tiene extremos inválidos."
+
+msgid "The axis did not return to OFF. Return it to OFF and press Enter."
+msgstr "El eje no volvió a apagado. Devuélvelo a apagado y pulsa Intro."
+
+msgid "The saved OFF and ON positions are too close. Repeat the assignment."
+msgstr "Las posiciones de apagado y encendido están demasiado cerca. Repite la asignación."
+
+msgid "Release the assigned button after entering this step, then press Enter."
+msgstr "Suelta el botón asignado después de entrar en este paso y pulsa Intro."
+
+msgid "The current flight profile is invalid; the AUX assignment was not saved."
+msgstr "El perfil de vuelo no es válido; la asignación AUX no se guardó."
+
+msgid "Smoke pump assignment\nKeep the intended control OFF, then press Enter."
+msgstr "Asignación de la bomba de humo\nMantén el control apagado y pulsa Intro."
+
+msgid "Turn the intended control ON\nMove or press exactly one unused control, then press Enter."
+msgstr "Enciende el control deseado\nMueve o pulsa un solo control libre y pulsa Intro."
+
+msgid "axis %d"
+msgstr "eje %d"
+
+msgid "button %d"
+msgstr "botón %d"
+
+msgid "Return %s to OFF, then press Enter. For a button, release it after this step begins."
+msgstr "Devuelve %s a apagado y pulsa Intro. Si es un botón, suéltalo después de iniciar este paso."
+
+msgid "Smoke pump assignment closed."
+msgstr "Asignación de humo cerrada."
+
+msgid "Detected live: %s. Use one control only; AETR axes are ignored."
+msgstr "Detectado: %s. Usa un solo control; los ejes AETR se ignoran."
+
+msgid "Selected: %s. Only events from the active device count."
+msgstr "Seleccionado: %s. Solo se leen eventos del dispositivo activo."
+
+msgid "Only the active device is read. AETR axes cannot be assigned. Esc cancels."
+msgstr "Solo se lee el dispositivo activo. Los ejes AETR no se pueden asignar. Esc cancela."
+
+msgid "[H] smoke pump %s  [J] assign radio AUX"
+msgstr "[H] bomba de humo %s  [J] asignar AUX de radio"
+
+msgid "Connect a radio before assigning smoke AUX."
+msgstr "Conecta una radio antes de asignar el AUX de humo."
+
+msgid "Smoke AUX assigned. Move throttle and smoke control to OFF before resuming."
+msgstr "AUX de humo asignado. Baja el acelerador y apaga el humo antes de continuar."
+
+msgid "Smoke AUX assigned for this flight; profile could not be saved."
+msgstr "AUX de humo asignado para este vuelo; el perfil no se pudo guardar."
+
+# SM-03/04 smoke controls and guided assignment.
+msgid "Stik smoke pump"
+msgstr "Humo del Stik"
+
+msgid "Assign smoke AUX"
+msgstr "Asignar AUX"
+
