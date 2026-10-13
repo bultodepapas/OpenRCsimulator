@@ -212,7 +212,8 @@ def add_v2_overlay(schema: dict, spec: dict):
     add_text_field(turbine["properties"], "description", nonempty=True)
     add_text_field(turbine["properties"]["engine"]["properties"], "name", nonempty=True)
     turbine["properties"]["engine"]["properties"]["spool_integrator"] = {
-        "type": "string", "enum": ["sampled", "rk4"]
+        "type": "string", "enum": next(rule["values"] for rule in spec["enum_paths"]
+                                         if rule["path"] == "/propulsion/engine/spool_integrator")
     }
 
     electric = schema["$defs"]["electricPropulsion"]
