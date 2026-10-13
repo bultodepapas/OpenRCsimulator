@@ -1,0 +1,211 @@
+{
+  "baseline_head": "bb7e89caed14",
+  "isolated_clone": ".tools/smoke-clean/app",
+  "runtime": ".tools/Godot_v4.7.2-stable_win64_console.exe (headless, Dummy audio)",
+  "full_suite_first_pass": {
+    "check_only": {
+      "total": 459,
+      "passed": 459,
+      "failed": 0
+    },
+    "tests": {
+      "total": 230,
+      "passed": 217,
+      "failed": 13,
+      "timeouts": 2,
+      "runtime_error_runs": 6
+    },
+    "note": "The first-pass failures include 8 snapshot/UI issues corrected in the final clone and superseded by passing focused reruns; the remaining 5 reproduce on pristine HEAD.",
+    "evidence": ".tools/smoke-verification/regression/summary.json"
+  },
+  "pristine_head_reproduction": {
+    "commit": "bb7e89caed14",
+    "total": 13,
+    "passed": 8,
+    "failed": 5,
+    "reproduced_failures": [
+      {
+        "name": "test_downwash_lag.gd",
+        "failure_lines": [
+          "FAIL gp-extra-300s-60 (no downwash gradient): no lag entry",
+          "FAIL p51d-mustang-120 (no downwash gradient): no lag entry",
+          "FAIL sebart-avanti-s-a200-p100rx (no downwash gradient): no lag entry"
+        ],
+        "runtime_error_lines": [],
+        "log": ".tools/smoke-verification/regression/baseline_test_test_downwash_lag.gd.log"
+      },
+      {
+        "name": "test_regime_consistency.gd",
+        "failure_lines": [
+          "FAIL p51d-mustang-120: static Cm at the trim: local 0.0454 within 0.012 of the oracle's 0.0145 (no trim step at the regime switch)"
+        ],
+        "runtime_error_lines": [],
+        "log": ".tools/smoke-verification/regression/baseline_test_test_regime_consistency.gd.log"
+      },
+      {
+        "name": "test_shaft_refinement.gd",
+        "failure_lines": [
+          "FAIL coupled-rk4 smooth full-session RPM refinement: errors [0.0000459051339, 0.00001123518814, 0.00000276336277] rpm, ratios [4.0858357982777, 4.06576662757198]"
+        ],
+        "runtime_error_lines": [],
+        "log": ".tools/smoke-verification/regression/baseline_test_test_shaft_refinement.gd.log"
+      },
+      {
+        "name": "test_slipstream_scalar.gd",
+        "failure_lines": [
+          "FAIL p51d-mustang-120 sample 0: [-0.00011111702226, -0.00000622110663, -0.00058133571742, 0.00000194098584, -0.00075129241508, 0.00000211015544] != [-0.00021681251727, -0.00005896950914, -0.00049563092371, -0.00000886331475, -0.0006311804048, 0.00006357231788]",
+          "FAIL p51d-mustang-120 sample 1: [-2.68583563779667, 7.42579540488242, 7.07837678616586, 2.36567872600376, 9.09657556293914, -9.7276452914796] != [-5.04391923627181, 7.65819914049307, 10.8451130704468, 1.19877471845345, 14.0088046506964, -10.2515035846206]",
+          "FAIL p51d-mustang-120 sample 2: [0.15640688075994, -0.18188182888763, 0.00526819189164, -0.51836649774121, -0.03190572363896, 0.24227162805146] != [0.15069420511202, -0.18239050638391, 0.18859042965006, -0.31449370406994, 0.18968210606304, 0.2438591076006]",
+          "FAIL p51d-mustang-120 sample 3: [-2.60094369073069, 20.3707775354236, 19.8262814734355, 3.6790379542557, 24.1924712536347, -27.1700959618995] != [0.03263555473446, 20.157240969009, 6.21666906487826, 5.74208309625877, 7.38782932434824, -26.501750848892]",
+          "FAIL p51d-mustang-120 sample 4: [0.06582692202251, -0.00664132419998, 0.20463887787195, -0.04354927783614, 0.23577770957927, 0.0219764975595] != [0.24339918404594, -0.02986455670733, 0.59585627835861, -0.13413618835208, 0.67823120676692, 0.08881004489233]"
+        ],
+        "runtime_error_lines": [],
+        "log": ".tools/smoke-verification/regression/baseline_test_test_slipstream_scalar.gd.log"
+      },
+      {
+        "name": "test_turbulence_flight.gd",
+        "failure_lines": [
+          "FAIL midflight trace continuation saves",
+          "FAIL late-clock trace preserves weather timestep"
+        ],
+        "runtime_error_lines": [
+          "ERROR: Could not create directory: '/tmp'.",
+          "ERROR: Could not create directory: '/tmp'."
+        ],
+        "log": ".tools/smoke-verification/regression/baseline_test_test_turbulence_flight.gd.log"
+      }
+    ],
+    "evidence": ".tools/smoke-verification/regression/baseline_comparison.json"
+  },
+  "final_post_fix_verification": {
+    "changed_script_parse": {
+      "total": 15,
+      "passed": 15,
+      "failed": [],
+      "evidence": ".tools/smoke-verification/regression/final_postfix_parse.json"
+    },
+    "focused_tests": {
+      "total": 13,
+      "passed": 13,
+      "failed_or_timed_out": [],
+      "tests": [
+        {
+          "name": "test_controls_reference",
+          "status": "passed",
+          "duration_seconds": 0.25,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_controls_reference.log"
+        },
+        {
+          "name": "test_time_of_day_checkpoint",
+          "status": "passed",
+          "duration_seconds": 5.672,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_time_of_day_checkpoint.log"
+        },
+        {
+          "name": "test_time_of_day_edit",
+          "status": "passed",
+          "duration_seconds": 10.219,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_time_of_day_edit.log"
+        },
+        {
+          "name": "test_time_of_day_session",
+          "status": "passed",
+          "duration_seconds": 4.015,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_time_of_day_session.log"
+        },
+        {
+          "name": "test_treeline",
+          "status": "passed",
+          "duration_seconds": 7.594,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_treeline.log"
+        },
+        {
+          "name": "test_ui_aircraft",
+          "status": "passed",
+          "duration_seconds": 8.531,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_ui_aircraft.log"
+        },
+        {
+          "name": "test_ui_atmosphere",
+          "status": "passed",
+          "duration_seconds": 13.688,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_ui_atmosphere.log"
+        },
+        {
+          "name": "test_ui_help",
+          "status": "passed",
+          "duration_seconds": 15.484,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_ui_help.log"
+        },
+        {
+          "name": "test_engine_smoke",
+          "status": "passed",
+          "duration_seconds": 4.172,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_engine_smoke.log"
+        },
+        {
+          "name": "test_smoke_aux",
+          "status": "passed",
+          "duration_seconds": 0.344,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_smoke_aux.log"
+        },
+        {
+          "name": "test_rc_calibration",
+          "status": "passed",
+          "duration_seconds": 0.328,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_rc_calibration.log"
+        },
+        {
+          "name": "test_rc_profile_validation",
+          "status": "passed",
+          "duration_seconds": 0.703,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_rc_profile_validation.log"
+        },
+        {
+          "name": "test_rc_input",
+          "status": "passed",
+          "duration_seconds": 0.235,
+          "runtime_error_detected": false,
+          "log": ".tools\\smoke-verification\\regression\\final-postfix-logs\\test_rc_input.log"
+        }
+      ]
+    },
+    "coverage": {
+      "corrected_initial_failures": [
+        "test_controls_reference",
+        "test_time_of_day_checkpoint",
+        "test_time_of_day_edit",
+        "test_time_of_day_session",
+        "test_treeline",
+        "test_ui_aircraft",
+        "test_ui_atmosphere",
+        "test_ui_help"
+      ],
+      "engine_smoke_checks": 54,
+      "smoke_aux_checks": 60,
+      "rc_regressions": [
+        "test_rc_calibration",
+        "test_rc_profile_validation",
+        "test_rc_input"
+      ]
+    },
+    "evidence": ".tools/smoke-verification/regression/final_postfix_results.json"
+  },
+  "test_sh_attempt": {
+    "status": "stopped_before_tests",
+    "reason": "Pre-existing generated aircraft schema mismatch: generator emits wing_section_cm_ac while tracked output lacks it.",
+    "instruction": "Do not repair this unrelated generated schema during smoke verification."
+  }
+}

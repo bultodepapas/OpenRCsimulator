@@ -16,6 +16,8 @@ The generated v2 schema/register were stale before this work: their generators a
 
 Pinned Godot 4.7.2, native Windows Compatibility on NVIDIA RTX 3090; headless tests use Dummy audio. Captures below use the real Home/flight routes and renderer. They establish visible integration, not a human readability trial.
 
+Captures: [Home EN](home-en.png), [Home ES](home-es.png), [airborne flight](flight.png), [selected runway flight](runway.png). [Manifest](manifest.json) binds the retained captures, CLI trace and focused logs to the aircraft input bytes.
+
 | Proof | Result |
 | --- | --- |
 | Generated data/schema and load boundary | Generator `--check`, structural schema, production loader and 10 Timber data checks pass; 2.190 kg, 60 mm longitudinal CG, valid full/carrier inertia |

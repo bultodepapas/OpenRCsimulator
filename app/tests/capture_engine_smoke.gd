@@ -37,10 +37,12 @@ var _wind_at_old_puff := Vector3.ZERO
 var _weather_setup_ok := false
 var _weather_setup_error := ""
 var _default_camera_fov := 0.0
+var _proximity_fade := false
 
 
 func _initialize() -> void:
 	var args := _arguments()
+	_proximity_fade = args.has("proximity-fade")
 	if args.has("parse-only"):
 		print("capture_engine_smoke.gd parsed")
 		quit(0)
@@ -63,6 +65,8 @@ func _disable_flight() -> void:
 	_main.set_process_unhandled_input(false)
 	_main._inspect = true # production's close aircraft-mounted view for visual detail and deterministic framing
 	_default_camera_fov = _main._camera.fov
+	if _proximity_fade:
+		_apply_test_proximity_fade()
 	_session = _main.session
 	if _session != null:
 		_session.input_enabled = false
@@ -150,6 +154,10 @@ func _run() -> void:
 	_manifest["startup_rpm"] = float(_sim.aux[0])
 	_manifest["startup_throttle"] = float(_sim.inputs[3])
 	_manifest["active_sim_process_mode"] = _sim.process_mode
+	var smoke_material := _main._smoke.exhaust.draw_pass_1.material as StandardMaterial3D
+	_manifest["smoke_proximity_fade"] = {"enabled": smoke_material.proximity_fade_enabled,
+		"distance_m": smoke_material.proximity_fade_distance, "test_override": _proximity_fade,
+		"scope": "production material unless explicitly overridden by this harness"}
 	_manifest["camera"] = {"default_fov_deg": _default_camera_fov,
 		"close_view": "production aircraft inspect view for exhaust geometry and RPM details",
 		"flight_view": "production pilot view for full flight and trail context"}
@@ -306,6 +314,59 @@ func _run() -> void:
 	_manifest["fast_pass"] = {"pose_source": "synthetic render-only translation over the real Stik flight", "speed_mps": _fast_pass_speed,
 		"presented_hz": 30, "nominal_segment_m": _fast_pass_speed * FRAME_DT, "mask_pixels": pass_view.mask_pixels}
 
+	# Actual ground-start cases use the configured production field and persistent runway launch path.
+	_session.start_choice = "runway"
+	_session.reset()
+	await _set_camera_mode(true)
+	var runway_launch: Dictionary = _session.trace_meta()
+	_check("Stik runway start succeeds on the configured production field",
+		_session.start_error.is_empty() and _session.is_flyable() and _sim.tick == 0
+		and runway_launch.get("launch_choice", "") == "runway",
+		"error=%s field=%s launch=%s" % [_session.start_error, runway_launch.get("launch_field_id", ""), runway_launch.get("launch_choice", "")])
+	_current_case = "runway-idle"
+	for _i in 30:
+		await _present_frame(false)
+	var runway_idle_view := await _capture_layers("runway-idle")
+	var idle_ground_speed := _ground_speed_mps()
+	var idle_birth_s: float = float(_main._smoke.pump.get_meta("last_birth_s"))
+	_check("actual runway idle keeps closed throttle, running engine, and pump births off",
+		_session.engine_running and _sim.inputs[3] == 0.0 and _sim.aux[0] > 0.0
+		and _main._smoke.levels.pump == 0.0 and not _main._smoke.pump.emitting and is_inf(idle_birth_s),
+		"rpm=%.0f throttle=%.3f pump=%.4f emitting=%s last_birth=%s" %
+		[_sim.aux[0], _sim.inputs[3], _main._smoke.levels.pump, _main._smoke.pump.emitting, str(idle_birth_s)])
+	_check("actual runway idle renders combustion exhaust", runway_idle_view.mask_pixels > 0 and _main._smoke.levels.exhaust > 0.0,
+		"mask_pixels=%d exhaust=%.4f" % [runway_idle_view.mask_pixels, _main._smoke.levels.exhaust])
+	_manifest["runway_idle"] = {"source": "production field + FlightSession.start_choice=runway + reset; actual simulation and engine idle",
+		"launch_field_id": runway_launch.get("launch_field_id", ""), "rpm": float(_sim.aux[0]),
+		"throttle": float(_sim.inputs[3]), "ground_speed_mps": idle_ground_speed,
+		"smoke_mask_pixels": runway_idle_view.mask_pixels, "pump_last_birth_s": str(idle_birth_s)}
+
+	var acceleration_start_north: float = float(_sim.state[RB.POS])
+	var acceleration_start_east: float = float(_sim.state[RB.POS + 1])
+	var acceleration_start_speed := idle_ground_speed
+	_sim.inputs[3] = 0.72
+	_current_case = "runway-ground-acceleration"
+	for _i in 30:
+		await _present_frame(true)
+	var acceleration_view := await _capture_layers("runway-ground-acceleration")
+	var acceleration_end_speed := _ground_speed_mps()
+	var ground_travel_m := sqrt((float(_sim.state[RB.POS]) - acceleration_start_north) ** 2
+		+ (float(_sim.state[RB.POS + 1]) - acceleration_start_east) ** 2)
+	_check("actual runway throttle command accelerates the Stik",
+		_session.engine_running and float(_sim.inputs[3]) >= 0.70 and acceleration_end_speed > acceleration_start_speed + 0.5
+		and ground_travel_m > 0.25,
+		"speed=%.3f -> %.3f m/s travel=%.3f m throttle=%.3f" %
+		[acceleration_start_speed, acceleration_end_speed, ground_travel_m, _sim.inputs[3]])
+	_check("actual runway acceleration produces a visible AUX pump trail",
+		acceleration_view.mask_pixels > 5 and float(_main._smoke.levels.pump) > 0.05,
+		"mask_pixels=%d pump_level=%.4f" % [acceleration_view.mask_pixels, _main._smoke.levels.pump])
+	await _set_camera_mode(false)
+	var acceleration_pilot_view := await _capture_layers("runway-ground-acceleration-pilot")
+	_manifest["runway_acceleration"] = {"source": "actual runway reset + 0.72 throttle input + pump request during 30 rendered intervals",
+		"frames": 30, "start_speed_mps": acceleration_start_speed, "end_speed_mps": acceleration_end_speed,
+		"travel_m": ground_travel_m, "throttle": float(_sim.inputs[3]), "smoke_mask_pixels": acceleration_view.mask_pixels,
+		"pilot_view_smoke_mask_pixels": acceleration_pilot_view.mask_pixels}
+
 	_manifest["wind_change_mps"] = _wind_at_pump_off.distance_to(_wind_at_old_puff)
 	_manifest["check_count"] = _checks.size()
 	await _finish()
@@ -429,6 +490,17 @@ func _set_camera_mode(inspect: bool) -> void:
 	await _flush_render()
 
 
+func _apply_test_proximity_fade() -> void:
+	for emitter: GPUParticles3D in [_main._smoke.exhaust, _main._smoke.pump]:
+		var quad := emitter.draw_pass_1 as QuadMesh
+		var material := quad.material as StandardMaterial3D if quad != null else null
+		if material == null:
+			_check("proximity fade test finds both native particle quad materials", false, emitter.name)
+			continue
+		material.proximity_fade_enabled = true
+		material.proximity_fade_distance = 0.12
+
+
 func _difference_mask(a: Image, b: Image, threshold: float) -> Dictionary:
 	var mask := Image.create(a.get_width(), a.get_height(), false, Image.FORMAT_RGBA8)
 	var changed := 0
@@ -488,6 +560,10 @@ func _source_hashes() -> Dictionary:
 func _bank_degrees() -> float:
 	var q: PackedFloat64Array = _sim.state.slice(RB.ATT, RB.ATT + 4)
 	return rad_to_deg(atan2(2.0 * (q[0] * q[1] + q[2] * q[3]), 1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2])))
+
+
+func _ground_speed_mps() -> float:
+	return sqrt(float(_sim.state[RB.VEL]) ** 2 + float(_sim.state[RB.VEL + 1]) ** 2 + float(_sim.state[RB.VEL + 2]) ** 2)
 
 
 func _vec(value: Vector3) -> Array:

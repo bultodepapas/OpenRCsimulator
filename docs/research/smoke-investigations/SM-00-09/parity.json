@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "fps": 30,
+      "mode": "off",
+      "flight_sha256": "720ca1eff75349c37fb4d9463ee2dadeb521a9ccc8400bb9a50b66f41c3c0d64",
+      "state_sha256": "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+    },
+    {
+      "fps": 30,
+      "mode": "on",
+      "flight_sha256": "720ca1eff75349c37fb4d9463ee2dadeb521a9ccc8400bb9a50b66f41c3c0d64",
+      "state_sha256": "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+    },
+    {
+      "fps": 60,
+      "mode": "off",
+      "flight_sha256": "720ca1eff75349c37fb4d9463ee2dadeb521a9ccc8400bb9a50b66f41c3c0d64",
+      "state_sha256": "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+    },
+    {
+      "fps": 60,
+      "mode": "on",
+      "flight_sha256": "720ca1eff75349c37fb4d9463ee2dadeb521a9ccc8400bb9a50b66f41c3c0d64",
+      "state_sha256": "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+    },
+    {
+      "fps": 144,
+      "mode": "off",
+      "flight_sha256": "720ca1eff75349c37fb4d9463ee2dadeb521a9ccc8400bb9a50b66f41c3c0d64",
+      "state_sha256": "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+    },
+    {
+      "fps": 144,
+      "mode": "on",
+      "flight_sha256": "720ca1eff75349c37fb4d9463ee2dadeb521a9ccc8400bb9a50b66f41c3c0d64",
+      "state_sha256": "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+    }
+  ]
+}

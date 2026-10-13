@@ -358,7 +358,7 @@ func _ready() -> void:
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
 	PropellerBlur.attach(_airplane, session, self)
 	# SM: authored combustion outlet + accepted propulsion kind; previews/conversions stay clear.
-	if str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace"):
+	if str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
 		var mouths: Array = _airplane.get("exhausts", [])
 		if mouths.size() == 1 and EngineSmoke.valid_anchor(mouths[0]) \
 				and Propulsion.source_kind(session.aircraft.model.propulsion) == mouths[0].kind:

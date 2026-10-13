@@ -105,6 +105,9 @@ func _emitter(label: String, count: int, life: float, fixed_seed: int, mask: Ima
 	material.billboard_keep_scale = true
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	material.roughness = 1.0
+	# SM-06: native depth fade softens billboards meeting the airframe/runway (Compatibility A/B).
+	material.proximity_fade_enabled = true
+	material.proximity_fade_distance = 0.12
 	var quad := QuadMesh.new()
 	quad.size = Vector2.ONE
 	quad.material = material

@@ -1,0 +1,125 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "api": "3.3.0 NVIDIA 610.88",
+  "captures": {
+    "off-camera-active.png": {
+      "height": 720,
+      "save_error": 0,
+      "sha256": "7d377f218ead9bb45b19e0e1b8d2303ace75a516493665f997858adf5ab77006",
+      "width": 1280
+    },
+    "off-camera-return.png": {
+      "height": 720,
+      "save_error": 0,
+      "sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1",
+      "width": 1280
+    },
+    "pause-after.png": {
+      "height": 720,
+      "save_error": 0,
+      "sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1",
+      "width": 1280
+    },
+    "pause-before.png": {
+      "height": 720,
+      "save_error": 0,
+      "sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1",
+      "width": 1280
+    },
+    "segment-fixed-seed-replay.png": {
+      "height": 720,
+      "save_error": 0,
+      "sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1",
+      "width": 1280
+    },
+    "segment-point-vs-sweep.png": {
+      "height": 720,
+      "save_error": 0,
+      "sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1",
+      "width": 1280
+    },
+    "transparency-order.png": {
+      "height": 720,
+      "save_error": 0,
+      "sha256": "2f4dc57b12fc6cf0995fb2821e789982ebf2f5db44e4ed42ed3c2fe52733beff",
+      "width": 1280
+    },
+    "transparency-particle-order.png": {
+      "height": 720,
+      "save_error": 0,
+      "sha256": "2f4dc57b12fc6cf0995fb2821e789982ebf2f5db44e4ed42ed3c2fe52733beff",
+      "width": 1280
+    }
+  },
+  "checks": {
+    "first_trial_sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1",
+    "fixed_seed_replay_identical": true,
+    "pause_after_sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1",
+    "pause_before_sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1",
+    "pause_image_identical": true,
+    "replay_sha256": "413cf8db84b5bd39825e3bddd18af8416e54a51899c90dec81e156a9c2f873d1"
+  },
+  "emitter_speed_mps": 40.0,
+  "engine": "4.7.2-stable (official)",
+  "fixed_seed": 6161,
+  "off_camera": {
+    "active_center_is_green": true,
+    "emitter_hidden_position_m": 10000.0,
+    "lifetime_s": 1.0,
+    "residual_age_s": 1.3,
+    "residual_dt_s": 0.0333333333333333,
+    "residual_steps": 39,
+    "returned_after_lifetime": true,
+    "returned_center_is_green": false
+  },
+  "output_dir": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\smoke-probe",
+  "output_prefix": "",
+  "particle_clock": "speed_scale=0; request_particles_process(dt, residual_dt); RenderingServer.particles_request_process(get_base())",
+  "particle_transparency": {
+    "both_layers_contribute": true,
+    "center_rgba": [
+      0.26274511218071,
+      0.0509803928434849,
+      0.505882382392883,
+      1.0
+    ],
+    "draw_order": "view_depth",
+    "far_red_node_added_after_near_blue_node": true,
+    "front_blue_dominates": true,
+    "test": "GPUParticles3D view-depth order"
+  },
+  "pause_policy": "No request_particles_process call during paused frames",
+  "quad_size_m": 0.35,
+  "queue_rid_source": "GPUParticles3D.get_base()",
+  "render_fps_cap": 30,
+  "renderer": "Compatibility / OpenGL",
+  "result_json": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\smoke-probe/result.json",
+  "sample_dt_s": 0.0333333333333333,
+  "segment_sweep": {
+    "point_birth_row": {
+      "bright_pixels": 270,
+      "coverage_ratio": 0.259615384615385,
+      "horizontal_pixels": 1040,
+      "sampled_row_y_px": 433
+    },
+    "swept_box_row": {
+      "bright_pixels": 937,
+      "coverage_ratio": 0.900961538461538,
+      "horizontal_pixels": 1040,
+      "sampled_row_y_px": 278
+    }
+  },
+  "step_distance_m": 1.33333333333333,
+  "transparency": {
+    "both_layers_contribute": true,
+    "center_rgba": [
+      0.26274511218071,
+      0.0509803928434849,
+      0.505882382392883,
+      1.0
+    ],
+    "far_red_added_after_near_blue": true,
+    "front_blue_dominates": true,
+    "test": "StandardMaterial3D alpha quads"
+  }
+}

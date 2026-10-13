@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Timber catalog entry has data
+ok   Timber aircraft data and tyre profile load  []
+ok   Timber wheel profile is applied  { &"format": "openrc-wheel-profiles v1", &"status": "applied", &"aircraft_id": "turbo-lumber-evolution", &"profile_sha256": "e6e9711e0f341b6d74fa863488f542944e33f60dc4888d66c1517f21a6cdea87", &"input_sha256": "84f44756f1ec0b55da9c5fe9b78de8a665cc2d689199eb7ba7365d4ba4e1d13f", &"contact_order": ["main_left", "main_right", "tail"] }
+ok   Timber has three named profiled contacts
+ok   main_left mesh radius is present in the profile  0.058002
+ok   main_right mesh radius is present in the profile  0.058002
+ok   tail mesh radius is present in the profile  0.014
+ok   wheel profile identity is recorded for trace v6
+ok   default runway field loads  []
+ok   default runway has a valid threshold  { &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+ok   Timber accepts the default field
+ok   Timber selected runway equilibrium solves
+ok   selected runway path records Timber threshold launch  choice=runway kind=runway_threshold field=default
+ok   static tyre loads sum to weight within 1%  21.4765 N vs 21.4766 N
+ok   all three wheels support the initial pose  [0.02117896718705, 0.02086703388262, 0.02099083855411]
+ok   settled runway pose is within all landing-gear travel limits
+ok   excessive wheel compression is detected as a typed gear-travel failure  main_left compressed 0.1112 m beyond 0.0800 m
+ok   one second at idle stays settled without a crash  max |v| 0.00000000000005 m/s, |ω| 0.00000000000005 rad/s, moved 0.0 m, crash={  } fault=
+ok   positive right rudder steers the aft tailwheel left  -0.5235987755983
+ok   taxi steering: right rudder yaws right and left rudder yaws left  right 0.73018773924672 rad/s; left -0.72976645956732 rad/s
+ok   render adapter applies the signed tailwheel steering angle  actual -0.52359879016876 rad; expected -0.5235987755983 rad
+ok   full-throttle runway roll lifts off without a crash  airborne=true speed=15.2543608324961 m/s up=0.10065432016349 m fault= crash={  }
+ok   runway takeoff agrees qualitatively at 240 and 480 Hz  240 Hz 15.254 m/s; 480 Hz 15.254 m/s; Δ 0.000 m/s
+TT-11 Timber ground: 23 checks, 0 failed
