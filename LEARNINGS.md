@@ -64,6 +64,10 @@ Put step status and next actions in the owning plan, measurements and reproducti
 
 Godot 4.7.2 plays a forward-looping `AudioStreamWAV` by interpolating past `loop_end` into the stream's silent padding. A perfectly seamless PCM source therefore clicks at every wrap, at any pitch and with or without 3D positioning: the second difference at the seam is hundreds of times its median. Source seam metrics and earlier speaker reviews passed it. Append a copy of the loop's first frames after `loop_end` (`Soundscape.seamless_loop`), and check loops in the mixed output. On the display-less Linux host, `--write-movie <x>.png --fixed-fps 60` under Xvfb writes the real Master mix to `<x>.wav`, frame-aligned with the simulation; `tools/audio/bench.sh` wraps it. [Audio realism plan, F14](docs/plans/audio-realism.md)
 
+## 2026-10-13 · CR-01d — run a generator's --check at HEAD before regenerating
+
+`tt07/derive_physics.py --check` already failed on the Linux host at HEAD, under Python 3.12 and 3.13. Regenerating there changed four floats in their last digit, a platform-only physics change hidden inside an unrelated edit. Check freshness before editing a generator. If HEAD is already stale, keep the committed values, insert only the intended change, prove the remaining difference is that drift, and have the reference machine confirm. [CR-01d](docs/research/crash-damage-investigations/CR-01d/README.md#timber-platform-drift)
+
 ## 2026-10-13 · CR-08b — effective mass grades the first contact, not the whole impact
 
 Effective mass at the struck point fixes whole-mass overrating: a level wingtip engages about 7 %. It also underrates oblique hits on long-nosed airframes. In a 45° Avanti dive the nose engages 20 % of the mass and grades C2, yet the CG keeps most of its normal energy and slams the belly down next. Grade the first contact and also bound what the CG still carries into the surface; do not count sliding speed as impact energy. [CR-08b](docs/research/crash-damage-investigations/CR-08b/README.md)
