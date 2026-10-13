@@ -1,0 +1,353 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "format": "openrc-aircraft-modules v1",
+  "aircraft_format": "openrc-aircraft v2",
+  "always_modules": [
+    "aircraft.inventory.v1"
+  ],
+  "capabilities": {
+    "controls": {
+      "conventional": {
+        "module": "controls.conventional.v1",
+        "law": "controls.conventional_surface_mapping.v1"
+      }
+    },
+    "gear": {
+      "fixed_tricycle": {
+        "module": "gear.fixed_tricycle.v1",
+        "law": "gear.point_contacts.v1"
+      },
+      "fixed_taildragger": {
+        "module": "gear.fixed_taildragger.v1",
+        "law": "gear.point_contacts.v1"
+      },
+      "locked_down_taildragger": {
+        "module": "gear.locked_down_taildragger.v1",
+        "law": "gear.point_contacts.v1"
+      },
+      "locked_up": {
+        "module": "gear.locked_up.v1",
+        "law": "gear.no_contacts.v1"
+      }
+    },
+    "propulsion_layout": {
+      "single_tractor": {
+        "module": "propulsion_layout.single_tractor.v1",
+        "law": "propulsion_layout.single_tractor.v1"
+      },
+      "single_centerline_jet": {
+        "module": "propulsion_layout.single_centerline_jet.v1",
+        "law": "propulsion_layout.single_centerline_jet.v1"
+      }
+    },
+    "energy": {
+      "prescribed_fuel": {
+        "module": "energy.prescribed_fuel.v1",
+        "law": "energy.prescribed_fuel_inventory_fixed.v1"
+      },
+      "finite_glow_fuel": {
+        "module": "energy.finite_glow_fuel.v1",
+        "law": "energy.finite_glow_fuel.v1"
+      },
+      "fixed_voltage": {
+        "module": "energy.fixed_voltage.v1",
+        "law": "energy.battery.fixed_voltage.v1"
+      },
+      "ocv_resistance": {
+        "module": "energy.ocv_resistance.v1",
+        "law": "energy.battery.ocv_resistance.v1"
+      }
+    },
+    "damage": {
+      "terminal_hull": {
+        "law": "damage.terminal_hull.v1"
+      }
+    },
+    "flaps": {
+      "not_simulated": {
+        "law": "controls.flaps.neutral_only.v1"
+      }
+    }
+  },
+  "capability_keys": [
+    "controls",
+    "gear",
+    "propulsion_layout",
+    "energy",
+    "damage",
+    "flaps"
+  ],
+  "propulsion": {
+    "glow_prop": {
+      "module": "propulsion.glow_prop.v1",
+      "allowed_capabilities": {
+        "propulsion_layout": [
+          "single_tractor"
+        ],
+        "energy": [
+          "prescribed_fuel",
+          "finite_glow_fuel"
+        ]
+      },
+      "fields": [
+        "description",
+        "engine",
+        "kind",
+        "propeller"
+      ],
+      "required_fields": [
+        "engine",
+        "kind",
+        "propeller"
+      ],
+      "sections": {
+        "engine": [
+          "glow_installation",
+          "idle_rpm",
+          "lag_time_constant",
+          "max_rpm_static",
+          "name",
+          "peak_power",
+          "peak_power_rpm",
+          "shaft"
+        ],
+        "propeller": [
+          "cp_table",
+          "ct_table",
+          "diameter",
+          "name",
+          "normal_force",
+          "pfactor_moment",
+          "rotating_inertia",
+          "rotation",
+          "slipstream",
+          "thrust_angles",
+          "thrust_line_offset"
+        ]
+      },
+      "variants": [
+        {
+          "name": "legacy_prescribed_rpm",
+          "when": {
+            "engine.shaft": false,
+            "engine.glow_installation": false
+          },
+          "energy": "prescribed_fuel",
+          "law": "propulsion.glow_prop.legacy_prescribed_rpm.v1",
+          "modules": [],
+          "compiler_transforms": {
+            "scale": true,
+            "weight": true,
+            "power": true
+          },
+          "compiler_reason": ""
+        },
+        {
+          "name": "coupled_shaft",
+          "when": {
+            "engine.shaft": true,
+            "engine.glow_installation": false
+          },
+          "energy": "prescribed_fuel",
+          "law": "propulsion.glow_prop.coupled_shaft.v1",
+          "modules": [
+            "propulsion.shaft.v1"
+          ],
+          "compiler_transforms": {
+            "scale": false,
+            "weight": false,
+            "power": false
+          },
+          "compiler_reason": "coupled shaft propulsion has no V1 virtual scale/power transform"
+        },
+        {
+          "name": "finite_glow_installation",
+          "when": {
+            "engine.shaft": false,
+            "engine.glow_installation": true
+          },
+          "energy": "finite_glow_fuel",
+          "law": "propulsion.glow_prop.finite_glow_installation.v1",
+          "modules": [
+            "installation.glow.v1"
+          ],
+          "compiler_transforms": {
+            "scale": false,
+            "weight": false,
+            "power": false
+          },
+          "compiler_reason": "finite-glow installation data must remain fixed until its module transform is qualified"
+        }
+      ],
+      "unsupported_compiler_reason": "the propulsion family is '{kind}'"
+    },
+    "electric_prop": {
+      "module": "propulsion.electric_prop.v1",
+      "allowed_capabilities": {
+        "propulsion_layout": [
+          "single_tractor"
+        ],
+        "energy": [
+          "fixed_voltage",
+          "ocv_resistance"
+        ]
+      },
+      "fields": [
+        "battery",
+        "esc",
+        "kind",
+        "motor",
+        "propeller"
+      ],
+      "required_fields": [
+        "battery",
+        "esc",
+        "kind",
+        "motor",
+        "propeller"
+      ],
+      "sections": {
+        "battery": [
+          "auxiliary_current_a",
+          "capacity_ah",
+          "initial_soc",
+          "kind",
+          "ocv_points",
+          "resistance_ohm",
+          "voltage_v"
+        ],
+        "esc": [
+          "command_mapping",
+          "kind"
+        ],
+        "motor": [
+          "kv_rpm_per_volt",
+          "no_load_context",
+          "no_load_current_a",
+          "resistance_ohm",
+          "resistance_scope"
+        ],
+        "propeller": [
+          "cp_table",
+          "ct_table",
+          "diameter",
+          "name",
+          "rotating_inertia",
+          "thrust_angles",
+          "thrust_line_offset"
+        ]
+      },
+      "section_variants": {
+        "battery": {
+          "selector_path": "battery.kind",
+          "fields": {
+            "fixed_voltage": [
+              "kind",
+              "voltage_v"
+            ],
+            "ocv_resistance": [
+              "auxiliary_current_a",
+              "capacity_ah",
+              "initial_soc",
+              "kind",
+              "ocv_points",
+              "resistance_ohm"
+            ]
+          }
+        }
+      },
+      "law": "propulsion.electric_prop.direct_drive_dc_motor.v1",
+      "battery_kind_path": "battery.kind",
+      "battery_laws": {
+        "fixed_voltage": "energy.battery.fixed_voltage.v1",
+        "ocv_resistance": "energy.battery.ocv_resistance.v1"
+      },
+      "compiler_transforms": {
+        "scale": false,
+        "weight": false,
+        "power": false
+      },
+      "compiler_family_transform_reason": "the propulsion family is '{kind}'"
+    },
+    "turbine": {
+      "module": "propulsion.turbine.v1",
+      "allowed_capabilities": {
+        "propulsion_layout": [
+          "single_centerline_jet"
+        ],
+        "energy": [
+          "prescribed_fuel"
+        ]
+      },
+      "fields": [
+        "description",
+        "engine",
+        "intake_offset",
+        "kind",
+        "thrust_angles",
+        "thrust_line_offset"
+      ],
+      "required_fields": [
+        "engine",
+        "kind",
+        "thrust_line_offset"
+      ],
+      "sections": {
+        "engine": [
+          "accel_limit",
+          "decel_limit",
+          "fuel_flow",
+          "governor_tau",
+          "idle_rpm",
+          "installed_factor",
+          "mass_flow",
+          "max_rpm",
+          "name",
+          "ram_flow",
+          "ram_jet",
+          "rotor_inertia",
+          "rotor_sense",
+          "spool_integrator",
+          "static_thrust",
+          "throttle_map"
+        ]
+      },
+      "law": "propulsion.turbine.v1",
+      "integrator_path": "engine.spool_integrator",
+      "integrator_default": "sampled",
+      "integrator_laws": {
+        "sampled": "propulsion.turbine.spool.sampled.v1",
+        "rk4": "propulsion.turbine.spool.rk4.v1"
+      },
+      "compiler_transforms": {
+        "scale": false,
+        "weight": false,
+        "power": false
+      },
+      "compiler_family_transform_reason": "the propulsion family is '{kind}'"
+    }
+  },
+  "conditional_laws": [
+    {
+      "family": "glow_prop",
+      "path": "propeller.normal_force",
+      "law": "propeller.normal_force.v1",
+      "compiler_transform_reason": "normal-force propeller coupling has no V1 virtual transform",
+      "compiler_transforms": {
+        "scale": false,
+        "weight": false,
+        "power": false
+      }
+    },
+    {
+      "family": "glow_prop",
+      "path": "propeller.pfactor_moment",
+      "law": "propeller.pfactor_moment.v1"
+    },
+    {
+      "family": "glow_prop",
+      "path": "propeller.slipstream",
+      "law": "propeller.slipstream.v1"
+    }
+  ]
+}

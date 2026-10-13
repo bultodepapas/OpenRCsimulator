@@ -10,9 +10,11 @@ const Prefabs = preload("res://scenery/prefabs.gd")
 const Scenery = preload("res://scenery/scenery.gd")
 const Loader = preload("res://scenery/scenery_loader.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const LakeLoader = preload("res://data/lake_loader.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Population = preload("res://scenery/population.gd")
 const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
+const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
 
 const TREE_XZ_LIMIT := 3.84 # baseline max half-extent across the measured seed sample; catalog width remains 8 m.
 const TREE_TOP_LIMIT := 10.0 # measured baseline top is below 10.0 m; catalog/collision height remains 10.5 m.
@@ -182,7 +184,10 @@ func _test_sampled_tree_envelope() -> void:
 func _test_complete_scenery_budget() -> void:
 	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH).field
 	var scenery: Dictionary = Loader.load_from(Loader.DEFAULT_PATH, field).scenery
-	var built := Scenery.build(field, scenery, {audio = false, birds = false, theme = "", quality = "high"})
+	var lake_result: Dictionary = LakeLoader.load_from(LakeLoader.DEFAULT_PATH)
+	_check("normalized lake loads for the complete scenery budget", bool(lake_result.get("ok", false)))
+	var lake: Dictionary = lake_result.get("lake", {})
+	var built := Scenery.build(field, scenery, {audio = false, birds = false, theme = "", quality = "high"}, {}, lake)
 	var stats: Dictionary = built.get_meta("stats")
 	var motion := built.get_node("Motion")
 	var counts := {crown = 0, bush_tips = 0}
@@ -218,9 +223,29 @@ func _test_complete_scenery_budget() -> void:
 		var restored := ImportedVegetation.set_damage_hidden(imported_plants, damage_id, false)
 		_check("source damage IDs hide and restore imported plants", hidden and restored, damage_id)
 	var triangles := _triangle_count(built)
+	var source_tree_counts: Dictionary = {}
+	var source_tree_triangles := 0
+	for group: Dictionary in scenery.groups:
+		if str(group.get("type", "")) != "instances":
+			continue
+		for placement: Dictionary in group.get("placements", []):
+			var prefab := str(placement.get("prefab", ""))
+			if prefab not in ["shade_tree", "sapling"]:
+				continue
+			var tree: Dictionary = VegetationPlacement.spec(prefab, int(placement.get("seed", 0)))
+			var asset_id := str(tree.get("asset_id", ""))
+			source_tree_counts[asset_id] = int(source_tree_counts.get(asset_id, 0)) + 1
+			source_tree_triangles += int(tree.get("triangles", 0))
+	_check("full scene retains the lightweight downloaded tree mix and some CommonTree_1",
+		source_tree_counts.get("common_tree_1", 0) == 1
+		and source_tree_counts.get("common_tree_3", 0) == 15
+		and source_tree_counts.get("pine_1", 0) == 1
+		and source_tree_triangles == 62787,
+		"sources=%s triangles=%d" % [source_tree_counts, source_tree_triangles])
 	_check("whole scenery stays below the approved LU-21 triangle ceiling", triangles <= TRIANGLE_LIMIT,
 		"triangles=%d" % triangles)
-	print("     LU-17 staged scenery triangles: %d (limit %d)" % [triangles, TRIANGLE_LIMIT])
+	print("     LU-17 complete scenery triangles: %d (limit %d), imported tree sources=%s (%d triangles)" %
+		[triangles, TRIANGLE_LIMIT, source_tree_counts, source_tree_triangles])
 	built.free()
 
 

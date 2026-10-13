@@ -6,9 +6,14 @@ const WIND_SHADER_PATH := "res://scenery/imported_vegetation_wind.gdshader"
 const DEFAULT_WIND_STRENGTH := 0.025
 
 const ALIASES := {
-	"shade_tree": ["common_tree_1", "common_tree_3", "pine_1"],
-	"tree": ["common_tree_1", "common_tree_3", "pine_1"],
-	"sapling": ["common_tree_1", "common_tree_3"],
+	# Seeded row IDs cycle through these weights in the default layout: 9 upright broadleafs and 1 pine,
+	# while retaining a single CommonTree_1 accent among the saplings.
+	"shade_tree": ["common_tree_3", "common_tree_3", "common_tree_3", "common_tree_3", "common_tree_3",
+		"common_tree_3", "common_tree_3", "common_tree_3", "common_tree_3", "pine_1"],
+	"tree": ["common_tree_3", "common_tree_3", "common_tree_3", "common_tree_3", "common_tree_3",
+		"common_tree_3", "common_tree_3", "common_tree_3", "common_tree_3", "pine_1"],
+	"sapling": ["common_tree_3", "common_tree_3", "common_tree_3", "common_tree_3", "common_tree_3",
+		"common_tree_3", "common_tree_1"],
 	"bush": [
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common_flowers",
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common",

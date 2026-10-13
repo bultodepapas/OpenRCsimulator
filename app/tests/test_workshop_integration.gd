@@ -115,7 +115,7 @@ func _run() -> void:
 			check("previous flight remains paused", original.session.sim.paused)
 			check("Pause editor draft preserved", host.screens.top() == editor_from_pause)
 	host.queue_free()
-	await process_frame
+	await ui.settle()
 	DirAccess.remove_absolute("user://test_workshop_integration.cfg")
 	print("Workshop integration: %d failed" % failures)
 	quit(1 if failures else 0)

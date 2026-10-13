@@ -57,10 +57,18 @@ func _test_catalog_and_parts() -> void:
 
 func _test_fit_and_aliases() -> void:
 	_check("shade tree alias resolves by seed", ImportedVegetation.resolve_id("shade_tree", 7) == "common_tree_3")
-	_check("sapling alias is restricted to downloaded broadleaf variants",
-		ImportedVegetation.resolve_id("sapling", 0) == "common_tree_1"
-		and ImportedVegetation.resolve_id("sapling", 1) == "common_tree_3"
-		and ImportedVegetation.resolve_id("sapling", 2) == "common_tree_1")
+	var shade_assets: Dictionary = {}
+	for seed in 10:
+		var shade_asset := ImportedVegetation.resolve_id("shade_tree", seed)
+		shade_assets[shade_asset] = int(shade_assets.get(shade_asset, 0)) + 1
+	_check("mature alias keeps a light CommonTree_3/Pine_1 source mix",
+		shade_assets.get("common_tree_3", 0) == 9 and shade_assets.get("pine_1", 0) == 1)
+	var sapling_weight_counts: Dictionary = {}
+	for seed in 7:
+		var sapling_asset := ImportedVegetation.resolve_id("sapling", seed)
+		sapling_weight_counts[sapling_asset] = int(sapling_weight_counts.get(sapling_asset, 0)) + 1
+	_check("sapling alias stays broadleaf and retains one CommonTree_1 accent",
+		sapling_weight_counts.get("common_tree_3", 0) == 6 and sapling_weight_counts.get("common_tree_1", 0) == 1)
 	var sapling_assets: Dictionary = {}
 	var sapling_heights_valid := true
 	for seed in 32:

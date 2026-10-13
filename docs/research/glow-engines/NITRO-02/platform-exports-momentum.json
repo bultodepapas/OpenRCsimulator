@@ -1,0 +1,71 @@
+{
+  "format": "openrc-glow-momentum-platform-exports v1",
+  "date": "2026-10-13",
+  "source": {
+    "path": ".tools\\glow-final-verify-snapshot\\app",
+    "scope": "all isolated app files, relative paths and bytes after pinned-editor import; .uid files included, regenerable .godot caches excluded",
+    "sha256": "5c888e2e46d926f5be26b544b63cdf22c16fa0aa9747f61ddeae1cb6d673e8c5",
+    "file_count": 1549,
+    "pre_import_sha256": "5c888e2e46d926f5be26b544b63cdf22c16fa0aa9747f61ddeae1cb6d673e8c5",
+    "pre_import_file_count": 1549,
+    "readiness": "export started only after explicit owner READY follow-up",
+    "packaged_smoke_sha256": "70cab1e303c0950caa54fbc055634634455c34b4ce4c574a15be3130aa6071b9"
+  },
+  "build": {
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "godot_binary_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "export_templates": {
+      "path": "C:\\Users\\bulto\\AppData\\Roaming\\Godot\\export_templates\\4.7.2.stable",
+      "version": "4.7.2.stable",
+      "components_sha256": {
+        "linux_release.x86_64": "d9f79ab89b5ae369aeed11c6052d402e8218cd503bf85b4a235f9c30c46a7c63",
+        "windows_release_x86_64.exe": "d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562",
+        "macos.zip": "88df5e2e6fee99088699be66e6d42e4da4fb0c5619d054297d755a49558a4792",
+        "version.txt": "38885c88f75abbc797a1db7559719800279a00cfb9fa8b2e2868a7f6f84bad2e"
+      },
+      "pinned_release_archive_sha512": "ca4d71c4d7b81dfc15d1a98baa07534aa95b03fdda78a0075b06672e1648d2e5f40980c9adc28d23e1b92e732ee7bf3461997aa804af74ec2fcd7a93ccb84079",
+      "runtime_not_tested_on_macos": true
+    },
+    "build_identity": "source-sha256:5c888e2e46d926f5be26b544b63cdf22c16fa0aa9747f61ddeae1cb6d673e8c5",
+    "candidate_dirty": true,
+    "project_version": "0.1.0"
+  },
+  "products": {
+    "Windows": {
+      "path": ".tools\\glow-momentum-export-20261013\\OpenRC Simulator.exe",
+      "sha256": "98f261602a29f34e64d3378a11ae10b997e1bfd692acf7e5cde1387d50e63f37"
+    },
+    "Linux": {
+      "path": ".tools\\glow-momentum-export-20261013\\openrc-simulator.x86_64",
+      "sha256": "61f61d23560e62d5d8a4cb65b412070b9e1d11ce8cb0c879b009823d52f11576"
+    },
+    "macOS": {
+      "path": ".tools\\glow-momentum-export-20261013\\OpenRC Simulator.zip",
+      "sha256": "536bc1d78a95c3ee3b17136cfe697587dedf7f9cb06e5c0efe6d2f48e464c8c2"
+    }
+  },
+  "installations": [
+    {
+      "aircraft": "stik-glow-55ax-2t",
+      "family": "glow_2t",
+      "profile_sha256": "41b636d09292ed0e440a7c4f80562536f26a5dab6cc1dee88113324e4a4906d1",
+      "installation_sha256": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+      "windows_trace_sha256": "af993bbea64a77d04dda93ffa135e7243eab5276e5c90522bd1b6f02f630b34b",
+      "linux_trace_sha256": "660d15a4958c3a1d97e47ab411e25471787c993c740035f9cd4b44135edfdbb8"
+    },
+    {
+      "aircraft": "stik-glow-fs64v-4t",
+      "family": "glow_4t",
+      "profile_sha256": "1c0060777d56af47b91c0a9f56cb6ad9d4a50bdb212dba426f86ec8d79ba506d",
+      "installation_sha256": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+      "windows_trace_sha256": "3ac909dc45d50cbec4a125d6768ea7680c88fcab5d5b8df3c35399975507f91e",
+      "linux_trace_sha256": "1d5a3e271a2792aed329ea5b2a9a15c8457a2e9fcf76f583c4158d07224ee8ba"
+    }
+  ],
+  "checks": {
+    "Windows": "Native exported application launched from an empty directory; both glow families generated 721 finite trace rows.",
+    "Linux": "Native Linux export launched under WSL from an empty directory; both glow families generated 721 finite trace rows.",
+    "macOS": "Static archive checks passed for universal x86_64/arm64 slices, executable permissions, ad-hoc signatures and version fields; runtime not tested."
+  },
+  "claim": "Isolated-snapshot resource/CLI software evidence only; no physical, pilot, acoustic, target-performance, or macOS runtime qualification."
+}

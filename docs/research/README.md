@@ -20,6 +20,10 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ## Entry points per track
 
+### Aircraft Workshop
+
+[AE-01–10 initial implementation](aircraft-editor/AE-01-10/README.md) records shared compiler/store/descriptor/trial/UI checks, native captures and the remaining acceptance scope. The [current guide](../AIRCRAFT-WORKSHOP.md) documents supported experiments; the [AE plan](../plans/aircraft-editor.md) owns engine-family editing and fleet continuation.
+
 ### RC monster truck
 
 [RCV-00](rc-monster-truck/README.md) records the repository/session/menu audit, primary vehicle-physics references, T-Maxx scale and mechanism evidence, free asset candidates and measurement gaps. The [active plan](../plans/rc-monster-truck.md) owns the proposed ground-vehicle integration, physics laboratory, playable course, acceptance gates and Blender developer letter. This is planning evidence; no truck runtime or physical validation is claimed.

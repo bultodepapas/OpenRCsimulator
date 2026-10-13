@@ -1,6 +1,6 @@
 # Aircraft experiment editor plan
 
-**Date:** 2026-10-13. **Revision:** 2 — fleet-wide authoring standard and capability-based composition. **Status:** plan with a partial implementation in the current working tree; acceptance-step reconciliation remains pending, and fleet delivery is not claimed. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track. **Repository baseline:** initial working-tree audit at `37103e0b`; current catalog/loader/render seams rechecked for this revision. Concurrent work remains owned by its tracks.
+**Date:** 2026-10-13. **Revision:** 3 — first operational Workshop slice and fleet-wide continuation. **Status:** shared editor, persistence and airborne trials implemented; partial AE-01…10 acceptance, with full fleet delivery still pending. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track. **Repository baseline:** initial audit at `37103e0b`; implementation and evidence below reflect the current source. Concurrent work remains owned by its tracks.
 
 Build one **Aircraft Workshop** for every compatible aircraft. A player can clone a catalog aircraft, make it lighter, heavier, smaller, larger or more powerful, save the result and fly it. The same workshop supports matching a real RC build and inventing miniature or giant airplanes. The Ugly Stik is the first numerical example and test fixture; its name must not select editing behavior. The first delivery proves the same workflow on both the Stik and Extra, including 50% and 200% Stik examples, a dedicated menu, persistent variants and a repeatable test-flight loop.
 
@@ -8,13 +8,30 @@ Build one **Aircraft Workshop** for every compatible aircraft. A player can clon
 
 The editor compiles explicit user choices into validated aircraft data. It does not alter catalog sources or bypass the simulator's validation. A variant is always identified as experimental; a successful numerical check does not promote it to a physically validated model.
 
-**Owns, proposed:** `app/aircraft_editor/`, `app/ui/aircraft_workshop/`, `app/data/aircraft_editor/`, `app/tests/test_aircraft_editor_*.gd`, `research/aircraft-editor/`, and this plan. Evidence belongs under `docs/research/aircraft-editor/` once it exists.
+**Owns:** `app/workshop/`, `app/ui/workshop.gd`, `app/ui/workshop_preview.gd`, `app/data/workshop/`, `app/tests/test_workshop_*.gd`, `research/aircraft-editor/`, [current guide](../AIRCRAFT-WORKSHOP.md), this plan and `docs/research/aircraft-editor/`. These implemented paths supersede the original `aircraft_editor/` naming proposal; do not create a parallel subsystem.
 
-**Coordinated boundaries:** aircraft contract/loader, `app/sim/flight_session.gd`, `app/main.gd`, catalog/preferences/app root, screen stack/localization, each visual builder, ground profiles, glow/electric/turbine systems, camera/HUD/audio/crash presentation. Those files retain their existing owners. The registry assigns the proposed `app/ui/aircraft_workshop/` subtree to AE; the menu track owns the surrounding shell, shared widgets and route integration. Register interfaces before editing them; do not allocate concurrent work on the same integration file.
+**Coordinated boundaries:** aircraft contract/loader, `app/sim/flight_session.gd`, `app/main.gd`, catalog/preferences/app root, screen stack/localization, each visual builder, ground profiles, glow/electric/turbine systems, camera/HUD/audio/crash presentation. Those files retain their existing owners. AE owns the Workshop screen/preview; the menu track owns the surrounding shell, shared widgets and route integration. Register interfaces before editing them; do not allocate concurrent work on the same integration file.
 
 Authoritative prerequisites: [aircraft contract](../../AIRCRAFT_CONTRACT.md), [architecture](../../STACK.md), [tools and verification commands](../TOOLS.md), [track registry](../README.md#tracks-plans-and-step-ids), [current menus](../MENU-PLAN.md), [menu redesign](../MENU-REDESIGN-PLAN.md), and [glow installations](../GLOW-ENGINES.md).
 
-Related continuation: [AS-06–18 aircraft standardization](aircraft-standardization.md) owns the proposed physical/model contract evolution and coordinates its Blender import/binding work with AE-08/19. Presentation bindings below should reference the model track's generated manifest instead of duplicating hinge transforms or physical values. A partial implementation now exists under `app/workshop/` and `app/ui/workshop*`; AE-00 must reconcile that source with this plan's proposed paths and acceptance status before claiming delivery.
+Related continuation: [AS-06–18 aircraft standardization](aircraft-standardization.md) owns the proposed physical/model contract evolution and coordinates its Blender import/binding work with AE-08/19. Future presentation bindings should reference the model track's generated manifest instead of duplicating hinge transforms or physical values.
+
+## 0. Implemented slice and remaining acceptance
+
+The [current Workshop guide](../AIRCRAFT-WORKSHOP.md) is authoritative for operating instructions, actual schemas, scale policies and limitations. [AE-01–10 evidence](../research/aircraft-editor/AE-01-10/README.md) records the tests and captures. Sections below retain the broader target design; proposed fields and paths are not automatically accepted by the implementation.
+
+| Steps | Implemented | Remaining acceptance |
+| --- | --- | --- |
+| AE-00 | Source audit, ownership and implemented-path reconciliation | Coordinate each later family/authoring seam with its owner |
+| AE-01/02 | Seven generated descriptors; closed recipe; exact source/dependency/compiler pins; deterministic trial fingerprints | Rich authoring manifest, stable cross-version component keys, full reusable module composition and migrations |
+| AE-03 | Atomic local library, immutable revisions, copies, load, trash and last-delete recovery | Persistent draft recovery, portable bundles and richer trash/revision navigation |
+| AE-04…07 | Shared no-op/compiler, uniform inventory/control/legacy propulsion/geometry transforms; Stik and Extra six-size flight fixtures; 20 unfamiliar IDs compile without special cases | Broader combination/refinement matrix and richer module dependency conflict checks |
+| AE-08 | Common preview, scaled render/CG/camera, hull/inventory and wreck geometry | Complete presentation-anchor matrix, richer imported bindings and authoring migration |
+| AE-09 | Home/Pause menu, all-catalog selection, presets, before/after metrics, saved builds, single undo, EN/ES, 720p/1080p checks | Persistent drafts, full undo/redo history, control-response editor and wider usability/playtest acceptance |
+| AE-10 | Frozen airborne trials, F5 identity, return to the same draft, old-flight rollback, Stik/Extra public workflow | Full planned crash/replay/recording and long-duration trial matrix before closing the complete V1 gate |
+| AE-11…26 | Not delivered by this slice | Continue the steps and gates below; AE-19 full-fleet editing and AE-25 twenty-airframe onboarding remain open |
+
+All current aircraft share the editor and support conventional control travel. Size/weight/virtual-power editing is currently enabled by the simple prescribed-RPM capability, demonstrated by Stik and Extra. Shaft/electric/finite-glow/turbine family transformations remain disabled. Dependency pins detect changed resources; they do not yet provide self-contained replay of historical external files. The 20-ID compiler test proves absence of name dispatch, not the complete twenty-airframe packaging/onboarding gate.
 
 ## 1. Product scope and delivery order
 
@@ -533,25 +550,22 @@ For a later **Slow flyer** or **Fast sport** label, AE-20 must report the actual
 
 Names below are proposed files/APIs, not existing symbols.
 
-| Proposed path | Responsibility |
+| Implemented or continuation path | Responsibility |
 | --- | --- |
-| `app/aircraft_editor/workshop_contract.gd` | Versioned companion descriptor, component/presentation bindings and conformance rules |
-| `app/aircraft_editor/module_registry.gd` | Shared capability-to-law classification, module versions and deterministic operation composition |
-| `app/aircraft_editor/modules/` | Reusable inventory/geometry/controls/gear, legacy/shaft/electric/glow/turbine and optional aero transforms/validators; no airplane-named modules |
-| `app/aircraft_editor/parameter_registry.gd` | Shared semantic parameter definitions used by curated panels, recipes, diagnostics and tests |
-| `app/aircraft_editor/variant_contract.gd` | Closed recipe format, versions, numeric/unit/provenance validation |
-| `app/aircraft_editor/variant_store.gd` | Atomic local save/load, drafts, revisions, trash, import/export |
-| `app/aircraft_editor/variant_compiler.gd` | Pure deterministic recipe → authored candidate/dependency/presentation manifest |
-| `app/aircraft_editor/scale_policy.gd` | Explicit dimensional ledger and coupled scale/mass proposals |
-| `app/aircraft_editor/mass_editor.gd` | Component keys, inventory scaling, bounded target-mass/CG fitting |
-| `app/aircraft_editor/presentation_adapter.gd` | Common geometry/datum/hinge/rotor operations over any compliant builder binding |
-| `app/aircraft_editor/variant_resolver.gd` | Immutable descriptor connecting base, revision, effective physical input and render family |
-| `app/aircraft_editor/variant_diagnostics.gd` | Read-only checks/metrics and structured issue paths |
-| `app/aircraft_editor/experiment_runner.gd` | Later deterministic performance/parameter-sweep trials, isolated from the live session |
-| `app/ui/aircraft_workshop/` | Screen, library, sections, preview and undoable draft controller |
-| `app/data/aircraft_editor/` | Versioned descriptor/recipe schemas, generator-emitted descriptors, shared module/parameter policies and capability-based recipe templates |
+| `app/workshop/descriptor.gd` | Current descriptor and snapshot binding validation; richer authoring fields remain planned |
+| `app/workshop/parameters.gd` | Current closed recipe keys, defaults and bounds; richer semantic registry remains planned |
+| `app/workshop/compiler.gd` | Current detached transforms, capability checks, scaling policy and summary |
+| `app/workshop/store.gd` | Current atomic library, revisions, copies and trash; persistent drafts/import/export remain planned |
+| `app/workshop/dependencies.gd` | Current exact-byte external resource pins; portable resource resolver remains planned |
+| `app/workshop/trial.gd` | Current immutable trial inputs, ancestor and physical identity |
+| `app/workshop/module_registry.gd`, `modules/` (proposed) | Extract/extend shared transforms into capability modules as new families arrive; no airplane-named modules |
+| `app/workshop/mass_editor.gd` (proposed) | Component keys, ballast and bounded target-mass/CG fitting |
+| `app/workshop/presentation_adapter.gd` (proposed) | Rich generated binding interface extending the current common render integration |
+| `app/workshop/experiment_runner.gd` (proposed) | Later deterministic performance/parameter-sweep trials, isolated from the live session |
+| `app/ui/workshop.gd`, `app/ui/workshop_preview.gd` | Current screen/library/recipe controls and detached preview |
+| `app/data/workshop/` | Current generated descriptors; later versioned policies and richer template schemas |
 | `research/aircraft-editor/` | Initial conformance runner, descriptor scaffold/template, fixture generation and reproducible fleet reports; generic authoring tools can move to their canonical tools home after AE-26 |
-| `app/tests/test_aircraft_editor_*.gd` | Shared compiler/persistence/lifecycle/UI checks and auto-discovered per-catalog conformance fixtures, not duplicated per-airplane suites |
+| `app/tests/test_workshop_*.gd` | Current shared compiler/persistence/lifecycle/UI checks; extend catalog-discovered conformance without per-airplane suites |
 
 Keep pure calculations usable headlessly. Scalar doubles and packed float64 arrays remain the physics representation. Only the preview/presentation layer creates Godot render vectors/transforms. Do not preload visual builders from the compiler. A new dependency is not necessary for V1.
 
@@ -559,7 +573,7 @@ The menu/preferences owner adds only selection/reference data to saved preferenc
 
 ## 14. Incremental implementation and acceptance
 
-Every row is **pending**. Evidence columns define required proof, not completed tests. Keep each step independently reviewable; split a row further if it spans too many owners.
+The table defines full acceptance scope. The partial implementation status is recorded in §0; no full fleet gate is closed by that slice. Evidence columns below describe remaining/full required proof, rather than claiming every check has run. Keep each step independently reviewable; split a row further if it spans too many owners.
 
 | ID | Work and dependency | Required proof / completion gate |
 | --- | --- | --- |

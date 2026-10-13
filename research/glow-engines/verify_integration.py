@@ -70,6 +70,7 @@ def main():
         ('research/glow-engines/build_profiles.py',['--check']),
         ('research/glow-engines/build_installations.py',['--check']),
         ('research/glow-engines/test_profiles.py',[]),
+        ('research/glow-engines/test_calibration_report.py',[]),
         ('research/glow-engines/installation_schema.py',['--check']),
         ('research/glow-engines/test_installation_schema.py',[]),
         ('research/glow-engines/test_installation_line_endings.py',[]),

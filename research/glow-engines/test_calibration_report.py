@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import importlib.util
-import json
 import math
 import unittest
 from pathlib import Path
@@ -38,6 +37,12 @@ class ActuatorDiskBoundTests(unittest.TestCase):
         self.assertTrue(accepted["passed"])
         self.assertEqual(refused["status"], "refused_impossible_positive_thrust_load")
         self.assertFalse(refused["passed"])
+        margin_shortfall = calibration_report.actuator_disk_power_bound(
+            thrust_n, 1.02 * ideal_power, 0.0, diameter_m, density
+        )
+        self.assertEqual(margin_shortfall["status"], "refused_below_required_power_margin")
+        self.assertTrue(margin_shortfall["physical_ideal_bound_passed"])
+        self.assertFalse(margin_shortfall["passed"])
         self.assertEqual(
             refused["source"], calibration_report.NASA_PROPELLER_THRUST_URL
         )
@@ -73,7 +78,7 @@ class GeneratedInstallationAuditTests(unittest.TestCase):
             self.assertEqual(audit["grid"]["sample_count"], 3000)
             self.assertEqual(audit["status"], "PASS")
             self.assertEqual(audit["refused_positive_thrust_sample_count"], 0)
-            self.assertGreaterEqual(audit["minimum_positive_thrust_power_ratio"], 1.0)
+            self.assertGreaterEqual(audit["minimum_positive_thrust_power_ratio"], 1.05)
 
     def test_reports_exclude_refused_positive_thrust_roots(self) -> None:
         for profile_name in [
@@ -91,18 +96,31 @@ class GeneratedInstallationAuditTests(unittest.TestCase):
                             if root["thrust_n"] > 0.0:
                                 self.assertTrue(bound["checked"])
                                 self.assertTrue(bound["passed"])
-                        for refusal in scenario["nominal_rejected_by_momentum_bound"]:
+                                self.assertGreaterEqual(
+                                    bound["shaft_to_ideal_power_ratio"], 1.05
+                                )
+                        for refusal in scenario["nominal_rejected_by_ideal_power_screen"]:
                             self.assertEqual(
                                 refusal["decision"],
-                                "refused; excluded from all candidate prediction and sensitivity extrema",
+                                "refused by the required 5% ideal-power screen; excluded from candidate prediction and sensitivity extrema",
                             )
                         envelope = scenario["assumption_envelope"]
-                        for refusal in envelope["momentum_bound_refusals"]:
+                        for refusal in envelope["ideal_power_screen_refusals"]:
                             self.assertEqual(
                                 refusal["decision"],
-                                "refused; excluded from all candidate prediction and sensitivity extrema",
+                                "refused by the required 5% ideal-power screen; excluded from candidate prediction and sensitivity extrema",
                             )
                             self.assertNotEqual(refusal["sensitivity_case"], "nominal")
+                if profile_name == "os_max_55ax_candidate.json":
+                    anchor = generated["single_point_propeller_anchor_inference"]
+                    self.assertEqual(
+                        anchor["static_balance_roots_rejected_by_ideal_power_screen"], []
+                    )
+                    for root in anchor["static_balance_roots_after_chord_fit"]:
+                        self.assertTrue(root["actuator_disk_power_bound"]["passed"])
+                    second_prop = anchor["second_recommended_prop_scenario"]
+                    self.assertEqual(second_prop["static_candidate_rejected_balance_roots"], [])
+                    self.assertTrue(second_prop["static_candidate_root_screen"])
 
 
 if __name__ == "__main__":

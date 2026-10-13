@@ -1,5 +1,5 @@
 {
-  "format": "openrc-glow-inference-audit v1",
+  "format": "openrc-glow-inference-audit v2",
   "engine_id": "os_max_55ax_candidate",
   "family": "glow_2t",
   "profile_status": "candidate",
@@ -488,8 +488,14 @@
     ]
   },
   "paired_propeller_inference": {
-    "status": "paired propeller load inference; no propeller is physically calibrated or held out",
+    "status": "paired propeller load inference with ideal-power refusals; no propeller is physically calibrated or held out",
     "method": "Full-admission engine/propeller torque roots; runtime-matched blade-element surrogate; one measured OS 2T RPM anchor only.",
+    "actuator_disk_bound_method": {
+      "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+      "equations": "A=pi*D^2/4; V_disk=(V_infinity+sqrt(V_infinity^2+2*T/(rho*A)))/2; P_ideal=T*V_disk",
+      "decision": "For positive thrust in forward flow, require surrogate shaft power to exceed this ideal momentum-theory lower bound by at least 5%. Roots below the ideal bound are physically impossible; roots below the 5% engineering margin are also rejected by this screen. Nonpositive-thrust and reverse-flow cases are outside this check.",
+      "scope": "Independent inference/report audit only. This is not measured induced flow, propeller calibration, aircraft validation, or a runtime operating-limit implementation."
+    },
     "nominal_axial_scenarios_m_s": [
       0.0,
       10.0,
@@ -652,7 +658,10 @@
             "sample_count": 3000
           },
           "positive_thrust_sample_count": 2098,
+          "required_shaft_to_ideal_power_ratio": 1.05,
           "refused_positive_thrust_sample_count": 0,
+          "physically_impossible_positive_thrust_sample_count": 0,
+          "required_margin_shortfall_sample_count": 0,
           "minimum_positive_thrust_power_ratio": 1.21668677,
           "minimum_ratio_at": {
             "rpm": 342.28187919,
@@ -740,6 +749,9 @@
                   "status": "accepted",
                   "checked": true,
                   "passed": true,
+                  "physical_ideal_bound_passed": true,
+                  "required_shaft_to_ideal_power_ratio": 1.05,
+                  "screening_margin_fraction": 0.050000000000000044,
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.07296587699003966,
                   "axial_speed_m_s": 0.0,
@@ -759,18 +771,9 @@
               }
             ],
             "nominal_balance_root_count": 2,
-            "nominal_rejected_by_momentum_bound": [
-              {
-                "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
-                "rpm": 10330.0,
-                "geometry_chord_m": 0.04342996,
-                "thrust_n": 67.42732899,
-                "shaft_power_w": 955.90319245,
-                "ideal_shaft_power_lower_bound_w": 1380.35163529,
-                "shaft_to_ideal_power_ratio": 0.69250702,
-                "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
-              }
-            ],
+            "nominal_ideal_power_screen_accepted_root_count": 2,
+            "nominal_ideal_power_screen_refused_root_count": 0,
+            "nominal_rejected_by_ideal_power_screen": [],
             "nominal_stable_full_admission_equilibrium": {
               "rpm": 10330.0,
               "stable_restoring_root": true,
@@ -780,6 +783,9 @@
                 "status": "accepted",
                 "checked": true,
                 "passed": true,
+                "physical_ideal_bound_passed": true,
+                "required_shaft_to_ideal_power_ratio": 1.05,
+                "screening_margin_fraction": 0.050000000000000044,
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.07296587699003966,
                 "axial_speed_m_s": 0.0,
@@ -802,9 +808,9 @@
               "sensitivity_case_count_excluding_nominal": 2,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 2,
-              "momentum_bound_accepted_sensitivity_root_count": 2,
-              "momentum_bound_refused_sensitivity_root_count": 1,
-              "momentum_bound_refusals": [
+              "ideal_power_screen_accepted_sensitivity_root_count": 2,
+              "ideal_power_screen_refused_sensitivity_root_count": 1,
+              "ideal_power_screen_refusals": [
                 {
                   "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
                   "rpm": 10330.0,
@@ -813,7 +819,8 @@
                   "shaft_power_w": 955.90319245,
                   "ideal_shaft_power_lower_bound_w": 1380.35163529,
                   "shaft_to_ideal_power_ratio": 0.69250702,
-                  "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+                  "reason": "refused_impossible_positive_thrust_load",
+                  "decision": "refused by the required 5% ideal-power screen; excluded from candidate prediction and sensitivity extrema"
                 }
               ],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
@@ -856,6 +863,9 @@
                   "status": "accepted",
                   "checked": true,
                   "passed": true,
+                  "physical_ideal_bound_passed": true,
+                  "required_shaft_to_ideal_power_ratio": 1.05,
+                  "screening_margin_fraction": 0.050000000000000044,
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.07296587699003966,
                   "axial_speed_m_s": 10.0,
@@ -875,18 +885,9 @@
               }
             ],
             "nominal_balance_root_count": 1,
-            "nominal_rejected_by_momentum_bound": [
-              {
-                "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
-                "rpm": 10021.68723893,
-                "geometry_chord_m": 0.04342996,
-                "thrust_n": 45.24862568,
-                "shaft_power_w": 916.55813761,
-                "ideal_shaft_power_lower_bound_w": 1018.08106861,
-                "shaft_to_ideal_power_ratio": 0.90028011,
-                "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
-              }
-            ],
+            "nominal_ideal_power_screen_accepted_root_count": 1,
+            "nominal_ideal_power_screen_refused_root_count": 0,
+            "nominal_rejected_by_ideal_power_screen": [],
             "nominal_stable_full_admission_equilibrium": {
               "rpm": 10413.18438108,
               "stable_restoring_root": true,
@@ -896,6 +897,9 @@
                 "status": "accepted",
                 "checked": true,
                 "passed": true,
+                "physical_ideal_bound_passed": true,
+                "required_shaft_to_ideal_power_ratio": 1.05,
+                "screening_margin_fraction": 0.050000000000000044,
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.07296587699003966,
                 "axial_speed_m_s": 10.0,
@@ -918,9 +922,9 @@
               "sensitivity_case_count_excluding_nominal": 2,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 2,
-              "momentum_bound_accepted_sensitivity_root_count": 1,
-              "momentum_bound_refused_sensitivity_root_count": 1,
-              "momentum_bound_refusals": [
+              "ideal_power_screen_accepted_sensitivity_root_count": 1,
+              "ideal_power_screen_refused_sensitivity_root_count": 1,
+              "ideal_power_screen_refusals": [
                 {
                   "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
                   "rpm": 10021.68723893,
@@ -929,7 +933,8 @@
                   "shaft_power_w": 916.55813761,
                   "ideal_shaft_power_lower_bound_w": 1018.08106861,
                   "shaft_to_ideal_power_ratio": 0.90028011,
-                  "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+                  "reason": "refused_impossible_positive_thrust_load",
+                  "decision": "refused by the required 5% ideal-power screen; excluded from candidate prediction and sensitivity extrema"
                 }
               ],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
@@ -971,6 +976,9 @@
                   "status": "accepted",
                   "checked": true,
                   "passed": true,
+                  "physical_ideal_bound_passed": true,
+                  "required_shaft_to_ideal_power_ratio": 1.05,
+                  "screening_margin_fraction": 0.050000000000000044,
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.07296587699003966,
                   "axial_speed_m_s": 20.0,
@@ -990,7 +998,9 @@
               }
             ],
             "nominal_balance_root_count": 1,
-            "nominal_rejected_by_momentum_bound": [],
+            "nominal_ideal_power_screen_accepted_root_count": 1,
+            "nominal_ideal_power_screen_refused_root_count": 0,
+            "nominal_rejected_by_ideal_power_screen": [],
             "nominal_stable_full_admission_equilibrium": {
               "rpm": 11864.87067966,
               "stable_restoring_root": true,
@@ -1000,6 +1010,9 @@
                 "status": "accepted",
                 "checked": true,
                 "passed": true,
+                "physical_ideal_bound_passed": true,
+                "required_shaft_to_ideal_power_ratio": 1.05,
+                "screening_margin_fraction": 0.050000000000000044,
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.07296587699003966,
                 "axial_speed_m_s": 20.0,
@@ -1022,9 +1035,9 @@
               "sensitivity_case_count_excluding_nominal": 2,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 3,
-              "momentum_bound_accepted_sensitivity_root_count": 2,
-              "momentum_bound_refused_sensitivity_root_count": 0,
-              "momentum_bound_refusals": [],
+              "ideal_power_screen_accepted_sensitivity_root_count": 2,
+              "ideal_power_screen_refused_sensitivity_root_count": 0,
+              "ideal_power_screen_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 11366.49762676,
@@ -1064,6 +1077,9 @@
                   "status": "accepted",
                   "checked": true,
                   "passed": true,
+                  "physical_ideal_bound_passed": true,
+                  "required_shaft_to_ideal_power_ratio": 1.05,
+                  "screening_margin_fraction": 0.050000000000000044,
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.07296587699003966,
                   "axial_speed_m_s": 30.0,
@@ -1083,7 +1099,9 @@
               }
             ],
             "nominal_balance_root_count": 1,
-            "nominal_rejected_by_momentum_bound": [],
+            "nominal_ideal_power_screen_accepted_root_count": 1,
+            "nominal_ideal_power_screen_refused_root_count": 0,
+            "nominal_rejected_by_ideal_power_screen": [],
             "nominal_stable_full_admission_equilibrium": {
               "rpm": 13918.38336256,
               "stable_restoring_root": true,
@@ -1093,6 +1111,9 @@
                 "status": "accepted",
                 "checked": true,
                 "passed": true,
+                "physical_ideal_bound_passed": true,
+                "required_shaft_to_ideal_power_ratio": 1.05,
+                "screening_margin_fraction": 0.050000000000000044,
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.07296587699003966,
                 "axial_speed_m_s": 30.0,
@@ -1115,9 +1136,9 @@
               "sensitivity_case_count_excluding_nominal": 2,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 3,
-              "momentum_bound_accepted_sensitivity_root_count": 2,
-              "momentum_bound_refused_sensitivity_root_count": 0,
-              "momentum_bound_refusals": [],
+              "ideal_power_screen_accepted_sensitivity_root_count": 2,
+              "ideal_power_screen_refused_sensitivity_root_count": 0,
+              "ideal_power_screen_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 13515.41328963,
@@ -1146,7 +1167,7 @@
         ],
         "model_limits": [
           "Uses the engine candidate curve and the runtime's 12-annulus no-induced-velocity uniform-chord surrogate.",
-          "Every positive-thrust prediction is checked against ideal actuator-disk power; impossible surrogate roots are refused and excluded from prediction extrema.",
+          "Every positive-thrust prediction is checked against the ideal actuator-disk lower bound with a 5% screening margin; roots below the ideal are physically impossible, and all roots below the required margin are refused and excluded from prediction extrema.",
           "The momentum check uses ideal actuator-disk theory as a lower bound, not measured induced flow or an induced-velocity calibration.",
           "The real propeller's radial chord, twist, airfoil, Reynolds correction, induced flow, rotating inertia and production variation are unavailable.",
           "Advancing cases are axial-speed scenarios at 10, 20 and 30 m/s, not aircraft telemetry or validated flight points.",
@@ -1238,7 +1259,10 @@
             "sample_count": 3000
           },
           "positive_thrust_sample_count": 1950,
+          "required_shaft_to_ideal_power_ratio": 1.05,
           "refused_positive_thrust_sample_count": 0,
+          "physically_impossible_positive_thrust_sample_count": 0,
+          "required_margin_shortfall_sample_count": 0,
           "minimum_positive_thrust_power_ratio": 1.09767176,
           "minimum_ratio_at": {
             "rpm": 7187.91946309,
@@ -1326,6 +1350,9 @@
                   "status": "accepted",
                   "checked": true,
                   "passed": true,
+                  "physical_ideal_bound_passed": true,
+                  "required_shaft_to_ideal_power_ratio": 1.05,
+                  "screening_margin_fraction": 0.050000000000000044,
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.08563356396747712,
                   "axial_speed_m_s": 0.0,
@@ -1345,18 +1372,9 @@
               }
             ],
             "nominal_balance_root_count": 2,
-            "nominal_rejected_by_momentum_bound": [
-              {
-                "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
-                "rpm": 9747.3122752,
-                "geometry_chord_m": 0.04837769,
-                "thrust_n": 71.80212888,
-                "shaft_power_w": 870.02091522,
-                "ideal_shaft_power_lower_bound_w": 1400.1664752,
-                "shaft_to_ideal_power_ratio": 0.62136962,
-                "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
-              }
-            ],
+            "nominal_ideal_power_screen_accepted_root_count": 2,
+            "nominal_ideal_power_screen_refused_root_count": 0,
+            "nominal_rejected_by_ideal_power_screen": [],
             "nominal_stable_full_admission_equilibrium": {
               "rpm": 9650.60647743,
               "stable_restoring_root": true,
@@ -1366,6 +1384,9 @@
                 "status": "accepted",
                 "checked": true,
                 "passed": true,
+                "physical_ideal_bound_passed": true,
+                "required_shaft_to_ideal_power_ratio": 1.05,
+                "screening_margin_fraction": 0.050000000000000044,
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.08563356396747712,
                 "axial_speed_m_s": 0.0,
@@ -1388,9 +1409,9 @@
               "sensitivity_case_count_excluding_nominal": 2,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 2,
-              "momentum_bound_accepted_sensitivity_root_count": 2,
-              "momentum_bound_refused_sensitivity_root_count": 1,
-              "momentum_bound_refusals": [
+              "ideal_power_screen_accepted_sensitivity_root_count": 2,
+              "ideal_power_screen_refused_sensitivity_root_count": 1,
+              "ideal_power_screen_refusals": [
                 {
                   "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
                   "rpm": 9747.3122752,
@@ -1399,7 +1420,8 @@
                   "shaft_power_w": 870.02091522,
                   "ideal_shaft_power_lower_bound_w": 1400.1664752,
                   "shaft_to_ideal_power_ratio": 0.62136962,
-                  "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+                  "reason": "refused_impossible_positive_thrust_load",
+                  "decision": "refused by the required 5% ideal-power screen; excluded from candidate prediction and sensitivity extrema"
                 }
               ],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
@@ -1441,6 +1463,9 @@
                   "status": "accepted",
                   "checked": true,
                   "passed": true,
+                  "physical_ideal_bound_passed": true,
+                  "required_shaft_to_ideal_power_ratio": 1.05,
+                  "screening_margin_fraction": 0.050000000000000044,
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.08563356396747712,
                   "axial_speed_m_s": 10.0,
@@ -1460,18 +1485,9 @@
               }
             ],
             "nominal_balance_root_count": 1,
-            "nominal_rejected_by_momentum_bound": [
-              {
-                "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
-                "rpm": 9752.73804227,
-                "geometry_chord_m": 0.04837769,
-                "thrust_n": 44.88804019,
-                "shaft_power_w": 870.94719835,
-                "ideal_shaft_power_lower_bound_w": 952.02360021,
-                "shaft_to_ideal_power_ratio": 0.91483782,
-                "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
-              }
-            ],
+            "nominal_ideal_power_screen_accepted_root_count": 1,
+            "nominal_ideal_power_screen_refused_root_count": 0,
+            "nominal_rejected_by_ideal_power_screen": [],
             "nominal_stable_full_admission_equilibrium": {
               "rpm": 10322.77914737,
               "stable_restoring_root": true,
@@ -1481,6 +1497,9 @@
                 "status": "accepted",
                 "checked": true,
                 "passed": true,
+                "physical_ideal_bound_passed": true,
+                "required_shaft_to_ideal_power_ratio": 1.05,
+                "screening_margin_fraction": 0.050000000000000044,
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.08563356396747712,
                 "axial_speed_m_s": 10.0,
@@ -1503,9 +1522,9 @@
               "sensitivity_case_count_excluding_nominal": 2,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 2,
-              "momentum_bound_accepted_sensitivity_root_count": 1,
-              "momentum_bound_refused_sensitivity_root_count": 1,
-              "momentum_bound_refusals": [
+              "ideal_power_screen_accepted_sensitivity_root_count": 1,
+              "ideal_power_screen_refused_sensitivity_root_count": 1,
+              "ideal_power_screen_refusals": [
                 {
                   "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
                   "rpm": 9752.73804227,
@@ -1514,7 +1533,8 @@
                   "shaft_power_w": 870.94719835,
                   "ideal_shaft_power_lower_bound_w": 952.02360021,
                   "shaft_to_ideal_power_ratio": 0.91483782,
-                  "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+                  "reason": "refused_impossible_positive_thrust_load",
+                  "decision": "refused by the required 5% ideal-power screen; excluded from candidate prediction and sensitivity extrema"
                 }
               ],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
@@ -1556,6 +1576,9 @@
                   "status": "accepted",
                   "checked": true,
                   "passed": true,
+                  "physical_ideal_bound_passed": true,
+                  "required_shaft_to_ideal_power_ratio": 1.05,
+                  "screening_margin_fraction": 0.050000000000000044,
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.08563356396747712,
                   "axial_speed_m_s": 20.0,
@@ -1575,7 +1598,9 @@
               }
             ],
             "nominal_balance_root_count": 1,
-            "nominal_rejected_by_momentum_bound": [],
+            "nominal_ideal_power_screen_accepted_root_count": 1,
+            "nominal_ideal_power_screen_refused_root_count": 0,
+            "nominal_rejected_by_ideal_power_screen": [],
             "nominal_stable_full_admission_equilibrium": {
               "rpm": 12323.37944175,
               "stable_restoring_root": true,
@@ -1585,6 +1610,9 @@
                 "status": "accepted",
                 "checked": true,
                 "passed": true,
+                "physical_ideal_bound_passed": true,
+                "required_shaft_to_ideal_power_ratio": 1.05,
+                "screening_margin_fraction": 0.050000000000000044,
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.08563356396747712,
                 "axial_speed_m_s": 20.0,
@@ -1607,9 +1635,9 @@
               "sensitivity_case_count_excluding_nominal": 2,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 3,
-              "momentum_bound_accepted_sensitivity_root_count": 2,
-              "momentum_bound_refused_sensitivity_root_count": 0,
-              "momentum_bound_refusals": [],
+              "ideal_power_screen_accepted_sensitivity_root_count": 2,
+              "ideal_power_screen_refused_sensitivity_root_count": 0,
+              "ideal_power_screen_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 11734.61387796,
@@ -1649,6 +1677,9 @@
                   "status": "accepted",
                   "checked": true,
                   "passed": true,
+                  "physical_ideal_bound_passed": true,
+                  "required_shaft_to_ideal_power_ratio": 1.05,
+                  "screening_margin_fraction": 0.050000000000000044,
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.08563356396747712,
                   "axial_speed_m_s": 30.0,
@@ -1668,7 +1699,9 @@
               }
             ],
             "nominal_balance_root_count": 1,
-            "nominal_rejected_by_momentum_bound": [],
+            "nominal_ideal_power_screen_accepted_root_count": 1,
+            "nominal_ideal_power_screen_refused_root_count": 0,
+            "nominal_rejected_by_ideal_power_screen": [],
             "nominal_stable_full_admission_equilibrium": {
               "rpm": 14711.35690003,
               "stable_restoring_root": true,
@@ -1678,6 +1711,9 @@
                 "status": "accepted",
                 "checked": true,
                 "passed": true,
+                "physical_ideal_bound_passed": true,
+                "required_shaft_to_ideal_power_ratio": 1.05,
+                "screening_margin_fraction": 0.050000000000000044,
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.08563356396747712,
                 "axial_speed_m_s": 30.0,
@@ -1700,9 +1736,9 @@
               "sensitivity_case_count_excluding_nominal": 2,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 3,
-              "momentum_bound_accepted_sensitivity_root_count": 2,
-              "momentum_bound_refused_sensitivity_root_count": 0,
-              "momentum_bound_refusals": [],
+              "ideal_power_screen_accepted_sensitivity_root_count": 2,
+              "ideal_power_screen_refused_sensitivity_root_count": 0,
+              "ideal_power_screen_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 14304.3889625,
@@ -1731,7 +1767,7 @@
         ],
         "model_limits": [
           "Uses the engine candidate curve and the runtime's 12-annulus no-induced-velocity uniform-chord surrogate.",
-          "Every positive-thrust prediction is checked against ideal actuator-disk power; impossible surrogate roots are refused and excluded from prediction extrema.",
+          "Every positive-thrust prediction is checked against the ideal actuator-disk lower bound with a 5% screening margin; roots below the ideal are physically impossible, and all roots below the required margin are refused and excluded from prediction extrema.",
           "The momentum check uses ideal actuator-disk theory as a lower bound, not measured induced flow or an induced-velocity calibration.",
           "The real propeller's radial chord, twist, airfoil, Reynolds correction, induced flow, rotating inertia and production variation are unavailable.",
           "Advancing cases are axial-speed scenarios at 10, 20 and 30 m/s, not aircraft telemetry or validated flight points.",
@@ -1765,6 +1801,8 @@
     "engine_specific_curve_fit": "NOT PERFORMED: no matched multi-point MAX-55AX or FS-64V torque/flow dataset",
     "propeller_map_fit": "NOT PERFORMED: the MAX-55AX 12x7 datum is RPM-only and only conditions a uniform-chord surrogate; no matched FS-64V RPM datum or Ct/Cp map exists",
     "paired_static_advancing_scenarios": "computed from candidates and inferred uniform-chord assumptions; not measurements, held-out propeller tests or aircraft-flight validation",
+    "positive_thrust_ideal_power_bound": "audited over 6,000 RPM/speed samples per family with the required 5% screening margin; all nominal positive-thrust prop samples pass, and all equilibrium roots below the required margin are refused/excluded from prediction envelopes",
+    "bound_scope": "NASA ideal momentum-theory lower bound plus the plan's 5% engineering screen; this does not estimate actual induced velocity, Ct/Cp, or propeller efficiency",
     "independent_held_out_validation": "NOT PERFORMED",
     "physical_engine_validation": "NOT PERFORMED",
     "experienced_pilot_validation": "NOT PERFORMED",

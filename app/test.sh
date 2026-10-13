@@ -47,6 +47,7 @@ python3 "$HERE/../research/glow-engines/build_profiles.py" --check
 python3 "$HERE/../research/glow-engines/build_installations.py" --check
 python3 "$HERE/../research/glow-engines/installation_schema.py" --check
 python3 "$HERE/../research/glow-engines/test_profiles.py"
+python3 "$HERE/../research/glow-engines/test_calibration_report.py"
 python3 "$HERE/../research/glow-engines/test_installation_schema.py"
 python3 "$HERE/../research/glow-engines/test_installation_line_endings.py"
 python3 "$HERE/../research/glow-engines/test_refinement_report.py"
