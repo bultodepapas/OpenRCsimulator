@@ -22,6 +22,7 @@ func _initialize() -> void:
 		return
 	var lake: Dictionary = loaded.lake
 	_test_invalid_and_outside(lake)
+	_test_vertical_airborne_reject(lake)
 	_test_water_and_hull_first(lake)
 	_test_water_grazing(lake)
 	_test_bank_policy_and_gear(lake)
@@ -49,6 +50,25 @@ func _test_invalid_and_outside(lake: Dictionary) -> void:
 	_check("path inside lake bounds but outside the irregular bank polygon remains clear",
 		LakeCollision.first_hit(lake, outside_polygon_previous, outside_polygon_candidate,
 			hull, {}, 1, 0.1, MASS, _inertia) == null)
+
+
+func _test_vertical_airborne_reject(lake: Dictionary) -> void:
+	var hull := PackedFloat64Array([0.0, 0.0, 0.0])
+	var previous := _state([110.0, 40.0, -0.001], [0.0, 18000.0, 0.0],
+		M.q_from_euler(0.0, 0.0, 0.0), [0.0, 0.0, 0.0])
+	var candidate := _state([110.0, 190.0, -0.001], [0.0, 18000.0, 0.0],
+		M.q_from_euler(0.0, 0.0, 0.0), [0.0, 0.0, 0.0])
+	_check("high-speed airborne hull path stays above water and bank without a false event",
+		LakeCollision.first_hit(lake, previous, candidate, hull, {}, 1, 1.0 / 240.0,
+			MASS, _inertia) == null)
+	var wing := PackedFloat64Array([0.0, 0.0, 15.0])
+	var deep_altitude_previous := _state([110.0, 125.0, -20.0], [0.0, 0.0, 0.0],
+		M.q_from_euler(0.0, 0.0, 0.0), [0.0, 0.0, 0.0])
+	var deep_altitude_candidate := _state([110.0, 125.0, -20.0], [0.0, 0.0, 0.0],
+		M.q_from_euler(PI_VALUE, 0.0, 0.0), [0.0, 0.0, 0.0])
+	_check("rotating probe whose conservative radius stays above the bank remains clear",
+		LakeCollision.first_hit(lake, deep_altitude_previous, deep_altitude_candidate,
+			wing, {}, 1, 1.0 / 240.0, MASS, _inertia) == null)
 
 
 func _test_water_and_hull_first(lake: Dictionary) -> void:

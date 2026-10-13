@@ -67,16 +67,19 @@ def _combined_hash(hashes: dict[str, str]) -> str:
 	return context.hexdigest()
 
 
-def build(target_root: Path) -> dict[str, str]:
+def build(target_root: Path, app_source: Path = APP) -> dict[str, str]:
 	target_root = target_root.resolve()
+	app_source = app_source.resolve()
 	tools_root = (ROOT / ".tools").resolve()
 	if tools_root not in target_root.parents:
 		raise ValueError(f"Build target must be below {tools_root}")
+	if not app_source.is_dir():
+		raise FileNotFoundError(f"Probe app source is not a directory: {app_source}")
 	if target_root.exists():
 		raise FileExistsError(f"Refusing to replace existing build target: {target_root}")
 	project = target_root / "project"
 	target_root.mkdir(parents=True)
-	shutil.copytree(APP, project, ignore=_ignore)
+	shutil.copytree(app_source, project, ignore=_ignore)
 
 	research = project / "research" / "glow-engines"
 	research.mkdir(parents=True)
@@ -135,7 +138,7 @@ def build(target_root: Path) -> dict[str, str]:
 
 	manifest = {
 		"format": "openrc-glow-release-probe-build v1",
-		"source_project": str(APP),
+		"source_project": str(app_source),
 		"isolated_project": str(project),
 		"main_scene": "res://research/glow-engines/release_probe_wrapper.tscn",
 		"embedded_manifest": str(embedded_manifest_path),
@@ -161,8 +164,14 @@ def main() -> None:
 		type=Path,
 		default=ROOT / ".tools" / "glow-release-probe-20261013",
 	)
+	parser.add_argument(
+		"--app-source",
+		type=Path,
+		default=APP,
+		help="App tree to copy into the isolated probe project (defaults to the working app).",
+	)
 	args = parser.parse_args()
-	result = build(args.target)
+	result = build(args.target, args.app_source)
 	print(json.dumps(result, indent=2))
 
 

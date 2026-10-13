@@ -19,6 +19,13 @@ func _initialize() -> void:
 		printerr(first.get("errors", []))
 		quit(1)
 		return
+	check("trial identity hashes its resolved model manifest", first.identity.trial_id == _expected_trial_id(first.identity))
+	var alternate_manifest_identity: Dictionary = first.identity.duplicate(true)
+	alternate_manifest_identity.presentation.model_manifest_sha256 = "f".repeat(64)
+	check("model manifest pin changes the trial identity", first.identity.trial_id != _expected_trial_id(alternate_manifest_identity))
+	var alternate_family_identity: Dictionary = first.identity.duplicate(true)
+	alternate_family_identity.presentation.visual_family = "other-model-family"
+	check("resolved visual family changes the trial identity", first.identity.trial_id != _expected_trial_id(alternate_family_identity))
 	var bound_visual: Dictionary = Builder.build(Catalog.DEFAULT_ID, NAN, first.presentation)
 	check("frozen trial carries the manifest consumed by its renderer", not bound_visual.is_empty()
 		and bound_visual.model_manifest_sha256 == first.identity.presentation.model_manifest_sha256)
@@ -49,6 +56,33 @@ func _initialize() -> void:
 	var saved := Trial.freeze(payload)
 	check("saved revision ancestry is retained", saved.get("ok", false)
 		and saved.identity.ancestor_variant_id == "saved-parent" and saved.identity.ancestor_revision == 3)
+	var missing_pin: Dictionary = payload.duplicate(true)
+	missing_pin.workshop_descriptor = {}
+	check("saved ancestry cannot silently acquire today's descriptor", not Trial.freeze(missing_pin).get("ok", false))
+	var oversized: Dictionary = payload.duplicate(true)
+	var oversized_bytes := PackedByteArray()
+	oversized_bytes.resize(Descriptor.MAX_BASE_BYTES + 1)
+	oversized.base_bytes = oversized_bytes
+	check("oversized source is refused before JSON parsing", not Trial.freeze(oversized).get("ok", false))
+	var malformed_payload: Dictionary = payload.duplicate(true)
+	malformed_payload.base_id = StringName(Catalog.DEFAULT_ID)
+	check("non-string base IDs are refused", not Trial.freeze(malformed_payload).get("ok", false))
+	malformed_payload = payload.duplicate(true)
+	malformed_payload.compiler_version = StringName(Compiler.COMPILER_VERSION)
+	check("non-string compiler pins are refused", not Trial.freeze(malformed_payload).get("ok", false))
+	malformed_payload = payload.duplicate(true)
+	malformed_payload.variant_id = StringName("saved-parent")
+	check("non-string ancestor IDs are refused", not Trial.freeze(malformed_payload).get("ok", false))
+	malformed_payload = payload.duplicate(true)
+	malformed_payload.variant_revision = 3.5
+	check("fractional ancestor revisions are refused", not Trial.freeze(malformed_payload).get("ok", false))
+	malformed_payload = payload.duplicate(true)
+	malformed_payload.variant_revision = 0
+	check("saved ancestry without a positive revision is refused", not Trial.freeze(malformed_payload).get("ok", false))
+	malformed_payload = payload.duplicate(true)
+	malformed_payload.variant_id = ""
+	malformed_payload.variant_revision = 3
+	check("orphan ancestor revisions are refused", not Trial.freeze(malformed_payload).get("ok", false))
 	payload.compiler_version = "unsupported-compiler"
 	check("compiler replacement is refused", not Trial.freeze(payload).get("ok", false))
 	payload.compiler_version = Compiler.COMPILER_VERSION
@@ -66,6 +100,8 @@ func _initialize() -> void:
 	payload.workshop_descriptor.presentation = {"visual_id": Catalog.DEFAULT_ID, "scale_root": "airplane"}
 	var old_saved := Trial.freeze(payload)
 	check("v1 saved descriptor can still launch through its explicit adapter", old_saved.get("ok", false))
+	check("legacy descriptor trial hash binds the resolved model manifest", old_saved.get("ok", false)
+		and old_saved.identity.trial_id == _expected_trial_id(old_saved.identity))
 	payload.workshop_descriptor = descriptor.duplicate(true)
 	payload.compiler_version = ""
 	check("saved ancestry without a compiler pin is refused", not Trial.freeze(payload).get("ok", false))
@@ -77,3 +113,16 @@ func check(label: String, condition: bool) -> void:
 	if not condition:
 		failures += 1
 		printerr("FAIL ", label)
+
+func _expected_trial_id(identity: Dictionary) -> String:
+	var material: String = str(identity.base_sha256) + ":" + str(identity.recipe_sha256) + ":" \
+		+ str(identity.descriptor_sha256) + ":" + str(identity.presentation.visual_family) + ":" \
+		+ str(identity.presentation.model_manifest_sha256) + ":" \
+		+ str(identity.dependencies_sha256) + ":" + str(identity.compiler)
+	return "workshop-" + _sha(material.to_utf8_buffer()).substr(0, 32)
+
+func _sha(bytes: PackedByteArray) -> String:
+	var hashing := HashingContext.new()
+	hashing.start(HashingContext.HASH_SHA256)
+	hashing.update(bytes)
+	return hashing.finish().hex_encode()

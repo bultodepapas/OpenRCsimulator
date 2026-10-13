@@ -14,6 +14,7 @@ const SOURCE_PATHS := [
 	"app/physics/glow/installation.gd", "app/physics/glow/flight.gd", "app/physics/glow/lifecycle.gd",
 	"app/physics/glow/source.gd", "app/physics/glow/two_stroke.gd", "app/physics/glow/four_stroke.gd",
 	"app/physics/glow/thermal.gd", "app/physics/glow/fuel_mass.gd", "app/physics/glow/propeller.gd",
+	"app/physics/glow/vibration.gd",
 	"app/physics/dynamics.gd", "app/physics/propulsion.gd", "app/physics/glow/operating_point.gd",
 	"app/physics/electric_battery_step.gd", "app/physics/math3d.gd", "app/physics/rigid_body.gd",
 	"app/physics/rotor_coupling.gd",
@@ -37,6 +38,13 @@ func snapshot(f: Node) -> Dictionary:
 		stop_reason=t.get("stop_reason",""),mass_kg=t.get("mass_properties",{}).get("mass_kg",0.),
 		firing_fraction=t.get("firing_fraction",0.),fault=f.sim.fault_reason}
 
+func record_mode_event(events: Array, f: Node, before: PackedFloat64Array, lower: float, kind: String) -> void:
+	var after: PackedFloat64Array=f.sim.continuous
+	if before[7]==after[7] and before[8]==after[8]: return
+	events.append({kind=kind,lower_time_s=lower,upper_time_s=f.sim.time(),
+		from_running=before[7]>0.5,from_reason=int(before[8]),
+		to_running=after[7]>0.5,to_reason=int(after[8])})
+
 func run_case(id: String, scenario: String) -> void:
 	var f=Session.new()
 	f.setup("res://data/aircraft/stik_glow_"+id+".json")
@@ -49,9 +57,11 @@ func run_case(id: String, scenario: String) -> void:
 			failed=true;f.free();return
 	var initial: Dictionary=snapshot(f)
 	var samples: Array=[initial]
+	var mode_events: Array=[]
 	var costs: Array=[]
 	var duration: int=6 if scenario=="takeoff" else 3
 	for tick in duration*hz:
+		var before_command: PackedFloat64Array=f.sim.continuous.duplicate()
 		if scenario=="takeoff":
 			f.sim.inputs[3]=1.
 			if tick>=3*hz: f.sim.inputs[1]=.18
@@ -65,14 +75,18 @@ func run_case(id: String, scenario: String) -> void:
 			if tick==hz/2: f.glow_set_mixture(.1)
 		elif scenario=="exhaustion":
 			if tick==hz/2: f.sim.continuous[1]=1e-7
+		record_mode_event(mode_events,f,before_command,f.sim.time(),"command")
+		var before_step: PackedFloat64Array=f.sim.continuous.duplicate()
+		var step_start_s: float=f.sim.time()
 		var started: int=Time.get_ticks_usec()
 		f.sim.step()
 		costs.append(Time.get_ticks_usec()-started)
+		record_mode_event(mode_events,f,before_step,step_start_s,"accepted_step")
 		if not f.sim.fault_reason.is_empty():
 			failed=true;break
 		if (tick+1)%(hz/10)==0: samples.append(snapshot(f))
 	costs.sort()
-	results.append({engine=id,scenario=scenario,hz=hz,initial=initial,final=snapshot(f),samples=samples,
+	results.append({engine=id,scenario=scenario,hz=hz,initial=initial,final=snapshot(f),samples=samples,mode_events=mode_events,
 		cost_us={p50=costs[int(costs.size()*.5)],p95=costs[int(costs.size()*.95)],maximum=costs[-1]},
 		configuration=f.trace_meta()})
 	print(id," ",scenario," ",f.sim.tick," ticks; p95 ",costs[int(costs.size()*.95)]," us; ",f.sim.fault_reason)
@@ -93,5 +107,5 @@ func _initialize():
 		failed=true
 	var file=FileAccess.open(output,FileAccess.WRITE)
 	if file==null: quit(2);return
-	file.store_string(JSON.stringify({format="openrc-glow-flight-experiment v2",ok=not failed,hz=hz,runs=results,source_sha256=sources_before},"\t",true,true)+"\n")
+	file.store_string(JSON.stringify({format="openrc-glow-flight-experiment v3",ok=not failed,hz=hz,runs=results,source_sha256=sources_before},"\t",true,true)+"\n")
 	quit(1 if failed else 0)

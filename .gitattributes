@@ -25,4 +25,5 @@
 
 # RCV bench identity and generated independent oracle are byte-stable.
 /research/rc-monster-truck/suspension_bench.json text eol=lf
+/research/rc-monster-truck/support_bench.json text eol=lf
 /research/rc-monster-truck/fixtures/*.json text eol=lf

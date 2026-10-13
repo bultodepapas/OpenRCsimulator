@@ -1,0 +1,21 @@
+{
+  "format": "openrc-support-bench",
+  "version": 1,
+  "id": "rcv-four-corner-synthetic-v1",
+  "description": "Synthetic four-corner support bench for numerical tests. Not measured truck data or a full-vehicle calibration.",
+  "parameters": {
+    "sprung_mass_kg": {"value": 4.8, "unit": "kg", "kind": "estimated", "source": "RCV support bench synthetic total sprung mass; not a weighed vehicle"},
+    "unsprung_mass_kg": {"value": 0.18, "unit": "kg", "kind": "estimated", "source": "RCV support bench synthetic unsprung mass per corner; not a measured wheel assembly"},
+    "suspension_stiffness_n_per_m": {"value": 900.0, "unit": "N/m", "kind": "estimated", "source": "RCV support bench synthetic linear wheel rate; not a measured shock curve or motion-ratio conversion"},
+    "suspension_damping_n_s_per_m": {"value": 7.0, "unit": "N*s/m", "kind": "estimated", "source": "RCV support bench synthetic linear wheel damping; not a measured damper curve"},
+    "tire_stiffness_n_per_m": {"value": 6500.0, "unit": "N/m", "kind": "estimated", "source": "RCV support bench synthetic unilateral vertical tire stiffness; not a calibrated RC tire"},
+    "gravity_m_per_s2": {"value": 9.80665, "unit": "m/s^2", "kind": "manual", "source": "Conventional standard gravity selected for this synthetic numerical bench"},
+    "suspension_rest_length_m": {"value": 0.1, "unit": "m", "kind": "estimated", "source": "RCV support bench synthetic neutral vertical spring mount separation; not shock eye length"},
+    "tire_radius_m": {"value": 0.085, "unit": "m", "kind": "estimated", "source": "RCV support bench synthetic undeformed rolling radius; not derived from Blender geometry"},
+    "roll_inertia_kg_m2": {"value": 0.192, "unit": "kg*m^2", "kind": "estimated", "source": "RCV support bench synthetic roll inertia about the sprung-mass CG; not measured"},
+    "pitch_inertia_kg_m2": {"value": 0.15552, "unit": "kg*m^2", "kind": "estimated", "source": "RCV support bench synthetic pitch inertia about the sprung-mass CG; not measured"},
+    "front_axle_x_m": {"value": 0.18, "unit": "m", "kind": "estimated", "source": "RCV support bench synthetic front axle station; x forward from the sprung-mass CG"},
+    "rear_axle_x_m": {"value": -0.18, "unit": "m", "kind": "estimated", "source": "RCV support bench synthetic rear axle station; x forward from the sprung-mass CG"},
+    "half_track_m": {"value": 0.2, "unit": "m", "kind": "estimated", "source": "RCV support bench synthetic half track; y positive left from the sprung-mass CG"}
+  }
+}

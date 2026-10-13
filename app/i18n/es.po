@@ -1025,8 +1025,8 @@ msgstr "Revisa los valores indicados antes de probar el avión."
 msgid "No build values are available."
 msgstr "No hay valores disponibles para esta variante."
 
-msgid "Scale %d%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f"
-msgstr "Escala %d%% · masa: %s · peso ×%.2f · potencia ×%.2f · mandos ×%.2f"
+msgid "Scale %s%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f"
+msgstr "Escala %s%% · masa: %s · peso ×%.2f · potencia ×%.2f · mandos ×%.2f"
 
 msgid "Base → proposed"
 msgstr "Original → variante"
@@ -1061,8 +1061,8 @@ msgstr "n/d"
 msgid "Scale 100%"
 msgstr "Escala 100%"
 
-msgid "Scale %d%%  ·  span %.2f m"
-msgstr "Escala %d%%  ·  envergadura %.2f m"
+msgid "Scale %s%%  ·  span %.2f m"
+msgstr "Escala %s%%  ·  envergadura %.2f m"
 
 msgid "Delete saved build?"
 msgstr "¿Eliminar esta variante?"
@@ -1123,3 +1123,12 @@ msgstr "Más recorrido"
 
 msgid "Light / low power"
 msgstr "Ligero / suave"
+
+msgid "Redo"
+msgstr "Rehacer"
+
+msgid "Recipe change reapplied."
+msgstr "Cambio de ajustes reaplicado."
+
+msgid "Recovered revision %d from backup. Review it before saving."
+msgstr "Revisión %d recuperada de la copia de seguridad. Revísala antes de guardar."

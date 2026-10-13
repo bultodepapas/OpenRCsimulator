@@ -147,6 +147,13 @@ static func sweep_probe(lake: Dictionary, from_ned: PackedFloat64Array, to_ned: 
 	var normalized: Dictionary = _normalize_waves(lake, waves)
 	if not normalized.ok:
 		return _invalid_event("sweep: wave parameters exceed the lake's validated bounds")
+	# Bank terrain is between down=0 and the mean water datum. Water can rise by no more
+	# than its validated summed amplitude, so this envelope safely rejects an airborne chord
+	# before shoreline and bank polygon scans. Equality stays on the full path for grazing.
+	var highest_possible_down: float = minf(0.0,
+		float(lake.water_level_down_m) - float(lake.wave_bounds.max_amplitude_m))
+	if maxf(from_ned[2], to_ned[2]) < highest_possible_down - CONTACT_EPSILON_M:
+		return _miss_event()
 	var north_delta: float = to_ned[0] - from_ned[0]
 	var east_delta: float = to_ned[1] - from_ned[1]
 	var horizontal_distance: float = M.sqrt_(north_delta * north_delta + east_delta * east_delta)

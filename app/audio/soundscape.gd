@@ -55,6 +55,31 @@ var last_update_usec: int = 0
 var peak_update_usec: int = 0
 var last_doppler: float = 1.0
 var last_targets: Dictionary = {}
+signal buses_releasing
+
+
+func _enter_tree() -> void:
+	if voices.is_empty():
+		return # Initial configure creates the voices and buses after attachment.
+	# Workshop retains a detached flight. Rebuild its released buses before audio resumes.
+	_bus_names.clear()
+	_setup_buses()
+	gain = 0.0
+	_primed = false
+	_levels.fill(0.0)
+	for index: int in voices.size():
+		var voice: AudioStreamPlayer3D = voices[index]
+		voice.bus = _bus_names[1 if index < 3 else 2]
+		voice.volume_db = -80.0
+		if voice.stream is AudioStreamWAV and voice.stream.loop_mode != AudioStreamWAV.LOOP_DISABLED:
+			_start_offsets[index] = 0.0
+	if glow_player != null:
+		glow_player.bus = _bus_names[1]
+		glow_player.volume_db = -80.0
+		_glow_pending_start = true
+		_glow_capacity = 0
+		_last_glow_refill_usec = 0
+		glow_voice.reset()
 
 
 func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 4102026, explicit_glow_family: String = "") -> void:
@@ -429,6 +454,8 @@ func output_bus() -> StringName:
 
 
 func _exit_tree() -> void:
+	# External ambience players must stop before their destination bus disappears.
+	buses_releasing.emit()
 	for voice: AudioStreamPlayer3D in voices:
 		voice.stop()
 	if glow_player != null:

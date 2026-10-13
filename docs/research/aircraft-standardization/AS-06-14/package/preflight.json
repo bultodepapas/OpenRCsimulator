@@ -1,0 +1,527 @@
+{
+	"aircraft": [
+		{
+			"asset": {
+				"identity": "jensen-60-nitro-61-v3",
+				"kind": "procedural",
+				"revision": "jensen-60-nitro-61-v3"
+			},
+			"catalog_status": "flyable",
+			"compiler_transforms": {
+				"controls": true,
+				"power": true,
+				"scale": true,
+				"weight": true
+			},
+			"contacts": {
+				"hull_probes": 8,
+				"policy": {
+					"gear_overtravel": {
+						"response": "terminal",
+						"rule_source": "GroundContact.collapsed",
+						"selected": true
+					},
+					"hull": {
+						"contact_event_source": "HullContact.contacts",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"law_identity_status": "identified",
+						"mode": "soft",
+						"terminal_rule_source": "HullContact.terminal",
+						"terminal_trigger": "impact_or_depth"
+					},
+					"prop_strike": {
+						"geometry_source": "HullContact.prop_disc",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"response": "engine_stop_continue",
+						"response_source": "FlightSession._check_prop_strike",
+						"selected": true
+					}
+				},
+				"supports": 3,
+				"visual_sections": "unbound physical hull labels; visual section provider declared separately",
+				"wheel_profile": "applied"
+			},
+			"dependency_count": 6,
+			"errors": [],
+			"id": "jensen-das-ugly-stik-60",
+			"laws": [
+				"controls.conventional_surface_mapping.v1",
+				"controls.flaps.neutral_only.v1",
+				"damage.terminal_hull.v1",
+				"energy.prescribed_fuel_inventory_fixed.v1",
+				"gear.point_contacts.v1",
+				"propulsion.glow_prop.legacy_prescribed_rpm.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"model_adapter": "euler_hinges",
+			"modules": [
+				"aircraft.inventory.v1",
+				"controls.conventional.v1",
+				"energy.prescribed_fuel.v1",
+				"gear.fixed_tricycle.v1",
+				"propulsion.glow_prop.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"ok": true,
+			"physical_validation": "not established by software conformance",
+			"render_geometry": {
+				"meshes": 101,
+				"surfaces": 143,
+				"triangles": 52360,
+				"vertices": 139255
+			},
+			"status_note": "Flight model under evaluation.",
+			"visual_family": "jensen-das-ugly-stik-60"
+		},
+		{
+			"asset": {
+				"identity": "jensen-60-nitro-61-v3",
+				"kind": "procedural",
+				"revision": "jensen-60-nitro-61-v3"
+			},
+			"catalog_status": "experimental",
+			"compiler_transforms": {
+				"controls": true,
+				"power": false,
+				"scale": false,
+				"weight": false
+			},
+			"contacts": {
+				"hull_probes": 8,
+				"policy": {
+					"gear_overtravel": {
+						"response": "terminal",
+						"rule_source": "GroundContact.collapsed",
+						"selected": true
+					},
+					"hull": {
+						"contact_event_source": "HullContact.contacts",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"law_identity_status": "identified",
+						"mode": "soft",
+						"terminal_rule_source": "HullContact.terminal",
+						"terminal_trigger": "impact_or_depth"
+					},
+					"prop_strike": {
+						"geometry_source": "HullContact.prop_disc",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"response": "engine_stop_continue",
+						"response_source": "FlightSession._check_prop_strike",
+						"selected": true
+					}
+				},
+				"supports": 3,
+				"visual_sections": "unbound physical hull labels; visual section provider declared separately",
+				"wheel_profile": "legacy_fallback"
+			},
+			"dependency_count": 6,
+			"errors": [],
+			"id": "stik-glow-55ax-2t",
+			"laws": [
+				"controls.conventional_surface_mapping.v1",
+				"controls.flaps.neutral_only.v1",
+				"damage.terminal_hull.v1",
+				"energy.finite_glow_fuel.v1",
+				"gear.point_contacts.v1",
+				"propulsion.glow_prop.finite_glow_installation.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"model_adapter": "euler_hinges",
+			"modules": [
+				"aircraft.inventory.v1",
+				"controls.conventional.v1",
+				"energy.finite_glow_fuel.v1",
+				"gear.fixed_tricycle.v1",
+				"installation.glow.v1",
+				"propulsion.glow_prop.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"ok": true,
+			"physical_validation": "not established by software conformance",
+			"render_geometry": {
+				"meshes": 101,
+				"surfaces": 143,
+				"triangles": 52360,
+				"vertices": 139255
+			},
+			"status_note": "Experimental: inferred O.S. MAX-55AX 2-stroke installation and engine profile; not flight-validated.",
+			"visual_family": "jensen-das-ugly-stik-60"
+		},
+		{
+			"asset": {
+				"identity": "jensen-60-nitro-61-v3",
+				"kind": "procedural",
+				"revision": "jensen-60-nitro-61-v3"
+			},
+			"catalog_status": "experimental",
+			"compiler_transforms": {
+				"controls": true,
+				"power": false,
+				"scale": false,
+				"weight": false
+			},
+			"contacts": {
+				"hull_probes": 8,
+				"policy": {
+					"gear_overtravel": {
+						"response": "terminal",
+						"rule_source": "GroundContact.collapsed",
+						"selected": true
+					},
+					"hull": {
+						"contact_event_source": "HullContact.contacts",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"law_identity_status": "identified",
+						"mode": "soft",
+						"terminal_rule_source": "HullContact.terminal",
+						"terminal_trigger": "impact_or_depth"
+					},
+					"prop_strike": {
+						"geometry_source": "HullContact.prop_disc",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"response": "engine_stop_continue",
+						"response_source": "FlightSession._check_prop_strike",
+						"selected": true
+					}
+				},
+				"supports": 3,
+				"visual_sections": "unbound physical hull labels; visual section provider declared separately",
+				"wheel_profile": "legacy_fallback"
+			},
+			"dependency_count": 6,
+			"errors": [],
+			"id": "stik-glow-fs64v-4t",
+			"laws": [
+				"controls.conventional_surface_mapping.v1",
+				"controls.flaps.neutral_only.v1",
+				"damage.terminal_hull.v1",
+				"energy.finite_glow_fuel.v1",
+				"gear.point_contacts.v1",
+				"propulsion.glow_prop.finite_glow_installation.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"model_adapter": "euler_hinges",
+			"modules": [
+				"aircraft.inventory.v1",
+				"controls.conventional.v1",
+				"energy.finite_glow_fuel.v1",
+				"gear.fixed_tricycle.v1",
+				"installation.glow.v1",
+				"propulsion.glow_prop.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"ok": true,
+			"physical_validation": "not established by software conformance",
+			"render_geometry": {
+				"meshes": 101,
+				"surfaces": 143,
+				"triangles": 52360,
+				"vertices": 139255
+			},
+			"status_note": "Experimental: inferred O.S. FS-64V 4-stroke installation and engine profile; not flight-validated.",
+			"visual_family": "jensen-das-ugly-stik-60"
+		},
+		{
+			"asset": {
+				"identity": "gp-extra-300s-60-v1",
+				"kind": "procedural",
+				"revision": "gp-extra-300s-60-v1"
+			},
+			"catalog_status": "experimental",
+			"compiler_transforms": {
+				"controls": true,
+				"power": true,
+				"scale": true,
+				"weight": true
+			},
+			"contacts": {
+				"hull_probes": 10,
+				"policy": {
+					"gear_overtravel": {
+						"response": "terminal",
+						"rule_source": "GroundContact.collapsed",
+						"selected": true
+					},
+					"hull": {
+						"contact_event_source": "HullContact.contacts",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"law_identity_status": "identified",
+						"mode": "soft",
+						"terminal_rule_source": "HullContact.terminal",
+						"terminal_trigger": "impact_or_depth"
+					},
+					"prop_strike": {
+						"geometry_source": "HullContact.prop_disc",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"response": "engine_stop_continue",
+						"response_source": "FlightSession._check_prop_strike",
+						"selected": true
+					}
+				},
+				"supports": 3,
+				"visual_sections": "unbound physical hull labels; visual section provider declared separately",
+				"wheel_profile": "applied"
+			},
+			"dependency_count": 4,
+			"errors": [],
+			"id": "gp-extra-300s-60",
+			"laws": [
+				"controls.conventional_surface_mapping.v1",
+				"controls.flaps.neutral_only.v1",
+				"damage.terminal_hull.v1",
+				"energy.prescribed_fuel_inventory_fixed.v1",
+				"gear.point_contacts.v1",
+				"propulsion.glow_prop.legacy_prescribed_rpm.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"model_adapter": "euler_hinges",
+			"modules": [
+				"aircraft.inventory.v1",
+				"controls.conventional.v1",
+				"energy.prescribed_fuel.v1",
+				"gear.fixed_taildragger.v1",
+				"propulsion.glow_prop.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"ok": true,
+			"physical_validation": "not established by software conformance",
+			"render_geometry": {
+				"meshes": 32,
+				"surfaces": 32,
+				"triangles": 19502,
+				"vertices": 57650
+			},
+			"status_note": "Experimental: first physics estimate from the plans, not yet flight-tested.",
+			"visual_family": "gp-extra-300s-60"
+		},
+		{
+			"asset": {
+				"identity": "p51d-mustang-120-v1",
+				"kind": "procedural",
+				"revision": "p51d-mustang-120-v1"
+			},
+			"catalog_status": "experimental",
+			"compiler_transforms": {
+				"controls": true,
+				"power": false,
+				"scale": false,
+				"weight": false
+			},
+			"contacts": {
+				"hull_probes": 14,
+				"policy": {
+					"gear_overtravel": {
+						"response": "terminal",
+						"rule_source": "GroundContact.collapsed",
+						"selected": true
+					},
+					"hull": {
+						"contact_event_source": "HullContact.contacts",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"law_identity_status": "identified",
+						"mode": "soft",
+						"terminal_rule_source": "HullContact.terminal",
+						"terminal_trigger": "impact_or_depth"
+					},
+					"prop_strike": {
+						"geometry_source": "HullContact.prop_disc",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"response": "engine_stop_continue",
+						"response_source": "FlightSession._check_prop_strike",
+						"selected": true
+					}
+				},
+				"supports": 3,
+				"visual_sections": "unbound physical hull labels; visual section provider declared separately",
+				"wheel_profile": "applied"
+			},
+			"dependency_count": 4,
+			"errors": [],
+			"id": "p51d-mustang-120",
+			"laws": [
+				"controls.conventional_surface_mapping.v1",
+				"controls.flaps.neutral_only.v1",
+				"damage.terminal_hull.v1",
+				"energy.prescribed_fuel_inventory_fixed.v1",
+				"gear.point_contacts.v1",
+				"propeller.normal_force.v1",
+				"propeller.pfactor_moment.v1",
+				"propeller.slipstream.v1",
+				"propulsion.glow_prop.shaft_balance.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"model_adapter": "euler_hinges",
+			"modules": [
+				"aircraft.inventory.v1",
+				"controls.conventional.v1",
+				"energy.prescribed_fuel.v1",
+				"gear.locked_down_taildragger.v1",
+				"propulsion.glow_prop.v1",
+				"propulsion.shaft.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"ok": true,
+			"physical_validation": "not established by software conformance",
+			"render_geometry": {
+				"meshes": 132,
+				"surfaces": 140,
+				"triangles": 52693,
+				"vertices": 151069
+			},
+			"status_note": "Experimental: first physics estimate from the full-size airplane scaled 1/4, not yet flight-tested.",
+			"visual_family": "p51d-mustang-120"
+		},
+		{
+			"asset": {
+				"identity": "a200-av02-contours-03",
+				"kind": "procedural",
+				"revision": "a200-av02-contours-03"
+			},
+			"catalog_status": "experimental",
+			"compiler_transforms": {
+				"controls": true,
+				"power": false,
+				"scale": false,
+				"weight": false
+			},
+			"contacts": {
+				"hull_probes": 13,
+				"policy": {
+					"gear_overtravel": {
+						"response": "terminal",
+						"rule_source": "GroundContact.collapsed",
+						"selected": false
+					},
+					"hull": {
+						"contact_event_source": "HullContact.contacts",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"law_identity_status": "identified",
+						"mode": "soft",
+						"terminal_rule_source": "HullContact.terminal",
+						"terminal_trigger": "impact_or_depth"
+					},
+					"prop_strike": {
+						"geometry_source": "HullContact.prop_disc",
+						"law_identity": "",
+						"response": "not_selected",
+						"response_source": "FlightSession._check_prop_strike",
+						"selected": false
+					}
+				},
+				"supports": 0,
+				"visual_sections": "unbound physical hull labels; visual section provider declared separately",
+				"wheel_profile": "no_gear"
+			},
+			"dependency_count": 2,
+			"errors": [],
+			"id": "sebart-avanti-s-a200-p100rx",
+			"laws": [
+				"controls.conventional_surface_mapping.v1",
+				"controls.flaps.neutral_only.v1",
+				"damage.terminal_hull.v1",
+				"energy.prescribed_fuel_inventory_fixed.v1",
+				"gear.no_contacts.v1",
+				"propulsion.turbine.spool.rk4.v1",
+				"propulsion.turbine.v1",
+				"propulsion_layout.single_centerline_jet.v1"
+			],
+			"model_adapter": "axis_hinges",
+			"modules": [
+				"aircraft.inventory.v1",
+				"controls.conventional.v1",
+				"energy.prescribed_fuel.v1",
+				"gear.locked_up.v1",
+				"propulsion.turbine.v1",
+				"propulsion_layout.single_centerline_jet.v1"
+			],
+			"ok": true,
+			"physical_validation": "not established by software conformance",
+			"render_geometry": {
+				"meshes": 36,
+				"surfaces": 36,
+				"triangles": 6276,
+				"vertices": 17056
+			},
+			"status_note": "Experimental: first physics estimate (turbine, kit and owner data), not yet flight-tested. Flaps up, gear up: in-air start only.",
+			"visual_family": "sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"asset": {
+				"identity": "eflite_turbo_timber_evolution",
+				"kind": "imported_glb",
+				"path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+				"revision": "r1-fb7586f19029",
+				"sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5"
+			},
+			"catalog_status": "experimental",
+			"compiler_transforms": {
+				"controls": true,
+				"power": false,
+				"scale": false,
+				"weight": false
+			},
+			"contacts": {
+				"hull_probes": 16,
+				"policy": {
+					"gear_overtravel": {
+						"response": "terminal",
+						"rule_source": "GroundContact.collapsed",
+						"selected": true
+					},
+					"hull": {
+						"contact_event_source": "HullContact.contacts",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"law_identity_status": "identified",
+						"mode": "soft",
+						"terminal_rule_source": "HullContact.terminal",
+						"terminal_trigger": "impact_or_depth"
+					},
+					"prop_strike": {
+						"geometry_source": "HullContact.prop_disc",
+						"law_identity": "soft-hull-spring-friction-v1 omega=60.0 zeta=0.7 onset_m=0.004 mu=0.4 slip_reg_mps=0.2 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground",
+						"response": "engine_stop_continue",
+						"response_source": "FlightSession._check_prop_strike",
+						"selected": true
+					}
+				},
+				"supports": 3,
+				"visual_sections": "unbound physical hull labels; visual section provider declared separately",
+				"wheel_profile": "applied"
+			},
+			"dependency_count": 6,
+			"errors": [],
+			"id": "turbo-lumber-evolution",
+			"laws": [
+				"controls.conventional_surface_mapping.v1",
+				"controls.flaps.neutral_only.v1",
+				"damage.terminal_hull.v1",
+				"energy.battery.fixed_voltage.v1",
+				"gear.point_contacts.v1",
+				"propulsion.electric_prop.direct_drive_dc_motor.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"model_adapter": "imported_glb",
+			"modules": [
+				"aircraft.inventory.v1",
+				"controls.conventional.v1",
+				"energy.fixed_voltage.v1",
+				"gear.fixed_taildragger.v1",
+				"propulsion.electric_prop.v1",
+				"propulsion_layout.single_tractor.v1"
+			],
+			"ok": true,
+			"physical_validation": "not established by software conformance",
+			"render_geometry": {
+				"meshes": 15,
+				"surfaces": 36,
+				"triangles": 64291,
+				"vertices": 53288
+			},
+			"status_note": "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off.",
+			"visual_family": "turbo-lumber-evolution"
+		}
+	],
+	"format": "openrc-aircraft-preflight v1",
+	"godot": "4.7.2-stable (official)",
+	"ok": true
+}

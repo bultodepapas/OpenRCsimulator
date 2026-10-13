@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+AS fleet jensen-das-ugly-stik-60 soft=false PASS
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+AS fleet jensen-das-ugly-stik-60 soft=true PASS
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+AS fleet stik-glow-55ax-2t soft=false PASS
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+AS fleet stik-glow-55ax-2t soft=true PASS
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+AS fleet stik-glow-fs64v-4t soft=false PASS
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+AS fleet stik-glow-fs64v-4t soft=true PASS
+AS fleet gp-extra-300s-60 soft=false PASS
+AS fleet gp-extra-300s-60 soft=true PASS
+AS fleet p51d-mustang-120 soft=false PASS
+AS fleet p51d-mustang-120 soft=true PASS
+AS fleet sebart-avanti-s-a200-p100rx soft=false PASS
+AS fleet sebart-avanti-s-a200-p100rx soft=true PASS
+AS fleet turbo-lumber-evolution soft=false PASS
+AS fleet turbo-lumber-evolution soft=true PASS

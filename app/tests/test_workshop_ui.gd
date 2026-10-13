@@ -3,6 +3,7 @@ extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Compiler := preload("res://workshop/compiler.gd")
+const Descriptor := preload("res://workshop/descriptor.gd")
 const Store := preload("res://workshop/store.gd")
 const Workshop := preload("res://ui/workshop.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
@@ -101,6 +102,15 @@ func _run() -> void:
 
 	workshop.set_aircraft(Catalog.DEFAULT_ID)
 	await _ui.settle()
+	workshop.set_recipe({"scale": 1.33, "weight_multiplier": 0.731}, false)
+	_check("intermediate recipe values are never silently rounded", is_equal_approx(workshop.get_recipe().scale, 1.33)
+		and is_equal_approx(workshop.get_recipe().weight_multiplier, 0.731))
+	_check("slider displays the exact saved multiplier", is_equal_approx(workshop.get("_factor_sliders")["weight_multiplier"].value, 0.731))
+	_check("scale selector includes the exact intermediate size", scale_selector.get_item_metadata(scale_selector.selected) == 1.33)
+	var precise_recipe: Dictionary = workshop.get_recipe()
+	workshop.set_recipe({"scale": []})
+	_check("malformed recipe is refused before changing the draft", workshop.get_recipe() == precise_recipe
+		and str(workshop.get("_status_label").text).contains("finite number"))
 	for requested_scale: float in [0.5, 2.0]:
 		workshop.set_recipe({"scale": requested_scale}, false)
 		_check("scale %.0f%% compiles" % (requested_scale * 100.0), bool(workshop.get_compiled().get("ok", false))
@@ -123,6 +133,40 @@ func _run() -> void:
 	(_find(workshop, "ResetRecipe") as Button).pressed.emit()
 	await _ui.settle()
 	_check("Reset returns every value to compiler defaults", workshop.get_recipe() == Compiler.defaults())
+
+	# History belongs to this source and handles a slider drag as one edit.
+	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	var undo_button := _find(workshop, "UndoRecipe") as Button
+	var redo_button := _find(workshop, "RedoRecipe") as Button
+	workshop.set_recipe({"scale": 0.5})
+	workshop.set_recipe({"scale": 2.0})
+	undo_button.pressed.emit()
+	_check("first Undo restores the preceding edit", workshop.get_recipe().scale == 0.5)
+	undo_button.pressed.emit()
+	_check("second Undo restores the original", workshop.get_recipe() == Compiler.defaults() and undo_button.disabled)
+	redo_button.pressed.emit()
+	redo_button.pressed.emit()
+	_check("Redo restores both edits", workshop.get_recipe().scale == 2.0 and redo_button.disabled)
+	undo_button.pressed.emit()
+	workshop.set_recipe({"scale": 1.5})
+	_check("new edit clears the redo branch", redo_button.disabled)
+	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	var power_slider: HSlider = workshop.get("_factor_sliders")["power_multiplier"]
+	power_slider.drag_started.emit()
+	power_slider.value = 1.15
+	power_slider.value = 1.2
+	power_slider.drag_ended.emit(true)
+	_check("slider drag contributes one history entry", workshop.get("_undo_history").size() == 1)
+	undo_button.pressed.emit()
+	_check("undoing a slider drag restores its starting value", workshop.get_recipe().power_multiplier == 1.0)
+	power_slider.drag_started.emit()
+	power_slider.drag_ended.emit(false)
+	_check("a drag without changes preserves redo", not redo_button.disabled and undo_button.disabled)
+	for edit_index: int in 40:
+		workshop.set_recipe({"scale": 0.5 if edit_index % 2 == 0 else 2.0})
+	_check("history is bounded", workshop.get("_undo_history").size() == Workshop.HISTORY_LIMIT)
+	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	_check("changing source clears both history branches", undo_button.disabled and redo_button.disabled)
 
 	# The whole storage flow stays under a per-run user:// directory.
 	var source_bytes: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)
@@ -165,6 +209,7 @@ func _run() -> void:
 		is_equal_approx(float(workshop.get_recipe().scale), 2.0)
 		and workshop.get("_base_bytes") == source_bytes
 		and int(workshop.get("_saved_variant_revision")) == 2)
+	_check("loading a saved variant clears unrelated undo state", undo_button.disabled and redo_button.disabled)
 	(_find(workshop, "DeleteVariant") as Button).pressed.emit()
 	await _ui.settle()
 	workshop.get("_delete_dialog").confirmed.emit()
@@ -183,6 +228,65 @@ func _run() -> void:
 	await _ui.settle()
 	_check("saving the retained draft creates a separate variant", Store.list_variants(store_root).size() == 2
 		and str(workshop.get("_saved_variant_id")) != saved_id)
+
+	# A second writer cannot be silently overwritten by this older editor draft.
+	var current_id: String = workshop.get("_saved_variant_id")
+	var current_revision: int = workshop.get("_saved_variant_revision")
+	var concurrent_recipe: Dictionary = Compiler.defaults()
+	concurrent_recipe.power_multiplier = 1.3
+	var concurrent: Dictionary = Store.save_variant("Another editor", Catalog.DEFAULT_ID, source_bytes,
+		concurrent_recipe, current_id, store_root, workshop.get("_workshop_descriptor"),
+		workshop.get("_variant_dependencies"), current_revision)
+	_check("concurrent save fixture advances the revision", concurrent.get("ok", false))
+	workshop.set_recipe({"power_multiplier": 0.9})
+	workshop.save_named_variant()
+	var after_conflict: Dictionary = Store.load_variant(current_id, store_root)
+	_check("stale editor save preserves the newer revision and current draft", after_conflict.get("ok", false)
+		and after_conflict.variant.recipe.power_multiplier == 1.3
+		and workshop.get_recipe().power_multiplier == 0.9
+		and int(workshop.get("_saved_variant_revision")) == current_revision)
+	workshop.save_variant_copy()
+	_check("conflicting draft can be saved as its own copy", str(workshop.get("_saved_variant_id")) != current_id)
+	workshop.set_recipe({"scale": 1.33, "weight_multiplier": 0.731})
+	workshop.save_named_variant()
+	var exact_recipe: Dictionary = workshop.get_recipe()
+	workshop.set_recipe({"scale": 0.5})
+	(_find(workshop, "LoadVariant") as Button).pressed.emit()
+	_check("precise saved recipe round-trips without quantization", workshop.get_recipe() == exact_recipe)
+
+	# A removed catalog entry remains a readable library item, but cannot corrupt the open draft.
+	var removed_base: Dictionary = JSON.parse_string(source_bytes.get_string_from_utf8())
+	removed_base.id = "removed-catalog-fixture"
+	var removed_bytes: PackedByteArray = JSON.stringify(removed_base, "", true, true).to_utf8_buffer()
+	var removed_descriptor: Dictionary = Descriptor.load_for(Catalog.DEFAULT_ID, source_bytes).descriptor.duplicate(true)
+	removed_descriptor.base_id = removed_base.id
+	removed_descriptor.base_sha256 = removed_bytes.get_string_from_utf8().sha256_text()
+	var removed: Dictionary = Store.save_variant("Unavailable airplane", removed_base.id, removed_bytes,
+		Compiler.defaults(), "", store_root, removed_descriptor)
+	_check("removed catalog fixture is stored independently", removed.get("ok", false), str(removed.get("errors", [])))
+	if removed.get("ok", false):
+		var old_base_id: String = workshop.get("_base_id")
+		var old_saved_id: String = workshop.get("_saved_variant_id")
+		var old_bytes: PackedByteArray = workshop.get("_base_bytes")
+		workshop.set("_selected_variant_id", removed.variant.id)
+		(_find(workshop, "LoadVariant") as Button).pressed.emit()
+		_check("unavailable source load preserves the entire current draft", workshop.get("_base_id") == old_base_id
+			and workshop.get("_base_bytes") == old_bytes and workshop.get_recipe() == exact_recipe
+			and workshop.get("_saved_variant_id") == old_saved_id)
+	var recovering_id: String = workshop.get("_saved_variant_id")
+	var manifest_path := store_root.path_join(recovering_id).path_join("manifest.json")
+	var broken_manifest := FileAccess.open(manifest_path, FileAccess.WRITE)
+	broken_manifest.store_string("{")
+	broken_manifest.close()
+	broken_manifest = null
+	workshop.set("_selected_variant_id", recovering_id)
+	(_find(workshop, "LoadVariant") as Button).pressed.emit()
+	_check("backup recovery visibly identifies the earlier revision", int(workshop.get("_saved_variant_revision")) == 1
+		and str(workshop.get("_status_label").text).contains("from backup"))
+	workshop.save_named_variant()
+	_check("saving a recovered draft advances past existing immutable revisions", int(workshop.get("_saved_variant_revision")) == 3
+		and not Store.load_variant(recovering_id, store_root).variant.recovered_from_manifest_backup,
+		"revision=%s note=%s" % [workshop.get("_saved_variant_revision"), workshop.get("_status_label").text])
 
 	workshop.queue_free()
 	await _ui.settle()

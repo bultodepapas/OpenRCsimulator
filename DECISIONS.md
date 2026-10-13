@@ -152,6 +152,10 @@ The researched electric Ultra Stick 25e remains a comparison specimen. Only its 
 
 ## Notes
 
+### 2026-10-13 — Verify coupled truck support in a separate small-angle rig (RCV-04b)
+
+Extend the quarter-car bench to a 14-state heave/roll/pitch plus four-hub system, with fixed generalized mass and an explicit linear mount Jacobian. Keep its `openrc-support-bench` input and local x-forward/y-left/z-up coordinates separate from production aircraft and the future full-vehicle state. Independent matrix-exponential, quarter-reduction, support-load and energy/work checks qualify the synthetic fixture. The research runner refuses sampled angles beyond 0.1 rad; it does not clamp or stabilize motion. This is a constrained vertical verification rig, not a choice of fixed inertia for a full truck with moving wheels. Whole-body transport/momentum, full 6DoF mechanics and complete-tick cost remain open. [Guide](research/rc-monster-truck/README.md#rcv-04b-four-corner-support), [dated evidence](docs/research/rc-monster-truck/RCV-04b/README.md).
+
 ### 2026-10-13 — Start truck mechanics with an isolated suspension bench (RCV-04a)
 
 The user's implementation request authorizes a float64 two-mass suspension bench while the external Blender model is prepared. Keep its strict `openrc-suspension-bench` input separate from aircraft data and the future full ground-vehicle schema. The four-value state reuses `Integrator.axpy`, not the aircraft quaternion finalizer. Two fixed equal RK4 substeps per public tick replace the initial single step after the 240 Hz undamped oracle exceeded the predeclared error limit; parameters and that limit are unchanged. This choice qualifies only the synthetic bench, not production truck mechanics or performance. [Guide](research/rc-monster-truck/README.md), [evidence and remaining gates](docs/research/rc-monster-truck/RCV-04a/README.md).

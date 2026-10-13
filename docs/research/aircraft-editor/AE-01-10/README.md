@@ -28,6 +28,35 @@ The capture script constructs the actual Workshop with an isolated empty library
 - [English, 1920×1080](workshop-en-1080.png): recipe, source/variant comparison and save controls. Presets remain accessible by scrolling.
 - Native capture logs: [Spanish](capture-es.log), [English](capture-en.log).
 
+## AE-02/03/09/10 robustness follow-up — 2026-10-13
+
+The [initial reproduction](hardening-ui-before.log) failed two new assertions: loading scale 1.33 silently selected 1.25, and a 0.731 multiplier displayed as the slider's rounded value. The editor now retains the physical recipe exactly, shows its intermediate scale and displays the exact slider value without changing the normal interaction step.
+
+Other fixes cover bounded per-source Undo/Redo, whole-drag undo, rejected-load preservation, visible backup recovery and saving a stale draft as a new copy. Updates require the expected revision. Atomic per-variant reservations serialize saves/deletes/restores, and unique temporary filenames avoid temporary-file collisions. Corrupt current manifests or invalid referenced records can recover through a valid backup. Missing historical descriptor pins stay missing, rather than silently binding to a current file.
+
+Trial preparation now rejects coerced metadata, invalid ancestor/revision pairing, missing saved descriptor pins and oversized snapshots. New trial IDs bind the resolved visual family and model-manifest SHA, including legacy descriptors; existing variant revisions are not rewritten. No aerodynamic law or aircraft source was retuned.
+
+| Follow-up check | Result |
+| --- | --- |
+| [Store](hardening-store.log) | 101 checks, 0 failures; recovery, expected revisions, exclusive reservation/cleanup and blocked overlapping mutations |
+| [Trial](hardening-trial.log) | 27 checks, 0 failures; strict metadata, size limit, provenance and resolved presentation binding |
+| [UI](hardening-ui.log) | 0 failed assertions; exact-value round trip, bounded history, drag grouping, branch invalidation, stale save/copy, unavailable source refusal and visible recovery/resave |
+| [Integration](hardening-integration.log) | 0 failed assertions; existing real app journey plus frozen restart and draft/history preservation |
+| [Compiler](hardening-compiler.log) | 379 checks, 0 failures |
+| [Descriptor](hardening-descriptor.log) | 54 checks, 0 failures with the current v2 model bindings |
+| [Checkout](hardening-checkout.log) | Fresh disposable fixture checkouts pass in both line-ending modes |
+| [Import](hardening-import.log) | No script/import errors |
+| [Audio lifecycle](hardening-audio.log) | 124 checks, 0 failures; detach/reattach restores dedicated buses and continuous voices across combustion/electric/turbine, plus both finite-glow generators; bus cleanup preserves ownership |
+| [Crash regression after audio cleanup](hardening-crash-masses.log) | 27 checks, 0 failures; no ObjectDB-leak warning at shutdown |
+
+The [audio reproduction](hardening-audio-before.log) exposed another lifecycle defect: detaching the old flight removed its buses and stopped its loops, but reattachment did not recreate them. `Soundscape._enter_tree()` now rebuilds its owned buses, schedules continuous loops only after positioning and fades back in. Transient wildlife events are not replayed. The same reentry restarts the finite-glow generator without changing the simulation.
+
+Verbose integration diagnostics identified the two shutdown objects as `AudioStreamMP3` and `AudioStreamPlaybackMP3` for lake ambience. The soundscape now signals before releasing its buses, and the flight stops the external lake player at that boundary. The final [verbose integration log](hardening-integration.log) has no ObjectDB-leak or script-error warning. The historical warning above remains part of the earlier evidence, not a claim that the final lifecycle still leaks.
+
+Updated native captures: [Spanish 720p, 133.5%](hardening-es-720.png) and [English 1080p](hardening-en-1080.png), with [Spanish](hardening-capture-es.log) and [English](hardening-capture-en.log) renderer logs. Use `--scale=1.335` with the capture command below for the intermediate-size example.
+
+The reservation tests hold a competing reservation and verify that no update/delete/restore can pass it; they do not constitute a power-loss or distributed-filesystem stress test. An abruptly terminated writer may leave an orphan reservation; the current behavior remains fail-closed, with loading and Save a copy available. The stale-model renderer warning in the trial log is an intentional negative fixture.
+
 ```powershell
 & .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_workshop_compiler.gd
 & .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_workshop_store.gd

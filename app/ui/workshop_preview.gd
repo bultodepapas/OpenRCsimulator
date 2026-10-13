@@ -199,7 +199,7 @@ func _update_scale_badge() -> void:
 	if not is_instance_valid(_scale_badge):
 		return
 	var span_m: float = _model_bounds.size.x * _requested_scale
-	_scale_badge.text = tr("Scale %d%%  ·  span %.2f m") % [roundi(_requested_scale * 100.0), span_m]
+	_scale_badge.text = tr("Scale %s%%  ·  span %.2f m") % [String.num(_requested_scale * 100.0, 4), span_m]
 
 
 func _build_world() -> void:

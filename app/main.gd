@@ -513,6 +513,7 @@ func _ready() -> void:
 	_lake_ambience = LakeWorld.ambience_player(_field_node)
 	if _lake_ambience != null:
 		if _soundscape_audio != null:
+			_soundscape_audio.soundscape.buses_releasing.connect(_lake_ambience.stop)
 			var soundscape_buses: Variant = _soundscape_audio.soundscape.get("_bus_names")
 			if soundscape_buses is Array and soundscape_buses.size() >= 3:
 				LakeWorld.set_ambience_bus(_field_node, StringName(soundscape_buses[2]))

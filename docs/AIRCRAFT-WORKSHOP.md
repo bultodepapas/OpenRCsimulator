@@ -7,9 +7,9 @@ The Workshop creates experimental local variants without changing shipped aircra
 1. Choose a catalog aircraft. Its supported adjustments are enabled automatically.
 2. Select a preset or edit size, weight, power and control travel. Inspect the original/proposed mass, span, area, wing loading, RPM, static thrust/power and reference-chord CG.
 3. Optionally name and **Save build**. Saving again creates an immutable revision of that variant; **Save a copy** creates a separate variant. Load restores the original source snapshot and saved recipe. Delete moves a variant to local trash; **Undo delete** restores the most recent deletion during this editor visit.
-4. Choose **Test fly**. Trials start in the air. Pause and return to Workshop to continue the same draft. If opened over an existing flight, that flight remains paused at its previous state. An invalid candidate leaves it untouched.
+4. Choose **Test fly**. Trials start in the air. Pause and return to Workshop to continue the same draft. If opened over an existing flight, that flight remains paused at its previous state. An invalid candidate leaves it untouched. Restoring a detached flight rebuilds its audio buses and restarts its continuous sound with a fade; the simulation state is preserved.
 
-The preview is a separate still scene with a scale grid. Keyboard focus stays in the menu and follows the scroll area. The title and action footer remain visible at 720p and 1080p. English and Spanish labels are included. Reset restores defaults; Undo restores one previous recipe. Unsaved drafts survive a trial round trip, but are not recovered after closing the editor or restarting the application.
+The preview is a separate still scene with a scale grid. Keyboard focus stays in the menu and follows the scroll area. The title and action footer remain visible at 720p and 1080p. English and Spanish labels are included. Reset restores defaults; Undo/Redo retain up to 32 recipe edits. One slider drag is one edit; a new edit clears the redo branch. Loading a variant or switching aircraft starts a separate history. A trial round trip preserves the draft and history, but unsaved drafts are not recovered after closing the editor or restarting the application.
 
 ## Supported adjustments
 
@@ -20,6 +20,8 @@ The preview is a separate still scene with a scale grid. Keyboard focus stays in
 | Weight | 0.50–2.00× | Uniform inventory mass change; derived inertia follows the changed mass |
 | Power | 0.50–2.00× | Virtual prescribed-RPM propeller static-power multiplier after size/mass scaling |
 | Control travel | 0.50–1.50× | Surface throw limits; does not change transmitter expo or servo speed |
+
+The six size choices are shortcuts. Loaded recipes may contain intermediate sizes within 50–200%; the editor adds their exact size to the selector and preserves their numeric multipliers instead of rounding them to the nearest shortcut or slider step. Invalid recipe inputs are refused before replacing the current draft.
 
 Presets are Mini, Giant, Light, Heavy, More power, More travel and Light / low power. They apply only supported adjustments. Their names describe changes rather than measured flight performance. Valid slider values can still form an invalid combination: normal aircraft, trim and timestep checks remain authoritative.
 
@@ -67,7 +69,13 @@ Virtual suspension uses `a=max(s,1)`: spring stiffness scales by `r/a`, damping 
 
 Variants live under Godot's `user://aircraft_variants/`. The record uses `format: openrc-aircraft-variant` and `version: 1`; it stores exact base bytes, recipe, descriptor, dependency hashes, compiler version, UUID, display name and revision. The original resource bytes are never overwritten.
 
-Trials normalize omitted recipe defaults and exclude cosmetic names from physical identity. Their fingerprint binds source, physical recipe, descriptor, dependencies and compiler. Trace metadata also records the ancestor variant/revision and exact resolved-input/model hashes. Flight restart/reload uses the frozen in-memory result, not a newly read catalog source.
+Trials normalize omitted recipe defaults and exclude cosmetic names from physical identity. Their fingerprint binds source, physical recipe, descriptor, resolved visual family/model-manifest hash, dependencies and compiler, including when a legacy descriptor supplies the visual binding. Trace metadata also records the ancestor variant/revision and exact resolved-input/model hashes. Saved ancestry requires an explicit descriptor, dependency and compiler pin plus a positive integer revision. Flight restart/reload uses the frozen in-memory result, not a newly read catalog source.
+
+Updating an existing variant requires its expected revision (`Store.save_variant`'s final argument); a stale editor must reload or save a copy. Saves, deletes and restores exclusively reserve the variant ID using an atomic directory operation. Each operation releases its reservation on ordinary success/failure, and temporary files have unique names. This prevents competing writers from overwriting a supposedly immutable revision.
+
+If the current manifest or its referenced revision is corrupt/incomplete, loading may recover an earlier valid revision through the manifest backup. The editor identifies the recovered revision; saving creates a new revision beyond existing files and preserves the usable backup. A saved record never silently acquires a missing historical descriptor pin.
+
+An abrupt process termination can leave an empty `user://aircraft_variants/_locks/<uuid>/` reservation. Loading and **Save a copy** remain available; automatic lock stealing is disabled. Only remove an orphan reservation after verifying that no simulator instance is writing that variant. The store provides local filesystem protection, not distributed synchronization.
 
 External dependencies are **hash-pinned, not embedded and replayed from a bundle**. Changed wheel/glow/model dependencies or an incompatible compiler prevent a saved variant from starting; the library record remains intact. A new copy from current catalog data is the current manual migration path. Removing the catalog visual family prevents a saved variant from flying; its record remains readable. Portable frozen dependency loading and explicit migrations remain AE-16/19.
 

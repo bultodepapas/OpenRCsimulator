@@ -1,0 +1,3673 @@
+{
+  "format": "openrc-gdscript-parse-evidence v1",
+  "ok": true,
+  "count": 611,
+  "checks": [
+    {
+      "script": "res://addons/aircraft_contract/export_plugin.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://addons/aircraft_contract/plugin.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://addons/build_info/export_plugin.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://addons/build_info/plugin.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/avanti_s_geometry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/avanti_s_model.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/extra_300s_appearance.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/extra_300s_finish.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/extra_300s_geometry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/extra_300s_model.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/extra_clearance.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/inspect_extra.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/inspect_model.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/inspect_p51.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/inspect_timber.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/model_clearance.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/model_manifest.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/model_registry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/p51d_appearance.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/p51d_finish.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/p51d_geometry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/p51d_model.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/timber_crash_sections.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/timber_geometry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/timber_model.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/ugly_stik_appearance.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/ugly_stik_controls.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/ugly_stik_equipment.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/ugly_stik_finish.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/ugly_stik_geometry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/ugly_stik_model.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/verify_avanti.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/verify_controls.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/verify_extra.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/verify_model.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/verify_p51.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/verify_p51_clearance.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/verify_timber.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/verify_timber_clearance.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://aircraft/visual_checks.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://app_root.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://app_state/aircraft_catalog.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://app_state/build_info.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://app_state/preferences.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://app_state/update_check.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://app_state/update_checker.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://app_state/visual_checkpoint.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://audio/flight_audio.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://audio/glow_voice.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://audio/soundscape.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://audio/soundscape_model.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://audio/wildlife.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://data/field_loader.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://data/lake_loader.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://environment/solar_clock.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://environment/solar_position.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://environment/time_of_day_config.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://environment/visual_timeline.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://input/commands.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://input/input_report.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://input/input_report_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://input/keyboard.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://input/latency_patch.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://input/rc_calibration.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://input/rc_input.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://input/smoke_aux.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://main.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/aero.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/air_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/aircraft_contact_contract.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/aircraft_contract.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/aircraft_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/aircraft_modules.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/atmosphere.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/control_surfaces.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/cruise_trim.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/dynamics.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/effective_mass.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/electric_battery_step.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/electric_motor.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/electric_stop.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/electric_supply.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/event_bracket.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/flight_modes.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/flight.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/four_stroke.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/fuel_mass.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/installation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/lifecycle.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/operating_point.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/profile.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/propeller.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/source.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/thermal.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/glow/two_stroke.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/ground_contact.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/ground_effect.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/ground_start.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/ground_surfaces.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/ground_terrain.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/ground_vehicle/quarter_car.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/ground_vehicle/suspension_bench_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/ground_wheels.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/hull_contact.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/hull_crossing.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/impact_snapshot.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/integrator.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/lake_surface.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/linearize.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/math3d.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/propulsion.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/rigid_body.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/rotor_coupling.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/rotorcraft/dynamic_inflow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/rotorcraft/inflow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/rotorcraft/main_rotor.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/rotorcraft/main_rotor_stage.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/rotorcraft/swash.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/slipstream.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/swirl_loads.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/trim.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/turbine.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/wash_transport.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/wheel_profiles.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/wind_config.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/wind_field.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/wind_turbulence.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://physics/wing_polar.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/airplane.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/atmosphere.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/camera/camera_math.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/camera/camera_rig.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/camera/chase_view.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/camera/orbit_view.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/crash/cause.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/crash/crash_audio.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/crash/director.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/crash/effects.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/crash/scenery_damage.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/crash/section_splitter.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/crash/severity.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/crash/wreck.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/engine_audio.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/engine_sound.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/engine_voice.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/field.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/field_projected_shadows.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/flight_cue_shadows.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/flightline_barrier.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/frame_samples.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/frames.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/ground.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/ground_gear.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/horizon.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/hud.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/lake/lake_reflection.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/lake/lake_terrain.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/lake/lake_world.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/lake/water_effects.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/lake/water_material.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/landscape_upgrade/airfield_lighting.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/landscape_upgrade/options.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/landscape_upgrade/ridges.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/landscape_upgrade/scenery_bodies.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/landscape_upgrade/scenery_grass_mask.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/landscape_upgrade/sun_glare.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/landscape_upgrade/twilight_palette.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/near_grass.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/flight_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/overlay_frame.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/overlay_manager.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/overlay_settings.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/telemetry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/telemetry_panel.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/transmitter.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/units.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/warnings_bar.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/overlays/wind.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/panel.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/pilot_camera.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/pilot_station.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/projected_shadow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/propeller_blur.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/shader_clock.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/shadow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/smoke/exhaust.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/time_of_day_lighting.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/tree_assets.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/treeline.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/visual_evidence.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/windsock.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/world/aircraft_lights.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/world/conditions.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/world/ephemeris.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/world/exposure.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/world/field_lights.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/world/sky_state.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/world/stars.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://render/world/world.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/ambience.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/ambience_player.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/birds.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/botanical_habitats.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/capture_views.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/collision_setup.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/collision_world.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/damage_batches.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/fence_parts.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/fleet.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/flowers.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/ground_features.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/imported_hedge.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/imported_near_grass.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/imported_vegetation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/mesh_kit.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/models.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/palette.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/people.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/population.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/postcards.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/prefabs.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/runway_scenario.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/scenery.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/scenery_loader.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/support_surfaces.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/takeoff_pilot.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/vegetation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://scenery/vegetation_placement.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/aircraft_propulsion_runtime.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/flight_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/lake_collision.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/landing_maneuver.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/maneuvers.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/recorder.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/scenarios.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/scenery_collision.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/scenery_damage.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/scripted.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/simulation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://sim/trace.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://spec.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/aero_flow_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/attached_flow_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/bench_physics.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/bench_radio_events.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/bench_regimes.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/bench_wind.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/benchmark_landscape_collision.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_aircraft_lights.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_engine_smoke.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_ground_terrain.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_lake_entry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_landscape_upgrade.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_population_assets.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_propeller_blur.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_time_of_day_dialog.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/capture_ui.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/check_field_pack.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/fake_releases.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/fixtures/atmosphere_field.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/fixtures/scenery_collision_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/golden_flights.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/landing_test_driver.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/p51_envelope_base.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/probe_field_failure.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/probe_trace_failure.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/propulsion_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/record_golden.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/replay_policy.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/run_fixed_step.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/slipstream_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/swirl_dense_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/swirl_e0b6_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aero.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aero_flow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_air_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_air_density.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aircraft_catalog.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aircraft_contact_contract.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aircraft_contract.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aircraft_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aircraft_model_manifest.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aircraft_modules.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aircraft_propulsion_runtime.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_aircraft_render_contract.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_atmosphere.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_atmosphere_flight.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_attached_flow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_avanti_handling.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_botanical_habitats.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_build_info.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_camera_math.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_camera_route.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_camera_views.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_checkpoint.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_checkpoint_integrity.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_contact_policy.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_continuous_state.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_control_surfaces.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_controls.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_controls_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_audio.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_breakup.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_cause.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_effects.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_energy.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_hull_labels.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_integration.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_masses.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_pose.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_presentation_ladder.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_proportional.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_sections.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_severity.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_snapshot.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_wreck.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_crash_wreck_surface.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_cruise_trim.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_damping_regimes.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_downloaded_habitats.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_downwash_lag.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_dynamics.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_e2e_input.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_e2e_radio.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_battery_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_battery_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_battery_step.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_dynamics.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_event_localization.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_input.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_motor.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_motor_compact.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_propulsion.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_runway.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_stop.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_electric_supply.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_engine_audio.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_engine_smoke.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_engine_sound.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_engine_voice.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_envelope.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_envelope_integrity.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_extra_handling.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_extra_installation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_far_forest.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_field_integration.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_field_loader.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_field_projected_shadows.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_field_surfaces.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_flight_cue_shadows.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_flightline_barrier.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_flightline_barrier_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_frame_samples.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_frames.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_audio.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_coupling.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_equilibrium.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_flight_physics.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_four_stroke.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_installation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_lifecycle.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_oracle.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_prepared.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_profiles.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_propeller_momentum.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_stage_reuse.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_thermal.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_trace.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_glow_two_stroke.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_golden.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ground_contact.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ground_effect.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ground_friction.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ground_physics.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ground_start_integrity.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ground_stiction.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ground_surfaces.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ground_terrain.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_gyro.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_half_power_start.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_handling.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_heli_dynamic_inflow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_heli_inflow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_heli_main_rotor.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_heli_main_rotor_stage.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_heli_swash.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_horizon.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_hull_crossing.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_imported_hedge.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_imported_near_grass.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_imported_vegetation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_induced_integrity.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_input_report.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_input_report_cli.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_input_report_e2e.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_integrator.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_lake_collision.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_lake_ground_contact.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_lake_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_lake_surface.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_lake_world.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landing_maneuver.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landing_variations.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_architecture.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_checkpoint.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_collision.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_collision_coverage.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_collision_oracle.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_collision_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_collision_setup.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_collision_support.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_collision_world.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_gravel.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_ground_lu18.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_horizon.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_lighting.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_marker_optics.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_population.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_population_assets.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_runtime.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_scenery_eligibility.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_scenery_grass_mask.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_tree_bounds.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_twilight.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_landscape_vegetation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_latency_patch.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_latency_patch_cli.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_latency_patch_route.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_math3d.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_modes.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_near_grass.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_overlay_manager.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_overlay_telemetry.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_overlay_units.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_p51_envelope.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_p51_ground.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_p51_handling.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_physical_envelope.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_pilot_aids.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_pilot_station.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_pilot_station_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_pilot_trim.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_projected_shadow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_prop_strike.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_prop_strike_feedback.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_propeller_blur.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_propeller_wake.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_propulsion.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_propulsion_scalar.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_pullup_invariants.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rates.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rc_axis_history.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rc_calibration.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rc_input.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rc_profile_validation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rc_rearm.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rcv_suspension.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_regime_consistency.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_replay_integrity.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_replay_policy.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rigid_body.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rk_stage_time.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rotor_coupling.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_rudder_authority.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_runway_checkpoint_metadata.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_runway_start.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_ambience.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_build.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_damage_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_destruction.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_destruction_runtime.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_ground_lu08.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_loader.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_scenario.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_scenery_trace.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_servo.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_session_guards.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_shader_clock.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_shaft_coupled.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_shaft_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_shaft_equilibrium.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_shaft_refinement.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_simulation.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_slipstream_downwash.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_slipstream_scalar.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_smoke_aux.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_soft_contact_feedback.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_soft_contacts.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_soundscape.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_spin.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_stall_solver.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_start_choice.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_strip_induced.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_swirl_accuracy.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_swirl_optimization.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_swirl_torque.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_tail_downwash.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_takeoff_roll.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_timber_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_timber_ground.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_timber_handling.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_checkpoint.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_checkpoint_v2.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_clock.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_config.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_edit.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_render.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_render_update.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_scenery_update.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_solar.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_time_of_day_timeline.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_touchdown.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_trace.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_trace_metadata.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_tree_assets.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_tree_wind.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_treeline.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_treeline_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_trim.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_trim_density.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_trim_integrity.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_turbine.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_turbine_continuous.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_turbulence_flight.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_aircraft.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_atmosphere.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_field_world_time_of_day.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_flight_capture.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_help.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_home.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_home_layout.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_input.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_language.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_pause.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_runway.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_screen_stack.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_time_of_day.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_time_of_day_pause.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_turbulence.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_update_notice.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_weather.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_ui_weather_sliders.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_update_check.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_vegetation_collision_proxies.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_visual_checkpoint.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_visual_evidence.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_visual_timeline.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wash_profile.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wash_transport.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_water_checkpoint.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_water_director.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_water_effects.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wheel_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wildlife.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wind_field.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wind_flight.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wind_hud.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wind_trace.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wind_turbulence.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_windsock.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_windsock_data.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wing_polar.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_wing_polar_session.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_workshop_compiler.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_workshop_descriptor.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_workshop_integration.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_workshop_store.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_workshop_trial.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_workshop_ui.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_world_ephemeris.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_world_field_lights.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_world_flow.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_world_sky.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_world_stars.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/test_yaw_damping.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/ui_driver.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://tests/wing_polar_fixture.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/controls_reference.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/field_error.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/first_flight_hint.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/held_keys.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/help_screen.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/home.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/home_scene.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/key_cap.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/key_labels.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/overlays_dialog.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/pause_menu.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/screen.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/screen_stack.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/smoke_aux_assignment.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/time_of_day_controls.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/time_of_day_dialog.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/ui_input.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/ui_theme.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/update_notice.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/weather_dialog.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/widgets.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/workshop.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://ui/workshop_preview.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://workshop/compiler.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://workshop/dependencies.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://workshop/descriptor.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://workshop/parameters.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://workshop/store.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    },
+    {
+      "script": "res://workshop/trial.gd",
+      "ok": true,
+      "exit_code": 0,
+      "log_sha256": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e"
+    }
+  ]
+}

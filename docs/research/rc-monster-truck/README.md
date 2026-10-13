@@ -4,7 +4,7 @@
 
 Three Luna Max sub-agents investigated repository integration, vehicle/ground physics and Blender/reference assets. The lead inspected shared shell/catalog/camera code, checked primary sources and reconciled the recommendations. A second review examined mechanics and integration. Intermediate reports were working notes under ignored `tmp/`; the durable findings are consolidated here and in the plan.
 
-Subsequent implementation evidence is recorded separately in [RCV-04a: suspension bench](RCV-04a/README.md). This source-investigation snapshot retains its original planning scope.
+Subsequent implementation evidence is recorded separately in [RCV-04a: suspension bench](RCV-04a/README.md) and [RCV-04b: coupled four-corner support](RCV-04b/README.md). This source-investigation snapshot retains its original planning scope.
 
 ## Evidence method and boundaries
 

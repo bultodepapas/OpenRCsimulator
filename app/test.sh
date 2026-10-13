@@ -53,6 +53,7 @@ python3 "$HERE/../research/glow-engines/build_installations.py" --check
 python3 "$HERE/../research/glow-engines/installation_schema.py" --check
 python3 "$HERE/../research/glow-engines/test_profiles.py"
 python3 "$HERE/../research/glow-engines/test_calibration_report.py"
+python3 "$HERE/../research/glow-engines/test_cycle_oracle.py"
 python3 "$HERE/../research/glow-engines/test_installation_schema.py"
 python3 "$HERE/../research/glow-engines/test_installation_line_endings.py"
 python3 "$HERE/../research/glow-engines/test_refinement_report.py"
@@ -95,6 +96,10 @@ python3 "$HERE/../research/propwash/e0b3b/test_profile.py"
 echo "== RCV-04a: independent suspension reference and headless bench exports"
 python3 "$HERE/../research/rc-monster-truck/generate_suspension_reference.py" --check
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_suspension_cli.py"
+
+echo "== RCV-04b: coupled support reference and headless experiments"
+python3 "$HERE/../research/rc-monster-truck/generate_support_reference.py" --check
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_support_cli.py"
 
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.

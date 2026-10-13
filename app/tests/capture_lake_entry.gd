@@ -29,6 +29,7 @@ var _audio_samples := PackedVector2Array()
 var _audio_bus_index := -1
 var _audio_effect_index := -1
 var _manual_step_timings: Array[Dictionary] = []
+var _capture_size := Vector2i(1280, 720)
 
 
 func _initialize() -> void:
@@ -39,7 +40,7 @@ func _initialize() -> void:
 			width = int(arg.get_slice("=", 1))
 		elif arg.begins_with("--height="):
 			height = int(arg.get_slice("=", 1))
-	root.size = Vector2i(width, height)
+	_capture_size = Vector2i(width, height)
 	Engine.max_fps = 60
 	_out_dir = _output_directory()
 	if DirAccess.make_dir_recursive_absolute(_out_dir) != OK:
@@ -48,6 +49,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	root.size = _capture_size
 	if not _failure.is_empty():
 		printerr(_failure)
 		quit(1)

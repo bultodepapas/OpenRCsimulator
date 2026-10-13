@@ -1,0 +1,10 @@
+{
+  "shoreline_minimum_runway_edge_distance_m": 82.15229759416349,
+  "bank_minimum_runway_edge_distance_m": 77.02596964660685,
+  "full_sim_step_wall_ms": {
+    "median": 8.344,
+    "p95": 13.469,
+    "max": 13.865
+  },
+  "notes": "Geometry estimates; timings include existing flight/scenery cost on a shared host."
+}

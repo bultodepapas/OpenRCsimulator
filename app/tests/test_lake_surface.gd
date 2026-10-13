@@ -143,6 +143,16 @@ func _test_sweeps() -> void:
 	var above_water := Lake.sweep_probe(_lake,
 		PackedFloat64Array([110.0, 90.0, 0.44]), PackedFloat64Array([110.0, 160.0, 0.44]), 0.0, 1.0, _flat_waves())
 	_check("a grazing horizontal flight above the waterline does not collide", above_water.ok and not above_water.hit, str(above_water))
+	var high_airborne := Lake.sweep_probe(_lake,
+		PackedFloat64Array([110.0, 40.0, -0.001]), PackedFloat64Array([110.0, 190.0, -0.001]), 0.0, 1.0)
+	_check("a high-speed chord above the entire water and bank envelope misses cleanly",
+		high_airborne.ok and not high_airborne.hit, str(high_airborne))
+	var invalid_high_airborne := Lake.sweep_probe(_lake,
+		PackedFloat64Array([110.0, 40.0, -10.0]), PackedFloat64Array([110.0, 190.0, -10.0]),
+		0.0, 1.0, [{"amplitude_m": 0.07, "wavelength_m": 8.0,
+		"period_s": 2.4, "heading_rad": 0.0, "phase_rad": 0.0}])
+	_check("airborne rejection still refuses wave data beyond validated bounds",
+		not invalid_high_airborne.ok and not invalid_high_airborne.hit, str(invalid_high_airborne))
 	var touching_water := Lake.sweep_probe(_lake,
 		PackedFloat64Array([110.0, 90.0, 0.45]), PackedFloat64Array([110.0, 160.0, 0.45]), 0.0, 1.0, _flat_waves())
 	_check("a probe that only grazes the water plane reports contact", touching_water.ok and touching_water.hit
@@ -154,6 +164,12 @@ func _test_sweeps() -> void:
 		PackedFloat64Array([110.0, 180.0, 0.2]), PackedFloat64Array([110.0, 160.0, 0.2]), 0.0, 0.2, _flat_waves())
 	_check("the dry bank reports its own terminal material", bank_hit.ok and bank_hit.hit
 		and bank_hit.material == "bank_ground" and bank_hit.east_m > 170.0, str(bank_hit))
+	var highest_bank_graze := Lake.sweep_probe(_lake,
+		PackedFloat64Array([110.0, 176.1, 0.0]), PackedFloat64Array([110.0, 174.5, 0.0]),
+		0.0, 0.1, _flat_waves())
+	_check("exact contact at the highest bank edge is not rejected by the vertical envelope",
+		highest_bank_graze.ok and highest_bank_graze.hit
+		and highest_bank_graze.material == "bank_ground", str(highest_bank_graze))
 	var tangent_bank := Lake.sweep_probe(_lake,
 		PackedFloat64Array([145.0, 100.0, 0.2]), PackedFloat64Array([145.0, 160.0, 0.2]), 0.0, 0.1, _flat_waves())
 	_check("a tangent bank-vertex touch remains a terminal ground event", tangent_bank.ok and tangent_bank.hit
