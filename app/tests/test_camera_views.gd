@@ -231,11 +231,23 @@ func _orbit() -> void:
 	# Rig: entering orbit from the pilot view keeps the camera where it was.
 	var cam := _camera()
 	var rig := CameraRig.new(cam, SPAN)
-	var airplane := Transform3D(Basis.IDENTITY, Vector3(0, 10, -20))
+	var airplane := Transform3D(Basis.IDENTITY, Vector3(0, 5, -20)) # seen 9° below the airplane: inside the orbit limits
 	rig.update(airplane.origin, airplane, airplane.basis, 1.0 / 60.0, false, _flat)
 	var pilot_eye := cam.position
 	rig.set_view("orbit")
 	rig.update(airplane.origin, airplane, airplane.basis, 1.0 / 60.0, false, _flat)
-	_check("rig: pilot → orbit keeps the eye (clamped distance aside)", cam.position.distance_to(airplane.origin) <= OrbitView.MAX_SPANS * SPAN + 1e-4
-		and (cam.position - airplane.origin).normalized().dot((pilot_eye - airplane.origin).normalized()) > 0.999)
+	_check("rig: pilot → orbit keeps the eye when within reach", cam.position.distance_to(pilot_eye) < 1e-3, "%s vs %s" % [cam.position, pilot_eye])
+	var far := Transform3D(Basis.IDENTITY, Vector3(0, 40, -200))
+	rig.set_view("pilot")
+	rig.update(far.origin, far, far.basis, 1.0 / 60.0, false, _flat)
+	pilot_eye = cam.position
+	rig.set_view("orbit")
+	rig.update(far.origin, far, far.basis, 1.0 / 60.0, false, _flat)
+	_check("rig: pilot → orbit from far keeps the direction at the default distance", is_equal_approx(cam.position.distance_to(far.origin), OrbitView.DEFAULT_SPANS * SPAN)
+		and (cam.position - far.origin).normalized().dot((pilot_eye - far.origin).normalized()) > 0.999)
+	var fresh := CameraRig.new(cam, SPAN)
+	fresh.set_view("orbit")
+	fresh.update(airplane.origin, airplane, Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	var from_target := cam.position - airplane.origin
+	_check("rig: a flight that starts in orbit sees it from behind-left, above", from_target.z > 0.0 and from_target.x < 0.0 and from_target.y > 0.0, str(from_target))
 	cam.queue_free()

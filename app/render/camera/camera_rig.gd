@@ -42,6 +42,7 @@ var _span := 1.5
 var _fov_offset := 0.0 # ln(tan) difference still being blended out after a zoom change
 var _absorb_from := NAN # the FOV on screen just before a zoom change
 var _orbit_primed := false
+var _placed := false # the camera has been placed by a view at least once (orbit can start from it)
 
 
 func _init(rig_camera: Camera3D, span: float) -> void:
@@ -143,9 +144,13 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 			_apply(chase.update(target, body, dt, paused, ground_y))
 		"orbit":
 			if not _orbit_primed:
-				orbit.start_from(camera.position, target)
+				if _placed:
+					orbit.start_from(camera.position, target)
+				else:
+					orbit.start_behind(body)
 				_orbit_primed = true
 			_apply(orbit.update(target, ground_y))
+	_placed = true
 
 
 func evidence() -> Dictionary:

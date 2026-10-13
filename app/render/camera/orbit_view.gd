@@ -26,16 +26,25 @@ func configure(span: float) -> void:
 	distance = DEFAULT_SPANS * _span
 
 
-## Starts the orbit from an existing camera position (continuity when switching views).
+## Starts the orbit in the direction of an existing camera (continuity when switching views); from farther than
+## the orbit reaches (the pilot station) it keeps the direction at the default distance.
 func start_from(eye: Vector3, target: Vector3) -> void:
 	var offset := eye - target
 	if offset.length() < 1e-3:
 		return
-	distance = clampf(offset.length(), MIN_SPANS * _span, MAX_SPANS * _span)
+	distance = offset.length() if offset.length() <= MAX_SPANS * _span else DEFAULT_SPANS * _span
+	distance = maxf(distance, MIN_SPANS * _span)
 	elevation_deg = clampf(rad_to_deg(asin(clampf(offset.y / offset.length(), -1.0, 1.0))), MIN_ELEVATION_DEG, MAX_ELEVATION_DEG)
 	var flat := CameraMath.horizontal_dir(offset)
 	if flat != Vector3.ZERO:
 		azimuth_deg = rad_to_deg(CameraMath.heading_of(flat))
+
+
+## Starts behind and to the left of the airplane's nose, slightly above (a flight that begins in this view).
+func start_behind(body: Basis) -> void:
+	reset()
+	var nose := CameraMath.horizontal_dir(-body.z, 0.05)
+	azimuth_deg = wrapf(rad_to_deg(CameraMath.heading_of(nose)) + 180.0 + 35.0 if nose != Vector3.ZERO else 0.0, -180.0, 180.0)
 
 
 func rotate(pixels: Vector2) -> void:
