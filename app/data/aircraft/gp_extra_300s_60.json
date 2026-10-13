@@ -830,6 +830,46 @@
       "unit": "s",
       "kind": "estimated",
       "source": "Time for a surface to go from neutral to full throw: a standard analog servo at 0.19 s/60 deg (Hitec HS-311 / Futaba S3003 class at 6 V) times about 45 deg of servo-arm travel for full surface throw (typical linkage). Same for every surface"
+    },
+    "rates": {
+      "normal": {
+        "aileron": {
+          "value": 0.394705,
+          "unit": "1",
+          "kind": "derived",
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.4 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
+        },
+        "elevator": {
+          "value": 0.588627,
+          "unit": "1",
+          "kind": "derived",
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.6 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
+        },
+        "rudder": {
+          "value": 0.581888,
+          "unit": "1",
+          "kind": "derived",
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.6 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
+        },
+        "aileron_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 lists no expo; 0 until a transmitter setup is documented"
+        },
+        "elevator_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 lists no expo; 0 until a transmitter setup is documented"
+        },
+        "rudder_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 lists no expo; 0 until a transmitter setup is documented"
+        }
+      }
     }
   },
   "aero": {

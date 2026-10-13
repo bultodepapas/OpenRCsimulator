@@ -1164,6 +1164,46 @@
         "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329)"
       }
     },
+    "rates": {
+      "normal": {
+        "aileron": {
+          "value": 0.777778,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329); low rate as the fraction of the high-rate throw"
+        },
+        "elevator": {
+          "value": 0.8,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329); low rate as the fraction of the high-rate throw"
+        },
+        "rudder": {
+          "value": 0.666667,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329); low rate as the fraction of the high-rate throw"
+        },
+        "aileron_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "the Hangar 9 Mustang 1.50 manual lists no expo; 0 until a transmitter setup is documented"
+        },
+        "elevator_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "the Hangar 9 Mustang 1.50 manual lists no expo; 0 until a transmitter setup is documented"
+        },
+        "rudder_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "the Hangar 9 Mustang 1.50 manual lists no expo; 0 until a transmitter setup is documented"
+        }
+      }
+    },
     "servo_full_throw_time": {
       "value": 0.18,
       "unit": "s",

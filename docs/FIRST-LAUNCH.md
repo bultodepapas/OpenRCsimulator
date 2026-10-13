@@ -47,6 +47,8 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 
 Letters refer to physical QWERTY positions; in-game Help shows your keyboard's labels. A connected USB radio/gamepad replaces the keyboard flight sticks.
 
+Keyboard and gamepad sticks use the aircraft's normal-flight dual rates and expo where its manual states them (Extra, P-51, Avanti; the status line shows `rates: normal`); a radio keeps its own rates. The direct route's `--rates=full` flies the maximum throws, as the Ugly Stik always does.
+
 ### Radio setup
 
 Connect in USB joystick mode with RF modules off. EdgeTX/OpenTX's Advanced joystick interface with at most eight axes is the starting configuration; mappings still depend on device, firmware and platform. The default channel order is AETR.

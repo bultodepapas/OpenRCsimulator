@@ -200,6 +200,7 @@ Cm0 = note("aero", "Cm0 about ARP", -slope_h * Sh / S * l_h / c_ref * inc_eff, "
 ail_c = W["aileron_chord"]
 elev_c = T["elevator_root_corner"][1] - T["elevator_hinge_z"]
 rud_c = T["rudder_te_low"][0] - T["rudder_hinge_z"]
+LOW_RATE_TRAVEL = {"aileron": 0.4, "elevator": 0.6, "rudder": 0.6}  # manual p43 LOW rate / HIGH rate travel (D6e)
 throws = {
     "aileron": note("controls", "aileron (deg)", math.degrees(math.asin(0.625 * IN / ail_c)), f"5/8 in on a {ail_c / IN:.2f} in chord"),
     "elevator": note("controls", "elevator (deg)", math.degrees(math.asin(1.25 * IN / elev_c)), f"1-1/4 in on a {elev_c / IN:.2f} in chord"),
@@ -534,6 +535,17 @@ data = {
             for k, v in throws.items()
         },
         "servo_full_throw_time": stik["controls"]["servo_full_throw_time"],
+        # D6e: the manual's LOW rates as fractions of the high-rate travel at the widest part (aileron 0.4, elevator
+        # and rudder 0.6), converted to command fractions of the angular throw, asin(f sin d) / d; applied by the
+        # session to the keyboard sticks as a radio would (controls.rates.normal). The manual lists no expo.
+        "rates": {
+            "normal": {
+                **{k: q(math.asin(LOW_RATE_TRAVEL[k] * math.sin(math.radians(throws[k]))) / math.radians(throws[k]), "1", "derived",
+                       f"{MANUAL} p43 LOW rate: {LOW_RATE_TRAVEL[k]:.1f} of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)")
+                  for k in ["aileron", "elevator", "rudder"]},
+                **{k + "_expo": q(0.0, "1", "estimated", f"{MANUAL} lists no expo; 0 until a transmitter setup is documented") for k in ["aileron", "elevator", "rudder"]},
+            },
+        },
     },
     "aero": {
         "source": "Derived from the measured geometry by " + SCRIPT + " (Helmbold/DATCOM, tail volume, strip theory, drag build-up); report research/extra-300/ex05/derivation.md. Not flight-identified: EXPERIMENTAL until EX-08/EX-09.",

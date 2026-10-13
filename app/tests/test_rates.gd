@@ -25,7 +25,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 func _initialize() -> void:
 	# Expo: ends kept, centre softened, odd and monotonic.
 	_check("expo keeps the ends", Commands.expo(1.0, 0.4) == 1.0 and Commands.expo(-1.0, 0.4) == -1.0 and Commands.expo(0.0, 0.4) == 0.0)
-	_check("expo 0.4 halves a half stick to %.3f (0.3375)" % Commands.expo(0.5, 0.4), absf(Commands.expo(0.5, 0.4) - 0.3375) < 1e-12)
+	_check("expo 0.4 takes a half stick to %.3f ((1 − 0.4)·0.5 + 0.4·0.125 = 0.35)" % Commands.expo(0.5, 0.4), absf(Commands.expo(0.5, 0.4) - 0.35) < 1e-12)
 	_check("expo is odd", Commands.expo(-0.3, 0.6) == -Commands.expo(0.3, 0.6))
 	var monotonic := true
 	var last := -1.0

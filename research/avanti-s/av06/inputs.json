@@ -98,6 +98,42 @@
    "unit": "s",
    "kind": "estimated",
    "source": "JR DS8411 0.15 s/60 deg at 6 V (manufacturer spec via retailers, docs/research/avanti-s-av06-airframe-data.md) x ~45 deg of servo travel for a full surface throw; the D/R and expo of the manual are set on the transmitter"
+  },
+  "rates_normal_aileron": {
+   "value": 0.5,
+   "unit": "1",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: transmitter D/R and expo per flight mode; normal mode aileron 50 % / 20 %, elevator 50 % / 40 %, rudder 80 % / 60 % (START/landing and 3D modes use 100 % D/R); docs/research/avanti-s-controls-and-installation.md"
+  },
+  "rates_normal_elevator": {
+   "value": 0.5,
+   "unit": "1",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: transmitter D/R and expo per flight mode; normal mode aileron 50 % / 20 %, elevator 50 % / 40 %, rudder 80 % / 60 % (START/landing and 3D modes use 100 % D/R); docs/research/avanti-s-controls-and-installation.md"
+  },
+  "rates_normal_rudder": {
+   "value": 0.8,
+   "unit": "1",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: transmitter D/R and expo per flight mode; normal mode aileron 50 % / 20 %, elevator 50 % / 40 %, rudder 80 % / 60 % (START/landing and 3D modes use 100 % D/R); docs/research/avanti-s-controls-and-installation.md"
+  },
+  "rates_normal_aileron_expo": {
+   "value": 0.2,
+   "unit": "1",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: transmitter D/R and expo per flight mode; normal mode aileron 50 % / 20 %, elevator 50 % / 40 %, rudder 80 % / 60 % (START/landing and 3D modes use 100 % D/R); docs/research/avanti-s-controls-and-installation.md"
+  },
+  "rates_normal_elevator_expo": {
+   "value": 0.4,
+   "unit": "1",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: transmitter D/R and expo per flight mode; normal mode aileron 50 % / 20 %, elevator 50 % / 40 %, rudder 80 % / 60 % (START/landing and 3D modes use 100 % D/R); docs/research/avanti-s-controls-and-installation.md"
+  },
+  "rates_normal_rudder_expo": {
+   "value": 0.6,
+   "unit": "1",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: transmitter D/R and expo per flight mode; normal mode aileron 50 % / 20 %, elevator 50 % / 40 %, rudder 80 % / 60 % (START/landing and 3D modes use 100 % D/R); docs/research/avanti-s-controls-and-installation.md"
   }
  },
  "aero": {

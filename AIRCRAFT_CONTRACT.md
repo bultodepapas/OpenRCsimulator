@@ -44,6 +44,7 @@ Explicit in every v2 file: start speed, planform, propulsion kind, capability se
 | Optional input | Absence means | Consumer |
 | --- | --- | --- |
 | `controls.max_throw.aileron_down` | Symmetric aileron travel using `aileron` | `_controls`, command surface mapping |
+| `controls.rates` (`normal`: travel fraction and expo per axis) | The maximum throws with no expo under every rate profile; a stick-shaping input setting from the manual, never an aerodynamic quantity | `_controls` → `Commands.shape_sticks` in `FlightSession.flown_commands` (keyboard and gamepad only; radios pass through) |
 | `landing_gear` | Permitted only for `locked_up`; no tire/suspension loads, hull contact is terminal | Contract → `_landing_gear` → ground/crash |
 | `landing_gear.breakaway_factor` | Existing dynamic rolling/slip law without static anchors | Ground/session anchor path |
 | `propulsion.engine.shaft` (combustion) | Prescribed equilibrium RPM with first-order lag; no airspeed unloading from a torque-balance engine | Propulsion/session |

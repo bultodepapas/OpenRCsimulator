@@ -286,6 +286,18 @@ func _ready() -> void:
 		return
 	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
 	session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
+	# D6e: keyboard and gamepad flights use the aircraft's normal rates and expo (controls.rates.normal) unless
+	# --rates=full asks for the maximum throws; radios keep their own rates either way.
+	var rates := str(args.get("rates", "normal"))
+	if rates != "normal" and rates != "full":
+		printerr("--rates must be normal or full")
+		session.free()
+		session = null
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	session.rate_profile = rates
 	if not _experimental_aircraft_path.is_empty():
 		var candidate_model: Dictionary = session.aircraft.get("model", {}) if session.aircraft.get("ok", false) else {}
 		var candidate_envelope: Dictionary = candidate_model.get("envelope", {})
@@ -518,6 +530,8 @@ func _status() -> String:
 	var trims: Dictionary = session.trims
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  engine %5.0f rpm" % [sim.time(), -s[RB.POS + 2], speed, sim.aux[0]]
+	if session.rates_active():
+		line += "  rates: normal"
 	if not _electric_demo.is_empty():
 		line = "Synthetic electric test airframe (%s)\n" % _electric_demo.to_upper() + line
 		if session.battery_is_dynamic():
@@ -756,6 +770,7 @@ func _on_resetting() -> void:
 ## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
 ## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
 ## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted),
+## --rates=normal|full (D6e: the aircraft's normal-flight rates and expo on the keyboard/gamepad sticks, or the maximum throws),
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
 func _user_args() -> Dictionary:
 	var args := {}

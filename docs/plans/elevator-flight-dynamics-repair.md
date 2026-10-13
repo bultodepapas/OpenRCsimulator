@@ -277,4 +277,6 @@ Steps 1–4 are implemented; the evidence page [E0a2c](../research/aero-consiste
 | D11j | `wing_section_cm_ac` (contract, schemas, loader, strips, P-51 generator): the P-51's static regime step +0.031 → +0.001. |
 | Steps (§3.2 cases) | Extra 17 m/s quarter stick: α 13.3° → 12.0°, roll 115 → 11 °/s; P-51 25 m/s quarter stick: 19.6° → 12.8°, roll 229 → 29 °/s; Avanti full stick: 83° → 32° α; Ugly Stik byte-identical. Rows `prod_repaired` in [steps-comparison.md](../../research/flight-dynamics/elevator-repair/results/steps-comparison.md). |
 
-Still open from this plan: D6e (rates and expo as an input feature), the D8b-R2 post-stall lateral work, and the Avanti/P-51 stall and neutral-point data items.
+| D6e | Implemented the same day ([evidence](../research/radio-input/D6e/README.md)): optional `controls.rates.normal` in the data (the three generators emit their manuals' normal rates; Extra 0.39/0.59/0.58 travel, P-51 0.78/0.80/0.67, Avanti 0.5/0.5/0.8 with expo 0.2/0.4/0.6), `Commands.expo`/`shape_sticks`, `FlightSession.rate_profile` ("full" by default so every scripted check is unchanged; the flight scene uses "normal" for keyboard and gamepad sticks, `--rates=full` for the maximum throws, radios pass through), `test_rates.gd`. |
+
+Still open from this plan: an in-flight rate switch (UI track), the D8b-R2 post-stall lateral work, and the Avanti/P-51 stall and neutral-point data items.
