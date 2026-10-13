@@ -53,9 +53,12 @@ def lag_time_constant(
         raise ValueError("effective_speed_mps must be nonnegative")
     if floor <= 0.0:
         raise ValueError("velocity_floor_mps must be positive")
-    return _LAG_COEFFICIENT * radius / (
+    tau = _LAG_COEFFICIENT * radius / (
         _LAG_DENOMINATOR * max(speed, floor)
     )
+    if not isfinite(tau) or tau <= 0.0:
+        raise ValueError("tau_s must be finite and positive")
+    return tau
 
 
 def derivative(

@@ -51,6 +51,12 @@ class DimensionalLagLaw(unittest.TestCase):
         self.assertAlmostEqual(float(result["rate_mps2"]), -0.5 / tau, places=14)
         self.assertGreater(tau, 0.0)
 
+        stopped = evaluate(0.5, 0.0, 1.225, radius, 0.0, 0.0, floor)
+        self.assertTrue(stopped["ok"], stopped)
+        self.assertTrue(math.isfinite(float(stopped["rate_mps2"])))
+        self.assertTrue(math.isfinite(float(stopped["tau_s"])))
+        self.assertLess(float(stopped["rate_mps2"]), 0.0)
+
     def test_feedback_effective_flow_is_sign_symmetric(self) -> None:
         positive = evaluate(
             3.0, 80.4, 1.225, 0.7, -1.5, 2.0, 0.25, instability=0.6
@@ -128,6 +134,31 @@ class OracleTrajectories(unittest.TestCase):
                 places=11,
             )
 
+        output_times = [index * oracle.BASE_TICK_S for index in range(33)]
+        reference = oracle.dense_trajectory(fixture, output_times)
+        unsplit = oracle.rk4_trajectory(fixture, oracle.BASE_TICK_S)
+        split = oracle.rk4_trajectory(
+            fixture, oracle.BASE_TICK_S, split_events=True
+        )
+        unsplit_error = max(
+            abs(actual - expected)
+            for (_, actual), expected in zip(unsplit, reference)
+        )
+        split_error = max(
+            abs(actual - expected)
+            for (_, actual), expected in zip(split, reference)
+        )
+        self.assertGreater(unsplit_error, oracle.ERROR_TOLERANCE_MPS)
+        self.assertLess(split_error, oracle.ERROR_TOLERANCE_MPS)
+
+        document = json.loads(ORACLE_PATH.read_text(encoding="utf-8"))
+        stored_step = next(
+            item for item in document["fixtures"] if item["name"] == fixture["name"]
+        )
+        event = stored_step["event_splits"][0]
+        self.assertEqual(event["event_kind"], "forcing_step")
+        self.assertEqual(event["time_s"], 0.0173)
+
     def test_source_law_seams_stay_literal_and_have_one_sided_targets(self) -> None:
         c_left = normalized(-1.428, 0.75 - 1.0e-9, instability=0.0)
         c_right = normalized(-1.428, 0.75 + 1.0e-9, instability=0.0)
@@ -151,6 +182,7 @@ class OracleTrajectories(unittest.TestCase):
             event = fixture_map[name]["event_splits"][0]
             self.assertEqual(event["direction"], direction)
             self.assertEqual(event["boundary"], boundary)
+            self.assertIn("epsilon_normalized", event)
             self.assertNotEqual(
                 event["left_limit_target_mps"], event["right_limit_target_mps"]
             )
@@ -202,6 +234,47 @@ class OracleTrajectories(unittest.TestCase):
         )
         feedback_error = _max_error_against_dense(feedback, base, False, reference)
         self.assertLess(feedback_error, tolerance)
+
+    def test_local_quarters_resolve_known_seams_without_relaxing_raw_gate(self) -> None:
+        base = oracle.BASE_TICK_S
+        tolerance = oracle.ERROR_TOLERANCE_MPS
+        sweep_names = ("C_increasing", "C_decreasing", "M_increasing", "M_decreasing")
+        worst_local = 0.0
+        for name in sweep_names:
+            fixture = _fixture(name)
+            quarter_step = base / 4.0
+            times = [
+                index * quarter_step
+                for index in range(round(fixture["duration_s"] / quarter_step) + 1)
+            ]
+            reference = oracle.dense_trajectory(fixture, times)
+            actual = oracle.rk4_trajectory(
+                fixture, base, split_events=True, local_quarters=True
+            )
+            stride = round(base / quarter_step)
+            error = max(
+                abs(state - reference[index * stride])
+                for index, (_, state) in enumerate(actual)
+            )
+            worst_local = max(worst_local, error)
+            self.assertLess(error, tolerance, name)
+
+        # Raw 240 Hz RK4 still fails. The local procedure qualifies only when
+        # supplied the fixture's exact seam time; it does not imply runtime
+        # state-dependent event detection is ready.
+        document = json.loads(ORACLE_PATH.read_text(encoding="utf-8"))
+        qualification = document["qualification"]
+        self.assertFalse(
+            qualification["all_integrated_fixtures"]["rk4_240hz_unsplit"][
+                "passes_1e-3_mps"
+            ]
+        )
+        self.assertTrue(
+            qualification["source_seam_sweeps"]["rk4_240hz_local_quarters"][
+                "passes_1e-3_mps"
+            ]
+        )
+        self.assertLessEqual(worst_local, tolerance)
 
     def test_dense_reference_is_converged_for_worst_seam_and_feedback(self) -> None:
         quarter_step = oracle.BASE_TICK_S / 4.0

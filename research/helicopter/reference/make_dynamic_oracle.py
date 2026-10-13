@@ -54,7 +54,12 @@ def _controls_at(profile: dict[str, Any], time_s: float) -> dict[str, float]:
 def _event_override(
     fixture: dict[str, Any], event: dict[str, Any], time_side: str
 ) -> dict[str, float]:
-    """Return a robust one-sided crossflow value at a known source seam."""
+    """Return exact one-sided controls at a known forcing or source event."""
+    if event.get("event_kind") == "forcing_step":
+        return {
+            key: float(value)
+            for key, value in fixture["profile"][time_side].items()
+        }
     controls = _controls_at(fixture["profile"], float(event["time_s"]))
     constants = fixture["constants"]
     hover = _hover_speed(
@@ -70,6 +75,20 @@ def _event_override(
     )
     controls["crossflow_mps"] = hover * normalized_crossflow
     return controls
+
+
+def _integration_events(fixture: dict[str, Any]) -> list[dict[str, Any]]:
+    """Known integration events, including piecewise-constant profile steps."""
+    events = list(fixture.get("event_splits", []))
+    profile = fixture["profile"]
+    if profile["interpolation"] == "step":
+        events.append(
+            {
+                "time_s": float(profile["step_time_s"]),
+                "event_kind": "forcing_step",
+            }
+        )
+    return events
 
 
 def _with_override(
@@ -149,6 +168,7 @@ def rk4_trajectory(
     fixture: dict[str, Any],
     step_s: float,
     split_events: bool = False,
+    local_quarters: bool = False,
 ) -> list[tuple[float, float]]:
     """Integrate at fixed output ticks, optionally splitting known seams.
 
@@ -161,38 +181,84 @@ def rk4_trajectory(
     count = int(round(duration_s / step_s))
     if not math.isclose(count * step_s, duration_s, rel_tol=0.0, abs_tol=2.0e-13):
         raise ValueError("step_s must divide fixture duration")
-    events = fixture.get("event_splits", []) if split_events else []
+    if local_quarters and not split_events:
+        raise ValueError("local seam refinement requires known-event splitting")
+    events = _integration_events(fixture) if split_events else []
     state = float(fixture["initial_vi_mps"])
     trajectory = [(0.0, state)]
     for index in range(count):
         start_s = index * step_s
         end_s = (index + 1) * step_s
         interior_events = [
-            event
-            for event in events
+            event for event in events
             if start_s < float(event["time_s"]) < end_s
         ]
-        if interior_events:
-            if len(interior_events) != 1:
-                raise ValueError("at most one known event may fall inside a tick")
-            event = interior_events[0]
-            event_s = float(event["time_s"])
-            state = _rk4_step(
-                fixture,
-                start_s,
-                state,
-                event_s - start_s,
-                end_override=_event_override(fixture, event, "before"),
-            )
-            state = _rk4_step(
-                fixture,
-                event_s,
-                state,
-                end_s - event_s,
-                start_override=_event_override(fixture, event, "after"),
-            )
+        if len(interior_events) > 1:
+            raise ValueError("at most one known event may fall inside a tick")
+
+        if local_quarters and any(
+            end_s >= float(event["time_s"]) - step_s - 1.0e-14
+            and start_s <= float(event["time_s"]) + step_s + 1.0e-14
+            for event in events
+        ):
+            if interior_events:
+                event = interior_events[0]
+                event_s = float(event["time_s"])
+                boundaries = [
+                    start_s,
+                    start_s + 0.5 * (event_s - start_s),
+                    event_s,
+                    event_s + 0.5 * (end_s - event_s),
+                    end_s,
+                ]
+            else:
+                boundaries = [
+                    start_s + (end_s - start_s) * substep / 4.0
+                    for substep in range(5)
+                ]
+        elif interior_events:
+            event_s = float(interior_events[0]["time_s"])
+            boundaries = [start_s, event_s, end_s]
         else:
-            state = _rk4_step(fixture, start_s, state, step_s)
+            boundaries = [start_s, end_s]
+
+        for sub_start_s, sub_end_s in zip(boundaries, boundaries[1:]):
+            start_event = next(
+                (
+                    event
+                    for event in events
+                    if math.isclose(
+                        sub_start_s, float(event["time_s"]), rel_tol=0.0, abs_tol=1.0e-14
+                    )
+                ),
+                None,
+            )
+            end_event = next(
+                (
+                    event
+                    for event in events
+                    if math.isclose(
+                        sub_end_s, float(event["time_s"]), rel_tol=0.0, abs_tol=1.0e-14
+                    )
+                ),
+                None,
+            )
+            state = _rk4_step(
+                fixture,
+                sub_start_s,
+                state,
+                sub_end_s - sub_start_s,
+                start_override=(
+                    _event_override(fixture, start_event, "after")
+                    if start_event is not None
+                    else None
+                ),
+                end_override=(
+                    _event_override(fixture, end_event, "before")
+                    if end_event is not None
+                    else None
+                ),
+            )
         trajectory.append((end_s, state))
     return trajectory
 
@@ -248,7 +314,7 @@ def dense_trajectory(
     if max_step_s <= 0.0 or not math.isfinite(max_step_s):
         raise ValueError("max_step_s must be finite and positive")
 
-    events = fixture.get("event_splits", [])
+    events = _integration_events(fixture)
     state = float(fixture["initial_vi_mps"])
     time_s = 0.0
     outputs: list[float] = []
@@ -514,22 +580,30 @@ def build_fixtures() -> list[dict[str, Any]]:
 
 def _event_target_values(fixture: dict[str, Any]) -> list[dict[str, Any]]:
     values: list[dict[str, Any]] = []
-    for event in fixture.get("event_splits", []):
+    for event in _integration_events(fixture):
         left_controls = _event_override(fixture, event, "before")
         right_controls = _event_override(fixture, event, "after")
         left_target, _ = _target_at_controls(fixture["constants"], left_controls)
         right_target, _ = _target_at_controls(fixture["constants"], right_controls)
-        values.append(
-            {
-                "time_s": round(float(event["time_s"]), 12),
-                "control": event["control"],
-                "threshold_normalized": event["threshold_normalized"],
-                "boundary": event["boundary"],
-                "direction": event["direction"],
-                "left_limit_target_mps": round(left_target, 12),
-                "right_limit_target_mps": round(right_target, 12),
-            }
-        )
+        entry = {
+            "time_s": round(float(event["time_s"]), 12),
+            "event_kind": event.get("event_kind", "steady_law_seam"),
+            "left_limit_target_mps": round(left_target, 12),
+            "right_limit_target_mps": round(right_target, 12),
+        }
+        if event.get("event_kind") == "forcing_step":
+            entry["control"] = "profile_controls"
+        else:
+            entry.update(
+                {
+                    "control": event["control"],
+                    "threshold_normalized": event["threshold_normalized"],
+                    "epsilon_normalized": event["epsilon_normalized"],
+                    "boundary": event["boundary"],
+                    "direction": event["direction"],
+                }
+            )
+        values.append(entry)
     return values
 
 
@@ -550,12 +624,18 @@ def _fixture_errors(fixture: dict[str, Any]) -> dict[str, dict[str, Any]]:
     result: dict[str, dict[str, Any]] = {}
     methods = (
         ("rk4_240hz_unsplit", BASE_TICK_S, 4, False),
-        ("rk4_120hz_unsplit", BASE_TICK_S / 2.0, 2, False),
-        ("rk4_60hz_unsplit", BASE_TICK_S / 4.0, 1, False),
+        ("rk4_480hz_unsplit", BASE_TICK_S / 2.0, 2, False),
+        ("rk4_960hz_unsplit", BASE_TICK_S / 4.0, 1, False),
         ("rk4_240hz_known_event_splits", BASE_TICK_S, 4, True),
+        ("rk4_240hz_local_quarters", BASE_TICK_S, 4, True),
     )
     for name, step_s, stride, split in methods:
-        trajectory = rk4_trajectory(fixture, step_s, split_events=split)
+        trajectory = rk4_trajectory(
+            fixture,
+            step_s,
+            split_events=split,
+            local_quarters=name == "rk4_240hz_local_quarters",
+        )
         errors = [
             abs(trajectory[index][1] - dense_states[index * stride])
             for index in range(len(trajectory))
@@ -599,18 +679,17 @@ def build_oracle() -> dict[str, Any]:
             }
         )
 
-    dynamic_fixtures = [
-        fixture for fixture in fixtures if fixture["kind"] != "target_step_exact"
-    ]
+    dynamic_fixtures = fixtures
     fixture_errors = {
         fixture["name"]: _fixture_errors(fixture) for fixture in dynamic_fixtures
     }
     errors_by_method: dict[str, dict[str, Any]] = {}
     method_names = (
         "rk4_240hz_unsplit",
-        "rk4_120hz_unsplit",
-        "rk4_60hz_unsplit",
+        "rk4_480hz_unsplit",
+        "rk4_960hz_unsplit",
         "rk4_240hz_known_event_splits",
+        "rk4_240hz_local_quarters",
     )
     for method in method_names:
         candidates = [fixture_errors[fixture["name"]][method] for fixture in dynamic_fixtures]
@@ -664,9 +743,16 @@ def build_oracle() -> dict[str, Any]:
             ],
             "error_tolerance_mps": ERROR_TOLERANCE_MPS,
             "comparison": "maximum absolute vi error at integrator output ticks against dense midpoint/exponential-convolution reference; the exact hover step uses its analytic exponential",
-            "all_dynamic_fixtures": errors_by_method,
+            "all_integrated_fixtures": errors_by_method,
             "source_seam_sweeps": seam_errors,
-            "event_split_scope": "fixtures provide known crossing times and one-sided endpoints; this is not session event-detector readiness",
+            "localized_refinement": {
+                "window": "only macrosteps intersecting [event-h, event+h]",
+                "substeps_per_affected_macrostep_max": 4,
+                "right_hand_side_evaluations_per_affected_macrostep_max": 16,
+                "crossing_tick": "split at the exact event time; subdivide each half into two equal segments, with one-sided endpoint targets; neighboring affected ticks use four equal quarters",
+            },
+            "per_fixture": fixture_errors,
+            "event_split_scope": "fixtures provide known forcing-step/crossing times and one-sided endpoints; this is not session event-detector readiness",
         },
         "sample_count": total_samples,
         "reference_step_s": DENSE_STEP_S,

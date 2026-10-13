@@ -355,14 +355,25 @@ static func _leaf_mass(k: MeshKit, center: Vector3, size: Vector3, base: Color, 
 
 static func _smooth_triangle(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, normal_a: Vector3,
 		normal_b: Vector3, normal_c: Vector3, base: Color, light: Color, dark: Color) -> void:
+	var triangle_b := b
+	var triangle_c := c
+	var triangle_normal_b := normal_b
+	var triangle_normal_c := normal_c
+	# Coarse lobed rings can fold one triangle slightly on particular seeds. Keep its
+	# front face aligned with the interpolated outward normals before MeshKit expands it.
+	if (b - a).cross(c - a).dot(normal_a) < 0.0:
+		triangle_b = c
+		triangle_c = b
+		triangle_normal_b = normal_c
+		triangle_normal_c = normal_b
 	var start := k.verts.size()
-	k.tri(a, b, c, base)
+	k.tri(a, triangle_b, triangle_c, base)
 	if k.verts.size() != start + 3:
 		return
 	var normal_xf: Basis = k.xf.basis.inverse().transposed()
-	var ordered_normals: Array[Vector3] = [normal_a, normal_c, normal_b]
+	var ordered_normals: Array[Vector3] = [normal_a, triangle_normal_c, triangle_normal_b]
 	if k.xf.basis.determinant() < 0.0:
-		ordered_normals = [normal_a, normal_b, normal_c]
+		ordered_normals = [normal_a, triangle_normal_b, triangle_normal_c]
 	for i in 3:
 		var normal: Vector3 = (normal_xf * ordered_normals[i]).normalized()
 		k.norms[start + i] = normal

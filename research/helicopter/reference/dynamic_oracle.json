@@ -24,30 +24,36 @@
     ],
     "error_tolerance_mps": 0.001,
     "comparison": "maximum absolute vi error at integrator output ticks against dense midpoint/exponential-convolution reference; the exact hover step uses its analytic exponential",
-    "all_dynamic_fixtures": {
+    "all_integrated_fixtures": {
       "rk4_240hz_unsplit": {
         "max_abs_error_mps": 0.011556348081,
         "time_s": 0.041666666667,
         "fixture": "M_decreasing",
         "passes_1e-3_mps": false
       },
-      "rk4_120hz_unsplit": {
-        "max_abs_error_mps": 0.010219600973,
-        "time_s": 0.039583333333,
-        "fixture": "M_decreasing",
+      "rk4_480hz_unsplit": {
+        "max_abs_error_mps": 0.034263803633,
+        "time_s": 0.01875,
+        "fixture": "hover_target_step",
         "passes_1e-3_mps": false
       },
-      "rk4_60hz_unsplit": {
-        "max_abs_error_mps": 0.000532601825,
-        "time_s": 0.039583333333,
-        "fixture": "M_decreasing",
-        "passes_1e-3_mps": true
+      "rk4_960hz_unsplit": {
+        "max_abs_error_mps": 0.028899010797,
+        "time_s": 0.017708333333,
+        "fixture": "hover_target_step",
+        "passes_1e-3_mps": false
       },
       "rk4_240hz_known_event_splits": {
         "max_abs_error_mps": 0.001057665005,
         "time_s": 0.041666666667,
         "fixture": "M_decreasing",
         "passes_1e-3_mps": false
+      },
+      "rk4_240hz_local_quarters": {
+        "max_abs_error_mps": 0.000376269961,
+        "time_s": 0.041666666667,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": true
       }
     },
     "source_seam_sweeps": {
@@ -57,13 +63,13 @@
         "fixture": "M_decreasing",
         "passes_1e-3_mps": false
       },
-      "rk4_120hz_unsplit": {
+      "rk4_480hz_unsplit": {
         "max_abs_error_mps": 0.010219600973,
         "time_s": 0.039583333333,
         "fixture": "M_decreasing",
         "passes_1e-3_mps": false
       },
-      "rk4_60hz_unsplit": {
+      "rk4_960hz_unsplit": {
         "max_abs_error_mps": 0.000532601825,
         "time_s": 0.039583333333,
         "fixture": "M_decreasing",
@@ -74,9 +80,192 @@
         "time_s": 0.041666666667,
         "fixture": "M_decreasing",
         "passes_1e-3_mps": false
+      },
+      "rk4_240hz_local_quarters": {
+        "max_abs_error_mps": 0.000376269961,
+        "time_s": 0.041666666667,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": true
       }
     },
-    "event_split_scope": "fixtures provide known crossing times and one-sided endpoints; this is not session event-detector readiness"
+    "localized_refinement": {
+      "window": "only macrosteps intersecting [event-h, event+h]",
+      "substeps_per_affected_macrostep_max": 4,
+      "right_hand_side_evaluations_per_affected_macrostep_max": 16,
+      "crossing_tick": "split at the exact event time; subdivide each half into two equal segments, with one-sided endpoint targets; neighboring affected ticks use four equal quarters"
+    },
+    "per_fixture": {
+      "hover_target_step": {
+        "rk4_240hz_unsplit": {
+          "max_abs_error_mps": 0.006176877288,
+          "time_s": 0.020833333333,
+          "fixture": "hover_target_step"
+        },
+        "rk4_480hz_unsplit": {
+          "max_abs_error_mps": 0.034263803633,
+          "time_s": 0.01875,
+          "fixture": "hover_target_step",
+          "passes_1e-3_mps": false
+        },
+        "rk4_960hz_unsplit": {
+          "max_abs_error_mps": 0.028899010797,
+          "time_s": 0.017708333333,
+          "fixture": "hover_target_step",
+          "passes_1e-3_mps": false
+        },
+        "rk4_240hz_known_event_splits": {
+          "max_abs_error_mps": 2.345578e-06,
+          "time_s": 0.054166666667,
+          "fixture": "hover_target_step"
+        },
+        "rk4_240hz_local_quarters": {
+          "max_abs_error_mps": 2.006951e-06,
+          "time_s": 0.0625,
+          "fixture": "hover_target_step"
+        }
+      },
+      "C_increasing": {
+        "rk4_240hz_unsplit": {
+          "max_abs_error_mps": 0.000217746469,
+          "time_s": 0.0375,
+          "fixture": "C_increasing"
+        },
+        "rk4_480hz_unsplit": {
+          "max_abs_error_mps": 6.4663209e-05,
+          "time_s": 0.0375,
+          "fixture": "C_increasing"
+        },
+        "rk4_960hz_unsplit": {
+          "max_abs_error_mps": 1.193935e-05,
+          "time_s": 0.0375,
+          "fixture": "C_increasing"
+        },
+        "rk4_240hz_known_event_splits": {
+          "max_abs_error_mps": 1.59226e-07,
+          "time_s": 0.05,
+          "fixture": "C_increasing"
+        },
+        "rk4_240hz_local_quarters": {
+          "max_abs_error_mps": 1.43045e-07,
+          "time_s": 0.029166666667,
+          "fixture": "C_increasing"
+        }
+      },
+      "C_decreasing": {
+        "rk4_240hz_unsplit": {
+          "max_abs_error_mps": 0.000224050103,
+          "time_s": 0.0375,
+          "fixture": "C_decreasing"
+        },
+        "rk4_480hz_unsplit": {
+          "max_abs_error_mps": 6.7292595e-05,
+          "time_s": 0.0375,
+          "fixture": "C_decreasing"
+        },
+        "rk4_960hz_unsplit": {
+          "max_abs_error_mps": 1.1154936e-05,
+          "time_s": 0.0375,
+          "fixture": "C_decreasing"
+        },
+        "rk4_240hz_known_event_splits": {
+          "max_abs_error_mps": 1.67031e-07,
+          "time_s": 0.033333333333,
+          "fixture": "C_decreasing"
+        },
+        "rk4_240hz_local_quarters": {
+          "max_abs_error_mps": 1.64113e-07,
+          "time_s": 0.029166666667,
+          "fixture": "C_decreasing"
+        }
+      },
+      "M_increasing": {
+        "rk4_240hz_unsplit": {
+          "max_abs_error_mps": 0.009793207069,
+          "time_s": 0.041666666667,
+          "fixture": "M_increasing"
+        },
+        "rk4_480hz_unsplit": {
+          "max_abs_error_mps": 0.009241856042,
+          "time_s": 0.039583333333,
+          "fixture": "M_increasing"
+        },
+        "rk4_960hz_unsplit": {
+          "max_abs_error_mps": 0.000113941783,
+          "time_s": 0.039583333333,
+          "fixture": "M_increasing"
+        },
+        "rk4_240hz_known_event_splits": {
+          "max_abs_error_mps": 0.000362977264,
+          "time_s": 0.041666666667,
+          "fixture": "M_increasing"
+        },
+        "rk4_240hz_local_quarters": {
+          "max_abs_error_mps": 0.000108280785,
+          "time_s": 0.041666666667,
+          "fixture": "M_increasing"
+        }
+      },
+      "M_decreasing": {
+        "rk4_240hz_unsplit": {
+          "max_abs_error_mps": 0.011556348081,
+          "time_s": 0.041666666667,
+          "fixture": "M_decreasing",
+          "passes_1e-3_mps": false
+        },
+        "rk4_480hz_unsplit": {
+          "max_abs_error_mps": 0.010219600973,
+          "time_s": 0.039583333333,
+          "fixture": "M_decreasing",
+          "passes_1e-3_mps": false
+        },
+        "rk4_960hz_unsplit": {
+          "max_abs_error_mps": 0.000532601825,
+          "time_s": 0.039583333333,
+          "fixture": "M_decreasing",
+          "passes_1e-3_mps": true
+        },
+        "rk4_240hz_known_event_splits": {
+          "max_abs_error_mps": 0.001057665005,
+          "time_s": 0.041666666667,
+          "fixture": "M_decreasing",
+          "passes_1e-3_mps": false
+        },
+        "rk4_240hz_local_quarters": {
+          "max_abs_error_mps": 0.000376269961,
+          "time_s": 0.041666666667,
+          "fixture": "M_decreasing",
+          "passes_1e-3_mps": true
+        }
+      },
+      "feedback_flow_ramp": {
+        "rk4_240hz_unsplit": {
+          "max_abs_error_mps": 2.17607e-07,
+          "time_s": 0.033333333333,
+          "fixture": "feedback_flow_ramp"
+        },
+        "rk4_480hz_unsplit": {
+          "max_abs_error_mps": 1.3741e-08,
+          "time_s": 0.033333333333,
+          "fixture": "feedback_flow_ramp"
+        },
+        "rk4_960hz_unsplit": {
+          "max_abs_error_mps": 1.883e-09,
+          "time_s": 0.054166666667,
+          "fixture": "feedback_flow_ramp"
+        },
+        "rk4_240hz_known_event_splits": {
+          "max_abs_error_mps": 2.17607e-07,
+          "time_s": 0.033333333333,
+          "fixture": "feedback_flow_ramp"
+        },
+        "rk4_240hz_local_quarters": {
+          "max_abs_error_mps": 2.17607e-07,
+          "time_s": 0.033333333333,
+          "fixture": "feedback_flow_ramp"
+        }
+      }
+    },
+    "event_split_scope": "fixtures provide known forcing-step/crossing times and one-sided endpoints; this is not session event-detector readiness"
   },
   "sample_count": 102,
   "reference_step_s": 1e-05,
@@ -112,7 +301,15 @@
           "crossflow_mps": 0.0
         }
       },
-      "event_splits": [],
+      "event_splits": [
+        {
+          "time_s": 0.0173,
+          "event_kind": "forcing_step",
+          "left_limit_target_mps": 0.0,
+          "right_limit_target_mps": 4.617128969863,
+          "control": "profile_controls"
+        }
+      ],
       "samples": [
         {
           "time_s": 0.0,
@@ -236,12 +433,14 @@
       "event_splits": [
         {
           "time_s": 0.0373,
+          "event_kind": "steady_law_seam",
+          "left_limit_target_mps": 6.076305486586,
+          "right_limit_target_mps": 6.092893780831,
           "control": "crossflow_mps",
           "threshold_normalized": 0.75,
+          "epsilon_normalized": 1e-10,
           "boundary": "C",
-          "direction": "increasing",
-          "left_limit_target_mps": 6.076305486586,
-          "right_limit_target_mps": 6.092893780831
+          "direction": "increasing"
         }
       ],
       "samples": [
@@ -367,12 +566,14 @@
       "event_splits": [
         {
           "time_s": 0.0373,
+          "event_kind": "steady_law_seam",
+          "left_limit_target_mps": 6.092893780831,
+          "right_limit_target_mps": 6.076305486586,
           "control": "crossflow_mps",
           "threshold_normalized": 0.75,
+          "epsilon_normalized": 1e-10,
           "boundary": "C",
-          "direction": "decreasing",
-          "left_limit_target_mps": 6.092893780831,
-          "right_limit_target_mps": 6.076305486586
+          "direction": "decreasing"
         }
       ],
       "samples": [
@@ -498,12 +699,14 @@
       "event_splits": [
         {
           "time_s": 0.03873,
+          "event_kind": "steady_law_seam",
+          "left_limit_target_mps": 5.286995746057,
+          "right_limit_target_mps": 4.642053744613,
           "control": "crossflow_mps",
           "threshold_normalized": 0.95,
+          "epsilon_normalized": 1e-10,
           "boundary": "M",
-          "direction": "increasing",
-          "left_limit_target_mps": 5.286995746057,
-          "right_limit_target_mps": 4.642053744613
+          "direction": "increasing"
         }
       ],
       "samples": [
@@ -629,12 +832,14 @@
       "event_splits": [
         {
           "time_s": 0.03873,
+          "event_kind": "steady_law_seam",
+          "left_limit_target_mps": 4.642053744613,
+          "right_limit_target_mps": 5.286995746057,
           "control": "crossflow_mps",
           "threshold_normalized": 0.95,
+          "epsilon_normalized": 1e-10,
           "boundary": "M",
-          "direction": "decreasing",
-          "left_limit_target_mps": 4.642053744613,
-          "right_limit_target_mps": 5.286995746057
+          "direction": "decreasing"
         }
       ],
       "samples": [
