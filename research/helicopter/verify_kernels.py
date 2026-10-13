@@ -1,4 +1,4 @@
-"""HELI-03a/04/13: native verification and disposable numerical defects.
+"""HELI-03a/04-R1/05/05a/13: native verification and disposable defects.
 
 Run from any directory. --out must name a fresh directory; generated logs are
 not source artifacts. --parse-all additionally checks every application script.
@@ -19,6 +19,9 @@ APP = ROOT / "app"
 SCRIPTS = (
     "physics/rotorcraft/inflow.gd", "physics/rotorcraft/swash.gd",
     "tests/test_heli_inflow.gd", "tests/test_heli_swash.gd",
+    "physics/rotorcraft/dynamic_inflow.gd", "physics/rotorcraft/main_rotor.gd",
+    "physics/rotorcraft/main_rotor_stage.gd", "tests/test_heli_dynamic_inflow.gd",
+    "tests/test_heli_main_rotor.gd", "tests/test_heli_main_rotor_stage.gd",
 )
 ERROR = re.compile(r"^(?:SCRIPT |SHADER )?ERROR:", re.MULTILINE)
 
@@ -53,12 +56,19 @@ def main() -> int:
     run("reference", [sys.executable, "-m", "unittest", "discover", "-s",
                       "research/helicopter/reference", "-p", "test_*.py"])
     run("oracle-current", [sys.executable, "research/helicopter/reference/make_oracle.py", "--check"])
+    run("dynamic-oracle-current", [sys.executable, "research/helicopter/reference/make_dynamic_oracle.py", "--check"])
+    run("main-oracle-current", [sys.executable, "research/helicopter/reference/make_main_rotor_oracle.py", "--check"])
     run("math-boundary", [sys.executable, "app/tests/check_transcendentals.py"])
     for index, script in enumerate(SCRIPTS):
         run(f"parse-kernel-{index}", engine(APP, "--check-only", "--script", f"res://{script}"))
     oracle = ROOT / "research/helicopter/reference/oracle.json"
     run("inflow", engine(APP, "--script", "res://tests/test_heli_inflow.gd", "--", f"--oracle={oracle}"))
     run("swash", engine(APP, "--script", "res://tests/test_heli_swash.gd"))
+    run("dynamic-inflow", engine(APP, "--script", "res://tests/test_heli_dynamic_inflow.gd", "--",
+        f"--oracle={ROOT / 'research/helicopter/reference/dynamic_oracle.json'}"))
+    run("main-rotor", engine(APP, "--script", "res://tests/test_heli_main_rotor.gd", "--",
+        f"--oracle={ROOT / 'research/helicopter/reference/main_rotor_oracle.json'}"))
+    run("main-stage", engine(APP, "--script", "res://tests/test_heli_main_rotor_stage.gd"))
     run("airplane-goldens", engine(APP, "--script", "res://tests/test_golden.gd"))
     hashes: list[str] = []
     for fps in (30, 60, 144):
@@ -87,6 +97,27 @@ def main() -> int:
         (disposable / "project.godot").write_text("config_version=5\n", encoding="utf-8")
         (disposable / SCRIPTS[0]).write_text(source.replace(old, new), encoding="utf-8")
         run(name, engine(disposable, "--script", "res://tests/test_heli_inflow.gd"), expect_defect=True)
+
+    # A units regression can look plausible at zero body rate. Probe actual
+    # nonzero p/q, and a missing lateral-flow sign, in separate applications.
+    rotor_source = (APP / "physics/rotorcraft/main_rotor.gd").read_text(encoding="utf-8")
+    rotor_defects = {
+        "body-rate-divided-by-lag": ("var a_rate: float = -body_rates[1] +", "var a_rate: float = -body_rates[1] / tau +"),
+        "wrong-lateral-flap-sign": ("(-b1 + flapback * mu_y", "(-b1 - flapback * mu_y"),
+        "hub-arm-counted-twice": ("var moment: PackedFloat64Array = M.add(M.add(arm_moment, spring), reaction)",
+                                  "var moment: PackedFloat64Array = M.add(M.add(M.scale(arm_moment, 2.0), spring), reaction)"),
+    }
+    for name, (old, new) in rotor_defects.items():
+        if rotor_source.count(old) != 1:
+            raise RuntimeError(f"main-rotor mutation anchor drifted: {name}")
+        disposable = out / name / "app"
+        for relative in ("physics/rotorcraft/main_rotor.gd", "physics/math3d.gd", "tests/test_heli_main_rotor.gd"):
+            target = disposable / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(APP / relative, target)
+        (disposable / "project.godot").write_text("config_version=5\n", encoding="utf-8")
+        (disposable / "physics/rotorcraft/main_rotor.gd").write_text(rotor_source.replace(old, new), encoding="utf-8")
+        run(name, engine(disposable, "--script", "res://tests/test_heli_main_rotor.gd"), expect_defect=True)
 
     if args.parse_all:
         scripts = sorted(path for path in APP.rglob("*.gd") if ".godot" not in path.parts)

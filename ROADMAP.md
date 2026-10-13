@@ -98,6 +98,8 @@ F1 controller reporting, F3b1 event-cost characterization, F6a marker and F6b vi
 
 G1a1 importer and G1b1 range auditor, G2-R1 equilibrium guards, experimental G2a/G2b coupling and G3b/AUD audio have implementation evidence in [propulsion research](docs/research/propulsion/) and [audio](docs/AUDIO-PLAN.md). Matched G1a/VAL-7 powerplant data, online G1b range coverage, G1d stopped/windmilling drag, G2 promotion and acoustic calibration remain open. Full fuel/engine-operation simulation is not delivered.
 
+The [RC glow engine realism plan](docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md) owns mandatory, separate two-stroke and true four-stroke research, implementation, calibration and validation milestones; both family gates must close before that feature is complete.
+
 #### M4b — Electric propulsion
 
 EL1b…e and EL2a provide synthetic fixed-bus and OCV/resistance/SOC flight, stop/depletion events, replay and telemetry. EL2a-P1/P2/P3 and E1 have dated optimization/maneuver proof. The [electric plan](docs/ELECTRIC-PROPULSION-PLAN.md) owns current equations, open EL2b…6 work, physical data and performance acceptance. Timber is not validated or enabled by these fixtures.

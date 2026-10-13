@@ -173,8 +173,8 @@
           -8.815787344462
         ],
         "effective_flap_time_constant_s": 0.119760479042,
-        "flap_rate_a1_rad_s": 0.14034836831,
-        "flap_rate_b1_rad_s": -1.598580493415
+        "flap_rate_a1_rad_s": -0.37415163169,
+        "flap_rate_b1_rad_s": -0.790080493415
       }
     },
     {
@@ -250,8 +250,8 @@
           -6.705336748493
         ],
         "effective_flap_time_constant_s": 0.119760479042,
-        "flap_rate_a1_rad_s": -1.050076481849,
-        "flap_rate_b1_rad_s": 1.113003704869
+        "flap_rate_a1_rad_s": -0.609076481849,
+        "flap_rate_b1_rad_s": 0.819003704869
       }
     },
     {
@@ -327,8 +327,8 @@
           -6.109141226459
         ],
         "effective_flap_time_constant_s": 0.119760479042,
-        "flap_rate_a1_rad_s": 0.0,
-        "flap_rate_b1_rad_s": 0.679000701303
+        "flap_rate_a1_rad_s": -0.0735,
+        "flap_rate_b1_rad_s": 0.826000701303
       }
     },
     {

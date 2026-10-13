@@ -369,11 +369,13 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	stats.population = population.get_meta("instances", 0)
 	stats.population_triangles = population.get_meta("triangles", 0)
 	stats.moving_people = population.get_meta("moving_people", 0)
+	var botanical_started := Time.get_ticks_usec()
 	var habitats := BotanicalHabitats.build(field, scenery, theme, quality)
 	root.add_child(habitats)
 	stats.botanical_plants = habitats.get_meta("plants", []).size()
 	stats.botanical_triangles = habitats.get_meta("triangles", 0)
 	stats.botanical_batches = habitats.get_meta("batches", 0)
+	timing["botanicals"] = float(Time.get_ticks_usec() - botanical_started) / 1000.0
 	var m0 := Time.get_ticks_usec()
 	var keys := cells.keys()
 	keys.sort()

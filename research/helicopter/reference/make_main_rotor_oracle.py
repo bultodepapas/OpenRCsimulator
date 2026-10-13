@@ -192,7 +192,9 @@ def build_cases() -> list[dict[str, Any]]:
     ]
 
 
-def _cross(a: tuple[float, float, float], b: tuple[float, float, float]) -> tuple[float, float, float]:
+def _cross(
+    a: tuple[float, float, float], b: tuple[float, float, float]
+) -> tuple[float, float, float]:
     return (
         a[1] * b[2] - a[2] * b[1],
         a[2] * b[0] - a[0] * b[2],
@@ -298,18 +300,16 @@ def independent_expected(inputs: dict[str, Any]) -> dict[str, Any]:
     )
     tau = 16.0 / (p["gamma_flybar"] * omega)
     gain_factor = (omega / p["omega_nominal_rad_s"]) ** 2
-    rate_a = (
-        -rates[1]
-        - a1
+    rate_a = -rates[1] + (
+        -a1
         + gradient_x * mux
         + gradient_z * muz
         - p["cyclic_longitudinal_gain_nominal_rad_per_rad"]
         * gain_factor
         * inputs["cyclic_forward_rad"]
     ) / tau
-    rate_b = (
-        -rates[0]
-        - b1
+    rate_b = -rates[0] + (
+        -b1
         + gradient_x * muy
         + p["cyclic_lateral_gain_nominal_rad_per_rad"]
         * gain_factor
@@ -380,7 +380,9 @@ def render() -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true", help="check the committed oracle without writing")
+    parser.add_argument(
+        "--check", action="store_true", help="check the committed oracle without writing"
+    )
     args = parser.parse_args()
     expected = render()
     if args.check:

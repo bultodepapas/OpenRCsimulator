@@ -1,0 +1,213 @@
+# RC glow engine realism: two-stroke and four-stroke
+
+2026-10-13 · Revision 1 · Owner: physics/propulsion, with aircraft-contract, aircraft, atmosphere and audio owners. Step prefix: **NITRO-**.
+
+**Status: active plan; implementation, calibration and physical validation are pending.** The initial manufacturer-source review is [NITRO-00](../research/glow-engines/NITRO-00/README.md). This document owns the glow-engine work under [ROADMAP M4](../../ROADMAP.md#m4--propulsion-response-operating-range-and-sound). Commands remain in [TOOLS](../TOOLS.md); supported configuration remains in the [aircraft contract](../../AIRCRAFT_CONTRACT.md).
+
+## Mandatory outcome and boundaries
+
+Deliver **both methanol/nitromethane two-stroke (2T) and true four-stroke (4T) RC aircraft glow engines as first-class physics families**. Neither family is an optional later enhancement. Completion requires separate research, implementation, real-engine calibration and validation for each, plus an experienced RC pilot's assessment of RPM behavior, throttle response, propeller loading, sound, consumption and aircraft performance.
+
+Share shaft mechanics, propeller aerodynamics, atmosphere inputs, fuel accounting and lifecycle infrastructure where their assumptions match. Use distinct combustion/charge, loss, stability and cycle models. A 4T implementation made by lowering a 2T RPM limit or changing its sound fails this scope. Displacement, design, fuel, exhaust, installation and operating conditions determine comparisons; do not encode universal 4T torque/efficiency or 2T power advantages.
+
+Baseline calibration candidates are **O.S. MAX-55AX (2T)** and **O.S. FS-64V (4T)**, each with an identified stock silencer, fuel and at least two suitable propellers. The [source snapshot](../research/glow-engines/NITRO-00/README.md#manufacturer-evidence) also covers **Saito FA-82B, YS FZ115S, YS DZ170 and ENYA SS35EX TN**. These broaden architecture and parameter research; they do not inherit either baseline's calibration. If matched baseline measurements cannot be obtained, change the named candidate within its family with documented evidence; never remove that family's calibration gate.
+
+Scope includes normal running, warm-up, rich/lean transitions, unstable idle, starvation, throttle cut, run-down and fuel exhaustion. Provide distinct safe idle and explicit throttle-cut commands. Cold-start/restart can use a documented simplified starter/glow-driver event, but must check fuel, ignition and crank motion; opening the throttle must not resurrect a stopped engine. Detailed wear, maintenance, CFD, elastic engine mounts, multi-engine aircraft and fuel slosh are outside this first delivery. Their omission does not excuse missing fuel consumption, temperature, combustion stability or family differences.
+
+Own new kernels provisionally under `app/physics/glow/`, focused `app/tests/test_glow_*.gd`, profile/source pipelines under `research/glow-engines/`, and evidence under `docs/research/glow-engines/<step>/`. New profile/schema paths are proposals until NITRO-01. Shared changes to `app/physics/propulsion.gd`, `app/sim/`, contract/schema, audio, catalog and generated aircraft data require the owning track's coordination. Preserve unrelated edits and stable `airplane`, `propeller` and `*_hinge` names. Regenerate aircraft data through each aircraft's source pipeline.
+
+## Current implementation and dependencies
+
+The Stik and Extra currently use prescribed RPM with lag. Existing combustion shaft torque uses a full-throttle power curve, admitted-power throttle approximation and friction. The [coupled-shaft guide](../PROPULSION-CORE-PLAN.md) supplies stage-local shaft/body integration and reaction/gyro accounting; it does not establish calibrated glow combustion. Current fuel is prescribed wet inventory with no tank burn or changing mass properties. Audio does not yet have an explicit 2T/4T profile contract.
+
+The historical `glow_prop` solver name also covers the P-51 gasoline installation. **Do not infer methanol fuel, two-stroke operation or glow ignition from that name.** Add explicit family, chemistry, cycle and conditional-module semantics before loading new profiles. Preserve legacy/electric/turbine routes and checkpoint identity; this plan does not silently reclassify them.
+
+Dependencies to qualify, rather than assume delivered:
+
+- G1a/VAL-7 matched propeller torque/thrust data and G1b operating-domain accounting; the existing [UIUC importer](../research/propulsion/G1a1/README.md) preserves evidence but does not supply missing high-RPM measurements.
+- G2a/G2b coupled shaft/body balance, finite root checks, positive carrier inertia, event handling at rest and the G1d stopped/windmilling regime.
+- NITRO contract extension for finite tank/energy state, fuel chemistry and changing mass/CG/inertia. Current v2 explicitly rejects active tank burn; update its conditional contract before enabling it.
+- M5 atmosphere: moist density loads the propeller, oxygen-bearing dry charge drives naturally aspirated combustion. Each YS boosted charge/feed system needs its own model-specific law.
+- AUD-09 and the [audio realism plan](audio-realism.md): engine-family metadata, cadence, native mixed-output captures and asset provenance. Audio consumes physics; it cannot create combustion failures.
+
+## Research and modeling coverage
+
+Every row is mandatory for **both** family dossiers, implemented profiles and validation reports. Statements about mechanisms below define model distinctions; their magnitude must come from engine-specific evidence.
+
+| Area | Two-stroke investigation/model | Four-stroke investigation/model | Required evidence/output |
+| --- | --- | --- | --- |
+| Torque and power | Port timing, scavenging/trapping, crankcase charge and exhaust effects; speed/throttle/mixture brake-torque map. | Intake/valve timing, volumetric efficiency, compression/expansion, pumping and valve-train losses; independent brake-torque map. | Torque and power versus RPM, torque peak distinct from power peak, usable loaded band and uncertainty. |
+| Throttle response | Carburetor/servo motion, charge/fuel transport, rich clearing or lean hesitation, acceleration and deceleration under prop load. | Intake/charge transport, mixture lag and cycle spacing, pumping/valve losses, acceleration and deceleration under prop load. | Synchronized command, throttle-barrel position and RPM steps in both directions, delay, rise/fall time, overshoot and stalls. |
+| Combustion dynamics | One nominal combustion opportunity per crank revolution per cylinder; ported cycle and model-specific missed fires. | One nominal opportunity per two crank revolutions per cylinder; explicit intake, compression, expansion and exhaust cycle with cam/valve phase. | Mean cycle work, phase/cadence, mechanical loss and cycle-to-cycle speed/stability observations; anti-aliasing proof. |
+| Propeller compatibility | Manufacturer-approved diameter/pitch and actual prop family, load, inertia, static and advancing operation. | Independent recommendations and loaded-RPM limits; suitability must be established for that engine, not transferred from a 2T. | At least two identified props per baseline; Ct/Cp or direct torque/thrust, RPM/J/Re coverage, takeoff versus flight-speed tradeoffs. |
+| Fuel consumption | Delivered mixture versus retained/burned charge and scavenging loss; rich fuel may leave without useful combustion. | Delivered/burned fuel and exhaust/thermal losses over the 720° cycle; naturally aspirated and YS feed systems distinct. | Flow versus speed/throttle/load/mixture, actual nitro/oil fractions, mass/volume conversion and endurance. No automatic half-flow rule. |
+| Idle and stalling | Sustaining plug/charge temperature, mixture window, rich intermittent firing, prolonged-idle clearing and lean cutout. | Sustaining plug/charge temperature over longer firing intervals, cycle compression/pumping and valve condition, mixture window and cutout. | Warm idle envelope, idle-to-power transitions and repeatable shutdown boundaries with identified causes. |
+| Temperature/cooling | Fuel evaporation, indicated work, friction, exhaust heat and head/case airflow; mixture-dependent operation. | Independent heat partition and head/case cooling, exhaust and valve-train behavior; no generic cooler/hotter offset. | Temperature sensor location, warm-up/cool-down and installed airflow tests; effects on torque, stability and shutdown. |
+| Sound/vibration | Exhaust pulses at nominal shaft order 1 for a single cylinder, missed-fire subharmonics, crank/mechanical and blade-pass orders. | Exhaust pulses at order 0.5 for a single cylinder, cam/valve mechanical orders and distinct exhaust shape. | Tach-synchronized spectra and recordings; measured modulation/amplitudes, mount context, RPM transitions and restart/cutoff. |
+| Aircraft dynamics | Resulting acceleration, takeoff, climb, cruise and throttle transitions from actual shaft output and propeller loads. | Same maneuvers with the independently calibrated 4T installation, its mass/inertia and matched propellers. | Thrust, torque reaction, relative-spin reaction, gyro, P-factor, normal forces and wake budgets; independent flight observations. |
+| Configuration | Manufacturer/model/revision, displacement, bore/stroke, cylinder count, port/exhaust/feed/plug/fuel configuration and maps. | Manufacturer/model/revision, valve/cam/cycle, displacement, cylinder count, feed/boost/plug/fuel configuration and maps. | Versioned profiles with units, evidence kind, source, supported domain, physical limits and generator identity. |
+
+**True four-stroke versus rich two-stroke “four-stroking”:** keep `family=glow_2t` even when a rich 2T misses combustion opportunities and sounds at a lower cadence. Its ported gas-exchange cycle does not acquire valves or become a 720° mechanical cycle. True `glow_4t` retains its four-stroke cycle even when it also misfires. The MAX-55AX manual explicitly describes the rich 2T condition; it is a mandatory discrimination test, not a second family selector.
+
+## Evidence and calibration protocol
+
+For each baseline, freeze manufacturer/model/production revision, bore/stroke/displacement, silencer/header, plug, fuel composition by volume, oil type, prop brand/series/material/blades/diameter/pitch, measured rotating inertia, installation, tank/feed geometry, pressure, ambient conditions and run-in condition. Cite document revision/page/section and preserve exact source hashes. Resolve conflicts before promoting inputs; do not average incompatible manufacturer revisions.
+
+Manufacturer RPM ranges and rated power points constrain a profile. They are not a complete torque curve, an installed WOT prediction, or a guarantee of stable idle. Convert power with the source's **PS versus hp** convention recorded. Only derive torque at a specified power/RPM pair using `Q=P/Ω`; a power peak does not locate the torque peak. Thrust/RPM alone cannot identify shaft power or engine efficiency.
+
+NITRO-2T-01 and NITRO-4T-01 must acquire original performance reports with stated instruments/conditions, or conduct matched bench measurements when available evidence is inadequate. Retain raw timestamped measurements and calibration records, repeated runs, sensor lag, correction assumptions, covariance/uncertainty and exclusions. Manufacturer claims remain `manual`; measured, borrowed, estimated and derived inputs retain their real evidence kinds. Forum anecdotes can identify a question but cannot close a numerical gate.
+
+Minimum acquisition for **each** family:
+
+1. Stabilized shaft torque and RPM across at least eight supported speed points spanning the usable band, including low, mid, peak-power neighborhood and high-speed falloff; throttle/mixture sweeps sufficient to identify partial-load behavior. Record thrust separately. Do not extrapolate a dynamometer curve to idle/stopped operation.
+2. Two documented propeller loads, five steady throttle positions, and repeated idle→mid, mid→WOT, WOT→mid and WOT→idle steps. Measure the servo separately. Reuse [VAL-7b](../research/validation/VAL-7b/README.md) for diagnostics, not as a requirement that the engine obey a first-order lag.
+3. Fuel flow by weighed consumption or calibrated flow meter, mixture density and measurement duration at idle/cruise/high load; rich and lean transitions, fuel exhaustion and actual usable tank volume. A manual's tank/time estimate is a broad plausibility constraint only.
+4. Head/case temperature at declared locations, ambient temperature and local cooling airflow during warm-up, steady load, reduced cooling and cool-down. Record plug/combustion behavior through transitions; no invented universal seizure temperature.
+5. Tach-synchronized exhaust audio and vibration at idle, mid and WOT, throttle transitions, rich irregular firing and shutdown. Separate prop noise from exhaust and mount resonances; preserve recording permission/provenance.
+
+Hold out whole runs and at least one propeller combination from fitting; acquire it before tuning. Fit independently for 2T and 4T. Fix or independently measure loss/inertia/prop parameters where possible so a flexible torque fit cannot hide a wrong propeller or fuel model. Preserve source domain and report parameter identifiability/sensitivity. A manufacturer datum with unspecified fuel/conditions cannot be forced into agreement with a different installed test.
+
+## Shared physical foundation
+
+### Shaft, propeller and aircraft coupling
+
+Use the existing fixed-axis **relative shaft speed** convention, locked aircraft inertia and simultaneous G2 body/rotor balance. For constant rotating inertia `I_s`, unit body shaft axis `a`, relative shaft speed `Ω`, and body angular velocity `ω_b`:
+
+```text
+I_s (Ω_dot + a · ω_b_dot) = Q_combustion - Q_mechanical - Q_pumping - Q_prop
+n = RPM / 60;  Ω = 2π n;  J = V_axial / (n D)
+T = Ct(J, Re, ...) ρ n² D⁴
+P_prop = Cp(J, Re, ...) ρ n³ D⁵
+Q_prop = P_prop / Ω = Cp(J, Re, ...) ρ n² D⁵ / (2π)   [rotating domain]
+P_brake = (Q_combustion - Q_mechanical - Q_pumping) Ω
+```
+
+If a map supplies measured **brake torque**, its losses are already included: apply mapped corrections consistently without subtracting friction/pumping twice. A separately calibrated indicated-work model may expose those losses. At a steady installed point, engine net torque equals propeller load; throttle does not prescribe shaft RPM. Integrate up/down response using crank/prop/spinner inertia and actual net torque, not an arbitrary family lag. Include reflected cam inertia where applicable; reciprocating-piston forces belong to their cycle/mechanical model, not a fictitious rotary inertia.
+
+Use each RK stage's RPM, inflow, air charge, temperature and fuel/mixture state. Propeller aerodynamic reaction is external; combustion and internal friction exchange angular momentum with the carrier. Retain the existing relative-spin/gyro conventions, account once for accelerating the shaft, and verify motor work and total angular momentum independently. Propeller axial force, offset moment, normal/P-factor forces and tail wake use the same stage loads and profile. Do not add a family-specific climb or thrust multiplier.
+
+Use suitable combustion-rated propellers and their documented limits; nominal diameter/pitch alone does not identify a propeller map. Report unsupported RPM/J/Re/Mach queries. A recommended prop size is not proof of coefficient coverage. Pitch speed `n * pitch` is only a geometric reference, not aircraft speed or thrust. Dynamic advancing loads determine airspeed unloading, cruise and climb. Qualify engine-off windmilling, stopped drag, zero-speed torque and event localization before replacing the inherited low-RPM cutoff; never divide by zero or leave residual spin as a claimed stopped state. Reverse rotation remains unsupported and visibly rejected.
+
+### Two combustion families and time scales
+
+Define separate `glow_2t` and `glow_4t` model implementations behind a common stage-evaluation interface. Candidate output includes indicated/brake torque with declared semantics, delivered/burned fuel, heat rates, combustion stability and event diagnostics. For a cylinder with `r` crank revolutions per mechanical cycle, `f_opportunity = RPM/(60r)` and mean indicated torque is `W_cycle/(2πr)`. Use `r=1` for 2T, `r=2` for 4T; cylinder phases/firing order and actual successful firings are explicit.
+
+2T charge/scavenging and 4T valve/intake/pumping behavior require independent reduced models and independently fitted maps. The 4T model includes the non-power strokes and their loss/work accounting. YS crankcase supercharging/regulation or pump injection cannot use a naturally aspirated pressure multiplier without supporting data. Shared interpolation/math code is acceptable; one curve scaled by RPM or a universal efficiency factor is not.
+
+At 240 Hz, a 2T firing fundamental can exceed the physics Nyquist limit; even a lower 4T fundamental has unresolved harmonics. Research a deterministic cycle/event solver with substeps or analytic cycle-work integration, checked against a fine crank-angle oracle. Feed the rigid body the conserved tick-integrated impulse/work and resolved low-frequency modulation; never sample raw crank pulses once per tick. Store cycle phase and combustion history in simulation state. Audio reconstructs firing events at audio rate; it does not advance physical state or RNG. The numerical acceptance below applies separately to each family. Any averaged reduction must document unresolved high-frequency shaft ripple; measured low-frequency RPM fluctuations, hesitation, missed fires and mechanical cadence remain mandatory.
+
+### Mixture, fuel, thermal and operating state
+
+Throttle moves the actual carburetor/charge control; high/low mixture settings and a transport/wetting state can cause rich clearing or lean hesitation. Calibrate their direction/magnitude per engine. A tuned healthy engine must not receive arbitrary hesitation for drama. Model combustion opportunities/success from charge, mixture, plug/thermal state and speed. If stochastic cycle variability is justified, use checkpointed deterministic streams updated only by accepted events, never RK trials, trim queries or audio/render calls.
+
+Separate engine mode from shaft motion: `stopped`, `starting`, `running`, `starved`/`cut` and a documented failure cause are candidate states. Shutdown extinguishes combustion while prop drag and mechanical/compression losses run the shaft down or windmill. Rich/lean misfire, insufficient sustaining heat, persistent sub-idle operation, starvation and qualified overheating are distinct causes. Add hysteresis/event localization to avoid tick-dependent restart/chatter. No fuel or ignition means no positive combustion torque; zero throttle with an idle stop differs from throttle cut.
+
+Use an engine-specific delivered-fuel map or a calibrated charge/mixture law. Account for unburned/scavenged fuel separately from combustion heat; both consume the tank. Do not infer fuel flow solely from brake power with constant efficiency, particularly at idle, rich operation or shutdown. Define methanol/nitro/oil fractions and mixture density; volume flow and mass flow are different quantities. Track usable fuel mass, cumulative consumption and remaining endurance under the flown throttle history. Locate depletion without negative fuel.
+
+Deliver actual finite-tank endurance for both families. The contract extension must distinguish prescribed-fuel legacy behavior from the new finite-fuel capability. Before enabling the latter, consistently update mass, CG, tensor, force arms and rigid-body momentum as fuel leaves; retain locked rotor/carrier inertia conventions. Derive the variable-mass/open-system balance and qualified exhaust-momentum approximation with the physics owner. Do not bolt a changing inventory mass onto a constant-mass solver. Full tank, nearly empty tank and exhaustion require flight tests; do not assume a fuel burn causes a favorable CG shift.
+
+A shared thermal accounting interface may use independently calibrated head/case heat capacities and conductances:
+
+```text
+C_head T_head_dot = heat_to_head + friction_share - cooling - conduction
+cooling = h(local_airflow, installation) A (T_head - T_ambient)
+```
+
+Separate fuel chemical energy, evaporation, shaft work, exhaust heat, stored heat and environmental rejection without double counting. Mixture/oil/nitro composition constrains energy and lubrication models. Local propwash plus flight airflow supplies cooling; keep installation/cowl factors explicit. Temperature affects torque/stability only through evidenced maps/limits, with different family/profile parameters. If a failure threshold lacks evidence, label the estimate and leave physical thermal acceptance open. Do not implement a hidden timer that stalls one family sooner.
+
+### Configurable profiles and presentation
+
+Extend the closed aircraft schema/loader and normalized model before integration. Proposed profile content:
+
+| Group | Mandatory content/validation |
+| --- | --- |
+| Identity/mechanics | Profile ID/version/hash, manufacturer/model/revision, explicit `glow_2t` or `glow_4t`, glow ignition, methanol-based chemistry, displacement, bore/stroke, cylinders/phases and rotation; family-specific ports or valve/cam semantics. |
+| Performance | Independent torque/work maps and loss semantics, RPM/throttle/mixture/temperature/load support, interpolation/extrapolation policy, operational limits and calibration/held-out record IDs. |
+| Charge/fuel/thermal | Naturally aspirated versus supported boost/feed model, needle maps/transport state, plug context, nitro/oil fractions and oil type, density/energy provenance, flow/thermal coefficients, idle/stall criteria and finite tank installation. |
+| Rotating installation | Crank/prop/spinner/reflected inertia and sources, physical carrier check, silencer/header, supported prop identities/maps/limits, cooling/wake geometry and installation mass properties. |
+| Audio/vibration | Exhaust/firing and mechanical orders, cylinder firing schedule, blade count, matched spectra/recordings and measured modulation/transfer context; authored sound parameters labeled separately. |
+
+Every physical quantity follows `{value, unit, kind, source}`. Validate finite ordered maps, units, family-incompatible fields, fractions and oil minimums, geometry/displacement consistency, map domains, inertia/timestep bounds and trim/start feasibility. Source uncertainty lives in the evidence report unless an explicit consumer is added. Missing mandatory physics blocks flight; no silent generic combustion fallback. Profiles are immutable loaded data; changing displacement/manufacturer/prop combinations uses validated authored/generated profiles without rewriting the shaft core.
+
+Session checkpoints/traces identify profile bytes, family, prop and fuel configuration, integration/layout versions, temperature, fuel, phase, mixture history, mode/failure and exact RNG bits where used. Reset/pause/reload/failure rollback restore all states atomically. Publish engine torque, prop torque, thrust, RPM, command/barrel position, flow, fuel remaining, thermal state, combustion success and domain flags with declared sample timing. Reuse stage results rather than recalculate inconsistent loads for telemetry.
+
+Audio uses the physical successful-fire cadence: nominal single-cylinder 2T `RPM/60`, true 4T `RPM/120`, plus actual cylinder schedule and missed fires. Propeller blade pass remains `blades*RPM/60` for either family. Provide independently recorded/procedural exhaust signatures and valve/mechanical layers, rich irregular firing, transient load timbre and combustion-off versus windmilling sound. Preserve pitch/order through transitions; a lower-pitched 2T loop alone fails 4T acceptance. Use physically supported vibration amplitudes/orders and installation transfer, without arbitrary aerodynamic force or camera shake. No audio RNG may change flight state. Coordinate smoke/particle presentation as a consumer of delivered/unburned fuel and exhaust state, not a torque source.
+
+## Milestones and proof register
+
+Steps are small reviewable slices. Each family owns its own research, implementation, calibration and validation evidence; a shared test result cannot mark both physically validated.
+
+| ID | Work | Proof/status |
+| --- | --- | --- |
+| NITRO-00 | Freeze initial manufacturer sources, runtime gaps and conflicting specifications. | Source snapshot delivered; no measured engine calibration. |
+| NITRO-01 | Coordinate profile/capability/schema, normalized interface, state/trace and generator contracts. | Pending — malformed/family-mismatched data rejected; valid legacy data preserved; authoritative contract/decision updated. |
+| NITRO-02a | Qualify shared coupled shaft/prop equations and stopped/windmilling events. | Pending — independent momentum/work oracle, finite roots, stage-local inputs and supported-domain proof. |
+| NITRO-02b | Implement finite tank and consistent variable mass/CG/inertia balance. | Pending — independent mass/momentum/energy checks, tank boundaries and lifecycle proof. |
+| NITRO-02c | Implement shared mixture/thermal accounting and deterministic cycle-event infrastructure. | Pending — analytic heat/flow/event fixtures, phase/substep convergence, anti-aliasing and rollback proof. |
+| NITRO-2T-01 | **2T research:** MAX-55AX dossier covering all ten areas; ENYA cross-check; freeze fuel/manual conflicts and acquire matched curves, steps, flow, temperature/audio/vibration. | Pending — complete source/measurement manifest, supported envelope and predeclared held-out runs. |
+| NITRO-2T-02a | **2T implementation:** ported charge/scavenging, independent torque/loss law, mixture transport and combustion opportunity/success. | Pending — float64 isolated kernel and independent mathematical/cycle oracles; no production data tuning yet. |
+| NITRO-2T-02b | **2T implementation:** sustaining idle, rich four-stroking, lean hesitation/starvation/cut, flow and thermal effects; checkpointed event state. | Pending — repeatable healthy/failure scenarios and replay; family remains 2T during irregular firing. |
+| NITRO-2T-02c | **2T implementation:** generated profile, coupled aircraft integration and distinct audio/vibration consumer. | Pending — parse/contract/session/aircraft checks, force budgets, native mixer captures and no-audio physics parity. |
+| NITRO-2T-03 | **2T calibration:** fit one real MAX-55AX configuration using manufacturer constraints plus acquired performance data; two suitable props. | Pending — measured torque/flow/thermal/step fits, residuals, uncertainty and frozen profile; estimates cannot close it. |
+| NITRO-2T-04 | **2T validation:** held-out bench/flight runs, 2T scenarios below and experienced-pilot evaluation. | Pending — separate 2T acceptance report with every required metric and gap. |
+| NITRO-4T-01 | **4T research:** FS-64V dossier covering all ten areas; Saito/YS intake, valve, feed and fuel distinctions; acquire matched performance records. | Pending — complete source/measurement manifest, supported envelope and predeclared held-out runs. |
+| NITRO-4T-02a | **4T implementation:** 720° cycle/valve-charge/pumping model, independent torque/loss law, mixture transport and combustion opportunity/success. | Pending — float64 isolated kernel, phase/work oracle and tests rejecting a scaled 2T substitute. |
+| NITRO-4T-02b | **4T implementation:** sustaining idle, thermal/plug dependence, unstable transitions/starvation/cut, independent fuel/thermal behavior. | Pending — repeatable healthy/failure scenarios and complete cycle/lifecycle replay. |
+| NITRO-4T-02c | **4T implementation:** generated profile, coupled aircraft integration, exhaust/cam/valve audio and vibration. | Pending — parse/contract/session/aircraft checks, native mixer captures and no-audio physics parity. |
+| NITRO-4T-03 | **4T calibration:** fit one real FS-64V configuration using manufacturer constraints plus acquired performance data; two suitable props. | Pending — measured torque/flow/thermal/step fits, residuals, uncertainty and frozen profile; no borrowed 2T map. |
+| NITRO-4T-04 | **4T validation:** held-out bench/flight runs, true-4T scenarios below and experienced-pilot evaluation. | Pending — separate 4T acceptance report with every required metric and gap. |
+| NITRO-03 | Qualify both playable installations, data-driven profile selection, takeoff/climb/cruise/cutoff and A/B pilot protocol. | Pending — real installation mass/CG/prop context, exported builds and profile/state/physics/audio consistency. |
+| NITRO-04 | Close both family gates, complete fleet regression, performance and release qualification. | Pending — both NITRO-2T-04 and NITRO-4T-04 passed, target-machine cost and documented physical/pilot acceptance. |
+
+Execution: source work for **both** families → shared contract/coupling/energy infrastructure → isolated 2T and 4T kernels → family integration/calibration → independent family validation → paired product/release qualification. Calibration data acquisition may proceed while kernels are built. Keep unavailable measurements visible as open gates; do not mark the whole track complete after delivering only one family. Use Luna Max research/review agents when useful, with disjoint paths and explicit shared-interface coordination.
+
+## Separate validation scenarios
+
+Run every scenario with the named engine, exact fuel/plug/exhaust, propeller and atmosphere. Calibration observations and validation runs must be different. Numerical fault fixtures do not require operating real hardware beyond manufacturer limits.
+
+| Scenario ID | Two-stroke scenario and acceptance | Four-stroke scenario and acceptance |
+| --- | --- | --- |
+| NITRO-2T-V01 / NITRO-4T-V01 | MAX-55AX torque/power sweep and two loaded-prop equilibria reproduce held-out curves and RPM within the declared bands. | FS-64V independent sweep/equilibria reproduce its curves and usable band; verify 720° work accounting rather than a shifted 2T curve. |
+| NITRO-2T-V02 / NITRO-4T-V02 | Warm idle hold, repeated idle→WOT/WOT→idle and advancing-prop unloading; reproduce clearing/hesitation only where measured. | Warm idle hold and the same commands at its supported loads; reproduce independent rise/fall and compression/pumping behavior. |
+| NITRO-2T-V03 / NITRO-4T-V03 | Rich four-stroking, rich/lean idle and transition failures; nominal opportunities remain once per revolution. | Healthy true-4T and rich/lean misfire/failure; opportunities stay once per two revolutions. At equal test RPM, phase/cadence tests distinguish both families and rich 2T. |
+| NITRO-2T-V04 / NITRO-4T-V04 | Fuel-flow sweeps and a recorded duty-cycle endurance run match delivered consumption; scavenged/unburned fuel still depletes the tank. | Independent flow sweeps/endurance match observations; no half-flow assumption. Saito manual flow is an additional profile-specific reference, never an FS-64V substitute. |
+| NITRO-2T-V05 / NITRO-4T-V05 | Warm-up, high-load reduced cooling and recovery reproduce measured temperature/torque/stability changes. | Independent installed cooling and thermal tests reproduce that engine's behavior; no inherited 2T thermal coefficients. |
+| NITRO-2T-V06 / NITRO-4T-V06 | Throttle cut, fuel starvation/exhaustion, stopped prop and airspeed windmilling; no combustion torque or phantom restart. | Same lifecycle conditions with 4T compression/pumping and cycle history; shutdown must not immediately zero rotating inertia. |
+| NITRO-2T-V07 / NITRO-4T-V07 | Realistic 2T installation: ground acceleration, takeoff distance, climb, cruise, throttle punches and engine-out glide. | Realistic 4T installation: same maneuvers, its own prop/mass/CG/inertia; evaluate measured outcomes, not a predetermined “more torque” ranking. |
+| NITRO-2T-V08 / NITRO-4T-V08 | Idle/mid/WOT/transient native sound and tach/vibration order checks; rich irregular firing has physical modulation. | Distinct 4T exhaust plus mechanical signature, successful-fire schedule and transitions; blinded listening and flight review. |
+
+For aircraft comparisons, use both **actual installed builds** and an explicitly synthetic controlled fixture holding airframe, total mass/CG/inertia and test atmosphere fixed. The latter isolates propulsion mechanisms; it is not an assertion that the engines are interchangeable or their stock installations weigh the same. Record throttle commands, RPM, torque, propeller load, thrust, temperature and fuel through the full maneuvers. Changing props changes inertia/load as well as thrust; swapping only the audio must leave every flight state byte-identical.
+
+## Acceptance criteria and completion gates
+
+### Software and numerical acceptance, applied independently to 2T and 4T
+
+- Enforce the repository float64 rule throughout state/physics; no Godot `Vector3`, `Basis`, `Quaternion` or `Transform3D` in simulation state. Draft kernels stay outside `app/` until parsed. Run focused checks and the relevant integrated [TOOLS](../TOOLS.md) gates.
+- At smooth steady points, require finite supported equilibria and torque residual `≤ 1e-10 * max(1, |Q_engine|, |Q_prop|)` N·m. Reject unbracketed/unstable starts instead of returning a ceiling; report multiple roots and the selected stable branch.
+- Compare the 240 Hz trajectory with a separately converged cycle/event oracle and step/substep refinement: initial engineering limits are 0.1% mean RPM, 0.5% delivered shaft work/fuel and 0.5 K temperature. Event timing must be bracketed within one 240 Hz tick and tighten under refinement. Tighten these limits if they exceed one tenth of the corresponding physical acceptance budget; they are numerical budgets, not measured engine accuracy.
+- Independent closed/open-system fixtures verify angular momentum, shaft work, chemical/thermal accounting and fuel mass conservation; require relative residual `≤ 1e-8` on analytic fixtures with declared scales. Refinement must bound nonlinear fixture error. Detect double-counted prop/reaction torque and losses, missing 720° phase, wrong RPM/rps conversion, skipped fuel, wrong family dispatch and aliasing using deliberate faults on disposable copies.
+- Full state/reset/pause/restore/reload/failed-step rollback is deterministic, including cycle phase, fuel, temperature, mixture, mode and RNG bits. Rendering/audio toggles and 30/60/144 FPS produce identical accepted physics states for the same tick inputs. Profile/layout mismatches refuse restore visibly.
+- Native mixed audio has correct shaft/firing/blade orders (frequency error ≤ 1% in constant-RPM fixtures), no family-switch pitch artifact, no clipping/dropouts or loop-seam clicks, and no combustion pulses after cut beyond documented acoustic decay. Signal correctness is separate from acoustic realism.
+
+### Physical acceptance, two separate reports
+
+Before fitting, freeze each family's validation envelope, repeat count, sensor uncertainty and tolerances. Initial project targets below are **proposed acceptance budgets**, not manufacturer specifications or claims already achieved:
+
+| Metric | Initial target for each baseline's held-out runs |
+| --- | --- |
+| Stable loaded RPM; brake torque/power and thrust | RPM within 3%; torque/power and thrust within 10% at each supported point, with idle assessed separately. Torque and power share the same measurement; they are not independent confirmations. |
+| Throttle dynamics | Rise/fall times within 15% or 0.05 s, whichever is larger; trajectory span-normalized RPM RMSE ≤ 5%; reproduce measured hesitation/overshoot and shutdown outcomes. |
+| Fuel/endurance | Mean delivered flow within 10%; usable-tank duty-cycle endurance within 10%; correct depletion/shutdown without negative fuel. |
+| Temperature/stability | Sensor-location steady temperature within 10 K; warm-up/cool-down time within 15%; measured idle/mixture/cooling failure boundary inside its repeatability interval. |
+| Flight | Takeoff distance, climb rate, cruise airspeed and longitudinal acceleration within 10% for controlled held-out observations with identified airframe/installation; engine-out response included. |
+| Sound/vibration | Correct firing/mechanical/blade orders; measured spectral bands/modulation and vibration amplitudes within predeclared source-specific repeatability/tolerances, plus pilot assessment. |
+
+Propagate measurement/model-comparison uncertainty with shared-error covariance retained. Require acquisition uncertainty small enough to resolve the acceptance budget (target expanded uncertainty ≤ one third of that budget). A broad confidence interval or sparse manufacturer datum must not manufacture a pass. Report all held-out points, failures and extrapolations; widen tolerances only through an explained owner-reviewed evidence decision made before retuning. Missing torque, flow, thermal, transient or flight observations leaves the corresponding physical gate open.
+
+At least one named experienced pilot familiar with **each real baseline installation** evaluates repeated warm-idle transitions, takeoff/climb/cruise, throttle loading, engine-out behavior, sound and endurance. Run labeled real-reference comparison and blinded/randomized simulator A/B trials; keep audio-on and muted handling evaluations distinct. Record pilot experience, hardware/build/profile IDs, maneuver ratings and specific discrepancies. Accept each family only when no material unexplained discrepancy remains and the pilot can describe differences supported by the traces/reference behavior. Do not force a fixed advantage or universal preference for either family.
+
+### Release gate
+
+Both families must have a playable calibrated engine/aircraft configuration, generated profile provenance, separate passing physical/pilot reports, supported-prop/load coverage and complete lifecycle/energy behavior. Synthetic software success or convincing sound alone cannot close NITRO-2T-04 or NITRO-4T-04.
+
+Measure representative idle/misfire, high-load, advancing propeller, finite-fuel, thermal and event-heavy sessions on the accepted target machine, including audio observer cost separately. Retain the main-line 500 µs physics-tick gate with p50/p95 and event-tail evidence; current coupled-shaft timing does not establish headroom. An unresolved cost or measurement gap keeps release acceptance open for this feature. Preserve legacy goldens unless an intentional physical change explains and independently validates their replacement. Consolidate this plan into the canonical propulsion guide only after both mandatory families and release gates are complete.

@@ -78,7 +78,11 @@ def _vector(value: Any, name: str) -> tuple[float, float, float]:
         raise ValueError(f"{name} must contain exactly three finite numbers")
     if len(value) != 3:
         raise ValueError(f"{name} must contain exactly three finite numbers")
-    return tuple(_number(component, f"{name}[{index}]") for index, component in enumerate(value))  # type: ignore[return-value]
+    values = tuple(
+        _number(component, f"{name}[{index}]")
+        for index, component in enumerate(value)
+    )
+    return values  # type: ignore[return-value]
 
 
 def _finite_result(value: float, name: str) -> float:
@@ -323,7 +327,6 @@ def _evaluate_resolved_inflow(
     # substituted lateral-flow term in dot(b1) has a plus sign. Eq. 27 uses
     # total in-plane mu; sign(u) is an explicit backward-flow interpretation.
     d_a1_d_mu_x = 2.0 * model["flapback_k_mu"] * (4.0 * theta0 / 3.0 - lambda0)
-    d_b1_d_mu_y = -d_a1_d_mu_x
     sign_u = 1.0 if hub_velocity[0] > 0.0 else (-1.0 if hub_velocity[0] < 0.0 else 0.0)
     d_a1_d_mu_z = (
         model["flapback_k_mu"]
@@ -342,17 +345,21 @@ def _evaluate_resolved_inflow(
     delta_lon_paper = -cyclic_forward
     flap_rate_a1 = (
         -body_rates[1]
-        - a1
-        + d_a1_d_mu_x * mu_x
-        + d_a1_d_mu_z * mu_z
-        + gain_lon * delta_lon_paper
-    ) / tau
+        + (
+            -a1
+            + d_a1_d_mu_x * mu_x
+            + d_a1_d_mu_z * mu_z
+            + gain_lon * delta_lon_paper
+        ) / tau
+    )
     flap_rate_b1 = (
         -body_rates[0]
-        - b1
-        + d_a1_d_mu_x * mu_y
-        + gain_lat * cyclic_right
-    ) / tau
+        + (
+            -b1
+            + d_a1_d_mu_x * mu_y
+            + gain_lat * cyclic_right
+        ) / tau
+    )
 
     scalar_results = {
         "lambda0": lambda0,
@@ -436,14 +443,17 @@ def evaluate(model: Mapping[str, Any], inputs: Mapping[str, Any]) -> dict[str, A
     elif keys == _LAMBDA_INPUT_KEYS:
         kind, value = "lambda0", inputs["lambda0"]
     else:
-        missing = sorted((_VI_INPUT_KEYS | _LAMBDA_INPUT_KEYS) - keys)
-        extra = sorted(keys - (_VI_INPUT_KEYS | _LAMBDA_INPUT_KEYS))
+        missing_common = sorted(_COMMON_INPUT_KEYS - keys)
+        allowed = _COMMON_INPUT_KEYS | {"induced_velocity_m_s", "lambda0"}
+        extra = sorted(keys - allowed)
         details = []
-        if missing:
-            details.append("missing " + ", ".join(missing))
+        if missing_common:
+            details.append("missing " + ", ".join(missing_common))
         if extra:
             details.append("unknown " + ", ".join(str(item) for item in extra))
         if "induced_velocity_m_s" in keys and "lambda0" in keys:
+            details.append("provide exactly one of induced_velocity_m_s or lambda0")
+        elif "induced_velocity_m_s" not in keys and "lambda0" not in keys:
             details.append("provide exactly one of induced_velocity_m_s or lambda0")
         raise ValueError("invalid inputs: " + "; ".join(details))
     return _evaluate_resolved_inflow(prepared, inputs, kind, value)
