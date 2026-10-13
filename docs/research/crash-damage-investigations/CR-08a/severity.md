@@ -1,6 +1,6 @@
 # CR-08a — Deterministic crash-severity estimate
 
-**Status:** implemented prototype; uncalibrated. **Serves:** [CRASH-DAMAGE-PLAN](../../../CRASH-DAMAGE-PLAN.md), CR-08a. This is a bounded presentation estimate, not a structural resolver.
+**Status:** implemented prototype; uncalibrated. **Class bins and the tangential term were replaced on 2026-10-13 by [CR-08b](../CR-08b/README.md)** (effective mass, J/kg cuts, slapdown, abrasion); the sections below record the CR-08a design. **Serves:** [CRASH-DAMAGE-PLAN](../../../CRASH-DAMAGE-PLAN.md), CR-08a. This is a bounded presentation estimate, not a structural resolver.
 
 ## Inputs and outputs
 

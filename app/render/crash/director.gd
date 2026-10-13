@@ -6,6 +6,7 @@ const Effects = preload("res://render/crash/effects.gd")
 const CrashAudio = preload("res://render/crash/crash_audio.gd")
 const Frames = preload("res://render/frames.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const EffectiveMass = preload("res://physics/effective_mass.gd")
 const M = preload("res://physics/math3d.gd")
 const SceneryBodies = preload("res://render/landscape_upgrade/scenery_bodies.gd")
 
@@ -101,14 +102,21 @@ func _start() -> void:
 		else:
 			component = "fuselage"
 	var surface := surface_at(flight.field,point[0],point[1])
-	report = Severity.estimate(float(flight.session.sim.mass), normal_speed,tangent_speed,rad_to_deg(atan2(normal_speed,tangent_speed)),surface,component)
+	var mass := float(flight.session.sim.mass)
+	# CR-08b: the struck point engages only its effective mass; a gear-limit snapshot has no
+	# contact point, so it keeps the whole mass (reported by the estimator's mass_basis).
+	var effective_mass := -1.0
+	if not impact.body_point.is_empty():
+		effective_mass = EffectiveMass.at_point(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), mass, flight.session.sim.inertia)
+	# The CG's own normal velocity bounds the slapdown that follows a first contact off the CG.
+	report = Severity.estimate(mass, normal_speed,tangent_speed,rad_to_deg(atan2(normal_speed,tangent_speed)),surface,component,effective_mass,1.0,v_ned[2])
 	if impact.trigger == "scenery":
 		# Preserve the actual obstacle normal and height; ground-only projections would misreport a wall hit.
 		surface = str(impact.obstacle_kind)
-		report = Severity.estimate_snapshot(impact, float(impact.effective_mass_kg), surface, component)
+		var cg_normal := -M.dot(v_ned, impact.normal_ned) if impact.normal_ned.size() == 3 else -1.0
+		report = Severity.estimate_snapshot(impact, mass, surface, component, PackedFloat64Array(), float(impact.effective_mass_kg), 1.0, cg_normal)
 		report["obstacle_id"] = str(impact.obstacle_id)
 		report["response_class"] = str(impact.response_class)
-		report["effective_mass_kg"] = float(impact.effective_mass_kg)
 		report["mass_basis"] = "rigid-body effective mass at the swept contact; material transfer remains estimated"
 		_scenery_contacts = SceneryBodies.build_near(flight.session.collision_world(), point)
 		add_child(_scenery_contacts)
@@ -121,7 +129,7 @@ func _start() -> void:
 	if impact.trigger == "scenery":
 		report["kinematics"] = "swept contact at time of impact"
 		report["sample_time"] = "tick_fraction_%.9f" % float(impact.time_fraction)
-	report["mass_kg"] = float(flight.session.sim.mass)
+	report["mass_kg"] = mass
 	report["cg_model"] = flight._cg_model
 	report["fuel_kg"] = _fuel_kg
 	report["fuel_kind"] = "declared inventory; no flight consumption"
@@ -174,7 +182,7 @@ func aim(camera: Camera3D, inspect: bool) -> void:
 func description() -> String:
 	if not active:
 		return ""
-	var names := ["Contact","Scrape","Damage","Structural breakup","Destroyed"]
+	var names := ["Touch, no damage","Scrape","Damage","Structural breakup","Destroyed"]
 	return "%s\nImpact %.1f m/s · %s\nEstimated %s damage\n\n[R] Restart flight   [C] Change view\n[Esc] Menu" % [names[clampi(int(report.get("class",0)),0,4)],float(report.get("speed_mps",0.0)),str(report.get("surface","ground")),str(report.get("component","airframe"))]
 
 func reset() -> void:

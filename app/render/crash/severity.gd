@@ -1,14 +1,21 @@
 extends RefCounted
 class_name CrashSeverity
 
-# These provisional cuts separate illustrative cases in report 05; they are not
-# airframe strength limits or calibrated predictions.
-const CLASS_CUTS_J: Array[float] = [1.0, 8.0, 100.0, 2000.0]
-const C4_REFERENCE_J: float = 2000.0
+# CR-08b: classes grade the struck point's normal energy per kilogram of airplane,
+# eps = surface_transfer * 0.5 * m_eff * v_n^2 / (m * durability). Dividing by the
+# whole mass keeps the grade independent of aircraft size for similar construction.
+# These provisional cuts separate the crash-realism plan's example cases; they are
+# not airframe strength limits or calibrated predictions.
+const CLASS_CUTS_J_PER_KG: Array[float] = [0.5, 2.5, 25.0, 150.0]
+const C4_REFERENCE_J_PER_KG: float = 150.0
+# Sliding never breaks sections: friction work during the impact can raise a
+# contact to C1 (scrape) at most. Estimate, not a measured abrasion limit.
+const ABRASION_SCRAPE_J_PER_KG: float = 1.0
+const ABRASION_MAX_CLASS: int = 1
 const MAX_ACCUMULATED_ENERGY_J: float = 1.0e12
 
-# Surface multipliers and tangential transfer fractions are presentation
-# estimates. They are deliberately bounded to avoid creating energy.
+# Surface multipliers on the normal channel are presentation estimates of
+# surface compliance. They are deliberately bounded to avoid creating energy.
 const SURFACE_TRANSFER: Dictionary = {
 	"grass": 0.78,
 	"mown": 0.82,
@@ -28,23 +35,25 @@ const SURFACE_TRANSFER: Dictionary = {
 	"lamp": 0.45,
 	"parked_aircraft": 0.30,
 }
-const TANGENTIAL_TRANSFER: Dictionary = {
-	"grass": 0.15,
-	"mown": 0.18,
-	"rough": 0.24,
-	"mown_grass": 0.18,
-	"dirt": 0.24,
-	"runway": 0.28,
-	"asphalt": 0.30,
-	"concrete": 0.35,
+# Airframe-on-surface sliding friction coefficients for the abrasion channel.
+# Estimates (not tyre data, not measured); friction work is mu * normal impulse * slide speed.
+const SLIDE_FRICTION: Dictionary = {
+	"grass": 0.35,
+	"mown": 0.35,
+	"rough": 0.45,
+	"mown_grass": 0.35,
+	"dirt": 0.45,
+	"runway": 0.55,
+	"asphalt": 0.55,
+	"concrete": 0.60,
 	"water": 0.05,
-	"unknown": 0.20,
-	"tree_trunk": 0.25,
-	"tree_foliage": 0.08,
-	"building": 0.30,
-	"vehicle": 0.25,
-	"lamp": 0.10,
-	"parked_aircraft": 0.15,
+	"unknown": 0.45,
+	"tree_trunk": 0.50,
+	"tree_foliage": 0.20,
+	"building": 0.60,
+	"vehicle": 0.40,
+	"lamp": 0.40,
+	"parked_aircraft": 0.30,
 }
 
 # Relative exposure multipliers only; these are not failure limits.
@@ -66,7 +75,10 @@ static func estimate(
 	tangential_velocity_mps: float,
 	impact_angle_deg: float,
 	surface_id: String,
-	component_id: String
+	component_id: String,
+	effective_mass_kg: float = -1.0,
+	durability: float = 1.0,
+	cg_normal_velocity_mps: float = -1.0
 ) -> Dictionary:
 	return _estimate_core(
 		mass_kg,
@@ -77,7 +89,10 @@ static func estimate(
 		component_id,
 		false,
 		"caller supplied component",
-		""
+		"",
+		effective_mass_kg,
+		durability,
+		cg_normal_velocity_mps
 	)
 
 
@@ -89,7 +104,10 @@ static func estimate_from_speed_angle(
 	speed_mps: float,
 	impact_angle_deg: float,
 	surface_id: String,
-	component_id: String
+	component_id: String,
+	effective_mass_kg: float = -1.0,
+	durability: float = 1.0,
+	cg_normal_velocity_mps: float = -1.0
 ) -> Dictionary:
 	if not is_finite(speed_mps) or speed_mps < 0.0:
 		return _invalid_result("speed must be finite and non-negative", surface_id, component_id, impact_angle_deg)
@@ -104,7 +122,10 @@ static func estimate_from_speed_angle(
 		tangential_velocity_mps,
 		impact_angle_deg,
 		surface_id,
-		component_id
+		component_id,
+		effective_mass_kg,
+		durability,
+		cg_normal_velocity_mps
 	)
 
 
@@ -117,7 +138,10 @@ static func estimate_snapshot(
 	mass_kg: float,
 	surface_id: String,
 	component_override: String = "",
-	cg_velocity_proxy_ned: PackedFloat64Array = PackedFloat64Array()
+	cg_velocity_proxy_ned: PackedFloat64Array = PackedFloat64Array(),
+	effective_mass_kg: float = -1.0,
+	durability: float = 1.0,
+	cg_normal_velocity_mps: float = -1.0
 ) -> Dictionary:
 	if snapshot == null or not is_instance_valid(snapshot):
 		return _invalid_result("snapshot unavailable", surface_id, component_override, 0.0)
@@ -199,7 +223,10 @@ static func estimate_snapshot(
 		component,
 		component_is_estimate,
 		component_basis,
-		trigger
+		trigger,
+		effective_mass_kg,
+		durability,
+		cg_normal_velocity_mps
 	)
 	result["speed_mps"] = speed
 	result["kinematics_is_proxy"] = is_proxy
@@ -216,6 +243,7 @@ static func accumulate_damage(state: Dictionary, impact: Dictionary) -> Dictiona
 	if raw_components is Dictionary:
 		components = raw_components.duplicate(true)
 	var previous_energy: float = _bounded_nonnegative(state.get("accumulated_energy_j", 0.0))
+	var previous_specific: float = _bounded_nonnegative(state.get("accumulated_specific_energy_j_per_kg", 0.0))
 	var previous_severity: float = _unit_value(state.get("severity", 0.0))
 	var previous_class: int = clampi(int(state.get("class", 0)), 0, 4)
 	var event_count: int = maxi(0, int(state.get("event_count", 0)))
@@ -224,6 +252,7 @@ static func accumulate_damage(state: Dictionary, impact: Dictionary) -> Dictiona
 		"class": previous_class,
 		"severity": previous_severity,
 		"accumulated_energy_j": previous_energy,
+		"accumulated_specific_energy_j_per_kg": previous_specific,
 		"event_count": event_count,
 		"damage_by_component": components,
 	}
@@ -237,10 +266,12 @@ static func accumulate_damage(state: Dictionary, impact: Dictionary) -> Dictiona
 	components[component] = 1.0 - (1.0 - old_component_damage) * (1.0 - increment)
 	var event_energy: float = _bounded_nonnegative(impact.get("estimated_energy_j", impact.get("energy_j", 0.0)))
 	var accumulated_energy: float = minf(MAX_ACCUMULATED_ENERGY_J, previous_energy + event_energy)
+	var accumulated_specific: float = minf(MAX_ACCUMULATED_ENERGY_J, previous_specific + _bounded_nonnegative(impact.get("specific_energy_j_per_kg", 0.0)))
 	var event_class: int = clampi(int(impact.get("class", 0)), 0, 4)
-	output["class"] = maxi(maxi(previous_class, event_class), _class_for_energy(accumulated_energy))
-	output["severity"] = maxf(previous_severity, clampf(accumulated_energy / C4_REFERENCE_J, 0.0, 1.0))
+	output["class"] = maxi(maxi(previous_class, event_class), _class_for_specific_energy(accumulated_specific))
+	output["severity"] = maxf(previous_severity, clampf(accumulated_specific / C4_REFERENCE_J_PER_KG, 0.0, 1.0))
 	output["accumulated_energy_j"] = accumulated_energy
+	output["accumulated_specific_energy_j_per_kg"] = accumulated_specific
 	output["event_count"] = event_count + 1
 	output["damage_by_component"] = components
 	return output
@@ -255,7 +286,10 @@ static func _estimate_core(
 	component_id: String,
 	component_is_estimate: bool,
 	component_basis: String,
-	trigger: String
+	trigger: String,
+	effective_mass_kg: float = -1.0,
+	durability: float = 1.0,
+	cg_normal_velocity_mps: float = -1.0
 ) -> Dictionary:
 	var surface: String = surface_id.strip_edges().to_lower()
 	if surface.is_empty():
@@ -271,6 +305,17 @@ static func _estimate_core(
 		return _invalid_result("tangential velocity must be finite and non-negative", surface, component, impact_angle_deg, trigger)
 	if not is_finite(impact_angle_deg) or impact_angle_deg < 0.0 or impact_angle_deg > 90.0:
 		return _invalid_result("angle must be between 0 and 90 degrees", surface, component, 0.0, trigger)
+	if not is_finite(durability) or durability <= 0.0:
+		return _invalid_result("durability must be finite and positive", surface, component, impact_angle_deg, trigger)
+	if not is_finite(cg_normal_velocity_mps):
+		return _invalid_result("CG normal velocity must be finite", surface, component, impact_angle_deg, trigger)
+	var participating_mass: float = mass_kg
+	var mass_basis: String = "whole aircraft mass; contact point effective mass not supplied"
+	if effective_mass_kg >= 0.0 or not is_finite(effective_mass_kg):
+		if not is_finite(effective_mass_kg) or effective_mass_kg <= 0.0 or effective_mass_kg > mass_kg * (1.0 + 1.0e-9):
+			return _invalid_result("effective mass must be finite, positive and at most the aircraft mass", surface, component, impact_angle_deg, trigger)
+		participating_mass = minf(effective_mass_kg, mass_kg)
+		mass_basis = "rigid-body effective mass at the contact point"
 
 	var normal_squared: float = normal_velocity_mps * normal_velocity_mps
 	var tangential_squared: float = tangential_velocity_mps * tangential_velocity_mps
@@ -285,23 +330,54 @@ static func _estimate_core(
 	if not is_finite(energy):
 		return _invalid_result("kinetic energy overflowed", surface, component, impact_angle_deg, trigger)
 	var transfer_factor: float = float(SURFACE_TRANSFER.get(surface, SURFACE_TRANSFER["unknown"]))
-	var tangential_factor: float = float(TANGENTIAL_TRANSFER.get(surface, TANGENTIAL_TRANSFER["unknown"]))
-	var normal_energy: float = 0.5 * mass_kg * normal_squared
-	var tangential_energy: float = 0.5 * mass_kg * tangential_squared * tangential_factor
-	var estimated_energy: float = (normal_energy + tangential_energy) * transfer_factor
-	if not is_finite(estimated_energy):
+	var friction: float = float(SLIDE_FRICTION.get(surface, SLIDE_FRICTION["unknown"]))
+	# Normal channel: the energy the struck part must absorb.
+	var normal_energy: float = 0.5 * participating_mass * normal_squared
+	var estimated_energy: float = normal_energy * transfer_factor
+	# Abrasion channel: friction work during the impact, mu * (m_eff * v_n) * v_t, bounded by
+	# the struck point's tangential energy. Sliding after the impact is not simulated.
+	var friction_work: float = minf(friction * participating_mass * normal_velocity_mps * tangential_velocity_mps,
+		0.5 * participating_mass * tangential_squared)
+	var capacity_kg: float = mass_kg * durability
+	var specific_energy: float = estimated_energy / capacity_kg
+	var abrasion: float = friction_work / capacity_kg
+	if not is_finite(estimated_energy) or not is_finite(friction_work) or not is_finite(specific_energy) or not is_finite(abrasion):
 		return _invalid_result("surface estimate overflowed", surface, component, impact_angle_deg, trigger)
-	var severity: float = clampf(estimated_energy / C4_REFERENCE_J, 0.0, 1.0)
+	# Slapdown: a plastic first contact removes 0.5*m_eff*v_n^2; what the CG still carries into the
+	# surface reaches it through a second contact (the nose stops, the belly slams). Upper bound with
+	# rates ignored; negative input means "not supplied" and disables the term.
+	var slapdown_energy: float = 0.0
+	if cg_normal_velocity_mps > 0.0:
+		slapdown_energy = maxf(0.0, 0.5 * mass_kg * cg_normal_velocity_mps * cg_normal_velocity_mps - normal_energy) * transfer_factor
+	var slapdown: float = slapdown_energy / capacity_kg
+	if not is_finite(slapdown):
+		return _invalid_result("slapdown estimate overflowed", surface, component, impact_angle_deg, trigger)
+	var slapdown_class: int = _class_for_specific_energy(slapdown) if slapdown_energy > 0.0 else 0
+	var normal_class: int = _class_for_specific_energy(specific_energy)
+	var abrasion_class: int = ABRASION_MAX_CLASS if abrasion >= ABRASION_SCRAPE_J_PER_KG else 0
+	var severity: float = clampf(maxf(specific_energy, slapdown) / C4_REFERENCE_J_PER_KG, 0.0, 1.0)
 	var component_group: String = _component_group(component)
 	var exposure_factor: float = float(COMPONENT_EXPOSURE.get(component_group, COMPONENT_EXPOSURE["unknown"]))
 	var component_damage: float = clampf(severity * exposure_factor, 0.0, 1.0)
 	var result: Dictionary = {
 		"valid": true,
-		"class": _class_for_energy(estimated_energy),
+		"class": maxi(maxi(normal_class, abrasion_class), slapdown_class),
+		"normal_class": normal_class,
+		"abrasion_class": abrasion_class,
+		"slapdown_class": slapdown_class,
+		"slapdown_energy_j": slapdown_energy,
+		"slapdown_j_per_kg": slapdown,
 		"severity": severity,
 		"energy_j": energy,
-		"mass_basis": "caller-supplied; participating mass not identified",
+		"mass_kg": mass_kg,
+		"effective_mass_kg": participating_mass,
+		"mass_basis": mass_basis,
+		"durability": durability,
+		"normal_energy_j": normal_energy,
 		"estimated_energy_j": estimated_energy,
+		"specific_energy_j_per_kg": specific_energy,
+		"friction_work_j": friction_work,
+		"abrasion_j_per_kg": abrasion,
 		"component_damage": component_damage,
 		"component": component,
 		"component_group": component_group,
@@ -338,15 +414,10 @@ static func _component_group(component: String) -> String:
 	return "unknown"
 
 
-static func _class_for_energy(energy_j: float) -> int:
-	if energy_j <= CLASS_CUTS_J[0]:
-		return 0
-	if energy_j <= CLASS_CUTS_J[1]:
-		return 1
-	if energy_j <= CLASS_CUTS_J[2]:
-		return 2
-	if energy_j <= CLASS_CUTS_J[3]:
-		return 3
+static func _class_for_specific_energy(energy_j_per_kg: float) -> int:
+	for index in range(CLASS_CUTS_J_PER_KG.size()):
+		if energy_j_per_kg <= CLASS_CUTS_J_PER_KG[index]:
+			return index
 	return 4
 
 
@@ -366,10 +437,22 @@ static func _invalid_result(
 	return {
 		"valid": false,
 		"class": 0,
+		"normal_class": 0,
+		"abrasion_class": 0,
+		"slapdown_class": 0,
+		"slapdown_energy_j": 0.0,
+		"slapdown_j_per_kg": 0.0,
 		"severity": 0.0,
 		"energy_j": 0.0,
+		"mass_kg": 0.0,
+		"effective_mass_kg": 0.0,
 		"mass_basis": "unavailable",
+		"durability": 0.0,
+		"normal_energy_j": 0.0,
 		"estimated_energy_j": 0.0,
+		"specific_energy_j_per_kg": 0.0,
+		"friction_work_j": 0.0,
+		"abrasion_j_per_kg": 0.0,
 		"component_damage": 0.0,
 		"component": component,
 		"component_group": _component_group(component),

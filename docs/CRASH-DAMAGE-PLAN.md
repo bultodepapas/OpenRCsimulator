@@ -19,12 +19,15 @@ Experimental delivery evidence:
 | CR-01a/b/c | Typed crash snapshot, crossing reconstruction and crash-pose display are implemented. CR-01 remains partial until component labels and crossing-time kinematics are complete. See [CR-01c](research/crash-damage-investigations/CR-01c/README.md). |
 | CR-02a / CR-03a | Spatial crash audio, bounded particles, dust and surface marks are implemented in the experimental presentation path. See [CR-02a](research/crash-damage-investigations/CR-02a/README.md) and [CR-22a integration](research/crash-damage-investigations/CR-22a/README.md). |
 | CR-08a | A pure mass/speed/angle/surface severity estimate is present and explicitly uncalibrated. See [severity report](research/crash-damage-investigations/CR-08a/severity.md). |
+| CR-08b | Effective-mass, per-kg grading with slapdown and abrasion channels replaces the CR-08a joule bins; still uncalibrated. See [CR-08b](research/crash-damage-investigations/CR-08b/README.md). |
 | CR-09a / CR-19a | Shared-mesh wreck, staged breakup, bounded debris, persistent wreck marks and inspection view are implemented. See [CR-09a](research/crash-damage-investigations/CR-09a/README.md) and [CR-22a integration](research/crash-damage-investigations/CR-22a/README.md). |
 | CR-22a | A bounded fuel/hot-turbine/estimated-rupture fire presentation is implemented. It does not model measured fuel burn or validated rupture thresholds. See [CR-22a](research/crash-damage-investigations/CR-22a/README.md). |
 
 These slices do not close the broader CR-02/03/04/05 contracts, CR-07–10 structural work, or CR-19/20–27 roadmap work.
 
 ## Remaining work and dependencies
+
+The active execution plan for proportional outcomes, crash causes, energy-source fire and effects cost is [crash realism](plans/crash-realism.md).
 
 | Area | Remaining scope |
 | --- | --- |
