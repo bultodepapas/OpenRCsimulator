@@ -1,0 +1,218 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+## ugly (jensen-das-ugly-stik-60)
+mass 2.885 kg; cg_le [0.1209 0.0000 0.0000]; arp_le [0.1209 0.0000 0.0700]; S 0.4645 b 1.524 c 0.3048; CG aft of ARP -0.0 % c, above ARP -23.0 % c
+inertia Jxx 0.1154 Jyy 0.3871 Jzz 0.4841 Jxy -0.00954 Jxz 0.00724 Jyz 0.00046 kg·m2; k_y/c 1.20; pitch-rate-squared roll moment Jyz 0.00046 N·m per (rad/s)^2
+tail: S_t 0.0956 m2 (20.6 % S), l_t 0.7200 m from CG (2.36 c), V_H 0.486, lift_slope 1.750, control_effectiveness 1.174, incidence 2.20°, downwash_gradient 0.457, free_slope 3.22283609576427, elevator_tau 0.637482
+closed form tail-only: Cma_t -0.851, Cmq_t(lift_slope) -4.019, Cmq_t(free or same) -7.402, Cmde_t -0.999, CLde_t 0.423; oracle data: Cma -0.723 Cmq -7.476 Cmde -0.849 CLde 0.098 CLadot(ref) 1.9724
+throws: elevator 20.00° aileron 20.00° rudder 25.00°; servo_rate 7.14 throws/s; τ·δ_max = 12.7° of tail angle (limits: attached 8°, tail local 12°, tail stall end 24°)
+envelope: a1 12.13° a2 18.13° n1 10.90° n2 16.90°, CL_max 1.10
+trim 15.0 m/s: α 4.26°, elevator -5.26° (data, +TE down) = pitch command 0.263, throttle 0.284, rpm 5174, thrust 3.1 N; local blend weight at trim 0.000
+  rotor momentum 0.1896 N·m·s: yaw moment per rad/s of pitch rate 0.190 N·m; aero yaw stiffness qbar·S·b·Cnβ 11.85 N·m/rad → steady β per rad/s of q: 0.92°
+  oracle at trim: CL 0.438 Cm -0.0001 | CLa 4.580 Cma -0.867 Cmq -7.526 CLq 2.951 Cmde -0.853 CLde 0.098 | SP approx 1.33 Hz ζ 0.64 | α per δe -0.98
+  local  at trim: CL 0.409 Cm -0.0014 | CLa 4.580 Cma -0.990 Cmq -7.325 CLq 2.893 Cmde -0.992 CLde 0.423 | SP approx 1.38 Hz ζ 0.61 | α per δe -1.00
+  blend  at trim: CL 0.438 Cm -0.0001 | CLa 4.580 Cma -0.867 Cmq -7.526 CLq 2.951 Cmde -0.853 CLde 0.098 | SP approx 1.33 Hz ζ 0.64 | α per δe -0.98
+  FlightModes (full Jacobian at trim): short period 1.43 Hz ζ 0.78, phugoid 0.117 Hz ζ 0.21, lag root -16.7594776243263
+  | α° | blend | Cma_or | Cma_loc | Cmq_or | Cmq_loc | CLa_or | CLa_loc | Cmde_or | Cmde_loc |
+  | 0 | 0.00 | -0.769 | -0.902 | -7.48 | -7.48 | 4.58 | 4.58 | -0.849 | -1.000 |
+  | 4 | 0.00 | -0.861 | -0.985 | -7.52 | -7.48 | 4.58 | 4.58 | -0.850 | -1.002 |
+  | 8 | 0.00 | -0.954 | -1.063 | -7.57 | -7.50 | 4.58 | 4.58 | -0.850 | -1.005 |
+  | 10 | 0.48 | -1.000 | -1.100 | -7.59 | -7.52 | 4.58 | 4.58 | -0.850 | -1.007 |
+  | 12 | 1.00 | -1.040 | -1.152 | -7.62 | -7.55 | 4.46 | 4.48 | -0.850 | -1.009 |
+  elevator sweep at trim α 4.26° (δ data convention, + TE down; pilot nose-up = negative δ):
+  | δe° | blend | Cm_or | Cm_loc | Cm_blend | q̇ blend °/s² | tail angle° |
+  | -20.0 | 0.23 | +0.219 | +0.250 | +0.226 | +654 | -9.2 |
+  | -15.0 | 0.00 | +0.145 | +0.166 | +0.145 | +418 | -6.1 |
+  | -10.0 | 0.00 | +0.070 | +0.080 | +0.070 | +204 | -2.9 |
+  | -5.0 | 0.00 | -0.004 | -0.006 | -0.004 | -11 | +0.3 |
+  | +0.0 | 0.00 | -0.078 | -0.093 | -0.078 | -226 | +3.5 |
+  | +5.0 | 0.00 | -0.152 | -0.181 | -0.152 | -440 | +6.7 |
+  | +10.0 | 0.46 | -0.226 | -0.269 | -0.246 | -710 | +9.9 |
+  | +15.0 | 1.00 | -0.300 | -0.354 | -0.354 | -1021 | +13.1 |
+  | +20.0 | 1.00 | -0.374 | -0.365 | -0.365 | -1055 | +16.3 |
+trim 21.0 m/s: α 1.53°, elevator -2.58° (data, +TE down) = pitch command 0.129, throttle 0.518, rpm 7123, thrust 5.6 N; local blend weight at trim 0.000
+  rotor momentum 0.2611 N·m·s: yaw moment per rad/s of pitch rate 0.261 N·m; aero yaw stiffness qbar·S·b·Cnβ 23.22 N·m/rad → steady β per rad/s of q: 0.64°
+  oracle at trim: CL 0.224 Cm -0.0001 | CLa 4.580 Cma -0.804 Cmq -7.494 CLq 2.951 Cmde -0.853 CLde 0.098 | SP approx 1.82 Hz ζ 0.65 | α per δe -1.06
+  local  at trim: CL 0.210 Cm -0.0020 | CLa 4.580 Cma -0.934 Cmq -7.425 CLq 3.009 Cmde -0.998 CLde 0.423 | SP approx 1.90 Hz ζ 0.62 | α per δe -1.07
+  blend  at trim: CL 0.224 Cm -0.0001 | CLa 4.580 Cma -0.804 Cmq -7.494 CLq 2.951 Cmde -0.853 CLde 0.098 | SP approx 1.82 Hz ζ 0.65 | α per δe -1.06
+  FlightModes (full Jacobian at trim): short period 1.95 Hz ζ 0.80, phugoid 0.083 Hz ζ 0.44, lag root -23.391860707113
+  | α° | blend | Cma_or | Cma_loc | Cmq_or | Cmq_loc | CLa_or | CLa_loc | Cmde_or | Cmde_loc |
+  | 0 | 0.00 | -0.769 | -0.902 | -7.48 | -7.48 | 4.58 | 4.58 | -0.849 | -1.000 |
+  | 4 | 0.00 | -0.861 | -0.985 | -7.52 | -7.48 | 4.58 | 4.58 | -0.850 | -1.002 |
+  | 8 | 0.00 | -0.954 | -1.063 | -7.57 | -7.50 | 4.58 | 4.58 | -0.850 | -1.005 |
+  | 10 | 0.48 | -1.000 | -1.100 | -7.59 | -7.52 | 4.58 | 4.58 | -0.850 | -1.007 |
+  | 12 | 1.00 | -1.040 | -1.152 | -7.62 | -7.55 | 4.46 | 4.48 | -0.850 | -1.009 |
+  elevator sweep at trim α 1.53° (δ data convention, + TE down; pilot nose-up = negative δ):
+  | δe° | blend | Cm_or | Cm_loc | Cm_blend | q̇ blend °/s² | tail angle° |
+  | -20.0 | 0.76 | +0.259 | +0.298 | +0.289 | +1634 | -10.7 |
+  | -15.0 | 0.00 | +0.185 | +0.213 | +0.185 | +1046 | -7.5 |
+  | -10.0 | 0.00 | +0.110 | +0.127 | +0.110 | +624 | -4.4 |
+  | -5.0 | 0.00 | +0.036 | +0.040 | +0.036 | +203 | -1.2 |
+  | +0.0 | 0.00 | -0.038 | -0.047 | -0.038 | -218 | +2.0 |
+  | +5.0 | 0.00 | -0.112 | -0.135 | -0.112 | -636 | +5.2 |
+  | +10.0 | 0.03 | -0.186 | -0.223 | -0.187 | -1060 | +8.4 |
+  | +15.0 | 0.97 | -0.260 | -0.311 | -0.310 | -1754 | +11.6 |
+  | +20.0 | 1.00 | -0.334 | -0.365 | -0.365 | -2066 | +14.8 |
+
+## extra (gp-extra-300s-60)
+mass 3.419 kg; cg_le [0.1027 0.0000 -0.0240]; arp_le [0.0868 0.0000 -0.0525]; S 0.4800 b 1.626 c 0.2953; CG aft of ARP 5.4 % c, above ARP 9.7 % c
+inertia Jxx 0.1667 Jyy 0.3199 Jzz 0.4634 Jxy 0.00000 Jxz -0.01486 Jyz 0.00000 kg·m2; k_y/c 1.04; pitch-rate-squared roll moment Jyz 0.00000 N·m per (rad/s)^2
+tail: S_t 0.0994 m2 (20.7 % S), l_t 0.7351 m from CG (2.49 c), V_H 0.516, lift_slope 1.720, control_effectiveness 1.164, incidence -0.95°, downwash_gradient none, free_slope none, elevator_tau none
+closed form tail-only: Cma_t -0.887, Cmq_t(lift_slope) -4.417, Cmq_t(free or same) -4.417, Cmde_t -1.033, CLde_t 0.415; oracle data: Cma -0.906 Cmq -9.227 Cmde -1.055 CLde 0.415 CLadot(ref) 1.629614
+throws: elevator 23.92° aileron 17.60° rudder 30.03°; servo_rate 7.14 throws/s; τ·δ_max = 27.9° of tail angle (limits: attached 8°, tail local 12°, tail stall end 24°)
+envelope: a1 13.28° a2 19.28° n1 12.20° n2 18.20°, CL_max 1.05
+trim 17.0 m/s: α 5.38°, elevator -2.93° (data, +TE down) = pitch command 0.122, throttle 0.357, rpm 5782, thrust 3.8 N; local blend weight at trim 0.000
+  rotor momentum 0.2118 N·m·s: yaw moment per rad/s of pitch rate 0.212 N·m; aero yaw stiffness qbar·S·b·Cnβ 23.02 N·m/rad → steady β per rad/s of q: 0.53°
+  oracle at trim: CL 0.391 Cm 0.0043 | CLa 4.451 Cma -0.613 Cmq -8.863 CLq 5.813 Cmde -1.030 CLde 0.415 | SP approx 1.49 Hz ζ 0.67 | α per δe -1.68
+  local  at trim: CL 0.391 Cm 0.0045 | CLa 4.451 Cma -0.626 Cmq -4.516 CLq 1.421 Cmde -1.036 CLde 0.415 | SP approx 1.32 Hz ζ 0.58 | α per δe -1.65
+  blend  at trim: CL 0.391 Cm 0.0043 | CLa 4.451 Cma -0.613 Cmq -8.863 CLq 5.813 Cmde -1.030 CLde 0.415 | SP approx 1.49 Hz ζ 0.67 | α per δe -1.68
+  FlightModes (full Jacobian at trim): short period 1.46 Hz ζ 0.69, phugoid 0.106 Hz ζ 0.21, lag root nan
+  | α° | blend | Cma_or | Cma_loc | Cmq_or | Cmq_loc | CLa_or | CLa_loc | Cmde_or | Cmde_loc |
+  | 0 | 0.00 | -0.665 | -0.675 | -8.91 | -4.51 | 4.45 | 4.45 | -1.033 | -1.035 |
+  | 4 | 0.00 | -0.625 | -0.641 | -8.88 | -4.52 | 4.45 | 4.45 | -1.032 | -1.035 |
+  | 8 | 0.00 | -0.587 | -0.616 | -8.84 | -4.65 | 4.45 | 4.45 | -1.031 | -1.048 |
+  | 10 | 0.32 | -0.568 | -0.607 | -8.82 | -4.75 | 4.45 | 4.45 | -1.030 | -1.058 |
+  | 12 | 0.86 | -0.549 | -0.600 | -8.80 | -4.88 | 4.45 | 4.45 | -1.030 | -1.071 |
+  elevator sweep at trim α 5.38° (δ data convention, + TE down; pilot nose-up = negative δ):
+  | δe° | blend | Cm_or | Cm_loc | Cm_blend | q̇ blend °/s² | tail angle° |
+  | -23.9 | 1.00 | +0.382 | +0.245 | +0.245 | +1100 | -23.4 |
+  | -17.9 | 1.00 | +0.274 | +0.247 | +0.247 | +1111 | -16.5 |
+  | -12.0 | 0.31 | +0.167 | +0.167 | +0.167 | +750 | -9.5 |
+  | -6.0 | 0.00 | +0.059 | +0.060 | +0.059 | +266 | -2.5 |
+  | +0.0 | 0.00 | -0.048 | -0.048 | -0.048 | -217 | +4.4 |
+  | +6.0 | 0.94 | -0.156 | -0.157 | -0.157 | -706 | +11.4 |
+  | +12.0 | 1.00 | -0.264 | -0.212 | -0.212 | -953 | +18.4 |
+  | +17.9 | 1.00 | -0.372 | -0.223 | -0.223 | -1000 | +25.3 |
+  | +23.9 | 1.00 | -0.480 | -0.265 | -0.265 | -1189 | +32.3 |
+trim 23.8 m/s: α 2.77°, elevator -1.30° (data, +TE down) = pitch command 0.054, throttle 0.595, rpm 7768, thrust 5.9 N; local blend weight at trim 0.000
+  rotor momentum 0.2845 N·m·s: yaw moment per rad/s of pitch rate 0.285 N·m; aero yaw stiffness qbar·S·b·Cnβ 45.12 N·m/rad → steady β per rad/s of q: 0.36°
+  oracle at trim: CL 0.200 Cm 0.0035 | CLa 4.451 Cma -0.638 Cmq -8.887 CLq 5.813 Cmde -1.031 CLde 0.415 | SP approx 2.11 Hz ζ 0.66 | α per δe -1.62
+  local  at trim: CL 0.200 Cm 0.0041 | CLa 4.451 Cma -0.650 Cmq -4.509 CLq 1.389 Cmde -1.035 CLde 0.415 | SP approx 1.88 Hz ζ 0.57 | α per δe -1.59
+  blend  at trim: CL 0.200 Cm 0.0035 | CLa 4.451 Cma -0.638 Cmq -8.887 CLq 5.813 Cmde -1.031 CLde 0.415 | SP approx 2.11 Hz ζ 0.66 | α per δe -1.62
+  FlightModes (full Jacobian at trim): short period 2.07 Hz ζ 0.68, phugoid 0.081 Hz ζ 0.37, lag root nan
+  | α° | blend | Cma_or | Cma_loc | Cmq_or | Cmq_loc | CLa_or | CLa_loc | Cmde_or | Cmde_loc |
+  | 0 | 0.00 | -0.665 | -0.675 | -8.91 | -4.51 | 4.45 | 4.45 | -1.033 | -1.035 |
+  | 4 | 0.00 | -0.625 | -0.641 | -8.88 | -4.52 | 4.45 | 4.45 | -1.032 | -1.035 |
+  | 8 | 0.00 | -0.587 | -0.616 | -8.84 | -4.65 | 4.45 | 4.45 | -1.031 | -1.048 |
+  | 10 | 0.32 | -0.568 | -0.607 | -8.82 | -4.75 | 4.45 | 4.45 | -1.030 | -1.058 |
+  | 12 | 0.86 | -0.549 | -0.600 | -8.80 | -4.88 | 4.45 | 4.45 | -1.030 | -1.071 |
+  elevator sweep at trim α 2.77° (δ data convention, + TE down; pilot nose-up = negative δ):
+  | δe° | blend | Cm_or | Cm_loc | Cm_blend | q̇ blend °/s² | tail angle° |
+  | -23.9 | 1.00 | +0.410 | +0.256 | +0.256 | +2256 | -26.0 |
+  | -17.9 | 1.00 | +0.303 | +0.240 | +0.240 | +2117 | -19.1 |
+  | -12.0 | 1.00 | +0.195 | +0.197 | +0.197 | +1739 | -12.1 |
+  | -6.0 | 0.00 | +0.088 | +0.089 | +0.088 | +773 | -5.1 |
+  | +0.0 | 0.00 | -0.020 | -0.019 | -0.020 | -175 | +1.8 |
+  | +6.0 | 0.10 | -0.128 | -0.127 | -0.128 | -1124 | +8.8 |
+  | +12.0 | 1.00 | -0.236 | -0.215 | -0.215 | -1896 | +15.7 |
+  | +17.9 | 1.00 | -0.344 | -0.214 | -0.214 | -1887 | +22.7 |
+  | +23.9 | 1.00 | -0.451 | -0.255 | -0.255 | -2243 | +29.7 |
+
+## p51 (p51d-mustang-120)
+mass 21.500 kg; cg_le [0.1778 0.0000 -0.0711]; arp_le [0.1139 0.0000 -0.1682]; S 1.3725 b 2.820 c 0.4867; CG aft of ARP 13.1 % c, above ARP 19.9 % c
+inertia Jxx 3.8618 Jyy 6.8180 Jzz 9.9462 Jxy 0.00000 Jxz -0.26981 Jyz 0.00000 kg·m2; k_y/c 1.16; pitch-rate-squared roll moment Jyz 0.00000 N·m per (rad/s)^2
+tail: S_t 0.2542 m2 (18.5 % S), l_t 1.2135 m from CG (2.49 c), V_H 0.462, lift_slope 1.843, control_effectiveness 1.008, incidence 2.36°, downwash_gradient none, free_slope none, elevator_tau none
+closed form tail-only: Cma_t -0.851, Cmq_t(lift_slope) -4.244, Cmq_t(free or same) -4.244, Cmde_t -0.858, CLde_t 0.344; oracle data: Cma -0.896 Cmq -8.323 Cmde -0.903 CLde 0.344 CLadot(ref) 1.402689
+throws: elevator 15.00° aileron 18.00° rudder 30.00°; servo_rate 5.56 throws/s; τ·δ_max = 15.1° of tail angle (limits: attached 8°, tail local 12°, tail stall end 24°)
+envelope: a1 11.58° a2 17.58° n1 12.42° n2 18.42°, CL_max 1.02
+trim 25.0 m/s: α 4.11°, elevator -6.12° (data, +TE down) = pitch command 0.408, throttle 0.141, rpm 3546, thrust 30.0 N; local blend weight at trim 0.000
+  rotor momentum 7.3049 N·m·s: yaw moment per rad/s of pitch rate 7.305 N·m; aero yaw stiffness qbar·S·b·Cnβ 206.67 N·m/rad → steady β per rad/s of q: 2.03°
+  oracle at trim: CL 0.396 Cm 0.0125 | CLa 4.338 Cma -0.224 Cmq -7.532 CLq 5.451 Cmde -0.854 CLde 0.344 | SP approx 0.71 Hz ζ 0.78 | α per δe -3.81
+  local  at trim: CL 0.396 Cm 0.0434 | CLa 4.338 Cma -0.241 Cmq -4.491 CLq 0.853 Cmde -0.863 CLde 0.344 | SP approx 0.64 Hz ζ 0.74 | α per δe -3.59
+  blend  at trim: CL 0.396 Cm 0.0125 | CLa 4.338 Cma -0.224 Cmq -7.532 CLq 5.451 Cmde -0.854 CLde 0.344 | SP approx 0.71 Hz ζ 0.78 | α per δe -3.81
+  FlightModes (full Jacobian at trim): short period 0.71 Hz ζ 0.82, phugoid 0.099 Hz ζ 0.20, lag root nan
+  | α° | blend | Cma_or | Cma_loc | Cmq_or | Cmq_loc | CLa_or | CLa_loc | Cmde_or | Cmde_loc |
+  | 0 | 0.00 | -0.305 | -0.313 | -7.61 | -4.38 | 4.34 | 4.34 | -0.858 | -0.850 |
+  | 4 | 0.00 | -0.224 | -0.248 | -7.53 | -4.46 | 4.34 | 4.34 | -0.857 | -0.854 |
+  | 8 | 0.63 | -0.146 | -0.193 | -7.46 | -4.65 | 4.34 | 4.34 | -0.855 | -0.867 |
+  | 10 | 1.00 | -0.108 | -0.112 | -7.43 | -4.49 | 4.34 | 4.31 | -0.854 | -0.819 |
+  | 12 | 1.00 | -0.562 | -0.141 | -7.40 | -2.77 | 1.36 | 1.52 | -0.853 | -0.482 |
+  elevator sweep at trim α 4.11° (δ data convention, + TE down; pilot nose-up = negative δ):
+  | δe° | blend | Cm_or | Cm_loc | Cm_blend | q̇ blend °/s² | tail angle° |
+  | -15.0 | 0.07 | +0.145 | +0.178 | +0.147 | +316 | -8.6 |
+  | -11.2 | 0.00 | +0.089 | +0.121 | +0.089 | +191 | -4.9 |
+  | -7.5 | 0.00 | +0.033 | +0.064 | +0.033 | +71 | -1.1 |
+  | -3.8 | 0.00 | -0.023 | +0.008 | -0.023 | -49 | +2.7 |
+  | +0.0 | 0.00 | -0.079 | -0.048 | -0.079 | -169 | +6.5 |
+  | +3.8 | 0.59 | -0.135 | -0.104 | -0.117 | -251 | +10.3 |
+  | +7.5 | 1.00 | -0.191 | -0.154 | -0.154 | -330 | +14.0 |
+  | +11.2 | 1.00 | -0.247 | -0.165 | -0.165 | -355 | +17.8 |
+  | +15.0 | 1.00 | -0.304 | -0.152 | -0.152 | -326 | +21.6 |
+trim 35.0 m/s: α 1.51°, elevator -5.38° (data, +TE down) = pitch command 0.359, throttle 0.338, rpm 4851, thrust 50.5 N; local blend weight at trim 0.000
+  rotor momentum 9.9945 N·m·s: yaw moment per rad/s of pitch rate 9.995 N·m; aero yaw stiffness qbar·S·b·Cnβ 405.07 N·m/rad → steady β per rad/s of q: 1.41°
+  oracle at trim: CL 0.204 Cm 0.0129 | CLa 4.338 Cma -0.276 Cmq -7.580 CLq 5.451 Cmde -0.855 CLde 0.344 | SP approx 1.05 Hz ζ 0.75 | α per δe -3.10
+  local  at trim: CL 0.204 Cm 0.0443 | CLa 4.338 Cma -0.289 Cmq -4.493 CLq 0.799 Cmde -0.864 CLde 0.344 | SP approx 0.94 Hz ζ 0.70 | α per δe -2.99
+  blend  at trim: CL 0.204 Cm 0.0129 | CLa 4.338 Cma -0.276 Cmq -7.580 CLq 5.451 Cmde -0.855 CLde 0.344 | SP approx 1.05 Hz ζ 0.75 | α per δe -3.10
+  FlightModes (full Jacobian at trim): short period 1.06 Hz ζ 0.76, phugoid 0.089 Hz ζ 0.37, lag root nan
+  | α° | blend | Cma_or | Cma_loc | Cmq_or | Cmq_loc | CLa_or | CLa_loc | Cmde_or | Cmde_loc |
+  | 0 | 0.00 | -0.305 | -0.313 | -7.61 | -4.38 | 4.34 | 4.34 | -0.858 | -0.850 |
+  | 4 | 0.00 | -0.224 | -0.248 | -7.53 | -4.46 | 4.34 | 4.34 | -0.857 | -0.854 |
+  | 8 | 0.63 | -0.146 | -0.193 | -7.46 | -4.65 | 4.34 | 4.34 | -0.855 | -0.867 |
+  | 10 | 1.00 | -0.108 | -0.112 | -7.43 | -4.49 | 4.34 | 4.31 | -0.854 | -0.819 |
+  | 12 | 1.00 | -0.562 | -0.141 | -7.40 | -2.77 | 1.36 | 1.52 | -0.853 | -0.482 |
+  elevator sweep at trim α 1.51° (δ data convention, + TE down; pilot nose-up = negative δ):
+  | δe° | blend | Cm_or | Cm_loc | Cm_blend | q̇ blend °/s² | tail angle° |
+  | -15.0 | 0.91 | +0.156 | +0.191 | +0.188 | +792 | -11.2 |
+  | -11.2 | 0.00 | +0.100 | +0.134 | +0.100 | +423 | -7.5 |
+  | -7.5 | 0.00 | +0.044 | +0.076 | +0.044 | +187 | -3.7 |
+  | -3.8 | 0.00 | -0.012 | +0.020 | -0.012 | -48 | +0.1 |
+  | +0.0 | 0.00 | -0.067 | -0.036 | -0.067 | -284 | +3.9 |
+  | +3.8 | 0.00 | -0.124 | -0.092 | -0.124 | -521 | +7.7 |
+  | +7.5 | 0.94 | -0.180 | -0.146 | -0.148 | -625 | +11.4 |
+  | +11.2 | 1.00 | -0.236 | -0.186 | -0.186 | -782 | +15.2 |
+  | +15.0 | 1.00 | -0.293 | -0.185 | -0.185 | -780 | +19.0 |
+
+## avanti (sebart-avanti-s-a200-p100rx)
+mass 11.705 kg; cg_le [0.2400 0.0000 0.0052]; arp_le [0.2063 0.0000 0.0000]; S 0.7023 b 2.000 c 0.3511; CG aft of ARP 9.6 % c, above ARP 1.5 % c
+inertia Jxx 0.6867 Jyy 2.4642 Jzz 3.0582 Jxy 0.00000 Jxz -0.02977 Jyz 0.00000 kg·m2; k_y/c 1.31; pitch-rate-squared roll moment Jyz 0.00000 N·m per (rad/s)^2
+tail: S_t 0.1648 m2 (23.5 % S), l_t 0.7279 m from CG (2.07 c), V_H 0.486, lift_slope 1.672, control_effectiveness 1.122, incidence 0.00°, downwash_gradient none, free_slope none, elevator_tau none
+closed form tail-only: Cma_t -0.813, Cmq_t(lift_slope) -3.371, Cmq_t(free or same) -3.371, Cmde_t -0.912, CLde_t 0.440; oracle data: Cma -0.851 Cmq -7.550 Cmde -0.955 CLde 0.440 CLadot(ref) 1.684616
+throws: elevator 30.00° aileron 30.00° rudder 30.00°; servo_rate 9.09 throws/s; τ·δ_max = 33.7° of tail angle (limits: attached 8°, tail local 12°, tail stall end 24°)
+envelope: a1 10.34° a2 14.34° n1 10.34° n2 14.34°, CL_max 0.85
+trim 29.0 m/s: α 4.05°, elevator -1.73° (data, +TE down) = pitch command 0.058, throttle 0.086, rpm 92101, thrust 15.6 N; local blend weight at trim 0.000
+  rotor momentum 0.3376 N·m·s: yaw moment per rad/s of pitch rate 0.338 N·m; aero yaw stiffness qbar·S·b·Cnβ 146.40 N·m/rad → steady β per rad/s of q: 0.13°
+  oracle at trim: CL 0.313 Cm -0.0013 | CLa 4.629 Cma -0.398 Cmq -6.946 CLq 6.248 Cmde -0.912 CLde 0.440 | SP approx 0.89 Hz ζ 0.64 | α per δe -2.29
+  local  at trim: CL 0.313 Cm 0.0003 | CLa 4.629 Cma -0.413 Cmq -3.518 CLq 0.836 Cmde -0.915 CLde 0.440 | SP approx 0.82 Hz ζ 0.58 | α per δe -2.22
+  blend  at trim: CL 0.313 Cm -0.0013 | CLa 4.629 Cma -0.398 Cmq -6.946 CLq 6.248 Cmde -0.912 CLde 0.440 | SP approx 0.89 Hz ζ 0.64 | α per δe -2.29
+  FlightModes (full Jacobian at trim): short period 0.87 Hz ζ 0.65, phugoid 0.060 Hz ζ 0.09, lag root nan
+  | α° | blend | Cma_or | Cma_loc | Cmq_or | Cmq_loc | CLa_or | CLa_loc | Cmde_or | Cmde_loc |
+  | 0 | 0.00 | -0.404 | -0.414 | -6.95 | -3.50 | 4.63 | 4.63 | -0.912 | -0.912 |
+  | 4 | 0.00 | -0.398 | -0.415 | -6.95 | -3.52 | 4.63 | 4.63 | -0.912 | -0.914 |
+  | 8 | 0.48 | -0.395 | -0.426 | -6.94 | -3.64 | 4.63 | 4.63 | -0.912 | -0.926 |
+  | 10 | 1.00 | -0.394 | -0.700 | -6.94 | -3.67 | 4.63 | 1.91 | -0.912 | -0.936 |
+  | 12 | 1.00 | -1.941 | -1.576 | -6.94 | -3.61 | -11.68 | -7.11 | -0.912 | -0.939 |
+  elevator sweep at trim α 4.05° (δ data convention, + TE down; pilot nose-up = negative δ):
+  | δe° | blend | Cm_or | Cm_loc | Cm_blend | q̇ blend °/s² | tail angle° |
+  | -30.0 | 1.00 | +0.449 | +0.284 | +0.284 | +838 | -29.6 |
+  | -22.5 | 1.00 | +0.329 | +0.243 | +0.243 | +718 | -21.2 |
+  | -15.0 | 1.00 | +0.210 | +0.212 | +0.212 | +626 | -12.8 |
+  | -7.5 | 0.00 | +0.091 | +0.093 | +0.091 | +268 | -4.4 |
+  | +0.0 | 0.00 | -0.029 | -0.027 | -0.029 | -85 | +4.0 |
+  | +7.5 | 1.00 | -0.148 | -0.147 | -0.147 | -433 | +12.5 |
+  | +15.0 | 1.00 | -0.268 | -0.181 | -0.181 | -534 | +20.9 |
+  | +22.5 | 1.00 | -0.387 | -0.218 | -0.218 | -643 | +29.3 |
+  | +30.0 | 1.00 | -0.507 | -0.250 | -0.250 | -740 | +37.7 |
+trim 40.6 m/s: α 2.07°, elevator -0.89° (data, +TE down) = pitch command 0.030, throttle 0.207, rpm 108976, thrust 26.5 N; local blend weight at trim 0.000
+  rotor momentum 0.3994 N·m·s: yaw moment per rad/s of pitch rate 0.399 N·m; aero yaw stiffness qbar·S·b·Cnβ 286.94 N·m/rad → steady β per rad/s of q: 0.08°
+  oracle at trim: CL 0.160 Cm -0.0008 | CLa 4.629 Cma -0.401 Cmq -6.948 CLq 6.248 Cmde -0.912 CLde 0.440 | SP approx 1.25 Hz ζ 0.63 | α per δe -2.28
+  local  at trim: CL 0.160 Cm 0.0012 | CLa 4.629 Cma -0.413 Cmq -3.504 CLq 0.833 Cmde -0.913 CLde 0.440 | SP approx 1.15 Hz ζ 0.58 | α per δe -2.21
+  blend  at trim: CL 0.160 Cm -0.0008 | CLa 4.629 Cma -0.401 Cmq -6.948 CLq 6.248 Cmde -0.912 CLde 0.440 | SP approx 1.25 Hz ζ 0.63 | α per δe -2.28
+  FlightModes (full Jacobian at trim): short period 1.22 Hz ζ 0.65, phugoid 0.043 Hz ζ 0.20, lag root nan
+  | α° | blend | Cma_or | Cma_loc | Cmq_or | Cmq_loc | CLa_or | CLa_loc | Cmde_or | Cmde_loc |
+  | 0 | 0.00 | -0.404 | -0.414 | -6.95 | -3.50 | 4.63 | 4.63 | -0.912 | -0.912 |
+  | 4 | 0.00 | -0.398 | -0.415 | -6.95 | -3.52 | 4.63 | 4.63 | -0.912 | -0.914 |
+  | 8 | 0.48 | -0.395 | -0.426 | -6.94 | -3.64 | 4.63 | 4.63 | -0.912 | -0.926 |
+  | 10 | 1.00 | -0.394 | -0.700 | -6.94 | -3.67 | 4.63 | 1.91 | -0.912 | -0.936 |
+  | 12 | 1.00 | -1.941 | -1.576 | -6.94 | -3.61 | -11.68 | -7.11 | -0.912 | -0.939 |
+  elevator sweep at trim α 2.07° (δ data convention, + TE down; pilot nose-up = negative δ):
+  | δe° | blend | Cm_or | Cm_loc | Cm_blend | q̇ blend °/s² | tail angle° |
+  | -30.0 | 1.00 | +0.463 | +0.285 | +0.285 | +1652 | -31.6 |
+  | -22.5 | 1.00 | +0.343 | +0.234 | +0.234 | +1355 | -23.2 |
+  | -15.0 | 1.00 | +0.224 | +0.220 | +0.220 | +1271 | -14.8 |
+  | -7.5 | 0.00 | +0.104 | +0.107 | +0.104 | +604 | -6.3 |
+  | +0.0 | 0.00 | -0.015 | -0.013 | -0.015 | -87 | +2.1 |
+  | +7.5 | 0.68 | -0.134 | -0.132 | -0.133 | -768 | +10.5 |
+  | +15.0 | 1.00 | -0.254 | -0.195 | -0.195 | -1126 | +18.9 |
+  | +22.5 | 1.00 | -0.373 | -0.216 | -0.216 | -1251 | +27.3 |
+  | +30.0 | 1.00 | -0.493 | -0.251 | -0.251 | -1454 | +35.7 |
