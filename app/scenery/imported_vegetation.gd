@@ -362,10 +362,13 @@ static func _wind_material(base_material: Material, source_height: float, base_y
 	material.set_shader_parameter("plant_base_y", base_y)
 	if base_material is BaseMaterial3D:
 		var standard := base_material as BaseMaterial3D
+		material.set_shader_parameter("uv1_scale", Vector2(standard.uv1_scale.x, standard.uv1_scale.y))
+		material.set_shader_parameter("uv1_offset", Vector2(standard.uv1_offset.x, standard.uv1_offset.y))
 		material.set_shader_parameter("albedo_color", standard.albedo_color)
 		material.set_shader_parameter("albedo_texture", standard.albedo_texture)
 		material.set_shader_parameter("use_albedo_texture", standard.albedo_texture != null)
 		material.set_shader_parameter("use_vertex_color", standard.vertex_color_use_as_albedo)
+		material.set_shader_parameter("vertex_color_is_srgb", standard.vertex_color_is_srgb)
 		material.set_shader_parameter("roughness", standard.roughness)
 		material.set_shader_parameter("metallic", standard.metallic)
 		material.set_shader_parameter("use_normal_texture", standard.normal_enabled and standard.normal_texture != null)
