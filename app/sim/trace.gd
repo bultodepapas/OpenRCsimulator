@@ -324,7 +324,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	if _continuous_turbine and (tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
 			or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, 4) or aux.size() < 4 or not _finite(aux) \
 			or aux[0] < 0.0 or (_last_recorded_tick >= 0 and tick != _last_recorded_tick + 1) \
-			or (_rows.is_empty() and (aux[0] != _coupled_start_rpm or str(meta.get("recording_start_tick")) != str(tick)))):
+			or (_rows.is_empty() and (absf(aux[0] - _coupled_start_rpm) > 1e-9 or str(meta.get("recording_start_tick")) != str(tick)))):
 		_invalid_weather = true
 		return
 	var electric_row: PackedFloat64Array = PackedFloat64Array()
@@ -455,7 +455,7 @@ func to_csv() -> String:
 		if meta.has(visual_key):
 			written_meta[visual_key] = meta[visual_key]
 	for key in written_meta:
-		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if _weather != null and key == "dt_s" else str(written_meta[key])
+		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if (_weather != null or _continuous_turbine) and key == "dt_s" else str(written_meta[key])
 		lines.append("# %s: %s" % [key, encoded])
 	lines.append(",".join(_columns))
 	var n := _columns.size()
