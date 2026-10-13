@@ -1,0 +1,46 @@
+Final bounded performance probe, 2026-10-13
+Godot: 4.7.2-stable (official)
+Source tree SHA-256: e51fd578d86af6af8df9495f0f97565e79267274164782164b1cca5b474c102d
+Input tree SHA-256: 1f30e9ef573952cfa475984c9acc91169740ebbc1d39f3e81341426b0f53c3cc
+Source hash scope (debug): working_tree_at_probe_start
+Source hash scope (release): copied_project_files_after_overlay_before_export
+Source files hashed: 25
+Input files hashed: 8
+No missing or unreadable source/input hashes: yes
+Embedded release manifest SHA-256: 1189a7637b9cc31b9a27080c22b4f35e46672afaa82947dd56bc1a751456c801
+Native release executable SHA-256: 758ccc9df743dcb9266184a782756aa6a35d165d3d3aa3782dc05c32bdb9b2f3
+Native release feature flags: debug=False, release=True
+Debug console feature flags: debug=True, release=False
+Both runs exited successfully; all six measured cases per runtime reported ok=true.
+
+Debug console summaries (median of two round percentiles):
+  legacy_stik: p50=542.5 us; p95=802.5 us; worst round p95=814.0 us
+  glow_2t: p50=2423.5 us; p95=2940.5 us; worst round p95=2986.0 us
+  glow_4t: p50=2243.5 us; p95=2845.0 us; worst round p95=2846.0 us
+
+Native release summaries (median of two round percentiles):
+  legacy_stik: p50=363.5 us; p95=504.0 us; worst round p95=516.0 us
+  glow_2t: p50=1303.0 us; p95=1900.0 us; worst round p95=2152.0 us
+  glow_4t: p50=1301.0 us; p95=1646.0 us; worst round p95=1765.0 us
+
+Release probe command:
+  ".tools\glow-release-probe-final-20261013\OpenRC Glow Release Probe.exe" -- --hz=240 --warmup=120 --ticks=600 --micro-groups=25 --out="<temporary release.json>"
+Exit code: 0
+The exported Windows executable embedded its main pack. Wrapper printed WRAPPED_RELEASE_FEATURES debug=false release=true.
+
+Debug console command:
+  .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script research/glow-engines/performance_probe.gd -- --hz=240 --warmup=120 --ticks=600 --micro-groups=25 --out="<temporary debug.json>"
+Exit code: 0
+
+The isolated export was built from .tools/glow-release-probe-final-20261013/project using the pinned Godot 4.7.2 Windows release template. Its embedded source manifest hashes copied source and input files after overlay/configuration edits and before export. Those maps exactly match the debug working-tree maps; the external build manifest's embedded-manifest digest matches the runtime-reported digest. The app project.godot and export_presets.cfg hashes are recorded separately.
+
+A persistent climb-trim watcher was observed immediately after release and before debug (PID 88100, --path app --script research/flight-dynamics/climb-trim/watch.gd). It was not stopped. No independent CPU isolation or per-run load sampling was performed, so host isolation remains unqualified.
+
+Interpretation: release timings are materially lower than debug timings, but the 500 us p95 target remains unmet for both glow families. Legacy release is near but above the target. Results are diagnostic, not a release-gate certification or physical claim. The candidate propeller polar is a uniform-box surrogate derived from inventory; crank polars are inferred at 2e-5 kg m2 (2T) and 3e-5 kg m2 (4T), without matched measurements.
+Postflight repository check
+Current source map matches recorded measured snapshot: False
+Current input map matches recorded measured snapshot: True
+Source drift: app/sim/flight_session.gd
+  measured snapshot SHA-256: 6595a85c10cc406e6324c91df97f968b1913f17d738c6fc8cb06fcbbc1afd9d5
+  postflight worktree SHA-256: c7b0ccc8a16a63b827ae00abf74dd5d43b9b7da997cb63fefc150a29f36c9155
+The paired timing remains tied to the identical debug/release snapshot. Concurrent lake-context edits were not included in the exported build and were not part of these timing results.

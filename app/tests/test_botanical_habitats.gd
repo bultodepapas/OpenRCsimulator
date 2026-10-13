@@ -1,77 +1,119 @@
-## LU-24–26: full-footprint clearance, stable quality subsets, botanical sharing and real scene integration.
+## LU-23: the default scene's understory uses downloaded geometry and retained damage IDs.
 extends SceneTree
-const Habitats := preload("res://scenery/botanical_habitats.gd")
-const Shapes := preload("res://scenery/botanical_meshes.gd")
+
 const FieldLoader := preload("res://data/field_loader.gd")
-const Loader := preload("res://scenery/scenery_loader.gd")
-const Mask := preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
-const Grass := preload("res://render/near_grass.gd")
-const Clock := preload("res://render/shader_clock.gd")
+const SceneryLoader := preload("res://scenery/scenery_loader.gd")
+const LakeLoader := preload("res://data/lake_loader.gd")
 const Scenery := preload("res://scenery/scenery.gd")
+const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
+const Clock := preload("res://render/shader_clock.gd")
+
 var failures := 0
 var checks := 0
 
-func check(label: String, ok: bool) -> void:
-	checks += 1
-	if not ok:
-		failures += 1
-		printerr("FAIL ", label)
 
 func _initialize() -> void:
 	Clock.register()
-	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH).field
-	var scenery: Dictionary = Loader.load_from(Loader.DEFAULT_PATH, field).scenery
-	var high := Habitats.layout(field, scenery, "high")
-	check("repeatable complete planting", var_to_bytes(high) == var_to_bytes(Habitats.layout(field, scenery, "high")))
-	check("new planting has useful density", high.size() > 1300 and high.size() < 1900)
-	var ids := {}
-	var species := {}
-	var excludes := Habitats.exclusions_for(scenery)
-	var clearance_ok := true
-	for p: Dictionary in high:
-		ids[p.seed] = p
-		species[p.species] = true
-		clearance_ok = clearance_ok and Grass.accepts(p.n, p.e, field, excludes)
-	check("all 11 botanical silhouettes appear", species.size() == 11)
-	check("all centres clear runway, paths, foundations and pilot", clearance_ok)
-	for tier: String in ["balanced", "low"]:
-		var plants := Habitats.layout(field, scenery, tier)
-		var stable := plants.size() < high.size() and not plants.is_empty()
-		for p: Dictionary in plants:
-			stable = stable and ids.has(p.seed) and var_to_bytes(ids[p.seed]) == var_to_bytes(p)
-		check(tier + " is an exact stable subset", stable)
-	var custom := field.duplicate(true)
-	custom.id = "other"
-	check("unrelated field gets no authored planting", Habitats.layout(custom, scenery, "high").is_empty())
-	check("custom scenery gets no bundled planting", Habitats.layout(field, {groups = []}, "high").is_empty())
-	for theme: String in ["temperate", "summer", "autumn"]:
-		var node := Habitats.build(field, scenery, theme, "high")
-		check(theme + " added triangles below 46k", int(node.get_meta("triangles")) < 46000)
-		check(theme + " at most 24 plant batches", int(node.get_meta("batches")) <= 24)
-		var geometry_ok := true
-		var sharing := {}
-		for child: Node in node.get_children():
-			if child is MultiMeshInstance3D:
-				var mesh: Mesh = child.multimesh.mesh
-				var plants: Array = child.get_meta("plants")
-				var name: String = plants[0].species
-				if sharing.has(name):
-					geometry_ok = geometry_ok and sharing[name] == mesh
-				sharing[name] = mesh
-				var aabb := mesh.get_aabb()
-				geometry_ok = geometry_ok and aabb.position.y >= -0.00001 and aabb.end.y * 1.08 < 1.0
-				geometry_ok = geometry_ok and maxf(absf(aabb.position.x), absf(aabb.end.x)) * 1.08 + 0.07 < Grass.CLEARANCE_M
-				geometry_ok = geometry_ok and maxf(absf(aabb.position.z), absf(aabb.end.z)) * 1.08 + 0.07 < Grass.CLEARANCE_M
-				var arrays := mesh.surface_get_arrays(0)
-				for vertex: Vector3 in arrays[Mesh.ARRAY_VERTEX]:
-					geometry_ok = geometry_ok and vertex.is_finite() and Vector2(vertex.x, vertex.z).length() * 1.08 + 0.07 < Grass.CLEARANCE_M
-				for normal: Vector3 in arrays[Mesh.ARRAY_NORMAL]:
-					geometry_ok = geometry_ok and absf(normal.length() - 1.0) < 0.0001
-		check(theme + " finite shared grounded geometry and full radius clearance", geometry_ok)
-		node.free()
-	var built := Scenery.build(field, scenery, {theme = "", quality = "high", audio = false, birds = false})
-	check("production scenery owns planting", built.get_node_or_null("BotanicalHabitats") != null)
-	check("production stats retain all botanical plants", int(built.get_meta("stats").botanical_plants) == high.size())
+	var field_result: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+	_check("default field loads", bool(field_result.get("ok", false)))
+	if not bool(field_result.get("ok", false)):
+		quit(1)
+		return
+	var field: Dictionary = field_result.field
+	var scenery_result: Dictionary = SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field)
+	_check("downloaded scenery layout loads", bool(scenery_result.get("ok", false)))
+	if not bool(scenery_result.get("ok", false)):
+		quit(1)
+		return
+	var lake_result: Dictionary = LakeLoader.load_from(LakeLoader.DEFAULT_PATH)
+	_check("downloaded lake definition loads", bool(lake_result.get("ok", false)))
+	if not bool(lake_result.get("ok", false)):
+		quit(1)
+		return
+	var source_scenery: Dictionary = scenery_result.scenery
+	_check("generated default has no retired procedural cushion group",
+		not source_scenery.groups.any(func(group: Dictionary) -> bool: return str(group.get("id", "")) == "wildflowers"))
+	var built := Scenery.build(field, source_scenery, {audio = false, birds = false, theme = "", quality = "high"}, {}, lake_result.lake)
+	_test_imported_habitats(built.get_node_or_null("BotanicalHabitats") as Node3D)
+	_test_downloaded_damage(built.get_node_or_null("ImportedVegetationBatches") as Node3D)
 	built.free()
-	print("LU-24–26 botanicals: %d checks, %d failures" % [checks, failures])
-	quit(0 if failures == 0 else 1)
+	print("downloaded vegetation scene checks: %d checks, %d failures" % [checks, failures])
+	quit(1 if failures > 0 else 0)
+
+
+func _test_imported_habitats(root: Node3D) -> void:
+	var plants: Array = root.get_meta("plants", []) if root != null else []
+	var triangle_total := int(root.get_meta("triangles", 0)) if root != null else 0
+	var budget := int(root.get_meta("triangle_budget", 0)) if root != null else 0
+	var batch_limit := int(root.get_meta("batch_limit", 0)) if root != null else 0
+	var batches := int(root.get_meta("batches", 0)) if root != null else 0
+	var reeds := 0
+	var dry_bank_plants := 0
+	var green_shrubs := 0
+	var tints_valid := true
+	for plant_value: Variant in plants:
+		if not plant_value is Dictionary:
+			continue
+		var plant: Dictionary = plant_value
+		var asset_id := str(plant.get("asset_id", ""))
+		if str(plant.get("zone", "")) == "shore":
+			if asset_id == "reed_aredon":
+				reeds += 1
+			elif asset_id == "bush_common_flowers":
+				green_shrubs += 1
+			else:
+				dry_bank_plants += 1
+		var tint: Color = plant.get("instance_tint", Color.WHITE)
+		tints_valid = tints_valid and tint.r >= 0.86 and tint.r <= 1.0 \
+			and tint.g >= 0.86 and tint.g <= 1.0 and tint.b >= 0.86 and tint.b <= 1.0 \
+			and is_equal_approx(tint.a, 1.0)
+	_check("production attaches downloaded habitat batches", root != null and not plants.is_empty()
+		and root.get_children().all(func(child: Node) -> bool: return child is MultiMeshInstance3D))
+	_check("source geometry stays within the provisional triangle budget",
+		triangle_total > 0 and budget == 90000 and triangle_total <= budget)
+	_check("shore habitats contain 28 reeds, 24 low source plants and four green shrubs",
+		reeds == 28 and dry_bank_plants == 24 and green_shrubs == 4,
+		"reeds=%d dry-bank=%d shrubs=%d" % [reeds, dry_bank_plants, green_shrubs])
+	_check("source vegetation carries bounded subtle instance tints", tints_valid)
+	_check("source meshes share no more than 24 runtime batches", batch_limit == 24 and batches <= batch_limit
+		and batches == root.get_child_count())
+	var only_downloads := true
+	for plant_value: Variant in plants:
+		if not plant_value is Dictionary:
+			only_downloads = false
+			continue
+		var plant: Dictionary = plant_value
+		var asset_id := str(plant.get("asset_id", ""))
+		only_downloads = only_downloads and not ImportedVegetation.get_asset(asset_id).is_empty()
+		only_downloads = only_downloads and int(plant.get("source_triangles", 0)) > 0
+	_check("every habitat placement resolves to a downloaded catalog mesh", only_downloads)
+
+
+func _test_downloaded_damage(root: Node3D) -> void:
+	var state: Dictionary = root.get_meta("_imported_vegetation_state", {}) if root != null else {}
+	var damage: Dictionary = state.get("damage", {})
+	var damage_ids: Array = damage.keys()
+	damage_ids.sort()
+	_check("near vegetation retains production damage IDs", not damage_ids.is_empty())
+	if root == null or damage_ids.is_empty():
+		return
+	var damage_id := str(damage_ids[0])
+	var hidden := ImportedVegetation.set_damage_hidden(root, damage_id, true)
+	var after_hide: Dictionary = root.get_meta("_imported_vegetation_state", {})
+	var bounds_records: Array = after_hide.get("bounds", [])
+	var records_hidden := hidden
+	for item: Dictionary in damage.get(damage_id, []):
+		var bounds_index := int(item.get("bounds_index", -1))
+		records_hidden = records_hidden and bounds_index >= 0 and bounds_index < bounds_records.size()
+		if bounds_index >= 0 and bounds_index < bounds_records.size():
+			records_hidden = records_hidden and bool(bounds_records[bounds_index].get("hidden", false))
+	_check("breaking one prop hides its downloaded mesh record", records_hidden, damage_id)
+	_check("damage reset restores its downloaded mesh record", ImportedVegetation.set_damage_hidden(root, damage_id, false), damage_id)
+
+
+func _check(label: String, condition: bool, detail: String = "") -> void:
+	checks += 1
+	if condition:
+		return
+	failures += 1
+	printerr("FAIL: %s %s" % [label, detail])

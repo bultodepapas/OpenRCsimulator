@@ -1,0 +1,592 @@
+{
+  "date": "2026-10-13",
+  "engine": "Godot 4.7.2 native Windows",
+  "scope": "Shared-code audit; concurrent checkout, focused tests, no full WSL run or physical qualification",
+  "git_head_at_report": "beaad3f588c617c6e9e846adfd82422841e2f2e7",
+  "source_sha256": {
+    "app/physics/aero.gd": "6dc8ea8af838d5d7543f7afeac727f8c21468c5970112944a00a749856e439c0",
+    "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/physics/integrator.gd": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+    "app/physics/air_data.gd": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+    "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+    "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+    "app/sim/flight_session.gd": "935c713d05e16e9e63964a7d83d8f2f1060eb46249a2b1bbd98377df5263b60f",
+    "app/tests/test_downwash_lag.gd": "5806cc41111b58a35dd1d5f53c396955110519929a58e17be25f087a766dd023",
+    "app/tests/test_ground_effect.gd": "24a46c32a12179cc6e4bd01dd6222d606001304fdf3f2679487097cd84e30e9a",
+    "research/flight-dynamics/climb-trim/loop_probe.gd": "1dabae19afdedc38deb2ae0104bbb23ed8cb40806bc29531e55eac4599f0125a",
+    "research/flight-dynamics/climb-trim/shared_code_probe.gd": "018150511c49dfce338047774c39374259ec4eeb286502d38995bd8fbb899524",
+    "research/flight-dynamics/climb-trim/integration_probe.gd": "9e94d11e58dfd365357783ed101bcf52177036c57e02a1e4d24765782193999c",
+    "research/flight-dynamics/climb-trim/frame_covariance_probe.gd": "59db7e2e1b6734c43ecbf86f0ef22ba797e16e219c69cc8853d78809165c0308",
+    "research/flight-dynamics/climb-trim/callback_probe.gd": "90472eb73e7c827d14dd1920b7ef4aa038cb17cb794f91e4b8fb17291bffcf73",
+    "research/flight-dynamics/climb-trim/aero_power_probe.gd": "ee5d10740fc5d33d075862927cc0926db150e9127b602eecb1e7335e56173c0c"
+  },
+  "fix": "Pass explicit lagged downwash and ground-effect factors into the horizontal-tail regime selector. Preserve default static calls. No aircraft parameter changes.",
+  "does_fix_recorded_loop": false,
+  "replay_after_fix": {
+    "case": "actual",
+    "completed": true,
+    "crashed": false,
+    "fault": "",
+    "first_inverted_s": 9.54166666666667,
+    "first_outside_map_s": -1.0,
+    "initial_power": 0.284374818125337,
+    "initial_speed": 15.0,
+    "inverted_seconds": 9.2875,
+    "max_height": 87.2346112924041,
+    "max_q": 1.18077637957564,
+    "max_state_error": 1.4210854715202e-14,
+    "outside_map_seconds": 0.0,
+    "recorded_checkpoints_match": true,
+    "seconds": 49.0916666666667,
+    "trim_deg": 5.25672969869836,
+    "sampled_blend_at_first_inversion": [
+      {
+        "aero": [
+          -5.15140449081733,
+          0.80920103535387,
+          -48.6709679937757,
+          0.805487925360414,
+          -0.0863288386157563,
+          -0.276341472537884
+        ],
+        "alpha_deg": 2.4472003120576,
+        "blend": 0.0,
+        "height": 55.0724393231459,
+        "pitch_deg": 59.9560015450658,
+        "prop": [
+          26.2435790992117,
+          0.0,
+          0.0,
+          -0.822514691280314,
+          0.0,
+          0.0
+        ],
+        "q": 0.583484847310922,
+        "speed": 23.6327570628844,
+        "t": 9.0,
+        "throttle": 1.0,
+        "trim": 0.262836484934918
+      },
+      {
+        "aero": [
+          -5.11020664952963,
+          1.04491120326062,
+          -37.7029848166941,
+          0.829983958854285,
+          -0.0518350280583137,
+          -0.309363438710076
+        ],
+        "alpha_deg": 1.92399173277646,
+        "blend": 0.0,
+        "height": 74.5560774819234,
+        "pitch_deg": 51.2554494026073,
+        "prop": [
+          27.7848272147826,
+          0.0,
+          0.0,
+          -0.846013665097251,
+          0.0,
+          0.0
+        ],
+        "q": 0.694182382025938,
+        "speed": 22.2834126662772,
+        "t": 10.0,
+        "throttle": 1.0,
+        "trim": 0.262836484934918
+      }
+    ]
+  },
+  "frame_covariance": {
+    "cases": 1000,
+    "max_frame_covariance_error": 2.27373675443232e-13,
+    "max_torque_power_identity_error": 9.9475983006414e-14
+  },
+  "integration": [
+    {
+      "commanded_throttle": 0.134600966893505,
+      "errors_vs_960hz": {
+        "120": {
+          "body_abs": 3.06289287710371e-07,
+          "body_index": 5,
+          "body_scaled": 6.9055729660987e-08,
+          "continuous_abs": 1.5459481801372e-06,
+          "continuous_index": 0,
+          "continuous_scaled": 3.27954630119365e-09,
+          "ok": true
+        },
+        "240": {
+          "body_abs": 7.30265876658365e-08,
+          "body_index": 5,
+          "body_scaled": 1.64590193399612e-08,
+          "continuous_abs": 4.73213731311262e-07,
+          "continuous_index": 0,
+          "continuous_scaled": 7.71122388165679e-10,
+          "ok": true
+        },
+        "480": {
+          "body_abs": 1.46103595888292e-08,
+          "body_index": 5,
+          "body_scaled": 3.29264495342921e-09,
+          "continuous_abs": 9.95805748971179e-08,
+          "continuous_index": 0,
+          "continuous_scaled": 1.5397805253059e-10,
+          "ok": true
+        },
+        "960": {
+          "body_abs": 0.0,
+          "body_index": -1,
+          "body_scaled": 0.0,
+          "continuous_abs": 0.0,
+          "continuous_index": -1,
+          "continuous_scaled": 0.0,
+          "ok": true
+        }
+      },
+      "final_aux_rpm": 8202.87401629607,
+      "final_body": [
+        60.0251275615801,
+        -29.995645384876,
+        -30.0003662056215,
+        20.021753846582,
+        -0.0471375334206873,
+        0.534193333835072,
+        0.707150970491439,
+        -0.0100902800052405,
+        0.00888444201707353,
+        0.706934762105017,
+        -0.00549368155861301,
+        0.00074103440401167,
+        -0.00138237233760139
+      ],
+      "final_continuous": [
+        8202.87401629607,
+        0.119940277463843,
+        389.102996278382,
+        0.134593755809166,
+        0.376892896698391,
+        0.000123062579913714,
+        0.981167153627363,
+        1.0,
+        0.0,
+        67.0,
+        67.0,
+        0.0,
+        1.15,
+        86.4463023206716,
+        83.7900185000971,
+        52.2169402312275,
+        582.908722358418
+      ],
+      "final_rpm": 8202.87401629607,
+      "initial_rpm": 8119.41617073179,
+      "initial_throttle": 0.104600966893505,
+      "name": "glow_2t",
+      "ok": true,
+      "rpm_mirror_error": 0.0
+    },
+    {
+      "commanded_throttle": 0.532465456403878,
+      "errors_vs_960hz": {
+        "120": {
+          "body_abs": 8.67850585173358e-07,
+          "body_index": 5,
+          "body_scaled": 1.51695195802068e-07,
+          "continuous_abs": 4.77573667012621e-06,
+          "continuous_index": 0,
+          "continuous_scaled": 8.84934975200251e-10,
+          "ok": true
+        },
+        "240": {
+          "body_abs": 2.06862976748212e-07,
+          "body_index": 5,
+          "body_scaled": 3.61124683732894e-08,
+          "continuous_abs": 2.0985935407225e-06,
+          "continuous_index": 0,
+          "continuous_scaled": 3.8886541515816e-10,
+          "ok": true
+        },
+        "480": {
+          "body_abs": 4.13546883404337e-08,
+          "body_index": 5,
+          "body_scaled": 7.23315029182645e-09,
+          "continuous_abs": 1.67340658663306e-07,
+          "continuous_index": 0,
+          "continuous_scaled": 3.10079076492074e-11,
+          "ok": true
+        },
+        "960": {
+          "body_abs": 0.0,
+          "body_index": -1,
+          "body_scaled": 0.0,
+          "continuous_abs": 0.0,
+          "continuous_index": -1,
+          "continuous_scaled": 0.0,
+          "ok": true
+        }
+      },
+      "final_aux_rpm": 5396.70914130782,
+      "final_body": [
+        60.0253333471178,
+        -32.4848882946829,
+        -30.0023492176314,
+        15.03419018702,
+        -0.0426984669263834,
+        1.11337968156495,
+        0.707220241998251,
+        -0.0293511290445599,
+        0.0236579011785925,
+        0.705987495812474,
+        -0.0129420201146127,
+        0.0038160812369316,
+        -0.00669204932030759
+      ],
+      "final_continuous": [
+        5396.70914130782,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_rpm": 5396.70914130782,
+      "initial_rpm": 5174.24535643894,
+      "initial_throttle": 0.502465456403878,
+      "name": "electric_4s",
+      "ok": true,
+      "rpm_mirror_error": 0.0
+    },
+    {
+      "commanded_throttle": 0.483743937795246,
+      "errors_vs_960hz": {
+        "120": {
+          "body_abs": 9.08302326241284e-07,
+          "body_index": 5,
+          "body_scaled": 1.60121501593209e-07,
+          "continuous_abs": 1.0456675227033e-05,
+          "continuous_index": 0,
+          "continuous_scaled": 6.58313459300786e-09,
+          "ok": true
+        },
+        "240": {
+          "body_abs": 2.16346091708175e-07,
+          "body_index": 5,
+          "body_scaled": 3.81857138559167e-08,
+          "continuous_abs": 1.27932253235485e-07,
+          "continuous_index": 0,
+          "continuous_scaled": 9.62630752887605e-10,
+          "ok": true
+        },
+        "480": {
+          "body_abs": 4.33397093768662e-08,
+          "body_index": 5,
+          "body_scaled": 7.61043044339091e-09,
+          "continuous_abs": 1.32497916638386e-06,
+          "continuous_index": 0,
+          "continuous_scaled": 1.35311262194904e-09,
+          "ok": true
+        },
+        "960": {
+          "body_abs": 0.0,
+          "body_index": -1,
+          "body_scaled": 0.0,
+          "continuous_abs": 0.0,
+          "continuous_index": -1,
+          "continuous_scaled": 0.0,
+          "ok": true
+        }
+      },
+      "final_aux_rpm": 5408.08972217326,
+      "final_body": [
+        60.0254296277684,
+        -32.484381705732,
+        -30.0024200695494,
+        15.0372885144567,
+        -0.0426810974244291,
+        1.1133268563248,
+        0.707240878474506,
+        -0.0294827690021063,
+        0.0235393780116119,
+        0.705965299309679,
+        -0.0138031096789901,
+        0.00396221312421551,
+        -0.00701866525913294
+      ],
+      "final_continuous": [
+        5408.08972217326,
+        10940.1797884307,
+        62.3810209651618,
+        0.878642202348236,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_rpm": 5408.08972217326,
+      "initial_rpm": 5174.24535601625,
+      "initial_throttle": 0.453743937795246,
+      "name": "electric_battery_4s",
+      "ok": true,
+      "rpm_mirror_error": 0.0
+    },
+    {
+      "commanded_throttle": 0.594745013879493,
+      "errors_vs_960hz": {
+        "120": {
+          "body_abs": 7.90327967958859e-07,
+          "body_index": 5,
+          "body_scaled": 1.33459826136403e-07,
+          "continuous_abs": 6.15464341535699e-06,
+          "continuous_index": 0,
+          "continuous_scaled": 4.78042727625194e-09,
+          "ok": true
+        },
+        "240": {
+          "body_abs": 1.88324313921129e-07,
+          "body_index": 5,
+          "body_scaled": 3.17907777778407e-08,
+          "continuous_abs": 9.48265551414806e-07,
+          "continuous_index": 0,
+          "continuous_scaled": 5.16116371862552e-10,
+          "ok": true
+        },
+        "480": {
+          "body_abs": 3.76787350209185e-08,
+          "body_index": 5,
+          "body_scaled": 6.3555489072508e-09,
+          "continuous_abs": 2.389506335021e-07,
+          "continuous_index": 0,
+          "continuous_scaled": 2.67513344809345e-10,
+          "ok": true
+        },
+        "960": {
+          "body_abs": 0.0,
+          "body_index": -1,
+          "body_scaled": 0.0,
+          "continuous_abs": 0.0,
+          "continuous_index": -1,
+          "continuous_scaled": 0.0,
+          "ok": true
+        }
+      },
+      "final_aux_rpm": 5403.06015894826,
+      "final_body": [
+        60.0268353550324,
+        -32.4831148810777,
+        -30.0027001122606,
+        15.0405596453459,
+        -0.0418172166571075,
+        1.11404026883608,
+        0.707461964857798,
+        -0.0303023588496106,
+        0.0228381209492028,
+        0.705732070660816,
+        -0.0137157995772546,
+        0.00458593440276572,
+        -0.00834931830946685
+      ],
+      "final_continuous": [
+        5403.06015894826,
+        7521.23166397365,
+        68.0646284196996,
+        0.697354981985005,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_rpm": 5403.06015894826,
+      "initial_rpm": 5174.24535643894,
+      "initial_throttle": 0.564745013879493,
+      "name": "electric_battery_6s",
+      "ok": true,
+      "rpm_mirror_error": 0.0
+    },
+    {
+      "commanded_throttle": 0.115964115802272,
+      "errors_vs_960hz": {
+        "120": {
+          "body_abs": 5.30414662326499e-08,
+          "body_index": 11,
+          "body_scaled": 1.32603665581625e-08,
+          "continuous_abs": 2.90267053060234e-06,
+          "continuous_index": 0,
+          "continuous_scaled": 3.03239820274382e-11,
+          "ok": true
+        },
+        "240": {
+          "body_abs": 1.26480453155157e-08,
+          "body_index": 11,
+          "body_scaled": 3.16201132887894e-09,
+          "continuous_abs": 1.79148628376424e-07,
+          "continuous_index": 0,
+          "continuous_scaled": 1.87155232736648e-12,
+          "ok": true
+        },
+        "480": {
+          "body_abs": 2.53057199132121e-09,
+          "body_index": 11,
+          "body_scaled": 6.32642997830304e-10,
+          "continuous_abs": 1.0433723218739e-08,
+          "continuous_index": 0,
+          "continuous_scaled": 1.09000326433414e-13,
+          "ok": true
+        },
+        "960": {
+          "body_abs": 0.0,
+          "body_index": -1,
+          "body_scaled": 0.0,
+          "continuous_abs": 0.0,
+          "continuous_index": -1,
+          "continuous_scaled": 0.0,
+          "ok": true
+        }
+      },
+      "final_aux_rpm": 95721.94469631,
+      "final_body": [
+        59.9999984808252,
+        -25.4899305855546,
+        -30.0016486763933,
+        28.9823159942245,
+        -9.3760278850895e-05,
+        2.04976636875811,
+        0.706660003070902,
+        -0.0250930066155669,
+        0.0250949590235294,
+        0.706662737174129,
+        2.0921812930163e-05,
+        0.00187846747164089,
+        2.20782064517986e-05
+      ],
+      "final_continuous": [
+        95721.94469631
+      ],
+      "final_rpm": 95721.94469631,
+      "initial_rpm": 92100.6444913699,
+      "initial_throttle": 0.0859641158022724,
+      "name": "turbine",
+      "ok": true,
+      "rpm_mirror_error": 0.0
+    }
+  ],
+  "callback_probe": {
+    "fps": [
+      15,
+      30,
+      60,
+      144
+    ],
+    "physics_ticks": 240,
+    "simulation_seconds": 1.0,
+    "keyboard_throttle_increment": 0.1,
+    "matching_serialized_state_md5": "7bb282bc7a48a8adc7afe8a7e2844acf",
+    "wall_seconds": [
+      1.295,
+      0.983,
+      0.97,
+      0.963
+    ]
+  },
+  "power_probe": {
+    "local_force_samples": 28000,
+    "local_positive_power_samples": 0,
+    "local_scope": "Intrinsic wing moment disabled to isolate force work",
+    "global_rate_increment_samples": 28000,
+    "global_rate_positive_power_samples": 0
+  },
+  "checks": [
+    {
+      "name": "rigid_body",
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "name": "integrator",
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "name": "rk_stage_time",
+      "passed": 22,
+      "failed": 0
+    },
+    {
+      "name": "continuous_state",
+      "passed": 42,
+      "failed": 0
+    },
+    {
+      "name": "shaft_coupled",
+      "passed": 43,
+      "failed": 0
+    },
+    {
+      "name": "turbine_continuous",
+      "passed": 46,
+      "failed": 0
+    },
+    {
+      "name": "electric_event_localization",
+      "passed": 2946,
+      "failed": 0
+    },
+    {
+      "name": "glow_session",
+      "passed": 132,
+      "failed": 0
+    },
+    {
+      "name": "latency_patch",
+      "passed": 533,
+      "failed": 0
+    },
+    {
+      "name": "ui_pause",
+      "passed": 33,
+      "failed": 0
+    },
+    {
+      "name": "e2e_radio",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "name": "checkpoint",
+      "passed": 92,
+      "failed": 0
+    },
+    {
+      "name": "golden_flights",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "name": "downwash_lag",
+      "passed": 20,
+      "failed": 0
+    },
+    {
+      "name": "ground_effect",
+      "passed": 50,
+      "failed": 0
+    },
+    {
+      "name": "tail_downwash",
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "name": "aero",
+      "passed": 23,
+      "failed": 0
+    },
+    {
+      "name": "aero_flow_parity",
+      "passed": 35001,
+      "failed": 0
+    }
+  ],
+  "limitations": [
+    "Synthetic flow counterexamples do not establish a naturally flown maneuver.",
+    "Battery 4S tiny RPM error versus 960 Hz is nonmonotonic between 240 and 480 Hz; no universal RK4 order claimed.",
+    "Some scene teardowns report ObjectDB leaks; origin not diagnosed.",
+    "Original low-power Timber symptom and physical fidelity of the recorded Stik loop remain unresolved.",
+    "Golden flights were checked without regeneration."
+  ]
+}

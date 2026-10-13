@@ -44,6 +44,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_preferences_cases()
 	await _home_fly_roundtrip_and_radio()
+	await _half_power_roundtrip()
 	await _rejected_launch_and_retry()
 	await _future_preferences_save_failure()
 	await _alternate_field_and_aircraft_sanitization()
@@ -171,7 +172,9 @@ func _home_fly_roundtrip_and_radio() -> void:
 	# End through the real pause-menu buttons, return to Home, then launch the remembered runway choice again.
 	app.call("open_pause")
 	await ui.settle()
-	for i in 5: # Continue, Restart, Time of day, Help, Flight overlays (HUD-06), End
+	for i in 12: # Other menu tracks may add actions; still reach End through real key events.
+		if ui.focus_name() == "End":
+			break
 		await ui.tap(KEY_DOWN)
 	_check("pause navigation reaches End", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)
@@ -194,6 +197,42 @@ func _home_fly_roundtrip_and_radio() -> void:
 		app.call("end_flight")
 		await ui.settle()
 		_check("manual radio flight can end back at Home", app.get("flight") == null and app.get("home") != null)
+	await _close_app(app)
+
+
+func _half_power_roundtrip() -> void:
+	_cleanup()
+	TranslationServer.set_locale("en")
+	_write_preferences(PREFS, 1, "en", STIK, RUNWAY)
+	var app: Node = await _new_app(PREFS)
+	var home: Control = app.home
+	home.start_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("runway cycles to explicit half-power airborne start", home.start_choice == "airborne_half_power")
+	_check("half-power label explains fixed trim", home.start_button.text == "Start: in the air at 50% throttle"
+		and home.limits_label.text.contains("Trim stays fixed"))
+	_check("new choice is not saved before Fly", Preferences.load_from(PREFS).start_choice == RUNWAY)
+	app.start_flight()
+	await ui.settle()
+	_check("half-power Home launch succeeds", app.flight != null and app.flight.startup_error.is_empty())
+	if app.flight != null:
+		var s: Node = app.flight.session
+		_check("main installs the selected equilibrium before flight", s.start_choice == "airborne_half_power"
+			and absf(s.start.throttle - 0.5) < 1e-7 and s.start.V > 15.0)
+		_check("new choice persists after successful Fly", Preferences.load_from(PREFS).start_choice == "airborne_half_power")
+		_check("trace distinguishes selected half-power profile and actual airborne launch",
+			s.trace_meta().selected_start_choice == "airborne_half_power" and s.trace_meta().launch_choice == "airborne")
+		await ui.tap(KEY_R)
+		_check("restart retains selected half-power trim", s.is_flyable() and absf(s.start.throttle - 0.5) < 1e-7)
+		app.open_pause()
+		await ui.settle()
+		app.end_flight()
+		await ui.settle()
+		_check("return to Home preserves half-power profile", app.home.start_choice == "airborne_half_power")
+		app.set_aircraft(TIMBER)
+		await ui.settle()
+		_check("unsupported aircraft clears half-power choice in UI and preferences", app.home.start_choice == AIRBORNE
+			and Preferences.load_from(PREFS).start_choice == AIRBORNE)
 	await _close_app(app)
 
 
@@ -310,7 +349,12 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	var app: Node = await _new_app(PREFS, ALT_FIELD)
 	var home: Control = app.get("home") as Control
 	_check("runway is disabled outside the existing default field", home.get("runway_available") == false
-		and home.get("start_button").disabled and home.get("start_choice") == AIRBORNE)
+		and home.get("start_choice") == AIRBORNE)
+	home.get("start_button").grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("alternate field can select airborne half power without offering runway", home.get("start_choice") == "airborne_half_power")
+	await ui.tap(KEY_ENTER)
+	_check("alternate field start cycle returns to legacy airborne", home.get("start_choice") == AIRBORNE)
 	await _close_app(app)
 
 	_cleanup()

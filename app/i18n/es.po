@@ -444,6 +444,12 @@ msgstr "El vuelo no está disponible. Restaura los datos del campo y reinicia el
 msgid "Start: in the air"
 msgstr "Inicio: en el aire"
 
+msgid "Start: in the air at 50% throttle"
+msgstr "Inicio: en el aire al 50 % de acelerador"
+
+msgid "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
+msgstr "Empieza en vuelo nivelado al 50 % de acelerador. El trim queda fijo durante el vuelo."
+
 msgid "Start: runway (experimental)"
 msgstr "Inicio: pista (experimental)"
 
@@ -865,3 +871,255 @@ msgstr "AvPág"
 msgid "Elevator trim: %+.1f° (PgUp down / PgDn up)"
 msgstr "Trim de profundidad: %+.1f° (RePág baja / AvPág sube)"
 
+msgid "Aircraft Workshop"
+msgstr "Laboratorio de aviones"
+
+msgid "Return to Workshop"
+msgstr "Volver al laboratorio"
+
+msgid "Experimental Workshop trial · Esc to return"
+msgstr "Prueba experimental del laboratorio · Esc para volver"
+
+msgid "The source aircraft is not available in this catalog."
+msgstr "El avión original no está disponible en este catálogo."
+
+
+msgid "Build a variant from any aircraft in the catalog. Changes are experimental."
+msgstr "Crea una variante de cualquier avión del catálogo. Los cambios son experimentales."
+
+msgid "Reset"
+msgstr "Restablecer"
+
+msgid "Undo"
+msgstr "Deshacer"
+
+msgid "Test fly"
+msgstr "Probar en vuelo"
+
+msgid "AIRCRAFT"
+msgstr "AVIÓN"
+
+msgid "SAVED BUILDS"
+msgstr "MIS VARIANTES"
+
+msgid "STARTING PRESETS"
+msgstr "PREAJUSTES"
+
+msgid "AIRFRAME RECIPE · EXPERIMENTAL"
+msgstr "AJUSTES DEL AVIÓN · EXPERIMENTAL"
+
+msgid "BUILD CHECK"
+msgstr "COMPARACIÓN"
+
+msgid "Still preview · no flight simulation"
+msgstr "Vista previa · sin simulación de vuelo"
+
+msgid "Experimental simulation; handling may differ from a real aircraft."
+msgstr "Simulación experimental; el comportamiento puede diferir del avión real."
+
+msgid "Name this build"
+msgstr "Nombre de la variante"
+
+msgid "Save build"
+msgstr "Guardar variante"
+
+msgid "Save a copy"
+msgstr "Guardar una copia"
+
+msgid "Choose a saved build…"
+msgstr "Elige una variante guardada…"
+
+msgid "Load"
+msgstr "Cargar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Mini"
+msgstr "Mini"
+
+msgid "Giant"
+msgstr "Gigante"
+
+msgid "Light"
+msgstr "Ligero"
+
+msgid "Heavy"
+msgstr "Pesado"
+
+msgid "Fast"
+msgstr "Rápido"
+
+msgid "Agile"
+msgstr "Ágil"
+
+msgid "Slow"
+msgstr "Lento"
+
+msgid "Presets change only adjustments supported by the selected airframe."
+msgstr "Los preajustes modifican solo las opciones compatibles con el avión seleccionado."
+
+msgid "Airframe scale"
+msgstr "Escala del avión"
+
+msgid "Mass scaling"
+msgstr "Escalado de masa"
+
+msgid "Constant wing loading"
+msgstr "Carga alar constante"
+
+msgid "Geometric"
+msgstr "Geométrica"
+
+msgid "Constant wing loading preserves wing loading as size changes. Geometric scales mass with volume."
+msgstr "Carga alar constante mantiene el peso por superficie alar. Geométrica cambia la masa según el volumen."
+
+msgid "1× keeps the original value. Changes apply to a new trial flight."
+msgstr "1× conserva el valor original. Los cambios se aplican en un nuevo vuelo de prueba."
+
+msgid "Weight multiplier"
+msgstr "Multiplicador de peso"
+
+msgid "Power multiplier"
+msgstr "Multiplicador de potencia"
+
+msgid "Control travel"
+msgstr "Recorrido de mandos"
+
+msgid "Range %.2f×–%.2f× · experimental adjustment."
+msgstr "Rango %.2f×–%.2f× · ajuste experimental."
+
+msgid "Not available for this engine type."
+msgstr "Aún no disponible para este tipo de motor."
+
+msgid "Try different sizes, weights and power levels. Values are estimates for experimentation."
+msgstr "Prueba tamaños, pesos y potencias diferentes. Los valores son estimaciones para experimentar."
+
+msgid "scale"
+msgstr "escala"
+
+msgid "mass and weight"
+msgstr "masa y peso"
+
+msgid "power"
+msgstr "potencia"
+
+msgid "control travel"
+msgstr "recorrido de mandos"
+
+msgid "Unsupported adjustments: %s. Those values stay unchanged."
+msgstr "Ajustes aún no disponibles: %s. Se conservan sus valores originales."
+
+msgid "Scaling unavailable: %s"
+msgstr "Escalado no disponible: %s"
+
+msgid "Mass and weight unavailable: %s"
+msgstr "Masa y peso no disponibles: %s"
+
+msgid "Ready for a trial · start in the air"
+msgstr "Listo para probar · inicio en el aire"
+
+msgid "Build blocked until the listed validation errors are resolved."
+msgstr "Revisa los valores indicados antes de probar el avión."
+
+msgid "No build values are available."
+msgstr "No hay valores disponibles para esta variante."
+
+msgid "Scale %d%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f"
+msgstr "Escala %d%% · masa: %s · peso ×%.2f · potencia ×%.2f · mandos ×%.2f"
+
+msgid "Base → proposed"
+msgstr "Original → variante"
+
+msgid "Wing span"
+msgstr "Envergadura"
+
+msgid "Wing area"
+msgstr "Superficie alar"
+
+msgid "Mass"
+msgstr "Masa"
+
+msgid "Wing loading"
+msgstr "Carga alar"
+
+msgid "Maximum RPM"
+msgstr "RPM máximas"
+
+msgid "Static thrust"
+msgstr "Empuje estático"
+
+msgid "Static power"
+msgstr "Potencia estática"
+
+msgid "CG (% chord)"
+msgstr "CG (% de cuerda)"
+
+msgid "n/a"
+msgstr "n/d"
+
+msgid "Scale 100%"
+msgstr "Escala 100%"
+
+msgid "Scale %d%%  ·  span %.2f m"
+msgstr "Escala %d%%  ·  envergadura %.2f m"
+
+msgid "Delete saved build?"
+msgstr "¿Eliminar esta variante?"
+
+msgid "Delete this saved build from this device?"
+msgstr "¿Mover esta variante a la papelera local?"
+
+msgid "Saved build loaded. Review the experimental values before a trial."
+msgstr "Variante cargada. Revisa sus valores antes de probarla."
+
+msgid "Saved build: %s"
+msgstr "Variante guardada: %s"
+
+msgid "Saved build deleted."
+msgstr "Variante movida a la papelera local."
+
+msgid "Applied the %s preset where this aircraft supports it."
+msgstr "Preajuste %s aplicado a las opciones compatibles."
+
+msgid "Recipe reset to defaults. Use Undo to restore the previous values."
+msgstr "Valores originales restablecidos. Usa Deshacer para recuperar los ajustes anteriores."
+
+msgid "Previous recipe restored."
+msgstr "Ajustes anteriores recuperados."
+
+msgid "Resolve the build errors before starting a trial."
+msgstr "Corrige los valores indicados antes de iniciar la prueba."
+
+msgid "The saved build has no aircraft data."
+msgstr "La variante guardada no contiene datos del avión."
+
+msgid "The saved build has no exact aircraft source snapshot."
+msgstr "La variante no contiene una copia exacta del avión original."
+
+msgid "The saved build refers to an unknown catalog aircraft."
+msgstr "El avión original de esta variante no está en el catálogo."
+
+msgid "This catalog aircraft has no flight model and cannot start a trial."
+msgstr "Este avión no tiene un modelo de vuelo para iniciar la prueba."
+
+msgid "This aircraft is a visual preview and has no flight data."
+msgstr "Este avión es una vista previa y aún no tiene datos de vuelo."
+
+msgid "Undo delete"
+msgstr "Recuperar"
+
+msgid "The saved build could not be restored."
+msgstr "No se pudo recuperar la variante."
+
+msgid "Saved build restored. Load it to continue editing that revision."
+msgstr "Variante recuperada. Cárgala para seguir editando esa revisión."
+
+msgid "More power"
+msgstr "Más potencia"
+
+msgid "More travel"
+msgstr "Más recorrido"
+
+msgid "Light / low power"
+msgstr "Ligero / suave"

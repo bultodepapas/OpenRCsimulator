@@ -1,0 +1,67 @@
+{
+  "source": ".tools\\climb-observed\\2026-10-13T19-28-33-88100",
+  "trace_sha256": {
+    "flight-001.csv": "77a4bf0a4f75a9c6c50744a6b7c46db5f76e939036f59c2c011a093b63358063",
+    "flight-002.csv": "24a445b60af6e8168ba495831050c4137964986cedddc818d30195437f34f08e",
+    "flight-003.csv": "20f97504375fda3767cf36564c3fce22ee906858309291aff3b72d314b19125e",
+    "flight-004.csv": "57df95b53d2fdfa9530848a24564040da9a1cf419d81ca6d952059199420905d",
+    "flight-005.csv": "ab108a16ccf229cf01ad3c4b537510c342d0ebf70f96e28171bd788b03f0d2bd",
+    "flight-006.csv": "130a9bf99b88035b4ce45ff8388d94d54daab27904bdce0e7a2c8919a408509e",
+    "flight-007.csv": "d18a2d0de98d921eefd336c62e975975c0b6aaa22b67d4066957433b90d50541",
+    "flight-008.csv": "965d882eb4b8e88e394f109159746529dd780976d9400403db23e6f45e4ab807",
+    "flight-009.csv": "1411fcf125ff0f262f840fb5c0fa46af899f37da155ecb4dcbd6d6a1cc415dba",
+    "flight-010.csv": "6e38522d4e54f221ad2c6115921497e7fa5b6eb57274210a41a1dbc094e12fd1",
+    "flight-011.csv": "2ab769007b180b561fb055e479b155e3397ea423b773656bc981d6871d55e66e",
+    "input-001.csv": "7304faef33ae34cda2c67eb2cbecfa223db18542b346ad38b12a2ddcba90558a",
+    "input-002.csv": "06dac66b59f416fd32697a26bba9584d1da22aabde810c3985ab052ba67b8a5c",
+    "input-003.csv": "eec37f01c1e2ece9adab8dbc67cdc33ba9bf441a8d2a16f42255e821007e954e",
+    "input-004.csv": "6dcf39621810873b689132b976fc9d3934f53e54ac2e62515e46c85b585022b0",
+    "input-005.csv": "e22258d448b75f9a8709b163e44683df930a7ce3373cc5a286366a36003a219f",
+    "input-006.csv": "e33009cba9960df613e213514612aa50673740a09e568f26cff31ca8ec1fa89d",
+    "input-007.csv": "50ad2258d5b4b3a79fd45b27bd35fffb9efe508b18c022ea932a805805de9bb2",
+    "input-008.csv": "74efc5f8ba8ecaa1cca6b62e71668fb294eb079bf11c45190f97fe3711309829",
+    "input-009.csv": "955d3e7c2a06632699e454e478e83bb9ccad703e3128889efbd84e5e3a3b5703",
+    "input-010.csv": "a596ab9c1130f1161a0ccfcc5b581fed9f3101fbba2ad1f8d6cd0af75d1df5cd",
+    "input-011.csv": "2c2b97067ea24b26cc0af06fe69a20d42fe21f92c770afc1557787b15ddf68d5"
+  },
+  "first_tick": 1,
+  "last_tick": 11782,
+  "rows": 11782,
+  "ranges": {
+    "alt_m": [
+      13.180216008,
+      87.234611292
+    ],
+    "tas_mps": [
+      1.896814747,
+      39.24647588
+    ],
+    "cmd_throttle": [
+      0.0,
+      1.0
+    ],
+    "cmd_pitch": [
+      0.262836485,
+      0.262836485
+    ],
+    "srv_pitch": [
+      0.262836485,
+      0.262836485
+    ],
+    "q_radps": [
+      -1.18077638,
+      1.009706618
+    ]
+  },
+  "raw_pitch_range": [
+    0.0,
+    0.0
+  ],
+  "trim_pitch_range": [
+    0.262836484935,
+    0.262836484935
+  ],
+  "first_inverted_s": 9.541666667,
+  "first_full_throttle_s": 6.708333333,
+  "limits": "An observed simulator flight, not physical-aircraft validation. Quaternion body-down dot world-down defines inverted. Euler pitch alone does not count loops."
+}

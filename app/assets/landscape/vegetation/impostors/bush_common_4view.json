@@ -1,0 +1,157 @@
+{
+  "format": "openrc-vegetation-impostor v1",
+  "asset_id": "bush_common_4view_impostor",
+  "derived_from_asset_id": "bush_common",
+  "source_name": "Bush_Common",
+  "source_scene": "res://assets/landscape/vegetation/models/Bush_Common.gltf",
+  "source_geometry_sha256": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90",
+  "source_archive_sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
+  "license": "CC0-1.0, embedded License_Standard.txt",
+  "license_evidence": "assets/landscape/vegetation/source/License_Standard.txt",
+  "license_evidence_sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+  "source_textures": [
+    {
+      "uri": "Leaves_TwistedTree_C.png",
+      "source_entry": "glTF/Leaves_TwistedTree_C.png",
+      "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
+    }
+  ],
+  "source_base_color_factor": {
+    "gltf_value": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "explicit_in_source": false,
+    "gltf_default_when_omitted": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "source_vertex_colors": {
+    "attributes": [
+      {
+        "mesh": "Bush_Common",
+        "name": "Color",
+        "gltf_semantic": "COLOR_0",
+        "domain": "CORNER",
+        "data_type": "BYTE_COLOR",
+        "sample_count": 2700,
+        "mean_rgba": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "min_rgba": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "max_rgba": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    ]
+  },
+  "source_bounds_m": {
+    "min": [
+      -0.923476,
+      -0.234695,
+      -0.974389
+    ],
+    "max": [
+      0.991369,
+      1.347091,
+      0.990752
+    ],
+    "size": [
+      1.914845,
+      1.581786,
+      1.965141
+    ],
+    "height": 1.581786,
+    "ground_offset": 0.234695
+  },
+  "source_mesh_bounds_blender_z_up_m": {
+    "min": [
+      -0.923476,
+      -0.990752,
+      0.0
+    ],
+    "max": [
+      0.991369,
+      0.974389,
+      1.581786
+    ]
+  },
+  "source_height_m": 1.581786,
+  "frame_world_size_m": [
+    2.161655,
+    2.161655
+  ],
+  "baked_azimuth_deg": [
+    0,
+    90,
+    180,
+    270
+  ],
+  "view_up": "source Y-up, imported and rendered with Blender Z-up",
+  "frame_size_px": [
+    256,
+    256
+  ],
+  "atlas_size_px": [
+    1024,
+    256
+  ],
+  "atlas_path": "res://assets/landscape/vegetation/impostors/bush_common_4view.png",
+  "atlas_sha256": "954bb172b6825494aa308fa13144ab7bd1140129db587ab1a97df3c58395f878",
+  "color_pipeline": {
+    "source_color": "glTF material Base Color input, routed directly to Emission Color",
+    "source_color_chain": "full Blender-imported Principled Base Color socket link, including the source image and COLOR_0 node chain",
+    "lighting": "unshaded emission only; no light objects and world strength 0",
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": 0.0,
+    "gamma": 1.0,
+    "output_colorspace": "sRGB PNG",
+    "alpha": "source glTF Alpha input thresholded with Greater Than at glTF alphaCutoff",
+    "alpha_cutoff": 0.2,
+    "alpha_mode": "MASK",
+    "png_channels": "RGBA",
+    "png_bit_depth": 8,
+    "alpha_mode_storage": "straight",
+    "material_routes": [
+      {
+        "material": "Leaves_TwistedTree",
+        "base_color_source": "complete imported glTF Principled Base Color input link, routed to Emission",
+        "base_color_input_network": [
+          "MIX",
+          "TEX_IMAGE",
+          "VERTEX_COLOR"
+        ],
+        "alpha_source": "complete imported glTF Principled Alpha input link, thresholded",
+        "alpha_input_network": [
+          "MATH",
+          "MATH",
+          "MATH",
+          "TEX_IMAGE",
+          "VERTEX_COLOR"
+        ],
+        "alpha_mode": "MASK",
+        "alpha_cutoff": 0.2,
+        "surface_render_method": "DITHERED"
+      }
+    ]
+  },
+  "renderer": "Blender 5.2.2 LTS EEVEE, unshaded source Base Color/Alpha, Standard view transform, transparent background",
+  "rebuild_command": "blender --background --python tools/landscape/vegetation/bake_hedge_impostor.py -- --frame-size 256"
+}

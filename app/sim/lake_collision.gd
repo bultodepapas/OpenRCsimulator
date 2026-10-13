@@ -33,7 +33,7 @@ class WaterEvent:
 ## gear may hit water but dry-bank support stays with GroundContact's terrain sampler.
 static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		hull: PackedFloat64Array, gear: Dictionary, tick: int, dt: float, mass: float,
-		inertia: PackedFloat64Array, soft_bank: bool = true) -> WaterEvent:
+		inertia: PackedFloat64Array, soft_bank: bool = true, prop_disc: Dictionary = {}) -> WaterEvent:
 	if not LakeSurface.is_valid_definition(lake) or not SceneryCollision._state_is_valid(previous) \
 			or not SceneryCollision._state_is_valid(candidate) or hull.is_empty() or hull.size() % 3 != 0 \
 			or not SceneryCollision._packed_finite(hull) or not is_finite(dt) or dt <= 0.0 or tick < 1 \
@@ -63,6 +63,11 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 			max_radius = maxf(max_radius, M.norm(body_point))
 			probes.append({"body_point": body_point, "kind": "gear", "index": index,
 				"order": gear_offset + index, "name": str(contact.get("name", ""))})
+	if _prop_disc_is_valid(prop_disc):
+		var prop_radius: float = M.norm(prop_disc.hub) + float(prop_disc.radius)
+		max_radius = maxf(max_radius, prop_radius)
+		probes.append({"kind": "propeller", "index": -1, "order": probes.size(),
+			"name": "propeller", "disc": prop_disc, "reach": prop_radius})
 	if probes.is_empty():
 		return null
 	var bank_bounds: PackedFloat64Array = _polygon_bounds(lake.bank_ne_m)
@@ -89,16 +94,19 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	var waves: Array = lake.get("waves", [])
 	var best: WaterEvent = null
 	for probe: Dictionary in probes:
-		var body_point: PackedFloat64Array = probe.body_point
-		var probe_radius: float = M.norm(body_point)
+		var probe_radius: float = float(probe.reach) if probe.has("reach") else M.norm(probe.body_point)
 		var bounds: PackedFloat64Array = shore_bounds if str(probe.kind) == "gear" else bank_bounds
 		for segment_index: int in subdivisions:
 			var fraction0: float = float(segment_index) / float(subdivisions)
 			var fraction1: float = float(segment_index + 1) / float(subdivisions)
 			var state0: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, fraction0)
 			var state1: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, fraction1)
-			var point0: PackedFloat64Array = _probe_position(state0, body_point)
-			var point1: PackedFloat64Array = _probe_position(state1, body_point)
+			var body_point0: PackedFloat64Array = _probe_body_point(probe, state0)
+			var body_point1: PackedFloat64Array = _probe_body_point(probe, state1)
+			if body_point0.size() != 3 or body_point1.size() != 3:
+				continue
+			var point0: PackedFloat64Array = _probe_position(state0, body_point0)
+			var point1: PackedFloat64Array = _probe_position(state1, body_point1)
 			var rotation_padding: float = SceneryCollision._rotational_chord_padding(
 				RB._att(state0), RB._att(state1), probe_radius)
 			if not _aabb_overlaps(bounds, minf(point0[0], point1[0]), maxf(point0[0], point1[0]),
@@ -120,7 +128,7 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 				material = str(local_hit.get("material", ""))
 				hit = local_hit
 			if material == "bank_ground":
-				if str(probe.kind) == "gear":
+				if str(probe.kind) != "hull":
 					var gear_water_hit: Dictionary = _sweep_water(lake, sweep0, sweep1,
 						segment_start_time, segment_end_time, waves)
 					if bool(gear_water_hit.get("hit", false)):
@@ -158,7 +166,8 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 			if best != null and best.probe_order == int(probe.order) \
 					and best.time_fraction <= fraction1 + FRACTION_TIE:
 				break
-		if str(probe.kind) == "hull" and soft_bank:
+		# A water/bank event from an earlier probe cannot be beaten by this end-of-tick crush check.
+		if str(probe.kind) == "hull" and soft_bank and best == null:
 			var final_event: WaterEvent = _deep_bank_event(lake, previous, candidate, probe,
 				tick, mass, inertia)
 			if final_event != null and (best == null or _event_precedes(final_event, best)):
@@ -226,7 +235,9 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, fraction)
 	if state.is_empty():
 		return null
-	var body_point: PackedFloat64Array = probe.body_point
+	var body_point: PackedFloat64Array = _probe_body_point(probe, state)
+	if body_point.size() != 3:
+		return null
 	var q: PackedFloat64Array = RB._att(state)
 	var point: PackedFloat64Array = _probe_position(state, body_point)
 	var time_s: float = float(local_hit.get("time_s", 0.0))
@@ -235,22 +246,23 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	var slope_east: float = 0.0
 	var depth: float = 0.0
 	if material == "water":
-		surface_down = LakeSurface._water_height_down_validated(lake, point[0], point[1], time_s, lake.get("waves", []))
+		var shore_fade_override: float = float(local_hit.get("shore_fade_override", -1.0))
+		surface_down = LakeSurface._water_height_down_validated(lake, point[0], point[1], time_s,
+			lake.get("waves", []), shore_fade_override)
 		var slope_n: float = LakeSurface._water_height_down_validated(lake, point[0] + WATER_SLOPE_EPSILON_M,
-			point[1], time_s, lake.get("waves", []))
+			point[1], time_s, lake.get("waves", []), shore_fade_override)
 		var slope_s: float = LakeSurface._water_height_down_validated(lake, point[0] - WATER_SLOPE_EPSILON_M,
-			point[1], time_s, lake.get("waves", []))
+			point[1], time_s, lake.get("waves", []), shore_fade_override)
 		var slope_e: float = LakeSurface._water_height_down_validated(lake, point[0],
-			point[1] + WATER_SLOPE_EPSILON_M, time_s, lake.get("waves", []))
+			point[1] + WATER_SLOPE_EPSILON_M, time_s, lake.get("waves", []), shore_fade_override)
 		var slope_w: float = LakeSurface._water_height_down_validated(lake, point[0],
-			point[1] - WATER_SLOPE_EPSILON_M, time_s, lake.get("waves", []))
+			point[1] - WATER_SLOPE_EPSILON_M, time_s, lake.get("waves", []), shore_fade_override)
 		if not is_finite(surface_down) or not is_finite(slope_n) or not is_finite(slope_s) \
 				or not is_finite(slope_e) or not is_finite(slope_w):
 			return null
 		slope_north = (slope_n - slope_s) / (2.0 * WATER_SLOPE_EPSILON_M)
 		slope_east = (slope_e - slope_w) / (2.0 * WATER_SLOPE_EPSILON_M)
-		var basin: Dictionary = LakeSurface.sample_terrain_validated(lake, point[0], point[1])
-		depth = float(basin.get("bed_depth_m", 0.0))
+		depth = LakeSurface._bed_depth_at(lake, point[0], point[1])
 	else:
 		var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, point[0], point[1])
 		if not bool(terrain.get("covered", false)):
@@ -338,6 +350,8 @@ static func _deep_bank_event(lake: Dictionary, previous: PackedFloat64Array, can
 	probe: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array) -> WaterEvent:
 	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, 1.0)
 	var point: PackedFloat64Array = _probe_position(state, probe.body_point)
+	if not LakeSurface._contains(lake.bank_ne_m, point[0], point[1]):
+		return null
 	var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, point[0], point[1])
 	if not bool(terrain.get("covered", false)):
 		return null
@@ -367,6 +381,43 @@ static func _deep_bank_event(lake: Dictionary, previous: PackedFloat64Array, can
 
 static func _probe_position(state: PackedFloat64Array, body_point: PackedFloat64Array) -> PackedFloat64Array:
 	return M.add(state.slice(RB.POS, RB.POS + 3), M.q_rotate(RB._att(state), body_point))
+
+
+static func _probe_body_point(probe: Dictionary, state: PackedFloat64Array) -> PackedFloat64Array:
+	if str(probe.get("kind", "")) != "propeller":
+		return probe.get("body_point", PackedFloat64Array())
+	var disc: Dictionary = probe.get("disc", {})
+	if not _prop_disc_is_valid(disc) or state.size() != RB.SIZE:
+		return PackedFloat64Array()
+	var axis: PackedFloat64Array = disc.axis
+	axis = M.scale(axis, 1.0 / M.norm(axis))
+	var down: PackedFloat64Array = HullContact._down_row(state)
+	var along: float = M.dot(down, axis)
+	var radial := M.sub(down, M.scale(axis, along))
+	var radial_length: float = M.norm(radial)
+	var lowest: PackedFloat64Array = disc.hub.duplicate()
+	if radial_length > 1.0e-9:
+		lowest = M.add(lowest, M.scale(radial, float(disc.radius) / radial_length))
+	return lowest
+
+
+static func _prop_disc_is_valid(disc: Dictionary) -> bool:
+	if disc.is_empty():
+		return false
+	var hub_value: Variant = disc.get("hub")
+	var axis_value: Variant = disc.get("axis")
+	if typeof(hub_value) != TYPE_PACKED_FLOAT64_ARRAY or hub_value.size() != 3 \
+			or typeof(axis_value) != TYPE_PACKED_FLOAT64_ARRAY or axis_value.size() != 3 \
+			or not SceneryCollision._packed_finite(hub_value) or not SceneryCollision._packed_finite(axis_value):
+		return false
+	var radius_value: Variant = disc.get("radius")
+	if typeof(radius_value) != TYPE_FLOAT and typeof(radius_value) != TYPE_INT:
+		return false
+	var radius: float = float(radius_value)
+	var axis_length: float = M.norm(axis_value)
+	var reach: float = M.norm(hub_value) + radius
+	return is_finite(radius) and radius > 0.0 and is_finite(axis_length) and axis_length > 0.0 \
+		and is_finite(reach)
 
 
 static func _surface_normal(slope_north: float, slope_east: float) -> PackedFloat64Array:

@@ -59,6 +59,23 @@ func _set_placement(copy: Dictionary, id: String, row: Array) -> void:
 			g.placements.value = [row]
 
 
+func _add_test_flowers(copy: Dictionary, row: Array) -> Dictionary:
+	var fixture := {
+		"id": "test-flowers",
+		"type": "flowers",
+		"zone": "club",
+		"collides": false,
+		"positions": {
+			"value": [row],
+			"unit": "m, m, size m",
+			"kind": "estimated",
+			"source": "synthetic scenery-loader test fixture",
+		},
+	}
+	copy.groups.append(fixture)
+	return fixture
+
+
 func _mutations() -> void:
 	_refuse("unknown format", func(c: Dictionary) -> void: c.format = "openrc-scenery v0", "format")
 	_refuse("another field's data", func(c: Dictionary) -> void: c.field = "elsewhere", "field")
@@ -89,10 +106,14 @@ func _mutations() -> void:
 		for g: Dictionary in c.groups:
 			if g.type == "track":
 				g.surface = "tarmac", "surface")
+	var valid_flowers_case: Dictionary = _raw.duplicate(true)
+	_add_test_flowers(valid_flowers_case, [-30.0, 15.0, 0.3])
+	var valid_flowers_result := Loader.validate(valid_flowers_case, _field)
+	_check("synthetic flower fixture is valid away from the runway", valid_flowers_result.ok,
+		str(valid_flowers_result.errors))
 	_refuse("flowers on the runway", func(c: Dictionary) -> void:
-		for g: Dictionary in c.groups:
-			if g.type == "flowers":
-				g.positions.value = [[15.0, 0.0, 0.3]], "runway")
+		var flowers := _add_test_flowers(c, [-30.0, 15.0, 0.3])
+		flowers.positions.value = [[15.0, 0.0, 0.3]], "runway")
 	_refuse("a fleet aircraft without a baked model", func(c: Dictionary) -> void:
 		for g: Dictionary in c.groups:
 			if g.type == "fleet":

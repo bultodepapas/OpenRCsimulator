@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-13",
+  "step": "RCV-04a",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "platform": "native Windows x86_64",
+  "initial_observed_head": "0bccdc655f8955afe684ff665d90b1b715303c25",
+  "verification_head": "0bccdc655f8955afe684ff665d90b1b715303c25",
+  "workspace": "Shared dirty live tree; other tracks changed unrelated source during this work. Not a full release qualification.",
+  "checks": [
+    {
+      "check": "parse physics/ground_vehicle/quarter_car.gd",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "parse physics/ground_vehicle/suspension_bench_data.gd",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "parse tests/test_rcv_suspension.gd",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "parse runner",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "independent fixture freshness",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "RCV numerical and contract tests",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "RCV CLI tests",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "aircraft golden replay",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "baseline global transcendental guard",
+      "exit_code": 1,
+      "expected_exit": 1
+    },
+    {
+      "check": "baseline Windows guard self-test",
+      "exit_code": 1,
+      "expected_exit": 1
+    },
+    {
+      "check": "float64 guard all physics/sim; transcendental guard RCV sources",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "check": "fixture freshness in focused fresh clone with autocrlf=true",
+      "exit_code": 0,
+      "expected_exit": 0
+    }
+  ],
+  "raw_byte_sha256": {
+    "app/physics/ground_vehicle/quarter_car.gd": "5a141caa4dba4628990df398f98043469f2868cc6dc959fb7f252c2943f56605",
+    "app/physics/ground_vehicle/suspension_bench_data.gd": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+    "app/tests/test_rcv_suspension.gd": "fe7a15035f1dc0bb538b9b93eb5bec0dc47fa84668c94175b38fb8c50df04f33",
+    "app/tests/test_rcv_suspension_cli.py": "a67ca96ac4b22bcec0cebfc106dbfe4bf71be35736ef981fdb741503a2920e96",
+    "research/rc-monster-truck/run_suspension_bench.gd": "0db09b177d2add4992d3b03c750d671420eed64e95197926be62d0a146c9c37a",
+    "research/rc-monster-truck/suspension_bench.json": "abbcd8974abdff396f3f2074dbc0031bc41b2230a74d9b1c31b5871e45496df3",
+    "research/rc-monster-truck/fixtures/suspension_reference.json": "34c728a1b6d3a05449569caf0b78ad1dcf4fedc68310ac1a2e3b177909d017f3",
+    "research/rc-monster-truck/generate_suspension_reference.py": "98436062963942806c7679a26b16218969fcfe508ec862136118a2fbf083e9c1",
+    "app/physics/integrator.gd": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+    "app/sim/flight_session.gd": "81f6f119e38e1a5661f3d818ad1b36b030f8fcf838101d6bc1cfd62ef33c095f",
+    "app/physics/aero.gd": "cf034742d69332061eb9414ccd57f7d0b6cb6e1c2f17cc5ae39e70fe26655539",
+    "app/tests/golden/glide_15.json": "fa5f195b62253a6bd2d243269c21a23de62d1564b0510583172dae17efc9f5ff",
+    "app/tests/golden/pull_throttle.json": "f779dcc4eb9a82dc2c7ae3ec3ba6c72490401773c6000857e85bb4dbafe560c7",
+    "app/tests/golden/roll_15.json": "f0513760a0b63058219755420ff7c4e2da7cf8f527a154c8add534337e96fe32",
+    "app/tests/golden/rudder_doublet.json": "68b15407788e33db80cce49307b12ecb099b7e85cfc56e04714d1de8b5cf61f5"
+  },
+  "remaining": [
+    "full app/test.sh",
+    "Linux execution",
+    "complete vehicle tick performance",
+    "real-truck calibration",
+    "vehicle/menu/model integration"
+  ]
+}

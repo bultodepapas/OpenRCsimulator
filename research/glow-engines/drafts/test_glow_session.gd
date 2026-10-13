@@ -2,6 +2,7 @@ extends SceneTree
 const Flight=preload("res://sim/flight_session.gd")
 const Adapter=preload("res://physics/glow/flight.gd")
 const RB=preload("res://physics/rigid_body.gd")
+const FieldLoader=preload("res://data/field_loader.gd")
 var checks:=0
 var failures:=0
 func check(label: String,ok: bool):
@@ -62,11 +63,19 @@ func _initialize():
 		check(id+" exhausted engine cannot start",not f.glow_start())
 		check(id+" exhausted coast",advance(f,40) and f.sim.continuous[1]==0.)
 		f.reset()
-		check(id+" runway pose",f.reset_on_runway(0.,0.,0.))
+		check(id+" field setup",f.set_field(FieldLoader.load_from().field))
+		var on_runway: bool=f.reset_on_runway(15.,-47.,PI/2.)
+		check(id+" runway pose",on_runway)
+		if not on_runway: f.free();continue
+		check(id+" parked stopped",advance(f,30) and not f.glow_state().running and f.sim.continuous[0]==0.)
+		check(id+" runway starter",f.glow_start())
 		check(id+" sustained warm idle",advance(f,240) and f.glow_state().running)
 		f.sim.inputs[3]=1.
 		check(id+" takeoff acceleration",advance(f,720) and f.sim.state[RB.VEL]>5.)
 		print(id," runway at3s ",f.sim.state.slice(0,6)," rpm ",f.sim.continuous[0])
+		f.sim.inputs[1]=.18
+		check(id+" rotation and climb",advance(f,720) and -f.sim.state[2]>2.)
+		print(id," takeoff at6s ",f.sim.state.slice(0,6))
 		f.free()
 	print("Glow session: ",checks," checks, ",failures," failures")
 	quit(1 if failures else 0)

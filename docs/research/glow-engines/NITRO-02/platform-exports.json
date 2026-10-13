@@ -1,0 +1,17 @@
+{
+  "format": "openrc-glow-platform-exports v1",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "template_archive_sha512": "ca4d71c4d7b81dfc15d1a98baa07534aa95b03fdda78a0075b06672e1648d2e5f40980c9adc28d23e1b92e732ee7bf3461997aa804af74ec2fcd7a93ccb84079",
+  "binary_sha256": {
+    "windows": "07a6c46630d4c54a3f68fb3347edb7bce6290c97c0839337e133c33d6c473e9f",
+    "linux": "2550dceea682e0cdcd8d7b0395111f20a0f0d57703063caf4a556f654e1ae124",
+    "macos": "bbb168c7c3bbda5b9ba501e705a921e2fd06c48d2f73bd53e3d73259001d0184"
+  },
+  "checks": {
+    "windows": "Both glow families run from empty directory, 721 trace rows each",
+    "linux": "Both glow families run under WSL from empty directory, 721 trace rows each",
+    "macos": "check_macos_export.py passed: x86_64 and arm64 slices, executable permission 0755, both ad-hoc signed; macOS runtime not exercised",
+    "version_fields": "check_build_versions.py passed: Windows FileVersion/ProductVersion0.1.0.0; macOS short/bundle0.1.0"
+  },
+  "release_qualification": "not granted; compiled-working-tree resource/CLI checks are separate from target-native visual/input/acoustic/performance and physical/pilot gates"
+}

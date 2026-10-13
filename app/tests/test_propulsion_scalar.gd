@@ -23,6 +23,11 @@ func _initialize() -> void:
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)
 		var prop: Dictionary = flight.aircraft.model.propulsion
+		# H14 freezes the historical Ct/Cp solver. The explicit glow annular law has
+		# independent passivity and carrier/shaft fixtures in test_glow_flight_physics.
+		if Propulsion.is_glow(prop):
+			flight.free()
+			continue
 		var start_rpm: float = flight.start.rpm
 		var has_axis := prop.has("axis")
 		for sample in CASES_PER_AIRCRAFT:

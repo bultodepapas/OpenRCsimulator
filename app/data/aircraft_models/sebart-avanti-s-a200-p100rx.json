@@ -1,0 +1,162 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 1,
+  "family_id": "sebart-avanti-s-a200-p100rx",
+  "builder": {
+    "script": "res://aircraft/avanti_s_model.gd",
+    "adapter": "axis_hinges"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": 0.0,
+    "model_y_thrust": 0.0
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "9748ccc8c193da6c39247678e271e56c83d4948dbf0a9c9accd89e9850f31f16",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/avanti_s_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/avanti-s-a200/geometry.json",
+      "sha256": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+      "hash_mode": "lf_text"
+    },
+    "revision": "a200-av02-contours-03",
+    "datum_source": {
+      "model_z_le": {
+        "value": 0.0
+      },
+      "model_y_thrust": {
+        "value": 0.0
+      }
+    }
+  },
+  "asset": {
+    "kind": "procedural",
+    "identity": "a200-av02-contours-03",
+    "revision": "a200-av02-contours-03"
+  },
+  "bindings": {
+    "controls": {
+      "aileron_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_left",
+            "node": "aileron_left_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "aileron_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_right",
+            "node": "aileron_right_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "elevator": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevator_left",
+            "node": "elevator_left_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          },
+          {
+            "key": "elevator_right",
+            "node": "elevator_right_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "rudder": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "rudder",
+            "node": "rudder_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "flap_left": {
+        "visual_only": true,
+        "hinges": [
+          {
+            "key": "flap_left",
+            "node": "flap_left_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "flap_right": {
+        "visual_only": true,
+        "hinges": [
+          {
+            "key": "flap_right",
+            "node": "flap_right_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": false,
+      "node": "propeller",
+      "spin_node": "",
+      "authored_diameter_m": 0.0,
+      "source": "none",
+      "geometry_ref": ""
+    },
+    "gear": {
+      "keys": {}
+    },
+    "crash": {
+      "provider": "none",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/avanti-s-a200/geometry.json",
+      "sha256": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/avanti_s_geometry.gd",
+      "sha256": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/avanti_s_model.gd",
+      "sha256": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    }
+  ]
+}

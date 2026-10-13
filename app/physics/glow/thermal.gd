@@ -38,3 +38,29 @@ static func evaluate(source: Dictionary, temperature_k: float, ambient_k: float,
 	return {ok = true, temperature_rate_k_s = rate, stored_heat_w = stored_heat,
 		exhaust_heat_w = exhaust_heat, evaporation_heat_w = evaporation, cooling_heat_w = cooling,
 		combustion_head_heat_w = combustion_to_head, mechanical_heat_w = mechanical_heat}
+
+
+## Internal repeated-stage path. `source` must be a successful prepared-source
+## result and `parameters` must be the detached settings snapshot validated by
+## Lifecycle.prepare_evaluator(); the public evaluate() keeps full guards.
+static func _evaluate_prepared(source: Dictionary, temperature_k: float, ambient_k: float,
+		cooling_airspeed_mps: float, parameters: Dictionary) -> Dictionary:
+	if not source.get("ok", false) or not is_finite(temperature_k) or temperature_k <= 0.0 or not is_finite(ambient_k) or ambient_k <= 0.0 or not is_finite(cooling_airspeed_mps) or cooling_airspeed_mps < 0.0:
+		return {ok = false, message = "Invalid thermal source, temperatures or airflow"}
+	var rejected_combustion: float = source.chemical_power_w - source.indicated_power_w
+	if rejected_combustion < 0.0:
+		return {ok = false, message = "Indicated work exceeds released chemical heat"}
+	var mechanical_heat: float = source.mechanical_loss_w + source.pumping_loss_w + source.valve_loss_w
+	var combustion_to_head: float = rejected_combustion * parameters.head_heat_fraction
+	var exhaust_heat: float = rejected_combustion - combustion_to_head
+	var evaporation: float = source.delivered_fuel_kg_s * parameters.premix_evaporation_j_kg * parameters.evaporation_head_fraction
+	var conductance: float = parameters.cooling_base_w_k + parameters.cooling_airflow_w_s_m_k * cooling_airspeed_mps
+	var cooling: float = conductance * (temperature_k - ambient_k)
+	var stored_heat: float = combustion_to_head + mechanical_heat - evaporation - cooling
+	var rate: float = stored_heat / parameters.heat_capacity_j_k
+	for value: float in [exhaust_heat, evaporation, cooling, stored_heat, rate]:
+		if not is_finite(value):
+			return {ok = false, message = "Nonfinite thermal balance"}
+	return {ok = true, temperature_rate_k_s = rate, stored_heat_w = stored_heat,
+		exhaust_heat_w = exhaust_heat, evaporation_heat_w = evaporation, cooling_heat_w = cooling,
+		combustion_head_heat_w = combustion_to_head, mechanical_heat_w = mechanical_heat}

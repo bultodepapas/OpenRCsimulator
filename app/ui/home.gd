@@ -27,6 +27,7 @@ const UpdateNotice := preload("res://ui/update_notice.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
+signal workshop_requested(from: Control)
 signal quit_requested
 ## The player asked for the next interface language (a Preferences.LANGUAGES code).
 signal language_requested(code: String)
@@ -55,6 +56,7 @@ var time_of_day: String = "day"
 var start_button: Button
 
 var fly_button: Button
+var workshop_button: Button
 var weather_button: Button
 var time_button: Button
 var language_button: Button
@@ -169,7 +171,7 @@ func _init() -> void:
 	card_lines.add_child(limits_label)
 	start_button = _button("", "")
 	start_button.name = "StartChoice"
-	start_button.pressed.connect(func() -> void: start_requested.emit("runway" if start_choice == "airborne" else "airborne"))
+	start_button.pressed.connect(_cycle_start_choice)
 	card_lines.add_child(start_button)
 	card.add_child(card_lines)
 	column.add_child(card)
@@ -196,6 +198,16 @@ func _init() -> void:
 	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
 	fly_row.add_child(weather_button)
 	column.add_child(fly_row)
+	workshop_button = _button("Aircraft Workshop", "")
+	workshop_button.name = "Workshop"
+	workshop_button.add_theme_font_size_override("font_size", 16)
+	for state: String in ["normal", "hover", "pressed", "disabled"]:
+		var compact: StyleBoxFlat = theme.get_stylebox(state, "Button").duplicate()
+		compact.content_margin_top = 2
+		compact.content_margin_bottom = 2
+		workshop_button.add_theme_stylebox_override(state, compact)
+	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
+	column.add_child(workshop_button)
 	column.add_child(_gap(10))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
@@ -252,7 +264,9 @@ func _init() -> void:
 func _ready() -> void:
 	# Down from Fly lands on the row's first button (geometry alone picks the middle one, Help). Left and right from
 	# Fly reach the aircraft arrows, so changing airplane is two keys away from the start.
-	fly_button.focus_neighbor_bottom = fly_button.get_path_to(language_button)
+	fly_button.focus_neighbor_bottom = fly_button.get_path_to(workshop_button)
+	workshop_button.focus_neighbor_top = workshop_button.get_path_to(fly_button)
+	workshop_button.focus_neighbor_bottom = workshop_button.get_path_to(language_button)
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button)
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
@@ -310,10 +324,25 @@ func set_aircraft(id: String) -> void:
 
 func set_start_choice(choice: String) -> void:
 	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
+	var half_power: bool = FlightSession.half_power_start_supported(aircraft_id)
 	start_choice = "runway" if supported and choice == "runway" else "airborne"
-	start_button.disabled = not supported
+	if half_power and choice == FlightSession.START_HALF_POWER:
+		start_choice = FlightSession.START_HALF_POWER
+	start_button.disabled = not supported and not half_power
 	start_button.text = "Start: runway (experimental)" if start_choice == "runway" else "Start: in the air"
 	limits_label.text = "Starts on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
+	if start_choice == FlightSession.START_HALF_POWER:
+		start_button.text = "Start: in the air at 50% throttle"
+		limits_label.text = "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
+
+
+func _cycle_start_choice() -> void:
+	var choices: Array[String] = ["airborne"]
+	if FlightSession.runway_aircraft_supported(aircraft_id) and runway_available:
+		choices.append("runway")
+	if FlightSession.half_power_start_supported(aircraft_id):
+		choices.append(FlightSession.START_HALF_POWER)
+	start_requested.emit(choices[(choices.find(start_choice) + 1) % choices.size()])
 
 
 ## Keeps only a complete validated config. A corrupt preference can never stop Home from opening.

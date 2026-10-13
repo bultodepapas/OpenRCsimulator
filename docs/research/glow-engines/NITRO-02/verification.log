@@ -1,0 +1,1309 @@
+=== build_profiles ===
+Glow profile generator: current (4 files)
+
+=== build_installations ===
+Glow installations current
+
+=== test_profiles ===
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK
+
+=== installation_schema ===
+Glow installation schema current; 4 bundled installations read and valid
+
+=== test_installation_schema ===
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.006s
+
+OK
+
+=== test_reference ===
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.009s
+
+OK
+
+=== build_schema ===
+Schema is current: C:\DEVELOPMENT\OpenRCsimulator\app\data\schema\openrc-aircraft-v2.schema.json
+
+=== check_transcendentals ===
+all physics/sim transcendental calls route through math3d
+
+=== test_aircraft_catalog ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default is the Ugly Stik and it is in the catalog  
+ok   seven aircraft, unique IDs  ["jensen-das-ugly-stik-60", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"]
+ok   seven simulated entries, including glow variants and experimental Timber  ["jensen-das-ugly-stik-60", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"]
+ok   glow Stik variants are explicitly experimental and identify inferred profiles  
+ok   unknown ID: no entry, cannot fly  
+ok   step wraps both ways  
+ok   the render adapter knows every catalog ID by the same name  
+ok   jensen-das-ugly-stik-60: builds root/propeller/hinges  
+ok   jensen-das-ugly-stik-60: surfaces deflect and return through the shared adapter  
+ok   jensen-das-ugly-stik-60: data loads  
+ok   jensen-das-ugly-stik-60: the data file is this aircraft (id matches)  jensen-das-ugly-stik-60
+ok   jensen-das-ugly-stik-60: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   jensen-das-ugly-stik-60: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   stik-glow-55ax-2t: builds root/propeller/hinges  
+ok   stik-glow-55ax-2t: surfaces deflect and return through the shared adapter  
+ok   stik-glow-55ax-2t: data loads  
+ok   stik-glow-55ax-2t: the data file is this aircraft (id matches)  stik-glow-55ax-2t
+ok   stik-glow-55ax-2t: data carries its explicit glow_2t family  
+ok   stik-glow-55ax-2t: visual and blur radii use the selected model diameter  
+ok   stik-glow-55ax-2t: glow propeller uses the physical shaft spin sign  
+ok   stik-glow-55ax-2t: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   stik-glow-55ax-2t: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   stik-glow-fs64v-4t: builds root/propeller/hinges  
+ok   stik-glow-fs64v-4t: surfaces deflect and return through the shared adapter  
+ok   stik-glow-fs64v-4t: data loads  
+ok   stik-glow-fs64v-4t: the data file is this aircraft (id matches)  stik-glow-fs64v-4t
+ok   stik-glow-fs64v-4t: data carries its explicit glow_4t family  
+ok   stik-glow-fs64v-4t: visual and blur radii use the selected model diameter  
+ok   stik-glow-fs64v-4t: glow propeller uses the physical shaft spin sign  
+ok   stik-glow-fs64v-4t: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   stik-glow-fs64v-4t: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   gp-extra-300s-60: builds root/propeller/hinges  
+ok   gp-extra-300s-60: surfaces deflect and return through the shared adapter  
+ok   gp-extra-300s-60: data loads  
+ok   gp-extra-300s-60: the data file is this aircraft (id matches)  gp-extra-300s-60
+ok   gp-extra-300s-60: span of the built model matches the data within 1 %  model 1.6236 m, data 1.6256 m
+ok   gp-extra-300s-60: CG lands on the root chord in the visual model  model point (0.0, -0.023952, -0.00614), LE z -0.1088, chord 0.3885
+ok   p51d-mustang-120: builds root/propeller/hinges  
+ok   p51d-mustang-120: surfaces deflect and return through the shared adapter  
+ok   p51d-mustang-120: data loads  
+ok   p51d-mustang-120: the data file is this aircraft (id matches)  p51d-mustang-120
+ok   p51d-mustang-120: span of the built model matches the data within 1 %  model 2.8225 m, data 2.8200 m
+ok   p51d-mustang-120: CG lands on the root chord in the visual model  model point (0.0, -0.071146, 0.177763), LE z 0.0000, chord 0.6664
+ok   sebart-avanti-s-a200-p100rx: builds root/propeller/hinges  
+ok   sebart-avanti-s-a200-p100rx: surfaces deflect and return through the shared adapter  
+ok   sebart-avanti-s-a200-p100rx: data loads  
+ok   sebart-avanti-s-a200-p100rx: the data file is this aircraft (id matches)  sebart-avanti-s-a200-p100rx
+ok   sebart-avanti-s-a200-p100rx: span of the built model matches the data within 1 %  model 2.0000 m, data 2.0000 m
+ok   sebart-avanti-s-a200-p100rx: CG lands on the root chord in the visual model  model point (0.0, 0.005153, 0.24), LE z 0.0000, chord 0.4591
+ok   turbo-lumber-evolution: builds root/propeller/hinges  
+ok   turbo-lumber-evolution: surfaces deflect and return through the shared adapter  
+ok   turbo-lumber-evolution: data loads  
+ok   turbo-lumber-evolution: the data file is this aircraft (id matches)  turbo-lumber-evolution
+ok   turbo-lumber-evolution: span of the built model matches the data within 1 %  model 1.5479 m, data 1.5550 m
+ok   turbo-lumber-evolution: CG lands on the root chord in the visual model  model point (0.0, -0.002176, 0.06), LE z 0.0000, chord 0.2111
+ok   stik-glow-55ax-2t APC 13x6 alternative diameter reaches visual and blur geometry  
+ok   stik-glow-fs64v-4t APC 13x6 alternative diameter reaches visual and blur geometry  
+ok   Extra: loaded CG = dry manual station plus prescribed fuel within 1 mm  z -0.00614 m, expected -0.00614 m
+ok   Extra: physics throws = the model's manual high rates  { "aileron": 17.600665, "elevator": 23.921943, "rudder": 30.026071 } vs { &"aileron": 17.6006649098975, &"elevator": 23.92194317248, &"rudder": 30.0260709855021 }
+ok   Extra: tapered wing roots = measured geometry  
+ok   Extra: equal-area strips move inboard on the tapered wing  outer strip at 0.638 m of 0.813
+ok   flight scene: Extra model and Extra physics together  
+ok   flight scene: trimmed at the Extra's start speed  17.0
+ok   flight scene: trace header names the Extra and its speed  trimmed level flight (engine running) across view at 17.0 m/s (D5: six-axis trim, calm air)
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-55ax-2t flight scene: matching glow telemetry is available  { "family": "glow_2t", "cycle_revolutions": 1, "admission": 0.35531269616332, "air_target": 0.35531269616332, "commanded_throttle": 0.10460096689351, "servo_fraction": 0.10460096689351, "mixture_command": 1.15, "actual_mixture": 1.1500000000574, "fuel_target_kg_s": 0.00011500577191, "fuel_transport_kg_s": 0.00011500577192, "firing_fraction": 1.0, "phase_revolutions": 0.76618014217495, &"running": true, &"stop_reason": "", &"opportunity_count": 6, &"fire_count": 6, &"firing_accumulator": 0.0, "fuel_kg": 0.1199942497114, "temperature_k": 389.906540693632, "air_fraction": 0.35531269616332, "ok": true, "message": "", "indicated_torque_nm": 0.21826585360927, "mechanical_torque_nm": 0.02423883234082, "pumping_torque_nm": 0.00226837979817, "valve_torque_nm": 0.0, "shaft_torque_nm": 0.19175864147027, "delivered_fuel_kg_s": 0.00011500577192, "burned_fuel_kg_s": 0.00005966080245, "unburned_fuel_kg_s": 0.00005534496947, "fuel_input_power_w": 1703.05091887179, "chemical_power_w": 1106.92796938669, "indicated_power_w": 185.583439091436, "mechanical_loss_w": 20.6093889217477, "pumping_loss_w": 1.92872003178043, "valve_loss_w": 0.0, "cycle_work_j": 1.37140480445675, "air_charge_kg_cycle": 0.000002486834, "cycle_frequency_hz": 135.323602840191, "opportunity_frequency_hz": 135.323602840191, "firing_frequency_hz": 135.323602840191, &"profile_identity": { &"id": "os_max_55ax_candidate", &"manufacturer": "O.S. Engines", &"model": "MAX-55AX", &"status": "candidate", &"cycle_revolutions": 1, &"input_sha256": "41b636d09292ed0e440a7c4f80562536f26a5dab6cc1dee88113324e4a4906d1" }, &"brake_power_w": 163.045330137907, &"unburned_chemical_power_w": 596.122949485096, &"rpm": 8119.41617041145, &"blade_count": 2.0, &"propeller": { &"ok": true, &"thrust_n": 5.0640102091645, &"torque_nm": 0.19175864141062, &"shaft_power_w": 163.045330087189, &"thrust_power_w": 101.243693038554, &"dissipation_w": 61.8016370486352 }, &"mass_properties": { &"ok": true, &"mass_kg": 2.62289332638127, &"cg_body_m": [-0.00000048428914, 0.0, 0.0], &"inertia": [0.11585023956, 0.32162928234186, 0.41789069222611, -0.0076956, 0.0078543, 0.00060438944289], &"inverse": [8.65666401925349, 3.11414867986092, 2.39604607383946, 0.20743366521345, -0.16300292921318, -0.00840268732403], &"inertia_origin": [0.11585023956, 0.32162928234248, 0.41789069222673, -0.0076956, 0.0078543, 0.00060438944289] }, &"shaft_work_j": 8.15226650736687, &"propeller_work_j": 8.15226650516714, &"thrust_work_j": 5.06218465246561, &"recommended_max_rpm": 15833.3333333333, &"above_recommended_rpm": false }
+ok   stik-glow-55ax-2t runtime audio snapshot follows the accepted family and firing fraction  
+ok   stik-glow-55ax-2t runtime glow voice replaces legacy motor and propeller loops  
+ok   stik-glow-55ax-2t runtime visual and blur follow session model propeller  
+ok   stik-glow-55ax-2t HUD shows family, engine values, mode and controls  airspeed  20.0 m/s   altitude  30.0 m   AoA  +1.5°   throttle  10%
+ 18 fps   frame p95  54.2 ms   physics 2109 µs/tick  [F3]
+Glow 2-stroke  8119 rpm  head 117 °C  fuel ~150 mL  running  φ 1.15
+[F6] cut  [F7] starter  [F8] lean  [F9] rich
+ok   stik-glow-55ax-2t recommended RPM warning is hidden at the trimmed start point  
+ok   stik-glow-55ax-2t HUD consumes the physical above-recommended RPM flag  { "family": "glow_2t", "cycle_revolutions": 1, "admission": 0.35531269616332, "air_target": 0.35531269616332, "commanded_throttle": 0.10460096689351, "servo_fraction": 0.10460096689351, "mixture_command": 1.15, "actual_mixture": 0.50419951554556, "fuel_target_kg_s": 0.00026231012452, "fuel_transport_kg_s": 0.00011500577192, "firing_fraction": 0.64235462867588, "phase_revolutions": 0.76618014217495, &"running": true, &"stop_reason": "", &"opportunity_count": 6, &"fire_count": 6, &"firing_accumulator": 0.0, "fuel_kg": 0.1199942497114, "temperature_k": 389.906540693632, "air_fraction": 0.35531269616332, "ok": true, "message": "", "indicated_torque_nm": 0.04652528034062, "mechanical_torque_nm": 0.03966866666667, "pumping_torque_nm": 0.00421309552064, "valve_torque_nm": 0.0, "shaft_torque_nm": 0.00264351815331, "delivered_fuel_kg_s": 0.00011500577192, "burned_fuel_kg_s": 0.0000220931758, "unburned_fuel_kg_s": 0.00009291259612, "fuel_input_power_w": 1703.05091887179, "chemical_power_w": 409.909911036285, "indicated_power_w": 77.1467082148942, "mechanical_loss_w": 65.7772941979577, "pumping_loss_w": 6.98601810526474, "valve_loss_w": 0.0, "cycle_work_j": 0.29232695784858, "air_charge_kg_cycle": 0.0000028837465, "cycle_frequency_hz": 263.905555555556, "opportunity_frequency_hz": 263.905555555556, "firing_frequency_hz": 169.520955144391, &"profile_identity": { &"id": "os_max_55ax_candidate", &"manufacturer": "O.S. Engines", &"model": "MAX-55AX", &"status": "candidate", &"cycle_revolutions": 1, &"input_sha256": "41b636d09292ed0e440a7c4f80562536f26a5dab6cc1dee88113324e4a4906d1" }, &"brake_power_w": 4.38339591167177, &"unburned_chemical_power_w": 1293.14100783551, &"rpm": 15834.3333333333, &"blade_count": 2.0, &"propeller": { &"ok": true, &"thrust_n": 64.2330023623108, &"torque_nm": 1.54665395022514, &"shaft_power_w": 2564.61132816141, &"thrust_power_w": 1284.19693197804, &"dissipation_w": 1280.41439618338 }, &"mass_properties": { &"ok": true, &"mass_kg": 2.62289332638127, &"cg_body_m": [-0.00000048428914, 0.0, 0.0], &"inertia": [0.11585023956, 0.32162928234186, 0.41789069222611, -0.0076956, 0.0078543, 0.00060438944289], &"inverse": [8.65666401925349, 3.11414867986092, 2.39604607383946, 0.20743366521345, -0.16300292921318, -0.00840268732403], &"inertia_origin": [0.11585023956, 0.32162928234248, 0.41789069222673, -0.0076956, 0.0078543, 0.00060438944289] }, &"shaft_work_j": 8.15226650736687, &"propeller_work_j": 8.15226650516714, &"thrust_work_j": 5.06218465246561, &"recommended_max_rpm": 15833.3333333333, &"above_recommended_rpm": true }
+ok   stik-glow-55ax-2t main render applies the adapter's physical spin sign  
+ok   stik-glow-55ax-2t F6 cuts combustion  
+ok   stik-glow-55ax-2t F8 requests a lean physical mixture value  
+ok   stik-glow-55ax-2t F9 requests a rich physical mixture value  
+ok   stik-glow-55ax-2t F7 restarts the glow engine  
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-fs64v-4t flight scene: matching glow telemetry is available  { "family": "glow_4t", "cycle_revolutions": 2, "admission": 0.42186213391028, "air_target": 0.42186213391028, "commanded_throttle": 0.11055712909273, "servo_fraction": 0.11055712909273, "mixture_command": 1.15, "actual_mixture": 1.15000000000817, "fuel_target_kg_s": 0.00008790266533, "fuel_transport_kg_s": 0.00008790266533, "firing_fraction": 1.0, "phase_revolutions": 1.20764285142893, &"running": true, &"stop_reason": "", &"opportunity_count": 3, &"fire_count": 3, &"firing_accumulator": 0.0, "fuel_kg": 0.11999560486673, "temperature_k": 389.937019924922, "air_fraction": 0.42186213391028, "ok": true, "message": "", "indicated_torque_nm": 0.35188194350658, "mechanical_torque_nm": 0.02529834284335, "pumping_torque_nm": 0.02066765183576, "valve_torque_nm": 0.01464917142167, "shaft_torque_nm": 0.2912667774058, "delivered_fuel_kg_s": 0.00008790266533, "burned_fuel_kg_s": 0.00006100731733, "unburned_fuel_kg_s": 0.000026895348, "fuel_input_power_w": 1301.69740578069, "chemical_power_w": 1131.91078762425, "indicated_power_w": 318.713239485823, "mechanical_loss_w": 22.9136986140217, "pumping_loss_w": 18.7195006470002, "valve_loss_w": 13.268327533542, "cycle_work_j": 4.42187891460469, "air_charge_kg_cycle": 0.00000477441238, "cycle_frequency_hz": 72.0764285139444, "opportunity_frequency_hz": 72.0764285139444, "firing_frequency_hz": 72.0764285139444, &"profile_identity": { &"id": "os_fs_64v_candidate", &"manufacturer": "O.S. Engines", &"model": "FS-64V", &"status": "candidate", &"cycle_revolutions": 2, &"input_sha256": "1c0060777d56af47b91c0a9f56cb6ad9d4a50bdb212dba426f86ec8d79ba506d" }, &"brake_power_w": 263.811712691259, &"unburned_chemical_power_w": 169.786618156434, &"rpm": 8649.17142167333, &"blade_count": 2.0, &"propeller": { &"ok": true, &"thrust_n": 5.09105855897372, &"torque_nm": 0.29126677735332, &"shaft_power_w": 263.811712643725, &"thrust_power_w": 101.78557895759, &"dissipation_w": 162.026133686134 }, &"mass_properties": { &"ok": true, &"mass_kg": 2.59337374229644, &"cg_body_m": [-0.00000037437139, 0.0, -0.0], &"inertia": [0.11607789338586, 0.31707884895037, 0.41271543402035, -0.0027984, 0.0094867, 0.00025143831305], &"inverse": [8.63296692670608, 3.15446640670871, 2.4275416027352, 0.07634820582887, -0.19848437314225, -0.00367673731351], &"inertia_origin": [0.11607789338586, 0.31707884895074, 0.41271543402071, -0.0027984, 0.0094867, 0.00025143831305] }, &"shaft_work_j": 13.1905856346377, &"propeller_work_j": 13.19058563173, &"thrust_work_j": 5.08927894736823, &"recommended_max_rpm": 11000.0, &"above_recommended_rpm": false }
+ok   stik-glow-fs64v-4t runtime audio snapshot follows the accepted family and firing fraction  
+ok   stik-glow-fs64v-4t runtime glow voice replaces legacy motor and propeller loops  
+ok   stik-glow-fs64v-4t runtime visual and blur follow session model propeller  
+ok   stik-glow-fs64v-4t HUD shows family, engine values, mode and controls  airspeed  20.0 m/s   altitude  30.0 m   AoA  +1.5°   throttle  11%
+ 22 fps   frame p95  46.5 ms   physics 1782 µs/tick  [F3]
+Glow 4-stroke  8649 rpm  head 117 °C  fuel ~150 mL  running  φ 1.15
+[F6] cut  [F7] starter  [F8] lean  [F9] rich
+ok   stik-glow-fs64v-4t recommended RPM warning is hidden at the trimmed start point  
+ok   stik-glow-fs64v-4t HUD consumes the physical above-recommended RPM flag  { "family": "glow_4t", "cycle_revolutions": 2, "admission": 0.42186213391028, "air_target": 0.42186213391028, "commanded_throttle": 0.11055712909273, "servo_fraction": 0.11055712909273, "mixture_command": 1.15, "actual_mixture": 0.93962369512338, "fuel_target_kg_s": 0.00010758356313, "fuel_transport_kg_s": 0.00008790266533, "firing_fraction": 1.0, "phase_revolutions": 1.20764285142893, &"running": true, &"stop_reason": "", &"opportunity_count": 3, &"fire_count": 3, &"firing_accumulator": 0.0, "fuel_kg": 0.11999560486673, "temperature_k": 389.937019924922, "air_fraction": 0.42186213391028, "ok": true, "message": "", "indicated_torque_nm": 0.29520108413969, "mechanical_torque_nm": 0.030002, "pumping_torque_nm": 0.02125493660598, "valve_torque_nm": 0.017001, "shaft_torque_nm": 0.22694314753371, "delivered_fuel_kg_s": 0.00008790266533, "burned_fuel_kg_s": 0.00006706088429, "unburned_fuel_kg_s": 0.00002084178103, "fuel_input_power_w": 1301.69740578069, "chemical_power_w": 1244.22678589367, "indicated_power_w": 340.078151049072, "mechanical_loss_w": 34.5629648261935, "pumping_loss_w": 24.4861551328392, "valve_loss_w": 19.5855264652395, "cycle_work_j": 3.70960622905996, "air_charge_kg_cycle": 0.00000459416033, "cycle_frequency_hz": 91.675, "opportunity_frequency_hz": 91.675, "firing_frequency_hz": 91.675, &"profile_identity": { &"id": "os_fs_64v_candidate", &"manufacturer": "O.S. Engines", &"model": "FS-64V", &"status": "candidate", &"cycle_revolutions": 2, &"input_sha256": "1c0060777d56af47b91c0a9f56cb6ad9d4a50bdb212dba426f86ec8d79ba506d" }, &"brake_power_w": 261.4435046248, &"unburned_chemical_power_w": 57.4706198870233, &"rpm": 11001.0, &"blade_count": 2.0, &"propeller": { &"ok": true, &"thrust_n": 26.7788440723009, &"torque_nm": 0.84084043003672, &"shaft_power_w": 968.666695813632, &"thrust_power_w": 535.389667225444, &"dissipation_w": 433.277028588188 }, &"mass_properties": { &"ok": true, &"mass_kg": 2.59337374229644, &"cg_body_m": [-0.00000037437139, 0.0, -0.0], &"inertia": [0.11607789338586, 0.31707884895037, 0.41271543402035, -0.0027984, 0.0094867, 0.00025143831305], &"inverse": [8.63296692670608, 3.15446640670871, 2.4275416027352, 0.07634820582887, -0.19848437314225, -0.00367673731351], &"inertia_origin": [0.11607789338586, 0.31707884895074, 0.41271543402071, -0.0027984, 0.0094867, 0.00025143831305] }, &"shaft_work_j": 13.1905856346377, &"propeller_work_j": 13.19058563173, &"thrust_work_j": 5.08927894736823, &"recommended_max_rpm": 11000.0, &"above_recommended_rpm": true }
+ok   stik-glow-fs64v-4t main render applies the adapter's physical spin sign  
+ok   stik-glow-fs64v-4t F6 cuts combustion  
+ok   stik-glow-fs64v-4t F8 requests a lean physical mixture value  
+ok   stik-glow-fs64v-4t F9 requests a rich physical mixture value  
+ok   stik-glow-fs64v-4t F7 restarts the glow engine  
+88 checks, 0 failed
+
+=== test_aircraft_contract ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+AS aircraft contract: 2597 checks, 0 failures
+
+=== test_aircraft_data ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b2: 15 propulsion cases equal numerically; 7 signed-zero byte differences
+87 checks, 0 failed
+
+=== test_aircraft_render_contract ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AS render contract: 291 checks, 0 failures
+
+=== test_checkpoint ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H8 checkpoints: 92 checks, 0 failed
+
+=== test_checkpoint_integrity ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+H8-R1 checkpoint integrity: 149 checks, 0 failed
+
+=== test_continuous_state ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   continuous loads receive absolute RK stage times  [0.00416666666667, 0.00625, 0.00625, 0.00833333333333]
+ok   continuous derivative receives the same absolute stage times  [0.00416666666667, 0.00625, 0.00625, 0.00833333333333]
+ok   malformed continuous derivative at stage 1 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   malformed continuous derivative at stage 2 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   malformed continuous derivative at stage 3 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   malformed continuous derivative at stage 4 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   nonfinite continuous derivative at stage 1 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   nonfinite continuous derivative at stage 2 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   nonfinite continuous derivative at stage 3 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   nonfinite continuous derivative at stage 4 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   malformed continuous loads at k1 roll back body, continuous, aux and modes  step rejected: aircraft returned nonfinite or malformed loads
+ok   malformed continuous loads at k2 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   malformed continuous loads at k3 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   malformed continuous loads at k4 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite continuous loads at k1 roll back body, continuous, aux and modes  step rejected: aircraft returned nonfinite or malformed loads
+ok   nonfinite continuous loads at k2 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite continuous loads at k3 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite continuous loads at k4 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   malformed pre-step output rolls back body, continuous, aux and modes  step rejected: pre-step produced nonfinite or malformed auxiliary state
+ok   nonfinite pre-step output rolls back body, continuous, aux and modes  step rejected: pre-step produced nonfinite or malformed auxiliary state
+ok   nonfinite continuous boundary state is rolled back with aux and modes  step rejected: input or auxiliary state is nonfinite or malformed
+ok   nonfinite continuous intermediate at k2 rolls back the tick  step rejected: RK stage state is nonfinite, malformed, or has a degenerate quaternion
+ok   nonfinite continuous intermediate at k3 rolls back the tick  step rejected: RK stage state is nonfinite, malformed, or has a degenerate quaternion
+ok   nonfinite continuous intermediate at k4 rolls back the tick  step rejected: RK stage state is nonfinite, malformed, or has a degenerate quaternion
+ok   continuous state is present in exact checkpoint
+ok   native checkpoint encoding preserves continuous state exactly
+ok   checkpoint continuous array is detached
+ok   continuous flight reaches a replay boundary
+ok   restore accepts a matching continuous layout
+ok   mid-lag checkpoint continuation is bit-exact
+ok   checkpoint rejects missing continuous data atomically
+ok   checkpoint rejects wrong type continuous data atomically
+ok   checkpoint rejects nonfinite continuous data atomically
+ok   checkpoint rejects wrong size continuous data atomically
+ok   reset accepts a caller-initialized continuous state
+ok   reset rejects nonfinite continuous state and restores the prior boundary
+ok   valid reset clears the continuous-state fault
+ok   checkpoint refuses a changed continuous layout
+ok   mid-run continuous layout change faults and restores the fixed layout  step rejected: input or auxiliary state is nonfinite or malformed
+ok   reset establishes a new continuous layout for a new run
+ok   the new fixed layout advances after reset
+ok   bidirectionally coupled body and z converge at fourth order  errors=[0.00002314674983, 0.00000158815057, 0.0000001032728] ratios=14.57466,15.37821
+continuous state: 42 checks, 0 failed
+
+=== test_dynamics ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   shared loads equal manual aero + propulsion evaluation 
+ok   shared derivative equals manual rigid-body derivative including rotor momentum 
+ok   shared evaluation reports its explicit air/load/rotor context 
+ok   15 m/s level trim exists trimmed
+ok   flight modes expose the full 9×9 Jacobian 
+ok   existing longitudinal and lateral modes use explicit projections (4×4; longitudinal 5×5 with the lag) 
+ok   full Jacobian retains the rotor q→r gyroscopic coupling ΔA[ṙ,q] 0.39211365607871557 vs J⁻¹(0,0,h)z 0.39211365607871557
+7 checks, 0 failed
+
+=== test_electric_battery_data ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL2a electric battery data: 67 checks passed
+WARNING: Exponent too high
+   at: built_in_strtod (core/string/ustring.cpp:2553)
+   GDScript backtrace (most recent call first):
+       [0] load_file (res://physics/aircraft_data.gd:57)
+       [1] _check_serialized_overflow (res://tests/test_electric_battery_data.gd:208)
+       [2] _initialize (res://tests/test_electric_battery_data.gd:159)
+
+=== test_electric_battery_session ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a battery session: 103 checks, 0 failed
+
+=== test_electric_battery_step ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL2a electric battery step: 63 checks, 0 failed
+
+=== test_electric_data ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL1b electric aircraft data: 43 checks passed
+WARNING: Exponent too high
+   at: built_in_strtod (core/string/ustring.cpp:2553)
+   GDScript backtrace (most recent call first):
+       [0] load_file (res://physics/aircraft_data.gd:57)
+       [1] _check_serialized_overflow (res://tests/test_electric_data.gd:155)
+       [2] _initialize (res://tests/test_electric_data.gd:95)
+
+=== test_electric_dynamics ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL2a-P1 electric dynamics: 74 checks, 0 failed
+
+=== test_electric_event_localization ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL2a-P2 event localization: 2946 checks, 0 failed; max linear calls=20, nonlinear=155
+
+=== test_electric_input ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   4s data starts a coupled electric flight
+ok   4s disabled source has zero current
+ok   4s reset restores powered trim
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   6s data starts a coupled electric flight
+ok   6s disabled source has zero current
+ok   6s reset restores powered trim
+EL1e electric session defaults: 6 checks, 0 failed
+
+=== test_electric_motor ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL1a synthetic static: rho=0.800 rpm=6246.823214 battery_A=10.714710
+EL1a synthetic static: rho=1.225 rpm=5936.859471 battery_A=14.589257
+EL1a synthetic static: rho=1.600 rpm=5705.821175 battery_A=17.477235
+EL1a no-load: Hz=120 rpm_error=0.015830550908
+EL1a no-load: Hz=240 rpm_error=0.000910824056
+EL1a no-load: Hz=480 rpm_error=0.000054623271
+EL1a no-load: Hz=960 rpm_error=0.000003344239
+EL1a electric source: 1057 checks, 0 failed
+
+=== test_electric_motor_compact ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL2a-P3 compact motor: 13 checks, 0 failed
+
+=== test_electric_propulsion ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   electric identity is a rotor-dynamics capability, not a combustion shaft layout 
+ok   analytic static quadratic gives a stable equilibrium { &"ok": true, &"status": "equilibrium", &"message": "stable electric torque equilibrium", &"rpm": 8797.67497039035, &"residual": 0.00000000000964, &"stability_slope": -0.00105748448292, &"lower_rpm": 1.0, &"upper_rpm": 12000.0, &"unstable_roots": 0, &"iterations": 27 }
+ok   equilibrium matches independently solved quadratic 8797.674970 rpm vs 8797.674970 rpm
+ok   equilibrium residual and restoring slopes are checked -0.00105748448292
+ok   legacy float steady_rpm wrapper uses the same electric source 
+ok   density changes propeller load and equilibrium RPM 
+ok   motor constants and source output remain independent of density 
+ok   windmilling prop can establish a stable root above Kv × V status=equilibrium rpm=16988.404338297285 reference=12000.0
+ok   unbracketed zero-duty static case fails explicitly no stable electric torque equilibrium in the bounded RPM search
+ok   stopped-prop cutoff zero is not reported as a steady root equilibrium at the stopped-prop cutoff is not a positive-RPM operating point
+ok   mathematical negative-Cp control detects an unstable-only root electric torque balance has no stable root in the bounded search; an unstable root was found
+ok   pure source rejects negative RPM and invalid duty 
+ok   steady solver reports invalid duty as an input failure 
+ok   source-off coasts with motor loss, no current or combustion friction -49.73181430444747 rpm/s
+ok   electric coast below prop cutoff still approaches the physical rest boundary 
+ok   source-off at exact rest does not initiate reverse rotation 
+ok   motor can provide breakaway torque at rest 
+ok   electric torque dispatch does not require shaft.power_curve 
+ok   powered electric in-air trim uses the same stable source equilibrium trimmed
+ok   electric trim reports an in-range duty, positive RPM and small residual duty=0.8303 rpm=9110.01 residual=1.9205804912358943e-10
+20 checks, 0 failed
+
+=== test_electric_runway ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-E1 electric runway: 177 checks, 0 failed
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+
+=== test_electric_session ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL1d electric session: 86 checks, 0 failed
+electric propulsion requires coupled-rk4
+
+=== test_electric_stop ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL1d electric stop: 37 checks, 0 failed
+
+=== test_electric_supply ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL2a electric supply: 95 checks, 0 failed
+
+=== test_glow_audio ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+23 checks, 0 failed
+
+=== test_glow_coupling ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   estimated prop map satisfies J·Ct ≤ Cp over 0≤J≤1.2 samples  minimum prop-drag minus thrust power=0 W
+ok   estimated prop map satisfies J·Ct ≤ Cp at every interval endpoint and extremum  minimum admissibility margin=0 W
+ok   beyond map coverage uses negative drag Ct and a zero Cp floor  Ct=-0.015 Cp=0.0; windmilling is not qualified
+ok   2t estimated prop produces positive static thrust
+ok   2t estimated prop absorbs positive shaft torque
+ok   2t Propulsion.prop_torque matches thrust_torque load  prop=0.14261277619428 output=0.14261277619428
+ok   2t forward inflow advances the propeller
+ok   2t forward inflow unloads the estimated Cp curve
+ok   2t thrust remains forward under forward inflow
+ok   2t initial admission torque exceeds estimated static prop load  { "ok": true, "message": "", "indicated_torque_nm": 0.37033932755088, "mechanical_torque_nm": 0.035, "pumping_torque_nm": 0.00053571553845, "valve_torque_nm": 0.0, "shaft_torque_nm": 0.33480361201243, "delivered_fuel_kg_s": 0.00010349906191, "burned_fuel_kg_s": 0.00005771107692, "unburned_fuel_kg_s": 0.00004578798499, "fuel_input_power_w": 3564.50769230769, "chemical_power_w": 2423.86523076923, "indicated_power_w": 193.909218461538, "mechanical_loss_w": 18.3259571459405, "pumping_loss_w": 0.2805, "valve_loss_w": 0.0, "cycle_work_j": 2.32691062153846, "air_charge_kg_cycle": 0.00000562683, "cycle_frequency_hz": 83.3333333333333, "opportunity_frequency_hz": 83.3333333333333, "firing_frequency_hz": 83.3333333333333 }
+ok   2t has positive initial shaft acceleration  23101.5900982977
+ok   2t low admission overcomes prop torque with negative shaft acceleration  -37189.9233843317
+ok   2t spin-up reaction opposes positive rotor acceleration
+ok   2t spin-down reaction opposes negative rotor acceleration
+ok   2t uses its family-specific cadence
+ok   720-degree opportunity cadence is half the 2T cadence
+ok   2t simulation accepted every requested RK4 tick  ticks=600 fault=
+ok   2t loaded run spins above and below its initial RPM
+ok   2t fixed prop produces positive thrust and body inflow
+ok   2t delivered fuel contains the burned mass
+ok   2t integrated prop drag work covers thrust work in still air  margin=344.5211106299107 J prop=1002.13078399771 J thrust=657.609673367797 J
+ok   2t body-free angular momentum closes against prop drag impulse  1.2323475573339238e-14 N·m·s
+ok   2t rotor and translation work close independently  0.0005676233087115179 J
+ok   2t 240/480/960 Hz traces stay finite
+ok   2t 480/960 Hz endpoint refinement improves over 240/480 Hz  coarse=0.00387726650447 fine=0.00193246696065
+ok   2t conservation error tightens at the finest step  work=0.00056762330871→0.00003522226893 angular=0.00000000000001→0.00000000000003
+ok   2t full continuous checkpoint is valid
+ok   2t branch continuation runs without a simulation fault
+ok   2t accepts its exact checkpoint for replay
+ok   2t restored checkpoint pauses before explicit resume
+ok   2t pause prevents a physics tick
+ok   2t checkpoint replay is byte-exact
+ok   2t malformed joint RK stage faults and pauses
+ok   2t malformed joint RK stage rolls back every state lane
+ok   4t estimated prop produces positive static thrust
+ok   4t estimated prop absorbs positive shaft torque
+ok   4t Propulsion.prop_torque matches thrust_torque load  prop=0.14261277619428 output=0.14261277619428
+ok   4t forward inflow advances the propeller
+ok   4t forward inflow unloads the estimated Cp curve
+ok   4t thrust remains forward under forward inflow
+ok   4t initial admission torque exceeds estimated static prop load  { "ok": true, "message": "", "indicated_torque_nm": 0.38123166071414, "mechanical_torque_nm": 0.025, "pumping_torque_nm": 0.0006127465309, "valve_torque_nm": 0.006, "shaft_torque_nm": 0.34961891418324, "delivered_fuel_kg_s": 0.00005174953096, "burned_fuel_kg_s": 0.00003394769231, "unburned_fuel_kg_s": 0.00001780183865, "fuel_input_power_w": 1782.25384615385, "chemical_power_w": 1425.80307692308, "indicated_power_w": 199.612430769231, "mechanical_loss_w": 13.0899693899575, "pumping_loss_w": 0.32083333333333, "valve_loss_w": 3.14159265358979, "cycle_work_j": 4.79069833846154, "air_charge_kg_cycle": 0.0000066198, "cycle_frequency_hz": 41.6666666666667, "opportunity_frequency_hz": 41.6666666666667, "firing_frequency_hz": 41.6666666666667 }
+ok   4t has positive initial shaft acceleration  24877.13872321
+ok   4t low admission overcomes prop torque with negative shaft acceleration  -36107.0434096068
+ok   4t spin-up reaction opposes positive rotor acceleration
+ok   4t spin-down reaction opposes negative rotor acceleration
+ok   4t uses its family-specific cadence
+ok   720-degree opportunity cadence is half the 2T cadence
+ok   4t simulation accepted every requested RK4 tick  ticks=600 fault=
+ok   4t loaded run spins above and below its initial RPM
+ok   4t fixed prop produces positive thrust and body inflow
+ok   4t delivered fuel contains the burned mass
+ok   4t integrated prop drag work covers thrust work in still air  margin=368.7047419360546 J prop=1070.57125594687 J thrust=701.866514010815 J
+ok   4t body-free angular momentum closes against prop drag impulse  2.3314683517128287e-15 N·m·s
+ok   4t rotor and translation work close independently  0.0006040459650193952 J
+ok   4t 240/480/960 Hz traces stay finite
+ok   4t 480/960 Hz endpoint refinement improves over 240/480 Hz  coarse=0.00421206467484 fine=0.00209981493733
+ok   4t conservation error tightens at the finest step  work=0.00060404596502→0.00003745981962 angular=0.0→0.00000000000006
+ok   4t full continuous checkpoint is valid
+ok   4t branch continuation runs without a simulation fault
+ok   4t accepts its exact checkpoint for replay
+ok   4t restored checkpoint pauses before explicit resume
+ok   4t pause prevents a physics tick
+ok   4t checkpoint replay is byte-exact
+ok   4t malformed joint RK stage faults and pauses
+ok   4t malformed joint RK stage rolls back every state lane
+glow shaft/prop coupling: 65 checks, 0 failed
+
+=== test_glow_equilibrium ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Glow equilibria: 196 checks, 0 failed
+
+=== test_glow_flight_physics ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   fuel mass model accepts full, partial and dry inventories
+ok   wet fuel mass retains the source mass  got 2.4, expected 2.4 (tol 0.000000002)
+ok   partial-fuel aircraft mass removes only burned fuel  got 2.28, expected 2.28 (tol 0.000000002)
+ok   dry aircraft mass equals the dry structure  got 2.2, expected 2.2 (tol 0.000000002)
+ok   wet CG is at the chosen datum  got 0.0, expected 0.0 (tol 0.000000002)
+ok   partial tank moves CG away from its side of the datum  got -0.01052631578947, expected -0.01052631578947 (tol 0.000000002)
+ok   dry CG settles at the dry structure centre  got -0.01818181818182, expected -0.01818181818182 (tol 0.000000002)
+ok   wet tensor agrees with dry body plus tank geometry  max component error=0
+ok   partial tensor follows the independent mass distribution  max component error=0
+ok   dry tensor returns to dry-body centroidal inertia  max component error=1.3877787807814457e-17
+ok   fuel removal changes the aircraft's inertia tensor
+ok   negative or excess remaining fuel is rejected
+ok   full co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   full fixed datum follows CM centripetal geometry  got 0.0, expected 0.0 (tol 0.0000000001)
+ok   partial co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   partial fixed datum follows CM centripetal geometry  got -0.26315789473684, expected -0.26315789473684 (tol 0.0000000001)
+ok   dry co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   dry fixed datum follows CM centripetal geometry  got -0.45454545454545, expected -0.45454545454545 (tol 0.0000000001)
+ok   2T installed aircraft loads  []
+ok   2T static propeller evaluates
+ok   2T static propeller cannot create mechanical power  QΩ − Tu=150.200787357029 W, blade drag dissipation=150.200787357029 W
+ok   2T static propeller closes to section drag dissipation  power gap=0.0 W
+ok   2T forward propeller evaluates
+ok   2T forward propeller cannot create mechanical power  QΩ − Tu=36.6947909594949 W, blade drag dissipation=36.6947909594949 W
+ok   2T forward propeller closes to section drag dissipation  power gap=0.00000000000002 W
+ok   2T reverse airflow propeller evaluates
+ok   2T reverse airflow propeller cannot create mechanical power  QΩ − Tu=283.307882777076 W, blade drag dissipation=283.307882777076 W
+ok   2T reverse airflow propeller closes to section drag dissipation  power gap=0.00000000000006 W
+ok   2T windmilling propeller evaluates
+ok   2T windmilling propeller cannot create mechanical power  QΩ − Tu=90.9389981017621 W, blade drag dissipation=90.9389981017621 W
+ok   2T windmilling propeller closes to section drag dissipation  power gap=-0.00000000000001 W
+ok   2T windmilling air drives the shaft
+ok   2T stopped in airflow propeller evaluates
+ok   2T stopped in airflow propeller cannot create mechanical power  QΩ − Tu=98.3272060562019 W, blade drag dissipation=98.3272060562019 W
+ok   2T stopped in airflow propeller closes to section drag dissipation  power gap=0.00000000000001 W
+ok   2T stopped in reverse airflow propeller evaluates
+ok   2T stopped in reverse airflow propeller cannot create mechanical power  QΩ − Tu=98.3272060562019 W, blade drag dissipation=98.3272060562019 W
+ok   2T stopped in reverse airflow propeller closes to section drag dissipation  power gap=0.00000000000003 W
+ok   2T rest propeller evaluates
+ok   2T rest propeller cannot create mechanical power  QΩ − Tu=0.0 W, blade drag dissipation=0.0 W
+ok   2T rest propeller closes to section drag dissipation  power gap=0.0 W
+ok   2T stationary propeller at rest has zero flow power
+ok   2T running flight stage evaluates
+ok   2T running body and rotor angular momentum balance  max component error=5.551115123125783e-17
+ok   2T rotating coast stage evaluates
+ok   2T rotating coast body and rotor angular momentum balance  max component error=4.440892098500626e-16
+ok   2T stopped coast consumes no tank fuel  got 0.0, expected 0.0 (tol 0.000000002)
+ok   2T static stop holds the rotor at rest  [0.0, 0.0, -1.09125, 0.0, 0.0, -0.00112269636782, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+ok   2T forward windmill breaks the stop into positive RPM  [8055.90100019916, 0.0, -3.71025, 0.0, 0.0, -0.00112269636782, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -98.3272060562019, 0.0]
+ok   2T reverse airflow is refused at the one-way stop  []
+ok   4T installed aircraft loads  []
+ok   4T static propeller evaluates
+ok   4T static propeller cannot create mechanical power  QΩ − Tu=262.242448179698 W, blade drag dissipation=262.242448179698 W
+ok   4T static propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T forward propeller evaluates
+ok   4T forward propeller cannot create mechanical power  QΩ − Tu=62.2479645182932 W, blade drag dissipation=62.2479645182932 W
+ok   4T forward propeller closes to section drag dissipation  power gap=-0.00000000000001 W
+ok   4T reverse airflow propeller evaluates
+ok   4T reverse airflow propeller cannot create mechanical power  QΩ − Tu=571.466653400393 W, blade drag dissipation=571.466653400393 W
+ok   4T reverse airflow propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T windmilling propeller evaluates
+ok   4T windmilling propeller cannot create mechanical power  QΩ − Tu=162.493004714407 W, blade drag dissipation=162.493004714407 W
+ok   4T windmilling propeller closes to section drag dissipation  power gap=-0.00000000000003 W
+ok   4T windmilling air drives the shaft
+ok   4T stopped in airflow propeller evaluates
+ok   4T stopped in airflow propeller cannot create mechanical power  QΩ − Tu=169.508319758402 W, blade drag dissipation=169.508319758402 W
+ok   4T stopped in airflow propeller closes to section drag dissipation  power gap=0.00000000000003 W
+ok   4T stopped in reverse airflow propeller evaluates
+ok   4T stopped in reverse airflow propeller cannot create mechanical power  QΩ − Tu=169.508319758402 W, blade drag dissipation=169.508319758402 W
+ok   4T stopped in reverse airflow propeller closes to section drag dissipation  power gap=0.00000000000006 W
+ok   4T rest propeller evaluates
+ok   4T rest propeller cannot create mechanical power  QΩ − Tu=0.0 W, blade drag dissipation=0.0 W
+ok   4T rest propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T stationary propeller at rest has zero flow power
+ok   4T running flight stage evaluates
+ok   4T running body and rotor angular momentum balance  max component error=1.1102230246251565e-16
+ok   4T rotating coast stage evaluates
+ok   4T rotating coast body and rotor angular momentum balance  max component error=4.440892098500626e-16
+ok   4T stopped coast consumes no tank fuel  got 0.0, expected 0.0 (tol 0.000000002)
+ok   4T static stop holds the rotor at rest  [0.0, 0.0, -0.92590909090909, 0.0, 0.0, -0.00054542811007, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+ok   4T forward windmill breaks the stop into positive RPM  [7008.12723506174, 0.0, -3.14809090909091, 0.0, 0.0, -0.00054542811007, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -169.508319758402, 0.0]
+ok   4T reverse airflow is refused at the one-way stop  []
+glow flight physics: 82 checks, 0 failed
+
+=== test_glow_four_stroke ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+304 checks, 0 failed
+
+=== test_glow_installation ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   malformed direct attachment is refused without an exception
+ok   2T generated aircraft JSON parses
+ok   2T aircraft mass and propulsion derive  []
+ok   2T generated installation JSON parses
+ok   2T generated install includes explicit starter prime quantity
+ok   2T generated installation attaches before flight  []
+ok   2T installed profile family matches its 2T/4T data
+ok   2T installed identity hashes exact source bytes
+ok   2T installed propeller has a unit runtime axis
+ok   2T attachment does not mutate its input model
+ok   2T full aircraft loader completes glow validation before flight  []
+ok   2T omitted thrust angles resolve to the documented +x runtime rotor axis  []
+ok   2T pure validator accepts generated candidate value  []
+ok   2T pure validator returns a detached normalized install
+ok   2T accepts zero heat partitions and cooling terms at their inclusive domain boundary  []
+ok   2T accepts a zero starter prime when no priming fuel is used  []
+ok   2T rejects unknown root field  ["Malformed glow installation root"]
+ok   2T rejects unknown lifecycle setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   2T rejects missing starter prime setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   2T rejects unsupported installation wash table  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects profile traversal  ["Glow profile must identify a bundled res://data/glow JSON file"]
+ok   2T rejects unknown family  ["Unsupported glow installation format or family"]
+ok   2T rejects profile family mismatch  ["Invalid or mismatched glow engine profile"]
+ok   2T rejects quantity unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects boolean quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects blank provenance  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects nonfinite quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects transport time constant below integrator envelope  ["Glow transport time constants must be in [0.02, 5] s"]
+ok   2T rejects idle admission upper bound  ["idle_admission must be strictly between zero and one"]
+ok   2T rejects cold full temperature crosses hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T rejects hot full temperature below cold full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T rejects hot zero temperature equals hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T rejects lean threshold reaches nominal mixture  ["Lean misfire ratios must satisfy 0 ≤ zero < start < nominal"]
+ok   2T rejects rich threshold is unordered  ["Rich misfire ratios must satisfy nominal < start < zero ≤ 4"]
+ok   2T rejects starter prime mass upper bound  ["starter_prime_kg must be in [0, 0.001] kg"]
+ok   2T rejects starter prime unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects negative starter prime mass  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects thermal partition above one  ["Glow head heat capacity or combustion heat fraction is outside its domain"]
+ok   2T rejects negative thermal cooling coefficient  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects zero thermal capacity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects unsupported blade count  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   2T rejects blade chord exceeds diameter  ["Glow propeller pitch or chord is outside its geometric domain"]
+ok   2T rejects propeller lift slope domain  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   2T rejects aircraft and install propeller diameter mismatch  ["Glow installation and aircraft propeller diameters disagree"]
+ok   2T rejects initial head temperature above installation bound  ["Initial glow temperature must be finite and in [200, 600] K"]
+ok   2T rejects unmatched fuel inventory name  ["Glow fuel tank must name one explicit glow_fuel inventory item"]
+ok   2T refuses a non-glow energy source tank
+ok   2T refuses malformed tank geometry quantity
+ok   2T refuses ambiguous duplicate glow fuel inventory names
+ok   2T refuses a non-unit rotor axis
+ok   2T rejects rotor inertia above the axis-projected dry carrier even below Jxx  ["Subtracting the glow rotor leaves nonpositive dry carrier inertia along its axis"]
+ok   2T accepts rotor inertia below the axis-projected dry carrier limit  []
+ok   2T rejects unsupported optional propeller module normal_force
+ok   2T rejects unsupported optional propeller module pfactor_moment
+ok   2T rejects unsupported optional propeller module slipstream
+ok   2T rejects mixed legacy shaft module
+ok   4T generated aircraft JSON parses
+ok   4T aircraft mass and propulsion derive  []
+ok   4T generated installation JSON parses
+ok   4T generated install includes explicit starter prime quantity
+ok   4T generated installation attaches before flight  []
+ok   4T installed profile family matches its 2T/4T data
+ok   4T installed identity hashes exact source bytes
+ok   4T installed propeller has a unit runtime axis
+ok   4T attachment does not mutate its input model
+ok   4T full aircraft loader completes glow validation before flight  []
+ok   4T omitted thrust angles resolve to the documented +x runtime rotor axis  []
+ok   4T pure validator accepts generated candidate value  []
+ok   4T pure validator returns a detached normalized install
+ok   4T accepts zero heat partitions and cooling terms at their inclusive domain boundary  []
+ok   4T accepts a zero starter prime when no priming fuel is used  []
+ok   4T rejects unknown root field  ["Malformed glow installation root"]
+ok   4T rejects unknown lifecycle setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   4T rejects missing starter prime setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   4T rejects unsupported installation wash table  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects profile traversal  ["Glow profile must identify a bundled res://data/glow JSON file"]
+ok   4T rejects unknown family  ["Unsupported glow installation format or family"]
+ok   4T rejects profile family mismatch  ["Invalid or mismatched glow engine profile"]
+ok   4T rejects quantity unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects boolean quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects blank provenance  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects nonfinite quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects transport time constant below integrator envelope  ["Glow transport time constants must be in [0.02, 5] s"]
+ok   4T rejects idle admission upper bound  ["idle_admission must be strictly between zero and one"]
+ok   4T rejects cold full temperature crosses hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T rejects hot full temperature below cold full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T rejects hot zero temperature equals hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T rejects lean threshold reaches nominal mixture  ["Lean misfire ratios must satisfy 0 ≤ zero < start < nominal"]
+ok   4T rejects rich threshold is unordered  ["Rich misfire ratios must satisfy nominal < start < zero ≤ 4"]
+ok   4T rejects starter prime mass upper bound  ["starter_prime_kg must be in [0, 0.001] kg"]
+ok   4T rejects starter prime unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects negative starter prime mass  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects thermal partition above one  ["Glow head heat capacity or combustion heat fraction is outside its domain"]
+ok   4T rejects negative thermal cooling coefficient  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects zero thermal capacity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects unsupported blade count  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   4T rejects blade chord exceeds diameter  ["Glow propeller pitch or chord is outside its geometric domain"]
+ok   4T rejects propeller lift slope domain  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   4T rejects aircraft and install propeller diameter mismatch  ["Glow installation and aircraft propeller diameters disagree"]
+ok   4T rejects initial head temperature above installation bound  ["Initial glow temperature must be finite and in [200, 600] K"]
+ok   4T rejects unmatched fuel inventory name  ["Glow fuel tank must name one explicit glow_fuel inventory item"]
+ok   4T refuses a non-glow energy source tank
+ok   4T refuses malformed tank geometry quantity
+ok   4T refuses ambiguous duplicate glow fuel inventory names
+ok   4T refuses a non-unit rotor axis
+ok   4T rejects rotor inertia above the axis-projected dry carrier even below Jxx  ["Subtracting the glow rotor leaves nonpositive dry carrier inertia along its axis"]
+ok   4T accepts rotor inertia below the axis-projected dry carrier limit  []
+ok   4T rejects unsupported optional propeller module normal_force
+ok   4T rejects unsupported optional propeller module pfactor_moment
+ok   4T rejects unsupported optional propeller module slipstream
+ok   4T rejects mixed legacy shaft module
+ok   2T APC variant generated aircraft JSON parses
+ok   2T APC variant aircraft mass and propulsion derive  []
+ok   2T APC variant generated installation JSON parses
+ok   2T APC variant generated install includes explicit starter prime quantity
+ok   2T APC variant generated installation attaches before flight  []
+ok   2T APC variant installed profile family matches its 2T/4T data
+ok   2T APC variant installed identity hashes exact source bytes
+ok   2T APC variant installed propeller has a unit runtime axis
+ok   2T APC variant attachment does not mutate its input model
+ok   2T APC variant full aircraft loader completes glow validation before flight  []
+ok   2T APC variant omitted thrust angles resolve to the documented +x runtime rotor axis  []
+ok   2T APC variant pure validator accepts generated candidate value  []
+ok   2T APC variant pure validator returns a detached normalized install
+ok   2T APC variant accepts zero heat partitions and cooling terms at their inclusive domain boundary  []
+ok   2T APC variant accepts a zero starter prime when no priming fuel is used  []
+ok   2T APC variant rejects unknown root field  ["Malformed glow installation root"]
+ok   2T APC variant rejects unknown lifecycle setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   2T APC variant rejects missing starter prime setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   2T APC variant rejects unsupported installation wash table  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects profile traversal  ["Glow profile must identify a bundled res://data/glow JSON file"]
+ok   2T APC variant rejects unknown family  ["Unsupported glow installation format or family"]
+ok   2T APC variant rejects profile family mismatch  ["Invalid or mismatched glow engine profile"]
+ok   2T APC variant rejects quantity unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects boolean quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects blank provenance  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects nonfinite quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects transport time constant below integrator envelope  ["Glow transport time constants must be in [0.02, 5] s"]
+ok   2T APC variant rejects idle admission upper bound  ["idle_admission must be strictly between zero and one"]
+ok   2T APC variant rejects cold full temperature crosses hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T APC variant rejects hot full temperature below cold full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T APC variant rejects hot zero temperature equals hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T APC variant rejects lean threshold reaches nominal mixture  ["Lean misfire ratios must satisfy 0 ≤ zero < start < nominal"]
+ok   2T APC variant rejects rich threshold is unordered  ["Rich misfire ratios must satisfy nominal < start < zero ≤ 4"]
+ok   2T APC variant rejects starter prime mass upper bound  ["starter_prime_kg must be in [0, 0.001] kg"]
+ok   2T APC variant rejects starter prime unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects negative starter prime mass  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects thermal partition above one  ["Glow head heat capacity or combustion heat fraction is outside its domain"]
+ok   2T APC variant rejects negative thermal cooling coefficient  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects zero thermal capacity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects unsupported blade count  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   2T APC variant rejects blade chord exceeds diameter  ["Glow propeller pitch or chord is outside its geometric domain"]
+ok   2T APC variant rejects propeller lift slope domain  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   2T APC variant rejects aircraft and install propeller diameter mismatch  ["Glow installation and aircraft propeller diameters disagree"]
+ok   2T APC variant rejects initial head temperature above installation bound  ["Initial glow temperature must be finite and in [200, 600] K"]
+ok   2T APC variant rejects unmatched fuel inventory name  ["Glow fuel tank must name one explicit glow_fuel inventory item"]
+ok   2T APC variant refuses a non-glow energy source tank
+ok   2T APC variant refuses malformed tank geometry quantity
+ok   2T APC variant refuses ambiguous duplicate glow fuel inventory names
+ok   2T APC variant refuses a non-unit rotor axis
+ok   2T APC variant rejects rotor inertia above the axis-projected dry carrier even below Jxx  ["Subtracting the glow rotor leaves nonpositive dry carrier inertia along its axis"]
+ok   2T APC variant accepts rotor inertia below the axis-projected dry carrier limit  []
+ok   2T APC variant rejects unsupported optional propeller module normal_force
+ok   2T APC variant rejects unsupported optional propeller module pfactor_moment
+ok   2T APC variant rejects unsupported optional propeller module slipstream
+ok   2T APC variant rejects mixed legacy shaft module
+ok   4T APC variant generated aircraft JSON parses
+ok   4T APC variant aircraft mass and propulsion derive  []
+ok   4T APC variant generated installation JSON parses
+ok   4T APC variant generated install includes explicit starter prime quantity
+ok   4T APC variant generated installation attaches before flight  []
+ok   4T APC variant installed profile family matches its 2T/4T data
+ok   4T APC variant installed identity hashes exact source bytes
+ok   4T APC variant installed propeller has a unit runtime axis
+ok   4T APC variant attachment does not mutate its input model
+ok   4T APC variant full aircraft loader completes glow validation before flight  []
+ok   4T APC variant omitted thrust angles resolve to the documented +x runtime rotor axis  []
+ok   4T APC variant pure validator accepts generated candidate value  []
+ok   4T APC variant pure validator returns a detached normalized install
+ok   4T APC variant accepts zero heat partitions and cooling terms at their inclusive domain boundary  []
+ok   4T APC variant accepts a zero starter prime when no priming fuel is used  []
+ok   4T APC variant rejects unknown root field  ["Malformed glow installation root"]
+ok   4T APC variant rejects unknown lifecycle setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   4T APC variant rejects missing starter prime setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   4T APC variant rejects unsupported installation wash table  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects profile traversal  ["Glow profile must identify a bundled res://data/glow JSON file"]
+ok   4T APC variant rejects unknown family  ["Unsupported glow installation format or family"]
+ok   4T APC variant rejects profile family mismatch  ["Invalid or mismatched glow engine profile"]
+ok   4T APC variant rejects quantity unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects boolean quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects blank provenance  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects nonfinite quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects transport time constant below integrator envelope  ["Glow transport time constants must be in [0.02, 5] s"]
+ok   4T APC variant rejects idle admission upper bound  ["idle_admission must be strictly between zero and one"]
+ok   4T APC variant rejects cold full temperature crosses hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T APC variant rejects hot full temperature below cold full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T APC variant rejects hot zero temperature equals hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T APC variant rejects lean threshold reaches nominal mixture  ["Lean misfire ratios must satisfy 0 ≤ zero < start < nominal"]
+ok   4T APC variant rejects rich threshold is unordered  ["Rich misfire ratios must satisfy nominal < start < zero ≤ 4"]
+ok   4T APC variant rejects starter prime mass upper bound  ["starter_prime_kg must be in [0, 0.001] kg"]
+ok   4T APC variant rejects starter prime unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects negative starter prime mass  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects thermal partition above one  ["Glow head heat capacity or combustion heat fraction is outside its domain"]
+ok   4T APC variant rejects negative thermal cooling coefficient  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects zero thermal capacity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects unsupported blade count  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   4T APC variant rejects blade chord exceeds diameter  ["Glow propeller pitch or chord is outside its geometric domain"]
+ok   4T APC variant rejects propeller lift slope domain  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   4T APC variant rejects aircraft and install propeller diameter mismatch  ["Glow installation and aircraft propeller diameters disagree"]
+ok   4T APC variant rejects initial head temperature above installation bound  ["Initial glow temperature must be finite and in [200, 600] K"]
+ok   4T APC variant rejects unmatched fuel inventory name  ["Glow fuel tank must name one explicit glow_fuel inventory item"]
+ok   4T APC variant refuses a non-glow energy source tank
+ok   4T APC variant refuses malformed tank geometry quantity
+ok   4T APC variant refuses ambiguous duplicate glow fuel inventory names
+ok   4T APC variant refuses a non-unit rotor axis
+ok   4T APC variant rejects rotor inertia above the axis-projected dry carrier even below Jxx  ["Subtracting the glow rotor leaves nonpositive dry carrier inertia along its axis"]
+ok   4T APC variant accepts rotor inertia below the axis-projected dry carrier limit  []
+ok   4T APC variant rejects unsupported optional propeller module normal_force
+ok   4T APC variant rejects unsupported optional propeller module pfactor_moment
+ok   4T APC variant rejects unsupported optional propeller module slipstream
+ok   4T APC variant rejects mixed legacy shaft module
+ok   unsafe glow install path rejected: user://install.json
+ok   unsafe glow install path rejected: res://data/glow/../stik_55ax_2t.json
+ok   unsafe glow install path rejected: res://data/glow/sub/install.json
+ok   unsafe glow install path rejected: res://data/glow/install.json.bak
+ok   unsafe glow install path rejected: 5
+glow installation contract: 226 checks, 0 failed
+
+=== test_glow_lifecycle ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+NITRO lifecycle: 47 checks, 0 failed
+
+=== test_glow_oracle ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+723 checks, 0 failed (36 oracle vectors)
+
+=== test_glow_profiles ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+NITRO profiles: 53 checks, 0 failed
+
+=== test_glow_session ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+55ax_2t runway at3s [14.6571400740255, -29.0082063643861, -0.24111970152815, 17.1126292238292, -0.02723039220087, -0.1286380178067] rpm 10959.2865253138
+55ax_2t takeoff at6s [17.6889355980885, 41.7767063946382, -19.7463674916016, 28.536937246447, -0.24694645400732, 0.68989712338076]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+fs64v_4t runway at3s [13.5161833753009, -25.4729831139904, -0.24189637184783, 17.5186696905924, -0.07440283642394, -0.11991314874207] rpm 9761.38019738102
+fs64v_4t takeoff at6s [8.68991348847528, 40.9113564706022, -12.6827442067016, 24.0364004937607, -0.28626477246995, 0.69963444613596]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+55ax_2t_apc_13x6 runway at3s [14.4389078798397, -32.8890778329616, -0.23787617753082, 14.1457154813861, -0.03987782216752, -0.19768039777705] rpm 10278.0852510367
+55ax_2t_apc_13x6 takeoff at6s [12.2966982415423, 34.1067209589991, -11.1186605054294, 27.8039635862304, -0.28178540588134, 0.72814852751226]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+fs64v_4t_apc_13x6 runway at3s [13.9423821992311, -20.2755182571148, -0.2467818903574, 20.4821428042067, -0.05351220414915, -0.03016616035977] rpm 11165.8777647768
+fs64v_4t_apc_13x6 takeoff at6s [13.6964869814549, 46.44844048402, -20.7727243235735, 23.2107039310023, -0.23860913667863, 0.65615149688775]
+Glow session: 132 checks, 0 failed
+
+=== test_glow_thermal ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+NITRO thermal: 15 checks, 0 failed
+
+=== test_glow_trace ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+NITRO-TRACE: 276 checks, 0 failed
+
+=== test_glow_two_stroke ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+50 checks, 0 failed
+
+=== test_golden ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   golden roll_15 replays (600 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 6.938893903907228e-18, rate 2.220446049250313e-16 rad/s; auxiliary/discrete ok
+ok   golden pull_throttle replays (720 ticks): worst error: position 4.263256414560601e-14 m, velocity 1.0658141036401503e-14 m/s, attitude 2.3869795029440866e-15, rate 2.581268532253489e-15 rad/s; auxiliary/discrete ok
+ok   golden rudder_doublet replays (720 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 1.3877787807814457e-17, rate 1.3877787807814457e-17 rad/s; auxiliary/discrete ok
+ok   golden glide_15 replays (1200 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 1.0408340855860843e-17, rate 1.6764205996180584e-17 rad/s; auxiliary/discrete ok
+4 golden flights, 0 failed
+
+=== test_ground_start_integrity ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E3b2-R1: 254 checks, 0 failed
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+
+=== test_gyro ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   rotor angular momentum at full rpm ≈ 0.41 N·m·s  0.4086
+ok   pull up (q > 0), clockwise prop → nose yaws RIGHT (ṙ > 0)  Δṙ 0.845 rad/s²
+ok   size: Δω̇ = J⁻¹·(0, 0, q·h)  
+ok   yaw right (r > 0), clockwise prop → nose pitches DOWN (q̇ < 0)  Δq̇ -1.058 rad/s²
+ok   torque-free tumble with the rotor: total angular momentum conserved to 1e-6 over 60 s  4.171457206637082e-11
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   flown pull-up at full throttle: yaw rate more to the right with the gyro  r -0.072 vs -0.170 rad/s
+6 checks, 0 failed
+
+=== test_modes ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+info 15 m/s w-kick: peak q 0.115 rad/s; linear error with the lag state 0.97 %, quasi-static 27.0 %
+42 checks, 0 failed
+
+=== test_propulsion ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   data with propulsion loads []
+ok   static thrust = Ct0·ρ·n²·D⁴ ≈ 41 N 41.25 N
+ok   T/W ≈ 1.46 (balanced virtual reference build) 1.46
+ok   static power balance closes 974 W
+ok   Ct at a knot 
+ok   Ct between knots 
+ok   Ct for J < 0 = static 
+ok   Ct beyond the data goes negative (windmill drag), floored -0.04781904761905
+ok   thrust falls with airspeed 41.3 > 32.6 > 4.7 N
+ok   past zero-thrust speed the prop drags -8.49 N at 50 m/s
+ok   power rolls the airplane left (Mx < 0) -0.834 N·m
+ok   stopped engine: no loads 
+ok   63.2 % of the step after τ 0.6321
+ok   lag is exact: 60 small steps = 1 big step 8077.574546 vs 8077.574546
+ok   throttle 0 → idle, throttle clamps 
+ok   finite at any airspeed 
+16 checks, 0 failed
+
+=== test_propulsion_scalar ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+H14 propulsion: 25001 byte-exact comparisons (19070 tilted-shaft, 16331 with crossflow, 3575 still air, 1157 stopped), 0 failed
+
+=== test_replay_integrity ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H9-R1 replay integrity: 153 checks, 0 failed
+
+=== test_runway_checkpoint_metadata ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+UI-06a-R1: 14 checks, 0 failed
+
+=== test_runway_start ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads
+ok   threshold: west end + 3 m, runway centre line, heading east  { &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+ok   west-bound threshold: east end − 3 m, heading west
+ok   a field without a runway has no threshold
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Stik session on the field
+ok   runway start solves and resets
+ok   every wheel starts stuck, engine idling at closed throttle
+ok   anchors hold the idle thrust: Σ horizontal = 0 within 1e-9 N  thrust 2.6019 N, ground north 0.0008298385809887565 N, east -2.600880 N
+ok   solve converged (residual < 1e-11 in 6 iterations) and is the session's start
+ok   each wheel leans past its anchor by ≈ T/Σk = 2.446 mm (within 5 %)  2.4466–2.5429 mm
+ok   nose load 10.0865 N matches the world side-view moment balance 10.0878 N within 0.5 %
+ok   terrain-projected ground support balances weight and vertical thrust within 1e-9 N  support 28.365011864 N, expected 28.365011864 N
+ok   after 1 s: |v| < 1e-6 m/s  max 2.8940680239819715e-14 m/s
+ok   after 1 s: ΣN = m·g within 0.3 % (the idle thrust, tilted by the nose-down lean, adds 0.0679 N)  28.36067 N vs 28.29276 N
+ok   after 1 s: attitude within 0.1° of the solve  0°
+ok   10 s at idle: |v| and |ω| < 1e-6 throughout, moved < 1 µm, anchors unchanged  v 4.0903788504694736e-14, ω 6.965525811439827e-14, 0 m
+ok   west-bound runway start solves
+ok   gp-extra-300s-60 (no stiction data) is refused and keeps its normal flying start
+ok   p51d-mustang-120 (no stiction data) is refused and keeps its normal flying start
+19 checks, 0 failed
+runway start needs valid aircraft data, trim, and stiction gear
+runway start needs valid aircraft data, trim, and stiction gear
+
+=== test_session_guards ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   untrimmable fixture was written
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   untrimmable reload is rejected  reload failed; previous aircraft and flight retained: trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   rejected reload preserves the active model
+ok   rejected reload preserves start and trims
+ok   rejected reload preserves current and previous state
+ok   rejected reload preserves tick and pause status
+ok   session exposes a runtime fault and pauses
+ok   session resume cannot bypass a runtime fault
+ok   untrimmable initial aircraft has no accepted start
+ok   untrimmable initial aircraft stays paused
+ok   initial failure states the trim problem  trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   resume cannot bypass an invalid initial trim
+ok   direct stepping cannot bypass an invalid initial trim
+ok   invalid initial start is inert instead of a thrown flight
+ok   simulation accepts a valid initial state
+ok   nonfinite loads pause at the last valid state
+ok   nonfinite loads expose a readable fault  step rejected: aircraft returned nonfinite or malformed loads
+ok   numerical fault cannot be resumed without a valid reset
+ok   explicit valid reset clears the simulation fault
+ok   nonfinite k2 loads roll back the full tick  calls 2, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite k3 loads roll back the full tick  calls 3, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite k4 loads roll back the full tick  calls 4, step rejected: RK stage loads are nonfinite or malformed
+ok   a tick evaluates the loads 4 times (H2: k1 reuses the tick's loads)  4
+ok   nonfinite auxiliary state rolls back and pauses
+ok   nonfinite pre-step auxiliary output rolls back and pauses
+ok   nonfinite current state restores the last valid state
+ok   degenerate quaternion reset is rejected
+ok   rejected quaternion reset retains valid state and pauses
+ok   nonfinite quaternion reset is rejected
+ok   nonfinite quaternion keeps the last valid state
+ok   inverted flight and high angular rates are not faulted by themselves
+ok   valid mass and inertia changes after reset use current values  u 15.008333333, p 0.004166667
+32 checks, 0 failed
+trim: needs 5.3° of elevator, more than the 1.0° throw
+
+=== test_shaft_data ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D1-R2: 120 checks, 0 failed
+aircraft data invalid: propulsion.engine.shaft.power_curve: invalid evidence kind or empty source
+
+=== test_shaft_equilibrium ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+G2-R1: 46 checks, 0 failed
+
+=== test_simulation ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+
+=== test_start_choice ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+UI-06a: 36 checks, 0 failed
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+
+=== test_trace ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+19 checks, 0 failed
+
+=== test_trace_metadata ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+C7-R2 / DATA-3: 297 checks, 0 failed
+
+=== test_trim_integrity ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D4-R2 trim integrity: 700 checks, 0 failed
+
+=== test_turbine ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   loader accepts a complete turbine block  []
+ok   loader refuses: propeller keys on a turbine  
+ok   loader refuses: throttle map not ending at max_rpm  
+ok   loader refuses: rpm not increasing in a table  
+ok   loader refuses: wrong table unit  
+ok   loader refuses: rotor sense not ±1  
+ok   loader refuses: idle above max  
+ok   loader refuses an unknown propulsion kind  ["propulsion.kind: \'rocket\' is not \'glow_prop\', \'turbine\', or \'electric_prop\'"]
+ok   throttle 0 → idle, 1 → max, 0.5 → linear map  
+ok   Propulsion.steady_rpm dispatches to the turbine  
+ok   static installed thrust at max = 0.9 × 100 N  90.000000 N
+ok   ram drag at 50 m/s = ṁ·u = 0.2 × 50 N  80.000000 N
+ok   idle thrust turns into drag at speed (ram drag > idle gross)  -0.600 N
+ok   half density halves thrust and ram drag  
+ok   stopped shaft: no thrust  
+ok   ram recovery at 70 m/s: ṁ0(1 + u²/193000)(sqrt(V_j0² + 3u²) − u)  81.2205 N (plain law 76.0000 N)
+ok   ram recovery leaves the static thrust unchanged  
+ok   loads: thrust on body +x, no side/vertical force, no roll torque  
+ok   loads: thrust line 5 cm above the CG pitches nose down by 4.5 N·m  My -4.500000
+ok   inlet normal force −ṁ·w on body z, nose-up moment ṁ·w·0.3 m  Fz -0.7987 N, My -4.2604 N·m
+ok   axial ram drag in the loads = ṁ·u  
+ok   spool-up idle → 95 % max on the acceleration limit: 3.417 s  3.4167 s
+ok   spool-up never overshoots the demand  150000.000 rpm
+ok   spool-down to within 5 % of idle on the deceleration limit: 1.742 s  1.7458 s
+ok   spool-down settles on idle, not below  40000.000
+ok   spool split 240/480 Hz within 0.5 % of the rpm range  worst 0.0 rpm
+ok   rotor momentum −I·ω along x (counter-clockwise)  -1.57080 N·m·s
+27 checks, 0 failed
+
+=== test_turbine_continuous ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok authored aircraft explicitly selects RK4 
+ok absent integration preserves historical sampled branch 
+ok unsupported integration is refused: RK4 
+ok unsupported integration is refused: rk45 
+ok unsupported integration is refused: true 
+ok unsupported integration is refused: 0 
+ok unsupported integration is refused: <null> 
+ok unsupported integration is refused: {  } 
+ok turbine selection rejected on a combustion propeller 
+ok continuous aircraft prepares and has one evolving RPM 
+ok stiff schedule refused before accepted flight changes 
+ok minimum authored governor supports 240 Hz envelope 
+ok coarse governor step refused 
+ok stage force uses stage RPM rather than sampled mirror 
+ok stage gyro uses stage RPM 
+ok stage observation cannot advance committed state 
+ok malformed or out-of-domain state rejected 
+ok endpoint telemetry exposes flow without changing prescribed mass 
+ok analytic fixture resets at 120 Hz 
+ok governor/impulse/displacement analytic agreement at 120 Hz [0.00000032781099, 0.0000000000112, 0.00000000000448]
+ok k1 load uses old RPM while aux mirrors accepted endpoint at 120 Hz 
+ok analytic fixture resets at 240 Hz 
+ok governor/impulse/displacement analytic agreement at 240 Hz [0.00000002032903, 0.00000000000069, 0.00000000000028]
+ok k1 load uses old RPM while aux mirrors accepted endpoint at 240 Hz 
+ok analytic fixture resets at 480 Hz 
+ok governor/impulse/displacement analytic agreement at 480 Hz [0.00000000125146, 0.00000000000003, 0.00000000000002]
+ok k1 load uses old RPM while aux mirrors accepted endpoint at 480 Hz 
+ok smooth RPM refinement exhibits fourth-order error reduction [0.00000032781099, 0.00000002032903, 0.00000000125146]
+ok turbine checkpoint identifies continuous law 
+ok checkpoint restore succeeds 
+ok full body/RPM/aux/modes continuation exactly repeats 
+ok inconsistent endpoint mirror refused transactionally 
+ok historical sampled snapshot cannot masquerade as continuous 
+ok wrong model-law snapshot refused 
+ok unsupported hot off-state snapshot refused 
+ok session hold freezes all turbine state 
+ok failed RK stage rolls back complete turbine/body transaction 
+ok explicit reset clears fault and rebuilds settled RPM 
+ok unsupported hot mode switch refuses an instantaneous RPM cut 
+ok trace retains 13 fresh complete finite rows 
+ok writer refuses invalid turbine metadata 
+ok calm writer refuses null servo in turbine header 
+ok calm writer refuses nonfinite servo row 
+ok physical turbine metadata freezes at first sample 
+ok calm turbine writer refuses a missing tick 
+ok all planned checks executed 
+46 checks, 0 failed
+
+=== test_ui_aircraft ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default: the Ugly Stik on the card and in the backdrop
+ok   default: Fly enabled and focused, counter 1 of 7
+ok   Right from Fly -> next aircraft arrow
+ok   55AX glow Stik: experimental 2-stroke on card and backdrop
+ok   55AX selection does not start a flight
+ok   FS-64V glow Stik: experimental true 4-stroke on card and backdrop
+ok   FS-64V selection does not start a flight
+ok   Enter on the arrow: the Extra on the card, in the backdrop and saved
+ok   Extra: Fly enabled, its status says experimental
+ok   choosing never starts a flight
+ok   P-51: shown, experimental, Fly enabled
+ok   Ventage Jet: shown, experimental, Fly enabled
+ok   Ventage Jet: the backdrop shows it, focus stays on the arrow
+ok   choosing the Ventage Jet never starts a flight
+ok   Timber: shown, experimental, Fly enabled
+ok   Timber status states the estimated electric, flaps-up configuration
+ok   Timber: the backdrop shows it, focus stays on the arrow
+ok   Timber: counter 7 of 7
+ok   Timber selection is saved without starting a session
+ok   next wraps around to the Ugly Stik
+ok   previous arrow goes back to the Timber
+ok   previous again: the Ventage Jet
+ok   Spanish: counter and status translated
+ok   Spanish: the Timber card shows its Spanish name
+ok   Spanish: Ventage Jet keeps its name
+ok   English: the Timber card shows its English name
+ok   restart: the saved Ventage Jet comes back, Fly enabled
+ok   reselected Timber: Fly enabled and choice saved
+ok   Fly starts Timber with its own model and physics
+ok   Timber flight pauses from the keyboard
+ok   Restart is keyboard reachable
+ok   Restart restores a fresh trimmed Timber flight
+ok   End flight is keyboard reachable
+ok   End returns to Home and releases the old session
+ok   reselect after End starts Timber again
+ok   new app remembers Timber and keeps Fly enabled
+ok   persisted Timber choice flies its matching physics
+ok   Fly with the Extra still starts the matching model and physics
+ok   unknown saved aircraft -> default
+ok   saved aircraft of the wrong type -> default
+all UI aircraft checks passed
+
+=== test_ui_home ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   Home shown, no flight scene, no simulation
+ok   Home backdrop: our airplane, its camera current
+ok   contrast: Fly normal text 5.38:1 >= 4.5
+ok   contrast: Fly hover text 6.06:1 >= 4.5
+ok   contrast: Fly pressed text 7.38:1 >= 4.5
+ok   contrast: Quit normal text 10.42:1 >= 4.5
+ok   contrast: Quit hover text 8.34:1 >= 4.5
+ok   contrast: Quit pressed text 12.17:1 >= 4.5
+ok   Fly inherits Button's focus outline, without fill
+ok   contrast: focus outline on panel 9.04:1 >= 3
+ok   contrast: every Home label >= 4.5:1 on its surface (worst 7.74, "High-wing sport trainer · 1.52 m · .61 glow")
+ok   smallest text is 18.0 px tall (>= 17 at 1280x720)
+ok   initial focus on Fly
+ok   focus outline visible (keyboard focus)
+ok   Down -> Language
+ok   Right -> Help
+ok   Right -> Quit
+ok   Up -> Fly
+ok   navigating did not start a flight
+ok   Quit requests closing the app
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Enter on Fly starts the flight
+ok   double Enter -> exactly one flight session
+ok   Home and its backdrop freed after Fly
+ok   the flight's camera is the one in use
+ok   Fly saves the selected default runway start
+ok   fresh Home flight uses gentle turbulent wind
+ok   fresh Home flight has passing evening and latency diagnostics
+all UI home checks passed
+
+=== test_ui_runway ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no preferences -> runway start
+ok   write old preferences without a start choice
+ok   old schema-1 preferences without start choice -> current runway default
+ok   write invalid start preference taxi
+ok   invalid start preference taxi -> airborne
+ok   write invalid start preference 7
+ok   invalid start preference 7 -> airborne
+ok   write invalid start preference true
+ok   invalid start preference true -> airborne
+ok   runway preference is valid for the Stik
+ok   runway preference is valid for qualified Timber
+ok   runway preference for the Extra is sanitized
+ok   future schema reads a valid runway choice and stays read-only
+ok   future schema refuses save without changing its bytes
+ok   save failure is reported for a path below an existing file
+ok   seed preferences with the first-flight hint suppressed
+ok   Home defaults to air; the Stik can choose runway
+ok   Home starts focused on Fly
+ok   Up from Fly focuses the start selector
+ok   a real Enter event selects runway
+ok   changing start choice does not save it
+ok   radio axis cannot navigate Home or change the start
+ok   Extra disables runway and sanitizes the selected choice
+ok   aircraft change persists the sanitized start
+ok   returning to Stik does not restore unsupported runway
+ok   runway can be selected again on the supported Stik
+ok   selection is still not persisted before Fly
+ok   Down from the selector returns focus to Fly
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly creates one flight and removes Home
+ok   Fly saves the selected runway choice
+ok   main and session receive the selected choice
+ok   runway launch succeeded without fallback
+ok   trace metadata identifies the launch choice
+ok   R restarts on runway
+ok   pause navigation reaches Restart
+ok   Pause Restart retains runway
+PROP STRIKE at 2800 rpm, 0.0 m/s: engine stopped
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 3), point speed 0.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 1.6 m/s, pitch -1°, bank -0° (throttle closed, low airspeed, after a prop strike)
+ok   ground contact enters the crash hold
+ok   crash recovery restarts on runway
+ok   pause navigation reaches End
+ok   flight -> Home preserves runway and saves no active session
+ok   Home focus returns to Fly
+ok   fake radio still cannot move Home focus or selection
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home -> flight again uses runway
+radio connected: ui-runway-fake|1209:4f54|Fake EdgeTX (default profile)
+ok   fake radio connects while preserving runway launch
+ok   fake radio throttle low arms the transmitter
+ok   radio roll reaches flight controls with solved trim
+ok   radio throttle reaches full power after arming
+ok   P resumes a manually controlled runway flight
+failsafe: radio disconnected
+ok   manual radio flight can end back at Home
+ok   write Spanish airborne preferences
+ok   saved Spanish Home defaults to airborne
+ok   Spanish Home focuses the start selector
+ok   real Spanish Home event selects runway without saving
+ok   Down returns focus to Fly after choosing runway
+ok   rejected runway launch leaves Home active and no session behind
+ok   rejection clears Fly latch and keeps Fly usable
+ok   rejection displays a Spanish reason
+ok   rejected start does not save or overwrite the preference file
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly can be retried after rejection
+ok   retry starts the selected runway choice
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future preferences still show valid runway choice
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   future-schema settings do not block the flight
+ok   failed save reason stays on the flight
+ok   failed save reason remains visible on returned Home
+ok   future preference bytes are preserved after failed save
+ok   alternate field fixture is valid
+ok   write runway preference for alternate-field probe
+ok   runway is disabled outside the existing default field
+ok   write runway preference before aircraft sanitization
+ok   changing to gp-extra-300s-60 sanitizes runway
+ok   changing to p51d-mustang-120 sanitizes runway
+ok   changing to sebart-avanti-s-a200-p100rx sanitizes runway
+ok   switching back to the Stik does not restore runway
+ok   qualified Timber enables the runway selector
+ok   Home can select runway for qualified Timber
+all UI runway checks passed
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+
+=== glow-catalog-cli ===
+glow_2t: 1 / 2 families passed, 721 accepted trace rows
+glow_4t: 2 / 2 families passed, 721 accepted trace rows

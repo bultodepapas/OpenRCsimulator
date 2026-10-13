@@ -12,6 +12,10 @@ const LightingConfig := preload("res://environment/time_of_day_config.gd")
 const SnapshotLighting := preload("res://render/time_of_day_lighting.gd")
 const SceneryMaterials := preload("res://scenery/scenery.gd")
 const FLEET_VIEWS := {
+	"lake_overview": {eye = [45.0, 50.0, -45.0], at = [110.0, 125.0, 0.45], fov = 55.0},
+	"lake_shore": {eye = [78.0, 113.0, -1.5], at = [112.0, 130.0, 0.45], fov = 58.0},
+	"lake_bottom": {eye = [109.5, 125.0, -55.0], at = [110.0, 125.0, 4.5], fov = 58.0},
+	"hedge_detail": {eye = [238.0, 45.0, -1.65], at = [242.0, 43.0, -0.85], fov = 55.0},
 	"herb_border": {eye = [-12.5, -2.0, -0.8], at = [-15.0, -3.0, -0.25], fov = 48.0},
 	"meadow_low": {eye = [50.0, 92.0, -1.25], at = [61.0, 103.0, -0.4], fov = 48.0},
 	"crop_close": {eye = [556.0, 316.0, -3.0], at = [569.0, 336.0, -0.3], fov = 52.0},
@@ -68,6 +72,39 @@ func _run() -> void:
 			return
 		snapshot = SnapshotLighting.snapshot(lighting.config)
 	var built := World.build(parent, loaded.field, Callable(), {}, snapshot)
+	var lake: Node3D = built.field.get_node_or_null("Lake")
+	var lake_diagnostics := {}
+	if lake != null:
+		if str(args.get("lake_reflection", "on")) == "off":
+			lake.get_node("Reflection").queue_free()
+		var basin: MeshInstance3D = lake.get_node("Basin")
+		var basin_arrays: Array = basin.mesh.surface_get_arrays(0)
+		var bverts: PackedVector3Array = basin_arrays[Mesh.ARRAY_VERTEX]
+		var binds: PackedInt32Array = basin_arrays[Mesh.ARRAY_INDEX]
+		lake_diagnostics = {identity = lake.get_meta("identity"), bounds = str(basin.mesh.get_aabb()),
+			vertices = bverts.size(), triangles = lake.get_meta("triangles"),
+			mask_mode = built.field.get_node("rough").material_override.get_shader_parameter("lake_mask_mode"),
+			mask_count = basin.material_override.get_shader_parameter("lake_bank_count"),
+			bank_shader = basin.material_override.shader.resource_path,
+			grass_texture = str(basin.material_override.get_shader_parameter("grass")),
+			first_normal = str(basin_arrays[Mesh.ARRAY_NORMAL][0]),
+			first_cross = str((bverts[binds[1]]-bverts[binds[0]]).cross(bverts[binds[2]]-bverts[binds[0]]))}
+		if str(args.get("lake_diagnostic", "normal")) == "solid":
+			var debug_material := StandardMaterial3D.new()
+			debug_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			debug_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+			debug_material.albedo_color = Color(0.7, 0.4, 0.1)
+			basin.material_override = debug_material
+		elif str(args.get("lake_diagnostic", "normal")) == "two-sided":
+			var debug_shader := Shader.new()
+			debug_shader.code = basin.material_override.shader.code.replace("render_mode cull_back;", "render_mode cull_disabled;")
+			basin.material_override.shader = debug_shader
+		elif str(args.get("lake_diagnostic", "normal")) == "unlit":
+			var debug_shader := Shader.new()
+			debug_shader.code = basin.material_override.shader.code.replace("render_mode cull_back;", "render_mode unshaded, cull_back;")
+			basin.material_override.shader = debug_shader
+		elif str(args.get("lake_diagnostic", "normal")) == "maskless":
+			basin.material_override.set_shader_parameter("lake_mask_mode", 0)
 	if built.field.get_node_or_null("DistantRidges") == null:
 		parent.add_child(Ridges.build())
 	# LU-16 diagnostic controls preserve camera/time/exposure while isolating the seam.
@@ -123,7 +160,9 @@ func _run() -> void:
 	var original_exposure: float = built.environment.tonemap_exposure
 	var report := {adapter = RenderingServer.get_video_adapter_name(), driver = RenderingServer.get_video_adapter_api_version(),
 		engine = Engine.get_version_info(), renderer = "gl_compatibility", width = root.size.x, height = root.size.y,
-		arguments = args, botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
+		arguments = args, lake = lake_diagnostics, field_build_ms = built.field_build_ms,
+		reflection_slots = ProjectSettings.get_setting("rendering/reflections/reflection_atlas/reflection_count"),
+		botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
 	var cases := str(args.get("cases", "pilot_north,postcard_club,glare_clear,glare_off,glare_blocked,glare_aircraft,glare_side,glare_night")).split(",")
 	for case: String in cases:
 		if lighting_helper != null:

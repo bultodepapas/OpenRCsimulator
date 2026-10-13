@@ -30,6 +30,38 @@ The clothed people derive from the **MakeHuman Community** CC0 system assets (ma
 
 Blender 5.2.2 and MPFB 2.0.18 are offline authoring tools. MPFB code is GPL-3.0-or-later; its separately licensed CC0 asset data and exported graphical output do not introduce a runtime plugin dependency. MPFB code is not distributed with this app. Original conversion scripts, bounded animation shader, transmitter geometry, terrain/material/light changes are project MIT work. Exact sources, transformations, shared-texture hashes, runtime file hashes, and native evidence: [LU-21](../../../docs/research/landscape-upgrade/LU-21/README.md), [source manifests](../../../assets/scenery/population/).
 
+## LU-22 lake and vegetation source notice (2026-10-13)
+
+The field data now includes the finite lake defined in [`lake.json`](../../data/fields/lake.json). Its shoreline, bank, bed profile, and 0.45 m mean depth are authored estimates, not a survey. The Compatibility renderer uses the reduced project adapter described in the [LU-22 evidence](../../../docs/research/landscape-upgrade/LU-22/README.md). It uses no third-party water textures. The water shader reference is Boujie Water Shader by Zach Bernal and contributors, pinned to commit `25f3c2da458e0a4f65bdb5903dc068b050930c06`; its preserved shader SHA-256 is `09a74e3b97738da896c9f39c73946e38f9487035c6559433316c2136ce84f607`. The full source and upstream notice are retained in [`water-source`](../../../assets/landscape/lake/water-source/PROVENANCE.md).
+
+Runtime vegetation files are unmodified imports from three CC0 sources: Quaternius's *Stylized Nature MegaKit Standard* (`298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9`, embedded license SHA-256 `120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58`); Quaternius's *LowPoly Crops Pack* (`48de7f1e092750a3832501e79d1463abeec8218c76090fc4b81fa8dfccacdb52`); and Aredon's *LowPoly Reed* (`03fd4f90d92618090829bac1152e4280327edb179139ae3f0c66542af31b89bd`). Source license evidence and exact archives are retained under `assets/landscape/vegetation/source/`; the runtime catalog and bundled Quaternius notice are [`vegetation/catalog.json`](vegetation/catalog.json) and [`vegetation/LICENSE.txt`](vegetation/LICENSE.txt). The two four-view impostor image sets are render derivatives of those imported CC0 models; their JSON manifests carry source identifiers, license evidence, and hashes. No source water texture is bundled.
+
+The downloaded audition sounds are CC0-1.0 samples and are not claims about the lake's acoustics. Their exact source pages, file names, and SHA-256 values are listed in [`audio/water/LICENSES.md`](../audio/water/LICENSES.md). That manifest is explicitly included with Linux, Windows, and macOS exports.
+
+The water reference source is MIT-licensed. This permission notice applies to that source-derived shader work:
+
+MIT License
+
+Copyright © 2023-present Zach Bernal and contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 ## Project permission notice
 
 This file is explicitly included in the Linux, Windows and macOS export presets. Repository-relative evidence links refer to the source distribution. The following notice applies to the original project contributions above.

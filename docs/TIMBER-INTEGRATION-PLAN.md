@@ -6,6 +6,8 @@
 
 Aircraft track; the playable baseline follows the owner's request to prioritize Timber completion. Evidence: [TT-00](research/timber-integration/TT-00/README.md), [primary sources](research/timber-integration/TT-00/sources.md), [code seams](research/timber-integration/TT-00/code-audit.md), [r1 review](research/timber-integration/TT-00-R1/README.md), [r1 contract review](research/timber-integration/TT-00-R1/contract-review.md). Shared dependencies: [electric propulsion](ELECTRIC-PROPULSION-PLAN.md) and its [EL1f handoff](research/propulsion/EL1f/README.md), [aircraft contract](../AIRCRAFT_CONTRACT.md), [integrated ground model](research/ground-physics/GP-05/README.md). The v12 Blender/CAD analysis, the millimetre CAD mapping and the presentation-pose warnings of Revision 3 are retained in TT-00; r1 supersedes them with explicit frames.
 
+External model-author delivery requirements: [self-contained Blender handoff](BLENDER-AIRCRAFT-HANDOFF.md), revision 2, covering the existing r1 asset, editable game source, simplification, articulated controls and explicit crash sections. This plan retains step status and simulator integration ownership.
+
 ## 0. Facts verified for Revision 4
 
 | Fact (2026-10-12) | Consequence for the plan |

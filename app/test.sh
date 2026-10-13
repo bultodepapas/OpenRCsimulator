@@ -38,6 +38,27 @@ python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --che
 python3 "$HERE/../research/aircraft-standardization/migrate.py" --check-known
 python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
 
+echo "== AS-07/09: shared aircraft modules and generated model bindings"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../research/aircraft-standardization/test_modules.py"
+python3 "$HERE/../research/aircraft-standardization/build_models.py" --check
+python3 "$HERE/../research/aircraft-standardization/test_models.py"
+
+echo "== AE-01: generated Workshop descriptors and exact-byte checkout bindings"
+python3 "$HERE/../research/aircraft-editor/build_descriptors.py" --check
+python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"
+
+echo "== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current"
+python3 "$HERE/../research/glow-engines/build_profiles.py" --check
+python3 "$HERE/../research/glow-engines/build_installations.py" --check
+python3 "$HERE/../research/glow-engines/installation_schema.py" --check
+python3 "$HERE/../research/glow-engines/test_profiles.py"
+python3 "$HERE/../research/glow-engines/test_calibration_report.py"
+python3 "$HERE/../research/glow-engines/test_installation_schema.py"
+python3 "$HERE/../research/glow-engines/test_installation_line_endings.py"
+python3 "$HERE/../research/glow-engines/test_refinement_report.py"
+python3 "$HERE/../research/glow-engines/test_pilot_review.py"
+python3 "$HERE/../research/glow-engines/reference/test_reference.py"
+
 echo "== P51-16: separated hardware inventory and physical inertia stay consistent"
 python3 "$HERE/../research/p51/p51-15/test_inventory.py"
 
@@ -71,6 +92,10 @@ echo "== E0b3b: neutral Stik wash profiles stay current"
 python3 "$HERE/../research/propwash/e0b3b/derive_profile.py" --check
 python3 "$HERE/../research/propwash/e0b3b/test_profile.py"
 
+echo "== RCV-04a: independent suspension reference and headless bench exports"
+python3 "$HERE/../research/rc-monster-truck/generate_suspension_reference.py" --check
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_suspension_cli.py"
+
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
 # Comment lines are ignored. Rendering code (render/) may use them at the boundary.
@@ -102,6 +127,10 @@ for t in "$HERE"/tests/test_*.gd; do
   test_timeout=60
   # Four 46-second simulated landings at 240/480 Hz: measured 75–82 s wall time on Linux (PT1-rc8).
   if [ "$(basename "$t")" = "test_landing_maneuver.gd" ]; then test_timeout=180; fi
+  # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
+  case "$(basename "$t")" in
+    test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd) test_timeout=600 ;;
+  esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"
   # Godot reports runtime script errors without failing the run; treat any as a failure.
   if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
@@ -203,6 +232,11 @@ for id in no-such-aircraft; do
   if run -- --aircraft="$id" --trace=/dev/null --t=1 > /dev/null 2>&1; then echo "--aircraft=$id was not refused"; exit 1; fi
 done
 echo "refused"
+
+echo "== NITRO-02: both finite-fuel glow catalog routes emit complete versioned traces"
+GLOW_WORK="$(mktemp -d)"
+python3 "$HERE/../research/glow-engines/packaged_smoke.py" --godot "$GODOT" --out "$GLOW_WORK/results"
+rm -rf "$GLOW_WORK"
 
 echo "== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)"
 FT="$(mktemp --suffix=.json)"

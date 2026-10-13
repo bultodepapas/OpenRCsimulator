@@ -2,6 +2,9 @@
 
 Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. Keep each change small, working and independently reviewable. Use Luna Max sub-agents when useful and assign clear file boundaries.
 
+
+do not creat thing that you can free download
+
 ## Start here
 
 - [STACK.md](STACK.md): current architecture and dependencies.
@@ -14,6 +17,8 @@ Build an RC airplane simulator incrementally. Prioritize robust physics, realist
 The production application is `app/`. The three.js bake-off in `prototypes/stage0/three/` is frozen. Runtime code, configuration and accepted data define implemented behavior; plans describe remaining work, and research records dated evidence.
 
 ## Discover code
+
+ 
 
 Prefer codebase-memory-mcp: `search_graph`, `trace_path`, `get_code_snippet`, `query_graph`, then `get_architecture`. Index the repository first if absent. Stored line ranges may lag the working tree; verify the current source before editing. Use `rg` for literals, configuration, non-code files or insufficient graph results.
 

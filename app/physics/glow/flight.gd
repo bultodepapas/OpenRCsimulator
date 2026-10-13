@@ -3,17 +3,23 @@
 ## mixture command, then shaft/propeller/thrust/chemical work (J).
 extends RefCounted
 const Life := preload("res://physics/glow/lifecycle.gd")
+const Vibration := preload("res://physics/glow/vibration.gd")
 const Source := preload("res://physics/glow/source.gd")
 const FuelMass := preload("res://physics/glow/fuel_mass.gd")
 const Blade := preload("res://physics/glow/propeller.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
 const Coupling := preload("res://physics/rotor_coupling.gd")
 const Boundary := preload("res://physics/electric_battery_step.gd")
 const SIZE := 17
-const LAW := "glow-mean-cycle-finite-tank-fixed-datum-v1"
+const LAW := "glow-mean-cycle-finite-tank-hub-inflow-v2"
 const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat"]
+const EVALUATOR_META := &"_glow_prepared_evaluator"
+const PROPELLER_EVALUATOR_META := &"_glow_prepared_propeller"
+const VIBRATION_EVALUATOR_META := &"_glow_source_vibration"
+const EVALUATOR_IDENTITY_META := &"_glow_prepared_identity"
 
 static func valid(values: PackedFloat64Array, install: Dictionary) -> bool:
 	var state: Dictionary=unpack(values,install)
@@ -45,6 +51,24 @@ static func put_state(values: PackedFloat64Array, state: Dictionary) -> PackedFl
 
 static func initial(owner: Node, aux: PackedFloat64Array) -> PackedFloat64Array:
 	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	# A fresh immutable installation evaluator on every reset/reload. This owns no
+	# physical state and is excluded from model serialization and checkpoints.
+	var prepared: Dictionary=Life.prepare_evaluator(install.profile,install.settings)
+	if not prepared.ok:
+		if owner.has_meta(EVALUATOR_META): owner.remove_meta(EVALUATOR_META)
+		return PackedFloat64Array([NAN])
+	var prepared_propeller: Dictionary=Blade.prepare_evaluator(install.propeller)
+	if not prepared_propeller.ok:
+		if owner.has_meta(PROPELLER_EVALUATOR_META): owner.remove_meta(PROPELLER_EVALUATOR_META)
+		return PackedFloat64Array([NAN])
+	var prepared_vibration: Dictionary=Vibration.prepare(install.profile)
+	if not prepared_vibration.ok:
+		if owner.has_meta(VIBRATION_EVALUATOR_META): owner.remove_meta(VIBRATION_EVALUATOR_META)
+		return PackedFloat64Array([NAN])
+	owner.set_meta(VIBRATION_EVALUATOR_META,prepared_vibration)
+	owner.set_meta(PROPELLER_EVALUATOR_META,prepared_propeller.evaluator)
+	owner.set_meta(EVALUATOR_META,prepared.evaluator)
+	owner.set_meta(EVALUATOR_IDENTITY_META,install.identity.duplicate(true))
 	var made: Dictionary=Life.create(install.profile,install.settings,install.initial_fuel_kg,
 		install.initial_temperature_k,aux[0],owner.engine_running)
 	if not made.ok: return PackedFloat64Array([NAN])
@@ -76,16 +100,35 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	if not owner.engine_running: state.running=false
 	var air: Dictionary=owner.air_data(body,time_s)
 	var ambient: Dictionary=owner.atmosphere_configuration()
-	var local_cooling: float=M.norm(air.v_air)
+	# The state velocity is at the fixed initial wet-CG datum. Apply the same
+	# hub lever arm used by the external thrust moment to local inflow. Wind is
+	# locally uniform here; this is not a disk-resolved crossflow/wake model.
+	var hub_air: PackedFloat64Array=Propulsion.hub_air_velocity(body,air.v_air,prop.offset)
+	var local_cooling: float=M.norm(hub_air)
 	var rpm: float=maxf(0.0,values[0])
 	# Mean propwash contributes local cooling at idle; installation coefficient remains estimated.
-	var load: Dictionary=Blade.evaluate(rpm,M.dot(air.v_air,prop.axis),owner.air_density(),install.propeller)
+	var identity_matches: bool=owner.get_meta(EVALUATOR_IDENTITY_META,{})==install.identity
+	var propeller_evaluator: Variant=owner.get_meta(PROPELLER_EVALUATOR_META,null)
+	var load: Dictionary
+	if propeller_evaluator is Blade.PreparedEvaluator and identity_matches:
+		load=Blade.evaluate_prepared(propeller_evaluator,rpm,M.dot(hub_air,prop.axis),owner.air_density())
+	else:
+		load=Blade.evaluate(rpm,M.dot(hub_air,prop.axis),owner.air_density(),install.propeller)
 	if not load.ok: return {ok=false}
 	local_cooling += M.sqrt_(maxf(0.0,load.thrust_n)/(2.0*owner.air_density()*PI*prop.diameter*prop.diameter/4.0))
-	var evaluation: Dictionary=Life.evaluate(install.profile,install.settings,state,rpm,owner.sim.inputs[3],values[12],
-		1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
+	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
+	var evaluation: Dictionary
+	if evaluator is Life.PreparedEvaluator and identity_matches:
+		evaluation=Life.evaluate_prepared(evaluator,state,rpm,owner.sim.inputs[3],values[12],
+			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
+	else:
+		# Standalone fixtures may run before initialization; a failed reload can
+		# restore a different installation. Both use the fully validated path.
+		evaluation=Life.evaluate(install.profile,install.settings,state,rpm,owner.sim.inputs[3],values[12],
+			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
 	if not evaluation.ok: return evaluation
 	evaluation.air=air
+	evaluation.hub_air_velocity_body_m_s=hub_air
 	evaluation.propeller=load
 	evaluation.state=state
 	return evaluation
@@ -100,8 +143,10 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 	if not mass.ok: return {}
 	var rpm: float=maxf(0.0,values[0])
 	var lag: int=owner.downwash_index()
+	var propeller_loads: PackedFloat64Array=Propulsion.loads_from_thrust_torque(result.hub_air_velocity_body_m_s,rpm,prop,
+		owner.air_density(),result.propeller.thrust_n,result.propeller.torque_nm)
 	var external: PackedFloat64Array=Dynamics.loads_from_air(body,model,owner._deflections(owner.sim.aux),rpm,
-		owner.air_density(),result.air,owner.sim.aux[lag] if lag>=0 else NAN,PackedFloat64Array(),owner._ground_up(body))
+		owner.air_density(),result.air,owner.sim.aux[lag] if lag>=0 else NAN,PackedFloat64Array(),owner._ground_up(body),propeller_loads)
 	var ground: Dictionary=owner._ground_evaluation(body,owner.sim.aux,values)
 	if not ground.get("ok",false): return {}
 	for i in ground.loads.size(): external[i]+=ground.loads[i]
@@ -120,6 +165,8 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 		var demand: float=-load-prop.rotor_inertia*M.dot(prop.axis,alpha)
 		if values[0]<0.0:
 			drive=-friction # moving left limit, never committed
+		elif demand < -friction:
+			return {} # reverse rotation exceeds static hold and is outside this installation's domain
 		elif demand<=friction:
 			locked=true
 			drive=load+prop.rotor_inertia*M.dot(prop.axis,alpha)
@@ -191,9 +238,20 @@ static func telemetry(owner: Node) -> Dictionary:
 	out.blade_count=owner.aircraft.model.propulsion.glow.propeller.blades
 	out.firing_fraction=result.firing_fraction
 	out.propeller=result.propeller
+	out.hub_air_velocity_body_m_s=result.hub_air_velocity_body_m_s
 	out.mass_properties=properties(owner,values[1])
 	out.shaft_work_j=values[13]
 	out.propeller_work_j=values[14]
 	out.thrust_work_j=values[15]
-	out.above_recommended_rpm=values[0]>owner.aircraft.model.propulsion.glow.profile.operation.recommended_max_rpm
+	out.recommended_max_rpm=minf(owner.aircraft.model.propulsion.glow.profile.operation.recommended_max_rpm,owner.aircraft.model.propulsion.glow.propeller.max_rpm)
+	out.above_recommended_rpm=values[0]>out.recommended_max_rpm
+	# Source excitation is an observer, never a sampled load on the aircraft. No
+	# endpoint shaft acceleration is stored: report constant-speed order estimates
+	# explicitly rather than inventing an acceleration or mount transfer function.
+	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	var prepared_vibration: Dictionary=owner.get_meta(VIBRATION_EVALUATOR_META,{})
+	if owner.get_meta(EVALUATOR_IDENTITY_META,{})!=install.identity or prepared_vibration.is_empty():
+		prepared_vibration=Vibration.prepare(install.profile)
+	out.source_vibration=Vibration.evaluate(prepared_vibration,values[6]*TAU,values[0]*TAU/60.0,
+		0.0,result.firing_fraction if out.running else 0.0)
 	return out

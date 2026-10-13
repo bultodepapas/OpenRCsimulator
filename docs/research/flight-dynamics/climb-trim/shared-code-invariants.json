@@ -1,0 +1,91 @@
+{
+  "failures": 0,
+  "results": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "explicit_lag_samples": 200,
+      "ground_query_samples": 100,
+      "maximum_scaled_error": {
+        "heading_rotation": 2.53130849614536e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 4.88498130835069e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "stik-glow-55ax-2t",
+      "explicit_lag_samples": 200,
+      "ground_query_samples": 100,
+      "maximum_scaled_error": {
+        "heading_rotation": 3.5527136788005e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 4.2854608750531e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "stik-glow-fs64v-4t",
+      "explicit_lag_samples": 200,
+      "ground_query_samples": 100,
+      "maximum_scaled_error": {
+        "heading_rotation": 2.0545504571991e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 5.77315972805081e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "explicit_lag_samples": 200,
+      "ground_query_samples": 100,
+      "maximum_scaled_error": {
+        "heading_rotation": 3.90243393155743e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 2.4757973449141e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "explicit_lag_samples": 200,
+      "ground_query_samples": 100,
+      "maximum_scaled_error": {
+        "heading_rotation": 1.17239551400417e-13,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 4.61852778244065e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "explicit_lag_samples": 200,
+      "ground_query_samples": 100,
+      "maximum_scaled_error": {
+        "heading_rotation": 5.6843418860808e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 3.530509218308e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "explicit_lag_samples": 200,
+      "ground_query_samples": 100,
+      "maximum_scaled_error": {
+        "heading_rotation": 2.8421709430404e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 2.83106871279415e-14
+      },
+      "samples": 400
+    }
+  ],
+  "schema": "openrc-shared-code-invariants-v1",
+  "seed": 2026101303
+}

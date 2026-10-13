@@ -7,6 +7,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const WeatherField = preload("res://physics/wind_field.gd")
 const Session = preload("res://sim/flight_session.gd")
 const Air = preload("res://physics/air_data.gd")
+const GlowFlight = preload("res://physics/glow/flight.gd")
 
 const FORMAT := "openrc-trace v3" # v2: + engine_rpm; v3: + servo (actual surface) positions
 const COLUMNS := [
@@ -43,9 +44,27 @@ var _battery_capacity_c: float = NAN
 var _battery_initial_charge_c: float = NAN
 const BATTERY_COLUMNS: Array = ["battery_soc", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j", "pack_exhausted"]
 const BATTERY_KEYS: Array[String] = ["soc", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j"]
+const GLOW_COLUMNS: Array[String] = [
+	"glow_fuel_kg", "glow_temperature_k", "glow_running", "glow_stop_reason_code",
+	"glow_phase_revolutions", "glow_mixture_command_phi", "glow_fuel_transport_kg_s",
+	"glow_opportunity_count", "glow_fire_count", "glow_fire_events", "glow_firing_accumulator",
+	"glow_shaft_work_j", "glow_propeller_work_j", "glow_thrust_work_j", "glow_chemical_work_j",
+]
+const GLOW_CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
+const GLOW_TRACE_SCHEMA: String = "openrc-glow-trace v1"
+const GLOW_LAW: String = GlowFlight.LAW
 var _coupled_shaft: bool = false
 var _continuous_turbine: bool = false
 var _coupled_start_rpm: float = NAN
+var _glow: bool = false
+var _glow_family: String = ""
+var _glow_cycle_revolutions: float = NAN
+var _glow_recording_start: Dictionary = {}
+var _glow_recording_start_continuous: PackedFloat64Array = PackedFloat64Array()
+var _glow_start_fuel_kg: float = NAN
+var _glow_last_fuel_kg: float = NAN
+var _glow_last_opportunities: int = -1
+var _glow_last_fires: int = -1
 
 
 func clear() -> void:
@@ -63,6 +82,15 @@ func clear() -> void:
 	_battery_capacity_c = NAN
 	_battery_initial_charge_c = NAN
 	_coupled_start_rpm = NAN
+	_glow = false
+	_glow_family = ""
+	_glow_cycle_revolutions = NAN
+	_glow_recording_start = {}
+	_glow_recording_start_continuous = PackedFloat64Array()
+	_glow_start_fuel_kg = NAN
+	_glow_last_fuel_kg = NAN
+	_glow_last_opportunities = -1
+	_glow_last_fires = -1
 	_atmosphere = {}
 	_turbulence_index = -1
 
@@ -168,7 +196,78 @@ func _prepare_turbine_metadata() -> void:
 	_weather_meta = meta.duplicate(true)
 
 
+## Glow traces have their own continuous layout and validation; keep the established shaft paths intact.
+func _prepare_glow_metadata() -> void:
+	var family: String = str(meta.get("glow_family", ""))
+	var cycle: float = 1.0 if family == "glow_2t" else (2.0 if family == "glow_4t" else NAN)
+	var identity: Variant = JSON.parse_string(str(meta.get("glow_identity", "null")))
+	var start: Variant = JSON.parse_string(str(meta.get("glow_recording_start", "null")))
+	var start_continuous: Variant = JSON.parse_string(str(meta.get("recording_start_continuous", "null")))
+	var aux_start: Variant = JSON.parse_string(str(meta.get("recording_start_aux", "null")))
+	var dt: Variant = meta.get("dt_s")
+	var start_tick: Variant = meta.get("recording_start_tick")
+	var start_reason: int = GlowFlight.REASONS.find(str(start.get("stop_reason", ""))) if start is Dictionary else -1
+	var profile_identity: Variant = start.get("profile_identity", {}) if start is Dictionary else {}
+	var installation_profile: Variant = identity.get("profile", {}) if identity is Dictionary else {}
+	if meta.get("metadata_schema") != "openrc-flight-meta v7" or meta.get("propulsion_model") != GLOW_LAW \
+			or family not in ["glow_2t", "glow_4t"] or not is_finite(cycle) \
+			or meta.get("continuous_layout") != GLOW_CONTINUOUS_LAYOUT \
+			or not identity is Dictionary or not installation_profile is Dictionary \
+			or not _is_sha256(str(installation_profile.get("sha256", ""))) \
+			or not start is Dictionary or start.get("ok") != true or start.get("family") != family \
+			or not profile_identity is Dictionary \
+			or profile_identity.get("input_sha256") != installation_profile.get("sha256") \
+			or start.get("cycle_revolutions") != cycle or start_reason < 0 \
+			or not start_continuous is Array or start_continuous.size() != GlowFlight.SIZE \
+			or not aux_start is Array or aux_start.size() != 4 \
+			or typeof(dt) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(dt)) or float(dt) <= 0.0 \
+			or typeof(start_tick) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start_tick)) \
+			or float(start_tick) < 0.0 or float(start_tick) != floor(float(start_tick)) \
+			or meta.get("shaft_integrator") != "coupled-rk4" \
+			or meta.get("rotor_coupling") != "relative-spin-locked-inertia-reaction-v1":
+		_invalid_weather = true
+		return
+	for component: Variant in aux_start:
+		if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)):
+			_invalid_weather = true
+			return
+	for component: Variant in start_continuous:
+		if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)):
+			_invalid_weather = true
+			return
+	for key: String in ["rpm", "fuel_kg", "temperature_k", "phase_revolutions", "mixture_command", "opportunity_count", "fire_count", "firing_accumulator"]:
+		if typeof(start.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start[key])):
+			_invalid_weather = true
+			return
+	if typeof(start.get("running")) != TYPE_BOOL or float(start.rpm) < 0.0 \
+			or float(start.fuel_kg) < 0.0 or float(start.temperature_k) <= 0.0 \
+			or float(start.phase_revolutions) < 0.0 or float(start.phase_revolutions) >= cycle \
+			or float(start.mixture_command) < 0.0 or float(start.mixture_command) > 2.8 \
+			or int(start.opportunity_count) < 0 or int(start.fire_count) < 0 \
+			or float(start.opportunity_count) != floor(float(start.opportunity_count)) \
+			or float(start.fire_count) != floor(float(start.fire_count)) \
+			or int(start.fire_count) > int(start.opportunity_count) \
+			or float(start.firing_accumulator) < 0.0 or float(start.firing_accumulator) >= 1.0 \
+			or absf(float(aux_start[0]) - float(start.rpm)) > maxf(1e-9, absf(float(start.rpm)) * 1e-12) \
+			or meta.get("recording_start_engine_running") != str(bool(start.running)):
+		_invalid_weather = true
+		return
+	_glow = true
+	_glow_family = family
+	_glow_cycle_revolutions = cycle
+	_glow_recording_start = start.duplicate(true)
+	_glow_recording_start_continuous = PackedFloat64Array(start_continuous)
+	_glow_start_fuel_kg = float(start.fuel_kg)
+	_weather_meta = meta.duplicate(true)
+	_columns.append_array(GLOW_COLUMNS)
+
+
 func _prepare_shaft_metadata() -> void:
+	var glow_metadata: bool = meta.get("propulsion_model") == GLOW_LAW or meta.has("glow_identity") \
+		or meta.has("glow_family") or meta.has("glow_recording_start")
+	if glow_metadata:
+		_prepare_glow_metadata()
+		return
 	if meta.get("propulsion_model") == Session.Turbine.CONTINUOUS_LAW or meta.has("turbine_integrator"):
 		_prepare_turbine_metadata()
 		return
@@ -310,7 +409,7 @@ func _valid_battery_sample(point: Dictionary) -> bool:
 
 
 ## Signature matches Simulation.stepped, so it can be connected directly.
-func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux := PackedFloat64Array([0.0])) -> void:
+func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux := PackedFloat64Array([0.0]), continuous := PackedFloat64Array()) -> void:
 	if _invalid_weather:
 		return
 	if _rows.is_empty():
@@ -327,6 +426,11 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			or (_rows.is_empty() and (absf(aux[0] - _coupled_start_rpm) > 1e-9 or str(meta.get("recording_start_tick")) != str(tick)))):
 		_invalid_weather = true
 		return
+	var glow_row := PackedFloat64Array()
+	if _glow:
+		glow_row = _glow_sample(continuous, tick, t, aux)
+		if _invalid_weather:
+			return
 	var electric_row: PackedFloat64Array = PackedFloat64Array()
 	if _electric:
 		var point: Variant = electrical_sample.call()
@@ -394,6 +498,8 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_rows.append(aux[i] if aux.size() > i else 0.0)
 	if _electric:
 		_rows.append_array(electric_row)
+	if _glow:
+		_rows.append_array(glow_row)
 	if _weather != null:
 		var wind: PackedFloat64Array = _weather.sample(t)
 		var noise: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])
@@ -423,6 +529,77 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 				_atmosphere.temperature_k, _atmosphere.engine_charge_ratio]))
 	_previous_recorded = s.duplicate()
 	_last_recorded_tick = tick
+	if _glow:
+		_glow_last_opportunities = int(continuous[9])
+		_glow_last_fires = int(continuous[10])
+		_glow_last_fuel_kg = continuous[1]
+
+
+func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFloat64Array) -> PackedFloat64Array:
+	var dt: float = float(meta.get("dt_s", NAN))
+	var expected_time: float = float(tick) * dt
+	if values.size() != GlowFlight.SIZE or not _finite(values) or tick < 0 or not is_finite(t) \
+			or absf(t - expected_time) > maxf(1e-12, absf(expected_time) * 1e-12) \
+			or aux.size() < 4 or not _finite(aux) \
+			or absf(aux[0] - values[0]) > maxf(1e-9, absf(values[0]) * 1e-12) \
+			or (_last_recorded_tick >= 0 and tick != _last_recorded_tick + 1):
+		_invalid_weather = true
+		return PackedFloat64Array()
+	if _rows.is_empty():
+		var expected_start_tick: float = float(meta.get("recording_start_tick", NAN))
+		if tick != int(expected_start_tick) or not _glow_start_matches(values):
+			_invalid_weather = true
+			return PackedFloat64Array()
+	else:
+		var fuel_tolerance: float = maxf(1e-12, absf(_glow_last_fuel_kg) * 2e-12)
+		if values[1] > _glow_last_fuel_kg + fuel_tolerance \
+				or int(values[9]) < _glow_last_opportunities or int(values[10]) < _glow_last_fires \
+				or int(values[10]) - _glow_last_fires > int(values[9]) - _glow_last_opportunities:
+			_invalid_weather = true
+			return PackedFloat64Array()
+	var reason: int = int(values[8])
+	var fuel_tolerance: float = maxf(1e-12, absf(_glow_start_fuel_kg) * 2e-12)
+	if values[0] < 0.0 or values[1] < 0.0 or values[1] > _glow_start_fuel_kg + fuel_tolerance \
+			or values[2] <= 0.0 or values[3] < 0.0 or values[3] > 1.0 \
+			or values[4] < 0.0 or values[4] > 1.0 or values[5] < 0.0 \
+			or values[6] < 0.0 or values[6] >= _glow_cycle_revolutions \
+			or values[7] not in [0.0, 1.0] or values[8] != floor(values[8]) \
+			or reason < 0 or reason >= GlowFlight.REASONS.size() \
+			or values[9] < 0.0 or values[9] != floor(values[9]) \
+			or values[10] < 0.0 or values[10] != floor(values[10]) or values[10] > values[9] \
+			or values[11] < 0.0 or values[11] >= 1.0 or values[12] < 0.0 or values[12] > 2.8:
+		_invalid_weather = true
+		return PackedFloat64Array()
+	var opportunity_delta: int = 0 if _rows.is_empty() else int(values[9]) - _glow_last_opportunities
+	var fire_events: int = 0 if _rows.is_empty() else int(values[10]) - _glow_last_fires
+	if fire_events > opportunity_delta:
+		_invalid_weather = true
+		return PackedFloat64Array()
+	return PackedFloat64Array([
+		values[1], values[2], values[7], values[8], values[6], values[12], values[5],
+		values[9], values[10], fire_events, values[11], values[13], values[14], values[15], values[16],
+	])
+
+
+func _glow_start_matches(values: PackedFloat64Array) -> bool:
+	var start: Dictionary = _glow_recording_start
+	if values.size() != _glow_recording_start_continuous.size():
+		return false
+	for index: int in values.size():
+		var expected: float = _glow_recording_start_continuous[index]
+		if absf(values[index] - expected) > maxf(1e-12, absf(expected) * 2e-12):
+			return false
+	var number_fields: Array = [
+		[0, "rpm"], [1, "fuel_kg"], [2, "temperature_k"], [6, "phase_revolutions"],
+		[9, "opportunity_count"], [10, "fire_count"], [11, "firing_accumulator"], [12, "mixture_command"],
+	]
+	for pair: Array in number_fields:
+		var observed: float = values[int(pair[0])]
+		var recorded: float = float(start.get(pair[1], NAN))
+		if not is_finite(recorded) or absf(observed - recorded) > maxf(1e-12, absf(recorded) * 2e-12):
+			return false
+	return typeof(start.get("running")) == TYPE_BOOL and values[7] == (1.0 if start.running else 0.0) \
+		and str(start.get("stop_reason", "")) == GlowFlight.REASONS[int(values[8])]
 
 
 ## Ticks that are missing between consecutive rows (a recorder that drops samples must be visible).
@@ -448,14 +625,19 @@ func to_csv() -> String:
 	if _invalid_weather:
 		return ""
 	var lines := PackedStringArray()
-	lines.append("# format: %s" % ("openrc-trace v8" if _battery else ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT))))))
-	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine else meta).duplicate(true)
+	lines.append("# format: %s" % ("openrc-trace v9" if _glow else ("openrc-trace v8" if _battery else ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT)))))))
+	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else meta).duplicate(true)
+	if _glow:
+		written_meta.glow_trace_schema = GLOW_TRACE_SCHEMA
+		written_meta.glow_stop_reason_codes = JSON.stringify(GlowFlight.REASONS)
+		written_meta.glow_event_semantics = "glow_fire_events is the per-row delta of successful accepted fires; counts are cumulative within this trace"
+		written_meta.glow_mode_semantics = "glow_running: 0 stopped, 1 running; stop reason is a separate enumerated code"
 	# Physical metadata stays frozen at the first sample. Paused visual edits can extend the same recording.
 	for visual_key: String in ["visual_context", "visual_timeline"]:
 		if meta.has(visual_key):
 			written_meta[visual_key] = meta[visual_key]
 	for key in written_meta:
-		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if (_weather != null or _continuous_turbine) and key == "dt_s" else str(written_meta[key])
+		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if (_weather != null or _continuous_turbine or _glow) and key == "dt_s" else str(written_meta[key])
 		lines.append("# %s: %s" % [key, encoded])
 	lines.append(",".join(_columns))
 	var n := _columns.size()

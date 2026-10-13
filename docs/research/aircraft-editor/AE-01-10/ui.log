@@ -1,0 +1,54 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   screen renders its title, preview and test action
+ok   catalog selector discovers every aircraft
+ok   initial keyboard focus enters the aircraft selector
+ok   Workshop is a still editor with no flight session
+ok   layout fits 720p height
+ok   layout fits 1080p height
+ok   opening starts at the top of the editor
+ok   Spanish locale translates the Workshop title
+ok   Tab advances focus inside the editor
+ok   catalog selection remains aligned: jensen-das-ugly-stik-60
+ok   no-op build validates: jensen-das-ugly-stik-60
+ok   unsupported controls stay visible and inactive: jensen-das-ugly-stik-60
+ok   catalog selection remains aligned: stik-glow-55ax-2t
+ok   no-op build validates: stik-glow-55ax-2t
+ok   unsupported controls stay visible and inactive: stik-glow-55ax-2t
+ok   catalog selection remains aligned: stik-glow-fs64v-4t
+ok   no-op build validates: stik-glow-fs64v-4t
+ok   unsupported controls stay visible and inactive: stik-glow-fs64v-4t
+ok   catalog selection remains aligned: gp-extra-300s-60
+ok   no-op build validates: gp-extra-300s-60
+ok   unsupported controls stay visible and inactive: gp-extra-300s-60
+ok   catalog selection remains aligned: p51d-mustang-120
+ok   no-op build validates: p51d-mustang-120
+ok   unsupported controls stay visible and inactive: p51d-mustang-120
+ok   catalog selection remains aligned: sebart-avanti-s-a200-p100rx
+ok   no-op build validates: sebart-avanti-s-a200-p100rx
+ok   unsupported controls stay visible and inactive: sebart-avanti-s-a200-p100rx
+ok   catalog selection remains aligned: turbo-lumber-evolution
+ok   no-op build validates: turbo-lumber-evolution
+ok   unsupported controls stay visible and inactive: turbo-lumber-evolution
+ok   catalog includes aircraft with restricted Workshop adjustments
+ok   scale 50% compiles
+ok   scale 200% compiles
+ok   Mini preset produces a valid recipe
+ok   Giant preset produces a valid recipe
+ok   Light preset produces a valid recipe
+ok   Heavy preset produces a valid recipe
+ok   Fast preset produces a valid recipe
+ok   Agile preset produces a valid recipe
+ok   Slow preset produces a valid recipe
+ok   Undo restores the prior recipe
+ok   Reset returns every value to compiler defaults
+ok   Save creates one local revision
+ok   Save updates the same variant as revision two
+ok   saved provenance pins exact source, compiler and dependencies
+ok   Test Fly emits the exact pinned snapshot and variant revision
+ok   Load restores the saved recipe and original source bytes
+ok   Delete removes the saved variant and disables its actions
+ok   deleting the current variant leaves an unsaved draft
+ok   Undo delete restores the original revision
+ok   saving the retained draft creates a separate variant
+Workshop UI: 0 failed

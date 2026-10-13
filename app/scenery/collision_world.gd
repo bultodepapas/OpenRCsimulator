@@ -6,6 +6,7 @@ const Treeline := preload("res://render/treeline.gd")
 const Prefabs := preload("res://scenery/prefabs.gd")
 const Models := preload("res://scenery/models.gd")
 const Palette := preload("res://scenery/palette.gd")
+const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
 const SupportSurfaces := preload("res://scenery/support_surfaces.gd")
 const FlightlineBarrier := preload("res://render/flightline_barrier.gd")
 const FenceParts := preload("res://scenery/fence_parts.gd")
@@ -15,6 +16,9 @@ const CELL_SIZE_M := 32.0
 const MAX_BIN_REFERENCES := 250000
 const TREE_TRUNK_RADIUS_M := 0.18 # estimated gameplay envelope; visual source is a tree card, not a trunk mesh
 const TREE_TRUNK_HEIGHT_FRACTION := 0.34
+const SHADE_TREE_TRUNK_RADIUS_FRACTION := 0.05
+const SHADE_TREE_TRUNK_HEIGHT_FRACTION := 0.355
+const SHADE_TREE_TRUNK_HEIGHT_VARIATION_FRACTION := 0.025
 const FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS := [0.2294921875, 0.1708984375, 0.2900390625] # raw atlas ratios at alpha 0.5
 const FIELD_TREE_CARD_FRAME_SIZE_M := 1.125001 # source frame size multiplied by Treeline.identity.height in shader
 const FIELD_TREE_WIND_LEAN_M := 0.24 # maximum lean in render/tree_wind.gdshaderinc (L15b)
@@ -151,7 +155,11 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 			elif prefab == "avanti_cradle":
 				_add_avanti_cradle(proxies, "%s:%02d" % [group_id, index], north, east, heading)
 			elif prefab == "shade_tree":
-				_add_shade_tree_proxies(proxies, "%s:%02d" % [group_id, index], north, east, int(placement.get("seed", 0)))
+				_add_imported_tree_proxies(proxies, "%s:%02d" % [group_id, index], prefab, north, east, heading,
+					int(placement.get("seed", 0)))
+			elif prefab == "sapling":
+				_add_imported_tree_proxies(proxies, "%s:%02d" % [group_id, index], prefab, north, east, heading,
+					int(placement.get("seed", 0)))
 			elif BUILDINGS.has(prefab):
 				var spec: Dictionary = Prefabs.CATALOG[prefab]
 				var size: Vector3 = spec.size
@@ -180,8 +188,8 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 					foot_height += SupportSurfaces.SEATED_OFFSET_M
 				_add_person_proxy(proxies, group_id, index, prefab, north, east, heading, foot_height)
 			elif prefab == "bush":
-				_add_capsule(proxies, "vegetation:%s:%02d:bush" % [group_id, index], "tree_foliage", "bush",
-					"soft_foliage_impulse", north, east, -0.43, 0.80, 0.0)
+				_add_bush_proxy(proxies, "%s:%02d" % [group_id, index], north, east, heading,
+					int(placement.get("seed", 0)))
 			elif prefab in ["cow", "sheep"]:
 				var size: Vector3 = Models.CATALOG[prefab].size
 				_add_box(proxies, "animal:%s:%02d:%s" % [group_id, index, prefab], "animal", prefab,
@@ -195,7 +203,7 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 
 			for proxy_index: int in range(first_proxy, proxies.size()):
 				proxies[proxy_index]["damage_id"] = "prop:%s:%02d" % [group_id, int(placement.get("source_index", index))]
-				if prefab == "shade_tree":
+				if prefab in ["shade_tree", "sapling"]:
 					proxies[proxy_index].damage_id += ":" + str(proxies[proxy_index].part)
 
 
@@ -256,17 +264,40 @@ static func _add_field_tree_proxies(proxies: Array[Dictionary], id: String, nort
 		rad_to_deg(-yaw))
 
 
-static func _add_shade_tree_proxies(proxies: Array[Dictionary], id: String, north: float, east: float,
-		seed: int) -> void:
-	# Match the deterministic mesh recipe: 9.35–10.30 m broadleaf crown, 0.34 m basal trunk.
-	var height := 9.35 + 0.95 * Palette.hash01(seed, 1)
-	var trunk_height := height * (0.355 + 0.025 * Palette.hash01(seed, 2))
-	var trunk_half := maxf(0.0, trunk_height * 0.5 - 0.34)
-	_add_capsule(proxies, "tree:shade-tree:%s:trunk" % id, "tree_trunk", "trunk", "hard_terminal",
-		north, east, -trunk_height * 0.5, 0.34, trunk_half)
-	var crown_center_up := trunk_height + 3.2
-	_add_capsule(proxies, "tree:shade-tree:%s:crown" % id, "tree_foliage", "crown", "soft_foliage_impulse",
-		north, east, -crown_center_up, 4.0, 0.0)
+static func _add_imported_tree_proxies(proxies: Array[Dictionary], id: String, prefab: String,
+		north: float, east: float, heading: float, seed: int) -> void:
+	# Use the same canonical imported asset and uniform target height as the rendered plant.
+	var vegetation: Dictionary = VegetationPlacement.spec(prefab, seed)
+	if vegetation.is_empty():
+		return
+	var height := float(vegetation.height)
+	var wind_margin := float(vegetation.wind_margin)
+	var trunk_height := height * (SHADE_TREE_TRUNK_HEIGHT_FRACTION
+		+ SHADE_TREE_TRUNK_HEIGHT_VARIATION_FRACTION * Palette.hash01(seed, 2))
+	var trunk_radius := minf(float(vegetation.width), float(vegetation.depth)) \
+		* SHADE_TREE_TRUNK_RADIUS_FRACTION + wind_margin
+	var trunk_half := maxf(0.0, trunk_height * 0.5 - trunk_radius)
+	var id_prefab := "shade-tree" if prefab == "shade_tree" else prefab
+	_add_capsule(proxies, "tree:%s:%s:trunk" % [id_prefab, id], "tree_trunk", "trunk", "hard_terminal",
+		north, east, -trunk_height * 0.5, trunk_radius, trunk_half)
+	var crown_height := maxf(0.001, height - trunk_height)
+	_add_box_at_down(proxies, "tree:%s:%s:crown" % [id_prefab, id], "tree_foliage", "crown",
+		"soft_foliage_impulse", north, east, -(trunk_height + height) * 0.5,
+		float(vegetation.width) + 2.0 * wind_margin, crown_height,
+		float(vegetation.depth) + 2.0 * wind_margin, heading)
+
+
+static func _add_bush_proxy(proxies: Array[Dictionary], id: String, north: float, east: float,
+		heading: float, seed: int) -> void:
+	var vegetation: Dictionary = VegetationPlacement.spec("bush", seed)
+	if vegetation.is_empty():
+		return
+	var wind_margin := float(vegetation.wind_margin)
+	var height := float(vegetation.height)
+	_add_box_at_down(proxies, "vegetation:%s:bush" % id, "tree_foliage", "bush",
+		"soft_foliage_impulse", north, east, -height * 0.5,
+		float(vegetation.width) + 2.0 * wind_margin, height,
+		float(vegetation.depth) + 2.0 * wind_margin, heading)
 
 
 static func _add_line_obstacles(proxies: Array[Dictionary], group: Dictionary) -> void:

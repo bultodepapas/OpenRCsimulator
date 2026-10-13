@@ -1,0 +1,279 @@
+extends SceneTree
+
+const AircraftData := preload("res://physics/aircraft_data.gd")
+const Installation := preload("res://physics/glow/installation.gd")
+const FuelMass := preload("res://physics/glow/fuel_mass.gd")
+
+var _checks: int = 0
+var _failures: int = 0
+
+
+func _check(label: String, passed: bool, detail: String = "") -> void:
+	_checks += 1
+	print(("ok   " if passed else "FAIL ") + label + ("  " + detail if not detail.is_empty() else ""))
+	if not passed:
+		_failures += 1
+
+
+func _initialize() -> void:
+	_check("malformed direct attachment is refused without an exception", not Installation.attach({}, {}).get("ok", false))
+	for entry: Dictionary in [
+		{"label": "2T", "aircraft": "res://data/aircraft/stik_glow_55ax_2t.json"},
+		{"label": "4T", "aircraft": "res://data/aircraft/stik_glow_fs64v_4t.json"},
+		{"label": "2T APC variant", "aircraft": "res://data/aircraft/stik_glow_55ax_2t_apc_13x6.json"},
+		{"label": "4T APC variant", "aircraft": "res://data/aircraft/stik_glow_fs64v_4t_apc_13x6.json"},
+	]:
+		_test_installation(str(entry.label), str(entry.aircraft))
+	_test_path_gate()
+	print("glow installation contract: %d checks, %d failed" % [_checks, _failures])
+	quit(1 if _failures > 0 else 0)
+
+
+func _test_installation(label: String, aircraft_path: String) -> void:
+	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(aircraft_path))
+	_check(label + " generated aircraft JSON parses", raw is Dictionary)
+	if not raw is Dictionary:
+		return
+	var legacy: Dictionary = AircraftData._validate_legacy(AircraftData.legacy_v1_input(raw))
+	_check(label + " aircraft mass and propulsion derive", legacy.get("ok", false), str(legacy.get("errors", [])))
+	if not legacy.get("ok", false):
+		return
+	var source_path: String = str(raw.propulsion.engine.glow_installation)
+	var value: Variant = JSON.parse_string(FileAccess.get_file_as_string(source_path))
+	_check(label + " generated installation JSON parses", value is Dictionary)
+	if not value is Dictionary:
+		return
+	_check(label + " generated install includes explicit starter prime quantity", value.settings.has("starter_prime_kg"))
+	var attached: Dictionary = Installation.attach(raw, legacy.model)
+	_check(label + " generated installation attaches before flight", attached.get("ok", false), str(attached.get("errors", [])))
+	if not attached.get("ok", false):
+		return
+	_check(label + " installed profile family matches its 2T/4T data", attached.model.propulsion.glow.profile.family == value.family)
+	_check(label + " installed identity hashes exact source bytes",
+		attached.model.propulsion.glow.identity.sha256 == FileAccess.get_sha256(source_path))
+	_check(label + " installed propeller has a unit runtime axis",
+		attached.model.propulsion.has("axis") and attached.model.propulsion.axis == PackedFloat64Array([1.0, 0.0, 0.0]))
+	_check(label + " attachment does not mutate its input model", not legacy.model.propulsion.has("glow"))
+	var aircraft_load: Dictionary = AircraftData.load_file(aircraft_path)
+	_check(label + " full aircraft loader completes glow validation before flight",
+		aircraft_load.get("ok", false) and aircraft_load.model.propulsion.glow.profile.family == value.family,
+		str(aircraft_load.get("errors", [])))
+	var no_angle_raw: Dictionary = raw.duplicate(true)
+	no_angle_raw.propulsion.propeller.erase("thrust_angles")
+	var default_axis_load: Dictionary = AircraftData.validate_and_derive(no_angle_raw)
+	_check(label + " omitted thrust angles resolve to the documented +x runtime rotor axis",
+		default_axis_load.get("ok", false)
+		and default_axis_load.model.propulsion.axis == PackedFloat64Array([1.0, 0.0, 0.0]),
+		str(default_axis_load.get("errors", [])))
+
+	var install_bytes: PackedByteArray = FileAccess.get_file_as_bytes(source_path)
+	var detached: Dictionary = legacy.model.duplicate(true)
+	var valid: Dictionary = Installation.prepare_value(value, raw, detached, install_bytes)
+	_check(label + " pure validator accepts generated candidate value", valid.get("ok", false), str(valid.get("errors", [])))
+	if not valid.get("ok", false):
+		return
+	_check(label + " pure validator returns a detached normalized install",
+		valid.model != detached and valid.model.propulsion.glow.settings.thermal is Dictionary)
+	_test_bad_install_values(label, value, raw, legacy.model)
+	_test_inventory_and_axis(label, value, raw, legacy.model)
+	_test_unsupported_modules(label, value, raw, legacy.model)
+
+
+func _test_bad_install_values(label: String, baseline: Dictionary, raw: Dictionary, model: Dictionary) -> void:
+	var cases: Array[Dictionary] = []
+	var value := baseline.duplicate(true)
+	value.extra = 1
+	cases.append({"label": "unknown root field", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.unknown_transport = {"value": 1.0, "unit": "1", "kind": "estimated", "source": "test"}
+	cases.append({"label": "unknown lifecycle setting", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.erase("starter_prime_kg")
+	cases.append({"label": "missing starter prime setting", "value": value})
+	value = baseline.duplicate(true)
+	value.propeller.wash_table = []
+	cases.append({"label": "unsupported installation wash table", "value": value})
+	value = baseline.duplicate(true)
+	value.profile = "res://data/glow/../glow/os_max_55ax_candidate.json"
+	cases.append({"label": "profile traversal", "value": value})
+	value = baseline.duplicate(true)
+	value.family = "glow_turbine"
+	cases.append({"label": "unknown family", "value": value})
+	value = baseline.duplicate(true)
+	value.family = "glow_4t" if baseline.family == "glow_2t" else "glow_2t"
+	cases.append({"label": "profile family mismatch", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.idle_admission.unit = "percent"
+	cases.append({"label": "quantity unit mismatch", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.servo_time_constant_s.value = true
+	cases.append({"label": "boolean quantity", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.air_time_constant_s.source = "  "
+	cases.append({"label": "blank provenance", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.fuel_transport_time_constant_s.value = INF
+	cases.append({"label": "nonfinite quantity", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.servo_time_constant_s.value = 0.019
+	cases.append({"label": "transport time constant below integrator envelope", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.idle_admission.value = 1.0
+	cases.append({"label": "idle admission upper bound", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.temperature_firing_full_k.value = value.settings.temperature_firing_hot_full_k.value + 1.0
+	cases.append({"label": "cold full temperature crosses hot full", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.temperature_firing_hot_full_k.value = value.settings.temperature_firing_full_k.value - 1.0
+	cases.append({"label": "hot full temperature below cold full", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.temperature_firing_hot_zero_k.value = value.settings.temperature_firing_hot_full_k.value
+	cases.append({"label": "hot zero temperature equals hot full", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.lean_misfire_start_ratio.value = 1.0
+	cases.append({"label": "lean threshold reaches nominal mixture", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.rich_misfire_zero_ratio.value = value.settings.rich_misfire_start_ratio.value
+	cases.append({"label": "rich threshold is unordered", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.starter_prime_kg.value = Installation.MAX_STARTER_PRIME_KG + 1.0e-6
+	cases.append({"label": "starter prime mass upper bound", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.starter_prime_kg.unit = "g"
+	cases.append({"label": "starter prime unit mismatch", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.starter_prime_kg.value = -1.0e-6
+	cases.append({"label": "negative starter prime mass", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.thermal.head_heat_fraction.value = 1.01
+	cases.append({"label": "thermal partition above one", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.thermal.cooling_base_w_k.value = -0.1
+	cases.append({"label": "negative thermal cooling coefficient", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.thermal.heat_capacity_j_k.value = 0.0
+	cases.append({"label": "zero thermal capacity", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.thermal.head_heat_fraction.value = 0.0
+	value.settings.thermal.cooling_base_w_k.value = 0.0
+	value.settings.thermal.cooling_airflow_w_s_m_k.value = 0.0
+	value.settings.thermal.premix_evaporation_j_kg.value = 0.0
+	value.settings.thermal.evaporation_head_fraction.value = 0.0
+	var zero_thermal: Dictionary = Installation.prepare_value(value, raw, model.duplicate(true), PackedByteArray())
+	_check(label + " accepts zero heat partitions and cooling terms at their inclusive domain boundary",
+		zero_thermal.get("ok", false), str(zero_thermal.get("errors", [])))
+	value = baseline.duplicate(true)
+	value.settings.starter_prime_kg.value = 0.0
+	var no_prime: Dictionary = Installation.prepare_value(value, raw, model.duplicate(true), PackedByteArray())
+	_check(label + " accepts a zero starter prime when no priming fuel is used",
+		no_prime.get("ok", false), str(no_prime.get("errors", [])))
+	value = baseline.duplicate(true)
+	value.propeller.blades.value = 3.0
+	cases.append({"label": "unsupported blade count", "value": value})
+	value = baseline.duplicate(true)
+	value.propeller.chord_m.value = value.propeller.diameter_m.value + 0.01
+	cases.append({"label": "blade chord exceeds diameter", "value": value})
+	value = baseline.duplicate(true)
+	value.propeller.lift_slope.value = 21.0
+	cases.append({"label": "propeller lift slope domain", "value": value})
+	value = baseline.duplicate(true)
+	value.propeller.diameter_m.value += 0.01
+	cases.append({"label": "aircraft and install propeller diameter mismatch", "value": value})
+	value = baseline.duplicate(true)
+	value.initial_temperature_k.value = 601.0
+	cases.append({"label": "initial head temperature above installation bound", "value": value})
+	value = baseline.duplicate(true)
+	value.fuel_inventory = "missing tank"
+	cases.append({"label": "unmatched fuel inventory name", "value": value})
+	for item: Dictionary in cases:
+		var result: Dictionary = Installation.prepare_value(item.value, raw, model.duplicate(true), PackedByteArray())
+		_check(label + " rejects " + str(item.label), not result.get("ok", false), str(result.get("errors", [])))
+
+
+func _test_inventory_and_axis(label: String, baseline: Dictionary, raw: Dictionary, model: Dictionary) -> void:
+	var invalid_raw := raw.duplicate(true)
+	for item: Dictionary in invalid_raw.inventory:
+		if item.get("name") == baseline.fuel_inventory:
+			item.energy_source = "battery"
+	var bad_fuel: Dictionary = Installation.prepare_value(baseline, invalid_raw, model.duplicate(true), PackedByteArray())
+	_check(label + " refuses a non-glow energy source tank", not bad_fuel.get("ok", false))
+
+	invalid_raw = raw.duplicate(true)
+	for item: Dictionary in invalid_raw.inventory:
+		if item.get("name") == baseline.fuel_inventory:
+			item.position.unit = "cm"
+	var bad_position: Dictionary = Installation.prepare_value(baseline, invalid_raw, model.duplicate(true), PackedByteArray())
+	_check(label + " refuses malformed tank geometry quantity", not bad_position.get("ok", false))
+	invalid_raw = raw.duplicate(true)
+	for item: Dictionary in invalid_raw.inventory:
+		if item.get("name") == baseline.fuel_inventory:
+			invalid_raw.inventory.append(item.duplicate(true))
+			break
+	var duplicate_fuel: Dictionary = Installation.prepare_value(baseline, invalid_raw, model.duplicate(true), PackedByteArray())
+	_check(label + " refuses ambiguous duplicate glow fuel inventory names", not duplicate_fuel.get("ok", false))
+
+	var candidate_model: Dictionary = model.duplicate(true)
+	candidate_model.propulsion.axis = PackedFloat64Array([2.0, 0.0, 0.0])
+	var bad_axis: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
+	_check(label + " refuses a non-unit rotor axis", not bad_axis.get("ok", false))
+
+	var tank: Dictionary = Installation._fuel_tank(raw, baseline.fuel_inventory, model)
+	var carrier_model: Dictionary = model.duplicate(true)
+	var carrier_raw: Dictionary = raw.duplicate(true)
+	var axis := PackedFloat64Array([cos(deg_to_rad(10.0)), sin(deg_to_rad(10.0)), 0.0])
+	carrier_raw.propulsion.propeller.thrust_angles.value = [0.0, 10.0]
+	carrier_model.propulsion.axis = axis
+	# Construct a valid synthetic wet tensor around a deliberately weak dry axis.
+	# 1.95e-4 is below dry Jxx (2e-4) but above the tensor's inertia about this 10° axis.
+	var dry_tensor := PackedFloat64Array([2.0e-4, 1.0e-4, 3.0e-4, 0.0, 0.0, 0.0])
+	var dry_mass: float = float(carrier_model.mass_kg) - tank.mass_kg
+	var dry_cg: PackedFloat64Array = PackedFloat64Array([
+		-tank.mass_kg * tank.position[0] / dry_mass,
+		-tank.mass_kg * tank.position[1] / dry_mass,
+		-tank.mass_kg * tank.position[2] / dry_mass,
+	])
+	var wet_tensor: PackedFloat64Array = dry_tensor.duplicate()
+	_add_tensor(wet_tensor, FuelMass.tensor_per_kg(dry_cg, PackedFloat64Array([0.0, 0.0, 0.0])), dry_mass)
+	_add_tensor(wet_tensor, FuelMass.tensor_per_kg(tank.position, tank.size), tank.mass_kg)
+	carrier_model.inertia = wet_tensor
+	carrier_model.propulsion.rotor_inertia = 1.95e-4
+	var over_limit: Dictionary = Installation.prepare_value(baseline, carrier_raw, carrier_model, PackedByteArray())
+	_check(label + " rejects rotor inertia above the axis-projected dry carrier even below Jxx",
+		not over_limit.get("ok", false), str(over_limit.get("errors", [])))
+	carrier_model.propulsion.rotor_inertia = 1.8e-4
+	var under_limit: Dictionary = Installation.prepare_value(baseline, carrier_raw, carrier_model, PackedByteArray())
+	_check(label + " accepts rotor inertia below the axis-projected dry carrier limit",
+		under_limit.get("ok", false), str(under_limit.get("errors", [])))
+
+
+func _test_unsupported_modules(label: String, baseline: Dictionary, raw: Dictionary, model: Dictionary) -> void:
+	for module: String in ["normal_force", "pfactor_moment", "slipstream"]:
+		var candidate := raw.duplicate(true)
+		candidate.propulsion.propeller[module] = {}
+		var result: Dictionary = Installation.prepare_value(baseline, candidate, model.duplicate(true), PackedByteArray())
+		_check(label + " rejects unsupported optional propeller module " + module, not result.get("ok", false))
+	var legacy_shaft: Dictionary = raw.duplicate(true)
+	legacy_shaft.propulsion.engine.shaft = {}
+	var shaft_result: Dictionary = Installation.prepare_value(baseline, legacy_shaft, model.duplicate(true), PackedByteArray())
+	_check(label + " rejects mixed legacy shaft module", not shaft_result.get("ok", false))
+
+
+func _test_path_gate() -> void:
+	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/stik_glow_55ax_2t.json"))
+	if not raw is Dictionary:
+		_check("path-gate fixture loads", false)
+		return
+	var legacy: Dictionary = AircraftData._validate_legacy(AircraftData.legacy_v1_input(raw))
+	if not legacy.get("ok", false):
+		_check("path-gate model derives", false, str(legacy.get("errors", [])))
+		return
+	for path: Variant in ["user://install.json", "res://data/glow/../stik_55ax_2t.json", "res://data/glow/sub/install.json", "res://data/glow/install.json.bak", 5]:
+		var candidate: Dictionary = raw.duplicate(true)
+		candidate.propulsion.engine.glow_installation = path
+		var result: Dictionary = Installation.attach(candidate, legacy.model)
+		_check("unsafe glow install path rejected: " + str(path), not result.get("ok", false))
+
+
+func _add_tensor(target: PackedFloat64Array, tensor: PackedFloat64Array, scale: float) -> void:
+	for index: int in 6:
+		target[index] += tensor[index] * scale

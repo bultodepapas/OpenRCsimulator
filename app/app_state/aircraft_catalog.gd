@@ -20,6 +20,7 @@ const DEFAULT_ID := "jensen-das-ugly-stik-60"
 const ENTRIES := [
 	{
 		id = "jensen-das-ugly-stik-60",
+		visual_family = "jensen-das-ugly-stik-60",
 		name = "Jensen Das Ugly Stik 60",
 		summary = "High-wing sport trainer · 1.52 m · .61 glow",
 		status = FLYABLE,
@@ -28,6 +29,7 @@ const ENTRIES := [
 	},
 	{
 		id = "stik-glow-55ax-2t",
+		visual_family = "jensen-das-ugly-stik-60",
 		name = "Jensen Das Ugly Stik 60 · MAX-55AX",
 		summary = "High-wing sport trainer · 1.52 m · .55 2-stroke glow",
 		status = EXPERIMENTAL,
@@ -36,6 +38,7 @@ const ENTRIES := [
 	},
 	{
 		id = "stik-glow-fs64v-4t",
+		visual_family = "jensen-das-ugly-stik-60",
 		name = "Jensen Das Ugly Stik 60 · FS-64V",
 		summary = "High-wing sport trainer · 1.52 m · .64 4-stroke glow",
 		status = EXPERIMENTAL,
@@ -44,6 +47,7 @@ const ENTRIES := [
 	},
 	{
 		id = "gp-extra-300s-60",
+		visual_family = "gp-extra-300s-60",
 		name = "Great Planes Extra 300S .60",
 		summary = "Low-wing aerobat · 1.63 m · .61 glow",
 		status = EXPERIMENTAL,
@@ -52,6 +56,7 @@ const ENTRIES := [
 	},
 	{
 		id = "p51d-mustang-120",
+		visual_family = "p51d-mustang-120",
 		name = "P-51D Mustang 1/4",
 		summary = "Giant-scale warbird · 2.82 m · 120 cc gasoline",
 		status = EXPERIMENTAL,
@@ -60,6 +65,7 @@ const ENTRIES := [
 	},
 	{
 		id = "sebart-avanti-s-a200-p100rx",
+		visual_family = "sebart-avanti-s-a200-p100rx",
 		name = "Ventage Jet",
 		summary = "Sport jet · 2.00 m · JetCat P100-RX turbine",
 		status = EXPERIMENTAL,
@@ -70,6 +76,7 @@ const ENTRIES := [
 		# TT-06: the author's r1 glTF model (assets/aircraft/turbo-lumber-evolution), inspired by the E-flite Turbo Timber
 		# Evolution; fictional name (Spanish "Turbo Tronco Evolución" in es.po). TT-07/08 estimated electric configuration.
 		id = "turbo-lumber-evolution",
+		visual_family = "turbo-lumber-evolution",
 		name = "Turbo Lumber Evolution",
 		summary = "High-wing STOL · 1.55 m · 4S electric",
 		status = EXPERIMENTAL,
@@ -114,6 +121,11 @@ static func entry(id: String) -> Dictionary:
 static func can_fly(id: String) -> bool:
 	var e := entry(id)
 	return not e.is_empty() and e.status != PREVIEW and e.data != ""
+
+
+## Physical configurations may share an authored visual family. Unknown IDs never borrow a default model.
+static func visual_family(id: String) -> String:
+	return str(entry(id).get("visual_family", ""))
 
 
 ## The next (step +1) or previous (step -1) ID in menu order, wrapping around.

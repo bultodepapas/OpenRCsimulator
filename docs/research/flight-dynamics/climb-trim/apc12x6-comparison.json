@@ -1,0 +1,1233 @@
+{
+  "schema": "openrc-propeller-counterfactual-v1",
+  "purpose": "Read-only comparison data for the standard Jensen Ugly Stik 60 model; not production aircraft data.",
+  "source": {
+    "url": "https://www.apcprop.com/files/PER3_12x6.dat",
+    "manufacturer_method_page": "https://www.apcprop.com/technical-information/performance-data/",
+    "file_name": "PER3_12x6.dat",
+    "file_sha256": "CFBD2410117D13105D8382DDA7F1EBFD1F671DA3C35073F76C1D9EE2A750E63E",
+    "header_version": "v2022-0915",
+    "simulation_date": "2022-09-22",
+    "propeller": "APC 12x6",
+    "method": "APC says the data are computed from actual propeller geometry using proprietary vortex-theory software and airfoil polars; they are not wind-tunnel measurements.",
+    "source_rpm_range": [
+      1000,
+      17000
+    ],
+    "source_curve_j_coverage_at_11000_rpm": [
+      0.0,
+      0.6802
+    ],
+    "source_curve_j_coverage_at_12000_rpm": [
+      0.0,
+      0.6577
+    ],
+    "common_j_limit_used": "Each tabulated comparison curve ends at the smaller upper-J limit of the neighboring APC RPM blocks. The replay sensitivity experiment may extrapolate beyond it using the legacy propulsion law and reports the first out-of-domain time separately.",
+    "source_curve_j_coverage_by_rpm": {
+      "1000": [
+        0.0,
+        0.6639
+      ],
+      "2000": [
+        0.0,
+        0.6585
+      ],
+      "3000": [
+        0.0,
+        0.6738
+      ],
+      "4000": [
+        0.0,
+        0.6753
+      ],
+      "5000": [
+        0.0,
+        0.6626
+      ],
+      "6000": [
+        0.0,
+        0.6616
+      ],
+      "7000": [
+        0.0,
+        0.6774
+      ],
+      "8000": [
+        0.0,
+        0.6786
+      ],
+      "9000": [
+        0.0,
+        0.6797
+      ],
+      "10000": [
+        0.0,
+        0.662
+      ],
+      "11000": [
+        0.0,
+        0.6802
+      ],
+      "12000": [
+        0.0,
+        0.6577
+      ],
+      "13000": [
+        0.0,
+        0.6789
+      ],
+      "14000": [
+        0.0,
+        0.6799
+      ],
+      "15000": [
+        0.0,
+        0.6802
+      ],
+      "16000": [
+        0.0,
+        0.657
+      ],
+      "17000": [
+        0.0,
+        0.6807
+      ]
+    }
+  },
+  "comparison_context": {
+    "standard_aircraft_json": "app/data/aircraft/jensen_ugly_stik_60.json",
+    "legacy_model": "D5 prescribes RPM from throttle and uses UIUC measured APC Sport 11x6 Ct/Cp tables as a proxy for the named APC 12x6; this artifact replaces only those coefficient arrays for isolated sensitivity runs.",
+    "diameter_m": 0.3048,
+    "air_density_kg_m3": 1.225,
+    "virtual_reference_mass_kg": 2.88505829104375,
+    "weight_n": 28.29275689,
+    "legacy_max_rpm_static": 11149.0,
+    "legacy_static_cp": 0.0471,
+    "engine_rated_power_w": 1397.4,
+    "engine_rated_power_rpm": 16000.0,
+    "engine_rated_power_source": "Input copied from the standard JSON (1397.4 W, whose source cites O.S. catalog 17750 at 1.9 PS/16,000 rpm). O.S.'s English catalog lists 1.9 PS/1.87 hp, while the English manual table lists 1.9 PS/1.93 hp; the calculation uses only the repository's stored 1397.4 W value and does not treat the inconsistent hp label as validation.",
+    "engine_max_practical_rpm": 17000,
+    "engine_max_practical_rpm_source": "O.S. MAX-61FX manual, same URL; practical RPM range 2,000\u201317,000.",
+    "engine_torque_assumption_nm": 0.83401169,
+    "engine_torque_assumption": "Constant-torque sensitivity computed from the repository's stored 1397.4 W at 16,000 rpm: Q=P/(2\u03c0\u00b7n). This is the legacy JSON's assumed linear power-vs-rpm law, not a measured or manufacturer-published torque curve.",
+    "gravity_m_s2": 9.80665
+  },
+  "static_equilibrium_summary": {
+    "rpm": 12647.795952,
+    "ct": 0.1054478,
+    "cp": 0.03659434,
+    "prop_torque_nm": 0.83401169,
+    "prop_power_w": 1104.626879,
+    "thrust_n": 49.54053,
+    "t_over_w_at_virtual_mass": 1.75099691,
+    "note": "Solved by balancing the stated constant-torque assumption against APC's computed static Cp interpolated between adjacent RPM blocks. Engine power input is the repository's 1397.4 W value; O.S. publishes a rated point, not a torque curve, and the English hp labels differ. Actual installed OS engine/prop RPM remains unmeasured."
+  },
+  "interpolation": {
+    "method": "For each target RPM, linearly interpolate Ct/Cp in J within each adjacent APC source RPM block, then linearly interpolate the resulting coefficients in RPM. Curve output uses the union of neighboring source J sample locations inside their shared coverage.",
+    "outside_coverage": "No extrapolated rows; APC's supplied 11k/12k and 12k/13k curves do not share coverage beyond approximately J=0.658."
+  },
+  "cases": [
+    {
+      "id": "fixed_legacy_11149_rpm",
+      "rpm": 11149.0,
+      "rpm_interpretation": "Hold the legacy JSON static target fixed; isolates Ct/Cp map replacement.",
+      "common_source_advance_ratio_range": [
+        0.0,
+        0.6577
+      ],
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.1040341
+          ],
+          [
+            0.0235,
+            0.1022341
+          ],
+          [
+            0.0469,
+            0.1003353
+          ],
+          [
+            0.047,
+            0.10032686
+          ],
+          [
+            0.0704,
+            0.09833537
+          ],
+          [
+            0.0705,
+            0.0983261
+          ],
+          [
+            0.0938,
+            0.09613689
+          ],
+          [
+            0.094,
+            0.09611744
+          ],
+          [
+            0.1173,
+            0.09382073
+          ],
+          [
+            0.1174,
+            0.09381011
+          ],
+          [
+            0.1407,
+            0.09133714
+          ],
+          [
+            0.1409,
+            0.09131527
+          ],
+          [
+            0.1642,
+            0.08872262
+          ],
+          [
+            0.1644,
+            0.08869883
+          ],
+          [
+            0.1876,
+            0.08592453
+          ],
+          [
+            0.1879,
+            0.08588661
+          ],
+          [
+            0.2111,
+            0.08292491
+          ],
+          [
+            0.2114,
+            0.08288538
+          ],
+          [
+            0.2345,
+            0.07981242
+          ],
+          [
+            0.2349,
+            0.0797565
+          ],
+          [
+            0.258,
+            0.07651267
+          ],
+          [
+            0.2584,
+            0.0764536
+          ],
+          [
+            0.2815,
+            0.07301318
+          ],
+          [
+            0.2819,
+            0.07295193
+          ],
+          [
+            0.3049,
+            0.06941571
+          ],
+          [
+            0.3054,
+            0.06933731
+          ],
+          [
+            0.3284,
+            0.06570145
+          ],
+          [
+            0.3289,
+            0.0656203
+          ],
+          [
+            0.3518,
+            0.06188692
+          ],
+          [
+            0.3523,
+            0.06180207
+          ],
+          [
+            0.3753,
+            0.05788718
+          ],
+          [
+            0.3758,
+            0.05780176
+          ],
+          [
+            0.3987,
+            0.0538752
+          ],
+          [
+            0.3993,
+            0.05376834
+          ],
+          [
+            0.4222,
+            0.04967558
+          ],
+          [
+            0.4228,
+            0.04956577
+          ],
+          [
+            0.4456,
+            0.04537868
+          ],
+          [
+            0.4463,
+            0.0452506
+          ],
+          [
+            0.4691,
+            0.04107868
+          ],
+          [
+            0.4698,
+            0.04094759
+          ],
+          [
+            0.4925,
+            0.03666753
+          ],
+          [
+            0.4933,
+            0.03651433
+          ],
+          [
+            0.516,
+            0.03216753
+          ],
+          [
+            0.5168,
+            0.03201433
+          ],
+          [
+            0.5395,
+            0.02765313
+          ],
+          [
+            0.5403,
+            0.02749597
+          ],
+          [
+            0.5629,
+            0.02303884
+          ],
+          [
+            0.5637,
+            0.02288164
+          ],
+          [
+            0.5864,
+            0.01843823
+          ],
+          [
+            0.5872,
+            0.01827816
+          ],
+          [
+            0.6098,
+            0.01374172
+          ],
+          [
+            0.6107,
+            0.01356498
+          ],
+          [
+            0.6333,
+            0.00912682
+          ],
+          [
+            0.6342,
+            0.00894617
+          ],
+          [
+            0.6567,
+            0.00441553
+          ],
+          [
+            0.6577,
+            0.00421128
+          ]
+        ],
+        "unit": "1",
+        "kind": "computed"
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.0362298
+          ],
+          [
+            0.0235,
+            0.0366298
+          ],
+          [
+            0.0469,
+            0.03694445
+          ],
+          [
+            0.047,
+            0.03694615
+          ],
+          [
+            0.0704,
+            0.03732961
+          ],
+          [
+            0.0705,
+            0.03733053
+          ],
+          [
+            0.0938,
+            0.03754432
+          ],
+          [
+            0.094,
+            0.03754615
+          ],
+          [
+            0.1173,
+            0.03774457
+          ],
+          [
+            0.1174,
+            0.03774506
+          ],
+          [
+            0.1407,
+            0.03784457
+          ],
+          [
+            0.1409,
+            0.0378447
+          ],
+          [
+            0.1642,
+            0.0378447
+          ],
+          [
+            0.1644,
+            0.0378447
+          ],
+          [
+            0.1876,
+            0.03782999
+          ],
+          [
+            0.1879,
+            0.03782763
+          ],
+          [
+            0.2111,
+            0.03763018
+          ],
+          [
+            0.2114,
+            0.03762653
+          ],
+          [
+            0.2345,
+            0.03733056
+          ],
+          [
+            0.2349,
+            0.03732401
+          ],
+          [
+            0.258,
+            0.03693081
+          ],
+          [
+            0.2584,
+            0.03692111
+          ],
+          [
+            0.2815,
+            0.03633132
+          ],
+          [
+            0.2819,
+            0.03631962
+          ],
+          [
+            0.3049,
+            0.03563202
+          ],
+          [
+            0.3054,
+            0.03561531
+          ],
+          [
+            0.3284,
+            0.03483234
+          ],
+          [
+            0.3289,
+            0.03481162
+          ],
+          [
+            0.3518,
+            0.03383298
+          ],
+          [
+            0.3523,
+            0.03381169
+          ],
+          [
+            0.3753,
+            0.03281839
+          ],
+          [
+            0.3758,
+            0.03279126
+          ],
+          [
+            0.3987,
+            0.03151985
+          ],
+          [
+            0.3993,
+            0.03148448
+          ],
+          [
+            0.4222,
+            0.03012023
+          ],
+          [
+            0.4228,
+            0.03008217
+          ],
+          [
+            0.4456,
+            0.02862156
+          ],
+          [
+            0.4463,
+            0.02857181
+          ],
+          [
+            0.4691,
+            0.02692245
+          ],
+          [
+            0.4698,
+            0.02686908
+          ],
+          [
+            0.4925,
+            0.02510964
+          ],
+          [
+            0.4933,
+            0.02504496
+          ],
+          [
+            0.516,
+            0.02319524
+          ],
+          [
+            0.5168,
+            0.02312137
+          ],
+          [
+            0.5395,
+            0.02101065
+          ],
+          [
+            0.5403,
+            0.02093599
+          ],
+          [
+            0.5629,
+            0.01878243
+          ],
+          [
+            0.5637,
+            0.01870067
+          ],
+          [
+            0.5864,
+            0.01638237
+          ],
+          [
+            0.5872,
+            0.01629456
+          ],
+          [
+            0.6098,
+            0.01378504
+          ],
+          [
+            0.6107,
+            0.0136822
+          ],
+          [
+            0.6333,
+            0.01108561
+          ],
+          [
+            0.6342,
+            0.01097855
+          ],
+          [
+            0.6567,
+            0.00827369
+          ],
+          [
+            0.6577,
+            0.00814304
+          ]
+        ],
+        "unit": "1",
+        "kind": "computed"
+      },
+      "fixed_rpm_speed_checks": [
+        {
+          "airspeed_mps": 0.0,
+          "advance_ratio": 0.0,
+          "ct": 0.1040341,
+          "cp": 0.0362298,
+          "thrust_n": 37.978778,
+          "prop_torque_nm": 0.641603,
+          "prop_power_w": 749.08454,
+          "t_over_w_at_virtual_mass": 1.34234985,
+          "legacy_11149rpm_11x6_borrowed": {
+            "advance_ratio": 0.0,
+            "ct": 0.113,
+            "cp": 0.0471,
+            "thrust_n": 41.251877,
+            "prop_torque_nm": 0.834106
+          },
+          "legacy_11x6_borrowed_at_same_rpm": {
+            "advance_ratio": 0.0,
+            "ct": 0.113,
+            "cp": 0.0471,
+            "thrust_n": 41.251877,
+            "prop_torque_nm": 0.834106
+          }
+        },
+        {
+          "airspeed_mps": 15.0,
+          "advance_ratio": 0.26484491,
+          "ct": 0.07549372,
+          "cp": 0.03675656,
+          "thrust_n": 27.559803,
+          "prop_torque_nm": 0.650931,
+          "prop_power_w": 759.975748,
+          "t_over_w_at_virtual_mass": 0.97409394,
+          "legacy_11149rpm_11x6_borrowed": {
+            "advance_ratio": 0.26484491,
+            "ct": 0.08928466,
+            "cp": 0.04837807,
+            "thrust_n": 32.594336,
+            "prop_torque_nm": 0.85674
+          },
+          "legacy_11x6_borrowed_at_same_rpm": {
+            "advance_ratio": 0.26484491,
+            "ct": 0.08928466,
+            "cp": 0.04837807,
+            "thrust_n": 32.594336,
+            "prop_torque_nm": 0.85674
+          }
+        },
+        {
+          "airspeed_mps": 25.0,
+          "advance_ratio": 0.44140818,
+          "ct": 0.04614849,
+          "cp": 0.02889009,
+          "thrust_n": 16.847006,
+          "prop_torque_nm": 0.511622,
+          "prop_power_w": 597.329331,
+          "t_over_w_at_virtual_mass": 0.59545297,
+          "legacy_11149rpm_11x6_borrowed": {
+            "advance_ratio": 0.44140818,
+            "ct": 0.06663592,
+            "cp": 0.0450724,
+            "thrust_n": 24.326167,
+            "prop_torque_nm": 0.798199
+          },
+          "legacy_11x6_borrowed_at_same_rpm": {
+            "advance_ratio": 0.44140818,
+            "ct": 0.06663592,
+            "cp": 0.0450724,
+            "thrust_n": 24.326168,
+            "prop_torque_nm": 0.798199
+          }
+        }
+      ],
+      "source_rpm_bracket": [
+        11000,
+        12000
+      ]
+    },
+    {
+      "id": "constant_torque_static_equilibrium",
+      "rpm": 12647.795952,
+      "rpm_interpretation": "Static RPM solved with the legacy JSON's constant-torque power law and APC computed static Cp.",
+      "common_source_advance_ratio_range": [
+        0.0,
+        0.6577
+      ],
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.1054478
+          ],
+          [
+            0.0234,
+            0.10365049
+          ],
+          [
+            0.0235,
+            0.10364254
+          ],
+          [
+            0.0468,
+            0.10175349
+          ],
+          [
+            0.047,
+            0.10173672
+          ],
+          [
+            0.0702,
+            0.09975679
+          ],
+          [
+            0.0705,
+            0.09972952
+          ],
+          [
+            0.0936,
+            0.09756098
+          ],
+          [
+            0.094,
+            0.09752244
+          ],
+          [
+            0.1171,
+            0.09522341
+          ],
+          [
+            0.1174,
+            0.09519181
+          ],
+          [
+            0.1405,
+            0.09276218
+          ],
+          [
+            0.1409,
+            0.0927179
+          ],
+          [
+            0.1639,
+            0.09006803
+          ],
+          [
+            0.1644,
+            0.09000904
+          ],
+          [
+            0.1873,
+            0.08727297
+          ],
+          [
+            0.1879,
+            0.08719797
+          ],
+          [
+            0.2107,
+            0.08427927
+          ],
+          [
+            0.2114,
+            0.08418578
+          ],
+          [
+            0.2341,
+            0.08108616
+          ],
+          [
+            0.2349,
+            0.08097471
+          ],
+          [
+            0.2575,
+            0.07779231
+          ],
+          [
+            0.2584,
+            0.07766059
+          ],
+          [
+            0.2809,
+            0.07430025
+          ],
+          [
+            0.2819,
+            0.07414814
+          ],
+          [
+            0.3043,
+            0.07070715
+          ],
+          [
+            0.3054,
+            0.07053208
+          ],
+          [
+            0.3277,
+            0.06691614
+          ],
+          [
+            0.3289,
+            0.06671879
+          ],
+          [
+            0.3512,
+            0.06301237
+          ],
+          [
+            0.3523,
+            0.06282599
+          ],
+          [
+            0.3746,
+            0.05901974
+          ],
+          [
+            0.3758,
+            0.05880827
+          ],
+          [
+            0.398,
+            0.0548629
+          ],
+          [
+            0.3993,
+            0.05463186
+          ],
+          [
+            0.4214,
+            0.05067114
+          ],
+          [
+            0.4228,
+            0.05041636
+          ],
+          [
+            0.4448,
+            0.04637969
+          ],
+          [
+            0.4463,
+            0.0461003
+          ],
+          [
+            0.4682,
+            0.04202135
+          ],
+          [
+            0.4698,
+            0.04171891
+          ],
+          [
+            0.4916,
+            0.03753289
+          ],
+          [
+            0.4933,
+            0.03720175
+          ],
+          [
+            0.515,
+            0.03297486
+          ],
+          [
+            0.5168,
+            0.03262424
+          ],
+          [
+            0.5384,
+            0.02838445
+          ],
+          [
+            0.5403,
+            0.02801253
+          ],
+          [
+            0.5619,
+            0.02374557
+          ],
+          [
+            0.5637,
+            0.02337905
+          ],
+          [
+            0.5853,
+            0.01901967
+          ],
+          [
+            0.5872,
+            0.01864146
+          ],
+          [
+            0.6087,
+            0.01432956
+          ],
+          [
+            0.6107,
+            0.01392845
+          ],
+          [
+            0.6321,
+            0.0096366
+          ],
+          [
+            0.6342,
+            0.00920963
+          ],
+          [
+            0.6555,
+            0.00484694
+          ],
+          [
+            0.6577,
+            0.00439634
+          ]
+        ],
+        "unit": "1",
+        "kind": "computed"
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.03659434
+          ],
+          [
+            0.0234,
+            0.03699374
+          ],
+          [
+            0.0235,
+            0.03699545
+          ],
+          [
+            0.0468,
+            0.03739314
+          ],
+          [
+            0.047,
+            0.037396
+          ],
+          [
+            0.0702,
+            0.03769299
+          ],
+          [
+            0.0705,
+            0.03769683
+          ],
+          [
+            0.0936,
+            0.03799254
+          ],
+          [
+            0.094,
+            0.03799654
+          ],
+          [
+            0.1171,
+            0.03819344
+          ],
+          [
+            0.1174,
+            0.03819517
+          ],
+          [
+            0.1405,
+            0.03829374
+          ],
+          [
+            0.1409,
+            0.03829434
+          ],
+          [
+            0.1639,
+            0.03829434
+          ],
+          [
+            0.1644,
+            0.03829434
+          ],
+          [
+            0.1873,
+            0.03826002
+          ],
+          [
+            0.1879,
+            0.0382558
+          ],
+          [
+            0.2107,
+            0.03806122
+          ],
+          [
+            0.2114,
+            0.0380533
+          ],
+          [
+            0.2341,
+            0.03776272
+          ],
+          [
+            0.2349,
+            0.03774804
+          ],
+          [
+            0.2575,
+            0.03729973
+          ],
+          [
+            0.2584,
+            0.03727939
+          ],
+          [
+            0.2809,
+            0.03670333
+          ],
+          [
+            0.2819,
+            0.03667496
+          ],
+          [
+            0.3043,
+            0.03600588
+          ],
+          [
+            0.3054,
+            0.03596998
+          ],
+          [
+            0.3277,
+            0.03520873
+          ],
+          [
+            0.3289,
+            0.03516126
+          ],
+          [
+            0.3512,
+            0.0342109
+          ],
+          [
+            0.3523,
+            0.03416084
+          ],
+          [
+            0.3746,
+            0.03311412
+          ],
+          [
+            0.3758,
+            0.03305115
+          ],
+          [
+            0.398,
+            0.03181967
+          ],
+          [
+            0.3993,
+            0.03174395
+          ],
+          [
+            0.4214,
+            0.03042371
+          ],
+          [
+            0.4228,
+            0.03033233
+          ],
+          [
+            0.4448,
+            0.02886328
+          ],
+          [
+            0.4463,
+            0.02875897
+          ],
+          [
+            0.4682,
+            0.02717032
+          ],
+          [
+            0.4698,
+            0.02704983
+          ],
+          [
+            0.4916,
+            0.02534275
+          ],
+          [
+            0.4933,
+            0.02519551
+          ],
+          [
+            0.515,
+            0.02328351
+          ],
+          [
+            0.5168,
+            0.02312492
+          ],
+          [
+            0.5384,
+            0.02118936
+          ],
+          [
+            0.5403,
+            0.02100386
+          ],
+          [
+            0.5619,
+            0.01879458
+          ],
+          [
+            0.5637,
+            0.01860997
+          ],
+          [
+            0.5853,
+            0.0163979
+          ],
+          [
+            0.5872,
+            0.0161928
+          ],
+          [
+            0.6087,
+            0.01380749
+          ],
+          [
+            0.6107,
+            0.01357453
+          ],
+          [
+            0.6321,
+            0.01104976
+          ],
+          [
+            0.6342,
+            0.01079619
+          ],
+          [
+            0.6555,
+            0.0081604
+          ],
+          [
+            0.6577,
+            0.00787598
+          ]
+        ],
+        "unit": "1",
+        "kind": "computed"
+      },
+      "fixed_rpm_speed_checks": [
+        {
+          "airspeed_mps": 0.0,
+          "advance_ratio": 0.0,
+          "ct": 0.1054478,
+          "cp": 0.03659434,
+          "thrust_n": 49.54053,
+          "prop_torque_nm": 0.834012,
+          "prop_power_w": 1104.626879,
+          "t_over_w_at_virtual_mass": 1.75099691,
+          "legacy_11149rpm_11x6_borrowed": {
+            "advance_ratio": 0.0,
+            "ct": 0.113,
+            "cp": 0.0471,
+            "thrust_n": 41.251877,
+            "prop_torque_nm": 0.834106
+          },
+          "legacy_11x6_borrowed_at_same_rpm": {
+            "advance_ratio": 0.0,
+            "ct": 0.113,
+            "cp": 0.0471,
+            "thrust_n": 53.088638,
+            "prop_torque_nm": 1.073443
+          }
+        },
+        {
+          "airspeed_mps": 15.0,
+          "advance_ratio": 0.23346012,
+          "ct": 0.08117354,
+          "cp": 0.03777091,
+          "thrust_n": 38.136217,
+          "prop_torque_nm": 0.860827,
+          "prop_power_w": 1140.142442,
+          "t_over_w_at_virtual_mass": 1.34791449,
+          "legacy_11149rpm_11x6_borrowed": {
+            "advance_ratio": 0.26484491,
+            "ct": 0.08928466,
+            "cp": 0.04837807,
+            "thrust_n": 32.594336,
+            "prop_torque_nm": 0.85674
+          },
+          "legacy_11x6_borrowed_at_same_rpm": {
+            "advance_ratio": 0.23346012,
+            "ct": 0.09209499,
+            "cp": 0.04822662,
+            "thrust_n": 43.267236,
+            "prop_torque_nm": 1.09912
+          }
+        },
+        {
+          "airspeed_mps": 25.0,
+          "advance_ratio": 0.38910019,
+          "ct": 0.05644457,
+          "cp": 0.03231336,
+          "thrust_n": 26.518276,
+          "prop_torque_nm": 0.736445,
+          "prop_power_w": 975.40241,
+          "t_over_w_at_virtual_mass": 0.93728144,
+          "legacy_11149rpm_11x6_borrowed": {
+            "advance_ratio": 0.44140818,
+            "ct": 0.06663592,
+            "cp": 0.0450724,
+            "thrust_n": 24.326167,
+            "prop_torque_nm": 0.798199
+          },
+          "legacy_11x6_borrowed_at_same_rpm": {
+            "advance_ratio": 0.38910019,
+            "ct": 0.07681192,
+            "cp": 0.04799916,
+            "thrust_n": 36.087081,
+            "prop_torque_nm": 1.093936
+          }
+        }
+      ],
+      "source_rpm_bracket": [
+        12000,
+        13000
+      ]
+    }
+  ]
+}

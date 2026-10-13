@@ -40,6 +40,12 @@
       "kind": "estimated",
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
     },
+    "starter_prime_kg": {
+      "value": 1e-05,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
     "temperature_firing_min_k": {
       "value": 280.0,
       "unit": "K",
@@ -134,6 +140,12 @@
     "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
   },
   "propeller": {
+    "max_rpm": {
+      "value": 11785.714285714286,
+      "unit": "rpm",
+      "kind": "derived",
+      "source": "https://www.masterairscrew.com/pages/downloads; generic plastic-prop 165000/diameter(in), provisionally applied to K-Series glass-fiber composite; not a SKU-specific rating"
+    },
     "diameter_m": {
       "value": 0.35559999999999997,
       "unit": "m",
@@ -150,7 +162,7 @@
       "value": 0.03,
       "unit": "m",
       "kind": "estimated",
-      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; independent broad-blade 14x6 surrogate, c/D transfer to 13x6"
     },
     "blades": {
       "value": 2.0,
@@ -171,10 +183,10 @@
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
     },
     "induced_drag": {
-      "value": 0.06,
+      "value": 0.075,
       "unit": "1",
       "kind": "estimated",
-      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; loss coefficient constrained to exceed ideal actuator-disk power by at least 5% over positive-thrust forward flow for both assumed geometries; not measured induced flow; NITRO-02 momentum-bound audit"
     }
   }
 }

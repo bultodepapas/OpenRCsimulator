@@ -126,12 +126,12 @@
       }
     },
     {
-      "name": "estimated sport propeller 13x6",
+      "name": "APC Sport LP12070 12x7",
       "mass": {
-        "value": 0.05,
+        "value": 0.0430913,
         "unit": "kg",
-        "kind": "estimated",
-        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+        "kind": "manual",
+        "source": "https://www.apcprop.com/product/12x7/; 1.52oz × 0.028349523125kg/oz"
       },
       "position": {
         "value": [
@@ -146,7 +146,7 @@
       "size": {
         "value": [
           0.01,
-          0.3302,
+          0.30479999999999996,
           0.025
         ],
         "unit": "m",
@@ -622,7 +622,7 @@
     {
       "name": "virtual reference-build balancing mass",
       "mass": {
-        "value": 0.20366342065560297,
+        "value": 0.19980777666986707,
         "unit": "kg",
         "kind": "derived",
         "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; virtual first-moment balance"
@@ -630,8 +630,8 @@
       "position": {
         "value": [
           0.85,
-          -0.03564704931612014,
-          -0.10129457677569678
+          -0.03633492209862959,
+          -0.10324923455850259
         ],
         "unit": "m",
         "kind": "derived",
@@ -1329,9 +1329,9 @@
       "glow_installation": "res://data/glow/stik_55ax_2t.json"
     },
     "propeller": {
-      "name": "estimated sport propeller 13x6 (annular surrogate)",
+      "name": "APC Sport LP12070 12x7 (annular surrogate)",
       "diameter": {
-        "value": 0.3302,
+        "value": 0.30479999999999996,
         "unit": "m",
         "kind": "estimated",
         "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
@@ -1428,10 +1428,10 @@
         "source": "UIUC propeller database vol. 1, measured APC Sport 11x6: apcsp_11x6_static_rd0488.txt (sha256 911866f1…) and apcsp_11x6_rd0495_6000.txt (sha256 987b1268…); applied to the 12x6 Sport by T = Ct·ρ·n²·D⁴ (APC's own 12x6 file is not reachable here)"
       },
       "rotating_inertia": {
-        "value": 8e-05,
+        "value": 0.00035585373583766657,
         "unit": "kg·m2",
-        "kind": "estimated",
-        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+        "kind": "derived",
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; uniform-box prop polar m*(diameter^2+thickness^2)/12 plus estimated crank polar 2e-05 kg m^2; no measured blade mass distribution"
       },
       "thrust_line_offset": {
         "value": [

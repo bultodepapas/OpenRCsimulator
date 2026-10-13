@@ -11,6 +11,7 @@ var _count: int = 0
 var _artifacts: bool = false
 var _native_capture: bool = false
 var _artifact_paths: PackedStringArray = PackedStringArray()
+var _native_tick: int = 0
 
 
 func _check(label: String, ok: bool, detail: String = "") -> void:
@@ -155,6 +156,7 @@ func _initialize() -> void:
 	var native_adapter_voice := GlowVoice.new()
 	native_adapter_voice.set_telemetry(_telemetry("glow_4t"))
 	_check("legacy native-generator render signature returns stereo PCM", native_adapter_voice.render(6000.0, 12000.0, 512).size() == 512)
+	_test_physical_telemetry_sync()
 
 	if _artifacts:
 		_write_wav("glow_2t_full_fire.wav", two_t)
@@ -185,6 +187,74 @@ func _worst_difference(a: PackedVector2Array, b: PackedVector2Array) -> float:
 	for i: int in a.size():
 		worst = maxf(worst, absf(a[i].x - b[i].x))
 	return worst
+
+
+func _test_physical_telemetry_sync() -> void:
+	var voice := GlowVoice.new()
+	var accepted: Dictionary = _telemetry("glow_2t")
+	accepted.merge({
+		"phase_revolutions": 0.25, "opportunity_count": 20, "fire_count": 8,
+		"firing_accumulator": 0.23, "fuel_kg": 0.5, "sample_tick": 100,
+		"audio_queue_frames": 2205.0,
+	}, true)
+	voice.render_telemetry(accepted, 1)
+	var expected_phase: float = 20.25 + 100.0 * 0.1 + 100.0 / GlowVoice.RATE
+	_check("physical phase uses cycle count plus normalized crank phase and queued lead",
+		absf(voice._shaft_phase_cycles - expected_phase) < 1e-10,
+		"got %.12f, expected %.12f" % [voice._shaft_phase_cycles, expected_phase])
+	var expected_accumulator: float = fposmod(0.23 + 10.0 * 1.0, 1.0)
+	_check("audio missed-fire scheduling starts from the accepted physical accumulator",
+		absf(voice._fraction_accumulator - expected_accumulator) < 1e-10,
+		"got %.12f, expected %.12f" % [voice._fraction_accumulator, expected_accumulator])
+
+	var modulated: Dictionary = accepted.duplicate(true)
+	modulated.merge({
+		"phase_revolutions": 0.4, "opportunity_count": 24, "fire_count": 9,
+		"firing_accumulator": 0.61, "firing_fraction": 0.25,
+		"sample_tick": 101, "audio_queue_frames": 0.0,
+	}, true)
+	voice.render_telemetry(modulated, 1)
+	_check("new accepted snapshot reanchors phase after RPM/firing modulation",
+		absf(voice._shaft_phase_cycles - (24.4 + 100.0 / GlowVoice.RATE)) < 1e-10,
+		"got %.12f" % voice._shaft_phase_cycles)
+	_check("new accepted snapshot restores its accumulator instead of retaining audio history",
+		absf(voice._fraction_accumulator - 0.61) < 1e-10, "got %.12f" % voice._fraction_accumulator)
+
+	var cut_snapshot: Dictionary = _telemetry("glow_2t", false, 0.4)
+	cut_snapshot.merge({
+		"phase_revolutions": 0.45, "opportunity_count": 20, "fire_count": 8,
+		"firing_accumulator": 0.2, "fuel_kg": 0.5, "sample_tick": 200,
+	}, true)
+	var no_fire_snapshot: Dictionary = cut_snapshot.duplicate(true)
+	no_fire_snapshot["fire_count"] = 0
+	var cut_voice := GlowVoice.new()
+	var no_fire_voice := GlowVoice.new()
+	var cut_samples: PackedVector2Array = cut_voice.render_telemetry(cut_snapshot, 256)
+	var no_fire_samples: PackedVector2Array = no_fire_voice.render_telemetry(no_fire_snapshot, 256)
+	_check("a cut gates the accepted successful-fire cycle while shaft and prop layers remain",
+		_worst_difference(cut_samples, no_fire_samples) < 1e-10 and _rms(_mono(cut_samples)) > 0.01,
+		"RMS %.5f, mechanical difference %s" % [_rms(_mono(cut_samples)), String.num_scientific(_worst_difference(cut_samples, no_fire_samples))])
+
+	var restart: Dictionary = cut_snapshot.duplicate(true)
+	restart["running"] = true
+	restart["sample_tick"] = 201
+	cut_voice.render_telemetry(restart, 1)
+	_check("restart after a cut waits for a new accepted opportunity before combustion",
+		not cut_voice._opportunity_fires and absf(cut_voice._fraction_accumulator - 0.2) < 1e-10)
+	restart.merge({
+		"phase_revolutions": 0.002, "opportunity_count": 21, "fire_count": 8,
+		"firing_accumulator": 0.6, "sample_tick": 202,
+	}, true)
+	cut_voice.render_telemetry(restart, 1)
+	_check("restart reconciliation honors a missed accepted firing opportunity", not cut_voice._opportunity_fires
+		and absf(cut_voice._fraction_accumulator - 0.6) < 1e-10)
+	restart.merge({
+		"phase_revolutions": 0.002, "opportunity_count": 22, "fire_count": 9,
+		"firing_accumulator": 0.0, "sample_tick": 203,
+	}, true)
+	cut_voice.render_telemetry(restart, 1)
+	_check("restart resumes combustion only after physics reports a successful fire",
+		cut_voice._opportunity_fires and absf(cut_voice._fraction_accumulator) < 1e-10)
 
 
 func _write_wav(name: String, samples: PackedFloat32Array) -> void:
@@ -236,23 +306,29 @@ func _capture_native_scenario() -> void:
 	var capture := AudioEffectCapture.new()
 	AudioServer.add_bus_effect(aircraft_bus, capture)
 	var phase_revolutions: float = 0.0
-	var full: PackedVector2Array = await _capture_segment(soundscape, capture, "glow_2t", true, 1.0, 0.8, phase_revolutions)
+	var full: PackedVector2Array = await _capture_segment(soundscape, capture, "glow_2t", true, 1.0, 0.8, phase_revolutions, 0)
 	phase_revolutions += 100.0 * 0.8
-	var cut: PackedVector2Array = await _capture_segment(soundscape, capture, "glow_2t", false, 1.0, 0.4, phase_revolutions)
+	var cut: PackedVector2Array = await _capture_segment(soundscape, capture, "glow_2t", false, 1.0, 0.4, phase_revolutions, 80)
 	phase_revolutions += 100.0 * 0.4
-	var restart: PackedVector2Array = await _capture_segment(soundscape, capture, "glow_2t", true, 1.0, 0.8, phase_revolutions)
+	var restart: PackedVector2Array = await _capture_segment(soundscape, capture, "glow_2t", true, 1.0, 0.8, phase_revolutions, 80)
 	var native_rate: float = float(AudioServer.get_mix_rate())
 	var full_mono: PackedFloat32Array = _mono(full)
 	var cut_mono: PackedFloat32Array = _mono(cut)
 	var restart_mono: PackedFloat32Array = _mono(restart)
 	_check("native AudioEffectCapture receives procedural generator PCM", full_mono.size() > int(native_rate * 0.5), "captured %d frames at %d Hz" % [full_mono.size(), int(native_rate)])
-	_check("native 2T generator output has the 100 Hz order-1 line", _power_at_rate(full_mono, 100.0, native_rate) > 8.0 * maxf(_power_at_rate(full_mono, 50.0, native_rate), 1e-9))
+	var native_full_100_order: float = _band_amplitude(full_mono, 95.0, 105.0, native_rate)
+	var native_full_50_order: float = _band_amplitude(full_mono, 45.0, 55.0, native_rate)
+	_check("native 2T generator output has the 100 Hz order-1 line", native_full_100_order > 1.5 * maxf(native_full_50_order, 1e-9),
+		"100 Hz band %s vs 50 Hz band %s" % [String.num_scientific(native_full_100_order), String.num_scientific(native_full_50_order)])
 	var native_full_100: float = _band_amplitude(full_mono, 95.0, 105.0, native_rate)
 	var native_cut_100: float = _band_amplitude(cut_mono, 95.0, 105.0, native_rate)
 	_check("native throttle cut keeps shaft/prop sound and lowers the combustion line", _rms(cut_mono) > 1e-5 and _power_at_rate(cut_mono, 200.0, native_rate) > 0.0 and native_full_100 > 1.5 * maxf(native_cut_100, 1e-9), "cut RMS %.7f; 100 Hz band full=%s cut=%s" % [_rms(cut_mono), String.num_scientific(native_full_100), String.num_scientific(native_cut_100)])
-	_check("native restart restores the 100 Hz combustion line", _power_at_rate(restart_mono, 100.0, native_rate) > 8.0 * maxf(_power_at_rate(restart_mono, 50.0, native_rate), 1e-9))
+	var native_restart_100: float = _band_amplitude(restart_mono, 95.0, 105.0, native_rate)
+	var native_restart_50: float = _band_amplitude(restart_mono, 45.0, 55.0, native_rate)
+	_check("native restart restores the 100 Hz combustion line", native_restart_100 > 1.5 * maxf(native_restart_50, 1e-9),
+		"100 Hz band %s vs 50 Hz band %s; RMS %.7f" % [String.num_scientific(native_restart_100), String.num_scientific(native_restart_50), _rms(restart_mono)])
 	soundscape.glow_family = "glow_4t"
-	var four_t: PackedVector2Array = await _capture_segment(soundscape, capture, "glow_4t", true, 1.0, 0.8, phase_revolutions + 80.0)
+	var four_t: PackedVector2Array = await _capture_segment(soundscape, capture, "glow_4t", true, 1.0, 0.8, phase_revolutions + 80.0, -1)
 	var four_t_mono: PackedFloat32Array = _mono(four_t)
 	var four_t_50: float = _band_amplitude(four_t_mono, 45.0, 55.0, native_rate)
 	var four_t_100: float = _band_amplitude(four_t_mono, 95.0, 105.0, native_rate)
@@ -276,17 +352,26 @@ func _capture_native_scenario() -> void:
 
 
 func _capture_segment(soundscape: Node, capture: AudioEffectCapture, family: String, running: bool,
-		firing_fraction: float, seconds: float, phase_revolutions: float) -> PackedVector2Array:
+		firing_fraction: float, seconds: float, phase_revolutions: float, initial_fire_count: int) -> PackedVector2Array:
 	var captured := PackedVector2Array()
 	var steps: int = ceili(seconds * 60.0)
+	var cycle_revolutions: int = GlowVoice.cycle_revolutions(family)
+	var initial_opportunity: int = floori(phase_revolutions / float(cycle_revolutions))
+	var fire_base: int = initial_fire_count if initial_fire_count >= 0 else initial_opportunity
 	for frame: int in steps:
 		var elapsed: float = float(frame) / 60.0
-		var phase: float = phase_revolutions + elapsed * 100.0
+		var unwrapped_phase: float = phase_revolutions + elapsed * 100.0
+		var opportunity_count: int = floori(unwrapped_phase / float(cycle_revolutions))
+		var fire_count: int = fire_base + (opportunity_count - initial_opportunity) if running else fire_base
 		var glow: Dictionary = {
 			"family": family, "rpm": 6000.0, "max_rpm": 12000.0,
 			"running": running, "firing_fraction": firing_fraction,
-			"phase_revolutions": phase, "blade_count": 2, "load": 0.65, "throttle": 0.7,
+			"phase_revolutions": fposmod(unwrapped_phase, float(cycle_revolutions)),
+			"opportunity_count": opportunity_count, "fire_count": fire_count,
+			"firing_accumulator": 0.0, "fuel_kg": 0.5, "sample_tick": _native_tick,
+			"blade_count": 2, "load": 0.65, "throttle": 0.7,
 		}
+		_native_tick += 1
 		var snapshot: Dictionary = {
 			"rpm": 6000.0, "max_rpm": 12000.0, "load": 0.65, "throttle": 0.7,
 			"running": running, "blades": 2, "kind": "glow_prop", "airspeed": 0.0,

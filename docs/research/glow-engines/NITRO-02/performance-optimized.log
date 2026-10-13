@@ -1,0 +1,165 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Wrote performance report: C:\DEVELOPMENT\OpenRCsimulator\docs\research\glow-engines\NITRO-02\performance-optimized.json
+SUMMARY legacy_stik rounds=2 step_p50_median_us=544.5 step_p95_median_us=677.0 step_p95_worst_us=741.0 ratio_to_500us=1.354
+SUMMARY glow_2t rounds=2 step_p50_median_us=1225.5 step_p95_median_us=1532.0 step_p95_worst_us=1539.0 ratio_to_500us=3.064
+SUMMARY glow_4t rounds=2 step_p50_median_us=1226.5 step_p95_median_us=1552.0 step_p95_worst_us=1610.0 ratio_to_500us=3.104
+WRAPPED_RELEASE_FEATURES debug=false release=true
+WRAPPED_RELEASE_SUMMARY={
+	"glow_2t": {
+		"median_of_round_step_p50_us": 1225.5,
+		"median_of_round_step_p95_us": 1532.0,
+		"microprofile": {
+			"blade_evaluate": {
+				"median_of_round_us_per_call": 17.59375,
+				"round_p50_us_per_call": [
+					16.5,
+					18.6875
+				]
+			},
+			"dynamics_loads": {
+				"median_of_round_us_per_call": 75.16666666666666,
+				"round_p50_us_per_call": [
+					72.08333333333333,
+					78.25
+				]
+			},
+			"flight_evaluate": {
+				"median_of_round_us_per_call": 212.75,
+				"round_p50_us_per_call": [
+					204.0,
+					221.5
+				]
+			},
+			"flight_point": {
+				"median_of_round_us_per_call": 111.08333333333333,
+				"round_p50_us_per_call": [
+					104.33333333333333,
+					117.83333333333333
+				]
+			},
+			"fuel_mass_evaluate": {
+				"median_of_round_us_per_call": 6.989583333333334,
+				"round_p50_us_per_call": [
+					5.291666666666667,
+					8.6875
+				]
+			},
+			"lifecycle_evaluate": {
+				"median_of_round_us_per_call": 150.89583333333331,
+				"round_p50_us_per_call": [
+					141.875,
+					159.91666666666666
+				]
+			},
+			"source_evaluate": {
+				"median_of_round_us_per_call": 49.3125,
+				"round_p50_us_per_call": [
+					44.791666666666664,
+					53.833333333333336
+				]
+			}
+		},
+		"round_step_p95_us": [
+			1525.0,
+			1539.0
+		],
+		"rounds": 2,
+		"worst_round_step_p95_us": 1539.0
+	},
+	"glow_4t": {
+		"median_of_round_step_p50_us": 1226.5,
+		"median_of_round_step_p95_us": 1552.0,
+		"microprofile": {
+			"blade_evaluate": {
+				"median_of_round_us_per_call": 18.416666666666668,
+				"round_p50_us_per_call": [
+					13.854166666666666,
+					22.979166666666668
+				]
+			},
+			"dynamics_loads": {
+				"median_of_round_us_per_call": 72.39583333333333,
+				"round_p50_us_per_call": [
+					65.20833333333333,
+					79.58333333333333
+				]
+			},
+			"flight_evaluate": {
+				"median_of_round_us_per_call": 209.5,
+				"round_p50_us_per_call": [
+					201.25,
+					217.75
+				]
+			},
+			"flight_point": {
+				"median_of_round_us_per_call": 102.70833333333334,
+				"round_p50_us_per_call": [
+					94.5,
+					110.91666666666667
+				]
+			},
+			"fuel_mass_evaluate": {
+				"median_of_round_us_per_call": 8.677083333333334,
+				"round_p50_us_per_call": [
+					7.729166666666667,
+					9.625
+				]
+			},
+			"lifecycle_evaluate": {
+				"median_of_round_us_per_call": 153.47916666666666,
+				"round_p50_us_per_call": [
+					140.79166666666666,
+					166.16666666666666
+				]
+			},
+			"source_evaluate": {
+				"median_of_round_us_per_call": 46.65625,
+				"round_p50_us_per_call": [
+					45.666666666666664,
+					47.645833333333336
+				]
+			}
+		},
+		"round_step_p95_us": [
+			1494.0,
+			1610.0
+		],
+		"rounds": 2,
+		"worst_round_step_p95_us": 1610.0
+	},
+	"legacy_stik": {
+		"median_of_round_step_p50_us": 544.5,
+		"median_of_round_step_p95_us": 677.0,
+		"microprofile": {
+			"dynamics_loads": {
+				"median_of_round_us_per_call": 42.77083333333333,
+				"round_p50_us_per_call": [
+					38.916666666666664,
+					46.625
+				]
+			}
+		},
+		"round_step_p95_us": [
+			613.0,
+			741.0
+		],
+		"rounds": 2,
+		"worst_round_step_p95_us": 741.0
+	}
+}
+
+BEFORE / AFTER NATIVE RELEASE COMPARISON (diagnostic; see performance-optimized.json for provenance)
+Source tree SHA-256: 17d0b3ebd66ad1e2c86174ba34dc47e1bb4c19cd59572e5e8db7a0617a60b2ac
+Input tree SHA-256: 1f30e9ef573952cfa475984c9acc91169740ebbc1d39f3e81341426b0f53c3cc (matches prior measurement: True)
+Runtime: 4.7.2-stable (official); debug=False; release=True
+Legacy Stik p95: 504 -> 677 us; reduction -34.3% (worst-round 516 -> 741 us).
+Glow 2T p95: 1900 -> 1532 us; reduction 19.4% (worst-round 2152 -> 1539 us).
+Glow 4T p95: 1646 -> 1552 us; reduction 5.7% (worst-round 1765 -> 1610 us).
+All three measured median p95 values remain above the 500 us target. Source snapshots differ; do not attribute changes to one optimization. Input hashes match. Parent reported no overlapping Godot bench; OS process/CPU load was not sampled.

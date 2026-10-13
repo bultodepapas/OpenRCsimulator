@@ -56,9 +56,14 @@
       "diameter_in": 12,
       "pitch_in": 7,
       "shaft_bore_in": 0.25,
+      "shaft_bore_mm": 6.35,
       "prop_mass_oz": 1.52,
+      "prop_mass_g_derived": 43.09127515,
+      "product_source": "https://www.apcprop.com/product/12x7/",
       "o_s_size_compatible": true,
       "apc_glow_max_rpm": 15833,
+      "manufacturer_max_recommended_rpm": 15833.333333333334,
+      "effective_engine_prop_recommended_rpm": 15833.333333333334,
       "observed_configuration": {
         "rpm_peak": 10330,
         "rpm_idle": 1800,
@@ -77,9 +82,14 @@
       "diameter_in": 13,
       "pitch_in": 6,
       "shaft_bore_in": 0.25,
+      "shaft_bore_mm": 6.35,
       "prop_mass_oz": 1.69,
+      "prop_mass_g_derived": 47.91069408125,
+      "product_source": "https://www.apcprop.com/product/13x6/",
       "o_s_size_compatible": true,
       "apc_glow_max_rpm": 14615,
+      "manufacturer_max_recommended_rpm": 14615.384615384615,
+      "effective_engine_prop_recommended_rpm": 14615.384615384615,
       "observed_configuration": null,
       "observed_data_limit": "manufacturer-compatible size only; no matched engine/prop test located"
     }
@@ -100,26 +110,33 @@
         "source": "https://doi.org/10.1177/0954410011426371"
       },
       "exploratory_response_tau_s": [0.1, 0.6],
-      "status": "family-prior sensitivity only; no MAX-55AX step fit"
+      "status": "family-prior sensitivity only; no MAX-55AX step fit",
+      "integrated_lifecycle": "GlowLifecycle models servo, air-admission and fuel-transport states; installed time constants are inferred and unvalidated for MAX-55AX"
     },
     "combustion_dynamics": {
       "nominal_opportunity_per_rev": 1,
       "nominal_cadence_hz_at_practical_limits": [33.3333, 283.3333],
       "cadence_hz_at_rated_rpm": 266.6667,
       "rich_four_stroking_success_fraction_prior": 0.5,
-      "status": "manual describes every-fourth-stroke firing when rich; automatic misfire boundary unmeasured"
+      "status": "mean-cycle profile plus lifecycle event/phase accumulator and assumed smooth mixture/temperature firing fraction; engine-specific misfire boundary and cycle variation unmeasured"
     },
     "propeller_compatibility": {
       "identified_combinations": ["APC Sport LP12070 12x7", "APC Sport LP13060 13x6"],
       "apc_glow_rpm_rule": "190000 / diameter_in",
       "engine_specific_ct_cp_or_thrust_data": false,
+      "paired_static_advancing_scenarios": "calibration_report.json: full-admission roots at 0, 10, 20 and 30 m/s with nonstatistical assumption envelopes",
+      "recommended_experimental_installed_default": "APC Sport LP12070 12x7; the only MAX-55AX/prop RPM observation found",
       "conditional_12x7_single_rpm_fit": {
         "observed_anchor_rpm": 10330,
-        "inferred_uniform_chord_mm": 21.13642,
-        "chord_scale_from_25mm_guess": 0.84545668,
-        "model_engine_torque_nm_at_anchor": 0.7085826,
+        "inferred_uniform_chord_mm": 21.136416912092642,
+        "chord_scale_from_25mm_guess": 0.8454566764837057,
+        "starting_25mm_surrogate_prop_torque_nm": 0.838106338348635,
+        "model_engine_torque_nm_at_anchor": 0.7085825993601651,
+        "reference_air_density_kg_m3": 1.225,
+        "reference_density_basis": "candidate profile density; O.S. reports 3 C but no barometric pressure",
         "status": "one-point fit using estimated blade-element sections; zero residual by construction, not independent validation"
       },
+      "unobserved_13x6_inferred_uniform_chord_mm": 22.897784988100366,
       "unobserved_13x6_static_scenario_rpm": 9650.61,
       "pitch_speed_example_mph": {
         "12x7_at_10330_rpm": 68.4754,
@@ -138,12 +155,12 @@
       "o_s_practical_floor_rpm": 2000,
       "single_field_idle_observation_rpm": 1800,
       "exploratory_warm_idle_search_rpm": [1800, 3000],
-      "status": "no repeated warm hold, stall boundary or mixture repeatability data"
+      "status": "lifecycle implements start/stop, minimum-start and inferred firing/stall thresholds; no repeated MAX-55AX warm hold, stall boundary or mixture repeatability data"
     },
     "temperature_cooling": {
       "adjacent_0_99cc_two_stroke_head_temperature_c": [160, 200],
       "exploratory_sensor_search_c": [120, 240],
-      "status": "broad sensor/model search only; not MAX-55AX temperature, target or failure threshold"
+      "status": "integrated scalar thermal energy model is a software candidate; sensor/model search only, not MAX-55AX temperature, target or failure threshold"
     },
     "sound_vibration": {
       "nominal_single_cylinder_event_hz": [33.3333, 283.3333],
@@ -160,7 +177,12 @@
       "profile": "app/data/glow/os_max_55ax_candidate.json",
       "profile_status": "candidate",
       "report": "calibration_report.json",
-      "revision_mass_and_silencer_identity": "verify on physical test article"
+      "revision_mass_and_silencer_identity": "verify on physical test article",
+      "integrated_experimental_installations": [
+        "app/data/glow/stik_55ax_2t.json (APC Sport 12x7 installed default)",
+        "app/data/glow/stik_55ax_2t_apc_13x6.json (APC Sport 13x6 alternate)"
+      ],
+      "runtime_status": "transient/lifecycle and thermal plumbing implemented; installation constants and engine behavior remain inferred, not physically validated"
     }
   },
   "external_cross_checks": [

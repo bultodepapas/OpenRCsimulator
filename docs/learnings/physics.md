@@ -2,7 +2,7 @@
 
 **Status:** curated reference.
 
-Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), propwash (E0b), and electric propulsion (EL), recorded from 2026-10-06 to 2026-10-11. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), propwash (E0b), electric propulsion (EL), and glow propulsion (NITRO), recorded from 2026-10-06 to 2026-10-13. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Numerical correctness and state
 
@@ -49,6 +49,10 @@ A frozen copy of the old implementation can show that a refactor preserves its b
 Small numerical errors do not prove identical execution paths: a changed early return can leave the entire trajectory bit-identical. Record selected branch decisions separately, verify that instrumentation preserves every-tick state, and test the observer with an actual branch mutation. Adjacent-float sensitivity is evidence for the tested trajectory and functions, not a substitute for native-platform runs. ([E4b](../research/ground-contact/E4b/README.md))
 
 ## Ground and aerodynamic models
+
+### Propeller passivity does not establish a physically possible thrust
+
+The NITRO-02 annular surrogate satisfied `QΩ − TV ≥ 0` while two estimated propellers produced more static thrust than their shaft power could support. At `V=0`, that passivity inequality constrains no thrust at all. For quasi-steady positive thrust and forward inflow, also check the independent actuator-disk minimum power using the actual disk area; preserve the signed windmilling domain separately. Reject an inconsistent model point rather than hiding it with a thrust clamp. Passing both necessary checks still does not validate inferred blade geometry or replace measured maps. [NITRO-02 defect, correction and regression](../research/glow-engines/NITRO-02/README.md#momentum-bound-correction).
 
 ### Stall existence does not validate departure severity
 

@@ -3,6 +3,7 @@
 extends SceneTree
 
 const NearGrass = preload("res://render/near_grass.gd")
+const Population = preload("res://scenery/population.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const FieldBuilder = preload("res://render/field.gd")
 const Ground = preload("res://render/ground.gd")
@@ -222,8 +223,8 @@ func _test_field_builder_and_scenery_hook() -> void:
 	_check("default SC-16/SC-17 data validates", bool(validated_scenery.get("ok", false)), str(validated_scenery.get("errors", [])))
 	if bool(validated_scenery.get("ok", false)):
 		var counts: Dictionary = _scenery_ornament_counts(validated_scenery.scenery)
-		_check("validated scenery has 2,970 SC-16 cushions and six SC-17 bushes",
-			counts.flowers == 2970 and counts.bushes == 6, str(counts))
+		_check("validated scenery retires procedural cushions and keeps six downloaded shrub placements",
+			counts.flowers == 0 and counts.bushes == 6, str(counts))
 
 	OS.set_environment("OPENRC_SCENERY", "on")
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
@@ -231,8 +232,18 @@ func _test_field_builder_and_scenery_hook() -> void:
 	var scenery_node: Node = with_scenery.get_node_or_null("Scenery")
 	_check("opt-in field hook attaches Scenery beside the single near-grass system",
 		scenery_node != null and _count_named(with_scenery, "NearGrass") == 1)
-	_check("opt-in field build retains the SC-16 flower cushions", scenery_node != null
-		and int((scenery_node.get_meta("stats") as Dictionary).get("flowers", -1)) == 2970)
+	var imported_grass: Node3D = with_scenery.get_node_or_null("NearGrass") as Node3D
+	var downloaded_habitats: Node3D = scenery_node.get_node_or_null("BotanicalHabitats") as Node3D if scenery_node != null else null
+	var scenery_stats: Dictionary = scenery_node.get_meta("stats", {}) if scenery_node != null else {}
+	_check("opt-in default field builds foreground grass from downloaded clump meshes",
+		imported_grass != null and bool(imported_grass.get_meta("imported", false))
+		and int(imported_grass.get_meta("clumps", 0)) > 0
+		and int(imported_grass.get_meta("triangles", 0)) <= int(imported_grass.get_meta("triangle_budget", -1))
+		and int(imported_grass.get_meta("batches", 99)) <= 3)
+	_check("opt-in scenery attaches downloaded habitat plants within its source budget",
+		downloaded_habitats != null and int(scenery_stats.get("botanical_plants", 0)) > 0
+		and int(scenery_stats.get("botanical_triangles", 0)) <= 90000
+		and int(downloaded_habitats.get_meta("batches", 99)) <= 24)
 	_check("opt-in scenery and grass remain visual-only", _count_colliders(with_scenery) == 0)
 	with_scenery.free()
 	OS.set_environment("OPENRC_SCENERY", previous_scenery)
@@ -300,7 +311,7 @@ func _primitive_count(chunks: Array[MultiMeshInstance3D]) -> int:
 	var total: int = 0
 	for chunk: MultiMeshInstance3D in chunks:
 		var mm: MultiMesh = chunk.multimesh
-		total += mm.instance_count * mm.mesh.surface_get_array_len(0) / 3
+		total += mm.instance_count * Population.triangles(mm.mesh)
 	return total
 
 

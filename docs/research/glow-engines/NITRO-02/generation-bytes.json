@@ -1,0 +1,58 @@
+{
+  "format": "openrc-glow-generation-byte-proof v1",
+  "ok": true,
+  "windows_python": "Python 3.11.9",
+  "linux_python": "Python 3.12.3",
+  "source_sha256": {
+    ".gitattributes": "d87402f0f4c2f08d0c96b2e43c8357a9b396d063f14b141489c6a6a06ebb3070",
+    "research/glow-engines/build_installations.py": "698e7c4bfce322f3a30876e62ffdc5d5d7bd9597f9e6c0f5e5aa8e53ed99f9ce",
+    "research/glow-engines/test_installation_line_endings.py": "9c8d6ceba00e1360c9682ca1d32d735dec2fc1d7527fb6cc2bc3db54e81ce7b6"
+  },
+  "results": [
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/glow-engines/test_installation_line_endings.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.019s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/glow-engines/build_installations.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "Glow installations current\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "wsl",
+        "--cd",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+        "python3",
+        "research/glow-engines/test_installation_line_endings.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.079s\n\nOK\n"
+    },
+    {
+      "command": [
+        "wsl",
+        "--cd",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+        "python3",
+        "research/glow-engines/build_installations.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "Glow installations current\n",
+      "stderr": ""
+    }
+  ],
+  "scope": "Generator and byte/order tests under Windows and WSL; temporary writes only, existing generated files checked without rewriting"
+}

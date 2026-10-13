@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-13",
+  "engine": "Godot 4.7.2 native Windows",
+  "scope": "Concurrent working tree; focused checks only, not clean-release or physical qualification",
+  "checks": [
+    {
+      "failed": 0,
+      "passed": 22,
+      "name": "power trim helper"
+    },
+    {
+      "failed": 0,
+      "passed": 14,
+      "name": "half-power session lifecycle"
+    },
+    {
+      "failed": 0,
+      "passed": 87,
+      "name": "Home and flight start UI"
+    },
+    {
+      "failed": 0,
+      "passed": 36,
+      "name": "existing start choice"
+    },
+    {
+      "failed": 0,
+      "passed": 92,
+      "name": "checkpoint"
+    },
+    {
+      "result": "exact physics checkpoint parity, segmentation, reset, detach",
+      "name": "observer parity"
+    },
+    {
+      "failures": [
+        "stik-glow-55ax-2t ten-second exact equilibrium",
+        "stik-glow-fs64v-4t ten-second exact equilibrium"
+      ],
+      "failed": 2,
+      "passed": 90,
+      "name": "fleet pilot trim"
+    }
+  ],
+  "baseline_max_state_error": 1.4210854715202E-14,
+  "native_observer": {
+    "directory": ".tools/climb-observed/2026-10-13T20-32-30-73596",
+    "pid": 73596,
+    "note": "Opened Home for user review; not evidence of a completed user flight",
+    "preset": "airborne_half_power"
+  },
+  "limits": [
+    "Full WSL suite not run",
+    "UI exit reports four existing ObjectDB leaks",
+    "Half-power initialization does not eliminate recorded-input or sustained-full-power inversions"
+  ],
+  "source_hashes": {
+    "app/physics/cruise_trim.gd": "A8E8418808F691119E45A00ADE08F525261B321368A0E9D78C92E52B7DF9DD02",
+    "app/sim/flight_session.gd": "935C713D05E16E9E63964A7D83D8F2F1060EB46249A2B1BBD98377DF5263B60F",
+    "app/tests/test_half_power_start.gd": "7BE364A8B2BD473E7B12648AB86A185C83F592929BDE070744D5D63C313F2B66",
+    "app/tests/test_ui_runway.gd": "A32A164779F95B603F20ABE7226E2D60937B64050D63E55D9CAD7BCD2B3C7DFD",
+    "research/flight-dynamics/climb-trim/loop_probe.gd": "064B48896125388AAEF8D887A206A500C3DD26B37CEFCFA7F5A0EDA6C6EB09DA"
+  },
+  "log_hashes": {
+    ".tools/half-power-session.log": "EBF5CD6A68349A59B47E821F02EEBAB136D25C76B53E4857F32D859BA0485601",
+    ".tools/half-power-ui-final.log": "F742D6CAC91E92A3705A2CDB82EC41D5829E679CC55861A339D5420A35968BB2",
+    ".tools/half-power-start-choice.log": "4E9EADD6F936E95B2802B1EEA859A2C68452CF15497A03D028CC37354FCE9182",
+    ".tools/half-power-checkpoint.log": "E68CD3AA894EB19471686520C1FB64B582ACD85C88B1E0CAED72E9D9DDD1B593",
+    ".tools/half-power-pilot-trim.log": "1970D0537032CDD3A5B01913BD8E8471FE85AA26C741F39B464838502BBB97FF",
+    ".tools/half-power-watch.log": "68FCF7DAC388AEFADF2C7BF46FCD72BC5B14B9175B2E370A2638A91C77FB16D8",
+    ".tools/half-power-replay.log": "B96D6C9B1A38C787FC61983273C7768319F0FD595A704D6F4DC10636705496FB"
+  }
+}

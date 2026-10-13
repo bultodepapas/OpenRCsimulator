@@ -609,6 +609,10 @@
             "additionalProperties": false,
             "required": [
               "displacement_m3",
+              "bore_m",
+              "stroke_m",
+              "rod_to_crank_radius_ratio",
+              "reciprocating_mass_kg",
               "mechanical_torque_nm",
               "combustion_efficiency",
               "indicated_efficiency",
@@ -634,6 +638,142 @@
                   },
                   "unit": {
                     "const": "m3"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "bore_m": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "exclusiveMinimum": 0.0
+                  },
+                  "unit": {
+                    "const": "m"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "stroke_m": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "exclusiveMinimum": 0.0
+                  },
+                  "unit": {
+                    "const": "m"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "rod_to_crank_radius_ratio": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "minimum": 2.0
+                  },
+                  "unit": {
+                    "const": "1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "reciprocating_mass_kg": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "exclusiveMinimum": 0.0
+                  },
+                  "unit": {
+                    "const": "kg"
                   },
                   "kind": {
                     "enum": [
@@ -971,6 +1111,10 @@
             "additionalProperties": false,
             "required": [
               "displacement_m3",
+              "bore_m",
+              "stroke_m",
+              "rod_to_crank_radius_ratio",
+              "reciprocating_mass_kg",
               "mechanical_torque_nm",
               "combustion_efficiency",
               "indicated_efficiency",
@@ -997,6 +1141,142 @@
                   },
                   "unit": {
                     "const": "m3"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "bore_m": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "exclusiveMinimum": 0.0
+                  },
+                  "unit": {
+                    "const": "m"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "stroke_m": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "exclusiveMinimum": 0.0
+                  },
+                  "unit": {
+                    "const": "m"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "rod_to_crank_radius_ratio": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "minimum": 2.0
+                  },
+                  "unit": {
+                    "const": "1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "reciprocating_mass_kg": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "exclusiveMinimum": 0.0
+                  },
+                  "unit": {
+                    "const": "kg"
                   },
                   "kind": {
                     "enum": [

@@ -60,9 +60,14 @@
       "diameter_in": 13,
       "pitch_in": 6,
       "shaft_bore_in": 0.25,
+      "shaft_bore_mm": 6.35,
       "prop_mass_oz": 1.69,
+      "prop_mass_g_derived": 47.91069408125,
+      "product_source": "https://www.apcprop.com/product/13x6/",
       "o_s_size_compatible": true,
       "apc_glow_max_rpm": 14615,
+      "manufacturer_max_recommended_rpm": 14615.384615384615,
+      "effective_engine_prop_recommended_rpm": 11000,
       "observed_configuration": null,
       "observed_data_limit": "recommended size and product geometry only; no matched FS-64V/APC 13x6 load curve"
     },
@@ -74,12 +79,20 @@
       "diameter_in": 14,
       "pitch_in": 6,
       "shaft_bore_in": 0.25,
+      "shaft_bore_mm": 6.35,
       "prop_mass_oz": 2.05,
+      "prop_mass_g_manufacturer": 58.1,
+      "product_source": "https://www.masterairscrew.com/products/k-series-14x6-propeller",
       "o_s_size_compatible": true,
       "propeller_manufacturer_intended_use": "larger 2T/4T glow engines and electric-conversion models",
+      "manufacturer_max_recommended_rpm": 11785.714285714286,
+      "rpm_limit_formula": "165000 / diameter_in for Master Airscrew plastic propellers",
+      "rpm_limit_source": "https://www.masterairscrew.com/pages/downloads",
+      "rpm_limit_applicability": "provisional generic formula; K Series is listed as glass-fiber reinforced composite and no SKU-specific RPM ceiling is published",
+      "effective_engine_prop_recommended_rpm": 11000,
       "manufacturer_recommended_size": "O.S. FS-64V scale 14x6",
       "observed_configuration": "O.S. qualitative Spacewalker II flight review reports FS-64V with 14x6; brand not identified in retrieved article",
-      "observed_data_limit": "no measured RPM, torque, thrust, coefficient map or prop RPM limit"
+      "observed_data_limit": "no measured RPM, torque, thrust or coefficient map; generic Master Airscrew plastic-prop RPM formula is applied provisionally and requires product-specific confirmation"
     }
   ],
   "ten_research_areas": {
@@ -93,20 +106,23 @@
     "throttle_response": {
       "direct_fs64_step_or_servo_measurement": false,
       "exploratory_command_load_response_s": [0.1, 1.0],
-      "status": "broad engineering sensitivity sweep only; no accepted 4T lag or rise/fall time"
+      "status": "broad engineering sensitivity sweep only; no accepted 4T lag or rise/fall time",
+      "integrated_lifecycle": "GlowLifecycle models servo, air-admission and fuel-transport states; installed time constants are inferred and unvalidated for FS-64V"
     },
     "combustion_dynamics": {
       "cycle_angle_deg": 720,
       "nominal_opportunity_per_rev": 0.5,
       "nominal_opportunity_hz_at_practical_limits": [20.0, 91.6667],
       "cycle_period_ms_at_practical_limits": [50.0, 10.9091],
-      "status": "true 4T event cadence and independent intake/pumping/valve terms; no measured misfire/phase map"
+      "status": "mean-cycle 720-degree source plus lifecycle event/phase accumulator and assumed smooth mixture/temperature firing fraction; no measured FS-64V misfire/phase map"
     },
     "propeller_compatibility": {
       "identified_combinations": ["APC Sport LP13060 13x6", "Master Airscrew K Series 14x6"],
       "direct_shaft_fit": "both named propeller product pages specify 1/4-in shaft; FS64 uses 1/4-28 prop nut",
       "apc_14x6_exception": "APC LP14060 specifies 5/16-in shaft bore and is not direct-fit",
       "engine_specific_ct_cp_or_thrust_data": false,
+      "paired_static_advancing_scenarios": "calibration_report.json: full-admission roots at 0, 10, 20 and 30 m/s with two geometry priors and nonstatistical assumption envelopes",
+      "recommended_experimental_installed_default": "Master Airscrew K Series 14x6; O.S. specifies scale 14x6 and its qualitative FS-64V review reports a 14x6",
       "pitch_speed_at_rated_rpm_mph": {
         "13x6": 62.5,
         "14x6": 62.5,
@@ -125,13 +141,15 @@
       "o_s_practical_floor_rpm": 2400,
       "exploratory_warm_idle_search_rpm": [2200, 3200],
       "saito_fa82b_comparator_idle_rpm": [2000, 2500],
-      "status": "no FS64 measured idle hold, stop boundary, restart or repeated mixture tests; Saito value is not transferred"
+      "candidate_low_speed_wot_brake_torque_nm": [[2400, 0.35], [4000, 0.5]],
+      "candidate_low_speed_curve_basis": "synthetic engineering inference to provide a plausible low-speed torque margin for a reduced-admission warm-idle state; not empirical calibration",
+      "status": "lifecycle implements start/stop, minimum-start, idle admission and inferred firing/stall thresholds; no FS64 measured idle hold, stop boundary, restart or repeated mixture tests; Saito value is not transferred"
     },
     "temperature_cooling": {
       "direct_fs64_temperature_data": false,
       "small_two_stroke_comparator_head_temperature_c": [160, 200],
       "instrumentation_search_span_c": [100, 250],
-      "status": "logger/model search span only; two-stroke comparator is not a 4T estimate or a threshold"
+      "status": "integrated family-neutral scalar thermal energy model is a software candidate; logger/model search span only, two-stroke comparator is not a 4T estimate or a threshold"
     },
     "sound_vibration": {
       "nominal_single_cylinder_event_hz": [20.0, 91.6667],
@@ -151,7 +169,12 @@
       "manufacturer_recommended_max_rpm": 11000,
       "current_profile_numerical_support_max_rpm": 15000,
       "high_speed_tail_status": "estimated unloading-flight support only; outside the published practical range and not an O.S.-approved operating band",
-      "exact_fuel_and_prop_configuration": "documented candidate; physical test article still required"
+      "exact_fuel_and_prop_configuration": "documented candidate; physical test article still required",
+      "integrated_experimental_installations": [
+        "app/data/glow/stik_fs64v_4t.json (Master Airscrew K 14x6 installed default)",
+        "app/data/glow/stik_fs64v_4t_apc_13x6.json (APC Sport 13x6 alternate)"
+      ],
+      "runtime_status": "transient/lifecycle and thermal plumbing implemented; installation constants and engine behavior remain inferred, not physically validated"
     }
   },
   "external_cross_checks": [

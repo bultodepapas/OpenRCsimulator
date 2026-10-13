@@ -1,0 +1,297 @@
+{
+  "format": "openrc-glow-optimization-trajectory-comparison v1",
+  "purpose": "Compare retained pre-optimization trajectories with the prepared evaluator and stage-load reuse",
+  "rates_hz": [
+    240,
+    480,
+    960
+  ],
+  "cases": [
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "saved_samples": 61,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "saved_samples": 61,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "saved_samples": 61,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "saved_samples": 61,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "saved_samples": 61,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "saved_samples": 31,
+      "all_saved_numbers_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "saved_samples": 61,
+      "all_saved_numbers_identical": true
+    }
+  ],
+  "passed": true,
+  "source_hashes_after": {
+    "app/data/field_loader.gd": "a4216cdacb6fc76a48c435994f947790eb73dccdc4a8ccb07e0eb7b5b8dddc0b",
+    "app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+    "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+    "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+    "app/physics/glow/flight.gd": "1b0dcb541761cfb1814a5ccdcb3704d7db72257d93dee7cb6cb6e5065f85d316",
+    "app/physics/glow/four_stroke.gd": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f",
+    "app/physics/glow/fuel_mass.gd": "dfc4fdd21223360f86d7b93647eac2d72dde5f7e83406fbc6a30d9442730a03d",
+    "app/physics/glow/installation.gd": "0a6873ecdab5abaf44498f4130d4af1e0d6e4fab454f71664401f20a9bbfd3b9",
+    "app/physics/glow/lifecycle.gd": "eb48dfe650fc40dbee04bf357c12bec2df7bc7d615ae0b392bd71e3d25bd01ac",
+    "app/physics/glow/operating_point.gd": "9beaa48ea3ac2e5b4616b6fd3f01523ec8a543a739e9e33d14a58c8b60d55dc4",
+    "app/physics/glow/profile.gd": "073c3257562f2281002f173dcf00bed6fa521862ee5979841fe08c19892e08b2",
+    "app/physics/glow/propeller.gd": "86afe1103c45686e07b96204fc3bb79838dde7c912c18e5e6d8683a845c1f7ca",
+    "app/physics/glow/source.gd": "4a40ed6584a89a87e1626fedd2aac60ffedf70b42a120bb8f15387744aa115c0",
+    "app/physics/glow/thermal.gd": "ce4137c380309ca85307a7f3a5ce073625cd4cbdedf68609f053f1b07e9ffd65",
+    "app/physics/glow/two_stroke.gd": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+    "app/sim/flight_session.gd": "9d86ba642fd75fd793c29a24d2249246e9431cbdc3fe3131e279f03b9786c997",
+    "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+    "research/glow-engines/flight_bench.gd": "b682c02b57cd6d938335e954a76f5f8e7501c722eef7832ced5fb4d779dc5665"
+  },
+  "input_files": {
+    ".tools\\glow-trajectory-before-optimization-20261013\\flight-240.json": "84b5ed3b695c8bfa08257eee8e5115b4596c5df6602120fadc80a42832e7f561",
+    ".tools\\glow-trajectory-before-optimization-20261013\\flight-480.json": "4b29f59682111e8ddbdf85745bb4751f20624205c9a6aec0e7d4428dd9660e60",
+    ".tools\\glow-trajectory-before-optimization-20261013\\flight-960.json": "cadbd1879f042b754f1b1184e56958ed8333c13972932079cd6c19121fc8dc6e",
+    "research\\glow-engines\\flight-240.json": "0418efa4825c94a1f7b50717cf5732fb9ff2cc4f4e06ada73a540f05e023fcf9",
+    "research\\glow-engines\\flight-480.json": "7a45fa58c2c09d2badf41a8aac1baf2e75ac155154ad16549591838e48e1a34f",
+    "research\\glow-engines\\flight-960.json": "652614c56fb006c9e1887fffe513517929d07cc033b2f425b1d76cb5f460cab1"
+  },
+  "scope": "Initial, final and every retained 0.1 s body/continuous/engine telemetry sample compare numerically identical in all 36 runs. Timing and source/build metadata are intentionally excluded. This is software regression evidence, not physical validation or an assertion about unsaved samples."
+}

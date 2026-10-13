@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openrcsimulator.local/schema/openrc-aircraft-model-v1.schema.json",
+  "title": "OpenRC Aircraft Model Manifest v1",
+  "description": "Generated presentation and asset bindings for one shared visual aircraft family.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "family_id",
+    "builder",
+    "surface_method",
+    "datum",
+    "coordinates",
+    "root_node",
+    "source_registry",
+    "geometry",
+    "asset",
+    "bindings",
+    "authoring_sources",
+    "dependencies"
+  ],
+  "properties": {
+    "schema": { "const": "openrc-aircraft-model" },
+    "version": { "const": 1 },
+    "family_id": { "$ref": "#/$defs/familyId" },
+    "builder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["script", "adapter"],
+      "properties": {
+        "script": { "$ref": "#/$defs/resourcePath" },
+        "adapter": { "enum": ["euler_hinges", "axis_hinges", "imported_glb"] }
+      }
+    },
+    "surface_method": { "const": "apply_surfaces" },
+    "datum": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_z_le", "model_y_thrust"],
+      "properties": {
+        "model_z_le": { "type": "number" },
+        "model_y_thrust": { "type": "number" }
+      }
+    },
+    "coordinates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["units", "nose", "right", "up"],
+      "properties": {
+        "units": { "const": "m" },
+        "nose": { "const": "-Z" },
+        "right": { "const": "+X" },
+        "up": { "const": "+Y" }
+      }
+    },
+    "root_node": { "type": "string", "const": "airplane" },
+    "source_registry": { "$ref": "#/$defs/authoringSource" },
+    "geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["script", "source", "revision", "datum_source"],
+      "properties": {
+        "script": { "$ref": "#/$defs/resourcePath" },
+        "source": { "$ref": "#/$defs/authoringSource" },
+        "revision": { "type": "string", "minLength": 1 },
+        "datum_source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["model_z_le", "model_y_thrust"],
+          "properties": {
+            "model_z_le": { "$ref": "#/$defs/numberSelector" },
+            "model_y_thrust": { "$ref": "#/$defs/numberSelector" }
+          }
+        }
+      }
+    },
+    "asset": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "identity", "revision"],
+          "properties": {
+            "kind": { "const": "procedural" },
+            "identity": { "type": "string", "minLength": 1 },
+            "revision": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "identity", "revision", "path", "sha256"],
+          "properties": {
+            "kind": { "const": "imported_glb" },
+            "identity": { "type": "string", "minLength": 1 },
+            "revision": { "type": "string", "minLength": 1 },
+            "path": { "$ref": "#/$defs/resourcePath" },
+            "sha256": { "$ref": "#/$defs/sha256" }
+          }
+        }
+      ]
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["controls", "rotor", "gear", "crash"],
+      "properties": {
+        "controls": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "enum": ["aileron_left", "aileron_right", "elevator", "rudder", "flap_left", "flap_right"] },
+          "additionalProperties": { "$ref": "#/$defs/controlBinding" }
+        },
+        "rotor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["present", "node", "spin_node", "authored_diameter_m", "source", "geometry_ref"],
+          "properties": {
+            "present": { "type": "boolean" },
+            "node": { "type": "string", "minLength": 1 },
+            "spin_node": { "type": "string" },
+            "authored_diameter_m": { "type": "number", "minimum": 0 },
+            "source": { "enum": ["builder", "geometry_articulation", "none"] },
+            "geometry_ref": { "type": "string" }
+          }
+        },
+        "gear": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["keys"],
+          "properties": {
+            "keys": {
+              "type": "object",
+              "propertyNames": { "enum": ["left", "right", "tail", "steering", "nose"] },
+              "additionalProperties": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "crash": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["provider", "metadata_script", "asset_node"],
+              "properties": {
+                "provider": { "const": "none" },
+                "metadata_script": { "const": "" },
+                "asset_node": { "const": "" }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["provider", "metadata_script", "asset_node"],
+              "properties": {
+                "provider": { "const": "generated_triangle_map" },
+                "metadata_script": { "$ref": "#/$defs/resourcePath" },
+                "asset_node": { "type": "string", "minLength": 1 }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "authoring_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/authoringSourceWithRole" }
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/runtimeDependency" }
+    }
+  },
+  "$defs": {
+    "familyId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "resourcePath": {
+      "type": "string",
+      "pattern": "^res://(?:aircraft|assets/aircraft|render/crash)/[A-Za-z0-9_.@+-]+(?:/[A-Za-z0-9_.@+-]+)*$"
+    },
+    "authoringPath": {
+      "type": "string",
+      "pattern": "^assets/aircraft/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"
+    },
+    "hashMode": { "enum": ["raw", "lf_text"] },
+    "authoringSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "hash_mode"],
+      "properties": {
+        "path": { "$ref": "#/$defs/authoringPath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "hash_mode": { "$ref": "#/$defs/hashMode" }
+      }
+    },
+    "authoringSourceWithRole": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "hash_mode", "role"],
+      "properties": {
+        "path": { "$ref": "#/$defs/authoringPath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "hash_mode": { "$ref": "#/$defs/hashMode" },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "runtimeDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "hash_mode", "role"],
+      "properties": {
+        "path": { "$ref": "#/$defs/resourcePath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "hash_mode": { "$ref": "#/$defs/hashMode" },
+        "role": { "enum": ["builder", "generated_geometry", "imported_asset", "crash_metadata", "script_dependency", "resource_dependency"] }
+      }
+    },
+    "numberSelector": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "scale": { "type": "number" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value"],
+          "properties": { "value": { "type": "number" } }
+        }
+      ]
+    },
+    "controlBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visual_only", "hinges"],
+      "properties": {
+        "visual_only": { "type": "boolean" },
+        "hinges": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/controlHinge" } }
+      }
+    },
+    "controlHinge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "node", "source", "geometry_ref"],
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "node": { "type": "string", "pattern": "^[A-Za-z0-9_]+_hinge$" },
+        "source": { "enum": ["builder", "geometry_articulation"] },
+        "geometry_ref": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "source": { "const": "geometry_articulation" } } },
+          "then": { "properties": { "geometry_ref": { "type": "string", "minLength": 1 } } },
+          "else": { "properties": { "geometry_ref": { "const": "" } } }
+        }
+      ]
+    }
+  }
+}

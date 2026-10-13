@@ -1,0 +1,2529 @@
+{
+  "schema": "openrc-glow-pilot-review v1",
+  "protocol": "NITRO-03 pilot review",
+  "protocol_date": "2026-10-13",
+  "status": "not_performed",
+  "seed": 20261013,
+  "randomization": {
+    "algorithm": "SplitMix64, unsigned 64-bit arithmetic, Fisher-Yates shuffle",
+    "family_block_order": [
+      "2t",
+      "4t"
+    ],
+    "counterbalance": "Within each family, 12 maneuver/repetition pairs contain exactly 6 audio-on-first and 6 muted-first pairs.",
+    "repeats_per_maneuver_per_family": 2,
+    "audio_conditions": [
+      "audio_on",
+      "muted"
+    ]
+  },
+  "blinding": {
+    "pilot_material": "pilot_cards contains opaque trial tokens and maneuver instructions only; do not give the operator schedule to the pilot.",
+    "family_label": "Mask the app's family and profile labels with an external monitor mask/crop; launch and select the aircraft while the pilot is away from the screen.",
+    "audio_condition": "Audio-on versus mute is perceptible and cannot be blinded. Keep the condition order hidden before each run and record the pilot's post-rating guess.",
+    "validity_rule": "If family/profile metadata is visible to the pilot, record the exposure and classify family blinding as failed; do not describe the block as blinded."
+  },
+  "run_controls": {
+    "launch": "Open the pinned Godot build with no user arguments to reach Home; the direct --quick-flight route starts airborne and is not the runway protocol.",
+    "pilot_input": "Use one calibrated Mode 2 USB transmitter/gamepad for all trials; record device, mapping, deadband, reversals and rate setting. Keyboard fallback: arrows roll/pitch, A/D rudder, S/W throttle; this is digital input and must be declared.",
+    "rates": "normal",
+    "engine_keys": {
+      "F6": "cut fuel/combustion",
+      "F7": "starter",
+      "F8": "set mixture to 0.85 times the profile nominal equivalence ratio",
+      "F9": "set mixture to 1.15 times the profile nominal equivalence ratio",
+      "R": "reset to the selected runway start",
+      "T": "start/stop trace recording; capture the saved trace path and SHA-256"
+    },
+    "baseline_mixture": "Leave mixture at profile nominal for every A/B flight trial; F8/F9 are reserved for separately documented rich/lean diagnostic work.",
+    "audio": "Use the same Windows output device and simulator application volume at 50 percent for audio-on trials; set only this application's Volume Mixer level to 0 percent for muted trials. Keep master volume/effects fixed and hidden from the pilot. Mixer percentage is a repeatable setting, not a calibrated sound-pressure level.",
+    "environment": "In Home, explicitly choose the default field, calm/default weather, daylight, Runway start and pilot view. Keep the same overlay preset and do not enable developer overlays. Home preferences persist, so inspect and record the actual settings before the first run.",
+    "start": "Choose the named aircraft and Runway in Home. The runway-start engine is warm but stopped; press F7. Reset with R between trials."
+  },
+  "common_start_sequence": [
+    "Press R to reset to the selected Runway start, set throttle to idle and press T to begin the trial trace.",
+    "Press F7, hold idle for 5 seconds, then smoothly advance throttle to full over 3 seconds and take off. Do not force a static hold; record any idle ground roll.",
+    "Climb to the safe test height selected before the session and establish level flight. On the takeoff_climb card, score this takeoff/climb; on other cards use this sequence only to reach the test height."
+  ],
+  "test_conditions": {
+    "field_id": "default",
+    "weather": "calm/default; freeze and record the exact settings before the first run",
+    "time_of_day": "default daylight; keep unchanged",
+    "pilot_view": "pilot",
+    "rates": "normal",
+    "target_test_height_agl_m": null,
+    "target_height_note": "Choose one safe height before the session and hold it constant; record the numeric height here.",
+    "baseline_throttle_command": 0.5,
+    "throttle_loading_sequence_percent": [
+      25,
+      75,
+      25
+    ],
+    "throttle_loading_endpoint_hold_s": 3,
+    "idle_to_full_to_idle_plateau_s": 5,
+    "engine_out_glide_s": 20
+  },
+  "ratings": {
+    "scale": "1 to 7; 1=very poor/very dissimilar, 4=neutral or mixed, 7=very good/very similar; workload uses 1=very low and 7=very high.",
+    "sound_rating": "Complete only for audio-on trials. Muted sound ratings stay null, not zero.",
+    "acceptance": "Ratings are descriptive. A family passes only after the experienced pilot has no material unexplained discrepancy against its labeled real reference; use the plan's separate physical budgets and trace evidence. Do not average away a safety-relevant mismatch or force a family preference."
+  },
+  "simulation_build": {
+    "godot_version": "4.7.2-stable",
+    "release_binary_sha256": null,
+    "release_pack_sha256": null,
+    "source_revision": null,
+    "pilot_machine_and_display": null,
+    "audio_output_device_and_fixed_volume_percent": null,
+    "input_device_mapping": null
+  },
+  "pilot": {
+    "participant_code": null,
+    "experience_years": null,
+    "seasons_flying_2t": null,
+    "seasons_flying_4t": null,
+    "familiar_with_both_real_baselines": null,
+    "notes": ""
+  },
+  "families": {
+    "glow_2t": {
+      "family": "glow_2t",
+      "catalog_id": "stik-glow-55ax-2t",
+      "engine": "O.S. MAX-55AX, product 15612, Type 40K carburetor, No.8 plug, stock Power Box silencer",
+      "profile": {
+        "id": "os_max_55ax_candidate",
+        "status": "candidate",
+        "path": "app/data/glow/os_max_55ax_candidate.json",
+        "sha256": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258"
+      },
+      "installation": {
+        "path": "app/data/glow/stik_55ax_2t.json",
+        "sha256": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45"
+      },
+      "aircraft_data": {
+        "path": "app/data/aircraft/stik_glow_55ax_2t.json",
+        "sha256": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+        "airframe": "Jensen Stik 60 geometry; physical build identity/weight/CG must be recorded separately"
+      },
+      "propeller": {
+        "build_id": "max55ax_apc_sport_12x7",
+        "description": "APC Sport LP12070, 12x7, 1/4-inch bore",
+        "physical_part_number_or_lot": null,
+        "reference_url": "https://www.apcprop.com/product/12x7/"
+      },
+      "fuel": {
+        "candidate_profile_blend_volume_fraction": {
+          "methanol": 0.72,
+          "nitromethane": 0.1,
+          "castor_oil": 0.18
+        },
+        "physical_test_recipe": "72/10/18 volume percent methanol/nitromethane/castor oil",
+        "physical_lot": null,
+        "physical_density_kg_m3": null,
+        "match_required": true,
+        "note": "The candidate profile treats lubricant as inert. Matching volume fractions controls blend composition but does not validate oil energy or chemistry. If the physical blend differs, record it and treat the comparison as fuel-mismatched."
+      },
+      "provenance": {
+        "engine_specification": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm",
+        "real_observation": "https://www.os-engines.co.jp/web_content/202102/index1.html"
+      }
+    },
+    "glow_4t": {
+      "family": "glow_4t",
+      "catalog_id": "stik-glow-fs64v-4t",
+      "engine": "O.S. FS-64V, product 3AY00, Type 61T carburetor, Type F plug, F-4051 silencer",
+      "profile": {
+        "id": "os_fs_64v_candidate",
+        "status": "candidate",
+        "path": "app/data/glow/os_fs_64v_candidate.json",
+        "sha256": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39"
+      },
+      "installation": {
+        "path": "app/data/glow/stik_fs64v_4t.json",
+        "sha256": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4"
+      },
+      "aircraft_data": {
+        "path": "app/data/aircraft/stik_glow_fs64v_4t.json",
+        "sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+        "airframe": "Jensen Stik 60 geometry; physical build identity/weight/CG must be recorded separately"
+      },
+      "propeller": {
+        "build_id": "fs64v_master_airscrew_k_14x6",
+        "description": "Master Airscrew K Series 14x6, 1/4-inch shaft",
+        "physical_part_number_or_lot": null,
+        "reference_url": "https://www.masterairscrew.com/products/k-series-14x6-propeller"
+      },
+      "fuel": {
+        "candidate_profile_blend_volume_fraction": {
+          "methanol": 0.72,
+          "nitromethane": 0.1,
+          "castor_oil": 0.18
+        },
+        "physical_test_recipe": "72/10/18 volume percent methanol/nitromethane/castor oil",
+        "physical_lot": null,
+        "physical_density_kg_m3": null,
+        "match_required": true,
+        "note": "The candidate profile treats lubricant as inert. Matching volume fractions controls blend composition but does not validate oil energy or chemistry. If the physical blend differs, record it and treat the comparison as fuel-mismatched."
+      },
+      "provenance": {
+        "engine_specification": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html",
+        "real_observation": "https://www.os-engines.co.jp/web_content/202210/index_1.html"
+      }
+    }
+  },
+  "real_reference": {
+    "glow_2t": {
+      "status": "not_performed",
+      "airframe_build_and_revision": null,
+      "engine_serial_and_hours": null,
+      "propeller_part_and_condition": null,
+      "plug_and_silencer_identity": null,
+      "fuel_lot_recipe_and_density": null,
+      "installed_mass_cg_and_inertia_record": null,
+      "tach_temperature_fuel_instruments_and_calibration": null,
+      "atmosphere_and_wind_record": null,
+      "audio_reference_clip_tach_sync_and_calibration": null,
+      "flight_trace_and_measurement_paths": [],
+      "pilot_familiarization_notes": ""
+    },
+    "glow_4t": {
+      "status": "not_performed",
+      "airframe_build_and_revision": null,
+      "engine_serial_and_hours": null,
+      "propeller_part_and_condition": null,
+      "plug_and_silencer_identity": null,
+      "fuel_lot_recipe_and_density": null,
+      "installed_mass_cg_and_inertia_record": null,
+      "tach_temperature_fuel_instruments_and_calibration": null,
+      "atmosphere_and_wind_record": null,
+      "audio_reference_clip_tach_sync_and_calibration": null,
+      "flight_trace_and_measurement_paths": [],
+      "pilot_familiarization_notes": ""
+    }
+  },
+  "physical_endurance_blocks": {
+    "glow_2t": {
+      "status": "not_performed",
+      "duty_cycle_definition_frozen_before_run": null,
+      "full_usable_tank_mass_kg": null,
+      "elapsed_time_s": null,
+      "fuel_remaining_kg": null,
+      "measurement_path_and_sha256": null,
+      "note": "One separate logged physical duty-cycle/endurance block per family; do not duplicate it as an audio preference trial."
+    },
+    "glow_4t": {
+      "status": "not_performed",
+      "duty_cycle_definition_frozen_before_run": null,
+      "full_usable_tank_mass_kg": null,
+      "elapsed_time_s": null,
+      "fuel_remaining_kg": null,
+      "measurement_path_and_sha256": null,
+      "note": "One separate logged physical duty-cycle/endurance block per family; do not duplicate it as an audio preference trial."
+    }
+  },
+  "conclusions": {
+    "glow_2t": {
+      "status": "not_performed",
+      "material_discrepancies": [],
+      "pilot_assessment": null
+    },
+    "glow_4t": {
+      "status": "not_performed",
+      "material_discrepancies": [],
+      "pilot_assessment": null
+    }
+  },
+  "operator_schedule": [
+    {
+      "order": 1,
+      "pilot_token": "P001",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-warm_idle_transition-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "warm_idle_transition",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 2,
+      "pilot_token": "P002",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-warm_idle_transition-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "warm_idle_transition",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 3,
+      "pilot_token": "P003",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-engine_out_glide-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "engine_out_glide",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 4,
+      "pilot_token": "P004",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-engine_out_glide-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "engine_out_glide",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 5,
+      "pilot_token": "P005",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-sound_order_review-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "sound_order_review",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 6,
+      "pilot_token": "P006",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-sound_order_review-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "sound_order_review",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 7,
+      "pilot_token": "P007",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-throttle_loading-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "throttle_loading",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 8,
+      "pilot_token": "P008",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-throttle_loading-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "throttle_loading",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 9,
+      "pilot_token": "P009",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-takeoff_climb-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "takeoff_climb",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 10,
+      "pilot_token": "P010",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-takeoff_climb-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "takeoff_climb",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 11,
+      "pilot_token": "P011",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-cruise_hold-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "cruise_hold",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 12,
+      "pilot_token": "P012",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-cruise_hold-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "cruise_hold",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 13,
+      "pilot_token": "P013",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-warm_idle_transition-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "warm_idle_transition",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 14,
+      "pilot_token": "P014",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-warm_idle_transition-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "warm_idle_transition",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 15,
+      "pilot_token": "P015",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-sound_order_review-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "sound_order_review",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 16,
+      "pilot_token": "P016",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-sound_order_review-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "sound_order_review",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 17,
+      "pilot_token": "P017",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-takeoff_climb-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "takeoff_climb",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 18,
+      "pilot_token": "P018",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-takeoff_climb-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "takeoff_climb",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 19,
+      "pilot_token": "P019",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-throttle_loading-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "throttle_loading",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 20,
+      "pilot_token": "P020",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-throttle_loading-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "throttle_loading",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 21,
+      "pilot_token": "P021",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-cruise_hold-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "cruise_hold",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 22,
+      "pilot_token": "P022",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-cruise_hold-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "cruise_hold",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 23,
+      "pilot_token": "P023",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-engine_out_glide-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "engine_out_glide",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 24,
+      "pilot_token": "P024",
+      "operator_only": {
+        "family": "glow_2t",
+        "catalog_id": "stik-glow-55ax-2t",
+        "profile_id": "os_max_55ax_candidate",
+        "propeller_build_id": "max55ax_apc_sport_12x7",
+        "pair_id": "2t-engine_out_glide-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "engine_out_glide",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 25,
+      "pilot_token": "P025",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-throttle_loading-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "throttle_loading",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 26,
+      "pilot_token": "P026",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-throttle_loading-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "throttle_loading",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 27,
+      "pilot_token": "P027",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-takeoff_climb-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "takeoff_climb",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 28,
+      "pilot_token": "P028",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-takeoff_climb-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "takeoff_climb",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 29,
+      "pilot_token": "P029",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-warm_idle_transition-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "warm_idle_transition",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 30,
+      "pilot_token": "P030",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-warm_idle_transition-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "warm_idle_transition",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 31,
+      "pilot_token": "P031",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-throttle_loading-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "throttle_loading",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 32,
+      "pilot_token": "P032",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-throttle_loading-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "throttle_loading",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 33,
+      "pilot_token": "P033",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-engine_out_glide-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "engine_out_glide",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 34,
+      "pilot_token": "P034",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-engine_out_glide-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "engine_out_glide",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 35,
+      "pilot_token": "P035",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-sound_order_review-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "sound_order_review",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 36,
+      "pilot_token": "P036",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-sound_order_review-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "sound_order_review",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 37,
+      "pilot_token": "P037",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-sound_order_review-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "sound_order_review",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 38,
+      "pilot_token": "P038",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-sound_order_review-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "sound_order_review",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 39,
+      "pilot_token": "P039",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-cruise_hold-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "cruise_hold",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 40,
+      "pilot_token": "P040",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-cruise_hold-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "cruise_hold",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 41,
+      "pilot_token": "P041",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-engine_out_glide-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "engine_out_glide",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 42,
+      "pilot_token": "P042",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-engine_out_glide-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "engine_out_glide",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 43,
+      "pilot_token": "P043",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-warm_idle_transition-r1",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "warm_idle_transition",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 44,
+      "pilot_token": "P044",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-warm_idle_transition-r1",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "warm_idle_transition",
+      "repetition": 1,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 45,
+      "pilot_token": "P045",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-takeoff_climb-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "takeoff_climb",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 46,
+      "pilot_token": "P046",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-takeoff_climb-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "takeoff_climb",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 47,
+      "pilot_token": "P047",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-cruise_hold-r2",
+        "audio_condition": "audio_on",
+        "condition_order_within_pair": 1
+      },
+      "maneuver_id": "cruise_hold",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    },
+    {
+      "order": 48,
+      "pilot_token": "P048",
+      "operator_only": {
+        "family": "glow_4t",
+        "catalog_id": "stik-glow-fs64v-4t",
+        "profile_id": "os_fs_64v_candidate",
+        "propeller_build_id": "fs64v_master_airscrew_k_14x6",
+        "pair_id": "4t-cruise_hold-r2",
+        "audio_condition": "muted",
+        "condition_order_within_pair": 2
+      },
+      "maneuver_id": "cruise_hold",
+      "repetition": 2,
+      "operator_result": {
+        "run_status": "not_run",
+        "trace_path": null,
+        "trace_sha256": null,
+        "audio_capture_path": null,
+        "safety_stop": null,
+        "deviations": [],
+        "notes": ""
+      },
+      "pilot_response": {
+        "handling_similarity_to_real_reference_1_to_7": null,
+        "response_predictability_1_to_7": null,
+        "workload_1_to_7": null,
+        "confidence_1_to_7": null,
+        "sound_realism_1_to_7": null,
+        "family_guess": null,
+        "audio_state_guess": null,
+        "material_discrepancy": "",
+        "free_text": ""
+      }
+    }
+  ],
+  "pilot_cards": [
+    {
+      "order": 1,
+      "pilot_token": "P001",
+      "maneuver_id": "warm_idle_transition",
+      "title": "Warm idle and throttle transitions",
+      "steps": [
+        "At the preselected safe height, repeat idle-to-full-to-idle twice with 5-second plateaus.",
+        "Record start attempts, stalls, hesitation, recovery, RPM trace and handling rating."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 2,
+      "pilot_token": "P002",
+      "maneuver_id": "warm_idle_transition",
+      "title": "Warm idle and throttle transitions",
+      "steps": [
+        "At the preselected safe height, repeat idle-to-full-to-idle twice with 5-second plateaus.",
+        "Record start attempts, stalls, hesitation, recovery, RPM trace and handling rating."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 3,
+      "pilot_token": "P003",
+      "maneuver_id": "engine_out_glide",
+      "title": "Engine cutoff and glide",
+      "steps": [
+        "At safe height in stable level flight, press F6 once to cut fuel and combustion.",
+        "Glide for 20 seconds without pressing F7; then land or end the trial using the prebriefed route.",
+        "Record RPM decay, glide control, trim change, restart expectation and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 4,
+      "pilot_token": "P004",
+      "maneuver_id": "engine_out_glide",
+      "title": "Engine cutoff and glide",
+      "steps": [
+        "At safe height in stable level flight, press F6 once to cut fuel and combustion.",
+        "Glide for 20 seconds without pressing F7; then land or end the trial using the prebriefed route.",
+        "Record RPM decay, glide control, trim change, restart expectation and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 5,
+      "pilot_token": "P005",
+      "maneuver_id": "sound_order_review",
+      "title": "Idle, midrange, full-power sound review",
+      "steps": [
+        "At safe height in straight flight, hold idle, mid throttle and full throttle for 5 seconds each.",
+        "Reduce to idle after the full-power hold and follow the prebriefed landing route; press F6 only after touchdown.",
+        "Record perceived event cadence, modulation, valve/mechanical cues and propeller contribution.",
+        "Rate sound only after the flight/handling ratings. In a muted trial, leave sound ratings blank."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 6,
+      "pilot_token": "P006",
+      "maneuver_id": "sound_order_review",
+      "title": "Idle, midrange, full-power sound review",
+      "steps": [
+        "At safe height in straight flight, hold idle, mid throttle and full throttle for 5 seconds each.",
+        "Reduce to idle after the full-power hold and follow the prebriefed landing route; press F6 only after touchdown.",
+        "Record perceived event cadence, modulation, valve/mechanical cues and propeller contribution.",
+        "Rate sound only after the flight/handling ratings. In a muted trial, leave sound ratings blank."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 7,
+      "pilot_token": "P007",
+      "maneuver_id": "throttle_loading",
+      "title": "Throttle loading and recovery",
+      "steps": [
+        "At safe height, repeat 25-to-75-to-25 percent throttle command three times.",
+        "Hold each endpoint for 3 seconds and use the same aircraft attitude target on every trial.",
+        "Record RPM rise/fall, hesitation, overshoot, sound impression when audible and corrections."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 8,
+      "pilot_token": "P008",
+      "maneuver_id": "throttle_loading",
+      "title": "Throttle loading and recovery",
+      "steps": [
+        "At safe height, repeat 25-to-75-to-25 percent throttle command three times.",
+        "Hold each endpoint for 3 seconds and use the same aircraft attitude target on every trial.",
+        "Record RPM rise/fall, hesitation, overshoot, sound impression when audible and corrections."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 9,
+      "pilot_token": "P009",
+      "maneuver_id": "takeoff_climb",
+      "title": "Takeoff and climb",
+      "steps": [
+        "Score the takeoff and climb to the preselected safe test height; hold that height for 20 seconds.",
+        "Record takeoff distance, time to height, climb rate, input corrections and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 10,
+      "pilot_token": "P010",
+      "maneuver_id": "takeoff_climb",
+      "title": "Takeoff and climb",
+      "steps": [
+        "Score the takeoff and climb to the preselected safe test height; hold that height for 20 seconds.",
+        "Record takeoff distance, time to height, climb rate, input corrections and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 11,
+      "pilot_token": "P011",
+      "maneuver_id": "cruise_hold",
+      "title": "Cruise hold",
+      "steps": [
+        "At safe height, stabilize level flight at 50 percent throttle command for 30 seconds.",
+        "Record airspeed, altitude change, RPM, corrections and pilot workload."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 12,
+      "pilot_token": "P012",
+      "maneuver_id": "cruise_hold",
+      "title": "Cruise hold",
+      "steps": [
+        "At safe height, stabilize level flight at 50 percent throttle command for 30 seconds.",
+        "Record airspeed, altitude change, RPM, corrections and pilot workload."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 13,
+      "pilot_token": "P013",
+      "maneuver_id": "warm_idle_transition",
+      "title": "Warm idle and throttle transitions",
+      "steps": [
+        "At the preselected safe height, repeat idle-to-full-to-idle twice with 5-second plateaus.",
+        "Record start attempts, stalls, hesitation, recovery, RPM trace and handling rating."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 14,
+      "pilot_token": "P014",
+      "maneuver_id": "warm_idle_transition",
+      "title": "Warm idle and throttle transitions",
+      "steps": [
+        "At the preselected safe height, repeat idle-to-full-to-idle twice with 5-second plateaus.",
+        "Record start attempts, stalls, hesitation, recovery, RPM trace and handling rating."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 15,
+      "pilot_token": "P015",
+      "maneuver_id": "sound_order_review",
+      "title": "Idle, midrange, full-power sound review",
+      "steps": [
+        "At safe height in straight flight, hold idle, mid throttle and full throttle for 5 seconds each.",
+        "Reduce to idle after the full-power hold and follow the prebriefed landing route; press F6 only after touchdown.",
+        "Record perceived event cadence, modulation, valve/mechanical cues and propeller contribution.",
+        "Rate sound only after the flight/handling ratings. In a muted trial, leave sound ratings blank."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 16,
+      "pilot_token": "P016",
+      "maneuver_id": "sound_order_review",
+      "title": "Idle, midrange, full-power sound review",
+      "steps": [
+        "At safe height in straight flight, hold idle, mid throttle and full throttle for 5 seconds each.",
+        "Reduce to idle after the full-power hold and follow the prebriefed landing route; press F6 only after touchdown.",
+        "Record perceived event cadence, modulation, valve/mechanical cues and propeller contribution.",
+        "Rate sound only after the flight/handling ratings. In a muted trial, leave sound ratings blank."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 17,
+      "pilot_token": "P017",
+      "maneuver_id": "takeoff_climb",
+      "title": "Takeoff and climb",
+      "steps": [
+        "Score the takeoff and climb to the preselected safe test height; hold that height for 20 seconds.",
+        "Record takeoff distance, time to height, climb rate, input corrections and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 18,
+      "pilot_token": "P018",
+      "maneuver_id": "takeoff_climb",
+      "title": "Takeoff and climb",
+      "steps": [
+        "Score the takeoff and climb to the preselected safe test height; hold that height for 20 seconds.",
+        "Record takeoff distance, time to height, climb rate, input corrections and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 19,
+      "pilot_token": "P019",
+      "maneuver_id": "throttle_loading",
+      "title": "Throttle loading and recovery",
+      "steps": [
+        "At safe height, repeat 25-to-75-to-25 percent throttle command three times.",
+        "Hold each endpoint for 3 seconds and use the same aircraft attitude target on every trial.",
+        "Record RPM rise/fall, hesitation, overshoot, sound impression when audible and corrections."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 20,
+      "pilot_token": "P020",
+      "maneuver_id": "throttle_loading",
+      "title": "Throttle loading and recovery",
+      "steps": [
+        "At safe height, repeat 25-to-75-to-25 percent throttle command three times.",
+        "Hold each endpoint for 3 seconds and use the same aircraft attitude target on every trial.",
+        "Record RPM rise/fall, hesitation, overshoot, sound impression when audible and corrections."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 21,
+      "pilot_token": "P021",
+      "maneuver_id": "cruise_hold",
+      "title": "Cruise hold",
+      "steps": [
+        "At safe height, stabilize level flight at 50 percent throttle command for 30 seconds.",
+        "Record airspeed, altitude change, RPM, corrections and pilot workload."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 22,
+      "pilot_token": "P022",
+      "maneuver_id": "cruise_hold",
+      "title": "Cruise hold",
+      "steps": [
+        "At safe height, stabilize level flight at 50 percent throttle command for 30 seconds.",
+        "Record airspeed, altitude change, RPM, corrections and pilot workload."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 23,
+      "pilot_token": "P023",
+      "maneuver_id": "engine_out_glide",
+      "title": "Engine cutoff and glide",
+      "steps": [
+        "At safe height in stable level flight, press F6 once to cut fuel and combustion.",
+        "Glide for 20 seconds without pressing F7; then land or end the trial using the prebriefed route.",
+        "Record RPM decay, glide control, trim change, restart expectation and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 24,
+      "pilot_token": "P024",
+      "maneuver_id": "engine_out_glide",
+      "title": "Engine cutoff and glide",
+      "steps": [
+        "At safe height in stable level flight, press F6 once to cut fuel and combustion.",
+        "Glide for 20 seconds without pressing F7; then land or end the trial using the prebriefed route.",
+        "Record RPM decay, glide control, trim change, restart expectation and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 25,
+      "pilot_token": "P025",
+      "maneuver_id": "throttle_loading",
+      "title": "Throttle loading and recovery",
+      "steps": [
+        "At safe height, repeat 25-to-75-to-25 percent throttle command three times.",
+        "Hold each endpoint for 3 seconds and use the same aircraft attitude target on every trial.",
+        "Record RPM rise/fall, hesitation, overshoot, sound impression when audible and corrections."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 26,
+      "pilot_token": "P026",
+      "maneuver_id": "throttle_loading",
+      "title": "Throttle loading and recovery",
+      "steps": [
+        "At safe height, repeat 25-to-75-to-25 percent throttle command three times.",
+        "Hold each endpoint for 3 seconds and use the same aircraft attitude target on every trial.",
+        "Record RPM rise/fall, hesitation, overshoot, sound impression when audible and corrections."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 27,
+      "pilot_token": "P027",
+      "maneuver_id": "takeoff_climb",
+      "title": "Takeoff and climb",
+      "steps": [
+        "Score the takeoff and climb to the preselected safe test height; hold that height for 20 seconds.",
+        "Record takeoff distance, time to height, climb rate, input corrections and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 28,
+      "pilot_token": "P028",
+      "maneuver_id": "takeoff_climb",
+      "title": "Takeoff and climb",
+      "steps": [
+        "Score the takeoff and climb to the preselected safe test height; hold that height for 20 seconds.",
+        "Record takeoff distance, time to height, climb rate, input corrections and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 29,
+      "pilot_token": "P029",
+      "maneuver_id": "warm_idle_transition",
+      "title": "Warm idle and throttle transitions",
+      "steps": [
+        "At the preselected safe height, repeat idle-to-full-to-idle twice with 5-second plateaus.",
+        "Record start attempts, stalls, hesitation, recovery, RPM trace and handling rating."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 30,
+      "pilot_token": "P030",
+      "maneuver_id": "warm_idle_transition",
+      "title": "Warm idle and throttle transitions",
+      "steps": [
+        "At the preselected safe height, repeat idle-to-full-to-idle twice with 5-second plateaus.",
+        "Record start attempts, stalls, hesitation, recovery, RPM trace and handling rating."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 31,
+      "pilot_token": "P031",
+      "maneuver_id": "throttle_loading",
+      "title": "Throttle loading and recovery",
+      "steps": [
+        "At safe height, repeat 25-to-75-to-25 percent throttle command three times.",
+        "Hold each endpoint for 3 seconds and use the same aircraft attitude target on every trial.",
+        "Record RPM rise/fall, hesitation, overshoot, sound impression when audible and corrections."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 32,
+      "pilot_token": "P032",
+      "maneuver_id": "throttle_loading",
+      "title": "Throttle loading and recovery",
+      "steps": [
+        "At safe height, repeat 25-to-75-to-25 percent throttle command three times.",
+        "Hold each endpoint for 3 seconds and use the same aircraft attitude target on every trial.",
+        "Record RPM rise/fall, hesitation, overshoot, sound impression when audible and corrections."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 33,
+      "pilot_token": "P033",
+      "maneuver_id": "engine_out_glide",
+      "title": "Engine cutoff and glide",
+      "steps": [
+        "At safe height in stable level flight, press F6 once to cut fuel and combustion.",
+        "Glide for 20 seconds without pressing F7; then land or end the trial using the prebriefed route.",
+        "Record RPM decay, glide control, trim change, restart expectation and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 34,
+      "pilot_token": "P034",
+      "maneuver_id": "engine_out_glide",
+      "title": "Engine cutoff and glide",
+      "steps": [
+        "At safe height in stable level flight, press F6 once to cut fuel and combustion.",
+        "Glide for 20 seconds without pressing F7; then land or end the trial using the prebriefed route.",
+        "Record RPM decay, glide control, trim change, restart expectation and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 35,
+      "pilot_token": "P035",
+      "maneuver_id": "sound_order_review",
+      "title": "Idle, midrange, full-power sound review",
+      "steps": [
+        "At safe height in straight flight, hold idle, mid throttle and full throttle for 5 seconds each.",
+        "Reduce to idle after the full-power hold and follow the prebriefed landing route; press F6 only after touchdown.",
+        "Record perceived event cadence, modulation, valve/mechanical cues and propeller contribution.",
+        "Rate sound only after the flight/handling ratings. In a muted trial, leave sound ratings blank."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 36,
+      "pilot_token": "P036",
+      "maneuver_id": "sound_order_review",
+      "title": "Idle, midrange, full-power sound review",
+      "steps": [
+        "At safe height in straight flight, hold idle, mid throttle and full throttle for 5 seconds each.",
+        "Reduce to idle after the full-power hold and follow the prebriefed landing route; press F6 only after touchdown.",
+        "Record perceived event cadence, modulation, valve/mechanical cues and propeller contribution.",
+        "Rate sound only after the flight/handling ratings. In a muted trial, leave sound ratings blank."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 37,
+      "pilot_token": "P037",
+      "maneuver_id": "sound_order_review",
+      "title": "Idle, midrange, full-power sound review",
+      "steps": [
+        "At safe height in straight flight, hold idle, mid throttle and full throttle for 5 seconds each.",
+        "Reduce to idle after the full-power hold and follow the prebriefed landing route; press F6 only after touchdown.",
+        "Record perceived event cadence, modulation, valve/mechanical cues and propeller contribution.",
+        "Rate sound only after the flight/handling ratings. In a muted trial, leave sound ratings blank."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 38,
+      "pilot_token": "P038",
+      "maneuver_id": "sound_order_review",
+      "title": "Idle, midrange, full-power sound review",
+      "steps": [
+        "At safe height in straight flight, hold idle, mid throttle and full throttle for 5 seconds each.",
+        "Reduce to idle after the full-power hold and follow the prebriefed landing route; press F6 only after touchdown.",
+        "Record perceived event cadence, modulation, valve/mechanical cues and propeller contribution.",
+        "Rate sound only after the flight/handling ratings. In a muted trial, leave sound ratings blank."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 39,
+      "pilot_token": "P039",
+      "maneuver_id": "cruise_hold",
+      "title": "Cruise hold",
+      "steps": [
+        "At safe height, stabilize level flight at 50 percent throttle command for 30 seconds.",
+        "Record airspeed, altitude change, RPM, corrections and pilot workload."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 40,
+      "pilot_token": "P040",
+      "maneuver_id": "cruise_hold",
+      "title": "Cruise hold",
+      "steps": [
+        "At safe height, stabilize level flight at 50 percent throttle command for 30 seconds.",
+        "Record airspeed, altitude change, RPM, corrections and pilot workload."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 41,
+      "pilot_token": "P041",
+      "maneuver_id": "engine_out_glide",
+      "title": "Engine cutoff and glide",
+      "steps": [
+        "At safe height in stable level flight, press F6 once to cut fuel and combustion.",
+        "Glide for 20 seconds without pressing F7; then land or end the trial using the prebriefed route.",
+        "Record RPM decay, glide control, trim change, restart expectation and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 42,
+      "pilot_token": "P042",
+      "maneuver_id": "engine_out_glide",
+      "title": "Engine cutoff and glide",
+      "steps": [
+        "At safe height in stable level flight, press F6 once to cut fuel and combustion.",
+        "Glide for 20 seconds without pressing F7; then land or end the trial using the prebriefed route.",
+        "Record RPM decay, glide control, trim change, restart expectation and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 43,
+      "pilot_token": "P043",
+      "maneuver_id": "warm_idle_transition",
+      "title": "Warm idle and throttle transitions",
+      "steps": [
+        "At the preselected safe height, repeat idle-to-full-to-idle twice with 5-second plateaus.",
+        "Record start attempts, stalls, hesitation, recovery, RPM trace and handling rating."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 44,
+      "pilot_token": "P044",
+      "maneuver_id": "warm_idle_transition",
+      "title": "Warm idle and throttle transitions",
+      "steps": [
+        "At the preselected safe height, repeat idle-to-full-to-idle twice with 5-second plateaus.",
+        "Record start attempts, stalls, hesitation, recovery, RPM trace and handling rating."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 45,
+      "pilot_token": "P045",
+      "maneuver_id": "takeoff_climb",
+      "title": "Takeoff and climb",
+      "steps": [
+        "Score the takeoff and climb to the preselected safe test height; hold that height for 20 seconds.",
+        "Record takeoff distance, time to height, climb rate, input corrections and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 46,
+      "pilot_token": "P046",
+      "maneuver_id": "takeoff_climb",
+      "title": "Takeoff and climb",
+      "steps": [
+        "Score the takeoff and climb to the preselected safe test height; hold that height for 20 seconds.",
+        "Record takeoff distance, time to height, climb rate, input corrections and any safety stop."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 47,
+      "pilot_token": "P047",
+      "maneuver_id": "cruise_hold",
+      "title": "Cruise hold",
+      "steps": [
+        "At safe height, stabilize level flight at 50 percent throttle command for 30 seconds.",
+        "Record airspeed, altitude change, RPM, corrections and pilot workload."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    },
+    {
+      "order": 48,
+      "pilot_token": "P048",
+      "maneuver_id": "cruise_hold",
+      "title": "Cruise hold",
+      "steps": [
+        "At safe height, stabilize level flight at 50 percent throttle command for 30 seconds.",
+        "Record airspeed, altitude change, RPM, corrections and pilot workload."
+      ],
+      "common_start_sequence_ref": "common_start_sequence",
+      "rating_instruction": "Rate this run before discussing it. Record your family and audio-state guess only after the ratings."
+    }
+  ],
+  "not_performed_note": "This is a generated randomized schedule and blank form, not a pilot result. No participant, physical baseline, trial, or acceptance outcome is recorded."
+}

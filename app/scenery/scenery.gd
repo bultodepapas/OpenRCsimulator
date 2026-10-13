@@ -11,6 +11,9 @@ const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
 const Models = preload("res://scenery/models.gd")
 const Population = preload("res://scenery/population.gd")
+const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
+const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
+const ImportedHedge = preload("res://scenery/imported_hedge.gd")
 const SupportSurfaces = preload("res://scenery/support_surfaces.gd")
 const Palette = preload("res://scenery/palette.gd")
 const GroundFeatures = preload("res://scenery/ground_features.gd")
@@ -153,7 +156,7 @@ static func _finite_number(value: Variant) -> bool:
 
 
 ## Called by render/field.gd after it built the field. No-op when the switch is off.
-static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}) -> void:
+static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> void:
 	var opts := options()
 	if not opts.enabled:
 		return
@@ -165,7 +168,7 @@ static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary =
 		for e: String in loaded.errors:
 			push_error("scenery: " + e)
 		return
-	field_node.add_child(build(field, loaded.scenery, opts, lighting))
+	field_node.add_child(build(field, loaded.scenery, opts, lighting, lake))
 
 
 static func opaque_material() -> StandardMaterial3D:
@@ -214,10 +217,11 @@ static func _placement_xf(n: float, e: float, heading_deg: float) -> Transform3D
 	return Transform3D(Basis(Vector3.UP, -deg_to_rad(heading_deg)), Frames.ned_to_render([n, e, 0.0]))
 
 
-static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, lighting: Dictionary = {}) -> Node3D:
+static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> Node3D:
 	var t0 := Time.get_ticks_usec()
 	var root := Node3D.new()
 	root.name = "Scenery"
+	root.set_meta("source_definition", scenery.duplicate(true))
 	root.set_meta("grass_exclusions", GrassMask.footprints(scenery))
 	var theme: String = opts.theme if Palette.THEMES.has(opts.theme) else scenery.theme
 	var quality: String = opts.quality if QUALITIES.has(opts.quality) else "high"
@@ -229,6 +233,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	var pilot := Vector2(float(field.pilot.north), float(field.pilot.east))
 	var cells := {}
 	var population_batches := {}
+	var vegetation_batches := {}
+	var vegetation_triangles := 0
 	var support_surfaces := SupportSurfaces.build(scenery)
 	var ground_cells := {}
 	var gravel := ShaderMaterial.new()
@@ -256,10 +262,17 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						continue
 					var xf := _placement_xf(pl.north, pl.east, pl.heading)
 					var kit: MeshKit = null
-					if not Population.handles(prefab):
+					if not Population.handles(prefab) and not VegetationPlacement.handles(prefab):
 						kit = _kit(cells, _cell(pl.north, pl.east))
 					var damage_first := kit.verts.size() if kit != null else 0
-					if Population.handles(prefab):
+					if VegetationPlacement.handles(prefab):
+						var plant := VegetationPlacement.spec(prefab, pl.seed)
+						var plant_xf := ImportedVegetation.fit_to_height(plant.asset_id, plant.height, xf)
+						var tone := 0.90 + 0.10 * Palette.hash01(pl.seed, 834)
+						var tint := Color(tone, minf(1.0, tone + 0.035), tone, 1.0)
+						ImportedVegetation.queue(vegetation_batches, plant.asset_id, plant_xf, pl.seed, damage_id, tint)
+						vegetation_triangles += int(plant.triangles)
+					elif Population.handles(prefab):
 						var foot_height := SupportSurfaces.height_at(pl.north, pl.east, support_surfaces) if prefab.begins_with("person_") else 0.0
 						if prefab == "person_sitting":
 							foot_height += SupportSurfaces.SEATED_OFFSET_M
@@ -293,7 +306,11 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						elif prefab.begins_with("person_"):
 							shadow_mode = "person"
 							shadow_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
-						var shadow_source := {transform = shadow_xf, size = spec.size, mode = shadow_mode, damage_id = damage_id}
+						var shadow_size: Vector3 = spec.size
+						if VegetationPlacement.handles(prefab):
+							var plant := VegetationPlacement.spec(prefab, pl.seed)
+							shadow_size = Vector3(plant.width, plant.height, plant.depth)
+						var shadow_source := {transform = shadow_xf, size = shadow_size, mode = shadow_mode, damage_id = damage_id}
 						var population_shadow := shadow_mode == "person" or shadow_mode == "vehicle"
 						if population_shadow:
 							# These props live in MultiMeshes, outside the static cell mask.
@@ -305,7 +322,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 							shadow_groups[shadow_cell].append(shadow_source)
 						if shadow_strength > 0.0:
 							var contact_kit: MeshKit = population_contact_kit if population_shadow else _kit(shadow_cells, shadow_cell)
-							GroundFeatures.contact_shadow(contact_kit, shadow_xf, spec.size, shadow_mode, sun)
+							GroundFeatures.contact_shadow(contact_kit, shadow_xf, shadow_size, shadow_mode, sun)
 							stats.shadows += 1
 			"fleet": # baked snapshots (tools/scenery/bake_fleet.gd): merged into the shelter's cell, ~5 k triangles each
 				for placement_index: int in group.placements.size():
@@ -335,17 +352,12 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					kit.tag_damage(damage_first, "fence:%s:%s" % [group.id, piece.id])
 					kit.damage_ranges.back()["beam"] = piece
 			"hedge":
-				var pts: Array = group.points
-				for i in pts.size() - 1:
-					var a: Vector2 = pts[i]
-					var b: Vector2 = pts[i + 1]
-					var mid := (a + b) * 0.5
-					var kit := _kit(cells, _cell(mid.x, mid.y))
-					var seg := PackedVector2Array([_xz(a), _xz(b)])
-					if group.type == "hedge":
-						GroundFeatures.hedge(kit, seg, group.height, group.width, theme, group.seed + i * 17)
-					else:
-						GroundFeatures.fence(kit, seg, group.style, group.seed + i * 17)
+				var pts: Array[Vector2] = []
+				for point: Vector2 in group.points:
+					pts.append(_xz(point))
+				var hedge := ImportedHedge.build(pts, group.height, group.width, group.seed, quality)
+				hedge.name = "ImportedHedge_" + str(group.id)
+				root.add_child(hedge)
 			"track", "patch":
 				var poly := PackedVector2Array()
 				for p: Vector2 in group.points:
@@ -359,18 +371,20 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 				else:
 					GroundFeatures.patch(kit, poly, group.surface, theme, group.seed)
 			"flowers":
-				var keep_flower := func(i: int) -> bool: return keep("ornament", group.seed + i, quality)
-				for node: MultiMeshInstance3D in Flowers.build(group.positions, theme, keep_flower):
-					root.add_child(node)
-					stats.flowers += node.multimesh.instance_count
+				# The downloaded habitat library owns default meadow flowers; the rejected procedural cushions are retired.
+				pass
 		timing[group.type] = float(timing.get(group.type, 0.0)) + (Time.get_ticks_usec() - g0) / 1000.0
+	var vegetation := ImportedVegetation.build(vegetation_batches)
+	root.add_child(vegetation)
+	stats.vegetation_triangles = vegetation_triangles
+	stats.vegetation_instances = vegetation_batches.values().reduce(func(total: int, list: Array) -> int: return total + list.size(), 0)
 	var population := Population.build(population_batches)
 	root.add_child(population)
 	stats.population = population.get_meta("instances", 0)
 	stats.population_triangles = population.get_meta("triangles", 0)
 	stats.moving_people = population.get_meta("moving_people", 0)
 	var botanical_started := Time.get_ticks_usec()
-	var habitats := BotanicalHabitats.build(field, scenery, theme, quality)
+	var habitats := BotanicalHabitats.build(field, scenery, theme, quality, lake)
 	root.add_child(habitats)
 	stats.botanical_plants = habitats.get_meta("plants", []).size()
 	stats.botanical_triangles = habitats.get_meta("triangles", 0)
@@ -537,6 +551,11 @@ static func apply_damage(field_node: Node3D, damage: Dictionary, force_shadows: 
 	root.set_meta("damage_state", damage.duplicate(true))
 	if not changed and not force_shadows:
 		return
+	var vegetation: Node3D = root.get_node_or_null("ImportedVegetationBatches")
+	if vegetation != null:
+		var state: Dictionary = vegetation.get_meta("_imported_vegetation_state", {})
+		for id: String in state.get("damage", {}):
+			ImportedVegetation.set_damage_hidden(vegetation, id, damage.get(id, {}).get("state", "") == "broken")
 	for child: Node in root.get_children():
 		if child is MeshInstance3D and child.has_meta("damage_ranges"):
 			DamageBatches.apply(child, damage)

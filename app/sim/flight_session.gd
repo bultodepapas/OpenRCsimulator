@@ -97,12 +97,12 @@ func glow_start() -> bool:
 	if not glow_is_active() or not _flight_ready(): return false
 	var install: Dictionary=aircraft.model.propulsion.glow
 	var current: Dictionary=GlowFlight.unpack(sim.continuous,install)
-	if current.is_empty() or current.running or current.fuel_kg<=1e-5: return false
+	if current.is_empty() or current.running or current.fuel_kg<=install.settings.starter_prime_kg: return false
 	var rpm: float=maxf(sim.continuous[0],install.settings.minimum_start_rpm)
 	var started: Dictionary=GlowFlight.Life.request_start(install.profile,install.settings,current,rpm,true)
 	if not started.get("started",false): return false
 	var next: Dictionary=started.state
-	next.fuel_kg-=1e-5
+	next.fuel_kg-=install.settings.starter_prime_kg
 	var source: Dictionary=GlowFlight.Source.evaluate(install.profile,rpm,next.air_fraction,sim.continuous[12],1.225*engine_charge_ratio(),true)
 	if not source.ok: return false
 	next.fuel_transport_kg_s=source.delivered_fuel_kg_s
@@ -277,6 +277,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const PropulsionRuntime := preload("res://sim/aircraft_propulsion_runtime.gd")
 const RotorCoupling = preload("res://physics/rotor_coupling.gd")
 const GroundStart := preload("res://physics/ground_start.gd")
 const Turbine := preload("res://physics/turbine.gd")
@@ -287,20 +288,44 @@ const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
+const ContactContract := preload("res://physics/aircraft_contact_contract.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const SceneryDamage := preload("res://sim/scenery_damage.gd")
+const LakeLoader := preload("res://data/lake_loader.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
+const LakeCollision := preload("res://sim/lake_collision.gd")
 
 const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
+const START_HALF_POWER := "airborne_half_power"
+const PowerTrim := preload("res://physics/cruise_trim.gd")
 ## Aircraft whose runway starts have passed the ground qualification gate (TT-11).
-const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution"]
+const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t"]
 const RUNWAY_FIELD_ID := "default"
 
 
 static func runway_aircraft_supported(aircraft_id: String) -> bool:
 	return RUNWAY_AIRCRAFT_IDS.has(aircraft_id)
+
+
+## D6e-R1: explicitly selected operating point, not an aircraft cruise-speed claim.
+static func half_power_start_supported(aircraft_id: String) -> bool:
+	return aircraft_id == "jensen-das-ugly-stik-60"
+
+
+func _selected_airborne_trim(model: Dictionary) -> Dictionary:
+	var speed: float = model.get("start_speed", 15.0)
+	if start_choice != START_HALF_POWER:
+		return Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, speed, air_density(), engine_charge_ratio())
+	if not half_power_start_supported(str(model.get("id", ""))):
+		return {ok = false, message = "half-power airborne start is not qualified for this aircraft"}
+	# Search bounds limit this opt-in policy; they do not prescribe a flight speed.
+	var t: Dictionary = PowerTrim.solve_level_at_throttle(speed, 0.5, 2.0 * speed, model, sim.gravity, model.controls.throw_rad, air_density(), engine_charge_ratio())
+	if t.ok:
+		t.state = Scenarios.Trim.state_for(t.V, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0), t.beta)
+	return t
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
@@ -402,6 +427,10 @@ var surface_error := ""
 ## Detached scalar proxy inventory; empty keeps the legacy no-world path byte-for-byte unchanged.
 var _collision_world: Dictionary = {}
 var _last_scenery_event: SceneryCollision.Event = null
+## Accepted, normalized lake geometry for this session only; empty disables lake terrain and collision queries.
+var _lake: Dictionary = {}
+var _lake_bank_bounds: PackedFloat64Array = PackedFloat64Array()
+var _last_lake_event: LakeCollision.WaterEvent = null
 var _scenery_damage: Dictionary = {}
 var _pending_scenery_damage: Dictionary = {}
 var _pending_scenery_tick: int = -1
@@ -414,16 +443,22 @@ func _init() -> void:
 
 
 ## Loads the aircraft, solves the trimmed start and creates the simulation. Call once, before adding to the tree.
-func setup(path := Scenarios.AIRCRAFT, expected_id: String = "") -> void:
+## Workshop trials resolve once. Reload/reset must retain that exact immutable candidate.
+var _frozen_aircraft: Dictionary = {}
+var workshop_identity: Dictionary = {}
+
+
+func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Dictionary = {}) -> void:
 	aircraft_path = path
 	expected_aircraft_id = expected_id
+	_frozen_aircraft = frozen_data.duplicate(true)
 	sim = Sim.new()
 	sim.modes = PackedInt64Array([1])
-	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
+	if _has_collision_query():
 		sim.post_step = Callable(self, "_resolve_collision_step")
 	sim.faulted.connect(_on_sim_faulted)
 	sim.stepped.connect(_on_sim_stepped)
-	var prepared := _prepare_aircraft(AircraftData.load_file(path))
+	var prepared := _prepare_aircraft(_load_selected_aircraft())
 	if prepared.ok:
 		_commit_aircraft(prepared)
 	else:
@@ -432,6 +467,10 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "") -> void:
 		sim.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(sim)
 	reset()
+
+
+func _load_selected_aircraft() -> Dictionary:
+	return _frozen_aircraft.duplicate(true) if not _frozen_aircraft.is_empty() else AircraftData.load_file(aircraft_path)
 
 
 func _ready() -> void:
@@ -536,6 +575,67 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 	return true
 
 
+## Installs one normalized lake at a launch/reset boundary. Invalid or stale identities leave the current lake intact.
+func set_lake_context(normalized_lake: Dictionary) -> bool:
+	var next_lake: Dictionary = {}
+	if not normalized_lake.is_empty():
+		if not LakeSurface.is_valid_definition(normalized_lake):
+			return false
+		var expected_identity: String = LakeLoader.identity(normalized_lake)
+		if expected_identity.is_empty() or expected_identity != str(normalized_lake.identity):
+			return false
+		next_lake = normalized_lake.duplicate(true)
+	var old_identity: String = str(_lake.get("identity", ""))
+	var next_identity: String = str(next_lake.get("identity", ""))
+	if sim != null and sim.tick > 0 and next_identity != old_identity:
+		return false
+	_lake = next_lake
+	_lake_bank_bounds = _polygon_bounds_ne(_lake.get("bank_ne_m", PackedFloat64Array()))
+	_last_lake_event = null
+	if sim != null and aircraft.get("ok", false):
+		_hull_contact = HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake)
+	_sync_post_step()
+	return true
+
+
+## A detached normalized lake snapshot; callers cannot mutate the active session geometry.
+func lake_context() -> Dictionary:
+	return _lake.duplicate(true)
+
+
+func _lake_identity() -> String:
+	return str(_lake.get("identity", ""))
+
+
+func _has_collision_query() -> bool:
+	return not _lake.is_empty() or (not _collision_world.is_empty() and not _collision_world.proxies.is_empty())
+
+
+func _polygon_bounds_ne(polygon: PackedFloat64Array) -> PackedFloat64Array:
+	if polygon.size() < 2 or polygon.size() % 2 != 0:
+		return PackedFloat64Array()
+	var min_n: float = polygon[0]
+	var max_n: float = polygon[0]
+	var min_e: float = polygon[1]
+	var max_e: float = polygon[1]
+	for at in range(2, polygon.size(), 2):
+		min_n = minf(min_n, polygon[at])
+		max_n = maxf(max_n, polygon[at])
+		min_e = minf(min_e, polygon[at + 1])
+		max_e = maxf(max_e, polygon[at + 1])
+	return PackedFloat64Array([min_n, max_n, min_e, max_e])
+
+
+func _inside_lake_bank_bounds(north: float, east: float) -> bool:
+	return _lake_bank_bounds.size() == 4 and north >= _lake_bank_bounds[0] and north <= _lake_bank_bounds[1] \
+		and east >= _lake_bank_bounds[2] and east <= _lake_bank_bounds[3]
+
+
+func _sync_post_step() -> void:
+	if sim != null:
+		sim.post_step = Callable(self, "_resolve_collision_step") if _has_collision_query() else Callable()
+
+
 ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
 func set_collision_world(world: Dictionary) -> bool:
 	if world.is_empty():
@@ -547,8 +647,7 @@ func set_collision_world(world: Dictionary) -> bool:
 		_clear_pending_scenery_damage()
 		if had_world:
 			_clear_scenery_damage()
-		if sim != null:
-			sim.post_step = Callable()
+		_sync_post_step()
 		return true
 	if typeof(world.get("format")) != TYPE_STRING or str(world.get("format")) != CollisionWorld.FORMAT \
 			or typeof(world.get("identity")) != TYPE_STRING or str(world.get("identity")).is_empty() \
@@ -567,16 +666,14 @@ func set_collision_world(world: Dictionary) -> bool:
 		_clear_pending_scenery_damage()
 		if identity != old_identity:
 			_clear_scenery_damage()
-		if sim != null:
-			sim.post_step = Callable()
+		_sync_post_step()
 		return true
 	_collision_world = world.duplicate(true)
 	_last_scenery_event = null
 	if identity != old_identity:
 		_clear_pending_scenery_damage()
 		_clear_scenery_damage()
-	if sim != null:
-		sim.post_step = Callable(self, "_resolve_collision_step") if not _collision_world.proxies.is_empty() else Callable()
+	_sync_post_step()
 	return true
 
 
@@ -623,6 +720,10 @@ func scenery_damage() -> Dictionary:
 
 func last_scenery_event() -> SceneryCollision.Event:
 	return _last_scenery_event
+
+
+func last_lake_event() -> LakeCollision.WaterEvent:
+	return _last_lake_event
 
 
 ## Whether this flight can fly at all: valid aircraft and start, no simulation fault (menus disable Continue).
@@ -680,6 +781,10 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 	if not _model_is_valid(model):
 		var invalid_model := "aircraft model has invalid mass properties or control throws"
 		return { ok = false, data = data, start = { ok = false, message = invalid_model }, trims = neutral_trims, message = invalid_model }
+	var contact_binding: Dictionary = ContactContract.describe(model, soft_hull_contacts)
+	if not contact_binding.ok:
+		var contact_error: String = "aircraft contact contract: " + "; ".join(contact_binding.errors)
+		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims, message = contact_error}
 	if electric and not _electric_step_supported(model):
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "electric source is too stiff for the selected timestep (source step ratio > 0.25); qualify a slower source or a finer solver"}
@@ -690,7 +795,7 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "continuous turbine with dynamic wheel profiles is not qualified yet"}
 	# Each aircraft declares its own start speed (the Stik's 15 m/s is the loader's default).
-	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, model.get("start_speed", 15.0), air_density(), engine_charge_ratio())
+	var candidate_start := _selected_airborne_trim(model)
 	if not candidate_start.get("ok", false):
 		var trim_error := "trim: " + str(candidate_start.get("message", "trim failed"))
 		return { ok = false, data = data, start = candidate_start, trims = neutral_trims, message = trim_error }
@@ -732,7 +837,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	_trim_charge = engine_charge_ratio()
 	sim.mass = aircraft.model.mass_kg
 	sim.inertia = aircraft.model.inertia.duplicate()
-	_hull_contact = HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia)
+	_hull_contact = HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake)
 	_prop_disc = HullContact.prop_disc(aircraft.model.propulsion)
 	_deflection_key = PackedFloat64Array()
 	_ground_effect_reach = GroundEffect.reach(aircraft.model)
@@ -745,28 +850,17 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 
 
 func _configure_continuous_callbacks() -> void:
-	if glow_is_active():
-		sim.continuous_step = GlowFlight.step.bind(self)
-		sim.continuous_evaluate = GlowFlight.evaluate.bind(self)
-		sim.continuous_loads = Callable()
-		sim.continuous_derivative = Callable()
-		sim.continuous_rotor_momentum = Callable()
-		sim.continuous_aux = _coupled_aux
+	var prepared: Dictionary = PropulsionRuntime.prepare_callbacks(self)
+	if not prepared.ok:
+		push_error("Cannot prepare aircraft propulsion: " + str(prepared.get("errors", [])))
 		return
-	if turbine_is_continuous():
-		sim.continuous_step = Callable()
-		sim.continuous_evaluate = _turbine_evaluate
-		sim.continuous_loads = Callable()
-		sim.continuous_derivative = Callable()
-		sim.continuous_rotor_momentum = Callable()
-		sim.continuous_aux = _turbine_aux
-		return
-	sim.continuous_step = _electric_step if Propulsion.is_electric(aircraft.model.propulsion) else Callable()
-	sim.continuous_evaluate = _coupled_evaluate if shaft_is_coupled() else (_wheel_evaluate if wheel_count() > 0 else Callable())
-	sim.continuous_loads = _coupled_loads if shaft_is_coupled() else _wash_loads
-	sim.continuous_derivative = _coupled_derivative if shaft_is_coupled() else _wash_derivative
-	sim.continuous_rotor_momentum = _coupled_rotor if shaft_is_coupled() else Callable()
-	sim.continuous_aux = _coupled_aux if shaft_is_coupled() else Callable()
+	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
+		sim.set(field, prepared[field])
+
+
+## Family-independent accepted-endpoint observation; never called from a force evaluation.
+func propulsion_observation() -> Dictionary:
+	return PropulsionRuntime.observe(self)
 
 
 func _set_initial_failure(prepared: Dictionary) -> void:
@@ -910,7 +1004,7 @@ func set_start_altitude(altitude: float) -> void:
 ## [F5] Reloads the aircraft data file, re-trims and restarts: tune a coefficient without restarting the app.
 ## Invalid data keeps the current aircraft flying. Returns a message for the panel.
 func reload() -> String:
-	var prepared := _prepare_aircraft(AircraftData.load_file(aircraft_path))
+	var prepared := _prepare_aircraft(_load_selected_aircraft())
 	if not prepared.ok:
 		return "reload failed; previous aircraft and flight retained: %s" % prepared.message
 	if start_choice == START_RUNWAY:
@@ -998,7 +1092,7 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	var input_values := PackedFloat64Array([pilot_commands.roll, pilot_commands.pitch, pilot_commands.yaw, 0.0])
 	var surface_angles: Dictionary = Commands.surface_deflections_deg(pilot_commands, model.controls.throw_deg)
 	var deflections: Dictionary = Aero.deflections_from_surfaces(surface_angles)
-	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, air_density(), engine_charge_ratio())
+	var rpm: float = 0.0 if Propulsion.is_glow(model.propulsion) else Propulsion.steady_rpm(0.0, 0.0, model.propulsion, air_density(), engine_charge_ratio())
 	var solved: Dictionary = GroundStart.solve(model, ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
 		deflections, input_values[2], rpm, air_density(), sim.gravity, _initial_wind(), _model_wheel_count(model) > 0)
 	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
@@ -1037,16 +1131,14 @@ func _physics_process(_delta: float) -> void:
 				_crash(ImpactSnapshot.hull_point(sim.state, sim.tick, aircraft.model.crash_hull, int(hit.index),
 					sim.previous, str(hit.rule)))
 			elif gear_collapsed(sim.state):
-				_crash(ImpactSnapshot.gear_limit(sim.state, sim.tick, aircraft.model.landing_gear,
-					ground_surfaces if wheel_count() > 0 else PackedFloat64Array()))
+				_crash(_gear_limit_impact(sim.state))
 			else:
 				# Only a flight that goes on can lose its propeller: a crash freezes the checkpoint untouched.
 				_check_prop_strike()
 		elif touches_ground(sim.state):
 			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
 		elif gear_collapsed(sim.state):
-			_crash(ImpactSnapshot.gear_limit(sim.state, sim.tick, aircraft.model.landing_gear,
-				ground_surfaces if wheel_count() > 0 else PackedFloat64Array()))
+			_crash(_gear_limit_impact(sim.state))
 
 
 ## E3d2: a turning propeller whose disc reaches the field breaks: the engine stops (dead stick) and the flight goes on.
@@ -1054,7 +1146,7 @@ func _physics_process(_delta: float) -> void:
 func _check_prop_strike() -> void:
 	if not prop_strike.is_empty() or not engine_running or _prop_disc.is_empty() or sim.aux[AUX_RPM] < HullContact.STRIKE_MIN_RPM:
 		return
-	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc)
+	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt())
 	if float(disc.depth) <= 0.0:
 		return
 	var q := RB._att(sim.state)
@@ -1069,7 +1161,7 @@ func gear_collapsed(s: PackedFloat64Array) -> bool:
 	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
 		return false
 	return Ground.collapsed(s, aircraft.model.landing_gear,
-		ground_surfaces if wheel_count() > 0 else PackedFloat64Array())
+		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake)
 
 
 ## Compression of each landing-gear contact at state `s` (m, ≤ 0 in the air), in data order; empty without gear.
@@ -1077,7 +1169,31 @@ func gear_compressions(s: PackedFloat64Array) -> PackedFloat64Array:
 	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
 		return PackedFloat64Array()
 	return Ground.compressions(s, aircraft.model.landing_gear,
-		ground_surfaces if wheel_count() > 0 else PackedFloat64Array())
+		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake)
+
+
+func _gear_limit_impact(s: PackedFloat64Array) -> ImpactSnapshot.Snapshot:
+	var surfaces: PackedFloat64Array = ground_surfaces if wheel_count() > 0 else PackedFloat64Array()
+	if _lake.is_empty():
+		return ImpactSnapshot.gear_limit(s, sim.tick, aircraft.model.landing_gear, surfaces)
+	var out: ImpactSnapshot.Snapshot = ImpactSnapshot.Snapshot.new()
+	out.trigger = "gear_limit"
+	out.tick = sim.tick
+	out.detected_state = s.duplicate()
+	var compressions: PackedFloat64Array = Ground.compressions(s, aircraft.model.landing_gear, surfaces, _lake)
+	for index in compressions.size():
+		var contact: Dictionary = aircraft.model.landing_gear.contacts[index]
+		if compressions[index] <= float(contact.max_compression):
+			continue
+		out.point_index = index
+		out.component_name = str(contact.get("name", ""))
+		out.body_point = contact.position.duplicate()
+		if is_finite(compressions[index]) and is_finite(float(contact.max_compression)):
+			out.has_compression = true
+			out.compression_m = compressions[index]
+			out.travel_limit_m = float(contact.max_compression)
+		break
+	return out
 
 
 ## True when any crash-hull point of the airplane at state `s` is at or below the ground (NED down ≥ 0).
@@ -1091,7 +1207,16 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 		# down component of R(q)·p: third row of the body→NED rotation matrix
 		var down := 2.0 * (q[1] * q[3] - q[0] * q[2]) * hull[i] + 2.0 * (q[2] * q[3] + q[0] * q[1]) * hull[i + 1] \
 			+ (1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2])) * hull[i + 2]
-		if s[RB.POS + 2] + down >= 0.0:
+		var ground_down: float = 0.0
+		if not _lake.is_empty():
+			var world_point: PackedFloat64Array = M.add(RB._slice3(s, RB.POS), M.q_rotate(q, hull.slice(i, i + 3)))
+			var point_north: float = world_point[0]
+			var point_east: float = world_point[1]
+			if _inside_lake_bank_bounds(point_north, point_east):
+				var terrain: Dictionary = LakeSurface.sample_terrain_validated(_lake, point_north, point_east)
+				if bool(terrain.get("covered", false)):
+					ground_down = float(terrain.ground_down_m)
+		if s[RB.POS + 2] + down >= ground_down:
 			return true
 	return false
 
@@ -1099,6 +1224,8 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int) -> PackedFloat64Array:
 	_clear_pending_scenery_damage()
+	if not _lake.is_empty():
+		return _resolve_collision_step_with_lake(previous, candidate, next_tick)
 	if _collision_world.is_empty() or _collision_world.proxies.is_empty() or not aircraft.get("ok", false):
 		_last_scenery_event = null
 		return candidate
@@ -1143,8 +1270,112 @@ func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloa
 	return response.state
 
 
+func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		next_tick: int) -> PackedFloat64Array:
+	if not aircraft.get("ok", false):
+		_last_scenery_event = null
+		_last_lake_event = null
+		return candidate
+	var scenery_hit: SceneryCollision.Event = null
+	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
+		scenery_hit = SceneryCollision.first_hit(previous, candidate, aircraft.model.crash_hull,
+			_collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)
+	var lake_hit: LakeCollision.WaterEvent = LakeCollision.first_hit(_lake, previous, candidate,
+		aircraft.model.crash_hull, aircraft.model.get("landing_gear", {}), next_tick, sim.dt(), sim.mass,
+		sim.inertia, soft_hull_contacts, _prop_disc)
+	var ground_hit: ImpactSnapshot.Snapshot = null
+	var ground_fraction: float = INF
+	if not soft_hull_contacts:
+		var dry_hit: Dictionary = _flat_ground_hit_outside_lake(previous, candidate, next_tick)
+		ground_hit = dry_hit.get("impact")
+		ground_fraction = float(dry_hit.get("fraction", INF))
+	var winner: String = ""
+	var winner_fraction: float = INF
+	if scenery_hit != null:
+		winner = "scenery"
+		winner_fraction = scenery_hit.time_fraction
+	# Scenery keeps a deterministic tie when both swept obstacle sets meet at the same fraction.
+	if lake_hit != null and (winner.is_empty() \
+			or lake_hit.time_fraction < winner_fraction - SceneryCollision.FRACTION_TIE):
+		winner = "lake"
+		winner_fraction = lake_hit.time_fraction
+	# The legacy dry-ground-first tie is retained for ground outside the bounded bank.
+	if ground_hit != null and ground_hit.point_index >= 0 \
+			and ground_fraction <= winner_fraction + SceneryCollision.FRACTION_TIE:
+		winner = "ground"
+		winner_fraction = ground_fraction
+	if winner.is_empty():
+		_last_scenery_event = null
+		_last_lake_event = null
+		return candidate
+	if winner == "ground":
+		_last_scenery_event = null
+		_last_lake_event = null
+		var contact_state: PackedFloat64Array = candidate
+		if ground_hit.crossing != null and ground_hit.crossing.available:
+			contact_state = SceneryCollision.state_at_fraction(previous, candidate, winner_fraction)
+			ground_hit.detected_state = contact_state.duplicate()
+		_crash(ground_hit, contact_state)
+		return contact_state
+	if winner == "lake":
+		_last_scenery_event = null
+		_last_lake_event = lake_hit
+		lake_hit.response_status = "terminal"
+		_crash(lake_hit, lake_hit.contact_state())
+		return lake_hit.contact_state()
+	_last_lake_event = null
+	_last_scenery_event = scenery_hit
+	_stage_scenery_damage(scenery_hit)
+	var scenery_state: PackedFloat64Array = scenery_hit.contact_state()
+	if scenery_hit.terminal:
+		scenery_hit.response_status = "terminal"
+		_crash(scenery_hit, scenery_state)
+		return scenery_state
+	var response: Dictionary = SceneryCollision.apply_response(scenery_state, scenery_hit, sim.mass, sim.inertia)
+	if not response.get("ok", false):
+		scenery_hit.terminal = true
+		scenery_hit.response_status = "response_failed_terminal"
+		_crash(scenery_hit, scenery_state)
+		return scenery_state
+	scenery_hit.response_status = "dissipative_impulse"
+	scenery_hit.restitution = float(response.restitution)
+	scenery_hit.dissipated_energy_j = float(response.dissipated_energy_j)
+	return response.state
+
+
+func _flat_ground_hit_outside_lake(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		next_tick: int) -> Dictionary:
+	var hull: PackedFloat64Array = aircraft.model.crash_hull
+	var q: PackedFloat64Array = RB._att(candidate)
+	var best: ImpactSnapshot.Snapshot = null
+	var best_fraction: float = INF
+	for index: int in range(0, hull.size(), 3):
+		var body_point: PackedFloat64Array = hull.slice(index, index + 3)
+		var point: PackedFloat64Array = M.add(RB._slice3(candidate, RB.POS), M.q_rotate(q, body_point))
+		if point[2] < 0.0:
+			continue
+		var hit: ImpactSnapshot.Snapshot = ImpactSnapshot.hull_point(candidate, next_tick, hull, index / 3, previous)
+		if hit.point_index < 0:
+			continue
+		var fraction: float = hit.crossing.fraction if hit.crossing != null and hit.crossing.available else 0.0
+		var crossing_state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, fraction) \
+			if hit.crossing != null and hit.crossing.available else candidate
+		var crossing_point: PackedFloat64Array = M.add(RB._slice3(crossing_state, RB.POS),
+			M.q_rotate(RB._att(crossing_state), body_point))
+		if _inside_lake_bank_bounds(crossing_point[0], crossing_point[1]):
+			var terrain: Dictionary = LakeSurface.sample_terrain_validated(_lake, crossing_point[0], crossing_point[1])
+			if bool(terrain.get("covered", false)):
+				continue # Lake terrain owns contacts inside its bank; flat ground must not mask its bed or shoreline.
+		if best == null or fraction < best_fraction:
+			best = hit
+			best_fraction = fraction
+	return {impact = best, fraction = best_fraction}
+
+
 func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = PackedFloat64Array()) -> void:
 	var why: String = impact.description()
+	if impact.trigger == "water":
+		engine_running = false
 	var s: PackedFloat64Array = impact_state if not impact_state.is_empty() else sim.state
 	var speed := M.sqrt_(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var prev: PackedFloat64Array = sim.previous
@@ -1165,28 +1396,34 @@ func reset() -> void:
 	prop_strike = {}
 	crash = {}
 	_last_scenery_event = null
+	_last_lake_event = null
 	if pause_reason.begins_with("CRASH"):
 		pause_reason = ""
 	start_error = ""
-	if aircraft.get("ok", false) and (_trim_density != air_density() or _trim_charge != engine_charge_ratio()):
+	var half_power_refit: bool = start_choice == START_HALF_POWER and start.get("requested_throttle", -1.0) != 0.5
+	if aircraft.get("ok", false) and (_trim_density != air_density() or _trim_charge != engine_charge_ratio() or half_power_refit):
 		var old_start: Dictionary = start
 		var speed: float = float(old_start.get("V", aircraft.model.get("start_speed", 15.0)))
 		if not is_finite(speed) or speed <= 0.0:
 			speed = float(aircraft.model.get("start_speed", 15.0))
-		var refit: Dictionary = trim_at(speed, str(old_start.get("mode", "level")))
+		var refit: Dictionary = _selected_airborne_trim(aircraft.model) if start_choice == START_HALF_POWER else trim_at(speed, str(old_start.get("mode", "level")))
 		if not refit.ok:
 			start = refit
 			_trim_density = NAN
 			_trim_charge = NAN
 			_fail_selected_start("atmosphere trim refused: " + str(refit.message))
 			return
+		if start_choice == START_HALF_POWER:
+			start = refit
+			_trim_density = air_density()
+			_trim_charge = engine_charge_ratio()
 		if Sim.state_is_valid(old_start.get("state", PackedFloat64Array())):
 			for axis: int in 3:
 				start.state[RB.POS + axis] = old_start.state[RB.POS + axis]
 	# D6e-R1: a restart must restore the solved equilibrium, including pilot-adjusted trim.
 	if _has_valid_start():
 		trims = {roll = start.roll_command, pitch = start.pitch_command, yaw = start.get("yaw_command", 0.0)}
-	if start_choice == START_AIRBORNE:
+	if start_choice == START_AIRBORNE or start_choice == START_HALF_POWER:
 		_reset_airborne_start()
 	elif start_choice == START_RUNWAY:
 		var result: Dictionary = _reset_selected_runway_start()
@@ -1279,11 +1516,11 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 		return { ok = false, message = "runway start needs valid aircraft data, trim, and stiction gear" }
 	commands = Commands.neutral_commands()
 	commands.throttle = 0.0
-	engine_running = true
+	engine_running = not glow_is_active()
 	sim.inputs = _inputs()
 	var prop: Dictionary = aircraft.model.propulsion
 	# An enabled electric source at zero duty is at relative rest, not a combustion idle.
-	var rpm: float = 0.0 if Propulsion.is_electric(prop) else Propulsion.steady_rpm(0.0, 0.0, prop, air_density(), engine_charge_ratio())
+	var rpm: float = 0.0 if Propulsion.is_electric(prop) or Propulsion.is_glow(prop) else Propulsion.steady_rpm(0.0, 0.0, prop, air_density(), engine_charge_ratio())
 	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	var solved: Dictionary = GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
 		rpm, air_density(), sim.gravity, _initial_wind(), wheel_count() > 0)
@@ -1558,14 +1795,15 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 	var anchors: PackedFloat64Array = aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
 	var hull: PackedFloat64Array = HullContact.loads(s, _hull_contact) if soft_hull_contacts else PackedFloat64Array()
 	if wheel_count() == 0:
-		return {ok = true, loads = _add_loads(Ground.loads(s, gear, steer, ground_surfaces, anchors), hull), derivative = PackedFloat64Array()}
+		return {ok = true, loads = _add_loads(Ground.loads(s, gear, steer, ground_surfaces, anchors,
+			PackedFloat64Array(), 0.0, _lake), hull), derivative = PackedFloat64Array()}
 	if values.size() != wheel_index() + wheel_count():
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	var speeds: PackedFloat64Array = values.slice(wheel_index(), wheel_index() + wheel_count())
 	for speed in speeds:
 		if not is_finite(speed):
 			return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
-	var evaluation: Dictionary = Ground.evaluate(s, gear, steer, ground_surfaces, anchors, speeds, 0.0, false)
+	var evaluation: Dictionary = Ground.evaluate(s, gear, steer, ground_surfaces, anchors, speeds, 0.0, false, _lake)
 	var loads: PackedFloat64Array = evaluation.get("loads", PackedFloat64Array())
 	var rates: PackedFloat64Array = evaluation.get("derivative", PackedFloat64Array())
 	if (not loads.is_empty() and loads.size() != 6) or rates.size() != wheel_count():
@@ -1908,7 +2146,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		# E3b1: stick/slip transitions from the committed state, with the steer the last tick used.
 		var wheel_speeds: PackedFloat64Array = sim.continuous.slice(wheel_index()) if wheel_count() > 0 else PackedFloat64Array()
 		out.append_array(Ground.anchor_step(sim.state, aircraft.model.landing_gear, aux[AUX_SERVO + 2], ground_surfaces,
-			aux.slice(AUX_ANCHORS, anchors_end), wheel_count() > 0, wheel_speeds))
+			aux.slice(AUX_ANCHORS, anchors_end), wheel_count() > 0, wheel_speeds, _lake))
 	if lag >= 0 and lag < aux.size():
 		# E0a2b: the tail's downwash follows the wing's lift l/V late. Exact first-order lag over the tick, from the
 		# committed state and the servos the last tick used; held through the RK stages like rpm.
@@ -2029,6 +2267,17 @@ func wheel_state_layout() -> String:
 
 
 ## Header lines for a flight trace of this session.
+## Preparation/inspection metadata only. No new solver or checkpoint state is introduced.
+func contact_contract() -> Dictionary:
+	if not aircraft.get("ok", false):
+		return {ok = false, errors = PackedStringArray(["Aircraft is unavailable."])}
+	var result: Dictionary = ContactContract.describe(aircraft.model, soft_hull_contacts)
+	result.format = "openrc-aircraft-contact-bindings v1"
+	result.scenery_policy = SceneryDamage.POLICY_VERSION if not _collision_world.is_empty() else "not_selected"
+	result.lake_identity = _lake_identity()
+	return result
+
+
 func trace_meta() -> Dictionary:
 	var model: Dictionary = aircraft.model
 	var prop: Dictionary = model.propulsion
@@ -2041,6 +2290,8 @@ func trace_meta() -> Dictionary:
 		scenario = "runway threshold on field '%s' (idle engine, static equilibrium; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
 		if Propulsion.is_electric(prop):
 			scenario = "runway threshold on field '%s' (electric source enabled, zero duty, rotor at rest; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
+		elif Propulsion.is_glow(prop):
+			scenario = "runway threshold on field '%s' (warm glow engine stopped; explicit starter required; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
 	elif str(_launch_metadata.get("launch_choice", "")) == "failed":
 		scenario = "start refused: " + str(_launch_metadata.get("launch_error", "unknown start error"))
 	elif str(_launch_metadata.get("launch_kind", "")) == "checkpoint_restore":
@@ -2101,6 +2352,11 @@ func trace_meta() -> Dictionary:
 	if not _collision_world.is_empty():
 		metadata.scenery_collision_model = "openrc-swept-landscape-contact v1"
 		metadata.collision_world_identity = str(_collision_world.identity)
+	if not _lake.is_empty():
+		metadata.lake_terrain_model = "bounded-lake-terrain-and-terminal-water-contact-v1"
+		metadata.lake_id = str(_lake.id)
+		metadata.lake_identity = _lake_identity()
+		metadata.ground = "flat at 0 m outside lake bank; normalized basin terrain inside bank; no water buoyancy"
 	if wheel_count() > 0:
 		var profile: Dictionary = model.get("wheel_profile", {})
 		metadata.metadata_schema = "openrc-flight-meta v6"
@@ -2194,6 +2450,9 @@ func trace_meta() -> Dictionary:
 		metadata.continuous_layout="rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
 		metadata.fuel_mass_policy="finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG"
 		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
+	if not workshop_identity.is_empty():
+		metadata.workshop = workshop_identity.duplicate(true)
+		metadata.aircraft_input_hash_convention = "sha256 of exact frozen Workshop aircraft bytes"
 	return metadata
 
 
@@ -2234,11 +2493,15 @@ func checkpoint() -> Dictionary:
 		boundary.wheel_state_layout = wheel_state_layout()
 		boundary.wheel_profile_sha256 = str(aircraft.model.wheel_profile.get("profile_sha256", ""))
 		boundary.wheel_profile_input_sha256 = str(aircraft.model.wheel_profile.get("input_sha256", ""))
-	if not _collision_world.is_empty():
+	if not _collision_world.is_empty() or not _lake.is_empty():
 		boundary.physics_format = str(boundary.format)
 		boundary.format = "openrc-flight-checkpoint v7"
-		boundary.collision_world_identity = str(_collision_world.identity)
-		if not _scenery_damage.is_empty():
+		if not _collision_world.is_empty():
+			boundary.collision_world_identity = str(_collision_world.identity)
+		if not _lake.is_empty():
+			boundary.lake_identity = _lake_identity()
+			boundary.lake_id = str(_lake.id)
+		if not _collision_world.is_empty() and not _scenery_damage.is_empty():
 			boundary.scenery_damage = _scenery_damage.duplicate(true)
 	return boundary
 
@@ -2270,6 +2533,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(SceneryDamage.THRESHOLDS_J)
 		parts.append(SceneryDamage.BROKEN_PROFILES)
 		parts.append("collision-world:" + str(_collision_world.identity))
+	if not _lake.is_empty():
+		parts.append("lake-geometry:" + _lake_identity())
 	config_hash.update(var_to_bytes(parts))
 	return config_hash.finish().hex_encode()
 
@@ -2292,11 +2557,17 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			or (not turbine_is_continuous() and candidate.has("turbine_law")):
 		return false
 	var has_collision_world := not _collision_world.is_empty()
+	var has_lake := not _lake.is_empty()
 	if candidate.format == "openrc-flight-checkpoint v7":
-		if not has_collision_world or candidate.get("collision_world_identity", "") != _collision_world.identity:
+		if (not has_collision_world and not has_lake) \
+				or has_collision_world != candidate.has("collision_world_identity") \
+				or (has_collision_world and candidate.get("collision_world_identity", "") != _collision_world.identity) \
+				or has_lake != candidate.has("lake_identity") \
+				or (has_lake and candidate.get("lake_identity", "") != _lake_identity()) \
+				or (has_lake and candidate.get("lake_id", "") != str(_lake.id)):
 			return false
-	elif has_collision_world:
-		return false # Old snapshots do not identify the obstacles used by the deterministic tick filter.
+	elif has_collision_world or has_lake or candidate.has("collision_world_identity") or candidate.has("lake_identity"):
+		return false # Old snapshots do not identify terrain or obstacles used by deterministic tick filtering.
 	if candidate.format != "openrc-flight-checkpoint v7" and candidate.has("scenery_damage"):
 		return false
 	var restored_damage: Dictionary = {}
@@ -2381,6 +2652,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	input_enabled = false
 	crash = {}
 	_last_scenery_event = null
+	_last_lake_event = null
 	pause_reason = "checkpoint restored (recorded inputs)"
 	_deflection_key = PackedFloat64Array()
 	scenery_damage_changed.emit()

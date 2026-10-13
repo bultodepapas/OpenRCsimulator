@@ -5,6 +5,7 @@ extends RefCounted
 
 const Spec := preload("res://spec.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 
 static var _data_throws_deg := {}
@@ -70,29 +71,19 @@ static func data_throws_deg() -> Dictionary:
 ## down-going aileron's maximum; absent = symmetric); empty = the data file's.
 static func surface_deflections_deg(c: Dictionary, throws_deg := {}) -> Dictionary:
 	var t: Dictionary = throws_deg if not throws_deg.is_empty() else data_throws_deg()
-	return {
-		aileron_right = _aileron(c.roll, t),
-		aileron_left = _aileron(-c.roll, t),
-		elevator = c.pitch * t.elevator,
-		rudder = c.yaw * t.rudder,
-	}
+	return ControlSurfaces.surface_deflections_deg(c, t)
 
 
 ## One aileron's trailing-edge angle (degrees, + = up) for its own command x (+ = this aileron's trailing edge up).
 static func _aileron(x: float, t: Dictionary) -> float:
-	return x * (t.aileron if x >= 0.0 else t.get("aileron_down", t.aileron))
+	return ControlSurfaces._aileron(x, t)
 
 
 ## Hinge rotations in model axes (radians). Surfaces extend aft (+z) from the hinge.
 ## About +x, the trailing edge goes up for a negative angle; about +y, it goes right (+x) for a positive angle.
 static func hinge_rotations(c: Dictionary, throws_deg := {}) -> Dictionary:
-	var d := surface_deflections_deg(c, throws_deg)
-	return {
-		aileron_right = { x = -deg_to_rad(d.aileron_right), y = 0.0 },
-		aileron_left = { x = -deg_to_rad(d.aileron_left), y = 0.0 },
-		elevator = { x = -deg_to_rad(d.elevator), y = 0.0 },
-		rudder = { x = 0.0, y = deg_to_rad(d.rudder) },
-	}
+	var t: Dictionary = throws_deg if not throws_deg.is_empty() else data_throws_deg()
+	return ControlSurfaces.hinge_rotations(c, t)
 
 
 ## Propeller speed, rev/s: 10 at the starting throttle (visual only).

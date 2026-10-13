@@ -36,6 +36,7 @@ const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd") # legacy atmosphere fixture only
 const FieldLoader = preload("res://data/field_loader.gd")
 const FieldBuilder = preload("res://render/field.gd")
+const LakeWorld = preload("res://render/lake/lake_world.gd")
 const SceneryCollisionSetup = preload("res://scenery/collision_setup.gd")
 const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
@@ -47,6 +48,8 @@ const VisualEvidence = preload("res://render/visual_evidence.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const LatencyPatch = preload("res://input/latency_patch.gd")
 const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
+const WATER_CHECKPOINT_FORMAT := "openrc-visual-water-checkpoint v1"
+const WATER_CHECKPOINT_FIELDS: Array[String] = ["format", "visual", "water_render", "payload_sha256"]
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
@@ -61,6 +64,8 @@ var session: Node
 var recorder: RefCounted
 ## The catalog aircraft to fly. Set before adding the node (Home does); otherwise --aircraft=<id>, else the Ugly Stik.
 var aircraft_id := ""
+## Detached Workshop compilation; aircraft_id remains the catalog visual identity.
+var workshop_trial: Dictionary = {}
 var _experimental_aircraft_path := ""
 var _electric_demo: String = ""
 ## Interactive Home choice only; CLI and scripted routes retain the airborne default.
@@ -141,6 +146,7 @@ var _prop_angle := 0.0
 var _scripted := false
 var _engine_audio: AudioStreamPlayer3D
 var _soundscape_audio: FlightAudio
+var _lake_ambience: AudioStreamPlayer3D
 ## Technical fixtures can retain the original diagnostic freeze route.
 var crash_effects_enabled := true
 var _crash_director: CrashDirector
@@ -309,7 +315,13 @@ func _ready() -> void:
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
 		_look_height = float(args.get("look_alt", field.pilot.eye_height))
 	Atmosphere.engine_shadows = Atmosphere.engine_shadows_enabled(args, interactive_start)
-	_build_world()
+	if not _build_world():
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_DATA)
+		return
 	_rig.set_view(_initial_view)
 	_rig.auto_zoom = _auto_zoom
 	_rig.look = _look
@@ -329,6 +341,10 @@ func _ready() -> void:
 			return
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
+	# This explicit airborne operating point must be selected before setup solves trim.
+	# Runway selection still waits for field/contact configuration below.
+	if start_choice == FlightSession.START_HALF_POWER:
+		session.start_choice = start_choice
 	if args.has("shaft-integrator") and (not session.setup_shaft_integrator(args["shaft-integrator"]) or _scripted):
 		printerr("shaft integrator refused: ", session.shaft_error if not _scripted else "requires a physics flight")
 		session.free() # refused before add_child(): this owner would otherwise remain orphaned
@@ -338,7 +354,31 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
-	session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
+	if workshop_trial.is_empty():
+		session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
+	else:
+		session.workshop_identity = workshop_trial.identity.duplicate(true)
+		session.setup("workshop://" + str(workshop_trial.identity.trial_id), str(workshop_trial.data.model.id), workshop_trial.data)
+	# Glow visuals use the exact propeller selected by the validated runtime model. Applying from the base geometry
+	# each time also handles installation-profile reloads that retain the same aircraft ID.
+	if session.aircraft.get("ok", false):
+		var loaded_model: Dictionary = session.aircraft.model
+		var propulsion: Dictionary = loaded_model.get("propulsion", {})
+		var glow: Dictionary = propulsion.get("glow", {})
+		if not glow.is_empty():
+			var glow_propeller: Dictionary = glow.get("propeller", {})
+			var diameter_m: float = float(glow_propeller.get("diameter_m", NAN))
+			if not AirplaneBuilder.apply_propeller_diameter(_airplane, diameter_m):
+				push_error("render/airplane.gd: validated glow model has no applicable propeller diameter")
+				session.free()
+				session = null
+				set_process(false)
+				set_process_unhandled_input(false)
+				get_tree().quit(ERR_INVALID_DATA)
+				return
+			_extent = Shadow.model_extent(_airplane.root)
+			Shadow.bind_model(_shadow, _airplane.root)
+			_rig.set_span(_extent.x)
 	# D6e: keyboard and gamepad flights use the aircraft's normal rates and expo (controls.rates.normal) unless
 	# --rates=full asks for the maximum throws; radios keep their own rates either way.
 	var rates := str(args.get("rates", "normal"))
@@ -372,6 +412,18 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
+	# The accepted scene definition also owns the float64 contact surface. Never fly a refused lake.
+	var lake_context: Dictionary = _field_node.get_meta("lake_context", {}) if _field_node != null else {}
+	var lake_error: String = str(_field_node.get_meta("lake_error", "")) if _field_node != null else ""
+	if not lake_error.is_empty() or not session.set_lake_context(lake_context):
+		startup_error = "Lake configuration refused: " + lake_error
+		printerr(startup_error)
+		session.free()
+		session = null
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_DATA)
+		return
 	if not _scripted and _capture_scene_id() == "field":
 		var obstacles := SceneryCollisionSetup.build(field)
 		if not obstacles.ok or not session.set_collision_world(obstacles.world):
@@ -458,6 +510,13 @@ func _ready() -> void:
 			_engine_audio = _soundscape_audio.soundscape.voices[0] # retain legacy combustion/turbine inspection interface
 	elif str(args.get("soundscape", "on")) == "off":
 		FlightAudio.silence_legacy_ambience(self)
+	_lake_ambience = LakeWorld.ambience_player(_field_node)
+	if _lake_ambience != null:
+		if _soundscape_audio != null:
+			var soundscape_buses: Variant = _soundscape_audio.soundscape.get("_bus_names")
+			if soundscape_buses is Array and soundscape_buses.size() >= 3:
+				LakeWorld.set_ambience_bus(_field_node, StringName(soundscape_buses[2]))
+		_lake_ambience.stream_paused = not session.holds.is_empty()
 	if not _scripted and _field_node != null and _capture_scene_id() == "field":
 		_scenery_damage_director = SceneryDamageDirector.new()
 		_scenery_damage_director.name = "SceneryDamageDirector"
@@ -537,6 +596,8 @@ func _process(delta: float) -> void:
 		_engine_audio.stream_paused = frozen
 		if not frozen:
 			EngineSound.update(_engine_audio, 0.0, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
+	if is_instance_valid(_lake_ambience):
+		_lake_ambience.stream_paused = not session.holds.is_empty()
 	var surfaces: Dictionary = session.surfaces()
 	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_camera_dt = dt
@@ -558,7 +619,8 @@ func _process(delta: float) -> void:
 func _update_cg_model() -> void:
 	if session.aircraft.ok:
 		var datum := AirplaneBuilder.datum(aircraft_id) # the data file's le frame in this aircraft's model
-		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, datum.x, datum.y)
+		var scale_factor: float = float(workshop_trial.get("scale", 1.0))
+		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, datum.x * scale_factor, datum.y * scale_factor)
 
 
 func _update_smoke() -> void:
@@ -665,6 +727,8 @@ func _update_hud() -> void:
 			lines.append("Glow %s  %.0f rpm  head %.0f °C  fuel ~%.0f mL  %s  φ %.2f" % [
 				family_label, float(glow.get("rpm", 0.0)), temperature_c, fuel_ml, engine_mode,
 				float(glow.get("mixture_command", 0.0))])
+			if glow.get("above_recommended_rpm", false):
+				lines.append("ABOVE RECOMMENDED RPM")
 			lines.append("[F6] cut  [F7] starter  [F8] lean  [F9] rich")
 	_hud.text = "\n".join(lines)
 
@@ -892,7 +956,20 @@ func checkpoint() -> Dictionary:
 	if not selection.ok or selection.config != lighting_config:
 		return {} # refuse an unrecorded visual edit
 	var saved: Dictionary = VisualCheckpoint.make(session.checkpoint(), _visual_timeline, _field_identity())
-	return saved.checkpoint if saved.ok else {}
+	if not saved.ok:
+		return {}
+	if _crash_director != null:
+		var water_render: Dictionary = _crash_director.water_checkpoint()
+		if not water_render.is_empty():
+			var paired: Dictionary = saved.checkpoint
+			var wrapped: Dictionary = {
+				"format": WATER_CHECKPOINT_FORMAT,
+				"visual": paired,
+				"water_render": water_render,
+			}
+			wrapped["payload_sha256"] = _water_checkpoint_digest(paired, water_render)
+			return wrapped
+	return saved.checkpoint
 
 
 ## Validate both halves and prepare detached shadow geometry before the physics owner commits.
@@ -900,7 +977,24 @@ func checkpoint() -> Dictionary:
 func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field" or not startup_error.is_empty():
 		return {ok = false, errors = ["visual checkpoint requires a ready production flight"]}
-	var decoded: Dictionary = VisualCheckpoint.read(candidate, _field_identity())
+	var visual_candidate: Variant = candidate
+	var water_restore: Dictionary = {}
+	var has_water_render: bool = false
+	if typeof(candidate) == TYPE_DICTIONARY and candidate.get("format") == WATER_CHECKPOINT_FORMAT:
+		if not _has_exact_keys(candidate, WATER_CHECKPOINT_FIELDS) \
+				or typeof(candidate.get("visual")) != TYPE_DICTIONARY \
+				or typeof(candidate.get("water_render")) != TYPE_DICTIONARY \
+				or typeof(candidate.get("payload_sha256")) != TYPE_STRING \
+				or candidate.payload_sha256 != _water_checkpoint_digest(candidate.visual, candidate.water_render):
+			return {ok = false, errors = ["water visual checkpoint envelope is invalid"]}
+		if _crash_director == null:
+			return {ok = false, errors = ["water visual checkpoint requires the crash director"]}
+		water_restore = _crash_director.prepare_water_restore(candidate.water_render)
+		if water_restore.is_empty():
+			return {ok = false, errors = ["water aftermath checkpoint is invalid or incompatible"]}
+		visual_candidate = candidate.visual
+		has_water_render = true
+	var decoded: Dictionary = VisualCheckpoint.read(visual_candidate, _field_identity())
 	if not decoded.ok:
 		return decoded
 	# TOD-09c1 defines progressing records before the live controller consumes them.
@@ -926,8 +1020,29 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if _engine_audio != null:
 		_engine_audio.stream_paused = true
 	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
+	if has_water_render:
+		if not _crash_director.restore_water_checkpoint(water_restore):
+			return {ok = false, physics_restored = true, errors = ["physics restored, but water aftermath could not be restored"]}
+	elif _crash_director != null:
+		_crash_director.reset()
 	_note = "Checkpoint restored; visual context: " + _visual_context_status
 	return {ok = true, context_status = _visual_context_status, errors = []}
+
+
+func _water_checkpoint_digest(visual: Dictionary, water_render: Dictionary) -> String:
+	var hashing := HashingContext.new()
+	hashing.start(HashingContext.HASH_SHA256)
+	hashing.update(var_to_bytes([visual, water_render]))
+	return hashing.finish().hex_encode()
+
+
+func _has_exact_keys(source: Dictionary, expected: Array[String]) -> bool:
+	if source.size() != expected.size():
+		return false
+	for key: Variant in source.keys():
+		if typeof(key) != TYPE_STRING or not expected.has(str(key)):
+			return false
+	return true
 
 
 ## Apply a visual-only edit while paused. Never restore physical state or change live input ownership.
@@ -979,6 +1094,8 @@ func _field_identity() -> String:
 	var hashing: HashingContext = HashingContext.new()
 	hashing.start(HashingContext.HASH_SHA256)
 	hashing.update(var_to_bytes(field))
+	if _field_node != null and _field_node.has_meta("lake_identity"):
+		hashing.update(str(_field_node.get_meta("lake_identity")).to_utf8_buffer())
 	return hashing.finish().hex_encode()
 
 
@@ -993,6 +1110,8 @@ func _prepare_checkpoint_lighting(config: Dictionary) -> Dictionary:
 ## the ZIP name. "development" when running from the source tree.
 func _trace_meta() -> Dictionary:
 	var meta: Dictionary = session.trace_meta()
+	meta.aircraft_visual_family = str(_airplane.get("visual_family", ""))
+	meta.aircraft_model_manifest_sha256 = str(_airplane.get("model_manifest_sha256", ""))
 	var build := BuildInfo.current()
 	meta.app_build = build.describe if build.source == "export" else "development"
 	meta.app_version = build.parsed.semver if build.source == "export" else build.version + " (development)"
@@ -1080,7 +1199,11 @@ func _view_name() -> String:
 	return _rig.view_name()
 
 
-func _build_world() -> void:
+func _build_world() -> bool:
+	_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}))
+	if _airplane.is_empty():
+		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
+		return false
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
 	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot)
 	_field_world_lighting = bool(built.conditions.time_of_day)
@@ -1088,9 +1211,9 @@ func _build_world() -> void:
 	_world_environment = built.world_environment
 	_sun = built.sun
 
-	_airplane = AirplaneBuilder.build(aircraft_id)
+	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	add_child(_airplane.root)
-	_extent = Shadow.model_extent(_airplane.root)
+	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
 	_shadow = Shadow.create(self)
 	Shadow.bind_model(_shadow, _airplane.root)
 	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
@@ -1105,6 +1228,7 @@ func _build_world() -> void:
 	else:
 		_panel = InputPanel.create(self)
 		_hud = Hud.create(self)
+	return true
 
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.
@@ -1132,7 +1256,9 @@ func _capture_scene_id() -> String:
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_last_render_pose = pose
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
-	_airplane.propeller.rotation.z = prop_angle
+	# root_transform replaces the basis each frame; restore the presentation-only uniform scale.
+	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
+	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
 	AirplaneBuilder.apply_throttle(_airplane, float(c.get("throttle", 0.0))) # US-V09c carburettor lever, visual only
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"

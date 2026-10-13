@@ -1,0 +1,28 @@
+# Keep hashed glow profiles, schemas and flight evidence byte-stable across checkouts.
+# Workshop descriptors bind exact aircraft bytes on every platform.
+/app/data/aircraft/*.json text eol=crlf
+/app/data/workshop/*.json text eol=lf
+/app/data/ground/wheel_profiles.json text eol=lf
+/app/data/glow/*_candidate.json text eol=lf
+/app/data/glow/profile_contract.json text eol=lf
+/app/data/glow/*.schema.json text eol=lf
+/research/glow-engines/flight-240.json text eol=lf
+/research/glow-engines/flight-480.json text eol=lf
+/research/glow-engines/flight-960.json text eol=lf
+
+# These generated Stik installation and aircraft records intentionally retain CRLF.
+/app/data/glow/stik_55ax_2t.json text eol=crlf
+/app/data/glow/stik_55ax_2t_apc_13x6.json text eol=crlf
+/app/data/glow/stik_fs64v_4t.json text eol=crlf
+/app/data/glow/stik_fs64v_4t_apc_13x6.json text eol=crlf
+/app/data/aircraft/stik_glow_55ax_2t.json text eol=crlf
+/app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json text eol=crlf
+/app/data/aircraft/stik_glow_fs64v_4t.json text eol=crlf
+/app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json text eol=crlf
+
+# Model manifests are exact-byte Workshop dependencies. Source-script hashes normalize text to LF.
+/app/data/aircraft_models/*.json text eol=lf
+
+# RCV bench identity and generated independent oracle are byte-stable.
+/research/rc-monster-truck/suspension_bench.json text eol=lf
+/research/rc-monster-truck/fixtures/*.json text eol=lf

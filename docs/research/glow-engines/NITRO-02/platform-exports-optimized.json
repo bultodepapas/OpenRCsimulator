@@ -1,0 +1,24 @@
+{
+  "format": "openrc-glow-optimized-platform-exports v1",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "products": {
+    "Windows": {
+      "path": ".tools\\glow-optimized-export-20261013\\OpenRC Simulator.exe",
+      "sha256": "46c660a3ee455d755c680df344ad6a54c2a7cf145e083059cb5da240756ce506"
+    },
+    "Linux": {
+      "path": ".tools\\glow-optimized-export-20261013\\openrc-simulator.x86_64",
+      "sha256": "425f87a00722510f81944a160df0af58340eb8deb43496a30190fa5deb947ea4"
+    },
+    "macOS": {
+      "path": ".tools\\glow-optimized-export-20261013\\OpenRC Simulator.zip",
+      "sha256": "c2728e0ddffb6c71f4f496f33f041c5a8ca471fa30ca1bd05b08f06caebc365b"
+    }
+  },
+  "checks": {
+    "Windows": "both families, 721 trace rows each, exported app in empty directory",
+    "Linux": "same check under WSL, exported app in empty directory",
+    "macOS": "universal x86_64/arm64, executable permissions, ad-hoc signatures and version fields; runtime not tested"
+  },
+  "claim": "Working-tree candidate artifacts; software resource/CLI proof, no physical/pilot or target-performance qualification"
+}

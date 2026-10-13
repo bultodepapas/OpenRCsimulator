@@ -239,8 +239,7 @@ func _test_one_way_rotor_stop(family: String, model: Dictionary) -> void:
 
 	var reverse_body: PackedFloat64Array = _body(PackedFloat64Array([-30.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]))
 	var reverse: Dictionary = Flight.evaluate(reverse_body, values, 0.0, owner)
-	_check(family + " reverse airflow cannot drive the rotor through zero", not reverse.is_empty()
-		and absf(float(reverse.derivative[0])) < 1.0e-12,
+	_check(family + " reverse airflow is refused at the one-way stop", reverse.is_empty(),
 		str(reverse.get("derivative", PackedFloat64Array())))
 	owner.free()
 

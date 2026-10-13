@@ -59,6 +59,7 @@ func _run() -> void:
 	app.preferences_path = PREFS
 	root.add_child(app)
 	await ui.settle()
+	await ui.tap(KEY_DOWN) # Workshop
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_RIGHT)
 	_check("Home: Help reachable by keyboard", ui.focus_name() == "Help", ui.focus_name())
@@ -105,6 +106,7 @@ func _run() -> void:
 	var session: Node = app.flight.session
 	app.open_pause()
 	await ui.settle()
+	await ui.tap(KEY_DOWN) # Workshop adds one reachable action before Help
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_DOWN)
@@ -120,7 +122,7 @@ func _run() -> void:
 	_check("Esc again continues the flight", app.pause_menu == null and not session.sim.paused)
 
 	app.queue_free()
-	await process_frame
+	await ui.settle()
 
 	# First-flight hint: once, three items, no keyboard focus, only flown time counts, remembered.
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
@@ -145,8 +147,9 @@ func _run() -> void:
 	ev = ev.duplicate()
 	ev.pressed = false
 	Input.parse_input_event(ev)
-	hint.duration_s = 0.5
 	app.open_pause()
+	# Allow half a second from this checkpoint, independent of renderer/test load.
+	hint.duration_s = float(hint.get("_flown")) + 0.5
 	await create_timer(1.0).timeout
 	_check("paused time does not use the hint up", hint.visible)
 	app.continue_flight()
@@ -160,7 +163,7 @@ func _run() -> void:
 	await ui.settle()
 	_check("next flight: no hint", app.flight.find_children("FirstFlightHint", "", true, false).is_empty())
 	app.queue_free()
-	await process_frame
+	await ui.settle()
 	var direct: Node = load("res://app_root.tscn").instantiate()
 	direct.user_args = PackedStringArray(["--quick-flight"])
 	direct.preferences_path = "user://test_ui_help_never_written.cfg"
@@ -169,7 +172,7 @@ func _run() -> void:
 	_check("direct route: no hint, no settings", direct.flight.find_children("FirstFlightHint", "", true, false).is_empty()
 		and not FileAccess.file_exists("user://test_ui_help_never_written.cfg"))
 	direct.queue_free()
-	await process_frame
+	await ui.settle()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("all UI help checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)

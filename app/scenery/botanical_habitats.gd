@@ -11,13 +11,27 @@ const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 
 const SEED := 221013
-const MAX_ADDED_TRIANGLES := 70000
+const MAX_ADDED_TRIANGLES := 90000
 const MAX_VISIBLE_BATCHES := 24
-const SHORE_REED_COUNT := 12
-const SHORE_CANDIDATE_LIMIT := 512
-const SHORE_MIN_SPACING_M := 3.0
+const SHORE_CLUSTER_VERTICES := [2, 7, 12, 17]
+const SHORE_REEDS_PER_CLUSTER := 7
+const SHORE_BANK_PLANTS_PER_CLUSTER := 6
+const SHORE_SHRUBS_PER_CLUSTER := 1
+const CORN_OMITTED_CELLS := [
+	Vector2i(0, 0), Vector2i(0, 6), Vector2i(1, 0),
+	Vector2i(2, 6), Vector2i(3, 0), Vector2i(3, 6),
+]
+const WHEAT_EXTENSION_SEED_START := 100000
+const SHORE_CANDIDATE_LIMIT := 64
+const SHORE_REED_MIN_SPACING_M := 0.85
+const SHORE_BANK_MIN_SPACING_M := 0.65
+const SHORE_SHRUB_MIN_SPACING_M := 1.1
 const SHORE_MIN_DISTANCE_M := 0.75
 const SHORE_MAX_DISTANCE_M := 4.5
+
+const SHORE_BANK_ASSETS := [
+	"grass_common_short", "grass_common_tall", "fern_1", "grass_common_short", "clover_1", "flower_3_group",
+]
 
 const HEIGHT_RANGES := {
 	"clover_1": Vector2(0.30, 0.52),
@@ -29,7 +43,8 @@ const HEIGHT_RANGES := {
 	"fern_1": Vector2(0.22, 0.42),
 	"corn_4": Vector2(1.15, 1.42),
 	"wheat_4": Vector2(0.72, 0.92),
-	"reed_aredon": Vector2(1.10, 1.40),
+	"reed_aredon": Vector2(0.90, 1.50),
+	"bush_common_flowers": Vector2(0.72, 1.0),
 }
 
 const FLOWER_PATCHES := [
@@ -40,7 +55,7 @@ const FLOWER_PATCHES := [
 	{zone = "meadow", north = 58.0, east = 98.0, radius_n = 8.0, radius_e = 13.0,
 		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group", "flower_4_group"]},
 	{zone = "meadow", north = 64.0, east = 154.0, radius_n = 7.0, radius_e = 13.0,
-		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group", "flower_4_group"]},
+		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group", "flower_3_group"]},
 	{zone = "meadow", north = 47.0, east = 128.0, radius_n = 5.0, radius_e = 11.0,
 		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1"]},
 ]
@@ -94,14 +109,19 @@ static func layout(field: Dictionary, scenery: Dictionary, quality: String, lake
 			str(patch.zone), pilot_north + float(patch.north), pilot_east + float(patch.east),
 			float(patch.radius_n), float(patch.radius_e), patch.assets, quality)
 
-	# Two restrained downloaded crop plots near the existing farm: 28 corn and 56 wheat.
+	# Two restrained downloaded crop plots near the existing farm: 22 corn and 62 wheat.
 	_append_grid(plants, field, land_exclusions, surface_rects, lake, sequence, "farm", "corn_4",
-		pilot_north + 561.0, pilot_east + 324.0, 4, 7, 0.86, 0.82, quality)
+		pilot_north + 561.0, pilot_east + 324.0, 4, 7, 0.86, 0.82, quality, CORN_OMITTED_CELLS)
 	_append_grid(plants, field, land_exclusions, surface_rects, lake, sequence, "farm", "wheat_4",
 		pilot_north + 561.0, pilot_east + 346.0, 7, 8, 0.78, 0.43, quality)
 
 	if not lake.is_empty():
 		_append_shore_reeds(plants, field, shared_exclusions, surface_rects, lake, sequence, quality)
+		_append_shore_bank_plants(plants, field, shared_exclusions, surface_rects, lake, sequence, quality)
+	# Extend the distinct wheat plot by one short row; a reserved seed range leaves all existing IDs intact.
+	var wheat_extension_sequence := {"next": WHEAT_EXTENSION_SEED_START}
+	_append_grid(plants, field, land_exclusions, surface_rects, lake, wheat_extension_sequence, "farm", "wheat_4",
+		pilot_north + 561.0 + 3.12, pilot_east + 346.0, 1, 6, 0.78, 0.43, quality)
 	return plants
 
 
@@ -135,12 +155,14 @@ static func build(field: Dictionary, scenery: Dictionary, _theme: String, qualit
 		var origin := Frames.ned_to_render([float(plant.north), float(plant.east), -ground_up])
 		var placement := Transform3D(Basis(Vector3.UP, yaw), origin)
 		placement = PlantLibrary.fit_to_height(asset_id, float(plant.get("height_m", 0.3)), placement)
-		var queued_id := PlantLibrary.queue(batches, asset_id, placement, int(plant.seed))
+		var tint := _habitat_tint(int(plant.seed))
+		var queued_id := PlantLibrary.queue(batches, asset_id, placement, int(plant.seed), "", tint)
 		if queued_id.is_empty():
 			continue
 		var committed := plant.duplicate(true)
 		committed["asset_id"] = queued_id
 		committed["source_triangles"] = source_triangles
+		committed["instance_tint"] = tint
 		placed_plants.append(committed)
 		triangles += source_triangles
 		var zone := str(committed.get("zone", ""))
@@ -173,6 +195,15 @@ static func build(field: Dictionary, scenery: Dictionary, _theme: String, qualit
 	root.set_meta("quality", quality)
 	root.set_meta("lake_id", str(lake.get("id", "")))
 	return root
+
+
+static func _habitat_tint(seed: int) -> Color:
+	var value := 0.89 + 0.11 * Palette.hash01(SEED, seed, 781)
+	var offset := 0.018 + 0.012 * Palette.hash01(SEED, seed, 782)
+	var warm := Palette.hash01(SEED, seed, 783) < 0.5
+	var red := value + offset if warm else value - offset
+	var blue := value - offset if warm else value + offset
+	return Color(clampf(red, 0.86, 1.0), clampf(value, 0.86, 1.0), clampf(blue, 0.86, 1.0), 1.0)
 
 
 static func _layout_applies(field: Dictionary, scenery: Dictionary) -> bool:
@@ -238,10 +269,12 @@ static func _append_cluster(output: Array[Dictionary], field: Dictionary, exclus
 static func _append_grid(output: Array[Dictionary], field: Dictionary, exclusions: Array,
 	surface_rects: PackedFloat64Array, lake: Dictionary, sequence: Dictionary, zone: String,
 	asset_id: String, center_north: float, center_east: float, rows: int, columns: int,
-	spacing_north: float, spacing_east: float, quality: String) -> void:
+	spacing_north: float, spacing_east: float, quality: String, omitted_cells: Array = []) -> void:
 	for row: int in range(rows):
 		for column: int in range(columns):
 			var plant_seed := _take_seed(sequence)
+			if Vector2i(row, column) in omitted_cells:
+				continue
 			var jitter_north := (Palette.hash01(SEED, plant_seed, 6) - 0.5) * 0.12
 			var jitter_east := (Palette.hash01(SEED, plant_seed, 7) - 0.5) * 0.12
 			var north := center_north + (float(row) - float(rows - 1) * 0.5) * spacing_north + jitter_north
@@ -255,49 +288,122 @@ static func _append_grid(output: Array[Dictionary], field: Dictionary, exclusion
 
 static func _append_shore_reeds(output: Array[Dictionary], field: Dictionary, exclusions: Array,
 	surface_rects: PackedFloat64Array, lake: Dictionary, sequence: Dictionary, quality: String) -> void:
-	var bank: PackedFloat64Array = lake.get("bank_ne_m", PackedFloat64Array())
-	if bank.size() < 6:
-		return
-	var min_north := INF
-	var max_north := -INF
-	var min_east := INF
-	var max_east := -INF
-	for index: int in range(0, bank.size(), 2):
-		min_north = minf(min_north, bank[index])
-		max_north = maxf(max_north, bank[index])
-		min_east = minf(min_east, bank[index + 1])
-		max_east = maxf(max_east, bank[index + 1])
+	var anchors := _shore_cluster_anchors(lake)
 	var selected: Array[Dictionary] = []
-	for _attempt: int in range(SHORE_CANDIDATE_LIMIT):
-		if selected.size() >= SHORE_REED_COUNT:
-			break
+	for cluster_index in anchors.size():
+		var anchor: Dictionary = anchors[cluster_index]
+		for plant_index in SHORE_REEDS_PER_CLUSTER:
+			var reed := _append_shore_plant(selected, field, exclusions, surface_rects, lake, sequence,
+				anchor, "reed_aredon", cluster_index, plant_index, "reed", SHORE_REED_MIN_SPACING_M)
+			if not reed.is_empty():
+				reed["cluster_id"] = "reed_cluster_%d" % cluster_index
+				selected.append(reed)
+	for plant: Dictionary in selected:
+		if _quality_keeps(int(plant.seed), quality):
+			output.append(plant)
+
+
+static func _append_shore_bank_plants(output: Array[Dictionary], field: Dictionary, exclusions: Array,
+	surface_rects: PackedFloat64Array, lake: Dictionary, sequence: Dictionary, quality: String) -> void:
+	var anchors := _shore_cluster_anchors(lake)
+	var selected: Array[Dictionary] = []
+	for cluster_index in anchors.size():
+		var anchor: Dictionary = anchors[cluster_index]
+		for plant_index in SHORE_BANK_PLANTS_PER_CLUSTER:
+			var asset_id := str(SHORE_BANK_ASSETS[plant_index % SHORE_BANK_ASSETS.size()])
+			var plant := _append_shore_plant(selected, field, exclusions, surface_rects, lake, sequence,
+				anchor, asset_id, cluster_index, plant_index, "bank", SHORE_BANK_MIN_SPACING_M)
+			if not plant.is_empty():
+				plant["cluster_id"] = "bank_cluster_%d" % cluster_index
+				selected.append(plant)
+		for plant_index in SHORE_SHRUBS_PER_CLUSTER:
+			var shrub_index := cluster_index * SHORE_SHRUBS_PER_CLUSTER + plant_index
+			var shrub := _append_shore_plant(selected, field, exclusions, surface_rects, lake, sequence,
+				anchor, "bush_common_flowers", cluster_index, shrub_index, "shrub", SHORE_SHRUB_MIN_SPACING_M)
+			if not shrub.is_empty():
+				shrub["cluster_id"] = "shore_shrub_cluster_%d" % cluster_index
+				shrub["decorative_soft_vegetation"] = true
+				selected.append(shrub)
+	for plant: Dictionary in selected:
+		if _quality_keeps(int(plant.seed), quality):
+			output.append(plant)
+
+
+static func _append_shore_plant(selected: Array[Dictionary], field: Dictionary, exclusions: Array,
+	surface_rects: PackedFloat64Array, lake: Dictionary, sequence: Dictionary, anchor: Dictionary,
+	asset_id: String, cluster_index: int, plant_index: int, kind: String, minimum_spacing: float) -> Dictionary:
+	for attempt in SHORE_CANDIDATE_LIMIT:
 		var plant_seed := _take_seed(sequence)
-		var north := lerpf(min_north, max_north, Palette.hash01(SEED, plant_seed, 21))
-		var east := lerpf(min_east, max_east, Palette.hash01(SEED, plant_seed, 22))
-		var bank_sample := LakeSurface.sample_terrain_validated(lake, north, east)
-		var shore_distance := float(bank_sample.get("signed_shore_distance_m", 0.0))
-		if not bool(bank_sample.get("covered", false)) or str(bank_sample.get("region", "")) != "bank" \
-			or shore_distance > -SHORE_MIN_DISTANCE_M or shore_distance < -SHORE_MAX_DISTANCE_M \
-			or float(bank_sample.get("ground_down_m", 0.0)) <= 0.0:
-			continue
-		if not Grass.accepts(north, east, field, exclusions):
+		var tangent_radius := 2.8 if kind == "reed" else 4.1 if kind == "bank" else 5.0
+		var tangent_offset := (Palette.hash01(SEED, plant_seed, 21) * 2.0 - 1.0) * tangent_radius
+		if kind == "bank":
+			var slot_position := float(plant_index % SHORE_BANK_ASSETS.size()) - 2.5
+			tangent_offset = slot_position * 0.95 + (Palette.hash01(SEED, plant_seed, 23) - 0.5) * 0.65
+		elif kind == "shrub":
+			tangent_offset = (-4.8 if cluster_index % 2 == 0 else 4.8) \
+				+ (Palette.hash01(SEED, plant_seed, 23) - 0.5) * 0.7
+		var normal_min := -0.55 if kind == "reed" else 0.35 if kind == "bank" else 0.15
+		var normal_max := 0.55 if kind == "reed" else 1.0 if kind == "bank" else 0.8
+		var normal_offset := lerpf(normal_min, normal_max, Palette.hash01(SEED, plant_seed, 22))
+		var point: Vector2 = anchor.point + anchor.tangent * tangent_offset + anchor.outward * normal_offset
+		var north := point.x
+		var east := point.y
+		var bank_sample := _shore_sample(lake, north, east, field, exclusions)
+		if bank_sample.is_empty():
 			continue
 		var spaced := true
 		for other: Dictionary in selected:
-			if Vector2(north, east).distance_to(Vector2(float(other.north), float(other.east))) < SHORE_MIN_SPACING_M:
+			if Vector2(north, east).distance_to(Vector2(float(other.north), float(other.east))) < minimum_spacing:
 				spaced = false
 				break
 		if not spaced:
 			continue
-		var plant := _plant_record("reed_aredon", "shore", north, east, plant_seed, surface_rects, lake)
+		var plant := _plant_record(asset_id, "shore", north, east, plant_seed, surface_rects, lake)
 		if plant.is_empty():
 			continue
 		plant["lake_ground_down_m"] = float(bank_sample.ground_down_m)
-		plant["shore_distance_m"] = shore_distance
-		selected.append(plant)
-	for plant: Dictionary in selected:
-		if _quality_keeps(int(plant.seed), quality):
-			output.append(plant)
+		plant["shore_distance_m"] = float(bank_sample.signed_shore_distance_m)
+		plant["cluster_index"] = cluster_index
+		return plant
+	return {}
+
+
+static func _shore_sample(lake: Dictionary, north: float, east: float, field: Dictionary,
+	exclusions: Array) -> Dictionary:
+	var bank_sample := LakeSurface.sample_terrain_validated(lake, north, east)
+	var shore_distance := float(bank_sample.get("signed_shore_distance_m", 0.0))
+	if not bool(bank_sample.get("covered", false)) or str(bank_sample.get("region", "")) != "bank" \
+		or shore_distance > -SHORE_MIN_DISTANCE_M or shore_distance < -SHORE_MAX_DISTANCE_M \
+		or float(bank_sample.get("ground_down_m", 0.0)) <= 0.0 \
+		or float(bank_sample.get("signed_bank_distance_m", 0.0)) <= 0.0:
+		return {}
+	if not Grass.accepts(north, east, field, exclusions):
+		return {}
+	return bank_sample
+
+
+static func _shore_cluster_anchors(lake: Dictionary) -> Array[Dictionary]:
+	var anchors: Array[Dictionary] = []
+	var shoreline: Variant = lake.get("shoreline_ne_m", PackedFloat64Array())
+	var bank: Variant = lake.get("bank_ne_m", PackedFloat64Array())
+	if not shoreline is PackedFloat64Array or not bank is PackedFloat64Array \
+		or shoreline.size() < 6 or bank.size() != shoreline.size() or shoreline.size() % 2 != 0:
+		return anchors
+	var vertex_count: int = bank.size() / 2
+	for index in SHORE_CLUSTER_VERTICES:
+		if index < 0 or index >= vertex_count:
+			continue
+		var prev := posmod(index - 1, vertex_count)
+		var next := posmod(index + 1, vertex_count)
+		var shore_point := Vector2(shoreline[index * 2], shoreline[index * 2 + 1])
+		var bank_point := Vector2(bank[index * 2], bank[index * 2 + 1])
+		var tangent := Vector2(shoreline[next * 2] - shoreline[prev * 2],
+			shoreline[next * 2 + 1] - shoreline[prev * 2 + 1]).normalized()
+		var outward := (bank_point - shore_point).normalized()
+		if tangent.length_squared() <= 0.5 or outward.length_squared() <= 0.5:
+			continue
+		anchors.append({"point": shore_point.lerp(bank_point, 0.5), "tangent": tangent, "outward": outward})
+	return anchors
 
 
 static func _plant_record(asset_id: String, zone: String, north: float, east: float, plant_seed: int,
@@ -317,6 +423,7 @@ static func _plant_record(asset_id: String, zone: String, north: float, east: fl
 		"height_m": height,
 		"yaw_rad": TAU * Palette.hash01(SEED, plant_seed, 32),
 		"seed": plant_seed,
+		"lake_ground_down_m": -terrain[0] if zone == "shore" else NAN,
 	}
 
 

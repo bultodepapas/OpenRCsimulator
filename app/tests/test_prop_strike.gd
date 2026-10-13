@@ -62,6 +62,9 @@ func _takeoff_clearance(id: String, field: Dictionary) -> void:
 	var disc := HullContact.prop_disc(session.aircraft.model.propulsion)
 	var clearance := -float(HullContact.prop_disc_depth(session.sim.state, disc).depth)
 	_check("%s propeller clears the runway at rest" % id, clearance > 0.0, "%.3f m" % clearance)
+	# Glow runway starts park with the engine stopped; start it before the takeoff run.
+	if session.glow_is_active():
+		_check("%s runway starter succeeds" % id, session.glow_start())
 	session.sim.set_paused(false)
 	for tick in 480:
 		session.sim.inputs[3] = 1.0

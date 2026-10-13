@@ -182,6 +182,13 @@ func prepare(airplane: Node3D) -> bool:
 	var split := SectionSplitter.apply(_twin)
 	if not bool(split.ok):
 		push_warning("Wreck.prepare: crash section map ignored: %s" % "; ".join(split.errors))
+	# The flight root may carry a uniform Workshop presentation scale. Bake it into
+	# the detached copy before measuring groups; rigid bodies themselves stay unscaled.
+	if not airplane.scale.is_equal_approx(Vector3.ONE):
+		var model_scale := Transform3D(Basis.IDENTITY.scaled(airplane.scale), Vector3.ZERO)
+		for child: Node in _twin.get_children():
+			if child is Node3D:
+				child.transform = model_scale * child.transform
 	_groups.clear()
 	_member_records.clear()
 	_selected_roots.clear()

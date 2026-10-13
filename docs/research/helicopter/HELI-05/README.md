@@ -6,6 +6,8 @@
 
 The primary source is Gavrilets, Mettler, and Feron, “Dynamic Model for a Miniature Aerobatic Helicopter,” AIAA 2001-4333, especially §§4.1.1–4.1.3 and Eqs. 5–6 (printed p. 6), Eqs. 11–12 (p. 8), Eqs. 17–23 (pp. 9–10), and Eqs. 25–27 (pp. 11–12). [Paper PDF](https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf). Parameter provenance is recorded in [HELI-01](../HELI-01/README.md#11-mit-x-cell-60-se-gavrilets-mettler-feron-1-f).
 
+Retained page renders for equation review: [6](references/heli05-page-06.png), [7](references/heli05-page-07.png), [8](references/heli05-page-08.png), [9](references/heli05-page-09.png), [10](references/heli05-page-10.png), [11](references/heli05-page-11.png), [12](references/heli05-page-12.png). These are source excerpts, not simulator output.
+
 The main rotor is a two-blade, no-twist rotor. The paper uses one uniform collective pitch, θ0; it does not give a root-to-0.75R conversion for this no-twist case. This reference therefore sets θ0 equal to the supplied 0.75R collective θ75 without extrapolation. With solidity σ = N c/(πR), total in-plane advance ratio μ, axial ratio μz = w/(ΩR), and λ0 = vi/(ΩR), the ideal thrust coefficient is
 
 ```text

@@ -1,0 +1,49 @@
+{
+  "format": "openrc-glow-cli-proof v1",
+  "passed": true,
+  "scope": "native exported application in empty directory",
+  "runtime": "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/glow-optimized-export-20261013/openrc-simulator.x86_64",
+  "runtime_sha256": "425f87a00722510f81944a160df0af58340eb8deb43496a30190fa5deb947ea4",
+  "engine_binary_sha256": "425f87a00722510f81944a160df0af58340eb8deb43496a30190fa5deb947ea4",
+  "pack_sha256": null,
+  "checker_sha256": "bb6bfecd4d3ede53ce0c4b51d0afa387fc34fb7d6d57a9a4e37c08f70c770047",
+  "cases": [
+    {
+      "aircraft": "stik-glow-55ax-2t",
+      "family": "glow_2t",
+      "rows": 721,
+      "identity": {
+        "format": "openrc-glow-installation v1",
+        "profile": {
+          "format": "openrc-glow-engine v1",
+          "sha256": "41b636d09292ed0e440a7c4f80562536f26a5dab6cc1dee88113324e4a4906d1"
+        },
+        "sha256": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45"
+      },
+      "initial_rpm": 8119.416170732,
+      "final_rpm": 8119.004399726,
+      "consumed_fuel_kg": 0.00034501199999999177,
+      "successful_fires": 405.0,
+      "trace_sha256": "90ce2216f44e40e50e25b6cefda7335f917ad328c012ed718c45f012765268c8"
+    },
+    {
+      "aircraft": "stik-glow-fs64v-4t",
+      "family": "glow_4t",
+      "rows": 721,
+      "identity": {
+        "format": "openrc-glow-installation v1",
+        "profile": {
+          "format": "openrc-glow-engine v1",
+          "sha256": "1c0060777d56af47b91c0a9f56cb6ad9d4a50bdb212dba426f86ec8d79ba506d"
+        },
+        "sha256": "e8ce0e64bcd75ad2fb895a7f630a9f531afbaadf7cb36785242df570fc788ba9"
+      },
+      "initial_rpm": 8649.171421739,
+      "final_rpm": 8648.913849946,
+      "consumed_fuel_kg": 0.00026370600000000244,
+      "successful_fires": 216.0,
+      "trace_sha256": "43d5e6fa602d932cbd44a54b27207c52b5eeaf648eb460b9817b586bd50337bb"
+    }
+  ],
+  "claim": "Resource/CLI software smoke, not physical, acoustic or release-performance acceptance"
+}

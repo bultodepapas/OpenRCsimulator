@@ -1,6 +1,6 @@
 # LU-21 — Replacement cars and people
 
-Status: **integrated and native-verified, 2026-10-12**. Full regression status is recorded below. Owner: landscape integration lead; three bounded Luna max reviewers. [Plan](../../../../LANDSCAPE_UPGRADE_PLAN.md) · [landscape changes](../LU-16/README.md).
+Status: **integrated and native-verified, 2026-10-12**. Full regression status is recorded below. Owner: landscape integration lead; three bounded Luna max reviewers. [Plan](../../../plans/landscape-upgrade.md) · [landscape changes](../LU-16/README.md).
 
 The owner's rejected population is replaced by **11 textured vehicles in three body styles and 13 clothed people in three poses**. Existing parking locations, aircraft, flying corridors and object response policy remain intact. The runtime uses shared meshes, materials and textures, MultiMeshes, import-generated mesh LOD and bounded simulation-clock movement. No runtime plugin was added.
 

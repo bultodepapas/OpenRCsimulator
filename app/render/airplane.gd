@@ -1,23 +1,12 @@
-# Stable render interface; visual geometry is separate from simulation data.
-# One adapter for every catalog aircraft (app_state/aircraft_catalog.gd): build(id) dispatches to the model team's
-# builder for that ID; with no argument it is the Ugly Stik, as before. Every build returns at least
-# { root, propeller, hinges, aircraft_id } and keeps the `airplane`, `propeller` and `*_hinge` node names.
-# `propeller.rotation.z` is the spin phase main.gd accumulates from the rotor speed (positive). The Timber's wrapper
-# turns +θ clockwise seen from behind, the simulator's rotor sense (sim/flight_session.gd, physics/dynamics.gd); the
-# Stik, Extra and P-51 propeller nodes are root-aligned (+Z aft), so the same +θ turns them counter-clockwise seen from
-# behind. The model owner decides which way the three procedural propellers should turn (TT-05 review finding).
+# Stable presentation adapter. Authored manifests select builders and bind scene nodes.
+# Physics remains scalar/float64; Godot transforms are used only at this rendering boundary.
 extends RefCounted
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
+const SurfaceContract := preload("res://physics/control_surfaces.gd")
 const Controls := preload("res://aircraft/ugly_stik_controls.gd")
 const UglyStik := preload("res://aircraft/ugly_stik_model.gd")
-const StikGeometry := preload("res://aircraft/ugly_stik_geometry.gd")
-const Extra := preload("res://aircraft/extra_300s_model.gd")
-const ExtraGeometry := preload("res://aircraft/extra_300s_geometry.gd")
-const Avanti := preload("res://aircraft/avanti_s_model.gd")
-const P51 := preload("res://aircraft/p51d_model.gd")
-const P51Geometry := preload("res://aircraft/p51d_geometry.gd")
-const Timber := preload("res://aircraft/timber_model.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
@@ -27,106 +16,128 @@ const TIMBER_ID := "turbo-lumber-evolution"
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
 
-# The Stik builder's prop is 12 in from generated visual geometry. These inferred glow installations use estimated
-# 13 x 6 and 14 x 6 props respectively; scale only their propeller nodes to match those stated diameters.
-const STIK_GLOW_55AX_PROP_DIAMETER_M := 0.3302
-const STIK_GLOW_FS64V_PROP_DIAMETER_M := 0.3556
-
+# Accepted builds populate this small render-only cache. Every new build revalidates dependencies.
+static var _accepted_datums: Dictionary = {}
 
 static func _mat(color: Color) -> StandardMaterial3D:
 	return UglyStik.material(color)
 
 
-## Returns { root: Node3D, propeller: Node3D, hinges: { name: … }, aircraft_id, … } for a catalog ID; {} for an
-## unknown one (never another airplane in its place).
-static func build(id := STIK_ID) -> Dictionary:
-	var airplane: Dictionary
-	match id:
-		STIK_ID:
-			airplane = UglyStik.build()
-		STIK_GLOW_55AX_ID:
-			airplane = UglyStik.build()
-			var ratio := STIK_GLOW_55AX_PROP_DIAMETER_M / float(StikGeometry.DATA.equipment.prop_diameter)
-			airplane.propeller.scale = Vector3(ratio, ratio, 1.0)
-		STIK_GLOW_FS64V_ID:
-			airplane = UglyStik.build()
-			var ratio := STIK_GLOW_FS64V_PROP_DIAMETER_M / float(StikGeometry.DATA.equipment.prop_diameter)
-			airplane.propeller.scale = Vector3(ratio, ratio, 1.0)
-		EXTRA_ID:
-			airplane = Extra.build()
-		AVANTI_ID:
-			airplane = Avanti.build()
-		P51_ID:
-			airplane = P51.build()
-		TIMBER_ID:
-			airplane = Timber.build()
-		_:
-			push_error("render/airplane.gd: unknown aircraft '%s'" % id)
+## Returns an independently built, validated visual for a catalog physical configuration.
+static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentation: Dictionary = {}) -> Dictionary:
+	var family: String = Catalog.visual_family(id)
+	if family.is_empty():
+		push_error("render/airplane.gd: unknown aircraft '%s'" % id)
+		return {}
+	var registry: Script = load("res://aircraft/model_registry.gd")
+	var resolved: Dictionary = registry.describe(family)
+	if not resolved.get("ok", false):
+		push_error("Aircraft model contract: " + str(resolved.get("errors", [])))
+		return {}
+	if not expected_presentation.is_empty():
+		if expected_presentation.get("visual_family", "") != family or expected_presentation.get("model_manifest_sha256", "") != resolved.manifest_sha256:
+			push_warning("Aircraft presentation changed after the Workshop trial was frozen.")
 			return {}
+	var manifest: Dictionary = resolved.manifest
+	var builder: Script = load(str(manifest.builder.script))
+	if builder == null or not builder.has_method("build"):
+		push_error("Aircraft model builder has no build method: " + str(manifest.builder.script))
+		return {}
+	var airplane: Dictionary = builder.call("build")
+	var verified: Dictionary = registry.validate_derived(manifest, airplane)
+	if not verified.get("ok", false):
+		if airplane.get("root") is Node:
+			airplane.root.free()
+		push_error("Aircraft model bindings: " + str(verified.get("errors", [])))
+		return {}
+	var data_path: String = str(Catalog.entry(id).get("data", ""))
+	var model: Dictionary = {}
+	if not data_path.is_empty():
+		var loaded: Dictionary = AircraftData.load_file(data_path)
+		if not loaded.get("ok", false):
+			airplane.root.free()
+			push_error("Aircraft data for presentation: " + str(loaded.get("errors", [])))
+			return {}
+		model = loaded.model
+	var glow: Dictionary = model.get("propulsion", {}).get("glow", {})
 	airplane.aircraft_id = id
+	airplane.visual_family = family
+	airplane.model_manifest = manifest.duplicate(true)
+	airplane.model_manifest_sha256 = resolved.manifest_sha256
+	airplane._model_builder = builder
+	airplane._finite_glow_visual = not glow.is_empty()
+	if not glow.is_empty():
+		airplane.propeller_spin_sign = -1.0
+		var selected_diameter: float = float(propeller_diameter_m)
+		if not is_finite(selected_diameter) or selected_diameter <= 0.0:
+			selected_diameter = float(glow.get("propeller", {}).get("diameter_m", NAN))
+		if not apply_propeller_diameter(airplane, selected_diameter):
+			airplane.root.free()
+			push_error("Aircraft visual has no valid propeller diameter binding.")
+			return {}
 	airplane.root.set_meta("aircraft_id", id)
-	# Optional, aircraft-authored mouths; an absent anchor never falls back to the aircraft origin.
 	airplane.exhausts = airplane.root.get_meta("exhausts", [])
+	_accepted_datums[id] = Vector2(float(manifest.datum.model_z_le), float(manifest.datum.model_y_thrust))
 	return airplane
 
 
-## Where the data file's le frame sits in the model: x = model z of the wing leading edge the data measures from,
-## y = model y of the thrust line. Read from the model team's generated geometry (never copied numbers).
-## Preview-only aircraft have no flight data: Vector2.ZERO.
+## Always scale from the authored diameter, so repeated setup/reload calls never compound scale.
+static func apply_propeller_diameter(airplane: Dictionary, diameter_m: float) -> bool:
+	if not airplane.get("_finite_glow_visual", false) or not is_finite(diameter_m) or diameter_m <= 0.0:
+		return false
+	var propeller: Node3D = airplane.get("propeller")
+	var manifest: Dictionary = airplane.get("model_manifest", {})
+	var base_diameter: float = float(manifest.get("bindings", {}).get("rotor", {}).get("authored_diameter_m", NAN))
+	if propeller == null or not is_finite(base_diameter) or base_diameter <= 0.0:
+		return false
+	var ratio: float = diameter_m / base_diameter
+	propeller.scale = Vector3(ratio, ratio, propeller.scale.z)
+	airplane.propeller_diameter_m = diameter_m
+	return true
+
+
+## Called each rendered frame: accepted model data, with no disk reads on this path.
 static func datum(id: String) -> Vector2:
-	match id:
-		STIK_ID, STIK_GLOW_55AX_ID, STIK_GLOW_FS64V_ID:
-			return Vector2(StikGeometry.DATA.wing.leading_z, StikGeometry.DATA.equipment.shaft_y)
-		EXTRA_ID:
-			# geometry.json: y = 0 on the spinner axis; the physics le frame starts at the trapezoid's root LE.
-			return Vector2(ExtraGeometry.DATA.wing.le_z_root, 0.0)
-		P51_ID:
-			# geometry.json: z = 0 at the root leading edge, y = 0 on the spinner axis: the le frame's own datum.
-			return Vector2(P51Geometry.DATA.wing.le_z_root, 0.0)
-		AVANTI_ID:
-			# geometry.json: z = 0 at the root leading edge beside the fuselage, y = 0 on the root wing mid-plane; the
-			# physics le frame (AV-06) uses the same origin, and its thrust line sits where the data file says.
-			return Vector2(0.0, 0.0)
-		TIMBER_ID:
-			# The imported r1 scene sits at its datum D0: symmetry plane x root leading edge x thrust-axis height
-			# (geometry.json datum); a future data file (TT-07) measures from the same point.
-			return Vector2(0.0, 0.0)
-	return Vector2.ZERO
+	if _accepted_datums.has(id):
+		return _accepted_datums[id]
+	var family: String = Catalog.visual_family(id)
+	if family.is_empty():
+		return Vector2.ZERO
+	var registry: Script = load("res://aircraft/model_registry.gd")
+	var resolved: Dictionary = registry.describe(family)
+	if not resolved.get("ok", false):
+		return Vector2.ZERO
+	var declared: Dictionary = resolved.manifest.datum
+	_accepted_datums[id] = Vector2(float(declared.model_z_le), float(declared.model_y_thrust))
+	return _accepted_datums[id]
 
 
-## Hinge rotations from input/commands.gd hinge_rotations(). Stik, Extra and P-51: wing rest frames carry the dihedral
-## (Stik) or the swept hinge line (Extra); the hinge rotates only in its own frame. The Avanti and the Timber drive
-## their own axis/rest hinges from the same deflections in degrees.
+## Existing conventional commands keep their signs and physical throws.
 static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
-	match airplane.get("aircraft_id", STIK_ID):
-		AVANTI_ID:
-			Avanti.apply_surfaces(airplane, surface_degrees(rotations))
-			return
-		TIMBER_ID:
-			Timber.apply_surfaces(airplane, surface_degrees(rotations))
-			return
-	for surface_name in rotations:
+	var manifest: Dictionary = airplane.model_manifest
+	if str(manifest.builder.adapter) != "euler_hinges":
+		var builder: Script = airplane._model_builder
+		builder.call(str(manifest.surface_method), airplane, surface_degrees(rotations))
+		return
+	for surface_name: String in rotations:
 		var r: Dictionary = rotations[surface_name]
-		airplane.hinges[surface_name].rotation = Vector3(r.x, r.y, 0)
-	if airplane.has("controls"): Controls.update(airplane.controls)
+		var binding: Dictionary = manifest.bindings.controls[surface_name]
+		for hinge: Dictionary in binding.hinges:
+			airplane.hinges[str(hinge.key)].rotation = Vector3(r.x, r.y, 0)
+	if airplane.has("controls"):
+		Controls.update(airplane.controls)
 
 
-## US-V09c: optional throttle command 0..1 for aircraft that show their throttle linkage (Stik: carburettor lever,
-## gas servo and pushrod). Visual only; other aircraft ignore it.
+## Optional legacy throttle linkage. Finite glow visuals retain their existing shaft behavior.
 static func apply_throttle(airplane: Dictionary, throttle: float) -> void:
-	if airplane.get("aircraft_id", STIK_ID) == STIK_ID and airplane.has("controls"):
+	if airplane.has("controls") and not airplane.get("_finite_glow_visual", false):
 		Controls.set_throttle(airplane.controls, throttle)
 
 
 ## The inverse of Commands.hinge_rotations(): trailing-edge deflections in degrees (up for ailerons/elevator,
 ## right for the rudder), as Commands.surface_deflections_deg() gives them.
 static func surface_degrees(rotations: Dictionary) -> Dictionary:
-	return {
-		aileron_right = -rad_to_deg(rotations.aileron_right.x),
-		aileron_left = -rad_to_deg(rotations.aileron_left.x),
-		elevator = -rad_to_deg(rotations.elevator.x),
-		rudder = rad_to_deg(rotations.rudder.y),
-	}
+	return SurfaceContract.from_hinge_rotations(rotations)
 
 
 ## Optional visual gear state from simulation; angles in radians around model axes. Each aircraft has its own wheels
@@ -134,11 +145,14 @@ static func surface_degrees(rotations: Dictionary) -> Dictionary:
 ## around +X; positive steering is around +Y.
 static func apply_gear(airplane: Dictionary, wheel_angles: Dictionary, steering_rad: float) -> void:
 	var gear: Dictionary = airplane.get("gear", {})
-	for key in ["left", "right", "nose", "tail"]:
-		if gear.has(key):
-			gear[key].rotation.x = float(wheel_angles.get(key, 0.0))
-	if gear.has("steering"):
-		gear.steering.rotation.y = steering_rad
+	var bindings: Dictionary = airplane.model_manifest.bindings.gear.keys
+	for role: String in ["left", "right", "nose", "tail"]:
+		var key: String = str(bindings.get(role, ""))
+		if not key.is_empty():
+			gear[key].rotation.x = float(wheel_angles.get(role, 0.0))
+	var steering_key: String = str(bindings.get("steering", ""))
+	if not steering_key.is_empty():
+		gear[steering_key].rotation.y = steering_rad
 
 
 ## Inspector-only access: restore false before returning to assembled views.

@@ -50,6 +50,7 @@ func _initialize() -> void:
 	session.reset()
 	_exact_inactivity(session)
 	_fixed_alpha_sweep(session)
+	_selector_uses_ground_effect_tail(session.aircraft.model)
 	_banked_and_regimes(session)
 	_session_path(session)
 	session.free()
@@ -238,6 +239,36 @@ func _fixed_alpha_sweep(session: Node) -> void:
 	for k in 6:
 		worst = maxf(worst, absf(near_edge[k] - legacy[k]) / maxf(1.0, absf(legacy[k])))
 	_check("1 cm below the reach height the loads are within 1e-6 (relative) of the exact legacy loads", worst < 1e-6, "worst %s" % worst)
+
+
+## The blend selector must see the same ground-reduced downwash as the local tail load.
+func _selector_uses_ground_effect_tail(model: Dictionary) -> void:
+	var alpha := deg_to_rad(7.8)
+	var h: float = 0.05 * float(model.reference.b)
+	var s := RB.make_state(M.v3(0.0, 0.0, -h), M.v3(15.0 * cos(alpha), 0.0, 15.0 * sin(alpha)), M.q_identity(), M.v3(0.0, 0.0, 0.0))
+	var air := Air.compute(s, ZERO_WIND, RHO)
+	var d := { aileron_right = 0.0, aileron_left = 0.0, elevator = 0.0, rudder = 0.0 }
+	var factors: PackedFloat64Array = GroundEffect.factors(s, model, 0.0)
+	var tail: Dictionary = model.surfaces.horizontal
+	var cl_ge: float = Aero.wing_lift_coefficient(s, air, d, model, 0.0)
+	var actual_tail: float = atan2(air.v_air[2], air.v_air[0]) - float(tail.downwash_per_cl) * factors[factors.size() - 1] * cl_ge \
+		+ float(tail.elevator_tau) * d.elevator + float(tail.free_incidence)
+	var x := clampf((absf(actual_tail) - float(model.surfaces.attached_limit))
+		/ (float(model.surfaces.tail_local_limit) - float(model.surfaces.attached_limit)), 0.0, 1.0)
+	var expected_blend := x * x * (3.0 - 2.0 * x)
+	var static_blend: float = Aero.local_flow_weight(s, air, d, model)
+	var actual_blend: float = Aero.local_flow_weight(s, air, d, model, NAN, factors)
+	_check("h/b 0.05: ground effect moves the actual tail beyond the attached limit", rad_to_deg(actual_tail) > rad_to_deg(float(model.surfaces.attached_limit)),
+		"tail %.3f°" % rad_to_deg(actual_tail))
+	_check("h/b 0.05: default selector retains its static result but explicit ground factors select local flow",
+		static_blend == 0.0 and expected_blend > 0.0 and absf(actual_blend - expected_blend) < 1e-12,
+		"static %.6f, actual %.6f, expected %.6f" % [static_blend, actual_blend, expected_blend])
+	var global := Aero._global_loads(s, air, d, model, RHO, NAN, factors)
+	var local := Aero._local_loads(s, air, d, model, RHO, NAN, null, factors)
+	var expected_loads := global.duplicate()
+	for k in 6:
+		expected_loads[k] = lerpf(global[k], local[k], expected_blend)
+	_check("Aero.loads applies the ground-aware tail blend", Aero.loads(s, air, d, model, RHO, NAN, 0.0).to_byte_array() == expected_loads.to_byte_array())
 
 
 func _banked_and_regimes(session: Node) -> void:

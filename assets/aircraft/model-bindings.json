@@ -1,0 +1,561 @@
+{
+  "schema": "openrc-aircraft-model-bindings",
+  "version": 1,
+  "families": [
+    {
+      "family_id": "jensen-das-ugly-stik-60",
+      "builder": {
+        "script": "res://aircraft/ugly_stik_model.gd",
+        "adapter": "euler_hinges"
+      },
+      "geometry": {
+        "script": "res://aircraft/ugly_stik_geometry.gd",
+        "source": "assets/aircraft/ugly-stik-60/geometry.json",
+        "revision_path": "id",
+        "identity_path": "id",
+        "datum": {
+          "model_z_le": {
+            "path": "wing.leading_z"
+          },
+          "model_y_thrust": {
+            "path": "equipment.shaft_y"
+          }
+        }
+      },
+      "asset": {
+        "kind": "procedural"
+      },
+      "bindings": {
+        "controls": {
+          "aileron_left": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_left",
+                "node": "aileron_left_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "aileron_right": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_right",
+                "node": "aileron_right_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "elevator": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevator",
+                "node": "elevator_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "rudder": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "rudder",
+                "node": "rudder_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          }
+        },
+        "rotor": {
+          "present": true,
+          "node": "propeller",
+          "spin_node": "",
+          "diameter": {
+            "path": "equipment.prop_diameter"
+          },
+          "source": "builder",
+          "geometry_ref": ""
+        },
+        "gear": {
+          "keys": {
+            "left": "left",
+            "right": "right",
+            "steering": "steering",
+            "nose": "nose"
+          }
+        },
+        "crash": {
+          "provider": "none",
+          "metadata_script": "",
+          "asset_node": ""
+        }
+      },
+      "authoring_sources": []
+    },
+    {
+      "family_id": "gp-extra-300s-60",
+      "builder": {
+        "script": "res://aircraft/extra_300s_model.gd",
+        "adapter": "euler_hinges"
+      },
+      "geometry": {
+        "script": "res://aircraft/extra_300s_geometry.gd",
+        "source": "assets/aircraft/extra-300s-60/geometry.json",
+        "revision_path": "id",
+        "identity_path": "id",
+        "datum": {
+          "model_z_le": {
+            "path": "wing.le_z_root"
+          },
+          "model_y_thrust": {
+            "value": 0.0
+          }
+        }
+      },
+      "asset": {
+        "kind": "procedural"
+      },
+      "bindings": {
+        "controls": {
+          "aileron_left": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_left",
+                "node": "aileron_left_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "aileron_right": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_right",
+                "node": "aileron_right_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "elevator": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevator",
+                "node": "elevator_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "rudder": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "rudder",
+                "node": "rudder_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          }
+        },
+        "rotor": {
+          "present": true,
+          "node": "propeller",
+          "spin_node": "",
+          "diameter": {
+            "path": "propeller.diameter"
+          },
+          "source": "builder",
+          "geometry_ref": ""
+        },
+        "gear": {
+          "keys": {
+            "left": "left",
+            "right": "right",
+            "tail": "tail",
+            "steering": "steering"
+          }
+        },
+        "crash": {
+          "provider": "none",
+          "metadata_script": "",
+          "asset_node": ""
+        }
+      },
+      "authoring_sources": [
+        {
+          "path": "assets/aircraft/extra-300s-60/appearance.json",
+          "role": "appearance"
+        }
+      ]
+    },
+    {
+      "family_id": "p51d-mustang-120",
+      "builder": {
+        "script": "res://aircraft/p51d_model.gd",
+        "adapter": "euler_hinges"
+      },
+      "geometry": {
+        "script": "res://aircraft/p51d_geometry.gd",
+        "source": "assets/aircraft/p51d-mustang-120/geometry.json",
+        "revision_path": "id",
+        "identity_path": "id",
+        "datum": {
+          "model_z_le": {
+            "path": "wing.le_z_root"
+          },
+          "model_y_thrust": {
+            "value": 0.0
+          }
+        }
+      },
+      "asset": {
+        "kind": "procedural"
+      },
+      "bindings": {
+        "controls": {
+          "aileron_left": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_left",
+                "node": "aileron_left_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "aileron_right": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_right",
+                "node": "aileron_right_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "elevator": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevator",
+                "node": "elevator_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "rudder": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "rudder",
+                "node": "rudder_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          }
+        },
+        "rotor": {
+          "present": true,
+          "node": "propeller",
+          "spin_node": "",
+          "diameter": {
+            "path": "propeller.diameter"
+          },
+          "source": "builder",
+          "geometry_ref": ""
+        },
+        "gear": {
+          "keys": {
+            "left": "left",
+            "right": "right",
+            "tail": "tail",
+            "steering": "steering"
+          }
+        },
+        "crash": {
+          "provider": "none",
+          "metadata_script": "",
+          "asset_node": ""
+        }
+      },
+      "authoring_sources": [
+        {
+          "path": "assets/aircraft/p51d-mustang-120/source.json",
+          "role": "geometry_input"
+        },
+        {
+          "path": "assets/aircraft/p51d-mustang-120/appearance.json",
+          "role": "appearance"
+        }
+      ]
+    },
+    {
+      "family_id": "sebart-avanti-s-a200-p100rx",
+      "builder": {
+        "script": "res://aircraft/avanti_s_model.gd",
+        "adapter": "axis_hinges"
+      },
+      "geometry": {
+        "script": "res://aircraft/avanti_s_geometry.gd",
+        "source": "assets/aircraft/avanti-s-a200/geometry.json",
+        "revision_path": "revision",
+        "identity_path": "revision",
+        "datum": {
+          "model_z_le": {
+            "value": 0.0
+          },
+          "model_y_thrust": {
+            "value": 0.0
+          }
+        }
+      },
+      "asset": {
+        "kind": "procedural"
+      },
+      "bindings": {
+        "controls": {
+          "aileron_left": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_left",
+                "node": "aileron_left_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "aileron_right": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_right",
+                "node": "aileron_right_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "elevator": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevator_left",
+                "node": "elevator_left_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              },
+              {
+                "key": "elevator_right",
+                "node": "elevator_right_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "rudder": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "rudder",
+                "node": "rudder_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "flap_left": {
+            "visual_only": true,
+            "hinges": [
+              {
+                "key": "flap_left",
+                "node": "flap_left_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "flap_right": {
+            "visual_only": true,
+            "hinges": [
+              {
+                "key": "flap_right",
+                "node": "flap_right_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          }
+        },
+        "rotor": {
+          "present": false,
+          "node": "propeller",
+          "spin_node": "",
+          "diameter": {
+            "value": 0.0
+          },
+          "source": "none",
+          "geometry_ref": ""
+        },
+        "gear": {
+          "keys": {}
+        },
+        "crash": {
+          "provider": "none",
+          "metadata_script": "",
+          "asset_node": ""
+        }
+      },
+      "authoring_sources": []
+    },
+    {
+      "family_id": "turbo-lumber-evolution",
+      "builder": {
+        "script": "res://aircraft/timber_model.gd",
+        "adapter": "imported_glb"
+      },
+      "geometry": {
+        "script": "res://aircraft/timber_geometry.gd",
+        "source": "assets/aircraft/turbo-lumber-evolution/geometry.json",
+        "revision_path": "revision",
+        "identity_path": "catalog_id",
+        "datum": {
+          "model_z_le": {
+            "value": 0.0
+          },
+          "model_y_thrust": {
+            "value": 0.0
+          }
+        }
+      },
+      "asset": {
+        "kind": "imported_glb",
+        "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+        "identity_path": "source_alias"
+      },
+      "bindings": {
+        "controls": {
+          "aileron_left": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_left",
+                "node": "aileron_left_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.aileron_left_hinge"
+              }
+            ]
+          },
+          "aileron_right": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_right",
+                "node": "aileron_right_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.aileron_right_hinge"
+              }
+            ]
+          },
+          "elevator": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevator",
+                "node": "elevator_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.elevator_hinge"
+              }
+            ]
+          },
+          "rudder": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "rudder",
+                "node": "rudder_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.rudder_hinge"
+              }
+            ]
+          },
+          "flap_left": {
+            "visual_only": true,
+            "hinges": [
+              {
+                "key": "flap_left",
+                "node": "flap_left_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.flap_left_hinge"
+              }
+            ]
+          },
+          "flap_right": {
+            "visual_only": true,
+            "hinges": [
+              {
+                "key": "flap_right",
+                "node": "flap_right_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.flap_right_hinge"
+              }
+            ]
+          }
+        },
+        "rotor": {
+          "present": true,
+          "node": "propeller",
+          "spin_node": "propeller_spin",
+          "diameter": {
+            "path": "thrust.propeller_radius.value",
+            "scale": 2.0
+          },
+          "source": "geometry_articulation",
+          "geometry_ref": "articulations.propeller_spin"
+        },
+        "gear": {
+          "keys": {
+            "left": "left",
+            "right": "right",
+            "tail": "tail",
+            "steering": "steering"
+          }
+        },
+        "crash": {
+          "provider": "generated_triangle_map",
+          "metadata_script": "res://aircraft/timber_crash_sections.gd",
+          "asset_node": "airframe"
+        }
+      },
+      "authoring_sources": [
+        {
+          "path": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
+          "role": "asset_identity"
+        },
+        {
+          "path": "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json",
+          "role": "mesh_measurements"
+        },
+        {
+          "path": "assets/aircraft/turbo-lumber-evolution/manual.json",
+          "role": "manual_metadata"
+        }
+      ]
+    }
+  ]
+}

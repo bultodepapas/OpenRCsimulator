@@ -40,6 +40,12 @@
       "kind": "estimated",
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
     },
+    "starter_prime_kg": {
+      "value": 1e-05,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
     "temperature_firing_min_k": {
       "value": 280.0,
       "unit": "K",
@@ -134,23 +140,29 @@
     "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
   },
   "propeller": {
+    "max_rpm": {
+      "value": 15833.333333333334,
+      "unit": "rpm",
+      "kind": "derived",
+      "source": "https://www.apcprop.com/technical-information/rpm-limits/; sport 190000/diameter(in)"
+    },
     "diameter_m": {
-      "value": 0.3302,
+      "value": 0.30479999999999996,
       "unit": "m",
       "kind": "estimated",
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
     },
     "pitch_m": {
-      "value": 0.15239999999999998,
+      "value": 0.17779999999999999,
       "unit": "m",
       "kind": "estimated",
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
     },
     "chord_m": {
-      "value": 0.025,
+      "value": 0.0211364169120926,
       "unit": "m",
       "kind": "estimated",
-      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      "source": "Conditional APC12x7 10330rpm fit at assumed 1.225kg/m3; transferred c/D for other diameters; NITRO-2T dossier"
     },
     "blades": {
       "value": 2.0,

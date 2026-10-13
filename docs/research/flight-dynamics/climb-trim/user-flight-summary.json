@@ -1,0 +1,998 @@
+{
+  "date": "2026-10-13",
+  "user_feedback": "MEJOR BASTANTE",
+  "interpretation": "Owner reports substantial improvement. This is not a controlled before/after test and does not establish the original root cause. Elevator trim remains unchanged in these captured segments. Some hands-off climbs follow previous control inputs and loss of height/speed changes.",
+  "aircraft": "turbo-lumber-evolution",
+  "observation_directory": ".tools/climb-observed/2026-10-13T18-24-06-64136",
+  "limitations": [
+    "This summary includes only segments 001-014 closed at inspection.",
+    "Recorder rejected flight segments 002 and 007 with ERR_INVALID_DATA; raw-input files remain. Missing flight data must not be inferred.",
+    "Session contains manual power changes, control inputs, resets and crashes; it is not a neutral-start regression."
+  ],
+  "segments": [
+    {
+      "file": "flight-001.csv",
+      "sha256": "f33a388f179dc2c305cb95b628851cf2544d0a7b91d8b9082b58134caa12e028",
+      "input_sha256": "de575dd63a6bb23f48374002b273afc052ef175be42b643b9a936e4bef7c59df",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 0.004166667,
+          "last": 5.004166667,
+          "min": 0.004166667,
+          "max": 5.004166667
+        },
+        "alt_m": {
+          "first": 29.999859832,
+          "last": 24.766960809,
+          "min": 24.766960809,
+          "max": 30.165347191
+        },
+        "pitch_deg": {
+          "first": 4.320110266,
+          "last": -31.102741548,
+          "min": -31.102741548,
+          "max": 11.285650311
+        },
+        "roll_deg": {
+          "first": 4.844e-06,
+          "last": 73.56128961,
+          "min": -0.314617631,
+          "max": 75.835251787
+        },
+        "tas_mps": {
+          "first": 13.073422564,
+          "last": 14.718252806,
+          "min": 12.091790166,
+          "max": 14.718252806
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "cmd_throttle": {
+          "first": 0.40938349,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.40938349
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-003.csv",
+      "sha256": "160520203e1c721cdca8b590ca9d2dcec8ea0c2874edd2ab6c91afb154661269",
+      "input_sha256": "5769de4444ec1b0513ed567e94a94c5983f21ce18ad6ab722f21496a51bc44e7",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 10.0125,
+          "last": 15.0125,
+          "min": 10.0125,
+          "max": 15.0125
+        },
+        "alt_m": {
+          "first": 10.352090054,
+          "last": 7.966611286,
+          "min": 7.845453444,
+          "max": 20.202249895
+        },
+        "pitch_deg": {
+          "first": -9.699675244,
+          "last": 5.688484305,
+          "min": -39.524991119,
+          "max": 16.442473552
+        },
+        "roll_deg": {
+          "first": 27.425240037,
+          "last": 5.012296586,
+          "min": 1.132838254,
+          "max": 93.833100189
+        },
+        "tas_mps": {
+          "first": 19.934461266,
+          "last": 20.098903528,
+          "min": 17.478035843,
+          "max": 21.52155166
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.74522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.74522352
+        },
+        "cmd_throttle": {
+          "first": 0.704166667,
+          "last": 0.370833333,
+          "min": 0.370833333,
+          "max": 0.704166667
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": -1.0,
+          "max": 0.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-004.csv",
+      "sha256": "a71189662d2478d72e32f937ef2a831246bb8f5c9eee40d31ba7a3b901a5c7d6",
+      "input_sha256": "9868df9fa193f79ea129becfab588edb5607d8300ac5ad43bdd1063b13941308",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 15.016666667,
+          "last": 20.016666667,
+          "min": 15.016666667,
+          "max": 20.016666667
+        },
+        "alt_m": {
+          "first": 7.972475293,
+          "last": 15.920094059,
+          "min": 7.972475293,
+          "max": 22.446930972
+        },
+        "pitch_deg": {
+          "first": 5.832682676,
+          "last": -18.888053373,
+          "min": -20.467856258,
+          "max": 37.121664046
+        },
+        "roll_deg": {
+          "first": 4.942930414,
+          "last": 4.160521085,
+          "min": -7.870722416,
+          "max": 11.212836423
+        },
+        "tas_mps": {
+          "first": 20.073017618,
+          "last": 14.139677773,
+          "min": 7.878096549,
+          "max": 20.073017618
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "cmd_throttle": {
+          "first": 0.370833333,
+          "last": 0.370833333,
+          "min": 0.370833333,
+          "max": 0.370833333
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-005.csv",
+      "sha256": "52bf58192a5438b83772f5b36649699ff73f39fc4fb6ec44ee5b755e145f80e9",
+      "input_sha256": "56b341e56f27454498fd269bf5d272b6da02e55c3fd5c5fe1db9a39670a3c9b6",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 20.020833333,
+          "last": 25.020833333,
+          "min": 20.020833333,
+          "max": 25.020833333
+        },
+        "alt_m": {
+          "first": 15.897517859,
+          "last": 14.809404689,
+          "min": 9.833663217,
+          "max": 15.897517859
+        },
+        "pitch_deg": {
+          "first": -18.860063642,
+          "last": 3.04100801,
+          "min": -18.860063642,
+          "max": 15.515027243
+        },
+        "roll_deg": {
+          "first": 4.163055324,
+          "last": 10.965322358,
+          "min": 3.470869155,
+          "max": 10.965322358
+        },
+        "tas_mps": {
+          "first": 14.150939841,
+          "last": 11.324774576,
+          "min": 11.207497531,
+          "max": 16.261535256
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "cmd_throttle": {
+          "first": 0.370833333,
+          "last": 0.370833333,
+          "min": 0.370833333,
+          "max": 0.370833333
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-006.csv",
+      "sha256": "c850f7bdb53a63f4213ea35e8fd918b6f200d308520eacb5a0734a5cdb45183b",
+      "input_sha256": "cc3adc38195c9873503ed4c791d73f21b859790b8f54e4b369482a0cf735df8c",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 25.025,
+          "last": 30.025,
+          "min": 25.025,
+          "max": 30.025
+        },
+        "alt_m": {
+          "first": 14.808220901,
+          "last": 3.985846307,
+          "min": 1.290500047,
+          "max": 14.808220901
+        },
+        "pitch_deg": {
+          "first": 2.992648539,
+          "last": 15.600317078,
+          "min": -21.522767554,
+          "max": 15.600317078
+        },
+        "roll_deg": {
+          "first": 10.970011183,
+          "last": 46.43009445,
+          "min": 10.970011183,
+          "max": 48.044175437
+        },
+        "tas_mps": {
+          "first": 11.328338535,
+          "last": 21.935642664,
+          "min": 11.309199643,
+          "max": 21.935642664
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 1.0
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 1.0
+        },
+        "cmd_throttle": {
+          "first": 0.370833333,
+          "last": 0.970833333,
+          "min": 0.370833333,
+          "max": 1.0
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-008.csv",
+      "sha256": "c9a20dd8d75e8957b81ca50bf804262b3fb7c4d48f8d9d5c1bfd0b44cac833dc",
+      "input_sha256": "cc3024d11b20d7efeec86b579d20a5cfe887723fe8dc76c694f0f68fdb086769",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 35.033333333,
+          "last": 40.033333333,
+          "min": 35.033333333,
+          "max": 40.033333333
+        },
+        "alt_m": {
+          "first": 17.072871545,
+          "last": 11.268149334,
+          "min": 4.560587086,
+          "max": 17.072871545
+        },
+        "pitch_deg": {
+          "first": -25.464770876,
+          "last": -1.513678162,
+          "min": -35.181252726,
+          "max": 18.838266558
+        },
+        "roll_deg": {
+          "first": -46.397148375,
+          "last": -39.154568784,
+          "min": -46.397148375,
+          "max": -23.705066126
+        },
+        "tas_mps": {
+          "first": 13.641905516,
+          "last": 11.116229498,
+          "min": 11.022003913,
+          "max": 18.808790628
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.84522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.84522352
+        },
+        "cmd_throttle": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-009.csv",
+      "sha256": "3052459c3cca841363643c54f373b4a7d721f449e1e86bb2006e7ef495461117",
+      "input_sha256": "7a3d010c91e09e4f62f977e4ff8a03a5c08688e04654d9fef86a373ea952eb7f",
+      "rows": 685,
+      "flight": {
+        "t_s": {
+          "first": 40.0375,
+          "last": 42.8875,
+          "min": 40.0375,
+          "max": 42.8875
+        },
+        "alt_m": {
+          "first": 11.263347092,
+          "last": 4.381009973,
+          "min": 4.381009973,
+          "max": 11.263347092
+        },
+        "pitch_deg": {
+          "first": -1.609044188,
+          "last": -22.750735522,
+          "min": -22.750735522,
+          "max": 38.67926263
+        },
+        "roll_deg": {
+          "first": -39.156192244,
+          "last": -99.641187774,
+          "min": -99.641187774,
+          "max": -23.958916392
+        },
+        "tas_mps": {
+          "first": 11.12176101,
+          "last": 12.457314333,
+          "min": 10.4312295,
+          "max": 14.346549431
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 1.0
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 1.0
+        },
+        "cmd_throttle": {
+          "first": 0.0,
+          "last": 0.758333333,
+          "min": 0.0,
+          "max": 0.758333333
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-010.csv",
+      "sha256": "721a2bcdfc5236f803ae9ba531880fe0f4c74513ba262591b16c9361f0ab8197",
+      "input_sha256": "dd8faf5558d9459b1f0c85cd42a9b90247cccac8e5f4d8012bea76b930c0bb31",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 0.0,
+          "last": 5.0,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "alt_m": {
+          "first": 30.0,
+          "last": 13.870802137,
+          "min": 13.867060619,
+          "max": 30.013994128
+        },
+        "pitch_deg": {
+          "first": 4.320124857,
+          "last": 4.028124369,
+          "min": -28.151273077,
+          "max": 15.710212728
+        },
+        "roll_deg": {
+          "first": 0.0,
+          "last": 4.130232458,
+          "min": -0.019151798,
+          "max": 52.620358449
+        },
+        "tas_mps": {
+          "first": 13.073890243,
+          "last": 17.502044166,
+          "min": 13.00998739,
+          "max": 18.05797327
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "cmd_throttle": {
+          "first": 0.40938349,
+          "last": 0.20938349,
+          "min": 0.20938349,
+          "max": 0.40938349
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": -1.0,
+          "max": 1.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-011.csv",
+      "sha256": "c570d00251afc1892dde823d781e17ee19642cd35268d2d94796497c4ca9c491",
+      "input_sha256": "73d5c5a5290abe3a0372a5cac12ef209be3541e5652d40c449e4999ab044713d",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 5.004166667,
+          "last": 10.004166667,
+          "min": 5.004166667,
+          "max": 10.004166667
+        },
+        "alt_m": {
+          "first": 13.871741961,
+          "last": 12.369272675,
+          "min": 12.369272675,
+          "max": 20.542891598
+        },
+        "pitch_deg": {
+          "first": 4.101997583,
+          "last": -17.615208259,
+          "min": -19.48186841,
+          "max": 21.409503566
+        },
+        "roll_deg": {
+          "first": 4.114859298,
+          "last": -8.287663603,
+          "min": -8.287663603,
+          "max": 14.672348564
+        },
+        "tas_mps": {
+          "first": 17.502615919,
+          "last": 14.34701509,
+          "min": 9.389125505,
+          "max": 17.502615919
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "cmd_throttle": {
+          "first": 0.20938349,
+          "last": 0.20938349,
+          "min": 0.20938349,
+          "max": 0.20938349
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": -1.0,
+          "max": 0.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-012.csv",
+      "sha256": "46601612bd9c4eec15d3b08fb8a263b017c6667910ad05702d9ebaa5d3617804",
+      "input_sha256": "9a429c93b3ece5b09228532a636605c15f9e26a73589eb2c921139b203f006c5",
+      "rows": 556,
+      "flight": {
+        "t_s": {
+          "first": 10.008333333,
+          "last": 12.320833333,
+          "min": 10.008333333,
+          "max": 12.320833333
+        },
+        "alt_m": {
+          "first": 12.347495439,
+          "last": 0.292258848,
+          "min": 0.292258848,
+          "max": 12.347495439
+        },
+        "pitch_deg": {
+          "first": -17.561832013,
+          "last": -43.626049547,
+          "min": -57.196050751,
+          "max": 23.87002226
+        },
+        "roll_deg": {
+          "first": -8.339374054,
+          "last": 2.236613912,
+          "min": -112.267988442,
+          "max": 3.52191394
+        },
+        "tas_mps": {
+          "first": 14.364363996,
+          "last": 16.537371736,
+          "min": 12.421341229,
+          "max": 16.800231519
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "cmd_throttle": {
+          "first": 0.20938349,
+          "last": 0.20938349,
+          "min": 0.20938349,
+          "max": 0.20938349
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": -1.0,
+          "max": 1.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-013.csv",
+      "sha256": "e3056b448e29b10483613c55988691a322616205023a092337a63c553aa68113",
+      "input_sha256": "17731ba466900ea44ffbcc7ec804339df4e3fbdfbe10103b41f61624b4e044fe",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 0.0,
+          "last": 5.0,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "alt_m": {
+          "first": 30.0,
+          "last": 13.759324298,
+          "min": 12.171754102,
+          "max": 30.0
+        },
+        "pitch_deg": {
+          "first": 4.320124857,
+          "last": -1.397279272,
+          "min": -51.352553782,
+          "max": 17.591378844
+        },
+        "roll_deg": {
+          "first": 0.0,
+          "last": 5.727174211,
+          "min": -1.979544632,
+          "max": 82.733901153
+        },
+        "tas_mps": {
+          "first": 13.073890243,
+          "last": 17.441367503,
+          "min": 13.00998739,
+          "max": 20.422000763
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": -0.85477648,
+          "max": 0.511890186
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": -0.85477648,
+          "max": 0.511890186
+        },
+        "cmd_throttle": {
+          "first": 0.40938349,
+          "last": 0.40938349,
+          "min": 0.40938349,
+          "max": 0.40938349
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": -1.0,
+          "max": 1.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": -1.0,
+          "max": 1.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    },
+    {
+      "file": "flight-014.csv",
+      "sha256": "512aee7f7a88745dcf2a0c6333008d4edfc5a89bc8c38167b1e2cef775e511ad",
+      "input_sha256": "7cf9ed313b152828c53d59fdc0a7cf069892f8546e9dbedb2766afd79043f478",
+      "rows": 1201,
+      "flight": {
+        "t_s": {
+          "first": 5.004166667,
+          "last": 10.004166667,
+          "min": 5.004166667,
+          "max": 10.004166667
+        },
+        "alt_m": {
+          "first": 13.753211677,
+          "last": 18.582090456,
+          "min": 13.598460497,
+          "max": 21.735572287
+        },
+        "pitch_deg": {
+          "first": -1.262184567,
+          "last": -10.428603953,
+          "min": -10.495324737,
+          "max": 21.753713146
+        },
+        "roll_deg": {
+          "first": 5.721382509,
+          "last": 16.097046258,
+          "min": 5.682662458,
+          "max": 16.433280039
+        },
+        "tas_mps": {
+          "first": 17.435794837,
+          "last": 13.666970155,
+          "min": 10.431414375,
+          "max": 17.4406948
+        },
+        "cmd_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "srv_pitch": {
+          "first": 0.14522352,
+          "last": 0.14522352,
+          "min": 0.14522352,
+          "max": 0.14522352
+        },
+        "cmd_throttle": {
+          "first": 0.40938349,
+          "last": 0.40938349,
+          "min": 0.40938349,
+          "max": 0.40938349
+        }
+      },
+      "inputs": {
+        "raw_roll": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_pitch": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "raw_yaw": {
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trim_pitch": {
+          "first": 0.145223519557,
+          "last": 0.145223519557,
+          "min": 0.145223519557,
+          "max": 0.145223519557
+        }
+      }
+    }
+  ]
+}

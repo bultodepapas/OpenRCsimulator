@@ -98,8 +98,15 @@ static func build(batches: Dictionary) -> Node3D:
 static func triangles(mesh: Mesh) -> int:
 	var total := 0
 	for surface in mesh.get_surface_count():
-		var indices: int = mesh.surface_get_array_index_len(surface)
-		total += (indices if indices > 0 else mesh.surface_get_array_len(surface)) / 3
+		# Mesh array-length convenience methods belong to ArrayMesh and fail on
+		# primitive sources such as QuadMesh. The surface arrays are available on
+	# both, and indexed geometry must count indices rather than unique vertices.
+		var arrays: Array = mesh.surface_get_arrays(surface)
+		var index_data: Variant = arrays[Mesh.ARRAY_INDEX]
+		var vertex_data: Variant = arrays[Mesh.ARRAY_VERTEX]
+		var index_count := (index_data as PackedInt32Array).size() if index_data is PackedInt32Array else 0
+		var vertex_count := (vertex_data as PackedVector3Array).size() if vertex_data is PackedVector3Array else 0
+		total += (index_count if index_count > 0 else vertex_count) / 3
 	return total
 
 

@@ -5,6 +5,7 @@ const FORMAT := "openrc-glow-engine v1"
 const CONTRACT := "res://data/glow/profile_contract.json"
 const KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
 const ROOT_KEYS := ["format", "id", "manufacturer", "model", "family", "status", "feed", "oil_model", "parameters", "fuel", "operation"]
+const DISPLACEMENT_GEOMETRY_RELATIVE_TOLERANCE := 0.005
 
 
 static func load_file(path: String) -> Dictionary:
@@ -55,6 +56,9 @@ static func prepare(raw: Variant) -> Dictionary:
 	if not is_finite(density) or density <= 0.0 or not is_finite(combustible_mass) or combustible_mass <= 0.0:
 		return _fail("Fuel blend derivation is nonfinite")
 	var p: Dictionary = params.values
+	var geometric_displacement_m3: float = PI * p.bore_m * p.bore_m * p.stroke_m * 0.25
+	if not is_finite(geometric_displacement_m3) or absf(geometric_displacement_m3 - p.displacement_m3) > p.displacement_m3 * DISPLACEMENT_GEOMETRY_RELATIVE_TOLERANCE:
+		return _fail("Bore and stroke do not reconstruct declared swept displacement within 0.5%")
 	p.oil_fraction = oil_mass / density
 	p.stoich_air_fuel_ratio = (methanol_mass * f.methanol_stoich_air_fuel_ratio + nitro_mass * f.nitromethane_stoich_air_fuel_ratio) / combustible_mass
 	p.fuel_lhv_j_kg = (methanol_mass * f.methanol_lhv_j_kg + nitro_mass * f.nitromethane_lhv_j_kg) / combustible_mass

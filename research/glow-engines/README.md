@@ -1,10 +1,10 @@
-# Standalone glow engine foundation
+# Glow engine source pipelines
 
-Implemented increment: NITRO-01a, with mean-cycle portions of NITRO-2T-02a / NITRO-4T-02a and a NITRO-02c thermal balance. [Owning plan](../../docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md) owns remaining steps; [evidence](../../docs/research/glow-engines/NITRO-01/README.md) records verification and limits.
+The [operating/configuration guide](../../docs/GLOW-ENGINES.md) owns the installed 2T/4T runtime contract. [NITRO-02](../../docs/research/glow-engines/NITRO-02/README.md) records current integration proof; [NITRO-01](../../docs/research/glow-engines/NITRO-01/README.md) preserves the original standalone foundation. The [plan](../../docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md) retains physical/pilot, cycle/propeller coverage and performance release gates.
 
 ## Interface and supported scope
 
-`app/physics/glow/profile.gd` reads `openrc-glow-engine v1` standalone candidate data, validates the closed family/quantity contract and produces detached float64 parameters. File-backed identity hashes the same bytes parsed. `source.gd` dispatches explicit `glow_2t` / `glow_4t` and retains candidate identity. These profiles are not an active aircraft v2 capability and cannot replace catalog propulsion through the current aircraft loader.
+`app/physics/glow/profile.gd` reads `openrc-glow-engine v1` candidate data, validates the closed family/quantity contract and produces detached float64 parameters. File-backed identity hashes the same bytes parsed. `source.gd` dispatches explicit `glow_2t` / `glow_4t` and retains candidate identity. `installation.gd` attaches profiles through the opt-in finite-fuel aircraft v2 extension. `build_installations.py` generates both catalog aircraft and an APC13×6 alternative for each; `verify_integration.py` and `flight_bench.gd` reproduce their software evidence. The following sections describe the pure source kernels; the integrated lifecycle, rest events and thermal feedback live in the operating guide above.
 
 `Source.evaluate(model, rpm, admission, mixture, dry_density_kg_m3, running, firing_fraction)` is pure. Admission is effective charge fraction, **not transmitter throttle**; mixture is fuel equivalence relative to the declared combustible blend. The initial kernels have no servo, charge-transport, plug-temperature or stochastic firing state. Tables are bounded, linear and flattened into `PackedFloat64Array` pairs; unsupported queries return `ok=false`. Callers must reject that result. They must not ignore errors or substitute another engine family.
 
@@ -16,7 +16,7 @@ Implemented increment: NITRO-01a, with mean-cycle portions of NITRO-2T-02a / NIT
 | Fuel component volume fractions and properties | Normalize volume to mass; oil is explicitly inert in this version. AFR and LHV use the combustible methanol/nitro mass basis, while delivered/unburned flow includes gross premix and lubricant. |
 | `running`, `firing_fraction` | Requested fuel/combustion enable and externally supplied fraction of successful opportunities. Opportunity frequency is `RPM/60` (2T) or `RPM/120` (4T); actual mean firing frequency is zero when there is no burned charge. |
 
-Rich 2T four-stroking can use a reduced successful-fire fraction without changing its 360° mechanical cycle. This is a mean input to the kernel, not yet an automatic rich-mixture instability/event law. A true 4T retains a 720° cycle, independent intake/valve/pumping parameters and an independent work map. Neither kernel embeds a manufacturer or family power/efficiency advantage.
+Rich 2T four-stroking uses a reduced successful-fire fraction without changing its 360° mechanical cycle. The installed lifecycle supplies that mean input from mixture/thermal state and records accepted opportunities and successful fires; the pure source kernel owns no event state. A true 4T retains a 720° cycle, independent intake/valve/pumping parameters and an independent work map. Neither kernel embeds a manufacturer or family power/efficiency advantage.
 
 At zero RPM, evaluations report zero fuel, work and moving losses. Positive-speed loss torques have a discontinuous rest limit; this is **not** a start/static-friction/compression/stop model. The coupled bench qualifies positive RPM and refuses a step requiring unsupported negative spin. No rest, windmilling-start, stable idle, thermal stall or shutdown-event acceptance follows from these kernels.
 
@@ -24,7 +24,7 @@ At zero RPM, evaluations report zero fuel, work and moving losses. Positive-spee
 
 ## Generated candidate profiles
 
-`build_profiles.py` owns all four files in `app/data/glow/`: closed runtime contract, offline schema and O.S. MAX-55AX / FS-64V candidates. Do not hand-edit them.
+`build_profiles.py` owns four profile files in `app/data/glow/`: closed runtime contract, offline schema and O.S. MAX-55AX / FS-64V candidates. `build_installations.py` separately owns the four installation inputs and their aircraft files. Do not hand-edit generated outputs.
 
 The candidates constrain **only the stated manufacturer rated power/RPM knot**. Intermediate WOT torque, delivery/trapping or filling, loss and efficiency knots are estimates; their inversion remains `derived` from explicitly estimated dependencies. The fuel blend is borrowed from the documented O.S. engine test campaign. Profile status is `candidate`; no measured full-curve, throttle, idle, temperature or acoustic calibration is claimed. Reference density and nominal mixture are modeling assumptions, not manufacturer test conditions.
 

@@ -1,0 +1,1358 @@
+{
+  "format": "openrc-glow-momentum-change-proof v1",
+  "ok": true,
+  "files": [
+    {
+      "hz": 240,
+      "before_sha256": "0418efa4825c94a1f7b50717cf5732fb9ff2cc4f4e06ada73a540f05e023fcf9",
+      "after_sha256": "aae64039644c08d40557c48677681b9033222625152539560c5c305d3719ec51",
+      "before_sources": {
+        "app/data/field_loader.gd": "a4216cdacb6fc76a48c435994f947790eb73dccdc4a8ccb07e0eb7b5b8dddc0b",
+        "app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+        "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+        "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+        "app/physics/glow/flight.gd": "1b0dcb541761cfb1814a5ccdcb3704d7db72257d93dee7cb6cb6e5065f85d316",
+        "app/physics/glow/four_stroke.gd": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f",
+        "app/physics/glow/fuel_mass.gd": "dfc4fdd21223360f86d7b93647eac2d72dde5f7e83406fbc6a30d9442730a03d",
+        "app/physics/glow/installation.gd": "0a6873ecdab5abaf44498f4130d4af1e0d6e4fab454f71664401f20a9bbfd3b9",
+        "app/physics/glow/lifecycle.gd": "eb48dfe650fc40dbee04bf357c12bec2df7bc7d615ae0b392bd71e3d25bd01ac",
+        "app/physics/glow/operating_point.gd": "9beaa48ea3ac2e5b4616b6fd3f01523ec8a543a739e9e33d14a58c8b60d55dc4",
+        "app/physics/glow/profile.gd": "073c3257562f2281002f173dcf00bed6fa521862ee5979841fe08c19892e08b2",
+        "app/physics/glow/propeller.gd": "86afe1103c45686e07b96204fc3bb79838dde7c912c18e5e6d8683a845c1f7ca",
+        "app/physics/glow/source.gd": "4a40ed6584a89a87e1626fedd2aac60ffedf70b42a120bb8f15387744aa115c0",
+        "app/physics/glow/thermal.gd": "ce4137c380309ca85307a7f3a5ce073625cd4cbdedf68609f053f1b07e9ffd65",
+        "app/physics/glow/two_stroke.gd": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353",
+        "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+        "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+        "app/sim/flight_session.gd": "9d86ba642fd75fd793c29a24d2249246e9431cbdc3fe3131e279f03b9786c997",
+        "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+        "research/glow-engines/flight_bench.gd": "b682c02b57cd6d938335e954a76f5f8e7501c722eef7832ced5fb4d779dc5665"
+      },
+      "after_sources": {
+        "app/data/field_loader.gd": "a4216cdacb6fc76a48c435994f947790eb73dccdc4a8ccb07e0eb7b5b8dddc0b",
+        "app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+        "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+        "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+        "app/physics/glow/flight.gd": "93eae6fc2e6704ac24feca33da3b6c5f5718313ab8af35ee8537cc6cf0064c70",
+        "app/physics/glow/four_stroke.gd": "130b8fe0c651fb2467f2cc6c54c079fe1ce08cae62ebab700517c36989bd84de",
+        "app/physics/glow/fuel_mass.gd": "31d082a0f9626dc53a78a4188fdf435ec64f1920508397ec381fe53c8f6c6509",
+        "app/physics/glow/installation.gd": "43d8a87610c5e396573c0d7e2229e6d17638ed31f4a645d4f271cf5a8cf45134",
+        "app/physics/glow/lifecycle.gd": "cda757040d41bb8c773a91d5880a3c97af4e453529de4c6cd1a2ddfd0dc45a34",
+        "app/physics/glow/operating_point.gd": "430ea738239ac84ca5e2576d5ad607c9fd717c286cf16c1b23647796e711dc9f",
+        "app/physics/glow/profile.gd": "0116ffd10f03228f3606244b6f517ed576fae90172d1f5c5850e7da01d4f1fe8",
+        "app/physics/glow/propeller.gd": "6dd77516580f012aeb490910c46bc297b41a77a88d1e5328ae0f80b3b59f4877",
+        "app/physics/glow/source.gd": "a5343da8944a1c7cca097305b4cbb63148ca2bb735cecf83e723b5b1eee04c34",
+        "app/physics/glow/thermal.gd": "d7d9a82866a9d4ded954117a1ef1550dcee1ccd1d79386b7f07640b63c06fe71",
+        "app/physics/glow/two_stroke.gd": "1b89305e9b86d1153a8ab9da3957d3933738b3b436d26f7474689c25cfc11902",
+        "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+        "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+        "app/sim/flight_session.gd": "313a75dc2434b63a1b16d4e291e071668b11ce0645efa3fa3ea37dfcefbe7792",
+        "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+        "research/glow-engines/flight_bench.gd": "9d5259395c952c09277849ef964fa6d0062b7b182c98f596769d46a0e068f5ca"
+      }
+    },
+    {
+      "hz": 480,
+      "before_sha256": "7a45fa58c2c09d2badf41a8aac1baf2e75ac155154ad16549591838e48e1a34f",
+      "after_sha256": "eef2a2543f9298f434cd1065604b4f230e4d6b35e47ab64a0e45361393299f63",
+      "before_sources": {
+        "app/data/field_loader.gd": "a4216cdacb6fc76a48c435994f947790eb73dccdc4a8ccb07e0eb7b5b8dddc0b",
+        "app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+        "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+        "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+        "app/physics/glow/flight.gd": "1b0dcb541761cfb1814a5ccdcb3704d7db72257d93dee7cb6cb6e5065f85d316",
+        "app/physics/glow/four_stroke.gd": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f",
+        "app/physics/glow/fuel_mass.gd": "dfc4fdd21223360f86d7b93647eac2d72dde5f7e83406fbc6a30d9442730a03d",
+        "app/physics/glow/installation.gd": "0a6873ecdab5abaf44498f4130d4af1e0d6e4fab454f71664401f20a9bbfd3b9",
+        "app/physics/glow/lifecycle.gd": "eb48dfe650fc40dbee04bf357c12bec2df7bc7d615ae0b392bd71e3d25bd01ac",
+        "app/physics/glow/operating_point.gd": "9beaa48ea3ac2e5b4616b6fd3f01523ec8a543a739e9e33d14a58c8b60d55dc4",
+        "app/physics/glow/profile.gd": "073c3257562f2281002f173dcf00bed6fa521862ee5979841fe08c19892e08b2",
+        "app/physics/glow/propeller.gd": "86afe1103c45686e07b96204fc3bb79838dde7c912c18e5e6d8683a845c1f7ca",
+        "app/physics/glow/source.gd": "4a40ed6584a89a87e1626fedd2aac60ffedf70b42a120bb8f15387744aa115c0",
+        "app/physics/glow/thermal.gd": "ce4137c380309ca85307a7f3a5ce073625cd4cbdedf68609f053f1b07e9ffd65",
+        "app/physics/glow/two_stroke.gd": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353",
+        "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+        "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+        "app/sim/flight_session.gd": "9d86ba642fd75fd793c29a24d2249246e9431cbdc3fe3131e279f03b9786c997",
+        "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+        "research/glow-engines/flight_bench.gd": "b682c02b57cd6d938335e954a76f5f8e7501c722eef7832ced5fb4d779dc5665"
+      },
+      "after_sources": {
+        "app/data/field_loader.gd": "a4216cdacb6fc76a48c435994f947790eb73dccdc4a8ccb07e0eb7b5b8dddc0b",
+        "app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+        "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+        "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+        "app/physics/glow/flight.gd": "93eae6fc2e6704ac24feca33da3b6c5f5718313ab8af35ee8537cc6cf0064c70",
+        "app/physics/glow/four_stroke.gd": "130b8fe0c651fb2467f2cc6c54c079fe1ce08cae62ebab700517c36989bd84de",
+        "app/physics/glow/fuel_mass.gd": "31d082a0f9626dc53a78a4188fdf435ec64f1920508397ec381fe53c8f6c6509",
+        "app/physics/glow/installation.gd": "43d8a87610c5e396573c0d7e2229e6d17638ed31f4a645d4f271cf5a8cf45134",
+        "app/physics/glow/lifecycle.gd": "cda757040d41bb8c773a91d5880a3c97af4e453529de4c6cd1a2ddfd0dc45a34",
+        "app/physics/glow/operating_point.gd": "430ea738239ac84ca5e2576d5ad607c9fd717c286cf16c1b23647796e711dc9f",
+        "app/physics/glow/profile.gd": "0116ffd10f03228f3606244b6f517ed576fae90172d1f5c5850e7da01d4f1fe8",
+        "app/physics/glow/propeller.gd": "6dd77516580f012aeb490910c46bc297b41a77a88d1e5328ae0f80b3b59f4877",
+        "app/physics/glow/source.gd": "a5343da8944a1c7cca097305b4cbb63148ca2bb735cecf83e723b5b1eee04c34",
+        "app/physics/glow/thermal.gd": "d7d9a82866a9d4ded954117a1ef1550dcee1ccd1d79386b7f07640b63c06fe71",
+        "app/physics/glow/two_stroke.gd": "1b89305e9b86d1153a8ab9da3957d3933738b3b436d26f7474689c25cfc11902",
+        "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+        "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+        "app/sim/flight_session.gd": "313a75dc2434b63a1b16d4e291e071668b11ce0645efa3fa3ea37dfcefbe7792",
+        "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+        "research/glow-engines/flight_bench.gd": "9d5259395c952c09277849ef964fa6d0062b7b182c98f596769d46a0e068f5ca"
+      }
+    },
+    {
+      "hz": 960,
+      "before_sha256": "652614c56fb006c9e1887fffe513517929d07cc033b2f425b1d76cb5f460cab1",
+      "after_sha256": "fa429beffdc10d667f9a567336b0ea2802d94cd75308e3757b698135b9a133fe",
+      "before_sources": {
+        "app/data/field_loader.gd": "a4216cdacb6fc76a48c435994f947790eb73dccdc4a8ccb07e0eb7b5b8dddc0b",
+        "app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+        "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+        "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+        "app/physics/glow/flight.gd": "1b0dcb541761cfb1814a5ccdcb3704d7db72257d93dee7cb6cb6e5065f85d316",
+        "app/physics/glow/four_stroke.gd": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f",
+        "app/physics/glow/fuel_mass.gd": "dfc4fdd21223360f86d7b93647eac2d72dde5f7e83406fbc6a30d9442730a03d",
+        "app/physics/glow/installation.gd": "0a6873ecdab5abaf44498f4130d4af1e0d6e4fab454f71664401f20a9bbfd3b9",
+        "app/physics/glow/lifecycle.gd": "eb48dfe650fc40dbee04bf357c12bec2df7bc7d615ae0b392bd71e3d25bd01ac",
+        "app/physics/glow/operating_point.gd": "9beaa48ea3ac2e5b4616b6fd3f01523ec8a543a739e9e33d14a58c8b60d55dc4",
+        "app/physics/glow/profile.gd": "073c3257562f2281002f173dcf00bed6fa521862ee5979841fe08c19892e08b2",
+        "app/physics/glow/propeller.gd": "86afe1103c45686e07b96204fc3bb79838dde7c912c18e5e6d8683a845c1f7ca",
+        "app/physics/glow/source.gd": "4a40ed6584a89a87e1626fedd2aac60ffedf70b42a120bb8f15387744aa115c0",
+        "app/physics/glow/thermal.gd": "ce4137c380309ca85307a7f3a5ce073625cd4cbdedf68609f053f1b07e9ffd65",
+        "app/physics/glow/two_stroke.gd": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353",
+        "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+        "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+        "app/sim/flight_session.gd": "9d86ba642fd75fd793c29a24d2249246e9431cbdc3fe3131e279f03b9786c997",
+        "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+        "research/glow-engines/flight_bench.gd": "b682c02b57cd6d938335e954a76f5f8e7501c722eef7832ced5fb4d779dc5665"
+      },
+      "after_sources": {
+        "app/data/field_loader.gd": "a4216cdacb6fc76a48c435994f947790eb73dccdc4a8ccb07e0eb7b5b8dddc0b",
+        "app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+        "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+        "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+        "app/physics/glow/flight.gd": "93eae6fc2e6704ac24feca33da3b6c5f5718313ab8af35ee8537cc6cf0064c70",
+        "app/physics/glow/four_stroke.gd": "130b8fe0c651fb2467f2cc6c54c079fe1ce08cae62ebab700517c36989bd84de",
+        "app/physics/glow/fuel_mass.gd": "31d082a0f9626dc53a78a4188fdf435ec64f1920508397ec381fe53c8f6c6509",
+        "app/physics/glow/installation.gd": "43d8a87610c5e396573c0d7e2229e6d17638ed31f4a645d4f271cf5a8cf45134",
+        "app/physics/glow/lifecycle.gd": "cda757040d41bb8c773a91d5880a3c97af4e453529de4c6cd1a2ddfd0dc45a34",
+        "app/physics/glow/operating_point.gd": "430ea738239ac84ca5e2576d5ad607c9fd717c286cf16c1b23647796e711dc9f",
+        "app/physics/glow/profile.gd": "0116ffd10f03228f3606244b6f517ed576fae90172d1f5c5850e7da01d4f1fe8",
+        "app/physics/glow/propeller.gd": "6dd77516580f012aeb490910c46bc297b41a77a88d1e5328ae0f80b3b59f4877",
+        "app/physics/glow/source.gd": "a5343da8944a1c7cca097305b4cbb63148ca2bb735cecf83e723b5b1eee04c34",
+        "app/physics/glow/thermal.gd": "d7d9a82866a9d4ded954117a1ef1550dcee1ccd1d79386b7f07640b63c06fe71",
+        "app/physics/glow/two_stroke.gd": "1b89305e9b86d1153a8ab9da3957d3933738b3b436d26f7474689c25cfc11902",
+        "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+        "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+        "app/sim/flight_session.gd": "313a75dc2434b63a1b16d4e291e071668b11ce0645efa3fa3ea37dfcefbe7792",
+        "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+        "research/glow-engines/flight_bench.gd": "9d5259395c952c09277849ef964fa6d0062b7b182c98f596769d46a0e068f5ca"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 8119.004399726396,
+          "after": 8119.004399726396
+        },
+        "fuel_kg": {
+          "before": 0.11965498783725621,
+          "after": 0.11965498783725621
+        },
+        "temperature_k": {
+          "before": 384.6521822565073,
+          "after": 384.6521822565073
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 6948.8104057247565,
+          "after": 6948.8104057247565
+        },
+        "fuel_kg": {
+          "before": 0.11938702345196862,
+          "after": 0.11938702345196862
+        },
+        "temperature_k": {
+          "before": 386.47419525027726,
+          "after": 386.47419525027726
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "cut",
+          "after": "cut"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 5427.586377288219,
+          "after": 5427.586377288219
+        },
+        "fuel_kg": {
+          "before": 0.11961335360340894,
+          "after": 0.11961335360340894
+        },
+        "temperature_k": {
+          "before": 382.83097992701715,
+          "after": 382.83097992701715
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 5229.679222551994,
+          "after": 5229.679222551994
+        },
+        "fuel_kg": {
+          "before": 0.11991266407643589,
+          "after": 0.11991266407643589
+        },
+        "temperature_k": {
+          "before": 382.80468255667677,
+          "after": 382.80468255667677
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 4843.555680006947,
+          "after": 4843.555680006947
+        },
+        "fuel_kg": {
+          "before": 0.0,
+          "after": 0.0
+        },
+        "temperature_k": {
+          "before": 382.8790797742133,
+          "after": 382.8790797742133
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "fuel_exhausted",
+          "after": "fuel_exhausted"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "samples": 61,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 13647.045021769301,
+          "after": 13647.045021769301
+        },
+        "fuel_kg": {
+          "before": 0.11741314312701209,
+          "after": 0.11741314312701209
+        },
+        "temperature_k": {
+          "before": 399.7715075007676,
+          "after": 399.7715075007676
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 8648.913849946111,
+          "after": 8649.21079279524
+        },
+        "fuel_kg": {
+          "before": 0.11973629362216047,
+          "after": 0.11973557687551181
+        },
+        "temperature_k": {
+          "before": 386.36753069367245,
+          "after": 386.3760719209445
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 7259.644113339477,
+          "after": 7248.441609748032
+        },
+        "fuel_kg": {
+          "before": 0.11966696653076232,
+          "after": 0.11966696014549882
+        },
+        "temperature_k": {
+          "before": 386.78092401696244,
+          "after": 386.78568774776664
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "cut",
+          "after": "cut"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5627.070154001944,
+          "after": 5622.420073080335
+        },
+        "fuel_kg": {
+          "before": 0.11969057690244925,
+          "after": 0.11968981443449056
+        },
+        "temperature_k": {
+          "before": 384.59239694898207,
+          "after": 384.59378690230625
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5438.91809016813,
+          "after": 5432.702686776123
+        },
+        "fuel_kg": {
+          "before": 0.11992922919930386,
+          "after": 0.11992904245407594
+        },
+        "temperature_k": {
+          "before": 384.5406937822138,
+          "after": 384.54211011458676
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5051.6648117966515,
+          "after": 5047.620798000936
+        },
+        "fuel_kg": {
+          "before": 0.0,
+          "after": 0.0
+        },
+        "temperature_k": {
+          "before": 384.5624997613287,
+          "after": 384.56365117739495
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "fuel_exhausted",
+          "after": "fuel_exhausted"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "samples": 61,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 11390.320610354383,
+          "after": 11393.13063156679
+        },
+        "fuel_kg": {
+          "before": 0.11887076297638903,
+          "after": 0.11888991897053353
+        },
+        "temperature_k": {
+          "before": 391.1237747173624,
+          "after": 391.03557551153517
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 8119.0043958824745,
+          "after": 8119.0043958824745
+        },
+        "fuel_kg": {
+          "before": 0.11965498783731433,
+          "after": 0.11965498783731433
+        },
+        "temperature_k": {
+          "before": 384.6521822566386,
+          "after": 384.6521822566386
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 6948.814609796039,
+          "after": 6948.814609796039
+        },
+        "fuel_kg": {
+          "before": 0.11938702291679903,
+          "after": 0.11938702291679903
+        },
+        "temperature_k": {
+          "before": 386.47419406367084,
+          "after": 386.47419406367084
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "cut",
+          "after": "cut"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 5427.584663096306,
+          "after": 5427.584663096306
+        },
+        "fuel_kg": {
+          "before": 0.11961335360340904,
+          "after": 0.11961335360340904
+        },
+        "temperature_k": {
+          "before": 382.83098414911404,
+          "after": 382.83098414911404
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 5229.676668606854,
+          "after": 5229.676668606854
+        },
+        "fuel_kg": {
+          "before": 0.11991266409270465,
+          "after": 0.11991266409270465
+        },
+        "temperature_k": {
+          "before": 382.8046814794276,
+          "after": 382.8046814794276
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 4843.550536344175,
+          "after": 4843.550536344175
+        },
+        "fuel_kg": {
+          "before": 0.0,
+          "after": 0.0
+        },
+        "temperature_k": {
+          "before": 382.8790843152569,
+          "after": 382.8790843152569
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "fuel_exhausted",
+          "after": "fuel_exhausted"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "samples": 61,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 13647.071571877985,
+          "after": 13647.071571877985
+        },
+        "fuel_kg": {
+          "before": 0.11741313928895343,
+          "after": 0.11741313928895343
+        },
+        "temperature_k": {
+          "before": 399.7714715605065,
+          "after": 399.7714715605065
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 8648.913847691078,
+          "after": 8649.210790512356
+        },
+        "fuel_kg": {
+          "before": 0.11973629362217768,
+          "after": 0.11973557687552944
+        },
+        "temperature_k": {
+          "before": 386.3675306935701,
+          "after": 386.37607192084164
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 7259.645204963431,
+          "after": 7248.441865851405
+        },
+        "fuel_kg": {
+          "before": 0.11966696657216522,
+          "after": 0.11966696025922603
+        },
+        "temperature_k": {
+          "before": 386.78093509195105,
+          "after": 386.78569004941164
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "cut",
+          "after": "cut"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5627.068092491912,
+          "after": 5622.418025229362
+        },
+        "fuel_kg": {
+          "before": 0.11969057691716614,
+          "after": 0.11968981444885717
+        },
+        "temperature_k": {
+          "before": 384.5923952848983,
+          "after": 384.5937850234161
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5438.916745542997,
+          "after": 5432.701365965385
+        },
+        "fuel_kg": {
+          "before": 0.11992922919462481,
+          "after": 0.11992904244937322
+        },
+        "temperature_k": {
+          "before": 384.5406991393407,
+          "after": 384.5421152647859
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5051.659625530864,
+          "after": 5047.615648636001
+        },
+        "fuel_kg": {
+          "before": 0.0,
+          "after": 0.0
+        },
+        "temperature_k": {
+          "before": 384.56248994304326,
+          "after": 384.5636426016001
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "fuel_exhausted",
+          "after": "fuel_exhausted"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "samples": 61,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 11390.345521803309,
+          "after": 11393.131969336759
+        },
+        "fuel_kg": {
+          "before": 0.11887076109110908,
+          "after": 0.11888991919786279
+        },
+        "temperature_k": {
+          "before": 391.1237440588468,
+          "after": 391.03557679317623
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 8119.00439492124,
+          "after": 8119.00439492124
+        },
+        "fuel_kg": {
+          "before": 0.11965498783732857,
+          "after": 0.11965498783732857
+        },
+        "temperature_k": {
+          "before": 384.6521822566744,
+          "after": 384.6521822566744
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 6948.814951960992,
+          "after": 6948.814951960992
+        },
+        "fuel_kg": {
+          "before": 0.11938702308086484,
+          "after": 0.11938702308086484
+        },
+        "temperature_k": {
+          "before": 386.4741924091167,
+          "after": 386.4741924091167
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "cut",
+          "after": "cut"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 5427.584221609407,
+          "after": 5427.584221609407
+        },
+        "fuel_kg": {
+          "before": 0.11961335360826832,
+          "after": 0.11961335360826832
+        },
+        "temperature_k": {
+          "before": 382.8309844340838,
+          "after": 382.8309844340838
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 5229.676346941741,
+          "after": 5229.676346941741
+        },
+        "fuel_kg": {
+          "before": 0.11991266409108342,
+          "after": 0.11991266409108342
+        },
+        "temperature_k": {
+          "before": 382.8046843404392,
+          "after": 382.8046843404392
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 4843.549249750772,
+          "after": 4843.549249750772
+        },
+        "fuel_kg": {
+          "before": 0.0,
+          "after": 0.0
+        },
+        "temperature_k": {
+          "before": 382.87908288829584,
+          "after": 382.87908288829584
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "fuel_exhausted",
+          "after": "fuel_exhausted"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "samples": 61,
+      "all_retained_numeric_state_and_telemetry_equal": true,
+      "final": {
+        "rpm": {
+          "before": 13647.085182633053,
+          "after": 13647.085182633053
+        },
+        "fuel_kg": {
+          "before": 0.11741313446900654,
+          "after": 0.11741313446900654
+        },
+        "temperature_k": {
+          "before": 399.77143621586544,
+          "after": 399.77143621586544
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 8648.913847127182,
+          "after": 8649.21078994149
+        },
+        "fuel_kg": {
+          "before": 0.11973629362218216,
+          "after": 0.11973557687553339
+        },
+        "temperature_k": {
+          "before": 386.3675306935449,
+          "after": 386.37607192081526
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 7259.64574638257,
+          "after": 7248.442566808843
+        },
+        "fuel_kg": {
+          "before": 0.11966696656471824,
+          "after": 0.11966696023022785
+        },
+        "temperature_k": {
+          "before": 386.7809296882396,
+          "after": 386.7856904460018
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "cut",
+          "after": "cut"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5627.067588659735,
+          "after": 5622.417525166376
+        },
+        "fuel_kg": {
+          "before": 0.1196905769184764,
+          "after": 0.11968981445013015
+        },
+        "temperature_k": {
+          "before": 384.59239485747844,
+          "after": 384.5937844321325
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5438.916175813365,
+          "after": 5432.700799175069
+        },
+        "fuel_kg": {
+          "before": 0.11992922919538303,
+          "after": 0.11992904245015354
+        },
+        "temperature_k": {
+          "before": 384.54069951656487,
+          "after": 384.5421171821892
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "samples": 31,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 5051.658328301874,
+          "after": 5047.614360635703
+        },
+        "fuel_kg": {
+          "before": 0.0,
+          "after": 0.0
+        },
+        "temperature_k": {
+          "before": 384.5624909807923,
+          "after": 384.56364477889605
+        },
+        "running": {
+          "before": false,
+          "after": false
+        },
+        "stop_reason": {
+          "before": "fuel_exhausted",
+          "after": "fuel_exhausted"
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "samples": 61,
+      "all_retained_numeric_state_and_telemetry_equal": false,
+      "final": {
+        "rpm": {
+          "before": 11390.360585160086,
+          "after": 11393.13330477571
+        },
+        "fuel_kg": {
+          "before": 0.11887076110551405,
+          "after": 0.1188899192030626
+        },
+        "temperature_k": {
+          "before": 391.1237417338124,
+          "after": 391.03557809907534
+        },
+        "running": {
+          "before": true,
+          "after": true
+        },
+        "stop_reason": {
+          "before": "",
+          "after": ""
+        },
+        "fault": {
+          "before": "",
+          "after": ""
+        }
+      }
+    }
+  ],
+  "two_stroke_identical_runs": 18,
+  "four_stroke_changed_runs": 18,
+  "scope": "Saved 240/480/960 Hz state and telemetry for six scenarios per family. Timing data excluded. 2T fit/load values are preserved; 4T differences are intentional after K=.06 to .075. This is not a claim about unsaved intermediate states or measured accuracy."
+}

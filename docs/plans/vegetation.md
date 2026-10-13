@@ -1,12 +1,12 @@
 # Downloaded vegetation and nearby lake — implementation plan
 
-Date: 2026-10-13. **Status: planning only; implementation paused at the owner's request.** Owner: landscape integration lead. Steps: **LU-22–27**, continuing the [landscape track](../../LANDSCAPE_UPGRADE_PLAN.md). This revision supersedes this document's previous procedural-vegetation direction.
+Date: 2026-10-13. **Status: implementation authorized and integrated; final native verification in progress.** Owner: landscape integration lead. Steps: **LU-22–27**, continuing the [landscape track](landscape-upgrade.md). This revision supersedes the previous procedural-vegetation direction. Current proof: [LU-22 evidence](../research/landscape-upgrade/LU-22/README.md).
 
 ## Owner's requirement and delivery order
 
 **Download existing tree and plant assets and integrate them. Do not model trees, shrubs, grasses, herbs, flowers, reeds or crops.** Then add a realistic lake near the runway, with an actual basin, depth, natural banks, shoreline vegetation, convincing water and a distinct aircraft water-impact sound and effect.
 
-The current delivery is this Markdown plan only. Asset downloads, application changes, lake excavation, physics and audio integration belong to the later implementation. Earlier procedural vegetation experiments are not the selected delivery: first inventory the task-owned changes and replace or retire them carefully, preserving other developers' work. Do not revert shared commits wholesale.
+The owner subsequently authorized implementation. Downloaded plant geometry now replaces the task's earlier procedural prototypes; retired generators and unused cushion placements are removed. Shared commits and other tracks are preserved.
 
 Execute in this order: **resource selection → downloaded vegetation integration → landscape composition → lake basin and water → water impacts/audio → complete verification**. Keep each implementation step working and reviewable.
 
@@ -20,7 +20,9 @@ Allowed asset processing: format conversion, axis/unit corrections, material ada
 
 ## Resource shortlist and selection gate
 
-Primary pages checked on 2026-10-13. These are **candidates**, not downloaded or Godot-qualified selections. Inspect the exact archive, included license, available LODs and materials during LU-22.
+Primary pages checked on 2026-10-13. The table retains the initial candidates. **Adopted:** Quaternius Stylized Nature MegaKit Standard, Quaternius LowPoly Crops Pack and Aredon's LowPoly Reed (all exact CC0 sources retained). Their 15 source assets provide three tree silhouettes, green/red flowering shrubs, three grasses, fern, clover, two flower groups, corn, wheat and reeds. Seven smaller trees use uniformly scaled downloaded geometry. The existing tree impostor family is retained; hedges use a reproducible four-view bake of a downloaded green flowering shrub. Original material/alpha boundaries and automatic Godot LODs are preserved. Asset hashes and conversions are in the evidence report.
+
+Poly Haven's listed full meshes were not adopted for this iteration because their source complexity and realistic photographic style do not fit the selected lightweight Quaternius family without another optimization/visual comparison. Kenney is not needed to fill a catalog gap. No plants were reconstructed or generated.
 
 | Resource | Intended use | Evidence and limits |
 | --- | --- | --- |
@@ -87,7 +89,7 @@ Choose a shared water-surface definition for visual and contact height. If visib
 
 ## Steps, ownership and proof
 
-All implementation steps remain **planned**. Lead owns resource selection, shared integration, this plan and final evidence. Coordinate ground/water-contact changes with physics/GP/CR, sound with AUD, and lighting with FW/TOD. Read git status before each shared patch. Optional Luna Max tasks must have bounded file ownership; resource research can remain read-only.
+LU-22–26 are integrated. LU-27 is undergoing native capture, performance, export and regression verification. The lead owns shared integration and final evidence; bounded Luna Max tasks covered source import, scalar lake contacts, audio/checkpoint seams and focused tests.
 
 | Step | Work | Required proof |
 | --- | --- | --- |
@@ -114,6 +116,6 @@ Future dated evidence belongs in docs/research/landscape-upgrade/LU-22; required
 
 Independent pilot preference, lower-end hardware acceptance and physical water-impact/buoyancy calibration are separate from software verification. Existing Linux atmosphere-trim and nearby collision-cost limitations remain documented in their owning reports.
 
-## Next action after this plan
+## Remaining acceptance
 
-Begin LU-22 with **downloads and an isolated comparison of existing assets**. Select the vegetation library from native images, integrate that library, and then proceed to the lake. The procedural-plant modelling route is superseded.
+Complete the native evidence and exported application checks. Independent pilot preference and lower-end hardware acceptance remain external review gates. Current aircraft entering water terminate the flight; the short sinking animation is render-only and does not claim buoyancy or hydrodynamic validation.

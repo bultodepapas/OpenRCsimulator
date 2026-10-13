@@ -1,11 +1,16 @@
 extends SceneTree
 
+const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const SceneryLoader := preload("res://scenery/scenery_loader.gd")
+
 var _failures := 0
 
 
 func _initialize() -> void:
 	_test_catalog_and_parts()
 	_test_fit_and_aliases()
+	_test_default_sapling_group()
 	_test_batch_build_and_damage()
 	if _failures == 0:
 		print("imported vegetation tests passed")
@@ -52,6 +57,20 @@ func _test_catalog_and_parts() -> void:
 
 func _test_fit_and_aliases() -> void:
 	_check("shade tree alias resolves by seed", ImportedVegetation.resolve_id("shade_tree", 7) == "common_tree_3")
+	_check("sapling alias is restricted to downloaded broadleaf variants",
+		ImportedVegetation.resolve_id("sapling", 0) == "common_tree_1"
+		and ImportedVegetation.resolve_id("sapling", 1) == "common_tree_3"
+		and ImportedVegetation.resolve_id("sapling", 2) == "common_tree_1")
+	var sapling_assets: Dictionary = {}
+	var sapling_heights_valid := true
+	for seed in 32:
+		var sapling: Dictionary = VegetationPlacement.spec("sapling", seed)
+		sapling_assets[sapling.get("asset_id", "")] = true
+		sapling_heights_valid = sapling_heights_valid and float(sapling.get("height", 0.0)) >= 3.2 \
+			and float(sapling.get("height", 99.0)) <= 4.8 and float(sapling.get("triangles", 0)) > 0
+	_check("sapling placement keeps natural height and source triangle metadata", sapling_heights_valid)
+	_check("saplings sample both downloaded broadleaf variants", sapling_assets.size() == 2 \
+		and sapling_assets.has("common_tree_1") and sapling_assets.has("common_tree_3"))
 	_check("bush alias resolves deterministically", ImportedVegetation.resolve_id("bush", 5) == "bush_common_flowers")
 	_check("unknown alias is rejected", ImportedVegetation.resolve_id("missing_plant", 0).is_empty())
 	var source: Dictionary = ImportedVegetation.get_asset("common_tree_3")
@@ -70,7 +89,12 @@ func _test_batch_build_and_damage() -> void:
 	var tree_transform := Transform3D(Basis.IDENTITY, Vector3.ZERO)
 	var second_transform := Transform3D(Basis.IDENTITY, Vector3(30.0, 0.0, 0.0))
 	_check("tree alias queues resolved asset", ImportedVegetation.queue(batches, "shade_tree", tree_transform, 1, "tree-damaged") == "common_tree_3")
-	_check("exact asset queues without changing ID", ImportedVegetation.queue(batches, "wheat_4", second_transform, 2) == "wheat_4")
+	_check("exact asset queues without changing ID", ImportedVegetation.queue(
+		batches, "wheat_4", second_transform, 2, "", Color(0.4, 1.2, 0.9, 0.0)) == "wheat_4")
+	var queued_tint: Color = batches["wheat_4"][0].get("tint", Color.WHITE)
+	_check("queue clamps tint RGB and keeps alpha opaque",
+		is_equal_approx(queued_tint.r, 0.86) and is_equal_approx(queued_tint.g, 1.0)
+		and is_equal_approx(queued_tint.b, 0.9) and is_equal_approx(queued_tint.a, 1.0))
 	var root := ImportedVegetation.build(batches)
 	var expected_part_nodes := ImportedVegetation.get_parts("common_tree_3").size() + ImportedVegetation.get_parts("wheat_4").size()
 	_check("builder emits one shared batch per source part", root.get_child_count() == expected_part_nodes)
@@ -91,6 +115,14 @@ func _test_batch_build_and_damage() -> void:
 					)
 				checked_source_materials = true
 	_check("tree source material path was checked", checked_source_materials)
+	var bounds_records: Array = root.get_meta("_imported_vegetation_state", {}).get("bounds", [])
+	var wheat_tint_retained := false
+	for bounds_record: Dictionary in bounds_records:
+		if str(bounds_record.get("asset_id", "")) == "wheat_4":
+			var tint: Color = bounds_record.get("tint", Color.WHITE)
+			wheat_tint_retained = is_equal_approx(tint.r, 0.86) and is_equal_approx(tint.g, 1.0) \
+				and is_equal_approx(tint.b, 0.9) and is_equal_approx(tint.a, 1.0)
+	_check("builder retains bounded tint with CPU instance bounds", wheat_tint_retained)
 	var original_bounds := ImportedVegetation.bounds(root)
 	_check("bounds include both plants", original_bounds.position.x < 0.0 and original_bounds.end.x > 30.0)
 	_check("damage ID hides its source instances", ImportedVegetation.set_damage_hidden(root, "tree-damaged", true))
@@ -116,7 +148,36 @@ func _test_batch_build_and_damage() -> void:
 	wind_root.free()
 
 
-func _check(label: String, condition: bool) -> void:
+func _test_default_sapling_group() -> void:
+	var field_result := FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+	_check("default field loads for sapling scene validation", bool(field_result.get("ok", false)))
+	if not bool(field_result.get("ok", false)):
+		return
+	var scenery_result := SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field_result.field)
+	_check("generated sapling group passes scene validation", bool(scenery_result.get("ok", false)), str(scenery_result.get("errors", [])))
+	if not bool(scenery_result.get("ok", false)):
+		return
+	var found := false
+	for group: Dictionary in scenery_result.scenery.groups:
+		if str(group.get("id", "")) != "saplings":
+			continue
+		found = true
+		var placements: Array = group.get("placements", [])
+		_check("default sapling group preserves seven stable source rows", placements.size() == 7)
+		var valid := true
+		var assets: Dictionary = {}
+		for placement: Dictionary in placements:
+			var plant: Dictionary = VegetationPlacement.spec("sapling", int(placement.seed))
+			assets[str(plant.get("asset_id", ""))] = true
+			valid = valid and float(placement.north) < 0.0 \
+				and plant.get("asset_id", "") in ["common_tree_1", "common_tree_3"] \
+				and float(plant.get("height", 0.0)) >= 3.2 and float(plant.get("height", 99.0)) <= 4.8
+		_check("sapling rows stay behind the club and fit downloaded sources proportionally", valid)
+		_check("sapling rows exercise both downloaded source variants", assets.has("common_tree_1") and assets.has("common_tree_3"))
+	_check("default layout contains its downloaded saplings group", found)
+
+
+func _check(label: String, condition: bool, detail: String = "") -> void:
 	if not condition:
 		_failures += 1
-		push_error("FAIL: %s" % label)
+		push_error("FAIL: %s %s" % [label, detail])

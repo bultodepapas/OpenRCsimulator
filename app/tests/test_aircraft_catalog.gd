@@ -13,6 +13,7 @@ const Commands := preload("res://input/commands.gd")
 const Extra := preload("res://aircraft/extra_300s_model.gd")
 const ExtraGeometry := preload("res://aircraft/extra_300s_geometry.gd")
 const StikGeometry := preload("res://aircraft/ugly_stik_geometry.gd")
+const PropellerBlur := preload("res://render/propeller_blur.gd")
 
 var _failures := 0
 var _count := 0
@@ -53,11 +54,6 @@ func _initialize() -> void:
 		var ok_contract: bool = airplane.get("root") is Node3D and airplane.root.name == "airplane" and airplane.get("propeller") is Node3D \
 			and airplane.get("hinges", {}).size() >= 4 and airplane.aircraft_id == id
 		_check("%s: builds root/propeller/hinges" % id, ok_contract)
-		if id == AirplaneBuilder.STIK_GLOW_55AX_ID or id == AirplaneBuilder.STIK_GLOW_FS64V_ID:
-			var visual_diameter: float = float(StikGeometry.DATA.equipment.prop_diameter)
-			var prop_ratio: float = AirplaneBuilder.STIK_GLOW_55AX_PROP_DIAMETER_M / visual_diameter if id == AirplaneBuilder.STIK_GLOW_55AX_ID else AirplaneBuilder.STIK_GLOW_FS64V_PROP_DIAMETER_M / visual_diameter
-			_check("%s: Stik visual uses the installation's estimated prop diameter" % id,
-				is_equal_approx(airplane.propeller.scale.x, prop_ratio) and is_equal_approx(airplane.propeller.scale.y, prop_ratio))
 		var extent := Shadow.model_extent(airplane.root)
 		AirplaneBuilder.apply_surfaces(airplane, Commands.hinge_rotations({ roll = 1.0, pitch = -1.0, yaw = 1.0, throttle = 0.0 }, { aileron = 20.0, elevator = 20.0, rudder = 20.0 }))
 		AirplaneBuilder.apply_surfaces(airplane, Commands.hinge_rotations(Commands.neutral_commands(), { aileron = 20.0, elevator = 20.0, rudder = 20.0 }))
@@ -82,6 +78,23 @@ func _initialize() -> void:
 			var expected_family := "glow_2t" if id == AirplaneBuilder.STIK_GLOW_55AX_ID else "glow_4t"
 			_check("%s: data carries its explicit %s family" % [id, expected_family],
 				model.propulsion.get("glow", {}).get("profile", {}).get("family", "") == expected_family)
+			var selected_diameter_m: float = float(model.propulsion.glow.propeller.diameter_m)
+			var base_visual_diameter: float = float(StikGeometry.DATA.equipment.prop_diameter)
+			var expected_scale: float = selected_diameter_m / base_visual_diameter
+			var catalog_default_scale_ok := is_equal_approx(airplane.propeller.scale.x, expected_scale)
+			var scaled := AirplaneBuilder.apply_propeller_diameter(airplane, selected_diameter_m)
+			var base_plane := AirplaneBuilder.build(AirplaneBuilder.STIK_ID)
+			var base_radius: float = float(PropellerBlur.profile(base_plane.propeller, base_plane.root).radius)
+			var visual_profile: Dictionary = PropellerBlur.profile(airplane.propeller, airplane.root)
+			_check("%s: visual and blur radii use the selected model diameter" % id,
+				catalog_default_scale_ok and scaled and is_equal_approx(airplane.propeller.scale.x, expected_scale)
+				and is_equal_approx(airplane.propeller.scale.y, expected_scale)
+				and is_equal_approx(float(visual_profile.get("radius", 0.0)), base_radius)
+				and is_equal_approx(float(visual_profile.get("radius", 0.0)) * airplane.propeller.scale.x,
+					base_radius * expected_scale))
+			_check("%s: glow propeller uses the physical shaft spin sign" % id,
+				float(airplane.get("propeller_spin_sign", 1.0)) == -1.0)
+			base_plane.root.free()
 		_check("%s: span of the built model matches the data within 1 %%" % id, absf(extent.x - model.reference.b) / model.reference.b < 0.01,
 			"model %.4f m, data %.4f m" % [extent.x, model.reference.b])
 		# The simulated CG, placed in the model through the datum, lies on the symmetry plane, between the wing's
@@ -92,6 +105,34 @@ func _initialize() -> void:
 		_check("%s: CG lands on the root chord in the visual model" % id, absf(cg.x) < 1e-6 and cg.z > datum.x and cg.z < datum.x + root_chord and absf(cg.y) < 0.1,
 			"model point %s, LE z %.4f, chord %.4f" % [cg, datum.x, root_chord])
 		airplane.root.free()
+
+	# Alternative installations retain the catalog aircraft ID but select a different propeller diameter. Applying each
+	# loaded model to the same generated Stik geometry proves the adapter does not bake in one variant's prop size.
+	var standard_airplane := AirplaneBuilder.build(AirplaneBuilder.STIK_ID)
+	var standard_radius: float = float(PropellerBlur.profile(standard_airplane.propeller, standard_airplane.root).radius)
+	for option: Dictionary in [
+		{"id": AirplaneBuilder.STIK_GLOW_55AX_ID, "path": "res://data/aircraft/stik_glow_55ax_2t_apc_13x6.json"},
+		{"id": AirplaneBuilder.STIK_GLOW_FS64V_ID, "path": "res://data/aircraft/stik_glow_fs64v_4t_apc_13x6.json"},
+	]:
+		var alternative: Dictionary = AircraftData.load_file(str(option.path))
+		var accepted := false
+		var diameter_m := NAN
+		var blur_radius := 0.0
+		var scale_ratio := 0.0
+		if alternative.ok:
+			var alternative_model: Dictionary = alternative.model
+			diameter_m = float(alternative_model.propulsion.glow.propeller.diameter_m)
+			var alternative_airplane := AirplaneBuilder.build(str(option.id))
+			accepted = AirplaneBuilder.apply_propeller_diameter(alternative_airplane, diameter_m)
+			blur_radius = float(PropellerBlur.profile(alternative_airplane.propeller, alternative_airplane.root).get("radius", 0.0))
+			scale_ratio = alternative_airplane.propeller.scale.x
+			accepted = accepted and is_equal_approx(scale_ratio, diameter_m / float(StikGeometry.DATA.equipment.prop_diameter))
+			alternative_airplane.root.free()
+		_check("%s APC 13x6 alternative diameter reaches visual and blur geometry" % option.id,
+			alternative.ok and accepted and is_equal_approx(blur_radius, standard_radius)
+			and is_equal_approx(blur_radius * scale_ratio,
+				standard_radius * diameter_m / float(StikGeometry.DATA.equipment.prop_diameter)))
+	standard_airplane.root.free()
 
 	# Extra specifics: the manual's EMPTY-TANK balance point is model z 0. The loaded CG moves when the prescribed
 	# fuel is added (EX-06). The throws remain the model team's manual-rate conversion.
@@ -145,6 +186,19 @@ func _initialize() -> void:
 			glow_flight._soundscape_audio.soundscape.glow_player != null
 			and glow_flight._soundscape_audio.soundscape.voices[0].stream == null
 			and glow_flight._soundscape_audio.soundscape.voices[1].stream == null)
+		var runtime_diameter_m: float = float(glow_flight.session.aircraft.model.propulsion.glow.propeller.diameter_m)
+		var glow_blur: Node3D = glow_flight.get_node_or_null("PropellerBlur") as Node3D
+		if glow_blur != null:
+			glow_blur.call("update", 0.0)
+		var glow_blur_profile: Dictionary = glow_blur.get("measured") if glow_blur != null else {}
+		_check("%s runtime visual and blur follow session model propeller" % glow_id,
+			is_equal_approx(glow_flight._airplane.propeller.scale.x,
+				runtime_diameter_m / float(StikGeometry.DATA.equipment.prop_diameter))
+			and glow_blur != null and is_equal_approx(float(glow_blur_profile.get("radius", 0.0)),
+				float(PropellerBlur.profile(glow_flight._airplane.propeller, glow_flight._airplane.root).radius))
+			and is_equal_approx(float(glow_blur.global_transform.basis.x.length()) * float(glow_blur_profile.get("radius", 0.0)),
+				float(PropellerBlur.profile(glow_flight._airplane.propeller, glow_flight._airplane.root).radius)
+				* float(glow_flight._airplane.propeller.scale.x)))
 		glow_flight._update_hud()
 		var expected_label := "2-stroke" if expected_family == "glow_2t" else "4-stroke"
 		_check("%s HUD shows family, engine values, mode and controls" % glow_id,
@@ -154,6 +208,28 @@ func _initialize() -> void:
 			and glow_flight._hud.text.contains("φ ") and glow_flight._hud.text.contains("[F6] cut")
 			and glow_flight._hud.text.contains("[F7] starter") and glow_flight._hud.text.contains("[F8] lean")
 			and glow_flight._hud.text.contains("[F9] rich"), glow_flight._hud.text)
+		_check("%s recommended RPM warning is hidden at the trimmed start point" % glow_id,
+			not glow_flight._hud.text.contains("ABOVE RECOMMENDED RPM"))
+		var original_continuous_rpm: float = float(glow_flight.session.sim.continuous[0])
+		var original_aux_rpm: float = float(glow_flight.session.sim.aux[0])
+		var recommended_rpm: float = float(glow.get("recommended_max_rpm", NAN))
+		var overspeed_flag := false
+		if is_finite(recommended_rpm):
+			glow_flight.session.sim.continuous[0] = recommended_rpm + 1.0
+			glow_flight.session.sim.aux[0] = recommended_rpm + 1.0
+			glow = glow_flight.session.glow_state()
+			overspeed_flag = bool(glow.get("above_recommended_rpm", false))
+			glow_flight._update_hud()
+			_check("%s HUD consumes the physical above-recommended RPM flag" % glow_id,
+				overspeed_flag and glow_flight._hud.text.contains("ABOVE RECOMMENDED RPM"), str(glow))
+		else:
+			_check("%s exposes a finite recommended RPM for the HUD warning" % glow_id, false, str(glow))
+		glow_flight.session.sim.continuous[0] = original_continuous_rpm
+		glow_flight.session.sim.aux[0] = original_aux_rpm
+		glow_flight._update_hud()
+		glow_flight._render_pose(glow_flight._current_pose(), glow_flight.session.surfaces(), 0.25)
+		_check("%s main render applies the adapter's physical spin sign" % glow_id,
+			is_equal_approx(glow_flight._airplane.propeller.rotation.z, -0.25))
 		var nominal_phi: float = float(glow_flight.session.aircraft.model.propulsion.glow.profile.operation.nominal_mixture)
 		_press_key(glow_flight, KEY_F6)
 		glow = glow_flight.session.glow_state()

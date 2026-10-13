@@ -393,6 +393,10 @@ func _update_glow_voice(glow_snapshot: Dictionary, snapshot: Dictionary,
 	var queued: int = _glow_capacity - available
 	var frames: int = clampi(target_frames - queued, 0, available)
 	if frames > 0:
+		# Synchronize oscillator phase at the point after already queued audio, not at the
+		# older accepted snapshot's immediate phase.
+		telemetry["audio_queue_frames"] = queued
+		glow_voice.set_telemetry(telemetry)
 		var buffer: PackedVector2Array = glow_voice.render(float(telemetry["rpm"]), max_rpm, frames)
 		playback.push_buffer(buffer)
 

@@ -1,0 +1,3344 @@
+{
+  "format": "openrc-glow-crank-angle-oracle v1",
+  "generated_by": "research/glow-engines/cycle_oracle.py",
+  "source_sha256": "3743d49ae6d132f3c9a7cb8bc5cd238b4f098923c33ae0cfa1bc0f7e744a839d",
+  "method": {
+    "closed_system": "Slider-crank cylinder volume and 1-zone ideal-gas first-law update, conservative midpoint pressure work; heat-release interval follows normalized Wiebe law.",
+    "two_stroke": "One 360-degree ported cycle. EPC-trapped charge is compressed/combusted/expanded to EPO; estimated exhaust blowdown, transfer-pressure interval and exhaust tail close the gas-exchange path; crankcase scavenge pump loss remains separate.",
+    "four_stroke": "One 720-degree true four-stroke cycle. IVC-trapped charge is compressed/combusted/expanded to EVO; separate exhaust/intake valve-open boundary-pressure path closes the cycle; open-system mass/enthalpy exchange is not solved.",
+    "energy_state": "Cycle-resolved kinetic energy uses d(0.5*J_eff(theta)*omega^2)/d(theta)=net torque; J_eff adds the profile's estimated equivalent piston mass times slider-crank (dy/dtheta)^2 to the aircraft configuration's installed rotor inertia. Prop load is reevaluated at instantaneous angular speed and integrated with a midpoint energy update. Rod angular kinetic energy and connecting-rod distribution are omitted.",
+    "combustion_waveform_during_speed_ripple": "A full pressure/torque waveform is generated at each candidate mean RPM, then held fixed over that one-cycle energy map. Instantaneous propeller and table-based mechanical/pump/valve losses vary with RPM; charge, fuel, and combustion do not adapt within the cycle. This is a conditional averaging-error experiment, not a transient engine model.",
+    "propeller_load": "Independent reproduction of current 12-annulus, uniform-chord installed-prop surrogate, followed by the ideal actuator-disk lower-bound refusal for positive static thrust.",
+    "phase_alias_probe": "Coarse uniform-angle midpoint sampling of a 0.0625-degree reference pressure-torque waveform, with 16 grid-phase offsets; linear interpolation only supplies sample values. This reports numerical alias sensitivity for an inferred waveform and is not a measurement or runtime fixed-dt test.",
+    "fixed_carrier": "The carrier is held at zero axial speed. This isolates an installed prop/engine pair and is not free-flight behavior."
+  },
+  "primary_method_references": [
+    {
+      "title": "Computer simulation of a four stroke spark ignition engine",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0196890401000929",
+      "use": "Single-zone crank-angle heat-release and pressure-volume work method precedent; model/measurements are not imported."
+    },
+    {
+      "title": "Modelling Methodology of a Spark-Ignition Engine and Experimental Validation: Part I: Single-Zone Combustion Model",
+      "url": "https://saemobilus.sae.org/papers/modelling-methodology-a-spark-ignition-engine-experimental-validation-part-i-single-zone-combustion-model-2002-01-2193",
+      "use": "Crank-angle-resolved single-zone combustion formulation; engine-specific measured calibration is not imported."
+    },
+    {
+      "title": "Mathematical modeling of the two-stroke crankcase scavenged spark ignition engine working process",
+      "url": "https://doi.org/10.1016/j.ecmx.2021.100086",
+      "use": "Supports treating two-stroke port exchange and scavenging as distinct from the closed compression/expansion segment; its multi-zone flow method is more detailed than this reduced estimate."
+    },
+    {
+      "title": "Simulation of a Crankcase Scavenged, Two-Stroke, SI Engine and Comparisons with Experimental Data",
+      "url": "https://saemobilus.sae.org/papers/simulation-a-crankcase-scavenged-two-stroke-si-engine-comparisons-experimental-data-690135",
+      "use": "Coupled crankcase/cylinder/inlet control-volume precedent; highlights what this single-zone port-boundary oracle omits."
+    },
+    {
+      "title": "O.S. MAX-55AX manufacturer specifications",
+      "url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm",
+      "use": "Bore, stroke, displacement and engine identity for the 2T candidate."
+    },
+    {
+      "title": "O.S. FS-64V manufacturer specifications",
+      "url": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html",
+      "use": "Bore, stroke, displacement and engine identity for the 4T candidate."
+    }
+  ],
+  "limitations": [
+    "Neither manufacturer publishes these candidates' compression ratio, connecting-rod ratio, port/valve timing, in-cylinder pressure trace, heat-transfer history, residual fraction or engine rotating inertia.",
+    "Open-system scavenging/intake/exhaust boundary pressures are imposed estimates; mass exchange, short-circuit fuel loss, crankcase dynamics, exhaust resonance, variable properties, wall heat transfer and glow ignition kinetics are not solved.",
+    "Fuel values are borrowed from the candidate's AIAA-based fuel table as composition only. The FS-a56 2T experimental engine in AIAA-2016-5011 is not either O.S. engine and is not used as an output target.",
+    "The profile root and pressure-oracle root use different candidate closures. Only the within-oracle angle-mean versus periodic-map comparison tests the mean reduction numerically for the declared waveform; no result proves actual engine accuracy.",
+    "The annular propeller method preserves estimated uniform chord/section coefficients. Its dynamic evaluation and ideal-power lower bound do not constitute a measured propeller map or aircraft data."
+  ],
+  "engines": {
+    "glow_2t": {
+      "engine_id": "os_max_55ax_candidate",
+      "family": "glow_2t",
+      "manufacturer_geometry_and_profile_estimates": {
+        "bore_m": {
+          "value": 0.023,
+          "unit": "m",
+          "kind": "manual",
+          "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15610.htm; manufacturer bore specification converted from mm to m"
+        },
+        "stroke_m": {
+          "value": 0.0215,
+          "unit": "m",
+          "kind": "manual",
+          "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15610.htm; manufacturer stroke specification converted from mm to m"
+        },
+        "rod_to_crank_radius_ratio": {
+          "value": 3.5,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "NITRO-03 explicit unmeasured slider-crank geometry estimate; connecting-rod length / crank radius = 3.5; matched internal dimension unavailable"
+        },
+        "reciprocating_mass_kg": {
+          "value": 0.010100000000000001,
+          "unit": "kg",
+          "kind": "estimated",
+          "source": "NITRO-03 explicit unmeasured equivalent-mass estimate: 2.5% of manufacturer dry engine mass (404 g); 1–5% sensitivity retained in vibration evidence; no matched component measurement; https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15610.htm"
+        }
+      },
+      "inputs": {
+        "profile_path": "app/data/glow/os_max_55ax_candidate.json",
+        "profile_sha256": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+        "installation_path": "app/data/glow/stik_55ax_2t.json",
+        "installation_sha256": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+        "aircraft_path": "app/data/aircraft/stik_glow_55ax_2t.json",
+        "aircraft_sha256": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+        "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+        "installed_rotor_inertia_source": {
+          "value": 0.00035585373583766657,
+          "unit": "kg·m2",
+          "kind": "derived",
+          "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; uniform-box prop polar m*(diameter^2+thickness^2)/12 plus estimated crank polar 2e-05 kg m^2; no measured blade mass distribution"
+        },
+        "reciprocating_mass_source": {
+          "value": 0.010100000000000001,
+          "unit": "kg",
+          "kind": "estimated",
+          "source": "NITRO-03 explicit unmeasured equivalent-mass estimate: 2.5% of manufacturer dry engine mass (404 g); 1–5% sensitivity retained in vibration evidence; no matched component measurement; https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15610.htm"
+        },
+        "family_kernel_path": "app/physics/glow/two_stroke.gd",
+        "family_kernel_sha256": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353",
+        "propeller_kernel_path": "app/physics/glow/propeller.gd",
+        "propeller_kernel_sha256": "68cc348bfa09f3599971184062eda861a891a05ff41702748f9ec4e091710a37",
+        "profile_status": "candidate",
+        "assumed_installed_propeller_parameters": {
+          "diameter_m": 0.30479999999999996,
+          "pitch_m": 0.17779999999999999,
+          "chord_m": 0.0211364169120926,
+          "blades": 2.0,
+          "lift_slope": 5.5,
+          "cd0": 0.022,
+          "induced_drag": 0.06
+        },
+        "fixed_carrier_axial_speed_m_s": 0.0,
+        "air_density_kg_m3": 1.225,
+        "mixture_equivalence_ratio": 1.15,
+        "admission": 1.0,
+        "firing_fraction": 1.0,
+        "mean_model_cycle_frequency_hz_at_rated": 266.6666666666667
+      },
+      "provenance": {
+        "engine_displacement_bore_stroke": "O.S. manufacturer dimensions from the linked product page; displacement checked against bore×stroke.",
+        "compression_ratio_rod_ratio_port_valve_events_gamma_heat_transfer_residual_temperature": "Not published for these candidate engines; explicit engineering assumptions and ranges below.",
+        "fuel_formula": "Candidate profile composition borrowed from AIAA-2016-5011 Table 1 as an adjacent single-cylinder 2-stroke test fuel basis; not treated as MAX-55AX or FS64V test data.",
+        "combustion_law": "Normalized single-Wiebe prescribed mass-burn fraction, used as an assumed heat-release shape; not inferred from measured cylinder pressure.",
+        "profile_comparison": "The source candidate kernel computes cycle work as burned fuel × LHV × a generated indicated-efficiency table. The pressure oracle instead integrates a crank-angle first-law pressure-volume path; disagreement compares two inferred closures, not measurement error.",
+        "dynamic_comparison": "The periodic crank-energy map uses the independent pressure trace plus exact installed candidate prop parameters and RPM-varying annular load. It is a fixed-carrier software experiment; no in-flight, prop-map or physical-engine validation is implied."
+      },
+      "nominal_assumptions": {
+        "compression_ratio": 8.0,
+        "rod_to_crank_ratio": 3.5,
+        "gamma": 1.34,
+        "heat_to_gas_fraction": 0.52,
+        "residual_mass_fraction": 0.1,
+        "trapped_temperature_k": 350.0,
+        "combustion_start_deg_btdc": 15.0,
+        "burn_duration_deg": 40.0,
+        "exhaust_open_deg_atdc": 100.0,
+        "transfer_open_deg_atdc": 120.0,
+        "transfer_close_deg_atdc": 240.0,
+        "exhaust_close_deg_atdc": 260.0,
+        "open_flow_shape": "linear blowdown; sin^2 scavenge-pressure pulse; ambient tail"
+      },
+      "explicit_one_factor_sensitivity_bounds": {
+        "compression_ratio": [
+          6.5,
+          10.0
+        ],
+        "rod_to_crank_ratio": [
+          3.0,
+          5.0
+        ],
+        "gamma": [
+          1.32,
+          1.38
+        ],
+        "heat_to_gas_fraction": [
+          0.35,
+          0.75
+        ],
+        "residual_mass_fraction": [
+          0.05,
+          0.2
+        ],
+        "trapped_temperature_k": [
+          320.0,
+          390.0
+        ],
+        "combustion_start_deg_btdc": [
+          5.0,
+          25.0
+        ],
+        "burn_duration_deg": [
+          25.0,
+          60.0
+        ],
+        "exhaust_open_deg_atdc": [
+          90.0,
+          110.0
+        ],
+        "transfer_open_deg_atdc": [
+          110.0,
+          130.0
+        ],
+        "transfer_close_deg_atdc": [
+          230.0,
+          250.0
+        ],
+        "exhaust_close_deg_atdc": [
+          250.0,
+          270.0
+        ]
+      },
+      "nominal_port_or_valve_events": {
+        "EPO_deg_ATDC": 100.0,
+        "TPO_deg_ATDC": 120.0,
+        "TPC_deg_ATDC": 240.0,
+        "EPC_deg_ATDC": 260.0
+      },
+      "rated_point": {
+        "rpm": 16000.0,
+        "profile_candidate_mean_cycle": {
+          "rpm": 16000.0,
+          "admission": 1.0,
+          "mixture": 1.15,
+          "rho_kg_m3": 1.225,
+          "air_delivered_kg_cycle": 1.093925e-05,
+          "air_charge_kg_cycle": 8.095045e-06,
+          "trapped_premix_kg_cycle": 2.0677980668427723e-06,
+          "delivered_premix_kg_cycle": 2.7943217119496922e-06,
+          "burned_fuel_kg_cycle": 1.4351193149139238e-06,
+          "chemical_heat_j_cycle": 26.62675733211228,
+          "cycle_work_j": 5.015143943537184,
+          "opportunity_hz": 266.6666666666667,
+          "candidate_indicated_work_rate_w": 1337.3717182765824,
+          "burned_fuel_flow_kg_s": 0.0003826984839770464,
+          "delivered_premix_flow_kg_s": 0.000745152456519918,
+          "indicated_mean_torque_nm": 0.7981849489313241,
+          "mechanical_torque_nm": 0.04,
+          "pumping_work_j": 0.075012,
+          "pumping_torque_nm": 0.011938530591209253,
+          "valve_torque_nm": 0.0,
+          "candidate_mean_shaft_torque_nm": 0.7462464183401147,
+          "indicated_efficiency": 0.18834978217527235,
+          "combustion_efficiency": 1.0,
+          "fuel_lhv_j_kg": 18553688.920080706,
+          "stoich_air_fuel_ratio": 5.640677340117555,
+          "oil_fraction": 0.20186248424590392
+        },
+        "pressure_oracle_indicated_work_rate_w": 1609.7981252070238,
+        "pressure_oracle_net_pv_work_rate_w": 1687.7201644606512,
+        "candidate_profile_burned_fuel_flow_kg_s": 0.0003826984839770464,
+        "candidate_profile_delivered_premix_flow_kg_s": 0.000745152456519918,
+        "thermodynamic_pressure_oracle": {
+          "family": "glow_2t",
+          "rpm": 16000.0,
+          "cycle_angle_rad": 6.283185307179586,
+          "cycle_angle_deg": 360.0,
+          "step_requested_deg": 0.25,
+          "step_count": 1440,
+          "cycle_work_j": 6.036742969526339,
+          "net_pv_cycle_work_j": 6.328950616727441,
+          "closed_compression_combustion_expansion_work_j": 6.036742969526339,
+          "open_gas_exchange_pv_work_j": 0.29220764720110454,
+          "heat_released_to_gas_j": 13.845913812698381,
+          "heat_release_fraction_of_profile_chemical_j": 0.5199999999999998,
+          "thermodynamic_indicated_efficiency_estimate": 0.2267171662786716,
+          "net_pv_efficiency_estimate": 0.23769137705306043,
+          "candidate_kernel_cycle_work_j": 5.015143943537184,
+          "cycle_work_delta_vs_candidate_j": 1.021599025989155,
+          "cycle_work_delta_vs_candidate_fraction": 0.2037028323595076,
+          "air_charge_kg_cycle": 8.095045e-06,
+          "burned_fuel_kg_cycle": 1.4351193149139238e-06,
+          "trapped_total_gas_mass_kg": 1.1292047852047523e-05,
+          "geometry_used": {
+            "bore_m": 0.023,
+            "stroke_m": 0.0215,
+            "rod_to_crank_radius_ratio": 3.5,
+            "profile_reciprocating_mass_kg": 0.010100000000000001
+          },
+          "assumed_start_pressure_pa": 158658.655991944,
+          "peak_pressure_pa": 4303373.054649261,
+          "peak_temperature_k": 1935.6873590135458,
+          "closed_energy_first_law_residual_j": 1.8254278297269444e-14
+        },
+        "fixed_carrier_propeller_at_rated": {
+          "thrust_n": 99.31809408464558,
+          "torque_nm": 1.6999251743406774,
+          "shaft_power_w": 2848.2519676592105,
+          "ideal_actuator_disk_power_w": 2340.990329945342,
+          "shaft_to_ideal_power_ratio": 1.2166867719294303,
+          "ideal_power_bound_pass": true
+        },
+        "one_factor_work_sensitivity_min_j": 4.063107253057071,
+        "one_factor_work_sensitivity_max_j": 8.706658399407997,
+        "sensitivity_interpretation": "Unweighted one-factor scenario endpoints; not a confidence interval or physical bound."
+      },
+      "mean_root_comparisons": {
+        "assumption": "Full admission, static 0 m/s carrier, 1.225 kg/m^3; restoring roots only.",
+        "inertia_sensitivity_method": "Primary periodic orbit uses the aircraft configuration's installed rotating_inertia value. Sensitivity cases use 0.5× and 2× that estimate; rotating mass distribution and crank contribution are not measured. The profile's separate estimated equivalent piston mass is included as angle-dependent inertia, with one-cycle 1%-to-5%-of-dry-mass perturbations around the primary speed (not re-solved equilibria).",
+        "profile_candidate_mean_cycle_roots": [
+          {
+            "rpm": 10330.000019073486,
+            "residual": -2.119062481042988e-09,
+            "left_positive_right_nonpositive": 1.0
+          }
+        ],
+        "profile_candidate_mean_cycle_selected_root": {
+          "rpm": 10330.000019073486,
+          "admission": 1.0,
+          "mixture": 1.15,
+          "rho_kg_m3": 1.225,
+          "air_delivered_kg_cycle": 1.0476519729868491e-05,
+          "air_charge_kg_cycle": 7.962154994700054e-06,
+          "trapped_premix_kg_cycle": 2.033852647631149e-06,
+          "delivered_premix_kg_cycle": 2.6761219047778273e-06,
+          "burned_fuel_kg_cycle": 1.411560086600188e-06,
+          "chemical_heat_j_cycle": 26.189646738782073,
+          "cycle_work_j": 4.684674336034579,
+          "opportunity_hz": 172.1666669845581,
+          "candidate_indicated_work_rate_w": 806.5447663431712,
+          "burned_fuel_flow_kg_s": 0.00024302359535838857,
+          "delivered_premix_flow_kg_s": 0.0004607389887899655,
+          "indicated_mean_torque_nm": 0.7455890773556461,
+          "mechanical_torque_nm": 0.028660000038146973,
+          "pumping_work_j": 0.05244246454161885,
+          "pumping_torque_nm": 0.008346477459720086,
+          "valve_torque_nm": 0.0,
+          "candidate_mean_shaft_torque_nm": 0.708582599857779,
+          "indicated_efficiency": 0.17887504870760376,
+          "combustion_efficiency": 1.0,
+          "fuel_lhv_j_kg": 18553688.920080706,
+          "stoich_air_fuel_ratio": 5.640677340117555,
+          "oil_fraction": 0.20186248424590392,
+          "propeller_torque_nm": 0.7085826019768415,
+          "propeller_load": {
+            "thrust_n": 41.398924253930275,
+            "torque_nm": 0.7085826019768415,
+            "shaft_power_w": 766.512823891116,
+            "ideal_actuator_disk_power_w": 630.0001295120309,
+            "shaft_to_ideal_power_ratio": 1.2166867719294305,
+            "ideal_power_bound_pass": true
+          },
+          "mean_cycle_residual_nm": -2.119062481042988e-09
+        },
+        "pressure_oracle_angle_mean_roots": [
+          {
+            "rpm": 12239.495086669922,
+            "residual": 2.3931992276793324e-08,
+            "left_positive_right_nonpositive": 1.0
+          }
+        ],
+        "pressure_oracle_angle_mean_selected_point": {
+          "rpm": 12239.495086669922,
+          "cycle_work_j": 6.213878244542529,
+          "net_pv_cycle_work_j": 6.51668655666303,
+          "pressure_work_rate_w_at_mean_rpm": 1267.5788707207232,
+          "net_pv_work_rate_w_at_mean_rpm": 1329.3492181940849,
+          "burned_fuel_flow_kg_s_at_mean_rpm": 0.00030134245067764116,
+          "mean_pressure_torque_nm": 1.037162878073424,
+          "vs_profile_candidate_kernel_work_fraction": 0.23374214547552374
+        },
+        "cycle_resolved_periodic_orbit_by_inertia": [
+          {
+            "installed_inertia_multiplier": 0.5,
+            "inertia_kg_m2": 0.00017792686791883328,
+            "periodic_orbit_roots": [
+              {
+                "rpm": 12217.971801757812,
+                "ok": true,
+                "stopped": false,
+                "start_rpm": 12217.971801757812,
+                "end_rpm": 12217.971714262014,
+                "time_average_rpm": 12236.03237056811,
+                "min_rpm": 12085.039208563107,
+                "max_rpm": 12337.437375650983,
+                "cycle_time_s": 0.004903550283531511,
+                "net_cycle_energy_j": -2.0977932706500724e-06,
+                "cycle_work_from_pressure_j": 6.513255374227722,
+                "installed_rotor_inertia_kg_m2": 0.00017792686791883328,
+                "profile_reciprocating_mass_kg": 0.010100000000000001,
+                "effective_inertia_min_kg_m2": 0.00017792686791883328,
+                "effective_inertia_max_kg_m2": 0.00017918987761449874,
+                "effective_inertia_ripple_fraction": 0.007098476528242026,
+                "ideal_power_bound_refusals": 0,
+                "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00030123291105831155,
+                "delivered_premix_flow_kg_s_at_time_average_rpm": 0.0005710957679915396,
+                "pressure_work_rate_w_at_time_average_rpm": 1328.273393280452
+              }
+            ],
+            "selected_restoring_orbit": {
+              "rpm": 12217.971801757812,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12217.971801757812,
+              "end_rpm": 12217.971714262014,
+              "time_average_rpm": 12236.03237056811,
+              "min_rpm": 12085.039208563107,
+              "max_rpm": 12337.437375650983,
+              "cycle_time_s": 0.004903550283531511,
+              "net_cycle_energy_j": -2.0977932706500724e-06,
+              "cycle_work_from_pressure_j": 6.513255374227722,
+              "installed_rotor_inertia_kg_m2": 0.00017792686791883328,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00017792686791883328,
+              "effective_inertia_max_kg_m2": 0.00017918987761449874,
+              "effective_inertia_ripple_fraction": 0.007098476528242026,
+              "ideal_power_bound_refusals": 0,
+              "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00030123291105831155,
+              "delivered_premix_flow_kg_s_at_time_average_rpm": 0.0005710957679915396,
+              "pressure_work_rate_w_at_time_average_rpm": 1328.273393280452
+            }
+          },
+          {
+            "installed_inertia_multiplier": 1.0,
+            "inertia_kg_m2": 0.00035585373583766657,
+            "periodic_orbit_roots": [
+              {
+                "rpm": 12229.196166992188,
+                "ok": true,
+                "stopped": false,
+                "start_rpm": 12229.196166992188,
+                "end_rpm": 12229.196205816568,
+                "time_average_rpm": 12238.284559798234,
+                "min_rpm": 12162.70542731932,
+                "max_rpm": 12288.90439668527,
+                "cycle_time_s": 0.004902647892098792,
+                "net_cycle_energy_j": 1.8581116592031321e-06,
+                "cycle_work_from_pressure_j": 6.514976278697393,
+                "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+                "profile_reciprocating_mass_kg": 0.010100000000000001,
+                "effective_inertia_min_kg_m2": 0.00035585373583766657,
+                "effective_inertia_max_kg_m2": 0.00035711674553333205,
+                "effective_inertia_ripple_fraction": 0.003549238264121124,
+                "ideal_power_bound_refusals": 0,
+                "burned_fuel_flow_kg_s_at_time_average_rpm": 0.0003013041552875516,
+                "delivered_premix_flow_kg_s_at_time_average_rpm": 0.0005712308371566911,
+                "pressure_work_rate_w_at_time_average_rpm": 1328.8688933172343
+              }
+            ],
+            "selected_restoring_orbit": {
+              "rpm": 12229.196166992188,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.196166992188,
+              "end_rpm": 12229.196205816568,
+              "time_average_rpm": 12238.284559798234,
+              "min_rpm": 12162.70542731932,
+              "max_rpm": 12288.90439668527,
+              "cycle_time_s": 0.004902647892098792,
+              "net_cycle_energy_j": 1.8581116592031321e-06,
+              "cycle_work_from_pressure_j": 6.514976278697393,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.00035711674553333205,
+              "effective_inertia_ripple_fraction": 0.003549238264121124,
+              "ideal_power_bound_refusals": 0,
+              "burned_fuel_flow_kg_s_at_time_average_rpm": 0.0003013041552875516,
+              "delivered_premix_flow_kg_s_at_time_average_rpm": 0.0005712308371566911,
+              "pressure_work_rate_w_at_time_average_rpm": 1328.8688933172343
+            }
+          },
+          {
+            "installed_inertia_multiplier": 2.0,
+            "inertia_kg_m2": 0.0007117074716753331,
+            "periodic_orbit_roots": [
+              {
+                "rpm": 12234.683227539062,
+                "ok": true,
+                "stopped": false,
+                "start_rpm": 12234.683227539062,
+                "end_rpm": 12234.68325212228,
+                "time_average_rpm": 12239.241689419709,
+                "min_rpm": 12201.431398985706,
+                "max_rpm": 12264.530885601904,
+                "cycle_time_s": 0.004902264496653202,
+                "net_cycle_energy_j": 2.350774138903944e-06,
+                "cycle_work_from_pressure_j": 6.515817547385944,
+                "installed_rotor_inertia_kg_m2": 0.0007117074716753331,
+                "profile_reciprocating_mass_kg": 0.010100000000000001,
+                "effective_inertia_min_kg_m2": 0.0007117074716753331,
+                "effective_inertia_max_kg_m2": 0.0007129704813709986,
+                "effective_inertia_ripple_fraction": 0.001774619132060451,
+                "ideal_power_bound_refusals": 0,
+                "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00030133443423863816,
+                "delivered_premix_flow_kg_s_at_time_average_rpm": 0.0005712882418431977,
+                "pressure_work_rate_w_at_time_average_rpm": 1329.1444294436421
+              }
+            ],
+            "selected_restoring_orbit": {
+              "rpm": 12234.683227539062,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12234.683227539062,
+              "end_rpm": 12234.68325212228,
+              "time_average_rpm": 12239.241689419709,
+              "min_rpm": 12201.431398985706,
+              "max_rpm": 12264.530885601904,
+              "cycle_time_s": 0.004902264496653202,
+              "net_cycle_energy_j": 2.350774138903944e-06,
+              "cycle_work_from_pressure_j": 6.515817547385944,
+              "installed_rotor_inertia_kg_m2": 0.0007117074716753331,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.0007117074716753331,
+              "effective_inertia_max_kg_m2": 0.0007129704813709986,
+              "effective_inertia_ripple_fraction": 0.001774619132060451,
+              "ideal_power_bound_refusals": 0,
+              "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00030133443423863816,
+              "delivered_premix_flow_kg_s_at_time_average_rpm": 0.0005712882418431977,
+              "pressure_work_rate_w_at_time_average_rpm": 1329.1444294436421
+            }
+          }
+        ],
+        "reciprocating_mass_one_cycle_sensitivity": [
+          {
+            "profile_mass_multiplier": 0.4,
+            "reciprocating_mass_kg": 0.004040000000000001,
+            "one_cycle_map_at_primary_initial_rpm": {
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.196166992188,
+              "end_rpm": 12229.28971346876,
+              "time_average_rpm": 12233.978890971624,
+              "min_rpm": 12152.23411837729,
+              "max_rpm": 12286.085377201296,
+              "cycle_time_s": 0.004904373346947535,
+              "net_cycle_energy_j": 0.004469432959865571,
+              "cycle_work_from_pressure_j": 6.514976278697393,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.004040000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.00035635893971593276,
+              "effective_inertia_ripple_fraction": 0.0014196953056484496,
+              "ideal_power_bound_refusals": 0
+            },
+            "net_cycle_energy_delta_vs_profile_mass_j": 0.004467574848206368,
+            "equilibrium_re_solved": false
+          },
+          {
+            "profile_mass_multiplier": 2.0,
+            "reciprocating_mass_kg": 0.020200000000000003,
+            "one_cycle_map_at_primary_initial_rpm": {
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.196166992188,
+              "end_rpm": 12229.041151769774,
+              "time_average_rpm": 12245.442002949805,
+              "min_rpm": 12180.096741942714,
+              "max_rpm": 12300.136282116346,
+              "cycle_time_s": 0.004899782301491983,
+              "net_cycle_energy_j": -0.007440050552190769,
+              "cycle_work_from_pressure_j": 6.514976278697393,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.020200000000000003,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003583797552289975,
+              "effective_inertia_ripple_fraction": 0.007098476528242026,
+              "ideal_power_bound_refusals": 0
+            },
+            "net_cycle_energy_delta_vs_profile_mass_j": -0.007441908663849972,
+            "equilibrium_re_solved": false
+          }
+        ],
+        "resolution_sweep_at_mid_inertia": [
+          {
+            "step_deg_max": 4.0,
+            "selected_restoring_orbit": {
+              "rpm": 12216.824340820312,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12216.824340820312,
+              "end_rpm": 12216.82429873845,
+              "time_average_rpm": 12225.855344252714,
+              "min_rpm": 12150.51919837301,
+              "max_rpm": 12276.41791838177,
+              "cycle_time_s": 0.004907632088760609,
+              "net_cycle_energy_j": -2.0119753116887296e-06,
+              "cycle_work_from_pressure_j": 6.502067006070419,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167430238811,
+              "effective_inertia_ripple_fraction": 0.0035492312122042957,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -0.0010311115974022123
+          },
+          {
+            "step_deg_max": 2.0,
+            "selected_restoring_orbit": {
+              "rpm": 12226.248168945312,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12226.248168945312,
+              "end_rpm": 12226.24820458853,
+              "time_average_rpm": 12235.32290551812,
+              "min_rpm": 12159.811152619808,
+              "max_rpm": 12285.925281634381,
+              "cycle_time_s": 0.004903834615835112,
+              "net_cycle_energy_j": 1.7054518934855878e-06,
+              "cycle_work_from_pressure_j": 6.511899831655919,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167430238811,
+              "effective_inertia_ripple_fraction": 0.0035492312122042957,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -0.00025752162051506655
+          },
+          {
+            "step_deg_max": 1.0,
+            "selected_restoring_orbit": {
+              "rpm": 12228.610229492188,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12228.610229492188,
+              "end_rpm": 12228.6102018201,
+              "time_average_rpm": 12237.695864264275,
+              "min_rpm": 12162.12612853452,
+              "max_rpm": 12288.313375964082,
+              "cycle_time_s": 0.004902883734446131,
+              "net_cycle_energy_j": -1.3243060834611242e-06,
+              "cycle_work_from_pressure_j": 6.514361554346348,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167430238811,
+              "effective_inertia_ripple_fraction": 0.0035492312122042957,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -6.362827774897273e-05
+          },
+          {
+            "step_deg_max": 0.5,
+            "selected_restoring_orbit": {
+              "rpm": 12229.196166992188,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.196166992188,
+              "end_rpm": 12229.196205816568,
+              "time_average_rpm": 12238.284559798234,
+              "min_rpm": 12162.70542731932,
+              "max_rpm": 12288.90439668527,
+              "cycle_time_s": 0.004902647892098792,
+              "net_cycle_energy_j": 1.8581116592031321e-06,
+              "cycle_work_from_pressure_j": 6.514976278697393,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.00035711674553333205,
+              "effective_inertia_ripple_fraction": 0.003549238264121124,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -1.5526242626906495e-05
+          },
+          {
+            "step_deg_max": 0.25,
+            "selected_restoring_orbit": {
+              "rpm": 12229.342651367188,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.342651367188,
+              "end_rpm": 12229.342706885598,
+              "time_average_rpm": 12238.43173370271,
+              "min_rpm": 12162.847866478563,
+              "max_rpm": 12289.052601586454,
+              "cycle_time_s": 0.0049025889350487175,
+              "net_cycle_energy_j": 2.6571096896077506e-06,
+              "cycle_work_from_pressure_j": 6.5151299677282655,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167516662837,
+              "effective_inertia_ripple_fraction": 0.003549255498594084,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -3.500732131622719e-06
+          },
+          {
+            "step_deg_max": 0.125,
+            "selected_restoring_orbit": {
+              "rpm": 12229.385375976562,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.385375976562,
+              "end_rpm": 12229.385323912948,
+              "time_average_rpm": 12238.474577323905,
+              "min_rpm": 12162.889886286976,
+              "max_rpm": 12289.09559303767,
+              "cycle_time_s": 0.004902571772398104,
+              "net_cycle_energy_j": -2.491771851964586e-06,
+              "cycle_work_from_pressure_j": 6.515169326288824,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167516662837,
+              "effective_inertia_ripple_fraction": 0.003549255498594084,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": 0.0
+          }
+        ],
+        "averaging_error_scope": "At each declared inferred pressure/flow/timing/inertia hypothesis, compare the angle-averaged pressure-work balance to the periodic crank-energy solution using the same pressure-work cycle and installed prop load. The profile-root difference additionally includes different inferred engine work/loss closures; neither comparison establishes empirical accuracy."
+      },
+      "quadrature_and_anti_alias_audit": {
+        "reference_step_deg": 0.0625,
+        "event_aligned_pressure_work_resolution_sweep": [
+          {
+            "step_deg_max": 20.0,
+            "steps": 19,
+            "cycle_work_j": 5.754021045917394,
+            "cycle_work_error_vs_finest_fraction": -0.04683976093683784,
+            "net_pv_cycle_work_j": 6.044110273340301,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.0450119470048872,
+            "peak_pressure_pa": 3698243.240000475,
+            "energy_residual_j": 1.2490009027033011e-15,
+            "samples_across_wiebe_burn": 2.0,
+            "peak_pressure_error_vs_finest_fraction": -0.14062684858576635
+          },
+          {
+            "step_deg_max": 10.0,
+            "steps": 37,
+            "cycle_work_j": 5.9695673045063575,
+            "cycle_work_error_vs_finest_fraction": -0.011134273986699195,
+            "net_pv_cycle_work_j": 6.261207701037583,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.010709884267653957,
+            "peak_pressure_pa": 4253804.081527951,
+            "energy_residual_j": 4.718447854656915e-15,
+            "samples_across_wiebe_burn": 4.0,
+            "peak_pressure_error_vs_finest_fraction": -0.011529317622457014
+          },
+          {
+            "step_deg_max": 5.0,
+            "steps": 72,
+            "cycle_work_j": 6.019942609984291,
+            "cycle_work_error_vs_finest_fraction": -0.0027895463902829487,
+            "net_pv_cycle_work_j": 6.312014310067183,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.0026822834393774864,
+            "peak_pressure_pa": 4241398.926569931,
+            "energy_residual_j": 4.579669976578771e-16,
+            "samples_across_wiebe_burn": 8.0,
+            "peak_pressure_error_vs_finest_fraction": -0.014411944972315793
+          },
+          {
+            "step_deg_max": 2.0,
+            "steps": 181,
+            "cycle_work_j": 6.034086890453973,
+            "cycle_work_error_vs_finest_fraction": -0.00044652997684380136,
+            "net_pv_cycle_work_j": 6.32627337562733,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.00042930713004740717,
+            "peak_pressure_pa": 4300527.146793582,
+            "energy_residual_j": 9.929557176491244e-15,
+            "samples_across_wiebe_burn": 20.0,
+            "peak_pressure_error_vs_finest_fraction": -0.0006721226692519844
+          },
+          {
+            "step_deg_max": 1.0,
+            "steps": 360,
+            "cycle_work_j": 6.036110597713395,
+            "cycle_work_error_vs_finest_fraction": -0.00011130052950747427,
+            "net_pv_cycle_work_j": 6.328313212014879,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.00010700669341123792,
+            "peak_pressure_pa": 4301540.576324549,
+            "energy_residual_j": 2.936930212915634e-14,
+            "samples_across_wiebe_burn": 40.0,
+            "peak_pressure_error_vs_finest_fraction": -0.00043662865946281215
+          },
+          {
+            "step_deg_max": 0.5,
+            "steps": 720,
+            "cycle_work_j": 6.036616490256218,
+            "cycle_work_error_vs_finest_fraction": -2.7498844875184503e-05,
+            "net_pv_cycle_work_j": 6.328823131365687,
+            "net_pv_cycle_work_error_vs_finest_fraction": -2.6437864255268728e-05,
+            "peak_pressure_pa": 4303401.612266262,
+            "energy_residual_j": 2.895416111731164e-14,
+            "samples_across_wiebe_burn": 80.0,
+            "peak_pressure_error_vs_finest_fraction": -4.173512968663751e-06
+          },
+          {
+            "step_deg_max": 0.25,
+            "steps": 1440,
+            "cycle_work_j": 6.036742969526339,
+            "cycle_work_error_vs_finest_fraction": -6.547407544243988e-06,
+            "net_pv_cycle_work_j": 6.328950616727441,
+            "net_pv_cycle_work_error_vs_finest_fraction": -6.294784149041277e-06,
+            "peak_pressure_pa": 4303373.054649261,
+            "energy_residual_j": 1.8254278297269444e-14,
+            "samples_across_wiebe_burn": 160.0,
+            "peak_pressure_error_vs_finest_fraction": -1.0809541949652335e-05
+          },
+          {
+            "step_deg_max": 0.125,
+            "steps": 2880,
+            "cycle_work_j": 6.0367745897273775,
+            "cycle_work_error_vs_finest_fraction": -1.3094846827987894e-06,
+            "net_pv_cycle_work_j": 6.328982488413242,
+            "net_pv_cycle_work_error_vs_finest_fraction": -1.258959554162331e-06,
+            "peak_pressure_pa": 4303391.432862753,
+            "energy_residual_j": 3.207259761592307e-14,
+            "samples_across_wiebe_burn": 320.0,
+            "peak_pressure_error_vs_finest_fraction": -6.538935009681168e-06
+          },
+          {
+            "step_deg_max": 0.0625,
+            "steps": 5760,
+            "cycle_work_j": 6.036782494801588,
+            "cycle_work_error_vs_finest_fraction": 0.0,
+            "net_pv_cycle_work_j": 6.328990456356245,
+            "net_pv_cycle_work_error_vs_finest_fraction": 0.0,
+            "peak_pressure_pa": 4303419.572643658,
+            "energy_residual_j": -9.71840626230085e-14,
+            "samples_across_wiebe_burn": 640.0,
+            "peak_pressure_error_vs_finest_fraction": 0.0
+          }
+        ],
+        "unlocked_uniform_phase_sampling_of_fine_pressure_torque": [
+          {
+            "requested_step_deg": 20.0,
+            "uniform_bin_step_deg": 20.0,
+            "samples_per_cycle": 18,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.01797729531566694,
+            "rms_work_error_fraction": 0.011539436452208316,
+            "min_work_error_fraction": -0.01797729531566694,
+            "max_work_error_fraction": 0.0147258073914327,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 6.3913202363264,
+                "error_fraction_vs_fine_reference": 0.009848297354842162
+              },
+              {
+                "phase_offset_deg": 1.25,
+                "estimated_net_pv_work_j": 6.412819940736439,
+                "error_fraction_vs_fine_reference": 0.013245316920331707
+              },
+              {
+                "phase_offset_deg": 2.5,
+                "estimated_net_pv_work_j": 6.422189950798763,
+                "error_fraction_vs_fine_reference": 0.0147258073914327
+              },
+              {
+                "phase_offset_deg": 3.75,
+                "estimated_net_pv_work_j": 6.418935073489071,
+                "error_fraction_vs_fine_reference": 0.014211526743968195
+              },
+              {
+                "phase_offset_deg": 5.0,
+                "estimated_net_pv_work_j": 6.404453073618567,
+                "error_fraction_vs_fine_reference": 0.01192332612644953
+              },
+              {
+                "phase_offset_deg": 6.25,
+                "estimated_net_pv_work_j": 6.381796341919465,
+                "error_fraction_vs_fine_reference": 0.008343492682973741
+              },
+              {
+                "phase_offset_deg": 7.5,
+                "estimated_net_pv_work_j": 6.355213817587527,
+                "error_fraction_vs_fine_reference": 0.004143371903009507
+              },
+              {
+                "phase_offset_deg": 8.75,
+                "estimated_net_pv_work_j": 6.329540598379378,
+                "error_fraction_vs_fine_reference": 8.692413536182109e-05
+              },
+              {
+                "phase_offset_deg": 10.0,
+                "estimated_net_pv_work_j": 6.2677863861364775,
+                "error_fraction_vs_fine_reference": -0.009670431744497332
+              },
+              {
+                "phase_offset_deg": 11.25,
+                "estimated_net_pv_work_j": 6.215212325872291,
+                "error_fraction_vs_fine_reference": -0.01797729531566694
+              },
+              {
+                "phase_offset_deg": 12.5,
+                "estimated_net_pv_work_j": 6.215518486297593,
+                "error_fraction_vs_fine_reference": -0.017928921024788713
+              },
+              {
+                "phase_offset_deg": 13.75,
+                "estimated_net_pv_work_j": 6.228155624845852,
+                "error_fraction_vs_fine_reference": -0.015932214182614923
+              },
+              {
+                "phase_offset_deg": 15.0,
+                "estimated_net_pv_work_j": 6.252579667773986,
+                "error_fraction_vs_fine_reference": -0.012073140117555337
+              },
+              {
+                "phase_offset_deg": 16.25,
+                "estimated_net_pv_work_j": 6.285322722566386,
+                "error_fraction_vs_fine_reference": -0.006899636536187748
+              },
+              {
+                "phase_offset_deg": 17.5,
+                "estimated_net_pv_work_j": 6.323025330220945,
+                "error_fraction_vs_fine_reference": -0.000942508315731394
+              },
+              {
+                "phase_offset_deg": 18.75,
+                "estimated_net_pv_work_j": 6.360062180610878,
+                "error_fraction_vs_fine_reference": 0.004909428204845412
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 10.0,
+            "uniform_bin_step_deg": 10.0,
+            "samples_per_cycle": 36,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.002943934423884631,
+            "rms_work_error_fraction": 0.0016935940460259427,
+            "min_work_error_fraction": -0.0027748704561841864,
+            "max_work_error_fraction": 0.002943934423884631,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 6.328516370696278,
+                "error_fraction_vs_fine_reference": -7.490699555279257e-05
+              },
+              {
+                "phase_offset_deg": 0.625,
+                "estimated_net_pv_work_j": 6.3309422614344495,
+                "error_fraction_vs_fine_reference": 0.00030839121842007877
+              },
+              {
+                "phase_offset_deg": 1.25,
+                "estimated_net_pv_work_j": 6.333559532242924,
+                "error_fraction_vs_fine_reference": 0.0007219280733927746
+              },
+              {
+                "phase_offset_deg": 1.875,
+                "estimated_net_pv_work_j": 6.336304483549482,
+                "error_fraction_vs_fine_reference": 0.0011556388406135376
+              },
+              {
+                "phase_offset_deg": 2.5,
+                "estimated_net_pv_work_j": 6.3391195739042345,
+                "error_fraction_vs_fine_reference": 0.00160043179363889
+              },
+              {
+                "phase_offset_deg": 3.125,
+                "estimated_net_pv_work_j": 6.341961660632512,
+                "error_fraction_vs_fine_reference": 0.0020494902568923834
+              },
+              {
+                "phase_offset_deg": 3.75,
+                "estimated_net_pv_work_j": 6.344801389495127,
+                "error_fraction_vs_fine_reference": 0.0024981761701035055
+              },
+              {
+                "phase_offset_deg": 4.375,
+                "estimated_net_pv_work_j": 6.34762258922915,
+                "error_fraction_vs_fine_reference": 0.002943934423884631
+              },
+              {
+                "phase_offset_deg": 5.0,
+                "estimated_net_pv_work_j": 6.329553311231439,
+                "error_fraction_vs_fine_reference": 8.893280517252578e-05
+              },
+              {
+                "phase_offset_deg": 5.625,
+                "estimated_net_pv_work_j": 6.311428327721431,
+                "error_fraction_vs_fine_reference": -0.0027748704561841864
+              },
+              {
+                "phase_offset_deg": 6.25,
+                "estimated_net_pv_work_j": 6.314016133304367,
+                "error_fraction_vs_fine_reference": -0.002365989197667284
+              },
+              {
+                "phase_offset_deg": 6.875,
+                "estimated_net_pv_work_j": 6.316477988798485,
+                "error_fraction_vs_fine_reference": -0.001977008441400696
+              },
+              {
+                "phase_offset_deg": 7.5,
+                "estimated_net_pv_work_j": 6.318854218548174,
+                "error_fraction_vs_fine_reference": -0.0016015568166786176
+              },
+              {
+                "phase_offset_deg": 8.125,
+                "estimated_net_pv_work_j": 6.321192323905138,
+                "error_fraction_vs_fine_reference": -0.0012321289635182087
+              },
+              {
+                "phase_offset_deg": 8.75,
+                "estimated_net_pv_work_j": 6.323545349167461,
+                "error_fraction_vs_fine_reference": -0.0008603437193234198
+              },
+              {
+                "phase_offset_deg": 9.375,
+                "estimated_net_pv_work_j": 6.32597006733694,
+                "error_fraction_vs_fine_reference": -0.0004772307748184268
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 5.0,
+            "uniform_bin_step_deg": 5.0,
+            "samples_per_cycle": 72,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.0014434618218555073,
+            "rms_work_error_fraction": 0.00085961178118518,
+            "min_work_error_fraction": -0.0014378608751358657,
+            "max_work_error_fraction": 0.0014434618218555073,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 6.328986896226208,
+                "error_fraction_vs_fine_reference": -5.625115192531283e-07
+              },
+              {
+                "phase_offset_deg": 0.3125,
+                "estimated_net_pv_work_j": 6.330282112249751,
+                "error_fraction_vs_fine_reference": 0.00020408561245477408
+              },
+              {
+                "phase_offset_deg": 0.625,
+                "estimated_net_pv_work_j": 6.3315769922688245,
+                "error_fraction_vs_fine_reference": 0.00040868064668697635
+              },
+              {
+                "phase_offset_deg": 0.9375,
+                "estimated_net_pv_work_j": 6.332873310226449,
+                "error_fraction_vs_fine_reference": 0.000613502879642347
+              },
+              {
+                "phase_offset_deg": 1.25,
+                "estimated_net_pv_work_j": 6.334173369331292,
+                "error_fraction_vs_fine_reference": 0.0008189162253895432
+              },
+              {
+                "phase_offset_deg": 1.5625,
+                "estimated_net_pv_work_j": 6.335479962010886,
+                "error_fraction_vs_fine_reference": 0.0010253618960862632
+              },
+              {
+                "phase_offset_deg": 1.875,
+                "estimated_net_pv_work_j": 6.336796328283043,
+                "error_fraction_vs_fine_reference": 0.00123335182453288
+              },
+              {
+                "phase_offset_deg": 2.1875,
+                "estimated_net_pv_work_j": 6.338126112450883,
+                "error_fraction_vs_fine_reference": 0.0014434618218555073
+              },
+              {
+                "phase_offset_deg": 2.5,
+                "estimated_net_pv_work_j": 6.3290348409638595,
+                "error_fraction_vs_fine_reference": 7.012904809977627e-06
+              },
+              {
+                "phase_offset_deg": 2.8125,
+                "estimated_net_pv_work_j": 6.319890248599942,
+                "error_fraction_vs_fine_reference": -0.0014378608751358657
+              },
+              {
+                "phase_offset_deg": 3.125,
+                "estimated_net_pv_work_j": 6.321185294577941,
+                "error_fraction_vs_fine_reference": -0.0012332396188818873
+              },
+              {
+                "phase_offset_deg": 3.4375,
+                "estimated_net_pv_work_j": 6.322485467024726,
+                "error_fraction_vs_fine_reference": -0.0010278083647584646
+              },
+              {
+                "phase_offset_deg": 3.75,
+                "estimated_net_pv_work_j": 6.323787832773645,
+                "error_fraction_vs_fine_reference": -0.0008220305621373658
+              },
+              {
+                "phase_offset_deg": 4.0625,
+                "estimated_net_pv_work_j": 6.325090229798939,
+                "error_fraction_vs_fine_reference": -0.000616247817752491
+              },
+              {
+                "phase_offset_deg": 4.375,
+                "estimated_net_pv_work_j": 6.326391236173986,
+                "error_fraction_vs_fine_reference": -0.00041068480039319066
+              },
+              {
+                "phase_offset_deg": 4.6875,
+                "estimated_net_pv_work_j": 6.327690138000671,
+                "error_fraction_vs_fine_reference": -0.00020545430816198973
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 2.0,
+            "uniform_bin_step_deg": 2.0,
+            "samples_per_cycle": 180,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.000578196649501761,
+            "rms_work_error_fraction": 0.0003444389372089797,
+            "min_work_error_fraction": -0.000578196649501761,
+            "max_work_error_fraction": 0.0005752917533894397,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 6.329007159078338,
+                "error_fraction_vs_fine_reference": 2.639081573496682e-06
+              },
+              {
+                "phase_offset_deg": 0.125,
+                "estimated_net_pv_work_j": 6.329522485304324,
+                "error_fraction_vs_fine_reference": 8.406221367329714e-05
+              },
+              {
+                "phase_offset_deg": 0.25,
+                "estimated_net_pv_work_j": 6.33003744190875,
+                "error_fraction_vs_fine_reference": 0.00016542694442733819
+              },
+              {
+                "phase_offset_deg": 0.375,
+                "estimated_net_pv_work_j": 6.330553736592456,
+                "error_fraction_vs_fine_reference": 0.00024700309583192137
+              },
+              {
+                "phase_offset_deg": 0.5,
+                "estimated_net_pv_work_j": 6.331071315519073,
+                "error_fraction_vs_fine_reference": 0.00032878216157494755
+              },
+              {
+                "phase_offset_deg": 0.625,
+                "estimated_net_pv_work_j": 6.331590141857579,
+                "error_fraction_vs_fine_reference": 0.00041075832224124476
+              },
+              {
+                "phase_offset_deg": 0.75,
+                "estimated_net_pv_work_j": 6.332110195434236,
+                "error_fraction_vs_fine_reference": 0.0004929283903181148
+              },
+              {
+                "phase_offset_deg": 0.875,
+                "estimated_net_pv_work_j": 6.332631472373068,
+                "error_fraction_vs_fine_reference": 0.0005752917533894397
+              },
+              {
+                "phase_offset_deg": 1.0,
+                "estimated_net_pv_work_j": 6.328980322064002,
+                "error_fraction_vs_fine_reference": -1.6012494115091869e-06
+              },
+              {
+                "phase_offset_deg": 1.125,
+                "estimated_net_pv_work_j": 6.325331055279651,
+                "error_fraction_vs_fine_reference": -0.000578196649501761
+              },
+              {
+                "phase_offset_deg": 1.25,
+                "estimated_net_pv_work_j": 6.325855864506606,
+                "error_fraction_vs_fine_reference": -0.0004952751740194827
+              },
+              {
+                "phase_offset_deg": 1.375,
+                "estimated_net_pv_work_j": 6.326380721867031,
+                "error_fraction_vs_fine_reference": -0.0004123460933004308
+              },
+              {
+                "phase_offset_deg": 1.5,
+                "estimated_net_pv_work_j": 6.326905703787307,
+                "error_fraction_vs_fine_reference": -0.0003293973317410881
+              },
+              {
+                "phase_offset_deg": 1.625,
+                "estimated_net_pv_work_j": 6.32743090069466,
+                "error_fraction_vs_fine_reference": -0.0002464146015608293
+              },
+              {
+                "phase_offset_deg": 1.75,
+                "estimated_net_pv_work_j": 6.327956416624288,
+                "error_fraction_vs_fine_reference": -0.0001633814648778209
+              },
+              {
+                "phase_offset_deg": 1.875,
+                "estimated_net_pv_work_j": 6.328482368808757,
+                "error_fraction_vs_fine_reference": -8.02793985852368e-05
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 1.0,
+            "uniform_bin_step_deg": 1.0,
+            "samples_per_cycle": 360,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.00028892512208811283,
+            "rms_work_error_fraction": 0.00017241139114241173,
+            "min_work_error_fraction": -0.00028809757491687904,
+            "max_work_error_fraction": 0.00028892512208811283,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 6.328988509653191,
+                "error_fraction_vs_fine_reference": -3.075850829592497e-07
+              },
+              {
+                "phase_offset_deg": 0.0625,
+                "estimated_net_pv_work_j": 6.329249421794505,
+                "error_fraction_vs_fine_reference": 4.0917337456258807e-05
+              },
+              {
+                "phase_offset_deg": 0.125,
+                "estimated_net_pv_work_j": 6.329510521276126,
+                "error_fraction_vs_fine_reference": 8.217186034120694e-05
+              },
+              {
+                "phase_offset_deg": 0.1875,
+                "estimated_net_pv_work_j": 6.329771813810804,
+                "error_fraction_vs_fine_reference": 0.0001234568862042984
+              },
+              {
+                "phase_offset_deg": 0.25,
+                "estimated_net_pv_work_j": 6.330033306029269,
+                "error_fraction_vs_fine_reference": 0.00016477346272125715
+              },
+              {
+                "phase_offset_deg": 0.3125,
+                "estimated_net_pv_work_j": 6.330295005476478,
+                "error_fraction_vs_fine_reference": 0.00020612278201848078
+              },
+              {
+                "phase_offset_deg": 0.375,
+                "estimated_net_pv_work_j": 6.330556920590912,
+                "error_fraction_vs_fine_reference": 0.0002475061774018794
+              },
+              {
+                "phase_offset_deg": 0.4375,
+                "estimated_net_pv_work_j": 6.330819060696542,
+                "error_fraction_vs_fine_reference": 0.00028892512208811283
+              },
+              {
+                "phase_offset_deg": 0.5,
+                "estimated_net_pv_work_j": 6.328993740571171,
+                "error_fraction_vs_fine_reference": 5.189160812157922e-07
+              },
+              {
+                "phase_offset_deg": 0.5625,
+                "estimated_net_pv_work_j": 6.327167089554097,
+                "error_fraction_vs_fine_reference": -0.00028809757491687904
+              },
+              {
+                "phase_offset_deg": 0.625,
+                "estimated_net_pv_work_j": 6.327426770291994,
+                "error_fraction_vs_fine_reference": -0.0002470672179132327
+              },
+              {
+                "phase_offset_deg": 0.6875,
+                "estimated_net_pv_work_j": 6.32768662520048,
+                "error_fraction_vs_fine_reference": -0.0002060093414196773
+              },
+              {
+                "phase_offset_deg": 0.75,
+                "estimated_net_pv_work_j": 6.327946653207678,
+                "error_fraction_vs_fine_reference": -0.00016492411479607227
+              },
+              {
+                "phase_offset_deg": 0.8125,
+                "estimated_net_pv_work_j": 6.32820685424216,
+                "error_fraction_vs_fine_reference": -0.00012381154932827876
+              },
+              {
+                "phase_offset_deg": 0.875,
+                "estimated_net_pv_work_j": 6.3284672292297435,
+                "error_fraction_vs_fine_reference": -8.267149873431023e-05
+              },
+              {
+                "phase_offset_deg": 0.9375,
+                "estimated_net_pv_work_j": 6.328727780074993,
+                "error_fraction_vs_fine_reference": -4.150366208699463e-05
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 0.5,
+            "uniform_bin_step_deg": 0.5,
+            "samples_per_cycle": 720,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.00014436546232809988,
+            "rms_work_error_fraction": 8.621091001006436e-05,
+            "min_work_error_fraction": -0.00014415413133039845,
+            "max_work_error_fraction": 0.00014436546232809988,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 6.3289899796184725,
+                "error_fraction_vs_fine_reference": -7.532603751858602e-08
+              },
+              {
+                "phase_offset_deg": 0.03125,
+                "estimated_net_pv_work_j": 6.329120406679959,
+                "error_fraction_vs_fine_reference": 2.0532551693541734e-05
+              },
+              {
+                "phase_offset_deg": 0.0625,
+                "estimated_net_pv_work_j": 6.329250929859322,
+                "error_fraction_vs_fine_reference": 4.11556163455451e-05
+              },
+              {
+                "phase_offset_deg": 0.09375,
+                "estimated_net_pv_work_j": 6.3293814530386685,
+                "error_fraction_vs_fine_reference": 6.177868099488393e-05
+              },
+              {
+                "phase_offset_deg": 0.125,
+                "estimated_net_pv_work_j": 6.3295120749103315,
+                "error_fraction_vs_fine_reference": 8.241733933456175e-05
+              },
+              {
+                "phase_offset_deg": 0.15625,
+                "estimated_net_pv_work_j": 6.329642696781988,
+                "error_fraction_vs_fine_reference": 0.00010305599767312934
+              },
+              {
+                "phase_offset_deg": 0.1875,
+                "estimated_net_pv_work_j": 6.329773420385758,
+                "error_fraction_vs_fine_reference": 0.00012371072999894928
+              },
+              {
+                "phase_offset_deg": 0.21875,
+                "estimated_net_pv_work_j": 6.329904143989547,
+                "error_fraction_vs_fine_reference": 0.00014436546232809988
+              },
+              {
+                "phase_offset_deg": 0.25,
+                "estimated_net_pv_work_j": 6.328991125112182,
+                "error_fraction_vs_fine_reference": 1.0566549923929358e-07
+              },
+              {
+                "phase_offset_deg": 0.28125,
+                "estimated_net_pv_work_j": 6.328078106234811,
+                "error_fraction_vs_fine_reference": -0.00014415413133039845
+              },
+              {
+                "phase_offset_deg": 0.3125,
+                "estimated_net_pv_work_j": 6.32820825567431,
+                "error_fraction_vs_fine_reference": -0.00012359011872886683
+              },
+              {
+                "phase_offset_deg": 0.34375,
+                "estimated_net_pv_work_j": 6.328338405113798,
+                "error_fraction_vs_fine_reference": -0.00010302610612922258
+              },
+              {
+                "phase_offset_deg": 0.375,
+                "estimated_net_pv_work_j": 6.328468645784057,
+                "error_fraction_vs_fine_reference": -8.244767878640147e-05
+              },
+              {
+                "phase_offset_deg": 0.40625,
+                "estimated_net_pv_work_j": 6.328598886454318,
+                "error_fraction_vs_fine_reference": -6.186925144335831e-05
+              },
+              {
+                "phase_offset_deg": 0.4375,
+                "estimated_net_pv_work_j": 6.328729219505647,
+                "error_fraction_vs_fine_reference": -4.127622760696781e-05
+              },
+              {
+                "phase_offset_deg": 0.46875,
+                "estimated_net_pv_work_j": 6.328859552556983,
+                "error_fraction_vs_fine_reference": -2.068320376924504e-05
+              }
+            ]
+          }
+        ],
+        "dynamic_periodic_resolution_sweep": [
+          {
+            "step_deg_max": 4.0,
+            "selected_restoring_orbit": {
+              "rpm": 12216.824340820312,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12216.824340820312,
+              "end_rpm": 12216.82429873845,
+              "time_average_rpm": 12225.855344252714,
+              "min_rpm": 12150.51919837301,
+              "max_rpm": 12276.41791838177,
+              "cycle_time_s": 0.004907632088760609,
+              "net_cycle_energy_j": -2.0119753116887296e-06,
+              "cycle_work_from_pressure_j": 6.502067006070419,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167430238811,
+              "effective_inertia_ripple_fraction": 0.0035492312122042957,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -0.0010311115974022123
+          },
+          {
+            "step_deg_max": 2.0,
+            "selected_restoring_orbit": {
+              "rpm": 12226.248168945312,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12226.248168945312,
+              "end_rpm": 12226.24820458853,
+              "time_average_rpm": 12235.32290551812,
+              "min_rpm": 12159.811152619808,
+              "max_rpm": 12285.925281634381,
+              "cycle_time_s": 0.004903834615835112,
+              "net_cycle_energy_j": 1.7054518934855878e-06,
+              "cycle_work_from_pressure_j": 6.511899831655919,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167430238811,
+              "effective_inertia_ripple_fraction": 0.0035492312122042957,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -0.00025752162051506655
+          },
+          {
+            "step_deg_max": 1.0,
+            "selected_restoring_orbit": {
+              "rpm": 12228.610229492188,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12228.610229492188,
+              "end_rpm": 12228.6102018201,
+              "time_average_rpm": 12237.695864264275,
+              "min_rpm": 12162.12612853452,
+              "max_rpm": 12288.313375964082,
+              "cycle_time_s": 0.004902883734446131,
+              "net_cycle_energy_j": -1.3243060834611242e-06,
+              "cycle_work_from_pressure_j": 6.514361554346348,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167430238811,
+              "effective_inertia_ripple_fraction": 0.0035492312122042957,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -6.362827774897273e-05
+          },
+          {
+            "step_deg_max": 0.5,
+            "selected_restoring_orbit": {
+              "rpm": 12229.196166992188,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.196166992188,
+              "end_rpm": 12229.196205816568,
+              "time_average_rpm": 12238.284559798234,
+              "min_rpm": 12162.70542731932,
+              "max_rpm": 12288.90439668527,
+              "cycle_time_s": 0.004902647892098792,
+              "net_cycle_energy_j": 1.8581116592031321e-06,
+              "cycle_work_from_pressure_j": 6.514976278697393,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.00035711674553333205,
+              "effective_inertia_ripple_fraction": 0.003549238264121124,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -1.5526242626906495e-05
+          },
+          {
+            "step_deg_max": 0.25,
+            "selected_restoring_orbit": {
+              "rpm": 12229.342651367188,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.342651367188,
+              "end_rpm": 12229.342706885598,
+              "time_average_rpm": 12238.43173370271,
+              "min_rpm": 12162.847866478563,
+              "max_rpm": 12289.052601586454,
+              "cycle_time_s": 0.0049025889350487175,
+              "net_cycle_energy_j": 2.6571096896077506e-06,
+              "cycle_work_from_pressure_j": 6.5151299677282655,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167516662837,
+              "effective_inertia_ripple_fraction": 0.003549255498594084,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -3.500732131622719e-06
+          },
+          {
+            "step_deg_max": 0.125,
+            "selected_restoring_orbit": {
+              "rpm": 12229.385375976562,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 12229.385375976562,
+              "end_rpm": 12229.385323912948,
+              "time_average_rpm": 12238.474577323905,
+              "min_rpm": 12162.889886286976,
+              "max_rpm": 12289.09559303767,
+              "cycle_time_s": 0.004902571772398104,
+              "net_cycle_energy_j": -2.491771851964586e-06,
+              "cycle_work_from_pressure_j": 6.515169326288824,
+              "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+              "profile_reciprocating_mass_kg": 0.010100000000000001,
+              "effective_inertia_min_kg_m2": 0.00035585373583766657,
+              "effective_inertia_max_kg_m2": 0.0003571167516662837,
+              "effective_inertia_ripple_fraction": 0.003549255498594084,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": 0.0
+          }
+        ],
+        "interpretation": "The event-aligned sweep tests crank-angle quadrature resolution. The separate phase sweep intentionally does not align coarse uniform samples to events and quantifies phase-sensitive midpoint integration error for the fine prescribed waveform. This does not prove that a runtime physics step aliases a real engine waveform."
+      },
+      "one_factor_sensitivity_rows": [
+        {
+          "parameter": "compression_ratio",
+          "case": "low",
+          "value": 6.5,
+          "cycle_work_j": 5.528171048535092,
+          "delta_vs_nominal_fraction": -0.08425207413128977,
+          "peak_pressure_pa": 3406410.2285379753
+        },
+        {
+          "parameter": "compression_ratio",
+          "case": "high",
+          "value": 10.0,
+          "cycle_work_j": 6.550546136811132,
+          "delta_vs_nominal_fraction": 0.08510554131310144,
+          "peak_pressure_pa": 5489924.012939536
+        },
+        {
+          "parameter": "gamma",
+          "case": "low",
+          "value": 1.32,
+          "cycle_work_j": 5.769132163739029,
+          "delta_vs_nominal_fraction": -0.04433658679818897,
+          "peak_pressure_pa": 4091957.7454619543
+        },
+        {
+          "parameter": "gamma",
+          "case": "high",
+          "value": 1.38,
+          "cycle_work_j": 6.545280230247262,
+          "delta_vs_nominal_fraction": 0.08423323780234804,
+          "peak_pressure_pa": 4729204.6094584055
+        },
+        {
+          "parameter": "heat_to_gas_fraction",
+          "case": "low",
+          "value": 0.35,
+          "cycle_work_j": 4.063107253057071,
+          "delta_vs_nominal_fraction": -0.32694158576097354,
+          "peak_pressure_pa": 3355894.7142078187
+        },
+        {
+          "parameter": "heat_to_gas_fraction",
+          "case": "high",
+          "value": 0.75,
+          "cycle_work_j": 8.706658399407997,
+          "delta_vs_nominal_fraction": 0.44226803051219776,
+          "peak_pressure_pa": 5591181.647520042
+        },
+        {
+          "parameter": "residual_mass_fraction",
+          "case": "low",
+          "value": 0.05,
+          "cycle_work_j": 6.03661649025621,
+          "delta_vs_nominal_fraction": -2.749884487651677e-05,
+          "peak_pressure_pa": 4229977.05147945
+        },
+        {
+          "parameter": "residual_mass_fraction",
+          "case": "high",
+          "value": 0.2,
+          "cycle_work_j": 6.036616490256208,
+          "delta_vs_nominal_fraction": -2.749884487696086e-05,
+          "peak_pressure_pa": 4477784.944134929
+        },
+        {
+          "parameter": "trapped_temperature_k",
+          "case": "low",
+          "value": 320.0,
+          "cycle_work_j": 6.036616490256206,
+          "delta_vs_nominal_fraction": -2.7498844877182904e-05,
+          "peak_pressure_pa": 4183824.4704134506
+        },
+        {
+          "parameter": "trapped_temperature_k",
+          "case": "high",
+          "value": 390.0,
+          "cycle_work_j": 6.036616490256211,
+          "delta_vs_nominal_fraction": -2.7498844876294726e-05,
+          "peak_pressure_pa": 4462837.801403327
+        },
+        {
+          "parameter": "combustion_start_deg_btdc",
+          "case": "low",
+          "value": 5.0,
+          "cycle_work_j": 5.756761269038756,
+          "delta_vs_nominal_fraction": -0.04638583980853461,
+          "peak_pressure_pa": 3425624.7947941036
+        },
+        {
+          "parameter": "combustion_start_deg_btdc",
+          "case": "high",
+          "value": 25.0,
+          "cycle_work_j": 5.993927810535935,
+          "delta_vs_nominal_fraction": -0.007098927997249538,
+          "peak_pressure_pa": 5045274.819080123
+        },
+        {
+          "parameter": "burn_duration_deg",
+          "case": "low",
+          "value": 25.0,
+          "cycle_work_j": 6.08891783202992,
+          "delta_vs_nominal_fraction": 0.00863627889082097,
+          "peak_pressure_pa": 5091234.9059771225
+        },
+        {
+          "parameter": "burn_duration_deg",
+          "case": "high",
+          "value": 60.0,
+          "cycle_work_j": 5.708872572254245,
+          "delta_vs_nominal_fraction": -0.054318657799865,
+          "peak_pressure_pa": 3217417.993755048
+        },
+        {
+          "parameter": "exhaust_open_deg_atdc",
+          "case": "low",
+          "value": 90.0,
+          "cycle_work_j": 5.681791726083673,
+          "delta_vs_nominal_fraction": -0.05880463127893143,
+          "peak_pressure_pa": 4303401.612266262
+        },
+        {
+          "parameter": "exhaust_open_deg_atdc",
+          "case": "high",
+          "value": 110.0,
+          "cycle_work_j": 6.312045489868239,
+          "delta_vs_nominal_fraction": 0.045597633392239434,
+          "peak_pressure_pa": 4303401.612266262
+        },
+        {
+          "parameter": "transfer_open_deg_atdc",
+          "case": "low",
+          "value": 110.0,
+          "cycle_work_j": 6.036616490256218,
+          "delta_vs_nominal_fraction": -2.7498844875184503e-05,
+          "peak_pressure_pa": 4303401.612266262
+        },
+        {
+          "parameter": "transfer_open_deg_atdc",
+          "case": "high",
+          "value": 130.0,
+          "cycle_work_j": 6.036616490256218,
+          "delta_vs_nominal_fraction": -2.7498844875184503e-05,
+          "peak_pressure_pa": 4303401.612266262
+        },
+        {
+          "parameter": "transfer_close_deg_atdc",
+          "case": "low",
+          "value": 230.0,
+          "cycle_work_j": 6.036616490256218,
+          "delta_vs_nominal_fraction": -2.7498844875184503e-05,
+          "peak_pressure_pa": 4303401.612266262
+        },
+        {
+          "parameter": "transfer_close_deg_atdc",
+          "case": "high",
+          "value": 250.0,
+          "cycle_work_j": 6.036616490256218,
+          "delta_vs_nominal_fraction": -2.7498844875184503e-05,
+          "peak_pressure_pa": 4303401.612266262
+        },
+        {
+          "parameter": "exhaust_close_deg_atdc",
+          "case": "low",
+          "value": 250.0,
+          "cycle_work_j": 6.000157624762853,
+          "delta_vs_nominal_fraction": -0.006066952067640963,
+          "peak_pressure_pa": 4348069.509835962
+        },
+        {
+          "parameter": "exhaust_close_deg_atdc",
+          "case": "high",
+          "value": 270.0,
+          "cycle_work_j": 6.0843758316725,
+          "delta_vs_nominal_fraction": 0.007883891280147326,
+          "peak_pressure_pa": 4251418.39940049
+        }
+      ],
+      "status": {
+        "numerical_first_law_closure": "checked for closed portions only",
+        "independent_thermodynamic_convergence": "evaluated by step refinement; see sweep",
+        "mean_reduction_comparison": "computed for the stated inferred hypotheses only",
+        "physical_engine_validation": "NOT PERFORMED",
+        "physical_propeller_validation": "NOT PERFORMED",
+        "independent_held_out_validation": "NOT PERFORMED",
+        "experienced_pilot_validation": "NOT PERFORMED"
+      }
+    },
+    "glow_4t": {
+      "engine_id": "os_fs_64v_candidate",
+      "family": "glow_4t",
+      "manufacturer_geometry_and_profile_estimates": {
+        "bore_m": {
+          "value": 0.025,
+          "unit": "m",
+          "kind": "manual",
+          "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html; manufacturer bore specification converted from mm to m"
+        },
+        "stroke_m": {
+          "value": 0.0213,
+          "unit": "m",
+          "kind": "manual",
+          "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html; manufacturer stroke specification converted from mm to m"
+        },
+        "rod_to_crank_radius_ratio": {
+          "value": 3.5,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "NITRO-03 explicit unmeasured slider-crank geometry estimate; connecting-rod length / crank radius = 3.5; matched internal dimension unavailable"
+        },
+        "reciprocating_mass_kg": {
+          "value": 0.01105,
+          "unit": "kg",
+          "kind": "estimated",
+          "source": "NITRO-03 explicit unmeasured equivalent-mass estimate: 2.5% of manufacturer dry engine mass (442 g); 1–5% sensitivity retained in vibration evidence; no matched component measurement; https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html"
+        }
+      },
+      "inputs": {
+        "profile_path": "app/data/glow/os_fs_64v_candidate.json",
+        "profile_sha256": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+        "installation_path": "app/data/glow/stik_fs64v_4t.json",
+        "installation_sha256": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+        "aircraft_path": "app/data/aircraft/stik_glow_fs64v_4t.json",
+        "aircraft_sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+        "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+        "installed_rotor_inertia_source": {
+          "value": 0.0006653817999999998,
+          "unit": "kg·m2",
+          "kind": "derived",
+          "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; uniform-box prop polar m*(diameter^2+thickness^2)/12 plus estimated crank polar 3e-05 kg m^2; no measured blade mass distribution"
+        },
+        "reciprocating_mass_source": {
+          "value": 0.01105,
+          "unit": "kg",
+          "kind": "estimated",
+          "source": "NITRO-03 explicit unmeasured equivalent-mass estimate: 2.5% of manufacturer dry engine mass (442 g); 1–5% sensitivity retained in vibration evidence; no matched component measurement; https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html"
+        },
+        "family_kernel_path": "app/physics/glow/four_stroke.gd",
+        "family_kernel_sha256": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f",
+        "propeller_kernel_path": "app/physics/glow/propeller.gd",
+        "propeller_kernel_sha256": "68cc348bfa09f3599971184062eda861a891a05ff41702748f9ec4e091710a37",
+        "profile_status": "candidate",
+        "assumed_installed_propeller_parameters": {
+          "diameter_m": 0.35559999999999997,
+          "pitch_m": 0.15239999999999998,
+          "chord_m": 0.03,
+          "blades": 2.0,
+          "lift_slope": 5.5,
+          "cd0": 0.022,
+          "induced_drag": 0.075
+        },
+        "fixed_carrier_axial_speed_m_s": 0.0,
+        "air_density_kg_m3": 1.225,
+        "mixture_equivalence_ratio": 1.15,
+        "admission": 1.0,
+        "firing_fraction": 1.0,
+        "mean_model_cycle_frequency_hz_at_rated": 91.66666666666667
+      },
+      "provenance": {
+        "engine_displacement_bore_stroke": "O.S. manufacturer dimensions from the linked product page; displacement checked against bore×stroke.",
+        "compression_ratio_rod_ratio_port_valve_events_gamma_heat_transfer_residual_temperature": "Not published for these candidate engines; explicit engineering assumptions and ranges below.",
+        "fuel_formula": "Candidate profile composition borrowed from AIAA-2016-5011 Table 1 as an adjacent single-cylinder 2-stroke test fuel basis; not treated as MAX-55AX or FS64V test data.",
+        "combustion_law": "Normalized single-Wiebe prescribed mass-burn fraction, used as an assumed heat-release shape; not inferred from measured cylinder pressure.",
+        "profile_comparison": "The source candidate kernel computes cycle work as burned fuel × LHV × a generated indicated-efficiency table. The pressure oracle instead integrates a crank-angle first-law pressure-volume path; disagreement compares two inferred closures, not measurement error.",
+        "dynamic_comparison": "The periodic crank-energy map uses the independent pressure trace plus exact installed candidate prop parameters and RPM-varying annular load. It is a fixed-carrier software experiment; no in-flight, prop-map or physical-engine validation is implied."
+      },
+      "nominal_assumptions": {
+        "compression_ratio": 8.0,
+        "rod_to_crank_ratio": 3.5,
+        "gamma": 1.34,
+        "heat_to_gas_fraction": 0.62,
+        "residual_mass_fraction": 0.08,
+        "trapped_temperature_k": 330.0,
+        "combustion_start_deg_btdc": 15.0,
+        "burn_duration_deg": 45.0,
+        "exhaust_open_deg_atdc": 145.0,
+        "intake_open_deg_before_exhaust_tdc": 10.0,
+        "exhaust_close_deg_after_exhaust_tdc": 10.0,
+        "intake_close_deg_abdc": 35.0,
+        "open_flow_shape": "exhaust back-pressure; linear overlap transition; ambient intake"
+      },
+      "explicit_one_factor_sensitivity_bounds": {
+        "compression_ratio": [
+          6.5,
+          10.0
+        ],
+        "rod_to_crank_ratio": [
+          3.0,
+          5.0
+        ],
+        "gamma": [
+          1.32,
+          1.38
+        ],
+        "heat_to_gas_fraction": [
+          0.35,
+          0.8
+        ],
+        "residual_mass_fraction": [
+          0.03,
+          0.18
+        ],
+        "trapped_temperature_k": [
+          300.0,
+          370.0
+        ],
+        "combustion_start_deg_btdc": [
+          5.0,
+          25.0
+        ],
+        "burn_duration_deg": [
+          25.0,
+          65.0
+        ],
+        "exhaust_open_deg_atdc": [
+          130.0,
+          160.0
+        ],
+        "intake_open_deg_before_exhaust_tdc": [
+          5.0,
+          25.0
+        ],
+        "exhaust_close_deg_after_exhaust_tdc": [
+          0.0,
+          20.0
+        ],
+        "intake_close_deg_abdc": [
+          20.0,
+          55.0
+        ]
+      },
+      "nominal_port_or_valve_events": {
+        "EVO_deg_ATDC": 145.0,
+        "IVO_deg_before_exhaust_TDC": 10.0,
+        "EVC_deg_after_exhaust_TDC": 10.0,
+        "IVC_deg_ABDC": 35.0
+      },
+      "rated_point": {
+        "rpm": 11000.0,
+        "profile_candidate_mean_cycle": {
+          "rpm": 11000.0,
+          "admission": 1.0,
+          "mixture": 1.15,
+          "rho_kg_m3": 1.225,
+          "air_delivered_kg_cycle": 1.0891475e-05,
+          "air_charge_kg_cycle": 1.0891475e-05,
+          "trapped_premix_kg_cycle": 2.7821180672950406e-06,
+          "delivered_premix_kg_cycle": 2.7821180672950406e-06,
+          "burned_fuel_kg_cycle": 1.930880698056914e-06,
+          "chemical_heat_j_cycle": 35.82495981353627,
+          "cycle_work_j": 9.79298732796579,
+          "opportunity_hz": 91.66666666666667,
+          "candidate_indicated_work_rate_w": 897.6905050635307,
+          "burned_fuel_flow_kg_s": 0.00017699739732188378,
+          "delivered_premix_flow_kg_s": 0.0002550274895020454,
+          "indicated_mean_torque_nm": 0.7793011704410238,
+          "mechanical_torque_nm": 0.03,
+          "pumping_work_j": 0.055438,
+          "pumping_torque_nm": 0.004411615867564247,
+          "valve_torque_nm": 0.017,
+          "candidate_mean_shaft_torque_nm": 0.7278895545734595,
+          "indicated_efficiency": 0.2733565474724011,
+          "combustion_efficiency": 1.0,
+          "fuel_lhv_j_kg": 18553688.920080706,
+          "stoich_air_fuel_ratio": 5.640677340117555,
+          "oil_fraction": 0.20186248424590392
+        },
+        "pressure_oracle_indicated_work_rate_w": 989.8294874298413,
+        "pressure_oracle_net_pv_work_rate_w": 985.1054894467287,
+        "candidate_profile_burned_fuel_flow_kg_s": 0.00017699739732188378,
+        "candidate_profile_delivered_premix_flow_kg_s": 0.0002550274895020454,
+        "thermodynamic_pressure_oracle": {
+          "family": "glow_4t",
+          "rpm": 11000.0,
+          "cycle_angle_rad": 12.566370614359172,
+          "cycle_angle_deg": 720.0,
+          "step_requested_deg": 0.25,
+          "step_count": 2880,
+          "cycle_work_j": 10.798139862870995,
+          "net_pv_cycle_work_j": 10.746605339418858,
+          "closed_compression_combustion_expansion_work_j": 10.798139862870995,
+          "open_gas_exchange_pv_work_j": -0.051534523452142496,
+          "heat_released_to_gas_j": 22.211475084392497,
+          "heat_release_fraction_of_profile_chemical_j": 0.6200000000000003,
+          "thermodynamic_indicated_efficiency_estimate": 0.30141387231343036,
+          "net_pv_efficiency_estimate": 0.29997536341571307,
+          "candidate_kernel_cycle_work_j": 9.79298732796579,
+          "cycle_work_delta_vs_candidate_j": 1.0051525349052053,
+          "cycle_work_delta_vs_candidate_fraction": 0.10264003222334361,
+          "air_charge_kg_cycle": 1.0891475e-05,
+          "burned_fuel_kg_cycle": 1.930880698056914e-06,
+          "trapped_total_gas_mass_kg": 1.4862601160103305e-05,
+          "geometry_used": {
+            "bore_m": 0.025,
+            "stroke_m": 0.0213,
+            "rod_to_crank_radius_ratio": 3.5,
+            "profile_reciprocating_mass_kg": 0.01105
+          },
+          "assumed_start_pressure_pa": 125102.91040089555,
+          "peak_pressure_pa": 5235018.947550007,
+          "peak_temperature_k": 2203.8466358260557,
+          "closed_energy_first_law_residual_j": 9.566381974773774e-14
+        },
+        "fixed_carrier_propeller_at_rated": {
+          "thrust_n": 87.61936800098792,
+          "torque_nm": 1.5634087583727951,
+          "shaft_power_w": 1800.9176056160345,
+          "ideal_actuator_disk_power_w": 1662.6867629020824,
+          "shaft_to_ideal_power_ratio": 1.0831370320604956,
+          "ideal_power_bound_pass": true
+        },
+        "one_factor_work_sensitivity_min_j": 6.095623818215658,
+        "one_factor_work_sensitivity_max_j": 13.932854441635785,
+        "sensitivity_interpretation": "Unweighted one-factor scenario endpoints; not a confidence interval or physical bound."
+      },
+      "mean_root_comparisons": {
+        "assumption": "Full admission, static 0 m/s carrier, 1.225 kg/m^3; restoring roots only.",
+        "inertia_sensitivity_method": "Primary periodic orbit uses the aircraft configuration's installed rotating_inertia value. Sensitivity cases use 0.5× and 2× that estimate; rotating mass distribution and crank contribution are not measured. The profile's separate estimated equivalent piston mass is included as angle-dependent inertia, with one-cycle 1%-to-5%-of-dry-mass perturbations around the primary speed (not re-solved equilibria).",
+        "profile_candidate_mean_cycle_roots": [
+          {
+            "rpm": 7785.230922698975,
+            "residual": -9.583681737090899e-09,
+            "left_positive_right_nonpositive": 1.0
+          }
+        ],
+        "profile_candidate_mean_cycle_selected_root": {
+          "rpm": 7785.230922698975,
+          "admission": 1.0,
+          "mixture": 1.15,
+          "rho_kg_m3": 1.225,
+          "air_delivered_kg_cycle": 1.115204253926015e-05,
+          "air_charge_kg_cycle": 1.115204253926015e-05,
+          "trapped_premix_kg_cycle": 2.848677432186047e-06,
+          "delivered_premix_kg_cycle": 2.848677432186047e-06,
+          "burned_fuel_kg_cycle": 1.9770750686171557e-06,
+          "chemical_heat_j_cycle": 36.682035794769924,
+          "cycle_work_j": 10.355793552076717,
+          "opportunity_hz": 64.87692435582478,
+          "candidate_indicated_work_rate_w": 671.8520349226192,
+          "burned_fuel_flow_kg_s": 0.0001282665496724623,
+          "delivered_premix_flow_kg_s": 0.00018481343028207937,
+          "indicated_mean_torque_nm": 0.8240878667260934,
+          "mechanical_torque_nm": 0.02357046184539795,
+          "pumping_work_j": 0.045350054635429383,
+          "pumping_torque_nm": 0.003608842682358054,
+          "valve_torque_nm": 0.013785230922698975,
+          "candidate_mean_shaft_torque_nm": 0.7831233312756384,
+          "indicated_efficiency": 0.2823123997265504,
+          "combustion_efficiency": 1.0,
+          "fuel_lhv_j_kg": 18553688.920080706,
+          "stoich_air_fuel_ratio": 5.640677340117555,
+          "oil_fraction": 0.20186248424590392,
+          "propeller_torque_nm": 0.7831233408593201,
+          "propeller_load": {
+            "thrust_n": 43.88920800490629,
+            "torque_nm": 0.7831233408593201,
+            "shaft_power_w": 638.4549893228938,
+            "ideal_actuator_disk_power_w": 589.4498760773926,
+            "shaft_to_ideal_power_ratio": 1.0831370320604954,
+            "ideal_power_bound_pass": true
+          },
+          "mean_cycle_residual_nm": -9.583681737090899e-09
+        },
+        "pressure_oracle_angle_mean_roots": [
+          {
+            "rpm": 8102.851104736328,
+            "residual": -2.8403893903572452e-08,
+            "left_positive_right_nonpositive": 1.0
+          }
+        ],
+        "pressure_oracle_angle_mean_selected_point": {
+          "rpm": 8102.851104736328,
+          "cycle_work_j": 11.185783626348769,
+          "net_pv_cycle_work_j": 11.142700226727989,
+          "pressure_work_rate_w_at_mean_rpm": 755.3061601175137,
+          "net_pv_work_rate_w_at_mean_rpm": 752.3970070157384,
+          "burned_fuel_flow_kg_s_at_mean_rpm": 0.00013506086272405734,
+          "mean_pressure_torque_nm": 0.8867079102374712,
+          "vs_profile_candidate_kernel_work_fraction": 0.05909097238241845
+        },
+        "cycle_resolved_periodic_orbit_by_inertia": [
+          {
+            "installed_inertia_multiplier": 0.5,
+            "inertia_kg_m2": 0.0003326908999999999,
+            "periodic_orbit_roots": [
+              {
+                "rpm": 8034.5123291015625,
+                "ok": true,
+                "stopped": false,
+                "start_rpm": 8034.5123291015625,
+                "end_rpm": 8034.512079933267,
+                "time_average_rpm": 8099.332467084256,
+                "min_rpm": 7849.093348629472,
+                "max_rpm": 8261.692274103187,
+                "cycle_time_s": 0.014816035826122812,
+                "net_cycle_energy_j": -7.309093021490298e-06,
+                "cycle_work_from_pressure_j": 11.13837496233988,
+                "installed_rotor_inertia_kg_m2": 0.0003326908999999999,
+                "profile_reciprocating_mass_kg": 0.01105,
+                "effective_inertia_min_kg_m2": 0.0003326908999999999,
+                "effective_inertia_max_kg_m2": 0.00033404711916059136,
+                "effective_inertia_ripple_fraction": 0.004076514147490773,
+                "ideal_power_bound_refusals": 0,
+                "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00013499951554552797,
+                "delivered_premix_flow_kg_s_at_time_average_rpm": 0.00019451465419549212,
+                "pressure_work_rate_w_at_time_average_rpm": 751.7783496919814
+              }
+            ],
+            "selected_restoring_orbit": {
+              "rpm": 8034.5123291015625,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8034.5123291015625,
+              "end_rpm": 8034.512079933267,
+              "time_average_rpm": 8099.332467084256,
+              "min_rpm": 7849.093348629472,
+              "max_rpm": 8261.692274103187,
+              "cycle_time_s": 0.014816035826122812,
+              "net_cycle_energy_j": -7.309093021490298e-06,
+              "cycle_work_from_pressure_j": 11.13837496233988,
+              "installed_rotor_inertia_kg_m2": 0.0003326908999999999,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0003326908999999999,
+              "effective_inertia_max_kg_m2": 0.00033404711916059136,
+              "effective_inertia_ripple_fraction": 0.004076514147490773,
+              "ideal_power_bound_refusals": 0,
+              "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00013499951554552797,
+              "delivered_premix_flow_kg_s_at_time_average_rpm": 0.00019451465419549212,
+              "pressure_work_rate_w_at_time_average_rpm": 751.7783496919814
+            }
+          },
+          {
+            "installed_inertia_multiplier": 1.0,
+            "inertia_kg_m2": 0.0006653817999999998,
+            "periodic_orbit_roots": [
+              {
+                "rpm": 8069.1070556640625,
+                "ok": true,
+                "stopped": false,
+                "start_rpm": 8069.1070556640625,
+                "end_rpm": 8069.106944722675,
+                "time_average_rpm": 8101.8183215956715,
+                "min_rpm": 7976.6470440423,
+                "max_rpm": 8182.506582758656,
+                "cycle_time_s": 0.014811489870136427,
+                "net_cycle_energy_j": -6.534370726285488e-06,
+                "cycle_work_from_pressure_j": 11.14047141611216,
+                "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+                "profile_reciprocating_mass_kg": 0.01105,
+                "effective_inertia_min_kg_m2": 0.0006653817999999998,
+                "effective_inertia_max_kg_m2": 0.0006667380191605912,
+                "effective_inertia_ripple_fraction": 0.0020382570737453864,
+                "ideal_power_bound_refusals": 0,
+                "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00013504285598593495,
+                "delivered_premix_flow_kg_s_at_time_average_rpm": 0.00019457710146239063,
+                "pressure_work_rate_w_at_time_average_rpm": 752.1506285855864
+              }
+            ],
+            "selected_restoring_orbit": {
+              "rpm": 8069.1070556640625,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1070556640625,
+              "end_rpm": 8069.106944722675,
+              "time_average_rpm": 8101.8183215956715,
+              "min_rpm": 7976.6470440423,
+              "max_rpm": 8182.506582758656,
+              "cycle_time_s": 0.014811489870136427,
+              "net_cycle_energy_j": -6.534370726285488e-06,
+              "cycle_work_from_pressure_j": 11.14047141611216,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380191605912,
+              "effective_inertia_ripple_fraction": 0.0020382570737453864,
+              "ideal_power_bound_refusals": 0,
+              "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00013504285598593495,
+              "delivered_premix_flow_kg_s_at_time_average_rpm": 0.00019457710146239063,
+              "pressure_work_rate_w_at_time_average_rpm": 752.1506285855864
+            }
+          },
+          {
+            "installed_inertia_multiplier": 2.0,
+            "inertia_kg_m2": 0.0013307635999999996,
+            "periodic_orbit_roots": [
+              {
+                "rpm": 8086.1907958984375,
+                "ok": true,
+                "stopped": false,
+                "start_rpm": 8086.1907958984375,
+                "end_rpm": 8086.190786198267,
+                "time_average_rpm": 8102.6200761875925,
+                "min_rpm": 8040.020048477496,
+                "max_rpm": 8142.841440265609,
+                "cycle_time_s": 0.014810024272600702,
+                "net_cycle_energy_j": -1.1448796612967271e-06,
+                "cycle_work_from_pressure_j": 11.141506697359258,
+                "installed_rotor_inertia_kg_m2": 0.0013307635999999996,
+                "profile_reciprocating_mass_kg": 0.01105,
+                "effective_inertia_min_kg_m2": 0.0013307635999999996,
+                "effective_inertia_max_kg_m2": 0.001332119819160591,
+                "effective_inertia_ripple_fraction": 0.0010191285368728042,
+                "ideal_power_bound_refusals": 0,
+                "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00013505683468707756,
+                "delivered_premix_flow_kg_s_at_time_average_rpm": 0.0001945972427362898,
+                "pressure_work_rate_w_at_time_average_rpm": 752.2949653750137
+              }
+            ],
+            "selected_restoring_orbit": {
+              "rpm": 8086.1907958984375,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8086.1907958984375,
+              "end_rpm": 8086.190786198267,
+              "time_average_rpm": 8102.6200761875925,
+              "min_rpm": 8040.020048477496,
+              "max_rpm": 8142.841440265609,
+              "cycle_time_s": 0.014810024272600702,
+              "net_cycle_energy_j": -1.1448796612967271e-06,
+              "cycle_work_from_pressure_j": 11.141506697359258,
+              "installed_rotor_inertia_kg_m2": 0.0013307635999999996,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0013307635999999996,
+              "effective_inertia_max_kg_m2": 0.001332119819160591,
+              "effective_inertia_ripple_fraction": 0.0010191285368728042,
+              "ideal_power_bound_refusals": 0,
+              "burned_fuel_flow_kg_s_at_time_average_rpm": 0.00013505683468707756,
+              "delivered_premix_flow_kg_s_at_time_average_rpm": 0.0001945972427362898,
+              "pressure_work_rate_w_at_time_average_rpm": 752.2949653750137
+            }
+          }
+        ],
+        "reciprocating_mass_one_cycle_sensitivity": [
+          {
+            "profile_mass_multiplier": 0.4,
+            "reciprocating_mass_kg": 0.00442,
+            "one_cycle_map_at_primary_initial_rpm": {
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1070556640625,
+              "end_rpm": 8069.042075477031,
+              "time_average_rpm": 8103.248010893048,
+              "min_rpm": 7975.758138372171,
+              "max_rpm": 8182.508822950464,
+              "cycle_time_s": 0.01480887661820127,
+              "net_cycle_energy_j": -0.0038264449052007876,
+              "cycle_work_from_pressure_j": 11.14047141611216,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.00442,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006659242876642363,
+              "effective_inertia_ripple_fraction": 0.0008153028294981546,
+              "ideal_power_bound_refusals": 0
+            },
+            "net_cycle_energy_delta_vs_profile_mass_j": -0.003819910534474502,
+            "equilibrium_re_solved": false
+          },
+          {
+            "profile_mass_multiplier": 2.0,
+            "reciprocating_mass_kg": 0.0221,
+            "one_cycle_map_at_primary_initial_rpm": {
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1070556640625,
+              "end_rpm": 8069.214687050433,
+              "time_average_rpm": 8099.439268085203,
+              "min_rpm": 7978.128242834953,
+              "max_rpm": 8182.520774479699,
+              "cycle_time_s": 0.014815840458591316,
+              "net_cycle_energy_j": 0.006341740948982988,
+              "cycle_work_from_pressure_j": 11.14047141611216,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.0221,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006680942383211827,
+              "effective_inertia_ripple_fraction": 0.004076514147490773,
+              "ideal_power_bound_refusals": 0
+            },
+            "net_cycle_energy_delta_vs_profile_mass_j": 0.006348275319709273,
+            "equilibrium_re_solved": false
+          }
+        ],
+        "resolution_sweep_at_mid_inertia": [
+          {
+            "step_deg_max": 4.0,
+            "selected_restoring_orbit": {
+              "rpm": 8063.2781982421875,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8063.2781982421875,
+              "end_rpm": 8063.278319925475,
+              "time_average_rpm": 8095.9349761328085,
+              "min_rpm": 7971.0512998501445,
+              "max_rpm": 8176.480260466407,
+              "cycle_time_s": 0.014822253433823958,
+              "net_cycle_energy_j": 7.161883956996462e-06,
+              "cycle_work_from_pressure_j": 11.124788229622292,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380164659441,
+              "effective_inertia_ripple_fraction": 0.0020382530239695384,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -0.0007368216179091114
+          },
+          {
+            "step_deg_max": 2.0,
+            "selected_restoring_orbit": {
+              "rpm": 8067.7154541015625,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8067.7154541015625,
+              "end_rpm": 8067.715519582307,
+              "time_average_rpm": 8100.41384154577,
+              "min_rpm": 7975.299583193835,
+              "max_rpm": 8181.075328233006,
+              "cycle_time_s": 0.014814057941649665,
+              "net_cycle_energy_j": 3.856105280419797e-06,
+              "cycle_work_from_pressure_j": 11.13673360221957,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380164659441,
+              "effective_inertia_ripple_fraction": 0.0020382530239695384,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -0.00018400525991024708
+          },
+          {
+            "step_deg_max": 1.0,
+            "selected_restoring_orbit": {
+              "rpm": 8068.8262939453125,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8068.8262939453125,
+              "end_rpm": 8068.826246547991,
+              "time_average_rpm": 8101.534985336958,
+              "min_rpm": 7976.380040414409,
+              "max_rpm": 8182.200710706861,
+              "cycle_time_s": 0.01481200787470388,
+              "net_cycle_energy_j": -2.791572143223675e-06,
+              "cycle_work_from_pressure_j": 11.139718954419878,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380164659441,
+              "effective_inertia_ripple_fraction": 0.0020382530239695384,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -4.562498493165812e-05
+          },
+          {
+            "step_deg_max": 0.5,
+            "selected_restoring_orbit": {
+              "rpm": 8069.1070556640625,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1070556640625,
+              "end_rpm": 8069.106944722675,
+              "time_average_rpm": 8101.8183215956715,
+              "min_rpm": 7976.6470440423,
+              "max_rpm": 8182.506582758656,
+              "cycle_time_s": 0.014811489870136427,
+              "net_cycle_energy_j": -6.534370726285488e-06,
+              "cycle_work_from_pressure_j": 11.14047141611216,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380191605912,
+              "effective_inertia_ripple_fraction": 0.0020382570737453864,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -1.0653423121009808e-05
+          },
+          {
+            "step_deg_max": 0.25,
+            "selected_restoring_orbit": {
+              "rpm": 8069.1741943359375,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1741943359375,
+              "end_rpm": 8069.174199158793,
+              "time_average_rpm": 8101.886182849089,
+              "min_rpm": 7976.712718098793,
+              "max_rpm": 8182.584982837491,
+              "cycle_time_s": 0.014811365809362815,
+              "net_cycle_energy_j": 2.8406515184542513e-07,
+              "cycle_work_from_pressure_j": 11.140659358093249,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380257461516,
+              "effective_inertia_ripple_fraction": 0.0020382669711611623,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -2.2774601249331283e-06
+          },
+          {
+            "step_deg_max": 0.125,
+            "selected_restoring_orbit": {
+              "rpm": 8069.1925048828125,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1925048828125,
+              "end_rpm": 8069.192472890732,
+              "time_average_rpm": 8101.90463461383,
+              "min_rpm": 7976.729922543104,
+              "max_rpm": 8182.6085086423645,
+              "cycle_time_s": 0.014811332077067788,
+              "net_cycle_energy_j": -1.8843313398519967e-06,
+              "cycle_work_from_pressure_j": 11.140706436777158,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380257461516,
+              "effective_inertia_ripple_fraction": 0.0020382669711611623,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": 0.0
+          }
+        ],
+        "averaging_error_scope": "At each declared inferred pressure/flow/timing/inertia hypothesis, compare the angle-averaged pressure-work balance to the periodic crank-energy solution using the same pressure-work cycle and installed prop load. The profile-root difference additionally includes different inferred engine work/loss closures; neither comparison establishes empirical accuracy."
+      },
+      "quadrature_and_anti_alias_audit": {
+        "reference_step_deg": 0.0625,
+        "event_aligned_pressure_work_resolution_sweep": [
+          {
+            "step_deg_max": 20.0,
+            "steps": 39,
+            "cycle_work_j": 10.417540444052136,
+            "cycle_work_error_vs_finest_fraction": -0.03525171828844642,
+            "net_pv_cycle_work_j": 10.366365812706352,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.03538727087736959,
+            "peak_pressure_pa": 4466387.286317016,
+            "energy_residual_j": -3.6914915568786455e-15,
+            "samples_across_wiebe_burn": 2.25,
+            "peak_pressure_error_vs_finest_fraction": -0.1468237182828953
+          },
+          {
+            "step_deg_max": 10.0,
+            "steps": 74,
+            "cycle_work_j": 10.707346746838361,
+            "cycle_work_error_vs_finest_fraction": -0.008413316830468864,
+            "net_pv_cycle_work_j": 10.655901932971739,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.008445309519374833,
+            "peak_pressure_pa": 5251760.915352117,
+            "energy_residual_j": -4.551914400963142e-15,
+            "samples_across_wiebe_burn": 4.5,
+            "peak_pressure_error_vs_finest_fraction": 0.003199580106745703
+          },
+          {
+            "step_deg_max": 5.0,
+            "steps": 144,
+            "cycle_work_j": 10.774547233019662,
+            "cycle_work_error_vs_finest_fraction": -0.002190009714766128,
+            "net_pv_cycle_work_j": 10.72303508116079,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.0021984250799063076,
+            "peak_pressure_pa": 5238528.158538307,
+            "energy_residual_j": -4.961309141293668e-15,
+            "samples_across_wiebe_burn": 9.0,
+            "peak_pressure_error_vs_finest_fraction": 0.0006718382134573986
+          },
+          {
+            "step_deg_max": 2.0,
+            "steps": 362,
+            "cycle_work_j": 10.794431909103798,
+            "cycle_work_error_vs_finest_fraction": -0.0003485283029504016,
+            "net_pv_cycle_work_j": 10.742900917402554,
+            "net_pv_cycle_work_error_vs_finest_fraction": -0.00034986610951148744,
+            "peak_pressure_pa": 5234778.649052536,
+            "energy_residual_j": -8.20350731789432e-15,
+            "samples_across_wiebe_burn": 22.5,
+            "peak_pressure_error_vs_finest_fraction": -4.439895010721617e-05
+          },
+          {
+            "step_deg_max": 1.0,
+            "steps": 720,
+            "cycle_work_j": 10.79725155285691,
+            "cycle_work_error_vs_finest_fraction": -8.740654580796647e-05,
+            "net_pv_cycle_work_j": 10.745717870277232,
+            "net_pv_cycle_work_error_vs_finest_fraction": -8.774256020338544e-05,
+            "peak_pressure_pa": 5234241.393594268,
+            "energy_residual_j": -9.770829978439366e-16,
+            "samples_across_wiebe_burn": 45.0,
+            "peak_pressure_error_vs_finest_fraction": -0.00014702632763485823
+          },
+          {
+            "step_deg_max": 0.5,
+            "steps": 1440,
+            "cycle_work_j": 10.797962192267724,
+            "cycle_work_error_vs_finest_fraction": -2.159560375480929e-05,
+            "net_pv_cycle_work_j": 10.746427836989044,
+            "net_pv_cycle_work_error_vs_finest_fraction": -2.1678624216536768e-05,
+            "peak_pressure_pa": 5234493.784068974,
+            "energy_residual_j": -4.240206276373559e-14,
+            "samples_across_wiebe_burn": 90.0,
+            "peak_pressure_error_vs_finest_fraction": -9.881430459557361e-05
+          },
+          {
+            "step_deg_max": 0.25,
+            "steps": 2880,
+            "cycle_work_j": 10.798139862870995,
+            "cycle_work_error_vs_finest_fraction": -5.141872652214552e-06,
+            "net_pv_cycle_work_j": 10.746605339418858,
+            "net_pv_cycle_work_error_vs_finest_fraction": -5.1616397358511534e-06,
+            "peak_pressure_pa": 5235018.947550007,
+            "energy_residual_j": 9.566381974773774e-14,
+            "samples_across_wiebe_burn": 180.0,
+            "peak_pressure_error_vs_finest_fraction": 1.5032445372931136e-06
+          },
+          {
+            "step_deg_max": 0.125,
+            "steps": 5760,
+            "cycle_work_j": 10.798184281193857,
+            "cycle_work_error_vs_finest_fraction": -1.0283776399333533e-06,
+            "net_pv_cycle_work_j": 10.746649715698425,
+            "net_pv_cycle_work_error_vs_finest_fraction": -1.032331074179993e-06,
+            "peak_pressure_pa": 5235010.636528687,
+            "energy_residual_j": 9.176708871960759e-14,
+            "samples_across_wiebe_burn": 360.0,
+            "peak_pressure_error_vs_finest_fraction": -8.433974796329125e-08
+          },
+          {
+            "step_deg_max": 0.0625,
+            "steps": 11520,
+            "cycle_work_j": 10.798195385816543,
+            "cycle_work_error_vs_finest_fraction": 0.0,
+            "net_pv_cycle_work_j": 10.746660809810322,
+            "net_pv_cycle_work_error_vs_finest_fraction": 0.0,
+            "peak_pressure_pa": 5235011.078048201,
+            "energy_residual_j": -1.3357713982771642e-13,
+            "samples_across_wiebe_burn": 720.0,
+            "peak_pressure_error_vs_finest_fraction": 0.0
+          }
+        ],
+        "unlocked_uniform_phase_sampling_of_fine_pressure_torque": [
+          {
+            "requested_step_deg": 20.0,
+            "uniform_bin_step_deg": 20.0,
+            "samples_per_cycle": 36,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.018915894077084716,
+            "rms_work_error_fraction": 0.008144690512456918,
+            "min_work_error_fraction": -0.018915894077084716,
+            "max_work_error_fraction": 0.00862520002969247,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 10.644393398951385,
+                "error_fraction_vs_fine_reference": -0.009516203467181183
+              },
+              {
+                "phase_offset_deg": 1.25,
+                "estimated_net_pv_work_j": 10.543378112249593,
+                "error_fraction_vs_fine_reference": -0.018915894077084716
+              },
+              {
+                "phase_offset_deg": 2.5,
+                "estimated_net_pv_work_j": 10.597048685467467,
+                "error_fraction_vs_fine_reference": -0.013921731316417718
+              },
+              {
+                "phase_offset_deg": 3.75,
+                "estimated_net_pv_work_j": 10.655369362579801,
+                "error_fraction_vs_fine_reference": -0.00849486634464014
+              },
+              {
+                "phase_offset_deg": 5.0,
+                "estimated_net_pv_work_j": 10.713029172377102,
+                "error_fraction_vs_fine_reference": -0.003129496503929796
+              },
+              {
+                "phase_offset_deg": 6.25,
+                "estimated_net_pv_work_j": 10.76364778837134,
+                "error_fraction_vs_fine_reference": 0.001580675045174118
+              },
+              {
+                "phase_offset_deg": 7.5,
+                "estimated_net_pv_work_j": 10.804932055476446,
+                "error_fraction_vs_fine_reference": 0.005422265268940851
+              },
+              {
+                "phase_offset_deg": 8.75,
+                "estimated_net_pv_work_j": 10.83376135519992,
+                "error_fraction_vs_fine_reference": 0.008104893876438979
+              },
+              {
+                "phase_offset_deg": 10.0,
+                "estimated_net_pv_work_j": 10.839352908946193,
+                "error_fraction_vs_fine_reference": 0.00862520002969247
+              },
+              {
+                "phase_offset_deg": 11.25,
+                "estimated_net_pv_work_j": 10.830647446137514,
+                "error_fraction_vs_fine_reference": 0.007815137912468906
+              },
+              {
+                "phase_offset_deg": 12.5,
+                "estimated_net_pv_work_j": 10.820868873669475,
+                "error_fraction_vs_fine_reference": 0.0069052206236388525
+              },
+              {
+                "phase_offset_deg": 13.75,
+                "estimated_net_pv_work_j": 10.80454509614239,
+                "error_fraction_vs_fine_reference": 0.0053862578671159955
+              },
+              {
+                "phase_offset_deg": 15.0,
+                "estimated_net_pv_work_j": 10.786570681798947,
+                "error_fraction_vs_fine_reference": 0.0037136997896307644
+              },
+              {
+                "phase_offset_deg": 16.25,
+                "estimated_net_pv_work_j": 10.772049766824336,
+                "error_fraction_vs_fine_reference": 0.0023624972876075123
+              },
+              {
+                "phase_offset_deg": 17.5,
+                "estimated_net_pv_work_j": 10.765595395412658,
+                "error_fraction_vs_fine_reference": 0.0017619040869933933
+              },
+              {
+                "phase_offset_deg": 18.75,
+                "estimated_net_pv_work_j": 10.770703296741225,
+                "error_fraction_vs_fine_reference": 0.0022372053381414236
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 10.0,
+            "uniform_bin_step_deg": 10.0,
+            "samples_per_cycle": 72,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.006593274486537459,
+            "rms_work_error_fraction": 0.0037393546790707873,
+            "min_work_error_fraction": -0.006593274486537459,
+            "max_work_error_fraction": 0.005953823766695621,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 10.749799927088024,
+                "error_fraction_vs_fine_reference": 0.0002921016428503176
+              },
+              {
+                "phase_offset_deg": 0.625,
+                "estimated_net_pv_work_j": 10.758911651080863,
+                "error_fraction_vs_fine_reference": 0.0011399672407412798
+              },
+              {
+                "phase_offset_deg": 1.25,
+                "estimated_net_pv_work_j": 10.767848777597843,
+                "error_fraction_vs_fine_reference": 0.0019715861663911483
+              },
+              {
+                "phase_offset_deg": 1.875,
+                "estimated_net_pv_work_j": 10.776627118134048,
+                "error_fraction_vs_fine_reference": 0.002788429713569185
+              },
+              {
+                "phase_offset_deg": 2.5,
+                "estimated_net_pv_work_j": 10.785263725444551,
+                "error_fraction_vs_fine_reference": 0.0035920846779671223
+              },
+              {
+                "phase_offset_deg": 3.125,
+                "estimated_net_pv_work_j": 10.793786534343115,
+                "error_fraction_vs_fine_reference": 0.004385150454341291
+              },
+              {
+                "phase_offset_deg": 3.75,
+                "estimated_net_pv_work_j": 10.802232325970571,
+                "error_fraction_vs_fine_reference": 0.00517104960729009
+              },
+              {
+                "phase_offset_deg": 4.375,
+                "estimated_net_pv_work_j": 10.810644534352386,
+                "error_fraction_vs_fine_reference": 0.005953823766695621
+              },
+              {
+                "phase_offset_deg": 5.0,
+                "estimated_net_pv_work_j": 10.741873153948784,
+                "error_fraction_vs_fine_reference": -0.0004455017187448007
+              },
+              {
+                "phase_offset_deg": 5.625,
+                "estimated_net_pv_work_j": 10.675805125277527,
+                "error_fraction_vs_fine_reference": -0.006593274486537459
+              },
+              {
+                "phase_offset_deg": 6.25,
+                "estimated_net_pv_work_j": 10.687012779193555,
+                "error_fraction_vs_fine_reference": -0.005550378082307739
+              },
+              {
+                "phase_offset_deg": 6.875,
+                "estimated_net_pv_work_j": 10.698083605059487,
+                "error_fraction_vs_fine_reference": -0.004520213823673513
+              },
+              {
+                "phase_offset_deg": 7.5,
+                "estimated_net_pv_work_j": 10.708958779568471,
+                "error_fraction_vs_fine_reference": -0.003508255346389433
+              },
+              {
+                "phase_offset_deg": 8.125,
+                "estimated_net_pv_work_j": 10.71959365720354,
+                "error_fraction_vs_fine_reference": -0.0025186570122389673
+              },
+              {
+                "phase_offset_deg": 8.75,
+                "estimated_net_pv_work_j": 10.729957229361098,
+                "error_fraction_vs_fine_reference": -0.0015543042387619055
+              },
+              {
+                "phase_offset_deg": 9.375,
+                "estimated_net_pv_work_j": 10.740031549561685,
+                "error_fraction_vs_fine_reference": -0.0006168669846344788
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 5.0,
+            "uniform_bin_step_deg": 5.0,
+            "samples_per_cycle": 144,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.0031994863004288776,
+            "rms_work_error_fraction": 0.0018811977457007009,
+            "min_work_error_fraction": -0.0031994863004288776,
+            "max_work_error_fraction": 0.003093486149553515,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 10.747111252506512,
+                "error_fraction_vs_fine_reference": 4.191466578884473e-05
+              },
+              {
+                "phase_offset_deg": 0.3125,
+                "estimated_net_pv_work_j": 10.751922872447935,
+                "error_fraction_vs_fine_reference": 0.000489646293926782
+              },
+              {
+                "phase_offset_deg": 0.625,
+                "estimated_net_pv_work_j": 10.756690095773326,
+                "error_fraction_vs_fine_reference": 0.0009332467210509954
+              },
+              {
+                "phase_offset_deg": 0.9375,
+                "estimated_net_pv_work_j": 10.76141362452224,
+                "error_fraction_vs_fine_reference": 0.0013727812734585232
+              },
+              {
+                "phase_offset_deg": 1.25,
+                "estimated_net_pv_work_j": 10.766094777665833,
+                "error_fraction_vs_fine_reference": 0.0018083726842639258
+              },
+              {
+                "phase_offset_deg": 1.5625,
+                "estimated_net_pv_work_j": 10.770735445435097,
+                "error_fraction_vs_fine_reference": 0.002240196843543929
+              },
+              {
+                "phase_offset_deg": 1.875,
+                "estimated_net_pv_work_j": 10.775338041957035,
+                "error_fraction_vs_fine_reference": 0.00266847839103046
+              },
+              {
+                "phase_offset_deg": 2.1875,
+                "estimated_net_pv_work_j": 10.77990545617942,
+                "error_fraction_vs_fine_reference": 0.003093486149553515
+              },
+              {
+                "phase_offset_deg": 2.5,
+                "estimated_net_pv_work_j": 10.745836540518408,
+                "error_fraction_vs_fine_reference": -7.67000379469085e-05
+              },
+              {
+                "phase_offset_deg": 2.8125,
+                "estimated_net_pv_work_j": 10.712277015773978,
+                "error_fraction_vs_fine_reference": -0.0031994863004288776
+              },
+              {
+                "phase_offset_deg": 3.125,
+                "estimated_net_pv_work_j": 10.717358388179193,
+                "error_fraction_vs_fine_reference": -0.0027266536228983673
+              },
+              {
+                "phase_offset_deg": 3.4375,
+                "estimated_net_pv_work_j": 10.722411230962614,
+                "error_fraction_vs_fine_reference": -0.0022564756882967885
+              },
+              {
+                "phase_offset_deg": 3.75,
+                "estimated_net_pv_work_j": 10.727430778395696,
+                "error_fraction_vs_fine_reference": -0.0017893959579585728
+              },
+              {
+                "phase_offset_deg": 4.0625,
+                "estimated_net_pv_work_j": 10.73241315935709,
+                "error_fraction_vs_fine_reference": -0.0013257746480865862
+              },
+              {
+                "phase_offset_deg": 4.375,
+                "estimated_net_pv_work_j": 10.73735536159677,
+                "error_fraction_vs_fine_reference": -0.0008658920550519422
+              },
+              {
+                "phase_offset_deg": 4.6875,
+                "estimated_net_pv_work_j": 10.742255194813216,
+                "error_fraction_vs_fine_reference": -0.00040995199114168823
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 2.0,
+            "uniform_bin_step_deg": 2.0,
+            "samples_per_cycle": 360,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.0012684240043659978,
+            "rms_work_error_fraction": 0.000751821603431968,
+            "min_work_error_fraction": -0.0012684240043659978,
+            "max_work_error_fraction": 0.0012478720526185594,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 10.746758706379671,
+                "error_fraction_vs_fine_reference": 9.109487224101542e-06
+              },
+              {
+                "phase_offset_deg": 0.125,
+                "estimated_net_pv_work_j": 10.748679219227173,
+                "error_fraction_vs_fine_reference": 0.00018781735578810022
+              },
+              {
+                "phase_offset_deg": 0.25,
+                "estimated_net_pv_work_j": 10.75059189072514,
+                "error_fraction_vs_fine_reference": 0.0003657955698415094
+              },
+              {
+                "phase_offset_deg": 0.375,
+                "estimated_net_pv_work_j": 10.752498980165548,
+                "error_fraction_vs_fine_reference": 0.0005432543613823615
+              },
+              {
+                "phase_offset_deg": 0.5,
+                "estimated_net_pv_work_j": 10.754400462317633,
+                "error_fraction_vs_fine_reference": 0.0007201913826335726
+              },
+              {
+                "phase_offset_deg": 0.625,
+                "estimated_net_pv_work_j": 10.756296329117044,
+                "error_fraction_vs_fine_reference": 0.0008966058831898494
+              },
+              {
+                "phase_offset_deg": 0.75,
+                "estimated_net_pv_work_j": 10.758186589215702,
+                "error_fraction_vs_fine_reference": 0.0010724986681311943
+              },
+              {
+                "phase_offset_deg": 0.875,
+                "estimated_net_pv_work_j": 10.760071267493856,
+                "error_fraction_vs_fine_reference": 0.0012478720526185594
+              },
+              {
+                "phase_offset_deg": 1.0,
+                "estimated_net_pv_work_j": 10.746510854256552,
+                "error_fraction_vs_fine_reference": -1.3953688166368217e-05
+              },
+              {
+                "phase_offset_deg": 1.125,
+                "estimated_net_pv_work_j": 10.733029487272379,
+                "error_fraction_vs_fine_reference": -0.0012684240043659978
+              },
+              {
+                "phase_offset_deg": 1.25,
+                "estimated_net_pv_work_j": 10.735009952375151,
+                "error_fraction_vs_fine_reference": -0.001084137448958633
+              },
+              {
+                "phase_offset_deg": 1.375,
+                "estimated_net_pv_work_j": 10.736984313352474,
+                "error_fraction_vs_fine_reference": -0.0009004188956084347
+              },
+              {
+                "phase_offset_deg": 1.5,
+                "estimated_net_pv_work_j": 10.738952448188941,
+                "error_fraction_vs_fine_reference": -0.0007172796981127494
+              },
+              {
+                "phase_offset_deg": 1.625,
+                "estimated_net_pv_work_j": 10.740914253818245,
+                "error_fraction_vs_fine_reference": -0.0005347294470140485
+              },
+              {
+                "phase_offset_deg": 1.75,
+                "estimated_net_pv_work_j": 10.742869645681285,
+                "error_fraction_vs_fine_reference": -0.0003527760107191469
+              },
+              {
+                "phase_offset_deg": 1.875,
+                "estimated_net_pv_work_j": 10.74481855737744,
+                "error_fraction_vs_fine_reference": -0.00017142556794946806
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 1.0,
+            "uniform_bin_step_deg": 1.0,
+            "samples_per_cycle": 720,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.0006310707988892439,
+            "rms_work_error_fraction": 0.00037598650927017543,
+            "min_work_error_fraction": -0.0006310707988892439,
+            "max_work_error_fraction": 0.0006271935734065703,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 10.746676455253299,
+                "error_fraction_vs_fine_reference": 1.4558422614108224e-06
+              },
+              {
+                "phase_offset_deg": 0.0625,
+                "estimated_net_pv_work_j": 10.74764162267555,
+                "error_fraction_vs_fine_reference": 9.126675556125896e-05
+              },
+              {
+                "phase_offset_deg": 0.125,
+                "estimated_net_pv_work_j": 10.748605291467637,
+                "error_fraction_vs_fine_reference": 0.00018093821808728983
+              },
+              {
+                "phase_offset_deg": 0.1875,
+                "estimated_net_pv_work_j": 10.74956745743186,
+                "error_fraction_vs_fine_reference": 0.00027046983923462165
+              },
+              {
+                "phase_offset_deg": 0.25,
+                "estimated_net_pv_work_j": 10.750528117448486,
+                "error_fraction_vs_fine_reference": 0.00035986132870524656
+              },
+              {
+                "phase_offset_deg": 0.3125,
+                "estimated_net_pv_work_j": 10.751487269455012,
+                "error_fraction_vs_fine_reference": 0.00044911249457912916
+              },
+              {
+                "phase_offset_deg": 0.375,
+                "estimated_net_pv_work_j": 10.752444912435625,
+                "error_fraction_vs_fine_reference": 0.0005382232423323252
+              },
+              {
+                "phase_offset_deg": 0.4375,
+                "estimated_net_pv_work_j": 10.753401046405815,
+                "error_fraction_vs_fine_reference": 0.0006271935734065703
+              },
+              {
+                "phase_offset_deg": 0.5,
+                "estimated_net_pv_work_j": 10.746634780318097,
+                "error_fraction_vs_fine_reference": -2.422100472521116e-06
+              },
+              {
+                "phase_offset_deg": 0.5625,
+                "estimated_net_pv_work_j": 10.739878905987684,
+                "error_fraction_vs_fine_reference": -0.0006310707988892439
+              },
+              {
+                "phase_offset_deg": 0.625,
+                "estimated_net_pv_work_j": 10.740854353249784,
+                "error_fraction_vs_fine_reference": -0.0005403033242882271
+              },
+              {
+                "phase_offset_deg": 0.6875,
+                "estimated_net_pv_work_j": 10.741828362468976,
+                "error_fraction_vs_fine_reference": -0.00044966966268589204
+              },
+              {
+                "phase_offset_deg": 0.75,
+                "estimated_net_pv_work_j": 10.74280092155014,
+                "error_fraction_vs_fine_reference": -0.00035917093955906143
+              },
+              {
+                "phase_offset_deg": 0.8125,
+                "estimated_net_pv_work_j": 10.743772019570303,
+                "error_fraction_vs_fine_reference": -0.00026880817131424983
+              },
+              {
+                "phase_offset_deg": 0.875,
+                "estimated_net_pv_work_j": 10.744741646759019,
+                "error_fraction_vs_fine_reference": -0.00017858226711231495
+              },
+              {
+                "phase_offset_deg": 0.9375,
+                "estimated_net_pv_work_j": 10.745709794486867,
+                "error_fraction_vs_fine_reference": -8.84940299397119e-05
+              }
+            ]
+          },
+          {
+            "requested_step_deg": 0.5,
+            "uniform_bin_step_deg": 0.5,
+            "samples_per_cycle": 1440,
+            "phase_offsets_tested": 16,
+            "max_abs_work_error_fraction": 0.00031504586770669807,
+            "rms_work_error_fraction": 0.0001879881310504067,
+            "min_work_error_fraction": -0.00031504586770669807,
+            "max_work_error_fraction": 0.00031407960949736413,
+            "phase_rows": [
+              {
+                "phase_offset_deg": 0.0,
+                "estimated_net_pv_work_j": 10.746664519499312,
+                "error_fraction_vs_fine_reference": 3.4519457292603306e-07
+              },
+              {
+                "phase_offset_deg": 0.03125,
+                "estimated_net_pv_work_j": 10.747147453882498,
+                "error_fraction_vs_fine_reference": 4.52832820154736e-05
+              },
+              {
+                "phase_offset_deg": 0.0625,
+                "estimated_net_pv_work_j": 10.74762964451267,
+                "error_fraction_vs_fine_reference": 9.015216163366091e-05
+              },
+              {
+                "phase_offset_deg": 0.09375,
+                "estimated_net_pv_work_j": 10.748111835142836,
+                "error_fraction_vs_fine_reference": 0.00013502104125118208
+              },
+              {
+                "phase_offset_deg": 0.125,
+                "estimated_net_pv_work_j": 10.748593279597317,
+                "error_fraction_vs_fine_reference": 0.00017982048760956104
+              },
+              {
+                "phase_offset_deg": 0.15625,
+                "estimated_net_pv_work_j": 10.749074724051804,
+                "error_fraction_vs_fine_reference": 0.0002246199339683841
+              },
+              {
+                "phase_offset_deg": 0.1875,
+                "estimated_net_pv_work_j": 10.749555420446324,
+                "error_fraction_vs_fine_reference": 0.0002693497717318749
+              },
+              {
+                "phase_offset_deg": 0.21875,
+                "estimated_net_pv_work_j": 10.750036116840867,
+                "error_fraction_vs_fine_reference": 0.00031407960949736413
+              },
+              {
+                "phase_offset_deg": 0.25,
+                "estimated_net_pv_work_j": 10.746655617785713,
+                "error_fraction_vs_fine_reference": -4.83129104167368e-07
+              },
+              {
+                "phase_offset_deg": 0.28125,
+                "estimated_net_pv_work_j": 10.743275118730546,
+                "error_fraction_vs_fine_reference": -0.00031504586770669807
+              },
+              {
+                "phase_offset_deg": 0.3125,
+                "estimated_net_pv_work_j": 10.743760264331629,
+                "error_fraction_vs_fine_reference": -0.00026990202166299326
+              },
+              {
+                "phase_offset_deg": 0.34375,
+                "estimated_net_pv_work_j": 10.744245409932706,
+                "error_fraction_vs_fine_reference": -0.00022475817561962153
+              },
+              {
+                "phase_offset_deg": 0.375,
+                "estimated_net_pv_work_j": 10.744729822358707,
+                "error_fraction_vs_fine_reference": -0.00017968255310085723
+              },
+              {
+                "phase_offset_deg": 0.40625,
+                "estimated_net_pv_work_j": 10.745214234784749,
+                "error_fraction_vs_fine_reference": -0.00013460693057820716
+              },
+              {
+                "phase_offset_deg": 0.4375,
+                "estimated_net_pv_work_j": 10.745697909950456,
+                "error_fraction_vs_fine_reference": -8.959991172208248e-05
+              },
+              {
+                "phase_offset_deg": 0.46875,
+                "estimated_net_pv_work_j": 10.74618158511614,
+                "error_fraction_vs_fine_reference": -4.4592892868067224e-05
+              }
+            ]
+          }
+        ],
+        "dynamic_periodic_resolution_sweep": [
+          {
+            "step_deg_max": 4.0,
+            "selected_restoring_orbit": {
+              "rpm": 8063.2781982421875,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8063.2781982421875,
+              "end_rpm": 8063.278319925475,
+              "time_average_rpm": 8095.9349761328085,
+              "min_rpm": 7971.0512998501445,
+              "max_rpm": 8176.480260466407,
+              "cycle_time_s": 0.014822253433823958,
+              "net_cycle_energy_j": 7.161883956996462e-06,
+              "cycle_work_from_pressure_j": 11.124788229622292,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380164659441,
+              "effective_inertia_ripple_fraction": 0.0020382530239695384,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -0.0007368216179091114
+          },
+          {
+            "step_deg_max": 2.0,
+            "selected_restoring_orbit": {
+              "rpm": 8067.7154541015625,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8067.7154541015625,
+              "end_rpm": 8067.715519582307,
+              "time_average_rpm": 8100.41384154577,
+              "min_rpm": 7975.299583193835,
+              "max_rpm": 8181.075328233006,
+              "cycle_time_s": 0.014814057941649665,
+              "net_cycle_energy_j": 3.856105280419797e-06,
+              "cycle_work_from_pressure_j": 11.13673360221957,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380164659441,
+              "effective_inertia_ripple_fraction": 0.0020382530239695384,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -0.00018400525991024708
+          },
+          {
+            "step_deg_max": 1.0,
+            "selected_restoring_orbit": {
+              "rpm": 8068.8262939453125,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8068.8262939453125,
+              "end_rpm": 8068.826246547991,
+              "time_average_rpm": 8101.534985336958,
+              "min_rpm": 7976.380040414409,
+              "max_rpm": 8182.200710706861,
+              "cycle_time_s": 0.01481200787470388,
+              "net_cycle_energy_j": -2.791572143223675e-06,
+              "cycle_work_from_pressure_j": 11.139718954419878,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380164659441,
+              "effective_inertia_ripple_fraction": 0.0020382530239695384,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -4.562498493165812e-05
+          },
+          {
+            "step_deg_max": 0.5,
+            "selected_restoring_orbit": {
+              "rpm": 8069.1070556640625,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1070556640625,
+              "end_rpm": 8069.106944722675,
+              "time_average_rpm": 8101.8183215956715,
+              "min_rpm": 7976.6470440423,
+              "max_rpm": 8182.506582758656,
+              "cycle_time_s": 0.014811489870136427,
+              "net_cycle_energy_j": -6.534370726285488e-06,
+              "cycle_work_from_pressure_j": 11.14047141611216,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380191605912,
+              "effective_inertia_ripple_fraction": 0.0020382570737453864,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -1.0653423121009808e-05
+          },
+          {
+            "step_deg_max": 0.25,
+            "selected_restoring_orbit": {
+              "rpm": 8069.1741943359375,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1741943359375,
+              "end_rpm": 8069.174199158793,
+              "time_average_rpm": 8101.886182849089,
+              "min_rpm": 7976.712718098793,
+              "max_rpm": 8182.584982837491,
+              "cycle_time_s": 0.014811365809362815,
+              "net_cycle_energy_j": 2.8406515184542513e-07,
+              "cycle_work_from_pressure_j": 11.140659358093249,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380257461516,
+              "effective_inertia_ripple_fraction": 0.0020382669711611623,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": -2.2774601249331283e-06
+          },
+          {
+            "step_deg_max": 0.125,
+            "selected_restoring_orbit": {
+              "rpm": 8069.1925048828125,
+              "ok": true,
+              "stopped": false,
+              "start_rpm": 8069.1925048828125,
+              "end_rpm": 8069.192472890732,
+              "time_average_rpm": 8101.90463461383,
+              "min_rpm": 7976.729922543104,
+              "max_rpm": 8182.6085086423645,
+              "cycle_time_s": 0.014811332077067788,
+              "net_cycle_energy_j": -1.8843313398519967e-06,
+              "cycle_work_from_pressure_j": 11.140706436777158,
+              "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+              "profile_reciprocating_mass_kg": 0.01105,
+              "effective_inertia_min_kg_m2": 0.0006653817999999998,
+              "effective_inertia_max_kg_m2": 0.0006667380257461516,
+              "effective_inertia_ripple_fraction": 0.0020382669711611623,
+              "ideal_power_bound_refusals": 0
+            },
+            "root_count": 1,
+            "time_average_rpm_error_vs_0_125deg_fraction": 0.0
+          }
+        ],
+        "interpretation": "The event-aligned sweep tests crank-angle quadrature resolution. The separate phase sweep intentionally does not align coarse uniform samples to events and quantifies phase-sensitive midpoint integration error for the fine prescribed waveform. This does not prove that a runtime physics step aliases a real engine waveform."
+      },
+      "one_factor_sensitivity_rows": [
+        {
+          "parameter": "compression_ratio",
+          "case": "low",
+          "value": 6.5,
+          "cycle_work_j": 10.023098185157894,
+          "delta_vs_nominal_fraction": -0.07178025336314453,
+          "peak_pressure_pa": 4186671.381201717
+        },
+        {
+          "parameter": "compression_ratio",
+          "case": "high",
+          "value": 10.0,
+          "cycle_work_j": 11.567382355545446,
+          "delta_vs_nominal_fraction": 0.07123291830218514,
+          "peak_pressure_pa": 6601766.167689109
+        },
+        {
+          "parameter": "gamma",
+          "case": "low",
+          "value": 1.32,
+          "cycle_work_j": 10.342290853488283,
+          "delta_vs_nominal_fraction": -0.042220437400780075,
+          "peak_pressure_pa": 4967532.701746424
+        },
+        {
+          "parameter": "gamma",
+          "case": "high",
+          "value": 1.38,
+          "cycle_work_j": 11.657423415608669,
+          "delta_vs_nominal_fraction": 0.07957144681052197,
+          "peak_pressure_pa": 5772722.447882617
+        },
+        {
+          "parameter": "heat_to_gas_fraction",
+          "case": "low",
+          "value": 0.35,
+          "cycle_work_j": 6.095623818215658,
+          "delta_vs_nominal_fraction": -0.4354960620343771,
+          "peak_pressure_pa": 3641792.0434376597
+        },
+        {
+          "parameter": "heat_to_gas_fraction",
+          "case": "high",
+          "value": 0.8,
+          "cycle_work_j": 13.932854441635785,
+          "delta_vs_nominal_fraction": 0.29029471534999485,
+          "peak_pressure_pa": 6304603.101405163
+        },
+        {
+          "parameter": "residual_mass_fraction",
+          "case": "low",
+          "value": 0.03,
+          "cycle_work_j": 10.797962192267738,
+          "delta_vs_nominal_fraction": -2.1595603753477022e-05,
+          "peak_pressure_pa": 5154372.855658331
+        },
+        {
+          "parameter": "residual_mass_fraction",
+          "case": "high",
+          "value": 0.18,
+          "cycle_work_j": 10.797962192267713,
+          "delta_vs_nominal_fraction": -2.159560375580849e-05,
+          "peak_pressure_pa": 5425331.99977954
+        },
+        {
+          "parameter": "trapped_temperature_k",
+          "case": "low",
+          "value": 300.0,
+          "cycle_work_j": 10.79796219226774,
+          "delta_vs_nominal_fraction": -2.1595603753366e-05,
+          "peak_pressure_pa": 5093484.950825631
+        },
+        {
+          "parameter": "trapped_temperature_k",
+          "case": "high",
+          "value": 370.0,
+          "cycle_work_j": 10.797962192267757,
+          "delta_vs_nominal_fraction": -2.1595603751700665e-05,
+          "peak_pressure_pa": 5424175.4045328135
+        },
+        {
+          "parameter": "combustion_start_deg_btdc",
+          "case": "low",
+          "value": 5.0,
+          "cycle_work_j": 10.300444889510699,
+          "delta_vs_nominal_fraction": -0.04609571122964129,
+          "peak_pressure_pa": 4102851.2833894254
+        },
+        {
+          "parameter": "combustion_start_deg_btdc",
+          "case": "high",
+          "value": 25.0,
+          "cycle_work_j": 10.847458479961087,
+          "delta_vs_nominal_fraction": 0.004562159915095787,
+          "peak_pressure_pa": 6301202.210827692
+        },
+        {
+          "parameter": "burn_duration_deg",
+          "case": "low",
+          "value": 25.0,
+          "cycle_work_j": 10.956857528328259,
+          "delta_vs_nominal_fraction": 0.014693394298098905,
+          "peak_pressure_pa": 6664800.244285609
+        },
+        {
+          "parameter": "burn_duration_deg",
+          "case": "high",
+          "value": 65.0,
+          "cycle_work_j": 10.235867952975097,
+          "delta_vs_nominal_fraction": -0.05207605648440705,
+          "peak_pressure_pa": 3870110.256170586
+        },
+        {
+          "parameter": "exhaust_open_deg_atdc",
+          "case": "low",
+          "value": 130.0,
+          "cycle_work_j": 10.514886579999553,
+          "delta_vs_nominal_fraction": -0.026236680824382685,
+          "peak_pressure_pa": 5234493.784068974
+        },
+        {
+          "parameter": "exhaust_open_deg_atdc",
+          "case": "high",
+          "value": 160.0,
+          "cycle_work_j": 10.965371362484522,
+          "delta_vs_nominal_fraction": 0.01548184402067454,
+          "peak_pressure_pa": 5234493.784068974
+        },
+        {
+          "parameter": "intake_open_deg_before_exhaust_tdc",
+          "case": "low",
+          "value": 5.0,
+          "cycle_work_j": 10.797962192267724,
+          "delta_vs_nominal_fraction": -2.159560375480929e-05,
+          "peak_pressure_pa": 5234493.784068974
+        },
+        {
+          "parameter": "intake_open_deg_before_exhaust_tdc",
+          "case": "high",
+          "value": 25.0,
+          "cycle_work_j": 10.797962192267724,
+          "delta_vs_nominal_fraction": -2.159560375480929e-05,
+          "peak_pressure_pa": 5234493.784068974
+        },
+        {
+          "parameter": "exhaust_close_deg_after_exhaust_tdc",
+          "case": "low",
+          "value": 0.0,
+          "cycle_work_j": 10.797962192267724,
+          "delta_vs_nominal_fraction": -2.159560375480929e-05,
+          "peak_pressure_pa": 5234493.784068974
+        },
+        {
+          "parameter": "exhaust_close_deg_after_exhaust_tdc",
+          "case": "high",
+          "value": 20.0,
+          "cycle_work_j": 10.797962192267724,
+          "delta_vs_nominal_fraction": -2.159560375480929e-05,
+          "peak_pressure_pa": 5234493.784068974
+        },
+        {
+          "parameter": "intake_close_deg_abdc",
+          "case": "low",
+          "value": 20.0,
+          "cycle_work_j": 10.78757142987379,
+          "delta_vs_nominal_fraction": -0.0009838640220113382,
+          "peak_pressure_pa": 5256435.575377509
+        },
+        {
+          "parameter": "intake_close_deg_abdc",
+          "case": "high",
+          "value": 55.0,
+          "cycle_work_j": 10.826332626082042,
+          "delta_vs_nominal_fraction": 0.002605735427093414,
+          "peak_pressure_pa": 5184778.779401051
+        }
+      ],
+      "status": {
+        "numerical_first_law_closure": "checked for closed portions only",
+        "independent_thermodynamic_convergence": "evaluated by step refinement; see sweep",
+        "mean_reduction_comparison": "computed for the stated inferred hypotheses only",
+        "physical_engine_validation": "NOT PERFORMED",
+        "physical_propeller_validation": "NOT PERFORMED",
+        "independent_held_out_validation": "NOT PERFORMED",
+        "experienced_pilot_validation": "NOT PERFORMED"
+      }
+    }
+  }
+}

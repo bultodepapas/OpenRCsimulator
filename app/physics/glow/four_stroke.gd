@@ -21,8 +21,34 @@ static func evaluate(
 		running: bool = true,
 		firing_fraction: float = 1.0
 	) -> Dictionary:
-	var result := _empty_result("")
+	return _evaluate_impl(rpm, admission, mixture, dry_density_kg_m3, parameters,
+		running, firing_fraction, false)
 
+
+## Internal entry used only with detached, profile-validated parameters.
+static func _evaluate_prevalidated(
+		rpm: float,
+		admission: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		parameters: Dictionary,
+		running: bool,
+		firing_fraction: float
+	) -> Dictionary:
+	return _evaluate_impl(rpm, admission, mixture, dry_density_kg_m3, parameters,
+		running, firing_fraction, true)
+
+
+static func _evaluate_impl(
+		rpm: float,
+		admission: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		parameters: Dictionary,
+		running: bool,
+		firing_fraction: float,
+		prevalidated: bool
+	) -> Dictionary:
 	if not is_finite(rpm) or rpm < 0.0:
 		return _empty_result("rpm must be finite and nonnegative")
 	if not is_finite(admission) or admission < 0.0 or admission > 1.0:
@@ -34,61 +60,119 @@ static func evaluate(
 	if not is_finite(firing_fraction) or firing_fraction < 0.0 or firing_fraction > 1.0:
 		return _empty_result("firing_fraction must be finite and in [0, 1]")
 
-	var scalar_result: Dictionary = _read_number(parameters, "displacement_m3", 0.0, false, INF, true)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var displacement_m3: float = float(scalar_result["value"])
+	var displacement_m3: float
+	var oil_fraction: float
+	var stoich_air_fuel_ratio: float
+	var fuel_lhv_j_kg: float
+	var intake_pressure_drop_pa: float
+	var mechanical_table: PackedFloat64Array
+	var combustion_table: PackedFloat64Array
+	var indicated_table: PackedFloat64Array
+	var volumetric_table: PackedFloat64Array
+	var pumping_table: PackedFloat64Array
+	var valve_table: PackedFloat64Array
+	if prevalidated:
+		displacement_m3 = float(parameters.displacement_m3)
+		oil_fraction = float(parameters.oil_fraction)
+		stoich_air_fuel_ratio = float(parameters.stoich_air_fuel_ratio)
+		fuel_lhv_j_kg = float(parameters.fuel_lhv_j_kg)
+		intake_pressure_drop_pa = float(parameters.intake_pressure_drop_pa)
+		mechanical_table = parameters.mechanical_torque_nm
+		combustion_table = parameters.combustion_efficiency
+		indicated_table = parameters.indicated_efficiency
+		volumetric_table = parameters.volumetric_efficiency
+		pumping_table = parameters.pumping_pressure_pa
+		valve_table = parameters.valve_torque_nm
+		if (rpm < mechanical_table[0] or rpm > mechanical_table[mechanical_table.size() - 2]
+			or rpm < indicated_table[0] or rpm > indicated_table[indicated_table.size() - 2]
+			or rpm < volumetric_table[0] or rpm > volumetric_table[volumetric_table.size() - 2]
+			or rpm < pumping_table[0] or rpm > pumping_table[pumping_table.size() - 2]
+			or rpm < valve_table[0] or rpm > valve_table[valve_table.size() - 2]):
+			return _empty_result("RPM table does not cover the query")
+		if mixture < combustion_table[0] or mixture > combustion_table[combustion_table.size() - 2]:
+			return _empty_result("combustion_efficiency does not cover the query")
+	else:
+		var scalar_result: Dictionary = _read_number(parameters, "displacement_m3", 0.0, false, INF, true)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		displacement_m3 = float(scalar_result["value"])
 
-	scalar_result = _read_number(parameters, "oil_fraction", 0.0, true, 1.0, false)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var oil_fraction: float = float(scalar_result["value"])
+		scalar_result = _read_number(parameters, "oil_fraction", 0.0, true, 1.0, false)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		oil_fraction = float(scalar_result["value"])
 
-	scalar_result = _read_number(parameters, "stoich_air_fuel_ratio", 0.0, false, INF, true)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var stoich_air_fuel_ratio: float = float(scalar_result["value"])
+		scalar_result = _read_number(parameters, "stoich_air_fuel_ratio", 0.0, false, INF, true)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		stoich_air_fuel_ratio = float(scalar_result["value"])
 
-	scalar_result = _read_number(parameters, "fuel_lhv_j_kg", 0.0, false, INF, true)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var fuel_lhv_j_kg: float = float(scalar_result["value"])
+		scalar_result = _read_number(parameters, "fuel_lhv_j_kg", 0.0, false, INF, true)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		fuel_lhv_j_kg = float(scalar_result["value"])
 
-	scalar_result = _read_number(parameters, "intake_pressure_drop_pa", 0.0, true, INF, true)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var intake_pressure_drop_pa: float = float(scalar_result["value"])
+		scalar_result = _read_number(parameters, "intake_pressure_drop_pa", 0.0, true, INF, true)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		intake_pressure_drop_pa = float(scalar_result["value"])
 
-	var mechanical_result: Dictionary = _read_table(parameters, "mechanical_torque_nm", rpm, 0.0, true, INF, true)
-	if not mechanical_result["ok"]:
-		return _empty_result(str(mechanical_result["message"]))
-	var mechanical_table: PackedFloat64Array = mechanical_result["values"]
+		var mechanical_result: Dictionary = _read_table(parameters, "mechanical_torque_nm", rpm, 0.0, true, INF, true)
+		if not mechanical_result["ok"]:
+			return _empty_result(str(mechanical_result["message"]))
+		mechanical_table = mechanical_result["values"]
 
-	var combustion_result: Dictionary = _read_table(parameters, "combustion_efficiency", mixture, 0.0, true, 1.0, true)
-	if not combustion_result["ok"]:
-		return _empty_result(str(combustion_result["message"]))
-	var combustion_table: PackedFloat64Array = combustion_result["values"]
+		var combustion_result: Dictionary = _read_table(parameters, "combustion_efficiency", mixture, 0.0, true, 1.0, true)
+		if not combustion_result["ok"]:
+			return _empty_result(str(combustion_result["message"]))
+		combustion_table = combustion_result["values"]
 
-	var indicated_result: Dictionary = _read_table(parameters, "indicated_efficiency", rpm, 0.0, true, 1.0, true)
-	if not indicated_result["ok"]:
-		return _empty_result(str(indicated_result["message"]))
-	var indicated_table: PackedFloat64Array = indicated_result["values"]
+		var indicated_result: Dictionary = _read_table(parameters, "indicated_efficiency", rpm, 0.0, true, 1.0, true)
+		if not indicated_result["ok"]:
+			return _empty_result(str(indicated_result["message"]))
+		indicated_table = indicated_result["values"]
 
-	var volumetric_result: Dictionary = _read_table(parameters, "volumetric_efficiency", rpm, 0.0, false, INF, true)
-	if not volumetric_result["ok"]:
-		return _empty_result(str(volumetric_result["message"]))
-	var volumetric_table: PackedFloat64Array = volumetric_result["values"]
+		var volumetric_result: Dictionary = _read_table(parameters, "volumetric_efficiency", rpm, 0.0, false, INF, true)
+		if not volumetric_result["ok"]:
+			return _empty_result(str(volumetric_result["message"]))
+		volumetric_table = volumetric_result["values"]
 
-	var pumping_result: Dictionary = _read_table(parameters, "pumping_pressure_pa", rpm, 0.0, true, INF, true)
-	if not pumping_result["ok"]:
-		return _empty_result(str(pumping_result["message"]))
-	var pumping_table: PackedFloat64Array = pumping_result["values"]
+		var pumping_result: Dictionary = _read_table(parameters, "pumping_pressure_pa", rpm, 0.0, true, INF, true)
+		if not pumping_result["ok"]:
+			return _empty_result(str(pumping_result["message"]))
+		pumping_table = pumping_result["values"]
 
-	var valve_result: Dictionary = _read_table(parameters, "valve_torque_nm", rpm, 0.0, true, INF, true)
-	if not valve_result["ok"]:
-		return _empty_result(str(valve_result["message"]))
-	var valve_table: PackedFloat64Array = valve_result["values"]
+		var valve_result: Dictionary = _read_table(parameters, "valve_torque_nm", rpm, 0.0, true, INF, true)
+		if not valve_result["ok"]:
+			return _empty_result(str(valve_result["message"]))
+		valve_table = valve_result["values"]
 
+	return _calculate_validated(rpm, admission, mixture, dry_density_kg_m3,
+		displacement_m3, oil_fraction, stoich_air_fuel_ratio, fuel_lhv_j_kg,
+		intake_pressure_drop_pa, mechanical_table, combustion_table, indicated_table,
+		volumetric_table, pumping_table, valve_table, running, firing_fraction)
+
+
+static func _calculate_validated(
+		rpm: float,
+		admission: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		displacement_m3: float,
+		oil_fraction: float,
+		stoich_air_fuel_ratio: float,
+		fuel_lhv_j_kg: float,
+		intake_pressure_drop_pa: float,
+		mechanical_table: PackedFloat64Array,
+		combustion_table: PackedFloat64Array,
+		indicated_table: PackedFloat64Array,
+		volumetric_table: PackedFloat64Array,
+		pumping_table: PackedFloat64Array,
+		valve_table: PackedFloat64Array,
+		running: bool,
+		firing_fraction: float
+	) -> Dictionary:
+	var result := _empty_result("")
 	var cycle_frequency_hz: float = rpm / 120.0
 	var opportunity_frequency_hz: float = cycle_frequency_hz
 	var omega_rad_s: float = 2.0 * PI * rpm / 60.0
