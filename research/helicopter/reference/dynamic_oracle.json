@@ -1,0 +1,850 @@
+{
+  "format": "openrc-dynamic-inflow-oracle-v1",
+  "model": "Johnson steady mean-inflow target plus an unvalidated first-order dimensional induced-velocity lag",
+  "units": {
+    "time": "s",
+    "induced_velocity": "m/s, positive down the wake axis for positive thrust",
+    "lambda": "vi/(omega*radius), dimensionless; diagnostic only",
+    "climb": "m/s, positive upward",
+    "crossflow": "m/s magnitude"
+  },
+  "equations": {
+    "state": "dvi/dt = (target_mps - vi_mps) / tau_s",
+    "time_constant": "tau_s = 0.849 * radius_m / (4 * max(effective_speed_mps, velocity_floor_mps))",
+    "feedback_effective_speed": "hypot(crossflow_mps, vi_mps + climb_mps)",
+    "fixed_target_response": "vi(t) = target + (vi0-target)*exp(-(t-t0)/tau)",
+    "lag_provenance": "selected model approximation; not a Johnson transient law"
+  },
+  "qualification": {
+    "base_step_s": 0.004166666667,
+    "tested_refinements_s": [
+      0.004166666667,
+      0.002083333333,
+      0.001041666667
+    ],
+    "error_tolerance_mps": 0.001,
+    "comparison": "maximum absolute vi error at integrator output ticks against dense midpoint/exponential-convolution reference; the exact hover step uses its analytic exponential",
+    "all_dynamic_fixtures": {
+      "rk4_240hz_unsplit": {
+        "max_abs_error_mps": 0.011556348081,
+        "time_s": 0.041666666667,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": false
+      },
+      "rk4_120hz_unsplit": {
+        "max_abs_error_mps": 0.010219600973,
+        "time_s": 0.039583333333,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": false
+      },
+      "rk4_60hz_unsplit": {
+        "max_abs_error_mps": 0.000532601825,
+        "time_s": 0.039583333333,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": true
+      },
+      "rk4_240hz_known_event_splits": {
+        "max_abs_error_mps": 0.001057665005,
+        "time_s": 0.041666666667,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": false
+      }
+    },
+    "source_seam_sweeps": {
+      "rk4_240hz_unsplit": {
+        "max_abs_error_mps": 0.011556348081,
+        "time_s": 0.041666666667,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": false
+      },
+      "rk4_120hz_unsplit": {
+        "max_abs_error_mps": 0.010219600973,
+        "time_s": 0.039583333333,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": false
+      },
+      "rk4_60hz_unsplit": {
+        "max_abs_error_mps": 0.000532601825,
+        "time_s": 0.039583333333,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": true
+      },
+      "rk4_240hz_known_event_splits": {
+        "max_abs_error_mps": 0.001057665005,
+        "time_s": 0.041666666667,
+        "fixture": "M_decreasing",
+        "passes_1e-3_mps": false
+      }
+    },
+    "event_split_scope": "fixtures provide known crossing times and one-sided endpoints; this is not session event-detector readiness"
+  },
+  "sample_count": 102,
+  "reference_step_s": 1e-05,
+  "fixtures": [
+    {
+      "name": "hover_target_step",
+      "kind": "target_step_exact",
+      "description": "Hover target changes from zero thrust to 80.4 N at 17.3 ms; fixed effective flow gives the closed-form exponential wake buildup.",
+      "duration_s": 0.133333333333,
+      "constants": {
+        "density_kg_m3": 1.225,
+        "radius_m": 0.7,
+        "velocity_floor_mps": 0.25,
+        "height_over_radius": -1.0,
+        "loss": 1.0,
+        "instability": 0.0,
+        "omega_rad_s": 167.02800941585735,
+        "effective_flow_mode": "fixed",
+        "fixed_effective_speed_mps": 4.0
+      },
+      "initial_vi_mps": 0.0,
+      "profile": {
+        "interpolation": "step",
+        "step_time_s": 0.0173,
+        "before": {
+          "thrust_n": 0.0,
+          "climb_mps": 0.0,
+          "crossflow_mps": 0.0
+        },
+        "after": {
+          "thrust_n": 80.4,
+          "climb_mps": 0.0,
+          "crossflow_mps": 0.0
+        }
+      },
+      "event_splits": [],
+      "samples": [
+        {
+          "time_s": 0.0,
+          "expected_vi_mps": 0.0,
+          "expected_lambda": 0.0
+        },
+        {
+          "time_s": 0.008333333333,
+          "expected_vi_mps": 0.0,
+          "expected_lambda": 0.0
+        },
+        {
+          "time_s": 0.016666666667,
+          "expected_vi_mps": 0.0,
+          "expected_lambda": 0.0
+        },
+        {
+          "time_s": 0.025,
+          "expected_vi_mps": 0.864448533192,
+          "expected_lambda": 0.007393529267
+        },
+        {
+          "time_s": 0.033333333333,
+          "expected_vi_mps": 1.6186151081,
+          "expected_lambda": 0.013843829579
+        },
+        {
+          "time_s": 0.041666666667,
+          "expected_vi_mps": 2.221218758239,
+          "expected_lambda": 0.01899782956
+        },
+        {
+          "time_s": 0.05,
+          "expected_vi_mps": 2.702718696371,
+          "expected_lambda": 0.023116043367
+        },
+        {
+          "time_s": 0.058333333333,
+          "expected_vi_mps": 3.087452825294,
+          "expected_lambda": 0.026406630293
+        },
+        {
+          "time_s": 0.066666666667,
+          "expected_vi_mps": 3.394867921819,
+          "expected_lambda": 0.029035916394
+        },
+        {
+          "time_s": 0.075,
+          "expected_vi_mps": 3.640502593837,
+          "expected_lambda": 0.031136801602
+        },
+        {
+          "time_s": 0.083333333333,
+          "expected_vi_mps": 3.836772695009,
+          "expected_lambda": 0.032815477291
+        },
+        {
+          "time_s": 0.091666666667,
+          "expected_vi_mps": 3.993598896692,
+          "expected_lambda": 0.034156793827
+        },
+        {
+          "time_s": 0.1,
+          "expected_vi_mps": 4.118908138332,
+          "expected_lambda": 0.035228549415
+        },
+        {
+          "time_s": 0.108333333333,
+          "expected_vi_mps": 4.219034302657,
+          "expected_lambda": 0.036084917027
+        },
+        {
+          "time_s": 0.116666666667,
+          "expected_vi_mps": 4.299038368211,
+          "expected_lambda": 0.036769182634
+        },
+        {
+          "time_s": 0.125,
+          "expected_vi_mps": 4.362964221639,
+          "expected_lambda": 0.037315933134
+        },
+        {
+          "time_s": 0.133333333333,
+          "expected_vi_mps": 4.414043060049,
+          "expected_lambda": 0.037752804587
+        }
+      ]
+    },
+    {
+      "name": "C_increasing",
+      "kind": "source_seam_sweep",
+      "description": "Crossflow rises through the literal baseline cutoff C at z=-1.428, f=0.",
+      "duration_s": 0.133333333333,
+      "constants": {
+        "density_kg_m3": 1.225,
+        "radius_m": 0.7,
+        "velocity_floor_mps": 0.25,
+        "height_over_radius": -1.0,
+        "loss": 1.0,
+        "instability": 0.0,
+        "omega_rad_s": 167.02800941585735,
+        "effective_flow_mode": "fixed",
+        "fixed_effective_speed_mps": 4.0
+      },
+      "initial_vi_mps": 6.349618503139,
+      "profile": {
+        "interpolation": "linear",
+        "start_time_s": 0.0,
+        "end_time_s": 0.13333333333333333,
+        "start": {
+          "thrust_n": 80.4,
+          "climb_mps": -6.593260168963951,
+          "crossflow_mps": 3.32507159893633
+        },
+        "end": {
+          "thrust_n": 80.4,
+          "climb_mps": -6.593260168963951,
+          "crossflow_mps": 3.817565355721686
+        }
+      },
+      "event_splits": [
+        {
+          "time_s": 0.0373,
+          "control": "crossflow_mps",
+          "threshold_normalized": 0.75,
+          "boundary": "C",
+          "direction": "increasing",
+          "left_limit_target_mps": 6.076305486586,
+          "right_limit_target_mps": 6.092893780831
+        }
+      ],
+      "samples": [
+        {
+          "time_s": 0.0,
+          "expected_vi_mps": 6.349618503139,
+          "expected_lambda": 0.054307559598
+        },
+        {
+          "time_s": 0.008333333333,
+          "expected_vi_mps": 6.343420912206,
+          "expected_lambda": 0.054254552313
+        },
+        {
+          "time_s": 0.016666666667,
+          "expected_vi_mps": 6.326378691365,
+          "expected_lambda": 0.054108792151
+        },
+        {
+          "time_s": 0.025,
+          "expected_vi_mps": 6.300494431821,
+          "expected_lambda": 0.053887407044
+        },
+        {
+          "time_s": 0.033333333333,
+          "expected_vi_mps": 6.267407488964,
+          "expected_lambda": 0.053604418213
+        },
+        {
+          "time_s": 0.041666666667,
+          "expected_vi_mps": 6.230058361794,
+          "expected_lambda": 0.053284975407
+        },
+        {
+          "time_s": 0.05,
+          "expected_vi_mps": 6.187618739384,
+          "expected_lambda": 0.052921994179
+        },
+        {
+          "time_s": 0.058333333333,
+          "expected_vi_mps": 6.139346162079,
+          "expected_lambda": 0.052509124355
+        },
+        {
+          "time_s": 0.066666666667,
+          "expected_vi_mps": 6.086348546857,
+          "expected_lambda": 0.052055841824
+        },
+        {
+          "time_s": 0.075,
+          "expected_vi_mps": 6.029548796527,
+          "expected_lambda": 0.051570040067
+        },
+        {
+          "time_s": 0.083333333333,
+          "expected_vi_mps": 5.969723663188,
+          "expected_lambda": 0.051058362556
+        },
+        {
+          "time_s": 0.091666666667,
+          "expected_vi_mps": 5.907533881079,
+          "expected_lambda": 0.050526460474
+        },
+        {
+          "time_s": 0.1,
+          "expected_vi_mps": 5.843547242282,
+          "expected_lambda": 0.049979190083
+        },
+        {
+          "time_s": 0.108333333333,
+          "expected_vi_mps": 5.77825602064,
+          "expected_lambda": 0.049420761745
+        },
+        {
+          "time_s": 0.116666666667,
+          "expected_vi_mps": 5.712089938649,
+          "expected_lambda": 0.048854850826
+        },
+        {
+          "time_s": 0.125,
+          "expected_vi_mps": 5.645425697728,
+          "expected_lambda": 0.048284679211
+        },
+        {
+          "time_s": 0.133333333333,
+          "expected_vi_mps": 5.578593938101,
+          "expected_lambda": 0.047713074828
+        }
+      ]
+    },
+    {
+      "name": "C_decreasing",
+      "kind": "source_seam_sweep",
+      "description": "Crossflow falls through the literal baseline cutoff C at z=-1.428, f=0.",
+      "duration_s": 0.133333333333,
+      "constants": {
+        "density_kg_m3": 1.225,
+        "radius_m": 0.7,
+        "velocity_floor_mps": 0.25,
+        "height_over_radius": -1.0,
+        "loss": 1.0,
+        "instability": 0.0,
+        "omega_rad_s": 167.02800941585735,
+        "effective_flow_mode": "fixed",
+        "fixed_effective_speed_mps": 4.0
+      },
+      "initial_vi_mps": 5.772555738047,
+      "profile": {
+        "interpolation": "linear",
+        "start_time_s": 0.0,
+        "end_time_s": 0.13333333333333333,
+        "start": {
+          "thrust_n": 80.4,
+          "climb_mps": -6.593260168963951,
+          "crossflow_mps": 3.6006218558577365
+        },
+        "end": {
+          "thrust_n": 80.4,
+          "climb_mps": -6.593260168963951,
+          "crossflow_mps": 3.1081280990723807
+        }
+      },
+      "event_splits": [
+        {
+          "time_s": 0.0373,
+          "control": "crossflow_mps",
+          "threshold_normalized": 0.75,
+          "boundary": "C",
+          "direction": "decreasing",
+          "left_limit_target_mps": 6.092893780831,
+          "right_limit_target_mps": 6.076305486586
+        }
+      ],
+      "samples": [
+        {
+          "time_s": 0.0,
+          "expected_vi_mps": 5.772555738047,
+          "expected_lambda": 0.049372007881
+        },
+        {
+          "time_s": 0.008333333333,
+          "expected_vi_mps": 5.780051933861,
+          "expected_lambda": 0.049436121985
+        },
+        {
+          "time_s": 0.016666666667,
+          "expected_vi_mps": 5.800493807782,
+          "expected_lambda": 0.049610958991
+        },
+        {
+          "time_s": 0.025,
+          "expected_vi_mps": 5.831249732708,
+          "expected_lambda": 0.049874010893
+        },
+        {
+          "time_s": 0.033333333333,
+          "expected_vi_mps": 5.870179494034,
+          "expected_lambda": 0.050206972681
+        },
+        {
+          "time_s": 0.041666666667,
+          "expected_vi_mps": 5.913456059437,
+          "expected_lambda": 0.050577112187
+        },
+        {
+          "time_s": 0.05,
+          "expected_vi_mps": 5.959214564988,
+          "expected_lambda": 0.050968479443
+        },
+        {
+          "time_s": 0.058333333333,
+          "expected_vi_mps": 6.008171387088,
+          "expected_lambda": 0.051387201533
+        },
+        {
+          "time_s": 0.066666666667,
+          "expected_vi_mps": 6.059542933936,
+          "expected_lambda": 0.051826576488
+        },
+        {
+          "time_s": 0.075,
+          "expected_vi_mps": 6.112663619258,
+          "expected_lambda": 0.052280911624
+        },
+        {
+          "time_s": 0.083333333333,
+          "expected_vi_mps": 6.166960483768,
+          "expected_lambda": 0.052745306485
+        },
+        {
+          "time_s": 0.091666666667,
+          "expected_vi_mps": 6.221940844605,
+          "expected_lambda": 0.053215547212
+        },
+        {
+          "time_s": 0.1,
+          "expected_vi_mps": 6.277207907624,
+          "expected_lambda": 0.053688240071
+        },
+        {
+          "time_s": 0.108333333333,
+          "expected_vi_mps": 6.332524579117,
+          "expected_lambda": 0.054161357224
+        },
+        {
+          "time_s": 0.116666666667,
+          "expected_vi_mps": 6.387893668918,
+          "expected_lambda": 0.054634922706
+        },
+        {
+          "time_s": 0.125,
+          "expected_vi_mps": 6.443520303159,
+          "expected_lambda": 0.055110690936
+        },
+        {
+          "time_s": 0.133333333333,
+          "expected_vi_mps": 6.499624722693,
+          "expected_lambda": 0.055590545608
+        }
+      ]
+    },
+    {
+      "name": "M_increasing",
+      "kind": "source_seam_sweep",
+      "description": "Crossflow rises through the literal VRS cutoff M at z=-1.3, f=1.",
+      "duration_s": 0.133333333333,
+      "constants": {
+        "density_kg_m3": 1.225,
+        "radius_m": 0.7,
+        "velocity_floor_mps": 0.25,
+        "height_over_radius": -1.0,
+        "loss": 1.0,
+        "instability": 1.0,
+        "omega_rad_s": 167.02800941585735,
+        "effective_flow_mode": "fixed",
+        "fixed_effective_speed_mps": 4.0
+      },
+      "initial_vi_mps": 7.219041033548,
+      "profile": {
+        "interpolation": "linear",
+        "start_time_s": 0.0,
+        "end_time_s": 0.13333333333333333,
+        "start": {
+          "thrust_n": 80.4,
+          "climb_mps": -6.002267660821524,
+          "crossflow_mps": 4.296861818868184
+        },
+        "end": {
+          "thrust_n": 80.4,
+          "climb_mps": -6.002267660821524,
+          "crossflow_mps": 4.604670416859031
+        }
+      },
+      "event_splits": [
+        {
+          "time_s": 0.03873,
+          "control": "crossflow_mps",
+          "threshold_normalized": 0.95,
+          "boundary": "M",
+          "direction": "increasing",
+          "left_limit_target_mps": 5.286995746057,
+          "right_limit_target_mps": 4.642053744613
+        }
+      ],
+      "samples": [
+        {
+          "time_s": 0.0,
+          "expected_vi_mps": 7.219041033548,
+          "expected_lambda": 0.061743630893
+        },
+        {
+          "time_s": 0.008333333333,
+          "expected_vi_mps": 7.195648391686,
+          "expected_lambda": 0.061543556307
+        },
+        {
+          "time_s": 0.016666666667,
+          "expected_vi_mps": 7.128028131975,
+          "expected_lambda": 0.060965207973
+        },
+        {
+          "time_s": 0.025,
+          "expected_vi_mps": 7.016923555641,
+          "expected_lambda": 0.060014943261
+        },
+        {
+          "time_s": 0.033333333333,
+          "expected_vi_mps": 6.855355265155,
+          "expected_lambda": 0.058633068183
+        },
+        {
+          "time_s": 0.041666666667,
+          "expected_vi_mps": 6.548314043447,
+          "expected_lambda": 0.05600697979
+        },
+        {
+          "time_s": 0.05,
+          "expected_vi_mps": 6.160603111502,
+          "expected_lambda": 0.052690932608
+        },
+        {
+          "time_s": 0.058333333333,
+          "expected_vi_mps": 5.845567247264,
+          "expected_lambda": 0.049996466954
+        },
+        {
+          "time_s": 0.066666666667,
+          "expected_vi_mps": 5.588663431633,
+          "expected_lambda": 0.047799198052
+        },
+        {
+          "time_s": 0.075,
+          "expected_vi_mps": 5.378271083707,
+          "expected_lambda": 0.045999736404
+        },
+        {
+          "time_s": 0.083333333333,
+          "expected_vi_mps": 5.205104677233,
+          "expected_lambda": 0.044518663969
+        },
+        {
+          "time_s": 0.091666666667,
+          "expected_vi_mps": 5.061744407755,
+          "expected_lambda": 0.043292520009
+        },
+        {
+          "time_s": 0.1,
+          "expected_vi_mps": 4.942261185918,
+          "expected_lambda": 0.042270593701
+        },
+        {
+          "time_s": 0.108333333333,
+          "expected_vi_mps": 4.841917000224,
+          "expected_lambda": 0.041412361377
+        },
+        {
+          "time_s": 0.116666666667,
+          "expected_vi_mps": 4.756925502188,
+          "expected_lambda": 0.040685438832
+        },
+        {
+          "time_s": 0.125,
+          "expected_vi_mps": 4.684260710912,
+          "expected_lambda": 0.040063945197
+        },
+        {
+          "time_s": 0.133333333333,
+          "expected_vi_mps": 4.621504166379,
+          "expected_lambda": 0.039527195661
+        }
+      ]
+    },
+    {
+      "name": "M_decreasing",
+      "kind": "source_seam_sweep",
+      "description": "Crossflow falls through the literal VRS cutoff M at z=-1.3, f=1.",
+      "duration_s": 0.133333333333,
+      "constants": {
+        "density_kg_m3": 1.225,
+        "radius_m": 0.7,
+        "velocity_floor_mps": 0.25,
+        "height_over_radius": -1.0,
+        "loss": 1.0,
+        "instability": 1.0,
+        "omega_rad_s": 167.02800941585735,
+        "effective_flow_mode": "fixed",
+        "fixed_effective_speed_mps": 4.0
+      },
+      "initial_vi_mps": 4.522190257074,
+      "profile": {
+        "interpolation": "linear",
+        "start_time_s": 0.0,
+        "end_time_s": 0.13333333333333333,
+        "start": {
+          "thrust_n": 80.4,
+          "climb_mps": -6.002267660821524,
+          "crossflow_mps": 4.475683223870966
+        },
+        "end": {
+          "thrust_n": 80.4,
+          "climb_mps": -6.002267660821524,
+          "crossflow_mps": 4.16787462588012
+        }
+      },
+      "event_splits": [
+        {
+          "time_s": 0.03873,
+          "control": "crossflow_mps",
+          "threshold_normalized": 0.95,
+          "boundary": "M",
+          "direction": "decreasing",
+          "left_limit_target_mps": 4.642053744613,
+          "right_limit_target_mps": 5.286995746057
+        }
+      ],
+      "samples": [
+        {
+          "time_s": 0.0,
+          "expected_vi_mps": 4.522190257074,
+          "expected_lambda": 0.038677775173
+        },
+        {
+          "time_s": 0.008333333333,
+          "expected_vi_mps": 4.524814742574,
+          "expected_lambda": 0.038700222097
+        },
+        {
+          "time_s": 0.016666666667,
+          "expected_vi_mps": 4.532013669123,
+          "expected_lambda": 0.038761793691
+        },
+        {
+          "time_s": 0.025,
+          "expected_vi_mps": 4.542929719047,
+          "expected_lambda": 0.038855157415
+        },
+        {
+          "time_s": 0.033333333333,
+          "expected_vi_mps": 4.55687812096,
+          "expected_lambda": 0.038974456499
+        },
+        {
+          "time_s": 0.041666666667,
+          "expected_vi_mps": 4.648304977271,
+          "expected_lambda": 0.039756419926
+        },
+        {
+          "time_s": 0.05,
+          "expected_vi_mps": 4.938687495816,
+          "expected_lambda": 0.042240028339
+        },
+        {
+          "time_s": 0.058333333333,
+          "expected_vi_mps": 5.250828960142,
+          "expected_lambda": 0.044909738522
+        },
+        {
+          "time_s": 0.066666666667,
+          "expected_vi_mps": 5.560290079801,
+          "expected_lambda": 0.047556524025
+        },
+        {
+          "time_s": 0.075,
+          "expected_vi_mps": 5.858214802077,
+          "expected_lambda": 0.050104640042
+        },
+        {
+          "time_s": 0.083333333333,
+          "expected_vi_mps": 6.141162920637,
+          "expected_lambda": 0.052524662883
+        },
+        {
+          "time_s": 0.091666666667,
+          "expected_vi_mps": 6.408168217373,
+          "expected_lambda": 0.054808328596
+        },
+        {
+          "time_s": 0.1,
+          "expected_vi_mps": 6.659488773058,
+          "expected_lambda": 0.056957844516
+        },
+        {
+          "time_s": 0.108333333333,
+          "expected_vi_mps": 6.895986770006,
+          "expected_lambda": 0.058980584789
+        },
+        {
+          "time_s": 0.116666666667,
+          "expected_vi_mps": 7.11879644866,
+          "expected_lambda": 0.060886250443
+        },
+        {
+          "time_s": 0.125,
+          "expected_vi_mps": 7.329140296942,
+          "expected_lambda": 0.062685297279
+        },
+        {
+          "time_s": 0.133333333333,
+          "expected_vi_mps": 7.528227040026,
+          "expected_lambda": 0.064388063384
+        }
+      ]
+    },
+    {
+      "name": "feedback_flow_ramp",
+      "kind": "feedback_flow_ramp",
+      "description": "Smooth climb/crossflow ramp exercises stage flow hypot(crossflow, vi + climb) in the lag time constant.",
+      "duration_s": 0.133333333333,
+      "constants": {
+        "density_kg_m3": 1.225,
+        "radius_m": 0.7,
+        "velocity_floor_mps": 0.25,
+        "height_over_radius": -1.0,
+        "loss": 1.0,
+        "instability": 0.6,
+        "omega_rad_s": 167.02800941585735,
+        "effective_flow_mode": "feedback",
+        "fixed_effective_speed_mps": 4.0
+      },
+      "initial_vi_mps": 4.496948284602,
+      "profile": {
+        "interpolation": "linear",
+        "start_time_s": 0.0,
+        "end_time_s": 0.13333333333333333,
+        "start": {
+          "thrust_n": 80.4,
+          "climb_mps": 0.0,
+          "crossflow_mps": 1.5
+        },
+        "end": {
+          "thrust_n": 80.4,
+          "climb_mps": 1.0,
+          "crossflow_mps": 2.8
+        }
+      },
+      "event_splits": [],
+      "samples": [
+        {
+          "time_s": 0.0,
+          "expected_vi_mps": 4.496948284602,
+          "expected_lambda": 0.038461883475
+        },
+        {
+          "time_s": 0.008333333333,
+          "expected_vi_mps": 4.491715741606,
+          "expected_lambda": 0.038417130134
+        },
+        {
+          "time_s": 0.016666666667,
+          "expected_vi_mps": 4.477512977919,
+          "expected_lambda": 0.038295655523
+        },
+        {
+          "time_s": 0.025,
+          "expected_vi_mps": 4.456276497458,
+          "expected_lambda": 0.038114022339
+        },
+        {
+          "time_s": 0.033333333333,
+          "expected_vi_mps": 4.42957363837,
+          "expected_lambda": 0.037885635844
+        },
+        {
+          "time_s": 0.041666666667,
+          "expected_vi_mps": 4.398656428325,
+          "expected_lambda": 0.037621204489
+        },
+        {
+          "time_s": 0.05,
+          "expected_vi_mps": 4.364515345669,
+          "expected_lambda": 0.03732919972
+        },
+        {
+          "time_s": 0.058333333333,
+          "expected_vi_mps": 4.327928439425,
+          "expected_lambda": 0.037016276103
+        },
+        {
+          "time_s": 0.066666666667,
+          "expected_vi_mps": 4.289503894354,
+          "expected_lambda": 0.036687635371
+        },
+        {
+          "time_s": 0.075,
+          "expected_vi_mps": 4.249715655544,
+          "expected_lambda": 0.036347331123
+        },
+        {
+          "time_s": 0.083333333333,
+          "expected_vi_mps": 4.208932531517,
+          "expected_lambda": 0.035998517736
+        },
+        {
+          "time_s": 0.091666666667,
+          "expected_vi_mps": 4.167441556196,
+          "expected_lambda": 0.035643650177
+        },
+        {
+          "time_s": 0.1,
+          "expected_vi_mps": 4.125466497308,
+          "expected_lambda": 0.035284642308
+        },
+        {
+          "time_s": 0.108333333333,
+          "expected_vi_mps": 4.083182371504,
+          "expected_lambda": 0.034922991024
+        },
+        {
+          "time_s": 0.116666666667,
+          "expected_vi_mps": 4.040726736416,
+          "expected_lambda": 0.034559872841
+        },
+        {
+          "time_s": 0.125,
+          "expected_vi_mps": 3.998208417731,
+          "expected_lambda": 0.034196218533
+        },
+        {
+          "time_s": 0.133333333333,
+          "expected_vi_mps": 3.955714216784,
+          "expected_lambda": 0.0338327705
+        }
+      ]
+    }
+  ]
+}
