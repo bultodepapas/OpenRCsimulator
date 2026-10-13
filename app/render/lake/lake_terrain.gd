@@ -134,7 +134,7 @@ static func _refine_water(a: Vector2, b: Vector2, c: Vector2, lake: Dictionary,
 	var p0 := Vector3(a.x, 0, a.y)
 	var p1 := Vector3(b.x, 0, b.y)
 	var p2 := Vector3(c.x, 0, c.y)
-	var ordered: Array[Vector2] = [a, c, b] if (p1 - p0).cross(p2 - p0).y > 0.0 else [a, b, c]
+	var ordered := PackedVector2Array([a, c, b] if (p1 - p0).cross(p2 - p0).y > 0.0 else [a, b, c])
 	for point: Vector2 in ordered:
 		var sample := Surface.sample_terrain_validated(lake, -point.y, point.x)
 		vertices.append(Vector3(point.x, 0, point.y))

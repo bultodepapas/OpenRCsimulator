@@ -12,6 +12,7 @@ const SceneryBodies = preload("res://render/landscape_upgrade/scenery_bodies.gd"
 const CrashCause = preload("res://render/crash/cause.gd")
 const Telemetry = preload("res://render/overlays/telemetry.gd")
 const GroundTerrain = preload("res://physics/ground_terrain.gd")
+const AirplaneBuilder = preload("res://render/airplane.gd")
 
 var flight: Node3D
 var wreck: Wreck
@@ -24,6 +25,8 @@ var impact_usec := 0
 var _fuel_kg := 0.0
 ## CR-22b: tagged energy per kind (inventory energy_source), kg.
 var energy_sources: Dictionary = {}
+## CR-09d1: inventory items as model-frame boxes {mass, center, size} for the wreck's section masses.
+var inventory_boxes: Array = []
 var _impact_point := Vector3.ZERO
 var _age := 0.0
 var _audio_enabled := true
@@ -57,6 +60,7 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(data_path))
 	if raw is Dictionary:
 		for item: Dictionary in raw.get("inventory",[]):
+			inventory_boxes.append(inventory_box(item, AirplaneBuilder.datum(str(flight.get("aircraft_id")))))
 			var kind := str(item.get("energy_source",""))
 			if not kind.is_empty():
 				energy_sources[kind] = float(energy_sources.get(kind, 0.0)) + maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
@@ -155,6 +159,7 @@ func _start() -> void:
 	report["tank_ruptured"] = int(report["class"]) == 4 or (int(report["class"]) == 3 and str(report.get("component_group","")) in ["fuselage","engine","propeller"] and float(report["estimated_energy_j"]) >= 600.0)
 	report["tank_rupture_kind"] = "estimated: C4, or C3 central impact >=600 J; uncalibrated"
 	report["tick"] = impact.tick
+	report["inventory_boxes"] = inventory_boxes
 	report["prop_broken"] = not flight.session.prop_strike.is_empty()
 	# CR-01e: why it happened, from the recorded history (card line and one log line).
 	var envelope: Dictionary = flight.session.aircraft.model.get("envelope", {})
@@ -244,6 +249,16 @@ func _record_sample() -> void:
 	history.append(CrashCause.sample(t, telemetry, s[RB.RATE], s[RB.RATE + 2], session.engine_running))
 	while not history.is_empty() and float(history[0].t) < t - CrashCause.HISTORY_S:
 		history.pop_front()
+
+
+## CR-09d1: one inventory item (le frame [x_aft, y_right, z_up] from the datum) as a model-frame box (+x right, +y up,
+## −z nose), with the same datum conversion as the CG (Frames.cg_in_model_frame).
+static func inventory_box(item: Dictionary, datum: Vector2) -> Dictionary:
+	var p: Array = item.get("position", {}).get("value", [0.0, 0.0, 0.0])
+	var size: Array = item.get("size", {}).get("value", [0.0, 0.0, 0.0])
+	return {mass = maxf(0.0, float(item.get("mass", {}).get("value", 0.0))),
+		center = Frames.cg_in_model_frame(PackedFloat64Array([float(p[0]), float(p[1]), float(p[2])]), datum.x, datum.y),
+		size = Vector3(absf(float(size[1])), absf(float(size[2])), absf(float(size[0])))}
 
 
 ## CR-03b: up to six distinct albedo colours of the airplane's own materials, most-used first, so crash chips look

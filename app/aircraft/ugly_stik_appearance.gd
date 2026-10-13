@@ -43,17 +43,80 @@ const DATA := {
 	},
 	"materials": {
 		"kind": "artistic_estimate",
-		"note": "Profiles in ugly_stik_finish.gd; roughness chosen by comparable captures, not measured BRDF. US-V09a: glossy film (roughness 0.2, specular 0.5)"
+		"note": "Profiles in ugly_stik_finish.gd; roughness chosen by comparable captures, not measured BRDF. US-V09a: glossy film (roughness 0.2, specular 0.5); US-V09b: film-over-structure normal map from film_structure"
 	},
 	"rasterization": "Godot SVG Image.load_svg_from_string from compiled source at atlas_size_px (artwork in a 1024 viewBox), mipmaps, linear anisotropic; same SVG checked in for editing/import comparison; no editor cache required at runtime",
-	"rib_hints": {
-		"kind": "artistic_estimate",
-		"pitch_m": 0.0508,
-		"opacity": 0.035,
-		"note": "Faint film-over-rib lines only; no claim of measured internal structure"
+	"film_structure": {
+		"kind": "plan_trace",
+		"source": "Jensen oz1253 sheet 2, bottom view of left wing, local 100 dpi raster (references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf); column/row darkness profiles 2026-10-13",
+		"method": "Rib centres in plan inches from the centre line; metres scale them so tip rib W5 equals geometry tip_start (factor 0.9797, the known scan-scale residual). Chord fractions use the drawing's leading edge to scallop tips, rescaled so its hinge line (0.907) equals geometry hinge_fraction.",
+		"rib_centres_plan_in": [
+			0.0,
+			1.88,
+			5.58,
+			9.22,
+			12.855,
+			16.48,
+			20.115,
+			23.75,
+			27.68
+		],
+		"rib_centres_m": [
+			0.0,
+			0.0468,
+			0.1389,
+			0.2294,
+			0.3199,
+			0.4101,
+			0.5005,
+			0.591,
+			0.6888
+		],
+		"rib_widths_m": [
+			0.00635,
+			0.00635,
+			0.003175,
+			0.003175,
+			0.003175,
+			0.003175,
+			0.003175,
+			0.003175,
+			0.00635
+		],
+		"rib_names": [
+			"W1",
+			"W2",
+			"W3",
+			"W3",
+			"W4",
+			"W4",
+			"W4",
+			"W4",
+			"W5"
+		],
+		"false_rib_width_m": 0.003175,
+		"false_ribs": "W6 midway between adjacent main ribs, leading edge to secondary spar",
+		"leading_edge_fraction": 0.03,
+		"secondary_spar_fraction": [
+			0.103,
+			0.117
+		],
+		"main_spar_fraction": [
+			0.292,
+			0.31
+		],
+		"trailing_sheet_front_fraction": 0.748,
+		"outboard_of_last_rib": "1/4 in sheet tip: flat",
+		"sag": {
+			"kind": "artistic_estimate",
+			"depth_m": 0.001,
+			"reference_bay_m": 0.09,
+			"law": "depth x (short side / reference)^2, sin x sin profile per open bay, film sags inward on both skins",
+			"note": "Normal map only; geometry, contacts and aerodynamics unchanged"
+		}
 	}
 }
 const RED := Color("#c8102e")
 const WHITE := Color("#f7f6f1")
 const BLACK := Color("#111216")
-const SVG_SOURCE := "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"2048\" height=\"2048\" viewBox=\"0 0 1024 1024\">\n<rect width=\"1024\" height=\"1024\" fill=\"#c8102e\"/>\n<rect x=\"49.1843\" y=\"0\" width=\"193.4715\" height=\"272\" fill=\"#111216\"/>\n<rect x=\"51.2000\" y=\"0\" width=\"189.4400\" height=\"272\" fill=\"#f7f6f1\"/>\n<path d=\"M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z\" transform=\"translate(145.9200 130.2400) scale(131.0236 143.3071)\" fill=\"#111216\"/>\n<rect x=\"781.3443\" y=\"0\" width=\"193.4715\" height=\"272\" fill=\"#111216\"/>\n<rect x=\"783.3600\" y=\"0\" width=\"189.4400\" height=\"272\" fill=\"#f7f6f1\"/>\n<path d=\"M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z\" transform=\"translate(878.0800 130.2400) scale(131.0236 143.3071)\" fill=\"#111216\"/>\n<path d=\"M 34.1333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 68.2667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 102.4000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 136.5333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 170.6667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 204.8000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 238.9333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 273.0667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 307.2000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 341.3333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 375.4667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 409.6000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 443.7333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 477.8667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 512.0000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 546.1333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 580.2667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 614.4000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 648.5333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 682.6667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 716.8000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 750.9333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 785.0667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 819.2000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 853.3333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 887.4667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 921.6000,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 955.7333,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<path d=\"M 989.8667,0 V 272\" stroke=\"#111216\" stroke-width=\"0.8\" opacity=\"0.035\"/>\n<rect x=\"16\" y=\"528\" width=\"480\" height=\"464\" fill=\"#f7f6f1\"/>\n<path d=\"M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z\" transform=\"translate(270.4516 765.0233) scale(171.9742 239.1070)\" fill=\"#111216\"/>\n<rect x=\"647.3455\" y=\"640.6667\" width=\"257.3091\" height=\"270.6667\" fill=\"#f7f6f1\"/>\n<path d=\"M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z\" transform=\"translate(776.0000 776.0000) scale(194.0364 177.8667)\" fill=\"#111216\"/>\n</svg>\n"
+const SVG_SOURCE := "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"2048\" height=\"2048\" viewBox=\"0 0 1024 1024\">\n<rect width=\"1024\" height=\"1024\" fill=\"#c8102e\"/>\n<rect x=\"49.1843\" y=\"0\" width=\"193.4715\" height=\"272\" fill=\"#111216\"/>\n<rect x=\"51.2000\" y=\"0\" width=\"189.4400\" height=\"272\" fill=\"#f7f6f1\"/>\n<path d=\"M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z\" transform=\"translate(145.9200 130.2400) scale(131.0236 143.3071)\" fill=\"#111216\"/>\n<rect x=\"781.3443\" y=\"0\" width=\"193.4715\" height=\"272\" fill=\"#111216\"/>\n<rect x=\"783.3600\" y=\"0\" width=\"189.4400\" height=\"272\" fill=\"#f7f6f1\"/>\n<path d=\"M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z\" transform=\"translate(878.0800 130.2400) scale(131.0236 143.3071)\" fill=\"#111216\"/>\n<rect x=\"16\" y=\"528\" width=\"480\" height=\"464\" fill=\"#f7f6f1\"/>\n<path d=\"M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z\" transform=\"translate(270.4516 765.0233) scale(171.9742 239.1070)\" fill=\"#111216\"/>\n<rect x=\"647.3455\" y=\"640.6667\" width=\"257.3091\" height=\"270.6667\" fill=\"#f7f6f1\"/>\n<path d=\"M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z\" transform=\"translate(776.0000 776.0000) scale(194.0364 177.8667)\" fill=\"#111216\"/>\n</svg>\n"

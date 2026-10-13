@@ -35,6 +35,21 @@ const SURFACE_TRANSFER: Dictionary = {
 	"lamp": 0.45,
 	"parked_aircraft": 0.30,
 }
+# CR-09d2: how much of a wreck part's impact speed comes back as rebound, per surface. Presentation estimates: turf and
+# soil absorb, paving returns a little; foliage and lamps barely, structures like paving.
+const SURFACE_RESTITUTION: Dictionary = {
+	"grass": 0.05, "mown": 0.06, "mown_grass": 0.06, "rough": 0.08, "dirt": 0.08, "runway": 0.18, "asphalt": 0.18,
+	"concrete": 0.22, "water": 0.0, "unknown": 0.10, "tree_trunk": 0.15, "tree_foliage": 0.02, "building": 0.20,
+	"vehicle": 0.18, "lamp": 0.10, "parked_aircraft": 0.10,
+}
+
+## CR-09d2: the wreck's ground contact for a surface id: {friction, bounce} from the abrasion and restitution tables.
+static func surface_contact(surface_id: String) -> Dictionary:
+	var surface := surface_id.strip_edges().to_lower()
+	return {friction = float(SLIDE_FRICTION.get(surface, SLIDE_FRICTION["unknown"])),
+		bounce = float(SURFACE_RESTITUTION.get(surface, SURFACE_RESTITUTION["unknown"]))}
+
+
 # Airframe-on-surface sliding friction coefficients for the abrasion channel.
 # Estimates (not tyre data, not measured); friction work is mu * normal impulse * slide speed.
 const SLIDE_FRICTION: Dictionary = {

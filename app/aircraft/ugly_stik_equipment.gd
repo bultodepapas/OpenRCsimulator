@@ -405,6 +405,32 @@ static func _crown(st: SurfaceTool, center: Vector3) -> void:
 			_quad(st, center + radial * ri + Vector3.UP * 0.004, center + radial * ro + Vector3.UP * 0.004, center + radial * ro + Vector3.UP * 0.0075, center + radial * ri + Vector3.UP * 0.0075, tangent)
 
 
+# Carburettor barrel axis point and lever tip at the arm's neutral pose (model space, metres; estimated, US-V03).
+# US-V09c: the lever sits on the left (−X) end of the barrel, away from the exhaust header, fuel and pressure lines on
+# +X; on +X its pushrod could not pass between the cooling fins and the header (verify_controls clearance probe).
+const THROTTLE_SIDE := -1.0
+
+static func throttle_arm_pivot() -> Vector3:
+	var e: Dictionary = D.equipment
+	return Vector3(THROTTLE_SIDE * 0.006, float(e.shaft_y) + 0.017, (float(e.firewall_z) + float(e.prop_z)) * 0.5 - 0.013)
+
+
+static func throttle_arm_tip() -> Vector3:
+	var e: Dictionary = D.equipment
+	return Vector3(THROTTLE_SIDE * 0.019, float(e.shaft_y) + 0.031, (float(e.firewall_z) + float(e.prop_z)) * 0.5 - 0.030)
+
+
+static func _add_throttle_arm(root: Node3D, pivot: Vector3, tip: Vector3) -> void:
+	var hinge := Node3D.new()
+	hinge.name = "carburetor_throttle_arm_hinge"
+	hinge.position = pivot
+	root.add_child(hinge)
+	var buckets := _buckets([["bright", Color("bdc2c5"), "machined_aluminum"], ["steel", STEEL_COLOR, "steel"]])
+	_bar(buckets.bright, Vector3.ZERO, tip, 0.003, 0.0018)
+	_engine_cylinder(buckets.steel, tip - Vector3(0.0015, 0, 0), tip + Vector3(0.0015, 0, 0), 0.0018, 0.0018, 6)
+	_flush(hinge, "carburetor_throttle_arm", buckets)
+
+
 static func _add_engine(root: Node3D) -> void:
 	var e: Dictionary = D.equipment
 	var engine_z: float = (float(e.firewall_z) + float(e.prop_z)) * 0.5
@@ -497,12 +523,10 @@ static func _add_engine(root: Node3D) -> void:
 	_turned(bright, carb_lower, intake_axis, [Vector2(0.008, 0.0067), Vector2(intake_length - 0.004, 0.0070), Vector2(intake_length - 0.001, 0.008), Vector2(intake_length, 0.008), Vector2(intake_length, 0.0055), Vector2(intake_length - 0.003, 0.0048), Vector2(0.011, 0.0042)], 48)
 	_engine_cylinder(black, carb_lower + intake_axis * 0.0105, carb_lower + intake_axis * 0.011, 0.0043, 0.0043, 32)
 	_engine_cylinder(cast, Vector3(-0.009, shaft_y + 0.017, engine_z - 0.013), Vector3(0.009, shaft_y + 0.017, engine_z - 0.013), 0.006, 0.006, 32)
-	# Throttle lever tip is exposed for the separate control-linkage pass.
-	var throttle_pivot := Vector3(0.006, shaft_y + 0.017, engine_z - 0.013)
-	var throttle_tip := Vector3(0.019, shaft_y + 0.031, engine_z - 0.030)
+	# US-V09c: the throttle lever turns with the carburettor barrel about +X; the controls pass drives its node.
+	var throttle_pivot := throttle_arm_pivot()
 	_engine_cylinder(steel, throttle_pivot - Vector3(0.003, 0, 0), throttle_pivot + Vector3(0.003, 0, 0), 0.0034, 0.0034, 8)
-	_bar(bright, throttle_pivot, throttle_tip, 0.003, 0.0018)
-	_engine_cylinder(steel, throttle_tip - Vector3(0.0015, 0, 0), throttle_tip + Vector3(0.0015, 0, 0), 0.0018, 0.0018, 6)
+	_add_throttle_arm(root, throttle_pivot, throttle_arm_tip() - throttle_pivot)
 	var needle := Vector3(0.029, shaft_y - 0.025, engine_z + 0.044)
 	_box(dark, needle, Vector3(0.009, 0.007, 0.014))
 	_engine_cylinder(steel, needle + Vector3(0.004, 0, 0), needle + Vector3(0.010, 0, 0), 0.0021, 0.0021, 6)
@@ -644,6 +668,10 @@ static func _prop_blades(st: SurfaceTool, radius: float) -> void:
 				lower_station.append(center + chord_axis * chord_offset + normal_axis * (camber - half_thickness))
 			upper.append(upper_station)
 			lower.append(lower_station)
+		# US-V09d grain UV: U runs tip to tip through the hub (one blank), V across the chord on both faces.
+		# V is the absolute chord offset (widest chord = 0..1), so straight grain runs out at the edges toward the tip.
+		var widest: float = chord_scales.max()
+		var uv := func(i: int, j: int) -> Vector2: return Vector2(0.5 + sign * 0.5 * radial_fractions[i], 0.5 + (chord_samples[j] - 0.5) * chord_scales[i] / widest)
 		for i in range(radial_fractions.size() - 1):
 			var upper_a: Array = upper[i]
 			var upper_b: Array = upper[i + 1]
@@ -653,19 +681,33 @@ static func _prop_blades(st: SurfaceTool, radius: float) -> void:
 				var leading_to_trailing: Vector3 = (upper_a[j + 1] - upper_a[j]).normalized()
 				var outward_span: Vector3 = Vector3(0, sign, 0)
 				var surface_normal: Vector3 = leading_to_trailing.cross(outward_span).normalized()
-				_quad(st, upper_a[j], upper_b[j], upper_b[j + 1], upper_a[j + 1], surface_normal)
-				_quad(st, lower_a[j + 1], lower_b[j + 1], lower_b[j], lower_a[j], -surface_normal)
+				_uv_quad(st, [upper_a[j], upper_b[j], upper_b[j + 1], upper_a[j + 1]], [uv.call(i, j), uv.call(i + 1, j), uv.call(i + 1, j + 1), uv.call(i, j + 1)], surface_normal)
+				_uv_quad(st, [lower_a[j + 1], lower_b[j + 1], lower_b[j], lower_a[j]], [uv.call(i, j + 1), uv.call(i + 1, j + 1), uv.call(i + 1, j), uv.call(i, j)], -surface_normal)
 			# Close the leading edge, trailing edge and blade tip for a readable section silhouette.
 			var outer_sign: float = 1.0 if i == radial_fractions.size() - 2 else 0.0
 			for j in [0, chord_samples.size() - 1]:
 				var desired: Vector3 = Vector3(-1 if j == 0 else 1, 0, 0)
-				_quad(st, upper_a[j], upper_b[j], lower_b[j], lower_a[j], desired)
+				_uv_quad(st, [upper_a[j], upper_b[j], lower_b[j], lower_a[j]], [uv.call(i, j), uv.call(i + 1, j), uv.call(i + 1, j), uv.call(i, j)], desired)
 			if outer_sign > 0.0:
 				for j in range(chord_samples.size() - 1):
-					_quad(st, upper_b[j], upper_b[j + 1], lower_b[j + 1], lower_b[j], Vector3(0, sign, 0))
+					_uv_quad(st, [upper_b[j], upper_b[j + 1], lower_b[j + 1], lower_b[j]], [uv.call(i + 1, j), uv.call(i + 1, j + 1), uv.call(i + 1, j + 1), uv.call(i + 1, j)], Vector3(0, sign, 0))
 		# The hidden root closure sits within the metal hub envelope.
 		for j in range(chord_samples.size() - 1):
-			_quad(st, upper[0][j + 1], upper[0][j], lower[0][j], lower[0][j + 1], Vector3(0, -sign, 0))
+			_uv_quad(st, [upper[0][j + 1], upper[0][j], lower[0][j], lower[0][j + 1]], [uv.call(0, j + 1), uv.call(0, j), uv.call(0, j), uv.call(0, j + 1)], Vector3(0, -sign, 0))
+
+
+# Quad with per-vertex UVs; winding follows `outward` like _triangle (normals are regenerated afterwards).
+static func _uv_quad(st: SurfaceTool, points: Array, uvs: Array, outward: Vector3) -> void:
+	for tri in [[0, 1, 2], [0, 2, 3]]:
+		var a: Vector3 = points[tri[0]]
+		var b: Vector3 = points[tri[1]]
+		var c: Vector3 = points[tri[2]]
+		var order := [tri[0], tri[1], tri[2]]
+		if (b - a).cross(c - a).dot(outward) > 0.0: order = [tri[0], tri[2], tri[1]]
+		for k in order:
+			st.set_normal(outward.normalized())
+			st.set_uv(uvs[k])
+			st.add_vertex(points[k])
 
 
 static func _wheel_lathe(st: SurfaceTool, radius: float, width: float) -> void:
@@ -815,7 +857,9 @@ static func build(root: Node3D, gear: Dictionary) -> Node3D:
 	propeller.position = Vector3(0, float(e.shaft_y), float(e.prop_z))
 	root.add_child(propeller)
 
-	var blades := _surface(WOOD_COLOR, "wood")
+	var blades := SurfaceTool.new()
+	blades.begin(Mesh.PRIMITIVE_TRIANGLES)
+	blades.set_material(Finish.propeller_wood(WOOD_COLOR))
 	_prop_blades(blades, float(e.prop_diameter) * 0.5)
 	# US-V09a: one smooth group per blade surface; the zero-thickness leading and trailing edges round off.
 	blades.generate_normals()

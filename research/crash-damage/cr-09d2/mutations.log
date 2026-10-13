@@ -1,0 +1,7 @@
+KILLED   wreck ground ignores the surface: 6 failing checks (e.g. grass sets the wreck ground material)
+KILLED   rebound fixed at 0.12: 2 failing checks (e.g. concrete rebound limiter returns its restitution  0.480 m/s)
+KILLED   ground material never applied: 4 failing checks (e.g. grass sets the wreck ground material)
+KILLED   glow fuel flashes: 1 failing checks (e.g. glow fuel never flashes)
+KILLED   flash lasts forever: 1 failing checks (e.g. the flash is over, the fire burns on  8.00)
+KILLED   flash ignores the fuel mass: 2 failing checks (e.g. a kerosene fire starts with a flash of the Roberts size  0.50 m)
+KILLED   no fireball particles: 1 failing checks (e.g. ignition throws a fireball)

@@ -1,0 +1,7 @@
+KILLED   inventory ignored (fixed shares): 7 failing checks (e.g. a section without items gets the floor mass from the core  { "core": 0.85714286565781, "horizontal_tail": 0.14285714924335 })
+KILLED   no custom centre of mass: 4 failing checks (e.g. jensen-das-ugly-stik-60 intact wreck's centre of mass is the aircraft CG  (0.0, -0.039957, 0.234711) vs (0.0, -0.005, 0.0059) (231.5 mm))
+KILLED   overlap ignores the box size: 1 failing checks (e.g. a box half inside a section puts half its mass there)
+KILLED   section floor creates mass: 1 failing checks (e.g. a section without items gets the floor mass from the core  { "core": 1.0, "horizontal_tail": 0.01499999966472 })
+KILLED   union box instead of member boxes: 2 failing checks (e.g. jensen-das-ugly-stik-60 gear section does not swallow tank and battery  0.749 vs gear items 0.195)
+KILLED   model frame axes swapped: 2 failing checks (e.g. jensen-das-ugly-stik-60 wing halves carry real wing mass)
+KILLED   director passes no inventory: 2 failing checks (e.g. production crash hands the inventory to the wreck)

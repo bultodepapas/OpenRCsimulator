@@ -5,6 +5,7 @@ extends Node3D
 signal secondary_impact(position: Vector3, strength: float)
 
 const SectionSplitter = preload("res://render/crash/section_splitter.gd")
+const Severity = preload("res://render/crash/severity.gd")
 
 const MAX_BODIES := 24
 const DEBRIS_LAYER := 1 << 19
@@ -106,6 +107,21 @@ var _run_generation := 0
 var _release_kinds: Array = []
 var _hidden_members: Array = [] # E3d2: propeller pieces hidden because the blades broke before the crash
 var _prop_broken := false
+## Settling damping (s⁻¹). Physically too strong in the air (~22 m/s² at 15 m/s), but CR-09d2 found that 0.3 / 1.0 lets
+## the box colliders tunnel through the ground plane and keeps pieces from sleeping within 8 s; lowering it waits for
+## CR-09d3 collision shapes. Surface friction and bounce still differ per surface.
+const AIR_LINEAR_DAMP := 1.5
+const AIR_ANGULAR_DAMP := 2.0
+## CR-09d2: the ground's contact for this crash (surface under the impact): friction and bounce.
+var _ground_contact := {friction = 0.45, bounce = 0.10}
+## CR-09d1: section masses and mass moments (model frame) from the aircraft inventory, {kind: {mass, moment}} with
+## "core" for the remainder; empty → the fixed GROUP_MASS_WEIGHTS shares.
+var _section_masses := {}
+const MIN_SECTION_MASS_KG := 0.015
+## Inventory positions are estimates to a few centimetres: a section's mesh box is thickened to at least this on every
+## axis (thin skins: stab, fin, wing) plus 1 cm, so a thin part catches its item without fattening bulky parts.
+const INVENTORY_MIN_THICKNESS_M := 0.06
+const INVENTORY_MARGIN_M := 0.01
 var _contact_model := Vector3.ZERO
 var _has_contact := false
 var _rng := RandomNumberGenerator.new()
@@ -180,6 +196,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		scatter_budget = 0.0
 	var component_hint := _component_description(severity).to_lower()
 	_prop_broken = bool(severity.get("prop_broken", false))
+	_set_ground_surface(str(severity.get("surface", "unknown")))
 	_release_kinds = _release_kinds_for(class_level, component_hint)
 	_has_contact = severity.get("contact_point_world") is Vector3 and _finite_vector(severity.contact_point_world) == severity.contact_point_world
 	_contact_model = pose.affine_inverse() * Vector3(severity.contact_point_world) if _has_contact else Vector3.ZERO
@@ -204,7 +221,9 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	_set_shape_bounds(0, core_bounds)
 	var core_center: Vector3 = _groups[0].center
 	_core_body = _bodies[0]
-	_core_body.mass = maxf(total_mass * (_group_weight("core") + float(_groups[0].undetached_weight)) / maxf(total_weight, 0.0001), 0.015)
+	_section_masses = _inventory_masses(severity.get("inventory_boxes", []), total_mass)
+	_core_body.mass = _core_mass(total_mass, total_weight)
+	_set_center_of_mass(_core_body, _core_moment(), _core_body.mass, core_center)
 	_core_body.global_transform = pose * Transform3D(Basis.IDENTITY, core_center)
 	_twin.reparent(_core_body, false)
 	_twin.transform = Transform3D(Basis.IDENTITY, -core_center)
@@ -222,9 +241,9 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 			body.collision_layer = 0
 			body.collision_mask = 0
 			continue
-		var mass_share: float = _group_weight(String(group.kind)) / maxf(total_weight, 0.0001)
-		body.mass = maxf(total_mass * mass_share, 0.015)
+		body.mass = _section_mass(String(group.kind), total_mass, total_weight)
 		group.mass = body.mass
+		_set_center_of_mass(body, _section_moment(String(group.kind)), body.mass, Vector3(group.center))
 		group.due_s = float(GROUP_DELAYS_S.get(group.kind, 0.10))
 		if _component_matches(String(group.kind), component_hint):
 			group.due_s = 0.0
@@ -359,6 +378,10 @@ func reset() -> void:
 			member.visible = true
 	_hidden_members.clear()
 	_prop_broken = false
+	_section_masses = {}
+	for body in _bodies:
+		if body != null:
+			body.center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_AUTO
 	_has_contact = false
 	_contact_model = Vector3.ZERO
 
@@ -453,8 +476,8 @@ func _ensure_pool() -> void:
 		body.name = "WreckPool_%02d" % _bodies.size()
 		body.mass = 0.1
 		body.gravity_scale = 1.0
-		body.linear_damp = 1.5
-		body.angular_damp = 2.0
+		body.linear_damp = AIR_LINEAR_DAMP
+		body.angular_damp = AIR_ANGULAR_DAMP
 		body.can_sleep = true
 		body.continuous_cd = true
 		body.contact_monitor = true
@@ -531,14 +554,20 @@ func _collect_fragment_groups(node: Node) -> void:
 	}]
 	for group: Dictionary in _groups:
 		var aggregate := {"has": false, "bounds": AABB()}
+		var member_bounds: Array = [] # CR-09d1: each member's own box (a nose leg and a main leg are not one block)
 		for member: Node3D in group.members:
 			_collect_mesh_bounds(member, _twin, [], aggregate)
+			var own := {"has": false, "bounds": AABB()}
+			_collect_mesh_bounds(member, _twin, [], own)
+			if bool(own.has):
+				member_bounds.append(own.bounds)
 		if not bool(aggregate.has):
 			continue
 		var bounds: AABB = aggregate.bounds
 		records.append({
 			"kind": group.kind,
 			"members": group.members,
+			"member_bounds": member_bounds,
 			"bounds": bounds,
 			"center": bounds.get_center(),
 			"due_s": float(GROUP_DELAYS_S.get(group.kind, 0.1)),
@@ -656,8 +685,8 @@ func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transfor
 	body.freeze = _paused
 	body.sleeping = false
 	body.can_sleep = true
-	body.linear_damp = 1.5
-	body.angular_damp = 2.0
+	body.linear_damp = AIR_LINEAR_DAMP
+	body.angular_damp = AIR_ANGULAR_DAMP
 	var center: Vector3 = group.center
 	var world_offset: Vector3 = aircraft_pose.basis * (center - cg_model)
 	var point_velocity: Vector3 = inherited_velocity + inherited_angular.cross(world_offset) if is_core else inherited_velocity
@@ -690,6 +719,138 @@ func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transfor
 		group.activated = true
 		_active_body_count += 1
 	_groups[0 if is_core else _group_index_for_body(body)] = group
+
+
+## CR-09d1: distributes each inventory box {mass, center, size} (model frame) over the section bounds by per-axis overlap
+## (a zero-size axis counts as inside or outside); what no section holds stays with the core. Every section keeps at
+## least MIN_SECTION_MASS_KG, taken from the core, so the total is conserved exactly. Empty input → {}.
+func _inventory_masses(boxes: Variant, total_mass: float) -> Dictionary:
+	if not boxes is Array or (boxes as Array).is_empty():
+		return {}
+	var out := {"core": {mass = 0.0, moment = Vector3.ZERO}}
+	var sum := 0.0
+	for box: Dictionary in boxes:
+		var mass := float(box.get("mass", 0.0))
+		var center: Vector3 = box.get("center", Vector3.ZERO)
+		var size: Vector3 = box.get("size", Vector3.ZERO)
+		if not is_finite(mass) or mass <= 0.0:
+			continue
+		sum += mass
+		var fractions := {}
+		var assigned := 0.0
+		for i in range(1, _groups.size()):
+			var f := 0.0
+			for member_box: AABB in _groups[i].get("member_bounds", [_groups[i].bounds]):
+				f += _overlap_fraction(center, size, _inventory_region(member_box))
+			f = minf(f, 1.0)
+			if f > 0.0:
+				fractions[String(_groups[i].kind)] = f
+				assigned += f
+		var scale := 1.0 / assigned if assigned > 1.0 else 1.0 # overlapping section bounds never create mass
+		for kind: String in fractions:
+			_add_mass(out, kind, mass * float(fractions[kind]) * scale, center)
+		_add_mass(out, "core", mass * (1.0 - minf(assigned, 1.0)), center)
+	if not is_finite(sum) or sum <= 0.0:
+		return {}
+	# Scale to the simulation's mass (the inventory defines it; guard rounding) and apply the per-section floor.
+	var k := total_mass / sum
+	for kind: String in out:
+		out[kind].mass *= k
+		out[kind].moment *= k
+	for i in range(1, _groups.size()):
+		var kind := String(_groups[i].kind)
+		if not out.has(kind):
+			out[kind] = {mass = 0.0, moment = Vector3.ZERO}
+		var missing := MIN_SECTION_MASS_KG - float(out[kind].mass)
+		if missing > 0.0:
+			out[kind].mass += missing
+			out[kind].moment += Vector3(_groups[i].center) * missing
+			out.core.mass -= missing
+			out.core.moment -= Vector3(_groups[i].center) * missing
+	return out
+
+
+static func _inventory_region(box: AABB) -> AABB:
+	var grown := box
+	for axis in 3:
+		var pad := maxf(INVENTORY_MARGIN_M, 0.5 * (INVENTORY_MIN_THICKNESS_M - box.size[axis]))
+		grown.position[axis] -= pad
+		grown.size[axis] += 2.0 * pad
+	return grown
+
+
+static func _overlap_fraction(center: Vector3, size: Vector3, bounds: AABB) -> float:
+	var fraction := 1.0
+	for axis in 3:
+		var lo := center[axis] - 0.5 * size[axis]
+		var hi := center[axis] + 0.5 * size[axis]
+		var b_lo := bounds.position[axis]
+		var b_hi := bounds.end[axis]
+		if size[axis] <= 1.0e-6:
+			fraction *= 1.0 if center[axis] >= b_lo and center[axis] <= b_hi else 0.0
+		else:
+			fraction *= clampf((minf(hi, b_hi) - maxf(lo, b_lo)) / size[axis], 0.0, 1.0)
+	return fraction
+
+
+static func _add_mass(out: Dictionary, kind: String, mass: float, at: Vector3) -> void:
+	if mass <= 0.0:
+		return
+	if not out.has(kind):
+		out[kind] = {mass = 0.0, moment = Vector3.ZERO}
+	out[kind].mass += mass
+	out[kind].moment += at * mass
+
+
+func _section_mass(kind: String, total_mass: float, total_weight: float) -> float:
+	if _section_masses.has(kind):
+		return maxf(float(_section_masses[kind].mass), MIN_SECTION_MASS_KG)
+	return maxf(total_mass * _group_weight(kind) / maxf(total_weight, 0.0001), MIN_SECTION_MASS_KG)
+
+
+func _core_mass(total_mass: float, total_weight: float) -> float:
+	if _section_masses.is_empty():
+		return maxf(total_mass * (_group_weight("core") + float(_groups[0].undetached_weight)) / maxf(total_weight, 0.0001), MIN_SECTION_MASS_KG)
+	var mass := float(_section_masses.core.mass)
+	for i in range(1, _groups.size()):
+		if not bool(_groups[i].get("detached", false)):
+			mass += _section_mass(String(_groups[i].kind), total_mass, total_weight)
+	return maxf(mass, MIN_SECTION_MASS_KG)
+
+
+func _core_moment() -> Variant:
+	if _section_masses.is_empty():
+		return null
+	var moment: Vector3 = _section_masses.core.moment
+	for i in range(1, _groups.size()):
+		var kind := String(_groups[i].kind)
+		if not bool(_groups[i].get("detached", false)) and _section_masses.has(kind):
+			moment += Vector3(_section_masses[kind].moment)
+	return moment
+
+
+func _section_moment(kind: String) -> Variant:
+	return Vector3(_section_masses[kind].moment) if _section_masses.has(kind) else null
+
+
+## CR-09d1: a body's centre of mass at its inventory moment (model frame), relative to the body origin `origin`.
+static func _set_center_of_mass(body: RigidBody3D, moment: Variant, mass: float, origin: Vector3) -> void:
+	if moment == null or mass <= 0.0:
+		body.center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_AUTO
+		return
+	body.center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
+	body.center_of_mass = Vector3(moment) / mass - origin
+
+
+## CR-09d2: the wreck slides and rebounds on the surface it hit (grass absorbs, paving returns a little).
+func _set_ground_surface(surface: String) -> void:
+	_ground_contact = Severity.surface_contact(surface)
+	if _ground == null:
+		return
+	var material := PhysicsMaterial.new()
+	material.friction = float(_ground_contact.friction)
+	material.bounce = float(_ground_contact.bounce)
+	_ground.physics_material_override = material
 
 
 func _group_index_for_body(body: RigidBody3D) -> int:
@@ -920,7 +1081,7 @@ func _limit_ground_rebound(body: RigidBody3D) -> void:
 	if body.global_position.y < clear_y:
 		body.global_position += Vector3.UP * minf(clear_y - body.global_position.y, 0.35)
 	if body.global_position.y <= vertical_extent + 0.15 and body.linear_velocity.y < 0.0:
-		body.linear_velocity.y = minf(-body.linear_velocity.y * 0.12, 5.0)
+		body.linear_velocity.y = minf(-body.linear_velocity.y * float(_ground_contact.bounce), 5.0)
 
 
 func _on_body_entered(other: Node, fragment: RigidBody3D) -> void:
@@ -982,7 +1143,7 @@ func _release_pending_c3_contact_group(generation: int) -> void:
 	if _c3_contact_exposure_index_j + 0.0001 < threshold:
 		return
 	var group_weight := _group_weight(kind)
-	var release_mass := _last_mass_kg * group_weight / maxf(_last_group_weight_total, 0.0001)
+	var release_mass := _section_mass(kind, _last_mass_kg, _last_group_weight_total)
 	if not is_finite(release_mass) or release_mass <= 0.0 or release_mass >= _core_body.mass:
 		return
 	# Transfer the group's estimated mass out of the core; no new scatter impulse is added.

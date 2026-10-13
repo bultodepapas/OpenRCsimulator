@@ -111,6 +111,7 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 		var on_hinge := absf(p.y - gap_offset) < 1e-7 and absf(q.y - gap_offset) < 1e-7
 		has_gap = has_gap or on_hinge
 		_quad(gap if on_hinge else st, a, b, c, d, n, "white" if textured else "red" if on_hinge else "")
+	if textured: st.generate_tangents()
 	var mesh := st.commit()
 	if has_gap: gap.commit(mesh)
 	return _instance(label, mesh, parent)
@@ -170,6 +171,7 @@ static func _fuselage(root: Node3D) -> void:
 		center /= float(count)
 		for j in count:
 			_triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1 if end == 0 else 1), "red")
+	st.generate_tangents()
 	_instance("fuselage", st.commit(), root)
 
 
@@ -195,6 +197,25 @@ static func _section_normal(section: Array, index: int, face_normal: Vector3) ->
 	var b := Vector3(0, after[0] - point[0], point[1] - after[1]).normalized()
 	# Preserve the hinge's sharp closing face; smooth only adjacent skin segments.
 	return (a + b).normalized() if a.dot(b) > 0.35 else face_normal
+
+
+# US-V09a follow-up: a skin segment narrower than BEVEL_SHADE_MAX_CHORD that ends on a hinge-gap face (the traced
+# 4 mm, 25° bevel ahead of the aileron) is sub-pixel at flight distance; with glossy film its sun glint aliased into a
+# dashed white line. It keeps its geometry but shades with the adjacent skin segment's face normal. ZERO = not a bevel.
+const BEVEL_SHADE_MAX_CHORD := 0.03
+
+static func _narrow_bevel_normal(section: Array, i: int, j: int) -> Vector3:
+	var n := section.size()
+	var a: Array = section[i]
+	var b: Array = section[j]
+	if is_equal_approx(float(a[0]), float(b[0])) or Vector2(b[0] - a[0], b[1] - a[1]).length() > BEVEL_SHADE_MAX_CHORD: return Vector3.ZERO
+	var neighbour: Array
+	if is_equal_approx(float(b[0]), float(section[(j + 1) % n][0])): neighbour = [section[(i - 1 + n) % n], a]
+	elif is_equal_approx(float(a[0]), float(section[(i - 1 + n) % n][0])): neighbour = [b, section[(j + 1) % n]]
+	else: return Vector3.ZERO
+	var p: Array = neighbour[0]
+	var q: Array = neighbour[1]
+	return Vector3(0, q[0] - p[0], p[1] - q[1]).normalized()
 
 
 static func _wing_quad(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, d: Vector3, outward: Vector3, normal_a: Vector3, normal_b: Vector3, uv_offset: Vector3) -> void:
@@ -228,7 +249,13 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 			var q := Vector3(0, section[j][1] * D.wing.chord, section[j][0] * D.wing.chord + z_offset)
 			var n := Vector3(0, q.z - p.z, p.y - q.y).normalized()
 			var closing := is_equal_approx(float(section[i][0]), float(section[j][0]))
-			_wing_quad(gap if closing else st, _wing_vertex(lo, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[j], z_offset, span_offset, chord_origin), _wing_vertex(lo, section[j], z_offset, span_offset, chord_origin), n, _section_normal(section, i, n), _section_normal(section, j, n), uv_offset)
+			var na := _section_normal(section, i, n)
+			var nb := _section_normal(section, j, n)
+			var bevel := _narrow_bevel_normal(section, i, j)
+			if bevel != Vector3.ZERO:
+				na = bevel
+				nb = bevel
+			_wing_quad(gap if closing else st, _wing_vertex(lo, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[j], z_offset, span_offset, chord_origin), _wing_vertex(lo, section[j], z_offset, span_offset, chord_origin), n, na, nb, uv_offset)
 	var polygon := PackedVector2Array()
 	for p in section: polygon.append(Vector2(p[0] * D.wing.chord + z_offset, p[1] * D.wing.chord))
 	var triangles := Geometry2D.triangulate_polygon(polygon)
@@ -242,6 +269,7 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 				st.set_normal(n)
 				st.set_uv(Finish.uv(point + uv_offset, "wing"))
 				st.add_vertex(point)
+	st.generate_tangents() # US-V09b: the covering's film-structure normal map needs a tangent frame
 	var mesh := st.commit()
 	var gap_vertices: Variant = gap.commit_to_arrays()[Mesh.ARRAY_VERTEX]
 	if gap_vertices != null and not gap_vertices.is_empty(): gap.commit(mesh)

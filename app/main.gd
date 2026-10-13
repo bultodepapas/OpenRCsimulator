@@ -1156,6 +1156,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
+	AirplaneBuilder.apply_throttle(_airplane, float(c.get("throttle", 0.0))) # US-V09c carburettor lever, visual only
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting and _shadow_mode == "sun" else 1.0
 	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0

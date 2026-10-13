@@ -107,6 +107,108 @@ func _check_engine_mesh(airplane: Dictionary) -> Dictionary:
 	return {"intake_depths_m": intake_depths, "crown_floor_y": slot_floors, "crown_tooth_y": tooth_tops, "crown_gaps_m": crown_gaps, "outlet_depth_m": outlet_depth}
 
 
+# US-V09b: the normal map needs tangents along dP/du. Without generate_tangents() Godot fills an arbitrary orthonormal
+# frame, so orthogonality alone proves nothing; compare each triangle's UV-derived tangent with the stored one.
+func _tangents_follow_uv(arrays: Array) -> bool:
+	var positions: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var tangents: Variant = arrays[Mesh.ARRAY_TANGENT]
+	if tangents == null or tangents.size() != positions.size() * 4 or arrays[Mesh.ARRAY_INDEX] != null: return false
+	var measured := 0
+	var aligned := 0
+	for i in range(0, positions.size(), 3):
+		var e1 := positions[i + 1] - positions[i]
+		var e2 := positions[i + 2] - positions[i]
+		var d1 := uv[i + 1] - uv[i]
+		var d2 := uv[i + 2] - uv[i]
+		var det := d1.x * d2.y - d2.x * d1.y
+		if absf(det) < 1e-12: continue # caps and edges that map to one atlas texel or line
+		var t := (e1 * d2.y - e2 * d1.y) / det
+		t -= normals[i] * normals[i].dot(t)
+		if t.length() < 1e-9: continue
+		measured += 1
+		var stored := Vector3(tangents[i * 4], tangents[i * 4 + 1], tangents[i * 4 + 2])
+		if stored.dot(t.normalized()) > 0.9: aligned += 1
+	return measured > 0 and aligned >= int(ceil(0.98 * measured))
+
+
+# US-V09d: varnished wooden blades with grain; the texture only darkens (0.79..1) and stays close to 1 on average so
+# the propeller blur disc, which copies albedo_color, keeps the blade colour within a few percent.
+func _check_propeller_wood(airplane: Dictionary) -> void:
+	var blades := airplane.propeller.find_child("propeller_blades", true, false) as MeshInstance3D
+	check("propeller blades exist", blades != null)
+	if blades == null: return
+	var mat := blades.mesh.surface_get_material(0) as StandardMaterial3D
+	check("propeller uses the varnished grain material", mat != null and mat.albedo_texture == Finish.grain() and mat.roughness < 0.4)
+	var image := Finish.grain().get_image()
+	var lo := 1.0
+	var hi := 0.0
+	var total := 0.0
+	var count := 0
+	for y in range(0, image.get_height(), 4):
+		for x in range(0, image.get_width(), 4):
+			var r := image.get_pixel(x, y).r
+			lo = minf(lo, r)
+			hi = maxf(hi, r)
+			total += r
+			count += 1
+	var mean := total / count
+	check("propeller grain only darkens within 0.79..1 (min %.3f max %.3f)" % [lo, hi], lo >= 0.78 and hi <= 1.0 and hi - lo > 0.05)
+	check("propeller grain mean stays near the measured blade albedo (%.3f)" % mean, mean > 0.86)
+	var uv: PackedVector2Array = blades.mesh.surface_get_arrays(0)[Mesh.ARRAY_TEX_UV]
+	var vertices: PackedVector3Array = blades.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var valid := uv.size() == vertices.size() and uv.size() > 0
+	for i in uv.size():
+		valid = valid and uv[i].x >= 0.0 and uv[i].x <= 1.0 and uv[i].y >= 0.0 and uv[i].y <= 1.0
+		# One blank: U follows the blade's spanwise position (left blade U < 0.5, right blade U > 0.5).
+		valid = valid and (uv[i].x - 0.5) * vertices[i].y >= -1e-6
+	check("propeller blade UVs run tip to tip through the hub", valid)
+
+
+# US-V09b: film sag between plan-traced ribs/spars. Samples the generated normal map in atlas pixels.
+func _check_film_structure(skin: StandardMaterial3D) -> void:
+	check("covering uses the film-structure normal map", skin.normal_enabled and skin.normal_texture == Finish.normal_map() and is_equal_approx(skin.normal_scale, 1.0 / Finish.NORMAL_MAP_GAIN))
+	check("hinge gaps have no film structure", not Finish.hinge_gap().normal_enabled)
+	var image := Finish.normal_map().get_image()
+	var size := Finish.NORMAL_MAP_SIZE
+	check("film normal map size and mip chain", image.get_size() == Vector2i(size, size) and image.has_mipmaps())
+	var f: Dictionary = Finish.Appearance.DATA.film_structure
+	var span := float(Geometry.DATA.wing.span)
+	var column := func(x: float) -> int: return int(floor((x / span + 0.5) * size))
+	var row := func(fraction: float) -> int: return int(floor((16.0 + 224.0 * fraction) * size / 1024.0))
+	var tilt := func(x: float, fraction: float) -> Vector3:
+		var c := image.get_pixel(column.call(x), row.call(fraction))
+		return Vector3(c.r * 2.0 - 1.0, c.g * 2.0 - 1.0, c.b * 2.0 - 1.0) / Finish.NORMAL_MAP_GAIN
+	var flat := 1.5 / 255.0 / Finish.NORMAL_MAP_GAIN
+	var fin_flat := true
+	for pixel in [Vector2i(256, 760), Vector2i(776, 776), Vector2i(512, 1000)]:
+		var c := image.get_pixel(pixel.x * size / 1024, pixel.y * size / 1024)
+		fin_flat = fin_flat and c.r8 == 128 and c.g8 == 128 and c.b8 == 255
+	check("film is flat on the fin and dorsal atlas regions", fin_flat)
+	var lo := float(f.rib_centres_m[2])
+	var hi := float(f.rib_centres_m[3])
+	var on_rib := true
+	for x in [lo, -lo, hi, -hi]:
+		on_rib = on_rib and absf(tilt.call(x, 0.5).x) < flat
+	check("film is supported on the traced ribs", on_rib)
+	check("film is flat on the trailing-edge sheet and the sheet tip", absf(tilt.call(0.18, 0.85).x) < flat and absf(tilt.call(0.73, 0.5).x) < flat)
+	var inboard: Vector3 = tilt.call(lo + 0.25 * (hi - lo), 0.5)
+	var outboard: Vector3 = tilt.call(lo + 0.75 * (hi - lo), 0.5)
+	var mirrored: Vector3 = tilt.call(-(lo + 0.25 * (hi - lo)), 0.5)
+	# Concave sag: the inboard wall tilts outboard (+x on the right wing), mirrored on the left wing.
+	check("film sags inward between ribs (concave, mirrored) %s %s %s" % [inboard, outboard, mirrored], inboard.x > 2.0 * flat and outboard.x < -2.0 * flat and mirrored.x < -2.0 * flat and absf(inboard.x + mirrored.x) <= 2.0 * flat)
+	var forward: Vector3 = tilt.call(0.5 * (lo + hi), 0.35)
+	var aft: Vector3 = tilt.call(0.5 * (lo + hi), 0.70)
+	# Green points toward image-up (leading edge): the forward wall of the dent tilts aft (green < 0).
+	check("film sags inward between spars (concave chordwise) %s %s" % [forward, aft], forward.y < -flat and aft.y > flat)
+	var slope := 0.0
+	for x in range(size):
+		var c := image.get_pixel(x, row.call(0.5))
+		slope = maxf(slope, Vector2(c.r * 2.0 - 1.0, c.g * 2.0 - 1.0).length() / Finish.NORMAL_MAP_GAIN)
+	check("film sag stays subtle (max tilt %.2f < 3 degrees)" % rad_to_deg(asin(minf(slope, 1.0))), slope > 0.0 and slope < sin(deg_to_rad(3.0)))
+
+
 func run(airplane: Dictionary) -> Dictionary:
 	var skin := Finish.covering()
 	check("atlas loaded", skin.albedo_texture != null)
@@ -140,6 +242,7 @@ func run(airplane: Dictionary) -> Dictionary:
 			var arrays := instance.mesh.surface_get_arrays(surface)
 			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 			var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+			check("film normal map tangents follow the atlas U direction " + String(instance.name), _tangents_follow_uv(arrays))
 			check("UV vertex cardinality " + String(instance.name), vertices.size() == uv.size())
 			if vertices.size() != uv.size(): continue
 			var valid := true
@@ -168,6 +271,8 @@ func run(airplane: Dictionary) -> Dictionary:
 	a.material_override.roughness = 0.99
 	check("inspection override stays local", b.get_active_material(0) == skin and a.get_active_material(0) != skin and skin.roughness != 0.99)
 	check("same color different finishes stay distinct", Finish.material(Color.GRAY, "rubber") != Finish.material(Color.GRAY, "steel"))
+	_check_film_structure(skin)
+	_check_propeller_wood(airplane)
 	var engine_probe_report := _check_engine_mesh(airplane)
 	a.free()
 	b.free()

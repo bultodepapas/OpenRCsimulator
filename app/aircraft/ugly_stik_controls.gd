@@ -5,6 +5,7 @@ extends RefCounted
 
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Finish := preload("res://aircraft/ugly_stik_finish.gd")
+const Equipment := preload("res://aircraft/ugly_stik_equipment.gd")
 const D: Dictionary = Geometry.DATA
 
 const PLASTIC := Color("24272b")
@@ -47,7 +48,7 @@ static func build(root: Node3D, hinges: Dictionary) -> Dictionary:
 	_build_wing_mechanism(root, assembly, service, linkages, hinges, "right", mechanisms, servos, failures)
 	_build_tail_mechanism(root, assembly, service, linkages, hinges, "elevator", mechanisms, servos, failures)
 	_build_tail_mechanism(root, assembly, service, linkages, hinges, "rudder", mechanisms, servos, failures)
-	_build_throttle_approximation(root, service, linkages, servos)
+	_build_throttle_mechanism(root, service, linkages, mechanisms, servos, failures)
 	_batch_static_meshes(service, "maintenance_static")
 	_batch_static_meshes(linkages, "linkage_static")
 	var controls := {
@@ -359,26 +360,64 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 	_update_rod(mechanisms[surface_name].rods[0], neutral_endpoint, horn_root, normal)
 
 
-static func _build_throttle_approximation(root: Node3D, service: Node3D, linkages: Node3D, servos: Dictionary) -> void:
-	# The geometry API contains no throttle hinge/command. This is a quiet, neutral
-	# installation cue only; the adapter may animate it later if it supplies throttle.
+# US-V09c: the carburettor lever (Equipment, node carburetor_throttle_arm_hinge) turns about +X with the throttle
+# command; a direct pushrod of constant length closes it to the gas servo, like the tail mechanisms. The servo station,
+# 12 mm arm and 60-degree barrel travel are estimates for a generic .61 installation, not measured.
+const THROTTLE_TRAVEL_DEG := 60.0
+const THROTTLE_SERVO_RADIUS_M := 0.012
+
+static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: Node3D, mechanisms: Dictionary, servos: Dictionary, failures: Array[String]) -> void:
+	var hinge := root.find_child("carburetor_throttle_arm_hinge", false, false) as Node3D
+	if hinge == null:
+		failures.append("missing carburetor throttle arm")
+		return
 	var e: Dictionary = D.equipment
-	var engine_z := (float(e.firewall_z) + float(e.prop_z)) * 0.5
-	var carburetor_point := Vector3(0.019, float(e.shaft_y) + 0.031, engine_z - 0.030)
+	var horn_local: Vector3 = Equipment.throttle_arm_tip() - Equipment.throttle_arm_pivot()
+	var carburetor_point := _point_in_root(root, hinge, horn_local)
 	var servo_center := Vector3(0, -0.020, float(e.firewall_z) + 0.035)
-	var servo_pivot := servo_center + Vector3(0.012, 0.004, 0.010)
+	var servo_pivot := servo_center + Vector3(Equipment.THROTTLE_SIDE * 0.012, 0.004, 0.010)
 	var normal := Vector3.DOWN
-	var u := Vector3.RIGHT
+	var u := Vector3.RIGHT * Equipment.THROTTLE_SIDE
 	var v := Vector3.BACK
 	_add_servo(service, "throttle_servo", servo_center, Basis.IDENTITY, SERVO_BODY_SIZE, servo_pivot, normal, u, Vector3(0, 0, -0.030), false)
-	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo_center, "animated": false, "reference": "static estimated gas servo; no throttle command in the hinge API"}
-	var endpoint := servo_pivot + u * 0.010
+	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo_center, "animated": true, "reference": "estimated gas servo station; drives the carburettor lever from the throttle command"}
+	var endpoint := servo_pivot + u * THROTTLE_SERVO_RADIUS_M
 	var rod_length := endpoint.distance_to(carburetor_point)
-	var rod := _new_rod(linkages, "throttle_pushrod_static", rod_length, 0.0008, STEEL, "steel")
-	var start_joint := _new_joint(linkages, "throttle_servo_clevis_static", endpoint, normal)
-	var end_joint := _new_joint(linkages, "throttle_carburetor_clevis_estimated", carburetor_point, normal)
-	_update_rod({"node": rod, "start_joint": start_joint, "end_joint": end_joint, "target_length_m": rod_length, "current_length_m": rod_length, "length_error_m": 0.0}, endpoint, carburetor_point, normal)
+	var rod := _new_rod(linkages, "throttle_pushrod", rod_length, 0.0008, STEEL, "steel")
+	var start_joint := _new_joint(linkages, "throttle_servo_clevis", endpoint, normal)
+	var end_joint := _new_joint(linkages, "throttle_carburetor_clevis", carburetor_point, normal)
+	var arm := _new_arm(service, "throttle_servo_arm", servo_pivot, u, v, normal, 0.0, THROTTLE_SERVO_RADIUS_M, 0.003)
+	mechanisms["throttle"] = {
+		"kind": "direct",
+		"surface": "throttle",
+		"hinge": hinge,
+		"horn_local": horn_local,
+		"plane_u": u,
+		"plane_v": v,
+		"plane_normal": normal,
+		"servo_pivot": servo_pivot,
+		"servo_radius_m": THROTTLE_SERVO_RADIUS_M,
+		"last_servo_angle": 0.0,
+		"servo_arm": arm,
+		"rods": [
+			{"name": "throttle_pushrod", "node": rod, "start_joint": start_joint, "end_joint": end_joint, "target_length_m": rod_length, "current_length_m": rod_length, "length_error_m": 0.0},
+		],
+		"solved": true,
+		"closure_error_m": 0.0,
+		"estimated_geometry": true,
+	}
+	_update_arm(arm, servo_pivot, endpoint, u, v, normal, 0.0)
+	_update_rod(mechanisms.throttle.rods[0], endpoint, carburetor_point, normal)
 	_add_cable_route(service, "throttle_servo_lead", [servo_center + Vector3(-0.010, 0.002, 0.004), servo_center + Vector3(-0.018, 0.002, -0.010), Vector3(0, -0.018, -0.08)])
+
+
+## Throttle command 0..1 → carburettor lever angle; the neutral built pose is half throttle. Updates every linkage.
+static func set_throttle(controls: Dictionary, throttle: float) -> void:
+	if not controls.get("ok", false) or not controls.mechanisms.has("throttle"):
+		return
+	var hinge: Node3D = controls.mechanisms.throttle.hinge
+	hinge.rotation.x = deg_to_rad((clampf(throttle, 0.0, 1.0) - 0.5) * THROTTLE_TRAVEL_DEG)
+	update(controls)
 
 
 static func _add_control_horn(hinge: Node3D, label: String, endpoint_local: Vector3, vertical: bool, normal: Vector3) -> void:
