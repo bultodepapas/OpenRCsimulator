@@ -1,6 +1,8 @@
 extends SceneTree
 
 const Store = preload("res://workshop/store.gd")
+const Dependencies = preload("res://workshop/dependencies.gd")
+const WorkshopCompiler = preload("res://workshop/compiler.gd")
 const BASE_PATH: String = "res://data/aircraft/jensen_ugly_stik_60.json"
 
 var _checks: int = 0
@@ -14,6 +16,7 @@ func _initialize() -> void:
 	var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(BASE_PATH)
 	var recipe: Dictionary = _recipe()
 	_check("base fixture read", not base_bytes.is_empty())
+	_test_dependency_manifests()
 	var saved: Dictionary = Store.save_variant("Store test Stik", "jensen-das-ugly-stik-60", base_bytes, recipe, "", _root)
 	_check("first variant save succeeds", bool(saved["ok"]), str(saved["errors"]))
 	if not bool(saved["ok"]):
@@ -23,10 +26,12 @@ func _initialize() -> void:
 	var id: String = str(first["id"])
 	_check("generated ID is a lowercase UUID", id.length() == 36 and id[14] == "4")
 	_check("revision starts at one", int(first["revision"]) == 1)
+	_check("new variants pin the current compiler version", str(first.get("compiler_version", "")) == WorkshopCompiler.COMPILER_VERSION)
 	_check("exact base bytes are returned", first["base_bytes"] == base_bytes)
 	_check("base SHA-256 covers exact source bytes", str(first["base_sha256"]) == _sha256(base_bytes))
 	_check("parsed base retains its aircraft identity", str(first["base"].get("id", "")) == "jensen-das-ugly-stik-60")
 	_check("catalog descriptor is pinned with the exact source snapshot", typeof(first.get("workshop_descriptor", null)) == TYPE_DICTIONARY and str(first["workshop_descriptor"].get("base_sha256", "")) == _sha256(base_bytes))
+	_check("dependency manifest is pinned with the variant", typeof(first.get("dependencies", null)) == TYPE_DICTIONARY and str(first["dependencies"].get("format", "")) == "openrc-aircraft-workshop-dependencies v1")
 	_check("variant list discovers the saved item", _contains_variant(Store.list_variants(_root), id))
 
 	var renamed_recipe: Dictionary = _recipe()
@@ -36,10 +41,17 @@ func _initialize() -> void:
 	_check("same-base save creates a new revision", bool(renamed["ok"]), str(renamed["errors"]))
 	if bool(renamed["ok"]):
 		_check("revision increments monotonically", int(renamed["variant"]["revision"]) == 2)
+		_check("same-ID revisions retain the pinned compiler version", str(renamed["variant"].get("compiler_version", "")) == str(first["compiler_version"]))
 		_check("rename changes display metadata", str(renamed["variant"]["name"]) == "Renamed Stik")
 		_check("revision still pins original base bytes", renamed["variant"]["base_bytes"] == base_bytes)
 		_check("later revisions retain the original Workshop descriptor", renamed["variant"].get("workshop_descriptor", {}) == first.get("workshop_descriptor", {}))
+		_check("later revisions retain the original dependency manifest", renamed["variant"].get("dependencies", {}) == first.get("dependencies", {}))
 		_check("load returns latest saved revision", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
+		var changed_dependencies: Dictionary = first["dependencies"].duplicate(true)
+		changed_dependencies["files"][Dependencies.WHEEL_PROFILES_PATH] = "0".repeat(64)
+		var rebased: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], changed_dependencies)
+		_check("a same-ID revision cannot silently replace dependency hashes", not bool(rebased["ok"]) and _has_error(rebased["errors"], "dependencies are immutable"), str(rebased["errors"]))
+		_check("rejected dependency replacement leaves saved revision untouched", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
 
 	var edited_base: Dictionary = first["base"].duplicate(true)
 	edited_base["description"] = str(edited_base["description"]) + " changed"
@@ -83,6 +95,34 @@ func _test_root_guard() -> void:
 	_check("store writes are limited to user data", not bool(rejected["ok"]) and not rejected["errors"].is_empty())
 
 
+func _test_dependency_manifests() -> void:
+	var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(BASE_PATH)
+	var base: Dictionary = JSON.parse_string(base_bytes.get_string_from_utf8())
+	var captured: Dictionary = Dependencies.capture(base)
+	_check("dependency capture succeeds for a non-glow catalog aircraft", bool(captured["ok"]), str(captured["errors"]))
+	if bool(captured["ok"]):
+		var files: Dictionary = captured["manifest"]["files"]
+		var wheel_bytes: PackedByteArray = FileAccess.get_file_as_bytes(Dependencies.WHEEL_PROFILES_PATH)
+		_check("wheel-profile manifest hashes the exact bundled bytes", str(files.get(Dependencies.WHEEL_PROFILES_PATH, "")) == _sha256(wheel_bytes))
+		_check("captured manifest verifies unchanged source bytes", bool(Dependencies.verify(base, captured["manifest"])["ok"]))
+		var altered: Dictionary = captured["manifest"].duplicate(true)
+		altered["files"][Dependencies.WHEEL_PROFILES_PATH] = "0".repeat(64)
+		var stale: Dictionary = Dependencies.verify(base, altered)
+		_check("changed dependency hash refuses use with create-new guidance", not bool(stale["ok"]) and _has_error(stale["errors"], "create a new variant"), str(stale["errors"]))
+	var glow_path: String = "res://data/aircraft/stik_glow_55ax_2t.json"
+	var glow_bytes: PackedByteArray = FileAccess.get_file_as_bytes(glow_path)
+	var glow_base: Dictionary = JSON.parse_string(glow_bytes.get_string_from_utf8())
+	var glow_capture: Dictionary = Dependencies.capture(glow_base)
+	_check("glow dependency capture succeeds", bool(glow_capture["ok"]), str(glow_capture["errors"]))
+	if bool(glow_capture["ok"]):
+		var glow_files: Dictionary = glow_capture["manifest"]["files"]
+		_check("glow manifest pins wheel, installation and profile files", glow_files.size() == 3 and glow_files.has(Dependencies.WHEEL_PROFILES_PATH) and glow_files.has("res://data/glow/stik_55ax_2t.json") and glow_files.has("res://data/glow/os_max_55ax_candidate.json"), str(glow_files.keys()))
+	var unsafe_base: Dictionary = glow_base.duplicate(true)
+	unsafe_base["propulsion"]["engine"]["glow_installation"] = "res://data/glow/../stik_55ax_2t.json"
+	var unsafe: Dictionary = Dependencies.capture(unsafe_base)
+	_check("glow dependency path traversal is rejected", not bool(unsafe["ok"]) and _has_error(unsafe["errors"], "flat bundled"), str(unsafe["errors"]))
+
+
 func _test_manifest_recovery(id: String) -> void:
 	var manifest_path: String = ProjectSettings.globalize_path(_root + "/" + id + "/manifest.json")
 	var backup_path: String = manifest_path + ".bak"
@@ -122,6 +162,7 @@ func _test_persisted_integrity(id: String) -> void:
 	_check("restore valid hash fixture", _write_file(record_path, original))
 	var restored_hash: Dictionary = Store.load_variant(id, _root)
 	_check("restored hash loads again", bool(restored_hash["ok"]), str(restored_hash["errors"]))
+	_check("loaded variant exposes its pinned compiler version", str(restored_hash.get("variant", {}).get("compiler_version", "")) == WorkshopCompiler.COMPILER_VERSION)
 	var restored_record: Dictionary = JSON.parse_string(original.get_string_from_utf8())
 	restored_record["version"] = 99
 	var unknown_version: PackedByteArray = (JSON.stringify(restored_record, "\t", true, true) + "\n").to_utf8_buffer()
@@ -129,6 +170,24 @@ func _test_persisted_integrity(id: String) -> void:
 	var rejected_version: Dictionary = Store.load_variant(id, _root)
 	_check("unknown persisted schema version is rejected", not bool(rejected_version["ok"]) and _has_error(rejected_version["errors"], "version"), str(rejected_version["errors"]))
 	_check("restore valid schema fixture", _write_file(record_path, original))
+	var old_compiler_record: Dictionary = JSON.parse_string(original.get_string_from_utf8())
+	old_compiler_record["compiler_version"] = "openrc-aircraft-workshop-legacy-compiler-0"
+	var old_compiler_bytes: PackedByteArray = (JSON.stringify(old_compiler_record, "\t", true, true) + "\n").to_utf8_buffer()
+	_check("older compiler-version fixture writes", _write_file(record_path, old_compiler_bytes))
+	var old_compiler_load: Dictionary = Store.load_variant(id, _root)
+	_check("older pinned compiler version remains loadable", bool(old_compiler_load["ok"]) and str(old_compiler_load["variant"].get("compiler_version", "")) == "openrc-aircraft-workshop-legacy-compiler-0", str(old_compiler_load["errors"]))
+	if bool(old_compiler_load["ok"]):
+		var old_variant: Dictionary = old_compiler_load["variant"]
+		var old_compiler_save: Dictionary = Store.save_variant(str(old_variant["name"]), str(old_variant["base_id"]), old_variant["base_bytes"], old_variant["recipe"], id, _root, old_variant.get("workshop_descriptor", {}), old_variant.get("dependencies", {}))
+		_check("same-ID save refuses to change an older compiler pin", not bool(old_compiler_save["ok"]) and _has_error(old_compiler_save["errors"], "create a new variant"), str(old_compiler_save["errors"]))
+		_check("refused compiler change leaves the stored revision untouched", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
+	var empty_compiler_record: Dictionary = JSON.parse_string(original.get_string_from_utf8())
+	empty_compiler_record["compiler_version"] = ""
+	var empty_compiler_bytes: PackedByteArray = (JSON.stringify(empty_compiler_record, "\t", true, true) + "\n").to_utf8_buffer()
+	_check("empty compiler-version fixture writes", _write_file(record_path, empty_compiler_bytes))
+	var empty_compiler_load: Dictionary = Store.load_variant(id, _root)
+	_check("empty compiler versions are rejected", not bool(empty_compiler_load["ok"]) and _has_error(empty_compiler_load["errors"], "compiler version"), str(empty_compiler_load["errors"]))
+	_check("restore valid compiler-version fixture", _write_file(record_path, original))
 	var descriptor_tamper: Dictionary = JSON.parse_string(original.get_string_from_utf8())
 	if typeof(descriptor_tamper.get("workshop_descriptor", null)) == TYPE_DICTIONARY:
 		descriptor_tamper["workshop_descriptor"]["base_sha256"] = "0".repeat(64)

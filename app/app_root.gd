@@ -431,6 +431,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		candidate.queue_free()
 		if previous != null:
 			add_child(previous)
+			previous._camera.make_current()
 		if _workshop_home_detached:
 			add_child(home_scene)
 			home_scene.camera.make_current()
@@ -442,7 +443,8 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	while screens.top() != null:
 		var node: Node = screens.top()
 		var id: String = "workshop" if node == editor else ("home" if node == home else "pause")
-		_workshop_screens.push_front({id = id, node = screens.pop(false, false)})
+		var opener: Control = ScreenStack._surface(node).return_focus
+		_workshop_screens.push_front({id = id, node = screens.pop(false, false), opener = opener})
 	flight = candidate
 	screens.set_session(flight.session)
 	_keyboard_reader = flight.session.read_raw
@@ -476,7 +478,7 @@ func _return_to_workshop() -> void:
 	var restored: Array[Dictionary] = _workshop_screens
 	_workshop_screens = []
 	for entry: Dictionary in restored:
-		screens.push(entry.id, entry.node)
+		screens.push(entry.id, entry.node, entry.opener if is_instance_valid(entry.opener) else null)
 
 
 func _exit_tree() -> void:
@@ -677,6 +679,13 @@ func end_flight() -> void:
 func quit_app() -> void:
 	if flight != null and not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press Quit again to quit without it."):
 		return
+	if is_instance_valid(_workshop_previous_flight) and _workshop_previous_flight.recorder != null \
+		and _workshop_previous_flight.recorder.recording:
+		var err: Error = _workshop_previous_flight.recorder.stop()
+		if err != OK:
+			if pause_menu != null:
+				pause_menu.set_note(tr("Could not save the flight trace (error %d). Press Quit again to quit without it.") % err)
+			return
 	get_tree().quit()
 
 

@@ -268,7 +268,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					if VegetationPlacement.handles(prefab):
 						var plant := VegetationPlacement.spec(prefab, pl.seed)
 						var plant_xf := ImportedVegetation.fit_to_height(plant.asset_id, plant.height, xf)
-						ImportedVegetation.queue(vegetation_batches, plant.asset_id, plant_xf, pl.seed, damage_id)
+						var tone := 0.90 + 0.10 * Palette.hash01(pl.seed, 834)
+						var tint := Color(tone, minf(1.0, tone + 0.035), tone, 1.0)
+						ImportedVegetation.queue(vegetation_batches, plant.asset_id, plant_xf, pl.seed, damage_id, tint)
 						vegetation_triangles += int(plant.triangles)
 					elif Population.handles(prefab):
 						var foot_height := SupportSurfaces.height_at(pl.north, pl.east, support_surfaces) if prefab.begins_with("person_") else 0.0

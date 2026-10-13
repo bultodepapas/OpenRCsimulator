@@ -38,6 +38,10 @@ python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --che
 python3 "$HERE/../research/aircraft-standardization/migrate.py" --check-known
 python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
 
+echo "== AE-01: generated Workshop descriptors and exact-byte checkout bindings"
+python3 "$HERE/../research/aircraft-editor/build_descriptors.py" --check
+python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"
+
 echo "== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current"
 python3 "$HERE/../research/glow-engines/build_profiles.py" --check
 python3 "$HERE/../research/glow-engines/build_installations.py" --check
@@ -115,7 +119,7 @@ for t in "$HERE"/tests/test_*.gd; do
   if [ "$(basename "$t")" = "test_landing_maneuver.gd" ]; then test_timeout=180; fi
   # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
   case "$(basename "$t")" in
-    test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd) test_timeout=600 ;;
+    test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd) test_timeout=600 ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"
   # Godot reports runtime script errors without failing the run; treat any as a failure.

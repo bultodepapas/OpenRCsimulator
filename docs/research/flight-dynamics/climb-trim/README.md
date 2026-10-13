@@ -88,6 +88,31 @@ The replay comparison changes initial speed, all solved trims and starting throt
 
 Verification: 22 power-trim helper checks; 14 selected-start checks covering equilibrium, fixed trim, restart, reload, atmosphere, late profile selection and unsupported-aircraft refusal; 36 existing start-choice checks; 92 checkpoint checks; unchanged observer checkpoint parity. The final real Home/Fly test passes all 87 checks, including the new selection, persistence, launch, restart and unsupported-aircraft checks. A stale process first encountered a concurrently changed scenery catalog; a fresh run resolved that error. The test now navigates to End by its focus identity rather than a fixed number of rows, and verifies that a field without runway support still allows both airborne choices. Existing UI teardown ObjectDB warnings remain. The fleet pilot-trim run passed the original aircraft but failed its exact ten-second equilibrium assertion for both newly added finite-fuel glow variants; that run is not a passing full-fleet qualification. Full WSL suite was not run. [Focused verification record](half-power-verification.json).
 
+## Shared-code audit and tail-selector correction (2026-10-13)
+
+The owner rejected the start-profile change as a diagnosis and requested a deeper shared-code investigation. Three adversarial reviews covered aerodynamic loads/regime selection, rigid-body/integration/propulsion state, and Godot/input/lifecycle. This pass keeps aircraft parameters and generated data unchanged.
+
+**Confirmed defect:** `Aero.loads` supplied lagged wing CL and ground-effect factors to the force laws, but omitted them from `local_flow_weight`. The selector consequently assessed a different horizontal-tail flow from the one producing the force. Its documented attached-flow limit is 8°, with transition completed at 12° for the Stik fixture. Two bounded prescribed-flow counterexamples isolate the missing inputs:
+
+| Case | Tail angle used by old selector | Tail angle used by force law | Required local-model weight |
+| --- | ---: | ---: | ---: |
+| 15 m/s, alpha ramp 7.8° to 0° over 11 ticks, elevator 12.605° up, settled initial downwash | −6.839° | −9.086° | 0.18097 instead of 0 |
+| Ground height/span 0.05, alpha 7.8°, neutral elevator | 5.432° | 8.600° | Nonzero instead of 0 |
+
+These are selector-contract failures, not evidence of a naturally flown maneuver or tail stall at 12°. The correction passes the same downwash state and ground factors into the selector and uses the same horizontal-tail angle law. Calls omitting both retain the existing static trim policy. No extra pitching moment, automatic elevator, CG adjustment or new aircraft coefficient is introduced. The focused downwash and ground-effect tests cover the counterexamples and force-path wiring.
+
+Other independent checks:
+
+- Seven flyable aircraft, 400 seeded synthetic states each: quaternion-sign, common heading/wind rotation, common aircraft/wind velocity offset and stage-air reuse. Explicit downwash and ground queries are included. Maximum scaled discrepancy is 1.18e-13; sign and stage-air comparisons are exact. [Results](shared-code-invariants.json).
+- 1,000 rigid-body coordinate-basis changes, transforming inertia and rotor momentum too: maximum derivative residual 2.28e-13; angular power-identity residual 9.95e-14.
+- Five propulsion configurations, 0.5 s throttle transients at 120/240/480/960 Hz: all complete without faults and RPM mirrors match exactly. Body endpoint discrepancies decrease with refinement. The battery 4S RPM error is slightly nonmonotonic at tiny absolute errors; no blanket RK4-order claim is made for the coupled sampled system.
+- Actual SceneTree callbacks at 15/30/60/144 FPS produce the same serialized state after 240 ticks and the same 0.1 throttle increase over 48 keyboard callbacks. At 15 FPS wall time stretches as expected from the 12-step catch-up cap. Focus-loss and radio-recovery tests pass; injecting a new key after directly invoking only the Simulation focus notification was rejected as an invalid reproduction of the real application path.
+- Rigid-body (15), integrator (9), RK-stage-time (22), continuous-state (42), coupled-shaft (43), turbine-continuous (46), electric event-localization (2,946), glow-session (132), input-latency (533), UI-pause (33) and radio E2E (40) checks pass. After the selector correction, checkpoint checks (92) and all four existing golden flights also pass. Golden references were not re-recorded.
+
+The coordinate/force review used the [JSBSim frame definitions](https://jsbsim-team.github.io/jsbsim-reference-manual/user/concepts/frames-of-reference/) and [force/moment implementation](https://jsbsim-team.github.io/jsbsim/classJSBSim_1_1FGAerodynamics.html). The tail-flow review used [NASA-CR-2774](https://ntrs.nasa.gov/citations/19770013083), which discusses predicting the flow reaching the horizontal tail; it supplies no new Stik coefficients. Godot's [callback priorities](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-property-process-physics-priority), [fixed-tick/catch-up contract](https://docs.godotengine.org/en/stable/classes/class_engine.html#class-engine-property-max-physics-steps-per-frame) and [packed-array reference semantics](https://docs.godotengine.org/en/stable/classes/class_packedfloat64array.html) informed the engine-boundary checks. Flight remains the custom float64 solver, not Godot's rigid-body solver.
+
+These are native Windows software checks in a concurrently edited checkout. Full WSL qualification and physical validation were not performed. Some scene teardown checks emit existing ObjectDB leak warnings; they are not treated as a cause of pitch motion.
+
 ## Options and chosen improvement
 
 - Reducing lift, changing CG/incidence or adding a universal nose-down moment has no supporting reproduction and would disturb the verified equilibrium. Rejected.

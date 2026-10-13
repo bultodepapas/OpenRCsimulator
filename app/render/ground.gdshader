@@ -90,7 +90,6 @@ uniform float wear = 0.45;            // touchdown wear weight, 10-30 m in from 
 varying vec3 world_pos;
 // LU-25: yield the exact validated bank footprint to the real basin geometry.
 uniform int lake_mask_mode = 0; // 0 ordinary field, 1 outside bank, 2 inside bank
-uniform bool lake_terrain = false;
 uniform int lake_bank_count = 0;
 uniform vec2 lake_bank_points[64];
 uniform vec4 lake_bank_bounds = vec4(0.0);
@@ -260,12 +259,6 @@ vec3 lobe_term(vec3 d) {
 
 void fragment() {
 	vec3 col = rough_grass_colour(world_pos.xz);
-	if (lake_terrain) {
-		float earth = smoothstep(-5.0, -0.7, UV.x);
-		vec3 soil = mix(vec3(0.14, 0.105, 0.065), vec3(0.065, 0.075, 0.045), smoothstep(-1.5, 0.8, UV.x));
-		soil *= 0.88 + 0.24 * clamp(col.g * 3.0, 0.0, 1.0);
-		col = mix(col, soil, earth);
-	}
 	// Evaluate derivatives before the terrain branch; suppress subpixel relief and skip all wave work beyond 80 m.
 	vec2 footprint = fwidth(world_pos.xz);
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;

@@ -56,7 +56,9 @@ def installation(two, diameter=13, pitch=6):
                     'diameter_m': q(diameter*.0254,'m'), 'pitch_m':q(pitch*.0254,'m'),
                     'chord_m':q(.0211364169120926*diameter/12 if two else .030*diameter/14,'m',
                                 'estimated', 'Conditional APC12x7 10330rpm fit at assumed 1.225kg/m3; transferred c/D for other diameters; NITRO-2T dossier' if two else EST+'; independent broad-blade 14x6 surrogate, c/D transfer to 13x6'), 'blades':q(2.),
-                    'lift_slope':q(5.5,'1/rad'), 'cd0':q(.022), 'induced_drag':q(.06),
+                    'lift_slope':q(5.5,'1/rad'), 'cd0':q(.022),
+                    'induced_drag':q(.06 if two else .075, source=EST if two else
+                        EST+'; loss coefficient constrained to exceed ideal actuator-disk power by at least 5% over positive-thrust forward flow for both assumed geometries; not measured induced flow; NITRO-02 momentum-bound audit'),
                 })
 
 def aircraft(two, install, suffix=''):

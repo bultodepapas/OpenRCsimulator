@@ -3,6 +3,8 @@ extends RefCounted
 ## All writes stay under user:// so shipped aircraft resources remain read-only.
 
 const WorkshopDescriptor = preload("res://workshop/descriptor.gd")
+const WorkshopDependencies = preload("res://workshop/dependencies.gd")
+const WorkshopCompiler = preload("res://workshop/compiler.gd")
 const DEFAULT_ROOT: String = "user://aircraft_variants"
 const VARIANT_FORMAT: String = "openrc-aircraft-variant"
 const VARIANT_VERSION: int = 1
@@ -27,6 +29,7 @@ const VARIANT_KEYS: PackedStringArray = [
 	"id",
 	"revision",
 	"name",
+	"compiler_version",
 	"base_id",
 	"recipe",
 	"base_sha256",
@@ -35,6 +38,7 @@ const VARIANT_KEYS: PackedStringArray = [
 	"created_at_unix",
 	"updated_at_unix",
 	"workshop_descriptor",
+	"dependencies",
 ]
 const VARIANT_REQUIRED_KEYS: PackedStringArray = [
 	"format",
@@ -42,6 +46,7 @@ const VARIANT_REQUIRED_KEYS: PackedStringArray = [
 	"id",
 	"revision",
 	"name",
+	"compiler_version",
 	"base_id",
 	"recipe",
 	"base_sha256",
@@ -78,7 +83,8 @@ static func save_variant(
 		recipe: Dictionary,
 		id: String = "",
 		root: String = DEFAULT_ROOT,
-		workshop_descriptor: Dictionary = {}
+		workshop_descriptor: Dictionary = {},
+		dependencies: Dictionary = {}
 ) -> Dictionary:
 	var errors := PackedStringArray()
 	var root_result: Dictionary = _resolve_root(root)
@@ -127,6 +133,8 @@ static func save_variant(
 	var variant_dir: String = root_path.path_join(safe_id)
 	var existing_variant: Dictionary = {}
 	var stored_descriptor: Dictionary = {}
+	var stored_dependencies: Dictionary = {}
+	var stored_compiler_version: String = WorkshopCompiler.COMPILER_VERSION
 	var revision: int = 1
 	var created_at: int = int(Time.get_unix_time_from_system())
 	var directory_exists: bool = DirAccess.dir_exists_absolute(variant_dir)
@@ -136,6 +144,11 @@ static func save_variant(
 			errors.append("Existing variant ID cannot be updated: %s" % "; ".join(existing_result["errors"]))
 			return _result(false, errors)
 		existing_variant = existing_result["variant"]
+		var pinned_compiler_version: String = str(existing_variant.get("compiler_version", ""))
+		if pinned_compiler_version != WorkshopCompiler.COMPILER_VERSION:
+			errors.append("This variant is pinned to compiler %s; create a new variant to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.COMPILER_VERSION])
+			return _result(false, errors)
+		stored_compiler_version = pinned_compiler_version
 		if str(existing_variant["base_id"]) != base_id or str(existing_variant["base_sha256"]) != base_hash:
 			errors.append("A saved variant's base ID and exact base snapshot are immutable.")
 			return _result(false, errors)
@@ -148,6 +161,14 @@ static func save_variant(
 				errors.append("A saved variant's Workshop descriptor is immutable.")
 				return _result(false, errors)
 			stored_descriptor = pinned_descriptor.duplicate(true)
+		var pinned_dependencies: Dictionary = existing_variant.get("dependencies", {})
+		if pinned_dependencies.is_empty():
+			errors.append("This saved variant has no pinned dependencies; create a new variant to record the current dependencies.")
+			return _result(false, errors)
+		if not dependencies.is_empty() and dependencies != pinned_dependencies:
+			errors.append("A saved variant's Workshop dependencies are immutable; create a new variant to use changed dependencies.")
+			return _result(false, errors)
+		stored_dependencies = pinned_dependencies.duplicate(true)
 		created_at = int(existing_variant["created_at_unix"])
 		revision = maxi(int(existing_variant["revision"]) + 1, _next_revision(variant_dir))
 	elif FileAccess.file_exists(variant_dir):
@@ -159,6 +180,12 @@ static func save_variant(
 			errors.append_array(descriptor_result["errors"])
 			return _result(false, errors)
 		stored_descriptor = descriptor_result["descriptor"]
+	if stored_dependencies.is_empty():
+		var dependencies_result: Dictionary = _resolve_workshop_dependencies(base_parsed, dependencies)
+		if not bool(dependencies_result["ok"]):
+			errors.append_array(dependencies_result["errors"])
+			return _result(false, errors)
+		stored_dependencies = dependencies_result["manifest"]
 	var revisions_dir: String = variant_dir.path_join("revisions")
 	root_error = _make_directory(revisions_dir)
 	if root_error != OK:
@@ -174,6 +201,7 @@ static func save_variant(
 		"id": safe_id,
 		"revision": revision,
 		"name": name,
+		"compiler_version": stored_compiler_version,
 		"base_id": base_id,
 		"recipe": stored_recipe,
 		"base_sha256": base_hash,
@@ -184,6 +212,8 @@ static func save_variant(
 	}
 	if not stored_descriptor.is_empty():
 		record["workshop_descriptor"] = stored_descriptor.duplicate(true)
+	if not stored_dependencies.is_empty():
+		record["dependencies"] = stored_dependencies.duplicate(true)
 	var record_validation: Dictionary = _validate_variant_record(record, safe_id)
 	if not bool(record_validation["ok"]):
 		errors.append_array(record_validation["errors"])
@@ -356,6 +386,7 @@ static func _load_from_directory(variant_dir: String, expected_id: String) -> Di
 		"id": expected_id,
 		"revision": revision,
 		"name": str(record["name"]),
+		"compiler_version": str(record["compiler_version"]),
 		"base_id": str(record["base_id"]),
 		"recipe": recipe,
 		"base": base,
@@ -368,6 +399,8 @@ static func _load_from_directory(variant_dir: String, expected_id: String) -> Di
 	}
 	if record.has("workshop_descriptor"):
 		variant["workshop_descriptor"] = (record["workshop_descriptor"] as Dictionary).duplicate(true)
+	if record.has("dependencies"):
+		variant["dependencies"] = (record["dependencies"] as Dictionary).duplicate(true)
 	if recovered:
 		errors.append("Recovered the last committed revision from its manifest backup.")
 	return _result(true, errors, variant)
@@ -398,7 +431,8 @@ static func _validate_variant_record(value: Variant, expected_id: String) -> Dic
 		return _result(false, errors)
 	var record: Dictionary = value
 	var has_descriptor: bool = record.has("workshop_descriptor")
-	var allowed_record_size: int = VARIANT_REQUIRED_KEYS.size() + (1 if has_descriptor else 0)
+	var has_dependencies: bool = record.has("dependencies")
+	var allowed_record_size: int = VARIANT_REQUIRED_KEYS.size() + (1 if has_descriptor else 0) + (1 if has_dependencies else 0)
 	if record.size() != allowed_record_size or not record.has_all(VARIANT_REQUIRED_KEYS):
 		errors.append("Variant revision has missing or unknown fields.")
 		return _result(false, errors)
@@ -414,6 +448,8 @@ static func _validate_variant_record(value: Variant, expected_id: String) -> Dic
 		errors.append("Variant revision number must be a positive integer.")
 	if not _valid_name(str(record["name"])) or typeof(record["name"]) != TYPE_STRING:
 		errors.append("Variant name is invalid.")
+	if typeof(record["compiler_version"]) != TYPE_STRING or str(record["compiler_version"]).strip_edges().is_empty():
+		errors.append("Variant compiler version must be a non-empty string.")
 	if typeof(record["base_id"]) != TYPE_STRING or not _valid_base_id(str(record["base_id"])):
 		errors.append("Variant base ID is invalid.")
 	if typeof(record["recipe"]) != TYPE_DICTIONARY:
@@ -447,6 +483,17 @@ static func _validate_variant_record(value: Variant, expected_id: String) -> Dic
 				var descriptor_result: Dictionary = WorkshopDescriptor.validate(record["workshop_descriptor"], str(record["base_id"]), decoded)
 				if not bool(descriptor_result["ok"]):
 					errors.append_array(descriptor_result["errors"])
+		if has_dependencies:
+			if typeof(record["dependencies"]) != TYPE_DICTIONARY:
+				errors.append("Pinned Workshop dependencies must be a JSON object.")
+			else:
+				var parsed_base: Dictionary = _parse_base_snapshot(str(record["base_id"]), decoded)
+				if not bool(parsed_base["ok"]):
+					errors.append_array(parsed_base["errors"])
+				else:
+					var dependencies_result: Dictionary = WorkshopDependencies.validate_manifest(parsed_base["base"], record["dependencies"])
+					if not bool(dependencies_result["ok"]):
+						errors.append_array(dependencies_result["errors"])
 	var recipe_json: String = JSON.stringify(record.get("recipe", {}), "", true, true)
 	if _valid_sha256(recipe_hash) and _sha256(recipe_json.to_utf8_buffer()) != recipe_hash:
 		errors.append("Recipe SHA-256 does not match the saved recipe.")
@@ -508,6 +555,12 @@ static func _resolve_workshop_descriptor(
 	if not bool(loaded["ok"]):
 		return loaded
 	return {"ok": true, "errors": PackedStringArray(), "descriptor": loaded["descriptor"]}
+
+
+static func _resolve_workshop_dependencies(base: Dictionary, provided: Dictionary) -> Dictionary:
+	if provided.is_empty():
+		return WorkshopDependencies.capture(base)
+	return WorkshopDependencies.validate_manifest(base, provided)
 
 
 static func _parse_base_snapshot(base_id: String, bytes: PackedByteArray) -> Dictionary:

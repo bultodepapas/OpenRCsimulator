@@ -564,8 +564,10 @@ static func _tail_angle_from_flow(flow: PackedFloat64Array, d: Dictionary, tail:
 
 
 ## 0 = empirical attached oracle; 1 = complete local model. Includes tail/control angles,
-## not just body alpha: a rapid pitch or a deflected tail can leave the oracle while the wing is attached.
-static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary) -> float:
+## not just body alpha: a rapid pitch, lagged downwash or ground effect can leave the oracle while the wing is attached.
+## NAN/empty inputs preserve the static trim selector; flight loads pass their actual downwash state and ground factors.
+static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
+		downwash_cl := NAN, ge := PackedFloat64Array()) -> float:
 	var env: Dictionary = model.envelope
 	var surfaces: Dictionary = model.surfaces
 	var limit: float = surfaces.attached_limit
@@ -620,10 +622,20 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 		var control: float = -float(d.rudder) if vertical else float(d.elevator)
 		var angle: float
 		if not vertical and tail.has("free_slope"):
-			# E0a2: attached (linear) downwash for the blend decision: k_ε·(CLα_w·α + CL_w0) = dε/dα·α + k_ε·CL_w0.
-			angle = wrapf(M.atan2_(component, flow_x) - (float(tail.downwash_gradient) * float(air.alpha)
-				+ float(tail.downwash_per_cl) * float(tail.wing_cl0)) + float(tail.elevator_tau) * control
-				+ float(tail.free_incidence), -PI, PI)
+			if not is_nan(downwash_cl) or not ge.is_empty():
+				# E0a2b/M5-GE-1: match _local_loads' actual tail flow. A displaced lag state and reduced
+				# ground-effect downwash can move the tail outside the oracle while body α and the steady tail remain attached.
+				var tail_cl: float = downwash_cl
+				if is_nan(tail_cl):
+					tail_cl = _wing_lift_coefficient_with(s, air, d, model, ge)
+				var downwash_scale := ge[ys.size() + 1] if not ge.is_empty() else 1.0
+				angle = wrapf(M.atan2_(component, flow_x) - float(tail.downwash_per_cl) * downwash_scale * tail_cl
+					+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
+			else:
+				# Legacy static selector: k_ε·(CLα_w·α + CL_w0) = dε/dα·α + k_ε·CL_w0.
+				angle = wrapf(M.atan2_(component, flow_x) - (float(tail.downwash_gradient) * float(air.alpha)
+					+ float(tail.downwash_per_cl) * float(tail.wing_cl0)) + float(tail.elevator_tau) * control
+					+ float(tail.free_incidence), -PI, PI)
 		else:
 			angle = wrapf(M.atan2_(component, flow_x) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
 		blend = maxf(blend, _smoothstep((absf(angle)-limit)/tail_span))
@@ -710,7 +722,7 @@ static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: 
 	if model.get("envelope", {}).is_empty():
 		return _global_loads(s, air, d, model, rho)
 	var ge := GroundEffect.factors(s, model, ground_up)
-	var blend := local_flow_weight(s, air, d, model)
+	var blend := local_flow_weight(s, air, d, model, downwash_cl, ge)
 	if blend == 0.0:
 		return _global_loads(s, air, d, model, rho, downwash_cl, ge)
 	var local := _local_loads(s, air, d, model, rho, downwash_cl, null, ge)

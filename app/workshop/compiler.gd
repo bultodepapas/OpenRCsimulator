@@ -273,6 +273,7 @@ static func _inherit_wheel_model(profiled_base: Dictionary, candidate_model: Dic
 				continue
 			var source_contact: Dictionary = source_by_name[contact_name]
 			var source_provenance: Dictionary = source_contact.get("wheel_provenance", {}).duplicate(true)
+			target_contact.brake_availability = str(source_contact.get("brake_availability", "none"))
 			var factors := {
 				"wheel_radius": scale,
 				"wheel_inertia": mass_ratio * scale * scale,
@@ -320,7 +321,10 @@ static func _inherit_wheel_model(profiled_base: Dictionary, candidate_model: Dic
 	var inherited_identity: Dictionary = source_identity.duplicate(true)
 	inherited_identity.aircraft_id = effective_id
 	inherited_identity.base_aircraft_id = base_id
-	inherited_identity.status = "inherited" if source_status == "applied" else source_status
+	# Runtime wheel dynamics are selected by status == "applied". Keep that physical
+	# capability marker while recording that the profile came from the selected base.
+	inherited_identity.status = source_status
+	inherited_identity.inheritance = "base_profile" if source_status == "applied" else "base_fallback"
 	candidate_model.wheel_profile = inherited_identity
 	return errors
 

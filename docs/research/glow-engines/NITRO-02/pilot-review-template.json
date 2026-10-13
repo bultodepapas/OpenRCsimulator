@@ -140,7 +140,7 @@
       },
       "installation": {
         "path": "app/data/glow/stik_fs64v_4t.json",
-        "sha256": "e8ce0e64bcd75ad2fb895a7f630a9f531afbaadf7cb36785242df570fc788ba9"
+        "sha256": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4"
       },
       "aircraft_data": {
         "path": "app/data/aircraft/stik_glow_fs64v_4t.json",

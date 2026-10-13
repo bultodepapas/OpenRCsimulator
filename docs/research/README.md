@@ -20,6 +20,10 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ## Entry points per track
 
+### RC monster truck
+
+[RCV-00](rc-monster-truck/README.md) records the repository/session/menu audit, primary vehicle-physics references, T-Maxx scale and mechanism evidence, free asset candidates and measurement gaps. The [active plan](../plans/rc-monster-truck.md) owns the proposed ground-vehicle integration, physics laboratory, playable course, acceptance gates and Blender developer letter. This is planning evidence; no truck runtime or physical validation is claimed.
+
 ### Ground physics
 
 [GP-00–05 evidence index](ground-physics/README.md) covers terrain, per-wheel contact, spin and suspension, profile/session integration, traces, numerical checks and remaining physical calibration. The [integrated ground model](ground-physics/GP-05/README.md) records current scope and open gates.

@@ -198,7 +198,7 @@ func _badge_style() -> StyleBoxFlat:
 func _update_scale_badge() -> void:
 	if not is_instance_valid(_scale_badge):
 		return
-	var span_m: float = _model_bounds.size.z * _requested_scale
+	var span_m: float = _model_bounds.size.x * _requested_scale
 	_scale_badge.text = tr("Scale %d%%  ·  span %.2f m") % [roundi(_requested_scale * 100.0), span_m]
 
 
@@ -213,7 +213,10 @@ func _build_world() -> void:
 	environment.ambient_light_color = AMBIENT
 	environment.ambient_light_energy = 0.62
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	_viewport.world_3d.environment = environment
+	var world_environment := WorldEnvironment.new()
+	world_environment.name = "PreviewEnvironment"
+	world_environment.environment = environment
+	_stage.add_child(world_environment)
 
 	_rig = Node3D.new()
 	_rig.name = "AircraftDatumPivot"
@@ -240,6 +243,5 @@ func _build_world() -> void:
 	_camera.near = 0.1
 	_camera.far = 100.0
 	_camera.position = Vector3(0.0, 0.0, 6.0)
-	_camera.look_at(Vector3.ZERO, Vector3.UP)
 	_camera.current = true
 	_stage.add_child(_camera)

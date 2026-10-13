@@ -14,6 +14,8 @@ The editor compiles explicit user choices into validated aircraft data. It does 
 
 Authoritative prerequisites: [aircraft contract](../../AIRCRAFT_CONTRACT.md), [architecture](../../STACK.md), [tools and verification commands](../TOOLS.md), [track registry](../README.md#tracks-plans-and-step-ids), [current menus](../MENU-PLAN.md), [menu redesign](../MENU-REDESIGN-PLAN.md), and [glow installations](../GLOW-ENGINES.md).
 
+Related continuation: [AS-06–18 aircraft standardization](aircraft-standardization.md) owns the proposed physical/model contract evolution and coordinates its Blender import/binding work with AE-08/19. Presentation bindings below should reference the model track's generated manifest instead of duplicating hinge transforms or physical values. A partial implementation now exists under `app/workshop/` and `app/ui/workshop*`; AE-00 must reconcile that source with this plan's proposed paths and acceptance status before claiming delivery.
+
 ## 1. Product scope and delivery order
 
 Three entry choices use the same variant format and compiler:
@@ -63,7 +65,7 @@ Fleet qualification matrix. These are fixtures for shared modules, not seven edi
 | `jensen-das-ugly-stik-60` | Legacy prescribed-RPM combustion propeller, fixed tricycle | First V1 fixture for common inventory/controls, legacy propulsion and deployed-gear modules |
 | `gp-extra-300s-60` | Legacy prescribed-RPM propeller, taildragger | Mandatory second V1 fixture using the same modules; descriptor/assets differ, editor code does not |
 | `p51d-mustang-120` | Gasoline hardware within the `glow_prop` solver family; shaft, wake and angled thrust | V2 fixture for reusable shaft, wake and thrust-axis modules; no fuel inference from the family name |
-| `turbo-lumber-evolution` | Electric motor/ESC, finite battery model, imported GLB, taildragger | V2 fixture for reusable electric/battery and imported-presentation modules |
+| `turbo-lumber-evolution` | Electric motor/ESC, fixed-voltage prescribed bus, imported GLB, taildragger | V2 fixture for reusable electric and imported-presentation modules; existing OCV/resistance regression specimens cover finite batteries |
 | `stik-glow-55ax-2t` | Explicit 2T installation, finite fuel, thermal/charge states, moving mass properties | V2 fixture for the reusable finite-glow 2T module and installation bindings |
 | `stik-glow-fs64v-4t` | Independent 4T installation with the same lifecycle obligations | V2 fixture for the independent reusable 4T law, sharing only appropriate installation/lifecycle interfaces |
 | `sebart-avanti-s-a200-p100rx` | Ventage Jet turbine, gear locked up, airborne-only route | V2 fixture for reusable turbine/no-gear modules; no runway option |

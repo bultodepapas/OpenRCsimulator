@@ -2,6 +2,8 @@
 
 **Status: current v2 authoring/runtime contract; AS-00–05 delivered, 2026-10-11.** Revision 1. Authored format: `openrc-aircraft v2`. Convention: `openrc-le-frd-v1`. [Audit](docs/research/aircraft-standardization/AS-00/), [migration and verification](docs/research/aircraft-standardization/AS-05/README.md).
 
+Proposed continuation: [AS-06–18 standardization and Blender onboarding](docs/plans/aircraft-standardization.md). It covers shared model bindings, fleet migration, propulsion/control extensibility and explicit contact policies; those proposals do not extend the accepted v2 format until their implementation gates pass.
+
 ## Scope and authority
 
 An aircraft file describes one complete simulated configuration, not every possible build of a commercial airframe. All five catalog models and the electric regression specimens use this contract. The catalog controls product availability; the file controls physics. A valid file is not evidence of a realistic aircraft. Preserve the evidence kind and source of every number, particularly the virtual balancing mass and borrowed aerodynamic/propeller data.

@@ -17,6 +17,11 @@ const SHORE_CLUSTER_VERTICES := [2, 7, 12, 17]
 const SHORE_REEDS_PER_CLUSTER := 7
 const SHORE_BANK_PLANTS_PER_CLUSTER := 6
 const SHORE_SHRUBS_PER_CLUSTER := 1
+const CORN_OMITTED_CELLS := [
+	Vector2i(0, 0), Vector2i(0, 6), Vector2i(1, 0),
+	Vector2i(2, 6), Vector2i(3, 0), Vector2i(3, 6),
+]
+const WHEAT_EXTENSION_SEED_START := 100000
 const SHORE_CANDIDATE_LIMIT := 64
 const SHORE_REED_MIN_SPACING_M := 0.85
 const SHORE_BANK_MIN_SPACING_M := 0.65
@@ -50,7 +55,7 @@ const FLOWER_PATCHES := [
 	{zone = "meadow", north = 58.0, east = 98.0, radius_n = 8.0, radius_e = 13.0,
 		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group", "flower_4_group"]},
 	{zone = "meadow", north = 64.0, east = 154.0, radius_n = 7.0, radius_e = 13.0,
-		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group", "flower_4_group"]},
+		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group", "flower_3_group"]},
 	{zone = "meadow", north = 47.0, east = 128.0, radius_n = 5.0, radius_e = 11.0,
 		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1"]},
 ]
@@ -104,15 +109,19 @@ static func layout(field: Dictionary, scenery: Dictionary, quality: String, lake
 			str(patch.zone), pilot_north + float(patch.north), pilot_east + float(patch.east),
 			float(patch.radius_n), float(patch.radius_e), patch.assets, quality)
 
-	# Two restrained downloaded crop plots near the existing farm: 28 corn and 56 wheat.
+	# Two restrained downloaded crop plots near the existing farm: 22 corn and 62 wheat.
 	_append_grid(plants, field, land_exclusions, surface_rects, lake, sequence, "farm", "corn_4",
-		pilot_north + 561.0, pilot_east + 324.0, 4, 7, 0.86, 0.82, quality)
+		pilot_north + 561.0, pilot_east + 324.0, 4, 7, 0.86, 0.82, quality, CORN_OMITTED_CELLS)
 	_append_grid(plants, field, land_exclusions, surface_rects, lake, sequence, "farm", "wheat_4",
 		pilot_north + 561.0, pilot_east + 346.0, 7, 8, 0.78, 0.43, quality)
 
 	if not lake.is_empty():
 		_append_shore_reeds(plants, field, shared_exclusions, surface_rects, lake, sequence, quality)
 		_append_shore_bank_plants(plants, field, shared_exclusions, surface_rects, lake, sequence, quality)
+	# Extend the distinct wheat plot by one short row; a reserved seed range leaves all existing IDs intact.
+	var wheat_extension_sequence := {"next": WHEAT_EXTENSION_SEED_START}
+	_append_grid(plants, field, land_exclusions, surface_rects, lake, wheat_extension_sequence, "farm", "wheat_4",
+		pilot_north + 561.0 + 3.12, pilot_east + 346.0, 1, 6, 0.78, 0.43, quality)
 	return plants
 
 
@@ -260,10 +269,12 @@ static func _append_cluster(output: Array[Dictionary], field: Dictionary, exclus
 static func _append_grid(output: Array[Dictionary], field: Dictionary, exclusions: Array,
 	surface_rects: PackedFloat64Array, lake: Dictionary, sequence: Dictionary, zone: String,
 	asset_id: String, center_north: float, center_east: float, rows: int, columns: int,
-	spacing_north: float, spacing_east: float, quality: String) -> void:
+	spacing_north: float, spacing_east: float, quality: String, omitted_cells: Array = []) -> void:
 	for row: int in range(rows):
 		for column: int in range(columns):
 			var plant_seed := _take_seed(sequence)
+			if Vector2i(row, column) in omitted_cells:
+				continue
 			var jitter_north := (Palette.hash01(SEED, plant_seed, 6) - 0.5) * 0.12
 			var jitter_east := (Palette.hash01(SEED, plant_seed, 7) - 0.5) * 0.12
 			var north := center_north + (float(row) - float(rows - 1) * 0.5) * spacing_north + jitter_north

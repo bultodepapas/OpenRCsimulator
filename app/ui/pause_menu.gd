@@ -95,7 +95,13 @@ func _init(can_end := true) -> void:
 func show_for(session: Node) -> void:
 	_session = session
 	refresh()
-	(continue_button if not continue_button.disabled else restart_button).grab_focus.call_deferred()
+	_focus_primary.call_deferred()
+
+
+func _focus_primary() -> void:
+	if not is_inside_tree() or not get_node("Screen")._active:
+		return
+	(continue_button if not continue_button.disabled else restart_button).grab_focus()
 
 
 func refresh() -> void:

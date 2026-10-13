@@ -98,11 +98,11 @@ func run() -> void:
 				var d: Dictionary = session._deflections(session.sim.aux)
 				var lag: int = session.downwash_index()
 				var components: Dictionary = Dynamics.evaluate(state,session.aircraft.model,d,session.sim.aux[0],session.air_density(),session.wind_at(session.sim.time()),session.sim.gravity,PackedFloat64Array(),session.sim.aux[lag] if lag >= 0 else NAN)
-				rows.append({t=session.sim.time(),height=-state[2],speed=air.V,alpha_deg=rad_to_deg(air.alpha),pitch_deg=rad_to_deg(M.q_to_euler(RB._att(state))[1]),q=state[11],blend=Aero.local_flow_weight(state,air,d,session.aircraft.model),throttle=session.commands.throttle,trim=session.trims.pitch,aero=Array(components.aero_loads),prop=Array(components.propulsion_loads)})
-		if case == "actual" and (max_error > 1e-8 or session.sim.tick != int(source.last_tick)):
+				rows.append({t=session.sim.time(),height=-state[2],speed=air.V,alpha_deg=rad_to_deg(air.alpha),pitch_deg=rad_to_deg(M.q_to_euler(RB._att(state))[1]),q=state[11],blend=Aero.local_flow_weight(state,air,d,session.aircraft.model,session.sim.aux[lag] if lag >= 0 else NAN),throttle=session.commands.throttle,trim=session.trims.pitch,aero=Array(components.aero_loads),prop=Array(components.propulsion_loads)})
+		if case == "actual" and not "--compare-physics" in OS.get_cmdline_user_args() and (max_error > 1e-8 or session.sim.tick != int(source.last_tick)):
 			printerr("Observed replay mismatch: ", max_error, " tick ", session.sim.tick)
 			quit(1)
 			return
-		print("LOOP_RESULT ",JSON.stringify({case=case,seconds=session.sim.time(),completed=session.sim.tick == last_tick,fault=session.sim.fault_reason,crashed=not session.crash.is_empty(),first_inverted_s=first_inverted_s,first_outside_map_s=first_outside_map_s,outside_map_seconds=outside_map_ticks*session.sim.dt(),initial_power=initial_power,initial_speed=initial_speed,trim_deg=session.trims.pitch*20.0,max_q=max_q,inverted_seconds=inverted_ticks*session.sim.dt(),max_height=max_height,max_state_error=max_error,rows=rows}))
+		print("LOOP_RESULT ",JSON.stringify({case=case,seconds=session.sim.time(),completed=session.sim.tick == last_tick,fault=session.sim.fault_reason,crashed=not session.crash.is_empty(),first_inverted_s=first_inverted_s,first_outside_map_s=first_outside_map_s,outside_map_seconds=outside_map_ticks*session.sim.dt(),initial_power=initial_power,initial_speed=initial_speed,trim_deg=session.trims.pitch*20.0,max_q=max_q,inverted_seconds=inverted_ticks*session.sim.dt(),max_height=max_height,max_state_error=max_error,recorded_checkpoints_match=(max_error <= 1e-8 and session.sim.tick == int(source.last_tick)) if case == "actual" else null,rows=rows}))
 		session.free()
 	quit()

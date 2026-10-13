@@ -6,6 +6,7 @@
 # Run: godot --headless --path . --script res://tests/test_downwash_lag.gd
 extends SceneTree
 
+const M := preload("res://physics/math3d.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -61,6 +62,7 @@ func _initialize() -> void:
 	var start: PackedFloat64Array = _session.sim.state
 	_check("reset starts the lag settled at the start state's wing CL", _session.sim.aux[lag] == _session._wing_cl(start, _session.sim.aux))
 	_identity(model)
+	_selector_uses_lagged_tail()
 	_session_path(model, lag)
 	_step_response(lag)
 	var at_240 := _plunge(model, lag, 1.0 / 240.0)
@@ -87,6 +89,50 @@ func _initialize() -> void:
 	_checkpoint()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## A descending α ramp leaves the tail outside the attached limit while the steady selector remains attached.
+func _selector_uses_lagged_tail() -> void:
+	var model: Dictionary = AD.load_file("res://data/aircraft/jensen_ugly_stik_60.json").model
+	var tail: Dictionary = model.surfaces.horizontal
+	var start_alpha := deg_to_rad(7.8)
+	var rate := -3.0 # rad/s, 46 ms at 15 m/s
+	var dt := 1.0 / 240.0
+	var d := { elevator = -deg_to_rad(12.605), aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0 }
+	var ticks := ceili(start_alpha / (-rate * dt))
+	var alpha := start_alpha
+	var s := RB.make_state(M.v3(0.0, 0.0, -20.0), M.v3(V * cos(alpha), 0.0, V * sin(alpha)), M.q_identity(), M.v3(0.0, 0.0, 0.0))
+	var air := Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), RHO)
+	var lag: float = Aero.wing_lift_coefficient(s, air, d, model)
+	for k in range(1, ticks + 1):
+		alpha = maxf(0.0, start_alpha + rate * k * dt)
+		s = RB.make_state(M.v3(0.0, 0.0, -20.0), M.v3(V * cos(alpha), 0.0, V * sin(alpha)), M.q_identity(), M.v3(0.0, 0.0, 0.0))
+		air = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), RHO)
+		var cl_now: float = Aero.wing_lift_coefficient(s, air, d, model)
+		lag = cl_now + (lag - cl_now) * exp(-dt * V / float(tail.downwash_lag_length))
+	var actual_tail: float = atan2(air.v_air[2], air.v_air[0]) - float(tail.downwash_per_cl) * lag \
+		+ float(tail.elevator_tau) * d.elevator + float(tail.free_incidence)
+	var x := clampf((absf(actual_tail) - float(model.surfaces.attached_limit))
+		/ (float(model.surfaces.tail_local_limit) - float(model.surfaces.attached_limit)), 0.0, 1.0)
+	var expected_blend := x * x * (3.0 - 2.0 * x)
+	var static_blend: float = Aero.local_flow_weight(s, air, d, model)
+	var actual_blend: float = Aero.local_flow_weight(s, air, d, model, lag)
+	_check("descending α ramp moves actual tail beyond the attached limit", absf(actual_tail) > float(model.surfaces.attached_limit),
+		"tail %.3f° after %d ticks" % [rad_to_deg(actual_tail), ticks])
+	_check("selector uses lagged CL while the static call remains unchanged",
+		static_blend == 0.0 and expected_blend > 0.0 and absf(actual_blend - expected_blend) < 1e-12,
+		"static %.6f, actual %.6f, expected %.6f" % [static_blend, actual_blend, expected_blend])
+	var global_loads: PackedFloat64Array = Aero._global_loads(s, air, d, model, RHO, lag)
+	var local_loads: PackedFloat64Array = Aero._local_loads(s, air, d, model, RHO, lag)
+	var expected_loads := global_loads.duplicate()
+	for i in 6:
+		expected_loads[i] = lerpf(global_loads[i], local_loads[i], expected_blend)
+	var actual_loads: PackedFloat64Array = Aero.loads(s, air, d, model, RHO, lag)
+	var static_loads: PackedFloat64Array = Aero.loads(s, air, d, model, RHO)
+	_check("Aero.loads applies the lag-aware blend and passes the lag to both load laws",
+		actual_loads.to_byte_array() == expected_loads.to_byte_array()
+			and actual_loads.to_byte_array() != static_loads.to_byte_array(),
+		"actual pitch %.6f, lag-weighted %.6f, static %.6f N·m" % [actual_loads[4], expected_loads[4], static_loads[4]])
 
 
 ## With the lag equal to the instantaneous wing CL the local loads are the quasi-static ones, byte for byte.

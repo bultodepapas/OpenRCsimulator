@@ -48,9 +48,11 @@ func _initialize() -> void:
 	_test_unfamiliar_identity(stik)
 	_test_catalog_registry()
 	_test_recipe_validation(stik)
+	_test_noop_trajectory(stik, STIK_PATH, "Stik")
+	_test_noop_trajectory(extra, EXTRA_PATH, "Extra")
 	_test_scaled_flight(stik, "Stik")
 	_test_scaled_flight(extra, "Extra")
-	print("Workshop compiler draft: %d checks, %d failures" % [_checks, _failures])
+	print("Workshop compiler: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
 
@@ -65,8 +67,17 @@ func _test_no_op(base: Dictionary, label: String) -> void:
 		result.data is Dictionary and result.data.get("ok", false) and result.data.has("warnings") and result.data.has("model"))
 	_check("%s no-op data matches full validator physics" % label,
 		result.ok and result.data.model.mass_kg == expected.model.mass_kg and result.data.model.inertia == expected.model.inertia)
+	var profiled_expected: Dictionary = WheelProfiles.apply_to_model(expected.model)
+	_check("%s no-op derived physics model is unchanged apart from identity/provenance" % label,
+		result.ok and profiled_expected.ok
+		and _physics_projection(result.data.model) == _physics_projection(profiled_expected.model))
 	_check("%s no-op inherits base wheel profile" % label,
-		result.ok and result.data.model.get("wheel_profile", {}).get("base_aircraft_id", "") == base.id)
+		result.ok and result.data.model.get("wheel_profile", {}).get("base_aircraft_id", "") == base.id
+		and result.data.model.get("wheel_profile", {}).get("inheritance", "") == "base_profile")
+	_check("%s summary exposes stable UI metrics" % label,
+		result.summary.has_all(["base_aircraft_id", "effective_model_id", "name", "scale", "mass_policy",
+			"weight_multiplier", "mass_ratio", "mass_kg", "wing_area_m2", "wing_span_m",
+			"wing_loading_kg_m2", "power_multiplier", "control_multiplier", "capabilities", "compiler_version"]))
 
 
 func _test_scale_policies(base: Dictionary) -> void:
@@ -257,6 +268,13 @@ func _test_catalog_registry() -> void:
 		_check("catalog no-op works with a trial identity %s" % raw.get("id", file), no_op.ok, str(no_op.errors))
 		if no_op.ok:
 			_check("catalog no-op effective model identity %s" % raw.get("id", file), no_op.data.model.id == custom_id)
+			var base_data: Dictionary = AircraftData.validate_and_derive(raw)
+			var profiled_base: Dictionary = WheelProfiles.apply_to_model(base_data.model)
+			_check("catalog no-op physics matches base for %s" % raw.get("id", file),
+				profiled_base.ok and _physics_projection(no_op.data.model) == _physics_projection(profiled_base.model))
+			_check("catalog no-op preserves base wheel runtime status for %s" % raw.get("id", file),
+				no_op.data.model.get("wheel_profile", {}).get("status", "") == profiled_base.model.get("wheel_profile", {}).get("status", "")
+				and no_op.data.model.get("wheel_profile", {}).get("base_aircraft_id", "") == str(raw.get("id", "")))
 		for capability: String in probes:
 			if support[capability]:
 				continue
@@ -295,16 +313,68 @@ func _test_scaled_flight(base: Dictionary, label: String) -> void:
 		var session: Node = Session.new()
 		session.physics_enabled = false
 		session.setup("", str(built.raw.id), frozen)
-		_check("%s %.0f%% session prepares a trim" % [label, scale_value * 100.0], session.aircraft.get("ok", false),
+		_check("%s %.0f%% session validates aircraft and trim" % [label, scale_value * 100.0],
+			session.aircraft.get("ok", false) and session.start.get("ok", false),
 			str(session.start.get("message", "")))
-		if session.aircraft.get("ok", false):
-			var finite_state := true
+		_check("%s %.0f%% session reports flyable before stepping" % [label, scale_value * 100.0],
+			session.is_flyable(), str(session.start.get("message", "")))
+		if session.aircraft.get("ok", false) and session.start.get("ok", false) and session.is_flyable():
+			var finite_state: bool = not session.sim.state.is_empty()
 			for tick: int in 240:
 				session.sim.step()
 				for value: float in session.sim.state:
 					finite_state = finite_state and is_finite(value)
-			_check("%s %.0f%% remains finite for 240 steps" % [label, scale_value * 100.0], finite_state)
+			_check("%s %.0f%% remains finite for 240 steps" % [label, scale_value * 100.0],
+				finite_state and session.sim.tick == 240 and session.sim.fault_reason.is_empty(),
+				"tick=%d fault=%s" % [session.sim.tick, session.sim.fault_reason])
 		session.free()
+
+
+func _test_noop_trajectory(base: Dictionary, path: String, label: String) -> void:
+	var built: Dictionary = Compiler.compile(base, {})
+	_check("%s no-op candidate compiles for trajectory comparison" % label, built.ok, str(built.errors))
+	if not built.ok:
+		return
+	var base_session: Node = Session.new()
+	var compiled_session: Node = Session.new()
+	base_session.physics_enabled = false
+	compiled_session.physics_enabled = false
+	base_session.setup(path, str(base.id))
+	var frozen: Dictionary = built.data.duplicate(true)
+	frozen["input_identity"] = {
+		"format": AircraftData.FORMAT,
+		"sha256": JSON.stringify(built.raw, "", true).sha256_text(),
+	}
+	compiled_session.setup("", str(built.raw.id), frozen)
+	var both_start: bool = base_session.aircraft.get("ok", false) and base_session.start.get("ok", false) \
+		and compiled_session.aircraft.get("ok", false) and compiled_session.start.get("ok", false) \
+		and base_session.is_flyable() and compiled_session.is_flyable()
+	_check("%s base and compiled no-op both trim and fly" % label, both_start,
+		"base=%s compiled=%s" % [base_session.start.get("message", ""), compiled_session.start.get("message", "")])
+	_check("%s base and compiled no-op activate identical wheel dynamics" % label,
+		base_session.wheel_count() == compiled_session.wheel_count(),
+		"base=%d compiled=%d" % [base_session.wheel_count(), compiled_session.wheel_count()])
+	if both_start:
+		var exact: bool = base_session.sim.state == compiled_session.sim.state \
+			and base_session.sim.aux == compiled_session.sim.aux \
+			and base_session.sim.continuous == compiled_session.sim.continuous \
+			and base_session.sim.inputs == compiled_session.sim.inputs
+		var first_mismatch := -1
+		for tick: int in 240:
+			base_session.sim.step()
+			compiled_session.sim.step()
+			var tick_matches: bool = base_session.sim.state == compiled_session.sim.state \
+				and base_session.sim.aux == compiled_session.sim.aux \
+				and base_session.sim.continuous == compiled_session.sim.continuous
+			if not tick_matches and first_mismatch < 0:
+				first_mismatch = tick + 1
+			exact = exact and tick_matches
+		_check("%s no-op trajectory exactly matches base for 240 committed ticks" % label,
+			exact and base_session.sim.tick == 240 and compiled_session.sim.tick == 240 \
+			and base_session.sim.fault_reason.is_empty() and compiled_session.sim.fault_reason.is_empty(),
+			"first_mismatch=%d base_tick=%d compiled_tick=%d" % [first_mismatch, base_session.sim.tick, compiled_session.sim.tick])
+	base_session.free()
+	compiled_session.free()
 
 
 func _static_power(model: Dictionary) -> float:
@@ -328,3 +398,21 @@ func _support_flags_equal(left: Dictionary, right: Dictionary) -> bool:
 		if left.get(flag) != right.get(flag):
 			return false
 	return true
+
+
+func _physics_projection(value: Variant) -> Variant:
+	if value is Dictionary:
+		var result: Dictionary = {}
+		for key: Variant in value.keys():
+			var name := str(key)
+			if name == "id" or name == "data_sha256" or name == "wheel_profile" or name == "wheel_provenance" \
+					or name.ends_with("_provenance"):
+				continue
+			result[key] = _physics_projection(value[key])
+		return result
+	if value is Array:
+		var result: Array = []
+		for element: Variant in value:
+			result.append(_physics_projection(element))
+		return result
+	return value

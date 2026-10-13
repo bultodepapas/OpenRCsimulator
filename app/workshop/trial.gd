@@ -23,19 +23,41 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	if not descriptor_result.get("ok", false):
 		return descriptor_result
 	var descriptor_sha: String = _sha(JSON.stringify(descriptor_result.descriptor, "", true, true).to_utf8_buffer())
+	var dependency_loader: Script = load("res://workshop/dependencies.gd")
+	var supplied_dependencies: Variant = payload.get("dependencies", {})
+	var dependency_result: Dictionary
+	if supplied_dependencies is Dictionary and supplied_dependencies.is_empty():
+		dependency_result = dependency_loader.capture(base)
+	else:
+		dependency_result = dependency_loader.verify(base, supplied_dependencies)
+	if not dependency_result.get("ok", false):
+		return dependency_result
+	var dependencies: Dictionary = dependency_result.manifest
+	var dependency_sha: String = _sha(JSON.stringify(dependencies, "", true, true).to_utf8_buffer())
 	var compiler: Script = load("res://workshop/compiler.gd")
+	var pinned_compiler: String = str(payload.get("compiler_version", ""))
+	if not pinned_compiler.is_empty() and pinned_compiler != compiler.COMPILER_VERSION:
+		return {ok = false, errors = PackedStringArray(["This saved variant requires a different Workshop compiler version; the saved variant remains unchanged."])}
 	var recipe: Dictionary = compiler.defaults()
 	recipe.merge(payload.get("recipe", {}), true)
-	var ancestor_id: String = str(recipe.get("id", ""))
+	var ancestor_id: String = str(payload.get("variant_id", recipe.get("id", "")))
+	var ancestor_revision: int = int(payload.get("variant_revision", 0))
+	if not ancestor_id.is_empty() and (pinned_compiler.is_empty() or supplied_dependencies.is_empty()):
+		return {ok = false, errors = PackedStringArray(["Saved variant provenance is incomplete; reload it from the Workshop library."])}
 	recipe.erase("id")
 	recipe.erase("name")
 	var base_sha: String = _sha(base_bytes)
 	var recipe_sha: String = _sha(JSON.stringify(recipe, "", true, true).to_utf8_buffer())
-	var trial_id: String = "workshop-" + _sha((base_sha + ":" + recipe_sha + ":" + descriptor_sha + ":workshop-compiler-v1").to_utf8_buffer()).substr(0, 32)
+	var compiler_version: String = compiler.COMPILER_VERSION
+	var trial_id: String = "workshop-" + _sha((base_sha + ":" + recipe_sha + ":" + descriptor_sha + ":" + dependency_sha + ":" + compiler_version).to_utf8_buffer()).substr(0, 32)
 	recipe.id = trial_id
 	var result: Dictionary = compiler.compile(base, recipe)
 	if not result.get("ok", false):
 		return result
+	# Detect a dependency replacement while compiling, before any live flight can be touched.
+	var unchanged: Dictionary = dependency_loader.verify(base, dependencies)
+	if not unchanged.get("ok", false):
+		return unchanged
 	var resolved_bytes: PackedByteArray = JSON.stringify(result.raw, "", true, true).to_utf8_buffer()
 	var resolved_sha: String = _sha(resolved_bytes)
 	result.data.input_identity = {format = "openrc-aircraft v2", sha256 = resolved_sha}
@@ -46,7 +68,9 @@ static func freeze(payload: Dictionary) -> Dictionary:
 			base_sha256 = base_sha, recipe_sha256 = recipe_sha, resolved_sha256 = resolved_sha,
 			resolved_model_sha256 = model_sha,
 			descriptor_sha256 = descriptor_sha,
-			ancestor_variant_id = ancestor_id, compiler = "workshop-compiler-v1", experimental = true}}
+			dependencies = dependencies.duplicate(true), dependencies_sha256 = dependency_sha,
+			ancestor_variant_id = ancestor_id, ancestor_revision = ancestor_revision,
+			compiler = compiler_version, experimental = true}}
 
 
 static func _sha(bytes: PackedByteArray) -> String:

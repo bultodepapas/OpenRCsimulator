@@ -1,7 +1,7 @@
 // LU-25: dry turf, damp soil and submerged bed on the physically sampled basin.
 shader_type spatial;
 render_mode cull_back, diffuse_burley;
-uniform sampler2D grass : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+#include "res://render/grass_surface.gdshaderinc"
 uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846);
 uniform vec3 sun_dir = vec3(0.0, 0.707, 0.707);
 uniform vec3 sun_lin = vec3(3.14159);
@@ -31,10 +31,10 @@ bool inside_bank(vec2 p) {
 }
 void vertex() { world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
 void fragment() {
- vec3 turf = texture(grass, world_pos.xz / 6.0).rgb;
+ vec3 turf = rough_grass_colour(world_pos.xz);
  float earth = smoothstep(-5.0, -0.7, UV.x);
  float wet = smoothstep(-1.8, 0.6, UV.x);
- vec3 soil = mix(vec3(0.22,0.16,0.08), vec3(0.095,0.10,0.06), wet);
+ vec3 soil = mix(vec3(0.48,0.39,0.245), vec3(0.32,0.335,0.225), wet);
  soil *= 0.85 + 0.25 * clamp(turf.g * 3.0, 0.0, 1.0);
  ALBEDO = mix(turf, soil, earth);
  ROUGHNESS = mix(1.0, 0.85, wet);

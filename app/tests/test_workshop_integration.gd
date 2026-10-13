@@ -60,6 +60,7 @@ func _run() -> void:
 		visual.root.free()
 		host.open_pause()
 		host.end_flight()
+		await ui.settle()
 		check("return restores same editor instance", host.screens.top() == editor and host.flight == null)
 		check("Home is still behind editor", host.home != null and host.home_scene.is_inside_tree())
 	host.close_workshop()
@@ -71,18 +72,26 @@ func _run() -> void:
 		original.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
 		host.open_pause()
 		host.open_workshop()
+		await ui.settle()
 		var checkpoint: Dictionary = original.session.sim.checkpoint()
 		var editor_from_pause: Node = host.screens.top()
 		var bad := payload.duplicate(true)
 		bad.recipe.scale = 0.0
 		host._start_workshop_trial(bad)
 		check("invalid draft retains original flight and editor", host.flight == original and host.screens.top() == editor_from_pause)
+		var valid_field_path: String = host.field_path
+		host.field_path = "user://workshop_missing_field_fixture.json"
+		host._start_workshop_trial(payload)
+		host.field_path = valid_field_path
+		check("failed candidate startup preserves old flight and camera", host.flight == original and original.is_inside_tree() and root.get_camera_3d() == original._camera)
+		check("failed candidate startup preserves old recorder", original.recorder != null and original.session.sim.tick == checkpoint.tick)
 		payload.recipe.scale = 0.5
 		host._start_workshop_trial(payload)
 		check("50% trial from Pause starts independently", host.flight != original and not original.is_inside_tree())
 		if host.flight != original:
 			host.open_pause()
 			host.end_flight()
+			await ui.settle()
 			check("return restores previous flight", host.flight == original and original.is_inside_tree())
 			check("original tick and state preserved", original.session.sim.tick == checkpoint.tick and original.session.sim.state == checkpoint.state)
 			check("previous flight remains paused", original.session.sim.paused)

@@ -77,6 +77,8 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 	var triangle_total := 0
 	var flower_count := 0
 	var crop_count := 0
+	var corn_count := 0
+	var wheat_count := 0
 	var reed_count := 0
 	var shore_count := 0
 	var shore_bank_plant_count := 0
@@ -139,9 +141,14 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 				heights_valid = heights_valid and float(plant.height_m) >= 0.2 and float(plant.height_m) <= 0.5
 			elif asset_id == "corn_4" or asset_id == "wheat_4":
 				crop_count += 1
+				corn_count += 1 if asset_id == "corn_4" else 0
+				wheat_count += 1 if asset_id == "wheat_4" else 0
 	_check("field, club and meadow use only downloaded grass, fern, clover and flower groups", grasses_seen.size() == 4 and flowers_seen.size() == 3)
 	_check("downloaded flower clusters replace the removed synthetic meadow", flower_count >= 45 and flower_count <= 60)
 	_check("two modest downloaded crop plots are populated", crop_count >= 70 and zone_counts.get("farm", 0) == crop_count)
+	_check("budget trim preserves separate 22-plant corn and 62-plant wheat plots",
+		corn_count == 22 and wheat_count == 62 and crop_count == 84,
+		"corn=%d wheat=%d" % [corn_count, wheat_count])
 	var clusters_valid := reed_clusters.size() == 4
 	for cluster_count: Variant in reed_clusters.values():
 		clusters_valid = clusters_valid and int(cluster_count) == 7
@@ -157,6 +164,8 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 	_check("uniform target heights stay in natural ranges", heights_valid)
 	_check("imported plants stay below the 90k provisional triangle budget", triangle_total <= 90000,
 		"%d triangles" % triangle_total)
+	_check("habitat crop and flower trim keeps the total at 83,650 triangles",
+		triangle_total == 83650, "%d triangles" % triangle_total)
 	_check("zone metadata can distinguish club, edge, meadow, farm and shore", ["club", "edge", "meadow", "farm", "shore"].all(func(zone: String) -> bool: return zone_counts.has(zone)))
 	_check("recipe has all expected zones", zone_counts.get("club", 0) > 0 and zone_counts.get("edge", 0) > 0 \
 		and zone_counts.get("meadow", 0) > 0 and zone_counts.get("farm", 0) > 0 and zone_counts.get("shore", 0) > 0)

@@ -474,24 +474,35 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 		set_note("This aircraft is a visual preview and has no flight data.")
 		_update_aircraft_description(entry)
 		return
-	var loaded := AircraftData.load_file(path)
-	if not bool(loaded.get("ok", false)):
+	var source_bytes: PackedByteArray = FileAccess.get_file_as_bytes(path)
+	if source_bytes.is_empty():
 		_base = {}
 		_base_bytes = PackedByteArray()
-		_compiled = {"ok": false, "errors": loaded.get("errors", ["Aircraft data could not be loaded."])}
+		_compiled = {"ok": false, "errors": ["Aircraft source bytes could not be read."]}
 		if is_instance_valid(_preview):
 			_preview.set_aircraft(_base_id, 1.0)
 		_update_aircraft_description(entry)
 		return
-	var loaded_model: Dictionary = loaded.get("model", {})
-	_base = loaded_model.duplicate(true)
-	_base_bytes = FileAccess.get_file_as_bytes(path)
-	if _base_bytes.is_empty():
-		_compiled = {"ok": false, "errors": ["Source aircraft bytes could not be read."]}
+	var parser := JSON.new()
+	if parser.parse(source_bytes.get_string_from_utf8()) != OK or not parser.data is Dictionary:
+		_base = {}
+		_base_bytes = PackedByteArray()
+		_compiled = {"ok": false, "errors": ["Aircraft source is not a valid JSON object."]}
 		if is_instance_valid(_preview):
 			_preview.set_aircraft(_base_id, 1.0)
 		_update_aircraft_description(entry)
 		return
+	_base = (parser.data as Dictionary).duplicate(true)
+	var validation: Dictionary = AircraftData.validate_and_derive(_base.duplicate(true))
+	if not bool(validation.get("ok", false)):
+		_base = {}
+		_base_bytes = PackedByteArray()
+		_compiled = {"ok": false, "errors": validation.get("errors", ["Aircraft data could not be validated."])}
+		if is_instance_valid(_preview):
+			_preview.set_aircraft(_base_id, 1.0)
+		_update_aircraft_description(entry)
+		return
+	_base_bytes = source_bytes
 	if not preserve_recipe:
 		_recipe = Compiler.defaults()
 		_undo_recipe.clear()

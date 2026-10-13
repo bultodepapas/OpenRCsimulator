@@ -1,5 +1,11 @@
 # D6e-R1 climb and pilot-trim probes
 
+The shared-code audit also uses `shared_code_probe.gd`: 400 seeded synthetic states per flyable aircraft, checking load invariance under quaternion sign, a common heading rotation of attitude/wind, and a common velocity offset of aircraft/wind. It also compares the ordinary load path with the stage-air reuse path. Half the samples carry explicit downwash state; a quarter also query ground effect. These checks exercise coordinate and state consistency, including reverse flow and large rates; they do not validate the aircraft's aerodynamic parameters.
+
+`callback_probe.gd -- --fps=15` exercises actual SceneTree callbacks with a keyboard throttle pulse. Repeat at 30, 60 and 144 FPS and compare the reported state hashes at 240 physics ticks. This measures the production session's callback ordering and input sampling, not GPU rendering quality.
+
+`frame_covariance_probe.gd` changes the body-coordinate basis, including inertia, force and rotor momentum, in 1,000 seeded rigid-body evaluations and checks the torque/power identity. `integration_probe.gd` compares a 0.5 s throttle transient at 120/240/480 Hz against 960 Hz for glow, electric and turbine configurations. It reports errors and rejects failed runs; it does not impose a universal convergence order on sampled auxiliary states or nonlinear electrical events.
+
 Use the repository's pinned Godot from the root:
 
 ```powershell
@@ -40,7 +46,7 @@ Pausing also closes the current segment. Independent `telemetry-*.jsonl` files r
 python research/flight-dynamics/climb-trim/analyze_loop.py .tools/climb-observed/2026-10-13T19-28-33-88100 docs/research/flight-dynamics/climb-trim
 ```
 
-The default comparison includes calm air, alternative starting trims and constant-power controls. `--isolate-trim` keeps the original starting state and moves only the elevator trim at five seconds, or removes rotor gyroscopic coupling. Counterfactuals that stop at ground contact are reported with their actual duration. An absence of loops before an early crash is not proof of satisfactory handling. The analyzer requires Python with matplotlib and reads the full captured CSV files; replay only needs pinned Godot and the compact fixture.
+The default comparison includes calm air, alternative starting trims and constant-power controls. `--isolate-trim` keeps the original starting state and moves only the elevator trim at five seconds, or removes rotor gyroscopic coupling. Add `--compare-physics` to `--replay-only` when evaluating an intentional solver change: it reports the historical checkpoint error and loop metrics instead of requiring the new physics to reproduce the old trajectory. The default remains strict. Counterfactuals that stop at ground contact are reported with their actual duration. An absence of loops before an early crash is not proof of satisfactory handling. The analyzer requires Python with matplotlib and reads the full captured CSV files; replay only needs pinned Godot and the compact fixture.
 
 `--prop-sensitivity` runs the first fifteen seconds, switching only the Ct/Cp curves at five seconds, either preserving the prescribed maximum RPM or changing it to the estimated static torque-balance RPM. The comparison curves and their source/provenance are in the evidence directory. Both use one RPM slice throughout each run, retain the legacy RPM-lag law, and extrapolate beyond the slice using the legacy law. First inversion and first out-of-domain times are reported separately: do not describe either case as an installed, validated O.S./APC powertrain. Component-load diagnostics include the sampled downwash lag but omit ground effect/contact loads; they describe the airborne first-loop interval, not the last low-altitude ticks of a counterfactual.
 

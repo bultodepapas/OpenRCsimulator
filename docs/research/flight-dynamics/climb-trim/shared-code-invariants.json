@@ -1,0 +1,77 @@
+{
+  "failures": 0,
+  "results": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "maximum_scaled_error": {
+        "heading_rotation": 2.88657986402541e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 3.94129173741931e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "stik-glow-55ax-2t",
+      "maximum_scaled_error": {
+        "heading_rotation": 1.83308888625841e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 4.14340141945538e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "stik-glow-fs64v-4t",
+      "maximum_scaled_error": {
+        "heading_rotation": 4.9960036108132e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 4.48530101948563e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "maximum_scaled_error": {
+        "heading_rotation": 2.17603712826531e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 3.90798504668055e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "maximum_scaled_error": {
+        "heading_rotation": 7.83811912364712e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 5.72768582287973e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "maximum_scaled_error": {
+        "heading_rotation": 3.25295346215171e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 7.46069872548105e-14
+      },
+      "samples": 400
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "maximum_scaled_error": {
+        "heading_rotation": 1.61425251395661e-14,
+        "quaternion_sign": 0.0,
+        "stage_air": 0.0,
+        "wind_boost": 1.24344978758018e-14
+      },
+      "samples": 400
+    }
+  ],
+  "schema": "openrc-shared-code-invariants-v1",
+  "seed": 2026101303
+}

@@ -39,6 +39,8 @@ python research/glow-engines/verify_integration.py --godot .tools/Godot_v4.7.2-s
 
 Repeat the flight experiment at 480 and 960 Hz. Run timing separately from other test processes. The experiment records each family's cruise, throttle-up/down/cut, rich mixture, lean mixture, exhaustion and takeoff trajectory. Output is model-generated evidence, not observed engine or aircraft data.
 
+Run the verifier from a stable checkout: it fingerprints the declared sources before and after the suite and refuses a single-snapshot pass if they change. Its default parse pass covers the glow kernels; `--parse-all` additionally parses every app GDScript. The catalog, aircraft UI and runway UI fixtures rebuild multiple complete scenes and have a 600 s wall-time ceiling; other verifier commands retain 180 s. These process deadlines do not alter the separate 500 µs physics-tick acceptance target. Windows verification runs the actual Godot executable behind the console launcher so timeouts terminate the test process; partial output and elapsed time are retained.
+
 `python research/glow-engines/refinement_report.py --check` verifies the retained trajectories, exact configuration identities and regenerated report. `packaged_smoke.py --godot <editor> --pack <exported.pck> --out <fresh-directory>` checks compiled resources; use `--godot <exported-executable> --exported` for a native application. `mutations.py --godot <editor> --out <fresh-directory>` reproduces the disposable formula faults.
 
 The standalone `endurance_bench.gd` runs from `--headless --path app --script ../research/glow-engines/endurance_bench.gd`; it takes minutes and refreshes the canonical endurance JSON/log. `-- --validate-only` checks both initial setups without running the long experiment.

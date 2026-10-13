@@ -183,10 +183,10 @@
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
     },
     "induced_drag": {
-      "value": 0.06,
+      "value": 0.075,
       "unit": "1",
       "kind": "estimated",
-      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; loss coefficient constrained to exceed ideal actuator-disk power by at least 5% over positive-thrust forward flow for both assumed geometries; not measured induced flow; NITRO-02 momentum-bound audit"
     }
   }
 }
