@@ -38,10 +38,22 @@ const C3_CONTACT_RELEASE_THRESHOLDS_J := {
 
 const GROUP_ORDER := [
 	"wing_left", "wing_right", "wing_center", "engine", "propeller",
-	"horizontal_tail", "vertical_tail", "gear", "canopy", "tail_boom"
+	"horizontal_tail", "vertical_tail", "gear", "canopy", "tail_boom",
+	"aileron_left", "aileron_right", "elevator", "rudder", "wheel"
 ]
-## CR-09e: tail surfaces glued to a breaking tail boom ride with it (one body) unless the whole airframe is destroyed.
-const TAIL_BOOM_CARRIES := ["horizontal_tail", "vertical_tail"]
+## CR-09e/f: parts fixed to a released section ride with it as one body (glued tail surfaces on a snapping boom,
+## hinged surfaces on their stab, fin or wing half, a wheel on its leg) unless the airframe is destroyed (C4).
+## Carriers are resolved in this order; a part rides with the first released carrier whose box touches it.
+const CARRIERS := [
+	["tail_boom", ["horizontal_tail", "vertical_tail", "elevator", "rudder"]],
+	["horizontal_tail", ["elevator"]],
+	["vertical_tail", ["rudder"]],
+	["wing_left", ["aileron_left"]],
+	["wing_right", ["aileron_right"]],
+	["wing_center", ["aileron_left", "aileron_right"]],
+	["gear", ["wheel"]],
+]
+const CARRY_TOUCH_M := 0.03
 ## CR-09c: an imported node may name its crash section explicitly: glTF extras "openrc_section" (set in Blender as a
 ## custom property) or meta "crash_section" (set by a builder or the section splitter). "core" keeps it with the body.
 const SECTION_EXTRAS_KEY := "openrc_section"
@@ -58,7 +70,12 @@ const GROUP_DELAYS_S := {
 	"vertical_tail": 0.12,
 	"gear": 0.20,
 	"canopy": 0.28,
-	"tail_boom": 0.10
+	"tail_boom": 0.10,
+	"aileron_left": 0.06,
+	"aileron_right": 0.06,
+	"elevator": 0.14,
+	"rudder": 0.14,
+	"wheel": 0.22
 }
 const GROUP_MASS_WEIGHTS := {
 	"core": 0.42,
@@ -71,7 +88,12 @@ const GROUP_MASS_WEIGHTS := {
 	"vertical_tail": 0.045,
 	"gear": 0.05,
 	"canopy": 0.02,
-	"tail_boom": 0.06
+	"tail_boom": 0.06,
+	"aileron_left": 0.02,
+	"aileron_right": 0.02,
+	"elevator": 0.02,
+	"rudder": 0.012,
+	"wheel": 0.02
 }
 
 var _twin: Node3D
@@ -234,7 +256,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 			for i in range(1, _groups.size()):
 				if String(_groups[i].kind) == kind and i != nearest:
 					_groups[i].detached = false
-	_carry_tail_surfaces(class_level)
+	_carry_attached(class_level)
 	for i in range(1, _groups.size()):
 		if not bool(_groups[i].detached) and not bool(_groups[i].get("carried", false)):
 			_groups[0].undetached_weight += _group_weight(String(_groups[i].key))
@@ -588,9 +610,10 @@ func _collect_fragment_groups(node: Node) -> void:
 		var aggregate := {"has": false, "bounds": AABB()}
 		var member_bounds: Array = [] # CR-09d1: each member's own box (a nose leg and a main leg are not one block)
 		for member: Node3D in group.members:
-			_collect_mesh_bounds(member, _twin, [], aggregate)
+			var nested := _selected_roots.filter(func(n: Node) -> bool: return n != member) # CR-09f: a nested part's box is its own
+			_collect_mesh_bounds(member, _twin, nested, aggregate)
 			var own := {"has": false, "bounds": AABB()}
-			_collect_mesh_bounds(member, _twin, [], own)
+			_collect_mesh_bounds(member, _twin, nested, own)
 			if bool(own.has):
 				member_bounds.append(own.bounds)
 		if not bool(aggregate.has):
@@ -690,9 +713,27 @@ func _collect_candidate_nodes(node: Node, groups_by_kind: Dictionary) -> void:
 				if not groups_by_kind.has(part_kind):
 					groups_by_kind[part_kind] = []
 				groups_by_kind[part_kind].append(child)
-				# A selected model subtree already contains its wing, tail, propeller or gear meshes.
+				# A selected model subtree already contains its wing, tail, propeller or gear meshes; only parts it
+				# names explicitly (a hinged aileron in a wing half, a wheel on a leg) become their own sections.
+				_collect_nested_explicit(child, groups_by_kind)
 				continue
 		_collect_candidate_nodes(child, groups_by_kind)
+
+
+func _collect_nested_explicit(node: Node, groups_by_kind: Dictionary) -> void:
+	for child in node.get_children():
+		if child is Node3D and _has_explicit_section(child):
+			var kind := _section_of(child)
+			if not kind.is_empty() and kind != CORE_SECTION:
+				if not groups_by_kind.has(kind):
+					groups_by_kind[kind] = []
+				groups_by_kind[kind].append(child)
+		_collect_nested_explicit(child, groups_by_kind)
+
+
+func _has_explicit_section(node: Node) -> bool:
+	var extras: Variant = node.get_meta("extras") if node.has_meta("extras") else null
+	return node.has_meta(SECTION_META) or (extras is Dictionary and (extras as Dictionary).has(SECTION_EXTRAS_KEY))
 
 
 ## CR-09c: the crash section of a twin node: glTF extras, then builder/splitter meta, then the name rules.
@@ -906,32 +947,39 @@ func _section_mass(kind: String, total_mass: float, total_weight: float) -> floa
 	return maxf(total_mass * _group_weight(kind) / maxf(total_weight, 0.0001), MIN_SECTION_MASS_KG)
 
 
-## CR-09e: a released tail boom carries the tail surfaces glued to it (C3). Their members, box, mass and weight join
-## the boom's group; their own bodies stay unused. C4 destroys the joint, so every surface flies on its own.
-func _carry_tail_surfaces(class_level: int) -> void:
-	var boom := -1
-	for i in range(1, _groups.size()):
-		if String(_groups[i].kind) == "tail_boom" and bool(_groups[i].detached):
-			boom = i
-	if boom < 0 or class_level >= 4:
+## CR-09e/f: a released section carries the parts fixed to it (CARRIERS) whether or not they were struck themselves:
+## their members, box, mass and weight join its group and their own bodies stay unused. C4 destroys every joint.
+func _carry_attached(class_level: int) -> void:
+	if class_level >= 4:
 		return
-	var group: Dictionary = _groups[boom]
-	var bounds: AABB = group.bounds
-	var carried: Array = []
-	var members: Array = group.members.duplicate()
-	for i in range(1, _groups.size()):
-		if TAIL_BOOM_CARRIES.has(String(_groups[i].kind)):
-			members.append_array(_groups[i].members)
-			bounds = bounds.merge(_groups[i].bounds)
-			carried.append(String(_groups[i].key))
-			_groups[i].detached = false
-			_groups[i].carried = true
-	group.members = members
-	group.bounds = bounds
-	group.center = bounds.get_center()
-	group.carried_keys = carried
-	_groups[boom] = group
-	_set_shape_bounds(boom, bounds)
+	for rule in CARRIERS:
+		for c in range(1, _groups.size()):
+			var carrier: Dictionary = _groups[c]
+			if String(carrier.kind) != String(rule[0]) or not bool(carrier.detached) or bool(carrier.get("carried", false)):
+				continue
+			var reach: AABB = (carrier.bounds as AABB).grow(CARRY_TOUCH_M)
+			var members: Array = carrier.members.duplicate()
+			var bounds: AABB = carrier.bounds
+			var carried: Array = carrier.get("carried_keys", []).duplicate()
+			for i in range(1, _groups.size()):
+				var part: Dictionary = _groups[i]
+				if i == c or bool(part.get("carried", false)) or not (rule[1] as Array).has(String(part.kind)):
+					continue
+				if not reach.intersects(part.bounds):
+					continue
+				members.append_array(part.members)
+				bounds = bounds.merge(part.bounds)
+				carried.append(String(part.key))
+				carried.append_array(part.get("carried_keys", []))
+				part.detached = false
+				part.carried = true
+				_groups[i] = part
+			carrier.members = members
+			carrier.bounds = bounds
+			carrier.center = bounds.get_center()
+			carrier.carried_keys = carried
+			_groups[c] = carrier
+			_set_shape_bounds(c, bounds)
 
 
 func _group_mass(group: Dictionary, total_mass: float, total_weight: float) -> float:
@@ -1149,9 +1197,15 @@ func _release_kinds_for(class_level: int, hint: String) -> Array:
 	if class_level == 2:
 		if h.contains("spinner") or h.contains("propeller") or h.contains("nose"):
 			kinds = ["propeller"]
-		elif h.contains("stab") or h.contains("elevator"):
+		elif h.contains("aileron"):
+			kinds = ["aileron_left"] if h.contains("left") else ["aileron_right"] if h.contains("right") else ["aileron_left", "aileron_right"]
+		elif h.contains("elevator"):
+			kinds = ["elevator|horizontal_tail"] # "a|b": the first one this model has (a fixed elevator → its tailplane)
+		elif h.contains("rudder"):
+			kinds = ["rudder|vertical_tail"]
+		elif h.contains("stab"):
 			kinds = ["horizontal_tail"]
-		elif h.contains("fin") or h.contains("rudder"):
+		elif h.contains("fin"):
 			kinds = ["vertical_tail"]
 		elif h.contains("canopy") or h.contains("hatch"):
 			kinds = ["canopy"]
@@ -1178,6 +1232,10 @@ func _release_kinds_for(class_level: int, hint: String) -> Array:
 	var available: Array = []
 	for kind in kinds:
 		var resolved := String(kind)
+		for option in resolved.split("|"):
+			if present.has(option):
+				resolved = option
+				break
 		if resolved.begins_with("wing_") and not present.has(resolved) and present.has("wing_center"):
 			resolved = "wing_center"
 		if present.has(resolved) and not available.has(resolved):

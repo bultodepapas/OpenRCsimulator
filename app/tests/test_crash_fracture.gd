@@ -39,10 +39,9 @@ func _run() -> void:
 	_check("Stik twin prepares", _wreck.prepare(airplane.root))
 	var gear := _groups("gear")
 	_check("gear flies as separate physical parts (main strap + wheels, nose leg, tail skid)", gear.size() == 3, str(gear.size()))
-	var main_members := 0
-	for g: Dictionary in gear:
-		main_members = maxi(main_members, (g.members as Array).size())
-	_check("the main strap keeps both wheels on one body", main_members >= 3)
+	_check("each wheel is its own part (pops off in a destroying crash)", _groups("wheel").size() == 3)
+	_check("hinged surfaces are their own parts", _groups("aileron_left").size() == 1 and _groups("aileron_right").size() == 1
+		and _groups("elevator").size() == 1 and _groups("rudder").size() == 1)
 	var shares := 0.0
 	for g: Dictionary in gear:
 		shares += float(_wreck._key_share[g.key])
@@ -52,7 +51,7 @@ func _run() -> void:
 	_start("C3", "fin_top", _pose * Vector3(0, 0.05, 0.8))
 	var boom: Dictionary = _groups("tail_boom")[0]
 	_check("C3 tail hit releases the boom", bool(boom.detached))
-	_check("C3 tail hit carries stab and fin on the boom", (boom.get("carried_keys", []) as Array).size() == 2)
+	_check("C3 tail hit carries stab, fin, elevator and rudder on the boom", (boom.get("carried_keys", []) as Array).size() == 4)
 	await _settle(0.6)
 	_check("C3 tail hit shows both sides of the fuselage break", _visible("fracture_fuselage_core") and _visible("fracture_fuselage_boom"))
 	_check("C3 tail hit keeps the wing roots unbroken", not _visible("fracture_wing_root_left") and not _visible("fracture_wing_root_right"))
@@ -61,14 +60,27 @@ func _run() -> void:
 	await _settle(0.6)
 	_check("C3 left wing hit shows only the left root splinters", _visible("fracture_wing_root_left") and not _visible("fracture_wing_root_right") and not _visible("fracture_fuselage_core"))
 
+	_start("C3", "left_wing_tip", _pose * Vector3(-0.7, 0, 0.1))
+	var wing: Dictionary = _groups("wing_left")[0]
+	_check("C3 wing hit: the aileron rides on its wing half", bool(wing.detached) and (wing.get("carried_keys", []) as Array).has("aileron_left")
+		and not bool(_groups("aileron_left")[0].detached))
 	_start("C2", "wheel", _pose * Vector3(0, -0.22, -0.25))
 	var released := _groups("gear").filter(func(g: Dictionary) -> bool: return bool(g.detached))
 	_check("C2 gear hit releases only the struck (nose) leg", released.size() == 1 and Vector3(released[0].center).z < 0.0)
+	_check("C2 gear hit: the nose wheel rides on its leg", (released[0].get("carried_keys", []) as Array).size() == 1)
+	_start("C2", "left_aileron", _pose * Vector3(-0.5, 0, 0.2))
+	_check("C2 aileron hit tears off only that aileron", bool(_groups("aileron_left")[0].detached) and not bool(_groups("wing_left")[0].detached)
+		and not bool(_groups("aileron_right")[0].detached))
 
 	_start("C4", "fuselage", _pose * Vector3(0, -0.05, -0.3))
 	await _settle(1.0)
 	_check("C4 shows every fracture", _visible("fracture_fuselage_core") and _visible("fracture_fuselage_boom") and _visible("fracture_wing_root_left") and _visible("fracture_wing_root_right"))
 	_check("C4 breaks the tail surfaces off the boom", (_groups("tail_boom")[0].get("carried_keys", []) as Array).is_empty())
+	var all_free := true
+	for kind in ["aileron_left", "aileron_right", "elevator", "rudder", "wheel"]:
+		for g: Dictionary in _groups(kind):
+			all_free = all_free and bool(g.detached)
+	_check("C4 tears every hinged surface and wheel off", all_free)
 	_wreck.reset()
 	_check("reset hides the fracture detail again", not _visible("fracture_fuselage_core") and not _visible("fracture_wing_root_left"))
 	print("CR-09e fracture: %d checks, %d failed" % [_checks, _failed])

@@ -12,7 +12,6 @@ const BALSA := Color("d9c08e")
 const SIDE_SHEET_M := 0.00635
 const TOP_SHEET_M := 0.003175
 const BOTTOM_SHEET_M := 0.0023813
-const SLEEVE_DEPTH_M := 0.018
 
 
 static func build(root: Node3D, break_station: int, wing_frames: Dictionary) -> void:
@@ -90,18 +89,7 @@ static func _fuselage_break(parent: Node3D, station: Array, direction: float, se
 	var film := _surface(Finish.RED, "skin", true)
 	# Into the piece = the side the piece lies on; the gap is on the other side.
 	var into := direction # boom lies aft (+Z) of the station, the front piece forward (−Z)
-	var z_in := z + into * SLEEVE_DEPTH_M
-	# Inner balsa faces (raw wood seen through the broken end), one plate per wall, facing the cavity.
-	var walls := [
-		[Vector3(w - SIDE_SHEET_M, bottom, 0), Vector3(w - SIDE_SHEET_M, top, 0), Vector3.LEFT],
-		[Vector3(-w + SIDE_SHEET_M, top, 0), Vector3(-w + SIDE_SHEET_M, bottom, 0), Vector3.RIGHT],
-		[Vector3(-w, top - TOP_SHEET_M, 0), Vector3(w, top - TOP_SHEET_M, 0), Vector3.DOWN],
-		[Vector3(w, bottom + BOTTOM_SHEET_M, 0), Vector3(-w, bottom + BOTTOM_SHEET_M, 0), Vector3.UP],
-	]
-	for wall in walls:
-		var a: Vector3 = wall[0]
-		var b: Vector3 = wall[1]
-		_quad(wood, a + Vector3(0, 0, z), b + Vector3(0, 0, z), b + Vector3(0, 0, z_in), a + Vector3(0, 0, z_in), wall[2])
+	# The inner balsa faces themselves are the fuselage's own inner lining (CR-09f, ugly_stik_model.gd).
 	# The cut faces of the sheets (end grain) at the station, facing the gap.
 	var gap := Vector3(0, 0, -into)
 	_quad(wood, Vector3(w, bottom, z), Vector3(w, top, z), Vector3(w - SIDE_SHEET_M, top, z), Vector3(w - SIDE_SHEET_M, bottom, z), gap)

@@ -781,6 +781,7 @@ static func _add_main_gear(root: Node3D, gear: Dictionary) -> void:
 		var pivot := Node3D.new()
 		pivot.name = "wheel_" + label + "_pivot"
 		pivot.position = center
+		pivot.set_meta("crash_section", "wheel") # CR-09f: a wheel can pop off its axle in a destroying crash
 		root.add_child(pivot)
 		gear[label] = pivot
 		_add_wheel(pivot, "gear_" + label, float(e.main_wheel_diameter) * 0.5, 0.024, side)
@@ -820,6 +821,7 @@ static func _add_nose_gear(root: Node3D, gear: Dictionary) -> void:
 	var nose_axle := Node3D.new()
 	nose_axle.name = "wheel_nose_pivot"
 	nose_axle.position = Vector3(NOSE_WHEEL_OFFSET, 0, 0)
+	nose_axle.set_meta("crash_section", "wheel")
 	steering.add_child(nose_axle)
 	gear["nose"] = nose_axle
 	_add_wheel(nose_axle, "nosewheel", float(e.nose_wheel_diameter) * 0.5, 0.022, 1.0)

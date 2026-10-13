@@ -194,7 +194,33 @@ static func _fuselage(root: Node3D) -> void:
 		for j in count:
 			_triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1 if end == 0 else 1), "red")
 	st.generate_tangents()
-	var fuselage := _instance("fuselage", st.commit(), root)
+	var mesh := st.commit()
+	# CR-09f: raw balsa inside the box (Jensen sheet 1: 1/4 in sides, 1/8 in top, 3/32 in bottom), facing the cavity:
+	# the same rounded section shrunk by each wall's sheet, with a smaller corner radius. A separate mesh, so the skin
+	# stays the closed solid the clearance tools probe; enclosed in flight and seen only where the wreck breaks it open.
+	var inner := SurfaceTool.new()
+	inner.begin(Mesh.PRIMITIVE_TRIANGLES)
+	inner.set_material(Finish.material(Fracture.BALSA, "wood"))
+	var inner_rings: Array = []
+	for station in D.fuselage_stations:
+		var wi: float = float(station[1]) - Fracture.SIDE_SHEET_M
+		var top_i: float = float(station[2]) - Fracture.TOP_SHEET_M
+		var bottom_i: float = float(station[3]) + Fracture.BOTTOM_SHEET_M
+		var radius := clampf(minf(float(station[1]) * 0.16, (float(station[2]) - float(station[3])) * 0.12) - 0.003, 0.0004, 0.45 * minf(wi, top_i - bottom_i))
+		var ring: Array = []
+		for corner in [[wi - radius, top_i - radius, 90.0], [wi - radius, bottom_i + radius, 0.0], [-wi + radius, bottom_i + radius, -90.0], [-wi + radius, top_i - radius, -180.0]]:
+			for k in FUSELAGE_CORNER_SEGMENTS + 1:
+				var angle := deg_to_rad(float(corner[2]) - 90.0 * k / FUSELAGE_CORNER_SEGMENTS)
+				ring.append(Vector3(corner[0], corner[1], float(station[0])) + Vector3(cos(angle), sin(angle), 0) * radius)
+		inner_rings.append(ring)
+	for i in range(inner_rings.size() - 1):
+		for j in count:
+			var k := (j + 1) % count
+			var points := [inner_rings[i][j], inner_rings[i][k], inner_rings[i + 1][k], inner_rings[i + 1][j]]
+			var normals := [-directions[j], -directions[k], -directions[k], -directions[j]]
+			_smooth_quad(inner, points, normals, -(directions[j] + directions[k]).normalized(), "")
+	var lining := _instance("fuselage_lining", inner.commit(), root)
+	var fuselage := _instance("fuselage", mesh, root)
 	# CR-09e: in a heavy crash the boom snaps at the first station aft of the wing trailing edge (estimate: where the
 	# Stik's fuselage starts to taper behind the saddle). The map follows the triangle order above: bays, then the
 	# front and rear caps. Only the wreck's twin is split (render/crash/section_splitter.gd); this mesh never changes.
@@ -202,6 +228,8 @@ static func _fuselage(root: Node3D) -> void:
 	var bays := rings.size() - 1
 	fuselage.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
 		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles, 0, count, 1, count]]})
+	lining.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
+		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles]]})
 
 
 # A traced tip tapers spanwise toward the leading edge, preserving nominal maximum span.
@@ -288,20 +316,29 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 	var polygon := PackedVector2Array()
 	for p in section: polygon.append(Vector2(p[0] * D.wing.chord + z_offset, p[1] * D.wing.chord))
 	var triangles := Geometry2D.triangulate_polygon(polygon)
+	# CR-09f: the cap on the centre line is the 1/4 in balsa root rib (W1), hidden against the other half in flight and
+	# bare wood once the wreck tears the half off.
+	var rib := SurfaceTool.new()
+	rib.begin(Mesh.PRIMITIVE_TRIANGLES)
+	rib.set_material(Finish.material(Fracture.BALSA, "wood"))
 	for x in [x0, x1]:
+		var root_rib := is_zero_approx(x + span_offset)
+		var target := rib if root_rib else st
 		for i in range(0, triangles.size(), 3):
 			# Closed caps use the same planar atlas and winding as the adjacent skin.
 			var vertices := [_wing_vertex(x, section[triangles[i]], z_offset, span_offset, chord_origin), _wing_vertex(x, section[triangles[i + 1]], z_offset, span_offset, chord_origin), _wing_vertex(x, section[triangles[i + 2]], z_offset, span_offset, chord_origin)]
 			var n := Vector3(-1 if x == x0 else 1, 0, 0)
 			if (vertices[2] - vertices[0]).cross(vertices[1] - vertices[0]).dot(n) < 0: vertices.reverse()
 			for point in vertices:
-				st.set_normal(n)
-				st.set_uv(Finish.uv(point + uv_offset, "wing"))
-				st.add_vertex(point)
+				target.set_normal(n)
+				target.set_uv(Finish.uv(point + uv_offset, "wing"))
+				target.add_vertex(point)
 	st.generate_tangents() # US-V09b: the covering's film-structure normal map needs a tangent frame
 	var mesh := st.commit()
 	var gap_vertices: Variant = gap.commit_to_arrays()[Mesh.ARRAY_VERTEX]
 	if gap_vertices != null and not gap_vertices.is_empty(): gap.commit(mesh)
+	var rib_vertices: Variant = rib.commit_to_arrays()[Mesh.ARRAY_VERTEX]
+	if rib_vertices != null and not rib_vertices.is_empty(): rib.commit(mesh)
 	_instance(label, mesh, parent)
 
 
@@ -309,6 +346,8 @@ static func _hinge(label: String, parent: Node3D, pos: Vector3, hinges: Dictiona
 	var pivot := Node3D.new()
 	pivot.name = label + "_hinge"
 	pivot.position = pos
+	# CR-09f: each hinged surface can tear off its hinges as its own wreck part (render/crash/wreck.gd CARRIERS).
+	pivot.set_meta("crash_section", label)
 	parent.add_child(pivot)
 	hinges[label] = pivot
 	return pivot
