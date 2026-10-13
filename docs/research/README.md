@@ -32,9 +32,11 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 [EX-06/08/09 realism audit](extra-300-realism/README.md) links the manual/source audit, corrections, behavior matrix, regression results and remaining physical gaps. The [Extra 300S plan](../EXTRA-300-PLAN.md) owns aircraft implementation; the research records realism findings and remaining physical gaps.
 
-### Avanti S flight realism
+<a id="avanti-s-flight-realism"></a>
 
-[AV-14…17 realism investigation](avanti-realism/README.md) records the A200/P100-RX source audit, geometry and mass-property corrections, full-session behavior checks, and remaining physical-validation gaps. The [Avanti plan](../AVANTI-S-PLAN.md) owns pending aircraft work.
+### Ventage Jet flight realism
+
+[AV-14…17 realism investigation](avanti-realism/README.md) records the A200/P100-RX source audit, geometry and mass-property corrections, full-session behavior checks, and remaining physical-validation gaps. The [Ventage Jet plan](../AVANTI-S-PLAN.md) owns pending aircraft work.
 
 ### Turbo Lumber Evolution (Timber)
 
@@ -74,9 +76,11 @@ Start with the [source and local-reference map](ugly-stik-resources.md), [model 
 
 Read the [family research](extra-300-family-research.md), [integration audit](extra-300-integration-audit.md), [realism audit](extra-300-realism/README.md), and [generated physics derivation](../../research/extra-300/ex05/derivation.md). Shared authoring tools are in [extra-aircraft-tooling](extra-aircraft-tooling/README.md). The [EXTRA-300-PLAN](../EXTRA-300-PLAN.md) owns aircraft implementation.
 
-### Avanti S
+<a id="avanti-s"></a>
 
-Start with [family research](avanti-s-family-research.md), the [integration audit](avanti-s-integration-audit.md), and [AV-06 physics model](avanti-s-av06-physics-model.md). For appearance, see the [latest contour refinement](avanti-s-refinement-v4.md); generated measurements and viewers remain in [research/avanti-s](../../research/avanti-s/). The [Avanti S plan](../AVANTI-S-PLAN.md) owns implementation.
+### Ventage Jet
+
+The simulator name is Ventage Jet; the source aircraft is the SebArt Avanti S (A200). Start with [family research](avanti-s-family-research.md), the [integration audit](avanti-s-integration-audit.md), and [AV-06 physics model](avanti-s-av06-physics-model.md). For appearance, see the [latest contour refinement](avanti-s-refinement-v4.md); generated measurements and viewers remain in [research/avanti-s](../../research/avanti-s/). The [Ventage Jet plan](../AVANTI-S-PLAN.md) owns implementation.
 
 ### P-51D
 

@@ -33,7 +33,7 @@ Same cases under the CR-08a estimator and CR-08b as implemented (§3.1; values f
 | Stik vertical nose-in, 30 m/s | 1014 J → C3 | 351 J/kg → C4 |
 | P-51 belly landing (v_n 1, v_t 25, runway) | 1797 J → C3 | 0.45 J/kg → C0, abrasion 12.9 J/kg → C1 |
 | P-51 vertical nose-in, 15 m/s | 1887 J → C3 | 88 J/kg → C3 |
-| Avanti wingtip on landing (v_n 1, v_t 30, runway) | 1407 J → C3 | 0.03 J/kg → C0, abrasion 1.2 J/kg → C1 |
+| Ventage Jet wingtip on landing (v_n 1, v_t 30, runway) | 1407 J → C3 | 0.03 J/kg → C0, abrasion 1.2 J/kg → C1 |
 
 ## 2. Scope
 
@@ -55,7 +55,7 @@ Use one pure float64 function for ground, gear and scenery contacts. Inputs are 
 
 - **Effective mass:** m_eff = 1 / (1/m + (r×n)ᵀ I⁻¹ (r×n)). Extract the code already in `scenery_collision._event_at` into a shared helper, coordinated with LU-05, so both paths use the same number.
 - **Normal channel (breakage):** E_n = ½ m_eff v_n². Grade it on the specific energy ε = E_n / (m · d). d is the aircraft durability factor: default 1.0, source `estimate` (decision D1). Provisional cuts: **C0 ≤ 0.5, C1 ≤ 2.5, C2 ≤ 25, C3 ≤ 150 J/kg, C4 above**. They replaced the joule bins in CR-08b and are not calibrated. Dividing by mass makes the grade independent of aircraft size for similarly built airframes.
-- **Slapdown:** a contact off the CG stops only m_eff. The CG's remaining normal energy, (½ m v_cg,n² − E_n) × transfer, reaches the surface through a second contact and is graded on the same cuts. It is an upper bound with body rates ignored. Without it a long-nosed 45° dive (Avanti, m_eff/m = 0.2) graded only C2.
+- **Slapdown:** a contact off the CG stops only m_eff. The CG's remaining normal energy, (½ m v_cg,n² − E_n) × transfer, reaches the surface through a second contact and is graded on the same cuts. It is an upper bound with body rates ignored. Without it a long-nosed 45° dive (Ventage Jet, m_eff/m = 0.2) graded only C2.
 - **Tangential channel (abrasion):** friction work during the impact, μ (m_eff v_n) v_t, capped at ½ m_eff v_t², per kilogram. At ≥ 1 J/kg it raises a contact to C1 at most. It drives marks, scrape audio, prop strikes and gear tear-off, and never drives section breakup. μ values are estimates.
 - **Several contacts in one tick:** take the worst normal channel. The wreck's secondary contacts feed the existing `accumulate_damage`, so damage only grows.
 
@@ -123,7 +123,7 @@ The crash card shows, for example, "Tip stall at 4 m: α 17°, 8.2 m/s, bank 35�
 | CR-09b | Contact-ordered, momentum-directed breakup; C2 single-part release; no radial scatter | Wreck tests per class (released set, order, scatter energy ≤ cap); capture sequence |
 | CR-03b | Directional, surface- and material-aware dust, chips and sparks; counts by ε | Counts-per-class tests; captures per surface × class on the owner's host |
 | CR-02b | Audio layers mapped to the ladder; scrape held while the wreck slides | Focused layer-per-class tests; native peak ≤ −1 dBFS |
-| CR-22b | Energy-source research note; `energy_source` kind; fire, fluid and LiPo smoke matrix | Research note with sources; one test per propulsion kind; Avanti fire unchanged |
+| CR-22b | Energy-source research note; `energy_source` kind; fire, fluid and LiPo smoke matrix | Research note with sources; one test per propulsion kind; Ventage Jet fire unchanged |
 | CR-22c | Emitter pools or ratios, distance LOD, pre-warm, per-class budgets | Extended `qualify.py` p95 table; no pool growth over repeated crashes |
 
 Order: CR-08b → CR-01d → CR-09b → CR-03b and CR-02b → CR-22b → CR-22c. CR-01e can run in parallel after CR-08b. CR-08b goes first because it needs only hull-point positions, not labels. Each step is a separate commit with its proof.

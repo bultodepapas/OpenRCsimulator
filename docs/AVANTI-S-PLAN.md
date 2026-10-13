@@ -1,4 +1,4 @@
-# Avanti S turbine jet: plan
+# Ventage Jet turbine jet: plan
 
 2026-10-12 · Revision 8 · **Status: AV-14…16 audit and bounded corrections complete; AV-17 integration evidence recorded, with the uninterrupted suite still failing a reproduced baseline atmosphere test. The catalog aircraft remains experimental. Planform metrology, turbine presentation, flap/gear simulation, fuel burn, independent validation and delivery remain open.**
 
@@ -48,11 +48,11 @@ Keep AV-01 geometry provisional until calibrated A200 planform, tail and equipme
 
 ## 6. AV-14…17 realism investigation and correction
 
-Written before implementation. The user's focus is the Avanti's complete RC flight behavior. Baseline `8b2020f4cc929bec62585deeea0d356b7c8af9df`, pinned Godot 4.7.2: 30 handling and 27 turbine checks pass. The app snapshot and sources are frozen independently of concurrent landscape/docs/validation work. Evidence lives in `docs/research/avanti-realism/AV-14/`; reproducible tools belong in `research/avanti-s/av14/`.
+Written before implementation. The user's focus is the Ventage Jet's complete RC flight behavior. Baseline `8b2020f4cc929bec62585deeea0d356b7c8af9df`, pinned Godot 4.7.2: 30 handling and 27 turbine checks pass. The app snapshot and sources are frozen independently of concurrent landscape/docs/validation work. Evidence lives in `docs/research/avanti-realism/AV-14/`; reproducible tools belong in `research/avanti-s/av14/`.
 
 ### Ownership and architecture
 
-The lead owns integration, this plan, the evidence/tools, bounded AV-06 source/data corrections and Avanti test changes. Three Luna/max audits cover airframe/primary sources, turbine/consumers, and controls/lifecycle/coverage, with separate report files. Contributions require lead review. Existing model/render, shared propulsion, input, crash and scenery owners retain their paths; no external owner acknowledgement is implied. Inspect shared-file status before edits. No production change starts until the audit findings and this plan are reviewed.
+The lead owns integration, this plan, the evidence/tools, bounded AV-06 source/data corrections and Ventage Jet test changes. Three Luna/max audits cover airframe/primary sources, turbine/consumers, and controls/lifecycle/coverage, with separate report files. Contributions require lead review. Existing model/render, shared propulsion, input, crash and scenery owners retain their paths; no external owner acknowledgement is implied. Inspect shared-file status before edits. No production change starts until the audit findings and this plan are reviewed.
 
 Retain the v2 contract, source generator, float64 session state and existing hinges. Correct demonstrated equations or provenance through the authored source; derive dependent quantities together. Keep uncertainty explicit instead of inventing measured Avanti behavior. The original A200/P100-RX identity excludes EDF, XS, Krill and BL data. No new aircraft-ID physics branch, guessed drag limiter, hidden stability assistance or partially active gear/flap module.
 
@@ -65,7 +65,7 @@ Retain the v2 contract, source generator, float64 session state and existing hin
 | Inventory | Paired aileron/flap/elevator servos span empty space as uniform boxes. Separate estimated hardware centers and local envelopes, retaining pair masses and longitudinal/vertical assumptions. Main gear is already separated. Unknown battery/electronics distribution remains an explicit approximation. |
 | Propulsion and environment | Audit thrust/rpm tables, ECU demand, acceleration/deceleration, installed loss, ram drag/normal force, gyro signs, atmosphere and off-state consumers. Keep identified-vs-borrowed-vs-estimated evidence distinct. Add sensitivity evidence before any numerical retuning. |
 | Controls and aero | Review differential throws, normalized servo time, trim saturation, damping, all-axis/both-sign response, high/normal rates, glide/climb, stalls/spins and inverted behavior. Manual radio expo is not a measured aerodynamic parameter or an instruction to apply expo twice. |
-| Lifecycle / ground | Existing handling uses `Maneuvers.fly()` and skips session crash checks. Add Avanti-specific full-session test/probe coverage, reset/fault/finite/trace completion guards, replay and deliberate hull impact. Gear/flaps are inactive; proper takeoff, landing and braking remain unimplemented. Probe approach energy and supported terrain/crash behavior without claiming gear-down landing acceptance. |
+| Lifecycle / ground | Existing handling uses `Maneuvers.fly()` and skips session crash checks. Add Ventage Jet-specific full-session test/probe coverage, reset/fault/finite/trace completion guards, replay and deliberate hull impact. Gear/flaps are inactive; proper takeoff, landing and braking remain unimplemented. Probe approach energy and supported terrain/crash behavior without claiming gear-down landing acceptance. |
 | Performance claims | Existing loop check integrates body pitch rate; that alone cannot prove a planar loop. Predicted level maximum exceeds the manual's 250 km/h tested-speed guidance; it is not a validated structural or operational envelope. No unsupported flutter/breakup model will be fabricated. |
 
 ### Phases and measurable acceptance
@@ -75,7 +75,7 @@ Retain the v2 contract, source generator, float64 session state and existing hin
 | AV-14 | Trace source → loader → control/force/animation/lifecycle consumers; verify primary sources and baseline | Three reviewed audits, dated primary URLs and variant/loading limits, baseline hashes/logs. Identify every changed input's consumer and separate unsupported systems from valid zero states. |
 | AV-15 | Correct confirmed geometry/inventory/provenance defects in generator/inputs | Analytic area/first-moment fixture independent of implementation; paired-mass/tensor oracle and physical principal moments; generator `--check`; strict v2 Godot validation. Document each intentional numerical delta and unchanged assumptions; never compensate with arbitrary coefficient tuning. |
 | AV-16 | Full flight, propulsion and lifecycle probes | Same baseline/candidate matrix at 240/480 Hz: multiple trim speeds, normal/high all-axis both signs, turbine step/idle energy/go-around input, glide/approach, guided turns/slips, stall/commanded recovery, pitch-loop inputs, inverted trim, wind/density. Require expected rows, continuous finite state, no unintended crash/fault, exact checkpoint/restart. Use ≤1% selected steady and ≤5% selected smooth refinement bands; report nonlinear events and unmatched stochastic realizations individually. Define any geometric loop proof explicitly. |
-| AV-17 | Integration and cost | Avanti/turbine tests, all four model contracts, affected shared checks and `app/test.sh` in an isolated LF checkout; reproduce unrelated failures on baseline. Same-host alternating trim/stalled timing, investigate repeatable >5% regression. Final source/hash/link review; results and remaining physical gaps in the evidence entry point. |
+| AV-17 | Integration and cost | Ventage Jet/turbine tests, all four model contracts, affected shared checks and `app/test.sh` in an isolated LF checkout; reproduce unrelated failures on baseline. Same-host alternating trim/stalled timing, investigate repeatable >5% regression. Final source/hash/link review; results and remaining physical gaps in the evidence entry point. |
 
 ### Risks and research basis
 

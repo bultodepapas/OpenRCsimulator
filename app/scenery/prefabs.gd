@@ -30,7 +30,7 @@ const CATALOG := {
 	"person_sitting": {size = Vector3(0.61, 1.444, 0.75), tier = "ornament", shadow = false, kind = "estimated", source = "LU-21 Anrico sitting03; seat-contact height 0.4742 m plus 0.006 m fitting offset"},
 	"person_pilot": {size = Vector3(0.67, 1.78, 0.45), tier = "ornament", shadow = true, kind = "estimated", source = "LU-21 MPFB pilot pose with transmitter; uniform adult scale"},
 	"avanti_cradle": {size = Vector3(0.7, 0.48, 1.63), tier = "standard", shadow = true, kind = "estimated",
-		source = "Original padded trestle cradle for the gear-up Avanti S fleet snapshot; visual support estimate"},
+		source = "Original padded trestle cradle for the gear-up Ventage Jet fleet snapshot; visual support estimate"},
 	"barn": {size = Vector3(10.8, 7.5, 14.8), tier = "landmark", shadow = false, kind = "estimated", source = "Gambrel barn 10 × 14 m"},
 	"silo": {size = Vector3(5.6, 15.0, 5.6), tier = "landmark", shadow = false, kind = "estimated", source = "Farm silo, 14 m min (SC-13: tall parts carry the farmstead)"},
 	"farmhouse": {size = Vector3(10.0, 7.2, 8.0), tier = "standard", shadow = false, kind = "estimated", source = "Two-storey farmhouse"},

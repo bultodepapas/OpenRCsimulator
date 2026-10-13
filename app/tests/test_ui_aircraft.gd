@@ -66,15 +66,15 @@ func _run() -> void:
 	_check("Extra: Fly enabled, its status says experimental", not home.fly_button.disabled and home.aircraft_status_label.text.begins_with("Experimental"))
 	_check("choosing never starts a flight", app.flight == null)
 
-	# Next again: the P-51 (experimental, flyable); then the Avanti (experimental since AV-07, flyable).
+	# Next again: the P-51 (experimental, flyable); then the Ventage Jet (experimental since AV-07, flyable).
 	await ui.tap(KEY_ENTER)
 	_check("P-51: shown, experimental, Fly enabled", home.aircraft_id == P51 and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental") and app.home_scene.airplane.aircraft_id == P51, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
-	_check("Avanti: shown, experimental, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled
+	_check("Ventage Jet: shown, experimental, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental"), home.aircraft_status_label.text)
-	_check("Avanti: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
-	_check("choosing the Avanti never starts a flight", app.flight == null)
+	_check("Ventage Jet: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
+	_check("choosing the Ventage Jet never starts a flight", app.flight == null)
 
 	# The Timber is now the experimental, data-backed electric aircraft (TT-08/10).
 	await ui.tap(KEY_ENTER)
@@ -87,14 +87,14 @@ func _run() -> void:
 	_check("Timber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
 	_check("Timber: counter 5 of 5", home.aircraft_count_label.text == "Aircraft 5 of 5", home.aircraft_count_label.text)
 	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
-	# Wraps to the Stik; Left twice goes back to the Avanti. Spanish texts follow the language.
+	# Wraps to the Stik; Left twice goes back to the Ventage Jet. Spanish texts follow the language.
 	await ui.tap(KEY_ENTER)
 	_check("next wraps around to the Ugly Stik", home.aircraft_id == STIK)
 	await ui.tap(KEY_LEFT)
 	await ui.tap(KEY_ENTER)
 	_check("previous arrow goes back to the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
-	_check("previous again: the Avanti", home.aircraft_id == AVANTI, home.aircraft_id)
+	_check("previous again: the Ventage Jet", home.aircraft_id == AVANTI, home.aircraft_id)
 	app.set_language("es")
 	await ui.settle()
 	# Labels keep the English source and translate when drawn (auto-translate), so read them the way they are drawn.
@@ -108,16 +108,16 @@ func _run() -> void:
 	_check("Spanish: the Timber card shows its Spanish name", home.aircraft_name_label.text == "Turbo Tronco Evolución", home.aircraft_name_label.text)
 	app.set_aircraft(AVANTI)
 	await ui.settle()
-	_check("Spanish: a proper name stays as written", home.aircraft_name_label.text == Catalog.entry(AVANTI).name, home.aircraft_name_label.text)
+	_check("Spanish: Ventage Jet keeps its name", home.aircraft_name_label.text == Catalog.entry(AVANTI).name, home.aircraft_name_label.text)
 	app.set_language("en")
 	await ui.settle()
 	_check("English: the Timber card shows its English name", Catalog.entry(TIMBER).name == "Turbo Lumber Evolution" and tr(Catalog.entry(TIMBER).name) == "Turbo Lumber Evolution")
 	await _close(app)
 
-	# A new start remembers the Avanti; then fly the Timber through Home's real Fly action.
+	# A new start remembers the Ventage Jet; then fly the Timber through Home's real Fly action.
 	app = await _app()
 	home = app.home
-	_check("restart: the saved Avanti comes back, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled, ui.focus_name())
+	_check("restart: the saved Ventage Jet comes back, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled, ui.focus_name())
 	app.set_aircraft(TIMBER)
 	await ui.settle()
 	_check("reselected Timber: Fly enabled and choice saved", home.aircraft_id == TIMBER and not home.fly_button.disabled

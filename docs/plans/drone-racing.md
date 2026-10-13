@@ -146,10 +146,10 @@ Rotor quantities:
 | --- | --- |
 | ω_i ≥ 0 | Rotor i speed, rad/s (stored as rpm in state, as the shaft is today) |
 | `spin` ±1 per rotor | Explicit data field: +1 counter-clockwise viewed from above |
-| a = [0, 0, −1] | Thrust axis in FRD: every rotor pushes along body −z (up). Per-rotor tilt is a later capability. |
+| a = [0, 0, −1] | Positive-thrust axis in FRD: every rotor pushes along body −z (up). Per-rotor tilt is a later capability. |
 | r_i | Rotor hub position from the CG, FRD |
-| V_c, V_p | Air velocity at the hub resolved along a (positive climbing) and in the rotor plane |
-| μ = V_p/(ωR), μ_c = V_c/(ωR), λ = v_i/(ωR) | In-plane advance ratio, climb ratio, induced inflow ratio |
+| V_a, V_p | Air velocity at the hub resolved along the rotor axis and in the rotor plane; the axial sign is converted once at the HELI-04 interface |
+| μ = V_p/(ωR), μ_a = V_a/(ωR), λ_i | Advance ratio, normalized axial flow and induced inflow under the shared HELI-04 sign convention |
 | θ_75, θ_tw | Equivalent blade pitch at 0.75R and linear twist of the fixed-pitch prop (from the helical pitch, DR-02) |
 | d_i ∈ [0, 1] | ESC duty command for rotor i |
 
@@ -160,42 +160,38 @@ Rotor numbering follows the Betaflight quad-X convention (1 rear right, 2 front 
 - speeding the counter-clockwise pair yaws the body clockwise (positive r)
 - the reaction torque of each rotor on the body has the sign of −`spin`
 
-All angles are radians internally; data files use the contract's exact units.
+All angles are radians internally; data files use the contract's exact units. The shared inflow boundary defines the sign convention for both vehicles; tests cover positive and negative axial flow rather than assuming thrust is even in flow direction. Thrust can be signed in windmill-brake flow; reversing motor rotation remains out of scope.
 
 ### 4.3 Rotor loads
 
-The air velocity at hub i is the CG air velocity plus ω × r_i, resolved into V_c (along a) and the in-plane vector V_p.
+The air velocity at hub i is the CG air velocity plus ω × r_i, resolved into axial V_a and in-plane V_p. Convert the axial sign once to the HELI-04 contract before evaluating the rotor law.
 
-**Thrust** (blade-element with uniform inflow, Padfield/Leishman form, for a fixed-pitch untapered-equivalent blade):
+**Thrust** (fixed-pitch blade-element form from DR-01, evaluated with the shared inflow sign convention):
 
-    C_T = (a_l·σ/2)·[ θ_75·(1/3 + μ²/2) + θ_tw·(1/4 + μ²/4) − (μ_c + λ)/2 ]
-    C_T ← C_Tmax·tanh(C_T/C_Tmax)          (smooth saturation; reverse thrust is not representable with these props)
+    C_T = f_BE(θ_75, θ_tw, μ, μ_a, λ_i; a_l, σ)
+    C_T ← C_Tmax·tanh(C_T/C_Tmax)          (smooth signed saturation)
     T   = C_T·ρ·πR²·(ωR)²
 
+- `f_BE` is the fixed-pitch, uniform-inflow expression recorded in DR-01, re-derived in DR-02/03 with HELI-04's axial-flow sign convention. Do not carry the earlier `−(μ_c + λ)/2` form forward unless that mapping is derived and shown equivalent. Negative aerodynamic thrust in windmill-brake flow is representable; reverse motor rotation is not.
 - a_l is the blade lift-curve slope and σ = N·c/(πR) the solidity. Neither is measured for racing props at Re ≈ 10⁵: a_l, the drag law and a tip-loss factor B are **fitted to the measured static bench points** (thrust and torque against rpm) so that the static point is `derived` from measurement and labelled with its residual. The identified `c_t` of the reference quad is the primary static constraint; the bench dataset of the race build is the second.
-- The existing airplane `thrust_torque` (static Ct·ρn²D⁴) is the unit-test oracle at μ = μ_c = 0.
+- The existing airplane `thrust_torque` (static Ct·ρn²D⁴) is the unit-test oracle at zero axial and in-plane flow.
 
-**Inflow** (quasi-static Glauert momentum relation, five fixed passes with the heli's smoothing):
-
-    λ = κ·C_T / (2·√(μ² + (μ_c + λ)²))
-
-- κ ≈ 1.1–1.2 (induced-power factor) is a data field.
-- Inside Johnson's vortex-ring region (NASA/TP-2005-213477) the target inflow comes from his normalized curve, as HELI-04 specifies; beyond V_c < −2·v_h the windmill-brake branch applies. This branch is **core**: at v_h ≈ 7 m/s a vertical descent of 3–10 m/s with little forward speed enters it, which is the "prop-wash" regime every FPV pilot knows. The inflow kernel is shared with the helicopter plan (`physics/rotorcraft/inflow.gd`); whichever track lands first owns it and the other reuses it with a byte-identity test.
+**Shared inflow (HELI-04):** `app/physics/rotorcraft/inflow.gd` owns the signed momentum branches, Johnson's normalized VRS model, windmill-brake branch, ground-effect response and inflow derivative. DR-04 maps each rotor's local axial and in-plane air velocity, signed thrust coefficient, speed, radius and terrain clearance into that contract; its prop law consumes the returned inflow. DR does not add a second five-pass solver or fit a separate VRS curve. Johnson's NASA/TP-2005-213477 model is a mean-inflow extension for isolated rotorcraft rotors; its transfer to 5-inch racing props is an estimate until held-out or physical data cover that regime.
 
 **Torque:**
 
-    C_Q = C_T·(λ + μ_c) + (σ·C_d(α̂)/8)·(1 + k_μ·μ²),   Q = C_Q·ρ·πR²·(ωR)²·R
+    C_Q = f_Q(C_T, λ_i, μ_a, μ; σ, C_d),   Q = C_Q·ρ·πR²·(ωR)²·R
 
-- C_d(α̂) = C_d0 + d1·α̂ + d2·α̂² with α̂ the mean section angle at 0.75R; the quadratic drag is what makes current rise faster than thrust at full throttle, which the bench data constrains.
+- `f_Q` is the DR-01 prop profile and induced-torque expression, derived with the shared axial sign convention in DR-02/03. C_d(α̂) = C_d0 + d1·α̂ + d2·α̂² with α̂ the mean section angle at 0.75R; the quadratic drag is what makes current rise faster than thrust at full throttle, which the bench data constrains.
 - The reaction torque on the body is −`spin`·Q about a.
 
 **In-plane H-force and hub moment** (rigid fixed-pitch blades do not flap; the advancing/retreating asymmetry appears as forces and moments at the hub):
 
-- H-force along −V̂_p from the profile term (σ·C_d·μ/4) and the induced term (∝ C_T·λ·μ), closed form from Leishman ch. 5 and Padfield, derived and checked in DR-03.
+- H-force along −V̂_p from the profile and induced terms, with λ_i and μ_a in the shared sign convention; the prop-specific expression is derived from Leishman ch. 5 and Padfield in DR-03.
 - Hub moment ∝ ρπR²(ωR)²R·(a_l σ/2)·μ·(θ_75 − …), giving the nose-up moment with speed.
 - The linear rotor-drag model of the control literature (F_h = −k_h·ω·V_p) is the small-μ check; the identified k_h of the reference quad is a held-out comparison, not a fit.
 
-**Ground effect** (Cheeseman–Bennett per rotor): T_IGE/T_OGE = 1/[1 − (R/4z)²·g(μ)] with z the hub height along the thrust axis above the terrain under the hub, clamped at z/R ≥ 0.5, a cut-off at z/R ≥ 2, and a multirotor factor k_ge (data field, `estimated`). The law is supported at this scale: a 2026 twin-rotor experiment with a 102 mm rotor on a 2207 motor measured +33 % thrust at z/R = 0.5, which is exactly the Cheeseman–Bennett value, and ≈ 0 above z/R = 2; the same experiment found rotor–rotor interaction *losses* up to 13 % at z/R = 1 and earlier quadrotor work found the augmentation non-monotonic with height, which is why the factor is a labelled field and not a claim ([DR-01 §6](../research/drone-racing/DR-01/README.md#6-secondary-aerodynamics)). The session already supplies the terrain height. For a 5-inch rotor the rise is 4–12 % below 8 cm: the "cushion" on landing, and the reason a quad lifts off before the throttle says so.
+**Ground effect:** use the HELI-04 shared response per rotor, with that hub's terrain clearance and disk orientation. Cheeseman–Bennett remains an independent check where its stated range applies (z/R > 0.6); values below that and any multirotor correction remain `estimated`. Do not add a guessed rotor-count factor to the shared law. The 2026 small-rotor measurements and the limits of the multirotor evidence are recorded in [DR-01 §6](../research/drone-racing/DR-01/README.md#6-secondary-aerodynamics).
 
 ### 4.4 Powertrain: four motors, one pack
 
@@ -258,7 +254,7 @@ Pipeline per tick:
 | Tier | Entries | Notes |
 | --- | --- | --- |
 | Body (existing) | 13 | Unchanged |
-| `continuous` (RK stages) | ω_1…ω_4 (4); remaining charge, delivered energy, pack heat (3, EL2a) | Joint evaluate returns `{loads, derivative, rotor_momentum}` |
+| `continuous` (RK stages) | ω_1…ω_4 (4); remaining charge, delivered energy, pack heat (3, EL2a); λ_1…λ_4 only if DR-03/09 show the shared inflow derivative is resolved at 240 Hz | Joint evaluate returns `{loads, derivative, rotor_momentum}`; the selected steady/dynamic inflow treatment is recorded in trace metadata |
 | `aux` (tick-held) | d_1…d_4; per axis: I-term, gyro low-pass state, D low-pass state, previous setpoint (12); link ring buffer (4 × N); telemetry mirrors: rpm_1…4, bus voltage, pack current, mixer saturation flag | Sampled once per tick, like a real controller output |
 | `modes` (discrete) | `armed`, `flight_mode`, `failsafe`, `crash_disarm`; race: `race_state`, `next_gate`, `lap`, `gate_count` | Tick-transactional; race entries owned by the race director (§8) |
 
@@ -294,9 +290,9 @@ Pipeline per tick:
 | Whole tick, armed hover on the pad with leg contacts | ≤ 350 µs |
 | Whole tick, any regime including gate proxies nearby | ≤ 500 µs (Gate P rule) |
 
-- Four rotors with closed-form inflow are an estimated 100–150 scalar operations each per evaluation; no strip loops.
+- Four rotors with the shared inflow call are estimated at 100–150 scalar operations each per evaluation; no strip loops.
 - The kernel is benchmarked **before** integration (DR-09) and the whole tick after it (DR-22).
-- Scalarize from the start, following H3/H12: no per-call arrays, trigonometry through `math3d` (H6 guard), the five inflow passes unrolled.
+- Scalarize from the start, following H3/H12: no per-call arrays, trigonometry through `math3d` (H6 guard), and no duplicate per-rotor inflow solver.
 
 ### 4.13 Non-goals
 
@@ -321,7 +317,7 @@ An angle (self-level) mode is **not** an autopilot: real flight controllers have
 
 - The v2 loader requires a wing, stable-airplane derivatives, tails and a forward shaft (§2 F9); a branch would touch the frozen AS migration and the 152-path register.
 - A helicopter file describes a main rotor, tail rotor, swashplate and governor; a quad file describes N identical rotors and a flight controller. Two closed shapes are simpler to validate than one shape with mutually exclusive blocks.
-- The sibling format shares the v2 *rules*: every quantity `{value, unit, kind, source}`, explicit capabilities, inventory-derived mass/CG/inertia, strict unknown-key errors, file-byte and semantic hashes, a generated schema. It shares the *kernels*: quantity parsing, inventory and inertia, identity, the EL battery block. They are extracted only if needed, with airplane byte-identity proof. Whatever kernel extraction the helicopter track lands first is reused.
+- The sibling format shares the v2 *rules*: every quantity `{value, unit, kind, source}`, explicit capabilities, inventory-derived mass/CG/inertia, strict unknown-key errors, file-byte and semantic hashes, a generated schema. It shares the *kernels*: quantity parsing, inventory and inertia, identity, the EL battery block, and HELI-04's inflow contract. Other extractions happen only if needed, with airplane byte-identity proof.
 
 Sketch of the multirotor blocks; the exact paths are fixed in DR-10:
 
@@ -331,7 +327,7 @@ Sketch of the multirotor blocks; the exact paths are fixed in DR-10:
     reference:    { wheelbase, rotor_count: 4, prop_diameter, mass_class }
     rotors:       [ { id: 1…4, position [x_aft, y_right, z_up], spin: ±1 } ]      (positions datum-relative; CG subtracted at derivation)
     rotor_model:  { radius, blades, chord_075, theta_075, theta_twist, lift_slope, tip_loss, profile_drag{cd0,d1,d2},
-                    ct_max, inflow{kappa, vrs_factor}, ground_effect{law:"cheeseman_bennett", factor}, inertia,
+                    ct_max, inflow{HELI-04 parameter names, units and provenance}, ground_effect{shared HELI-04 parameters}, inertia,
                     static_calibration{rpm[], thrust_n[], torque_nm[], residual} }
     motor:        { kv_rpm_per_volt, resistance_ohm, resistance_scope, no_load_current_a, no_load_context, pole_pairs }
     esc:          { kind: "synchronous" | "ideal_motoring", idle_duty, output_limit, command_mapping: "linear" }
@@ -361,7 +357,7 @@ Sketch of the multirotor blocks; the exact paths are fixed in DR-10:
 - **New state classes:**
   - a checkpoint format bump with a multirotor law string and the race block
   - restore whitelist entries for every new aux and mode entry
-  - a trace column group `MR_COLUMNS`: `rpm_1…4, duty_1…4, bus_v, pack_a, soc, setpoint_p/q/r, mode, armed, mixer_sat, thrust_n, vz_over_vh, z_over_r`, and `RACE_COLUMNS`: `race_state, next_gate, lap, lap_time_s`
+  - a trace column group `MR_COLUMNS`: `rpm_1…4, duty_1…4, bus_v, pack_a, soc, setpoint_p/q/r, mode, armed, mixer_sat, thrust_n, vz_over_vh, z_over_r`, plus `lambda_1…4` when inflow is integrated as state; `metadata_schema` records the HELI-04 kernel identity and chosen steady/dynamic treatment. `RACE_COLUMNS`: `race_state, next_gate, lap, lap_time_s`
   - a new `metadata_schema` version and an `input_semantics` field (`airplane_aetr`, `heli_aetc`, `multirotor_fc`), plus the rates profile identity
   - `replay_policy` classes for every new entry (the controller integrators are tick-exact state, not tolerance-replayed quantities)
 - **Multirotor goldens:** `hover_hold`, `punch_out`, `roll_flip`, `yaw_spin`, `descent_propwash`, `pad_arm_takeoff`. They are recorded only after the model-to-data comparison passes (DR-38) and re-recorded only for an explained physics change. `golden_flights.gd` refuses to record or replay while the shaft is coupled (`session.shaft_is_coupled()`); DR-17 extends the format to coupled continuous tails (electric airplanes benefit too) rather than adding a second format.
@@ -528,12 +524,12 @@ Each step is one small working change with its proof. A step that touches a coor
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| DR-04 | `multirotor/rotor.gd`: blade-element + momentum thrust, five-pass inflow with Johnson VRS and windmill branches (shared `rotorcraft/inflow.gd`), torque with C_d(α̂), H-force and hub moment, Cheeseman–Bennett ground effect | `test_mr_rotor`: static point equals the airplane `thrust_torque` oracle and the identified c_t within the fit residual; v_h known answer; continuity over V_c/v_h ∈ [−3, 1]; H-force reduces to the linear law at small μ within 5 %; ground-effect ratio known answers; sign symmetry to 1e-12 |
+| DR-04 | `multirotor/rotor.gd`: prop-specific blade-element thrust/torque, H-force and hub moment; consume HELI-04's signed inflow, Johnson VRS/windmill branches, ground effect and derivative without editing `rotorcraft/inflow.gd` | `test_mr_rotor`: static point equals the airplane `thrust_torque` oracle and identified c_t within fit residual; shared-kernel known answers and branch continuity over the declared range; positive/negative axial-flow and coordinate-sign covariance cases; H-force reduces to the linear law at small μ within 5 %; Cheeseman–Bennett cross-check for z/R > 0.6; timestep-refinement comparison of dynamic and steady inflow |
 | DR-05 | `multirotor/powertrain.gd`: N motors on one pack, `synchronous` and `ideal_motoring` ESC kinds, shared-bus closed form with active-set passes, rotor ODEs, idle floor and output limit; EL battery kernels reused (EL owner review) | Bus solve equals a brute-force root to 1e-12; energy closure ∫(P_elec − P_loss − P_shaft)dt = ΔE within 1e-6 relative over 10 s; braking current sign and pack charge accounting; single-motor case byte-identical to `electric_supply.gd` |
 | DR-06 | `multirotor/airframe.gd` (three-axis quadratic drag) and N-rotor parallel `RotorCoupling` (signed momentum, inertial yaw, simultaneous relative-spin solve) | Momentum and work closure (extends `test_rotor_coupling`); airplane path byte-identical |
 | DR-07 | `multirotor/fc.gd`: rates (actual, betaflight), modes (acro, angle, horizon), rate PID + FF with low-pass states, quad-X mixer with air mode, idle and output limit, arming/disarm/failsafe logic, link ring buffer; pure functions over an aux slice | Rate curves pinned to the documented examples (7/67/54 → 70/670 deg/s with expo); mixer reproduces the documented saturation examples; hover step responses vs the DR-03 240 Hz model to 1e-9; no code copied from GPL firmware (review) |
 | DR-08 | Betaflight `diff rates` importer (`research/drone-racing/tools/import_rates.py` and the GDScript parser) → `openrc-rates v1` with warnings for ignored lines | Round trip on a real dump; ignored PID lines listed; rejected malformed input |
-| DR-09 | `bench_multirotor.gd`: per-call kernel cost; explicit-step ratio from actual J, R_m, K_v; h/h2/h4 refinement at a full-throttle punch and a throttle chop | ≤ 25 µs per full evaluation (100 µs per tick) on the H15 host, or stop and redesign before integration; qualified step ratio recorded with the data |
+| DR-09 | `bench_multirotor.gd`: per-call kernel cost; explicit-step ratio from actual J, R_m, K_v; h/h2/h4 refinement at a full-throttle punch, throttle chop and axial-flow transition | ≤ 25 µs per full evaluation (100 µs per tick) on the H15 host, or stop and redesign before integration; qualified motor and inflow timestep treatment recorded with the data |
 
 ### Phase 2: data
 
@@ -594,7 +590,7 @@ Steps DR-29, DR-30 and DR-32 can start in parallel with Phase 1 because their fi
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| DR-38 | **Model-to-data comparison (held-out):** feed the dataset's recorded motor speeds and body velocities into the rotor/airframe model and compare predicted forces and torques with the dataset's ground truth; speed/pitch bucket vs the identified rotor-drag model; motor lag vs the identified time constant | Report in `docs/research/drone-racing/DR-38/`; tolerances §11 |
+| DR-38 | **Model-to-data comparison (held-out):** feed the dataset's recorded motor speeds and body velocities into the rotor/airframe model and compare predicted forces and torques with the dataset's ground truth; speed/pitch bucket vs the identified rotor-drag model; motor lag vs the identified time constant; report whether held-out records cover negative axial flow or VRS | Report in `docs/research/drone-racing/DR-38/`; tolerances §11; if VRS is absent from the held-out data, label the small-prop VRS prediction unvalidated and reserve physical validation for DR-40 |
 | DR-39 | Owner race session (Gate DR-P, §11) | Ratings, lap results and traces in `docs/research/drone-racing/DR-39/` |
 | DR-40 | Physical data, if the owner or a contributor has a quad: Betaflight blackbox logs (gyro, setpoint, motor outputs, voltage, current), weight/CG via VAL-5, bench thrust via VAL-7, lap times on a real 5×5 course | Measurements with uncertainty; held-out comparison; the race build re-estimated from measured hardware |
 | DR-41 | Later: turtle mode (bidirectional rotation), Freedom-Spec rpm cap and 6S/7-inch Pro-Spec class, whoop gates and ducted rotor data, BEMT tables from measured prop geometry, rotor–frame interaction, in-app track editor, shared ghosts | Separate plan revision |
@@ -604,7 +600,7 @@ Steps DR-29, DR-30 and DR-32 can start in parallel with Phase 1 because their fi
 | Lane | Steps | Files |
 | --- | --- | --- |
 | A | DR-03 | `research/drone-racing/reference/` |
-| B | DR-04…09 | `app/physics/multirotor/`, `app/tests/test_mr_*.gd`, `bench_multirotor.gd` |
+| B | DR-04…09 (after HELI-04's interface and reference tests settle) | `app/physics/multirotor/`, `app/tests/test_mr_*.gd`, `bench_multirotor.gd`; consumes but does not own `app/physics/rotorcraft/inflow.gd` |
 | C | DR-10…13 | `app/physics/multirotor_data.gd`, `app/data/schema/openrc-multirotor-v1.*`, `research/drone-racing/<quad>/` |
 | D | DR-23, DR-25…27 | `app/sim/race/`, `app/data/tracks/`, `app/tests/test_race_*.gd` |
 | E | DR-29, DR-32 | `assets/aircraft/<quad-id>/`, `app/aircraft/<quad>_*`, `app/render/track/` |
@@ -612,7 +608,7 @@ Steps DR-29, DR-30 and DR-32 can start in parallel with Phase 1 because their fi
 
 Integration steps (DR-14…22, DR-24, DR-30) are serialized with the main line and their owners.
 
-**Order:** DR-00 → 01 → 02 → 03 → 04…09 (B) with 29/32 (E) in parallel → 10…13 → 14/15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 30 → 31 → 35 → 36 → 27 → 28 → 33 → 34 → 37 → 38 → 39 → 40.
+**Order:** HELI-04 owns and lands the shared inflow kernel first. The drone track remains proposed: after DR-00 decisions and DR-01…03, DR-04…09 consume the stable HELI-04 contract (with DR-29/32 presentation work in parallel); then DR-10…13 → 14/15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 30 → 31 → 35 → 36 → 27 → 28 → 33 → 34 → 37 → 38 → 39 → 40.
 
 ## 11. Acceptance
 
@@ -621,7 +617,7 @@ Integration steps (DR-14…22, DR-24, DR-30) are serialized with the main line a
 | Software verification | Kernel known answers (§10). The GDScript model equals the independent DR-03 model within 1e-6 relative over 5 s of scripted inputs. Airplanes byte-identical. 30/60/144 fps determinism. `test.sh` green. |
 | Controller fidelity (DR-21) | Closed-loop step and doublet responses within ±15 % rise and overshoot and ±20 % settling of the 8 kHz reference on the same plant; the equivalent gains and the comparison are filed with the data. |
 | Model-to-data (held-out, DR-38) | Replaying the NeuroBEM motor speeds and body states through the rotor and airframe model, the force and torque RMSE over the unseen flights must beat the published quadratic-model baseline (1.49 N, 0.087 N·m) and approach the published blade-element result (0.98 N, 0.074 N·m); hover thrust within ±10 %; the residual is reported against speed (rotor–frame interaction dominates above ≈ 15 m/s and is reported, not hidden). Emergent motor lag within ±30 % of the identified 33–39 ms. |
-| Emergent behaviour (scripted fixtures) | Each must appear with its declared cause: hover throttle ≈ 30 % of max rpm at thrust-to-weight ≈ 9; ground-effect lift-off below the hover throttle within 1R of the pad; prop-wash sink increase and roughness in a 3–10 m/s vertical descent, recovered by forward speed; loss of authority at full throttle (mixer saturation flag) and its return with air mode at zero throttle; nose-up and deceleration on stick release at speed (H-force and hub moment); yaw authority from inertial reaction; bus sag of ≈ 1 V on a punch-out at 100 A; faster deceleration with `synchronous` than `ideal_motoring` on a throttle chop; pack exhaustion ending the flight. |
+| Emergent behaviour (scripted fixtures) | Each must appear with its declared cause: hover throttle ≈ 30 % of max rpm at thrust-to-weight ≈ 9; ground-effect lift-off below the hover throttle within 1R of the pad; predicted loss of mean rotor thrust and increased sink in the Johnson VRS region at low forward speed, with recovery trend as forward speed rises; no claim of stochastic roughness without an unsteady model or data; loss of authority at full throttle (mixer saturation flag) and its return with air mode at zero throttle; nose-up and deceleration on stick release at speed (H-force and hub moment); yaw authority from inertial reaction; bus sag of ≈ 1 V on a punch-out at 100 A; faster deceleration with `synchronous` than `ideal_motoring` on a throttle chop; pack exhaustion ending the flight. |
 | Race logic | Lap times reproduce to the millisecond under replay; a missed gate invalidates the lap; false starts restart; results persist; GQ-style laps land in the 10–20 s band for the authored course (a sanity range, not a target). |
 | Performance | ≤ 100 µs rotor/airframe, ≤ 60 µs powertrain, ≤ 15 µs race per tick and ≤ 500 µs whole tick (H15 host, median). FPV view and OSD ≤ 1.0 ms p95 added frame time at 1080p on the owner's host; track visuals ≤ 0.5 ms. 60 fps p95 maintained. |
 | Gate DR-P (pilot) | The owner, and ideally an experienced FPV racer, flies with a radio and imported rates: 60 s hover in a 2 m box in angle and acro; a punch-out and a dive; three clean laps of `strip-sprint`; a GQ-style session. Per-axis ratings −2…+2 against a real 5-inch quad, FPV readability of gates at 30 m, OSD legibility, disc/sound realism notes, and lap times against the pilot's real or Velocidrone/Liftoff times on a comparable course. |
@@ -643,7 +639,7 @@ Integration steps (DR-14…22, DR-24, DR-30) are serialized with the main line a
 | D10 | Visual asset source | **Procedural generator** from the data file's dimensions; a GLB with manifest if the owner supplies one |
 | D11 | Betaflight import scope | **Rates, expo, throttle limits, idle, motor limit, angle limits**; PID/filter/feed-forward lines ignored with a warning |
 | D12 | LEDs and night racing | **Yes**: emissive gate strips and arm LEDs in evening/night, after the field-world owner reviews the glow pass |
-| D13 | Order against the helicopter track | **Multirotor first**: it lands the shared seams (inflow kernel, leg/skid contact, switch mapping, disc clearance, PREVIEW rotorcraft) with the simpler physics; the helicopter reuses them |
+| D13 | Order against the helicopter track | **Helicopter first for shared rotorcraft kernels:** HELI-04 owns the initial inflow implementation and reference vectors; DR-04 consumes that stable contract. Contact, input and disc-clearance seams keep their own named owners and acceptance steps. |
 | D14 | Latency modelling | **RC-link delay as a declared data field (default 1 tick, estimated)**; **video frame-delay buffer available with cited presets (analog ≈ 19 ms, HDZero ≈ 15 ms, DJI ≈ 30 ms), on in FPV race routes at the analog value**, off in captures; never presented as a link model. Alternative: off everywhere until DR-39 |
 
 ## 13. Risks
@@ -663,7 +659,7 @@ Integration steps (DR-14…22, DR-24, DR-30) are serialized with the main line a
 | R11 | Compatibility particle limits; captures lose particle history | Shared probe first (SM-00/HELI-28); pure-function wash laws; xvfb captures with prewarm |
 | R12 | The identified research quad is heavier and slower than a race build | Name the configuration; race build as the second file with labelled estimates; pilots choose |
 | R13 | Scope creep (turtle mode, whoops, long range, multiplayer, editor) | Non-goals in §4.13; each needs its own revision |
-| R14 | Two rotorcraft tracks edit the same shared kernels | D13 fixes the order; the second track reuses with byte-identity tests; the registry names the owner of each shared file |
+| R14 | Two rotorcraft tracks need the same shared kernels | HELI-04 owns the first inflow implementation; DR consumes it without editing the shared file and adds consumer conformance tests. Other shared seams get an explicit owner and acceptance when their steps start. |
 | R15 | Firmware defaults and rate maths change between releases; commercial sims are not ground truth | Pin the firmware commit and version in the data's `source`; test the curves against the pinned documentation; never cite another sim as validation |
 | R16 | Perceived responsiveness is latency-dominated; a sim without video delay feels "too fast" and the aerodynamics get blamed | D14 frame-delay buffer with cited presets; DR-39 rates feel with and without it |
 
@@ -672,4 +668,4 @@ Integration steps (DR-14…22, DR-24, DR-30) are serialized with the main line a
 1. Does the owner fly or own an FPV quad (frame, motors, props, pack, firmware, radio and goggles)? That decides DR-40, the race build (DR-12) and whether the owner's own `diff rates` is the first imported profile.
 2. Should the first flyable build ship the identified research quad or wait for the race build so that the first impression is a race-weight 5-inch?
 3. Should racing be allowed on the airplane field's mown strip by default, or does the owner prefer a dedicated gate area east of the strip (the GQ grid needs 45 × 30 m)?
-4. Is the helicopter track started before this one? If so, DR-04/DR-19 reuse its kernels instead of landing them (D13).
+4. Does the held-out NeuroBEM data cover negative axial flow or VRS? If not, DR-38 must leave the small-prop VRS prediction unvalidated until physical data are collected under DR-40.

@@ -70,7 +70,7 @@ Godot 4.7.2 plays a forward-looping `AudioStreamWAV` by interpolating past `loop
 
 ## 2026-10-13 · CR-08b — effective mass grades the first contact, not the whole impact
 
-Effective mass at the struck point fixes whole-mass overrating: a level wingtip engages about 7 %. It also underrates oblique hits on long-nosed airframes. In a 45° Avanti dive the nose engages 20 % of the mass and grades C2, yet the CG keeps most of its normal energy and slams the belly down next. Grade the first contact and also bound what the CG still carries into the surface; do not count sliding speed as impact energy. [CR-08b](docs/research/crash-damage-investigations/CR-08b/README.md)
+Effective mass at the struck point fixes whole-mass overrating: a level wingtip engages about 7 %. It also underrates oblique hits on long-nosed airframes. In a 45° Ventage Jet dive the nose engages 20 % of the mass and grades C2, yet the CG keeps most of its normal energy and slams the belly down next. Grade the first contact and also bound what the CG still carries into the surface; do not count sliding speed as impact energy. [CR-08b](docs/research/crash-damage-investigations/CR-08b/README.md)
 
 ## 2026-10-12 · VQ-05 — Compatibility lights by winding and ignores per-instance transparency
 
