@@ -53,3 +53,15 @@ static func format(pair: Array, signed := false) -> String:
 		text = text.pad_decimals(decimals)
 	var sign := "-" if rounded < 0.0 else ("+" if signed and rounded > 0.0 else "")
 	return "%s%s %s" % [sign, text, unit]
+
+
+## Degrees with `decimals` places; the sign follows the rounded value, so a small negative angle never reads "-0°".
+static func angle(deg: float, decimals: int, signed := true) -> String:
+	if not is_finite(deg):
+		return "–°"
+	var rounded := snappedf(deg, pow(10.0, -decimals))
+	var text := String.num(absf(rounded), decimals)
+	if decimals > 0:
+		text = text.pad_decimals(decimals)
+	var sign := "-" if rounded < 0.0 else ("+" if signed and rounded > 0.0 else "")
+	return sign + text + "°"

@@ -64,3 +64,18 @@ Existing failures reproduced at premerge `a48ca0f`:
 All 484 application GDScript files parse. Across `app/test.sh` and explicit continuations after its existing failures, 238 of 240 GDScript tests pass; the two scenery counts above remain red. The corrected Timber menu test passes separately. All subsequent tool/model/CLI/trace/FPS/ground-contact stages pass except TT-07 freshness and the same two of ten shaft CLI tests. The suite therefore remains red for five pre-existing checks; the merge corrections introduce no remaining observed failure.
 
 The complete capture workflow's image, repeatability, shader/cue, trace and runway-scenario checks pass. The initial L6c attempt stopped at case 45 after Godot saved a PNG and exited 141; the unmodified L6c tool rerendered all 64 cases successfully, then the runway scenario passed. The final capture inventory contains 46 primary images plus all required review manifests; it was published from the ordered successful initial capture log after rechecking every PNG/sidecar hash, and records the continuation and both log hashes. Software OpenGL captures do not close hardware readability or timing gates.
+
+## Visual review and repairs (2026-10-13, HUD-11-R1)
+
+Eleven software-OpenGL captures (Xvfb, llvmpipe) of real flights: Pilot/Full/Developer presets, gusty and crosswind weather, English and Spanish, 720p and 1080p, Mode 1 with deflected sticks and trims, all seven warnings, a first Home flight, and Pause → Flight overlays through the real app route. Scratch capture script, not committed. Findings and repairs:
+
+| Finding | Repair | Proof |
+| --- | --- | --- |
+| Telemetry read "-0°" for small negative pitch/bank | `Units.angle()` signs the rounded value | 6 new cases in `test_overlay_units` (29 checks) |
+| Wind box changed width at 10 Hz as a gust's updraft text came and went | Three fixed lines (speed, bearing, updraft) in a 150 px column | size equal with and without updraft |
+| Five or more warnings reached the Wind box (≈ 780 px of chips) | Chips wrap in a 640 px centred flow | all seven Spanish chips wrap; no overlap at 720p |
+| The pause dialog changed overlays the player could not see (hidden while paused) | `preview()`: overlays shown above the pause menu (layer 11) while the dialog is open; the suspended pause column hides, then returns before focus restores | Home → Fly → Pause → dialog route: layers, visibility, focus back on "Flight overlays" |
+| The first-flight hint (top right) covered the Wind overlay and the warnings | Hint card at bottom centre | hint rect intersects no Pilot overlay on a real first flight |
+| The default Home latency marker (centre right) covered Telemetry and the Transmitter title | `LatencyPatch.left_side` on overlay flights: top left at y = 120; legacy/CLI unchanged | marker rect intersects no Pilot overlay; F6a tests 533 + 5 + 26 checks pass |
+
+`test_overlay_manager`: 77 checks. Developer-preset overlap with long diagnostic lines remains accepted.

@@ -47,6 +47,14 @@ func _initialize() -> void:
 		[Units.format(Units.speed(0.0, "si")), "0.0 m/s"],
 		[Units.format(Units.length(NAN, "imperial")), "– ft"],
 	]
+	cases.append_array([
+		[Units.angle(-0.3, 0), "0°"],
+		[Units.angle(-0.04, 1), "0.0°"],
+		[Units.angle(4.26, 1), "+4.3°"],
+		[Units.angle(-1.0, 0), "-1°"],
+		[Units.angle(12.0, 0, false), "12°"],
+		[Units.angle(NAN, 1), "–°"],
+	])
 	for c: Array in cases:
 		_check("format → %s" % c[1], c[0] == c[1], "got '%s'" % c[0])
 	print("overlay units: %d checks, %d failed" % [_count, _failures])

@@ -124,8 +124,9 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 			return
 		var wav: AudioStreamWAV = seamless_loop(source)
 		player.stream = wav
-		# Independent offsets: motor and propeller loops must not wrap or modulate in step (F5).
-		player.play(rng.randf_range(0.0, source.get_length()))
+		# Motor, propeller and airframe start together: the blade-pass loop is a harmonic of the firing loop at the
+		# same pitch, so their phase decides level and timbre. A random offset changed the mix by up to 5 dB (AUD-07).
+		player.play(rng.randf_range(0.0, source.get_length()) if voices.size() > 3 else 0.0)
 
 
 ## AUD-07a: Godot 4.7.2 interpolates past loop_end into the stream's silent padding, so a seamless

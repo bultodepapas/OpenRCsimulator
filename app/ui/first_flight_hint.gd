@@ -28,14 +28,16 @@ func _init(session: Node) -> void:
 	screen.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(screen)
-	# Top right: the flight's input panel is top left and the HUD bottom left.
+	# Bottom centre: the flight overlays' Pilot preset holds the corners and the warnings the top centre
+	# (docs/plans/flight-overlays.md); tests/test_overlay_manager.gd checks they do not overlap at 1280×720.
 	var card := PanelContainer.new()
+	card.name = "Card"
 	card.theme_type_variation = "Card"
 	card.gui_input.connect(_on_card_input)
-	card.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	card.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	card.offset_right = -24
-	card.offset_top = 24
+	card.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	card.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	card.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	card.offset_bottom = -24
 	screen.set_anchors_preset(Control.PRESET_FULL_RECT)
 	screen.add_child(card)
 	var row := HBoxContainer.new()

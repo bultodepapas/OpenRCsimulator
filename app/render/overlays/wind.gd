@@ -5,10 +5,13 @@ const Units := preload("res://render/overlays/units.gd")
 const Telemetry := preload("res://render/overlays/telemetry.gd")
 
 const DIAL := 56.0
+## Fixed text column: the box keeps its size when a gust's updraft line comes and goes (no jitter at 10 Hz).
+const TEXT_WIDTH := 150.0
 
 var dial: Control
 var speed_label: Label
 var detail_label: Label
+var updraft_label: Label
 ## Screen angle of the downwind arrow (deg clockwise from up), NAN when calm.
 var arrow_deg := NAN
 
@@ -28,11 +31,19 @@ func _init() -> void:
 	var texts := VBoxContainer.new()
 	texts.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	texts.alignment = BoxContainer.ALIGNMENT_CENTER
+	texts.add_theme_constant_override("separation", 0)
+	texts.custom_minimum_size.x = TEXT_WIDTH
 	row.add_child(texts)
 	speed_label = text_label("–", VALUE_SIZE, UiTheme.TEXT)
 	texts.add_child(speed_label)
 	detail_label = text_label("", LABEL_SIZE, UiTheme.TEXT_2)
+	detail_label.name = "From"
 	texts.add_child(detail_label)
+	updraft_label = text_label("", LABEL_SIZE, UiTheme.TEXT_2)
+	updraft_label.name = "Updraft"
+	texts.add_child(updraft_label)
+	for line: Label in [detail_label, updraft_label]:
+		line.custom_minimum_size.y = LABEL_SIZE * 1.4 # an empty line keeps its height
 
 
 ## t: Telemetry.compute() output or {}; view_heading_deg: where the pilot looks.
@@ -41,15 +52,13 @@ func refresh(t: Dictionary, view_heading_deg: float, system: String) -> void:
 		arrow_deg = NAN
 		speed_label.text = tr("Calm") if not t.is_empty() else "–"
 		detail_label.text = ""
+		updraft_label.text = ""
 	else:
 		arrow_deg = Telemetry.wind_arrow_deg(t.wind_from_deg, view_heading_deg) if is_finite(t.wind_from_deg) else NAN
 		speed_label.text = Units.format(Units.speed(t.wind_speed, system))
-		var parts := PackedStringArray()
-		if is_finite(t.wind_from_deg):
-			parts.append(tr("from %03d°") % (roundi(t.wind_from_deg) % 360))
-		if absf(float(t.wind_up)) >= 0.05:
-			parts.append(tr("up %s") % Units.format(Units.vertical(t.wind_up, system), true))
-		detail_label.text = "  ".join(parts)
+		detail_label.text = tr("from %03d°") % (roundi(t.wind_from_deg) % 360) if is_finite(t.wind_from_deg) else ""
+		updraft_label.text = tr("up %s") % Units.format(Units.vertical(t.wind_up, system), true) \
+			if absf(float(t.wind_up)) >= 0.05 else ""
 	dial.queue_redraw()
 
 

@@ -403,6 +403,7 @@ func _ready() -> void:
 		latency_patch.session = session
 		latency_patch.axis = latency_options.axis
 		latency_patch.threshold = latency_options.threshold
+		latency_patch.left_side = _overlays != null # HUD: the overlays hold the right-hand side
 		add_child(latency_patch)
 	recorder = Recorder.new(session.sim, session.electrical_state)
 	session.resetting.connect(_on_resetting)

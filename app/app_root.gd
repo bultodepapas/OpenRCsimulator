@@ -365,12 +365,20 @@ func open_overlays(from: Control = null) -> void:
 		return
 	var dialog := OverlaysDialog.new(flight.get("_overlays"))
 	dialog.closed.connect(close_overlays)
-	screens.push("overlays", dialog, from if from != null else pause_menu.overlays_button)
+	if screens.push("overlays", dialog, from if from != null else pause_menu.overlays_button):
+		# The player sees each switch act on the paused picture; the suspended pause column steps aside so the
+		# left-hand overlays are not drawn over its buttons.
+		pause_menu.visible = false
+		flight.get("_overlays").preview(true)
 
 
 func close_overlays() -> void:
 	if screens.is_top("overlays"):
+		if pause_menu != null:
+			pause_menu.visible = true # before the pop: focus returns to its Flight overlays button
 		screens.pop()
+		if flight != null and flight.get("_overlays") != null:
+			flight.get("_overlays").preview(false) # back under the pause menu, hidden like the other overlays
 
 
 func close_help() -> void:
