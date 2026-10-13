@@ -348,9 +348,6 @@ msgstr "Calibrar la radio"
 msgid "Next radio calibration step"
 msgstr "Siguiente paso de la calibración de la radio"
 
-msgid "Performance numbers"
-msgstr "Cifras de rendimiento"
-
 msgid "Reload the aircraft data file"
 msgstr "Recargar el archivo de datos del avión"
 
@@ -605,3 +602,170 @@ msgstr "Oculta este aviso hasta que se publique una versión más nueva."
 
 msgid "Could not open the browser (error %d)."
 msgstr "No se pudo abrir el navegador (error %d)."
+
+# Flight overlays (HUD, docs/plans/flight-overlays.md).
+
+msgid "Flight data"
+msgstr "Datos de vuelo"
+
+msgid "Transmitter"
+msgstr "Emisora"
+
+msgid "Wind"
+msgstr "Viento"
+
+msgid "Telemetry"
+msgstr "Telemetría"
+
+msgid "Diagnostics"
+msgstr "Diagnóstico"
+
+msgid "Performance"
+msgstr "Rendimiento"
+
+msgid "Airspeed"
+msgstr "Velocidad aire"
+
+msgid "Ground speed"
+msgstr "Velocidad suelo"
+
+msgid "Height"
+msgstr "Altura"
+
+msgid "Vertical speed"
+msgstr "Velocidad vertical"
+
+msgid "Distance"
+msgstr "Distancia"
+
+msgid "Flight time"
+msgstr "Tiempo de vuelo"
+
+msgid "Angle of attack"
+msgstr "Ángulo de ataque"
+
+msgid "Sideslip"
+msgstr "Derrape"
+
+msgid "Bank angle"
+msgstr "Ángulo de alabeo"
+
+msgid "Pitch angle"
+msgstr "Ángulo de cabeceo"
+
+msgid "Heading"
+msgstr "Rumbo"
+
+msgid "Load factor"
+msgstr "Factor de carga"
+
+msgid "Engine"
+msgstr "Motor"
+
+msgid "%d rpm"
+msgstr "%d rpm"
+
+msgid "Mode %d"
+msgstr "Modo %d"
+
+msgid "from %03d°"
+msgstr "desde %03d°"
+
+msgid "up %s"
+msgstr "ascend. %s"
+
+msgid "FAILSAFE · radio lost"
+msgstr "FAILSAFE · emisora perdida"
+
+msgid "RADIO SAFE · throttle low to arm"
+msgstr "EMISORA SEGURA · motor abajo para armar"
+
+msgid "STALL"
+msgstr "PÉRDIDA"
+
+msgid "LOW · sinking"
+msgstr "BAJO · descendiendo"
+
+msgid "FAR · come closer"
+msgstr "LEJOS · acércate"
+
+msgid "BATTERY LOW"
+msgstr "BATERÍA BAJA"
+
+msgid "EXPERIMENTAL MODEL"
+msgstr "MODELO EXPERIMENTAL"
+
+msgid "Keyboard"
+msgstr "Teclado"
+
+msgid "Gamepad"
+msgstr "Mando"
+
+msgid "Radio"
+msgstr "Emisora"
+
+msgid "ARMED"
+msgstr "ARMADA"
+
+msgid "SAFE"
+msgstr "SEGURA"
+
+msgid "Rates: normal"
+msgstr "Recorridos: normales"
+
+msgid "Rates: full"
+msgstr "Recorridos: máximos"
+
+msgid "Flight overlays"
+msgstr "Indicadores de vuelo"
+
+msgid "Close any overlay with its × or press H to cycle presets; F3 shows the developer overlays."
+msgstr "Cierra cualquier indicador con su × o pulsa H para cambiar de conjunto; F3 muestra los indicadores de desarrollo."
+
+msgid "Off"
+msgstr "Ninguno"
+
+msgid "Pilot"
+msgstr "Piloto"
+
+msgid "Full"
+msgstr "Completo"
+
+msgid "Developer"
+msgstr "Desarrollo"
+
+msgid "Warnings"
+msgstr "Avisos"
+
+msgid "Diagnostics (developer)"
+msgstr "Diagnóstico (desarrollo)"
+
+msgid "Performance (developer)"
+msgstr "Rendimiento (desarrollo)"
+
+msgid "Units"
+msgstr "Unidades"
+
+msgid "By language"
+msgstr "Según el idioma"
+
+msgid "Metric (km/h, m)"
+msgstr "Métrico (km/h, m)"
+
+msgid "Imperial (mph, ft)"
+msgstr "Imperial (mph, ft)"
+
+msgid "SI (m/s, m)"
+msgstr "SI (m/s, m)"
+
+msgid "Mode 1 (throttle right)"
+msgstr "Modo 1 (motor a la derecha)"
+
+msgid "Mode 2 (throttle left)"
+msgstr "Modo 2 (motor a la izquierda)"
+
+msgid "Done"
+msgstr "Hecho"
+
+msgid "Overlay preset · developer overlays"
+msgstr "Indicadores · desarrollo"

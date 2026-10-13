@@ -39,9 +39,12 @@ const M := preload("res://physics/math3d.gd")
 const VisualEvidence = preload("res://render/visual_evidence.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const LatencyPatch = preload("res://input/latency_patch.gd")
+const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
+## The player changed the flight overlays (X, [H], [F3]); Home saves them (docs/plans/flight-overlays.md).
+signal overlay_settings_changed(settings: Dictionary)
 
 ## Data path is injectable before entering the tree; normal routes use the packaged default.
 var field_path: String = FieldLoader.DEFAULT_PATH
@@ -102,6 +105,10 @@ func _render_wind(time_s: float) -> Vector3:
 var interactive_start: bool = false
 ## UI-06d: Home injects the saved diagnostic choice; technical launches retain their explicit marker flag.
 var latency_marker_enabled: bool = false
+## Flight overlays instead of the legacy text labels: Home sets it with the saved settings; the direct route uses
+## --hud=overlays (default --hud=legacy, so captures and automation keep their picture).
+var overlays_enabled: bool = false
+var overlay_settings: Variant = {}
 var startup_error: String = ""
 var _airplane: Dictionary
 var _camera: Camera3D
@@ -129,6 +136,7 @@ const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
+var _overlays: CanvasLayer = null # OverlayManager when overlays_enabled
 var _auto_zoom := true
 var _show_perf := true
 var _frame_times := PackedFloat64Array()
@@ -256,6 +264,14 @@ func _ready() -> void:
 		_note = "EXPERIMENTAL: wing polar; aircraft-specific flight validation pending."
 		print("EXPERIMENTAL AIRCRAFT DATA: wing polar, aircraft-specific flight validation pending: ", _experimental_aircraft_path)
 	_auto_zoom = str(args.get("autozoom", "1")) != "0"
+	var hud_mode := str(args.get("hud", "overlays" if overlays_enabled else "legacy"))
+	if hud_mode != "legacy" and hud_mode != "overlays":
+		printerr("--hud must be legacy or overlays")
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	overlays_enabled = hud_mode == "overlays"
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
 		_look_height = float(args.get("look_alt", field.pilot.eye_height))
@@ -473,6 +489,10 @@ func _process(delta: float) -> void:
 		if _crash_director.active:
 			_panel.text = _crash_director.description()
 	_update_hud()
+	if _overlays != null:
+		if _overlays.tick(dt):
+			_overlays.refresh_numbers(_overlay_snapshot())
+		_overlays.refresh_sticks(OverlayManager.sticks(session) if not _scripted and _visual_pose.is_empty() else {})
 
 
 func _update_cg_model() -> void:
@@ -499,7 +519,9 @@ func _update_hud() -> void:
 		var field_air: Dictionary = session.atmosphere_configuration()
 		var true_speed: float = session.air_data(session.sim.state).V
 		lines.append(tr("EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m") % [true_speed * M.sqrt_(field_air.sigma), field_air.rho_kgm3, field_air.density_altitude_m])
-	if _show_perf:
+	if _overlays != null:
+		_overlays.performance_label.text = Hud.perf_line(_frame_times, session.sim.step_usec).trim_suffix("  [F3]")
+	elif _show_perf:
 		lines.append(Hud.perf_line(_frame_times, session.sim.step_usec))
 	if not _experimental_aircraft_path.is_empty():
 		lines.append("EXPERIMENTAL: wing polar; aircraft-specific flight validation pending.")
@@ -613,11 +635,26 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_V:
 				_shadow_mode = SHADOW_MODES[(SHADOW_MODES.find(_shadow_mode) + 1) % SHADOW_MODES.size()]
 			KEY_F3:
-				_show_perf = not _show_perf
+				if _overlays != null:
+					_overlays.toggle_developer()
+				else:
+					_show_perf = not _show_perf
+			KEY_H:
+				if _overlays != null:
+					_overlays.cycle_preset()
 			KEY_F5:
 				_note = session.reload() if _experimental_aircraft_path.is_empty() else "Experimental polar is fixed for this flight; restart the application to load another file."
 				_update_cg_model()
 				print(_note)
+
+
+## What the flight overlays show this frame; {} when there is no physics flight to describe.
+func _overlay_snapshot() -> Dictionary:
+	if _scripted or not _visual_pose.is_empty() or session == null:
+		return {}
+	var forward: Vector3 = -_camera.global_transform.basis.z
+	var view_heading: float = OverlayManager.Telemetry.heading_of_render_forward(forward.x, forward.z)
+	return OverlayManager.snapshot(session, field.pilot, _extent.x, not _experimental_aircraft_path.is_empty(), view_heading)
 
 
 ## Shows or hides the flight's text overlays (input panel and HUD). A menu hides them: the paused picture then
@@ -836,8 +873,15 @@ func _build_world() -> void:
 	Shadow.bind_model(_shadow, _airplane.root)
 	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
 	_camera = PilotCamera.create(self, field.pilot)
-	_panel = InputPanel.create(self)
-	_hud = Hud.create(self)
+	if overlays_enabled:
+		_overlays = OverlayManager.new(overlay_settings, TranslationServer.get_locale().substr(0, 2))
+		_overlays.settings_changed.connect(func(settings: Dictionary) -> void: overlay_settings_changed.emit(settings))
+		add_child(_overlays)
+		_panel = _overlays.diagnostics_panel
+		_hud = _overlays.diagnostics_hud
+	else:
+		_panel = InputPanel.create(self)
+		_hud = Hud.create(self)
 
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.

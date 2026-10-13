@@ -24,7 +24,7 @@ const SHORTCUTS := [
 	[[KEY_T], "Record a flight trace (press again to save it)"],
 	[[KEY_K], "Calibrate the radio"],
 	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
-	[[KEY_F3], "Performance numbers"],
+	[[KEY_H, KEY_F3], "Overlay preset · developer overlays"],
 	[[KEY_F5], "Reload the aircraft data file"],
 ]
 

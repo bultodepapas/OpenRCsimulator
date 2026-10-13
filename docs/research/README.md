@@ -86,6 +86,10 @@ Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p
 
 [Menu investigations](menu-investigations/README.md) is the index for UI- and input-focused probes. Start with [UI-06d](menu-investigations/UI-06d/README.md) for the current interactive launch profile and [UI-20](menu-investigations/UI-20/README.md) for the shell audit. The [menu plan](../MENU-PLAN.md) and [redesign plan](../MENU-REDESIGN-PLAN.md) own follow-up work.
 
+### Flight overlays
+
+[HUD-01…10 evidence](flight-overlays/HUD-01-10/README.md) records the overlay tests, trace identity with overlays on and the per-frame cost. The [flight overlays plan](../plans/flight-overlays.md) owns open work.
+
 ### Visual quality and landscape
 
 Current implementation guidance is in the [visual quality guide](../VISUAL-QUALITY-PLAN.md), [landscape guide](../LANDSCAPE-PLAN.md), and [landscape-upgrade plan](../../LANDSCAPE_UPGRADE_PLAN.md). Evidence entry points:

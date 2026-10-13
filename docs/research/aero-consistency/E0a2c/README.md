@@ -10,7 +10,7 @@
 | E0a2c | The three generators emit `aero.surfaces.horizontal.downwash_gradient` (the dε/dα they already computed), so the loader derives the free tail law for them as it does for the Stik: free slope CLα_h·η, physical elevator τ_e·k_flap, downwash as the lagged wing lift, Cmα̇ in both regimes. Regenerated data and derivation tables. | `research/extra-300/ex05/derive_physics.py`, `research/p51/p51-05/derive_physics.py`, `research/avanti-s/av06/derive_physics.py`, the three `app/data/aircraft/*.json`, their `derivation.md` |
 | D11j | Optional `aero.surfaces.wing_section_cm_ac` (unit 1, −0.3…0.1): the cambered section's pitching moment as a pure couple on every strip of the local wing, q·S_i·c_i·Cm_ac, using the strips' local chords stored by the loader. Absent = no arithmetic (byte-identical). The P-51 generator emits its thin-airfoil value ×0.8 (−0.0286); the oracle's Cm0 already carried it. | `app/physics/aircraft_data.gd` (`_surfaces`, `_induced_map`), `app/physics/aero.gd` (`_local_loads`), contract and schemas, parameter register, `AIRCRAFT_CONTRACT.md` |
 | D8a-R2 | `flight_modes.gd` classifies an overdamped short period (two negative real roots besides the lag root) and reports it as ζ ≥ 1 with the roots; the P-51 with the free tail law is such a case. | `app/physics/flight_modes.gd` |
-| Tests | `test_downwash_lag.gd` now expects the lag state on the three aircraft and checks that the same data without the gradient has none; `test_aero_flow.gd` strips the new field before comparing with its frozen vector reference. | `app/tests/` |
+| Tests | `test_downwash_lag.gd` now expects the lag state on the three aircraft and checks that the same data without the gradient has none; `test_aero_flow.gd` and `test_slipstream_scalar.gd` strip the free-tail fields and the section moment before comparing with their frozen references (both predate the P-51's free tail law); `test_shaft_refinement.gd` see below. | `app/tests/` |
 
 The Ugly Stik data and goldens are untouched and byte-identical (`test_golden.gd`, `test_aero_flow.gd`).
 
@@ -42,6 +42,10 @@ Short period at trim (full Jacobian): Extra 1.46 Hz ζ 0.69 → 1.72 Hz ζ 0.89;
 ## What it does not fix
 
 Whenever a pull still crosses the wing's stall start (the Avanti at a quarter stick on its 30° high-rate throw, the Extra and P-51 from half stick), the local strip model's post-stall autorotation still rolls the airplane; the oracle-with-stall counterfactual never does. That is the D8b-R2 topic (post-stall gain and progression) and the input question (the manuals' normal rates and expo are not applied), both in the plan.
+
+## Side effect on the coupled shaft refinement check
+
+`test_shaft_refinement.gd` measured the P-51's whole-session RPM convergence under the coupled-RK4 shaft integrator and expected fourth order (error ratios 13–20 when halving the tick). With the free tail law the P-51 carries the downwash-lag state, which the session advances once per tick and holds through the RK stages (the E0a2b design the Stik already had); that hold limits the refinement of every state to second order (measured ratios 4.09 / 4.07 at errors of 4.6e-5, 1.1e-5 and 2.8e-6 rpm, against 16.4 / 16.2 at 1.3e-6 … 5e-9 rpm without the lag). The test now checks the integrator's order on the same data without the gradient and bounds the lagged case (ratios 3–6, 240 Hz error below 1e-5 rpm). Integrating the lag inside the RK stages would restore fourth order; it is a design change to the sampled-state layout (checkpoints, replay policy) and is not part of this repair.
 
 ## Checks run
 

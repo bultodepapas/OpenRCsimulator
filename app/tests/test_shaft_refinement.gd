@@ -1,15 +1,27 @@
 # G2a: real P-51 smooth throttle transient must retain RK4 order and a bounded 240 Hz error.
+# E0a2c: the P-51 now carries the tail's downwash lag, an auxiliary state advanced once per tick and held through the
+# RK stages (E0a2b, like the split integrator's rpm). That hold limits the whole-session refinement of every state to
+# second order, so the integrator's own fourth order is checked on the same data without the gradient (no lag state),
+# and the production data is checked for its second-order convergence at a negligible absolute error.
 extends SceneTree
 const Flight = preload("res://sim/flight_session.gd")
+const AircraftData = preload("res://physics/aircraft_data.gd")
 const PATH: String = "res://data/aircraft/p51d_mustang_120.json"
 var failures: int = 0
 
 
-func run_flight(rate: int, mode: String) -> PackedFloat64Array:
+func run_flight(rate: int, mode: String, lagged: bool) -> PackedFloat64Array:
 	Engine.physics_ticks_per_second = rate
 	var flight: Flight = Flight.new()
 	flight.setup_shaft_integrator(mode)
 	flight.setup(PATH)
+	if not lagged:
+		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PATH))
+		raw.aero.surfaces.horizontal.erase("downwash_gradient")
+		if not flight._apply(AircraftData.validate_and_derive(raw)) or flight.downwash_index() != -1:
+			failures += 1
+			printerr("FAIL refinement flight could not drop the downwash lag")
+		flight.reset()
 	flight.input_enabled = false
 	flight.sim.inputs[3] += 0.03
 	for tick: int in rate / 2:
@@ -25,20 +37,24 @@ func run_flight(rate: int, mode: String) -> PackedFloat64Array:
 
 func _initialize() -> void:
 	var old_rate: int = Engine.physics_ticks_per_second
-	for mode: String in ["coupled-rk4", "split"]:
-		var coarse: PackedFloat64Array = run_flight(60, mode)
-		var middle: PackedFloat64Array = run_flight(120, mode)
-		var fine: PackedFloat64Array = run_flight(240, mode)
-		var reference: PackedFloat64Array = run_flight(1920, mode)
+	var cases := [
+		{ mode = "coupled-rk4", lagged = false, lo = 13.0, hi = 20.0, floor = 1e-7, label = "coupled-rk4 without the downwash lag (integrator order)" },
+		{ mode = "coupled-rk4", lagged = true, lo = 3.0, hi = 6.0, floor = 1e-5, label = "coupled-rk4 with the held downwash lag (second order, bounded)" },
+		{ mode = "split", lagged = true, lo = 1.8, hi = 2.5, floor = 10.0, label = "split" },
+	]
+	for c in cases:
+		var coarse: PackedFloat64Array = run_flight(60, c.mode, c.lagged)
+		var middle: PackedFloat64Array = run_flight(120, c.mode, c.lagged)
+		var fine: PackedFloat64Array = run_flight(240, c.mode, c.lagged)
+		var reference: PackedFloat64Array = run_flight(1920, c.mode, c.lagged)
 		var errors: Array[float] = []
 		for state: PackedFloat64Array in [coarse, middle, fine]:
 			errors.append(absf(state[-1] - reference[-1]))
 		var ratios: Array[float] = [errors[0] / errors[1], errors[1] / errors[2]]
-		var good: bool = ratios[0] > 13.0 and ratios[0] < 20.0 and ratios[1] > 13.0 and ratios[1] < 20.0 and errors[2] < 1e-7 \
-			if mode == "coupled-rk4" else ratios[0] > 1.8 and ratios[0] < 2.5 and ratios[1] > 1.8 and ratios[1] < 2.5
-		print(("ok " if good else "FAIL ") + mode + " smooth full-session RPM refinement: errors %s rpm, ratios %s" % [errors, ratios])
+		var good: bool = ratios[0] > c.lo and ratios[0] < c.hi and ratios[1] > c.lo and ratios[1] < c.hi and errors[2] < c.floor
+		print(("ok " if good else "FAIL ") + c.label + " smooth full-session RPM refinement: errors %s rpm, ratios %s" % [errors, ratios])
 		if not good:
 			failures += 1
 	Engine.physics_ticks_per_second = old_rate
-	print("G2 refinement: 2 checks, %d failed" % failures)
+	print("G2 refinement: %d checks, %d failed" % [cases.size(), failures])
 	quit(1 if failures else 0)
