@@ -1,0 +1,190 @@
+## NITRO flight adapter. All evolving values live in Simulation.continuous.
+## Layout: RPM, six lifecycle values, running/reason/opportunities/fires/accumulator,
+## mixture command, then shaft/propeller/thrust/chemical work (J).
+extends RefCounted
+const Life := preload("res://physics/glow/lifecycle.gd")
+const Source := preload("res://physics/glow/source.gd")
+const FuelMass := preload("res://physics/glow/fuel_mass.gd")
+const Blade := preload("res://physics/glow/propeller.gd")
+const M := preload("res://physics/math3d.gd")
+const RB := preload("res://physics/rigid_body.gd")
+const Dynamics := preload("res://physics/dynamics.gd")
+const Coupling := preload("res://physics/rotor_coupling.gd")
+const Boundary := preload("res://physics/electric_battery_step.gd")
+const SIZE := 17
+const LAW := "glow-mean-cycle-finite-tank-fixed-datum-v1"
+const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted"]
+
+static func unpack(values: PackedFloat64Array, install: Dictionary) -> Dictionary:
+	if values.size()<SIZE: return {}
+	for v in values:
+		if not is_finite(v): return {}
+	if values[7] not in [0.0,1.0] or values[8]!=floor(values[8]) or values[8]<0.0 or values[8]>=REASONS.size(): return {}
+	var state: Dictionary={family=install.profile.family,cycle_revolutions=install.profile.identity.cycle_revolutions,
+		running=values[7]==1.0,stop_reason=REASONS[int(values[8])],opportunity_count=int(values[9]),fire_count=int(values[10]),firing_accumulator=values[11]}
+	for i in 6: state[Life.CONTINUOUS_KEYS[i]]=values[i+1]
+	return state
+
+static func put_state(values: PackedFloat64Array, state: Dictionary) -> PackedFloat64Array:
+	var out: PackedFloat64Array=values.duplicate()
+	for i in 6: out[i+1]=state[Life.CONTINUOUS_KEYS[i]]
+	out[7]=1.0 if state.running else 0.0
+	out[8]=REASONS.find(state.stop_reason)
+	out[9]=state.opportunity_count
+	out[10]=state.fire_count
+	out[11]=state.firing_accumulator
+	return out
+
+static func initial(owner: Node, aux: PackedFloat64Array) -> PackedFloat64Array:
+	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	var made: Dictionary=Life.create(install.profile,install.settings,install.initial_fuel_kg,
+		install.initial_temperature_k,aux[0],owner.engine_running)
+	if not made.ok: return PackedFloat64Array([NAN])
+	var state: Dictionary=made.state
+	state.servo_fraction=owner.sim.inputs[3]
+	state.air_fraction=install.settings.idle_admission+(1.0-install.settings.idle_admission)*state.servo_fraction
+	var point: Dictionary=Source.evaluate(install.profile,aux[0],state.air_fraction,install.profile.operation.nominal_mixture,
+		1.225*owner.engine_charge_ratio(),owner.engine_running)
+	if not point.ok: return PackedFloat64Array([NAN])
+	state.fuel_transport_kg_s=point.delivered_fuel_kg_s
+	var out:=PackedFloat64Array()
+	out.resize(SIZE)
+	out[0]=aux[0]
+	out[12]=install.profile.operation.nominal_mixture
+	return put_state(out,state)
+
+static func properties(owner: Node, fuel: float) -> Dictionary:
+	var model: Dictionary=owner.aircraft.model
+	var install: Dictionary=model.propulsion.glow
+	return FuelMass.evaluate(model.mass_kg,model.inertia,install.initial_fuel_kg,maxf(0.0,fuel),install.tank_position,install.tank_size)
+
+static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	var prop: Dictionary=owner.aircraft.model.propulsion
+	var install: Dictionary=prop.glow
+	var state: Dictionary=unpack(values,install)
+	if state.is_empty(): return {ok=false}
+	# Negative fuel is the left-limit continuation used only by the bounded exhaustion solver.
+	if state.fuel_kg<0.0: state.fuel_kg=1e-30
+	if not owner.engine_running: state.running=false
+	var air: Dictionary=owner.air_data(body,time_s)
+	var ambient: Dictionary=owner.atmosphere_configuration()
+	var local_cooling: float=M.norm(air.v_air)
+	var rpm: float=maxf(0.0,values[0])
+	# Mean propwash contributes local cooling at idle; installation coefficient remains estimated.
+	var load: Dictionary=Blade.evaluate(rpm,M.dot(air.v_air,prop.axis),owner.air_density(),install.propeller)
+	if not load.ok: return {ok=false}
+	local_cooling += M.sqrt_(maxf(0.0,load.thrust_n)/(2.0*owner.air_density()*PI*prop.diameter*prop.diameter/4.0))
+	var evaluation: Dictionary=Life.evaluate(install.profile,install.settings,state,rpm,owner.sim.inputs[3],values[12],
+		1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
+	if not evaluation.ok: return evaluation
+	evaluation.air=air
+	evaluation.propeller=load
+	evaluation.state=state
+	return evaluation
+
+static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float, owner: Node) -> Dictionary:
+	if values.size()!=SIZE+owner.wheel_count(): return {}
+	var result: Dictionary=point(owner,body,values,time_s)
+	if not result.ok: return {}
+	var model: Dictionary=owner.aircraft.model
+	var prop: Dictionary=model.propulsion
+	var mass: Dictionary=properties(owner,values[1])
+	if not mass.ok: return {}
+	var rpm: float=maxf(0.0,values[0])
+	var lag: int=owner.downwash_index()
+	var external: PackedFloat64Array=Dynamics.loads_from_air(body,model,owner._deflections(owner.sim.aux),rpm,
+		owner.air_density(),result.air,owner.sim.aux[lag] if lag>=0 else NAN,PackedFloat64Array(),owner._ground_up(body))
+	var ground: Dictionary=owner._ground_evaluation(body,owner.sim.aux,values)
+	if not ground.get("ok",false): return {}
+	for i in ground.loads.size(): external[i]+=ground.loads[i]
+	var force: PackedFloat64Array=external.slice(0,3)
+	var torque: PackedFloat64Array=M.sub(external.slice(3,6),M.cross(mass.cg_body_m,force))
+	var w: PackedFloat64Array=body.slice(RB.RATE,RB.RATE+3)
+	var drive: float=result.source.shaft_torque_nm
+	var load: float=result.propeller.torque_nm
+	var locked: bool=false
+	if values[0]<=0.0:
+		# Static friction holds a stopped crank while the propeller can break it away in airflow.
+		var coast: Dictionary=Source.evaluate(prop.glow.profile,0.001,result.state.air_fraction,values[12],1.225*owner.engine_charge_ratio(),false)
+		if not coast.ok: return {}
+		var friction: float=-coast.shaft_torque_nm
+		var alpha: PackedFloat64Array=RB.inertia_mul(mass.inverse,M.sub(torque,M.cross(w,RB.inertia_mul(mass.inertia,w))))
+		var demand: float=-load-prop.rotor_inertia*M.dot(prop.axis,alpha)
+		if values[0]<0.0:
+			drive=-friction # moving left limit, never committed
+		elif demand<=friction:
+			locked=true
+			drive=load+prop.rotor_inertia*M.dot(prop.axis,alpha)
+		else: drive=-friction
+	var response: Dictionary=Coupling.response(w,torque,mass.inertia,mass.inverse,prop.axis,prop.rotor_inertia,
+		rpm*TAU/60.0,drive-load)
+	if not response.ok: return {}
+	if locked:
+		response.spin_acceleration=0.0
+		response.reaction=PackedFloat64Array([0.,0.,0.])
+	var moment: PackedFloat64Array=M.add(torque,response.reaction)
+	var rotor: PackedFloat64Array=M.scale(prop.axis,prop.rotor_inertia*rpm*TAU/60.0)
+	var body_rate: PackedFloat64Array=FuelMass.datum_derivative(body,mass,force,moment,owner.sim.gravity,rotor)
+	var derivative:=PackedFloat64Array()
+	derivative.resize(SIZE)
+	derivative[0]=response.spin_acceleration*60.0/TAU
+	for i in 6: derivative[i+1]=result.rates[Life.CONTINUOUS_KEYS[i]]
+	derivative[13]=result.source.brake_power_w
+	derivative[14]=result.propeller.shaft_power_w
+	derivative[15]=result.propeller.thrust_power_w
+	derivative[16]=result.source.chemical_power_w
+	derivative.append_array(ground.derivative)
+	for i in 3: external[i+3]+=response.reaction[i]
+	return {loads=external,derivative=derivative,rotor_momentum=rotor,body_derivative=body_rate}
+
+static func project_stop(values: PackedFloat64Array,index: int,owner: Node) -> PackedFloat64Array:
+	var out: PackedFloat64Array=values.duplicate()
+	var mass: Dictionary=properties(owner,values[RB.SIZE+1])
+	if not mass.ok: return PackedFloat64Array([NAN])
+	var prop: Dictionary=owner.aircraft.model.propulsion
+	var correction: PackedFloat64Array=RB.inertia_mul(mass.inverse,M.scale(prop.axis,prop.rotor_inertia*out[index]*TAU/60.0))
+	# Preserve linear momentum as the body rates change about the fixed datum.
+	var velocity_correction: PackedFloat64Array=M.cross(correction,mass.cg_body_m)
+	for i in 3:
+		out[RB.RATE+i]+=correction[i]
+		out[RB.VEL+i]-=velocity_correction[i]
+	out[index]=0.0
+	return out
+
+static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative: Callable,first: PackedFloat64Array,owner: Node) -> PackedFloat64Array:
+	var bounded: Dictionary=Boundary.advance(combined,time_s,dt,derivative,first,RB.SIZE,RB.SIZE+1,project_stop.bind(owner))
+	if not bounded.ok: return PackedFloat64Array([NAN])
+	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	var values: PackedFloat64Array=bounded.state.slice(RB.SIZE)
+	var before: Dictionary=unpack(combined.slice(RB.SIZE),install)
+	if not owner.engine_running:
+		before=Life.cut(before).state
+	var candidate: Dictionary=unpack(values,install)
+	var endpoint: Dictionary=point(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
+	if not endpoint.ok: return PackedFloat64Array([NAN])
+	var accepted: Dictionary=Life.accepted(install.profile,install.settings,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
+	if not accepted.ok: return PackedFloat64Array([NAN])
+	values=put_state(values,accepted.state)
+	var out: PackedFloat64Array=bounded.state.slice(0,RB.SIZE)
+	out.append_array(values)
+	return out
+
+static func telemetry(owner: Node) -> Dictionary:
+	var values: PackedFloat64Array=owner.sim.continuous
+	if values.size()<SIZE: return {ok=false}
+	var result: Dictionary=point(owner,owner.sim.state,values,owner.sim.time())
+	if not result.ok: return result
+	var out: Dictionary=result.telemetry.duplicate(true)
+	out.merge(result.state,true)
+	out.merge(result.source,true)
+	out.ok=true
+	out.rpm=values[0]
+	out.running=result.state.running and result.state.fuel_kg>0.0
+	out.blade_count=owner.aircraft.model.propulsion.glow.propeller.blades
+	out.firing_fraction=result.firing_fraction
+	out.propeller=result.propeller
+	out.mass_properties=properties(owner,values[1])
+	out.shaft_work_j=values[13]
+	out.propeller_work_j=values[14]
+	out.thrust_work_j=values[15]
+	return out

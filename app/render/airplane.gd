@@ -24,6 +24,13 @@ const EXTRA_ID := "gp-extra-300s-60"
 const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
 const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
+const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
+const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
+
+# The Stik builder's prop is 12 in from generated visual geometry. These inferred glow installations use estimated
+# 13 x 6 and 14 x 6 props respectively; scale only their propeller nodes to match those stated diameters.
+const STIK_GLOW_55AX_PROP_DIAMETER_M := 0.3302
+const STIK_GLOW_FS64V_PROP_DIAMETER_M := 0.3556
 
 
 static func _mat(color: Color) -> StandardMaterial3D:
@@ -37,6 +44,14 @@ static func build(id := STIK_ID) -> Dictionary:
 	match id:
 		STIK_ID:
 			airplane = UglyStik.build()
+		STIK_GLOW_55AX_ID:
+			airplane = UglyStik.build()
+			var ratio := STIK_GLOW_55AX_PROP_DIAMETER_M / float(StikGeometry.DATA.equipment.prop_diameter)
+			airplane.propeller.scale = Vector3(ratio, ratio, 1.0)
+		STIK_GLOW_FS64V_ID:
+			airplane = UglyStik.build()
+			var ratio := STIK_GLOW_FS64V_PROP_DIAMETER_M / float(StikGeometry.DATA.equipment.prop_diameter)
+			airplane.propeller.scale = Vector3(ratio, ratio, 1.0)
 		EXTRA_ID:
 			airplane = Extra.build()
 		AVANTI_ID:
@@ -49,6 +64,7 @@ static func build(id := STIK_ID) -> Dictionary:
 			push_error("render/airplane.gd: unknown aircraft '%s'" % id)
 			return {}
 	airplane.aircraft_id = id
+	airplane.root.set_meta("aircraft_id", id)
 	# Optional, aircraft-authored mouths; an absent anchor never falls back to the aircraft origin.
 	airplane.exhausts = airplane.root.get_meta("exhausts", [])
 	return airplane
@@ -59,7 +75,7 @@ static func build(id := STIK_ID) -> Dictionary:
 ## Preview-only aircraft have no flight data: Vector2.ZERO.
 static func datum(id: String) -> Vector2:
 	match id:
-		STIK_ID:
+		STIK_ID, STIK_GLOW_55AX_ID, STIK_GLOW_FS64V_ID:
 			return Vector2(StikGeometry.DATA.wing.leading_z, StikGeometry.DATA.equipment.shaft_y)
 		EXTRA_ID:
 			# geometry.json: y = 0 on the spinner axis; the physics le frame starts at the trapezoid's root LE.

@@ -82,6 +82,14 @@
         [
           2.5,
           0.2
+        ],
+        [
+          3.0,
+          0.0
+        ],
+        [
+          20.0,
+          0.0
         ]
       ],
       "unit": "1, 1",
@@ -305,8 +313,8 @@
     "max_rpm": {
       "value": 17000.0,
       "unit": "rpm",
-      "kind": "manual",
-      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm"
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
     },
     "rated_rpm": {
       "value": 16000.0,
@@ -331,6 +339,12 @@
       "unit": "1",
       "kind": "estimated",
       "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "recommended_max_rpm": {
+      "value": 17000.0,
+      "unit": "rpm",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm"
     }
   }
 }

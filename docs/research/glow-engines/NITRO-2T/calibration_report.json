@@ -1,0 +1,497 @@
+{
+  "format": "openrc-glow-inference-audit v1",
+  "engine_id": "os_max_55ax_candidate",
+  "family": "glow_2t",
+  "profile_status": "candidate",
+  "interpretation": "generated candidate inference; never a measured or held-out data fit",
+  "profile_path": "app/data/glow/os_max_55ax_candidate.json",
+  "profile_sha256": "41b636d09292ed0e440a7c4f80562536f26a5dab6cc1dee88113324e4a4906d1",
+  "rating_constraint": {
+    "source": "O.S. manufacturer rated-power/RPM point retained in the candidate profile",
+    "rated_rpm": 16000.0,
+    "rated_power_w": 1250.347875,
+    "torque_derived_from_rating_nm": 0.74624642,
+    "candidate_reconstructed_power_w": 1250.347875,
+    "candidate_power_residual_w": 0.0,
+    "candidate_reconstructed_torque_nm": 0.74624642,
+    "identity_check": "PASS",
+    "meaning": "algebraic closure of generated assumptions; not calibration against independent measurements"
+  },
+  "rpm_domain": {
+    "o_s_published_practical_rpm": [
+      2000.0,
+      17000.0
+    ],
+    "profile_recommended_max_rpm": 17000.0,
+    "profile_numerical_max_rpm": 17000.0,
+    "profile_table_rpm_support": [
+      0.0,
+      17000.0
+    ],
+    "profile_knots_outside_o_s_practical_range": [],
+    "profile_knots_above_recommended_max_rpm": [],
+    "peak_search_range_rpm": [
+      2000.0,
+      17000.0
+    ],
+    "manufacturer_source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm",
+    "warning": "Candidate support beyond the published practical range is shown for audit but is not a manufacturer-approved operating envelope."
+  },
+  "fuel_basis_from_profile": {
+    "total_premix_density_kg_m3": 856.92,
+    "oil_mass_fraction_of_premix": 0.20186248,
+    "combustible_stoichiometric_air_fuel_ratio": 5.64067734,
+    "combustible_lhv_j_kg": 18553688.92008071,
+    "methanol_mass_per_premix_m3_kg": 570.24,
+    "nitromethane_mass_per_premix_m3_kg": 113.7,
+    "oil_mass_per_premix_m3_kg": 172.98
+  },
+  "candidate_wot_knot_curve": [
+    {
+      "rpm": 2000.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.1941887,
+      "mechanical_torque_nm": 0.012,
+      "pumping_torque_nm": 0.0021887,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.18,
+      "brake_shaft_power_w": 37.6991118,
+      "cycle_work_j": 1.2201238,
+      "opportunity_frequency_hz": 33.3333333,
+      "nominal_firing_frequency_hz": 33.3333333,
+      "delivered_premix_kg_s": 3.33e-05,
+      "burned_combustible_kg_s": 2.31e-05,
+      "unburned_premix_kg_s": 1.02e-05,
+      "delivered_premix_ml_min": 2.3315362,
+      "within_o_s_practical_rpm_range": true
+    },
+    {
+      "rpm": 4000.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.3193769,
+      "mechanical_torque_nm": 0.016,
+      "pumping_torque_nm": 0.0033769,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.3,
+      "brake_shaft_power_w": 125.6637061,
+      "cycle_work_j": 2.0067042,
+      "opportunity_frequency_hz": 66.6666667,
+      "nominal_firing_frequency_hz": 66.6666667,
+      "delivered_premix_kg_s": 8.61e-05,
+      "burned_combustible_kg_s": 5.97e-05,
+      "unburned_premix_kg_s": 2.63e-05,
+      "delivered_premix_ml_min": 6.0261244,
+      "within_o_s_practical_rpm_range": true
+    },
+    {
+      "rpm": 7000.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.5474576,
+      "mechanical_torque_nm": 0.022,
+      "pumping_torque_nm": 0.0054576,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.52,
+      "brake_shaft_power_w": 381.1799086,
+      "cycle_work_j": 3.4397776,
+      "opportunity_frequency_hz": 116.6666667,
+      "nominal_firing_frequency_hz": 116.6666667,
+      "delivered_premix_kg_s": 0.000193,
+      "burned_combustible_kg_s": 0.0001339,
+      "unburned_premix_kg_s": 5.91e-05,
+      "delivered_premix_ml_min": 13.5131274,
+      "within_o_s_practical_rpm_range": true
+    },
+    {
+      "rpm": 10000.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.7361011,
+      "mechanical_torque_nm": 0.028,
+      "pumping_torque_nm": 0.0081011,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.7,
+      "brake_shaft_power_w": 733.0382858,
+      "cycle_work_j": 4.6250599,
+      "opportunity_frequency_hz": 166.6666667,
+      "nominal_firing_frequency_hz": 166.6666667,
+      "delivered_premix_kg_s": 0.0003363,
+      "burned_combustible_kg_s": 0.0002334,
+      "unburned_premix_kg_s": 0.0001029,
+      "delivered_premix_ml_min": 23.5436246,
+      "within_o_s_practical_rpm_range": true
+    },
+    {
+      "rpm": 13000.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.8244377,
+      "mechanical_torque_nm": 0.034,
+      "pumping_torque_nm": 0.0104377,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.78,
+      "brake_shaft_power_w": 1061.8583169,
+      "cycle_work_j": 5.1800948,
+      "opportunity_frequency_hz": 216.6666667,
+      "nominal_firing_frequency_hz": 216.6666667,
+      "delivered_premix_kg_s": 0.0004693,
+      "burned_combustible_kg_s": 0.0003257,
+      "unburned_premix_kg_s": 0.0001436,
+      "delivered_premix_ml_min": 32.8619433,
+      "within_o_s_practical_rpm_range": true
+    },
+    {
+      "rpm": 16000.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.7981849,
+      "mechanical_torque_nm": 0.04,
+      "pumping_torque_nm": 0.0119385,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.7462464,
+      "brake_shaft_power_w": 1250.347875,
+      "cycle_work_j": 5.0151439,
+      "opportunity_frequency_hz": 266.6666667,
+      "nominal_firing_frequency_hz": 266.6666667,
+      "delivered_premix_kg_s": 0.0005514,
+      "burned_combustible_kg_s": 0.0003827,
+      "unburned_premix_kg_s": 0.0001687,
+      "delivered_premix_ml_min": 38.6089356,
+      "within_o_s_practical_rpm_range": true
+    },
+    {
+      "rpm": 17000.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.7540068,
+      "mechanical_torque_nm": 0.042,
+      "pumping_torque_nm": 0.0120068,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.7,
+      "brake_shaft_power_w": 1246.1650859,
+      "cycle_work_j": 4.7375641,
+      "opportunity_frequency_hz": 283.3333333,
+      "nominal_firing_frequency_hz": 283.3333333,
+      "delivered_premix_kg_s": 0.0005472,
+      "burned_combustible_kg_s": 0.0003798,
+      "unburned_premix_kg_s": 0.0001674,
+      "delivered_premix_ml_min": 38.3167598,
+      "within_o_s_practical_rpm_range": true
+    }
+  ],
+  "candidate_derived_peaks": {
+    "method": "25 RPM scan through linearly interpolated profile tables inside the manufacturer's practical RPM envelope",
+    "not_a_measured_peak": true,
+    "torque_peak": {
+      "rpm": 13000.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.8244377,
+      "mechanical_torque_nm": 0.034,
+      "pumping_torque_nm": 0.0104377,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.78,
+      "brake_shaft_power_w": 1061.8583169,
+      "cycle_work_j": 5.1800948,
+      "opportunity_frequency_hz": 216.6666667,
+      "nominal_firing_frequency_hz": 216.6666667,
+      "delivered_premix_kg_s": 0.0004693,
+      "burned_combustible_kg_s": 0.0003257,
+      "unburned_premix_kg_s": 0.0001436,
+      "delivered_premix_ml_min": 32.8619433
+    },
+    "power_peak": {
+      "rpm": 16025.0,
+      "admission": 1.0,
+      "mixture_equivalence": 1.15,
+      "indicated_torque_nm": 0.797074,
+      "mechanical_torque_nm": 0.04005,
+      "pumping_torque_nm": 0.0119408,
+      "valve_torque_nm": 0.0,
+      "brake_shaft_torque_nm": 0.7450832,
+      "brake_shaft_power_w": 1250.3495431,
+      "cycle_work_j": 5.0081637,
+      "opportunity_frequency_hz": 267.0833333,
+      "nominal_firing_frequency_hz": 267.0833333,
+      "delivered_premix_kg_s": 0.0005513,
+      "burned_combustible_kg_s": 0.0003827,
+      "unburned_premix_kg_s": 0.0001687,
+      "delivered_premix_ml_min": 38.604491
+    }
+  },
+  "rated_rpm_effective_admission_scenarios": {
+    "meaning": "static candidate-kernel sensitivity only; admission is not transmitter position and no transient is simulated",
+    "points": [
+      {
+        "rpm": 16000.0,
+        "admission": 0.25,
+        "mixture_equivalence": 1.15,
+        "indicated_torque_nm": 0.1995462,
+        "mechanical_torque_nm": 0.04,
+        "pumping_torque_nm": 0.0029846,
+        "valve_torque_nm": 0.0,
+        "brake_shaft_torque_nm": 0.1565616,
+        "brake_shaft_power_w": 262.3214863,
+        "cycle_work_j": 1.253786,
+        "opportunity_frequency_hz": 266.6666667,
+        "nominal_firing_frequency_hz": 266.6666667,
+        "delivered_premix_kg_s": 0.0001379,
+        "burned_combustible_kg_s": 9.57e-05,
+        "unburned_premix_kg_s": 4.22e-05,
+        "delivered_premix_ml_min": 9.6522339
+      },
+      {
+        "rpm": 16000.0,
+        "admission": 0.5,
+        "mixture_equivalence": 1.15,
+        "indicated_torque_nm": 0.3990925,
+        "mechanical_torque_nm": 0.04,
+        "pumping_torque_nm": 0.0059693,
+        "valve_torque_nm": 0.0,
+        "brake_shaft_torque_nm": 0.3531232,
+        "brake_shaft_power_w": 591.6636159,
+        "cycle_work_j": 2.507572,
+        "opportunity_frequency_hz": 266.6666667,
+        "nominal_firing_frequency_hz": 266.6666667,
+        "delivered_premix_kg_s": 0.0002757,
+        "burned_combustible_kg_s": 0.0001913,
+        "unburned_premix_kg_s": 8.44e-05,
+        "delivered_premix_ml_min": 19.3044678
+      },
+      {
+        "rpm": 16000.0,
+        "admission": 0.75,
+        "mixture_equivalence": 1.15,
+        "indicated_torque_nm": 0.5986387,
+        "mechanical_torque_nm": 0.04,
+        "pumping_torque_nm": 0.0089539,
+        "valve_torque_nm": 0.0,
+        "brake_shaft_torque_nm": 0.5496848,
+        "brake_shaft_power_w": 921.0057454,
+        "cycle_work_j": 3.761358,
+        "opportunity_frequency_hz": 266.6666667,
+        "nominal_firing_frequency_hz": 266.6666667,
+        "delivered_premix_kg_s": 0.0004136,
+        "burned_combustible_kg_s": 0.000287,
+        "unburned_premix_kg_s": 0.0001265,
+        "delivered_premix_ml_min": 28.9567017
+      },
+      {
+        "rpm": 16000.0,
+        "admission": 1.0,
+        "mixture_equivalence": 1.15,
+        "indicated_torque_nm": 0.7981849,
+        "mechanical_torque_nm": 0.04,
+        "pumping_torque_nm": 0.0119385,
+        "valve_torque_nm": 0.0,
+        "brake_shaft_torque_nm": 0.7462464,
+        "brake_shaft_power_w": 1250.347875,
+        "cycle_work_j": 5.0151439,
+        "opportunity_frequency_hz": 266.6666667,
+        "nominal_firing_frequency_hz": 266.6666667,
+        "delivered_premix_kg_s": 0.0005514,
+        "burned_combustible_kg_s": 0.0003827,
+        "unburned_premix_kg_s": 0.0001687,
+        "delivered_premix_ml_min": 38.6089356
+      }
+    ]
+  },
+  "one_at_a_time_assumption_sensitivity": {
+    "meaning": "local perturbation experiment on inferred inputs; values are not confidence intervals, empirical uncertainty bands, or retuned profiles",
+    "points": [
+      {
+        "rpm": 9000.0,
+        "baseline": {
+          "brake_torque_nm": 0.63666039,
+          "brake_power_w": 600.0382802
+        },
+        "one_at_a_time_cases": [
+          {
+            "case": "indicated_efficiency_minus_10pct",
+            "candidate_brake_torque_nm": 0.56967804,
+            "delta_from_candidate_nm": -0.06698235,
+            "candidate_brake_power_w": 536.90890191
+          },
+          {
+            "case": "indicated_efficiency_plus_10pct",
+            "candidate_brake_torque_nm": 0.70364274,
+            "delta_from_candidate_nm": 0.06698235,
+            "candidate_brake_power_w": 663.16765849
+          },
+          {
+            "case": "fresh_charge_minus_10pct",
+            "candidate_brake_torque_nm": 0.56967804,
+            "delta_from_candidate_nm": -0.06698235,
+            "candidate_brake_power_w": 536.90890191
+          },
+          {
+            "case": "fresh_charge_plus_10pct",
+            "candidate_brake_torque_nm": 0.70364274,
+            "delta_from_candidate_nm": 0.06698235,
+            "candidate_brake_power_w": 663.16765849
+          },
+          {
+            "case": "all_candidate_shaft_losses_minus_50pct",
+            "candidate_brake_torque_nm": 0.65324195,
+            "delta_from_candidate_nm": 0.01658156,
+            "candidate_brake_power_w": 615.66603155
+          },
+          {
+            "case": "all_candidate_shaft_losses_plus_50pct",
+            "candidate_brake_torque_nm": 0.62007883,
+            "delta_from_candidate_nm": -0.01658156,
+            "candidate_brake_power_w": 584.41052885
+          }
+        ]
+      },
+      {
+        "rpm": 16000.0,
+        "baseline": {
+          "brake_torque_nm": 0.74624642,
+          "brake_power_w": 1250.347875
+        },
+        "one_at_a_time_cases": [
+          {
+            "case": "indicated_efficiency_minus_10pct",
+            "candidate_brake_torque_nm": 0.66642792,
+            "delta_from_candidate_nm": -0.07981849,
+            "candidate_brake_power_w": 1116.61070317
+          },
+          {
+            "case": "indicated_efficiency_plus_10pct",
+            "candidate_brake_torque_nm": 0.82606491,
+            "delta_from_candidate_nm": 0.07981849,
+            "candidate_brake_power_w": 1384.08504683
+          },
+          {
+            "case": "fresh_charge_minus_10pct",
+            "candidate_brake_torque_nm": 0.66642792,
+            "delta_from_candidate_nm": -0.07981849,
+            "candidate_brake_power_w": 1116.61070317
+          },
+          {
+            "case": "fresh_charge_plus_10pct",
+            "candidate_brake_torque_nm": 0.82606491,
+            "delta_from_candidate_nm": 0.07981849,
+            "candidate_brake_power_w": 1384.08504683
+          },
+          {
+            "case": "all_candidate_shaft_losses_minus_50pct",
+            "candidate_brake_torque_nm": 0.77221568,
+            "delta_from_candidate_nm": 0.02596927,
+            "candidate_brake_power_w": 1293.85979664
+          },
+          {
+            "case": "all_candidate_shaft_losses_plus_50pct",
+            "candidate_brake_torque_nm": 0.72027715,
+            "delta_from_candidate_nm": -0.02596927,
+            "candidate_brake_power_w": 1206.83595336
+          }
+        ]
+      }
+    ]
+  },
+  "single_point_propeller_anchor_inference": {
+    "status": "conditional one-point fit; not an independent validation",
+    "reference": {
+      "engine": "O.S. MAX-55AX",
+      "propeller": "APC Sport 12x7 LP12070 (identified in the O.S. field article)",
+      "observed_peak_rpm": 10330.0,
+      "ambient_temperature_c": 3.0,
+      "source": "https://www.os-engines.co.jp/web_content/202102/index1.html",
+      "not_reported": [
+        "shaft torque",
+        "thrust",
+        "barometric pressure",
+        "propeller chord distribution",
+        "propeller pitch/twist distribution"
+      ]
+    },
+    "method": "At observed static RPM, scale only a guessed uniform chord so the 12-annulus no-induced-velocity propeller torque equals the current full-admission candidate engine torque. The load law mirrors app/physics/glow/propeller.gd; engine torque is linearly interpolated from the live profile.",
+    "assumed_propeller_geometry_and_sections": {
+      "diameter_m": 0.30479999999999996,
+      "pitch_m": 0.17779999999999999,
+      "starting_uniform_chord_mm": 25.0,
+      "blades": 2,
+      "lift_slope_per_rad": 5.5,
+      "cd0": 0.022,
+      "induced_drag": 0.06,
+      "static_prop_air_density_kg_m3": 1.225,
+      "density_note": "profile reference density is used because the O.S. article reports temperature but not barometric pressure; actual test density is unknown"
+    },
+    "conditional_fit": {
+      "candidate_engine_torque_at_anchor_nm": 0.7085826,
+      "starting_chord_prop_torque_at_anchor_nm": 0.83810634,
+      "chord_scale_factor": 0.84545668,
+      "implied_uniform_chord_mm": 21.13642,
+      "post_fit_torque_residual_nm": 0.0,
+      "residual_interpretation": "zero by construction; cannot verify the engine torque or propeller map"
+    },
+    "static_balance_roots_after_chord_fit": [
+      {
+        "rpm": 10330.0,
+        "net_torque_slope_nm_per_rpm": -0.0001111,
+        "locally_stable_by_scalar_shaft_test": true,
+        "anchor_or_candidate_prediction": "anchor by construction"
+      }
+    ],
+    "second_recommended_prop_scenario": {
+      "configuration": "APC Sport LP13060 13x6",
+      "manufacturer_prop_rpm_ceiling": 14615.38,
+      "assumed_chord_mm_from_diameter_similarity": 22.89778,
+      "static_candidate_balance_roots_rpm": [
+        9650.61
+      ],
+      "evidence_status": "unobserved surrogate prediction; same section coefficients and chord/diameter ratio assumed from the fitted 12x7 prop",
+      "warning": "The O.S. 12x7 RPM point does not validate the different 13x6 geometry or its static equilibrium."
+    },
+    "one_at_a_time_assumption_sensitivity": [
+      {
+        "case": "section_lift_slope_4_5",
+        "exact_fit_chord_mm": 23.80278,
+        "meaning": "one changed assumed prop/air input; this is not a statistical interval"
+      },
+      {
+        "case": "section_lift_slope_6_5",
+        "exact_fit_chord_mm": 19.74656,
+        "meaning": "one changed assumed prop/air input; this is not a statistical interval"
+      },
+      {
+        "case": "section_cd0_0_015",
+        "exact_fit_chord_mm": 22.02203,
+        "meaning": "one changed assumed prop/air input; this is not a statistical interval"
+      },
+      {
+        "case": "section_cd0_0_035",
+        "exact_fit_chord_mm": 19.66755,
+        "meaning": "one changed assumed prop/air input; this is not a statistical interval"
+      },
+      {
+        "case": "density_minus_10pct",
+        "exact_fit_chord_mm": 23.48491,
+        "meaning": "one changed assumed prop/air input; this is not a statistical interval"
+      },
+      {
+        "case": "density_plus_10pct",
+        "exact_fit_chord_mm": 19.21492,
+        "meaning": "one changed assumed prop/air input; this is not a statistical interval"
+      }
+    ],
+    "limits": [
+      "O.S. reported only a peak-RPM observation for one APC 12x7 setup; RPM alone does not identify engine torque, propeller torque, thrust, or blade geometry.",
+      "The inferred uniform chord is conditional on the candidate engine curve, reference air density, section coefficients, zero axial flow, and this simplified no-induction load law.",
+      "The exact anchor agreement is a one-point parameter fit, not a measured torque match, held-out prediction, full static map, advancing-flight validation, or APC blade-shape reconstruction."
+    ]
+  },
+  "validation_status": {
+    "profile_structure": "JSON parses and the report's required fields are present; a full runtime/schema validation is not performed here",
+    "rated_knot_reconstruction": "checked by this report; this verifies candidate algebraic consistency only",
+    "engine_specific_curve_fit": "NOT PERFORMED: no matched multi-point MAX-55AX or FS-64V torque/flow dataset",
+    "independent_held_out_validation": "NOT PERFORMED",
+    "physical_engine_validation": "NOT PERFORMED",
+    "experienced_pilot_validation": "NOT PERFORMED",
+    "aiaa_2016_5011": "external comparison only: MAX-55AX part-load installed-hybrid data; FS-a56 is not FS-64V; no points are imported as a fit target here"
+  }
+}

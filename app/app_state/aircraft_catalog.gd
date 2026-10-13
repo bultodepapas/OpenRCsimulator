@@ -27,6 +27,22 @@ const ENTRIES := [
 		data = "res://data/aircraft/jensen_ugly_stik_60.json",
 	},
 	{
+		id = "stik-glow-55ax-2t",
+		name = "Jensen Das Ugly Stik 60 · MAX-55AX",
+		summary = "High-wing sport trainer · 1.52 m · .55 2-stroke glow",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: inferred O.S. MAX-55AX 2-stroke installation and engine profile; not flight-validated.",
+		data = "res://data/aircraft/stik_glow_55ax_2t.json",
+	},
+	{
+		id = "stik-glow-fs64v-4t",
+		name = "Jensen Das Ugly Stik 60 · FS-64V",
+		summary = "High-wing sport trainer · 1.52 m · .64 4-stroke glow",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: inferred O.S. FS-64V 4-stroke installation and engine profile; not flight-validated.",
+		data = "res://data/aircraft/stik_glow_fs64v_4t.json",
+	},
+	{
 		id = "gp-extra-300s-60",
 		name = "Great Planes Extra 300S .60",
 		summary = "Low-wing aerobat · 1.63 m · .61 glow",

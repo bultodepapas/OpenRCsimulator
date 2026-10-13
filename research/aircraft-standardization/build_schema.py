@@ -201,6 +201,8 @@ def add_v2_overlay(schema: dict, spec: dict):
     add_text_field(glow["properties"], "description", nonempty=True)
     glow_engine = glow["properties"]["engine"]
     add_text_field(glow_engine["properties"], "name", nonempty=True)
+    add_text_field(glow_engine["properties"], "glow_installation", nonempty=True)
+    glow_engine["allOf"] = [{"not": {"required": ["glow_installation", "shaft"]}}]
     glow_prop = glow["properties"]["propeller"]
     add_text_field(glow_prop["properties"], "name", nonempty=True)
     glow_prop["properties"]["rotation"] = {"const": "clockwise_from_rear"}
@@ -273,10 +275,13 @@ def add_v2_overlay(schema: dict, spec: dict):
     # contract repeats these and adds geometric steering checks.
     rules = []
     for kind, layout, energy in [
-        ("glow_prop", "single_tractor", "prescribed_fuel"),
         ("turbine", "single_centerline_jet", "prescribed_fuel"),
     ]:
         rules.append({"if": branch_condition(["propulsion", "kind"], kind), "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": layout}, "energy": {"const": energy}}}}}})
+    glow_energy = {"if": {"properties": {"propulsion": {"properties": {"engine": {"required": ["glow_installation"]}}}}},
+                   "then": {"properties": {"capabilities": {"properties": {"energy": {"const": "finite_glow_fuel"}}}}},
+                   "else": {"properties": {"capabilities": {"properties": {"energy": {"const": "prescribed_fuel"}}}}}}
+    rules.append({"if": branch_condition(["propulsion", "kind"], "glow_prop"), "then": {"allOf": [glow_energy, {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}}}}}]}})
     for battery_kind, energy in [("fixed_voltage", "fixed_voltage"), ("ocv_resistance", "ocv_resistance")]:
         condition = {"properties": {"propulsion": {"properties": {"kind": {"const": "electric_prop"}, "battery": {"properties": {"kind": {"const": battery_kind}}}}}}}
         rules.append({"if": condition, "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}, "energy": {"const": energy}}}}}})

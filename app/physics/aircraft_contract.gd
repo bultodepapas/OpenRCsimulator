@@ -147,6 +147,10 @@ static func _validate_relations(root: Dictionary, spec: Dictionary, issues: Pack
 	if capabilities.get("propulsion_layout", "") != layout_expected:
 		_issue(issues, "/capabilities/propulsion_layout", "does not match propulsion.kind")
 	var energy_expected := "prescribed_fuel"
+	if propulsion_kind == "glow_prop" and propulsion.get("engine", {}).has("glow_installation"):
+		energy_expected = "finite_glow_fuel"
+		if propulsion.engine.has("shaft"):
+			_issue(issues, "/propulsion/engine", "glow_installation and legacy shaft are mutually exclusive")
 	if propulsion_kind == "electric_prop":
 		var battery: Variant = propulsion.get("battery", {})
 		if battery is Dictionary:

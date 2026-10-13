@@ -1,0 +1,22 @@
+{
+  "schema": "openrc.av20.suite-status/v1",
+  "full_suite_passed": false,
+  "baseline_failure": {
+    "script": "test_landscape_gravel.gd",
+    "detail": "47 nonempty scenery cells remain after population extraction"
+  },
+  "delivery_failure": {
+    "script": "test_crash_integration.gd",
+    "checks": 95,
+    "failed": 2,
+    "assertions": [
+      "jensen-das-ugly-stik-60: crash detection preserves the complete simulation checkpoint",
+      "gp-extra-300s-60: crash detection preserves the complete simulation checkpoint"
+    ]
+  },
+  "disabled_turbine_control": {
+    "same_assertions_failed": true,
+    "source_change": "turbine_is_continuous forced false in disposable app copy"
+  },
+  "physical_validation": false
+}

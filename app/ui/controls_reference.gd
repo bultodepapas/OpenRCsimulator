@@ -11,11 +11,11 @@ const FLIGHT := [
 	[[KEY_UP, KEY_DOWN], "Pitch"],
 	[[KEY_A, KEY_D], "Rudder"],
 	[[KEY_W, KEY_S], "Throttle"],
-	[[KEY_PAGEUP, KEY_PAGEDOWN], "Elevator trim: nose down / up"],
 ]
 
 ## Shortcuts while flying: [keys, what they do] (main.gd _unhandled_input).
 const SHORTCUTS := [
+	[[KEY_PAGEUP, KEY_PAGEDOWN], "Elevator trim: nose down / up"],
 	[[KEY_ESCAPE], "Pause menu (in the radio calibration: cancel it)"],
 	[[KEY_R], "Restart the flight"],
 	[[KEY_P], "Resume after a radio failsafe"],

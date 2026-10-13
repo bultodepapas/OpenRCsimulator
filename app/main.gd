@@ -653,6 +653,19 @@ func _update_hud() -> void:
 		lines.append(Hud.perf_line(_frame_times, session.sim.step_usec))
 	if not _experimental_aircraft_path.is_empty():
 		lines.append("EXPERIMENTAL: wing polar; aircraft-specific flight validation pending.")
+	if not _scripted and session != null and session.has_method("glow_is_active") and session.glow_is_active():
+		var glow: Dictionary = session.glow_state()
+		if glow.get("ok", false):
+			var family: String = str(glow.get("family", ""))
+			var family_label := "2-stroke" if family == "glow_2t" else "4-stroke" if family == "glow_4t" else family
+			var temperature_c: float = float(glow.get("temperature_k", 273.15)) - 273.15
+			# The generated Stik data estimates premix at about 0.8 g/mL; display the corresponding approximate volume.
+			var fuel_ml: float = float(glow.get("fuel_kg", 0.0)) / 0.0008
+			var engine_mode: String = "running" if glow.get("running", false) else str(glow.get("stop_reason", "stopped")).replace("_", " ")
+			lines.append("Glow %s  %.0f rpm  head %.0f °C  fuel ~%.0f mL  %s  φ %.2f" % [
+				family_label, float(glow.get("rpm", 0.0)), temperature_c, fuel_ml, engine_mode,
+				float(glow.get("mixture_command", 0.0))])
+			lines.append("[F6] cut  [F7] starter  [F8] lean  [F9] rich")
 	_hud.text = "\n".join(lines)
 
 
@@ -747,6 +760,26 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _camera_input(event):
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
+		if not _scripted and session != null and session.has_method("glow_is_active") and session.glow_is_active():
+			var glow_action_ok := false
+			var action_label := ""
+			match event.physical_keycode:
+				KEY_F6:
+					glow_action_ok = session.glow_cut()
+					action_label = "cut"
+				KEY_F7:
+					glow_action_ok = session.glow_start()
+					action_label = "starter"
+				KEY_F8, KEY_F9:
+					var glow_model: Dictionary = session.aircraft.model.propulsion.glow
+					var nominal_phi: float = float(glow_model.profile.operation.nominal_mixture)
+					var target_phi: float = nominal_phi * (0.85 if event.physical_keycode == KEY_F8 else 1.15)
+					glow_action_ok = session.glow_set_mixture(target_phi)
+					action_label = "lean mixture φ %.2f" % target_phi if event.physical_keycode == KEY_F8 else "rich mixture φ %.2f" % target_phi
+			if action_label != "":
+				_note = "Glow %s %s." % [action_label, "accepted" if glow_action_ok else "refused"]
+				get_viewport().set_input_as_handled()
+				return
 		match event.physical_keycode:
 			KEY_PAGEUP, KEY_PAGEDOWN:
 				if session.adjust_elevator_trim(-0.1 if event.physical_keycode == KEY_PAGEUP else 0.1):

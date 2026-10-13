@@ -22,7 +22,8 @@
     "energy": [
       "prescribed_fuel",
       "fixed_voltage",
-      "ocv_resistance"
+      "ocv_resistance",
+      "finite_glow_fuel"
     ],
     "damage": [
       "terminal_hull"
@@ -596,7 +597,8 @@
         "lag_time_constant",
         "peak_power",
         "peak_power_rpm",
-        "shaft"
+        "shaft",
+        "glow_installation"
       ]
     },
     {
@@ -958,12 +960,19 @@
     {
       "path": "/propulsion/propeller/name",
       "nonempty": true
+    },
+    {
+      "path": "/propulsion/engine/glow_installation",
+      "nonempty": true
     }
   ],
   "enum_paths": [
     {
       "path": "/propulsion/engine/spool_integrator",
-      "values": ["sampled", "rk4"]
+      "values": [
+        "sampled",
+        "rk4"
+      ]
     },
     {
       "path": "/format",
@@ -1026,7 +1035,8 @@
       "values": [
         "prescribed_fuel",
         "fixed_voltage",
-        "ocv_resistance"
+        "ocv_resistance",
+        "finite_glow_fuel"
       ]
     },
     {

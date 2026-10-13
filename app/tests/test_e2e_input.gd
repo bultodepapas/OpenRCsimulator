@@ -73,6 +73,26 @@ func _run() -> void:
 	await create_timer(0.1).timeout
 	var trim_pct := roundi(float(_main.session.start.throttle) * 100.0)
 	_check("reset -> throttle back to its trimmed setting", _pct() == trim_pct, "%s (trim %d%%)" % [_row("throttle"), trim_pct])
+	# D6e-R1: the real key route changes trim, release keeps it, and restart restores equilibrium.
+	var pitch_trim: float = _main.session.trims.pitch
+	_key(KEY_PAGEUP, true)
+	_key(KEY_PAGEUP, false)
+	await create_timer(0.1).timeout
+	_check("PgUp trims nose down through the servo", absf((_main.session.trims.pitch - pitch_trim)
+		* _main.session.throws_deg().elevator + 0.1) < 1e-12
+		and absf(_main.session.surfaces().pitch - _main.session.trims.pitch) < 1e-12)
+	_key(KEY_PAGEDOWN, true)
+	_key(KEY_PAGEDOWN, false)
+	await process_frame
+	await process_frame
+	_check("PgDn trims nose up", absf(_main.session.trims.pitch - pitch_trim) < 1e-12)
+	_key(KEY_PAGEUP, true)
+	_key(KEY_PAGEUP, false)
+	await process_frame
+	_key(KEY_R, true)
+	_key(KEY_R, false)
+	await create_timer(0.1).timeout
+	_check("R restores the solved elevator trim", _main.session.trims.pitch == pitch_trim)
 
 	# D5: the live airplane starts trimmed in level flight with the engine running: hands-off it holds altitude;
 	# pulling the throttle back makes it descend.

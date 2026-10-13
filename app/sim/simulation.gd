@@ -205,7 +205,8 @@ func step() -> void:
 				stage_error.message = "RK rotor momentum is nonfinite or malformed"
 				return _zero_derivative()
 			stage_h = candidate_h
-		var derivative := RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, stage_h)
+		# A qualified open-system law may supply its stage body derivative (finite fuel mass/CG).
+		var derivative: PackedFloat64Array = joint.body_derivative if joint.has("body_derivative") else RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, stage_h)
 		if not _array_is_finite(derivative, RB.SIZE):
 			stage_error.message = "RK stage derivative is nonfinite or malformed"
 			return _zero_derivative()
@@ -525,7 +526,7 @@ func _stage_loads(combined: PackedFloat64Array, stage_t: float) -> Variant:
 
 
 func _joint_stage_is_valid(candidate: Variant) -> bool:
-	return candidate is Dictionary and candidate.size() == 3 and candidate.has_all(["loads", "derivative", "rotor_momentum"]) \
+	return candidate is Dictionary and (candidate.size() == 3 or (candidate.size() == 4 and candidate.has("body_derivative") and _array_is_finite(candidate.body_derivative, RB.SIZE))) and candidate.has_all(["loads", "derivative", "rotor_momentum"]) \
 		and _loads_are_valid(candidate.loads) and _array_is_finite(candidate.derivative, continuous.size()) \
 		and _array_is_finite(candidate.rotor_momentum, 3)
 

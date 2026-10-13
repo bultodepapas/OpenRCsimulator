@@ -1976,7 +1976,8 @@
           "enum": [
             "prescribed_fuel",
             "fixed_voltage",
-            "ocv_resistance"
+            "ocv_resistance",
+            "finite_glow_fuel"
           ]
         },
         "damage": {
@@ -2564,9 +2565,24 @@
               "type": "string",
               "minLength": 1,
               "pattern": "[^\\u0001-\\u0020]"
+            },
+            "glow_installation": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "[^\\u0001-\\u0020]"
             }
           },
-          "additionalProperties": false
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "not": {
+                "required": [
+                  "glow_installation",
+                  "shaft"
+                ]
+              }
+            }
+          ]
         },
         "propeller": {
           "type": "object",
@@ -4440,33 +4456,6 @@
           "propulsion": {
             "properties": {
               "kind": {
-                "const": "glow_prop"
-              }
-            }
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "capabilities": {
-            "properties": {
-              "propulsion_layout": {
-                "const": "single_tractor"
-              },
-              "energy": {
-                "const": "prescribed_fuel"
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "propulsion": {
-            "properties": {
-              "kind": {
                 "const": "turbine"
               }
             }
@@ -4486,6 +4475,71 @@
             }
           }
         }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "propulsion": {
+            "properties": {
+              "kind": {
+                "const": "glow_prop"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "propulsion": {
+                  "properties": {
+                    "engine": {
+                      "required": [
+                        "glow_installation"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "capabilities": {
+                  "properties": {
+                    "energy": {
+                      "const": "finite_glow_fuel"
+                    }
+                  }
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "capabilities": {
+                  "properties": {
+                    "energy": {
+                      "const": "prescribed_fuel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "capabilities": {
+                "properties": {
+                  "propulsion_layout": {
+                    "const": "single_tractor"
+                  }
+                }
+              }
+            }
+          }
+        ]
       }
     },
     {

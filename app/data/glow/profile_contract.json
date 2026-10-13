@@ -195,6 +195,13 @@
       "minimum": 0.0,
       "maximum": 1e+100,
       "positive": true
+    },
+    "recommended_max_rpm": {
+      "unit": "rpm",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
     }
   }
 }

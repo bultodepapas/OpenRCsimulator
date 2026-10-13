@@ -1,0 +1,469 @@
+{
+  "date": "2026-10-13",
+  "engine": "Godot 4.7.2 stable official",
+  "scope": "production session neutral keyboard samples, 240 Hz, 10 s; generated diagnostics, not the reported pilot flight",
+  "cases": [
+    {
+      "airspeed_mps": 15.0,
+      "alpha_deg": 4.26030240816547,
+      "altitude_gain_m": 0.0,
+      "climb_mps": 1.77635683940025e-13,
+      "condition": "trim",
+      "crashed": false,
+      "elevator_trim_deg": 5.25672969869836,
+      "fault": "",
+      "id": "jensen-das-ugly-stik-60",
+      "inputs": [
+        0.0205260161958305,
+        0.262836484934918,
+        0.026386599355537,
+        0.284374818125337
+      ],
+      "pitch_deg": 4.26030240816616,
+      "seconds": 10.0,
+      "trim_throttle": 0.284374818125337
+    },
+    {
+      "airspeed_mps": 15.1773785794267,
+      "alpha_deg": 4.15060272029346,
+      "altitude_gain_m": -4.57438979938204,
+      "climb_mps": -0.563451613769734,
+      "condition": "quarter",
+      "crashed": false,
+      "elevator_trim_deg": 5.25672969869836,
+      "fault": "",
+      "id": "jensen-das-ugly-stik-60",
+      "inputs": [
+        0.0205260161958305,
+        0.262836484934918,
+        0.026386599355537,
+        0.25
+      ],
+      "pitch_deg": 1.98714611148536,
+      "seconds": 10.0,
+      "trim_throttle": 0.284374818125337
+    },
+    {
+      "airspeed_mps": 22.5594306087036,
+      "alpha_deg": 2.85486854404821,
+      "altitude_gain_m": 9.32993937702605,
+      "climb_mps": -4.28237521782307,
+      "condition": "half",
+      "crashed": false,
+      "elevator_trim_deg": 5.25672969869836,
+      "fault": "",
+      "id": "jensen-das-ugly-stik-60",
+      "inputs": [
+        0.0205260161958305,
+        0.262836484934918,
+        0.026386599355537,
+        0.5
+      ],
+      "pitch_deg": -8.17711508262133,
+      "seconds": 10.0,
+      "trim_throttle": 0.284374818125337
+    },
+    {
+      "airspeed_mps": 15.5267359650935,
+      "alpha_deg": 4.01446928996455,
+      "altitude_gain_m": -4.67792286855549,
+      "climb_mps": -0.790115453122634,
+      "condition": "quarter_gentle",
+      "crashed": false,
+      "elevator_trim_deg": 5.25672969869836,
+      "fault": "",
+      "id": "jensen-das-ugly-stik-60",
+      "inputs": [
+        0.0205260161958305,
+        0.262836484934918,
+        0.026386599355537,
+        0.25
+      ],
+      "pitch_deg": 0.641229873856238,
+      "seconds": 10.0,
+      "trim_throttle": 0.284374818125337
+    },
+    {
+      "airspeed_mps": 17.0000000000004,
+      "alpha_deg": 5.38143094377719,
+      "altitude_gain_m": 4.38049596596102e-12,
+      "climb_mps": 1.20803367309463e-12,
+      "condition": "trim",
+      "crashed": false,
+      "elevator_trim_deg": 2.92799427078364,
+      "fault": "",
+      "id": "gp-extra-300s-60",
+      "inputs": [
+        0.00943899790202884,
+        0.122397844973698,
+        -0.0362812221548794,
+        0.357163662739951
+      ],
+      "pitch_deg": 5.38143094378115,
+      "seconds": 10.0,
+      "trim_throttle": 0.357163662739951
+    },
+    {
+      "airspeed_mps": 17.191039702541,
+      "alpha_deg": 5.36284481290502,
+      "altitude_gain_m": -11.3136235563997,
+      "climb_mps": -1.36934363554643,
+      "condition": "quarter",
+      "crashed": false,
+      "elevator_trim_deg": 2.92799427078364,
+      "fault": "",
+      "id": "gp-extra-300s-60",
+      "inputs": [
+        0.00943899790202884,
+        0.122397844973698,
+        -0.0362812221548794,
+        0.25
+      ],
+      "pitch_deg": 0.925433202454597,
+      "seconds": 10.0,
+      "trim_throttle": 0.357163662739951
+    },
+    {
+      "airspeed_mps": 18.4518012298216,
+      "alpha_deg": 4.71465457413037,
+      "altitude_gain_m": 16.3294467980532,
+      "climb_mps": -0.0109959962568853,
+      "condition": "half",
+      "crashed": false,
+      "elevator_trim_deg": 2.92799427078364,
+      "fault": "",
+      "id": "gp-extra-300s-60",
+      "inputs": [
+        0.00943899790202884,
+        0.122397844973698,
+        -0.0362812221548794,
+        0.5
+      ],
+      "pitch_deg": 4.14457732782471,
+      "seconds": 10.0,
+      "trim_throttle": 0.357163662739951
+    },
+    {
+      "airspeed_mps": 17.4965988202731,
+      "alpha_deg": 5.26578447413525,
+      "altitude_gain_m": -11.3774568729743,
+      "climb_mps": -1.67634821003334,
+      "condition": "quarter_gentle",
+      "crashed": false,
+      "elevator_trim_deg": 2.92799427078364,
+      "fault": "",
+      "id": "gp-extra-300s-60",
+      "inputs": [
+        0.00943899790202884,
+        0.122397844973698,
+        -0.0362812221548794,
+        0.25
+      ],
+      "pitch_deg": -0.468763262481874,
+      "seconds": 10.0,
+      "trim_throttle": 0.357163662739951
+    },
+    {
+      "airspeed_mps": 24.9999999999999,
+      "alpha_deg": 4.11487847816357,
+      "altitude_gain_m": 6.01119154453045e-12,
+      "climb_mps": 1.19904086659517e-12,
+      "condition": "trim",
+      "crashed": false,
+      "elevator_trim_deg": 6.25338737506881,
+      "fault": "",
+      "id": "p51d-mustang-120",
+      "inputs": [
+        0.015447899715594,
+        0.416892491671254,
+        0.110315804632207,
+        0.140546279806114
+      ],
+      "pitch_deg": 4.11487847816631,
+      "seconds": 10.0,
+      "trim_throttle": 0.140546279806114
+    },
+    {
+      "airspeed_mps": 27.283149004352,
+      "alpha_deg": 2.60127305284651,
+      "altitude_gain_m": 5.88278168544008,
+      "climb_mps": 2.42686350893288,
+      "condition": "quarter",
+      "crashed": false,
+      "elevator_trim_deg": 6.25338737506881,
+      "fault": "",
+      "id": "p51d-mustang-120",
+      "inputs": [
+        0.015447899715594,
+        0.416892491671254,
+        0.110315804632207,
+        0.25
+      ],
+      "pitch_deg": 7.7110104744958,
+      "seconds": 10.0,
+      "trim_throttle": 0.140546279806114
+    },
+    {
+      "airspeed_mps": 30.9083736767431,
+      "alpha_deg": 0.991813143730391,
+      "altitude_gain_m": 27.6968527098372,
+      "climb_mps": 4.02586762941869,
+      "condition": "half",
+      "crashed": false,
+      "elevator_trim_deg": 6.25338737506881,
+      "fault": "",
+      "id": "p51d-mustang-120",
+      "inputs": [
+        0.015447899715594,
+        0.416892491671254,
+        0.110315804632207,
+        0.5
+      ],
+      "pitch_deg": 8.46247104590913,
+      "seconds": 10.0,
+      "trim_throttle": 0.140546279806114
+    },
+    {
+      "airspeed_mps": 27.4246746464458,
+      "alpha_deg": 2.66326809546581,
+      "altitude_gain_m": 6.19044621923934,
+      "climb_mps": 1.87806513872192,
+      "condition": "quarter_gentle",
+      "crashed": false,
+      "elevator_trim_deg": 6.25338737506881,
+      "fault": "",
+      "id": "p51d-mustang-120",
+      "inputs": [
+        0.015447899715594,
+        0.416892491671254,
+        0.110315804632207,
+        0.25
+      ],
+      "pitch_deg": 6.35579662929433,
+      "seconds": 10.0,
+      "trim_throttle": 0.140546279806114
+    },
+    {
+      "airspeed_mps": 28.9999999999376,
+      "alpha_deg": 4.04530622523129,
+      "altitude_gain_m": 1.00569508276749e-09,
+      "climb_mps": 1.39227518403118e-10,
+      "condition": "trim",
+      "crashed": false,
+      "elevator_trim_deg": 1.73111795074931,
+      "fault": "",
+      "id": "sebart-avanti-s-a200-p100rx",
+      "inputs": [
+        0.0,
+        0.0577039316916437,
+        0.0,
+        0.0859641158022724
+      ],
+      "pitch_deg": 4.04530622550637,
+      "seconds": 10.0,
+      "trim_throttle": 0.0859641158022724
+    },
+    {
+      "airspeed_mps": 26.1648810021594,
+      "alpha_deg": 4.47863518266848,
+      "altitude_gain_m": 43.9790516735323,
+      "climb_mps": 6.62958021686005,
+      "condition": "quarter",
+      "crashed": false,
+      "elevator_trim_deg": 1.73111795074931,
+      "fault": "",
+      "id": "sebart-avanti-s-a200-p100rx",
+      "inputs": [
+        0.0,
+        0.0577039316916437,
+        0.0,
+        0.25
+      ],
+      "pitch_deg": 19.1559596004632,
+      "seconds": 10.0,
+      "trim_throttle": 0.0859641158022724
+    },
+    {
+      "airspeed_mps": 22.7756265874289,
+      "alpha_deg": 4.8381120824929,
+      "altitude_gain_m": 99.0586134902445,
+      "climb_mps": 14.7725497543866,
+      "condition": "half",
+      "crashed": false,
+      "elevator_trim_deg": 1.73111795074931,
+      "fault": "",
+      "id": "sebart-avanti-s-a200-p100rx",
+      "inputs": [
+        0.0,
+        0.0577039316916437,
+        0.0,
+        0.5
+      ],
+      "pitch_deg": 45.2705920924672,
+      "seconds": 10.0,
+      "trim_throttle": 0.0859641158022724
+    },
+    {
+      "airspeed_mps": 25.84899798303,
+      "alpha_deg": 4.5077849196173,
+      "altitude_gain_m": 45.2092311185568,
+      "climb_mps": 6.51998259164946,
+      "condition": "quarter_gentle",
+      "crashed": false,
+      "elevator_trim_deg": 1.73111795074931,
+      "fault": "",
+      "id": "sebart-avanti-s-a200-p100rx",
+      "inputs": [
+        0.0,
+        0.0577039316916437,
+        0.0,
+        0.25
+      ],
+      "pitch_deg": 18.8573683947524,
+      "seconds": 10.0,
+      "trim_throttle": 0.0859641158022724
+    },
+    {
+      "airspeed_mps": 13.0738902428818,
+      "alpha_deg": 4.3201248574117,
+      "altitude_gain_m": -1.94355109783828e-09,
+      "climb_mps": -2.70951538983155e-10,
+      "condition": "trim",
+      "crashed": false,
+      "elevator_trim_deg": 2.58586195585666,
+      "fault": "",
+      "id": "turbo-lumber-evolution",
+      "inputs": [
+        0.0119407995124513,
+        0.145223519557061,
+        -0.0309302060910531,
+        0.409383489576641
+      ],
+      "pitch_deg": 4.32012485623586,
+      "seconds": 10.0,
+      "trim_throttle": 0.409383489576641
+    },
+    {
+      "airspeed_mps": 12.9456197088485,
+      "alpha_deg": 4.38649981625876,
+      "altitude_gain_m": -11.4391972166973,
+      "climb_mps": -1.62525995465178,
+      "condition": "quarter",
+      "crashed": false,
+      "elevator_trim_deg": 2.58586195585666,
+      "fault": "",
+      "id": "turbo-lumber-evolution",
+      "inputs": [
+        0.0119407995124513,
+        0.145223519557061,
+        -0.0309302060910531,
+        0.25
+      ],
+      "pitch_deg": -2.63481976831732,
+      "seconds": 10.0,
+      "trim_throttle": 0.409383489576641
+    },
+    {
+      "airspeed_mps": 13.3164102880159,
+      "alpha_deg": 4.17424081201137,
+      "altitude_gain_m": 10.2732172344444,
+      "climb_mps": 1.38979148716122,
+      "condition": "half",
+      "crashed": false,
+      "elevator_trim_deg": 2.58586195585666,
+      "fault": "",
+      "id": "turbo-lumber-evolution",
+      "inputs": [
+        0.0119407995124513,
+        0.145223519557061,
+        -0.0309302060910531,
+        0.5
+      ],
+      "pitch_deg": 10.1961847184714,
+      "seconds": 10.0,
+      "trim_throttle": 0.409383489576641
+    },
+    {
+      "airspeed_mps": 13.4947544109627,
+      "alpha_deg": 4.17413529388895,
+      "altitude_gain_m": -11.9140062108333,
+      "climb_mps": -1.58478711880058,
+      "condition": "quarter_gentle",
+      "crashed": false,
+      "elevator_trim_deg": 2.58586195585666,
+      "fault": "",
+      "id": "turbo-lumber-evolution",
+      "inputs": [
+        0.0119407995124513,
+        0.145223519557061,
+        -0.0309302060910531,
+        0.25
+      ],
+      "pitch_deg": -2.94567509030111,
+      "seconds": 10.0,
+      "trim_throttle": 0.409383489576641
+    }
+  ],
+  "live_scene_gentle_quarter": [
+    {
+      "trace_sha256": "057175ea762137684fc1704ac022bc419761ec46b8f6b45bd2cfdc1436d7e2cd",
+      "initial": {
+        "tick": 0.0,
+        "t_s": 0.0,
+        "alt_m": 30.0,
+        "pitch_deg": 4.320124857,
+        "cmd_pitch": 0.14522352,
+        "cmd_throttle": 0.40938349,
+        "srv_pitch": 0.14522352,
+        "engine_rpm": 4390.719779366,
+        "tas_mps": 13.073890243
+      },
+      "final": {
+        "tick": 2400.0,
+        "t_s": 10.0,
+        "alt_m": 18.085993789,
+        "pitch_deg": -2.94567509,
+        "cmd_pitch": 0.14522352,
+        "cmd_throttle": 0.25,
+        "srv_pitch": 0.14522352,
+        "engine_rpm": 2883.274227213,
+        "tas_mps": 13.494754411
+      },
+      "throttle_range": [
+        0.25,
+        0.25
+      ],
+      "aircraft": "turbo-lumber-evolution"
+    },
+    {
+      "trace_sha256": "2455fb694c0fe1b6aa4ae4570b43b94828de6544abc06c0743bb9cad804fb5a0",
+      "initial": {
+        "tick": 0.0,
+        "t_s": 0.0,
+        "alt_m": 30.0,
+        "pitch_deg": 4.260302408,
+        "cmd_pitch": 0.262836485,
+        "cmd_throttle": 0.284374818,
+        "srv_pitch": 0.262836485,
+        "engine_rpm": 5174.245356528,
+        "tas_mps": 15.0
+      },
+      "final": {
+        "tick": 2400.0,
+        "t_s": 10.0,
+        "alt_m": 25.322077131,
+        "pitch_deg": 0.641229874,
+        "cmd_pitch": 0.262836485,
+        "cmd_throttle": 0.25,
+        "srv_pitch": 0.262836485,
+        "engine_rpm": 4887.25,
+        "tas_mps": 15.526735965
+      },
+      "throttle_range": [
+        0.25,
+        0.25
+      ],
+      "aircraft": "jensen-das-ugly-stik-60"
+    }
+  ]
+}
