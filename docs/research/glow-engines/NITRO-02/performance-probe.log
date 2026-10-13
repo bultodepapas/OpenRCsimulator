@@ -37,3 +37,10 @@ The isolated export was built from .tools/glow-release-probe-final-20261013/proj
 A persistent climb-trim watcher was observed immediately after release and before debug (PID 88100, --path app --script research/flight-dynamics/climb-trim/watch.gd). It was not stopped. No independent CPU isolation or per-run load sampling was performed, so host isolation remains unqualified.
 
 Interpretation: release timings are materially lower than debug timings, but the 500 us p95 target remains unmet for both glow families. Legacy release is near but above the target. Results are diagnostic, not a release-gate certification or physical claim. The candidate propeller polar is a uniform-box surrogate derived from inventory; crank polars are inferred at 2e-5 kg m2 (2T) and 3e-5 kg m2 (4T), without matched measurements.
+Postflight repository check
+Current source map matches recorded measured snapshot: False
+Current input map matches recorded measured snapshot: True
+Source drift: app/sim/flight_session.gd
+  measured snapshot SHA-256: 6595a85c10cc406e6324c91df97f968b1913f17d738c6fc8cb06fcbbc1afd9d5
+  postflight worktree SHA-256: c7b0ccc8a16a63b827ae00abf74dd5d43b9b7da997cb63fefc150a29f36c9155
+The paired timing remains tied to the identical debug/release snapshot. Concurrent lake-context edits were not included in the exported build and were not part of these timing results.
