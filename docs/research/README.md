@@ -132,7 +132,7 @@ The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begi
 
 ### Helicopter and shared rotor foundations
 
-[HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the independent mean-inflow reference, generated oracle and standalone GDScript checks, including the published crossflow seams that must be qualified before session use. [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.
+[HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the steady inflow reference and published crossflow seams; [HELI-04-R1](helicopter/HELI-04-R1/README.md) qualifies dimensional transient flow with prescribed events. [HELI-05/05a](helicopter/HELI-05/README.md) verifies main-rotor loads/flapping and the fixed-body joint stage; [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.
 
 ### Drone racing (shared-foundation review)
 

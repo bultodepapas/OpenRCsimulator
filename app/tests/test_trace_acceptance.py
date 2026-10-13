@@ -106,6 +106,34 @@ class TraceAcceptance(unittest.TestCase):
                                          capture_output=True, text=True, timeout=10)
                 self.assertEqual(checked.returncode, 0, checked.stderr)
 
+    def test_continuous_turbine_metadata_rejects_mixed_sampling(self):
+        path = self.directory / 'turbine-metadata.csv'
+        result = self.run_app('--aircraft=sebart-avanti-s-a200-p100rx', '--trace=' + str(path), '--t=.05')
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('ERROR:', result.stdout)
+        metadata = dict(line[2:].split(': ', 1) for line in path.read_text().splitlines()
+                        if line.startswith('# '))
+        check_coupled_metadata(metadata)
+        for key, value in [
+            ('turbine_integrator', 'sampled'),
+            ('continuous_layout', 'none'),
+            ('recording_start_continuous', '[true]'),
+            ('recording_start_continuous', '[]'),
+            ('recording_start_continuous', '[0, 1]'),
+            ('recording_start_continuous', '[-1]'),
+            ('recording_start_continuous', '[NaN]'),
+            ('recording_start_continuous', '[1]'),
+            ('shaft_integrator', 'coupled-rk4'),
+            ('propulsion_model', 'turbine-ecu-spool-v1'),
+        ]:
+            with self.subTest(key=key, value=value):
+                with self.assertRaises(ValueError):
+                    check_coupled_metadata({**metadata, key: value})
+        for key in ['turbine_integrator', 'recording_start_continuous']:
+            with self.subTest(missing=key):
+                with self.assertRaises(ValueError):
+                    check_coupled_metadata({k: v for k, v in metadata.items() if k != key})
+
     def test_timber_electric_endpoint_equations_reject_corruption(self):
         path = self.directory / 'timber-electric.csv'
         result = self.run_app('--aircraft=turbo-lumber-evolution', '--trace=' + str(path), '--t=.05')
