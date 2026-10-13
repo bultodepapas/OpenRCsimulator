@@ -161,6 +161,7 @@ var _shadow: MeshInstance3D
 ## [V] cycles; Gate L decides the default.
 const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
+var _night_kit: Node3D # FW-35b: the aircraft's night lights (fitted at dusk, or by [L] at any hour)
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
 var _overlays: CanvasLayer = null # OverlayManager when overlays_enabled
@@ -887,6 +888,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_rig.toggle_auto_zoom()
 			KEY_V:
 				_shadow_mode = SHADOW_MODES[(SHADOW_MODES.find(_shadow_mode) + 1) % SHADOW_MODES.size()]
+			KEY_L:
+				_cycle_night_lights()
 			KEY_F3:
 				if _overlays != null:
 					_overlays.toggle_developer()
@@ -899,6 +902,18 @@ func _unhandled_input(event: InputEvent) -> void:
 				_note = session.reload() if _experimental_aircraft_path.is_empty() else "Experimental polar is fixed for this flight; restart the application to load another file."
 				_update_cg_model()
 				print(_note)
+
+
+## FW-35b: [L] cycles the night lights ALL → NAV (navigation and strobes) → OFF. In daylight the first press fits the
+## kit; its physical brightness then shows as faint dots, as real LEDs do in the sun.
+func _cycle_night_lights() -> void:
+	var modes: Array = World.AircraftLights.MODES
+	if _night_kit == null or not is_instance_valid(_night_kit):
+		_night_kit = World.AircraftLights.attach(_airplane.root)
+	else:
+		var mode := String(_night_kit.get_meta("mode", "all"))
+		World.AircraftLights.set_mode(_night_kit, modes[(modes.find(mode) + 1) % modes.size()])
+	_note = tr("Night lights: " + String(_night_kit.get_meta("mode", "all")))
 
 
 ## CAM-04: mouse wheel zooms the current view; a right-button drag turns the orbit view. True when used.
@@ -1216,7 +1231,7 @@ func _build_world() -> bool:
 	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
 	_shadow = Shadow.create(self)
 	Shadow.bind_model(_shadow, _airplane.root)
-	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
+	_night_kit = World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
 	_camera = PilotCamera.create(self, field.pilot)
 	_rig = CameraRig.new(_camera, _extent.x)
 	if overlays_enabled:

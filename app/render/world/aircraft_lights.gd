@@ -35,7 +35,7 @@ const BELLY_TO := 0.80
 const BELLY_STATIONS := 14
 const BELLY_STEP_M := 0.03
 ## Landing light: in the left wing's leading edge at this share of the semispan (the RC kit position).
-const LANDING_SPAN := 0.30
+const LANDING_SPAN := 0.36 # its 16° beam then clears a propeller disc of up to ~40 % of the span
 const MODES := ["all", "nav", "off"]
 ## A diffuse LED strip's radiance in scene units (estimate: ~1,000–3,000 cd/m², a tenth of a bare LED).
 const STRIP_RADIANCE := 0.25
@@ -435,6 +435,34 @@ static func attach(root: Node3D) -> Node3D:
 	landing.light_color = Color("#fff4e0")
 	landing.shadow_enabled = false
 	kit.add_child(landing)
+	_mark_hosts(root, kit)
 	root.add_child(kit)
 	set_mode(kit, "all")
 	return kit
+
+
+## FW-35b: each light names the model part it is mounted on (the smallest mesh whose box, grown 2 cm, holds it), so a
+## crash wreck can carry it on that part (render/crash/wreck.gd follows meta "crash_follow"); light quads never count
+## in the wreck's collision boxes ("crash_no_bounds"). The flying kit keeps its own structure.
+static func _mark_hosts(root: Node3D, kit: Node3D) -> void:
+	var hosts: Array = []
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		var t := Transform3D.IDENTITY
+		var n: Node = mi
+		while n != null and n != root:
+			if n is Node3D:
+				t = (n as Node3D).transform * t
+			n = n.get_parent()
+		hosts.append({node = mi, box = (t * mi.get_aabb()).grow(0.02)})
+	for item in kit.get_children():
+		var anchor: Vector3 = (item as Node3D).position
+		if item is MeshInstance3D and not ((item as MeshInstance3D).mesh is QuadMesh):
+			anchor = (item as MeshInstance3D).get_aabb().get_center() # a strip: the middle of its line
+		var best: Dictionary = {}
+		for host: Dictionary in hosts:
+			if (host.box as AABB).has_point(anchor) and (best.is_empty() or (host.box as AABB).get_volume() < (best.box as AABB).get_volume()):
+				best = host
+		item.set_meta("crash_no_bounds", true)
+		if not best.is_empty():
+			item.set_meta("crash_follow", root.get_path_to(best.node))

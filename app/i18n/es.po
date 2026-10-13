@@ -339,8 +339,17 @@ msgstr "Zoom: auto, acercar, alejar, reiniciar"
 msgid "Backspace"
 msgstr "Borrar"
 
-msgid "Ground shadow: sun, vertical or off"
-msgstr "Sombra en el suelo: sol, vertical o ninguna"
+msgid "Ground shadow · night lights"
+msgstr "Sombra · luces nocturnas"
+
+msgid "Night lights: all"
+msgstr "Luces nocturnas: todas"
+
+msgid "Night lights: nav"
+msgstr "Luces nocturnas: navegación"
+
+msgid "Night lights: off"
+msgstr "Luces nocturnas: apagadas"
 
 msgid "Record a flight trace (press again to save it)"
 msgstr "Grabar una traza (otra vez: guardarla)"

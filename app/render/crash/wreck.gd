@@ -182,6 +182,7 @@ func prepare(airplane: Node3D) -> bool:
 	var split := SectionSplitter.apply(_twin)
 	if not bool(split.ok):
 		push_warning("Wreck.prepare: crash section map ignored: %s" % "; ".join(split.errors))
+	_mount_followers(_twin)
 	# The flight root may carry a uniform Workshop presentation scale. Bake it into
 	# the detached copy before measuring groups; rigid bodies themselves stay unscaled.
 	if not airplane.scale.is_equal_approx(Vector3.ONE):
@@ -654,6 +655,22 @@ func _collect_fragment_groups(node: Node) -> void:
 				"index": member.get_index(),
 				"transform": member.transform,
 			})
+
+
+## FW-35b: add-on nodes (the night kit's lights) that name the part they are mounted on ride with that part in the
+## twin. A host replaced by the section splitter no longer exists; that light stays on the airframe body.
+const FOLLOW_META := "crash_follow"
+const NO_BOUNDS_META := "crash_no_bounds"
+
+func _mount_followers(twin: Node3D) -> void:
+	var followers: Array = []
+	for node in twin.find_children("*", "Node3D", true, false):
+		if node.has_meta(FOLLOW_META):
+			followers.append(node)
+	for node: Node3D in followers:
+		var host := twin.get_node_or_null(node.get_meta(FOLLOW_META) as NodePath) as Node3D
+		if host != null and host != node.get_parent():
+			node.reparent(host, true)
 
 
 func _collect_reveal_nodes(node: Node) -> void:
@@ -1413,7 +1430,7 @@ func _subtree_has_mesh(node: Node) -> bool:
 
 
 func _collect_mesh_bounds(node: Node, root: Node3D, excluded: Array, aggregate: Dictionary) -> void:
-	if excluded.has(node):
+	if excluded.has(node) or node.has_meta(NO_BOUNDS_META): # light quads are scaled in their shader, not boxes
 		return
 	if node is MeshInstance3D and node.mesh != null and node.visible:
 		var local_bounds: AABB = node.get_aabb()

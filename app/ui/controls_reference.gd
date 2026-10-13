@@ -21,7 +21,7 @@ const SHORTCUTS := [
 	[[KEY_P], "Resume after a radio failsafe"],
 	[[KEY_C, KEY_1, KEY_2, KEY_5], "Views: next (Shift+C back), pilot, chase, orbit"],
 	[[KEY_Z, KEY_EQUAL, KEY_MINUS, KEY_BACKSPACE], "Zoom: auto on/off, in, out, reset"],
-	[[KEY_V], "Ground shadow: sun, vertical or off"],
+	[[KEY_V, KEY_L], "Ground shadow · night lights"],
 	[[KEY_T], "Record a flight trace (press again to save it)"],
 	[[KEY_K], "Calibrate the radio"],
 	[[KEY_H], "Stik smoke pump"],

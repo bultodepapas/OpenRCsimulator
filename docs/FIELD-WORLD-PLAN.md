@@ -33,7 +33,7 @@ Available named presets include dawn, sunrise, morning, noon, afternoon, golden_
 | FW-04–09 | Consolidate field layers, shader/hash utilities, contact-shadow and palette decisions, and scenery quality controls. | Open; keep existing field layouts and byte-parity contracts while each owning track is coordinated. |
 | FW-25/26 | Finish cloud behavior below the horizon and evaluate credible dark adaptation without harming lit objects. | Partial; night cloud shadows and per-pixel scotopic response remain incomplete. |
 | FW-30 | Measure local-light cost on the supported target GPU. | Open; llvmpipe proves repeatability, not hardware performance. |
-| FW-35 | Complete and review the aircraft night kit. | Partial; wing underside strips are implemented under FW-62; a fuselage belly strip and owner night-flight review remain. |
+| FW-35 | Complete and review the aircraft night kit. | Partial; wing underside strips under FW-62; FW-35b (2026-10-13) adds white top strips, the fuselage belly strip, a landing light clear of the propeller, [L] ALL/NAV/OFF modes and crash-wreck mounting ([evidence](research/field-world/FW-35b/README.md)); radio AUX switch and owner night-flight review remain. |
 | FW-36 | Blinded readability review at dusk, moonlight and dark night, with and without the kit. | Open; Gate FW-N evidence. |
 | FW-61 | Complete the evening time-flow step record and lifecycle review. | Runtime flow and focused test exist; the full anchored TOD-09c2 contract remains open. |
 
