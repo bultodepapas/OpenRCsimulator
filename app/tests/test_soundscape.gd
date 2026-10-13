@@ -46,6 +46,21 @@ func _run() -> void:
 		_check("%s configures exactly 14 bounded voices" % kinds[index], rig.voices.size() == 14, "voices=%d" % rig.voices.size())
 		_check("%s adds three dedicated buses" % kinds[index], AudioServer.bus_count == buses_before + 3,
 			"before=%d after=%d" % [buses_before, AudioServer.bus_count])
+		# AUD-07e: nothing plays from the origin before the first update positions the voices (start pop).
+		var silent_until_positioned: bool = true
+		for voice: AudioStreamPlayer3D in rig.voices:
+			silent_until_positioned = silent_until_positioned and not voice.playing
+		rig.update_sound(_flight_snapshot(), 1.0 / 60.0)
+		var loops_started: bool = true
+		for voice_index: int in [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13]:
+			loops_started = loops_started and rig.voices[voice_index].playing
+		_check("loops start only after the first positioned update", silent_until_positioned and loops_started)
+		# AUD-07d: the stateless limiter recovers after an overshoot; Godot 4.7.2's HardLimiter does not.
+		var mix_index: int = AudioServer.get_bus_index(rig.output_bus())
+		_check("mix bus limits with the recovering stateless limiter at -1 dBFS",
+			AudioServer.get_bus_effect_count(mix_index) == 1
+			and AudioServer.get_bus_effect(mix_index, 0) is AudioEffectLimiter
+			and is_equal_approx((AudioServer.get_bus_effect(mix_index, 0) as AudioEffectLimiter).ceiling_db, -1.0))
 		var output_bus: StringName = rig.output_bus()
 		var aircraft_bus: StringName = rig.voices[0].bus
 		var environment_bus: StringName = rig.voices[3].bus
