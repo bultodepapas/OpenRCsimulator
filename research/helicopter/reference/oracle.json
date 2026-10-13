@@ -1,0 +1,903 @@
+{
+  "dimensional_target_cases": [
+    {
+      "expected": {
+        "ground_factor": 0.867384389528,
+        "hover": 3.604475031457,
+        "velocity": 3.126465374729
+      },
+      "inputs": {
+        "climb": 0.0,
+        "crossflow": 0.0,
+        "density": 1.225,
+        "height_over_radius": 1.0,
+        "radius": 1.0,
+        "thrust": 100.0
+      },
+      "name": "positive_hover_ige"
+    },
+    {
+      "expected": {
+        "ground_factor": 0.620514615789,
+        "hover": 3.604475031457,
+        "velocity": 1.648086126631
+      },
+      "inputs": {
+        "climb": 2.0,
+        "crossflow": 1.5,
+        "density": 1.225,
+        "height_over_radius": 0.5,
+        "radius": 1.0,
+        "thrust": 100.0
+      },
+      "name": "positive_thrust_mirror"
+    },
+    {
+      "expected": {
+        "ground_factor": 0.620514615789,
+        "hover": 3.604475031457,
+        "velocity": -1.648086126631
+      },
+      "inputs": {
+        "climb": -2.0,
+        "crossflow": 1.5,
+        "density": 1.225,
+        "height_over_radius": 0.5,
+        "radius": 1.0,
+        "thrust": -100.0
+      },
+      "name": "negative_thrust_mirror"
+    },
+    {
+      "expected": {
+        "ground_factor": 1.0,
+        "hover": 4.617128969863,
+        "velocity": 3.213126953275
+      },
+      "inputs": {
+        "climb": 3.2,
+        "crossflow": 1.7,
+        "density": 1.225,
+        "height_over_radius": -1.0,
+        "radius": 0.7,
+        "thrust": 80.4
+      },
+      "name": "positive_crossflow_off_ground"
+    },
+    {
+      "expected": {
+        "ground_factor": 1.0,
+        "hover": 4.617128969863,
+        "velocity": -3.213126953275
+      },
+      "inputs": {
+        "climb": -3.2,
+        "crossflow": 1.7,
+        "density": 1.225,
+        "height_over_radius": -1.0,
+        "radius": 0.7,
+        "thrust": -80.4
+      },
+      "name": "negative_crossflow_off_ground"
+    },
+    {
+      "expected": {
+        "ground_factor": 0.867384389528,
+        "hover": 3.604475031457,
+        "velocity": 2.303771970013
+      },
+      "inputs": {
+        "climb": 2.0,
+        "crossflow": 1.5,
+        "density": 1.225,
+        "height_over_radius": 1.0,
+        "radius": 1.0,
+        "thrust": 100.0
+      },
+      "name": "positive_forward_ige"
+    }
+  ],
+  "format": "openrc-johnson-inflow-oracle-v1",
+  "model": "NASA/TP-2005-213477 steady mean inflow; Hayden hover factor",
+  "normalized_cases": [
+    {
+      "expected_ratio": 1.0,
+      "inputs": {
+        "vx": 0.0,
+        "vz": 0.0
+      },
+      "name": "hover"
+    },
+    {
+      "expected_ratio": 0.61803398875,
+      "inputs": {
+        "vx": 0.0,
+        "vz": 1.0
+      },
+      "name": "axial_climb_1"
+    },
+    {
+      "expected_ratio": 0.786151377757,
+      "inputs": {
+        "vx": 1.0,
+        "vz": 0.0
+      },
+      "name": "forward_hover_1"
+    },
+    {
+      "expected_ratio": 0.5,
+      "inputs": {
+        "vx": 0.0,
+        "vz": -2.5
+      },
+      "name": "windmill_branch"
+    },
+    {
+      "expected_ratio": 1.860395097456,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.0,
+        "vz": -1.8
+      },
+      "name": "baseline_midcurve"
+    },
+    {
+      "expected_ratio": 1.25,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.0,
+        "vz": -0.45
+      },
+      "name": "vrs_n_suppressed"
+    },
+    {
+      "expected_ratio": 1.3,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.0,
+        "vz": -0.45
+      },
+      "name": "vrs_n_full"
+    },
+    {
+      "expected_ratio": 2.75,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.0,
+        "vz": -1.5
+      },
+      "name": "vrs_x_full"
+    },
+    {
+      "expected_ratio": 1.803373398478,
+      "inputs": {
+        "instability": 0.65,
+        "loss": 1.1,
+        "vx": 0.5,
+        "vz": -0.8
+      },
+      "name": "vrs_forward_blend"
+    },
+    {
+      "expected_ratio": 1.780775638594,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.85,
+        "vz": -0.8
+      },
+      "name": "vrs_crossflow_extension"
+    },
+    {
+      "expected_ratio": 1.024432190543,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.95,
+        "vz": -0.8
+      },
+      "name": "vrs_outer_limit"
+    },
+    {
+      "expected_ratio": 0.641742430504,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.0,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x0_f0"
+    },
+    {
+      "expected_ratio": 0.641742430504,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.0,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x0_f1"
+    },
+    {
+      "expected_ratio": 0.628389074374,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.25,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x1_f0"
+    },
+    {
+      "expected_ratio": 0.628389074374,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.25,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x1_f1"
+    },
+    {
+      "expected_ratio": 0.594782861114,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.5,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x2_f0"
+    },
+    {
+      "expected_ratio": 0.594782861114,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.5,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x2_f1"
+    },
+    {
+      "expected_ratio": 0.554154089843,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.74,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x3_f0"
+    },
+    {
+      "expected_ratio": 0.554154089843,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.74,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x3_f1"
+    },
+    {
+      "expected_ratio": 0.534900343604,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.85,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x4_f0"
+    },
+    {
+      "expected_ratio": 0.534900343604,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.85,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x4_f1"
+    },
+    {
+      "expected_ratio": 0.509026796439,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 1.0,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x5_f0"
+    },
+    {
+      "expected_ratio": 0.509026796439,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 1.0,
+        "vz": -2.2
+      },
+      "name": "grid_z0_x5_f1"
+    },
+    {
+      "expected_ratio": 1.860395097456,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.0,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x0_f0"
+    },
+    {
+      "expected_ratio": 2.393195097456,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.0,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x0_f1"
+    },
+    {
+      "expected_ratio": 1.757687464719,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.25,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x1_f0"
+    },
+    {
+      "expected_ratio": 2.215669767166,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.25,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x1_f1"
+    },
+    {
+      "expected_ratio": 1.41139537672,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.5,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x2_f0"
+    },
+    {
+      "expected_ratio": 1.41139537672,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.5,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x2_f1"
+    },
+    {
+      "expected_ratio": 0.808026879732,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.74,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x3_f0"
+    },
+    {
+      "expected_ratio": 0.808026879732,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.74,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x3_f1"
+    },
+    {
+      "expected_ratio": 0.733070234138,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.85,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x4_f0"
+    },
+    {
+      "expected_ratio": 0.733070234138,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.85,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x4_f1"
+    },
+    {
+      "expected_ratio": 0.659164879868,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 1.0,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x5_f0"
+    },
+    {
+      "expected_ratio": 0.659164879868,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 1.0,
+        "vz": -1.8
+      },
+      "name": "grid_z1_x5_f1"
+    },
+    {
+      "expected_ratio": 1.842686044188,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.0,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x0_f0"
+    },
+    {
+      "expected_ratio": 2.511992129766,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.0,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x0_f1"
+    },
+    {
+      "expected_ratio": 1.797122771577,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.25,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x1_f0"
+    },
+    {
+      "expected_ratio": 2.537822388283,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.25,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x1_f1"
+    },
+    {
+      "expected_ratio": 1.645456960029,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.5,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x2_f0"
+    },
+    {
+      "expected_ratio": 2.619940951862,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.5,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x2_f1"
+    },
+    {
+      "expected_ratio": 1.34846269604,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.74,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x3_f0"
+    },
+    {
+      "expected_ratio": 2.551202502168,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.74,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x3_f1"
+    },
+    {
+      "expected_ratio": 1.161062242999,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.85,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x4_f0"
+    },
+    {
+      "expected_ratio": 2.160190685018,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.85,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x4_f1"
+    },
+    {
+      "expected_ratio": 0.941266846916,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 1.0,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x5_f0"
+    },
+    {
+      "expected_ratio": 0.941266846916,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 1.0,
+        "vz": -1.3
+      },
+      "name": "grid_z2_x5_f1"
+    },
+    {
+      "expected_ratio": 1.409481005021,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.0,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x0_f0"
+    },
+    {
+      "expected_ratio": 1.607195917544,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.0,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x0_f1"
+    },
+    {
+      "expected_ratio": 1.38009418486,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.25,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x1_f0"
+    },
+    {
+      "expected_ratio": 1.609593532552,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.25,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x1_f1"
+    },
+    {
+      "expected_ratio": 1.291338076148,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.5,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x2_f0"
+    },
+    {
+      "expected_ratio": 1.617861293876,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.5,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x2_f1"
+    },
+    {
+      "expected_ratio": 1.152730867904,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.74,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x3_f0"
+    },
+    {
+      "expected_ratio": 1.605229058091,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.74,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x3_f1"
+    },
+    {
+      "expected_ratio": 1.075935921836,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.85,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x4_f0"
+    },
+    {
+      "expected_ratio": 1.464801196929,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.85,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x4_f1"
+    },
+    {
+      "expected_ratio": 0.966318620558,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 1.0,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x5_f0"
+    },
+    {
+      "expected_ratio": 0.966318620558,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 1.0,
+        "vz": -0.7
+      },
+      "name": "grid_z3_x5_f1"
+    },
+    {
+      "expected_ratio": 1.25,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.0,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x0_f0"
+    },
+    {
+      "expected_ratio": 1.3,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.0,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x0_f1"
+    },
+    {
+      "expected_ratio": 1.226237502965,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.25,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x1_f0"
+    },
+    {
+      "expected_ratio": 1.296915126252,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.25,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x1_f1"
+    },
+    {
+      "expected_ratio": 1.155955220289,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.5,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x2_f0"
+    },
+    {
+      "expected_ratio": 1.280935423511,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.5,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x2_f1"
+    },
+    {
+      "expected_ratio": 1.049805147177,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.74,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x3_f0"
+    },
+    {
+      "expected_ratio": 1.203958912729,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.74,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x3_f1"
+    },
+    {
+      "expected_ratio": 0.991977677873,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.85,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x4_f0"
+    },
+    {
+      "expected_ratio": 1.10284936184,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.85,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x4_f1"
+    },
+    {
+      "expected_ratio": 0.908877426038,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 1.0,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x5_f0"
+    },
+    {
+      "expected_ratio": 0.908877426038,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 1.0,
+        "vz": -0.45
+      },
+      "name": "grid_z4_x5_f1"
+    },
+    {
+      "expected_ratio": 1.104987562112,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.0,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x0_f0"
+    },
+    {
+      "expected_ratio": 1.104987562112,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.0,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x0_f1"
+    },
+    {
+      "expected_ratio": 1.086118688941,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.25,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x1_f0"
+    },
+    {
+      "expected_ratio": 1.086118688941,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.25,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x1_f1"
+    },
+    {
+      "expected_ratio": 1.031059448206,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.5,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x2_f0"
+    },
+    {
+      "expected_ratio": 1.031059448206,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.5,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x2_f1"
+    },
+    {
+      "expected_ratio": 0.949460960235,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.74,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x3_f0"
+    },
+    {
+      "expected_ratio": 0.949460960235,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.74,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x3_f1"
+    },
+    {
+      "expected_ratio": 0.905350361462,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.85,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x4_f0"
+    },
+    {
+      "expected_ratio": 0.905350361462,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 0.85,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x4_f1"
+    },
+    {
+      "expected_ratio": 0.841642991711,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 1.0,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x5_f0"
+    },
+    {
+      "expected_ratio": 0.841642991711,
+      "inputs": {
+        "instability": 1.0,
+        "vx": 1.0,
+        "vz": -0.2
+      },
+      "name": "grid_z5_x5_f1"
+    },
+    {
+      "expected_ratio": 1.31603547024,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.749999999,
+        "vz": -1.428
+      },
+      "name": "boundary_c_below"
+    },
+    {
+      "expected_ratio": 1.319628238904,
+      "inputs": {
+        "instability": 0.0,
+        "vx": 0.750000001,
+        "vz": -1.428
+      },
+      "name": "boundary_c_above"
+    },
+    {
+      "expected_ratio": 1.145082968348,
+      "inputs": {
+        "vx": 0.9499999999,
+        "vz": -1.3
+      },
+      "name": "boundary_m_below_z_m1p3"
+    },
+    {
+      "expected_ratio": 1.0053983276,
+      "inputs": {
+        "vx": 0.9500000001,
+        "vz": -1.3
+      },
+      "name": "boundary_m_above_z_m1p3"
+    },
+    {
+      "expected_ratio": 0.898800591437,
+      "inputs": {
+        "vx": 0.9499999999,
+        "vz": -0.7
+      },
+      "name": "boundary_m_below_z_m0p7"
+    },
+    {
+      "expected_ratio": 1.002891007444,
+      "inputs": {
+        "vx": 0.9500000001,
+        "vz": -0.7
+      },
+      "name": "boundary_m_above_z_m0p7"
+    }
+  ],
+  "velocity_convention": {
+    "ratio": "induced velocity v/v_h, positive downward",
+    "vx": "crossflow magnitude, normalized by v_h",
+    "vz": "positive climb, normalized by v_h"
+  }
+}

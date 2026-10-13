@@ -32,9 +32,13 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 [EX-06/08/09 realism audit](extra-300-realism/README.md) links the manual/source audit, corrections, behavior matrix, regression results and remaining physical gaps. The [Extra 300S plan](../EXTRA-300-PLAN.md) owns aircraft implementation; the research records realism findings and remaining physical gaps.
 
-### Avanti S flight realism
+<a id="avanti-s-flight-realism"></a>
 
-[AV-14…17 realism investigation](avanti-realism/README.md) records the A200/P100-RX source audit, geometry and mass-property corrections, full-session behavior checks, and remaining physical-validation gaps. The [Avanti plan](../AVANTI-S-PLAN.md) owns pending aircraft work.
+### Ventage Jet flight realism
+
+[AV-14…17 realism investigation](avanti-realism/README.md) records the A200/P100-RX source audit, geometry and mass-property corrections, full-session behavior checks, and remaining physical-validation gaps. The [Ventage Jet plan](../AVANTI-S-PLAN.md) owns pending aircraft work.
+
+[AV-18 fuel-turbine source review](turbine-realism/AV-18/README.md) compares identified JetCat revisions, Xicoy and KingTech manufacturer data with original engine experiments, and fingerprints the current propulsion/fuel gaps. The [turbine realism plan](../plans/turbine-realism.md) owns detailed response, ECU, fuel/mass and integration work.
 
 ### Turbo Lumber Evolution (Timber)
 
@@ -74,9 +78,11 @@ Start with the [source and local-reference map](ugly-stik-resources.md), [model 
 
 Read the [family research](extra-300-family-research.md), [integration audit](extra-300-integration-audit.md), [realism audit](extra-300-realism/README.md), and [generated physics derivation](../../research/extra-300/ex05/derivation.md). Shared authoring tools are in [extra-aircraft-tooling](extra-aircraft-tooling/README.md). The [EXTRA-300-PLAN](../EXTRA-300-PLAN.md) owns aircraft implementation.
 
-### Avanti S
+<a id="avanti-s"></a>
 
-Start with [family research](avanti-s-family-research.md), the [integration audit](avanti-s-integration-audit.md), and [AV-06 physics model](avanti-s-av06-physics-model.md). For appearance, see the [latest contour refinement](avanti-s-refinement-v4.md); generated measurements and viewers remain in [research/avanti-s](../../research/avanti-s/). The [Avanti S plan](../AVANTI-S-PLAN.md) owns implementation.
+### Ventage Jet
+
+The simulator name is Ventage Jet; the source aircraft is the SebArt Avanti S (A200). Start with [family research](avanti-s-family-research.md), the [integration audit](avanti-s-integration-audit.md), and [AV-06 physics model](avanti-s-av06-physics-model.md). For appearance, see the [latest contour refinement](avanti-s-refinement-v4.md); generated measurements and viewers remain in [research/avanti-s](../../research/avanti-s/). The [Ventage Jet plan](../AVANTI-S-PLAN.md) owns implementation.
 
 ### P-51D
 
@@ -123,9 +129,13 @@ The [smoke guide](../SMOKE-PLAN.md) records the unintegrated feature and its pro
 
 The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begin with [primary sources](wind-physics-primary-sources.md), [implementation evidence](wind-implementation/README.md), [M5-W04a turbulence](wind-implementation/M5-W04a/README.md), and the [investigation index](wind-investigations/README.md). Atmospheric density research is in [M5-ATM-1](atmosphere/M5-ATM-1/kernel/README.md) and [M5-ATM-2/3](atmosphere/M5-ATM-2/README.md).
 
-### Drone racing (proposed)
+### Helicopter and shared rotor foundations
 
-[DR-01](drone-racing/DR-01/README.md) records the identified quadrotor models and datasets, small-propeller data limits, Betaflight rate and mixer semantics, racing formats and timing systems, FPV camera and OSD facts, Compatibility-renderer limits and the code-seam map for a multirotor. The [drone racing plan](../plans/drone-racing.md) owns the proposed steps; nothing is implemented.
+[HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the independent mean-inflow reference, generated oracle and standalone GDScript checks, including the published crossflow seams that must be qualified before session use. [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.
+
+### Drone racing (shared-foundation review)
+
+[DR-01](drone-racing/DR-01/README.md) records the identified quadrotor models and datasets, small-propeller data limits, Betaflight rate and mixer semantics, racing formats and timing systems, FPV camera and OSD facts, Compatibility-renderer limits and the code-seam map for a multirotor. The [drone racing plan](../plans/drone-racing.md) consumes HELI's shared inflow evidence; multirotor flight and racing remain proposed.
 
 ### Cross-aircraft
 

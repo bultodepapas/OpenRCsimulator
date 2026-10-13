@@ -269,7 +269,7 @@ def build():
     avanti_i = fleet_aircraft.index("sebart-avanti-s-a200-p100rx")
     avanti_n, avanti_e, avanti_heading = fleet_slots[avanti_i]
     inst("avanti-cradle", "pits", ["avanti_cradle"], [(avanti_n, avanti_e, avanti_heading)], "estimated",
-         "Padded trestles directly under the catalog Avanti snapshot, which is an in-air-start model with gear retracted",
+         "Padded trestles directly under the catalog Ventage Jet snapshot, which is an in-air-start model with gear retracted",
          snap=False)
     # Informal gravel parking: a loose, staggered row, an open gap, and canted spaces near the ends.
     # Vehicle positions are estimates; the four existing body styles rotate through the same 11 places.

@@ -19,6 +19,11 @@ if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --impor
 fi
 rm -f "$IMPORT_LOG"
 
+echo "== HELI-03a/04: independent mean-inflow reference stays current"
+python3 "$HERE/../research/helicopter/reference/test_johnson_inflow.py"
+python3 "$HERE/../research/helicopter/reference/make_oracle.py" --check
+run --script res://tests/test_heli_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/oracle.json"
+
 echo "== AS-01/02: versioned aircraft contract and migration stay current"
 python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
 python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check

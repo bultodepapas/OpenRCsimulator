@@ -12,6 +12,12 @@ const LightingConfig := preload("res://environment/time_of_day_config.gd")
 const SnapshotLighting := preload("res://render/time_of_day_lighting.gd")
 const SceneryMaterials := preload("res://scenery/scenery.gd")
 const FLEET_VIEWS := {
+	"herb_border": {eye = [-12.5, -2.0, -0.8], at = [-15.0, -3.0, -0.25], fov = 48.0},
+	"meadow_low": {eye = [50.0, 92.0, -1.25], at = [61.0, 103.0, -0.4], fov = 48.0},
+	"crop_close": {eye = [556.0, 316.0, -3.0], at = [569.0, 336.0, -0.3], fov = 52.0},
+	"cultivated_overview": {eye = [542.0, 307.0, -32.0], at = [572.0, 342.0, -0.1], fov = 52.0},
+	"tree_detail": {eye = [-44.0, -26.0, -1.6], at = [-49.0, -22.0, -6.0], fov = 50.0},
+	"shrub_detail": {eye = [-18.0, -7.0, -0.8], at = [-19.75, -6.5, -0.4], fov = 45.0},
 	"people_5m": {eye = [-12.5, -2.5, -1.65], at = [-17.5, -2.5, -0.9], fov = 38.0},
 	"people_15m": {eye = [-2.5, -2.5, -1.65], at = [-17.5, -2.5, -0.9], fov = 38.0},
 	"people_40m": {eye = [22.5, -2.5, -1.65], at = [-17.5, -2.5, -0.9], fov = 38.0},
@@ -89,6 +95,9 @@ func _run() -> void:
 							item.mesh.surface_set_material(surface, SceneryMaterials.opaque_material())
 						else:
 							material.set_shader_parameter("detail_strength", 0.0)
+	var habitats: Node3D = built.field.get_node_or_null("Scenery/BotanicalHabitats")
+	if habitats != null and str(args.get("botanicals", "on")) == "off":
+		habitats.visible = false
 	var camera := Camera3D.new()
 	camera.far = 21000
 	camera.near = 0.1
@@ -114,7 +123,7 @@ func _run() -> void:
 	var original_exposure: float = built.environment.tonemap_exposure
 	var report := {adapter = RenderingServer.get_video_adapter_name(), driver = RenderingServer.get_video_adapter_api_version(),
 		engine = Engine.get_version_info(), renderer = "gl_compatibility", width = root.size.x, height = root.size.y,
-		arguments = args, cases = {}}
+		arguments = args, botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
 	var cases := str(args.get("cases", "pilot_north,postcard_club,glare_clear,glare_off,glare_blocked,glare_aircraft,glare_side,glare_night")).split(",")
 	for case: String in cases:
 		if lighting_helper != null:
@@ -172,7 +181,7 @@ func _run() -> void:
 				blocker.position = Frames.ned_to_render([15.0, 55.0, -0.7])
 				blocker.basis = camera.basis
 		for i in 60:
-			World.update(built.environment, 1.5, Vector3.ZERO, camera.position + -camera.basis.z * 30.0, camera)
+			World.update(built.environment, float(args.get("botanical_clock", 1.5)), Vector3(float(args.get("botanical_wind", 0.0)), 0, 1.0 if args.has("botanical_wind") else 0.0), camera.position + -camera.basis.z * 30.0, camera)
 			if horizon_diagnostic == "no-rim":
 				for mat: ShaderMaterial in World.haze_materials(built.field):
 					if mat.shader.resource_path == "res://render/ground.gdshader":

@@ -23,24 +23,26 @@ def main():
         'gp-extra-300s-60': 'extra-300s.png',
         'p51d-mustang-120': 'p51d-mustang.png',
         'sebart-avanti-s-a200-p100rx': 'avanti-s.png',
+        'turbo-lumber-evolution': 'turbo-lumber-evolution.png',
     }
     if {a['id'] for a in manifest['aircraft']} != set(names):
-        raise ValueError('Expected the four catalog aircraft')
+        raise ValueError('Expected the five catalog aircraft')
+    expected_frames = sum(a['frames'] for a in manifest['aircraft'])
     frame_paths = sorted((args.source / 'frames').glob('*.png'))
-    if len(frame_paths) != 96 or manifest['frame_count'] != 96:
-        raise ValueError('Expected 96 fresh rendered frames')
+    if expected_frames != 120 or len(frame_paths) != expected_frames or manifest['frame_count'] != expected_frames:
+        raise ValueError('Expected 120 fresh rendered frames')
     frames = []
     for path in frame_paths:
         with Image.open(path) as image:
             if image.size != (640, 360):
                 raise ValueError(f'Wrong frame size: {path}')
-            frames.append(image.convert('RGB'))
+            frames.append(image.convert('RGB').quantize(colors=128, dither=Image.Dither.NONE))
     args.destination.mkdir(parents=True, exist_ok=True)
     gif = args.destination / 'aircraft-tour.gif'
     frames[0].save(gif, save_all=True, append_images=frames[1:], duration=110,
                   loop=0, optimize=True)
     with Image.open(gif) as image:
-        if image.n_frames != 96:
+        if image.n_frames != expected_frames:
             raise ValueError('GIF dropped frames')
         duration_ms = 0
         for i in range(image.n_frames):
@@ -66,7 +68,7 @@ def main():
         if p.suffix in ('.png', '.gif')
     }
     (args.destination / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-    print(f'Packaged 4 aircraft, flight screenshot, {len(frames)} GIF frames ({gif.stat().st_size:,} bytes)')
+    print(f"Packaged {len(manifest['aircraft'])} aircraft, flight screenshot, {len(frames)} GIF frames ({gif.stat().st_size:,} bytes)")
 
 
 if __name__ == '__main__':

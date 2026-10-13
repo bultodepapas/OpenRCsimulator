@@ -78,7 +78,7 @@ Godot 4.7.2 plays a forward-looping `AudioStreamWAV` by interpolating past `loop
 
 ## 2026-10-13 · CR-08b — effective mass grades the first contact, not the whole impact
 
-Effective mass at the struck point fixes whole-mass overrating: a level wingtip engages about 7 %. It also underrates oblique hits on long-nosed airframes. In a 45° Avanti dive the nose engages 20 % of the mass and grades C2, yet the CG keeps most of its normal energy and slams the belly down next. Grade the first contact and also bound what the CG still carries into the surface; do not count sliding speed as impact energy. [CR-08b](docs/research/crash-damage-investigations/CR-08b/README.md)
+Effective mass at the struck point fixes whole-mass overrating: a level wingtip engages about 7 %. It also underrates oblique hits on long-nosed airframes. In a 45° Ventage Jet dive the nose engages 20 % of the mass and grades C2, yet the CG keeps most of its normal energy and slams the belly down next. Grade the first contact and also bound what the CG still carries into the surface; do not count sliding speed as impact energy. [CR-08b](docs/research/crash-damage-investigations/CR-08b/README.md)
 
 ## 2026-10-12 · VQ-05 — Compatibility lights by winding and ignores per-instance transparency
 
@@ -186,3 +186,7 @@ Splitting fences into visible bays increased the nearby proxy count; selecting t
 ## 2026-10-12 · TT-11 — seed ground equilibrium from the support plane
 
 A level Newton seed can converge to a two-main-wheel equilibrium for a taildragger even when the authored three-point gear supports the CG. A small residual does not establish the intended resting configuration. Seed height/roll/pitch from the actual contact plane, retain the established nosewheel branch, and require every selected contact to stick before accepting the start. [Timber diagnosis, static support and refinement](docs/research/timber-integration/TT-10/README.md).
+
+## 2026-10-13 · HELI-04 — check crossflow joins as well as axial joins
+
+Johnson's published inflow table contains printed endpoint/derivative errata, and its moving axial polynomials still jump when an entire crossflow branch switches off at C or M. Matching values and slopes inside one slice does not prove continuity across another parameter. Inspect the rendered equations, verify one-sided values with an independent implementation and retain source-law limitations as integration gates; do not silently fit a smoother. Ground-effect activation also needs downstream-wake geometry: signed body-axis thrust alone cannot distinguish upright descent from inverted lift. [Primary-source interpretation and checks](docs/research/helicopter/HELI-04/README.md).

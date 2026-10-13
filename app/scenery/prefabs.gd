@@ -30,7 +30,7 @@ const CATALOG := {
 	"person_sitting": {size = Vector3(0.61, 1.444, 0.75), tier = "ornament", shadow = false, kind = "estimated", source = "LU-21 Anrico sitting03; seat-contact height 0.4742 m plus 0.006 m fitting offset"},
 	"person_pilot": {size = Vector3(0.67, 1.78, 0.45), tier = "ornament", shadow = true, kind = "estimated", source = "LU-21 MPFB pilot pose with transmitter; uniform adult scale"},
 	"avanti_cradle": {size = Vector3(0.7, 0.48, 1.63), tier = "standard", shadow = true, kind = "estimated",
-		source = "Original padded trestle cradle for the gear-up Avanti S fleet snapshot; visual support estimate"},
+		source = "Original padded trestle cradle for the gear-up Ventage Jet fleet snapshot; visual support estimate"},
 	"barn": {size = Vector3(10.8, 7.5, 14.8), tier = "landmark", shadow = false, kind = "estimated", source = "Gambrel barn 10 × 14 m"},
 	"silo": {size = Vector3(5.6, 15.0, 5.6), tier = "landmark", shadow = false, kind = "estimated", source = "Farm silo, 14 m min (SC-13: tall parts carry the farmstead)"},
 	"farmhouse": {size = Vector3(10.0, 7.2, 8.0), tier = "standard", shadow = false, kind = "estimated", source = "Two-storey farmhouse"},
@@ -459,22 +459,23 @@ static func _flower_clump(k: MeshKit, seed: int, theme: String) -> void:
 		k.quad(p0, p1, p2, p3, leaf)
 		k.quad(p3, p2, p1, p0, leaf.darkened(0.08)) # back face stays visible from the path
 
-		var index := int(Palette.hash01(seed, i, 6) * species.size()) % species.size()
+		# One species per bouquet; rounded petals with a shallow cup replace star-like spikes.
+		var index := int(Palette.hash01(seed, 6) * species.size()) % species.size()
 		var petal: Color = Palette.FLOWERS[species[index]]
 		if theme == "autumn":
 			petal = Palette.vegetation(petal, theme)
 		var center := head + Vector3(0, 0.008, 0)
-		for petal_index in 4:
-			var pa := TAU * float(petal_index) / 4.0 + 0.18 * float(i % 3)
-			var root_a := center + Vector3(cos(pa - 0.42) * 0.020, 0.0, sin(pa - 0.42) * 0.020)
-			var outer := center + Vector3(cos(pa) * 0.075, 0.028, sin(pa) * 0.075)
-			var root_b := center + Vector3(cos(pa + 0.42) * 0.020, 0.0, sin(pa + 0.42) * 0.020)
-			if (outer - root_a).cross(root_b - root_a).y < 0.0:
-				k.tri(root_a, root_b, outer, petal)
-				k.tri(root_a, outer, root_b, petal)
-			else:
-				k.tri(root_a, outer, root_b, petal)
-				k.tri(root_a, root_b, outer, petal)
+		var petals := 8 if species[index] == "daisy" else 6
+		for petal_index in petals:
+			var pa := TAU * float(petal_index) / float(petals) + 0.18 * float(i % 3)
+			var root := center + Vector3(cos(pa) * 0.018, 0, sin(pa) * 0.018)
+			var left := center + Vector3(cos(pa - 0.22) * 0.060, 0.009, sin(pa - 0.22) * 0.060)
+			var outer := center + Vector3(cos(pa) * 0.075, 0.012, sin(pa) * 0.075)
+			var right := center + Vector3(cos(pa + 0.22) * 0.060, 0.009, sin(pa + 0.22) * 0.060)
+			k.tri(root, left, outer, petal)
+			k.tri(root, outer, left, petal)
+			k.tri(root, outer, right, petal)
+			k.tri(root, right, outer, petal)
 		var pollen_a := center + Vector3(0.012, 0.008, 0.0)
 		var pollen_b := center + Vector3(-0.006, 0.008, 0.010)
 		var pollen_c := center + Vector3(-0.006, 0.008, -0.010)
