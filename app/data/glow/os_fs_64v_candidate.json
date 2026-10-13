@@ -43,6 +43,14 @@
         [
           11000.0,
           0.03
+        ],
+        [
+          13000.0,
+          0.034
+        ],
+        [
+          15000.0,
+          0.038
         ]
       ],
       "unit": "rpm, N·m",
@@ -78,6 +86,14 @@
         [
           2.5,
           0.2
+        ],
+        [
+          3.0,
+          0.0
+        ],
+        [
+          20.0,
+          0.0
         ]
       ],
       "unit": "1, 1",
@@ -113,6 +129,14 @@
         [
           11000.0,
           0.85
+        ],
+        [
+          13000.0,
+          0.65
+        ],
+        [
+          15000.0,
+          0.3
         ]
       ],
       "unit": "rpm, 1",
@@ -148,6 +172,14 @@
         [
           11000.0,
           5300.0
+        ],
+        [
+          13000.0,
+          5900.0
+        ],
+        [
+          15000.0,
+          6500.0
         ]
       ],
       "unit": "rpm, Pa",
@@ -189,6 +221,14 @@
         [
           11000.0,
           0.017
+        ],
+        [
+          13000.0,
+          0.019
+        ],
+        [
+          15000.0,
+          0.020999999999999998
         ]
       ],
       "unit": "rpm, N·m",
@@ -203,11 +243,11 @@
         ],
         [
           2400.0,
-          0.1153648229056686
+          0.22270086537461162
         ],
         [
           4000.0,
-          0.20987687228898888
+          0.2318000835775802
         ],
         [
           6000.0,
@@ -224,6 +264,14 @@
         [
           11000.0,
           0.2733565474724011
+        ],
+        [
+          13000.0,
+          0.21004427040282123
+        ],
+        [
+          15000.0,
+          0.11370710474680715
         ]
       ],
       "unit": "rpm, 1",
@@ -289,10 +337,10 @@
   },
   "operation": {
     "max_rpm": {
-      "value": 11000.0,
+      "value": 15000.0,
       "unit": "rpm",
-      "kind": "manual",
-      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html"
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
     },
     "rated_rpm": {
       "value": 11000.0,
@@ -317,6 +365,12 @@
       "unit": "1",
       "kind": "estimated",
       "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "recommended_max_rpm": {
+      "value": 11000.0,
+      "unit": "rpm",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html"
     }
   }
 }

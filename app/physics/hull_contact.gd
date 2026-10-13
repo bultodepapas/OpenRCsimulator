@@ -7,6 +7,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const EffectiveMass := preload("res://physics/effective_mass.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
 
 ## Contact natural frequency against each point's smallest effective mass: ω·dt = 0.25 at 240 Hz, so no point is
 ## stiffer than this for RK4 in any attitude. A belly carrying the whole airplane sags g/ω² ≈ 2.7 mm.
@@ -48,9 +49,11 @@ static func prop_disc(propulsion: Dictionary) -> Dictionary:
 
 ## E3d2: depth (m, positive below the field) of the disc's lowest point at state `s`, and that point in NED. The lowest
 ## point is the hub plus the radius along the ground-down direction projected onto the disc plane.
-static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary) -> Dictionary:
+static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary = {}, time_s: float = 0.0) -> Dictionary:
 	if disc.is_empty():
 		return {depth = -INF, point_ned = PackedFloat64Array()}
+	if (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)) or not is_finite(time_s):
+		return {depth = NAN, point_ned = PackedFloat64Array()}
 	var down := _down_row(s)
 	var a: PackedFloat64Array = disc.axis
 	var along := down[0] * a[0] + down[1] * a[1] + down[2] * a[2]
@@ -60,7 +63,15 @@ static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary) -> Dictiona
 	if p_len > 1.0e-9: # an axis pointing straight down leaves the disc horizontal: every rim point is as deep
 		lowest = M.add(lowest, M.scale(p, float(disc.radius) / p_len))
 	var depth := s[RB.POS + 2] + down[0] * lowest[0] + down[1] * lowest[1] + down[2] * lowest[2]
-	return {depth = depth, point_ned = M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), lowest))}
+	var point_ned: PackedFloat64Array = M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), lowest))
+	if not lake.is_empty():
+		var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, point_ned[0], point_ned[1])
+		if bool(terrain.get("covered", false)):
+			var surface_down: float = LakeSurface.water_height_down(lake, point_ned[0], point_ned[1], time_s)
+			if not is_finite(surface_down):
+				surface_down = float(terrain.ground_down_m)
+			depth = point_ned[2] - surface_down
+	return {depth = depth, point_ned = point_ned}
 
 
 const _DIRECTIONS := [
@@ -73,8 +84,10 @@ const _DIRECTIONS := [
 
 ## Per-point stiffness/damping for `hull` (body FRD about the CG, flattened) from the smallest effective mass over
 ## 26 body directions. Returns {} when the inputs cannot support a contact (callers then add no hull forces).
-static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat64Array) -> Dictionary:
-	if hull.is_empty() or hull.size() % 3 != 0 or not is_finite(mass) or mass <= 0.0:
+static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat64Array,
+		lake: Dictionary = {}) -> Dictionary:
+	if hull.is_empty() or hull.size() % 3 != 0 or not is_finite(mass) or mass <= 0.0 \
+			or (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)):
 		return {}
 	var identity := PackedFloat64Array([1.0, 0.0, 0.0, 0.0])
 	var k := PackedFloat64Array()
@@ -91,7 +104,12 @@ static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat6
 		k.append(smallest * OMEGA_RAD_S * OMEGA_RAD_S)
 		c.append(2.0 * ZETA * smallest * OMEGA_RAD_S)
 		reach = maxf(reach, M.norm(r))
-	return {points = hull.duplicate(), stiffness = k, damping = c, reach = reach, mass = mass, inertia = inertia.duplicate()}
+	var prepared := {points = hull.duplicate(), stiffness = k, damping = c, reach = reach,
+		mass = mass, inertia = inertia.duplicate()}
+	if not lake.is_empty():
+		prepared["lake"] = lake.duplicate(true)
+		prepared["lake_bounds_ne_m"] = _polygon_bounds(lake.bank_ne_m)
+	return prepared
 
 
 ## Body loads [Fx, Fy, Fz, Mx, My, Mz] from every touching hull point, or EMPTY when none touches (callers add
@@ -106,7 +124,19 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary) -> PackedFloat64A
 	var down: PackedFloat64Array = rows[2]
 	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var touched := false
+	var lake: Dictionary = prepared.get("lake", {})
 	for i in range(0, hull.size(), 3):
+		var body_point: PackedFloat64Array = hull.slice(i, i + 3)
+		if not lake.is_empty():
+			var point_ned: PackedFloat64Array = _point_ned(s, body_point)
+			var terrain: Dictionary = _lake_sample(prepared, point_ned)
+			if bool(terrain.get("covered", false)):
+				var lake_load: PackedFloat64Array = _lake_load(s, prepared, i / 3, body_point, point_ned, terrain)
+				if not lake_load.is_empty():
+					for axis: int in 6:
+						out[axis] += lake_load[axis]
+					touched = true
+				continue
 		var rx := hull[i]
 		var ry := hull[i + 1]
 		var rz := hull[i + 2]
@@ -157,10 +187,22 @@ static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	var q_before := RB._att(previous)
 	var worst := none.duplicate()
 	for i in range(0, hull.size(), 3):
+		var r := hull.slice(i, i + 3)
+		var lake: Dictionary = prepared.get("lake", {})
+		if not lake.is_empty():
+			var point_now: PackedFloat64Array = _point_ned(s, r)
+			var terrain_now: Dictionary = _lake_sample(prepared, point_now)
+			if bool(terrain_now.get("covered", false)):
+				var lake_result: Dictionary = _lake_terminal_candidate(previous, s, prepared, i / 3,
+					r, point_now, terrain_now, q_before)
+				if str(lake_result.get("rule", "")) == "depth":
+					return lake_result
+				if not lake_result.is_empty() and float(lake_result.specific_j_per_kg) > float(worst.specific_j_per_kg):
+					worst = lake_result
+				continue
 		var depth := s[RB.POS + 2] + down_now[0] * hull[i] + down_now[1] * hull[i + 1] + down_now[2] * hull[i + 2]
 		if depth <= 0.0:
 			continue
-		var r := hull.slice(i, i + 3)
 		if depth > CRASH_DEPTH_M:
 			return {index = i / 3, rule = "depth", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = depth}
 		var depth_before := previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
@@ -189,10 +231,20 @@ static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	var q := RB._att(s)
 	var q_before := RB._att(previous)
 	for i in range(0, hull.size(), 3):
+		var r := hull.slice(i, i + 3)
+		var lake: Dictionary = prepared.get("lake", {})
+		if not lake.is_empty():
+			var point_now: PackedFloat64Array = _point_ned(s, r)
+			var terrain_now: Dictionary = _lake_sample(prepared, point_now)
+			if bool(terrain_now.get("covered", false)):
+				var lake_contact: Dictionary = _lake_contact_record(previous, s, prepared, i / 3,
+					r, point_now, terrain_now, q_before, q)
+				if not lake_contact.is_empty():
+					out.append(lake_contact)
+				continue
 		var depth := s[RB.POS + 2] + down_now[0] * hull[i] + down_now[1] * hull[i + 1] + down_now[2] * hull[i + 2]
 		if depth <= 0.0:
 			continue
-		var r := hull.slice(i, i + 3)
 		var depth_before := previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
 		var v_before := M.q_rotate(q_before, M.add(RB._slice3(previous, RB.VEL), M.cross(RB._slice3(previous, RB.RATE), r)))
 		var v_now := M.q_rotate(q, M.add(RB._slice3(s, RB.VEL), M.cross(RB._slice3(s, RB.RATE), r)))
@@ -200,6 +252,157 @@ static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 			slide_speed_mps = M.sqrt_(v_now[0] * v_now[0] + v_now[1] * v_now[1]),
 			point_ned = M.add(RB._slice3(s, RB.POS), M.q_rotate(q, r)), velocity_ned = v_now})
 	return out
+
+
+static func _lake_load(s: PackedFloat64Array, prepared: Dictionary, point_index: int,
+	body_point: PackedFloat64Array, point_ned: PackedFloat64Array, terrain: Dictionary) -> PackedFloat64Array:
+	var normal: PackedFloat64Array = _lake_normal(terrain)
+	if normal.is_empty():
+		return PackedFloat64Array()
+	var normal_length: float = M.norm(PackedFloat64Array([
+		float(terrain.slope_north), float(terrain.slope_east), 1.0]))
+	var compression: float = (point_ned[2] - float(terrain.ground_down_m)) / normal_length
+	if compression <= 0.0:
+		return PackedFloat64Array()
+	var q: PackedFloat64Array = RB._att(s)
+	var velocity_body: PackedFloat64Array = M.add(RB._slice3(s, RB.VEL),
+		M.cross(RB._slice3(s, RB.RATE), body_point))
+	var velocity_ned: PackedFloat64Array = M.q_rotate(q, velocity_body)
+	var normal_rate: float = -M.dot(velocity_ned, normal)
+	var onset: float = minf(compression / DAMPING_ONSET_M, 1.0)
+	var f_up: float = float(prepared.stiffness[point_index]) * compression \
+		+ float(prepared.damping[point_index]) * onset * normal_rate
+	if f_up <= 0.0:
+		return PackedFloat64Array()
+	var normal_speed: float = M.dot(velocity_ned, normal)
+	var tangent_velocity: PackedFloat64Array = M.sub(velocity_ned, M.scale(normal, normal_speed))
+	var slip: float = M.norm(tangent_velocity)
+	var friction_scale: float = FRICTION_MU * f_up / maxf(slip, SLIP_REGULARIZATION_MPS)
+	var force_ned: PackedFloat64Array = M.sub(M.scale(normal, f_up), M.scale(tangent_velocity, friction_scale))
+	var q_inverse: PackedFloat64Array = PackedFloat64Array([q[0], -q[1], -q[2], -q[3]])
+	var force_body: PackedFloat64Array = M.q_rotate(q_inverse, force_ned)
+	return PackedFloat64Array([
+		force_body[0], force_body[1], force_body[2],
+		body_point[1] * force_body[2] - body_point[2] * force_body[1],
+		body_point[2] * force_body[0] - body_point[0] * force_body[2],
+		body_point[0] * force_body[1] - body_point[1] * force_body[0],
+	])
+
+
+static func _lake_terminal_candidate(previous: PackedFloat64Array, s: PackedFloat64Array,
+	prepared: Dictionary, point_index: int, body_point: PackedFloat64Array, point_now: PackedFloat64Array,
+	terrain_now: Dictionary, q_before: PackedFloat64Array) -> Dictionary:
+	var normal: PackedFloat64Array = _lake_normal(terrain_now)
+	if normal.is_empty():
+		return {}
+	var normal_length: float = M.norm(PackedFloat64Array([
+		float(terrain_now.slope_north), float(terrain_now.slope_east), 1.0]))
+	var depth: float = (point_now[2] - float(terrain_now.ground_down_m)) / normal_length
+	if depth <= 0.0:
+		return {}
+	if depth > CRASH_DEPTH_M:
+		return {index = point_index, rule = "depth", specific_j_per_kg = 0.0,
+			normal_speed_mps = 0.0, depth_m = depth}
+	var point_before: PackedFloat64Array = _point_ned(previous, body_point)
+	var terrain_before: Dictionary = _lake_sample(prepared, point_before)
+	var depth_before: float = 0.0
+	if bool(terrain_before.get("covered", false)):
+		var before_normal_length: float = M.norm(PackedFloat64Array([
+			float(terrain_before.slope_north), float(terrain_before.slope_east), 1.0]))
+		depth_before = (point_before[2] - float(terrain_before.ground_down_m)) / before_normal_length
+	else:
+		var extrapolated_ground_down: float = float(terrain_now.ground_down_m) \
+			+ float(terrain_now.slope_north) * (point_before[0] - point_now[0]) \
+			+ float(terrain_now.slope_east) * (point_before[1] - point_now[1])
+		depth_before = (point_before[2] - extrapolated_ground_down) / normal_length
+	if depth_before > 0.0:
+		return {} # Resting or sliding bank contact is handled by the spring-damper, not a new impact.
+	var velocity_ned: PackedFloat64Array = M.q_rotate(q_before, M.add(RB._slice3(previous, RB.VEL),
+		M.cross(RB._slice3(previous, RB.RATE), body_point)))
+	var normal_speed: float = maxf(0.0, -M.dot(velocity_ned, normal))
+	var effective_mass: float = EffectiveMass.at_point(q_before, body_point, normal,
+		float(prepared.mass), prepared.inertia)
+	if effective_mass <= 0.0:
+		effective_mass = float(prepared.mass)
+	var specific: float = 0.5 * effective_mass * normal_speed * normal_speed / float(prepared.mass)
+	if specific >= TERMINAL_J_PER_KG:
+		return {index = point_index, rule = "impact", specific_j_per_kg = specific,
+			normal_speed_mps = normal_speed, depth_m = depth}
+	return {}
+
+
+static func _lake_contact_record(previous: PackedFloat64Array, s: PackedFloat64Array,
+	prepared: Dictionary, point_index: int, body_point: PackedFloat64Array, point_now: PackedFloat64Array,
+	terrain_now: Dictionary, q_before: PackedFloat64Array, q_now: PackedFloat64Array) -> Dictionary:
+	var normal: PackedFloat64Array = _lake_normal(terrain_now)
+	if normal.is_empty():
+		return {}
+	var normal_length: float = M.norm(PackedFloat64Array([
+		float(terrain_now.slope_north), float(terrain_now.slope_east), 1.0]))
+	var depth: float = (point_now[2] - float(terrain_now.ground_down_m)) / normal_length
+	if depth <= 0.0:
+		return {}
+	var point_before: PackedFloat64Array = _point_ned(previous, body_point)
+	var terrain_before: Dictionary = _lake_sample(prepared, point_before)
+	var depth_before: float
+	if bool(terrain_before.get("covered", false)):
+		var before_normal_length: float = M.norm(PackedFloat64Array([
+			float(terrain_before.slope_north), float(terrain_before.slope_east), 1.0]))
+		depth_before = (point_before[2] - float(terrain_before.ground_down_m)) / before_normal_length
+	else:
+		var extrapolated_ground_down: float = float(terrain_now.ground_down_m) \
+			+ float(terrain_now.slope_north) * (point_before[0] - point_now[0]) \
+			+ float(terrain_now.slope_east) * (point_before[1] - point_now[1])
+		depth_before = (point_before[2] - extrapolated_ground_down) / normal_length
+	var velocity_before: PackedFloat64Array = M.q_rotate(q_before, M.add(RB._slice3(previous, RB.VEL),
+		M.cross(RB._slice3(previous, RB.RATE), body_point)))
+	var velocity_now: PackedFloat64Array = M.q_rotate(q_now, M.add(RB._slice3(s, RB.VEL),
+		M.cross(RB._slice3(s, RB.RATE), body_point)))
+	var normal_rate: float = maxf(0.0, -M.dot(velocity_before, normal))
+	var tangent_now: PackedFloat64Array = M.sub(velocity_now, M.scale(normal, M.dot(velocity_now, normal)))
+	return {index = point_index, new = depth_before <= 0.0, depth_m = depth,
+		normal_speed_mps = normal_rate, slide_speed_mps = M.norm(tangent_now),
+		point_ned = point_now, velocity_ned = velocity_now, normal_ned = normal}
+
+
+static func _point_ned(s: PackedFloat64Array, body_point: PackedFloat64Array) -> PackedFloat64Array:
+	return M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), body_point))
+
+
+static func _lake_sample(prepared: Dictionary, point_ned: PackedFloat64Array) -> Dictionary:
+	var lake_value: Variant = prepared.get("lake", {})
+	if typeof(lake_value) != TYPE_DICTIONARY or lake_value.is_empty() or point_ned.size() != 3:
+		return {covered = false}
+	var lake: Dictionary = lake_value
+	var bounds_value: Variant = prepared.get("lake_bounds_ne_m", PackedFloat64Array())
+	if typeof(bounds_value) == TYPE_PACKED_FLOAT64_ARRAY and bounds_value.size() == 4:
+		var bounds: PackedFloat64Array = bounds_value
+		if point_ned[0] < bounds[0] or point_ned[0] > bounds[1] \
+				or point_ned[1] < bounds[2] or point_ned[1] > bounds[3]:
+			return {covered = false}
+	return LakeSurface.sample_terrain_validated(lake, point_ned[0], point_ned[1])
+
+
+static func _lake_normal(terrain: Dictionary) -> PackedFloat64Array:
+	var slope_north: float = float(terrain.get("slope_north", NAN))
+	var slope_east: float = float(terrain.get("slope_east", NAN))
+	if not is_finite(slope_north) or not is_finite(slope_east):
+		return PackedFloat64Array()
+	var length: float = M.sqrt_(1.0 + slope_north * slope_north + slope_east * slope_east)
+	return PackedFloat64Array([-slope_north / length, -slope_east / length, -1.0 / length])
+
+
+static func _polygon_bounds(polygon: PackedFloat64Array) -> PackedFloat64Array:
+	var north_min: float = INF
+	var north_max: float = -INF
+	var east_min: float = INF
+	var east_max: float = -INF
+	for index: int in range(0, polygon.size(), 2):
+		north_min = minf(north_min, polygon[index])
+		north_max = maxf(north_max, polygon[index])
+		east_min = minf(east_min, polygon[index + 1])
+		east_max = maxf(east_max, polygon[index + 1])
+	return PackedFloat64Array([north_min, north_max, east_min, east_max])
 
 
 static func _rows(s: PackedFloat64Array) -> Array:

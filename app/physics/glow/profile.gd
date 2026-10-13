@@ -68,6 +68,8 @@ static func prepare(raw: Variant) -> Dictionary:
 	var op: Dictionary = operation.values
 	if op.rated_rpm > op.max_rpm:
 		return _fail("Rated RPM exceeds the supported maximum")
+	if op.recommended_max_rpm > op.max_rpm:
+		return _fail("Recommended RPM exceeds numerical model support")
 	for key: String in rules:
 		if rules[key].shape == "curve":
 			var table: PackedFloat64Array = p[key]

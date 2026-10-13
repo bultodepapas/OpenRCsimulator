@@ -34,6 +34,7 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 | ↓ / ↑ | Elevator / pitch; ↓ pulls the stick back |
 | A / D | Rudder |
 | W / S | Increase / decrease throttle |
+| Page Up / Page Down | Current source: elevator trim nose down / nose up, 0.1° per press |
 | Esc | Pause; cancel radio calibration |
 | R | Restart flight |
 | P | Resume after a radio failsafe |
@@ -53,6 +54,8 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 Letters refer to physical QWERTY positions; in-game Help shows your keyboard's labels. A connected USB radio/gamepad replaces the keyboard flight sticks.
 
 Keyboard and gamepad sticks use the aircraft's normal-flight dual rates and expo where its manual states them (Extra, P-51, Ventage Jet; the status line shows `rates: normal`); a radio keeps its own rates. The direct route's `--rates=full` flies the maximum throws, as the Ugly Stik always does.
+
+Current source lets you adjust elevator trim with **Page Up / Page Down** (Spanish keyboards: **RePág / AvPág**). Establish the desired speed and flight path with the sticks and throttle, then adjust trim to relieve the held elevator command. This is a fixed surface offset, not altitude hold; changes in power or speed may need another adjustment. The transmitter overlay shows the resulting trim. **R** restores the starting trim. Trim keys are ignored while paused or replaying recorded inputs.
 
 ### Radio setup
 

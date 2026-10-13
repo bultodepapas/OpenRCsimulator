@@ -9,6 +9,8 @@
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
+const GlowProp := preload("res://physics/glow/propeller.gd")
+const GlowOperating := preload("res://physics/glow/operating_point.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const ElectricMotor := preload("res://physics/electric_motor.gd")
 const ElectricSupply: Script = preload("res://physics/electric_supply.gd")
@@ -59,7 +61,11 @@ static func rpm_step(rpm: float, throttle: float, dt: float, prop: Dictionary) -
 
 ## True when the aircraft declares a shaft model (rpm from the torque balance instead of the throttle lag).
 static func has_shaft(prop: Dictionary) -> bool:
-	return not prop.get("shaft", {}).is_empty()
+	return is_glow(prop) or not prop.get("shaft", {}).is_empty()
+
+
+static func is_glow(prop: Dictionary) -> bool:
+	return prop.has("glow")
 
 
 ## Explicit normalized source identity. Missing kind remains the legacy glow source.
@@ -344,6 +350,9 @@ static func _cp_floor(prop: Dictionary) -> float:
 
 ## Propeller shaft torque (N·m, positive = absorbs engine power) at rpm and axial airspeed u (m/s).
 static func prop_torque(rpm: float, u: float, prop: Dictionary, rho: float) -> float:
+	if is_glow(prop):
+		var point: Dictionary = GlowProp.evaluate(rpm, u, rho, prop.glow.propeller)
+		return point.torque_nm if point.ok else NAN
 	if rpm < STOPPED_RPM:
 		return 0.0
 	var D: float = prop.diameter
@@ -356,6 +365,9 @@ static func prop_torque(rpm: float, u: float, prop: Dictionary, rho: float) -> f
 ## P_adm = P_idle + θ·(P_peak_ind − P_idle) (air flow through the carburettor); the engine delivers
 ## Q = min(Q_full_ind(n), P_adm/ω) − Q_friction(n). Q_full_ind is the full-throttle brake torque curve plus friction.
 static func engine_torque(rpm: float, throttle: float, prop: Dictionary, charge_ratio: float = 1.0) -> float:
+	if is_glow(prop):
+		var point: Dictionary = GlowOperating.source(prop, rpm, throttle, RHO_REFERENCE * charge_ratio)
+		return point.shaft_torque_nm if point.ok else NAN
 	if is_electric(prop):
 		var source: Dictionary = electric_source_state(rpm, throttle, prop)
 		return float(source.shaft_torque_nm) if source.get("ok", false) else NAN
@@ -414,6 +426,9 @@ static func shaft_rate(rpm: float, throttle: float, u: float, prop: Dictionary, 
 ## finite equilibrium is established there; callers must refuse that start, not use a bracket endpoint.
 ## Assumes a structurally valid loader model. Does not establish root uniqueness or measured engine validity.
 static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float, engine_charge_ratio: float = 1.0) -> float:
+	if is_glow(prop):
+		var point: Dictionary = GlowOperating.solve(prop, throttle, u, rho, RHO_REFERENCE * engine_charge_ratio)
+		return point.rpm if point.ok else NAN
 	if is_electric(prop):
 		var operating_point: Dictionary = steady_operating_point(throttle, u, prop, rho)
 		return float(operating_point.rpm) if operating_point.get("ok", false) else NAN
@@ -502,6 +517,10 @@ static func _crossflow(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, 
 
 ## Thrust (N, along the shaft), shaft torque (N·m) and advance ratio for air-relative body velocity v_air.
 static func thrust_torque(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
+	if is_glow(prop):
+		var speed: float = M.dot(v_air, axis(prop))
+		var point: Dictionary = GlowProp.evaluate(rpm, speed, rho, prop.glow.propeller)
+		return PackedFloat64Array([point.thrust_n, point.torque_nm, speed/(maxf(rpm,1.0)/60.0*prop.diameter)]) if point.ok else PackedFloat64Array([NAN,NAN,NAN])
 	if rpm < STOPPED_RPM:
 		return PackedFloat64Array([0.0, 0.0, 0.0])
 	var D: float = prop.diameter
@@ -519,7 +538,7 @@ static func thrust_torque(v_air: PackedFloat64Array, rpm: float, prop: Dictionar
 static func loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
 	if Turbine.is_turbine(prop): # AV-05
 		return Turbine.loads(v_air, rpm, prop, rho)
-	if rpm < STOPPED_RPM:
+	if rpm < STOPPED_RPM and not is_glow(prop):
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var tq := thrust_torque(v_air, rpm, prop, rho)
 	var thrust := tq[0]

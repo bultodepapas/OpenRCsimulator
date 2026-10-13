@@ -27,7 +27,9 @@ func configure(scene: Node3D) -> void:
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--audio-seed="):
 			audio_seed = int(argument.trim_prefix("--audio-seed="))
-	soundscape.configure(flight.field, str(flight.session.aircraft.model.propulsion.get("kind", "glow_prop")), audio_seed)
+	var propulsion: Dictionary = flight.session.aircraft.model.propulsion
+	var glow_family: String = _glow_family(propulsion)
+	soundscape.configure(flight.field, str(propulsion.get("kind", "glow_prop")), audio_seed, glow_family)
 	flight.session.resetting.connect(_on_resetting)
 	silence_legacy_ambience(flight)
 
@@ -45,6 +47,8 @@ func snapshot() -> Dictionary:
 	var prop: Dictionary = session.aircraft.model.propulsion
 	var atmosphere: Dictionary = session.atmosphere_configuration()
 	var blades: int = propeller_blade_count(flight.aircraft_id)
+	var glow_family: String = _glow_family(prop)
+	var glow_profile: Dictionary = prop.get("glow", {}).get("profile", {})
 	var air: Dictionary = session.air_data(session.sim.state)
 	var rpm: float = session.sim.aux[0]
 	var load_amount: float = session.sim.inputs[3]
@@ -57,6 +61,21 @@ func snapshot() -> Dictionary:
 	var elevation: float = float(flight._lighting.get("solar", {}).get("elevation_deg", flight._lighting.get("sun_elevation_deg", 45.0)))
 	if not Atmosphere.state.is_empty():
 		elevation = float(Atmosphere.state.get("sun_elevation_deg", elevation))
+	var glow_state: Dictionary = {}
+	if session.has_method("glow_state"):
+		var accepted_glow: Variant = session.call("glow_state")
+		if accepted_glow is Dictionary:
+			glow_state = accepted_glow.duplicate()
+	if not glow_family.is_empty():
+		var operation: Dictionary = glow_profile.get("operation", {})
+		glow_state["family"] = str(glow_state.get("family", glow_family))
+		glow_state["rpm"] = float(glow_state.get("rpm", rpm))
+		glow_state["max_rpm"] = float(glow_state.get("max_rpm", operation.get("max_rpm", EngineSound.reference_rpm(prop))))
+		glow_state["running"] = bool(glow_state.get("running", session.engine_running))
+		glow_state["firing_fraction"] = float(glow_state.get("firing_fraction", 1.0))
+		glow_state["load"] = float(glow_state.get("load", load_amount))
+		glow_state["throttle"] = float(glow_state.get("throttle", session.sim.inputs[3]))
+		glow_state["blade_count"] = int(glow_state.get("blade_count", blades))
 	# Doppler source velocity: accepted body velocity rotated to NED, converted at the render boundary.
 	var s: PackedFloat64Array = session.sim.state
 	var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
@@ -85,7 +104,19 @@ func snapshot() -> Dictionary:
 		source = flight._airplane.root.global_position, listener = flight._camera.global_position, source_velocity = velocity,
 		paused = session.sim.paused, sun_elevation = elevation,
 		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
+		glow = glow_state,
 	}
+
+
+static func _glow_family(propulsion: Dictionary) -> String:
+	var glow: Variant = propulsion.get("glow", {})
+	if not glow is Dictionary:
+		return ""
+	var profile: Variant = glow.get("profile", {})
+	if not profile is Dictionary:
+		return ""
+	var family: String = str(profile.get("family", ""))
+	return family if family in ["glow_2t", "glow_4t"] else ""
 
 
 static func propeller_blade_count(aircraft_id: String) -> int:

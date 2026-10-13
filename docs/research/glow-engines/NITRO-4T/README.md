@@ -1,0 +1,78 @@
+# NITRO-4T — O.S. FS-64V inferred calibration dossier
+
+2026-10-13 · **Status: quantified candidate inference; physical calibration, held-out validation and pilot acceptance remain open.** This dossier addresses all ten mandatory areas in [the active plan](../../../plans/RC_NITRO_ENGINE_REALISM_PLAN.md). The generated [candidate profile](../../../../app/data/glow/os_fs_64v_candidate.json) remains owned by [`build_profiles.py`](../../../../research/glow-engines/build_profiles.py); do not edit it here. The companion [inference report](calibration_report.json) is regenerated from the live profile by [`calibration_report.py`](../../../../research/glow-engines/calibration_report.py).
+
+## Identity and baseline configuration
+
+The baseline is O.S. FS-64V, product 3AY00, single-cylinder naturally aspirated overhead-valve four-stroke glow engine, 10.46 cm³, 25.0 mm bore × 21.3 mm stroke, type 61T carburetor, Type F plug and stock F-4051 silencer. O.S. publishes **1.14 PS / 1.12 hp at 11,000 RPM**, practical engine speed **2,400–11,000 RPM**, bare engine **442 g**, silencer **44 g**, sport/stunt propellers **12×6–8 or 13×6–7**, and scale propeller **14×6** ([O.S. product specification](https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html)). Use 1.14 PS × 735.49875 = **838.468575 W** for the manufacturer's rounded metric rating, giving **0.7279 N·m** at exactly 11,000 RPM. The additional 1.12 hp is rounded; do not treat rounded PS and hp as separate test results.
+
+The manufacturer engine-plus-silencer mass is **486 g**. The documented O.S. 2022 flight-review configuration also used the FS-64V and NITRO-X Standard 15-18; it reports easy starting, usable low/high response and half-throttle cruise qualitatively, without RPM, torque, fuel-flow or flight telemetry. It flew a Spacewalker II and the pilot described a 14×6 propeller as turning through the air well. This is useful configuration/pilot-source context, not calibration ([O.S. flight review](https://www.os-engines.co.jp/web_content/202210/index_1.html)).
+
+| Build ID | Recommended prop and identified product | Direct fit / applicable cap | Evidence and use |
+| --- | --- | --- | --- |
+| `fs64v_apc_sport_13x6` | APC Sport LP13060, 13×6, 1/4-in bore, 1.69 oz | Matches 1/4-28 crank; APC glow/Sport suggested maximum is 190,000/13 = **14,615 RPM**, above the engine's 11,000-RPM practical maximum. | O.S. recommends 13×6–7 for sport/stunt. No exact FS-64V/APC 13×6 RPM, coefficient or thrust test was retrieved ([APC 13×6](https://www.apcprop.com/product/13x6/); [APC limit](https://www.apcprop.com/technical-information/rpm-limits/)). |
+| `fs64v_master_airscrew_k_14x6` | Master Airscrew K Series 14×6, 1/4-in shaft, 2.05 oz | Manufacturer lists 1/4-in shaft diameter; compatible with the O.S. 1/4-28 prop nut when correctly centered and clamped. No RPM ceiling for this model is asserted here; obtain and enforce the current prop-maker limit. | O.S. recommends 14×6 for scale and tested the FS-64V in a Spacewalker II with 14×6 in its qualitative flight report. Master Airscrew identifies its K Series as for larger 2T/4T glow and electric-conversion models ([Master Airscrew product](https://www.masterairscrew.com/products/k-series-14x6-propeller)). |
+
+O.S. explicitly states its 14×6 recommendation. The APC Sport 14×6 SKU is **not** the direct-fit choice: APC's LP14060 page specifies a 5/16-in shaft bore. Do not silently substitute it on this 1/4-28 crank without verified centered hardware. O.S. warns that same-size propeller characteristics vary by manufacturer; these named parts identify proposed builds but do not supply their engine-specific load curves.
+
+## Ten-area calibration record
+
+### 1. Torque and power
+
+The current profile's full-admission WOT knots, inferred torque/power, rating identity and local sensitivities appear in `calibration_report.json`. The only FS-64V engine power point used is the official **1.14 PS @ 11,000 RPM**. The rated-point reconstruction residual confirms only that the candidate's generated efficiencies invert to this rating; it is not an empirical fit residual. No measured FS-64V full curve or torque-peak location is available. The candidate has a distinct **manufacturer-recommended maximum of 11,000 RPM** and estimated numerical support to **15,000 RPM** to carry an unloading propeller through flight-model scenarios. The 13,000/15,000 knots are an explicit high-speed inference outside the published practical range, not an O.S.-approved operating envelope; the generated report flags them and searches for accepted-profile peaks only inside 2,400–11,000 RPM.
+
+AIAA 2016-5011 measured a different O.S. four-stroke, **FS-a56, 9.32 cm³**, not the 10.46 cm³ FS-64V. In its hybrid test, the FS-a56 measured about **0.17 N·m at 80 W** and **0.32 N·m at 415 W**; the paper says both tested engines rose toward 0.35 N·m by about 150 W and then remained near that level as RPM increased. The FS-a56's lowest/highest reported volumetric efficiencies were **33% / 44%**, with leanest achieved mixture changing from φ=2.4 at 80 W to φ=2.24 at 415 W. Use these only as adjacent-family plausibility checks: do not scale them into a 64V curve or reduce its speed ceiling. The test was around **78.2 kPa / 291.3 K** (about 10,930 ft density altitude) with alternator-cradle load. No FS-64V residual is computed ([AIAA 2016-5011](https://doi.org/10.2514/6.2016-5011)).
+
+### 2. Throttle response
+
+No numeric throttle-command/barrel/RPM transient or servo-separated model was found for the FS-64V. O.S.'s 2022 flight review describes normal start, low/high throttle response and sufficient half-throttle cruise, but gives no synchronized trace. The MAX-61FX first-order 0.25-s estimate is a different 2T engine and is not used as a 4T parameter. Use **0.10–1.00 s** only as a broad exploratory range for charge/mixture response sensitivity; it is an engineering sweep bound, not an FS-64V response measurement or acceptance band. Actual shaft rise/fall also depends on measured prop/crank/cam inertia and load balance. The profile itself contains no independent charge-transport, intake wetting, servo or stall-delay calibration.
+
+### 3. Combustion dynamics
+
+This single-cylinder engine has one nominal opportunity per 720° cycle: `f = RPM/120`, or **20–91.7 Hz** over the O.S. practical 2,400–11,000 RPM band; at rated speed it is **91.7 Hz**. Its inter-opportunity interval falls from **50.0 ms** at 2,400 RPM to **10.9 ms** at 11,000 RPM. The 4T kernel retains a separate cycle angle, volumetric filling, intake depression, pumping and valve-train loss. `firing_fraction` can represent an externally given mean success fraction but no engine-specific misfire curve, cam phase, compression waveform, cycle variation or plug-temperature law is available. A missed fire does not change the engine to a 2T. The O.S. FS64 manual describes mixture-sensitive pickup/idle and over-lean overheating qualitatively, without a numeric failure boundary ([O.S. manual](https://www.os-engines.co.jp/english/line_up/engine/air/single/img/manual/3AY00.pdf)).
+
+### 4. Propeller compatibility
+
+O.S.'s 13×6–7 sport/stunt and 14×6 scale recommendations support the two identified builds above. The APC 13×6 has a direct 1/4-in hub fit; the Master Airscrew K 14×6 is explicitly listed for larger glow engines and has a 1/4-in shaft. APC's 13-in speed limit does not constrain the 11,000-RPM engine band. The 14×6 requires its own manufacturer safety limit before a physical run. No engine-specific `Ct/Cp`, static thrust/torque, advance-ratio/Reynolds map, or measured rotating inertia has been retrieved for either. O.S.'s flight story is one qualitative 14×6 configuration, not a load data series. Geometric still-air pitch speed at the official rated speed is **62.5 mph** for 13×6 and **62.5 mph** for 14×6 because both have 6-in pitch; those numbers are not aircraft speed or thrust. Use measured prop curves or explicit, bounded surrogates.
+
+### 5. Fuel consumption
+
+O.S. states the FS-64V manual fuel should be methanol based, with at least **18% lubricant** and **5–20% nitromethane by volume**; its factory adjustment assumes **18% oil / 15% nitro**. By contrast, the candidate uses the AIAA research blend **72/10/18 vol% methanol/nitromethane/castor oil** and an inert-oil lower-energy bound. That candidate is inside the manual's broad nitro/oil constraints but does not match the factory's 15% nitro baseline; physical calibration must freeze one exact fuel. The report converts the configured blend from volume to component mass and lists candidate delivered/burned/unburned flow at every RPM knot.
+
+The AIAA FS-a56 hybrid run weighed fuel during one-minute steady periods and reports a linear fit **4T flow = 0.34x + 27.11 mg/s**, `R²=0.97`, where `x` is ESC electrical power in watts. This fit is based on the sibling FS-a56 and the hybrid electrical-demand axis, not FS-64V shaft output. It is an external scale/plausibility check only. O.S. says rich idle can be smoky/sluggish and lean settings can cut out or overheat; neither source quantifies FS-64V fuel flow through throttle, mixture and duty cycle. There is no FS-64V weighed consumption or endurance result here. Do not apply a 2T half-flow rule.
+
+### 6. Idle and stalling
+
+O.S.'s practical speed floor is **2,400 RPM**, which is not a declared minimum sustainable idle. As an exploratory warm-idle search only, use **2,200–3,200 RPM**, bracketing the O.S. floor and nearby four-stroke analogues. Saito FA-82B's manual describes a 2,000–2,500-RPM idle on a different, 13.47 cm³ engine; it is a comparator only and cannot establish FS64 stability. The O.S. FS-64V flight report records successful starting and responsive throttle, but no idle RPM, duration or restart. There is no warmed-up FS64 idle hold, rich/lean repeat set, stop boundary or stall probability. The mean-cycle kernel cannot sustain a qualified rest/idle/start law without those states and observations.
+
+### 7. Temperature and cooling
+
+No quantitative FS-64V head/case temperature, airflow, warm-up/cool-down or overheat boundary was retrieved. A separate **0.99 cm³ two-stroke** glow research engine measured about **160–200 °C** cylinder-head temperature at full load; its cycle, scale and measurement setup make it unsuitable as a 4T value. For instrument planning only, a **100–250 °C head-surface search span** is a broad engineering logger/model bracket, not a predicted FS64 temperature range, operating target or failure threshold. Keep sensor location and cooling airflow fixed and report raw measurements before fitting heat capacity/conductance. The current thermal component is a scalar energy proxy, not a 4T installation model.
+
+### 8. Sound and vibration
+
+Nominal single-cylinder 4T exhaust cadence is 0.5/rev: **20–91.7 Hz** over the practical band, or 91.7 Hz at rated speed. A two-blade prop has blade-pass frequency `2×RPM/60`, **80–366.7 Hz** over the same range. These are kinematic event/order values, not measured spectral amplitudes. O.S. describes a deeper/more realistic four-stroke sound and the F-4051 silencer as designed for its characteristic 4T sound, but publishes no FS64 dBA trace or tach-synchronized spectrum. NIST IR 75-693 supplies a model-airplane recording method with multiple 1-m positions and a microphone directly below the propeller; it provides measurement protocol, not a numeric sound prior for this engine ([NIST report](https://doi.org/10.6028/NBS.IR.75-693)). The 14×6 flight story is pilot description, not acoustic validation. No FS-64V audio/vibration capture exists in the dossier.
+
+### 9. Aircraft dynamics
+
+The only relevant aircraft-level report found is O.S.'s Spacewalker II flight review using FS-64V, NITRO-X 15-18 and a 14×6: it says takeoff was quick, climb was strong in that setup and half throttle maintained level flight. It provides no airframe mass/CG, weather, tachometer, airspeed, takeoff distance, climb rate, fuel trace or matched comparison. It therefore provides a named configuration and qualitative pilot evidence, not a force/performance fit or pilot acceptance. Simulated takeoff, climb, cruise, acceleration, torque reaction, gyroscopic response, P-factor, windmilling and engine-out glide need matched telemetry and propeller data. Do not encode a generic 4T advantage.
+
+### 10. Configuration and provenance
+
+The versioned machine-readable [dossier JSON](dossier.json) records the 3AY00 identity, O.S. fuel constraints, Type F plug, 61T carburetor, F-4051 silencer/mass, two manufacturer-compatible prop configurations, candidate blend and evidence gaps. The profile declares `openrc-glow-engine v1`, `glow_4t`, `candidate`, with unit/kind/source on input quantities. Manufacturer points are distinct from external FS-a56 measurements, Saito/YS crosschecks, borrowed fuel properties and derived profile estimates. The companion report uses the live candidate file's SHA-256, reconstructs current WOT knots and labels unperformed physical tests.
+
+## Cross-family checks and evidence boundary
+
+Saito FA-82B is a true 4T with 13.47 cm³ displacement, its own 13×7–8/14×5–6 prop choices and a manual estimate of about **35 cm³/min at 10,000 RPM** under that manufacturer's conditions. This is context only; it is larger and does not set FS64 fuel flow. YS FZ115S has crankcase-boosted/intake-fuel-feed architecture and DZ170 uses a fuel pump; neither maps to this naturally aspirated FS64. ENYA SS35EX TN is a 2T comparator only. See source context and model-specific cautions in [NITRO-00](../NITRO-00/README.md).
+
+The automated report checks profile/math consistency, reconstructs the manufacturer rated knot, shows candidate torque/power/fuel knots, effective-admission scenarios, and one-at-a-time sensitivity to candidate charge, indicated-efficiency and loss assumptions. Its local deltas are **not statistical uncertainty**. Software verification, inferred-profile consistency, physical calibration, independent held-out validation and experienced-pilot comparison remain separate. The final three are all open for the FS-64V.
+
+| Evidence still required | Current status |
+| --- | --- |
+| At least 8 FS-64V shaft torque/RPM points across the usable band; independent throttle/mixture sweeps with exact 15/18 or other frozen fuel, plug, exhaust and atmosphere | Not acquired. The AIAA four-stroke is FS-a56, not FS64. |
+| Two exact installed props, steady loads and prop maps; verified 14×6 maker RPM ceiling; RPM/J/Re, thrust, torque and inertia | Not acquired. O.S. reported a 14×6 flight qualitatively; no prop coefficient data. |
+| Servo-separated throttle/barrel/RPM rise/fall steps, heat soak and repeatable warm-idle/stall/failure envelope | Not acquired. |
+| FS64 weighed fuel flow by RPM/load/mixture and actual duty-cycle endurance; installed thermal and reduced-cooling traces | Not acquired. The AIAA FS-a56 ESC-axis flow fit is proxy evidence only. |
+| Tach-synchronized exhaust/valve/vibration spectra, measured aircraft configuration/telemetry and experienced-pilot A/B evaluation | Not acquired. The O.S. flight note is qualitative manufacturer-published observation. |
+
+Run `python research/glow-engines/calibration_report.py --write` after candidate-profile edits settle, then `python -m unittest discover -s research/glow-engines -p test_profiles.py`. The generated report cannot close NITRO-4T-03 or NITRO-4T-04.

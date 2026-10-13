@@ -33,6 +33,7 @@ Native engine: pinned Godot 4.7.2-stable, `ed1daf0bf`. Paired Linux baseline sou
 | `test_checkpoint.gd` | 92 checks pass; cold turbine mode and powered reset/reload, full continuation and invalid-mode refusal |
 | Atmosphere flight integration | 142 checks pass; reference snapshots ignore physically inactive stored atmosphere fields, custom-air trim and replay remain consistent |
 | Python trace acceptance | 16 tests pass in the frozen Linux candidate; mixed sampling, invalid/missing state and wrong law are rejected |
+| Focused shared regressions | [11 scripts pass](focused-checks.json), including checkpoint integrity, continuous-state rollback, session guards, coupled propeller shaft and electric fixed-bus/battery behavior |
 | AV-18 reducer | 11 tests pass: up/down/rated crossings, sample support, dwell and uncertainty; no physical run is implied |
 | AV-10b reference | 5 tests pass: open-system momentum, constant-thrust solution, annulus drainage and fixed-datum/current-CG transforms; production fuel remains pending |
 | Schema/parameter register/aircraft generator | `--check` passes on the authoring platform; categorical selection is the intentional aircraft-data change |
@@ -95,6 +96,8 @@ This produces raw native response captures, complete-state hashes, reduced respo
 
 ## Full-suite qualification and next gates
 
-The frozen pre-change full suite reproduced an unrelated `test_landscape_gravel.gd` failure (47 remaining cells). Later candidate qualification also exposed the atmosphere/checkpoint expectations addressed above. Final suite status is recorded here after the frozen delivery run; focused checks do not substitute for a complete-suite result.
+The frozen pre-change full suite reproduced an unrelated `test_landscape_gravel.gd` failure (47 remaining cells). Later candidate qualification exposed the atmosphere/checkpoint expectations addressed above, which now pass. The final frozen `app/test.sh` run passes import, schema/tool/float64 guards, every-script parsing and the tests through the crash integration case, then **stops at `test_crash_integration.gd`: 95 checks, 2 failed**. Both failures are the Stik/Extra assertions that crash detection preserves the complete simulation checkpoint.
+
+The same two assertion failures reproduce in a disposable copy of that candidate with `turbine_is_continuous()` forced false. This is a control for independence from the new turbine route, not a passing mutation test or a claim that the whole project suite is green. [Suite qualification](suite-status.json) records the exact failures. No unrelated crash test was weakened. Later full-suite tests are not implied to have run; the separate focused regression set covers the relevant turbine/session/shaft/electric/atmosphere paths.
 
 Next required work remains AV-21 matched response/steady identification, AV-22/05b source-backed thermal/start/cut/cooling state, and AV-10a/b/c finite fuel with consistent mass/CG/inertia. The [variable-mass reference](../../../../research/avanti-s/av10/README.md) shows why a fixed-centroid fuel box and a single pickup cannot be combined blindly: mass and angular-momentum flux must match the declared distribution. No fuel mass is consumed in this delivered runtime slice.

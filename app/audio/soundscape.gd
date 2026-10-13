@@ -3,6 +3,7 @@ extends Node3D
 
 const Model = preload("res://audio/soundscape_model.gd")
 const Wildlife = preload("res://audio/wildlife.gd")
+const GlowVoice = preload("res://audio/glow_voice.gd")
 const PATH: String = "res://assets/audio/soundscape/"
 const BUS: StringName = &"OpenRC Soundscape"
 const AMBIENCE_BUS: StringName = &"OpenRC Environment"
@@ -23,6 +24,12 @@ var canopies: Array[AABB] = []
 var birds: Array[AudioStreamWAV] = []
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var kind: String = "glow_prop"
+var glow_family: String = ""
+var glow_voice = GlowVoice.new()
+var glow_player: AudioStreamPlayer3D
+var _glow_pending_start: bool = false
+var _glow_capacity: int = 0
+var _last_glow_refill_usec: int = 0
 var gain: float = 0.0
 var clock_s: float = 0.0
 var wildlife := Wildlife.new()
@@ -50,16 +57,19 @@ var last_doppler: float = 1.0
 var last_targets: Dictionary = {}
 
 
-func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 4102026) -> void:
+func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 4102026, explicit_glow_family: String = "") -> void:
 	kind = propulsion_kind
+	glow_family = explicit_glow_family if explicit_glow_family in [GlowVoice.FAMILY_2T, GlowVoice.FAMILY_4T] else ""
 	rng.seed = seed_value
 	_setup_buses()
 	_find_trees(field)
-	var motor_name: String = "motor_electric" if kind == "electric_prop" else ("turbine_whine" if kind == "turbine" else "motor_combustion")
+	var motor_name: String = "" if not glow_family.is_empty() else ("motor_electric" if kind == "electric_prop" else ("turbine_whine" if kind == "turbine" else "motor_combustion"))
 	_voice("Motor", motor_name, AIRCRAFT_BUS, 8.0)
 	# A turbine has no propeller: its second aircraft voice carries the jet roar (AUD-10).
-	_voice("Propeller", "turbine_roar" if kind == "turbine" else "motor_propeller", AIRCRAFT_BUS, 8.0)
+	_voice("Propeller", "" if not glow_family.is_empty() else ("turbine_roar" if kind == "turbine" else "motor_propeller"), AIRCRAFT_BUS, 8.0)
 	_voice("Airframe", "airframe", AIRCRAFT_BUS, 10.0)
+	if not glow_family.is_empty():
+		_create_glow_player()
 	_voice("WindLow", "wind_low", AMBIENCE_BUS, 20.0)
 	_voice("WindHigh", "wind_high", AMBIENCE_BUS, 20.0)
 	for i: int in 4:
@@ -88,6 +98,28 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 		voices[CRICKET_FIRST + i].global_position = cricket_anchors[i]
 	assert(voices.size() == MAX_VOICES)
 	_levels.resize(voices.size())
+
+
+func _create_glow_player() -> void:
+	var generator := AudioStreamGenerator.new()
+	generator.mix_rate = GlowVoice.RATE
+	generator.buffer_length = 0.15
+	glow_voice.reset()
+	glow_player = AudioStreamPlayer3D.new()
+	glow_player.name = "GlowEngine"
+	glow_player.stream = generator
+	glow_player.bus = _bus_names[1]
+	glow_player.unit_size = 8.0
+	glow_player.max_db = 0.0
+	glow_player.max_distance = 1500.0
+	glow_player.panning_strength = 0.75
+	glow_player.attenuation_filter_cutoff_hz = 6500.0
+	glow_player.attenuation_filter_db = -12.0
+	glow_player.volume_db = -80.0
+	add_child(glow_player)
+	_glow_pending_start = true
+	_glow_capacity = 0
+	_last_glow_refill_usec = 0
 
 
 func _setup_buses() -> void:
@@ -194,6 +226,13 @@ func reset_observer() -> void:
 		voices[i].volume_db = -80.0
 		if i >= EVENT_FIRST and i < EVENT_FIRST + EVENT_COUNT:
 			voices[i].stop()
+	if glow_player != null:
+		glow_player.stop()
+		glow_player.volume_db = -80.0
+		_glow_pending_start = true
+		_glow_capacity = 0
+		_last_glow_refill_usec = 0
+		glow_voice.reset()
 	wildlife.reset()
 
 
@@ -227,6 +266,8 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	gain = move_toward(gain, mix_target, dt / (0.08 if paused else 0.35))
 	for voice: AudioStreamPlayer3D in voices:
 		voice.stream_paused = paused and gain <= 0.0
+	if glow_player != null:
+		glow_player.stream_paused = paused and gain <= 0.0
 	if not paused:
 		clock_s += dt
 	_screen_clock -= dt
@@ -239,13 +280,27 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	last_targets = Model.targets(parameters)
 	var t: Dictionary = last_targets
 	var duck: float = 1.0 - 0.22 * (1.0 - smoothstep(12.0, 90.0, source.distance_to(listener))) * float(t.motor_gain)
+	var glow_snapshot: Dictionary = snapshot.get("glow", {})
+	var use_glow_voice: bool = glow_player != null and str(glow_snapshot.get("family", glow_family)) == glow_family
 	for i: int in 3:
 		voices[i].global_position = source
 		voices[i].attenuation_filter_cutoff_hz = lerpf(6500.0, 1500.0, screened)
 		voices[i].attenuation_filter_db = lerpf(-12.0, -24.0, screened)
+	if glow_player != null:
+		glow_player.global_position = source
+		glow_player.attenuation_filter_cutoff_hz = lerpf(6500.0, 1500.0, screened)
+		glow_player.attenuation_filter_db = lerpf(-12.0, -24.0, screened)
+		glow_player.pitch_scale = lerpf(glow_player.pitch_scale, clampf(last_doppler, 0.1, 4.0), 1.0 - exp(-dt / 0.04))
 	var screen_gain: float = db_to_linear(-7.0 * screened)
-	_level(0, float(t.motor_gain) * screen_gain, dt)
-	_level(1, float(t.prop_gain) * screen_gain, dt)
+	if use_glow_voice:
+		# Explicit glow profiles use the physical firing cadence voice; the old motor and
+		# prop loops are absent for those profiles so their blade/fire orders cannot double.
+		_level(0, 0.0, dt)
+		_level(1, 0.0, dt)
+		_update_glow_voice(glow_snapshot, snapshot, screen_gain, duck, dt, paused)
+	else:
+		_level(0, float(t.motor_gain) * screen_gain, dt)
+		_level(1, float(t.prop_gain) * screen_gain, dt)
 	_level(2, float(t.air_gain) * screen_gain, dt)
 	_pitch(0, float(t.motor_pitch) * last_doppler, dt)
 	_pitch(1, float(t.prop_pitch) * last_doppler, dt)
@@ -287,10 +342,59 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		_level(CRICKET_FIRST + i, 0.11 * float(wildlife_presence.cricket) * breathing * duck, dt)
 	if not _start_offsets.is_empty():
 		for index: int in _start_offsets:
+			if use_glow_voice and int(index) < 2:
+				continue
 			voices[index].play(float(_start_offsets[index]))
 		_start_offsets.clear()
 	last_update_usec = Time.get_ticks_usec() - started
 	peak_update_usec = maxi(peak_update_usec, last_update_usec)
+
+
+func _update_glow_voice(glow_snapshot: Dictionary, snapshot: Dictionary,
+		screen_gain: float, duck: float, dt: float, paused: bool) -> void:
+	if glow_player == null:
+		return
+	var telemetry: Dictionary = glow_snapshot.duplicate()
+	telemetry["family"] = str(telemetry.get("family", glow_family))
+	telemetry["rpm"] = float(telemetry.get("rpm", snapshot.get("rpm", 0.0)))
+	telemetry["max_rpm"] = float(telemetry.get("max_rpm", snapshot.get("max_rpm", 12000.0)))
+	telemetry["running"] = bool(telemetry.get("running", snapshot.get("running", false)))
+	telemetry["firing_fraction"] = float(telemetry.get("firing_fraction", 1.0))
+	telemetry["load"] = float(telemetry.get("load", snapshot.get("load", 0.45)))
+	telemetry["throttle"] = float(telemetry.get("throttle", snapshot.get("throttle", 0.45)))
+	telemetry["blade_count"] = int(telemetry.get("blade_count", snapshot.get("blades", 2)))
+	glow_voice.set_telemetry(telemetry)
+	var rpm: float = maxf(float(telemetry.get("rpm", 0.0)), 0.0)
+	var max_rpm: float = maxf(float(telemetry.get("max_rpm", 12000.0)), 1.0)
+	var spin: float = clampf(rpm / max_rpm, 0.0, 1.3)
+	# Presentation level law only; its amplitude has not been calibrated against a microphone.
+	var target_level: float = (0.12 + 0.28 * sqrt(spin)) * smoothstep(30.0, 600.0, rpm)
+	var level: float = lerpf(db_to_linear(glow_player.volume_db + AIRCRAFT_TRIM_DB), target_level * gain * screen_gain * duck, 1.0 - exp(-dt / 0.09))
+	glow_player.volume_db = linear_to_db(maxf(level, 0.0001)) - AIRCRAFT_TRIM_DB
+	if _glow_pending_start:
+		glow_player.play()
+		var playback := glow_player.get_stream_playback() as AudioStreamGeneratorPlayback
+		if playback != null:
+			playback.set_meta("openrc_generator_source", glow_player.stream)
+		_glow_pending_start = false
+	if paused:
+		return
+	var playback := glow_player.get_stream_playback() as AudioStreamGeneratorPlayback
+	if playback == null:
+		return
+	var available: int = playback.get_frames_available()
+	if _glow_capacity <= 0:
+		_glow_capacity = available
+	var now: int = Time.get_ticks_usec()
+	var gap: float = float(now - _last_glow_refill_usec) / 1000000.0 if _last_glow_refill_usec > 0 else 0.05
+	_last_glow_refill_usec = now
+	var target_seconds: float = 0.035 if gap <= 0.018 else 0.05
+	var target_frames: int = mini(_glow_capacity, ceili(target_seconds * GlowVoice.RATE))
+	var queued: int = _glow_capacity - available
+	var frames: int = clampi(target_frames - queued, 0, available)
+	if frames > 0:
+		var buffer: PackedVector2Array = glow_voice.render(float(telemetry["rpm"]), max_rpm, frames)
+		playback.push_buffer(buffer)
 
 
 func _level(index: int, target: float, dt: float) -> void:
@@ -323,6 +427,8 @@ func output_bus() -> StringName:
 func _exit_tree() -> void:
 	for voice: AudioStreamPlayer3D in voices:
 		voice.stop()
+	if glow_player != null:
+		glow_player.stop()
 	for i: int in range(_bus_names.size() - 1, -1, -1):
 		var index: int = AudioServer.get_bus_index(_bus_names[i])
 		if index > 0:

@@ -20,6 +20,7 @@ const Aero := preload("res://physics/aero.gd")
 const WingPolar := preload("res://physics/wing_polar.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
+const GlowInstallation := preload("res://physics/glow/installation.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
 ## CR-01d: names a crash-hull point may carry (crash_hull_components). Same list as the contract's enum path;
@@ -152,6 +153,12 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		result.model.data_sha256 = JSON.stringify(raw, "", true).sha256_text()
 		result.model.capabilities = raw.capabilities.duplicate(true)
 		result.model.convention_id = raw.convention_id
+		if raw.propulsion.get("engine", {}).has("glow_installation"):
+			var installed: Dictionary = GlowInstallation.attach(raw, result.model)
+			if not installed.ok:
+				return {ok=false,errors=installed.errors,warnings=result.warnings,model={}}
+			result.model = installed.model
+			result.warnings.append("Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending")
 	return result
 
 

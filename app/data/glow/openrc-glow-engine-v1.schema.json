@@ -379,7 +379,8 @@
         "rated_rpm",
         "rated_power_w",
         "reference_dry_density_kg_m3",
-        "nominal_mixture"
+        "nominal_mixture",
+        "recommended_max_rpm"
       ],
       "properties": {
         "max_rpm": {
@@ -535,6 +536,40 @@
             },
             "unit": {
               "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "recommended_max_rpm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "rpm"
             },
             "kind": {
               "enum": [

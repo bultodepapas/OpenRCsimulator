@@ -114,6 +114,10 @@ The owner's instruction to proceed authorizes `propulsion.engine.spool_integrato
 
 This decision changes numerical coupling, not the empirical maps, prescribed fuel inventory or unresolved gas/mounting torque model. ECU hot cutoff and finite-fuel dynamics require their own source-backed state/contract work. Revisit the step envelope when an independently qualified event/integration method supports steeper schedules, and the empirical law when matched engine data exists.
 
+## 2026-10-13 — Pilot elevator trim (D6e-R1)
+
+Provide a bounded elevator offset in physical degrees, applied after stick rates through the existing servo; restart restores the solved starting trim. Keep the force model and manual power response intact. Five-aircraft equilibrium and the reported 25% Timber/Stik case were checked; the latter descends in the tested current source, so the owner's climb report remains unresolved pending a matching flight trace/build. [Evidence, options and limits](docs/research/flight-dynamics/climb-trim/README.md). Revisit physics only when a reproducing case or physical data supports it.
+
 ## Open (deliberately not decided yet)
 
 - **Measured engine and propeller data.** v0 uses the O.S. MAX-61FX catalog power and UIUC-measured APC Sport 11×6 coefficients applied to the 12×6. Open: APC's own 12×6 data, a measured rpm or thrust on a real installation, and the throttle response time.

@@ -61,6 +61,7 @@ SPEC = {
         'rated_power_w': scalar('W', positive=True),
         'reference_dry_density_kg_m3': scalar('kg/m3', positive=True),
         'nominal_mixture': scalar('1', positive=True),
+        'recommended_max_rpm': scalar('rpm', positive=True),
     },
 }
 
@@ -95,14 +96,14 @@ def candidate(family):
            if two else 'https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html')
     rated = 16000. if two else 11000.
     rated_w = (1.7 if two else 1.14)*735.49875  # PS, explicitly not mechanical hp
-    rpm = [0., 2000., 4000., 7000., 10000., 13000., rated, 17000.] if two else [0., 2400., 4000., 6000., 8000., 10000., rated]
+    rpm = [0., 2000., 4000., 7000., 10000., 13000., rated, 17000.] if two else [0., 2400., 4000., 6000., 8000., 10000., rated, 13000., 15000.]
     # Net WOT torque hypotheses. Only the rated-power knot is manufacturer anchored.
-    q = [0., .18, .30, .52, .70, .78, rated_w/(rated*math.tau/60), .70] if two else [0., .17, .45, .65, .80, .77, rated_w/(rated*math.tau/60)]
+    q = [0., .18, .30, .52, .70, .78, rated_w/(rated*math.tau/60), .70] if two else [0., .35, .50, .65, .80, .77, rated_w/(rated*math.tau/60), .40, .05]
     volume = (8.93 if two else 10.46)*1e-6
     p = {'displacement_m3': quantity(volume, SPEC['common']['displacement_m3'], 'derived', url+'; cc × 1e-6 -> m3')}
     mech = [.008+.000002*r for r in rpm]
     p['mechanical_torque_nm'] = quantity(list(map(list, zip(rpm, mech))), SPEC['common']['mechanical_torque_nm'])
-    p['combustion_efficiency'] = quantity([[0., 0.], [.5, .5], [.8, .90], [1., .98], [1.15, 1.], [1.6, .85], [2.5, .2]], SPEC['common']['combustion_efficiency'])
+    p['combustion_efficiency'] = quantity([[0., 0.], [.5, .5], [.8, .90], [1., .98], [1.15, 1.], [1.6, .85], [2.5, .2], [3.,0.], [20.,0.]], SPEC['common']['combustion_efficiency'])
     angle = math.tau if two else 2*math.tau
     if two:
         delivery = [.45, .55, .66, .8, .95, 1.02, 1.0, .96]
@@ -115,7 +116,7 @@ def candidate(family):
         pump = [s*volume*d/angle for s,d in zip(scav,delivery)]
         valve = [0.]*len(rpm)
     else:
-        ve = [.35, .5, .68, .79, .88, .89, .85]
+        ve = [.35, .5, .68, .79, .88, .89, .85, .65, .30]
         pumping = [2000.+.3*r for r in rpm]
         valve = [.006+.000001*r for r in rpm]
         family_values = {'volumetric_efficiency': list(map(list, zip(rpm,ve))),
@@ -133,8 +134,8 @@ def candidate(family):
     assert all(0 <= e <= 1 for e in eta)
     p['indicated_efficiency'] = quantity(list(map(list, zip(rpm,eta))), SPEC['common']['indicated_efficiency'],
         'derived', 'build_profiles.py: independently inferred WOT torque knots + estimated gas-exchange/loss curves; ONLY rated-power knot constrained by '+url)
-    op_values = [rpm[-1], rated, rated_w, 1.225, 1.15]
-    op = {k: quantity(v, r, 'manual' if k in ['max_rpm','rated_rpm'] else 'estimated', url if k in ['max_rpm','rated_rpm'] else EST)
+    op_values = [rpm[-1], rated, rated_w, 1.225, 1.15, 17000. if two else 11000.]
+    op = {k: quantity(v, r, 'manual' if k in ['recommended_max_rpm','rated_rpm'] else 'estimated', url if k in ['recommended_max_rpm','rated_rpm'] else EST)
           for (k,r),v in zip(SPEC['operation'].items(),op_values)}
     op['rated_power_w'] = quantity(rated_w, SPEC['operation']['rated_power_w'], 'derived', url+'; metric PS × 735.49875 W/PS')
     return dict(format='openrc-glow-engine v1', id='os_max_55ax_candidate' if two else 'os_fs_64v_candidate',

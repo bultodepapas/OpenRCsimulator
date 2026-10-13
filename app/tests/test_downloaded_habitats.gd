@@ -1,0 +1,210 @@
+## LU-23: all runtime habitat plants resolve to downloaded source assets and stay within the interim budget.
+extends SceneTree
+
+const Habitats := preload("res://scenery/botanical_habitats.gd")
+const PlantLibrary := preload("res://scenery/imported_vegetation.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const SceneryLoader := preload("res://scenery/scenery_loader.gd")
+const LakeLoader := preload("res://data/lake_loader.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
+const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
+const Grass := preload("res://render/near_grass.gd")
+
+const ALLOWED_ASSETS := {
+	"grass_common_short": true,
+	"grass_common_tall": true,
+	"grass_wispy_tall": true,
+	"fern_1": true,
+	"clover_1": true,
+	"flower_3_group": true,
+	"flower_4_group": true,
+	"corn_4": true,
+	"wheat_4": true,
+	"reed_aredon": true,
+}
+const FLOWER_ASSETS := ["clover_1", "flower_3_group", "flower_4_group"]
+const GRASS_ASSETS := ["grass_common_short", "grass_common_tall", "grass_wispy_tall", "fern_1"]
+
+var _failures := 0
+var _checks := 0
+
+
+func _initialize() -> void:
+	var field_result := FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+	_check("bundled field loads", bool(field_result.get("ok", false)))
+	var scenery_result := SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field_result.get("field", {}))
+	_check("bundled scenery loads", bool(scenery_result.get("ok", false)))
+	var lake_result := LakeLoader.load_from(LakeLoader.DEFAULT_PATH)
+	_check("bundled lake loads", bool(lake_result.get("ok", false)))
+	if _failures > 0:
+		quit(1)
+		return
+	var field: Dictionary = field_result.field
+	var scenery: Dictionary = scenery_result.scenery
+	var lake: Dictionary = lake_result.lake
+	_test_default_guard(field, scenery, lake)
+	var high := Habitats.layout(field, scenery, "high", lake)
+	_test_layout(field, scenery, lake, high)
+	_test_quality_subsets(field, scenery, lake, high)
+	_test_build(field, scenery, lake, high)
+	print("downloaded habitat checks: %d checks, %d failures" % [_checks, _failures])
+	quit(1 if _failures > 0 else 0)
+
+
+func _test_default_guard(field: Dictionary, scenery: Dictionary, lake: Dictionary) -> void:
+	var repeat := Habitats.layout(field, scenery, "high", lake)
+	_check("layout is deterministic", var_to_bytes(repeat) == var_to_bytes(Habitats.layout(field, scenery, "high", lake)))
+	var without_lake := Habitats.layout(field, scenery, "high")
+	var has_shore_without_context := false
+	for plant: Dictionary in without_lake:
+		has_shore_without_context = has_shore_without_context or plant.get("zone", "") == "shore"
+	_check("omitted lake context places no shoreline reeds", not has_shore_without_context)
+	var other_field := field.duplicate(true)
+	other_field["id"] = "custom"
+	_check("custom field gets no bundled recipes", Habitats.layout(other_field, scenery, "high", lake).is_empty())
+	_check("custom scenery gets no bundled recipes", Habitats.layout(field, {"groups": []}, "high", lake).is_empty())
+	_check("invalid lake input fails closed", Habitats.layout(field, scenery, "high", {"invalid": true}).is_empty())
+
+
+func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plants: Array[Dictionary]) -> void:
+	var exclusions := Habitats.exclusions_for(scenery, lake)
+	var shared_exclusions := Habitats.exclusions_for(scenery)
+	var surface_table := _surface_rects(field)
+	var assets_seen: Dictionary = {}
+	var zone_counts: Dictionary = {}
+	var triangle_total := 0
+	var flower_count := 0
+	var crop_count := 0
+	var reed_count := 0
+	var grasses_seen: Dictionary = {}
+	var flowers_seen: Dictionary = {}
+	var all_roots_match_physical_ground := true
+	var clear_of_collision_proxies := true
+	var meadow_clear_of_bank := true
+	var shore_roots_match_lake_ground := true
+	var heights_valid := true
+	for plant: Dictionary in plants:
+		var asset_id := str(plant.get("asset_id", ""))
+		var zone := str(plant.get("zone", ""))
+		var source := PlantLibrary.get_asset(asset_id)
+		var source_triangles := int(source.get("source_triangles", 0))
+		assets_seen[asset_id] = true
+		zone_counts[zone] = int(zone_counts.get(zone, 0)) + 1
+		triangle_total += source_triangles
+		_check("placement uses a catalogued download", ALLOWED_ASSETS.has(asset_id) and source_triangles > 0)
+		var ground_sample := GroundTerrain.sample_validated(float(plant.north), float(plant.east), surface_table, lake)
+		all_roots_match_physical_ground = all_roots_match_physical_ground and ground_sample.size() == 3 \
+			and absf(float(plant.ground_up_m) - ground_sample[0]) < 1e-10 \
+			and absf(float(plant.ground_down_m) + ground_sample[0]) < 1e-10
+		if zone == "shore":
+			reed_count += 1
+			var bank_sample := LakeSurface.sample_terrain_validated(lake, float(plant.north), float(plant.east))
+			shore_roots_match_lake_ground = shore_roots_match_lake_ground \
+				and str(bank_sample.get("region", "")) == "bank" \
+				and float(bank_sample.get("signed_shore_distance_m", 0.0)) <= -0.75 \
+				and absf(float(plant.get("lake_ground_down_m", NAN)) - float(bank_sample.get("ground_down_m", NAN))) < 1e-9
+			heights_valid = heights_valid and float(plant.height_m) >= 1.1 and float(plant.height_m) <= 1.4
+			clear_of_collision_proxies = clear_of_collision_proxies \
+				and Grass.accepts(float(plant.north), float(plant.east), field, shared_exclusions)
+		else:
+			meadow_clear_of_bank = meadow_clear_of_bank \
+				and not bool(LakeSurface.sample_terrain_validated(lake, float(plant.north), float(plant.east)).get("covered", false))
+			clear_of_collision_proxies = clear_of_collision_proxies \
+				and Grass.accepts(float(plant.north), float(plant.east), field, exclusions)
+			if asset_id in FLOWER_ASSETS:
+				flower_count += 1
+				flowers_seen[asset_id] = true
+				heights_valid = heights_valid and float(plant.height_m) >= 0.3 and float(plant.height_m) <= 0.65
+			elif asset_id in GRASS_ASSETS:
+				grasses_seen[asset_id] = true
+				heights_valid = heights_valid and float(plant.height_m) >= 0.2 and float(plant.height_m) <= 0.5
+			elif asset_id == "corn_4" or asset_id == "wheat_4":
+				crop_count += 1
+	_check("field, club and meadow use only downloaded grass, fern, clover and flower groups", grasses_seen.size() == 4 and flowers_seen.size() == 3)
+	_check("downloaded flower clusters replace the removed synthetic meadow", flower_count >= 45 and flower_count <= 60)
+	_check("two modest downloaded crop plots are populated", crop_count >= 70 and zone_counts.get("farm", 0) == crop_count)
+	_check("shoreline planting is sparse", reed_count > 0 and reed_count <= 24)
+	_check("every recipe includes the physical field and lake ground sample", all_roots_match_physical_ground)
+	_check("shore reeds use the sampled dry lake bank", shore_roots_match_lake_ground)
+	_check("meadow and crops stay outside the lake bank footprint", meadow_clear_of_bank)
+	_check("all planting clears shared paths, structures and surface proxies", clear_of_collision_proxies)
+	_check("uniform target heights stay in natural ranges", heights_valid)
+	_check("imported plants stay below the 70k provisional triangle budget", triangle_total <= 70000,
+		"%d triangles" % triangle_total)
+	_check("zone metadata can distinguish club, edge, meadow, farm and shore", ["club", "edge", "meadow", "farm", "shore"].all(func(zone: String) -> bool: return zone_counts.has(zone)))
+	_check("recipe has all expected zones", zone_counts.get("club", 0) > 0 and zone_counts.get("edge", 0) > 0 \
+		and zone_counts.get("meadow", 0) > 0 and zone_counts.get("farm", 0) > 0 and zone_counts.get("shore", 0) > 0)
+	print("downloaded habitat layout: %d placements, %d source triangles, zone counts %s" % [plants.size(), triangle_total, zone_counts])
+
+
+func _test_quality_subsets(field: Dictionary, scenery: Dictionary, lake: Dictionary, high: Array[Dictionary]) -> void:
+	var by_seed: Dictionary = {}
+	for plant: Dictionary in high:
+		by_seed[int(plant.seed)] = plant
+	for quality: String in ["balanced", "low"]:
+		var subset := Habitats.layout(field, scenery, quality, lake)
+		var is_subset := not subset.is_empty() and subset.size() < high.size()
+		for plant: Dictionary in subset:
+			var plant_seed := int(plant.seed)
+			is_subset = is_subset and by_seed.has(plant_seed) and var_to_bytes(by_seed.get(plant_seed, {})) == var_to_bytes(plant)
+		_check("%s habitat quality is a stable source-plant subset" % quality, is_subset)
+
+
+func _test_build(field: Dictionary, scenery: Dictionary, lake: Dictionary, high: Array[Dictionary]) -> void:
+	var node := Habitats.build(field, scenery, "temperate", "high", lake)
+	var built_plants: Array = node.get_meta("plants", [])
+	var expected_triangles := 0
+	for plant: Dictionary in high:
+		expected_triangles += int(PlantLibrary.get_asset(str(plant.asset_id)).get("source_triangles", 0))
+	_check("runtime uses every accepted source placement", built_plants.size() == high.size())
+	_check("runtime reports source triangles only", int(node.get_meta("triangles", -1)) == expected_triangles \
+		and int(node.get_meta("imported_triangles", -1)) == expected_triangles)
+	_check("runtime records its hard budget", int(node.get_meta("triangle_budget", 0)) == 70000 \
+		and expected_triangles <= int(node.get_meta("triangle_budget", 0)))
+	_check("runtime draw batches meet target", node.get_child_count() <= 24 \
+		and int(node.get_meta("batches", 99)) == node.get_child_count())
+	_check("runtime contains only downloaded MultiMesh batches", not node.get_children().is_empty() \
+		and node.get_children().all(func(child: Node) -> bool: return child is MultiMeshInstance3D))
+	var group_zones: Dictionary = node.get_meta("group_zones", {})
+	var zones: Dictionary = node.get_meta("zones", {})
+	_check("runtime retains source-group to placement-zone counts", group_zones.size() > 0 \
+		and group_zones.has("reed_aredon") and zones.has("shore"))
+	var source_meshes_match := true
+	var drawn_triangles := 0
+	for child: Node in node.get_children():
+		var batch := child as MultiMeshInstance3D
+		var asset_id := str(child.name).get_slice("_Part_", 0)
+		var part_index := int(str(child.name).get_slice("_Part_", 1))
+		var parts := PlantLibrary.get_parts(asset_id)
+		if part_index >= parts.size():
+			source_meshes_match = false
+			continue
+		var source_part: Dictionary = parts[part_index]
+		var mesh: Mesh = batch.multimesh.mesh
+		source_meshes_match = source_meshes_match and mesh != null \
+			and mesh.get_surface_count() == int(source_part.get("source_surfaces", -1))
+		for surface_index in range(mesh.get_surface_count()):
+			var source_materials: Array = source_part.get("materials", [])
+			source_meshes_match = source_meshes_match and surface_index < source_materials.size() \
+				and mesh.surface_get_material(surface_index) == source_materials[surface_index]
+		drawn_triangles += int(source_part.get("source_triangles", 0)) * batch.multimesh.instance_count
+	_check("each batch retains the downloaded mesh surfaces and source materials", source_meshes_match)
+	_check("drawn batch geometry matches metadata", drawn_triangles == expected_triangles)
+	node.free()
+
+
+func _surface_rects(field: Dictionary) -> PackedFloat64Array:
+	var table := GroundSurfaces.load_table()
+	if not bool(table.get("ok", false)):
+		return PackedFloat64Array()
+	var built := GroundSurfaces.build(table.table, field)
+	return built.rects if bool(built.get("ok", false)) else PackedFloat64Array()
+
+
+func _check(label: String, condition: bool, detail: String = "") -> void:
+	_checks += 1
+	if condition:
+		return
+	_failures += 1
+	printerr("FAIL: %s %s" % [label, detail])

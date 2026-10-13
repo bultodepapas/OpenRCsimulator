@@ -122,7 +122,7 @@ func _key_table(rows: Array, columns := 2, description_width := 340) -> GridCont
 	var grid := GridContainer.new()
 	grid.columns = columns
 	grid.add_theme_constant_override("h_separation", 14)
-	grid.add_theme_constant_override("v_separation", 4)
+	grid.add_theme_constant_override("v_separation", 2) # trim shortcut fits the 720p Help alongside the existing controls
 	for row in rows:
 		var caps := HBoxContainer.new()
 		caps.add_theme_constant_override("separation", 4)

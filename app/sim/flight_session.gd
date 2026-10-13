@@ -7,6 +7,7 @@
 extends Node
 
 const ElectricStop: Script = preload("res://physics/electric_stop.gd")
+const GlowFlight: Script = preload("res://physics/glow/flight.gd")
 const BatteryStep: Script = preload("res://physics/electric_battery_step.gd")
 const BATTERY_LAW: String = "electric-ocv-resistance-coupled-events-v1"
 const BATTERY_LAYOUT: String = "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, remaining charge C, terminal energy J, pack heat J; RK4 coupled"
@@ -41,7 +42,7 @@ func setup_shaft_integrator(mode: Variant) -> bool:
 	if mode == "coupled-rk4" and aircraft.get("ok", false) and not _supports_coupled_shaft(aircraft.model):
 		shaft_error = "coupled-rk4 requires a propeller shaft model with positive rotor inertia"
 		return false
-	if mode == "split" and aircraft.get("ok", false) and Propulsion.is_electric(aircraft.model.propulsion):
+	if mode == "split" and aircraft.get("ok", false) and (Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active()):
 		shaft_error = "electric propulsion requires coupled-rk4"
 		return false
 	_shaft_explicit = true
@@ -64,6 +65,61 @@ func shaft_integrator() -> String:
 
 func shaft_is_coupled() -> bool:
 	return _shaft_integrator == "coupled-rk4"
+
+
+func glow_is_active() -> bool:
+	return aircraft.get("ok", false) and Propulsion.is_glow(aircraft.model.propulsion)
+
+
+func glow_state() -> Dictionary:
+	return GlowFlight.telemetry(self) if glow_is_active() and _flight_ready() else {ok=false}
+
+
+## Separate cut and starter commands: moving the throttle never changes the ignition latch.
+func glow_cut() -> bool:
+	if not glow_is_active() or not _flight_ready(): return false
+	var cut: Dictionary=GlowFlight.Life.cut(GlowFlight.unpack(sim.continuous,aircraft.model.propulsion.glow))
+	if not cut.ok: return false
+	sim.continuous=GlowFlight.put_state(sim.continuous,cut.state)
+	engine_running=false
+	return true
+
+
+func glow_set_mixture(value: float) -> bool:
+	if not glow_is_active() or not _flight_ready() or not is_finite(value) or value<0.0 or value>2.8: return false
+	sim.continuous[12]=value
+	return true
+
+
+## Simplified external starter action; crank impulse conserves aircraft/rotor momentum.
+## A metered priming dose leaves the finite tank. Hot engines refuse restart.
+func glow_start() -> bool:
+	if not glow_is_active() or not _flight_ready(): return false
+	var install: Dictionary=aircraft.model.propulsion.glow
+	var current: Dictionary=GlowFlight.unpack(sim.continuous,install)
+	if current.is_empty() or current.running or current.fuel_kg<=1e-5: return false
+	var rpm: float=maxf(sim.continuous[0],install.settings.minimum_start_rpm)
+	var started: Dictionary=GlowFlight.Life.request_start(install.profile,install.settings,current,rpm,true)
+	if not started.get("started",false): return false
+	var next: Dictionary=started.state
+	next.fuel_kg-=1e-5
+	var source: Dictionary=GlowFlight.Source.evaluate(install.profile,rpm,next.air_fraction,sim.continuous[12],1.225*engine_charge_ratio(),true)
+	if not source.ok: return false
+	next.fuel_transport_kg_s=source.delivered_fuel_kg_s
+	var mass: Dictionary=GlowFlight.properties(self,next.fuel_kg)
+	if not mass.ok: return false
+	var prop: Dictionary=aircraft.model.propulsion
+	var impulse: float=prop.rotor_inertia*(rpm-sim.continuous[0])*TAU/60.0
+	var correction: PackedFloat64Array=RB.inertia_mul(mass.inverse,M.scale(prop.axis,-impulse))
+	var velocity_correction: PackedFloat64Array=M.cross(correction,mass.cg_body_m)
+	for i in 3:
+		sim.state[RB.RATE+i]+=correction[i]
+		sim.state[RB.VEL+i]-=velocity_correction[i]
+	sim.continuous=GlowFlight.put_state(sim.continuous,next)
+	sim.continuous[0]=rpm
+	sim.aux[AUX_RPM]=rpm
+	engine_running=true
+	return true
 
 
 ## AV-20: data selects stage-coupled turbine RPM independently of the propeller shaft route.
@@ -613,9 +669,12 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 		var identity_error := "aircraft identity mismatch: selected '%s', loaded '%s'" % [expected_aircraft_id, model.get("id", "")]
 		return {ok = false, data = data, start = {ok = false, message = identity_error}, trims = neutral_trims, message = identity_error}
 	var electric: bool = Propulsion.is_electric(model.get("propulsion", {}))
+	var glow: bool = Propulsion.is_glow(model.get("propulsion", {}))
+	if glow and _shaft_explicit and not shaft_is_coupled():
+		return {ok=false,data=data,start={ok=false},trims=neutral_trims,message="glow installation requires coupled-rk4"}
 	if electric and _shaft_explicit and not shaft_is_coupled():
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims, message = "electric propulsion requires coupled-rk4"}
-	if (electric or (shaft_is_coupled() and _shaft_explicit)) and not _supports_coupled_shaft(model):
+	if (electric or glow or (shaft_is_coupled() and _shaft_explicit)) and not _supports_coupled_shaft(model):
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "coupled-rk4 requires a propeller shaft model with positive carrier inertia"}
 	if not _model_is_valid(model):
@@ -665,7 +724,7 @@ func _apply(data: Dictionary) -> bool:
 func _commit_aircraft(prepared: Dictionary) -> void:
 	aircraft = prepared.data
 	if not _shaft_explicit:
-		_shaft_integrator = "coupled-rk4" if Propulsion.is_electric(aircraft.model.propulsion) else "split"
+		_shaft_integrator = "coupled-rk4" if Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active() else "split"
 	start = prepared.start
 	trims = prepared.trims.duplicate(true)
 	_has_committed_aircraft = true
@@ -686,6 +745,14 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 
 
 func _configure_continuous_callbacks() -> void:
+	if glow_is_active():
+		sim.continuous_step = GlowFlight.step.bind(self)
+		sim.continuous_evaluate = GlowFlight.evaluate.bind(self)
+		sim.continuous_loads = Callable()
+		sim.continuous_derivative = Callable()
+		sim.continuous_rotor_momentum = Callable()
+		sim.continuous_aux = _coupled_aux
+		return
 	if turbine_is_continuous():
 		sim.continuous_step = Callable()
 		sim.continuous_evaluate = _turbine_evaluate
@@ -1534,6 +1601,10 @@ func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloa
 
 
 func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
+	if glow_is_active():
+		var glow_values: PackedFloat64Array=GlowFlight.initial(self,aux)
+		for _i in wheel_count(): glow_values.append(0.0)
+		return glow_values
 	var out: PackedFloat64Array = _settled_wash(s, aux)
 	if turbine_is_continuous():
 		out.append(aux[AUX_RPM])
@@ -1587,6 +1658,8 @@ func _battery_point(rpm: float, values: PackedFloat64Array, dynamics_only: bool 
 
 
 func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
+	if glow_is_active():
+		return values[0] if values.size()==GlowFlight.SIZE+wheel_count() and is_finite(values[0]) and (trial or values[0]>=0.0) else NAN
 	var prop: Dictionary = aircraft.model.propulsion
 	var count: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
 	if values.size() != count + (4 if battery_is_dynamic() else 1) + wheel_count() \
@@ -1597,6 +1670,8 @@ func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
 
 ## The optional RPM boundary mirror is telemetry, never a second evolving shaft state.
 func _coupled_aux(values: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
+	if glow_is_active() and not GlowFlight.valid(values,aircraft.model.propulsion.glow):
+		return PackedFloat64Array([NAN])
 	var out: PackedFloat64Array = sampled.duplicate()
 	if out.is_empty() or (battery_is_dynamic() and not _battery_values_valid(values)):
 		return PackedFloat64Array([NAN])
@@ -1927,6 +2002,7 @@ func wheel_count() -> int:
 func wheel_index() -> int:
 	if not aircraft.get("ok", false):
 		return 0
+	if glow_is_active(): return GlowFlight.SIZE
 	var index: int = _rotor_index()
 	if shaft_is_coupled():
 		index += 1 + (3 if battery_is_dynamic() else 0)
@@ -2110,6 +2186,14 @@ func trace_meta() -> Dictionary:
 		var current_layout: String = str(metadata.continuous_layout)
 		metadata.continuous_layout = wheel_suffix if current_layout == "none" else current_layout + "; " + wheel_suffix
 		metadata.metadata_schema = "openrc-flight-meta v6"
+	if glow_is_active():
+		metadata.metadata_schema="openrc-flight-meta v7"
+		metadata.propulsion_model=GlowFlight.LAW
+		metadata.glow_identity=JSON.stringify(prop.glow.identity,"",true,true)
+		metadata.glow_family=prop.glow.profile.family
+		metadata.continuous_layout="rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
+		metadata.fuel_mass_policy="finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG"
+		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
 	return metadata
 
 
@@ -2143,6 +2227,9 @@ func checkpoint() -> Dictionary:
 		boundary.turbine_law = Turbine.CONTINUOUS_LAW
 		# Reference atmosphere ignores stored custom values. Do not make them change a pure-reference snapshot.
 		boundary.weather_config = WeatherConfig.defaults() if weather_is_calm() and atmosphere_is_reference() else weather_configuration()
+	if glow_is_active():
+		boundary.format="openrc-flight-checkpoint v9"
+		boundary.glow_law=GlowFlight.LAW
 	if wheel_count() > 0:
 		boundary.wheel_state_layout = wheel_state_layout()
 		boundary.wheel_profile_sha256 = str(aircraft.model.wheel_profile.get("profile_sha256", ""))
@@ -2174,6 +2261,7 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(electric_law())
 	if turbine_is_continuous():
 		parts.append(Turbine.CONTINUOUS_LAW + "; " + Turbine.CONTINUOUS_LAYOUT)
+	if glow_is_active(): parts.append(GlowFlight.LAW)
 	if soft_hull_contacts:
 		# E3d1: soft hull contacts change the dynamics near the ground; legacy hashes stay unchanged.
 		parts.append(HullContact.law())
@@ -2190,12 +2278,14 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
-			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7", "openrc-flight-checkpoint v8"] or typeof(candidate.get("configuration")) != TYPE_STRING \
+			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7", "openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
 		return false
 	var snapshot: Dictionary = candidate.simulation
 	var physics_format: String = str(candidate.get("physics_format", candidate.get("format", "")))
-	if physics_format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v8"]:
+	if glow_is_active() != (physics_format=="openrc-flight-checkpoint v9") or (glow_is_active() and candidate.get("glow_law")!=GlowFlight.LAW):
+		return false
+	if physics_format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9"]:
 		return false
 	if turbine_is_continuous() != (physics_format == "openrc-flight-checkpoint v8") \
 			or (turbine_is_continuous() and candidate.get("turbine_law") != Turbine.CONTINUOUS_LAW) \
@@ -2221,11 +2311,11 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			or (electric and candidate.get("electric_law") != electric_law()) \
 			or battery_is_dynamic() != (physics_format == "openrc-flight-checkpoint v6"):
 		return false
-	if shaft_is_coupled() != (physics_format in ["openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]) \
+	if shaft_is_coupled() != (physics_format in ["openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v9"]) \
 			or (shaft_is_coupled() and candidate.get("shaft_integrator") != shaft_integrator()):
 		return false
 	var restored_weather: WeatherField = _weather
-	if physics_format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v8"]:
+	if physics_format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9"]:
 		var built: Dictionary = WeatherField.build(candidate.get("weather_config"))
 		if not built.ok:
 			return false
