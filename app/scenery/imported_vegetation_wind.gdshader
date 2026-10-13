@@ -34,15 +34,17 @@ void fragment() {
 	if (use_vertex_color) {
 		color *= COLOR;
 	}
+	if (use_alpha_scissor) {
+		if (color.a < alpha_scissor_threshold) {
+			discard;
+		}
+		color.a = 1.0;
+	}
 	ALBEDO = color.rgb;
-	ALPHA = color.a;
 	ROUGHNESS = roughness;
 	METALLIC = metallic;
 	if (use_normal_texture) {
 		NORMAL_MAP = texture(normal_texture, UV).rgb;
 		NORMAL_MAP_DEPTH = normal_scale;
-	}
-	if (use_alpha_scissor) {
-		ALPHA_SCISSOR_THRESHOLD = alpha_scissor_threshold;
 	}
 }

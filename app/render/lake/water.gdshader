@@ -50,9 +50,6 @@ varying vec2 world_ne;
 varying float shore_distance_m;
 varying vec3 world_position;
 
-const float TAU = 6.283185307179586;
-
-
 vec2 shore_fade_data(float distance_m) {
 	if (distance_m <= 0.0) {
 		return vec2(0.0);
@@ -111,11 +108,11 @@ void vertex() {
 }
 
 
-float view_depth_at(vec2 screen_uv) {
+float view_depth_at(vec2 screen_uv, mat4 inverse_projection) {
 	float raw_depth = textureLod(depth_texture, screen_uv, 0.0).r;
 	// Compatibility is OpenGL: depth texture [0,1] maps to NDC Z [-1,1].
 	vec3 ndc = vec3(screen_uv * 2.0 - 1.0, raw_depth * 2.0 - 1.0);
-	vec4 view_position = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
+	vec4 view_position = inverse_projection * vec4(ndc, 1.0);
 	return -view_position.z / max(view_position.w, 1e-6);
 }
 
@@ -149,7 +146,7 @@ void fragment() {
 	NORMAL = wave_normal_view;
 
 	float surface_depth_view = -VERTEX.z;
-	float scene_depth_view = view_depth_at(SCREEN_UV);
+	float scene_depth_view = view_depth_at(SCREEN_UV, INV_PROJECTION_MATRIX);
 	float water_depth_m = clamp(scene_depth_view - surface_depth_view, 0.0, 12.0);
 	float depth_fraction = clamp(water_depth_m / deep_reference_depth_m, 0.0, 1.0);
 	float absorption = 1.0 - exp(-water_depth_m * absorption_per_m);
@@ -158,7 +155,7 @@ void fragment() {
 	vec2 refracted_uv = SCREEN_UV + wave_normal_view.xy * refraction_strength
 		* clamp(water_depth_m / 1.2, 0.0, 1.0);
 	refracted_uv = clamp(refracted_uv, vec2(0.001), vec2(0.999));
-	if (view_depth_at(refracted_uv) + 0.015 < surface_depth_view) {
+	if (view_depth_at(refracted_uv, INV_PROJECTION_MATRIX) + 0.015 < surface_depth_view) {
 		refracted_uv = SCREEN_UV;
 	}
 	vec3 scene_color = textureLod(screen_texture, refracted_uv, 0.0).rgb;
