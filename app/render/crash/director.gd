@@ -23,6 +23,10 @@ var _impact_point := Vector3.ZERO
 var _age := 0.0
 var _audio_enabled := true
 var _scenery_contacts: Node3D
+## E3d1: per-point time of the last skid mark, so a slide leaves a trail without a mark every frame.
+var _touch_marks: Dictionary = {}
+const TOUCH_TRAIL_S := 0.12
+const TOUCH_SLIDE_MPS := 1.5
 
 func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> void:
 	flight = scene
@@ -50,6 +54,7 @@ func update(delta: float) -> void:
 	if flight.session.crash.is_empty():
 		if active:
 			reset()
+		_touch_feedback()
 		return
 	if not active:
 		_start()
@@ -171,6 +176,31 @@ static func component_for(trigger: String, point_index: int, body_point: PackedF
 	elif body_point[0] > chord:
 		component = "engine"
 	return {component = component, is_estimate = true, basis = "geometric hull region; crash_hull_components unavailable"}
+
+## E3d1: marks, puffs and sounds for soft hull contacts while the flight continues. New touches are sized by the
+## struck point's normal speed; slides leave a trail paced by TOUCH_TRAIL_S. Reads the session feed only.
+func _touch_feedback() -> void:
+	var contacts: Array = flight.session.soft_contacts
+	if contacts.is_empty():
+		_touch_marks.clear()
+		return
+	var now := Time.get_ticks_msec() / 1000.0
+	for contact: Dictionary in contacts:
+		var point := Frames.ned_to_render(Array(contact.point_ned))
+		var velocity := Frames.ned_to_render(Array(contact.velocity_ned))
+		var surface := surface_at(flight.field, contact.point_ned[0], contact.point_ned[1])
+		var slide := float(contact.slide_speed_mps)
+		if bool(contact.new):
+			var strength := clampf(float(contact.normal_speed_mps) / 3.0, 0.1, 1.0)
+			effects.touch(point, velocity, strength)
+			if _audio_enabled:
+				audio.touch(point, strength, slide > TOUCH_SLIDE_MPS, surface)
+			_touch_marks[contact.index] = now
+		elif slide > TOUCH_SLIDE_MPS and now - float(_touch_marks.get(contact.index, -INF)) >= TOUCH_TRAIL_S:
+			effects.mark(Vector3(point.x, 0.0, point.z), velocity, 0.08)
+			if _audio_enabled:
+				audio.touch(point, clampf(slide / 15.0, 0.05, 0.6), true, surface)
+			_touch_marks[contact.index] = now
 
 static func surface_at(field: Dictionary, north: float, east: float) -> String:
 	for kind: String in ["runway","mown","rough"]:

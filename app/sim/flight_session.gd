@@ -313,6 +313,8 @@ var crash_auto_restart := true
 ## contact is a crash"; Main turns it on for interactive flights.
 var soft_hull_contacts := false
 var _hull_contact := {}
+## E3d1 presentation feed: the hull points touching after the latest tick (HullContact.contacts); read-only.
+var soft_contacts: Array = []
 ## The last crash while shown: CG speed/sink (m/s), ticks_left, why and a typed tick-boundary impact; empty while flying.
 var crash := {}
 ## Why the session paused the simulation ("" = it did not), for the panel.
@@ -938,6 +940,7 @@ func _physics_process(_delta: float) -> void:
 		return
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if soft_hull_contacts:
+			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
 			var hit: Dictionary = HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
 				_crash(ImpactSnapshot.hull_point(sim.state, sim.tick, aircraft.model.crash_hull, int(hit.index),
@@ -1049,6 +1052,7 @@ func reset() -> void:
 	_shaft_pending_reset = false
 	resetting.emit()
 	_clear_scenery_damage(true)
+	soft_contacts = []
 	crash = {}
 	_last_scenery_event = null
 	if pause_reason.begins_with("CRASH"):
@@ -1887,6 +1891,8 @@ func trace_meta() -> Dictionary:
 		loads = "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
 		state_timing = "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
 	}
+	if soft_hull_contacts:
+		metadata.hull_contact_model = HullContact.law()
 	if not _collision_world.is_empty():
 		metadata.scenery_collision_model = "openrc-swept-landscape-contact v1"
 		metadata.collision_world_identity = str(_collision_world.identity)
@@ -2020,6 +2026,9 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(BATTERY_LAYOUT if battery_is_dynamic() else "shaft-relative-rk4-locked-inertia-reaction-v1; wash-first,rpm-last")
 	if Propulsion.is_electric(aircraft.model.propulsion):
 		parts.append(electric_law())
+	if soft_hull_contacts:
+		# E3d1: soft hull contacts change the dynamics near the ground; legacy hashes stay unchanged.
+		parts.append(HullContact.law())
 	if not _collision_world.is_empty():
 		parts.append("scenery-damage-policy:" + SceneryDamage.POLICY_VERSION)
 		parts.append(SceneryDamage.THRESHOLDS_J)

@@ -132,6 +132,18 @@ func impact(position: Vector3, severity: Dictionary, turbine: bool) -> void:
 			mix_gain * (0.19 if turbine else 0.24), 0.92 + _variation(0.025))
 
 
+## E3d1: a soft hull contact that continues the flight: a short scrape while sliding, otherwise a light surface thud.
+## Its own pacing; the crash-aftermath cooldown is not running while the flight continues.
+func touch(position: Vector3, strength: float, sliding: bool, surface: String) -> void:
+	if not _setup_complete or strength <= 0.02:
+		return
+	var level: float = clampf(strength, 0.0, 1.0)
+	if sliding:
+		_play("scrape", position, 0.06 + 0.22 * level, 0.95 + _variation(0.06))
+	else:
+		_play(_surface_sample(surface), position, (0.06 + 0.25 * level) * sqrt(level), 1.05 + _variation(0.05))
+
+
 func secondary(position: Vector3, strength: float) -> void:
 	if not _setup_complete or strength <= 0.025 or _secondary_cooldown > 0.0:
 		return

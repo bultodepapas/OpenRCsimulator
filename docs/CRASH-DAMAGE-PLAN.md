@@ -8,7 +8,7 @@
 
 ## Current behavior
 
-The existing airframe crash detector still ends the flight. Experimental crash presentation is enabled on ordinary interactive flight and can be disabled with --crash-effects=off. Partial C0–C2 labels and the severity estimate describe presentation only; they do not establish structural strength or a flyable damaged-aircraft state.
+On interactive flights, crash-hull points are soft contacts ([E3d1](research/crash-damage-investigations/E3d1/README.md)): a wingtip brush, tail touch or belly slide continues, and only a C2-grade new impact or a deep crush ends the flight (`--soft-contacts=off` restores "any contact is a crash"; scripted, capture and trace routes keep it). Experimental crash presentation is enabled on ordinary interactive flight and can be disabled with --crash-effects=off. Partial C0–C2 labels and the severity estimate describe presentation only; they do not establish structural strength or a flyable damaged-aircraft state.
 
 Static landscape contacts are implemented through [LU-05](research/landscape-upgrade/LU-05/collision-report.md). [CR-17a](research/crash-damage-investigations/CR-17a/README.md) adds committed local scenery damage, matching fence/flightline-barrier geometry, material-specific aftermath and checkpoint/reset behavior. The source float64 inventory remains immutable; a per-flight damage mask removes broken pieces from later contacts. Large structures retain collision. Proxy dimensions and failure cutoffs remain gameplay estimates; sparse hull coverage, tree lodging and nearby query cost remain open.
 

@@ -43,8 +43,8 @@ static func targets(snapshot: Dictionary) -> Dictionary:
 ## against the AUD-06 bench (D4), not calibrated acoustics.
 const TURBINE_WHINE_REFERENCE_RPM: float = 82320.0 # turbine_whine.wav plays its 1,372 Hz shaft order at pitch 1
 const TURBINE_ROAR_PITCH_AT_MAX_JET: float = 1.40 # roar peak ~1.5 kHz x 1.40 ~ St 0.2 x V_j,max / D_nozzle (~2 kHz)
-const TURBINE_WHINE_GAIN: float = 0.60
-const TURBINE_ROAR_GAIN: float = 1.20
+const TURBINE_WHINE_GAIN: float = 0.98
+const TURBINE_ROAR_GAIN: float = 2.28
 ## Exhaust-axis angle (deg, 0 = listener in the plume behind) -> dB. Mixing noise peaks 15-45 deg off the jet
 ## axis with a refraction dip on it; the intake whine radiates forward and is shielded aft.
 const ROAR_DIRECTIVITY: Array[float] = [0.0, -4.0, 30.0, 0.0, 60.0, -3.0, 90.0, -7.0, 120.0, -10.0, 180.0, -12.0]

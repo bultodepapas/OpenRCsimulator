@@ -94,7 +94,7 @@ func _test_aircraft(aircraft_id: String) -> void:
 	_check("%s: generated state intersects this aircraft's own crash hull" % aircraft_id,
 		session.touches_ground(impact_state))
 	session.sim.state = impact_state.duplicate()
-	session.sim.previous = impact_state.duplicate()
+	session.sim.previous = _tick_before(impact_state)
 	session.sim.set_paused(false)
 	var before_crash: Dictionary = session.sim.checkpoint()
 	session._physics_process(session.sim.dt())
@@ -169,7 +169,7 @@ func _test_aircraft(aircraft_id: String) -> void:
 
 	var second_state: PackedFloat64Array = _place_hull_contact(session)
 	session.sim.state = second_state.duplicate()
-	session.sim.previous = second_state.duplicate()
+	session.sim.previous = _tick_before(second_state)
 	session.sim.set_paused(false)
 	session._physics_process(session.sim.dt())
 	director.update(session.sim.dt())
@@ -204,7 +204,20 @@ func _place_hull_contact(session: Variant) -> PackedFloat64Array:
 		var world_point: PackedFloat64Array = M.q_rotate(attitude, point)
 		deepest_down = maxf(deepest_down, world_point[2])
 	state[RB.POS + 2] = -deepest_down + 0.001
+	# E3d1: production flights use soft hull contacts, so arm a real impact: descending at 20 m/s (C2 or worse at
+	# any hull point) instead of a point resting on the ground.
+	var v_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), PackedFloat64Array([0.0, 0.0, 20.0]))
+	for axis in 3:
+		state[RB.VEL + axis] = v_body[axis]
+		state[RB.RATE + axis] = 0.0
 	return state
+
+
+## The same state one centimetre higher: every hull point is clear of the ground on the previous tick.
+func _tick_before(state: PackedFloat64Array) -> PackedFloat64Array:
+	var before := state.duplicate()
+	before[RB.POS + 2] -= 0.01
+	return before
 
 
 func _visible_body_snapshot(bodies: Array) -> Array[Dictionary]:

@@ -4,6 +4,8 @@
 ## Usage: see tools/audio/bench.sh. Read-only: it drives inputs like a player and never edits the simulation.
 extends SceneTree
 
+const M = preload("res://physics/math3d.gd")
+const RB = preload("res://physics/rigid_body.gd")
 const FPS: int = 60
 var args: Dictionary = {}
 var scene: Node3D
@@ -19,8 +21,10 @@ const SCENARIOS: Dictionary = {
 	sweep = [[0.0, "trim"], [3.0, "up"], [6.0, "full"], [11.0, "down"], [14.0, "idle"], [19.0, "end"]],
 	runway = [[0.0, "idle"], [2.0, "inspect_on"], [2.5, "idle"], [3.0, "inspect_off"], [3.5, "idle"],
 		[4.0, "inspect_on"], [4.5, "idle"], [5.0, "inspect_off"], [5.5, "up"], [8.5, "full"], [14.0, "end"]],
+	# The pilot station moves 250 m ahead of the start, 30 m to the right: approach, pass, recede.
+	flyby = [[0.0, "up"], [2.0, "approach"], [4.0, "passing"], [7.0, "recede"], [11.0, "end"]],
 }
-const THROTTLE: Dictionary = {up = 1.0, down = -1.0}
+const THROTTLE: Dictionary = {up = 1.0, down = -1.0, approach = 1.0, passing = 1.0, recede = 1.0}
 
 
 func _initialize() -> void:
@@ -46,6 +50,11 @@ func _run() -> void:
 		quit(1)
 		return
 	scene.session.read_raw = _controls
+	if scenario == "flyby":
+		_place_station_ahead(250.0, 30.0)
+	if args.has("engine-only"):
+		# Calibration aid: silence the environment bus (wind, foliage, wildlife) so levels are the aircraft alone.
+		AudioServer.set_bus_mute(AudioServer.get_bus_index(adapter.soundscape._bus_names[2]), true)
 	var timeline: Array = SCENARIOS[scenario]
 	var end_frame: int = roundi(float(timeline[-1][0]) * FPS)
 	while frame < end_frame:
@@ -74,7 +83,7 @@ func _run() -> void:
 		arguments = args, aircraft = scene.aircraft_id, fps = FPS, mix_rate = AudioServer.get_mix_rate(),
 		driver = AudioServer.get_driver_name(), frames = frame, events = events, focus_resumes = focus_resumes,
 		columns = ["t", "rpm", "throttle", "distance_m", "doppler", "motor_gain", "motor_pitch", "prop_gain", "prop_pitch",
-			"motor_volume_db", "motor_pitch_scale", "listener_x", "listener_y", "listener_z", "paused", "crash"],
+			"motor_volume_db", "motor_pitch_scale", "listener_x", "listener_y", "listener_z", "paused", "crash", "exhaust_angle_deg"],
 		rows = rows,
 		audio_sources_sha256 = {
 			adapter = FileAccess.get_sha256("res://audio/flight_audio.gd"),
@@ -92,6 +101,19 @@ func _run() -> void:
 	quit(0)
 
 
+## Presentation only: relocates the pilot camera's station along the accepted start velocity (NED).
+func _place_station_ahead(ahead_m: float, right_m: float) -> void:
+	var state: PackedFloat64Array = scene.session.sim.state
+	var attitude: PackedFloat64Array = M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3])
+	var velocity: PackedFloat64Array = M.q_rotate(attitude, M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]))
+	var heading := Vector2(velocity[0], velocity[1]).normalized()
+	var right := Vector2(-heading.y, heading.x)
+	var station: Array = scene._camera.get_meta("pilot_station", [0.0, 0.0, 0.0])
+	var target := Vector2(state[RB.POS], state[RB.POS + 1]) + heading * ahead_m + right * right_m
+	scene._camera.set_meta("pilot_station", [target.x, target.y, float(station[2])])
+	events.append({frame = 0, t = 0.0, stage = "station", north = target.x, east = target.y})
+
+
 func _record(t: float) -> void:
 	var session: Node = scene.session
 	var mix: Node = adapter.soundscape
@@ -102,7 +124,7 @@ func _record(t: float) -> void:
 		float(targets.get("motor_gain", 0.0)), float(targets.get("motor_pitch", 0.0)),
 		float(targets.get("prop_gain", 0.0)), float(targets.get("prop_pitch", 0.0)),
 		mix.voices[0].volume_db, mix.voices[0].pitch_scale, listener.x, listener.y, listener.z,
-		session.sim.paused, not session.crash.is_empty()])
+		session.sim.paused, not session.crash.is_empty(), float(targets.get("exhaust_angle_deg", -1.0))])
 
 
 func _stage_at(timeline: Array, t: float) -> String:

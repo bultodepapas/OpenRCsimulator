@@ -9,6 +9,7 @@ var dust: CPUParticles3D
 var smoke: CPUParticles3D
 var flame: CPUParticles3D
 var sparks: CPUParticles3D
+var touch_dust: CPUParticles3D # E3d1: small puff for a soft hull contact that continues the flight
 var light: OmniLight3D
 var marks: Array[MeshInstance3D] = []
 var fragments: MultiMeshInstance3D
@@ -70,6 +71,16 @@ func prepare() -> void:
 	sparks.scale_amount_min = 0.015
 	sparks.scale_amount_max = 0.035
 	sparks.color_ramp = _gradient([Color(1,0.95,0.7,1),Color(1,0.22,0.025,0)], [0.0,1.0])
+	touch_dust = _particles(24, 1.2, puff, false)
+	touch_dust.one_shot = true
+	touch_dust.explosiveness = 0.9
+	touch_dust.spread = 35.0
+	touch_dust.initial_velocity_min = 0.3
+	touch_dust.gravity = Vector3(0, -0.8, 0)
+	touch_dust.scale_amount_min = 0.08
+	touch_dust.scale_amount_max = 0.25
+	touch_dust.emission_sphere_radius = 0.05
+	touch_dust.color_ramp = dust.color_ramp
 	light = OmniLight3D.new()
 	light.light_color = Color(1,0.28,0.05)
 	light.omni_range = 7.0
@@ -182,6 +193,7 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	dust.emission_sphere_radius = radius
 	dust.restart()
 	dust.emitting = level > 0
+	touch_dust.emitting = false
 	sparks.restart()
 	sparks.emitting = level >= 3 and (hot_turbine or severity.get("surface","") in ["runway","asphalt","concrete"])
 	flame.emission_sphere_radius = 0.25 + 0.4*power
@@ -215,6 +227,20 @@ func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = fals
 	item.scale = Vector3(clampf(radius*0.8,0.12,1.4),1,clampf(radius+slide_speed*0.035,0.2,2.5))
 	(item.material_override as StandardMaterial3D).albedo_color = Color(0.035,0.029,0.025,0.88) if burned else Color(0.12,0.075,0.025,0.78)
 	item.visible = true
+
+## E3d1: a soft hull contact that continues the flight: a scuff along the slide and a small puff thrown along it,
+## sized by `strength` (0..1). Never a radial burst; the crash aftermath (start) supersedes it.
+func touch(point: Vector3, velocity: Vector3, strength: float) -> void:
+	var level := clampf(strength, 0.0, 1.0)
+	mark(Vector3(point.x, 0.0, point.z), velocity, 0.06 + 0.22 * level)
+	var slide := Vector3(velocity.x, 0.0, velocity.z)
+	touch_dust.global_position = Vector3(point.x, 0.03, point.z)
+	touch_dust.direction = (slide.normalized() * 0.8 + Vector3.UP * 0.6).normalized() if slide.length() > 0.5 else Vector3.UP
+	touch_dust.initial_velocity_max = 0.8 + 3.0 * level
+	touch_dust.visible = true
+	touch_dust.restart()
+	touch_dust.emitting = true
+
 
 func secondary(point: Vector3, strength: float) -> void:
 	if not _active or _paused or strength < 0.3:
@@ -278,4 +304,4 @@ func reset() -> void:
 		light.visible = false
 
 func stats() -> Dictionary:
-	return {particles=556, splinters=_fragment_count, marks=mini(_mark_index,MAX_MARKS), fire=fire_strength(), update_usec=last_update_usec}
+	return {particles=580, splinters=_fragment_count, marks=mini(_mark_index,MAX_MARKS), fire=fire_strength(), update_usec=last_update_usec}

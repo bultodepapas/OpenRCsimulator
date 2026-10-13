@@ -23,6 +23,12 @@ const SLIP_REGULARIZATION_MPS := 0.2
 const TERMINAL_J_PER_KG := 2.5
 const CRASH_DEPTH_M := 0.08
 
+## Identity of this contact law and its constants, for checkpoint configuration hashes and trace metadata.
+static func law() -> String:
+	return "soft-hull-spring-friction-v1 omega=%s zeta=%s onset_m=%s mu=%s slip_reg_mps=%s terminal_j_per_kg=%s crash_depth_m=%s flat-ground" % [
+		OMEGA_RAD_S, ZETA, DAMPING_ONSET_M, FRICTION_MU, SLIP_REGULARIZATION_MPS, TERMINAL_J_PER_KG, CRASH_DEPTH_M]
+
+
 const _DIRECTIONS := [
 	[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1],
 	[1, 1, 0], [1, -1, 0], [-1, 1, 0], [-1, -1, 0], [1, 0, 1], [1, 0, -1], [-1, 0, 1], [-1, 0, -1],
@@ -134,6 +140,31 @@ static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 		if specific >= TERMINAL_J_PER_KG and specific > float(worst.specific_j_per_kg):
 			worst = {index = i / 3, rule = "impact", specific_j_per_kg = specific, normal_speed_mps = v_n, depth_m = depth}
 	return worst
+
+
+## Presentation feed: every hull point touching after the step previous → s, as {index, new, depth_m,
+## normal_speed_mps (into the ground, from `previous`), slide_speed_mps, point_ned}. Empty in the air.
+static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepared: Dictionary) -> Array:
+	var out: Array = []
+	if prepared.is_empty() or previous.size() != s.size() or -s[RB.POS + 2] > float(prepared.reach):
+		return out
+	var hull: PackedFloat64Array = prepared.points
+	var down_now: PackedFloat64Array = _down_row(s)
+	var down_before: PackedFloat64Array = _down_row(previous)
+	var q := RB._att(s)
+	var q_before := RB._att(previous)
+	for i in range(0, hull.size(), 3):
+		var r := hull.slice(i, i + 3)
+		var depth := s[RB.POS + 2] + down_now[0] * r[0] + down_now[1] * r[1] + down_now[2] * r[2]
+		if depth <= 0.0:
+			continue
+		var depth_before := previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
+		var v_before := M.q_rotate(q_before, M.add(RB._slice3(previous, RB.VEL), M.cross(RB._slice3(previous, RB.RATE), r)))
+		var v_now := M.q_rotate(q, M.add(RB._slice3(s, RB.VEL), M.cross(RB._slice3(s, RB.RATE), r)))
+		out.append({index = i / 3, new = depth_before <= 0.0, depth_m = depth, normal_speed_mps = maxf(0.0, v_before[2]),
+			slide_speed_mps = M.sqrt_(v_now[0] * v_now[0] + v_now[1] * v_now[1]),
+			point_ned = M.add(RB._slice3(s, RB.POS), M.q_rotate(q, r)), velocity_ned = v_now})
+	return out
 
 
 static func _rows(s: PackedFloat64Array) -> Array:

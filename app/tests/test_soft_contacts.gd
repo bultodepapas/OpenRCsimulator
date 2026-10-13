@@ -34,6 +34,7 @@ func _initialize() -> void:
 	_depth_backstop(stik)
 	_airborne_identity(stik)
 	_determinism(stik)
+	_identity(stik)
 	stik.free()
 	var avanti := _session(AVANTI, AVANTI_ID)
 	_belly_slide(avanti)
@@ -105,6 +106,15 @@ func _default_is_legacy(session: Node) -> void:
 func _loads_shape(session: Node) -> void:
 	var prepared: Dictionary = session._hull_contact
 	_check("hull contact is prepared for the Stik", not prepared.is_empty() and prepared.stiffness.size() == session.aircraft.model.crash_hull.size() / 3)
+	var names: PackedStringArray = session.aircraft.model.crash_hull_components
+	var tip_k: float = prepared.stiffness[names.find("left_wing_tip")]
+	var belly_k: float = prepared.stiffness[names.find("belly")]
+	var bound: float = float(prepared.mass) * HullContact.OMEGA_RAD_S * HullContact.OMEGA_RAD_S
+	var bounded := true
+	for k: float in prepared.stiffness:
+		bounded = bounded and k > 0.0 and k <= bound * (1.0 + 1e-12)
+	_check("every point is no stiffer than the whole mass at the contact frequency", bounded)
+	_check("a wingtip (small effective mass) is softer than the belly", tip_k < 0.5 * belly_k, "tip %.0f, belly %.0f N/m" % [tip_k, belly_k])
 	var air := _state_above(session, 0.5, 0.0, 0.0, 0.0, M.v3(15, 0, 0))
 	_check("no load above the ground", HullContact.loads(air, prepared).is_empty())
 	var sunk := _state_above(session, -0.005, 0.0, 0.0, 0.0, M.v3(3, 0, 0))
@@ -147,8 +157,11 @@ func _depth_backstop(session: Node) -> void:
 	before[RB.POS + 2] += HullContact.CRASH_DEPTH_M - 0.01 # already touching: not a new impact
 	var hit := HullContact.terminal(before, crushed, prepared)
 	_check("a crush deeper than the backstop is a crash", int(hit.index) >= 0 and hit.rule == "depth")
-	var resting := before.duplicate()
-	_check("a point already resting in contact is not a new impact", int(HullContact.terminal(before, resting, prepared).index) < 0)
+	# Already touching on the previous tick and still pressing down hard: not a new impact (the depth rule watches it).
+	var pressing := _state_above(session, -0.01, 0.0, 0.0, 0.0, M.v3(0, 0, 10)) # only the belly touches, 1 cm deep
+	var still := pressing.duplicate()
+	still[RB.POS + 2] += 0.005
+	_check("a point already in contact is not graded as a new impact", int(HullContact.terminal(pressing, still, prepared).index) < 0)
 
 
 func _airborne_identity(session: Node) -> void:
@@ -156,6 +169,27 @@ func _airborne_identity(session: Node) -> void:
 	var off := _run(session, cruise, false, 240)
 	var on := _run(session, cruise, true, 240)
 	_check("one second of flight away from the ground is bit-identical with soft contacts on", off.state == on.state)
+
+
+func _identity(session: Node) -> void:
+	session.soft_hull_contacts = false
+	session.reset()
+	var legacy_config: String = session._checkpoint_configuration()
+	var legacy_meta: Dictionary = session.trace_meta()
+	session.soft_hull_contacts = true
+	var soft_config: String = session._checkpoint_configuration()
+	var soft_meta: Dictionary = session.trace_meta()
+	_check("legacy trace metadata has no contact-law key", not legacy_meta.has("hull_contact_model"))
+	_check("soft trace metadata records the contact law", soft_meta.get("hull_contact_model", "") == HullContact.law())
+	_check("soft contacts change the checkpoint configuration", soft_config != legacy_config)
+	var checkpoint: Dictionary = session.checkpoint()
+	session.soft_hull_contacts = false
+	_check("a soft-contact checkpoint is refused by a legacy session", not checkpoint.is_empty() and not session.restore_checkpoint(checkpoint))
+	session.soft_hull_contacts = true
+	_check("the same session restores its own checkpoint", session.restore_checkpoint(checkpoint))
+	_check("the contact law names its constants", HullContact.law().contains("omega=60") and HullContact.law().contains("terminal_j_per_kg=2.5"))
+	session.soft_hull_contacts = false
+	session.reset()
 
 
 func _determinism(session: Node) -> void:
@@ -172,7 +206,7 @@ func _belly_slide(session: Node) -> void:
 	var end: PackedFloat64Array = slide.state
 	var speed := M.norm(RB._slice3(end, RB.VEL))
 	_check("belly landing at 1 m/s sink does not end the flight", slide.crashed_at < 0, "crashed at %d" % slide.crashed_at)
-	_check("the belly slide decelerates the airplane", speed < 12.0, "speed after 6 s %.2f m/s" % speed)
+	_check("the belly slide brings the airplane to a stop", speed < 1.0, "speed after 6 s %.2f m/s" % speed)
 	_check("the slide stays finite", _finite(end))
 	_check("the belly stays near the surface", absf(_deepest(session, end)) < 0.05, "deepest point %.4f m" % _deepest(session, end))
 
