@@ -132,10 +132,16 @@ static func _momentum(z: float, x: float, windmill: bool) -> PackedFloat64Array:
 		return PackedFloat64Array([root, slope])
 	var lo: float = 0.0
 	var hi: float = absf(z) + 2.0
+	# Since v*sqrt(x^2+(z+v)^2)=1, v<=1/x. In climb, v is also
+	# <=1/sqrt(x^2+z^2). Tight bounds preserve the bisection fallback's
+	# relative accuracy at large accepted velocity ratios.
+	hi = minf(hi, 1.0 / x)
+	if z >= 0.0:
+		hi = minf(hi, 1.0 / M.sqrt_(x * x + z * z))
 	# Scale the bracket to the small root in deep windmill flight. A bracket
 	# of order |z| loses relative accuracy when v is of order 1/|z|.
 	if windmill and z < -2.0:
-		hi = 2.0 / M.sqrt_(x * x + z * z)
+		hi = minf(hi, 2.0 / M.sqrt_(x * x + z * z))
 	var disc: float = z * z - 8.0 * x * x
 	if z < 0.0 and disc > 0.0:
 		var d: float = M.sqrt_(disc)

@@ -186,3 +186,7 @@ Splitting fences into visible bays increased the nearby proxy count; selecting t
 ## 2026-10-12 · TT-11 — seed ground equilibrium from the support plane
 
 A level Newton seed can converge to a two-main-wheel equilibrium for a taildragger even when the authored three-point gear supports the CG. A small residual does not establish the intended resting configuration. Seed height/roll/pitch from the actual contact plane, retain the established nosewheel branch, and require every selected contact to stick before accepting the start. [Timber diagnosis, static support and refinement](docs/research/timber-integration/TT-10/README.md).
+
+## 2026-10-13 · HELI-04 — check crossflow joins as well as axial joins
+
+Johnson's published inflow table contains printed endpoint/derivative errata, and its moving axial polynomials still jump when an entire crossflow branch switches off at C or M. Matching values and slopes inside one slice does not prove continuity across another parameter. Inspect the rendered equations, verify one-sided values with an independent implementation and retain source-law limitations as integration gates; do not silently fit a smoother. Ground-effect activation also needs downstream-wake geometry: signed body-axis thrust alone cannot distinguish upright descent from inverted lift. [Primary-source interpretation and checks](docs/research/helicopter/HELI-04/README.md).

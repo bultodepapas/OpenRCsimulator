@@ -337,8 +337,9 @@ def target(
     positive-thrust curve about the thrust axis. The hover scale is
     sqrt(abs(T)/(2*rho*pi*R^2)); returned velocity is positive downward for
     positive thrust. A height of -1 disables ground effect. A nonnegative
-    height enables Hayden's correction for either thrust sign; the caller must
-    pass it only when the downstream wake geometry meets the ground.
+    height enables Hayden's correction for either thrust sign; the caller
+    measures it along the downstream wake direction and uses it only when
+    that wake meets terrain.
     """
     try:
         t = _number(thrust, "thrust")
