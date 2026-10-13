@@ -22,12 +22,17 @@ var report: Dictionary = {}
 var last_update_usec := 0
 var impact_usec := 0
 var _fuel_kg := 0.0
+## CR-22b: tagged energy per kind (inventory energy_source), kg.
+var energy_sources: Dictionary = {}
 var _impact_point := Vector3.ZERO
 var _age := 0.0
 var _audio_enabled := true
 var _scenery_contacts: Node3D
 ## E3d1: per-point time of the last skid mark, so a slide leaves a trail without a mark every frame.
 var _touch_marks: Dictionary = {}
+## E3d2: the prop strike already shown (its tick), and the propeller node hidden because its blades broke.
+var _prop_strike_tick := -1
+var _hidden_propeller: Node3D
 ## CR-01e: the last CrashCause.HISTORY_S of flight, sampled every SAMPLE_INTERVAL_S of sim time (oldest first).
 var history: Array = []
 const TOUCH_TRAIL_S := 0.12
@@ -47,12 +52,15 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 	audio = CrashAudio.new()
 	add_child(audio)
 	audio.setup()
-	# Declared inventory state, not a fuel-burn simulation. Keep source quantity.
+	# Declared inventory state, not a fuel-burn simulation. CR-22b: energy is read from the explicit
+	# energy_source tag, never inferred from a name or the propulsion kind.
 	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(data_path))
 	if raw is Dictionary:
 		for item: Dictionary in raw.get("inventory",[]):
-			if str(item.get("name","")).begins_with("kerosene +"):
-				_fuel_kg += maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
+			var kind := str(item.get("energy_source",""))
+			if not kind.is_empty():
+				energy_sources[kind] = float(energy_sources.get(kind, 0.0)) + maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
+	_fuel_kg = float(energy_sources.get("kerosene", 0.0))
 	flight.session.resetting.connect(reset)
 
 func update(delta: float) -> void:
@@ -61,6 +69,7 @@ func update(delta: float) -> void:
 		if active:
 			reset()
 		_record_sample()
+		_prop_strike_feedback()
 		_touch_feedback()
 		return
 	if not active:
@@ -146,12 +155,15 @@ func _start() -> void:
 	report["tank_ruptured"] = int(report["class"]) == 4 or (int(report["class"]) == 3 and str(report.get("component_group","")) in ["fuselage","engine","propeller"] and float(report["estimated_energy_j"]) >= 600.0)
 	report["tank_rupture_kind"] = "estimated: C4, or C3 central impact >=600 J; uncalibrated"
 	report["tick"] = impact.tick
+	report["prop_broken"] = not flight.session.prop_strike.is_empty()
 	# CR-01e: why it happened, from the recorded history (card line and one log line).
 	var envelope: Dictionary = flight.session.aircraft.model.get("envelope", {})
 	report["cause"] = CrashCause.classify(history, {
 		trigger = str(impact.trigger), obstacle_kind = str(impact.get("obstacle_kind")) if impact.get("obstacle_kind") != null else "",
 		component_group = str(report.get("component_group", "")), speed_mps = float(report.get("speed_mps", 0.0)),
 	}, {stall_alpha_deg = rad_to_deg(float(envelope.a1)) if envelope.has("a1") else INF, start_speed = float(flight.session.aircraft.model.start_speed)})
+	if report.prop_broken:
+		(report.cause.factors as Array).append("after a prop strike")
 	print("CRASH CAUSE: ", CrashCause.line(report.cause))
 	# CR-09b: the wreck releases sections in order of distance from this point (render world space).
 	report["contact_point_world"] = _impact_point
@@ -165,6 +177,9 @@ func _start() -> void:
 	var turbine: bool = flight.session.aircraft.model.propulsion.get("kind","") == "turbine"
 	var hot: bool = turbine and flight.session.engine_running and flight.session.sim.aux[0] > 0
 	effects.start(_impact_point,velocity,report,_fuel_kg,hot,flight._render_wind(flight.session.sim.time()))
+	report["energy"] = Effects.energy_outcome(energy_sources, report, bool(flight.session.engine_running), hot)
+	report["energy_sources"] = energy_sources.duplicate()
+	effects.apply_energy(report.energy)
 	if _audio_enabled:
 		audio.impact(_impact_point,report,turbine)
 	active = true
@@ -190,6 +205,23 @@ static func component_for(trigger: String, point_index: int, body_point: PackedF
 	elif body_point[0] > chord:
 		component = "engine"
 	return {component = component, is_estimate = true, basis = "geometric hull region; crash_hull_components unavailable"}
+
+## E3d2: blade fragments, a crack and the engine dying once per strike; the source blades disappear.
+func _prop_strike_feedback() -> void:
+	var strike: Dictionary = flight.session.prop_strike
+	if strike.is_empty() or int(strike.tick) == _prop_strike_tick:
+		return
+	_prop_strike_tick = int(strike.tick)
+	var point := Frames.ned_to_render(Array(strike.point_ned))
+	var velocity := Frames.ned_to_render(Array(strike.velocity_ned))
+	effects.prop_break(point, velocity, surface_at(flight.field, strike.point_ned[0], strike.point_ned[1]))
+	if _audio_enabled:
+		audio.prop_strike(point)
+	var propeller: Variant = flight._airplane.get("propeller")
+	if propeller is Node3D and is_instance_valid(propeller):
+		_hidden_propeller = propeller
+		_hidden_propeller.visible = false
+
 
 ## CR-01e: one history sample per SAMPLE_INTERVAL_S of sim time, from the HUD's 64-bit telemetry. A restart or a
 ## rewind (time going backwards) clears the history; a paused session adds nothing.
@@ -298,6 +330,10 @@ func description() -> String:
 
 func reset() -> void:
 	history.clear()
+	_prop_strike_tick = -1
+	if is_instance_valid(_hidden_propeller):
+		_hidden_propeller.visible = true
+	_hidden_propeller = null
 	if is_instance_valid(_scenery_contacts):
 		_scenery_contacts.free()
 	_scenery_contacts = null

@@ -422,7 +422,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed; aligned box inertia envelope"
-      }
+      },
+      "energy_source": "lipo"
     },
     {
       "name": "virtual reference-build balancing mass",

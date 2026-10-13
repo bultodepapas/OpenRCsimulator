@@ -22,11 +22,45 @@ const SLIP_REGULARIZATION_MPS := 0.2
 ## (surface transfer 1, conservative), or when any point is pushed this deep (a slow crush).
 const TERMINAL_J_PER_KG := 2.5
 const CRASH_DEPTH_M := 0.08
+## E3d2: a turning propeller whose disc reaches the field is a prop strike (engine stops, not a crash). Estimate: any
+## rotation a pilot would hear; research 04 §6 proposed 1.5 × idle, but a glow prop at idle also breaks on the ground.
+const STRIKE_MIN_RPM := 300.0
 
 ## Identity of this contact law and its constants, for checkpoint configuration hashes and trace metadata.
 static func law() -> String:
-	return "soft-hull-spring-friction-v1 omega=%s zeta=%s onset_m=%s mu=%s slip_reg_mps=%s terminal_j_per_kg=%s crash_depth_m=%s flat-ground" % [
-		OMEGA_RAD_S, ZETA, DAMPING_ONSET_M, FRICTION_MU, SLIP_REGULARIZATION_MPS, TERMINAL_J_PER_KG, CRASH_DEPTH_M]
+	return "soft-hull-spring-friction-v1 omega=%s zeta=%s onset_m=%s mu=%s slip_reg_mps=%s terminal_j_per_kg=%s crash_depth_m=%s prop_strike_min_rpm=%s flat-ground" % [
+		OMEGA_RAD_S, ZETA, DAMPING_ONSET_M, FRICTION_MU, SLIP_REGULARIZATION_MPS, TERMINAL_J_PER_KG, CRASH_DEPTH_M, STRIKE_MIN_RPM]
+
+
+## E3d2: the propeller disc from the propulsion data: {hub (body FRD about the CG), axis (unit, body FRD), radius};
+## {} for a turbine or data without a propeller diameter. Same hub and axis the thrust is applied at (Propulsion).
+static func prop_disc(propulsion: Dictionary) -> Dictionary:
+	if str(propulsion.get("kind", "")) == "turbine" or not propulsion.has("diameter") or not propulsion.has("offset"):
+		return {}
+	var r: PackedFloat64Array = propulsion.offset # [x_aft, y_right, z_up] from the CG
+	var a: PackedFloat64Array = propulsion.get("axis", PackedFloat64Array([1.0, 0.0, 0.0]))
+	var length := M.norm(a)
+	var radius := 0.5 * float(propulsion.diameter)
+	if not is_finite(length) or length <= 0.0 or not is_finite(radius) or radius <= 0.0:
+		return {}
+	return {hub = PackedFloat64Array([-r[0], r[1], -r[2]]), axis = M.scale(a, 1.0 / length), radius = radius}
+
+
+## E3d2: depth (m, positive below the field) of the disc's lowest point at state `s`, and that point in NED. The lowest
+## point is the hub plus the radius along the ground-down direction projected onto the disc plane.
+static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary) -> Dictionary:
+	if disc.is_empty():
+		return {depth = -INF, point_ned = PackedFloat64Array()}
+	var down := _down_row(s)
+	var a: PackedFloat64Array = disc.axis
+	var along := down[0] * a[0] + down[1] * a[1] + down[2] * a[2]
+	var p := PackedFloat64Array([down[0] - along * a[0], down[1] - along * a[1], down[2] - along * a[2]])
+	var p_len := M.norm(p)
+	var lowest: PackedFloat64Array = disc.hub.duplicate()
+	if p_len > 1.0e-9: # an axis pointing straight down leaves the disc horizontal: every rim point is as deep
+		lowest = M.add(lowest, M.scale(p, float(disc.radius) / p_len))
+	var depth := s[RB.POS + 2] + down[0] * lowest[0] + down[1] * lowest[1] + down[2] * lowest[2]
+	return {depth = depth, point_ned = M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), lowest))}
 
 
 const _DIRECTIONS := [
@@ -114,7 +148,8 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary) -> PackedFloat64A
 ## normal_speed_mps, depth_m}.
 static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepared: Dictionary) -> Dictionary:
 	var none := {index = -1, rule = "", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = 0.0}
-	if prepared.is_empty() or previous.size() != s.size():
+	# CR-22c: runs every tick; nothing can touch above the hull's reach, and points in the air cost no allocation.
+	if prepared.is_empty() or previous.size() != s.size() or -s[RB.POS + 2] > float(prepared.reach):
 		return none
 	var hull: PackedFloat64Array = prepared.points
 	var down_now: PackedFloat64Array = _down_row(s)
@@ -122,10 +157,10 @@ static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	var q_before := RB._att(previous)
 	var worst := none.duplicate()
 	for i in range(0, hull.size(), 3):
-		var r := hull.slice(i, i + 3)
-		var depth := s[RB.POS + 2] + down_now[0] * r[0] + down_now[1] * r[1] + down_now[2] * r[2]
+		var depth := s[RB.POS + 2] + down_now[0] * hull[i] + down_now[1] * hull[i + 1] + down_now[2] * hull[i + 2]
 		if depth <= 0.0:
 			continue
+		var r := hull.slice(i, i + 3)
 		if depth > CRASH_DEPTH_M:
 			return {index = i / 3, rule = "depth", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = depth}
 		var depth_before := previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
@@ -154,10 +189,10 @@ static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	var q := RB._att(s)
 	var q_before := RB._att(previous)
 	for i in range(0, hull.size(), 3):
-		var r := hull.slice(i, i + 3)
-		var depth := s[RB.POS + 2] + down_now[0] * r[0] + down_now[1] * r[1] + down_now[2] * r[2]
+		var depth := s[RB.POS + 2] + down_now[0] * hull[i] + down_now[1] * hull[i + 1] + down_now[2] * hull[i + 2]
 		if depth <= 0.0:
 			continue
+		var r := hull.slice(i, i + 3)
 		var depth_before := previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
 		var v_before := M.q_rotate(q_before, M.add(RB._slice3(previous, RB.VEL), M.cross(RB._slice3(previous, RB.RATE), r)))
 		var v_now := M.q_rotate(q, M.add(RB._slice3(s, RB.VEL), M.cross(RB._slice3(s, RB.RATE), r)))

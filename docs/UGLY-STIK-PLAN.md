@@ -1,12 +1,12 @@
 # Jensen Ugly Stik 60: model and finish
 
-2026-10-12 · Revision 8 · **Status: visual geometry v3, finish v4 and engine detail v5 are implemented. Pilot readability and target-GPU acceptance remain open.** Prefixes: `US-` and `US-V`. Owned paths: `assets/aircraft/ugly-stik-60/`, `app/aircraft/ugly_stik_*`, shared `app/render/airplane.gd` contract, `research/ugly-stik/`, and `docs/research/ugly-stik-*`.
+2026-10-13 · Revision 9 · **Status: visual geometry v3, finish v4 with the US-V09a glossy-film/shading pass, and engine detail v5 are implemented. Pilot readability and target-GPU acceptance remain open.** Prefixes: `US-` and `US-V`. Owned paths: `assets/aircraft/ugly-stik-60/`, `app/aircraft/ugly_stik_*`, shared `app/render/airplane.gd` contract, `research/ugly-stik/`, and `docs/research/ugly-stik-*`.
 
 The reference is the Jensen 60-inch Ugly Stik with a generic .61-class nitro installation. The target is a recognizable, articulated airplane for the first owner playtest, not a certified replica. The [geometry source](../assets/aircraft/ugly-stik-60/geometry.json) and [appearance source](../assets/aircraft/ugly-stik-60/appearance.json) are authoritative; their compilers generate the Godot model data. The asset README has regeneration commands and the builder contract.
 
 ## Current implementation
 
-The native builder exposes `build() → {root, propeller, hinges, gear, controls}` with root `airplane`, propeller `propeller`, and stable `aileron_left`, `aileron_right`, `elevator`, and `rudder` hinges. Fixed wing frames carry dihedral; the hinges carry surface deflection. The model includes the classic red finish with white fields and black crosses, scalloped trailing edges, a gold-head engine, silencer, generic servos, control links, retainers, and gear details. Engine v5 improves open intake/bores, cooling fins and exhaust geometry.
+The native builder exposes `build() → {root, propeller, hinges, gear, controls}` with root `airplane`, propeller `propeller`, and stable `aileron_left`, `aileron_right`, `elevator`, and `rudder` hinges. Fixed wing frames carry dihedral; the hinges carry surface deflection. The model includes the classic red finish (glossy film since US-V09a) with white fields and black crosses, scalloped trailing edges, a gold-head engine, silencer, generic servos, control links, retainers, and gear details. Engine v5 improves open intake/bores, cooling fins and exhaust geometry.
 
 The model contract and reproducible visual evidence pass. The completed work and remaining acceptance are tracked here:
 
@@ -31,6 +31,7 @@ The model contract and reproducible visual evidence pass. The completed work and
 | US-V06 | Retainers, mounts, wheels and visible fittings. [Finish report](research/ugly-stik-model-v4.md) | Complete |
 | US-V07 | Wing surface detail, propeller detail and reproducible close views. [Photo brief](research/ugly-stik-visual-photo-brief.md) | Complete |
 | US-V08 | Geometry cost and repeated captures recorded; 20/50/100 m orientation form prepared. [Finish report](research/ugly-stik-model-v4.md) · [engine v5 validation](research/ugly-stik-engine-v5.md) | Implementation complete; pilot reading and target-GPU acceptance open |
+| US-V09a | Glossy film covering, rounded fuselage corners, occluded hinge gaps, spline fin/rudder outline, smooth propeller and tyres, 2048 px atlas; before/after flight and bench captures. [Finish v6 report](research/ugly-stik-finish-v6.md) | Implemented 2026-10-13 (`b19f6a4`); pilot reading of the new finish open |
 
 ## Limits and acceptance
 

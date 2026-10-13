@@ -187,6 +187,9 @@ def add_v2_overlay(schema: dict, spec: dict):
     add_text_field(balance_props, "configuration", nonempty=True)
     inventory_items = root_props["inventory"]["items"]
     add_text_field(inventory_items["properties"], "name", nonempty=True)
+    # CR-22b: optional energy carried by this item (fuel or pack); the vocabulary lives in the contract.
+    energy_names = next(rule["values"] for rule in spec["enum_paths"] if rule["path"] == "/inventory/*/energy_source")
+    inventory_items["properties"]["energy_source"] = {"type": "string", "enum": energy_names}
     merge_required(inventory_items, ["size"])
 
     propulsion = root_props["propulsion"]

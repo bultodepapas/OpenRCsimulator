@@ -258,6 +258,8 @@ flap_mid = (W["flap_inner"] + W["flap_outer"]) / 2
 elevator_half_spacing = 0.30 / 2  # retain the former paired-box half-width; root mounting is inferred, not measured
 gear_half_track = GEAR["track"] / 2
 spinner_d_in = 2 * g["spinner"]["radius"] / IN
+# CR-22b: which inventory items carry energy (crash fire/smoke presentation only).
+ENERGY_SOURCES = {"fuel (half tank)": "gasoline"}
 items = [
     ("engine DA-120 with ignition module", 2.45, "manual", "DA-120: 2300 g engine, 2445 g with ignition (toni-clark.com/en/da-120); DLE-120 2.78-2.90 kg complete", le(g["spinner"]["back_z"] + 0.13), [0.16, 0.30, 0.16], "estimated", "crankshaft on the thrust line, crankcase ~0.13 m behind the spinner back"),
     ("mufflers / canisters (2)", 0.60, "estimated", "two in-cowl canister mufflers for a 120 cc twin", le(g["spinner"]["back_z"] + 0.20, -0.07), [0.25, 0.20, 0.08], "estimated", "under the cylinders inside the cowl"),
@@ -669,7 +671,8 @@ data = {
     },
     "inventory": [
         dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3] + (f"; x{k_total_struct:.3f}: airframe scaled to the built weight (P51-09)" if is_structure(it) else "")), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
-             **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}))
+             **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),
+             **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
     "crash_hull": q([

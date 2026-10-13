@@ -181,7 +181,8 @@
         "name",
         "mass",
         "position",
-        "size"
+        "size",
+        "energy_source"
       ]
     },
     {
@@ -1067,6 +1068,15 @@
         "fin_top",
         "canopy",
         "belly"
+      ]
+    },
+    {
+      "path": "/inventory/*/energy_source",
+      "values": [
+        "kerosene",
+        "glow_fuel",
+        "gasoline",
+        "lipo"
       ]
     }
   ],

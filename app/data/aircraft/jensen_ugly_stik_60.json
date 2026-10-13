@@ -268,7 +268,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "energy_source": "glow_fuel"
     },
     {
       "name": "receiver battery 4.8 V 600 mAh",

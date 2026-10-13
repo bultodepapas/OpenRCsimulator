@@ -308,6 +308,7 @@
         "kind": "estimated",
         "source": "same as the tank"
       },
+      "energy_source": "gasoline",
       "size": {
         "value": [
           0,

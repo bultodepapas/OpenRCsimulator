@@ -4,6 +4,8 @@ extends Node3D
 ## Visual-only pooled aircraft breakup. No values flow back into the flight simulation.
 signal secondary_impact(position: Vector3, strength: float)
 
+const SectionSplitter = preload("res://render/crash/section_splitter.gd")
+
 const MAX_BODIES := 24
 const DEBRIS_LAYER := 1 << 19
 const MAX_INPUT_SPEED_MPS := 100.0
@@ -37,6 +39,12 @@ const GROUP_ORDER := [
 	"wing_left", "wing_right", "wing_center", "engine", "propeller",
 	"horizontal_tail", "vertical_tail", "gear", "canopy"
 ]
+## CR-09c: an imported node may name its crash section explicitly: glTF extras "openrc_section" (set in Blender as a
+## custom property) or meta "crash_section" (set by a builder or the section splitter). "core" keeps it with the body.
+const SECTION_EXTRAS_KEY := "openrc_section"
+const SECTION_META := "crash_section"
+const CORE_SECTION := "core"
+
 const GROUP_DELAYS_S := {
 	"wing_left": 0.00,
 	"wing_right": 0.00,
@@ -96,6 +104,8 @@ var _c3_contact_exposure_index_j := 0.0
 var _c3_contact_release_pending := false
 var _run_generation := 0
 var _release_kinds: Array = []
+var _hidden_members: Array = [] # E3d2: propeller pieces hidden because the blades broke before the crash
+var _prop_broken := false
 var _contact_model := Vector3.ZERO
 var _has_contact := false
 var _rng := RandomNumberGenerator.new()
@@ -121,6 +131,10 @@ func prepare(airplane: Node3D) -> bool:
 	_twin.transform = Transform3D.IDENTITY
 	_twin.visible = false
 	add_child(_twin)
+	# CR-09c: merged imported meshes with a generated section map become real section meshes in the twin only.
+	var split := SectionSplitter.apply(_twin)
+	if not bool(split.ok):
+		push_warning("Wreck.prepare: crash section map ignored: %s" % "; ".join(split.errors))
 	_groups.clear()
 	_member_records.clear()
 	_selected_roots.clear()
@@ -165,6 +179,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	if class_level < 3:
 		scatter_budget = 0.0
 	var component_hint := _component_description(severity).to_lower()
+	_prop_broken = bool(severity.get("prop_broken", false))
 	_release_kinds = _release_kinds_for(class_level, component_hint)
 	_has_contact = severity.get("contact_point_world") is Vector3 and _finite_vector(severity.contact_point_world) == severity.contact_point_world
 	_contact_model = pose.affine_inverse() * Vector3(severity.contact_point_world) if _has_contact else Vector3.ZERO
@@ -231,6 +246,14 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		body.collision_mask = 0
 		body.linear_velocity = Vector3.ZERO
 		body.angular_velocity = Vector3.ZERO
+	# E3d2: blades already broken by a prop strike stay hidden (_should_detach keeps them on the core).
+	if _prop_broken:
+		for i in range(1, _groups.size()):
+			if String(_groups[i].kind) == "propeller":
+				for member: Node3D in _groups[i].members:
+					if is_instance_valid(member) and member.visible:
+						member.visible = false
+						_hidden_members.append(member)
 	# Low classes keep all sections attached to the core body. These mass weights are presentation estimates.
 	_groups[0].mass = _core_body.mass
 	_groups[0].base_velocity = safe_velocity
@@ -331,6 +354,11 @@ func reset() -> void:
 	_last_component_hint = ""
 	_last_cg_model = Vector3.ZERO
 	_release_kinds = []
+	for member: Node3D in _hidden_members:
+		if is_instance_valid(member):
+			member.visible = true
+	_hidden_members.clear()
+	_prop_broken = false
 	_has_contact = false
 	_contact_model = Vector3.ZERO
 
@@ -531,14 +559,30 @@ func _collect_fragment_groups(node: Node) -> void:
 func _collect_candidate_nodes(node: Node, groups_by_kind: Dictionary) -> void:
 	for child in node.get_children():
 		if child is Node3D:
-			var part_kind := _fragment_kind(String(child.name))
-			if not part_kind.is_empty():
+			var part_kind := _section_of(child)
+			if not part_kind.is_empty() and part_kind != CORE_SECTION:
 				if not groups_by_kind.has(part_kind):
 					groups_by_kind[part_kind] = []
 				groups_by_kind[part_kind].append(child)
 				# A selected model subtree already contains its wing, tail, propeller or gear meshes.
 				continue
 		_collect_candidate_nodes(child, groups_by_kind)
+
+
+## CR-09c: the crash section of a twin node: glTF extras, then builder/splitter meta, then the name rules.
+## An unknown explicit name is reported once and ignored (the name rules still apply).
+func _section_of(node: Node) -> String:
+	var explicit := ""
+	var extras: Variant = node.get_meta("extras") if node.has_meta("extras") else null
+	if extras is Dictionary and (extras as Dictionary).has(SECTION_EXTRAS_KEY):
+		explicit = String(extras[SECTION_EXTRAS_KEY])
+	elif node.has_meta(SECTION_META):
+		explicit = String(node.get_meta(SECTION_META))
+	if not explicit.is_empty():
+		if explicit == CORE_SECTION or GROUP_ORDER.has(explicit):
+			return explicit
+		push_warning("Wreck: unknown crash section '%s' on %s" % [explicit, node.name])
+	return _fragment_kind(String(node.name))
 
 
 func _fragment_kind(raw_name: String) -> String:
@@ -768,7 +812,7 @@ func _component_description(severity: Dictionary) -> String:
 
 
 func _should_detach(kind: String, class_level: int, component_hint: String) -> bool:
-	if class_level < 2:
+	if class_level < 2 or (kind == "propeller" and _prop_broken):
 		return false
 	if class_level >= 4:
 		return true
@@ -811,14 +855,19 @@ func _release_kinds_for(class_level: int, hint: String) -> Array:
 			kinds = ["canopy", "vertical_tail"]
 		elif h.contains("gear") or h.contains("wheel"):
 			kinds = ["gear", "propeller"]
-	# A model without split wing halves releases its single wing section instead.
+	# CR-09c1: release only sections this model has. Without split wing halves the single wing section stands in;
+	# a C3 set left empty falls back to the legacy wings-and-tails set so a hit never releases nothing.
 	var present: Array = []
 	for group: Dictionary in _prepared_groups:
 		present.append(String(group.get("kind", "")))
-	for i in kinds.size():
-		if String(kinds[i]).begins_with("wing_") and not present.has(kinds[i]) and present.has("wing_center"):
-			kinds[i] = "wing_center"
-	return kinds
+	var available: Array = []
+	for kind in kinds:
+		var resolved := String(kind)
+		if resolved.begins_with("wing_") and not present.has(resolved) and present.has("wing_center"):
+			resolved = "wing_center"
+		if present.has(resolved) and not available.has(resolved):
+			available.append(resolved)
+	return available
 
 
 func _component_matches(kind: String, component_hint: String) -> bool:
@@ -955,6 +1004,8 @@ func _release_pending_c3_contact_group(generation: int) -> void:
 
 func _next_c3_contact_release_index() -> int:
 	for kind in C3_CONTACT_RELEASE_ORDER:
+		if kind == "propeller" and _prop_broken:
+			continue
 		for i in range(1, _groups.size()):
 			var group: Dictionary = _groups[i]
 			if String(group.kind) != String(kind):

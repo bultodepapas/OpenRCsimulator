@@ -776,6 +776,7 @@
       }
     },
     {
+      "energy_source": "glow_fuel",
       "mass": {
         "kind": "estimated",
         "source": "150 ml at ~0.8 g/ml methanol/oil/nitro blend; flight state: half tank",

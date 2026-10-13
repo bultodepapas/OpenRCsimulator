@@ -354,6 +354,15 @@
                 "const": "m"
               }
             }
+          },
+          "energy_source": {
+            "type": "string",
+            "enum": [
+              "kerosene",
+              "glow_fuel",
+              "gasoline",
+              "lipo"
+            ]
           }
         },
         "additionalProperties": false

@@ -12,6 +12,12 @@
 extends RefCounted
 
 const TimberGeometry := preload("res://aircraft/timber_geometry.gd")
+const CrashSections := preload("res://aircraft/timber_crash_sections.gd")
+const SectionSplitter := preload("res://render/crash/section_splitter.gd")
+## TT-13c: pivots whose subtree breaks away with a section in a crash (aileron/flap with their wing, legs as gear).
+const CRASH_PIVOT_SECTIONS := [["aileron_left_hinge", "wing_left"], ["flap_left_hinge", "wing_left"],
+	["aileron_right_hinge", "wing_right"], ["flap_right_hinge", "wing_right"],
+	["gear_left_suspension", "gear"], ["gear_right_suspension", "gear"], ["tailwheel_steer", "gear"]]
 const SCENE := preload("res://assets/aircraft/turbo-lumber-evolution/timber.glb")
 const VISUAL_REVISION := "r1-fb7586f19029" # must equal TimberGeometry.DATA.revision (verify_timber.gd, check_asset.py)
 ## Hinges driven by apply_surfaces(): command key -> hinge keys.
@@ -108,6 +114,7 @@ static func build() -> Dictionary:
 		hinges[key] = {node = node, axis = node.basis.x.normalized(), rest = node.basis, pivot = node.position,
 			range_deg = a.range_deg, positive = a.positive, app_sign = float(a.app_sign)}
 	var propeller := _wrap_propeller(root, data)
+	_tag_crash_sections(root, data)
 	var gear := {}
 	gear.steering = _wrap(root, _node(root, "tailwheel_steer"), "tail_steering")
 	gear.left = _wrap(root, _node(root, "wheel_left_axle"), "wheel_left_spin")
@@ -115,6 +122,19 @@ static func build() -> Dictionary:
 	gear.tail = _wrap(root, _node(root, "tailwheel_axle"), "wheel_tail_spin")
 	return {root = root, propeller = propeller, hinges = hinges, gear = gear, has_propeller = true, data = data,
 		aircraft_id = data.catalog_id}
+
+
+## TT-13c: crash presentation only. The merged `airframe` carries the generated section map (applied by the wreck to
+## its hidden twin, never to this model), valid only for the asset it was generated from; control and gear pivots name
+## the section they break away with. Meta only: no node of the flying model moves.
+static func _tag_crash_sections(root: Node3D, data: Dictionary) -> void:
+	var airframe := root.find_child("airframe", true, false)
+	if airframe != null and String(CrashSections.DATA.glb_sha256) == String(data.inputs.glb_sha256):
+		airframe.set_meta(SectionSplitter.META, CrashSections.DATA)
+	for pair: Array in CRASH_PIVOT_SECTIONS:
+		var pivot := root.find_child(String(pair[0]), true, false)
+		if pivot != null:
+			pivot.set_meta(SectionSplitter.SECTION_META, String(pair[1]))
 
 
 # Rotates one hinge about its stored axis, relative to its rest basis. Zero restores the rest basis exactly.

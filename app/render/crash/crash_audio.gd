@@ -155,6 +155,14 @@ func touch(position: Vector3, strength: float, sliding: bool, surface: String) -
 		_play(_surface_sample(surface), position, (0.06 + 0.25 * level) * sqrt(level), 1.05 + _variation(0.05))
 
 
+## E3d2: blades snapping on the ground and the engine dying; the flight continues.
+func prop_strike(position: Vector3) -> void:
+	if not _setup_complete:
+		return
+	_play("crack_light", position, 0.35, 1.15 + _variation(0.05))
+	_play("engine_cut", position, 0.30, 1.0 + _variation(0.03))
+
+
 func secondary(position: Vector3, strength: float) -> void:
 	if not _setup_complete or strength <= 0.025 or _secondary_cooldown > 0.0:
 		return
