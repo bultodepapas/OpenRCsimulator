@@ -14,3 +14,5 @@ python3 research/audio/review-2026-10-13/measure_clamp.py "$OUT/out.wav"
 ```
 
 Movie Maker writes `out.wav` (48 kHz, stereo, 32-bit) beside the PNG frames. Measured levels carry a constant -3.0 dB centre-pan offset.
+
+- `loop_probe/`: standalone project that plays `motor_combustion.wav` as a forward loop without and with the AUD-07a guard tail (F14). Capture it like the clamp probe, then run `python3 research/audio/review-2026-10-13/measure_loop.py "$OUT/out.wav"` from the repository root.

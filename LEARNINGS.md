@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-13 · AUD-07a — Godot loops click at every wrap; measure the mixer, not the asset
+
+Godot 4.7.2 plays a forward-looping `AudioStreamWAV` by interpolating past `loop_end` into the stream's silent padding. A perfectly seamless PCM source therefore clicks at every wrap, at any pitch and with or without 3D positioning: the second difference at the seam is hundreds of times its median. Source seam metrics and earlier speaker reviews passed it. Append a copy of the loop's first frames after `loop_end` (`Soundscape.seamless_loop`), and check loops in the mixed output. On the display-less Linux host, `--write-movie <x>.png --fixed-fps 60` under Xvfb writes the real Master mix to `<x>.wav`, frame-aligned with the simulation; `tools/audio/bench.sh` wraps it. [Audio realism plan, F14](docs/plans/audio-realism.md)
+
 ## 2026-10-13 · CR-08b — effective mass grades the first contact, not the whole impact
 
 Effective mass at the struck point fixes whole-mass overrating: a level wingtip engages about 7 %. It also underrates oblique hits on long-nosed airframes. In a 45° Avanti dive the nose engages 20 % of the mass and grades C2, yet the CG keeps most of its normal energy and slams the belly down next. Grade the first contact and also bound what the CG still carries into the surface; do not count sliding speed as impact energy. [CR-08b](docs/research/crash-damage-investigations/CR-08b/README.md)

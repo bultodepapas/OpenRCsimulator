@@ -22,6 +22,10 @@ const Ground := preload("res://physics/ground_contact.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
+## CR-01d: names a crash-hull point may carry (crash_hull_components). Same list as the contract's enum path;
+## test_crash_hull_labels.gd keeps them equal. Left/right follow y_right in the le frame.
+const HULL_COMPONENTS := ["left_wing_tip", "right_wing_tip", "spinner", "propeller", "nose", "tail_end",
+	"left_stab_tip", "right_stab_tip", "fin_top", "canopy", "belly"]
 ## D1-R3 ground_support() tolerances (m, m²): contacts within 1 mm of a facet plane count as on it (data rounding, far
 ## below the 1–3 cm static sag); smaller triangle areas, near-vertical facets and shorter edges are degenerate.
 const SUPPORT_PLANE_TOL := 0.001
@@ -257,6 +261,7 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 			envelope.ground_effect = ground_effect
 	var prop := _propulsion(errors, raw.get("propulsion"))
 	var hull := _crash_hull(errors, raw.get("crash_hull"))
+	var hull_components := _crash_hull_components(errors, raw.get("crash_hull_components"), hull.size() / 3)
 	var controls := _controls(errors, raw.get("controls"))
 
 	if not errors.is_empty():
@@ -306,6 +311,7 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 		propulsion = prop,
 		controls = controls,
 		crash_hull = _hull_body(hull, cg_inv),
+		crash_hull_components = hull_components,
 		landing_gear = gear,
 	}
 	return { ok = errors.is_empty(), errors = errors, warnings = warnings, model = model }
@@ -1545,6 +1551,26 @@ static func _crash_hull(errors: PackedStringArray, node: Variant) -> PackedFloat
 				errors.append("crash_hull: %s is not a finite point within 3 m" % [p])
 				return PackedFloat64Array()
 			out.append(coordinate)
+	return out
+
+
+## CR-01d: optional semantic name per crash-hull point, in hull order. Empty when absent (crash presentation then
+## falls back to a marked geometric estimate). Presentation-only: no force or detector reads it.
+static func _crash_hull_components(errors: PackedStringArray, node: Variant, point_count: int) -> PackedStringArray:
+	var out := PackedStringArray()
+	if node == null:
+		return out
+	if typeof(node) != TYPE_ARRAY:
+		errors.append("crash_hull_components: must be an array of names")
+		return out
+	if (node as Array).size() != point_count:
+		errors.append("crash_hull_components: %d names for %d crash_hull points" % [(node as Array).size(), point_count])
+		return PackedStringArray()
+	for name in node:
+		if typeof(name) != TYPE_STRING or not HULL_COMPONENTS.has(name):
+			errors.append("crash_hull_components: '%s' is not one of %s" % [str(name), str(HULL_COMPONENTS)])
+			return PackedStringArray()
+		out.append(name)
 	return out
 
 

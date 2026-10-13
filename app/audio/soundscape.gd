@@ -11,6 +11,7 @@ const MAX_VOICES: int = 14
 const EVENT_FIRST: int = 9
 const EVENT_COUNT: int = 3
 const CRICKET_FIRST: int = 12
+const LOOP_GUARD_FRAMES: int = 64
 var voices: Array[AudioStreamPlayer3D] = []
 var trees: Array[Vector3] = []
 var canopies: Array[AABB] = []
@@ -115,12 +116,29 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 		if source == null:
 			push_error("Missing soundscape source: " + asset)
 			return
-		var wav: AudioStreamWAV = source.duplicate() as AudioStreamWAV
-		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
-		wav.loop_begin = 0
-		wav.loop_end = roundi(wav.get_length() * wav.mix_rate)
+		var wav: AudioStreamWAV = seamless_loop(source)
 		player.stream = wav
-		player.play(rng.randf_range(0.0, wav.get_length()) if voices.size() > 3 else 0.0)
+		player.play(rng.randf_range(0.0, source.get_length()) if voices.size() > 3 else 0.0)
+
+
+## AUD-07a: Godot 4.7.2 interpolates past loop_end into the stream's silent padding, so a seamless
+## source still clicks at every wrap (measured: docs/plans/audio-realism.md, F14). Copying the loop's
+## first frames after loop_end gives the resampler the true continuation; loop_end stays the source length.
+static func seamless_loop(source: AudioStreamWAV) -> AudioStreamWAV:
+	var wav: AudioStreamWAV = source.duplicate() as AudioStreamWAV
+	var sample_bytes: int = 2 if source.format == AudioStreamWAV.FORMAT_16_BITS else 1
+	var frame_bytes: int = sample_bytes * (2 if source.stereo else 1)
+	var frames: int = roundi(source.get_length() * source.mix_rate)
+	if source.format == AudioStreamWAV.FORMAT_16_BITS or source.format == AudioStreamWAV.FORMAT_8_BITS:
+		var bytes: PackedByteArray = source.data.duplicate()
+		bytes.append_array(source.data.slice(0, mini(LOOP_GUARD_FRAMES, frames) * frame_bytes))
+		wav.data = bytes
+	else:
+		push_warning("Compressed loop keeps Godot's wrap interpolation: " + source.resource_path)
+	wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	wav.loop_begin = 0
+	wav.loop_end = frames
+	return wav
 
 
 func _find_trees(field: Dictionary) -> void:

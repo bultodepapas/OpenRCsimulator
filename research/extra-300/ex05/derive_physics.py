@@ -525,6 +525,8 @@ data = {
         le(T["rudder_top_te_z"], T["fin_top_y"]),
         le(max(g["canopy"]["top"], key=lambda p: p[1])[0], max(p[1] for p in g["canopy"]["top"])),
     ], "m", "measured", "Body crash points (le frame) from " + GEO_SRC + ": wing tip LE/TE, spinner tip, rudder bottom TE, stab tips, fin top, canopy top. Wheel bottoms use E5a landing_gear contacts and are excluded from this crash hull."),
+    # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
+    "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "spinner", "tail_end", "left_stab_tip", "right_stab_tip", "fin_top", "canopy"],
     "plausibility": {
         "mass_range": q([3.0, 3.8], "kg", "manual", MANUAL + ": 7-7.5 lb (3.18-3.40 kg) dry; RCM review build 124 oz (3.52 kg) RTF; widened for fuel"),
         "inertia_reference": stik["plausibility"]["inertia_reference"],

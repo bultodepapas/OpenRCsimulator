@@ -1397,6 +1397,24 @@
     "kind": "derived",
     "source": "research/timber/tt07/derive_physics.py: TT-02 imported extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"
   },
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "spinner",
+    "tail_end",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top",
+    "propeller",
+    "belly",
+    "belly",
+    "belly",
+    "belly",
+    "belly",
+    "belly",
+    "belly",
+    "belly"
+  ],
   "plausibility": {
     "mass_range": {
       "value": [

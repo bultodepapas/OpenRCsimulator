@@ -1984,6 +1984,26 @@
         }
       },
       "additionalProperties": false
+    },
+    "crash_hull_components": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "string",
+        "enum": [
+          "left_wing_tip",
+          "right_wing_tip",
+          "spinner",
+          "propeller",
+          "nose",
+          "tail_end",
+          "left_stab_tip",
+          "right_stab_tip",
+          "fin_top",
+          "canopy",
+          "belly"
+        ]
+      }
     }
   },
   "$defs": {

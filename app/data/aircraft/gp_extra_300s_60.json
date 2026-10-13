@@ -783,6 +783,18 @@
     "kind": "measured",
     "source": "Body crash points (le frame) from assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology): wing tip LE/TE, spinner tip, rudder bottom TE, stab tips, fin top, canopy top. Wheel bottoms use E5a landing_gear contacts and are excluded from this crash hull."
   },
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "spinner",
+    "tail_end",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top",
+    "canopy"
+  ],
   "plausibility": {
     "mass_range": {
       "value": [

@@ -87,20 +87,10 @@ func _start() -> void:
 		_impact_point.y = 0.025
 	var normal_speed := maxf(0.0,point_velocity[2])
 	var tangent_speed := sqrt(point_velocity[0]*point_velocity[0]+point_velocity[1]*point_velocity[1])
-	var component := "unknown"
-	if impact.trigger == "gear_limit":
-		component = "gear"
-	elif not impact.body_point.is_empty():
-		# Geometric region estimate; hull indices are not semantic model IDs.
-		var b: PackedFloat64Array = impact.body_point
-		if absf(b[1]) > float(flight.session.aircraft.model.reference.b)*0.28:
-			component = "wing"
-		elif b[0] < -float(flight.session.aircraft.model.reference.c):
-			component = "tail"
-		elif b[0] > float(flight.session.aircraft.model.reference.c):
-			component = "engine"
-		else:
-			component = "fuselage"
+	var model: Dictionary = flight.session.aircraft.model
+	var named := component_for(str(impact.trigger), int(impact.point_index), impact.body_point,
+		model.get("crash_hull_components", PackedStringArray()), float(model.reference.b), float(model.reference.c))
+	var component: String = named.component
 	var surface := surface_at(flight.field,point[0],point[1])
 	var mass := float(flight.session.sim.mass)
 	# CR-08b: the struck point engages only its effective mass; a gear-limit snapshot has no
@@ -121,8 +111,8 @@ func _start() -> void:
 		_scenery_contacts = SceneryBodies.build_near(flight.session.collision_world(true), point)
 		add_child(_scenery_contacts)
 	report["trigger"] = impact.trigger
-	report["component_is_estimate"] = true
-	report["component_basis"] = "gear-limit trigger" if impact.trigger == "gear_limit" else "geometric hull region; not a structural section ID"
+	report["component_is_estimate"] = named.is_estimate
+	report["component_basis"] = named.basis
 	report["kinematics"] = "detected rigid contact point" if impact.has_kinematics else "detected CG proxy; deforming gear velocity unavailable"
 	report["kinematics_is_proxy"] = not impact.has_kinematics
 	report["sample_time"] = "detected_tick_point" if impact.has_kinematics else "detected_tick_CG_proxy"
@@ -135,7 +125,8 @@ func _start() -> void:
 	report["fuel_kind"] = "declared inventory; no flight consumption"
 	# Presentation estimate, not a simulated tank/joint failure. A damaged wing
 	# alone does not imply a ruptured tank; whole-airframe destruction can.
-	report["tank_ruptured"] = int(report["class"]) == 4 or (int(report["class"]) == 3 and component in ["fuselage","engine"] and float(report["estimated_energy_j"]) >= 600.0)
+	# Central = the fuselage/engine/propeller groups, so labelled nose, belly and spinner hits count (CR-01d).
+	report["tank_ruptured"] = int(report["class"]) == 4 or (int(report["class"]) == 3 and str(report.get("component_group","")) in ["fuselage","engine","propeller"] and float(report["estimated_energy_j"]) >= 600.0)
 	report["tank_rupture_kind"] = "estimated: C4, or C3 central impact >=600 J; uncalibrated"
 	report["tick"] = impact.tick
 	var velocity := Frames.ned_to_render(Array(v_ned))
@@ -153,6 +144,26 @@ func _start() -> void:
 	active = true
 	_age = 0.0
 	impact_usec = Time.get_ticks_usec()-began
+
+## CR-01d: the struck component. A labelled hull point names it (the nearest hull point, not a structural section);
+## without labels, a marked geometric region estimate remains. Gear overtravel is always the gear.
+static func component_for(trigger: String, point_index: int, body_point: PackedFloat64Array,
+		labels: PackedStringArray, span: float, chord: float) -> Dictionary:
+	if trigger == "gear_limit":
+		return {component = "gear", is_estimate = true, basis = "gear-limit trigger"}
+	if point_index >= 0 and point_index < labels.size():
+		return {component = labels[point_index], is_estimate = false,
+			basis = "aircraft data crash_hull_components label of the struck hull point; not a structural section ID"}
+	if body_point.size() != 3:
+		return {component = "unknown", is_estimate = true, basis = "no struck hull point"}
+	var component := "fuselage"
+	if absf(body_point[1]) > span*0.28:
+		component = "wing"
+	elif body_point[0] < -chord:
+		component = "tail"
+	elif body_point[0] > chord:
+		component = "engine"
+	return {component = component, is_estimate = true, basis = "geometric hull region; crash_hull_components unavailable"}
 
 static func surface_at(field: Dictionary, north: float, east: float) -> String:
 	for kind: String in ["runway","mown","rough"]:

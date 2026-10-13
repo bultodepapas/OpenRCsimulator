@@ -174,6 +174,15 @@ def add_v2_overlay(schema: dict, spec: dict):
     }
     merge_required(aero, ["conventions", "reference_coefficients"])
 
+    # CR-01d: optional semantic name per crash_hull point; the vocabulary lives in the contract's enum paths.
+    # The runtime loader also checks that the list matches the number of hull points.
+    hull_names = next(rule["values"] for rule in spec["enum_paths"] if rule["path"] == "/crash_hull_components/*")
+    root_props["crash_hull_components"] = {
+        "type": "array",
+        "minItems": 4,
+        "items": {"type": "string", "enum": hull_names},
+    }
+
     balance_props = root_props["balance"]["properties"]
     add_text_field(balance_props, "configuration", nonempty=True)
     inventory_items = root_props["inventory"]["items"]

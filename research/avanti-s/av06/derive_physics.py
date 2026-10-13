@@ -674,6 +674,8 @@ data = {
         le(max(z for z, _ in fin_raw), fin_top_y),
         le(canopy_top[0], canopy_top[2]),
     ], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tips LE/TE, nose and tail cone, belly at three stations (gear UP), stab tips, fin top, canopy top. No landing gear contacts: any ground contact is a crash (gear up)"),
+    # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
+    "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "nose", "tail_end", "belly", "belly", "belly", "left_stab_tip", "right_stab_tip", "fin_top", "canopy"],
     "plausibility": {
         "mass_range": qi("airframe.mass_range", "kg"),
         "inertia_reference": stik["plausibility"]["inertia_reference"],

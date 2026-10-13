@@ -13,6 +13,8 @@ const Propulsion := preload("res://physics/propulsion.gd")
 const Slipstream := preload("res://physics/slipstream.gd")
 const SmokeAssignment := preload("res://ui/smoke_aux_assignment.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
+const CameraRig := preload("res://render/camera/camera_rig.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Commands := preload("res://input/commands.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
@@ -117,8 +119,21 @@ var overlay_settings: Variant = {}
 var startup_error: String = ""
 var _airplane: Dictionary
 var _camera: Camera3D
+## CAM-02: views, zoom and camera input (render/camera/camera_rig.gd); built with the world.
+var _rig: CameraRig
+## The view a flight starts in: --view=<pilot|chase|orbit|closeup>, or closeup with --inspect.
+var _initial_view := "pilot"
+var _camera_dt := 0.0
 var _panel: Label
-var _inspect := false
+## The historical close-up switch, kept for fixtures that set it: true selects the close-up view, false the pilot view.
+var _inspect: bool:
+	get:
+		return _rig.view == "closeup" if _rig != null else _initial_view == "closeup"
+	set(on):
+		if _rig != null:
+			_rig.set_view("closeup" if on else "pilot")
+		else:
+			_initial_view = "closeup" if on else "pilot"
 var _capturing := false
 var _t := 0.0
 var _prop_angle := 0.0
@@ -241,6 +256,14 @@ func _ready() -> void:
 	# Deliver input events at once: with accumulation, joypad events reach the game a frame late on Linux/macOS.
 	Input.use_accumulated_input = false
 	_inspect = args.has("inspect")
+	if args.has("view"):
+		_initial_view = str(args.view)
+		if not CameraRig.is_view(_initial_view) or (args.has("visual_pose") and _initial_view != "pilot"):
+			push_error("--view must be one of %s (visual poses need the pilot view)" % ", ".join(CameraRig.VIEWS))
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 	_scripted = args.has("scripted")
 	if aircraft_id == "":
 		aircraft_id = str(args.get("aircraft", Catalog.DEFAULT_ID))
@@ -287,6 +310,10 @@ func _ready() -> void:
 		_look_height = float(args.get("look_alt", field.pilot.eye_height))
 	Atmosphere.engine_shadows = Atmosphere.engine_shadows_enabled(args, interactive_start)
 	_build_world()
+	_rig.set_view(_initial_view)
+	_rig.auto_zoom = _auto_zoom
+	_rig.look = _look
+	_rig.look_height = _look_height
 	_shadow_mode = str(args.get("shadow", "sun"))
 	if args.has("hide_airplane"):
 		# L0c readability: the same view without the airplane (and its pilot-aid shadow) is the background reference.
@@ -508,12 +535,13 @@ func _process(delta: float) -> void:
 			EngineSound.update(_engine_audio, 0.0, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
 	var surfaces: Dictionary = session.surfaces()
 	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
+	_camera_dt = dt
 	_render_pose(_current_pose(), surfaces, _prop_angle)
 	_update_smoke()
 	if _crash_director != null:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
-			_crash_director.aim(_camera, _inspect)
+			_crash_director.aim(_camera, _rig.view != "pilot") # chase and orbit keep the director's wreck view
 		if _crash_director.active:
 			_panel.text = _crash_director.description()
 	_update_hud()
@@ -675,7 +703,7 @@ func _status() -> String:
 		line += "\n" + recorder.note
 	else:
 		line += "\n[T] record trace"
-	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _auto_zoom else "off", _shadow_mode]
+	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _rig.auto_zoom else "off", _shadow_mode]
 	if _note != "":
 		line += "\n" + _note
 	return line
@@ -712,6 +740,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_smoke_key_on = not _smoke_key_on
 		get_viewport().set_input_as_handled()
 		return
+	if _camera_input(event):
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
 			KEY_J:
@@ -726,7 +756,19 @@ func _unhandled_input(event: InputEvent) -> void:
 				elif not _scripted:
 					recorder.start(_trace_meta())
 			KEY_C:
-				_inspect = not _inspect
+				_rig.cycle(-1 if event.shift_pressed else 1)
+			KEY_1:
+				_rig.set_view("pilot")
+			KEY_2:
+				_rig.set_view("chase")
+			KEY_5:
+				_rig.set_view("orbit")
+			KEY_EQUAL, KEY_KP_ADD:
+				_rig.zoom(1.0)
+			KEY_MINUS, KEY_KP_SUBTRACT:
+				_rig.zoom(-1.0)
+			KEY_BACKSPACE:
+				_rig.reset_view()
 			KEY_K:
 				session.start_calibration()
 			KEY_ENTER, KEY_KP_ENTER:
@@ -737,7 +779,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				else:
 					pause_requested.emit()
 			KEY_Z:
-				_auto_zoom = not _auto_zoom
+				_rig.toggle_auto_zoom()
 			KEY_V:
 				_shadow_mode = SHADOW_MODES[(SHADOW_MODES.find(_shadow_mode) + 1) % SHADOW_MODES.size()]
 			KEY_F3:
@@ -752,6 +794,29 @@ func _unhandled_input(event: InputEvent) -> void:
 				_note = session.reload() if _experimental_aircraft_path.is_empty() else "Experimental polar is fixed for this flight; restart the application to load another file."
 				_update_cg_model()
 				print(_note)
+
+
+## CAM-04: mouse wheel zooms the current view; a right-button drag turns the orbit view. True when used.
+func _camera_input(event: InputEvent) -> bool:
+	if _rig == null:
+		return false
+	if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+		var notches: float = event.factor if event.factor > 0.0 else 1.0
+		_rig.zoom(notches if event.button_index == MOUSE_BUTTON_WHEEL_UP else -notches)
+		get_viewport().set_input_as_handled()
+		return true
+	if event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_RIGHT) != 0:
+		_rig.drag(event.relative)
+		get_viewport().set_input_as_handled()
+		return true
+	return false
+
+
+## Terrain height (render y) under a render-space point, from the session's own ground table; NAN when unknown.
+func _ground_height(x: float, z: float) -> float:
+	if session == null:
+		return 0.0
+	return GroundTerrain.sample(-z, x, session.ground_surfaces)[0]
 
 
 ## What the flight overlays show this frame; {} when there is no physics flight to describe.
@@ -908,6 +973,8 @@ func _on_resetting() -> void:
 	_visual_timeline = VisualTimeline.create(lighting_config).timeline
 	_visual_context_status = "present"
 	_t = 0.0
+	if _rig != null:
+		_rig.reset()
 	if recorder.recording:
 		recorder.stop()
 	if _engine_audio != null and _soundscape_audio == null and _engine_audio.playing:
@@ -916,7 +983,7 @@ func _on_resetting() -> void:
 
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
-## --alt=4 (start altitude, m), --autozoom=0, --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
+## --alt=4 (start altitude, m), --autozoom=0, --view=pilot|chase|orbit|closeup (CAM-04), --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
 ## --hide_airplane (readability reference), --hide_treeline (L6c tree-mask reference; refused without field objects),
 ## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
 ## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
@@ -969,7 +1036,7 @@ func _validate_experimental_aircraft_data(path: Variant, selected_aircraft_id: S
 func _view_name() -> String:
 	if not _visual_pose.is_empty():
 		return "fixed inspection"
-	return "close-up" if _inspect else "pilot"
+	return _rig.view_name()
 
 
 func _build_world() -> void:
@@ -987,6 +1054,7 @@ func _build_world() -> void:
 	Shadow.bind_model(_shadow, _airplane.root)
 	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
 	_camera = PilotCamera.create(self, field.pilot)
+	_rig = CameraRig.new(_camera, _extent.x)
 	if overlays_enabled:
 		_overlays = OverlayManager.new(overlay_settings, TranslationServer.get_locale().substr(0, 2))
 		_overlays.settings_changed.connect(func(settings: Dictionary) -> void: overlay_settings_changed.emit(settings))
@@ -1030,10 +1098,8 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction if _shadow_mode == "sun" else Vector3.UP, strength)
-	if is_nan(_look.x):
-		PilotCamera.aim(_camera, pose.pos, _airplane.root.transform, _inspect, _extent.x if _auto_zoom else 0.0)
-	else:
-		PilotCamera.look(_camera, _look.x, _look.y, _look_height)
+	var paused: bool = session != null and session.sim.paused and not _scripted
+	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height)
 
 
 func _write_trace_and_quit(ticks: int, path: String) -> void:
@@ -1194,7 +1260,7 @@ func _log_frame_time(delta: float) -> void:
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa, scaling_3d_scale = get_viewport().scaling_3d_scale},
 		camera = {
 			fov_deg = _camera.fov,
-			autozoom = _auto_zoom,
+			autozoom = _rig.auto_zoom,
 			near_m = _camera.near,
 			far_m = _camera.far,
 			mode = _view_name(),
@@ -1261,7 +1327,7 @@ func capture_evidence() -> Dictionary:
 		pose = VisualEvidence.transform(Transform3D(basis, position)), coordinate_frame = "render: east/up/south; metres",
 		distance_to_pilot_m = position.distance_to(pilot), distance_to_camera_m = position.distance_to(_camera.global_position),
 		camera = {transform = VisualEvidence.transform(_camera.global_transform), fov_deg = _camera.fov,
-			autozoom = _auto_zoom, near_m = _camera.near, far_m = _camera.far, mode = _view_name(),
+			autozoom = _rig.auto_zoom, near_m = _camera.near, far_m = _camera.far, mode = _view_name(),
 			projection = _camera.projection, keep_aspect = _camera.keep_aspect,
 			viewport = [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y]},
 		exposure = _env.tonemap_exposure, tonemapper = _env.tonemap_mode,

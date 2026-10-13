@@ -14,12 +14,18 @@ The owner reports four things: the jet turbine does not sound good, it "goes awa
 | --- | --- |
 | The jet sounds poor | F1, F2, F3, F9 |
 | The jet "goes away too fast" | F1 and F3 (dull and quiet, no aft roar after the pass), F8b (no propagation delay), F4 (abrupt crash fade) |
-| Odd cycles | F5 (short loops repeat at 1/pitch), F8a (Doppler chirps) |
-| Glitches | F8a, F7 (flat level up close), F10, F11 |
+| Odd cycles | **F14 (a click at every loop wrap, fixed in AUD-07a)**, F5 (short loops repeat at 1/pitch), F8a (Doppler chirps) |
+| Glitches | F14, F8a, F7 (flat level up close), F10, F11 |
 
 ## 2. What the code does today
 
 All values were read from the working tree on 2026-10-13 or measured with the probes in [research/audio/review-2026-10-13](../../research/audio/review-2026-10-13/README.md).
+
+### Every looped voice
+
+| # | Finding | Where | Effect |
+| --- | --- | --- | --- |
+| F14 | **Every loop clicks at its wrap point.** Godot 4.7.2 interpolates past `loop_end` into the stream's silent padding. A seamless source still clicks: at the seam the second difference is 0.12–0.43 against a median of 0.0003–0.0004 (hundreds of times larger), at pitch 1.0 and 0.87, also on a plain `AudioStreamPlayer`; with the guard it falls to 0.002 ([loop probe](../../research/audio/review-2026-10-13/README.md)). In flight the [bench](#aud-06-bench-results) finds a click every 1/pitch s on the engine. Fixed in AUD-07a by copying the loop's first 64 frames after `loop_end`. | [soundscape.gd `seamless_loop`](../../app/audio/soundscape.gd), crash `fire_loop` in [crash_audio.gd](../../app/render/crash/crash_audio.gd) (crash track) | A tick every 0.5–2 s on the engine, steady with RPM: the main "odd cycle" and glitch. Wind, foliage, airframe, crickets and the crash fire also wrapped with a click, every 4–31 s. |
 
 ### Turbine (Avanti S, JetCat P100-RX, 44 000–154 000 rpm)
 

@@ -57,7 +57,8 @@ func _run() -> void:
 		var expected_motor: AudioStreamWAV = load("res://assets/audio/soundscape/" + motor_files[index]) as AudioStreamWAV
 		var configured_motor: AudioStreamWAV = rig.voices[0].stream as AudioStreamWAV
 		_check("propulsion kind loads its matching original motor source",
-			configured_motor != null and expected_motor != null and configured_motor.data == expected_motor.data)
+			configured_motor != null and expected_motor != null
+			and configured_motor.data.slice(0, expected_motor.data.size()) == expected_motor.data)
 		var decoded_birds: bool = rig.birds.size() == 10
 		for bird: AudioStreamWAV in rig.birds:
 			decoded_birds = decoded_birds and bird != null and bird.data.size() > 0
@@ -66,9 +67,11 @@ func _run() -> void:
 		for voice_index: int in [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13]:
 			var loop: AudioStreamWAV = rig.voices[voice_index].stream as AudioStreamWAV
 			pcm_loops = pcm_loops and loop.format == AudioStreamWAV.FORMAT_16_BITS
-			pcm_loops = pcm_loops and loop.loop_end == roundi(loop.get_length() * loop.mix_rate)
-			pcm_loops = pcm_loops and loop.loop_end == loop.data.size() / 2
-		_check("imported PCM loops cover the complete source duration", pcm_loops)
+			var guard: int = SoundscapeScript.LOOP_GUARD_FRAMES * 2
+			pcm_loops = pcm_loops and loop.loop_begin == 0 and loop.loop_end == (loop.data.size() - guard) / 2
+			# AUD-07a: the frames after loop_end repeat the loop start, so the wrap interpolates seamlessly.
+			pcm_loops = pcm_loops and loop.data.slice(loop.data.size() - guard) == loop.data.slice(0, guard)
+		_check("imported PCM loops cover the complete source duration with a seamless wrap guard", pcm_loops)
 
 		# Exercise a real day/calm scheduler through the public update path, recording
 		# the clip assigned to each scheduled voice rather than calling the scheduler.

@@ -1122,6 +1122,22 @@
     "kind": "derived",
     "source": "Points that hit the ground first (le frame) from assets/aircraft/p51d-mustang-120/geometry.json (P51-01: full-size P-51D dimensions scaled to the kit span): wing tip LE/TE (with dihedral), spinner tip, propeller disc bottom and lower quarters (a prop strike), rudder bottom TE, stab tips, fin top, canopy top, scoop bottom. The wheels are landing-gear contacts (P51-12)"
   },
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "spinner",
+    "propeller",
+    "propeller",
+    "propeller",
+    "tail_end",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top",
+    "canopy",
+    "belly"
+  ],
   "plausibility": {
     "mass_range": {
       "value": [

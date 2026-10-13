@@ -169,6 +169,9 @@ def derive(inputs=None):
              [gv("fin","rudder_te_z"),0,gv("fin","top_y")],[-0.2515,0,-gv("thrust","propeller_radius")]]
     # Fuselage skin excludes wheels; retain several lower-envelope stations for belly strikes.
     for row in g["fuselage"]["stations"][::max(1,len(g["fuselage"]["stations"])//8)]:hull.append([row[0],0,row[2]])
+    # CR-01d: one semantic name per hull point, in the order built above (crash presentation only).
+    hull_names=["left_wing_tip","right_wing_tip","spinner","tail_end","left_stab_tip","right_stab_tip","fin_top","propeller"]
+    hull_names+=["belly"]*(len(hull)-len(hull_names))
     model=dict(format="openrc-aircraft v2",id="turbo-lumber-evolution",
       description="EXPERIMENTAL TT-07: photograph-inspired r1 mesh (revision unconfirmed), B-reference 800 Kv/70 A/4S 3200 mAh/11x7.3 three-blade loadout. Estimated inventory, motor losses and borrowed two-blade propeller map. Wheels fixed, flaps up, slats absent, assists off; prescribed bus, no battery depletion. Not physical validation.",
       convention_id="openrc-le-frd-v1",capabilities=dict(controls="conventional",gear="fixed_taildragger",propulsion_layout="single_tractor",energy="fixed_voltage",damage="terminal_hull",flaps="not_simulated"),
@@ -181,6 +184,7 @@ def derive(inputs=None):
           envelope=dict(CL_max=eq("CL_max","1"),CL_min=eq("CL_min","1"),stall_blend_width=eq("stall_blend_width","deg"),CD90=q(1.11+0.018*ar,"1"),sideslip_blend=q([15,25],"deg","estimated","TT-07 linear-to-sine sideslip blend"))),
       propulsion=propulsion,landing_gear=dict(contacts=gc,rolling_resistance=eq("rolling_resistance","1"),side_friction=eq("side_friction","1"),peak_slip_angle=eq("peak_slip_angle","deg"),breakaway_factor=eq("breakaway_factor","1")),
       crash_hull=q(hull,"m",source=SOURCE+": TT-02 imported extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"),
+      crash_hull_components=hull_names,
       plausibility=dict(mass_range=q([1.86,2.4],"kg","estimated","Manual 1.860 kg empty/2.190 kg with pack; widened upper reference-build limit"),inertia_reference=q(j[:3],"kg·m2",source=SOURCE+": same inventory box estimate; self-reference is no independent plausibility evidence")))
     return model,dict(mass=mass,cg=cg,inertia=j,stall_speed=vs,start_speed=speed,static_margin=(xarp-values["Cma"]/cla*c-cg_x)/c,CD0=cd0,tail_load_share=tail_share,virtual_mass=residue,virtual_station=xb)
 

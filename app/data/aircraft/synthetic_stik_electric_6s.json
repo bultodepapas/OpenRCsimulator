@@ -695,6 +695,16 @@
     "kind": "estimated",
     "source": "Points that hit the ground first (le frame): wing tips (60 in span, slight dihedral), spinner tip (firewall 6.94 in ahead of LE plus engine and spinner), tail end and stabilizer tips (52 in overall length), fin top, belly under the CG (fuselage bottom 0.053 m below the thrust line, from the model team's fuselage stations). Read from the Jensen plan and the visual model. Since E1 the wheels are landing_gear contacts, not hull points: a wheel on the ground is a landing, a leg pushed past its travel is a crash"
   },
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "spinner",
+    "tail_end",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top",
+    "belly"
+  ],
   "landing_gear": {
     "description": "E1: the wheels as spring-damper contacts with the flat ground (physics/ground_contact.gd): F_up = max(0, k·compression + c·rate) at each wheel bottom. Stiffness from the ROADMAP E1 rule ω·dt < 0.1 (ω = sqrt(Σk/m) at the 240 Hz tick), checked by the loader; the CG must lie inside the wheel footprint. E2: tyre forces in the ground plane along each wheel's heading: rolling resistance C_rr·N and a slip-angle side force saturating at μ·N (friction circle); the nose wheel steers with the rudder servo. Coefficients are for a tyre on dry pavement; per-surface factors (grass) come with the field surfaces (E3). Brakes: none.",
     "contacts": [

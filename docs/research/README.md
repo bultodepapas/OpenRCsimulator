@@ -123,6 +123,10 @@ The [smoke guide](../SMOKE-PLAN.md) records the unintegrated feature and its pro
 
 The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begin with [primary sources](wind-physics-primary-sources.md), [implementation evidence](wind-implementation/README.md), [M5-W04a turbulence](wind-implementation/M5-W04a/README.md), and the [investigation index](wind-investigations/README.md). Atmospheric density research is in [M5-ATM-1](atmosphere/M5-ATM-1/kernel/README.md) and [M5-ATM-2/3](atmosphere/M5-ATM-2/README.md).
 
+### Drone racing (proposed)
+
+[DR-01](drone-racing/DR-01/README.md) records the identified quadrotor models and datasets, small-propeller data limits, Betaflight rate and mixer semantics, racing formats and timing systems, FPV camera and OSD facts, Compatibility-renderer limits and the code-seam map for a multirotor. The [drone racing plan](../plans/drone-racing.md) owns the proposed steps; nothing is implemented.
+
 ### Cross-aircraft
 
 [Aircraft reference index](aircraft-reference-index.md) maps the owner-supplied local references by aircraft identity; the source files themselves are local only.

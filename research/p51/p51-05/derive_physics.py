@@ -683,6 +683,8 @@ data = {
         le(canopy_top[0], canopy_top[1]),
         le(g["scoop_stations"][2][0], g["scoop_stations"][2][2]),
     ], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tip LE/TE (with dihedral), spinner tip, propeller disc bottom and lower quarters (a prop strike), rudder bottom TE, stab tips, fin top, canopy top, scoop bottom. The wheels are landing-gear contacts (P51-12)"),
+    # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
+    "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "spinner", "propeller", "propeller", "propeller", "tail_end", "left_stab_tip", "right_stab_tip", "fin_top", "canopy", "belly"],
     "plausibility": {
         "mass_range": q([float(lo_m) - 1.5, float(hi_m) + 2.0], "kg", "estimated", f"kit flying mass range {lo_m}-{hi_m} kg (source.json; CARF 2.54 m: 15-17 kg dry), widened for fuel and the virtual balancing mass of the reference build"),
         "inertia_reference": stik["plausibility"]["inertia_reference"],

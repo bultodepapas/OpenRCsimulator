@@ -1291,6 +1291,21 @@
     "kind": "derived",
     "source": "Points that hit the ground first (le frame) from assets/aircraft/avanti-s-a200/geometry.json (AV-02 visual blockout, estimated): wing tips LE/TE, nose and tail cone, belly at three stations (gear UP), stab tips, fin top, canopy top. No landing gear contacts: any ground contact is a crash (gear up)"
   },
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "nose",
+    "tail_end",
+    "belly",
+    "belly",
+    "belly",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top",
+    "canopy"
+  ],
   "plausibility": {
     "mass_range": {
       "value": [

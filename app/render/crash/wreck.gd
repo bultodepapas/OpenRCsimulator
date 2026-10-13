@@ -765,6 +765,8 @@ func _component_matches(kind: String, component_hint: String) -> bool:
 		return normalized.contains("fin") or normalized.contains("rudder") or normalized.contains("tail")
 	if kind == "gear":
 		return normalized.contains("gear") or normalized.contains("wheel")
+	if kind == "propeller":
+		return normalized.contains("propeller") or normalized.contains("spinner")
 	return normalized.contains(kind)
 
 
