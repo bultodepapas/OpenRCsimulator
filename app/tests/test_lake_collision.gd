@@ -26,6 +26,7 @@ func _initialize() -> void:
 	_test_water_grazing(lake)
 	_test_bank_policy_and_gear(lake)
 	_test_rotating_wing(lake)
+	_test_prop_disc(lake)
 	_test_hull_contact_context(lake)
 	print("all lake collision checks passed" if _failures == 0 else "%d lake collision checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
@@ -41,6 +42,13 @@ func _test_invalid_and_outside(lake: Dictionary) -> void:
 		candidate, hull, {}, 1, 0.1, MASS, _inertia) == null)
 	_check("flight outside the bounded bank keeps the no-event result", LakeCollision.first_hit(lake,
 		previous, candidate, hull, {}, 1, 0.1, MASS, _inertia) == null)
+	var outside_polygon_previous := _state([143.0, 150.0, -1.0], [0.0, 0.0, 20.0],
+		M.q_from_euler(0.0, 0.0, 0.0), [0.0, 0.0, 0.0])
+	var outside_polygon_candidate := _state([143.0, 150.0, 1.0], [0.0, 0.0, 20.0],
+		M.q_from_euler(0.0, 0.0, 0.0), [0.0, 0.0, 0.0])
+	_check("path inside lake bounds but outside the irregular bank polygon remains clear",
+		LakeCollision.first_hit(lake, outside_polygon_previous, outside_polygon_candidate,
+			hull, {}, 1, 0.1, MASS, _inertia) == null)
 
 
 func _test_water_and_hull_first(lake: Dictionary) -> void:
@@ -131,6 +139,21 @@ func _test_rotating_wing(lake: Dictionary) -> void:
 		_check("rotating wing event preserves point angular velocity", M.norm(event.velocity_ned) > 25.0
 			and event._state_at_contact.size() == RB.SIZE and event.crossing.available,
 			"velocity=%s fraction=%.6f" % [event.velocity_ned, event.time_fraction])
+
+
+func _test_prop_disc(lake: Dictionary) -> void:
+	var previous := _state([110.0, 125.0, -1.0], [0.0, 0.0, 20.0], M.q_from_euler(0.0, 0.0, 0.0), [0.0, 0.0, 0.0])
+	var candidate := _state([110.0, 125.0, 1.0], [0.0, 0.0, 20.0], M.q_from_euler(0.0, 0.0, 0.0), [0.0, 0.0, 0.0])
+	var off_water_hull := PackedFloat64Array([200.0, 0.0, 0.0])
+	var disc := {"hub": PackedFloat64Array([0.0, 0.0, 0.0]),
+		"axis": PackedFloat64Array([1.0, 0.0, 0.0]), "radius": 0.1}
+	var event: LakeCollision.WaterEvent = LakeCollision.first_hit(lake, previous, candidate,
+		off_water_hull, {}, 1, 0.1, MASS, _inertia, true, disc)
+	_check("optional propeller disc is a swept water probe", event != null and event.trigger == "water"
+		and event.probe_kind == "propeller" and event.point_index == -1
+		and event.component_name == "propeller",
+		"kind=%s fraction=%s" % [event.probe_kind if event != null else "",
+			event.time_fraction if event != null else -1.0])
 
 
 func _test_hull_contact_context(lake: Dictionary) -> void:

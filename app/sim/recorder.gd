@@ -21,7 +21,7 @@ func start(meta: Dictionary) -> void:
 	trace.clear()
 	trace.meta = meta.duplicate(true)
 	recording = true
-	trace.record(_sim.tick, _sim.time(), _sim.state, _sim.last_loads, _sim.inputs, _sim.aux)
+	trace.record(_sim.tick, _sim.time(), _sim.state, _sim.last_loads, _sim.inputs, _sim.aux, _sim.continuous.duplicate())
 
 
 ## Saves to `path`, by default user://traces/ (on Linux: ~/.local/share/godot/app_userdata/OpenRC Simulator/traces/).
@@ -49,4 +49,4 @@ func seconds() -> float:
 
 func _on_stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux: PackedFloat64Array) -> void:
 	if recording:
-		trace.record(tick, t, state, loads, inputs, aux)
+		trace.record(tick, t, state, loads, inputs, aux, _sim.continuous.duplicate())

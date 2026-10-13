@@ -120,6 +120,8 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 		var demand: float=-load-prop.rotor_inertia*M.dot(prop.axis,alpha)
 		if values[0]<0.0:
 			drive=-friction # moving left limit, never committed
+		elif demand < -friction:
+			return {} # reverse rotation exceeds static hold and is outside this installation's domain
 		elif demand<=friction:
 			locked=true
 			drive=load+prop.rotor_inertia*M.dot(prop.axis,alpha)
@@ -195,5 +197,6 @@ static func telemetry(owner: Node) -> Dictionary:
 	out.shaft_work_j=values[13]
 	out.propeller_work_j=values[14]
 	out.thrust_work_j=values[15]
-	out.above_recommended_rpm=values[0]>owner.aircraft.model.propulsion.glow.profile.operation.recommended_max_rpm
+	out.recommended_max_rpm=minf(owner.aircraft.model.propulsion.glow.profile.operation.recommended_max_rpm,owner.aircraft.model.propulsion.glow.propeller.max_rpm)
+	out.above_recommended_rpm=values[0]>out.recommended_max_rpm
 	return out

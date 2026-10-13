@@ -1,4 +1,5 @@
-## Stable roots within the explicit engine envelope. All restoring roots are reported.
+## Bracketed restoring roots within the explicit engine envelope.
+## Include every engine RPM knot so narrow tabulated branches cannot hide between grid samples.
 extends RefCounted
 const Source := preload("res://physics/glow/source.gd")
 const Prop := preload("res://physics/glow/propeller.gd")
@@ -21,10 +22,18 @@ static func solve(prop: Dictionary, throttle: float, u: float, rho: float, dry_d
 	var maximum: float = prop.glow.profile.operation.max_rpm
 	var minimum: float = prop.glow.settings.stall_rpm
 	var roots := PackedFloat64Array()
+	var nodes: Array[float]=[]
+	for i in range(1,129): nodes.append(minimum+(maximum-minimum)*i/128.0)
+	for key in prop.glow.profile.parameters:
+		var table: Variant=prop.glow.profile.parameters[key]
+		if not table is PackedFloat64Array or key=="combustion_efficiency": continue
+		for i in range(0,table.size(),2):
+			if table[i]>minimum and table[i]<maximum: nodes.append(table[i])
+	nodes.sort()
 	var lo: float = minimum
 	var flo: float = residual(prop,lo,throttle,u,rho,dry_density)
-	for i in range(1,129):
-		var hi: float = minimum+(maximum-minimum)*i/128.0
+	for hi: float in nodes:
+		if hi<=lo: continue
 		var fhi: float = residual(prop,hi,throttle,u,rho,dry_density)
 		if not is_finite(flo) or not is_finite(fhi): return {ok=false, roots=roots}
 		if flo>0.0 and fhi<=0.0:
@@ -42,4 +51,4 @@ static func solve(prop: Dictionary, throttle: float, u: float, rho: float, dry_d
 		lo=hi
 		flo=fhi
 	return {ok=not roots.is_empty(),roots=roots,rpm=roots[roots.size()-1] if not roots.is_empty() else NAN,
-		selection="highest restoring root in supported envelope"}
+		selection="highest bracketed restoring root on RPM-knot plus 128-interval mesh"}

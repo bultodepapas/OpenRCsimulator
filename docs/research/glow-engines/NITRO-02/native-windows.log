@@ -1,0 +1,15 @@
+=== glow_2t.log ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+trace saved: C:\DEVELOPMENT\OpenRCsimulator\.tools\glow-package-20261013\native-proof\glow_2t.csv (721 rows)
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+
+=== glow_4t.log ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+trace saved: C:\DEVELOPMENT\OpenRCsimulator\.tools\glow-package-20261013\native-proof\glow_4t.csv (721 rows)
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

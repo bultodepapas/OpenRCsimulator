@@ -2,13 +2,13 @@
 # One adapter for every catalog aircraft (app_state/aircraft_catalog.gd): build(id) dispatches to the model team's
 # builder for that ID; with no argument it is the Ugly Stik, as before. Every build returns at least
 # { root, propeller, hinges, aircraft_id } and keeps the `airplane`, `propeller` and `*_hinge` node names.
-# `propeller.rotation.z` is the spin phase main.gd accumulates from the rotor speed (positive). The Timber's wrapper
-# turns +θ clockwise seen from behind, the simulator's rotor sense (sim/flight_session.gd, physics/dynamics.gd); the
-# Stik, Extra and P-51 propeller nodes are root-aligned (+Z aft), so the same +θ turns them counter-clockwise seen from
-# behind. The model owner decides which way the three procedural propellers should turn (TT-05 review finding).
+# `propeller.rotation.z` is the spin phase main.gd accumulates from the rotor speed. The adapter returns the signed
+# direction separately: existing models keep their historical positive spin, while the glow Stik follows the physical
+# shaft sense. Glow propeller diameter comes from the validated aircraft model through apply_propeller_diameter().
 extends RefCounted
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
 const Controls := preload("res://aircraft/ugly_stik_controls.gd")
 const UglyStik := preload("res://aircraft/ugly_stik_model.gd")
 const StikGeometry := preload("res://aircraft/ugly_stik_geometry.gd")
@@ -27,31 +27,23 @@ const TIMBER_ID := "turbo-lumber-evolution"
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
 
-# The Stik builder's prop is 12 in from generated visual geometry. These inferred glow installations use estimated
-# 13 x 6 and 14 x 6 props respectively; scale only their propeller nodes to match those stated diameters.
-const STIK_GLOW_55AX_PROP_DIAMETER_M := 0.3302
-const STIK_GLOW_FS64V_PROP_DIAMETER_M := 0.3556
-
-
 static func _mat(color: Color) -> StandardMaterial3D:
 	return UglyStik.material(color)
 
 
 ## Returns { root: Node3D, propeller: Node3D, hinges: { name: … }, aircraft_id, … } for a catalog ID; {} for an
 ## unknown one (never another airplane in its place).
-static func build(id := STIK_ID) -> Dictionary:
+static func build(id := STIK_ID, propeller_diameter_m := NAN) -> Dictionary:
 	var airplane: Dictionary
 	match id:
 		STIK_ID:
 			airplane = UglyStik.build()
 		STIK_GLOW_55AX_ID:
 			airplane = UglyStik.build()
-			var ratio := STIK_GLOW_55AX_PROP_DIAMETER_M / float(StikGeometry.DATA.equipment.prop_diameter)
-			airplane.propeller.scale = Vector3(ratio, ratio, 1.0)
+			airplane.propeller_spin_sign = -1.0
 		STIK_GLOW_FS64V_ID:
 			airplane = UglyStik.build()
-			var ratio := STIK_GLOW_FS64V_PROP_DIAMETER_M / float(StikGeometry.DATA.equipment.prop_diameter)
-			airplane.propeller.scale = Vector3(ratio, ratio, 1.0)
+			airplane.propeller_spin_sign = -1.0
 		EXTRA_ID:
 			airplane = Extra.build()
 		AVANTI_ID:
@@ -64,10 +56,46 @@ static func build(id := STIK_ID) -> Dictionary:
 			push_error("render/airplane.gd: unknown aircraft '%s'" % id)
 			return {}
 	airplane.aircraft_id = id
+	if id in [STIK_GLOW_55AX_ID, STIK_GLOW_FS64V_ID]:
+		var selected_diameter: float = float(propeller_diameter_m)
+		if not is_finite(selected_diameter) or selected_diameter <= 0.0:
+			selected_diameter = _catalog_glow_propeller_diameter(id)
+		if is_finite(selected_diameter) and selected_diameter > 0.0:
+			apply_propeller_diameter(airplane, selected_diameter)
 	airplane.root.set_meta("aircraft_id", id)
 	# Optional, aircraft-authored mouths; an absent anchor never falls back to the aircraft origin.
 	airplane.exhausts = airplane.root.get_meta("exhausts", [])
 	return airplane
+
+
+static func _catalog_glow_propeller_diameter(id: String) -> float:
+	var entry: Dictionary = Catalog.entry(id)
+	if entry.is_empty() or str(entry.get("data", "")).is_empty():
+		return NAN
+	var loaded: Dictionary = AircraftData.load_file(str(entry.data))
+	if not loaded.get("ok", false):
+		return NAN
+	var model: Dictionary = loaded.model
+	var propulsion: Dictionary = model.get("propulsion", {})
+	var glow: Dictionary = propulsion.get("glow", {})
+	var propeller: Dictionary = glow.get("propeller", {})
+	return float(propeller.get("diameter_m", NAN))
+
+
+## Applies the validated glow installation's propeller diameter to its Stik visual. The generated visual is authored
+## at StikGeometry.DATA.equipment.prop_diameter; resetting from that baseline keeps repeated setup/reload calls stable.
+static func apply_propeller_diameter(airplane: Dictionary, diameter_m: float) -> bool:
+	var id: String = str(airplane.get("aircraft_id", ""))
+	if id not in [STIK_GLOW_55AX_ID, STIK_GLOW_FS64V_ID] or not is_finite(diameter_m) or diameter_m <= 0.0:
+		return false
+	var propeller: Node3D = airplane.get("propeller")
+	var base_diameter: float = float(StikGeometry.DATA.equipment.prop_diameter)
+	if propeller == null or not is_finite(base_diameter) or base_diameter <= 0.0:
+		return false
+	var ratio: float = diameter_m / base_diameter
+	propeller.scale = Vector3(ratio, ratio, propeller.scale.z)
+	airplane.propeller_diameter_m = diameter_m
+	return true
 
 
 ## Where the data file's le frame sits in the model: x = model z of the wing leading edge the data measures from,

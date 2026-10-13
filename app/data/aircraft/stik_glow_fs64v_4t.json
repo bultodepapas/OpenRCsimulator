@@ -126,7 +126,7 @@
       }
     },
     {
-      "name": "estimated sport propeller 14x6",
+      "name": "Master Airscrew K Series 14x6",
       "mass": {
         "value": 0.06,
         "unit": "kg",
@@ -1329,7 +1329,7 @@
       "glow_installation": "res://data/glow/stik_fs64v_4t.json"
     },
     "propeller": {
-      "name": "estimated sport propeller 14x6 (annular surrogate)",
+      "name": "Master Airscrew K Series 14x6 (annular surrogate)",
       "diameter": {
         "value": 0.35559999999999997,
         "unit": "m",
@@ -1428,10 +1428,10 @@
         "source": "UIUC propeller database vol. 1, measured APC Sport 11x6: apcsp_11x6_static_rd0488.txt (sha256 911866f1…) and apcsp_11x6_rd0495_6000.txt (sha256 987b1268…); applied to the 12x6 Sport by T = Ct·ρ·n²·D⁴ (APC's own 12x6 file is not reachable here)"
       },
       "rotating_inertia": {
-        "value": 0.00011,
+        "value": 0.0006653817999999998,
         "unit": "kg·m2",
-        "kind": "estimated",
-        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+        "kind": "derived",
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; uniform-box prop polar m*(diameter^2+thickness^2)/12 plus estimated crank polar 3e-05 kg m^2; no measured blade mass distribution"
       },
       "thrust_line_offset": {
         "value": [

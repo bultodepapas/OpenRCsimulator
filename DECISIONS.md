@@ -115,6 +115,14 @@ This decision changes numerical coupling, not the empirical maps, prescribed fue
 
 Provide a bounded elevator offset in physical degrees, applied after stick rates through the existing servo; restart restores the solved starting trim. Keep the force model and manual power response intact. Five-aircraft equilibrium and the reported 25% Timber/Stik case were checked; the latter descends in the tested current source, so the owner's climb report remains unresolved pending a matching flight trace/build. [Evidence, options and limits](docs/research/flight-dynamics/climb-trim/README.md). Revisit physics only when a reproducing case or physical data supports it.
 
+## 2026-10-13 — Explicit finite-fuel 2T and 4T candidates (NITRO-02)
+
+The owner's instruction to implement both glow families, using internet evidence or inference where measurements are missing, authorizes separate experimental MAX-55AX and FS-64V installations. An explicit family/profile extension selects independent 360° ported-charge or 720° valve/intake/pumping mean-cycle models. The historical `glow_prop` name does not select fuel chemistry or cycle family. Manufacturer constraints and transferred/inferred inputs retain their actual provenance; physical/pilot acceptance remains separate.
+
+Use stage-coupled shaft/body dynamics with one passive propeller force/torque law. Keep the body datum at the initial wet CG and solve with instantaneous fuel-dependent mass, CG and full inertia, including co-moving efflux cancellation. All evolving engine state lives in the simulation transaction/checkpoint; sound observes it. Runway starts use a stopped warm engine because a static idle hold can be physically impossible. Reject unsupported reverse rotation and incompatible propeller side-force/wake modules. [Contract, limitations and evidence](docs/GLOW-ENGINES.md).
+
+Revisit the mean-cycle reduction with matched crank-angle/vibration data, propeller loads with measured advancing maps, and transport/thermal coefficients with independent observations. The numerical support tail above the FS-64V manufacturer's practical RPM recommendation does not extend its recommended operating range. The 500 µs performance target and physical/pilot release gates remain explicit.
+
 ## Open (deliberately not decided yet)
 
 - **Measured engine and propeller data.** v0 uses the O.S. MAX-61FX catalog power and UIUC-measured APC Sport 11×6 coefficients applied to the 12×6. Open: APC's own 12×6 data, a measured rpm or thrust on a real installation, and the throttle response time.

@@ -2,7 +2,7 @@
 
 2026-10-13. **Status: manual trim implemented and verified; the reported hands-off Timber climb at 25% throttle is not reproduced and remains unresolved.** Main physics/input track; this report does not close a flight-validation gate.
 
-The owner reports a common tendency to climb, especially Timber at low power with keyboard controls and no elevator input; the Stik feels incorrectly trimmed. The initial power-step hypothesis alone does **not** explain that report. Launch choice and the exact executable/source version of the observed flight remain unconfirmed.
+The owner reports a common tendency to climb, especially Timber at low power with keyboard controls and no elevator input; the Stik feels incorrectly trimmed. The initial power-step hypothesis alone does **not** explain that report. The owner confirmed running this repository on Windows. The actual flight's launch choice and state history remain unconfirmed.
 
 ## Evidence
 
@@ -19,7 +19,15 @@ All five maintain starting altitude within 2e-9 m in calm air at solved power. T
 
 The complete `main.tscn` scene, field, soft contacts, gentle weather, **real keyboard polling and engine physics callbacks** reproduce the 25% descent values exactly. Recorded commands remain neutral plus the solved trim, with `cmd_throttle=0.25`. This rules out a startup climb in those tested current-source conditions; it does not invalidate the owner's observation of another flight.
 
+A further **native Windows Home-to-Fly run**, with rendering on the RTX 3090 and the player's gentle-weather preferences copied to an isolated diagnostic file, also failed to reproduce the climb. In about ten simulated seconds, Timber at 25% lost 11.795 m and Stik lost 4.623 m; Timber at its solved starting power lost 0.400 m in gusts. Timber at 25% on the runway stayed on the ground. Raw pitch/roll/yaw inputs remained zero. The native HUD capture showed negative vertical speed. The recorder attaches a few ticks after Home launches, so these deltas do not start at tick zero. [Native summaries and trace hashes](native-windows.json); reproduce using `native_probe.gd`. The shared checkout changed concurrently; this is measured working-tree evidence, not a clean release qualification. This run also emitted ObjectDB/resource cleanup warnings at exit.
+
 `Trim._evaluate` and the runtime share `Dynamics`; pilot trailing-edge-up angles are converted once to the aerodynamic convention. No common elevator sign or gravity defect was found. A nose-up attitude is distinct from a rising flight path: the level starts have approximately 4.3° pitch/angle of attack. No camera-perception explanation has been established for the report.
+
+## Owner follow-up
+
+The owner subsequently reported substantial improvement ("MEJOR BASTANTE") while using the observed native session. [Actual-flight segment summary](user-flight-summary.json) records the first fourteen completed segment slots, including hashes. This is user feedback, not a controlled before/after comparison or proof of the original cause. Elevator trim stayed at 0.145223519557 throughout these segments, so the improvement cannot be attributed to operating the new manual trim keys in this captured flight.
+
+The flight includes control/power changes, resets and crashes. A hands-off interval at 37.08% power rose from 7.97 m to a 22.45 m peak, then descended to 15.92 m; its initial airspeed was 20.07 m/s after earlier inputs, compared with the 13.1 m/s starting trim. A subsequent hands-off segment ended at 14.81 m. Such recovery and oscillation are consistent with exchanging speed and height after a disturbance; this is an interpretation, not measured validation of the model's damping or an explanation established for the original neutral-start report. Two flight segments (002 and 007) were rejected by the trace validator with `ERR_INVALID_DATA`; their raw-input files remain, but missing flight data must not be inferred.
 
 ## Options and chosen improvement
 
@@ -39,4 +47,4 @@ Native Windows, pinned Godot 4.7.2: `test_pilot_trim.gd` (68 checks), trim (14),
 
 No aircraft data or golden-flight references were changed. Other tracks modified/committed the shared checkout during this work; test evidence is scoped to the listed runs, not to a clean-tree release.
 
-To resolve the original symptom, identify the exact executable/build and retain a **T** recording of the actual climb with aircraft, launch choice and controls unchanged. Compare `cmd_pitch`, `srv_pitch`, throttle, RPM, airspeed, vertical velocity, weather and initial-state identity. A current-source low-power descent is insufficient evidence to declare the reported climb fixed.
+To resolve the original symptom, capture the actual climb with aircraft, launch choice and controls unchanged. The read-only `watch.gd` diagnostic opens normal Home and automatically saves independent flight and raw-input segments; the normal **T** recorder is also available. Its test verifies exact physics checkpoint equality against an unobserved session, including reset. Compare raw inputs, `cmd_pitch`, `srv_pitch`, throttle, RPM, airspeed, vertical velocity, weather and initial-state identity. A current-source low-power descent is insufficient evidence to declare the reported climb fixed.

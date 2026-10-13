@@ -54,6 +54,15 @@ func _initialize() -> void:
 		var old: Dictionary = AD.validate_and_derive(AD.legacy_v1_input(raw))
 		check("explicit legacy adapter loads", old.ok, old.errors)
 		if old.ok:
+			# The historical adapter derives the common aircraft only. Attach the
+			# explicit v2 glow module from the same validated input before comparing;
+			# a v1 model alone cannot represent finite fuel or family identity.
+			if raw.propulsion.get("engine", {}).has("glow_installation"):
+				var installed_old: Dictionary = AD.GlowInstallation.attach(raw, old.model)
+				check("explicit glow extension loads", installed_old.ok, installed_old.errors)
+				if not installed_old.ok:
+					continue
+				old.model = installed_old.model
 			# GP-03 profiles are attached at load_file's boundary, independently of the
 			# v1/v2 aircraft adapter. Compare both adapters after the same profile step.
 			var profiled_old: Dictionary = AD.WheelProfiles.apply_to_model(old.model)
@@ -62,7 +71,7 @@ func _initialize() -> void:
 			for key: String in ["capabilities", "convention_id", "data_sha256"]:
 				comparable.erase(key)
 			profiled_old.model.erase("data_sha256")
-			check("same physical derivation", comparable == profiled_old.model)
+			check(path + " same physical derivation", comparable == profiled_old.model)
 		# Every object, including quantity/table metadata and each inventory component,
 		# must reject a plausible-looking unconsumed tuning field.
 		var nodes: Array = []

@@ -25,6 +25,10 @@ var _fraction_accumulator := 0.0
 var _opportunity_fires := false
 var _combustion_envelope := 0.0
 var _has_phase_anchor := false
+var _has_physical_anchor := false
+var _physical_opportunity_count := -1
+var _physical_fire_count := -1
+var _suppress_combustion_until_opportunity := false
 
 
 static func cycle_revolutions(family: String) -> int:
@@ -65,6 +69,10 @@ func reset(rpm: float = 0.0, max_rpm: float = 1.0) -> void:
 	_opportunity_fires = false
 	_combustion_envelope = 0.0
 	_has_phase_anchor = false
+	_has_physical_anchor = false
+	_physical_opportunity_count = -1
+	_physical_fire_count = -1
+	_suppress_combustion_until_opportunity = false
 	phase = 0.0
 	frequency = maxf(rpm, 0.0) / 60.0 if is_finite(rpm) else 0.0
 	amplitude = 0.0 if not is_finite(max_rpm) or max_rpm <= 0.0 else clampf(maxf(rpm, 0.0) / max_rpm, 0.0, 1.0)
@@ -82,9 +90,11 @@ func render(rpm: float, max_rpm: float, frames: int) -> PackedVector2Array:
 
 ## Render detached accepted-state telemetry to mono-as-stereo PCM for AudioStreamGeneratorPlayback.
 ## Required fields: `family` (`glow_2t`/`glow_4t`) and `rpm`; optional fields are `max_rpm`,
-## `running`, `firing_fraction`, `load`, `throttle`, `blade_count`, and monotonic unwrapped
-## `phase_revolutions` (crankshaft revolutions). Missing family is silent; legacy `glow_prop`
-## never selects a cycle family.
+## `running`, `firing_fraction`, `load`, `throttle`, and `blade_count`. Physical sessions also
+## supply normalized `phase_revolutions`, cumulative `opportunity_count`/`fire_count`, and
+## `firing_accumulator`; `audio_queue_frames` estimates the already queued phase lead. Without
+## counters, `phase_revolutions` keeps the older unwrapped-phase adapter behavior. Missing family
+## is silent; legacy `glow_prop` never selects a cycle family.
 func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 	var out := PackedVector2Array()
 	var frame_count: int = maxi(frames, 0)
@@ -108,13 +118,56 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 		_scheduled_opportunity = -1
 		_fraction_accumulator = 0.0
 		_opportunity_fires = false
+		_has_physical_anchor = false
+		_physical_opportunity_count = -1
+		_physical_fire_count = -1
+		_suppress_combustion_until_opportunity = false
 		last_family = family
 	last_firing_fraction = firing_fraction
 	frequency = rpm / 60.0
 	amplitude = 0.34 * (0.65 + 0.35 * load) if running else 0.0
 	var shaft_step: float = rpm / (60.0 * RATE)
 	var external_phase: Variant = snapshot.get("phase_revolutions", null)
-	if not _has_phase_anchor and _is_number(external_phase) and is_finite(float(external_phase)):
+	var physical_phase: float = 0.0
+	var physical_opportunities: int = -1
+	var physical_fire_count: int = -1
+	var physical_accumulator: float = NAN
+	if _has_authoritative_cycle_state(snapshot, cycle_revs):
+		physical_opportunities = int(snapshot.opportunity_count)
+		physical_fire_count = int(snapshot.fire_count)
+		physical_accumulator = float(snapshot.firing_accumulator)
+		physical_phase = float(physical_opportunities) * float(cycle_revs) + float(snapshot.phase_revolutions)
+		var queued_frames: float = _finite_nonnegative(snapshot.get("audio_queue_frames", 0.0), 0.0)
+		# Generator playback trails the accepted simulation by its queued duration. Anchor the
+		# next block at the end of those samples so phase corrections do not replay queued audio.
+		_shaft_phase_cycles = physical_phase + rpm / 60.0 * queued_frames / RATE
+		_scheduled_opportunity = physical_opportunities
+		_fraction_accumulator = physical_accumulator
+		var firing_limit: float = _finite_nonnegative(snapshot.get("firing_fraction", 1.0), 1.0)
+		var opportunity_delta: int = physical_opportunities - _physical_opportunity_count if _has_physical_anchor else 0
+		var fire_delta: int = physical_fire_count - _physical_fire_count if _has_physical_anchor else 0
+		var has_recent_fire: bool = physical_opportunities > 0 and physical_fire_count > 0 \
+			and physical_accumulator + 1e-12 < clampf(firing_limit, 0.0, 1.0)
+		if not running:
+			_opportunity_fires = false
+			_suppress_combustion_until_opportunity = true
+		elif _suppress_combustion_until_opportunity:
+			if opportunity_delta > 0:
+				_suppress_combustion_until_opportunity = false
+				_opportunity_fires = fire_delta > 0
+			else:
+				_opportunity_fires = false
+		elif opportunity_delta > 0:
+			# Accepted event counts identify the last event exactly for the normal one-opportunity
+			# tick. At larger skips, fall back to the accumulator-derived current-cycle state.
+			_opportunity_fires = fire_delta > 0 if opportunity_delta == 1 else has_recent_fire
+		else:
+			_opportunity_fires = has_recent_fire
+		_has_physical_anchor = true
+		_physical_opportunity_count = physical_opportunities
+		_physical_fire_count = physical_fire_count
+		_has_phase_anchor = true
+	elif not _has_phase_anchor and _is_number(external_phase) and is_finite(float(external_phase)):
 		_shaft_phase_cycles = float(external_phase)
 		_has_phase_anchor = true
 	var nyquist: float = RATE * 0.5
@@ -132,13 +185,13 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 			_fraction_accumulator = fposmod(1.0 - firing_fraction, 1.0)
 			_scheduled_opportunity = opportunity - 1
 		while _scheduled_opportunity < opportunity:
-			_schedule_opportunity(firing_fraction)
+			_schedule_opportunity(firing_fraction if running and _finite_nonnegative(snapshot.get("fuel_kg", 1.0), 1.0) > 0.0 else 0.0)
 			_scheduled_opportunity += 1
 		var cycle_phase: float = fposmod(_shaft_phase_cycles / float(cycle_revs), 1.0)
 		var target_envelope: float = 1.0 if running else 0.0
 		_combustion_envelope += fade_alpha * (target_envelope - _combustion_envelope)
 		var combustion: float = 0.0
-		if _opportunity_fires and _combustion_envelope > 0.000001 and cycle_frequency > 0.0:
+		if running and _opportunity_fires and _combustion_envelope > 0.000001 and cycle_frequency > 0.0:
 			combustion = _exhaust_wave(family, cycle_phase, cycle_frequency, nyquist) * combustion_gain * _combustion_envelope
 		var crank_phase: float = fposmod(_shaft_phase_cycles, 1.0)
 		var mechanical: float = 0.0
@@ -158,6 +211,22 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 		_shaft_phase_cycles += shaft_step
 	phase = fposmod(_shaft_phase_cycles, 1.0)
 	return out
+
+
+func _has_authoritative_cycle_state(snapshot: Dictionary, cycle_revs: int) -> bool:
+	if not _is_number(snapshot.get("phase_revolutions")) \
+			or not _is_number(snapshot.get("opportunity_count")) \
+			or not _is_number(snapshot.get("fire_count")) \
+			or not _is_number(snapshot.get("firing_accumulator")):
+		return false
+	var phase_value: float = float(snapshot.phase_revolutions)
+	var opportunity_value: float = float(snapshot.opportunity_count)
+	var fire_value: float = float(snapshot.fire_count)
+	var accumulator: float = float(snapshot.firing_accumulator)
+	return is_finite(phase_value) and phase_value >= 0.0 and phase_value < float(cycle_revs) \
+		and is_finite(opportunity_value) and opportunity_value >= 0.0 and opportunity_value == floor(opportunity_value) \
+		and is_finite(fire_value) and fire_value >= 0.0 and fire_value <= opportunity_value and fire_value == floor(fire_value) \
+		and is_finite(accumulator) and accumulator >= 0.0 and accumulator < 1.0
 
 
 func _schedule_opportunity(firing_fraction: float) -> void:

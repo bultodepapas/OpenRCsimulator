@@ -1,0 +1,43 @@
+command: "C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe" --headless --path app --script "C:\DEVELOPMENT\OpenRCsimulator\research\glow-engines\performance_probe.gd" -- --hz=240 --warmup=120 --ticks=600 --micro-groups=25 --out="C:\DEVELOPMENT\OpenRCsimulator\docs\research\glow-engines\NITRO-02\performance.json"
+preflight Godot processes:
+
+   Id ProcessName                  CPU StartTime             Path
+   -- -----------                  --- ---------             ----
+54104 Godot_v4.7.2-stable_win64 557.66 10/13/2026 1:30:41 PM C:\Users\bulto\AppData\Local\Corruption\tools\godot-4.7.2\…
+64136 Godot_v4.7.2-stable_win64 656.30 10/13/2026 1:24:04 PM C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_…
+
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Wrote performance report: C:\DEVELOPMENT\OpenRCsimulator\docs\research\glow-engines\NITRO-02\performance.json
+SUMMARY legacy_stik rounds=2 step_p50_median_us=477.5 step_p95_median_us=741.0 step_p95_worst_us=753.0 ratio_to_500us=1.482
+SUMMARY glow_2t rounds=2 step_p50_median_us=1666.0 step_p95_median_us=2357.0 step_p95_worst_us=2359.0 ratio_to_500us=4.714
+SUMMARY glow_4t rounds=2 step_p50_median_us=1683.5 step_p95_median_us=2442.5 step_p95_worst_us=2535.0 ratio_to_500us=4.885
+exit_code=0
+
+Release-runtime probe attempt (Python subprocess.run with a 30 s timeout):
+Target binary: .tools/rc7-proof/windows-smoke/OpenRC Simulator.exe
+Target binary SHA-256: e2f8f6637b059805b5449e198348a450ccf7824dc528af965e733168bd94bc78
+Requested replacement PCK: .tools/glow-package-20261013/nitro02-candidate.pck
+PCK SHA-256: 5d7af7bee1635f2d5d8319220bad4f890ec38beb16bfe919f9b2f4b6144b22e7
+With --main-pack, Godot returned 1 and said this binary was compiled without path-override support.
+Without --main-pack, Godot returned 31; the embedded application parsed --warmup and required --frametimes. The external probe emitted no report.
+Release OS.has_feature("debug") and OS.has_feature("release") are unavailable. The console probe reports debug=true and release=false.
+No source-code changes were made to enable path overrides or modify the release artifact.
+
+Timing interpretation:
+Source tree SHA-256: 7f73cd9a2e6be54fad8d743d7fcde4f84fbc932b54a0d6406ff0c55f084404ae
+Input tree SHA-256: f1df85e09a4a8a9cbecc665a6de2acb52ba3979f0958681afe1d175516619768
+At 240 Hz, median-of-two-round p95 tick costs were 741 us legacy, 2357 us glow_2t, and 2442.5 us glow_4t; all exceed the 500 us target.
+Isolated median evaluator costs (us/call; independent measurements, so do not add):
+glow_2t Flight.evaluate 332.6; Flight.point 200.2; lifecycle 139.3; source 35.6; blade 21.7; fuel mass 5.8; Dynamics.loads 65.3.
+glow_4t Flight.evaluate 350.5; Flight.point 250.1; lifecycle 150.2; source 37.9; blade 21.5; fuel mass 5.8; Dynamics.loads 64.8.
+Flight.evaluate is the largest isolated cost and is repeated across RK stages. Lifecycle.evaluate calls Source.evaluate twice per stage; the measured source cost makes shared validated interpolation work a focused follow-up candidate, but the calls serve baseline target-flow and transported-fuel mixture paths. Any refactor needs equivalence tests and must retain malformed-profile checks.
+No optimization or physics change was made. Host contention is material: two long-running Godot processes were active, and per-round flight-evaluate micro timings varied by roughly 20–30%. The family timing difference is not a sound basis to rank 2T versus 4T.
+This debug-host run cannot certify the 500 us gate: even legacy exceeds it. The release runtime did not permit the comparison, as recorded above.

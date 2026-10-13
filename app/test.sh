@@ -38,6 +38,14 @@ python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --che
 python3 "$HERE/../research/aircraft-standardization/migrate.py" --check-known
 python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
 
+echo "== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current"
+python3 "$HERE/../research/glow-engines/build_profiles.py" --check
+python3 "$HERE/../research/glow-engines/build_installations.py" --check
+python3 "$HERE/../research/glow-engines/installation_schema.py" --check
+python3 "$HERE/../research/glow-engines/test_profiles.py"
+python3 "$HERE/../research/glow-engines/test_installation_schema.py"
+python3 "$HERE/../research/glow-engines/reference/test_reference.py"
+
 echo "== P51-16: separated hardware inventory and physical inertia stay consistent"
 python3 "$HERE/../research/p51/p51-15/test_inventory.py"
 
@@ -203,6 +211,11 @@ for id in no-such-aircraft; do
   if run -- --aircraft="$id" --trace=/dev/null --t=1 > /dev/null 2>&1; then echo "--aircraft=$id was not refused"; exit 1; fi
 done
 echo "refused"
+
+echo "== NITRO-02: both finite-fuel glow catalog routes emit complete versioned traces"
+GLOW_WORK="$(mktemp -d)"
+python3 "$HERE/../research/glow-engines/packaged_smoke.py" --godot "$GODOT" --out "$GLOW_WORK/results"
+rm -rf "$GLOW_WORK"
 
 echo "== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)"
 FT="$(mktemp --suffix=.json)"

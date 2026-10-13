@@ -132,8 +132,8 @@ static func create(
 	return {"ok": true, "message": "", "state": state}
 
 
-## Evaluates one RK stage. `mixture` is the carburetor's requested multiplier on
-## the profile nominal mixture; fuel transport creates the actual mixture from
+## Evaluates one RK stage. `mixture` is the requested equivalence ratio phi;
+## fuel transport creates the actual equivalence ratio from
 ## delivered premix mass flow divided by the admitted-air flow.
 static func evaluate(
 		profile: Dictionary,

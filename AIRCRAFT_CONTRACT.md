@@ -48,6 +48,7 @@ Explicit in every v2 file: start speed, planform, propulsion kind, capability se
 | `landing_gear` | Permitted only for `locked_up`; no tire/suspension loads, hull contact is terminal | Contract → `_landing_gear` → ground/crash |
 | `landing_gear.breakaway_factor` | Existing dynamic rolling/slip law without static anchors | Ground/session anchor path |
 | `propulsion.engine.shaft` (combustion) | Prescribed equilibrium RPM with first-order lag; no airspeed unloading from a torque-balance engine | Propulsion/session |
+| `propulsion.engine.glow_installation` | Historical combustion solver; no inferred cycle family or finite fuel | Explicit `glow_2t`/`glow_4t` installation, finite tank and coupled flight; mutually exclusive with legacy `shaft`; [contract and semantics](docs/GLOW-ENGINES.md) |
 | `propulsion.engine.spool_integrator` (turbine: `sampled` or `rk4`) | `sampled`: historical tick-before-body RPM. `rk4`: continuous RPM and stage thrust/gyro; explicit-step envelope required; dynamic wheel profiles and hot cutoff remain unsupported | Turbine/FlightSession; versioned checkpoint and trace identity |
 | Propeller/turbine `thrust_angles` | Axial thrust | Propulsion/turbine axis |
 | `normal_force`, `pfactor_moment`, `slipstream` (combustion prop) | Corresponding force, moment or wake increment absent | Propulsion, slipstream, local aero |
@@ -70,7 +71,7 @@ Capabilities are closed selections used to validate configuration consistency. T
 | `controls` | `conventional`: aileron, elevator, rudder and throttle only |
 | `gear` | `fixed_tricycle`, `fixed_taildragger`, `locked_down_taildragger`: deployed contact module required; `locked_up`: contact module forbidden |
 | `propulsion_layout` | `single_tractor` for a propeller; `single_centerline_jet` for turbine |
-| `energy` | `prescribed_fuel` for combustion/turbine; `fixed_voltage` or `ocv_resistance` must agree with electric battery kind |
+| `energy` | `prescribed_fuel` for legacy combustion/turbine; `finite_glow_fuel` iff explicit glow installation; `fixed_voltage` or `ocv_resistance` must agree with electric battery kind |
 | `damage` | `terminal_hull`: hull/gear-limit crossing ends the flight; wreck effects are presentation |
 | `flaps` | `not_simulated`: any modeled flap mesh remains neutral |
 
@@ -87,9 +88,9 @@ For deployed gear, compare each contact's datum-relative x position with `balanc
 | Turbo Lumber Evolution | Electric 800 Kv tractor, nominal fixed 4S bus, fixed taildragger contacts, flaps up, assists off; estimated hardware losses and borrowed propeller map |
 | Synthetic Stik electric specimens | One direct-drive tractor BLDC equivalent, ideal motoring ESC, prescribed voltage or OCV/resistance battery, Stik reference airframe; test fixtures, separate from the catalog |
 
-Runway-start menu availability is a separate qualified product policy, currently Stik and Turbo Lumber Evolution. Having valid wheel contacts does not claim runway-start UI qualification. The P-51 and Extra retain their physics ground tests; Ventage Jet cannot taxi on invisible wheels. Existing model wheel/gear articulation helpers are not proof of live suspension/steering animation.
+Runway-start menu availability is a separate qualified product policy, currently Stik (including both experimental glow variants) and Turbo Lumber Evolution. Having valid wheel contacts does not claim runway-start UI qualification. The P-51 and Extra retain their physics ground tests; Ventage Jet cannot taxi on invisible wheels. Existing model wheel/gear articulation helpers are not proof of live suspension/steering animation.
 
-Planned and **rejected as v2 active configuration**: EDF duct/fan and inlet/outlet momentum; pusher installations and wake orientation; multiple propulsion units and differential throttle; propeller reverse sense/pitch/gearing; retract deployment and changing contact/drag/inertia; flaps/slats/spoilers and mixing; fuel tanks/burn/slosh and changing mass properties; battery temperature/ESC heating/BEC/receiver failures; structural flexibility, part loss and persistent damage; distributed mass rotation; water/skis; moving terrain. Add a conditional module, consumer, provenance, complete lifecycle state, versioned schema and independent or analytic test before admitting any extension. Do not copy tractor propeller coefficients to an EDF.
+Planned and **rejected as v2 active configuration**: EDF duct/fan and inlet/outlet momentum; pusher installations and wake orientation; multiple propulsion units and differential throttle; propeller reverse sense/pitch/gearing; retract deployment and changing contact/drag/inertia; flaps/slats/spoilers and mixing; fuel slosh and general moving/distributed mass beyond the explicit uniform-tank glow extension; battery temperature/ESC heating/BEC/receiver failures; structural flexibility, part loss and persistent damage; distributed mass rotation; water/skis; moving terrain. Add a conditional module, consumer, provenance, complete lifecycle state, versioned schema and independent or analytic test before admitting any extension. Do not copy tractor propeller coefficients to an EDF.
 
 ## Physical modules and parameter effects
 

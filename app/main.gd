@@ -339,6 +339,26 @@ func _ready() -> void:
 		return
 	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
 	session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
+	# Glow visuals use the exact propeller selected by the validated runtime model. Applying from the base geometry
+	# each time also handles installation-profile reloads that retain the same aircraft ID.
+	if session.aircraft.get("ok", false):
+		var loaded_model: Dictionary = session.aircraft.model
+		var propulsion: Dictionary = loaded_model.get("propulsion", {})
+		var glow: Dictionary = propulsion.get("glow", {})
+		if not glow.is_empty():
+			var glow_propeller: Dictionary = glow.get("propeller", {})
+			var diameter_m: float = float(glow_propeller.get("diameter_m", NAN))
+			if not AirplaneBuilder.apply_propeller_diameter(_airplane, diameter_m):
+				push_error("render/airplane.gd: validated glow model has no applicable propeller diameter")
+				session.free()
+				session = null
+				set_process(false)
+				set_process_unhandled_input(false)
+				get_tree().quit(ERR_INVALID_DATA)
+				return
+			_extent = Shadow.model_extent(_airplane.root)
+			Shadow.bind_model(_shadow, _airplane.root)
+			_rig.set_span(_extent.x)
 	# D6e: keyboard and gamepad flights use the aircraft's normal rates and expo (controls.rates.normal) unless
 	# --rates=full asks for the maximum throws; radios keep their own rates either way.
 	var rates := str(args.get("rates", "normal"))
@@ -665,6 +685,8 @@ func _update_hud() -> void:
 			lines.append("Glow %s  %.0f rpm  head %.0f °C  fuel ~%.0f mL  %s  φ %.2f" % [
 				family_label, float(glow.get("rpm", 0.0)), temperature_c, fuel_ml, engine_mode,
 				float(glow.get("mixture_command", 0.0))])
+			if glow.get("above_recommended_rpm", false):
+				lines.append("ABOVE RECOMMENDED RPM")
 			lines.append("[F6] cut  [F7] starter  [F8] lean  [F9] rich")
 	_hud.text = "\n".join(lines)
 
@@ -1132,7 +1154,7 @@ func _capture_scene_id() -> String:
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_last_render_pose = pose
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
-	_airplane.propeller.rotation.z = prop_angle
+	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting and _shadow_mode == "sun" else 1.0

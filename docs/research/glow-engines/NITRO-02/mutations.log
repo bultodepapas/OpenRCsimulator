@@ -1,0 +1,183 @@
+=== control.log ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+723 checks, 0 failed (36 oracle vectors)
+
+=== four-stroke-opportunity-rate.log ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+723 checks, 81 failed (36 oracle vectors)
+FAIL four_stroke_analytic.delivered_fuel_kg_s matches independent reference got 0.000888888888888889, expected 0.00044444444444444
+FAIL four_stroke_analytic.burned_fuel_kg_s matches independent reference got 0.00020000000000000004, expected 0.0001
+FAIL four_stroke_analytic.unburned_fuel_kg_s matches independent reference got 0.0006888888888888891, expected 0.00034444444444444
+FAIL four_stroke_analytic.fuel_input_power_w matches independent reference got 0.8000000000000002, expected 0.4000000000000001
+FAIL four_stroke_analytic.chemical_power_w matches independent reference got 0.20000000000000004, expected 0.10000000000000002
+FAIL four_stroke_analytic.cycle_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_analytic.opportunity_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_analytic.firing_frequency_hz matches independent reference got 50, expected 25
+FAIL four_stroke_cut.cycle_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_cut.opportunity_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_zero_admission.cycle_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_zero_admission.opportunity_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_zero_mixture.cycle_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_zero_mixture.opportunity_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_zero_completion.delivered_fuel_kg_s matches independent reference got 0.000888888888888889, expected 0.00044444444444444
+FAIL four_stroke_zero_completion.unburned_fuel_kg_s matches independent reference got 0.000888888888888889, expected 0.00044444444444444
+FAIL four_stroke_zero_completion.fuel_input_power_w matches independent reference got 0.8000000000000002, expected 0.4000000000000001
+FAIL four_stroke_zero_completion.cycle_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_zero_completion.opportunity_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_upper_bound.delivered_fuel_kg_s matches independent reference got 0.0048000000000000004, expected 0.0024
+FAIL four_stroke_upper_bound.burned_fuel_kg_s matches independent reference got 0.0010800000000000002, expected 0.00054
+FAIL four_stroke_upper_bound.unburned_fuel_kg_s matches independent reference got 0.00372, expected 0.00186
+FAIL four_stroke_upper_bound.fuel_input_power_w matches independent reference got 4.320000000000001, expected 2.1600000000000006
+FAIL four_stroke_upper_bound.chemical_power_w matches independent reference got 1.0800000000000003, expected 0.5400000000000001
+FAIL four_stroke_upper_bound.cycle_frequency_hz matches independent reference got 200, expected 100
+FAIL four_stroke_upper_bound.opportunity_frequency_hz matches independent reference got 200, expected 100
+FAIL four_stroke_upper_bound.firing_frequency_hz matches independent reference got 200, expected 100
+FAIL four_stroke_valve_and_pump_loss.delivered_fuel_kg_s matches independent reference got 0.0009166666666666666, expected 0.00045833333333333
+FAIL four_stroke_valve_and_pump_loss.burned_fuel_kg_s matches independent reference got 0.00041250000000000005, expected 0.00020625
+FAIL four_stroke_valve_and_pump_loss.unburned_fuel_kg_s matches independent reference got 0.0005041666666666667, expected 0.00025208333333333
+FAIL four_stroke_valve_and_pump_loss.fuel_input_power_w matches independent reference got 0.8250000000000001, expected 0.4125
+FAIL four_stroke_valve_and_pump_loss.chemical_power_w matches independent reference got 0.41250000000000003, expected 0.20625
+FAIL four_stroke_valve_and_pump_loss.cycle_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_valve_and_pump_loss.opportunity_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_valve_and_pump_loss.firing_frequency_hz matches independent reference got 100, expected 50
+FAIL four_stroke_random_00.delivered_fuel_kg_s matches independent reference got 0.0005340824499866659, expected 0.00026704122499333
+FAIL four_stroke_random_00.burned_fuel_kg_s matches independent reference got 0.0001537145330356413, expected 7.685726651782063e-05
+FAIL four_stroke_random_00.unburned_fuel_kg_s matches independent reference got 0.00038036791695102466, expected 0.00019018395847551
+FAIL four_stroke_random_00.fuel_input_power_w matches independent reference got 20572.596261052528, expected 10286.298130526262
+FAIL four_stroke_random_00.chemical_power_w matches independent reference got 6472.370138727211, expected 3236.1850693636047
+FAIL four_stroke_random_00.cycle_frequency_hz matches independent reference got 159.52074390794107, expected 79.76037195397052
+FAIL four_stroke_random_00.opportunity_frequency_hz matches independent reference got 159.52074390794107, expected 79.76037195397052
+FAIL four_stroke_random_00.firing_frequency_hz matches independent reference got 103.45982099952057, expected 51.72991049976028
+FAIL four_stroke_random_01.delivered_fuel_kg_s matches independent reference got 9.358890124279625e-05, expected 4.6794450621398126e-05
+FAIL four_stroke_random_01.burned_fuel_kg_s matches independent reference got 1.1089980265241089e-05, expected 5.544990132620544e-06
+FAIL four_stroke_random_01.unburned_fuel_kg_s matches independent reference got 8.249892097755516e-05, expected 4.124946048877758e-05
+FAIL four_stroke_random_01.fuel_input_power_w matches independent reference got 3391.003699363435, expected 1695.5018496817174
+FAIL four_stroke_random_01.chemical_power_w matches independent reference got 463.5076668681242, expected 231.7538334340621
+FAIL four_stroke_random_01.cycle_frequency_hz matches independent reference got 118.07023962675207, expected 59.035119813376035
+FAIL four_stroke_random_01.opportunity_frequency_hz matches independent reference got 118.07023962675207, expected 59.035119813376035
+FAIL four_stroke_random_01.firing_frequency_hz matches independent reference got 29.106807806647033, expected 14.553403903323517
+FAIL four_stroke_random_02.cycle_frequency_hz matches independent reference got 91.7706695887204, expected 45.8853347943602
+FAIL four_stroke_random_02.opportunity_frequency_hz matches independent reference got 91.7706695887204, expected 45.8853347943602
+FAIL four_stroke_random_03.cycle_frequency_hz matches independent reference got 161.51472275006566, expected 80.75736137503283
+FAIL four_stroke_random_03.opportunity_frequency_hz matches independent reference got 161.51472275006566, expected 80.75736137503283
+FAIL four_stroke_random_04.delivered_fuel_kg_s matches independent reference got 0.0003888819314636483, expected 0.00019444096573182
+FAIL four_stroke_random_04.burned_fuel_kg_s matches independent reference got 6.687607971223528e-05, expected 3.343803985611764e-05
+FAIL four_stroke_random_04.unburned_fuel_kg_s matches independent reference got 0.000322005851751413, expected 0.0001610029258757
+FAIL four_stroke_random_04.fuel_input_power_w matches independent reference got 2678.2377481892786, expected 1339.1188740946393
+FAIL four_stroke_random_04.chemical_power_w matches independent reference got 573.8689187756701, expected 286.93445938783503
+FAIL four_stroke_random_04.cycle_frequency_hz matches independent reference got 134.11242294653553, expected 67.05621147326777
+FAIL four_stroke_random_04.opportunity_frequency_hz matches independent reference got 134.11242294653553, expected 67.05621147326777
+FAIL four_stroke_random_04.firing_frequency_hz matches independent reference got 80.94904849147852, expected 40.47452424573926
+FAIL four_stroke_random_05.delivered_fuel_kg_s matches independent reference got 0.000117122313483471, expected 5.856115674173552e-05
+FAIL four_stroke_random_05.burned_fuel_kg_s matches independent reference got 7.763310924101602e-06, expected 3.881655462050803e-06
+FAIL four_stroke_random_05.unburned_fuel_kg_s matches independent reference got 0.0001093590025593694, expected 5.467950127968472e-05
+FAIL four_stroke_random_05.fuel_input_power_w matches independent reference got 3948.7285842288716, expected 1974.364292114436
+FAIL four_stroke_random_05.chemical_power_w matches independent reference got 315.6645845833107, expected 157.83229229165545
+FAIL four_stroke_random_05.cycle_frequency_hz matches independent reference got 37.979503685717305, expected 18.989751842858652
+FAIL four_stroke_random_05.opportunity_frequency_hz matches independent reference got 37.979503685717305, expected 18.989751842858652
+FAIL four_stroke_random_05.firing_frequency_hz matches independent reference got 13.336735810378084, expected 6.668367905189042
+FAIL four_stroke_random_06.cycle_frequency_hz matches independent reference got 133.41303445587616, expected 66.70651722793808
+FAIL four_stroke_random_06.opportunity_frequency_hz matches independent reference got 133.41303445587616, expected 66.70651722793808
+FAIL four_stroke_random_07.delivered_fuel_kg_s matches independent reference got 9.315378646222558e-06, expected 4.65768932311128e-06
+FAIL four_stroke_random_07.burned_fuel_kg_s matches independent reference got 1.217980483339241e-06, expected 6.089902416696207e-07
+FAIL four_stroke_random_07.unburned_fuel_kg_s matches independent reference got 8.097398162883317e-06, expected 4.0486990814416585e-06
+FAIL four_stroke_random_07.fuel_input_power_w matches independent reference got 264.59343916691233, expected 132.29671958345622
+FAIL four_stroke_random_07.chemical_power_w matches independent reference got 42.6661979559399, expected 21.333098977969957
+FAIL four_stroke_random_07.cycle_frequency_hz matches independent reference got 5.658333118250251, expected 2.8291665591251256
+FAIL four_stroke_random_07.opportunity_frequency_hz matches independent reference got 5.658333118250251, expected 2.8291665591251256
+FAIL four_stroke_random_07.firing_frequency_hz matches independent reference got 3.626418802012562, expected 1.813209401006281
+
+=== four-stroke-valve-loss.log ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+723 checks, 15 failed (36 oracle vectors)
+FAIL four_stroke_analytic.shaft_torque_nm matches independent reference got -0.01083556345123245, expected -0.01183556345123245
+FAIL four_stroke_cut.shaft_torque_nm matches independent reference got -0.010875352187005425, expected -0.01187535218700542
+FAIL four_stroke_zero_admission.shaft_torque_nm matches independent reference got -0.011193662073189215, expected -0.01219366207318921
+FAIL four_stroke_zero_mixture.shaft_torque_nm matches independent reference got -0.010875352187005425, expected -0.01187535218700542
+FAIL four_stroke_zero_completion.shaft_torque_nm matches independent reference got -0.010875352187005425, expected -0.01187535218700542
+FAIL four_stroke_upper_bound.shaft_torque_nm matches independent reference got -0.01072813386464542, expected -0.01172813386464542
+FAIL four_stroke_valve_and_pump_loss.shaft_torque_nm matches independent reference got -0.01103202033411151, expected -0.0140320203341115
+FAIL four_stroke_random_00.shaft_torque_nm matches independent reference got 1.1472796686805775, expected 1.1436175963484008
+FAIL four_stroke_random_01.shaft_torque_nm matches independent reference got 0.02743294625194787, expected 0.02611681269183267
+FAIL four_stroke_random_02.shaft_torque_nm matches independent reference got -0.024023349567049566, expected -0.03176358229314531
+FAIL four_stroke_random_03.shaft_torque_nm matches independent reference got -0.01816434523787113, expected -0.02542078698857851
+FAIL four_stroke_random_04.shaft_torque_nm matches independent reference got 0.0962107360723893, expected 0.09408431204655142
+FAIL four_stroke_random_05.shaft_torque_nm matches independent reference got 0.1753344865255947, expected 0.17131537371102307
+FAIL four_stroke_random_06.shaft_torque_nm matches independent reference got -0.024346488063859074, expected -0.02588543154005492
+FAIL four_stroke_random_07.shaft_torque_nm matches independent reference got 0.0473280780847015, expected 0.04624981584057811
+
+=== two-stroke-cycle-angle.log ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+723 checks, 18 failed (36 oracle vectors)
+FAIL two_stroke_analytic.indicated_torque_nm matches independent reference got 0.012732395447351632, expected 0.02546479089470326
+FAIL two_stroke_analytic.shaft_torque_nm matches independent reference got 0.0011408460164326782, expected 0.01387324146378431
+FAIL two_stroke_analytic.indicated_power_w matches independent reference got 8.000000000000004, expected 16.000000000000007
+FAIL two_stroke_upper_bound.indicated_torque_nm matches independent reference got 0.0343774677078494, expected 0.0687549354156988
+FAIL two_stroke_upper_bound.shaft_torque_nm matches independent reference got 0.02151267873219528, expected 0.05589014644004468
+FAIL two_stroke_upper_bound.indicated_power_w matches independent reference got 43.20000000000001, expected 86.40000000000002
+FAIL two_stroke_port_loss.indicated_torque_nm matches independent reference got 0.02100845248813019, expected 0.04201690497626038
+FAIL two_stroke_port_loss.shaft_torque_nm matches independent reference got 0.009576058000303131, expected 0.03058451048843331
+FAIL two_stroke_port_loss.indicated_power_w matches independent reference got 13.200000000000003, expected 26.40000000000001
+FAIL two_stroke_random_02.indicated_torque_nm matches independent reference got 0.003504090972874107, expected 0.00700818194574821
+FAIL two_stroke_random_02.shaft_torque_nm matches independent reference got -0.004868524327027619, expected -0.00136443335415351
+FAIL two_stroke_random_02.indicated_power_w matches independent reference got 0.07429614801728696, expected 0.1485922960345738
+FAIL two_stroke_random_03.indicated_torque_nm matches independent reference got 0.7472199580829298, expected 1.49443991616586
+FAIL two_stroke_random_03.shaft_torque_nm matches independent reference got 0.7133536611463833, expected 1.4605736192293135
+FAIL two_stroke_random_03.indicated_power_w matches independent reference got 166.04528857296737, expected 332.09057714593484
+FAIL two_stroke_random_05.indicated_torque_nm matches independent reference got 4.818491261547352, expected 9.636982523094703
+FAIL two_stroke_random_05.shaft_torque_nm matches independent reference got 4.769119791899065, expected 9.587611053446416
+FAIL two_stroke_random_05.indicated_power_w matches independent reference got 1387.8435667310105, expected 2775.687133462021
+
+=== two-stroke-premix-oil.log ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+723 checks, 45 failed (36 oracle vectors)
+FAIL two_stroke_analytic.indicated_torque_nm matches independent reference got 0.022918311805232936, expected 0.02546479089470326
+FAIL two_stroke_analytic.shaft_torque_nm matches independent reference got 0.011326762374313983, expected 0.01387324146378431
+FAIL two_stroke_analytic.delivered_fuel_kg_s matches independent reference got 8.000000000000002e-05, expected 8.88888888888889e-05
+FAIL two_stroke_analytic.burned_fuel_kg_s matches independent reference got 2.880000000000001e-05, expected 3.200000000000001e-05
+FAIL two_stroke_analytic.unburned_fuel_kg_s matches independent reference got 5.120000000000001e-05, expected 5.6888888888888895e-05
+FAIL two_stroke_analytic.fuel_input_power_w matches independent reference got 72.00000000000001, expected 80.00000000000001
+FAIL two_stroke_analytic.chemical_power_w matches independent reference got 28.800000000000008, expected 32.000000000000014
+FAIL two_stroke_analytic.indicated_power_w matches independent reference got 14.400000000000006, expected 16.000000000000007
+FAIL two_stroke_analytic.cycle_work_j matches independent reference got 0.14400000000000004, expected 0.16000000000000006
+FAIL two_stroke_zero_completion.delivered_fuel_kg_s matches independent reference got 8.000000000000002e-05, expected 8.88888888888889e-05
+FAIL two_stroke_zero_completion.unburned_fuel_kg_s matches independent reference got 8.000000000000002e-05, expected 8.88888888888889e-05
+FAIL two_stroke_zero_completion.fuel_input_power_w matches independent reference got 72.00000000000001, expected 80.00000000000001
+FAIL two_stroke_upper_bound.delivered_fuel_kg_s matches independent reference got 0.0008640000000000001, expected 0.00095999999999999
+FAIL two_stroke_upper_bound.unburned_fuel_kg_s matches independent reference got 0.0006912000000000001, expected 0.00078719999999999
+FAIL two_stroke_upper_bound.fuel_input_power_w matches independent reference got 777.5999999999999, expected 864.0000000000001
+FAIL two_stroke_port_loss.indicated_torque_nm matches independent reference got 0.03781521447863434, expected 0.04201690497626038
+FAIL two_stroke_port_loss.shaft_torque_nm matches independent reference got 0.02638281999080728, expected 0.03058451048843331
+FAIL two_stroke_port_loss.delivered_fuel_kg_s matches independent reference got 0.00013200000000000004, expected 0.00014666666666666
+FAIL two_stroke_port_loss.burned_fuel_kg_s matches independent reference got 4.752000000000001e-05, expected 5.2800000000000016e-05
+FAIL two_stroke_port_loss.unburned_fuel_kg_s matches independent reference got 8.448000000000003e-05, expected 9.386666666666668e-05
+FAIL two_stroke_port_loss.fuel_input_power_w matches independent reference got 118.80000000000003, expected 132.00000000000003
+FAIL two_stroke_port_loss.chemical_power_w matches independent reference got 47.52000000000001, expected 52.80000000000002
+FAIL two_stroke_port_loss.indicated_power_w matches independent reference got 23.760000000000005, expected 26.40000000000001
+FAIL two_stroke_port_loss.cycle_work_j matches independent reference got 0.23760000000000006, expected 0.26400000000000007
+FAIL two_stroke_random_02.indicated_torque_nm matches independent reference got 0.006479235253215943, expected 0.00700818194574821
+FAIL two_stroke_random_02.shaft_torque_nm matches independent reference got -0.0018933800466857838, expected -0.00136443335415351
+FAIL two_stroke_random_02.delivered_fuel_kg_s matches independent reference got 2.941452010466479e-06, expected 3.1815839475506253e-06
+FAIL two_stroke_random_02.burned_fuel_kg_s matches independent reference got 1.2612827452858272e-08, expected 1.3642503503185076e-08
+FAIL two_stroke_random_02.unburned_fuel_kg_s matches independent reference got 2.928839183013621e-06, expected 3.1679414440474404e-06
+FAIL two_stroke_random_02.fuel_input_power_w matches independent reference got 98.8150831482074, expected 106.88207089612136
+FAIL two_stroke_random_02.chemical_power_w matches independent reference got 0.4583060043883408, expected 0.49572082816226815
+FAIL two_stroke_random_02.indicated_power_w matches independent reference got 0.13737720428443062, expected 0.1485922960345738
+FAIL two_stroke_random_02.cycle_work_j matches independent reference got 0.04071023574476642, expected 0.0440337058315664
+FAIL two_stroke_random_03.indicated_torque_nm matches independent reference got 1.3293175358727498, expected 1.49443991616586
+FAIL two_stroke_random_03.shaft_torque_nm matches independent reference got 1.2954512389362034, expected 1.4605736192293135
+FAIL two_stroke_random_03.delivered_fuel_kg_s matches independent reference got 0.0003143978883543263, expected 0.00035345110647809
+FAIL two_stroke_random_03.burned_fuel_kg_s matches independent reference got 7.01690604522376e-05, expected 7.888517377515232e-05
+FAIL two_stroke_random_03.unburned_fuel_kg_s matches independent reference got 0.0002442288279020887, expected 0.00027456593270294
+FAIL two_stroke_random_03.fuel_input_power_w matches independent reference got 5537.494625748026, expected 6225.339530211358
+FAIL two_stroke_random_03.chemical_power_w matches independent reference got 1389.4057244392243, expected 1561.9920134342417
+FAIL two_stroke_random_03.indicated_power_w matches independent reference got 295.39750840621866, expected 332.09057714593484
+FAIL two_stroke_random_03.cycle_work_j matches independent reference got 8.352348409971833, expected 9.389842923716024
+FAIL two_stroke_random_05.delivered_fuel_kg_s matches independent reference got 0.0004841207733060191, expected 0.00054675468421979
+FAIL two_stroke_random_05.unburned_fuel_kg_s matches independent reference got 0.00025215222386838206, expected 0.00031478613478216
+FAIL two_stroke_random_05.fuel_input_power_w matches independent reference got 17255.160085204436, expected 19487.574431317473

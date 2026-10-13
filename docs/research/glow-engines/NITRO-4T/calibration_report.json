@@ -419,10 +419,669 @@
     ]
   },
   "single_point_propeller_anchor_inference": null,
+  "paired_propeller_inference": {
+    "status": "paired propeller load inference; no propeller is physically calibrated or held out",
+    "method": "Full-admission engine/propeller torque roots; runtime-matched blade-element surrogate; one measured OS 2T RPM anchor only.",
+    "nominal_axial_scenarios_m_s": [
+      0.0,
+      10.0,
+      20.0,
+      30.0
+    ],
+    "common_section_assumptions": {
+      "lift_slope_per_rad": 5.5,
+      "cd0": 0.022,
+      "induced_drag": 0.06,
+      "blades": 2.0
+    },
+    "uncertainty_method": {
+      "cases": [
+        {
+          "name": "lower_candidate_torque_and_heavier_prop_load",
+          "engine": {
+            "indicated_efficiency_scale": 0.9,
+            "charge_scale": 0.9,
+            "losses_scale": 1.5
+          },
+          "section": {
+            "lift_slope_per_rad": 6.5,
+            "cd0": 0.035,
+            "induced_drag": 0.12,
+            "blades": 2.0
+          },
+          "density_scale": 1.1
+        },
+        {
+          "name": "higher_candidate_torque_and_lighter_prop_load",
+          "engine": {
+            "indicated_efficiency_scale": 1.1,
+            "charge_scale": 1.1,
+            "losses_scale": 0.5
+          },
+          "section": {
+            "lift_slope_per_rad": 4.5,
+            "cd0": 0.015,
+            "induced_drag": 0.03,
+            "blades": 2.0
+          },
+          "density_scale": 0.9
+        }
+      ],
+      "meaning": "conservative paired assumptions combining profile efficiency/charge/loss sensitivity, air density and section coefficients. The reported min/max are scenario sensitivity envelopes, not probability intervals, confidence intervals or physical bounds."
+    },
+    "profile_recommendations": {
+      "installed_default": "Master Airscrew K Series 14x6",
+      "installed_default_evidence": "O.S. recommends scale 14x6 and its qualitative FS-64V flight review reports a 14x6; brand and RPM were not recorded",
+      "numeric_geometry_prior": "30.0 mm uniform chord at 14x6, explicitly unmeasured; scale c/D to 27.8571428571 mm at 13x6",
+      "alternate_geometry_sensitivity": "24.6591530641 mm at 14x6 and 22.8977849881 mm at 13x6 if the 2T fitted c/D is transferred; neither is manufacturer blade geometry",
+      "numeric_operating_guidance": "Nominal static roots are reported per prop; keep the O.S. recommended maximum at 11,000 RPM. Retain profile numerical support to 15,000 RPM only for unloading-flight model scenarios with an over-recommendation flag.",
+      "candidate_static_rpm_by_configuration_id": {
+        "fs64v_apc_sport_13x6": 9384.07,
+        "fs64v_master_airscrew_k_14x6": 8284.84
+      },
+      "manufacturer_recommended_max_rpm": 11000.0,
+      "manufacturer_max_recommended_rpm_by_configuration_id": {
+        "fs64v_apc_sport_13x6": 14615.384615384615,
+        "fs64v_master_airscrew_k_14x6": 11785.714285714286
+      },
+      "effective_recommended_rpm_by_configuration_id": {
+        "fs64v_apc_sport_13x6": 11000.0,
+        "fs64v_master_airscrew_k_14x6": 11000.0
+      },
+      "profile_numerical_support_max_rpm": 15000.0,
+      "engine_profile_change": "The 14x6/13x6 predictions do not identify a new FS-64V torque curve. Preserve 0.72788955 Nm at the 1.14 PS/11,000 RPM rated point; require independent bench data before changing knots."
+    },
+    "propellers": [
+      {
+        "configuration_id": "fs64v_apc_sport_13x6",
+        "name": "APC Sport 13x6 LP13060",
+        "diameter_in": 13.0,
+        "pitch_in": 6.0,
+        "prop_mass_oz": 1.69,
+        "prop_mass_g_derived": 47.91069408125,
+        "shaft_bore_in": 0.25,
+        "shaft_bore_mm": 6.35,
+        "propeller_source": "https://www.apcprop.com/product/13x6/",
+        "observed_engine_prop_source": null,
+        "apc_glow_rpm_ceiling": 14615.384615384615,
+        "nominal_chord_m": 0.027857142857142858,
+        "chord_basis": "scaled from 30 mm Master Airscrew 14x6 screening geometry; no APC blade chord data",
+        "anchor_rpm": null,
+        "refit_chord_in_uncertainty_cases": false,
+        "installed_default_recommendation": false,
+        "alternative_chord_m": 0.022897784988100363,
+        "manufacturer_max_recommended_rpm": 14615.384615384615,
+        "rpm_limit_basis": "APC glow/Sport propeller limit: 190000 divided by diameter in inches",
+        "rpm_limit_source": "https://www.apcprop.com/technical-information/rpm-limits/",
+        "diameter_m": 0.3302,
+        "pitch_m": 0.15239999999999998,
+        "direct_fit_check": "1/4-in prop bore matches the O.S. 1/4-28 shaft/nut size; verify actual hub centering and clamping on the test article",
+        "engine_rpm_guidance": {
+          "o_s_published_practical_rpm": [
+            2400.0,
+            11000.0
+          ],
+          "profile_numeric_support_rpm": [
+            0.0,
+            15000.0
+          ],
+          "profile_recommended_max_rpm": 11000.0,
+          "effective_recommended_rpm_for_configuration": 11000.0
+        },
+        "section_assumptions": {
+          "lift_slope_per_rad": 5.5,
+          "cd0": 0.022,
+          "induced_drag": 0.06,
+          "blades": 2.0
+        },
+        "reference_air_density_kg_m3": 1.225,
+        "static_and_advancing_full_admission_predictions": [
+          {
+            "axial_speed_m_s": 0.0,
+            "static_condition": true,
+            "nominal_uniform_chord_m": 0.027857142857142858,
+            "nominal_all_roots": [
+              {
+                "rpm": 0.0,
+                "stable_restoring_root": false,
+                "net_torque_slope_nm_per_rpm": 0.00010195,
+                "engine_torque_nm": -0.0,
+                "thrust_n": 0.0,
+                "torque_nm": 0.0,
+                "shaft_power_w": 0.0,
+                "thrust_power_w": 0.0,
+                "advance_ratio": 0.0,
+                "within_o_s_practical_rpm_range": false
+              },
+              {
+                "rpm": 9384.06615039,
+                "stable_restoring_root": true,
+                "net_torque_slope_nm_per_rpm": -0.00018117,
+                "engine_torque_nm": 0.77931819,
+                "thrust_n": 49.8990639,
+                "torque_nm": 0.77931819,
+                "shaft_power_w": 765.83372904,
+                "thrust_power_w": 0.0,
+                "advance_ratio": 0.0,
+                "within_o_s_practical_rpm_range": true
+              }
+            ],
+            "nominal_stable_full_admission_equilibrium": {
+              "rpm": 9384.06615039,
+              "stable_restoring_root": true,
+              "net_torque_slope_nm_per_rpm": -0.00018117,
+              "engine_torque_nm": 0.77931819,
+              "thrust_n": 49.8990639,
+              "torque_nm": 0.77931819,
+              "shaft_power_w": 765.83372904,
+              "thrust_power_w": 0.0,
+              "advance_ratio": 0.0,
+              "within_o_s_practical_rpm_range": true
+            },
+            "assumption_envelope": {
+              "axial_speed_m_s": 0.0,
+              "sensitivity_case_count_excluding_nominal": 4,
+              "nominal_case_included_in_min_max": true,
+              "stable_root_count_including_nominal": 5,
+              "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
+              "rpm": [
+                5005.67567881,
+                12328.27708767
+              ],
+              "thrust_n": [
+                17.4175999,
+                61.51312045
+              ],
+              "torque_nm": [
+                0.44206056,
+                0.77931819
+              ],
+              "shaft_power_w": [
+                231.72510996,
+                909.13762149
+              ]
+            }
+          },
+          {
+            "axial_speed_m_s": 10.0,
+            "static_condition": false,
+            "nominal_uniform_chord_m": 0.027857142857142858,
+            "nominal_all_roots": [
+              {
+                "rpm": 9837.48051286,
+                "stable_restoring_root": true,
+                "net_torque_slope_nm_per_rpm": -0.00019481,
+                "engine_torque_nm": 0.77246553,
+                "thrust_n": 35.53720689,
+                "torque_nm": 0.77246553,
+                "shaft_power_w": 795.77741823,
+                "thrust_power_w": 355.37206893,
+                "advance_ratio": 0.18470995,
+                "within_o_s_practical_rpm_range": true
+              }
+            ],
+            "nominal_stable_full_admission_equilibrium": {
+              "rpm": 9837.48051286,
+              "stable_restoring_root": true,
+              "net_torque_slope_nm_per_rpm": -0.00019481,
+              "engine_torque_nm": 0.77246553,
+              "thrust_n": 35.53720689,
+              "torque_nm": 0.77246553,
+              "shaft_power_w": 795.77741823,
+              "thrust_power_w": 355.37206893,
+              "advance_ratio": 0.18470995,
+              "within_o_s_practical_rpm_range": true
+            },
+            "assumption_envelope": {
+              "axial_speed_m_s": 10.0,
+              "sensitivity_case_count_excluding_nominal": 4,
+              "nominal_case_included_in_min_max": true,
+              "stable_root_count_including_nominal": 5,
+              "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
+              "rpm": [
+                7111.6059268,
+                12253.35407435
+              ],
+              "thrust_n": [
+                17.97462728,
+                42.28104574
+              ],
+              "torque_nm": [
+                0.56567067,
+                0.77246553
+              ],
+              "shaft_power_w": [
+                421.26944478,
+                920.9187452
+              ]
+            }
+          },
+          {
+            "axial_speed_m_s": 20.0,
+            "static_condition": false,
+            "nominal_uniform_chord_m": 0.027857142857142858,
+            "nominal_all_roots": [
+              {
+                "rpm": 11224.51358374,
+                "stable_restoring_root": true,
+                "net_torque_slope_nm_per_rpm": -0.00038818,
+                "engine_torque_nm": 0.68684944,
+                "thrust_n": 23.29729818,
+                "torque_nm": 0.68684944,
+                "shaft_power_w": 807.34228001,
+                "thrust_power_w": 465.94596358,
+                "advance_ratio": 0.32377003,
+                "within_o_s_practical_rpm_range": false
+              }
+            ],
+            "nominal_stable_full_admission_equilibrium": {
+              "rpm": 11224.51358374,
+              "stable_restoring_root": true,
+              "net_torque_slope_nm_per_rpm": -0.00038818,
+              "engine_torque_nm": 0.68684944,
+              "thrust_n": 23.29729818,
+              "torque_nm": 0.68684944,
+              "shaft_power_w": 807.34228001,
+              "thrust_power_w": 465.94596358,
+              "advance_ratio": 0.32377003,
+              "within_o_s_practical_rpm_range": false
+            },
+            "assumption_envelope": {
+              "axial_speed_m_s": 20.0,
+              "sensitivity_case_count_excluding_nominal": 4,
+              "nominal_case_included_in_min_max": true,
+              "stable_root_count_including_nominal": 5,
+              "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
+              "rpm": [
+                9678.16649502,
+                12761.37545668
+              ],
+              "thrust_n": [
+                13.84236814,
+                25.65047753
+              ],
+              "torque_nm": [
+                0.5665033,
+                0.68684944
+              ],
+              "shaft_power_w": [
+                603.1724049,
+                821.75250042
+              ]
+            }
+          },
+          {
+            "axial_speed_m_s": 30.0,
+            "static_condition": false,
+            "nominal_uniform_chord_m": 0.027857142857142858,
+            "nominal_all_roots": [
+              {
+                "rpm": 12769.27394971,
+                "stable_restoring_root": true,
+                "net_torque_slope_nm_per_rpm": -0.00038268,
+                "engine_torque_nm": 0.43349215,
+                "thrust_n": 7.30689617,
+                "torque_nm": 0.43349215,
+                "shaft_power_w": 579.66364619,
+                "thrust_power_w": 219.20688503,
+                "advance_ratio": 0.42690302,
+                "within_o_s_practical_rpm_range": false
+              }
+            ],
+            "nominal_stable_full_admission_equilibrium": {
+              "rpm": 12769.27394971,
+              "stable_restoring_root": true,
+              "net_torque_slope_nm_per_rpm": -0.00038268,
+              "engine_torque_nm": 0.43349215,
+              "thrust_n": 7.30689617,
+              "torque_nm": 0.43349215,
+              "shaft_power_w": 579.66364619,
+              "thrust_power_w": 219.20688503,
+              "advance_ratio": 0.42690302,
+              "within_o_s_practical_rpm_range": false
+            },
+            "assumption_envelope": {
+              "axial_speed_m_s": 30.0,
+              "sensitivity_case_count_excluding_nominal": 4,
+              "nominal_case_included_in_min_max": true,
+              "stable_root_count_including_nominal": 5,
+              "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
+              "rpm": [
+                11940.56067772,
+                13650.71030632
+              ],
+              "thrust_n": [
+                0.60299135,
+                10.05256479
+              ],
+              "torque_nm": [
+                0.35879466,
+                0.43349215
+              ],
+              "shaft_power_w": [
+                498.92205645,
+                579.66364619
+              ]
+            }
+          }
+        ],
+        "model_limits": [
+          "Uses the engine candidate curve and the runtime's 12-annulus no-induced-velocity uniform-chord surrogate.",
+          "The real propeller's radial chord, twist, airfoil, Reynolds correction, induced flow, rotating inertia and production variation are unavailable.",
+          "Advancing cases are axial-speed scenarios at 10, 20 and 30 m/s, not aircraft telemetry or validated flight points.",
+          "Static RPM, thrust and torque for unobserved combinations are engineering inferences, not measurements."
+        ]
+      },
+      {
+        "configuration_id": "fs64v_master_airscrew_k_14x6",
+        "name": "Master Airscrew K Series 14x6",
+        "diameter_in": 14.0,
+        "pitch_in": 6.0,
+        "prop_mass_oz": 2.05,
+        "prop_mass_g_manufacturer": 58.1,
+        "shaft_bore_in": 0.25,
+        "shaft_bore_mm": 6.35,
+        "propeller_source": "https://www.masterairscrew.com/products/k-series-14x6-propeller",
+        "observed_engine_prop_source": "https://www.os-engines.co.jp/web_content/202210/index_1.html",
+        "apc_glow_rpm_ceiling": null,
+        "manufacturer_max_recommended_rpm": 11785.714285714286,
+        "rpm_limit_basis": "Generic Master Airscrew plastic-prop safety instruction: 165000 divided by diameter in inches; applied provisionally because the K-series product page specifies glass-fiber reinforced composite but no SKU-specific RPM ceiling",
+        "rpm_limit_source": "https://www.masterairscrew.com/pages/downloads",
+        "nominal_chord_m": 0.03,
+        "chord_basis": "explicit unmeasured 30 mm wide-chord screening assumption, not fitted to an FS-64V RPM datum",
+        "anchor_rpm": null,
+        "refit_chord_in_uncertainty_cases": false,
+        "installed_default_recommendation": true,
+        "alternative_chord_m": 0.024659153064108083,
+        "diameter_m": 0.35559999999999997,
+        "pitch_m": 0.15239999999999998,
+        "direct_fit_check": "1/4-in prop bore matches the O.S. 1/4-28 shaft/nut size; verify actual hub centering and clamping on the test article",
+        "engine_rpm_guidance": {
+          "o_s_published_practical_rpm": [
+            2400.0,
+            11000.0
+          ],
+          "profile_numeric_support_rpm": [
+            0.0,
+            15000.0
+          ],
+          "profile_recommended_max_rpm": 11000.0,
+          "effective_recommended_rpm_for_configuration": 11000.0
+        },
+        "section_assumptions": {
+          "lift_slope_per_rad": 5.5,
+          "cd0": 0.022,
+          "induced_drag": 0.06,
+          "blades": 2.0
+        },
+        "reference_air_density_kg_m3": 1.225,
+        "static_and_advancing_full_admission_predictions": [
+          {
+            "axial_speed_m_s": 0.0,
+            "static_condition": true,
+            "nominal_uniform_chord_m": 0.03,
+            "nominal_all_roots": [
+              {
+                "rpm": 0.0,
+                "stable_restoring_root": false,
+                "net_torque_slope_nm_per_rpm": 0.00010195,
+                "engine_torque_nm": -0.0,
+                "thrust_n": 0.0,
+                "torque_nm": 0.0,
+                "shaft_power_w": 0.0,
+                "thrust_power_w": 0.0,
+                "advance_ratio": 0.0,
+                "within_o_s_practical_rpm_range": false
+              },
+              {
+                "rpm": 8284.8418121,
+                "stable_restoring_root": true,
+                "net_torque_slope_nm_per_rpm": -0.00020697,
+                "engine_torque_nm": 0.79577275,
+                "thrust_n": 49.70306686,
+                "torque_nm": 0.79577275,
+                "shaft_power_w": 690.40177803,
+                "thrust_power_w": 0.0,
+                "advance_ratio": 0.0,
+                "within_o_s_practical_rpm_range": true
+              }
+            ],
+            "nominal_stable_full_admission_equilibrium": {
+              "rpm": 8284.8418121,
+              "stable_restoring_root": true,
+              "net_torque_slope_nm_per_rpm": -0.00020697,
+              "engine_torque_nm": 0.79577275,
+              "thrust_n": 49.70306686,
+              "torque_nm": 0.79577275,
+              "shaft_power_w": 690.40177803,
+              "thrust_power_w": 0.0,
+              "advance_ratio": 0.0,
+              "within_o_s_practical_rpm_range": true
+            },
+            "assumption_envelope": {
+              "axial_speed_m_s": 0.0,
+              "sensitivity_case_count_excluding_nominal": 4,
+              "nominal_case_included_in_min_max": true,
+              "stable_root_count_including_nominal": 5,
+              "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
+              "rpm": [
+                4079.82510249,
+                11739.45949121
+              ],
+              "thrust_n": [
+                14.91924352,
+                70.28041914
+              ],
+              "torque_nm": [
+                0.38958572,
+                0.8548803
+              ],
+              "shaft_power_w": [
+                166.44593513,
+                1010.35321096
+              ]
+            }
+          },
+          {
+            "axial_speed_m_s": 10.0,
+            "static_condition": false,
+            "nominal_uniform_chord_m": 0.03,
+            "nominal_all_roots": [
+              {
+                "rpm": 8866.0013921,
+                "stable_restoring_root": true,
+                "net_torque_slope_nm_per_rpm": -0.0002261,
+                "engine_torque_nm": 0.78710119,
+                "thrust_n": 33.85998226,
+                "torque_nm": 0.78710119,
+                "shaft_power_w": 730.78055408,
+                "thrust_power_w": 338.59982263,
+                "advance_ratio": 0.19031004,
+                "within_o_s_practical_rpm_range": true
+              }
+            ],
+            "nominal_stable_full_admission_equilibrium": {
+              "rpm": 8866.0013921,
+              "stable_restoring_root": true,
+              "net_torque_slope_nm_per_rpm": -0.0002261,
+              "engine_torque_nm": 0.78710119,
+              "thrust_n": 33.85998226,
+              "torque_nm": 0.78710119,
+              "shaft_power_w": 730.78055408,
+              "thrust_power_w": 338.59982263,
+              "advance_ratio": 0.19031004,
+              "within_o_s_practical_rpm_range": true
+            },
+            "assumption_envelope": {
+              "axial_speed_m_s": 10.0,
+              "sensitivity_case_count_excluding_nominal": 4,
+              "nominal_case_included_in_min_max": true,
+              "stable_root_count_including_nominal": 5,
+              "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
+              "rpm": [
+                6321.24209039,
+                11684.66611617
+              ],
+              "thrust_n": [
+                15.13474621,
+                46.93685646
+              ],
+              "torque_nm": [
+                0.52015652,
+                0.86445967
+              ],
+              "shaft_power_w": [
+                344.32225225,
+                1017.64103667
+              ]
+            }
+          },
+          {
+            "axial_speed_m_s": 20.0,
+            "static_condition": false,
+            "nominal_uniform_chord_m": 0.03,
+            "nominal_all_roots": [
+              {
+                "rpm": 10625.51023398,
+                "stable_restoring_root": true,
+                "net_torque_slope_nm_per_rpm": -0.00029526,
+                "engine_torque_nm": 0.74363645,
+                "thrust_n": 22.72171352,
+                "torque_nm": 0.74363645,
+                "shaft_power_w": 827.4448983,
+                "thrust_power_w": 454.43427041,
+                "advance_ratio": 0.31759211,
+                "within_o_s_practical_rpm_range": true
+              }
+            ],
+            "nominal_stable_full_admission_equilibrium": {
+              "rpm": 10625.51023398,
+              "stable_restoring_root": true,
+              "net_torque_slope_nm_per_rpm": -0.00029526,
+              "engine_torque_nm": 0.74363645,
+              "thrust_n": 22.72171352,
+              "torque_nm": 0.74363645,
+              "shaft_power_w": 827.4448983,
+              "thrust_power_w": 454.43427041,
+              "advance_ratio": 0.31759211,
+              "within_o_s_practical_rpm_range": true
+            },
+            "assumption_envelope": {
+              "axial_speed_m_s": 20.0,
+              "sensitivity_case_count_excluding_nominal": 4,
+              "nominal_case_included_in_min_max": true,
+              "stable_root_count_including_nominal": 5,
+              "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
+              "rpm": [
+                9111.23624493,
+                12268.44053531
+              ],
+              "thrust_n": [
+                11.11920088,
+                27.52716818
+              ],
+              "torque_nm": [
+                0.59796449,
+                0.74363645
+              ],
+              "shaft_power_w": [
+                575.65686294,
+                907.73524307
+              ]
+            }
+          },
+          {
+            "axial_speed_m_s": 30.0,
+            "static_condition": false,
+            "nominal_uniform_chord_m": 0.03,
+            "nominal_all_roots": [
+              {
+                "rpm": 12416.64733799,
+                "stable_restoring_root": true,
+                "net_torque_slope_nm_per_rpm": -0.00044906,
+                "engine_torque_nm": 0.48686342,
+                "thrust_n": 5.46003362,
+                "torque_nm": 0.48686342,
+                "shaft_power_w": 633.05305217,
+                "thrust_power_w": 163.80100863,
+                "advance_ratio": 0.4076678,
+                "within_o_s_practical_rpm_range": false
+              }
+            ],
+            "nominal_stable_full_admission_equilibrium": {
+              "rpm": 12416.64733799,
+              "stable_restoring_root": true,
+              "net_torque_slope_nm_per_rpm": -0.00044906,
+              "engine_torque_nm": 0.48686342,
+              "thrust_n": 5.46003362,
+              "torque_nm": 0.48686342,
+              "shaft_power_w": 633.05305217,
+              "thrust_power_w": 163.80100863,
+              "advance_ratio": 0.4076678,
+              "within_o_s_practical_rpm_range": false
+            },
+            "assumption_envelope": {
+              "axial_speed_m_s": 30.0,
+              "sensitivity_case_count_excluding_nominal": 4,
+              "nominal_case_included_in_min_max": true,
+              "stable_root_count_including_nominal": 5,
+              "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
+              "rpm": [
+                11596.04065496,
+                13370.61175981
+              ],
+              "thrust_n": [
+                -3.37778166,
+                10.1636945
+              ],
+              "torque_nm": [
+                0.42683693,
+                0.48686342
+              ],
+              "shaft_power_w": [
+                543.59149595,
+                658.1531992
+              ]
+            }
+          }
+        ],
+        "model_limits": [
+          "Uses the engine candidate curve and the runtime's 12-annulus no-induced-velocity uniform-chord surrogate.",
+          "The real propeller's radial chord, twist, airfoil, Reynolds correction, induced flow, rotating inertia and production variation are unavailable.",
+          "Advancing cases are axial-speed scenarios at 10, 20 and 30 m/s, not aircraft telemetry or validated flight points.",
+          "Static RPM, thrust and torque for unobserved combinations are engineering inferences, not measurements."
+        ]
+      }
+    ]
+  },
+  "profile_recommendations": {
+    "installed_default": "Master Airscrew K Series 14x6",
+    "installed_default_evidence": "O.S. recommends scale 14x6 and its qualitative FS-64V flight review reports a 14x6; brand and RPM were not recorded",
+    "numeric_geometry_prior": "30.0 mm uniform chord at 14x6, explicitly unmeasured; scale c/D to 27.8571428571 mm at 13x6",
+    "alternate_geometry_sensitivity": "24.6591530641 mm at 14x6 and 22.8977849881 mm at 13x6 if the 2T fitted c/D is transferred; neither is manufacturer blade geometry",
+    "numeric_operating_guidance": "Nominal static roots are reported per prop; keep the O.S. recommended maximum at 11,000 RPM. Retain profile numerical support to 15,000 RPM only for unloading-flight model scenarios with an over-recommendation flag.",
+    "candidate_static_rpm_by_configuration_id": {
+      "fs64v_apc_sport_13x6": 9384.07,
+      "fs64v_master_airscrew_k_14x6": 8284.84
+    },
+    "manufacturer_recommended_max_rpm": 11000.0,
+    "manufacturer_max_recommended_rpm_by_configuration_id": {
+      "fs64v_apc_sport_13x6": 14615.384615384615,
+      "fs64v_master_airscrew_k_14x6": 11785.714285714286
+    },
+    "effective_recommended_rpm_by_configuration_id": {
+      "fs64v_apc_sport_13x6": 11000.0,
+      "fs64v_master_airscrew_k_14x6": 11000.0
+    },
+    "profile_numerical_support_max_rpm": 15000.0,
+    "engine_profile_change": "The 14x6/13x6 predictions do not identify a new FS-64V torque curve. Preserve 0.72788955 Nm at the 1.14 PS/11,000 RPM rated point; require independent bench data before changing knots."
+  },
   "validation_status": {
     "profile_structure": "JSON parses and the report's required fields are present; a full runtime/schema validation is not performed here",
     "rated_knot_reconstruction": "checked by this report; this verifies candidate algebraic consistency only",
     "engine_specific_curve_fit": "NOT PERFORMED: no matched multi-point MAX-55AX or FS-64V torque/flow dataset",
+    "propeller_map_fit": "NOT PERFORMED: the MAX-55AX 12x7 datum is RPM-only and only conditions a uniform-chord surrogate; no matched FS-64V RPM datum or Ct/Cp map exists",
+    "paired_static_advancing_scenarios": "computed from candidates and inferred uniform-chord assumptions; not measurements, held-out propeller tests or aircraft-flight validation",
     "independent_held_out_validation": "NOT PERFORMED",
     "physical_engine_validation": "NOT PERFORMED",
     "experienced_pilot_validation": "NOT PERFORMED",

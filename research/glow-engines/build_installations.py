@@ -23,6 +23,7 @@ def installation(two, diameter=13, pitch=6):
         'fuel_transport_time_constant_s': q(.12 if two else .16, 's'),
         'stall_rpm': q(1200. if two else 1500., 'rpm'),
         'minimum_start_rpm': q(2200., 'rpm'),
+        'starter_prime_kg': q(1e-5, 'kg'),
         'temperature_firing_min_k': q(280., 'K'),
         'temperature_firing_full_k': q(360., 'K'),
         'temperature_firing_hot_full_k': q(450., 'K'),
@@ -43,12 +44,15 @@ def installation(two, diameter=13, pitch=6):
                 fuel_inventory='usable glow premix', settings=settings,
                 initial_temperature_k=q(390., 'K'),
                 propeller={
+                    'max_rpm':q((190000. if two or diameter==13 else 165000.)/diameter,'rpm','derived',
+                                'https://www.apcprop.com/technical-information/rpm-limits/; sport 190000/diameter(in)' if two or diameter==13 else 'https://www.masterairscrew.com/pages/downloads; generic plastic-prop 165000/diameter(in), provisionally applied to K-Series glass-fiber composite; not a SKU-specific rating'),
                     'diameter_m': q(diameter*.0254,'m'), 'pitch_m':q(pitch*.0254,'m'),
-                    'chord_m':q(.025 if two else .030,'m'), 'blades':q(2.),
+                    'chord_m':q(.0211364169120926*diameter/12 if two else .030*diameter/14,'m',
+                                'estimated', 'Conditional APC12x7 10330rpm fit at assumed 1.225kg/m3; transferred c/D for other diameters; NITRO-2T dossier' if two else EST+'; independent broad-blade 14x6 surrogate, c/D transfer to 13x6'), 'blades':q(2.),
                     'lift_slope':q(5.5,'1/rad'), 'cd0':q(.022), 'induced_drag':q(.06),
                 })
 
-def aircraft(two, install):
+def aircraft(two, install, suffix=''):
     raw = json.loads((ROOT/'app/data/aircraft/jensen_ugly_stik_60.json').read_text(encoding='utf-8'))
     tag = '55ax_2t' if two else 'fs64v_4t'
     raw['id'] = 'stik-glow-'+tag.replace('_','-')
@@ -64,8 +68,10 @@ def aircraft(two, install):
     inv[1]['mass'] = q(.121 if two else .044,'kg','borrowed' if two else 'manual',
                          'AIAA 2016-5011 Table 2: tested assembly 525 g minus engine 404 g; E-3071 revision pairing unverified' if two else url)
     diameter=install['propeller']['diameter_m']['value']
-    inv[2]['name']='estimated sport propeller '+('13x6' if two else '14x6')
-    inv[2]['mass']=q(.050 if two else .060,'kg')
+    diameter_in=round(diameter/.0254)
+    pitch_in=round(install['propeller']['pitch_m']['value']/.0254)
+    inv[2]['name']=('APC Sport LP%02d%03d' % (diameter_in,pitch_in*10) if two or diameter_in==13 else 'Master Airscrew K Series')+' %dx%d' % (diameter_in,pitch_in)
+    inv[2]['mass']=q(.0430913,'kg','manual','https://www.apcprop.com/product/12x7/; 1.52oz × 0.028349523125kg/oz') if two and diameter_in==12 else q(.050 if diameter_in==13 else .060,'kg')
     inv[2]['size']=q([.01,diameter,.025],'m')
     inv[6]['name']='usable glow premix'
     inv[6]['size']=q([.09,.05,.05],'m')
@@ -86,11 +92,19 @@ def aircraft(two, install):
     engine['peak_power_rpm']=copy.deepcopy(profile['operation']['rated_rpm'])
     engine['max_rpm_static']=q(13000. if two else 10000.,'rpm')
     engine['idle_rpm']=q(2800.,'rpm')
-    engine['glow_installation']='res://data/glow/stik_'+tag+'.json'
+    engine['glow_installation']='res://data/glow/stik_'+tag+suffix+'.json'
     prop=raw['propulsion']['propeller']
     prop['name']=inv[2]['name']+' (annular surrogate)'
     prop['diameter']=copy.deepcopy(install['propeller']['diameter_m'])
-    prop['rotating_inertia']=q(8e-5 if two else 1.1e-4,'kg·m2')
+    # The locked-body inventory already uses this uniform rectangular propeller.
+    # Its entire axial inertia rotates; add only the estimated crank polar inertia
+    # contained in the engine inventory. Changing prop mass/diameter changes both
+    # locked-body and relative shaft inertia, rather than only aerodynamic load.
+    prop_size=inv[2]['size']['value']
+    prop_polar=inv[2]['mass']['value']*(prop_size[1]**2+prop_size[2]**2)/12.
+    crank_polar=2e-5 if two else 3e-5
+    prop['rotating_inertia']=q(prop_polar+crank_polar,'kg·m2','derived',
+                              EST+'; uniform-box prop polar m*(diameter^2+thickness^2)/12 plus estimated crank polar '+str(crank_polar)+' kg m^2; no measured blade mass distribution')
     prop['thrust_angles']=q([0.,0.],'deg')
     for contact in raw['landing_gear']['contacts']:
         for key in ['stiffness','damping']:
@@ -102,9 +116,10 @@ def outputs():
     out={}
     for two in [True,False]:
         tag='55ax_2t' if two else 'fs64v_4t'
-        install=installation(two,13 if two else 14,6)
-        out[ROOT/'app/data/glow'/('stik_'+tag+'.json')]=install
-        out[ROOT/'app/data/aircraft'/('stik_glow_'+tag+'.json')]=aircraft(two,install)
+        for suffix,diameter,pitch in [('',12 if two else 14,7 if two else 6),('_apc_13x6',13,6)]:
+            install=installation(two,diameter,pitch)
+            out[ROOT/'app/data/glow'/('stik_'+tag+suffix+'.json')]=install
+            out[ROOT/'app/data/aircraft'/('stik_glow_'+tag+suffix+'.json')]=aircraft(two,install,suffix)
     return out
 
 def main():

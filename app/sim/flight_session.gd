@@ -97,12 +97,12 @@ func glow_start() -> bool:
 	if not glow_is_active() or not _flight_ready(): return false
 	var install: Dictionary=aircraft.model.propulsion.glow
 	var current: Dictionary=GlowFlight.unpack(sim.continuous,install)
-	if current.is_empty() or current.running or current.fuel_kg<=1e-5: return false
+	if current.is_empty() or current.running or current.fuel_kg<=install.settings.starter_prime_kg: return false
 	var rpm: float=maxf(sim.continuous[0],install.settings.minimum_start_rpm)
 	var started: Dictionary=GlowFlight.Life.request_start(install.profile,install.settings,current,rpm,true)
 	if not started.get("started",false): return false
 	var next: Dictionary=started.state
-	next.fuel_kg-=1e-5
+	next.fuel_kg-=install.settings.starter_prime_kg
 	var source: Dictionary=GlowFlight.Source.evaluate(install.profile,rpm,next.air_fraction,sim.continuous[12],1.225*engine_charge_ratio(),true)
 	if not source.ok: return false
 	next.fuel_transport_kg_s=source.delivered_fuel_kg_s
@@ -295,7 +295,7 @@ const SceneryDamage := preload("res://sim/scenery_damage.gd")
 const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
 ## Aircraft whose runway starts have passed the ground qualification gate (TT-11).
-const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution"]
+const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t"]
 const RUNWAY_FIELD_ID := "default"
 
 
@@ -998,7 +998,7 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	var input_values := PackedFloat64Array([pilot_commands.roll, pilot_commands.pitch, pilot_commands.yaw, 0.0])
 	var surface_angles: Dictionary = Commands.surface_deflections_deg(pilot_commands, model.controls.throw_deg)
 	var deflections: Dictionary = Aero.deflections_from_surfaces(surface_angles)
-	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, air_density(), engine_charge_ratio())
+	var rpm: float = 0.0 if Propulsion.is_glow(model.propulsion) else Propulsion.steady_rpm(0.0, 0.0, model.propulsion, air_density(), engine_charge_ratio())
 	var solved: Dictionary = GroundStart.solve(model, ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
 		deflections, input_values[2], rpm, air_density(), sim.gravity, _initial_wind(), _model_wheel_count(model) > 0)
 	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
@@ -1277,11 +1277,11 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 		return { ok = false, message = "runway start needs valid aircraft data, trim, and stiction gear" }
 	commands = Commands.neutral_commands()
 	commands.throttle = 0.0
-	engine_running = true
+	engine_running = not glow_is_active()
 	sim.inputs = _inputs()
 	var prop: Dictionary = aircraft.model.propulsion
 	# An enabled electric source at zero duty is at relative rest, not a combustion idle.
-	var rpm: float = 0.0 if Propulsion.is_electric(prop) else Propulsion.steady_rpm(0.0, 0.0, prop, air_density(), engine_charge_ratio())
+	var rpm: float = 0.0 if Propulsion.is_electric(prop) or Propulsion.is_glow(prop) else Propulsion.steady_rpm(0.0, 0.0, prop, air_density(), engine_charge_ratio())
 	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	var solved: Dictionary = GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
 		rpm, air_density(), sim.gravity, _initial_wind(), wheel_count() > 0)
@@ -2039,6 +2039,8 @@ func trace_meta() -> Dictionary:
 		scenario = "runway threshold on field '%s' (idle engine, static equilibrium; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
 		if Propulsion.is_electric(prop):
 			scenario = "runway threshold on field '%s' (electric source enabled, zero duty, rotor at rest; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
+		elif Propulsion.is_glow(prop):
+			scenario = "runway threshold on field '%s' (warm glow engine stopped; explicit starter required; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
 	elif str(_launch_metadata.get("launch_choice", "")) == "failed":
 		scenario = "start refused: " + str(_launch_metadata.get("launch_error", "unknown start error"))
 	elif str(_launch_metadata.get("launch_kind", "")) == "checkpoint_restore":

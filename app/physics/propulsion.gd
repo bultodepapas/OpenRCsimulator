@@ -570,7 +570,7 @@ static func _tilted_loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionar
 	var pf1 := 0.0
 	var pf2 := 0.0
 	var speed := M.sqrt_(v0 * v0 + v1 * v1 + v2 * v2)
-	if not speed < 1e-6: # the oracle's test, so NaN takes the same branch
+	if not speed < 1e-6 and rpm != 0.0: # legacy oracle branch; stopped glow has no supported side-force tables
 		var along: float = v0 * a0 + v1 * a1 + v2 * a2
 		var c0: float = v0 - a0 * along
 		var c1: float = v1 - a1 * along

@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-13",
+  "platform": "Windows native OpenGL, NVIDIA RTX 3090",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "source_head": "4dece25b8e4480eae9d280e20b799d4c55f110f8",
+  "source_note": "Shared working tree with concurrent changes; hashes identify selected runtime files after the run. HEAD alone is not a release identity.",
+  "source_sha256": {
+    "app/main.gd": "ac286f4e9db084ab5b6d4031d8f89a4138c124b18a49913cee9d8e96169fda69",
+    "app/app_root.gd": "42f6c0c4b1c9175a7458f54f2cdee03ca9e7933b07c7124dc6aa0b63e094dcde",
+    "app/sim/flight_session.gd": "6595a85c10cc406e6324c91df97f968b1913f17d738c6fc8cb06fcbbc1afd9d5",
+    "app/physics/dynamics.gd": "9acf29818a9800fe2d624ffaed1206f9295ec07cb44af9941ed0d3c9e79fbe45"
+  },
+  "probe": "research/flight-dynamics/climb-trim/native_probe.gd",
+  "cases": [
+    {
+      "climb_mps": 0.0497368584028765,
+      "gain_m": -0.40020332768481,
+      "height_m": 29.5964769850569,
+      "id": "turbo-lumber-evolution",
+      "inputs": [
+        0.0119407995124513,
+        0.145223519557061,
+        -0.0309302060910531,
+        0.409383489576641
+      ],
+      "launch": "airborne",
+      "pause_reason": "",
+      "paused": false,
+      "pitch_deg": 3.85347458527828,
+      "power": -1.0,
+      "raw": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "seconds": 10.0,
+      "trace": {
+        "file": "trace-2026-10-13T18-23-08.csv",
+        "sha256": "3e063fe0890fd64bc90eb7f396575cac7a353cf5b931a0a1d817e075e4ff86e7"
+      },
+      "initial_time_note": "Recording and requested power applied after Home transition; seconds is absolute simulation time."
+    },
+    {
+      "climb_mps": -1.5650840920893,
+      "gain_m": -11.7949067349657,
+      "height_m": 18.2026536186379,
+      "id": "turbo-lumber-evolution",
+      "inputs": [
+        0.0119407995124513,
+        0.145223519557061,
+        -0.0309302060910531,
+        0.25
+      ],
+      "launch": "airborne",
+      "pause_reason": "",
+      "paused": false,
+      "pitch_deg": -2.86277415609621,
+      "power": 0.25,
+      "raw": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "seconds": 10.0041666666667,
+      "trace": {
+        "file": "trace-2026-10-13T18-23-22.csv",
+        "sha256": "f480e3df347410e5719b102ac9bbd0ce41906ca5ee3c127899747e1312ca063e"
+      },
+      "initial_time_note": "Recording and requested power applied after Home transition; seconds is absolute simulation time."
+    },
+    {
+      "climb_mps": -7.87159038333746e-05,
+      "gain_m": 0.000482370271561061,
+      "height_m": 0.221083391887867,
+      "id": "turbo-lumber-evolution",
+      "inputs": [
+        0.0119407995124513,
+        0.145223519557061,
+        -0.0309302060910531,
+        0.25
+      ],
+      "launch": "runway",
+      "pause_reason": "",
+      "paused": false,
+      "pitch_deg": 9.34853537779092,
+      "power": 0.25,
+      "raw": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "seconds": 10.0083333333333,
+      "trace": {
+        "file": "trace-2026-10-13T18-23-37.csv",
+        "sha256": "aec7ce66749c2fa29fbdbdc22390c93306395b31370b37641a07f98187997573"
+      },
+      "initial_time_note": "Recording and requested power applied after Home transition; seconds is absolute simulation time."
+    },
+    {
+      "climb_mps": -0.779499189446057,
+      "gain_m": -4.62324304998175,
+      "height_m": 25.3736789625976,
+      "id": "jensen-das-ugly-stik-60",
+      "inputs": [
+        0.0205260161958305,
+        0.262836484934918,
+        0.026386599355537,
+        0.25
+      ],
+      "launch": "airborne",
+      "pause_reason": "",
+      "paused": false,
+      "pitch_deg": 0.684865044047635,
+      "power": 0.25,
+      "raw": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "seconds": 10.0041666666667,
+      "trace": {
+        "file": "trace-2026-10-13T18-23-51.csv",
+        "sha256": "d24bae0548f857a2d44df4dbaa060bdd3a5a19f6de5be1ac42b18b7c5abdf22a"
+      },
+      "initial_time_note": "Recording and requested power applied after Home transition; seconds is absolute simulation time."
+    }
+  ]
+}

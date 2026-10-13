@@ -88,6 +88,28 @@ uniform float border_m = 0.6;         // noisy border, amplitude 0.3-0.8 m
 uniform float wear = 0.45;            // touchdown wear weight, 10-30 m in from each threshold
 
 varying vec3 world_pos;
+// LU-25: yield the exact validated bank footprint to the real basin geometry.
+uniform int lake_mask_mode = 0; // 0 ordinary field, 1 outside bank, 2 inside bank
+uniform bool lake_terrain = false;
+uniform int lake_bank_count = 0;
+uniform vec2 lake_bank_points[64];
+uniform vec4 lake_bank_bounds = vec4(0.0);
+
+bool lake_inside_bank(vec2 p) {
+	if (lake_bank_count < 3 || any(lessThan(p, lake_bank_bounds.xy)) || any(greaterThan(p, lake_bank_bounds.zw))) return false;
+	bool inside = false;
+	int previous = lake_bank_count - 1;
+	for (int i = 0; i < 64; i++) {
+		if (i >= lake_bank_count) break;
+		vec2 a = lake_bank_points[i];
+		vec2 b = lake_bank_points[previous];
+		if ((a.y > p.y) != (b.y > p.y)) {
+			if (p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x) inside = !inside;
+		}
+		previous = i;
+	}
+	return inside;
+}
 
 // Far-field land cover: integer-hash Voronoi parcels, each a crop colour factor. Borders blend over parcel_blend_m
 // (hard edges at 2-5 km alias into row steps and shimmer from altitude).
@@ -238,6 +260,12 @@ vec3 lobe_term(vec3 d) {
 
 void fragment() {
 	vec3 col = rough_grass_colour(world_pos.xz);
+	if (lake_terrain) {
+		float earth = smoothstep(-5.0, -0.7, UV.x);
+		vec3 soil = mix(vec3(0.14, 0.105, 0.065), vec3(0.065, 0.075, 0.045), smoothstep(-1.5, 0.8, UV.x));
+		soil *= 0.88 + 0.24 * clamp(col.g * 3.0, 0.0, 1.0);
+		col = mix(col, soil, earth);
+	}
 	// Evaluate derivatives before the terrain branch; suppress subpixel relief and skip all wave work beyond 80 m.
 	vec2 footprint = fwidth(world_pos.xz);
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;
@@ -306,6 +334,11 @@ void fragment() {
 		? 1.0 - smoothstep(1.0 / rim_end, 1.0 / rim_start, 1.0 / max(d, 1e-3))
 		: smoothstep(rim_start, rim_end, d);
 	FOG = vec4(haze, max(1.0 - exp(-beta * d), rim));
+	// Evaluate derivatives before the shoreline discard, preserving neighbouring texture gradients.
+	if (lake_mask_mode > 0) {
+		bool inside = lake_inside_bank(world_pos.xz);
+		if ((lake_mask_mode == 1 && inside) || (lake_mask_mode == 2 && !inside)) discard;
+	}
 }
 
 // Preserve this shader's existing Compatibility fallback: Lambert (no diffuse_burley render mode).

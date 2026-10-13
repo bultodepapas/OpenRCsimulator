@@ -76,6 +76,7 @@ func snapshot() -> Dictionary:
 		glow_state["load"] = float(glow_state.get("load", load_amount))
 		glow_state["throttle"] = float(glow_state.get("throttle", session.sim.inputs[3]))
 		glow_state["blade_count"] = int(glow_state.get("blade_count", blades))
+		glow_state["sample_tick"] = int(session.sim.tick)
 	# Doppler source velocity: accepted body velocity rotated to NED, converted at the render boundary.
 	var s: PackedFloat64Array = session.sim.state
 	var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
