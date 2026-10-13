@@ -87,10 +87,11 @@ The tests cover source-form thrust and torque, hard clamp behavior, pitch/cyclic
 The main-rotor suite passes 768 checks on Godot 4.7.2 Windows and Ubuntu/WSL, including the ten independent oracle cases, hard clamp and power anchors, body-rate dimensions, source lateral-flow sign, one-count hub moment, context/input refusal and immutable preparation. Compact and full diagnostic evaluations return byte-identical loads and flap derivatives for every oracle case. The compact path avoids diagnostic-vector/dictionary allocation; input/context checks remain active. Three disposable defects—dividing q by the lag time, changing the lateral-flow sign and doubling the hub-arm moment—are rejected by the tests.
 
 ```powershell
-.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_heli_main_rotor.gd -- --oracle=research/helicopter/reference/main_rotor_oracle.json
+$MainRotorOracle = (Resolve-Path research/helicopter/reference/main_rotor_oracle.json).Path
+.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_heli_main_rotor.gd -- --oracle="$MainRotorOracle"
 ```
 
-Use an absolute oracle path if the engine resolves user paths relative to `app/`. The shared [verification runner](../../../../research/helicopter/verify_kernels.py) supplies absolute paths and checks both reference freshness and native behavior.
+The shared [verification runner](../../../../research/helicopter/verify_kernels.py) supplies absolute paths and checks both reference freshness and native behavior.
 
 ## Joint main-rotor stage
 
@@ -98,7 +99,7 @@ Use an absolute oracle path if the engine resolves user paths relative to `app/`
 
 The 25-check stage suite drives three continuous states through the existing nonautonomous RK4 core while holding the body and shaft speed fixed. It checks query purity, actual stage-vi feedback into thrust, signed reflection, residual wake at rotor stop and compact/full payload equivalence. With unsaturated hover `T=A-Bvi` and the ideal target `vi²=T/(2ρA_disk)`, the settled vi agrees with the independently solved positive quadratic root at h, h/2 and h/4. Cyclic flap targets also settle. This stand is not a whole-helicopter hover trim or a flight.
 
-All 42 Python reference tests and freshness checks pass. The application-wide Windows parse sweep covered 507 scripts; later main-kernel optimizations also pass focused parsing and execution on both platforms. Existing airplane goldens and Windows 30/60/144 FPS body-state identity pass. This track changes no airplane runtime path or golden file. The full application test suite and physical acceptance remain outside this report.
+All 42 Python reference tests and freshness checks pass. The application-wide Windows parse sweep covered 507 scripts; later main-kernel optimizations also pass focused parsing and execution on both platforms. Existing airplane goldens and 30/60/144 FPS body-state identity pass on Windows and Ubuntu/WSL. One Linux frame-run process initially timed out; its focused rerun and the subsequent native-only suite passed. This track changes no airplane runtime path or golden file. The full application test suite and physical acceptance remain outside this report.
 
 ## HELI-09b isolated stage cost
 
