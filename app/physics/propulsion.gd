@@ -541,8 +541,14 @@ static func loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: 
 	if rpm < STOPPED_RPM and not is_glow(prop):
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var tq := thrust_torque(v_air, rpm, prop, rho)
-	var thrust := tq[0]
-	var torque := tq[1]
+	return loads_from_thrust_torque(v_air, rpm, prop, rho, tq[0], tq[1])
+
+
+## Reuse an already evaluated propeller at this exact RK stage. The caller must
+## supply thrust/torque for the same air velocity, RPM, density and installation.
+## No result is retained across stages; geometry and crossflow arithmetic match loads().
+static func loads_from_thrust_torque(v_air: PackedFloat64Array, rpm: float, prop: Dictionary,
+		rho: float, thrust: float, torque: float) -> PackedFloat64Array:
 	var r: PackedFloat64Array = prop.offset # [x_aft, y_right, z_up] from the CG
 	var at := M.v3(-r[0], r[1], -r[2])
 	if not prop.has("axis"):

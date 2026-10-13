@@ -70,17 +70,19 @@ static func _load_components(state: PackedFloat64Array, model: Dictionary, d: Di
 
 ## Share one stage's air data with the shaft solve. `air` must be Air.compute for this
 ## exact state, wind and density; never reuse it across RK stages or simulation ticks.
+## `stage_propulsion_loads`, when supplied, has the same requirement and is body
+## force/moment about the reference CG. Empty retains the independent evaluation.
 static func loads_from_air(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
 		rho: float, air: Dictionary, downwash_cl := NAN, transported_dv := PackedFloat64Array(),
-		ground_up := NAN) -> PackedFloat64Array:
-	return _components_from_air(state, model, d, rpm, rho, air, downwash_cl, transported_dv, ground_up).loads
+		ground_up := NAN, stage_propulsion_loads := PackedFloat64Array()) -> PackedFloat64Array:
+	return _components_from_air(state, model, d, rpm, rho, air, downwash_cl, transported_dv, ground_up, stage_propulsion_loads).loads
 
 
 static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
 		rho: float, air: Dictionary, downwash_cl: float, transported_dv: PackedFloat64Array,
-		ground_up := NAN) -> Dictionary:
+		ground_up := NAN, stage_propulsion_loads := PackedFloat64Array()) -> Dictionary:
 	var aero_loads := Aero.loads(state, air, d, model, rho, downwash_cl, ground_up)
-	var propulsion_loads := Propulsion.loads(air.v_air, rpm, model.propulsion, rho)
+	var propulsion_loads: PackedFloat64Array = stage_propulsion_loads if not stage_propulsion_loads.is_empty() else Propulsion.loads(air.v_air, rpm, model.propulsion, rho)
 	var total := aero_loads.duplicate()
 	for i in 6:
 		total[i] += propulsion_loads[i]

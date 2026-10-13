@@ -20,6 +20,19 @@ const MAX_OPPORTUNITIES_PER_ACCEPT := 64
 const LOW_FLOW := 1.0e-15
 
 
+## Immutable installation snapshot for repeated RK stages. Dynamic lifecycle state
+## remains in the caller's serialized Dictionary and is never stored here.
+class PreparedEvaluator extends RefCounted:
+	var _model: Dictionary
+	var _settings: Dictionary
+	var _source: Source.PreparedEvaluator
+
+	func _init(model: Dictionary, settings: Dictionary, source: Source.PreparedEvaluator) -> void:
+		_model = model.duplicate(true)
+		_settings = settings.duplicate(true)
+		_source = source
+
+
 ## Explicit fixture values only. None are calibrated or suitable as an installation profile.
 static func candidate_settings_for_tests(family: String) -> Dictionary:
 	if family not in FAMILIES:
@@ -153,6 +166,58 @@ static func evaluate(
 	if not state_error.is_empty():
 		return _fail(state_error)
 	var model: Dictionary = _model(profile)
+	return _evaluate_validated(model, settings, state, rpm, throttle, mixture,
+		dry_density_kg_m3, ambient_k, cooling_airspeed_mps)
+
+
+## Performs one-time validation and detaches immutable profile/settings data for a
+## simulation owner. Runtime state is intentionally not captured in this object.
+static func prepare_evaluator(profile: Dictionary, settings: Dictionary) -> Dictionary:
+	var configuration_error: String = _configuration_error(profile, settings)
+	if not configuration_error.is_empty():
+		return _fail(configuration_error)
+	var model: Dictionary = _model(profile)
+	var source_result: Dictionary = Source.prepare_evaluator(model)
+	if not source_result.get("ok", false):
+		return _fail("Glow source preparation failed: " + str(source_result.get("message", "unknown profile error")))
+	var evaluator := PreparedEvaluator.new(model, settings, source_result.evaluator)
+	return {ok = true, message = "", evaluator = evaluator}
+
+
+## RK-stage API over a prepared, typed installation evaluator. State and all
+## dynamic queries are validated at each call just like the public Dictionary API.
+static func evaluate_prepared(
+		evaluator: PreparedEvaluator,
+		state: Dictionary,
+		rpm: float,
+		throttle: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		ambient_k: float,
+		cooling_airspeed_mps: float
+) -> Dictionary:
+	if not evaluator is PreparedEvaluator:
+		return _fail("A prepared lifecycle evaluator is required")
+	var state_error: String = _state_error(state, true)
+	if not state_error.is_empty():
+		return _fail(state_error)
+	return _evaluate_validated(evaluator._model, evaluator._settings, state, rpm,
+		throttle, mixture, dry_density_kg_m3, ambient_k, cooling_airspeed_mps,
+		evaluator._source)
+
+
+static func _evaluate_validated(
+		model: Dictionary,
+		settings: Dictionary,
+		state: Dictionary,
+		rpm: float,
+		throttle: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		ambient_k: float,
+		cooling_airspeed_mps: float,
+		prepared_source: Variant = null
+) -> Dictionary:
 	if str(state.family) != str(model.family):
 		return _fail("Profile family does not match lifecycle state")
 	var operation: Dictionary = model.operation
@@ -183,12 +248,21 @@ static func evaluate(
 	var current_transport: float = maxf(0.0, float(state.fuel_transport_kg_s))
 	if active and admission > 0.0:
 		var baseline_mixture: float = mixture if mixture > 0.0 else float(operation.nominal_mixture)
-		var baseline: Dictionary = Source.evaluate(
-			model, rpm, admission, baseline_mixture, dry_density_kg_m3, true, 1.0
-		)
-		if not baseline.get("ok", false):
-			return _fail("Fuel-flow target failed: " + str(baseline.get("message", "unknown source error")))
-		var unit_flow: float = float(baseline.delivered_fuel_kg_s) / baseline_mixture
+		var unit_flow: float
+		if prepared_source is Source.PreparedEvaluator:
+			var flow_result: Dictionary = Source.unit_fuel_flow_prepared(
+				prepared_source, rpm, admission, baseline_mixture, dry_density_kg_m3
+			)
+			if not flow_result.get("ok", false):
+				return _fail("Fuel-flow target failed: " + str(flow_result.get("message", "unknown source error")))
+			unit_flow = float(flow_result.unit_fuel_flow_kg_s_per_mixture)
+		else:
+			var baseline: Dictionary = Source.evaluate(
+				model, rpm, admission, baseline_mixture, dry_density_kg_m3, true, 1.0
+			)
+			if not baseline.get("ok", false):
+				return _fail("Fuel-flow target failed: " + str(baseline.get("message", "unknown source error")))
+			unit_flow = float(baseline.delivered_fuel_kg_s) / baseline_mixture
 		target_fuel_flow = unit_flow * mixture
 		if unit_flow > LOW_FLOW:
 			actual_mixture = current_transport / unit_flow
@@ -200,14 +274,26 @@ static func evaluate(
 		firing_fraction = _firing_fraction(
 			settings, float(operation.nominal_mixture), actual_mixture, float(state.temperature_k)
 		)
-	var source: Dictionary = Source.evaluate(
-		model, rpm, admission, actual_mixture, dry_density_kg_m3, active, firing_fraction
-	)
+	var source: Dictionary
+	if prepared_source is Source.PreparedEvaluator:
+		source = Source.evaluate_prepared(
+			prepared_source, rpm, admission, actual_mixture, dry_density_kg_m3, active, firing_fraction
+		)
+	else:
+		source = Source.evaluate(
+			model, rpm, admission, actual_mixture, dry_density_kg_m3, active, firing_fraction
+		)
 	if not source.get("ok", false):
 		return _fail("Glow source failed: " + str(source.get("message", "unknown source error")))
-	var thermal: Dictionary = Thermal.evaluate(
-		source, float(state.temperature_k), ambient_k, cooling_airspeed_mps, settings.thermal
-	)
+	var thermal: Dictionary
+	if prepared_source is Source.PreparedEvaluator:
+		thermal = Thermal.evaluate_prepared(
+			source, float(state.temperature_k), ambient_k, cooling_airspeed_mps, settings.thermal
+		)
+	else:
+		thermal = Thermal.evaluate(
+			source, float(state.temperature_k), ambient_k, cooling_airspeed_mps, settings.thermal
+		)
 	if not thermal.get("ok", false):
 		return _fail("Glow thermal balance failed: " + str(thermal.get("message", "unknown thermal error")))
 	var fuel_transport_rate: float = 0.0

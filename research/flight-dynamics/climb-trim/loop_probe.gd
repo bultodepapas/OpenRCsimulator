@@ -15,6 +15,7 @@ func run() -> void:
 	for row: Dictionary in source.samples: samples[int(row.tick)] = row
 	var cases: Array = ["actual", "calm", "trim22", "trim25", "half", "quarter", "neutral"]
 	if "--isolate-trim" in OS.get_cmdline_user_args(): cases = ["manual22at5", "no_gyro"]
+	if "--replay-only" in OS.get_cmdline_user_args(): cases = ["actual"]
 	for case in cases:
 		var session = Session.new()
 		if case != "calm": assert(session.setup_weather(Weather.GENTLE_PRACTICE))
@@ -65,6 +66,10 @@ func run() -> void:
 				var d: Dictionary = session._deflections(session.sim.aux)
 				var components: Dictionary = Dynamics.evaluate(state,session.aircraft.model,d,session.sim.aux[0],session.air_density(),session.wind_at(session.sim.time()),session.sim.gravity)
 				rows.append({t=session.sim.time(),height=-state[2],speed=air.V,alpha_deg=rad_to_deg(air.alpha),pitch_deg=rad_to_deg(M.q_to_euler(RB._att(state))[1]),q=state[11],blend=Aero.local_flow_weight(state,air,d,session.aircraft.model),throttle=session.commands.throttle,trim=session.trims.pitch,aero=Array(components.aero_loads),prop=Array(components.propulsion_loads)})
-		print("LOOP_RESULT ",JSON.stringify({case=case,seconds=session.sim.time(),initial_power=initial_power,trim_deg=session.trims.pitch*20.0,max_q=max_q,inverted_seconds=inverted_ticks*session.sim.dt(),max_height=max_height,max_state_error=max_error,rows=rows}))
+		if case == "actual" and (max_error > 1e-8 or session.sim.tick != int(source.last_tick)):
+			printerr("Observed replay mismatch: ", max_error, " tick ", session.sim.tick)
+			quit(1)
+			return
+		print("LOOP_RESULT ",JSON.stringify({case=case,seconds=session.sim.time(),completed=session.sim.tick == int(source.last_tick),fault=session.sim.fault_reason,crashed=not session.crash.is_empty(),initial_power=initial_power,trim_deg=session.trims.pitch*20.0,max_q=max_q,inverted_seconds=inverted_ticks*session.sim.dt(),max_height=max_height,max_state_error=max_error,rows=rows}))
 		session.free()
 	quit()
