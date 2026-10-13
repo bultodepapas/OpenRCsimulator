@@ -38,6 +38,7 @@ var smoke: CPUParticles3D
 var flame: CPUParticles3D
 var sparks: CPUParticles3D
 var touch_dust: CPUParticles3D # E3d1: small puff for a soft hull contact that continues the flight
+var blade_chips: CPUParticles3D # E3d2: fragments of propeller blades after a prop strike
 var light: OmniLight3D
 var marks: Array[MeshInstance3D] = []
 var fragments: MultiMeshInstance3D
@@ -99,7 +100,7 @@ func prepare() -> void:
 	sparks.scale_amount_min = 0.015
 	sparks.scale_amount_max = 0.035
 	sparks.color_ramp = _gradient([Color(1,0.95,0.7,1),Color(1,0.22,0.025,0)], [0.0,1.0])
-	vent = _particles(120, 5.0, puff, false)
+	vent = _particles(108, 5.0, puff, false)
 	vent.initial_velocity_min = 0.4
 	vent.initial_velocity_max = 1.2
 	vent.spread = 12.0
@@ -108,6 +109,24 @@ func prepare() -> void:
 	vent.scale_amount_max = 0.4
 	vent.scale_amount_curve = _curve([Vector2(0,0.4),Vector2(0.5,1.6),Vector2(1,2.6)])
 	vent.color_ramp = _gradient([Color(0.85,0.85,0.82,0),Color(0.82,0.82,0.80,0.7),Color(0.70,0.70,0.68,0)], [0.0,0.1,1.0])
+	blade_chips = _particles(12, 1.6, null, false)
+	blade_chips.one_shot = true
+	blade_chips.explosiveness = 1.0
+	blade_chips.spread = 55.0
+	blade_chips.initial_velocity_min = 3.0
+	blade_chips.initial_velocity_max = 9.0
+	blade_chips.gravity = Vector3(0, -9.81, 0)
+	blade_chips.angular_velocity_min = -720.0
+	blade_chips.angular_velocity_max = 720.0
+	blade_chips.scale_amount_min = 1.0
+	blade_chips.scale_amount_max = 1.0
+	var shard := BoxMesh.new()
+	shard.size = Vector3(0.012, 0.004, 0.06)
+	var shard_material := StandardMaterial3D.new()
+	shard_material.albedo_color = Color(0.08, 0.08, 0.08)
+	shard_material.roughness = 0.6
+	shard.material = shard_material
+	blade_chips.mesh = shard
 	touch_dust = _particles(24, 1.2, puff, false)
 	touch_dust.one_shot = true
 	touch_dust.explosiveness = 0.9
@@ -239,6 +258,7 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	dust.restart()
 	dust.emitting = level > 0 and not profile.is_empty()
 	touch_dust.emitting = false
+	blade_chips.emitting = false
 	vent.emitting = false
 	vent.gravity = Vector3(0, 0.5, 0) + wind.limit_length(10.0)*0.2
 	sparks.restart()
@@ -338,6 +358,18 @@ func touch(point: Vector3, velocity: Vector3, strength: float, surface := "grass
 	touch_dust.visible = true
 	touch_dust.restart()
 	touch_dust.emitting = true
+
+
+## E3d2: the blades of a turning propeller break on the ground: a burst of blade fragments thrown along the slide
+## and upward, and a surface puff. The flight continues; the crash aftermath (start) supersedes it.
+func prop_break(point: Vector3, velocity: Vector3, surface := "grass") -> void:
+	touch(point, velocity, 0.6, surface)
+	var slide := Vector3(velocity.x, 0.0, velocity.z)
+	blade_chips.global_position = Vector3(point.x, maxf(point.y, 0.03), point.z)
+	blade_chips.direction = (slide.normalized() * 0.5 + Vector3.UP).normalized() if slide.length() > 0.5 else Vector3.UP
+	blade_chips.visible = true
+	blade_chips.restart()
+	blade_chips.emitting = true
 
 
 func secondary(point: Vector3, strength: float) -> void:

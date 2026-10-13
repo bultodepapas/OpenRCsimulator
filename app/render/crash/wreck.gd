@@ -104,6 +104,8 @@ var _c3_contact_exposure_index_j := 0.0
 var _c3_contact_release_pending := false
 var _run_generation := 0
 var _release_kinds: Array = []
+var _hidden_members: Array = [] # E3d2: propeller pieces hidden because the blades broke before the crash
+var _prop_broken := false
 var _contact_model := Vector3.ZERO
 var _has_contact := false
 var _rng := RandomNumberGenerator.new()
@@ -177,6 +179,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	if class_level < 3:
 		scatter_budget = 0.0
 	var component_hint := _component_description(severity).to_lower()
+	_prop_broken = bool(severity.get("prop_broken", false))
 	_release_kinds = _release_kinds_for(class_level, component_hint)
 	_has_contact = severity.get("contact_point_world") is Vector3 and _finite_vector(severity.contact_point_world) == severity.contact_point_world
 	_contact_model = pose.affine_inverse() * Vector3(severity.contact_point_world) if _has_contact else Vector3.ZERO
@@ -243,6 +246,14 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		body.collision_mask = 0
 		body.linear_velocity = Vector3.ZERO
 		body.angular_velocity = Vector3.ZERO
+	# E3d2: blades already broken by a prop strike stay hidden (_should_detach keeps them on the core).
+	if _prop_broken:
+		for i in range(1, _groups.size()):
+			if String(_groups[i].kind) == "propeller":
+				for member: Node3D in _groups[i].members:
+					if is_instance_valid(member) and member.visible:
+						member.visible = false
+						_hidden_members.append(member)
 	# Low classes keep all sections attached to the core body. These mass weights are presentation estimates.
 	_groups[0].mass = _core_body.mass
 	_groups[0].base_velocity = safe_velocity
@@ -343,6 +354,11 @@ func reset() -> void:
 	_last_component_hint = ""
 	_last_cg_model = Vector3.ZERO
 	_release_kinds = []
+	for member: Node3D in _hidden_members:
+		if is_instance_valid(member):
+			member.visible = true
+	_hidden_members.clear()
+	_prop_broken = false
 	_has_contact = false
 	_contact_model = Vector3.ZERO
 
@@ -796,7 +812,7 @@ func _component_description(severity: Dictionary) -> String:
 
 
 func _should_detach(kind: String, class_level: int, component_hint: String) -> bool:
-	if class_level < 2:
+	if class_level < 2 or (kind == "propeller" and _prop_broken):
 		return false
 	if class_level >= 4:
 		return true
@@ -988,6 +1004,8 @@ func _release_pending_c3_contact_group(generation: int) -> void:
 
 func _next_c3_contact_release_index() -> int:
 	for kind in C3_CONTACT_RELEASE_ORDER:
+		if kind == "propeller" and _prop_broken:
+			continue
 		for i in range(1, _groups.size()):
 			var group: Dictionary = _groups[i]
 			if String(group.kind) != String(kind):
