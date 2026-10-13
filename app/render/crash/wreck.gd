@@ -110,6 +110,10 @@ var _prop_broken := false
 ## "core" for the remainder; empty → the fixed GROUP_MASS_WEIGHTS shares.
 var _section_masses := {}
 const MIN_SECTION_MASS_KG := 0.015
+## Inventory positions are estimates to a few centimetres: a section's mesh box is thickened to at least this on every
+## axis (thin skins: stab, fin, wing) plus 1 cm, so a thin part catches its item without fattening bulky parts.
+const INVENTORY_MIN_THICKNESS_M := 0.06
+const INVENTORY_MARGIN_M := 0.01
 var _contact_model := Vector3.ZERO
 var _has_contact := false
 var _rng := RandomNumberGenerator.new()
@@ -541,14 +545,20 @@ func _collect_fragment_groups(node: Node) -> void:
 	}]
 	for group: Dictionary in _groups:
 		var aggregate := {"has": false, "bounds": AABB()}
+		var member_bounds: Array = [] # CR-09d1: each member's own box (a nose leg and a main leg are not one block)
 		for member: Node3D in group.members:
 			_collect_mesh_bounds(member, _twin, [], aggregate)
+			var own := {"has": false, "bounds": AABB()}
+			_collect_mesh_bounds(member, _twin, [], own)
+			if bool(own.has):
+				member_bounds.append(own.bounds)
 		if not bool(aggregate.has):
 			continue
 		var bounds: AABB = aggregate.bounds
 		records.append({
 			"kind": group.kind,
 			"members": group.members,
+			"member_bounds": member_bounds,
 			"bounds": bounds,
 			"center": bounds.get_center(),
 			"due_s": float(GROUP_DELAYS_S.get(group.kind, 0.1)),
@@ -720,7 +730,10 @@ func _inventory_masses(boxes: Variant, total_mass: float) -> Dictionary:
 		var fractions := {}
 		var assigned := 0.0
 		for i in range(1, _groups.size()):
-			var f := _overlap_fraction(center, size, AABB(_groups[i].bounds).grow(0.01))
+			var f := 0.0
+			for member_box: AABB in _groups[i].get("member_bounds", [_groups[i].bounds]):
+				f += _overlap_fraction(center, size, _inventory_region(member_box))
+			f = minf(f, 1.0)
 			if f > 0.0:
 				fractions[String(_groups[i].kind)] = f
 				assigned += f
@@ -746,6 +759,15 @@ func _inventory_masses(boxes: Variant, total_mass: float) -> Dictionary:
 			out.core.mass -= missing
 			out.core.moment -= Vector3(_groups[i].center) * missing
 	return out
+
+
+static func _inventory_region(box: AABB) -> AABB:
+	var grown := box
+	for axis in 3:
+		var pad := maxf(INVENTORY_MARGIN_M, 0.5 * (INVENTORY_MIN_THICKNESS_M - box.size[axis]))
+		grown.position[axis] -= pad
+		grown.size[axis] += 2.0 * pad
+	return grown
 
 
 static func _overlap_fraction(center: Vector3, size: Vector3, bounds: AABB) -> float:
