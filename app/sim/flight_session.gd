@@ -1329,14 +1329,18 @@ func _flat_ground_hit_outside_lake(previous: PackedFloat64Array, candidate: Pack
 		var point: PackedFloat64Array = M.add(RB._slice3(candidate, RB.POS), M.q_rotate(q, body_point))
 		if point[2] < 0.0:
 			continue
-		if _inside_lake_bank_bounds(point[0], point[1]):
-			var terrain: Dictionary = LakeSurface.sample_terrain_validated(_lake, point[0], point[1])
-			if bool(terrain.get("covered", false)):
-				continue # Lake terrain owns contacts inside its bank; flat ground must not mask its bed or shoreline.
 		var hit: ImpactSnapshot.Snapshot = ImpactSnapshot.hull_point(candidate, next_tick, hull, index / 3, previous)
 		if hit.point_index < 0:
 			continue
 		var fraction: float = hit.crossing.fraction if hit.crossing != null and hit.crossing.available else 0.0
+		var crossing_state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, fraction) \
+			if hit.crossing != null and hit.crossing.available else candidate
+		var crossing_point: PackedFloat64Array = M.add(RB._slice3(crossing_state, RB.POS),
+			M.q_rotate(RB._att(crossing_state), body_point))
+		if _inside_lake_bank_bounds(crossing_point[0], crossing_point[1]):
+			var terrain: Dictionary = LakeSurface.sample_terrain_validated(_lake, crossing_point[0], crossing_point[1])
+			if bool(terrain.get("covered", false)):
+				continue # Lake terrain owns contacts inside its bank; flat ground must not mask its bed or shoreline.
 		if best == null or fraction < best_fraction:
 			best = hit
 			best_fraction = fraction
@@ -2511,13 +2515,14 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	var has_collision_world := not _collision_world.is_empty()
 	var has_lake := not _lake.is_empty()
 	if candidate.format == "openrc-flight-checkpoint v7":
-		if has_collision_world != candidate.has("collision_world_identity") \
+		if (not has_collision_world and not has_lake) \
+				or has_collision_world != candidate.has("collision_world_identity") \
 				or (has_collision_world and candidate.get("collision_world_identity", "") != _collision_world.identity) \
 				or has_lake != candidate.has("lake_identity") \
 				or (has_lake and candidate.get("lake_identity", "") != _lake_identity()) \
 				or (has_lake and candidate.get("lake_id", "") != str(_lake.id)):
 			return false
-	elif has_collision_world or has_lake:
+	elif has_collision_world or has_lake or candidate.has("collision_world_identity") or candidate.has("lake_identity"):
 		return false # Old snapshots do not identify terrain or obstacles used by deterministic tick filtering.
 	if candidate.format != "openrc-flight-checkpoint v7" and candidate.has("scenery_damage"):
 		return false
@@ -2603,6 +2608,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	input_enabled = false
 	crash = {}
 	_last_scenery_event = null
+	_last_lake_event = null
 	pause_reason = "checkpoint restored (recorded inputs)"
 	_deflection_key = PackedFloat64Array()
 	scenery_damage_changed.emit()

@@ -122,10 +122,19 @@ def verify_recorded_inputs(engine: str, run: dict[str, Any]) -> None:
 def read_runs() -> tuple[dict[int, dict[tuple[str, str], dict[str, Any]]], list[dict[str, Any]]]:
     by_rate: dict[int, dict[tuple[str, str], dict[str, Any]]] = {}
     source_records: list[dict[str, Any]] = []
+    shared_sources = None
     for hz, path in RUNS.items():
         raw = json.loads(path.read_text(encoding="utf-8"))
-        if raw.get("format") != "openrc-glow-flight-experiment v1" or raw.get("ok") is not True:
+        if raw.get("format") != "openrc-glow-flight-experiment v2" or raw.get("ok") is not True:
             raise ValueError(f"{path.relative_to(ROOT)} is not a successful supported flight bench output")
+        sources = raw.get('source_sha256', {})
+        if set(sources) != set(SOURCE_PATHS) or any(
+                not isinstance(value, str) or len(value) != 64 or
+                any(c not in '0123456789abcdef' for c in value) for value in sources.values()):
+            raise ValueError(f'{path.name}: missing or malformed runtime source manifest')
+        if shared_sources is not None and shared_sources != sources:
+            raise ValueError('Refinement runs must use identical runner/runtime source snapshots')
+        shared_sources = sources
         if raw.get("hz") != hz or not isinstance(raw.get("runs"), list):
             raise ValueError(f"{path.relative_to(ROOT)} has mismatched rate or missing runs")
         cases: dict[tuple[str, str], dict[str, Any]] = {}
@@ -333,11 +342,8 @@ def build() -> dict[str, Any]:
             "metrics": per_metric,
         }
 
-    source_hashes = []
-    for relative in SOURCE_PATHS:
-        path = ROOT / relative
-        if path.exists():
-            source_hashes.append({"path": relative, "sha256": sha256(path)})
+    recorded_sources = json.loads(next(iter(RUNS.values())).read_text(encoding='utf-8'))['source_sha256']
+    source_hashes = [{'path': relative, 'sha256': recorded_sources[relative]} for relative in SOURCE_PATHS]
     input_hashes = []
     for relative in INPUT_PATHS:
         path = ROOT / relative
@@ -378,7 +384,7 @@ def build() -> dict[str, Any]:
             "limitation": "The report compares endpoint event counts only. It cannot establish cycle pulse timing or event phase against a measured cycle oracle; no matched physical cycle trace is available.",
         },
         "source_hashes": source_hashes,
-        "source_hash_scope": "SHA-256 of the current checked-out runner and runtime sources at report generation; the bench configuration does not record per-module source hashes.",
+        "source_hash_scope": "Declared runner/runtime files hashed by each bench before and after execution; changed sources refuse the run, and all refinement rates must share the same hashes. Later working-tree edits do not relabel retained trajectories.",
         "input_hashes": input_hashes,
         "benchmark_outputs": run_files,
         "run_metadata": source_records,

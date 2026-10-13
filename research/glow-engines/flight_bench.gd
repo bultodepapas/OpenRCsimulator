@@ -8,6 +8,25 @@ var hz:=240
 var output:=""
 var results: Array=[]
 var failed:=false
+const SOURCE_PATHS := [
+	"research/glow-engines/flight_bench.gd", "app/sim/flight_session.gd", "app/sim/simulation.gd",
+	"app/data/field_loader.gd", "app/physics/aircraft_data.gd", "app/physics/glow/profile.gd",
+	"app/physics/glow/installation.gd", "app/physics/glow/flight.gd", "app/physics/glow/lifecycle.gd",
+	"app/physics/glow/source.gd", "app/physics/glow/two_stroke.gd", "app/physics/glow/four_stroke.gd",
+	"app/physics/glow/thermal.gd", "app/physics/glow/fuel_mass.gd", "app/physics/glow/propeller.gd",
+	"app/physics/dynamics.gd", "app/physics/propulsion.gd", "app/physics/glow/operating_point.gd",
+	"app/physics/electric_battery_step.gd", "app/physics/math3d.gd", "app/physics/rigid_body.gd",
+	"app/physics/rotor_coupling.gd",
+]
+
+func source_hashes() -> Dictionary:
+	var hashes: Dictionary={}
+	for path: String in SOURCE_PATHS:
+		var digest: String=FileAccess.get_sha256(ProjectSettings.globalize_path("res://..").path_join(path))
+		if digest.length()!=64:
+			failed=true
+		hashes[path]=digest
+	return hashes
 
 func snapshot(f: Node) -> Dictionary:
 	var t: Dictionary=f.glow_state()
@@ -64,11 +83,15 @@ func _initialize():
 		if arg.begins_with("--hz="): hz=arg.trim_prefix("--hz=").to_int()
 		if arg.begins_with("--out="): output=arg.trim_prefix("--out=")
 	if hz not in [240,480,960,1920] or output.is_empty(): quit(2);return
+	var sources_before: Dictionary=source_hashes()
 	Engine.physics_ticks_per_second=hz
 	for id in ["55ax_2t","fs64v_4t"]:
 		for scenario in ["cruise","steps","rich","lean","exhaustion","takeoff"]:
 			run_case(id,scenario)
+	if sources_before!=source_hashes():
+		printerr("Flight benchmark source changed during execution; repeat from a stable snapshot")
+		failed=true
 	var file=FileAccess.open(output,FileAccess.WRITE)
 	if file==null: quit(2);return
-	file.store_string(JSON.stringify({format="openrc-glow-flight-experiment v1",ok=not failed,hz=hz,runs=results},"\t",true,true)+"\n")
+	file.store_string(JSON.stringify({format="openrc-glow-flight-experiment v2",ok=not failed,hz=hz,runs=results,source_sha256=sources_before},"\t",true,true)+"\n")
 	quit(1 if failed else 0)
