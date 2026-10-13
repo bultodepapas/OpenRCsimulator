@@ -35,16 +35,16 @@ static func shade_tree(k: MeshKit, seed: int, theme: String) -> Array:
 	elif age == 2:
 		leaf = leaf.lerp(dark, 0.22) # mature crowns carry deeper shade
 		trunk = trunk.darkened(0.06)
-	var spray_length := 0.50
-	var spray_width := 0.095
+	var spray_length := 0.25
+	var spray_width := 0.070
 	match species:
-		0: spray_width = 0.105
-		1: spray_length = 0.48
+		0: spray_width = 0.076
+		1: spray_length = 0.23
 		2:
-			spray_length = 0.55
-			spray_width = 0.082
+			spray_length = 0.27
+			spray_width = 0.062
 		_:
-			spray_length = 0.51
+			spray_length = 0.25
 	var lean := Vector3(0.42 * (Palette.hash01(seed, 4) - 0.5), 0.0,
 		0.42 * (Palette.hash01(seed, 5) - 0.5))
 	k.cylinder(0.34, 0.19, trunk_h, 9, Vector3.ZERO, trunk)
@@ -63,10 +63,9 @@ static func shade_tree(k: MeshKit, seed: int, theme: String) -> Array:
 		k.beam(start, elbow, 0.19, trunk)
 		k.beam(elbow, end, 0.12, trunk.lightened(0.04))
 		# Forks terminate within foliage, avoiding bare spikes and detached crown islands.
-		var fork := end + Vector3(cos(a + 0.48) * 0.65, 0.75, sin(a + 0.48) * 0.65)
+		var fork := end + Vector3(cos(a + 0.48) * 0.45, 0.52, sin(a + 0.48) * 0.45)
 		k.beam(end, fork, 0.065, trunk.lightened(0.05))
-	# Keep the source twigs joined to those fork tips; their compound sprays break up
-	# the canopy edge without adding isolated leaf balls or changing the proxy envelope.
+	# Short, connected shoots carry small overlapping leaf clusters across the crown edge.
 	var spray_count := 3 + species % 2
 	if age != 1:
 		spray_count = maxi(2, spray_count - 1) # young and veteran crowns leave a few more branch windows
@@ -76,23 +75,20 @@ static func shade_tree(k: MeshKit, seed: int, theme: String) -> Array:
 		var lateral := Vector3(-radial.z, 0.0, radial.x)
 		var reach := 1.3 + 0.75 * Palette.hash01(seed, i, 8)
 		var branch_end := lean + Vector3(cos(a) * reach, 5.2 + 1.4 * Palette.hash01(seed, i, 10), sin(a) * reach)
-		var fork := branch_end + Vector3(cos(a + 0.48) * 0.65, 0.75, sin(a + 0.48) * 0.65)
-		var shoot_end := fork + radial * (0.30 + 0.14 * Palette.hash01(seed, i, 211)) \
-			+ Vector3.UP * (0.10 + 0.12 * Palette.hash01(seed, i, 212))
+		var fork := branch_end + Vector3(cos(a + 0.48) * 0.45, 0.52, sin(a + 0.48) * 0.45)
+		var shoot_end := fork + radial * (0.12 + 0.07 * Palette.hash01(seed, i, 211)) \
+			+ Vector3.UP * (0.06 + 0.06 * Palette.hash01(seed, i, 212))
 		k.beam(fork, shoot_end, 0.032, trunk.lightened(0.06))
-		for leaflet in 4:
-			var along := 0.20 + float(leaflet) * 0.18
+		for leaflet in 3:
+			var along := 0.16 + float(leaflet) * 0.32
 			var attach := fork.lerp(shoot_end, along)
-			var side_sign := -1.0 if leaflet % 2 == 0 else 1.0
-			var direction := (radial * 0.70 + lateral * side_sign * 0.30
-				+ Vector3.UP * (0.18 + 0.08 * Palette.hash01(seed, i * 19 + leaflet, 213))).normalized()
-			var tint := leaf.lerp(light, 0.12 + 0.18 * Palette.hash01(seed, i * 19 + leaflet, 214))
-			_leaf_blade(k, attach, direction, lateral, spray_length * (0.90 + 0.12 * Palette.hash01(seed, i * 19 + leaflet, 215)),
-				spray_width * (0.88 + 0.16 * Palette.hash01(seed, i * 19 + leaflet, 216)), tint, light, dark,
+			var side_sign := float(leaflet - 1)
+			var direction := (radial * 0.42 + lateral * side_sign * 0.12
+				+ Vector3.UP * (0.34 + 0.08 * Palette.hash01(seed, i * 19 + leaflet, 213))).normalized()
+			var tint := leaf.lerp(light, 0.10 + 0.14 * Palette.hash01(seed, i * 19 + leaflet, 214))
+			_leaf_blade(k, attach, direction, lateral, spray_length * (0.92 + 0.10 * Palette.hash01(seed, i * 19 + leaflet, 215)),
+				spray_width * (0.90 + 0.12 * Palette.hash01(seed, i * 19 + leaflet, 216)), tint, light, dark,
 				seed + i * 17 + leaflet + 220)
-		var terminal_dir := (radial * 0.62 + Vector3.UP * 0.60 + lateral * 0.10).normalized()
-		_leaf_blade(k, shoot_end, terminal_dir, lateral, spray_length * 0.84, spray_width * 0.82,
-			leaf.lerp(light, 0.18), light, dark, seed + i + 270)
 	# A small irregular core joins horizontal canopy lobes. The old two deep ellipsoids read as
 	# one oversized ball; these flattened masses leave visible air and branch structure between layers.
 	var lower_size := Vector3(4.35, 2.35, 4.10)
@@ -107,9 +103,9 @@ static func shade_tree(k: MeshKit, seed: int, theme: String) -> Array:
 		upper_size = Vector3(3.55, 2.65, 3.20)
 		crown_offset = Vector3(0.55, 0, 0.30)
 	_leaf_mass(k, lean + Vector3(0, 5.65, 0), lower_size, leaf.lerp(dark, 0.30), light, dark,
-		seed, 12, 6, 0.0, 0.025, 0.0, 0.11)
+		seed, 13, 7, 0.0, 0.025, 0.0, 0.11)
 	_leaf_mass(k, lean + crown_offset + Vector3(0, height - upper_size.y * 0.5, 0),
-		upper_size, leaf, light, dark, seed + 11, 12, 6, 0.0, 0.025, 0.0, 0.09)
+		upper_size, leaf, light, dark, seed + 11, 13, 7, 0.0, 0.025, 0.0, 0.09)
 	# Stagger flattened lobes around the branches. Their height layers and uneven radial reach make
 	# the outer crown read as overlapping foliage rather than a round ball with little balls attached.
 	var lobe_count := 8 + habit
@@ -129,12 +125,11 @@ static func shade_tree(k: MeshKit, seed: int, theme: String) -> Array:
 		var radial_size := 1.80 + 0.50 * Palette.hash01(seed, i, 104)
 		var height_size := 0.88 + 0.34 * Palette.hash01(seed, i, 105)
 		var breadth := 1.45 + 0.46 * Palette.hash01(seed, i, 106)
-		# Coarser rings can land a vertex fractionally farther out than the old 10×5 surface.
-		# A half-percent trim keeps the measured collision envelope strictly conservative.
+		# Preserve the original canopy envelope while using enough rings to keep close crowns soft.
 		var size := Vector3(radial_size * 0.995, height_size, breadth * 0.995)
 		var center := lean + crown_offset * 0.35 + radial * radius + Vector3(0.0, y, 0.0)
 		var tint := leaf.lerp(light, 0.10 + 0.22 * Palette.hash01(seed, i, 107))
-		_leaf_mass(k, center, size, tint, light, dark, seed + i + 20, 8, 4, -a, 0.02, 0.0, 0.08)
+		_leaf_mass(k, center, size, tint, light, dark, seed + i + 20, 10, 5, -a, 0.02, 0.0, 0.08)
 	var tips := MeshKit.new()
 	var pivot := Vector3(0, trunk_h, 0)
 	for i in 4:
@@ -142,19 +137,17 @@ static func shade_tree(k: MeshKit, seed: int, theme: String) -> Array:
 		var start := Vector3(cos(a) * 1.9, 6.1, sin(a) * 1.9)
 		var end := Vector3(cos(a) * 2.78, 6.2 + 0.9 * Palette.hash01(seed, i, 22), sin(a) * 2.78)
 		tips.beam(start - pivot, end - pivot, 0.045, trunk)
-		_leaf_mass(tips, end - pivot, Vector3(1.35, 0.78, 1.02), leaf.lerp(light, 0.28), light, dark,
-			seed + i + 31, 8, 4, a, 0.025, 0.0, 0.10)
 		var radial := Vector3(cos(a), 0.0, sin(a))
 		var lateral := Vector3(-radial.z, 0.0, radial.x)
-		var spray_base := radial * 3.34 + Vector3(0.0, end.y, 0.0)
+		var spray_base := radial * 3.02 + Vector3(0.0, end.y, 0.0)
 		tips.beam(end - pivot, spray_base - pivot, 0.024, trunk.lightened(0.06))
 		for leaflet in 3:
 			var side_sign := float(leaflet - 1)
-			var attach := spray_base + lateral * (side_sign * 0.085) - pivot
-			var direction := (lateral * (0.52 + 0.08 * side_sign) + radial * 0.10
-				+ Vector3.UP * (0.20 + 0.05 * Palette.hash01(seed, i * 7 + leaflet, 280))).normalized()
-			_leaf_blade(tips, attach, direction, radial, spray_length * 0.96, spray_width * 0.92,
-				leaf.lerp(light, 0.20 + 0.10 * float(leaflet % 2)), light, dark, seed + i * 7 + leaflet + 290)
+			var attach := spray_base + lateral * (side_sign * 0.035) - pivot
+			var direction := (lateral * (side_sign * 0.12) + radial * 0.30
+				+ Vector3.UP * (0.60 + 0.05 * Palette.hash01(seed, i * 7 + leaflet, 280))).normalized()
+			_leaf_blade(tips, attach, direction, radial, spray_length * 0.92, spray_width * 0.92,
+				leaf.lerp(light, 0.14 + 0.08 * float(leaflet % 2)), light, dark, seed + i * 7 + leaflet + 290)
 	return [{kind = "crown", motion_mode = 3, kit = tips, pivot = pivot, axis = Vector3.UP,
 		rate = _rate(seed, 24), phase = Palette.hash01(seed, 25)}]
 
@@ -175,14 +168,14 @@ static func bush(k: MeshKit, seed: int, theme: String) -> Array:
 		leaf = leaf.lerp(Palette.veg("leaf_dark", theme), 0.18)
 	var dark: Color = leaf.darkened(0.22)
 	var bark: Color = Palette.col("trunk").darkened(0.12)
-	var blade_length := 0.32
-	var blade_width := 0.066
+	var blade_length := 0.16
+	var blade_width := 0.050
 	if species == 1:
-		blade_length = 0.35
-		blade_width = 0.075
+		blade_length = 0.18
+		blade_width = 0.054
 	elif species == 2:
-		blade_length = 0.29
-		blade_width = 0.058
+		blade_length = 0.15
+		blade_width = 0.046
 	# Low stems fan from the base, rather than reading as three freestanding spheres.
 	k.cylinder(0.08, 0.055, 0.34, 6, Vector3(0.0, 0.0, 0.0), bark)
 	for i in 5:
@@ -195,20 +188,19 @@ static func bush(k: MeshKit, seed: int, theme: String) -> Array:
 		var size: float = 0.62 + 0.10 * Palette.hash01(seed, i, 34)
 		var tint := leaf.lerp(light, 0.12 + 0.45 * Palette.hash01(seed, i, 35))
 		_leaf_mass(k, tip + Vector3(0.0, 0.06, 0.0), Vector3(size, 0.46 + size * 0.20, size),
-			tint, light, dark, seed + i + 10, 7, 4, angle, 0.08, 0.08)
-		# Paired, cupped blades sit on the lobe shoulders and fan along its edge.
-		# Their tips stay inside the old rounded silhouette while giving close shrubs a leafy read.
+			tint, light, dark, seed + i + 10, 9, 5, angle, 0.08, 0.08)
+		# Small rounded leaflets overlap the shoulders and stay tucked against each twig.
 		var leaf_root := tip + radial * (size * 0.30) + Vector3(0.0, 0.22, 0.0)
-		for side_index in 2:
-			var sign := -1.0 if side_index == 0 else 1.0
-			var direction := (lateral * sign * 0.82 + radial * 0.12
-				+ Vector3.UP * (0.18 + 0.07 * Palette.hash01(seed, i, side_index + 321))).normalized()
-			var leaf_tint := tint.lerp(light, 0.12 + 0.16 * float(side_index))
-			_leaf_blade(k, leaf_root + lateral * (sign * 0.025), direction, radial,
-				blade_length * (0.94 + 0.10 * Palette.hash01(seed, i, side_index + 323)),
-				blade_width, leaf_tint, light, dark, seed + i * 11 + side_index + 330)
+		for leaflet in 3:
+			var side_sign := float(leaflet - 1)
+			var direction := (radial * 0.36 + lateral * side_sign * 0.12
+				+ Vector3.UP * (0.56 + 0.05 * Palette.hash01(seed, i, leaflet + 321))).normalized()
+			var leaf_tint := tint.lerp(light, 0.10 + 0.12 * float(leaflet % 2))
+			_leaf_blade(k, leaf_root + lateral * (side_sign * 0.020), direction, radial,
+				blade_length * (0.96 + 0.08 * Palette.hash01(seed, i, leaflet + 323)),
+				blade_width, leaf_tint, light, dark, seed + i * 11 + leaflet + 330)
 	_leaf_mass(k, Vector3(0.0, 0.48, 0.0), Vector3(0.76, 0.56, 0.72), leaf, light, dark,
-		seed + 41, 8, 4, 0.0, 0.07, 0.1)
+		seed + 41, 10, 6, 0.0, 0.07, 0.1)
 
 	var tips := MeshKit.new()
 	var pivot := Vector3.ZERO
@@ -217,8 +209,13 @@ static func bush(k: MeshKit, seed: int, theme: String) -> Array:
 		var start := Vector3(cos(angle) * 0.28, 0.36, sin(angle) * 0.28)
 		var end := Vector3(cos(angle) * 0.70, 0.65 + 0.08 * Palette.hash01(seed, i, 43), sin(angle) * 0.70)
 		tips.beam(start, end, 0.025, bark)
-		_leaf_mass(tips, end, Vector3(0.43, 0.32, 0.43), light, light, dark,
-			seed + i + 51, 7, 4, angle, 0.035, 0.08)
+		var radial := Vector3(cos(angle), 0.0, sin(angle))
+		var lateral := Vector3(-radial.z, 0.0, radial.x)
+		for leaflet in 2:
+			var side_sign := -1.0 if leaflet == 0 else 1.0
+			var direction := (radial * 0.34 + lateral * side_sign * 0.14 + Vector3.UP * 0.62).normalized()
+			_leaf_blade(tips, end, direction, radial, blade_length * 0.92, blade_width * 0.90,
+				light.lerp(leaf, 0.20), light, dark, seed + i * 5 + leaflet + 351)
 	return [{kind = "bush_tips", motion_mode = 3, kit = tips, pivot = pivot, axis = Vector3.UP,
 		rate = _rate(seed, 45), phase = Palette.hash01(seed, 46)}]
 
@@ -248,7 +245,8 @@ static func _leaf_blade(k: MeshKit, base: Vector3, direction: Vector3, side_hint
 	var left: Array[Vector3] = []
 	var right: Array[Vector3] = []
 	var along: Array[float] = [0.0, 0.48, 1.0]
-	var widths: Array[float] = [0.16, 1.0, 0.015]
+	# Blunt, ovate endpoints keep the small overlapping leaflets from reading as spikes.
+	var widths: Array[float] = [0.22, 1.0, 0.30]
 	for point in 3:
 		var t: float = along[point]
 		var arch := sin(PI * t) * half_width * (0.10 + 0.035 * Palette.hash01(seed, point, 341))

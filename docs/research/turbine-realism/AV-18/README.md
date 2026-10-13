@@ -75,7 +75,7 @@ Inspection reference HEAD: `455b68367ba5036b2c07e3e00d8d9600cea914a8`. Findings 
 | `app/physics/turbine.gd` | `6f7cb1a5dcd4c757c6b8663fde7b1f921db51c45161facb39664c41dae5f9662` |
 | `app/sim/flight_session.gd` | `deb781c8980a1d8d601dbb7b2249f8f80207212c4901bda94c3e981bdbe0820b` |
 | `app/sim/simulation.gd` | `edaf012561e96714ca4ddb05b07fdbbb9eb9f3faed930ce4fafe265d3e5f7c6c` |
-| `research/avanti-s/av06/inputs.json` | `3894641aa5cbaA0d4d6f588f77922876f1b73b680ceb0213995c9e66ee901369` |
+| `research/avanti-s/av06/inputs.json` | `3894641aa5cbaa0d4d6f588f77922876f1b73b680ceb0213995c9e66ee901369` |
 | `app/data/aircraft/sebart_avanti_s_a200.json` | `d5a3eed4cec571cc145bc09f84af9bc2b83d74fe08cfc43e5325585a0f2c86d4` |
 
 1. `Turbine.spool_step` advances RPM before body RK4; its schedule-limited branch holds the current rate over the tick. Body loads and rotor momentum use sampled RPM. Continuous callbacks already exist for other propulsion/ground state.
