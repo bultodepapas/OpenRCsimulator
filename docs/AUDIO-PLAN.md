@@ -2,7 +2,7 @@
 
 2026-10-12 · Revision 4 · Step prefix: **AUD-**
 
-**Status:** AUD-01–05 are delivered. The new soundscape passed software qualification and stereo-speaker acceptance. Dedicated mixer-thread timing and target-platform qualification remain open limits.
+**Status:** AUD-01–05 are delivered. The new soundscape passed software qualification and stereo-speaker acceptance. Dedicated mixer-thread timing and target-platform qualification remain open limits. **Active plan:** [audio realism](plans/audio-realism.md) (AUD-06…13: glitches, engine voices, turbine).
 
 **Owns:** app/audio, app/assets/audio/soundscape, tools/audio and the soundscape/wildlife tests. Simulation, aircraft data, UI, scenery and world rendering remain with their owners. The only active audio workstream is this integration.
 
