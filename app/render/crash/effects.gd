@@ -4,6 +4,19 @@ extends Node3D
 
 const MAX_MARKS := 16
 const MAX_SPLINTERS := 160
+# CR-03b: surfaces that throw no dust (hard paving, structures); sparks need a metal part sliding fast on one.
+const HARD_SURFACES := ["runway", "asphalt", "concrete", "building", "vehicle", "lamp"]
+const SPARK_SLIDE_MPS := 10.0
+const METAL_GROUPS := ["engine", "propeller"]
+# Cut grass and turf, bare soil, and bark. Alpha ramps keep the existing fade shape.
+const DUST_COLORS := {
+	"grass": [Color(0.30, 0.36, 0.16), Color(0.36, 0.30, 0.18)],
+	"soil": [Color(0.38, 0.30, 0.20), Color(0.46, 0.40, 0.30)],
+	"bark": [Color(0.24, 0.17, 0.10), Color(0.32, 0.25, 0.17)],
+	"leaves": [Color(0.20, 0.32, 0.12), Color(0.28, 0.36, 0.16)],
+}
+const DEFAULT_DEBRIS := [Color(0.62, 0.40, 0.19)]
+var debris_colors: Array = DEFAULT_DEBRIS.duplicate()
 var emitters: Array[CPUParticles3D] = []
 var dust: CPUParticles3D
 var smoke: CPUParticles3D
@@ -183,19 +196,27 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	_origin.y = 0.04
 	var level := clampi(int(severity.get("class",0)),0,4)
 	var power := clampf(float(severity.get("severity",0.0)),0.0,1.0)
-	var radius := 0.2 + 1.0*power
+	var radius := 0.15 + 0.35*power
+	var surface := str(severity.get("surface",""))
+	var slide := Vector3(velocity.x,0.0,velocity.z)
 	_fire_duration = minf(50.0, fuel_kg / 0.035) if hot_turbine and level >= 3 and fuel_kg > 0.0 and severity.get("tank_ruptured",false) else 0.0
 	for p in emitters:
 		p.global_position = _origin
 		p.visible = true
 		p.restart()
-	dust.initial_velocity_max = 2.0 + 8.0*power
+	# CR-03b: material-driven ejecta thrown forward along the slide, never a spherical burst.
+	var profile := dust_profile(surface)
+	dust.direction = (slide.normalized()*0.6 + Vector3.UP*0.8).normalized() if slide.length() > 1.0 else Vector3.UP
+	dust.spread = 30.0
+	dust.initial_velocity_max = 1.5 + 6.0*power
 	dust.emission_sphere_radius = radius
+	if not profile.is_empty():
+		dust.color_ramp = _gradient([Color(profile[0], 0.0), Color(profile[0], 0.65), Color(profile[1], 0.0)], [0.0, 0.08, 1.0])
 	dust.restart()
-	dust.emitting = level > 0
+	dust.emitting = level > 0 and not profile.is_empty()
 	touch_dust.emitting = false
 	sparks.restart()
-	sparks.emitting = level >= 3 and (hot_turbine or severity.get("surface","") in ["runway","asphalt","concrete"])
+	sparks.emitting = sparks_for(level, surface, str(severity.get("component_group","")), float(severity.get("tangential_speed_mps", 0.0)), hot_turbine)
 	flame.emission_sphere_radius = 0.25 + 0.4*power
 	flame.emitting = _fire_duration > 0
 	smoke.emitting = _fire_duration > 0
@@ -205,15 +226,60 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	light.visible = _fire_duration > 0
 	if level > 0:
 		mark(_origin, velocity, radius, _fire_duration > 0)
-	_fragment_count = 0 if level < 3 else mini(MAX_SPLINTERS, 32 + level*28)
+	_fragment_count = splinter_count(level, power)
 	fragments.multimesh.visible_instance_count = _fragment_count
 	for i in _fragment_count:
 		_positions[i] = _origin + Vector3(_rng.randf_range(-0.5,0.5),_rng.randf_range(0.15,0.7),_rng.randf_range(-0.5,0.5))
-		_velocities[i] = velocity.limit_length(80)*0.18 + Vector3(_rng.randf_range(-4,4),_rng.randf_range(2,8),_rng.randf_range(-4,4))*power
+		# CR-03b: chips trail the slide; only a small spread and lift, scaled by severity, separates them.
+		_velocities[i] = slide.limit_length(80)*0.25 + Vector3(_rng.randf_range(-1.5,1.5),_rng.randf_range(0.5,3.0),_rng.randf_range(-1.5,1.5))*(0.4 + power)
 		_rotations[i] = Vector3(_rng.randf()*TAU,_rng.randf()*TAU,_rng.randf()*TAU)
 		_spins[i] = Vector3(_rng.randf_range(-14,14),_rng.randf_range(-14,14),_rng.randf_range(-14,14))
-		fragments.multimesh.set_instance_color(i, Color(0.18,0.18,0.17) if hot_turbine else Color(0.62,0.40,0.19))
+		fragments.multimesh.set_instance_color(i, chip_color(i, hot_turbine))
 		fragments.multimesh.set_instance_transform(i,Transform3D(Basis.from_euler(_rotations[i]),_positions[i]))
+
+## CR-03b: dust colours for a ground or obstacle surface, [start, end]; empty = no dust (hard surfaces).
+static func dust_profile(surface: String) -> Array:
+	var s := surface.to_lower()
+	if HARD_SURFACES.has(s):
+		return []
+	if s == "tree_trunk":
+		return DUST_COLORS.bark
+	if s == "tree_foliage":
+		return DUST_COLORS.leaves
+	if s in ["rough", "dirt", "parked_aircraft"]:
+		return DUST_COLORS.soil
+	return DUST_COLORS.grass
+
+
+## CR-03b: sparks need metal (a hot turbine casing at C3+, or an engine/propeller part) sliding fast on a hard surface.
+static func sparks_for(level: int, surface: String, component_group: String, tangential_mps: float, hot_turbine: bool) -> bool:
+	if not HARD_SURFACES.has(surface.to_lower()) or level < 2:
+		return false
+	if hot_turbine and level >= 3:
+		return true
+	return METAL_GROUPS.has(component_group) and tangential_mps >= SPARK_SLIDE_MPS
+
+
+## CR-03b: chips from the struck part at C2, a wreck's worth at C3/C4, scaled by severity; none below C2.
+static func splinter_count(level: int, power: float) -> int:
+	if level < 2:
+		return 0
+	if level == 2:
+		return int(round(8.0 + 8.0 * clampf(power, 0.0, 1.0)))
+	return mini(MAX_SPLINTERS, int(round((32 + level * 28) * (0.5 + 0.5 * clampf(power, 0.0, 1.0)))))
+
+
+## CR-03b: debris takes the airframe's own covering colours (sampled once by the director); empty keeps the default.
+func set_debris_colors(colors: Array) -> void:
+	debris_colors = colors.duplicate() if not colors.is_empty() else DEFAULT_DEBRIS.duplicate()
+
+
+## Colour of chip `index`: the airframe palette in turn; a hot turbine adds soot-dark casing pieces.
+func chip_color(index: int, hot_turbine: bool) -> Color:
+	if hot_turbine and index % 3 == 0:
+		return Color(0.18, 0.18, 0.17)
+	return debris_colors[index % debris_colors.size()]
+
 
 func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = false) -> void:
 	# Reserve the primary gouge/scorch for the lifetime of this aftermath.
@@ -230,9 +296,14 @@ func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = fals
 
 ## E3d1: a soft hull contact that continues the flight: a scuff along the slide and a small puff thrown along it,
 ## sized by `strength` (0..1). Never a radial burst; the crash aftermath (start) supersedes it.
-func touch(point: Vector3, velocity: Vector3, strength: float) -> void:
+func touch(point: Vector3, velocity: Vector3, strength: float, surface := "grass") -> void:
 	var level := clampf(strength, 0.0, 1.0)
 	mark(Vector3(point.x, 0.0, point.z), velocity, 0.06 + 0.22 * level)
+	# CR-03b: the same surface rule as crash dust: turf, soil or nothing on paving.
+	var profile := dust_profile(surface)
+	if profile.is_empty():
+		return
+	touch_dust.color_ramp = _gradient([Color(profile[0], 0.0), Color(profile[0], 0.6), Color(profile[1], 0.0)], [0.0, 0.1, 1.0])
 	var slide := Vector3(velocity.x, 0.0, velocity.z)
 	touch_dust.global_position = Vector3(point.x, 0.03, point.z)
 	touch_dust.direction = (slide.normalized() * 0.8 + Vector3.UP * 0.6).normalized() if slide.length() > 0.5 else Vector3.UP

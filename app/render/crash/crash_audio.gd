@@ -108,28 +108,39 @@ func impact(position: Vector3, severity: Dictionary, turbine: bool) -> void:
 		return
 	_primary_played = true
 	_fire_position = position
+	for layer: Dictionary in layers_for(severity, turbine):
+		_play(layer.sample, position, layer.gain, clampf(float(layer.pitch) + _variation(float(layer.spread)), 0.82, 1.15))
+
+
+## CR-02b: the primary impact's layers for an outcome class, as {sample, gain, pitch, spread}. Pure, so the ladder is
+## testable without an audio device. C0 is a body thud; C1 adds a scrape tail; C2 cracks lightly, rattles debris and
+## cuts the engine only when the propeller or engine was struck; C3/C4 crack heavily, tear and run the engine down.
+## Severity and class drive authored mix choices only; energy is not treated as measured acoustics.
+static func layers_for(severity: Dictionary, turbine: bool) -> Array:
 	var outcome_class: int = clampi(int(severity.get("class", 1)), 0, 4)
 	var normalized: float = clampf(float(severity.get("severity", 0.0)), 0.0, 1.0)
-	# Severity and class drive authored mix choices only. energy_j is not treated as measured acoustics.
 	var class_floor: float = float(outcome_class) / 4.0 * 0.25
 	var intensity: float = maxf(normalized, class_floor)
 	var class_gain: float = 0.30 + 0.175 * outcome_class
 	var mix_gain: float = clampf(class_gain * (0.18 + 0.82 * sqrt(intensity)), 0.0, 0.95)
 	var surface: String = str(severity.get("surface", "grass")).to_lower()
+	var group: String = str(severity.get("component_group", ""))
 	var body_sample: String = _surface_sample(surface)
-	var pitch: float = clampf(0.91 + 0.035 * outcome_class + _variation(0.035), 0.82, 1.15)
-	var crack_sample: String = "crack_light" if outcome_class <= 1 else "crack_heavy"
-	_play(crack_sample, position, mix_gain * 0.52, pitch)
-	_play(body_sample, position, mix_gain * (0.62 if body_sample == "impact_hard" else 0.54), 0.93 + _variation(0.025))
+	var layers: Array = []
 	if outcome_class >= 2:
-		_play("tear", position, mix_gain * 0.28, 0.88 + _variation(0.07))
-		_play("debris", position, mix_gain * (0.32 + 0.05 * outcome_class), 0.92 + _variation(0.08))
+		layers.append({sample = "crack_light" if outcome_class == 2 else "crack_heavy", gain = mix_gain * 0.52,
+			pitch = 0.91 + 0.035 * outcome_class, spread = 0.035})
+	layers.append({sample = body_sample, gain = mix_gain * (0.62 if body_sample == "impact_hard" else 0.54), pitch = 0.93, spread = 0.025})
+	if outcome_class >= 3:
+		layers.append({sample = "tear", gain = mix_gain * 0.28, pitch = 0.88, spread = 0.07})
+	if outcome_class >= 2:
+		layers.append({sample = "debris", gain = mix_gain * (0.32 + 0.05 * outcome_class) * (0.6 if outcome_class == 2 else 1.0), pitch = 0.92, spread = 0.08})
 	if outcome_class >= 1:
 		# This is a short contact tail. Sustained scraping awaits a measured sliding-contact signal.
-		_play("scrape", position, mix_gain * (0.15 if surface == "grass" else 0.24), 0.92 + _variation(0.05))
-	if outcome_class >= 2:
-		_play("turbine_spool" if turbine else "engine_cut", position,
-			mix_gain * (0.19 if turbine else 0.24), 0.92 + _variation(0.025))
+		layers.append({sample = "scrape", gain = mix_gain * (0.15 if surface == "grass" else 0.24), pitch = 0.92, spread = 0.05})
+	if outcome_class >= 3 or (outcome_class == 2 and group in ["propeller", "engine"]):
+		layers.append({sample = "turbine_spool" if turbine else "engine_cut", gain = mix_gain * (0.19 if turbine else 0.24), pitch = 0.92, spread = 0.025})
+	return layers
 
 
 ## E3d1: a soft hull contact that continues the flight: a short scrape while sliding, otherwise a light surface thud.
@@ -233,7 +244,7 @@ func active_voice_count() -> int:
 	return count
 
 
-func _surface_sample(surface: String) -> String:
+static func _surface_sample(surface: String) -> String:
 	if surface.contains("runway") or surface.contains("asphalt") or surface.contains("concrete") or surface.contains("hard") or surface.contains("tree"):
 		return "impact_hard"
 	if surface.contains("rough") or surface.contains("dirt") or surface.contains("soil") or surface.contains("gravel"):

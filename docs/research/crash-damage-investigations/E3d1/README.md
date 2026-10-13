@@ -23,18 +23,18 @@ Scripted, capture and trace routes keep D9d's "any hull contact is a crash", so 
   - **API.** `terminal()` applies the crash rule; `contacts()` feeds presentation.
 - [flight_session.gd](../../../../app/sim/flight_session.gd) adds the loads inside `_ground_evaluation`, the single ground path for every integrator route; an empty result adds nothing. `soft_hull_contacts` is off by default, and [main.gd](../../../../app/main.gd) turns it on interactively. The scenery post-step no longer turns a ground touch into a crash when the option is on. [impact_snapshot.gd](../../../../app/physics/impact_snapshot.gd) `hull_point()` names the triggering point.
 - Presentation: [director.gd](../../../../app/render/crash/director.gd) reads `session.soft_contacts` while no crash is shown.
-  - A new touch gets a scuff mark, a small directional puff (`effects.touch()`, a 24-particle emitter of its own) and a surface thud or a scrape.
+  - A new touch gets a scuff mark, a small directional puff coloured by the surface (`effects.touch()`, a 24-particle emitter of its own; none on paving) and a surface thud or a scrape.
   - A slide above 1.5 m/s leaves a mark trail every 0.12 s.
   - Restart clears them.
 
 ## Evidence
 
-- [test_soft_contacts.gd](../../../../app/tests/test_soft_contacts.gd): **26 checks**. The research 04 anchors:
+- [test_soft_contacts.gd](../../../../app/tests/test_soft_contacts.gd): **32 checks**. The research 04 anchors:
   - **Wingtip brush** (Stik, bank 40°, 15 m/s, 0.5 m/s sink): touches at tick 5, ≤ 8 mm deep, no crash.
   - **Vertical nose-in at 10 m/s:** crash, naming the spinner and the `impact` rule.
   - **Avanti belly landing** (no gear, 12 m/s, 1 m/s sink): slides to 0.08 m/s in 6 s, 2.5 mm deep, no crash.
 
-  Also covered: the default route remains legacy, one second of flight away from the ground is bit-identical with the option on, runs repeat exactly, the stiffness bounds hold (Stik tip 668 N/m against belly 9,702 N/m), friction stays inside the Coulomb bound, the damper never pulls, the depth backstop crashes, and an existing contact is not re-graded. The terminal cut is pinned to `Severity.CLASS_CUTS_J_PER_KG[1]`.
+  Also covered: the default route remains legacy, one second of flight away from the ground is bit-identical with the option on, runs repeat exactly, the stiffness bounds hold (Stik tip 668 N/m against belly 9,702 N/m), friction stays inside the Coulomb bound, the damper never pulls, the depth backstop crashes, and an existing contact is not re-graded. The terminal cut is pinned to `Severity.CLASS_CUTS_J_PER_KG[1]`. Identity: the contact law (`HullContact.law()`) enters the checkpoint configuration hash and the trace metadata (`hull_contact_model`) only when the option is on. A soft checkpoint is refused by a legacy session, and legacy hashes and metadata are unchanged.
 - [test_soft_contact_feedback.gd](../../../../app/tests/test_soft_contact_feedback.gd): **10 checks** in the production scene. A brush continues with a mark and a puff, the aftermath stays idle, the source airplane stays visible, the effects budget holds, and restart clears the marks.
 - [Mutations](../../../../research/crash-damage/e3d1/mutations.log): **13/13 killed**.
   - Physics: no friction, whole-mass stiffness, a pulling damper, cuts too lenient or too strict, existing contacts re-graded, no depth backstop.

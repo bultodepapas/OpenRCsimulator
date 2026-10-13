@@ -38,6 +38,7 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 	effects = Effects.new()
 	add_child(effects)
 	effects.prepare()
+	effects.set_debris_colors(airframe_colors(flight._airplane.root))
 	audio = CrashAudio.new()
 	add_child(audio)
 	audio.setup()
@@ -177,6 +178,31 @@ static func component_for(trigger: String, point_index: int, body_point: PackedF
 		component = "engine"
 	return {component = component, is_estimate = true, basis = "geometric hull region; crash_hull_components unavailable"}
 
+## CR-03b: up to six distinct albedo colours of the airplane's own materials, most-used first, so crash chips look
+## like its covering. Dark and transparent materials (tyres, hardware, canopy glass) are skipped.
+const CHIP_MIN_LUMINANCE := 0.12
+static func airframe_colors(root: Node) -> Array:
+	var counts := {}
+	var stack: Array = [root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		stack.append_array(node.get_children())
+		var mesh_instance := node as MeshInstance3D
+		if mesh_instance == null or mesh_instance.mesh == null:
+			continue
+		for surface in mesh_instance.mesh.get_surface_count():
+			var material := mesh_instance.get_active_material(surface) as BaseMaterial3D
+			if material == null or material.albedo_color.a < 0.9:
+				continue
+			var key := Color(snappedf(material.albedo_color.r, 0.05), snappedf(material.albedo_color.g, 0.05), snappedf(material.albedo_color.b, 0.05))
+			if key.get_luminance() < CHIP_MIN_LUMINANCE:
+				continue
+			counts[key] = int(counts.get(key, 0)) + 1
+	var colors: Array = counts.keys()
+	colors.sort_custom(func(a: Color, b: Color) -> bool: return counts[a] > counts[b] or (counts[a] == counts[b] and a.to_html() < b.to_html()))
+	return colors.slice(0, 6)
+
+
 ## E3d1: marks, puffs and sounds for soft hull contacts while the flight continues. New touches are sized by the
 ## struck point's normal speed; slides leave a trail paced by TOUCH_TRAIL_S. Reads the session feed only.
 func _touch_feedback() -> void:
@@ -192,7 +218,7 @@ func _touch_feedback() -> void:
 		var slide := float(contact.slide_speed_mps)
 		if bool(contact.new):
 			var strength := clampf(float(contact.normal_speed_mps) / 3.0, 0.1, 1.0)
-			effects.touch(point, velocity, strength)
+			effects.touch(point, velocity, strength, surface)
 			if _audio_enabled:
 				audio.touch(point, strength, slide > TOUCH_SLIDE_MPS, surface)
 			_touch_marks[contact.index] = now
