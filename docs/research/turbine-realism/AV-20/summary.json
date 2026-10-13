@@ -6,31 +6,56 @@
       "id": "jensen-das-ugly-stik-60",
       "complete_state_identical": true,
       "endpoint_rpm_delta": 0.0,
-      "endpoint_body_max_abs_delta": 0.0
+      "endpoint_delta": {
+        "position_max_m": 0.0,
+        "velocity_max_m_s": 0.0,
+        "attitude_chord": 0.0,
+        "angular_rate_max_rad_s": 0.0
+      }
     },
     {
       "id": "gp-extra-300s-60",
       "complete_state_identical": true,
       "endpoint_rpm_delta": 0.0,
-      "endpoint_body_max_abs_delta": 0.0
+      "endpoint_delta": {
+        "position_max_m": 0.0,
+        "velocity_max_m_s": 0.0,
+        "attitude_chord": 0.0,
+        "angular_rate_max_rad_s": 0.0
+      }
     },
     {
       "id": "p51d-mustang-120",
       "complete_state_identical": true,
       "endpoint_rpm_delta": 0.0,
-      "endpoint_body_max_abs_delta": 0.0
+      "endpoint_delta": {
+        "position_max_m": 0.0,
+        "velocity_max_m_s": 0.0,
+        "attitude_chord": 0.0,
+        "angular_rate_max_rad_s": 0.0
+      }
     },
     {
       "id": "turbo-lumber-evolution",
       "complete_state_identical": true,
       "endpoint_rpm_delta": 0.0,
-      "endpoint_body_max_abs_delta": 0.0
+      "endpoint_delta": {
+        "position_max_m": 0.0,
+        "velocity_max_m_s": 0.0,
+        "attitude_chord": 0.0,
+        "angular_rate_max_rad_s": 0.0
+      }
     },
     {
       "id": "sebart-avanti-s-a200-p100rx",
       "complete_state_identical": false,
       "endpoint_rpm_delta": 64.42980907104356,
-      "endpoint_body_max_abs_delta": 0.00823586305454782
+      "endpoint_delta": {
+        "position_max_m": 0.004048235557249313,
+        "velocity_max_m_s": 0.00823586305454782,
+        "attitude_chord": 5.378787596657622e-05,
+        "angular_rate_max_rad_s": 0.00012967594811488792
+      }
     }
   ],
   "mutations_rejected": [
@@ -63,7 +88,7 @@
     },
     "sim/flight_session.gd": {
       "baseline": "3bdb837f6198ab6595c32970e904465ba3d8a06264b0bcb8b140b0c510721d22",
-      "candidate": "95e64368b09555de344e4682a23c86404ce1d61190d20cb991dc016ff2cb2ad9"
+      "candidate": "c70ecc42410fe1b021539aad6ca2729ef09156b650db448369d52719963ae88e"
     },
     "data/aircraft/sebart_avanti_s_a200.json": {
       "baseline": "e57b9053d6134663d49bee334f9d15370ff1e33fc0bc30a9de490b601c2e1a32",

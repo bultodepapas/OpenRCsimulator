@@ -22,6 +22,8 @@ const M := preload("res://physics/math3d.gd")
 
 const RB := preload("res://physics/rigid_body.gd")
 const Wheels := preload("res://physics/ground_wheels.gd")
+const Terrain := preload("res://physics/ground_terrain.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
 
 ## Below this wheel rolling speed (m/s) the slip angle is measured against it instead of |v_long|: the side force
 ## becomes a stiff damper, F = −(μ·N / (tan α_peak · SLIP_FLOOR))·v_lat, instead of dividing by zero at rest. Summed
@@ -71,9 +73,12 @@ const DAMPING_ONSET_FRACTION := 0.5
 ## everywhere (factors 1, the gear's own coefficients).
 ## anchors: E3b1 per-contact [north, east, stuck] (ANCHOR_STRIDE floats each); empty = no stiction (E2 exactly).
 static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surfaces := PackedFloat64Array(),
-		anchors := PackedFloat64Array(), wheels := PackedFloat64Array(), brake := 0.0) -> PackedFloat64Array:
+		anchors := PackedFloat64Array(), wheels := PackedFloat64Array(), brake := 0.0,
+		lake: Dictionary = {}) -> PackedFloat64Array:
 	if not wheels.is_empty():
-		return evaluate(s, gear, steer, surfaces, anchors, wheels, brake).loads
+		return evaluate(s, gear, steer, surfaces, anchors, wheels, brake, true, lake).loads
+	if not lake.is_empty():
+		return _loads_with_lake(s, gear, steer, surfaces, anchors, lake)
 	if gear.is_empty() or -s[RB.POS + 2] > gear.reach:
 		return PackedFloat64Array()
 	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -158,6 +163,109 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 	return out if touched else PackedFloat64Array()
 
 
+## Legacy no-wheel-state load path on the sampled terrain plane. The empty-lake path above remains unchanged.
+static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: float,
+		surfaces: PackedFloat64Array, anchors: PackedFloat64Array, lake: Dictionary) -> PackedFloat64Array:
+	if not LakeSurface.is_valid_definition(lake) or not Terrain.is_valid_surface_table(surfaces):
+		return PackedFloat64Array([NAN])
+	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces):
+		return PackedFloat64Array()
+	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var touched := false
+	var rows := _rows(s)
+	var north: PackedFloat64Array = rows[0]
+	var east: PackedFloat64Array = rows[1]
+	var down: PackedFloat64Array = rows[2]
+	var mu: float = gear.get("side_friction", 0.0)
+	var c_rr: float = gear.get("rolling_resistance", 0.0)
+	var tan_peak: float = gear.get("tan_peak_slip", 1.0)
+	var breakaway: float = gear.get("breakaway_factor", 1.0)
+	for index in gear.contacts.size():
+		var contact: Dictionary = gear.contacts[index]
+		var r: PackedFloat64Array = contact.position
+		var p_n: float = s[RB.POS] + north[0] * r[0] + north[1] * r[1] + north[2] * r[2]
+		var p_e: float = s[RB.POS + 1] + east[0] * r[0] + east[1] * r[1] + east[2] * r[2]
+		var p_d: float = s[RB.POS + 2] + down[0] * r[0] + down[1] * r[1] + down[2] * r[2]
+		var terrain: PackedFloat64Array = Terrain.sample_validated(p_n, p_e, surfaces, lake)
+		if terrain.size() != 3 or not is_finite(terrain[0]) or not is_finite(terrain[1]) or not is_finite(terrain[2]):
+			return PackedFloat64Array([NAN])
+		var norm := M.sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
+		var up_n := -terrain[1] / norm
+		var up_e := -terrain[2] / norm
+		var up_d := -1.0 / norm
+		var up_body := M.v3(
+			north[0] * up_n + east[0] * up_e + down[0] * up_d,
+			north[1] * up_n + east[1] * up_e + down[1] * up_d,
+			north[2] * up_n + east[2] * up_e + down[2] * up_d)
+		var compression: float = (p_d + terrain[0]) / norm
+		if compression <= 0.0:
+			continue
+		var vx := s[RB.VEL] + s[RB.RATE + 1] * r[2] - s[RB.RATE + 2] * r[1]
+		var vy := s[RB.VEL + 1] + s[RB.RATE + 2] * r[0] - s[RB.RATE] * r[2]
+		var vz := s[RB.VEL + 2] + s[RB.RATE] * r[1] - s[RB.RATE + 1] * r[0]
+		var velocity := M.v3(vx, vy, vz)
+		var rate: float = -M.dot(up_body, velocity)
+		var normal_load: float = contact.stiffness * compression + damping(contact, compression) * rate
+		if normal_load <= 0.0:
+			continue
+		var delta: float = steer * float(contact.get("max_steering", 0.0))
+		var heading := M.v3(M.cos_(delta), M.sin_(delta), 0.0)
+		var heading_projection: float = M.dot(heading, up_body)
+		heading[0] -= up_body[0] * heading_projection
+		heading[1] -= up_body[1] * heading_projection
+		heading[2] -= up_body[2] * heading_projection
+		var heading_length: float = M.sqrt_(M.dot(heading, heading))
+		if heading_length > 1e-6:
+			heading[0] /= heading_length
+			heading[1] /= heading_length
+			heading[2] /= heading_length
+		var side := M.cross(heading, up_body)
+		var f_long := 0.0
+		var f_side := 0.0
+		if mu > 0.0 and heading_length > 1e-6:
+			var v_long: float = M.dot(velocity, heading)
+			var v_lat: float = M.dot(velocity, side)
+			var mu_n: float = mu * normal_load
+			var rolling: float = c_rr
+			if not surfaces.is_empty():
+				var surface_index: int = Wheels.surface_at(surfaces, p_n, p_e)
+				mu_n *= surfaces[surface_index + 4]
+				rolling *= surfaces[surface_index + 5]
+			var anchor_at: int = index * ANCHOR_STRIDE
+			var anchored: bool = anchors.size() == gear.contacts.size() * ANCHOR_STRIDE and anchors[anchor_at + 2] == 1.0
+			if anchored:
+				var delta_n: float = p_n - anchors[anchor_at]
+				var delta_e: float = p_e - anchors[anchor_at + 1]
+				var delta_body := M.v3(
+					north[0] * delta_n + east[0] * delta_e,
+					north[1] * delta_n + east[1] * delta_e,
+					north[2] * delta_n + east[2] * delta_e)
+				var hold_long: float = breakaway * rolling * normal_load
+				f_long = clampf(-float(contact.get("anchor_stiffness", 0.0)) * M.dot(delta_body, heading)
+					- float(contact.get("anchor_damping", 0.0)) * v_long, -hold_long, hold_long)
+				f_side = clampf(-float(contact.get("anchor_stiffness", 0.0)) * M.dot(delta_body, side)
+					- float(contact.get("anchor_damping", 0.0)) * v_lat, -mu_n, mu_n)
+			else:
+				f_long = -rolling * normal_load * clampf(v_long / maxf(ROLL_CREEP, rolling * ROLL_CREEP_PER_CRR), -1.0, 1.0)
+				f_side = -mu_n * clampf(v_lat / (tan_peak * maxf(absf(v_long), SLIP_FLOOR)), -1.0, 1.0)
+			var tangent_force: float = M.sqrt_(f_long * f_long + f_side * f_side)
+			if tangent_force > mu_n:
+				f_long *= mu_n / tangent_force
+				f_side *= mu_n / tangent_force
+		var force := M.v3(
+			up_body[0] * normal_load + heading[0] * f_long + side[0] * f_side,
+			up_body[1] * normal_load + heading[1] * f_long + side[1] * f_side,
+			up_body[2] * normal_load + heading[2] * f_long + side[2] * f_side)
+		out[0] += force[0]
+		out[1] += force[1]
+		out[2] += force[2]
+		out[3] += r[1] * force[2] - r[2] * force[1]
+		out[4] += r[2] * force[0] - r[0] * force[2]
+		out[5] += r[0] * force[1] - r[1] * force[0]
+		touched = true
+	return out if touched else PackedFloat64Array()
+
+
 ## E3b1: the anchors for the next tick, from the committed state `s` and the anchors/steer the last tick used.
 ## Once per tick (FlightSession._pre_step), never inside RK4. Per contact: off the ground (or without tyre friction)
 ## → sliding; stuck → sliding when the anchor's elastic force k·d exceeds breakaway·C_rr·N along the wheel, μ·N across
@@ -177,9 +285,10 @@ static func damping(contact: Dictionary, compression: float) -> float:
 
 
 static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
-		anchors: PackedFloat64Array, enhanced := false, speeds := PackedFloat64Array()) -> PackedFloat64Array:
-	if enhanced:
-		return Wheels.anchor_step(s, gear, steer, surfaces, anchors, speeds)
+		anchors: PackedFloat64Array, enhanced := false, speeds := PackedFloat64Array(),
+		lake: Dictionary = {}) -> PackedFloat64Array:
+	if enhanced or not lake.is_empty():
+		return Wheels.anchor_step(s, gear, steer, surfaces, anchors, speeds, lake)
 	var out := PackedFloat64Array()
 	out.resize(anchors.size()) # zero-filled: sliding
 	if gear.is_empty() or anchors.size() != gear.contacts.size() * ANCHOR_STRIDE or -s[RB.POS + 2] > gear.reach:
@@ -274,9 +383,10 @@ static func surface_at(table: PackedFloat64Array, north: float, east: float) -> 
 
 
 ## Compression of every contact (m, ≤ 0 when above the ground), in the order of gear.contacts.
-static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array()) -> PackedFloat64Array:
-	if not surfaces.is_empty():
-		return Wheels.compressions(s, gear, surfaces)
+static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array(),
+		lake: Dictionary = {}) -> PackedFloat64Array:
+	if not surfaces.is_empty() or not lake.is_empty():
+		return Wheels.compressions(s, gear, surfaces, lake)
 	var out := PackedFloat64Array()
 	if gear.is_empty():
 		return out
@@ -288,10 +398,13 @@ static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces := Pa
 
 
 ## True when any contact is pushed past its travel: the gear has collapsed (a crash, like any other hull point).
-static func collapsed(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array()) -> bool:
+static func collapsed(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array(),
+		lake: Dictionary = {}) -> bool:
+	if not lake.is_empty() and not LakeSurface.is_valid_definition(lake):
+		return true
 	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Wheels.Terrain.max_height(surfaces):
 		return false
-	var c := compressions(s, gear, surfaces)
+	var c := compressions(s, gear, surfaces, lake)
 	for i in c.size():
 		if c[i] > gear.contacts[i].max_compression:
 			return true
@@ -299,9 +412,9 @@ static func collapsed(s: PackedFloat64Array, gear: Dictionary, surfaces := Packe
 
 
 ## Potential energy stored in the springs (J), for energy checks.
-static func spring_energy(s: PackedFloat64Array, gear: Dictionary) -> float:
+static func spring_energy(s: PackedFloat64Array, gear: Dictionary, lake: Dictionary = {}) -> float:
 	var e := 0.0
-	var c := compressions(s, gear)
+	var c := compressions(s, gear, PackedFloat64Array(), lake)
 	for i in c.size():
 		if c[i] > 0.0:
 			e += 0.5 * gear.contacts[i].stiffness * c[i] * c[i]
@@ -333,5 +446,6 @@ static func _down_row(s: PackedFloat64Array) -> PackedFloat64Array:
 ## GP-02: continuous wheel rim speeds in contact order; returns stage loads, rim derivatives and wheel diagnostics.
 ## The legacy loads() API without wheel state is retained for the E1–E5 analytic reference fixtures.
 static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
-		anchors: PackedFloat64Array, wheels: PackedFloat64Array, brake := 0.0, diagnostics_enabled := true) -> Dictionary:
-	return Wheels.evaluate(s, gear, steer, surfaces, anchors, wheels, brake, diagnostics_enabled)
+		anchors: PackedFloat64Array, wheels: PackedFloat64Array, brake := 0.0, diagnostics_enabled := true,
+		lake: Dictionary = {}) -> Dictionary:
+	return Wheels.evaluate(s, gear, steer, surfaces, anchors, wheels, brake, diagnostics_enabled, lake)

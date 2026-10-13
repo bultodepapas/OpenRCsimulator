@@ -40,6 +40,8 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 [AV-18 fuel-turbine source review](turbine-realism/AV-18/README.md) compares identified JetCat revisions, Xicoy and KingTech manufacturer data with original engine experiments, and fingerprints the current propulsion/fuel gaps. The [turbine realism plan](../plans/turbine-realism.md) owns detailed response, ECU, fuel/mass and integration work.
 
+[AV-18…20 implementation](turbine-realism/AV-20/README.md) records continuous turbine RPM, explicit model selection, checkpoint/trace guards, analytic and paired-flight proofs, and remaining physical/ECU/fuel gates. The [AV-10b reference](../../research/avanti-s/av10/README.md) verifies open-system mass mechanics separately from production fuel integration.
+
 ### Turbo Lumber Evolution (Timber)
 
 [TT-00](timber-integration/TT-00/README.md) starts the CAD/import and code-seam review; [TT-00-R1](timber-integration/TT-00-R1/README.md) reviews the r1 delivery. [TT-01](timber-integration/TT-01/README.md) freezes the r1 bytes, [TT-02](timber-integration/TT-02/README.md) measures the imported scene and resolves the forward-extent discrepancy, [TT-03](timber-integration/TT-03/README.md) puts the GLB in the app with its model contract and captures, [TT-05](timber-integration/TT-05/README.md) proves the articulation signs, propeller sense, gear wrappers and clearances, and [TT-06](timber-integration/TT-06/README.md) registers the catalog preview entry with the shared test sweep. [TT-07–12](timber-integration/TT-10/README.md) enables experimental electric flight, product controls, runway start and sound with bounded software proofs. The [integration plan](../TIMBER-INTEGRATION-PLAN.md) owns the model and electric-flight handoff.

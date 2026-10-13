@@ -97,7 +97,7 @@ static func queue(
 	return canonical_id
 
 
-static func build(batches: Dictionary) -> Node3D:
+static func build(batches: Dictionary, enable_wind: bool = false) -> Node3D:
 	var root := Node3D.new()
 	root.name = "ImportedVegetationBatches"
 	var state := {
@@ -119,11 +119,19 @@ static func build(batches: Dictionary) -> Node3D:
 			if source_mesh == null:
 				continue
 			var source_bounds: AABB = part.get("bounds", AABB())
-			var draw_mesh := _wind_mesh(source_mesh, float(asset.get("source_bounds_m", {}).get("height", 1.0)), source_bounds)
+			var source_height := float(asset.get("source_bounds_m", {}).get("height", 1.0))
+			var draw_mesh := _prepare_mesh(
+				source_mesh,
+				part.get("materials", []),
+				source_height,
+				source_bounds,
+				enable_wind
+			)
 			var multi_mesh := MultiMesh.new()
 			multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
-			multi_mesh.use_custom_data = true
 			multi_mesh.mesh = draw_mesh
+			multi_mesh.use_colors = true
+			multi_mesh.use_custom_data = true
 			multi_mesh.instance_count = records.size()
 			var part_transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
 			var bounds_indices: Array[int] = []
@@ -134,6 +142,7 @@ static func build(batches: Dictionary) -> Node3D:
 				multi_mesh.set_instance_transform(instance_index, instance_transform)
 				var phase := fposmod(float(record.get("seed", 0)) * 0.61803398875, 1.0)
 				multi_mesh.set_instance_custom_data(instance_index, Color(phase, 0.0, 0.0, 1.0))
+				multi_mesh.set_instance_color(instance_index, Color.WHITE)
 				var damage_id := str(record.get("damage_id", ""))
 				var bounds_index := (state["bounds"] as Array).size()
 				(state["bounds"] as Array).append({
@@ -149,8 +158,10 @@ static func build(batches: Dictionary) -> Node3D:
 			instance.name = "%s_Part_%02d" % [asset_id, part_index]
 			instance.multimesh = multi_mesh
 			instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-			instance.set_instance_shader_parameter("wind_direction", Vector2(0.8, 0.6).normalized())
-			instance.set_instance_shader_parameter("wind_strength", _wind_strength_for_role(role))
+			instance.set_meta("_imported_vegetation_wind_enabled", enable_wind)
+			if enable_wind:
+				instance.set_instance_shader_parameter("wind_direction", Vector2(0.8, 0.6).normalized())
+				instance.set_instance_shader_parameter("wind_strength", _wind_strength_for_role(role))
 			root.add_child(instance)
 			(state["multimeshes"] as Array).append(multi_mesh)
 
@@ -220,7 +231,7 @@ static func set_wind(root: Node3D, strength: float, direction: Vector2 = Vector2
 		return
 	var normalized_direction := direction.normalized()
 	for child in root.get_children():
-		if child is MultiMeshInstance3D:
+		if child is MultiMeshInstance3D and bool(child.get_meta("_imported_vegetation_wind_enabled", false)):
 			(child as MultiMeshInstance3D).set_instance_shader_parameter("wind_strength", maxf(strength, 0.0))
 			(child as MultiMeshInstance3D).set_instance_shader_parameter("wind_direction", normalized_direction)
 
@@ -322,18 +333,21 @@ static func _triangle_count(mesh: Mesh) -> int:
 	return total
 
 
-static func _wind_mesh(source_mesh: Mesh, source_height: float, bounds_value: AABB) -> Mesh:
+static func _prepare_mesh(
+	source_mesh: Mesh,
+	source_materials: Array,
+	source_height: float,
+	bounds_value: AABB,
+	enable_wind: bool
+) -> Mesh:
 	var draw_mesh := source_mesh.duplicate() as Mesh
-	if not draw_mesh is ArrayMesh:
-		return draw_mesh
-	var array_mesh := draw_mesh as ArrayMesh
-	for surface_index in range(array_mesh.get_surface_count()):
-		var base_material := source_mesh.surface_get_material(surface_index)
-		array_mesh.surface_set_material(
-			surface_index,
-			_wind_material(base_material, source_height, bounds_value.position.y)
-		)
-	return array_mesh
+	for surface_index in range(draw_mesh.get_surface_count()):
+		var base_material: Material = source_materials[surface_index] if surface_index < source_materials.size() else source_mesh.surface_get_material(surface_index)
+		var output_material := base_material
+		if enable_wind:
+			output_material = _wind_material(base_material, source_height, bounds_value.position.y)
+		draw_mesh.surface_set_material(surface_index, output_material)
+	return draw_mesh
 
 
 static func _wind_material(base_material: Material, source_height: float, base_y: float) -> ShaderMaterial:

@@ -74,10 +74,23 @@ func _test_batch_build_and_damage() -> void:
 	var root := ImportedVegetation.build(batches)
 	var expected_part_nodes := ImportedVegetation.get_parts("common_tree_3").size() + ImportedVegetation.get_parts("wheat_4").size()
 	_check("builder emits one shared batch per source part", root.get_child_count() == expected_part_nodes)
+	var checked_source_materials := false
 	for child in root.get_children():
 		_check("batch child is a MultiMeshInstance3D", child is MultiMeshInstance3D)
 		if child is MultiMeshInstance3D:
-			_check("batch has both queued plants", (child as MultiMeshInstance3D).multimesh.instance_count == 1)
+			var multi_mesh := (child as MultiMeshInstance3D).multimesh
+			_check("batch has one queued plant", multi_mesh.instance_count == 1)
+			_check("batch retains instance color data", multi_mesh.use_colors)
+			if str(child.name).begins_with("common_tree_3_"):
+				var source_materials: Array = ImportedVegetation.get_parts("common_tree_3")[0].get("materials", [])
+				_check("default batch keeps original material per surface", multi_mesh.mesh.get_surface_count() == source_materials.size())
+				for surface_index in range(mini(multi_mesh.mesh.get_surface_count(), source_materials.size())):
+					_check(
+						"tree source material %d is retained" % surface_index,
+						multi_mesh.mesh.surface_get_material(surface_index) == source_materials[surface_index]
+					)
+				checked_source_materials = true
+	_check("tree source material path was checked", checked_source_materials)
 	var original_bounds := ImportedVegetation.bounds(root)
 	_check("bounds include both plants", original_bounds.position.x < 0.0 and original_bounds.end.x > 30.0)
 	_check("damage ID hides its source instances", ImportedVegetation.set_damage_hidden(root, "tree-damaged", true))
@@ -87,6 +100,20 @@ func _test_batch_build_and_damage() -> void:
 	var after_restore := ImportedVegetation.bounds(root)
 	_check("bounds restore after crash recovery", is_equal_approx(after_restore.position.x, original_bounds.position.x))
 	root.free()
+
+	var wind_root := ImportedVegetation.build(batches, true)
+	var checked_wind_materials := false
+	for child in wind_root.get_children():
+		if child is MultiMeshInstance3D and str(child.name).begins_with("common_tree_3_"):
+			var wind_mesh := (child as MultiMeshInstance3D).multimesh.mesh
+			var source_surface_count: int = ImportedVegetation.get_parts("common_tree_3")[0].get("materials", []).size()
+			_check("wind mesh retains every source surface", wind_mesh.get_surface_count() == source_surface_count)
+			for surface_index in range(wind_mesh.get_surface_count()):
+				_check("wind material is shader-backed", wind_mesh.surface_get_material(surface_index) is ShaderMaterial)
+			checked_wind_materials = true
+	_check("wind shader path is explicitly opt-in", checked_wind_materials)
+	ImportedVegetation.set_wind(wind_root, 0.0)
+	wind_root.free()
 
 
 func _check(label: String, condition: bool) -> void:

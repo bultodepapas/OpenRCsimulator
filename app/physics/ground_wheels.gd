@@ -5,6 +5,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
 const REFERENCE_RADIUS := 0.0381
 const STRIDE := 6
 const STICK_SPEED := 0.02
@@ -30,13 +31,13 @@ static func _damping(contact: Dictionary, compression: float) -> float:
 
 # Each frame is evaluated at this RK stage, including terrain slope and contact velocity.
 static func frame(s: PackedFloat64Array, c: Dictionary, steer: float, surfaces: PackedFloat64Array,
-		rotation := PackedFloat64Array(), surfaces_validated := false) -> Dictionary:
+		rotation := PackedFloat64Array(), surfaces_validated := false, lake: Dictionary = {}) -> Dictionary:
 	var a := _rotation(s) if rotation.is_empty() else rotation
 	var r: PackedFloat64Array = c.position
 	var p := PackedFloat64Array([s[0] + a[0] * r[0] + a[1] * r[1] + a[2] * r[2],
 		s[1] + a[3] * r[0] + a[4] * r[1] + a[5] * r[2],
 		s[2] + a[6] * r[0] + a[7] * r[1] + a[8] * r[2]])
-	var terrain := Terrain.sample_validated(p[0], p[1], surfaces) if surfaces_validated else Terrain.sample(p[0], p[1], surfaces)
+	var terrain := Terrain.sample_validated(p[0], p[1], surfaces, lake) if surfaces_validated else Terrain.sample(p[0], p[1], surfaces, lake)
 	var norm := M.sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
 	var normal := M.v3(-terrain[1] / norm, -terrain[2] / norm, -1.0 / norm)
 	var compression := (p[2] + terrain[0]) / norm
@@ -95,14 +96,15 @@ static func coefficients(gear: Dictionary, c: Dictionary, surfaces: PackedFloat6
 
 
 static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
-		anchors: PackedFloat64Array, speeds: PackedFloat64Array, brake := 0.0, diagnostics_enabled := true) -> Dictionary:
+		anchors: PackedFloat64Array, speeds: PackedFloat64Array, brake := 0.0, diagnostics_enabled := true,
+		lake: Dictionary = {}) -> Dictionary:
 	var rates := PackedFloat64Array()
 	rates.resize(speeds.size())
 	var diagnostics: Array = []
 	var loads := PackedFloat64Array()
 	if gear.is_empty():
 		return {loads = loads, derivative = rates, wheels = diagnostics}
-	if speeds.size() != gear.contacts.size() or not Terrain.is_valid_surface_table(surfaces):
+	if speeds.size() != gear.contacts.size() or not Terrain.is_valid_surface_table(surfaces) or not _valid_lake(lake):
 		return {loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN]), wheels = diagnostics}
 	# No body arithmetic at all when every wheel is beyond the terrain's height bound.
 	if -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces):
@@ -110,7 +112,7 @@ static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surf
 	var rotation := _rotation(s)
 	for i in gear.contacts.size():
 		var c: Dictionary = gear.contacts[i]
-		var f := frame(s, c, steer, surfaces, rotation, true)
+		var f := frame(s, c, steer, surfaces, rotation, true, lake)
 		var cf := coefficients(gear, c, surfaces, f.position)
 		var n: float = f.normal_load
 		var rim: float = speeds[i]
@@ -174,11 +176,12 @@ static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surf
 	return {loads = loads, derivative = rates, wheels = diagnostics}
 
 
-static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces: PackedFloat64Array) -> PackedFloat64Array:
+static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces: PackedFloat64Array,
+		lake: Dictionary = {}) -> PackedFloat64Array:
 	var values := PackedFloat64Array()
 	if gear.is_empty():
 		return values
-	if not Terrain.is_valid_surface_table(surfaces):
+	if not Terrain.is_valid_surface_table(surfaces) or not _valid_lake(lake):
 		return PackedFloat64Array([NAN])
 	var a := _rotation(s)
 	for contact in gear.contacts:
@@ -186,20 +189,22 @@ static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces: Pack
 		var north := s[0] + a[0] * r[0] + a[1] * r[1] + a[2] * r[2]
 		var east := s[1] + a[3] * r[0] + a[4] * r[1] + a[5] * r[2]
 		var down := s[2] + a[6] * r[0] + a[7] * r[1] + a[8] * r[2]
-		var terrain := Terrain.sample_validated(north, east, surfaces)
+		var terrain := Terrain.sample_validated(north, east, surfaces, lake)
 		values.append((down + terrain[0]) / M.sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2]))
 	return values
 
 
 static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
-		anchors: PackedFloat64Array, speeds := PackedFloat64Array()) -> PackedFloat64Array:
+		anchors: PackedFloat64Array, speeds := PackedFloat64Array(), lake: Dictionary = {}) -> PackedFloat64Array:
 	var out := PackedFloat64Array()
 	out.resize(anchors.size())
+	if not _valid_lake(lake):
+		return PackedFloat64Array([NAN])
 	if gear.is_empty() or anchors.size() != gear.contacts.size() * 3 or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height(surfaces):
 		return out
 	for i in gear.contacts.size():
 		var c: Dictionary = gear.contacts[i]
-		var f := frame(s, c, steer, surfaces)
+		var f := frame(s, c, steer, surfaces, PackedFloat64Array(), false, lake)
 		var cf := coefficients(gear, c, surfaces, f.position)
 		var n: float = f.normal_load
 		if n <= 0.0 or cf[0] <= 0.0 or not f.valid_heading:
@@ -222,3 +227,8 @@ static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, s
 			out[at + 1] = f.position[1]
 			out[at + 2] = 1.0
 	return out
+
+
+## Empty means the legacy flat field; nonempty contexts are normalized, immutable LakeLoader output.
+static func _valid_lake(lake: Dictionary) -> bool:
+	return lake.is_empty() or LakeSurface.is_valid_definition(lake)

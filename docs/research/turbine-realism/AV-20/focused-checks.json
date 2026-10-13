@@ -1,0 +1,68 @@
+[
+  {
+    "script": "test_turbine.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "27 checks, 0 failed"
+  },
+  {
+    "script": "test_turbine_continuous.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "46 checks, 0 failed"
+  },
+  {
+    "script": "test_avanti_handling.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "47 checks, 0 failed"
+  },
+  {
+    "script": "test_checkpoint.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "H8 checkpoints: 92 checks, 0 failed"
+  },
+  {
+    "script": "test_checkpoint_integrity.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "H8-R1 checkpoint integrity: 149 checks, 0 failed"
+  },
+  {
+    "script": "test_continuous_state.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "continuous state: 42 checks, 0 failed"
+  },
+  {
+    "script": "test_session_guards.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "trim: needs 5.3\u00b0 of elevator, more than the 1.0\u00b0 throw"
+  },
+  {
+    "script": "test_shaft_coupled.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "G2 coupled shaft: 43 checks, 0 failed"
+  },
+  {
+    "script": "test_electric_session.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "electric propulsion requires coupled-rk4"
+  },
+  {
+    "script": "test_electric_battery_session.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "EL2a battery session: 103 checks, 0 failed"
+  },
+  {
+    "script": "test_atmosphere_flight.gd",
+    "ok": true,
+    "exit": 0,
+    "tail": "M5-ATM flight: 142 checks, 0 failed"
+  }
+]

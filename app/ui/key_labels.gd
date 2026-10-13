@@ -16,6 +16,8 @@ const NAMES := {
 	KEY_UP: "Up arrow",
 	KEY_DOWN: "Down arrow",
 	KEY_BACKSPACE: "Backspace",
+	KEY_PAGEUP: "PgUp",
+	KEY_PAGEDOWN: "PgDn",
 }
 
 

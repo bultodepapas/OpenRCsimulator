@@ -162,6 +162,6 @@ static func rotor_momentum(rpm: float, prop: Dictionary) -> PackedFloat64Array:
 	return M.scale(prop.axis, float(prop.rotor_inertia) * float(prop.rotor_sense) * rpm * TAU / 60.0)
 
 
-## Fuel-flow map (kg/s), reserved for AV-10; no current flight-state consumer. Mass stays fixed.
+## Fuel-flow map (kg/s) for accepted-endpoint observations. Mass stays fixed until AV-10.
 static func fuel_flow(rpm: float, prop: Dictionary) -> float:
 	return 0.0 if rpm < STOPPED_RPM else table(prop.fuel_flow, rpm)

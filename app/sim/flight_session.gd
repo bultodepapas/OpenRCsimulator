@@ -1114,6 +1114,9 @@ func reset() -> void:
 		if Sim.state_is_valid(old_start.get("state", PackedFloat64Array())):
 			for axis: int in 3:
 				start.state[RB.POS + axis] = old_start.state[RB.POS + axis]
+	# D6e-R1: a restart must restore the solved equilibrium, including pilot-adjusted trim.
+	if _has_valid_start():
+		trims = {roll = start.roll_command, pitch = start.pitch_command, yaw = start.get("yaw_command", 0.0)}
 	if start_choice == START_AIRBORNE:
 		_reset_airborne_start()
 	elif start_choice == START_RUNWAY:
@@ -1299,8 +1302,19 @@ func rates_active() -> bool:
 		and not (radio.connected and not radio.is_rate_throttle())
 
 
-## Stick commands (shaped by the active rate profile) plus trims: what the surfaces actually do (and what the physics
-## sees). Trims are in units of the maximum throw, like a radio's trim tabs, so they are added after the rates.
+## Manual elevator trim, degrees trailing edge up (+ = nose up). Only changes the command offset;
+## the normal tick sampler and servo apply it. No force, attitude, throttle or speed is changed here.
+func adjust_elevator_trim(delta_deg: float) -> bool:
+	if not is_finite(delta_deg) or not physics_enabled or not input_enabled or not _flight_ready() \
+			or sim.paused or not holds.is_empty() or not crash.is_empty() or calibration != null:
+		return false
+	var throw_deg: float = aircraft.model.controls.throw_deg.elevator
+	trims.pitch = clampf(float(trims.pitch) + delta_deg / throw_deg, -1.0, 1.0)
+	return true
+
+
+## Stick commands plus trims in maximum-throw units. Sticks are shaped before trim so reduced
+## rates never attenuate the trim correction; the existing servo applies the summed command.
 func flown_commands() -> Dictionary:
 	var c := commands.duplicate()
 	if rates_active():

@@ -26,7 +26,7 @@ A nominal catalog match, plausible sound or passing golden replay does not confe
 
 The current implementation already has a nonlinear throttle-to-RPM map, asymmetric rate schedules, a governor lag, static thrust/flow tables, ram corrections, separate inlet/nozzle arms and rotor gyro momentum. These are useful foundations; preserve them as a frozen comparison model before changing behavior.
 
-| Priority | Current limitation | Consequence | Required correction |
+| Priority | Starting limitation | Consequence | Required correction |
 | --- | --- | --- | --- |
 | P0 | RPM advances before body RK4 and is held during stages | Coupled thrust/gyro transients can inherit a lower-order split | One evolving continuous turbine state evaluated at each body stage |
 | P0 | Disabling the engine gives zero RPM in the next pre-step | Abrupt loss of spin; no physical shutdown sequence | Separate fuel valve, combustion, rotor speed, cooling and run permission |

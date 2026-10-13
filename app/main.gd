@@ -748,6 +748,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
+			KEY_PAGEUP, KEY_PAGEDOWN:
+				if session.adjust_elevator_trim(-0.1 if event.physical_keycode == KEY_PAGEUP else 0.1):
+					_note = tr("Elevator trim: %+.1f° (PgUp down / PgDn up)") % (session.trims.pitch * session.throws_deg().elevator)
+					get_viewport().set_input_as_handled()
 			KEY_J:
 				_begin_smoke_assignment()
 			KEY_R:

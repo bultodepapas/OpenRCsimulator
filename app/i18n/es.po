@@ -852,3 +852,16 @@ msgstr "Hecho"
 
 msgid "Overlay preset · developer overlays"
 msgstr "Indicadores · desarrollo"
+# Manual elevator trim (D6e-R1).
+msgid "Elevator trim: nose down / up"
+msgstr "Trim de profundidad: bajar / subir morro"
+
+msgid "PgUp"
+msgstr "RePág"
+
+msgid "PgDn"
+msgstr "AvPág"
+
+msgid "Elevator trim: %+.1f° (PgUp down / PgDn up)"
+msgstr "Trim de profundidad: %+.1f° (RePág baja / AvPág sube)"
+
