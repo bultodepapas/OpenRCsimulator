@@ -32,8 +32,6 @@ TRANSIENT_EVENTS = [(0.0, 0.60), (0.40, 1.0), (0.90, 0.60)]
 PHASE_CASES_DEG = [-10.0, 0.0, 20.0]
 INERTIA_MULTIPLIERS = [0.5, 1.0, 2.0]
 REFINEMENT_STEPS_DEG = [0.5, 0.25, 0.125]
-STEADY_DURATION_S = 0.25
-STEADY_WARMUP_S = 0.08333333333333333
 
 ENGINES = {
     "glow_2t": {
@@ -177,6 +175,123 @@ def _profile_torque(case: dict[str, Any], phase_rad: float, rpm: float,
         - work["mechanical_torque_nm"]
         - work["valve_torque_nm"]
     )
+
+
+def integrate_one_cycle(case: dict[str, Any], *, start_rpm: float, admission: float,
+                        max_step_deg: float, inertia_multiplier: float = 1.0,
+                        phase_shift_deg: float = 0.0) -> dict[str, float]:
+    """One independently integrated opportunity; returns its crank-map endpoint."""
+    family = case["family"]
+    cycle_angle = float(case["config"]["cycle_angle_rad"])
+    step_max = math.radians(max_step_deg)
+    inertia = case["inertia"] * inertia_multiplier
+    omega = start_rpm * TAU / 60.0
+    energy_start = 0.5 * inertia * omega * omega
+    energy = energy_start
+    phase = 0.0
+    elapsed_s = 0.0
+    engine_work_j = 0.0
+    prop_work_j = 0.0
+    rpm_min = start_rpm
+    rpm_max = start_rpm
+    work = closure(case, start_rpm, admission)
+    angle_count = 0
+    while phase < cycle_angle - 1e-12:
+        dtheta = min(step_max, cycle_angle - phase)
+        omega0 = _speed_from_energy(energy, inertia)
+        rpm0 = omega0 * 60.0 / TAU
+        theta_mid = phase + 0.5 * dtheta
+        engine_tau0 = _profile_torque(case, theta_mid, rpm0, work, phase_shift_deg)
+        prop0 = source.propeller_load(rpm0, AIR_SPEED, RHO, case["prop"])
+        if not prop0["ideal_power_bound_pass"]:
+            raise ValueError(f"ideal-power refusal at {rpm0:.6f} RPM")
+        energy_mid = max(1e-12, energy + 0.5 * (engine_tau0 - float(prop0["torque_nm"])) * dtheta)
+        rpm_mid = _speed_from_energy(energy_mid, inertia) * 60.0 / TAU
+        engine_tau_mid = _profile_torque(case, theta_mid, rpm_mid, work, phase_shift_deg)
+        prop_mid = source.propeller_load(rpm_mid, AIR_SPEED, RHO, case["prop"])
+        if not prop_mid["ideal_power_bound_pass"]:
+            raise ValueError(f"ideal-power refusal at {rpm_mid:.6f} RPM")
+        omega_mid = rpm_mid * TAU / 60.0
+        net_tau_mid = engine_tau_mid - float(prop_mid["torque_nm"])
+        delta_energy = net_tau_mid * dtheta
+        if energy + delta_energy <= 0.0:
+            raise ValueError("periodic shaft map stopped inside the opportunity")
+        elapsed_s += dtheta / omega_mid
+        engine_work_j += engine_tau_mid * dtheta
+        prop_work_j += float(prop_mid["torque_nm"]) * dtheta
+        energy += delta_energy
+        phase += dtheta
+        angle_count += 1
+        rpm_end = _speed_from_energy(energy, inertia) * 60.0 / TAU
+        rpm_min = min(rpm_min, rpm0, rpm_mid, rpm_end)
+        rpm_max = max(rpm_max, rpm0, rpm_mid, rpm_end)
+    final_rpm = _speed_from_energy(energy, inertia) * 60.0 / TAU
+    return {
+        "start_rpm": start_rpm,
+        "end_rpm": final_rpm,
+        "map_delta_rpm": final_rpm - start_rpm,
+        "time_average_rpm": cycle_angle / elapsed_s * 60.0 / TAU,
+        "minimum_rpm": rpm_min,
+        "maximum_rpm": rpm_max,
+        "elapsed_s": elapsed_s,
+        "angle_step_count": angle_count,
+        "integrated_engine_work_j": engine_work_j,
+        "profile_indicated_work_j": work["cycle_work_j"],
+        "integrated_prop_work_j": prop_work_j,
+        "profile_expected_net_shaft_work_j": (
+            work["cycle_work_j"] - work["pumping_work_j"]
+            - (work["mechanical_torque_nm"] + work["valve_torque_nm"]) * cycle_angle
+        ),
+        "integrated_pumping_work_j": work["pumping_work_j"],
+        "profile_cycle_fuel_kg": work["burned_fuel_kg_cycle"],
+        "profile_cycle_delivered_premix_kg": work["delivered_premix_kg_cycle"],
+        "profile_chemical_heat_j": work["chemical_heat_j_cycle"],
+        "energy_closure_residual_j": (energy - energy_start) - (engine_work_j - prop_work_j),
+    }
+
+
+def periodic_orbit(case: dict[str, Any], *, mean_rpm: float, admission: float,
+                   max_step_deg: float, inertia_multiplier: float = 1.0,
+                   phase_shift_deg: float = 0.0) -> dict[str, float]:
+    """Find the stable cycle-start speed whose one-cycle energy map is periodic."""
+    parameters = source.interp_parameters(case["profile"])
+    rpm_min = max(float(parameters["mechanical_torque_nm"][0][0]), mean_rpm * 0.75)
+    rpm_max = min(float(parameters["mechanical_torque_nm"][-1][0]), mean_rpm * 1.25,
+                  quantity(case["profile"]["operation"], "max_rpm"))
+    points = []
+    for i in range(13):
+        rpm = rpm_min + (rpm_max - rpm_min) * i / 12.0
+        trace = integrate_one_cycle(case, start_rpm=rpm, admission=admission,
+                                    max_step_deg=max_step_deg,
+                                    inertia_multiplier=inertia_multiplier,
+                                    phase_shift_deg=phase_shift_deg)
+        points.append((rpm, trace["map_delta_rpm"]))
+    brackets = [(a, b) for a, b in zip(points, points[1:]) if a[1] >= 0.0 and b[1] <= 0.0]
+    if not brackets:
+        raise ValueError(
+            f"no stable periodic orbit bracket for {case['family']} at "
+            f"inertia x{inertia_multiplier:g}, phase {phase_shift_deg:g} deg: {points}"
+        )
+    lo, hi = brackets[-1]
+    a, fa = lo
+    b, fb = hi
+    for _ in range(28):
+        mid = 0.5 * (a + b)
+        trace = integrate_one_cycle(case, start_rpm=mid, admission=admission,
+                                    max_step_deg=max_step_deg,
+                                    inertia_multiplier=inertia_multiplier,
+                                    phase_shift_deg=phase_shift_deg)
+        fm = trace["map_delta_rpm"]
+        if fm > 0.0:
+            a, fa = mid, fm
+        else:
+            b, fb = mid, fm
+    root_rpm = 0.5 * (a + b)
+    trace = integrate_one_cycle(case, start_rpm=root_rpm, admission=admission,
+                                max_step_deg=max_step_deg,
+                                inertia_multiplier=inertia_multiplier,
+                                phase_shift_deg=phase_shift_deg)
+    return trace
 
 
 def _admission_at(events: list[tuple[float, float]], time_s: float, case: dict[str, Any]) -> float:
@@ -486,39 +601,44 @@ def analyze_family(family: str) -> dict[str, Any]:
     steady_rows = []
     for inertia_multiple in INERTIA_MULTIPLIERS:
         for phase_shift in PHASE_CASES_DEG:
-            result = simulate_phase(
-                case, initial_rpm=full_root["rpm"], duration_s=STEADY_DURATION_S,
-                sample_hz=SAMPLE_HZ, max_step_deg=0.25,
-                inertia_multiplier=inertia_multiple, phase_shift_deg=phase_shift,
+            result = periodic_orbit(
+                case, mean_rpm=full_root["rpm"], admission=full_admission,
+                max_step_deg=0.25, inertia_multiplier=inertia_multiple,
+                phase_shift_deg=phase_shift,
             )
-            measured = [row for row in result["rows"] if row["time_s"] >= STEADY_WARMUP_S]
-            mean_rpm = sum(row["rpm_mean"] for row in measured) / len(measured)
             steady_rows.append({
                 "rotor_inertia_multiplier": inertia_multiple,
                 "phase_shift_deg": phase_shift,
                 "candidate_mean_root_rpm": full_root["rpm"],
-                "phase_time_average_rpm_after_warmup": mean_rpm,
-                "relative_difference_from_mean_root_fraction": _relative_error(mean_rpm, full_root["rpm"]),
-                "cycle_count": result["cycle_count"],
+                "phase_periodic_start_rpm": result["start_rpm"],
+                "phase_periodic_time_average_rpm": result["time_average_rpm"],
+                "relative_difference_from_mean_root_fraction": _relative_error(result["time_average_rpm"], full_root["rpm"]),
+                "cycle_rpm_ripple_fraction": (result["maximum_rpm"] - result["minimum_rpm"]) / result["time_average_rpm"],
+                "periodic_map_residual_rpm": result["map_delta_rpm"],
                 "angle_step_deg": 0.25,
             })
 
     angle_rows = []
     for angle_step in REFINEMENT_STEPS_DEG:
-        phase = simulate_phase(
-            case, initial_rpm=full_root["rpm"], duration_s=STEADY_DURATION_S,
-            sample_hz=SAMPLE_HZ, max_step_deg=angle_step,
+        phase = periodic_orbit(
+            case, mean_rpm=full_root["rpm"], admission=full_admission,
+            max_step_deg=angle_step,
         )
-        measured = [row for row in phase["rows"] if row["time_s"] >= STEADY_WARMUP_S]
-        mean_rpm = sum(row["rpm_mean"] for row in measured) / len(measured)
-        angle_rows.append({"step_deg_max": angle_step, "mean_rpm_after_warmup": mean_rpm,
-                           "profile_cycle_count": phase["cycle_count"],
-                           "net_profile_work_j": phase["totals"]["profile_net_shaft_work_j"],
-                           "phase_engine_work_j": phase["totals"]["actual_engine_work_j"],
-                           "prop_work_j": phase["totals"]["prop_work_j"]})
-    fine_rpm = angle_rows[-1]["mean_rpm_after_warmup"]
+        angle_rows.append({"step_deg_max": angle_step,
+                           "periodic_start_rpm": phase["start_rpm"],
+                           "periodic_time_average_rpm": phase["time_average_rpm"],
+                           "periodic_map_residual_rpm": phase["map_delta_rpm"],
+                           "cycle_elapsed_s": phase["elapsed_s"],
+                           "phase_minimum_rpm": phase["minimum_rpm"],
+                           "phase_maximum_rpm": phase["maximum_rpm"],
+                           "profile_cycle_work_j": phase["profile_indicated_work_j"],
+                           "integrated_engine_work_j": phase["integrated_engine_work_j"],
+                           "integrated_prop_work_j": phase["integrated_prop_work_j"],
+                           "energy_closure_residual_j": phase["energy_closure_residual_j"],
+                           "angle_step_count": phase["angle_step_count"]})
+    fine_rpm = angle_rows[-1]["periodic_time_average_rpm"]
     for row in angle_rows:
-        row["mean_rpm_error_vs_finest_fraction"] = _relative_error(row["mean_rpm_after_warmup"], fine_rpm)
+        row["mean_rpm_error_vs_finest_fraction"] = _relative_error(row["periodic_time_average_rpm"], fine_rpm)
 
     reference = simulate_phase(
         case, initial_rpm=low_root["rpm"], duration_s=DURATION_S,
@@ -582,7 +702,7 @@ def analyze_family(family: str) -> dict[str, Any]:
             "rows": angle_rows,
             "quadrature_budget_fraction": 1e-3,
             "steady_mean_rpm_relative_error_vs_mean_root_fraction": _relative_error(
-                angle_rows[-1]["mean_rpm_after_warmup"], full_root["rpm"]),
+                angle_rows[-1]["periodic_time_average_rpm"], full_root["rpm"]),
             "status": "evaluated",
         },
         "throttle_transient": {
@@ -603,12 +723,12 @@ def analyze_family(family: str) -> dict[str, Any]:
             "mean_reduction_shaft_work_fuel_budget_fraction": 0.005,
             "result_classification": {
                 "steady_mean_rpm_relative_error_fraction": _relative_error(
-                    angle_rows[-1]["mean_rpm_after_warmup"], full_root["rpm"]),
+                    angle_rows[-1]["periodic_time_average_rpm"], full_root["rpm"]),
                 "steady_rpm_budget_pass": abs(_relative_error(
-                    angle_rows[-1]["mean_rpm_after_warmup"], full_root["rpm"])) <= 0.001,
+                    angle_rows[-1]["periodic_time_average_rpm"], full_root["rpm"])) <= 0.001,
                 "transient_mean_rpm_budget_pass": abs(base_metrics["mean_rpm_relative_error_fraction"]) <= 0.001,
                 "rpm_budget_pass": (
-                    abs(_relative_error(angle_rows[-1]["mean_rpm_after_warmup"], full_root["rpm"])) <= 0.001
+                    abs(_relative_error(angle_rows[-1]["periodic_time_average_rpm"], full_root["rpm"])) <= 0.001
                     and abs(base_metrics["mean_rpm_relative_error_fraction"]) <= 0.001
                 ),
                 "shaft_work_budget_pass": abs(base_metrics["prop_shaft_work_relative_error_fraction"]) <= 0.005,

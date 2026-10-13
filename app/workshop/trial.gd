@@ -9,6 +9,10 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	if typeof(base_bytes_value) != TYPE_PACKED_BYTE_ARRAY or typeof(base_id_value) != TYPE_STRING \
 			or typeof(recipe_value) != TYPE_DICTIONARY:
 		return {ok = false, errors = PackedStringArray(["Workshop source ID, source bytes, or recipe have invalid types."])}
+	var parameters: Script = load("res://workshop/parameters.gd")
+	var checked_recipe: Dictionary = parameters.validate(recipe_value)
+	if not checked_recipe.ok:
+		return {ok = false, errors = checked_recipe.errors}
 	var base_bytes: PackedByteArray = base_bytes_value
 	var base_id: String = base_id_value
 	var descriptor_loader: Script = load("res://workshop/descriptor.gd")
@@ -53,8 +57,8 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var pinned_compiler: String = pinned_compiler_value
 	if not pinned_compiler.is_empty() and pinned_compiler != compiler.COMPILER_VERSION:
 		return {ok = false, errors = PackedStringArray(["This saved variant requires a different Workshop compiler version; the saved variant remains unchanged."])}
-	var recipe: Dictionary = compiler.defaults()
-	recipe.merge(recipe_value, true)
+	# Hash the same normalized numeric values the compiler consumes (1 == 1.0).
+	var recipe: Dictionary = checked_recipe.values
 	var recipe_ancestor_id: Variant = recipe.get("id", "")
 	var ancestor_id_value: Variant = payload.get("variant_id", recipe_ancestor_id)
 	var ancestor_revision_value: Variant = payload.get("variant_revision", 0)
@@ -62,6 +66,8 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		return {ok = false, errors = PackedStringArray(["Saved variant ancestry has invalid ID or revision types."])}
 	var ancestor_id: String = ancestor_id_value
 	var ancestor_revision: int = ancestor_revision_value
+	if recipe.has("id") and recipe.id != ancestor_id:
+		return {ok = false, errors = PackedStringArray(["Recipe ID and saved variant ancestry disagree."])}
 	if (ancestor_id.is_empty() and ancestor_revision != 0) or (not ancestor_id.is_empty() and ancestor_revision < 1):
 		return {ok = false, errors = PackedStringArray(["Saved variant ancestry requires a matching ID and positive revision."])}
 	if not ancestor_id.is_empty() and (pinned_compiler.is_empty() or supplied_dependencies.is_empty() or supplied_descriptor.is_empty()):

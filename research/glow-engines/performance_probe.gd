@@ -462,6 +462,21 @@ func _run_extended_scenario(family: String, scenario_name: String, collect_measu
 		"sampling_state_before_measurement": _extended_state_record(flight, sample),
 		"measurements_collected": collect_measurements,
 	}
+	if scenario_name == "misfire":
+		output["scenario_control_basis"] = {
+			"kind": "synthetic_partial_rich_misfire_command",
+			"rich_misfire_start_ratio": float(install.settings.rich_misfire_start_ratio),
+			"rich_misfire_zero_ratio": float(install.settings.rich_misfire_zero_ratio),
+			"relative_mixture_command": mixture_command / nominal_mixture,
+			"reason": "The normalized command is placed midway between this installation's declared rich-misfire start and zero ratios; successful and missed firing events are verified from accepted counters.",
+		}
+	elif scenario_name == "idle":
+		output["scenario_control_basis"] = {
+			"kind": "airborne_idle_command_transition",
+			"initial_condition": "Trimmed airborne default launch state",
+			"throttle_command": 0.0,
+			"preconditioning_ticks": precondition_ticks,
+		}
 	if collect_measurements:
 		var observer_audio: Dictionary = _measure_extended_observer_audio(flight, sample)
 		if not observer_audio.get("ok", false):

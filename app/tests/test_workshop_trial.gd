@@ -37,6 +37,15 @@ func _initialize() -> void:
 	payload.recipe = Compiler.defaults()
 	var explicit := Trial.freeze(payload)
 	check("omitted and explicit defaults have the same identity", explicit.identity == first.identity)
+	var integer_payload: Dictionary = payload.duplicate(true)
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+		integer_payload.recipe[key] = 1
+	var integer_trial := Trial.freeze(integer_payload)
+	check("integer and float recipes have identical resolved identity", integer_trial.get("ok", false)
+		and integer_trial.identity == first.identity and integer_trial.raw_bytes == first.raw_bytes)
+	var invalid_cosmetic: Dictionary = payload.duplicate(true)
+	invalid_cosmetic.recipe.name = {"invalid": true}
+	check("invalid recipe metadata is refused before hashing", not Trial.freeze(invalid_cosmetic).get("ok", false))
 	payload.recipe.name = "A cosmetic name"
 	var renamed := Trial.freeze(payload)
 	check("display names do not alter physical identity", renamed.identity.trial_id == first.identity.trial_id)
@@ -56,6 +65,12 @@ func _initialize() -> void:
 	var saved := Trial.freeze(payload)
 	check("saved revision ancestry is retained", saved.get("ok", false)
 		and saved.identity.ancestor_variant_id == "saved-parent" and saved.identity.ancestor_revision == 3)
+	var conflicting_ancestor: Dictionary = payload.duplicate(true)
+	conflicting_ancestor.recipe.id = "different-parent"
+	check("conflicting recipe and payload ancestry is refused", not Trial.freeze(conflicting_ancestor).get("ok", false))
+	conflicting_ancestor.variant_id = ""
+	conflicting_ancestor.variant_revision = 0
+	check("explicit empty ancestry cannot mask a saved recipe ID", not Trial.freeze(conflicting_ancestor).get("ok", false))
 	var missing_pin: Dictionary = payload.duplicate(true)
 	missing_pin.workshop_descriptor = {}
 	check("saved ancestry cannot silently acquire today's descriptor", not Trial.freeze(missing_pin).get("ok", false))
