@@ -43,3 +43,11 @@ python research/flight-dynamics/climb-trim/analyze_loop.py .tools/climb-observed
 The default comparison includes calm air, alternative starting trims and constant-power controls. `--isolate-trim` keeps the original starting state and moves only the elevator trim at five seconds, or removes rotor gyroscopic coupling. Counterfactuals that stop at ground contact are reported with their actual duration. An absence of loops before an early crash is not proof of satisfactory handling. The analyzer requires Python with matplotlib and reads the full captured CSV files; replay only needs pinned Godot and the compact fixture.
 
 `--prop-sensitivity` runs the first fifteen seconds, switching only the Ct/Cp curves at five seconds, either preserving the prescribed maximum RPM or changing it to the estimated static torque-balance RPM. The comparison curves and their source/provenance are in the evidence directory. Both use one RPM slice throughout each run, retain the legacy RPM-lag law, and extrapolate beyond the slice using the legacy law. First inversion and first out-of-domain times are reported separately: do not describe either case as an installed, validated O.S./APC powertrain. Component-load diagnostics include the sampled downwash lag but omit ground effect/contact loads; they describe the airborne first-loop interval, not the last low-altitude ticks of a counterfactual.
+
+`energy_probe.gd` independently integrates load work over the first fifteen seconds and compares it with body mechanical-energy change. It includes the sampled downwash lag; calm 240/480 Hz cases preserve the input-event times. Its airborne load audit omits ground contact/effect and is scoped to this interval. Energy closure tests numerical consistency, not aircraft parameter accuracy.
+
+```powershell
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/energy_probe.gd"
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/energy_probe.gd" -- --calm
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/energy_probe.gd" -- --calm --480
+```

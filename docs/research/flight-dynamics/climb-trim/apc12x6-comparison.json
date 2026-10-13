@@ -22,7 +22,7 @@
       0.0,
       0.6577
     ],
-    "common_j_limit_used": "Each case stops at the smaller upper-J limit of the neighboring APC RPM blocks; no extrapolation past APC's available computed curve.",
+    "common_j_limit_used": "Each tabulated comparison curve ends at the smaller upper-J limit of the neighboring APC RPM blocks. The replay sensitivity experiment may extrapolate beyond it using the legacy propulsion law and reports the first out-of-domain time separately.",
     "source_curve_j_coverage_by_rpm": {
       "1000": [
         0.0,

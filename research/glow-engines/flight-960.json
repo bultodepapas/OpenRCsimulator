@@ -1,5 +1,5 @@
 {
-	"format": "openrc-glow-flight-experiment v1",
+	"format": "openrc-glow-flight-experiment v2",
 	"hz": 960,
 	"ok": true,
 	"runs": [
@@ -15,7 +15,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:03:25",
+				"created_utc": "2026-10-13T20:05:22",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -55,9 +55,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 6622,
-				"p50": 2466,
-				"p95": 2846
+				"maximum": 9369,
+				"p50": 1067,
+				"p95": 1843
 			},
 			"engine": "55ax_2t",
 			"final": {
@@ -1661,7 +1661,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:03:32",
+				"created_utc": "2026-10-13T20:05:26",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -1701,9 +1701,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 4279,
-				"p50": 2297,
-				"p95": 2831
+				"maximum": 5881,
+				"p50": 1074,
+				"p95": 1740
 			},
 			"engine": "55ax_2t",
 			"final": {
@@ -3307,7 +3307,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:03:40",
+				"created_utc": "2026-10-13T20:05:30",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -3347,9 +3347,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 5147,
-				"p50": 2439,
-				"p95": 2904
+				"maximum": 4428,
+				"p50": 1140,
+				"p95": 1949
 			},
 			"engine": "55ax_2t",
 			"final": {
@@ -4953,7 +4953,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:03:47",
+				"created_utc": "2026-10-13T20:05:34",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -4993,9 +4993,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 10100,
-				"p50": 2442,
-				"p95": 2851
+				"maximum": 5924,
+				"p50": 1180,
+				"p95": 2113
 			},
 			"engine": "55ax_2t",
 			"final": {
@@ -6599,7 +6599,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:03:55",
+				"created_utc": "2026-10-13T20:05:39",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -6639,9 +6639,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 9124,
-				"p50": 2556,
-				"p95": 2980
+				"maximum": 5409,
+				"p50": 1245,
+				"p95": 2159
 			},
 			"engine": "55ax_2t",
 			"final": {
@@ -8245,7 +8245,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:04:11",
+				"created_utc": "2026-10-13T20:05:48",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -8285,9 +8285,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 7102,
-				"p50": 2768,
-				"p95": 3258
+				"maximum": 7074,
+				"p50": 1390,
+				"p95": 2355
 			},
 			"engine": "55ax_2t",
 			"final": {
@@ -11331,7 +11331,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:04:19",
+				"created_utc": "2026-10-13T20:05:52",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -11371,9 +11371,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 4326,
-				"p50": 2503,
-				"p95": 2850
+				"maximum": 6605,
+				"p50": 1122,
+				"p95": 1924
 			},
 			"engine": "fs64v_4t",
 			"final": {
@@ -12977,7 +12977,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:04:26",
+				"created_utc": "2026-10-13T20:05:56",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -13017,9 +13017,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 5073,
-				"p50": 2334,
-				"p95": 2823
+				"maximum": 4151,
+				"p50": 1040,
+				"p95": 1725
 			},
 			"engine": "fs64v_4t",
 			"final": {
@@ -14623,7 +14623,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:04:33",
+				"created_utc": "2026-10-13T20:06:00",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -14663,9 +14663,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 5528,
-				"p50": 2492,
-				"p95": 2836
+				"maximum": 8092,
+				"p50": 1037,
+				"p95": 1716
 			},
 			"engine": "fs64v_4t",
 			"final": {
@@ -16269,7 +16269,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:04:41",
+				"created_utc": "2026-10-13T20:06:04",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -16309,9 +16309,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 5662,
-				"p50": 2475,
-				"p95": 2829
+				"maximum": 5730,
+				"p50": 1157,
+				"p95": 1965
 			},
 			"engine": "fs64v_4t",
 			"final": {
@@ -17915,7 +17915,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:04:48",
+				"created_utc": "2026-10-13T20:06:08",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -17955,9 +17955,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 7317,
-				"p50": 2542,
-				"p95": 2883
+				"maximum": 4290,
+				"p50": 1192,
+				"p95": 1989
 			},
 			"engine": "fs64v_4t",
 			"final": {
@@ -19561,7 +19561,7 @@
 				"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 				"configuration": "virtual-glow-installation-v1",
 				"continuous_layout": "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J",
-				"created_utc": "2026-10-13T19:05:04",
+				"created_utc": "2026-10-13T20:06:17",
 				"dt_s": 0.0010416666666666667,
 				"engine": "Godot 4.7.2-stable (official)",
 				"engine_rpm_semantics": "propeller shaft rpm",
@@ -19601,9 +19601,9 @@
 				"wing_polar_model": "legacy attached-to-flat-plate blend"
 			},
 			"cost_us": {
-				"maximum": 5076,
-				"p50": 2779,
-				"p95": 3188
+				"maximum": 5356,
+				"p50": 1313,
+				"p95": 2177
 			},
 			"engine": "fs64v_4t",
 			"final": {
@@ -22635,5 +22635,29 @@
 			],
 			"scenario": "takeoff"
 		}
-	]
+	],
+	"source_sha256": {
+		"app/data/field_loader.gd": "a4216cdacb6fc76a48c435994f947790eb73dccdc4a8ccb07e0eb7b5b8dddc0b",
+		"app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+		"app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+		"app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+		"app/physics/glow/flight.gd": "1b0dcb541761cfb1814a5ccdcb3704d7db72257d93dee7cb6cb6e5065f85d316",
+		"app/physics/glow/four_stroke.gd": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f",
+		"app/physics/glow/fuel_mass.gd": "dfc4fdd21223360f86d7b93647eac2d72dde5f7e83406fbc6a30d9442730a03d",
+		"app/physics/glow/installation.gd": "0a6873ecdab5abaf44498f4130d4af1e0d6e4fab454f71664401f20a9bbfd3b9",
+		"app/physics/glow/lifecycle.gd": "eb48dfe650fc40dbee04bf357c12bec2df7bc7d615ae0b392bd71e3d25bd01ac",
+		"app/physics/glow/operating_point.gd": "9beaa48ea3ac2e5b4616b6fd3f01523ec8a543a739e9e33d14a58c8b60d55dc4",
+		"app/physics/glow/profile.gd": "073c3257562f2281002f173dcf00bed6fa521862ee5979841fe08c19892e08b2",
+		"app/physics/glow/propeller.gd": "86afe1103c45686e07b96204fc3bb79838dde7c912c18e5e6d8683a845c1f7ca",
+		"app/physics/glow/source.gd": "4a40ed6584a89a87e1626fedd2aac60ffedf70b42a120bb8f15387744aa115c0",
+		"app/physics/glow/thermal.gd": "ce4137c380309ca85307a7f3a5ce073625cd4cbdedf68609f053f1b07e9ffd65",
+		"app/physics/glow/two_stroke.gd": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353",
+		"app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+		"app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+		"app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+		"app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+		"app/sim/flight_session.gd": "9d86ba642fd75fd793c29a24d2249246e9431cbdc3fe3131e279f03b9786c997",
+		"app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+		"research/glow-engines/flight_bench.gd": "b682c02b57cd6d938335e954a76f5f8e7501c722eef7832ced5fb4d779dc5665"
+	}
 }

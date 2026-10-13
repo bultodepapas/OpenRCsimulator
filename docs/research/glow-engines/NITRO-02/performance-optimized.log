@@ -154,3 +154,12 @@ WRAPPED_RELEASE_SUMMARY={
 		"worst_round_step_p95_us": 741.0
 	}
 }
+
+BEFORE / AFTER NATIVE RELEASE COMPARISON (diagnostic; see performance-optimized.json for provenance)
+Source tree SHA-256: 17d0b3ebd66ad1e2c86174ba34dc47e1bb4c19cd59572e5e8db7a0617a60b2ac
+Input tree SHA-256: 1f30e9ef573952cfa475984c9acc91169740ebbc1d39f3e81341426b0f53c3cc (matches prior measurement: True)
+Runtime: 4.7.2-stable (official); debug=False; release=True
+Legacy Stik p95: 504 -> 677 us; reduction -34.3% (worst-round 516 -> 741 us).
+Glow 2T p95: 1900 -> 1532 us; reduction 19.4% (worst-round 2152 -> 1539 us).
+Glow 4T p95: 1646 -> 1552 us; reduction 5.7% (worst-round 1765 -> 1610 us).
+All three measured median p95 values remain above the 500 us target. Source snapshots differ; do not attribute changes to one optimization. Input hashes match. Parent reported no overlapping Godot bench; OS process/CPU load was not sampled.
