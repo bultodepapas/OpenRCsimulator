@@ -19,6 +19,7 @@ Experimental delivery evidence:
 | CR-01a/b/c | Typed crash snapshot, crossing reconstruction and crash-pose display are implemented. CR-01 remains partial until component labels and crossing-time kinematics are complete. See [CR-01c](research/crash-damage-investigations/CR-01c/README.md). |
 | CR-02a / CR-03a | Spatial crash audio, bounded particles, dust and surface marks are implemented in the experimental presentation path. See [CR-02a](research/crash-damage-investigations/CR-02a/README.md) and [CR-22a integration](research/crash-damage-investigations/CR-22a/README.md). |
 | CR-08a | A pure mass/speed/angle/surface severity estimate is present and explicitly uncalibrated. See [severity report](research/crash-damage-investigations/CR-08a/severity.md). |
+| CR-01d | Every aircraft names its crash-hull points (`crash_hull_components`); crash presentation reports the struck component from data instead of a geometric guess. See [CR-01d](research/crash-damage-investigations/CR-01d/README.md). |
 | CR-08b | Effective-mass, per-kg grading with slapdown and abrasion channels replaces the CR-08a joule bins; still uncalibrated. See [CR-08b](research/crash-damage-investigations/CR-08b/README.md). |
 | CR-09a / CR-19a | Shared-mesh wreck, staged breakup, bounded debris, persistent wreck marks and inspection view are implemented. See [CR-09a](research/crash-damage-investigations/CR-09a/README.md) and [CR-22a integration](research/crash-damage-investigations/CR-22a/README.md). |
 | CR-17a | Local fences, lightweight props and shrubs can break; large obstacles show marks/chips. Damage commits after an accepted tick and survives compatible checkpoints. [Implementation and evidence](research/crash-damage-investigations/CR-17a/README.md). |
@@ -32,7 +33,7 @@ The active execution plan for proportional outcomes, crash causes, energy-source
 
 | Area | Remaining scope |
 | --- | --- |
-| Diagnostics | Finish CR-01 component labels and crossing-time kinematics. Preserve explicit unknown values where current model data cannot support a claim. |
+| Diagnostics | CR-01d named the hull points; finish CR-01 crossing-time kinematics. Preserve explicit unknown values where current model data cannot support a claim. |
 | Structure evidence | CR-07 must find aircraft-specific material/joint evidence with uncertainty before any strength threshold or resolver. CR-08 video observations can challenge outcome classes but cannot substitute for that evidence. See [crash investigations](research/crash-damage-investigations/README.md). |
 | Breakable models | CR-06 section contracts and CR-09 breakup tied to supported structure evidence remain incomplete. Current wreck presentation does not prove validated failure. |
 | Damaged flight | CR-11–15 depend on E3d contact semantics, H8 state/replay foundations, G4b mass updates and CR-07 evidence. Persistent aircraft damage stays off until these prerequisites are accepted. |

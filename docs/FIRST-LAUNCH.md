@@ -37,7 +37,9 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 | Esc | Pause; cancel radio calibration |
 | R | Restart flight |
 | P | Resume after a radio failsafe |
-| C | Pilot view / close-up |
+| C · Shift+C | Next / previous view: pilot, chase, orbit, close-up |
+| 1 · 2 · 5 | Pilot · chase · orbit view (orbit: drag with the right mouse button) |
+| = · − · Backspace | Zoom in · out · reset (also the mouse wheel); in chase and orbit it moves the camera |
 | Z | Toggle auto-zoom |
 | V | Ground-shadow aid: sun / vertical / off |
 | K · Enter | Start calibration · advance its step |

@@ -15,6 +15,7 @@ const NAMES := {
 	KEY_RIGHT: "Right arrow",
 	KEY_UP: "Up arrow",
 	KEY_DOWN: "Down arrow",
+	KEY_BACKSPACE: "Backspace",
 }
 
 

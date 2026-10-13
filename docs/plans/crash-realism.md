@@ -1,6 +1,6 @@
 # Crash realism plan: causes, proportional outcomes, fire and cost
 
-**Date:** 2026-10-13. **Status:** decisions D1–D5 taken; CR-08b implemented ([evidence](../research/crash-damage-investigations/CR-08b/README.md)); next CR-01d. **Prefix:** CR- (new slices of existing crash steps; see the [registry](../README.md#tracks-plans-and-step-ids)). **Parent:** [CRASH-DAMAGE-PLAN](../CRASH-DAMAGE-PLAN.md). When this plan is complete, consolidate it into the parent plan and delete this file.
+**Date:** 2026-10-13. **Status:** decisions D1–D5 taken; CR-08b and CR-01d implemented ([CR-08b](../research/crash-damage-investigations/CR-08b/README.md), [CR-01d](../research/crash-damage-investigations/CR-01d/README.md)); next CR-09b. **Prefix:** CR- (new slices of existing crash steps; see the [registry](../README.md#tracks-plans-and-step-ids)). **Parent:** [CRASH-DAMAGE-PLAN](../CRASH-DAMAGE-PLAN.md). When this plan is complete, consolidate it into the parent plan and delete this file.
 **Owner:** crash track. **Owns:** `app/render/crash/`, `app/tests/test_crash_*.gd`, `docs/research/crash-damage-investigations/`, `research/crash-damage/`.
 **Coordinated, not owned:** `app/physics/impact_snapshot.gd` (physics), `app/sim/scenery_collision.gd` (landscape LU-05), `app/sim/flight_session.gd` and `app/main.gd` (main line), aircraft data and generators (model owners, [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md)).
 
@@ -117,7 +117,7 @@ The crash card shows, for example, "Tip stall at 4 m: α 17°, 8.2 m/s, bank 35�
 
 | ID | Work | Proof |
 | --- | --- | --- |
-| CR-01d | Semantic `component` per hull point, from each aircraft's generator; loader validation | Loader tests (missing or unknown label rejected), all aircraft regenerated, healthy traces identical |
+| CR-01d | Semantic `crash_hull_components` per hull point, from each aircraft's generator; loader validation | **Done 2026-10-13.** 112 checks incl. geometry consistency on all nine files, 11/11 mutations killed; Timber needs an owner `--check` on its reference machine; [evidence](../research/crash-damage-investigations/CR-01d/README.md) |
 | CR-08b | Shared effective-mass helper; normal, slapdown and abrasion channels; J/kg class cuts; durability argument | **Done 2026-10-13.** 49 + 44 focused checks, fleet table, 9/9 mutations killed, scenery parity 1e-12; [evidence](../research/crash-damage-investigations/CR-08b/README.md) |
 | CR-01e | Pre-impact buffer, cause classifier, crash card and log line | One scripted crash per cause through the existing test drivers; trace parity; buffer cost measured |
 | CR-09b | Contact-ordered, momentum-directed breakup; C2 single-part release; no radial scatter | Wreck tests per class (released set, order, scatter energy ≤ cap); capture sequence |

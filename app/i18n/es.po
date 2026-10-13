@@ -330,8 +330,14 @@ msgstr "Reiniciar el vuelo"
 msgid "Resume after a radio failsafe"
 msgstr "Reanudar tras un failsafe de la radio"
 
-msgid "Camera: pilot view or close-up"
-msgstr "Cámara: vista del piloto o de cerca"
+msgid "Camera: next view (Shift+C back) · pilot, chase, orbit"
+msgstr "Cámara: siguiente vista (Mayús+C atrás) · piloto, persecución, órbita"
+
+msgid "Zoom in, out, reset (also the mouse wheel)"
+msgstr "Zoom: acercar, alejar, restablecer (también la rueda del ratón)"
+
+msgid "Backspace"
+msgstr "Retroceso"
 
 msgid "Auto-zoom on or off"
 msgstr "Autozoom sí o no"

@@ -763,9 +763,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				_rig.set_view("chase")
 			KEY_5:
 				_rig.set_view("orbit")
-			KEY_EQUAL, KEY_KP_ADD:
+			KEY_EQUAL:
 				_rig.zoom(1.0)
-			KEY_MINUS, KEY_KP_SUBTRACT:
+			KEY_MINUS:
 				_rig.zoom(-1.0)
 			KEY_BACKSPACE:
 				_rig.reset_view()
