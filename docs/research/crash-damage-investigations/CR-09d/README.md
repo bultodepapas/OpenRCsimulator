@@ -40,3 +40,14 @@ Wreck sections took fixed mass shares (core 42 %, each wing 15 %, engine 8 %…)
 - Item positions are the data's estimates.
 - A C3 contact release moves the section's mass out of the core without moving the core's centre of mass.
 - Collision is still one box per section (CR-09d3).
+
+## CR-09d2 — Surface-aware wreck contact (2026-10-13)
+
+[severity.gd](../../../../app/render/crash/severity.gd) `surface_contact()` gives the wreck's ground a physics material for the surface under the impact. The friction comes from the same `SLIDE_FRICTION` table the abrasion channel uses, so grading and motion agree. A new `SURFACE_RESTITUTION` table sets the bounce: turf 0.05–0.06, soil 0.08, paving 0.18–0.22. [wreck.gd](../../../../app/render/crash/wreck.gd) applies it per crash, and its rebound limiter returns the surface's restitution instead of a fixed 0.12.
+
+- **Evidence:** [test_crash_wreck_surface.gd](../../../../app/tests/test_crash_wreck_surface.gd), **10 checks** on real Godot physics.
+  - The same intact Stik wreck launched at 12 m/s slides **4.95 m on grass and 4.17 m on concrete**.
+  - Dropped, it rebounds at **0.94 m/s from concrete and 0.21 m/s from grass**.
+  - The limiter returns 4 m/s × restitution exactly. Ground materials and table lookups are checked.
+- **Mutations:** [7/7 killed](../../../../research/crash-damage/cr-09d2/mutations.log), shared with CR-22d. One equivalent mutant (removing an age test the clamp already covers) was replaced by a meaningful one.
+- **Finding:** the wreck bodies' settling damping (1.5 s⁻¹ linear, 2.0 s⁻¹ angular) brakes a flying wing at about 22 m/s² at 15 m/s, which is far too strong for air. Lowering it to 0.3 / 1.0 made the box colliders tunnel through the ground plane and kept pieces from sleeping within 8 s (8 `test_crash_wreck` failures). The damping stays until CR-09d3 replaces the boxes with real collision shapes.

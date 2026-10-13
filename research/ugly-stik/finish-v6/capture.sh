@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
-# Usage: research/ugly-stik/finish-v6/capture.sh <new output dir> [--app <app dir>] [--view <name>]
+# Usage: research/ugly-stik/finish-v6/capture.sh <new output dir> [--app <app dir>] [--view <name>] [--throttle 0..1]
 # Renders the US-V09a bench views with the pinned Godot under Xvfb. --app selects another checkout's app/ (A/B).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 OUT="${1:?output directory}"; shift
-APP="$ROOT/app"; VIEW=""
+APP="$ROOT/app"; VIEW=""; THROTTLE=""
 while (($#)); do
 	case "$1" in
 		--app) APP="$2"; shift ;;
 		--view) VIEW="$2"; shift ;;
+		--throttle) THROTTLE="$2"; shift ;;
 		*) echo "unknown argument $1" >&2; exit 2 ;;
 	esac
 	shift
@@ -17,5 +18,5 @@ done
 mkdir -p "$OUT"
 LP_NUM_THREADS="${LP_NUM_THREADS:-1}" xvfb-run -a -s "-screen 0 1280x720x24" "$("$ROOT/app/get-godot.sh")" \
 	--path "$APP" --rendering-driver opengl3 --audio-driver Dummy \
-	--script "$ROOT/research/ugly-stik/finish-v6/finish_bench.gd" -- --out="$(cd "$OUT" && pwd)" ${VIEW:+--view=$VIEW}
+	--script "$ROOT/research/ugly-stik/finish-v6/finish_bench.gd" -- --out="$(cd "$OUT" && pwd)" ${VIEW:+--view=$VIEW} ${THROTTLE:+--throttle=$THROTTLE}
 (cd "$OUT" && sha256sum ./*.png > SHA256SUMS)

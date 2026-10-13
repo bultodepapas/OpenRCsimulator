@@ -8,6 +8,10 @@ const WHITE := Appearance.WHITE
 const SVG_PATH := "res://aircraft/livery.svg"
 static var _materials: Dictionary = {}
 static var _atlas: ImageTexture
+static var _normal_map: ImageTexture
+const NORMAL_MAP_SIZE := 1024
+# Slopes are stored ×GAIN for 8-bit precision; the material's normal_scale (1/GAIN) restores them (small-angle mix).
+const NORMAL_MAP_GAIN := 8.0
 
 static func material(color: Color, profile: String = "skin") -> StandardMaterial3D:
 	var key := profile + ":" + color.to_html()
@@ -60,11 +64,93 @@ static func atlas() -> ImageTexture:
 	_atlas = ImageTexture.create_from_image(image)
 	return _atlas
 
+# US-V09b: open bays between the plan-traced ribs and spars (Appearance film_structure) let the film sag inward.
+# Returns a tangent-space normal map in the atlas UV layout: wing rows only, everything else flat. Built once.
+static func normal_map() -> ImageTexture:
+	if _normal_map != null: return _normal_map
+	var f: Dictionary = Appearance.DATA.film_structure
+	var span := float(Geometry.DATA.wing.span)
+	var chord := float(Geometry.DATA.wing.chord)
+	var ribs: Array = []
+	var false_ribs: Array = []
+	for i in f.rib_centres_m.size():
+		var c := float(f.rib_centres_m[i])
+		var half := float(f.rib_widths_m[i]) / 2.0
+		ribs.append([maxf(c - half, 0.0), c + half])
+		if i > 0:
+			var mid := (c + float(f.rib_centres_m[i - 1])) / 2.0
+			false_ribs.append([mid - float(f.false_rib_width_m) / 2.0, mid + float(f.false_rib_width_m) / 2.0])
+	var le_supports: Array = ribs + false_ribs
+	le_supports.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0])
+	var main_columns := _bay_profile(ribs, NORMAL_MAP_SIZE, func(col: int) -> float: return ((col + 0.5) / NORMAL_MAP_SIZE - 0.5) * span)
+	var le_columns := _bay_profile(le_supports, NORMAL_MAP_SIZE, func(col: int) -> float: return ((col + 0.5) / NORMAL_MAP_SIZE - 0.5) * span)
+	# Atlas rows: v = (16 + 224 z / chord) / 1024 (see uv()); chord bays between leading edge, spars and trailing sheet.
+	var row_scale := NORMAL_MAP_SIZE / 1024.0
+	var chord_bays := [[float(f.leading_edge_fraction), float(f.secondary_spar_fraction[0])],
+		[float(f.secondary_spar_fraction[1]), float(f.main_spar_fraction[0])],
+		[float(f.main_spar_fraction[1]), float(f.trailing_sheet_front_fraction)]]
+	var data := PackedByteArray()
+	data.resize(NORMAL_MAP_SIZE * NORMAL_MAP_SIZE * 3)
+	for i in range(0, data.size(), 3):
+		data[i] = 128
+		data[i + 1] = 128
+		data[i + 2] = 255
+	var depth := float(f.sag.depth_m)
+	var reference := float(f.sag.reference_bay_m)
+	for row in NORMAL_MAP_SIZE:
+		var fraction := ((row + 0.5) / row_scale - 16.0) / 224.0
+		var bay := -1
+		for k in chord_bays.size():
+			if fraction > chord_bays[k][0] and fraction < chord_bays[k][1]: bay = k
+		if bay < 0: continue
+		var height := (float(chord_bays[bay][1]) - float(chord_bays[bay][0])) * chord
+		var b := (fraction - float(chord_bays[bay][0])) / (float(chord_bays[bay][1]) - float(chord_bays[bay][0]))
+		var bv := sin(PI * b)
+		var bdz := PI / height * cos(PI * b)
+		var columns: Array = le_columns if bay == 0 else main_columns
+		for col in NORMAL_MAP_SIZE:
+			var width: float = columns[col].x
+			if width <= 0.0: continue
+			var short := minf(width, height) / reference
+			var d := depth * short * short
+			# Height h = -d·A·B (inward). Tangent space: x along +u (+span x), green toward image-up (−z, OpenGL).
+			var tilt := Vector2(d * columns[col].z * bv, -d * columns[col].y * bdz) * NORMAL_MAP_GAIN
+			var n := Vector3(tilt.x, tilt.y, sqrt(maxf(0.0, 1.0 - tilt.length_squared())))
+			var i := (row * NORMAL_MAP_SIZE + col) * 3
+			data[i] = clampi(roundi((n.x * 0.5 + 0.5) * 255.0), 0, 255)
+			data[i + 1] = clampi(roundi((n.y * 0.5 + 0.5) * 255.0), 0, 255)
+			data[i + 2] = clampi(roundi((n.z * 0.5 + 0.5) * 255.0), 0, 255)
+	var image := Image.create_from_data(NORMAL_MAP_SIZE, NORMAL_MAP_SIZE, false, Image.FORMAT_RGB8, data)
+	image.generate_mipmaps()
+	_normal_map = ImageTexture.create_from_image(image)
+	return _normal_map
+
+
+# Per column: Vector3(bay width m, A = sin(pi a), dA/dx). Width 0 = supported (on a rib or outboard of the last rib).
+static func _bay_profile(supports: Array, size: int, column_x: Callable) -> Array:
+	var result: Array = []
+	for col in size:
+		var x: float = column_x.call(col)
+		var s := absf(x)
+		var value := Vector3.ZERO
+		for k in supports.size() - 1:
+			var lo: float = supports[k][1]
+			var hi: float = supports[k + 1][0]
+			if s > lo and s < hi:
+				var a := (s - lo) / (hi - lo)
+				value = Vector3(hi - lo, sin(PI * a), signf(x) * PI / (hi - lo) * cos(PI * a))
+		result.append(value)
+	return result
+
+
 static func covering() -> StandardMaterial3D:
 	var key := "classic-covering-v4"
 	if _materials.has(key): return _materials[key]
 	var mat := material(Color.WHITE, "skin").duplicate() as StandardMaterial3D
 	mat.albedo_texture = atlas()
+	mat.normal_enabled = true
+	mat.normal_texture = normal_map()
+	mat.normal_scale = 1.0 / NORMAL_MAP_GAIN
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 	mat.texture_repeat = false
 	mat.resource_name = key
@@ -80,6 +166,8 @@ static func hinge_gap() -> StandardMaterial3D:
 	mat.albedo_color = Color(0.1, 0.1, 0.1)
 	mat.roughness = 1.0
 	mat.metallic_specular = 0.0
+	mat.normal_enabled = false
+	mat.normal_texture = null
 	mat.resource_name = key
 	_materials[key] = mat
 	return mat

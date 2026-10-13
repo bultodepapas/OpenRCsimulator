@@ -5,6 +5,7 @@ extends Node3D
 signal secondary_impact(position: Vector3, strength: float)
 
 const SectionSplitter = preload("res://render/crash/section_splitter.gd")
+const Severity = preload("res://render/crash/severity.gd")
 
 const MAX_BODIES := 24
 const DEBRIS_LAYER := 1 << 19
@@ -106,6 +107,13 @@ var _run_generation := 0
 var _release_kinds: Array = []
 var _hidden_members: Array = [] # E3d2: propeller pieces hidden because the blades broke before the crash
 var _prop_broken := false
+## Settling damping (s⁻¹). Physically too strong in the air (~22 m/s² at 15 m/s), but CR-09d2 found that 0.3 / 1.0 lets
+## the box colliders tunnel through the ground plane and keeps pieces from sleeping within 8 s; lowering it waits for
+## CR-09d3 collision shapes. Surface friction and bounce still differ per surface.
+const AIR_LINEAR_DAMP := 1.5
+const AIR_ANGULAR_DAMP := 2.0
+## CR-09d2: the ground's contact for this crash (surface under the impact): friction and bounce.
+var _ground_contact := {friction = 0.45, bounce = 0.10}
 ## CR-09d1: section masses and mass moments (model frame) from the aircraft inventory, {kind: {mass, moment}} with
 ## "core" for the remainder; empty → the fixed GROUP_MASS_WEIGHTS shares.
 var _section_masses := {}
@@ -188,6 +196,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		scatter_budget = 0.0
 	var component_hint := _component_description(severity).to_lower()
 	_prop_broken = bool(severity.get("prop_broken", false))
+	_set_ground_surface(str(severity.get("surface", "unknown")))
 	_release_kinds = _release_kinds_for(class_level, component_hint)
 	_has_contact = severity.get("contact_point_world") is Vector3 and _finite_vector(severity.contact_point_world) == severity.contact_point_world
 	_contact_model = pose.affine_inverse() * Vector3(severity.contact_point_world) if _has_contact else Vector3.ZERO
@@ -467,8 +476,8 @@ func _ensure_pool() -> void:
 		body.name = "WreckPool_%02d" % _bodies.size()
 		body.mass = 0.1
 		body.gravity_scale = 1.0
-		body.linear_damp = 1.5
-		body.angular_damp = 2.0
+		body.linear_damp = AIR_LINEAR_DAMP
+		body.angular_damp = AIR_ANGULAR_DAMP
 		body.can_sleep = true
 		body.continuous_cd = true
 		body.contact_monitor = true
@@ -676,8 +685,8 @@ func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transfor
 	body.freeze = _paused
 	body.sleeping = false
 	body.can_sleep = true
-	body.linear_damp = 1.5
-	body.angular_damp = 2.0
+	body.linear_damp = AIR_LINEAR_DAMP
+	body.angular_damp = AIR_ANGULAR_DAMP
 	var center: Vector3 = group.center
 	var world_offset: Vector3 = aircraft_pose.basis * (center - cg_model)
 	var point_velocity: Vector3 = inherited_velocity + inherited_angular.cross(world_offset) if is_core else inherited_velocity
@@ -831,6 +840,17 @@ static func _set_center_of_mass(body: RigidBody3D, moment: Variant, mass: float,
 		return
 	body.center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
 	body.center_of_mass = Vector3(moment) / mass - origin
+
+
+## CR-09d2: the wreck slides and rebounds on the surface it hit (grass absorbs, paving returns a little).
+func _set_ground_surface(surface: String) -> void:
+	_ground_contact = Severity.surface_contact(surface)
+	if _ground == null:
+		return
+	var material := PhysicsMaterial.new()
+	material.friction = float(_ground_contact.friction)
+	material.bounce = float(_ground_contact.bounce)
+	_ground.physics_material_override = material
 
 
 func _group_index_for_body(body: RigidBody3D) -> int:
@@ -1061,7 +1081,7 @@ func _limit_ground_rebound(body: RigidBody3D) -> void:
 	if body.global_position.y < clear_y:
 		body.global_position += Vector3.UP * minf(clear_y - body.global_position.y, 0.35)
 	if body.global_position.y <= vertical_extent + 0.15 and body.linear_velocity.y < 0.0:
-		body.linear_velocity.y = minf(-body.linear_velocity.y * 0.12, 5.0)
+		body.linear_velocity.y = minf(-body.linear_velocity.y * float(_ground_contact.bounce), 5.0)
 
 
 func _on_body_entered(other: Node, fragment: RigidBody3D) -> void:

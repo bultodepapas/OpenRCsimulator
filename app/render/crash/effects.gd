@@ -16,6 +16,8 @@ const DUST_COLORS := {
 	"leaves": [Color(0.20, 0.32, 0.12), Color(0.28, 0.36, 0.16)],
 }
 const DEFAULT_DEBRIS := [Color(0.62, 0.40, 0.19)]
+## CR-03b: ejecta fall by material: turf clods, soil and bark drop back; leaves drift (m/s², downward).
+const EJECTA_FALL := {"grass": 4.0, "soil": 4.0, "bark": 4.0, "leaves": 0.8}
 # CR-22b (research.md): burn rates and venting timing are presentation estimates, not measurements.
 const KEROSENE_BURN_KG_S := 0.035
 const GASOLINE_BURN_KG_S := 0.05
@@ -27,10 +29,18 @@ const VENT_DURATION_S := 20.0
 const FLARE_S := 3.0
 const FLARE_MIN_SEVERITY := 0.8
 const CENTRAL_GROUPS := ["fuselage", "engine", "propeller"]
+# CR-22d: ignition flash when a fuel fire starts. Roberts (1981) fireball correlations, D = 5.8·M^(1/3) m and
+# t = 0.45·M^(1/3) s, applied to an estimated atomised share of the fuel; a minimum duration keeps it perceptible.
+const FLASH_ATOMISED_FRACTION := 0.01
+const FLASH_MIN_S := 0.35
+const FLASH_MAX_RADIUS_M := 1.2
 var vent: CPUParticles3D # CR-22b: grey-white smoke from a damaged LiPo pack
 var _vent_start_s := INF
 var _vent_end_s := INF
 var _flare_end_s := -INF
+var fireball: CPUParticles3D # CR-22d
+var _flash_end_s := -INF
+var _flash_s := 0.0
 var debris_colors: Array = DEFAULT_DEBRIS.duplicate()
 var emitters: Array[CPUParticles3D] = []
 var dust: CPUParticles3D
@@ -100,7 +110,18 @@ func prepare() -> void:
 	sparks.scale_amount_min = 0.015
 	sparks.scale_amount_max = 0.035
 	sparks.color_ramp = _gradient([Color(1,0.95,0.7,1),Color(1,0.22,0.025,0)], [0.0,1.0])
-	vent = _particles(108, 5.0, puff, false)
+	vent = _particles(96, 5.0, puff, false)
+	fireball = _particles(12, 0.6, fire_tex, true)
+	fireball.one_shot = true
+	fireball.explosiveness = 1.0
+	fireball.spread = 180.0
+	fireball.initial_velocity_min = 0.3
+	fireball.initial_velocity_max = 1.2
+	fireball.gravity = Vector3(0, 2.0, 0)
+	fireball.scale_amount_curve = _curve([Vector2(0,0.4),Vector2(0.3,1.0),Vector2(1,0.2)])
+	fireball.color_ramp = _gradient([Color(1,1,0.9,1.0),Color(1,0.85,0.45,1.0),Color(1,0.4,0.08,0.8),Color(0.2,0.06,0.02,0)], [0.0,0.15,0.55,1.0])
+	# The flash is light from burning fuel: draw it after the dust thrown at the same instant, not under it.
+	((fireball.mesh as QuadMesh).material as StandardMaterial3D).render_priority = 2
 	vent.initial_velocity_min = 0.4
 	vent.initial_velocity_max = 1.2
 	vent.spread = 12.0
@@ -255,11 +276,13 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	dust.emission_sphere_radius = radius
 	if not profile.is_empty():
 		dust.color_ramp = _gradient([Color(profile[0], 0.0), Color(profile[0], 0.65), Color(profile[1], 0.0)], [0.0, 0.08, 1.0])
+		dust.gravity = Vector3(0, -float(EJECTA_FALL.get(_profile_name(profile), 0.6)), 0)
 	dust.restart()
 	dust.emitting = level > 0 and not profile.is_empty()
 	touch_dust.emitting = false
 	blade_chips.emitting = false
 	vent.emitting = false
+	fireball.emitting = false
 	vent.gravity = Vector3(0, 0.5, 0) + wind.limit_length(10.0)*0.2
 	sparks.restart()
 	sparks.emitting = sparks_for(level, surface, str(severity.get("component_group","")), float(severity.get("tangential_speed_mps", 0.0)), hot_turbine)
@@ -295,6 +318,13 @@ static func dust_profile(surface: String) -> Array:
 	if s in ["rough", "dirt", "parked_aircraft"]:
 		return DUST_COLORS.soil
 	return DUST_COLORS.grass
+
+
+static func _profile_name(profile: Array) -> String:
+	for name: String in DUST_COLORS:
+		if DUST_COLORS[name] == profile:
+			return name
+	return ""
 
 
 ## CR-03b: sparks need metal (a hot turbine casing at C3+, or an engine/propeller part) sliding fast on a hard surface.
@@ -397,6 +427,10 @@ func update(delta: float, paused: bool) -> void:
 	smoke.emitting = burning > 0
 	light.visible = burning > 0
 	light.light_energy = burning*(1.7+0.35*sin(_age*19.0)+0.25*sin(_age*31.0))
+	var flash := flash_strength()
+	if flash > 0.0:
+		light.visible = true
+		light.light_energy = maxf(light.light_energy, 8.0 * flash)
 	if _age < 12.0:
 		for i in _fragment_count:
 			if _velocities[i].length_squared() < 0.002 and _positions[i].y <= 0.015:
@@ -416,6 +450,13 @@ func update(delta: float, paused: bool) -> void:
 			fragments.multimesh.set_instance_transform(i,Transform3D(Basis.from_euler(_rotations[i]),_positions[i]))
 	last_update_usec = Time.get_ticks_usec()-began
 
+## CR-22d: 1 at ignition, fading to 0 over the flash duration; 0 when no flash.
+func flash_strength() -> float:
+	if not _active or _flash_s <= 0.0 or _age >= _flash_end_s:
+		return 0.0
+	return clampf((_flash_end_s - _age) / _flash_s, 0.0, 1.0)
+
+
 func fire_strength() -> float:
 	if not _active:
 		return 0.0
@@ -431,7 +472,8 @@ static func energy_outcome(sources: Dictionary, report: Dictionary, engine_runni
 	var severity := clampf(float(report.get("severity", 0.0)), 0.0, 1.0)
 	var central := CENTRAL_GROUPS.has(str(report.get("component_group", "")))
 	var ruptured := bool(report.get("tank_ruptured", false))
-	var out := {fire_kind = "", fire_s = 0.0, stain = false, vent_delay_s = -1.0, vent_s = 0.0, flare = false}
+	var out := {fire_kind = "", fire_s = 0.0, stain = false, vent_delay_s = -1.0, vent_s = 0.0, flare = false,
+		flash = false, flash_radius_m = 0.0, flash_s = 0.0}
 	var kerosene := float(sources.get("kerosene", 0.0))
 	var gasoline := float(sources.get("gasoline", 0.0))
 	var glow := float(sources.get("glow_fuel", 0.0))
@@ -442,6 +484,13 @@ static func energy_outcome(sources: Dictionary, report: Dictionary, engine_runni
 	elif gasoline > 0.0 and engine_running and level == 4 and central:
 		out.fire_kind = "gasoline"
 		out.fire_s = minf(GASOLINE_FIRE_MAX_S, gasoline / GASOLINE_BURN_KG_S)
+	if not out.fire_kind.is_empty():
+		# A fuel fire starts with a short flash of the atomised fuel; glow and LiPo never flash (research.md).
+		var atomised := FLASH_ATOMISED_FRACTION * (kerosene if out.fire_kind == "kerosene" else gasoline)
+		var cube := pow(atomised, 1.0 / 3.0)
+		out.flash = true
+		out.flash_radius_m = minf(0.5 * 5.8 * cube, FLASH_MAX_RADIUS_M)
+		out.flash_s = maxf(0.45 * cube, FLASH_MIN_S)
 	if (glow > 0.0 or gasoline > 0.0 or kerosene > 0.0) and ruptured and out.fire_kind.is_empty():
 		out.stain = true # methanol burns nearly invisibly; a spill shows as a dark wet stain
 	if lipo > 0.0 and level >= 3 and central:
@@ -455,6 +504,19 @@ static func energy_outcome(sources: Dictionary, report: Dictionary, engine_runni
 func apply_energy(outcome: Dictionary) -> void:
 	if not _active:
 		return
+	if bool(outcome.get("flash", false)):
+		var radius := float(outcome.flash_radius_m)
+		_flash_s = float(outcome.flash_s)
+		_flash_end_s = _age + _flash_s
+		fireball.global_position = _origin + Vector3.UP * radius * 0.6
+		fireball.emission_sphere_radius = radius * 0.5
+		fireball.scale_amount_min = radius * 1.8
+		fireball.scale_amount_max = radius * 2.8
+		fireball.lifetime = _flash_s + 0.25
+		fireball.visible = true
+		fireball.restart()
+		fireball.emitting = true
+		light.visible = true
 	if str(outcome.get("fire_kind", "")) == "gasoline":
 		_fire_duration = float(outcome.fire_s)
 		light.visible = true
@@ -475,6 +537,8 @@ func reset() -> void:
 	_vent_start_s = INF
 	_vent_end_s = INF
 	_flare_end_s = -INF
+	_flash_end_s = -INF
+	_flash_s = 0.0
 	_mark_index = 0
 	_fragment_count = 0
 	_rng.seed = 220031

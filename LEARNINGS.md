@@ -60,6 +60,14 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-13 · US-V09c — Geometry3D intersections miss millimetre triangles expressed in metres
+
+`Geometry3D.segment_intersects_triangle` and `ray_intersects_triangle` treat a determinant below their 1e-5 epsilon as parallel. A mesh built in metres with millimetre-sized triangles therefore returns no hit at all, and an interference check passes while the throttle pushrod runs straight through the exhaust casting. Scale points and triangles to millimetres, as `visual_checks.gd` already does. Keep a positive-control segment that must hit, and mutate the installation once to prove the probe fails. [US-V09c evidence](docs/research/ugly-stik-finish-v6.md#us-v09c--throttle-linkage)
+
+## 2026-10-13 · US-V09b — missing tangents and 8-bit slopes break subtle normal maps without errors
+
+Without `SurfaceTool.generate_tangents()`, Godot 4.7 fills an arbitrary orthonormal tangent frame. The normal map then renders in the wrong direction, and both "has tangents" and orthogonality checks still pass. Compare each triangle's UV-derived dP/du with the stored tangent instead. RGB8 also quantises tilt in steps of about 0.45°, too coarse for sub-2° film sag. Store the slope ×8 and set `normal_scale = 1/8`; the normal-map depth is a mix, so this is accurate at small angles. [US-V09b evidence](docs/research/ugly-stik-finish-v6.md#us-v09b--film-over-structure)
+
 ## 2026-10-13 · CAM-08 — spring the camera's offset, not its world position
 
 A critically damped spring that follows a moving point trails it by 2v/ω in steady motion: about 7 m at 20 m/s with a 0.25 s half-life, so a chase camera sprung in world space slides back to its lag cap whenever the airplane flies straight. Spring the offset from the target instead, in the target's frame or as a world-axis offset, and smooth only changes of heading, height or zoom. Test steady straight flight at several frame rates, not only a step response. Also, compare render results (`Vector3`, 32-bit) to about 1e-6. [CAM evidence](docs/research/camera-views/CAM-01-10/README.md)
@@ -71,6 +79,10 @@ Help fit 598 of 600 px at 1280×720 before the camera keys. One extra row overfl
 ## 2026-10-13 · AUD-07 — Godot audio: loops click, the hard limiter sticks; measure the mixer, not the asset
 
 Godot 4.7.2 plays a forward-looping `AudioStreamWAV` by interpolating past `loop_end` into the stream's silent padding. A perfectly seamless PCM source therefore clicks at every wrap, at any pitch and with or without 3D positioning: the second difference at the seam is hundreds of times its median. Source seam metrics and earlier speaker reviews passed it. Append a copy of the loop's first frames after `loop_end` (`Soundscape.seamless_loop`), and check loops in the mixed output. `AudioEffectHardLimiter` never fully releases: after one overshoot the bus stays about 0.15 dB·s / `release` low for the rest of the session (−1.3 dB at 0.12 s), so a single loud moment ducks everything after it; the stateless `AudioEffectLimiter` recovers. A 3D player that starts at the listener's position plays at `max_db` whatever its `volume_db`, so position voices before `play()`. On the display-less Linux host, `--write-movie <x>.png --fixed-fps 60` under Xvfb writes the real Master mix to `<x>.wav`, frame-aligned with the simulation; `tools/audio/bench.sh` wraps it. [Audio realism plan, F14–F16](docs/plans/audio-realism.md), [probes](research/audio/review-2026-10-13/README.md)
+
+## 2026-10-13 · CR-09d2 — heavy settling damping can hide collision tunnelling
+
+The wreck's 1.5 s⁻¹ linear damping looked like a harmless settling aid. Lowering it to a physically plausible 0.3 s⁻¹ made the box colliders tunnel through the ground plane and kept pieces awake, failing 8 wreck checks. Before relaxing a damping or clamp, find out what it is compensating for, and fix that first (here: real collision shapes, CR-09d3). [CR-09d](docs/research/crash-damage-investigations/CR-09d/README.md#cr-09d2--surface-aware-wreck-contact-2026-10-13)
 
 ## 2026-10-13 · CR-09d1 — check presentation physics against the flight model's own invariants
 

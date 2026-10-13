@@ -14,6 +14,7 @@ const VIEWS := {
 	"under": [Vector3(-1.6, -1.4, -1.5), Vector3(0, 0, 0.1), 32.0],
 	"tail": [Vector3(-0.7, 0.35, 1.55), Vector3(0, 0.08, 0.75), 30.0],
 	"nose": [Vector3(-0.55, 0.2, -0.75), Vector3(0, 0, -0.2), 32.0],
+	"throttle": [Vector3(-0.20, 0.11, -0.42), Vector3(-0.012, 0.018, -0.36), 24.0],
 }
 
 
@@ -24,9 +25,11 @@ func _initialize() -> void:
 func _run() -> void:
 	var out := ""
 	var only := ""
+	var throttle := 0.5
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="): out = arg.trim_prefix("--out=")
 		elif arg.begins_with("--view="): only = arg.trim_prefix("--view=")
+		elif arg.begins_with("--throttle="): throttle = float(arg.trim_prefix("--throttle="))
 	DirAccess.make_dir_recursive_absolute(out)
 	await process_frame
 	var world := WorldEnvironment.new()
@@ -35,6 +38,10 @@ func _run() -> void:
 	Atmosphere.create_sun(root)
 	var airplane: Dictionary = AirplaneBuilder.build(AirplaneBuilder.STIK_ID)
 	root.add_child(airplane.root)
+	# Older app copies (A/B baselines) have no throttle linkage API.
+	var builder: GDScript = AirplaneBuilder
+	for method in builder.get_script_method_list():
+		if method.name == "apply_throttle": builder.call("apply_throttle", airplane, throttle)
 	var camera := Camera3D.new()
 	root.add_child(camera)
 	camera.current = true

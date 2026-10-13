@@ -95,6 +95,13 @@ static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
 	if airplane.has("controls"): Controls.update(airplane.controls)
 
 
+## US-V09c: optional throttle command 0..1 for aircraft that show their throttle linkage (Stik: carburettor lever,
+## gas servo and pushrod). Visual only; other aircraft ignore it.
+static func apply_throttle(airplane: Dictionary, throttle: float) -> void:
+	if airplane.get("aircraft_id", STIK_ID) == STIK_ID and airplane.has("controls"):
+		Controls.set_throttle(airplane.controls, throttle)
+
+
 ## The inverse of Commands.hinge_rotations(): trailing-edge deflections in degrees (up for ailerons/elevator,
 ## right for the rudder), as Commands.surface_deflections_deg() gives them.
 static func surface_degrees(rotations: Dictionary) -> Dictionary:

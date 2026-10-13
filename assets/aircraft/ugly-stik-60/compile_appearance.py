@@ -22,9 +22,7 @@ def build(d):
         x0,x1=sorted((512+sign*512*f for f in wing['field_semispan_fraction']))
         border=1024*wing['border_width_m']/1.524
         s += [f'<rect x="{x0-border:.4f}" y="0" width="{x1-x0+border*2:.4f}" height="272" fill="{black}"/>',f'<rect x="{x0:.4f}" y="0" width="{x1-x0:.4f}" height="272" fill="{white}"/>',cross(512+sign*512*wing['cross_center_semispan_fraction'],16+224*wing['cross_center_chord_fraction'],1024*wing['cross_size_m']/1.524,224*wing['cross_size_m']/.3048,black)]
-    for rib in range(-14,15):
-        x=512+rib*d['rib_hints']['pitch_m']*1024/1.524
-        s += [f'<path d="M {x:.4f},0 V 272" stroke="{black}" stroke-width="0.8" opacity="{d["rib_hints"]["opacity"]}"/>']
+    # US-V09b: structure under the film is a normal map built from film_structure (ugly_stik_finish.gd), not drawn lines.
     s += [f'<rect x="16" y="528" width="480" height="464" fill="{white}"/>']
     fin=d['fin']
     s += [cross(32+448*(fin['cross_center_chord_z_m']+.2)/.31,976-432*fin['cross_center_height_m']/.215,448*fin['cross_size_m']/.31,432*fin['cross_size_m']/.215,black)]

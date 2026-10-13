@@ -1,4 +1,4 @@
-# Ugly Stik · covering and surface shading (US-V09a)
+# Ugly Stik · covering, shading and throttle linkage (US-V09a–c)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -30,9 +30,43 @@ Left = before (`9a3dda9`), right = US-V09a, with the same cameras, light and fra
 
 Reproduce the bench with `research/ugly-stik/finish-v6/capture.sh <new dir> [--app <other checkout>/app]`. For the flight captures, run the app with `--capture --t=1.5 --view=closeup --time_of_day=<day|golden_hour> --hud=overlays --out=<png>` under Xvfb ([TOOLS](../TOOLS.md)).
 
+## US-V09b · film over structure
+
+2026-10-13. Owner photo C shows the red film revealing ribs and spars ([photo brief](ugly-stik-visual-photo-brief.md)). The v4 atlas only drew faint rib lines at an assumed 2 in pitch, with opacity 0.035. US-V09b removes those lines and adds a tangent-space normal map generated at load from `appearance.json` → `film_structure`.
+
+- **Structure source:** Jensen oz1253 sheet 2, bottom view of the left wing, measured from column and row darkness profiles of the local 100 dpi raster. Main ribs (centre line in inches): W1 0, W2 1.88, W3 5.58 and 9.22, W4 12.86/16.48/20.12/23.75, W5 27.68. They are scaled so W5 equals the geometry `tip_start` (factor 0.980, the known scan-scale residual). W6 false ribs sit midway between main ribs, from the leading edge to the secondary spar.
+- **Chord stations:** chord fractions are normalised to the drawing's leading edge and scallop tips, then rescaled so the drawn hinge (0.907) equals `hinge_fraction`. Leading-edge stock ends at 0.030, the secondary spar spans 0.103–0.117 and the main spar 0.292–0.310, and the 1/8 in trailing-edge sheet starts at 0.748. The sheet, the 1/4 in sheet aileron and the sheet tip stay flat.
+- **Sag:** each open bay gets a sin × sin dent, inward on both skins. Its depth is 1.0 mm × (short side / 90 mm)², an artistic estimate; it gives at most about 2° of tilt. Geometry, contacts and aerodynamics are unchanged. Slopes are stored ×8 in RGB8 and the material's `normal_scale` is 1/8, which keeps byte quantisation near 0.06° instead of 0.45°.
+- **Tangents:** wing, fuselage and fin/rudder covering surfaces call `SurfaceTool.generate_tangents()`. Without it, Godot fills an arbitrary orthonormal frame, so the contract compares each triangle's UV-derived dP/du with the stored tangent.
+- **Hinge bevel:** the traced 4 mm, 25° bevel ahead of the aileron now shades with the adjacent skin normal; its geometry is unchanged. With glossy film its sun glint had aliased into a dashed white line in the default close-up view.
+
+Evidence (left `b19f6a4`/US-V09a, right US-V09b; [hashes](ugly-stik-finish-v6-evidence/v09b-SHA256SUMS)): [flight close-up](ugly-stik-finish-v6-evidence/v09b-flight-day-closeup-ab.png) (faint rib bands, no hinge dashes), [bench quarter](ugly-stik-finish-v6-evidence/v09b-bench-quarter-ab.png) and [bench hinge](ugly-stik-finish-v6-evidence/v09b-bench-hinge-ab.png); both bench pairs have engine shadows off. Two scratch probes rendered one bay under grazing light from +x and from +z. In both, the half facing away from the light was brighter (28.7 vs 25.1 and 27.9 vs 26.0), so the sag renders concave on both axes. The visual contract adds the following film checks, still within `verify_model.gd` (807 checks, 0 failed): normal map size and mips, flat on fin, dorsal, ribs, trailing sheet and tip, concave and mirrored between ribs and between spars, maximum tilt below 3°, gain restored, gaps without a normal map, and tangents following U. The mutation results on a disposable copy:
+
+| Mutation | Detected |
+| --- | --- |
+| Inverted sag | yes |
+| No wing tangents | yes |
+| No fuselage tangents | yes |
+| `normal_scale` not restored | yes |
+| No fin/rudder tangents | no |
+
+The undetected case is harmless: the map is flat there, and Godot's default frame already matches dP/du on those planar faces.
+
+## US-V09c · throttle linkage
+
+2026-10-13. The v4/v5 carburettor lever, gas servo and pushrod were a static installation cue: the lever was baked into `engine_assembly`, and the render interface had no throttle signal.
+
+- **Lever:** the lever is now its own node, `carburetor_throttle_arm_hinge`, turning about +X with the barrel. `AirplaneBuilder.apply_throttle(airplane, 0..1)` maps the command to ±30° around the built pose, which is half throttle. The command is `session.surfaces().throttle`; `main.gd::_render_pose` calls it after `apply_surfaces()`. Other aircraft ignore the call. It is visual only.
+- **Linkage:** the throttle is a `direct` mechanism like the tail surfaces. The 12 mm gas-servo arm is solved for a constant-length pushrod (`Controls.set_throttle`). The servo station, arm and 60° travel are estimates for a generic .61.
+- **Routing:** the lever moved from +X to −X. On +X the new clearance probe showed the pushrod passing through the exhaust casting between 0 and 0.8 throttle; the old static rod already did so at its neutral pose. No servo shift found in a 7-case search cleared both the cooling fins and the header. On −X there is no exhaust, fuel or pressure line.
+- **Contract:** `verify_controls.gd` (376 checks, 0 failed) sweeps 21 throttle values. It checks closure, no node allocation, lever angle against command, the tip moving up and aft, and that the lever stays at least 15 mm behind the propeller plane. A clearance probe tests the rod axis and four 1.3 mm parallels against every engine and nose-gear triangle in millimetres, with a positive control (see [LEARNINGS](../../LEARNINGS.md)). It caught both forced-collision mutations of the servo station. `verify_model.gd`: 817 checks, 0 failed. The render contract, catalog, propeller blur, smoke, crash, controls and projected-shadow tests pass, and the production flight capture runs without engine errors.
+
+Evidence: [idle vs full throttle, left engine view](ugly-stik-finish-v6-evidence/v09c-throttle-idle-full.png) ([hashes](ugly-stik-finish-v6-evidence/v09c-SHA256SUMS)). Reproduce with `research/ugly-stik/finish-v6/capture.sh <dir> --view throttle --throttle 0` (or `1`).
+
 ## Limits and open findings
 
 - **Engine shadow acne (global, not Stik-specific).** With PSSM engine shadows on (the interactive default), the wing shows a diagonal crosshatch. It disappears with `OPENRC_ENGINE_SHADOWS=off`, and the glossier film makes it more visible. Sun bias settings belong to the atmosphere/world owners (`render/atmosphere.gd`, L3).
 - **No sky reflections in time-of-day lighting.** `apply_state_to_environment` sets `REFLECTION_SOURCE_DISABLED` (exposure double-application, FW-23). The Home default `evening` therefore shows only the sun highlight of the film. Any fix belongs to the world track.
-- The fixed hinge bevel (0.874–0.888 chord, about 25°) is traced geometry. At flight distance it can still sparkle as a thin highlight, because Compatibility has no specular antialiasing.
+- Rounded fuselage corners (8 mm radius) still produce a thin, sometimes dashed sun glint at flight distance. Compatibility has no specular antialiasing; FXAA or a renderer preset (VQ-06) would treat it globally.
+- The stabiliser, fin, rudder, elevator and fuselage are sheeted (Jensen sheet 1: stab "1/16 sheet top & bottom" over 1/8 × 3/16 in diagonal ribs; 1/4 in sheet fin, rudder and elevator; 1/4 in sides, 1/8 in top, 3/32 in bottom). Their film therefore stays flat; only the open wing bays carry structure.
 - llvmpipe software renders establish pixels and repeatability, not target-GPU cost or readability. The owner's 20/50/100 m orientation scoring (US-06) should be repeated with this finish.

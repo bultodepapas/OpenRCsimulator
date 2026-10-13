@@ -54,6 +54,14 @@ func _matrix() -> void:
 		and not Effects.energy_outcome({lipo = 0.33}, _report(4, 0.5, "engine", false), true, false).flare)
 	_check("a wing-tip hit leaves the pack alone", Effects.energy_outcome({lipo = 0.33}, _report(4, 1.0, "wingtip", false), true, false).vent_delay_s < 0.0)
 	_check("a damage-class hit leaves the pack alone", Effects.energy_outcome({lipo = 0.33}, _report(2, 0.2, "fuselage", false), true, false).vent_delay_s < 0.0)
+	# CR-22d: a fuel fire starts with a flash sized by Roberts (1981) on the atomised share; glow and LiPo never flash.
+	var roberts := func(kg: float) -> float: return minf(0.5 * 5.8 * pow(Effects.FLASH_ATOMISED_FRACTION * kg, 1.0 / 3.0), Effects.FLASH_MAX_RADIUS_M)
+	_check("a kerosene fire starts with a flash of the Roberts size", jet.flash and is_equal_approx(jet.flash_radius_m, roberts.call(1.28)), "%.2f m" % jet.flash_radius_m)
+	_check("a gasoline fire flashes smaller than the jet's", gas.flash and gas.flash_radius_m < jet.flash_radius_m)
+	_check("a flash lasts at least the perceptible minimum", jet.flash_s >= Effects.FLASH_MIN_S)
+	_check("glow fuel never flashes", not glow.flash)
+	_check("a LiPo flare is not a fuel flash", not Effects.energy_outcome({lipo = 0.33}, _report(4, 0.9, "engine", false), true, false).flash)
+	_check("cold kerosene never flashes", not cold.flash)
 	var none := Effects.energy_outcome({}, _report(4, 1.0, "fuselage", true), true, true)
 	_check("no tagged energy, no fire, stain or smoke", none.fire_kind.is_empty() and not none.stain and none.vent_delay_s < 0.0)
 
@@ -86,7 +94,17 @@ func _instance() -> void:
 	_check("a glow spill leaves one dark wet stain", int(fx.stats().marks) == marks_before + 1 and stain != null
 		and (stain.material_override as StandardMaterial3D).albedo_color.a < 0.6)
 	fx.reset()
-	_check("reset clears pending venting", not fx.vent.emitting and fx._vent_start_s == INF)
+	var jet_report := _report(4, 1.0, "fuselage", true)
+	fx.start(Vector3.ZERO, Vector3(20, -10, 0), jet_report, 1.28, true, Vector3.ZERO)
+	var jet_outcome := Effects.energy_outcome({kerosene = 1.28}, jet_report, true, true)
+	fx.apply_energy(jet_outcome)
+	_check("ignition throws a fireball", fx.fireball.emitting)
+	_step(fx, 0.05)
+	_check("the flash lights the scene far brighter than the fire", fx.light.visible and fx.light.light_energy >= 6.0, "%.1f" % fx.light.light_energy)
+	_step(fx, float(jet_outcome.flash_s) + 0.1)
+	_check("the flash is over, the fire burns on", fx.flash_strength() == 0.0 and fx.fire_strength() > 0.0 and fx.light.light_energy < 3.0, "%.2f" % fx.light.light_energy)
+	fx.reset()
+	_check("reset clears pending venting", not fx.vent.emitting and fx._vent_start_s == INF and fx.flash_strength() == 0.0)
 	fx.free()
 
 
