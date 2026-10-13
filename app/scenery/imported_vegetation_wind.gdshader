@@ -37,9 +37,11 @@ void vertex() {
 }
 
 vec3 srgb_to_linear(vec3 value) {
-	vec3 low = value / 12.92;
-	vec3 high = pow((value + 0.055) / 1.055, vec3(2.4));
-	return mix(high, low, lessThanEqual(value, vec3(0.04045)));
+	return vec3(
+		value.r <= 0.04045 ? value.r / 12.92 : pow((value.r + 0.055) / 1.055, 2.4),
+		value.g <= 0.04045 ? value.g / 12.92 : pow((value.g + 0.055) / 1.055, 2.4),
+		value.b <= 0.04045 ? value.b / 12.92 : pow((value.b + 0.055) / 1.055, 2.4)
+	);
 }
 
 void fragment() {

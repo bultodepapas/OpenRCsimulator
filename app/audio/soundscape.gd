@@ -142,20 +142,6 @@ func _setup_buses() -> void:
 	AudioServer.add_bus_effect(AudioServer.get_bus_index(_bus_names[0]), limiter)
 
 
-func _exit_tree() -> void:
-	# Each soundscape owns three uniquely named buses. Remove them with the scene so returning to Home or
-	# destroying a test scene cannot accumulate bus/effect objects in AudioServer.
-	for player: AudioStreamPlayer3D in voices:
-		player.stop()
-	if glow_player != null:
-		glow_player.stop()
-	for at: int in range(_bus_names.size() - 1, -1, -1):
-		var bus_index: int = AudioServer.get_bus_index(_bus_names[at])
-		if bus_index > 0:
-			AudioServer.remove_bus(bus_index)
-	_bus_names.clear()
-
-
 func _voice(label: String, asset: String, bus_name: StringName, reference_distance: float) -> void:
 	var player: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 	player.name = label

@@ -10,6 +10,7 @@ const HullContact := preload("res://physics/hull_contact.gd")
 const HullCrossing := preload("res://physics/hull_crossing.gd")
 
 const MAX_ROTATION_STEP_RAD := 0.03490658503988659 # Match SceneryCollision's 2 degree bound.
+const ROTATION_SUBSTEP_FRACTION := 0.25 # Four smaller chords keep curved probes close to their true shoreline path.
 const MAX_TRANSLATION_STEP_M := 1000.0
 const FRACTION_TIE := 1.0e-12
 const NORMAL_EPSILON := 1.0e-10
@@ -81,7 +82,7 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	var angle: float = 2.0 * M.acos_(clampf(dot, -1.0, 1.0))
 	var horizontal_delta: float = M.sqrt_((candidate[RB.POS] - previous[RB.POS]) * (candidate[RB.POS] - previous[RB.POS])
 		+ (candidate[RB.POS + 1] - previous[RB.POS + 1]) * (candidate[RB.POS + 1] - previous[RB.POS + 1]))
-	var subdivisions: int = maxi(1, ceili(angle / MAX_ROTATION_STEP_RAD))
+	var subdivisions: int = maxi(1, ceili(angle / (MAX_ROTATION_STEP_RAD * ROTATION_SUBSTEP_FRACTION)))
 	subdivisions = maxi(subdivisions, ceili(horizontal_delta / MAX_TRANSLATION_STEP_M))
 	var start_time: float = float(tick - 1) * dt
 	var end_time: float = float(tick) * dt
