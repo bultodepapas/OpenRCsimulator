@@ -1,6 +1,6 @@
 # Jensen Ugly Stik 60: model and finish
 
-2026-10-13 · Revision 9 · **Status: visual geometry v3, finish v4 with the US-V09a–c glossy-film, shading, film-over-structure and throttle-linkage passes, and engine detail v5 are implemented. Pilot readability and target-GPU acceptance remain open.** Prefixes: `US-` and `US-V`. Owned paths: `assets/aircraft/ugly-stik-60/`, `app/aircraft/ugly_stik_*`, shared `app/render/airplane.gd` contract, `research/ugly-stik/`, and `docs/research/ugly-stik-*`.
+2026-10-13 · Revision 9 · **Status: visual geometry v3, finish v4 with the US-V09a–d glossy-film, shading, film-over-structure, throttle-linkage and propeller passes, and engine detail v5 are implemented. Pilot readability and target-GPU acceptance remain open.** Prefixes: `US-` and `US-V`. Owned paths: `assets/aircraft/ugly-stik-60/`, `app/aircraft/ugly_stik_*`, shared `app/render/airplane.gd` contract, `research/ugly-stik/`, and `docs/research/ugly-stik-*`.
 
 The reference is the Jensen 60-inch Ugly Stik with a generic .61-class nitro installation. The target is a recognizable, articulated airplane for the first owner playtest, not a certified replica. The [geometry source](../assets/aircraft/ugly-stik-60/geometry.json) and [appearance source](../assets/aircraft/ugly-stik-60/appearance.json) are authoritative; their compilers generate the Godot model data. The asset README has regeneration commands and the builder contract.
 
@@ -34,6 +34,7 @@ The model contract and reproducible visual evidence pass. The completed work and
 | US-V09a | Glossy film covering, rounded fuselage corners, occluded hinge gaps, spline fin/rudder outline, smooth propeller and tyres, 2048 px atlas; before/after flight and bench captures. [Finish v6 report](research/ugly-stik-finish-v6.md) | Implemented 2026-10-13 (`b19f6a4`); pilot reading of the new finish open |
 | US-V09b | Film-over-structure normal map from Jensen sheet 2 ribs/spars (replaces 2 in rib hint lines); narrow hinge bevel shaded with the adjacent skin. [Finish v6 report](research/ugly-stik-finish-v6.md#us-v09b--film-over-structure) | Implemented 2026-10-13; pilot reading open |
 | US-V09c | Throttle linkage follows the command: separate carburettor lever on −X, gas servo and constant-length pushrod; 21-step sweep and rod/engine clearance probe. [Finish v6 report](research/ugly-stik-finish-v6.md#us-v09c--throttle-linkage) | Implemented 2026-10-13 |
+| US-V09d | Varnished wooden propeller: tip-to-tip grain UVs, procedural straight grain, gloss; blur disc colour preserved. [Finish v6 report](research/ugly-stik-finish-v6.md#us-v09d--varnished-wooden-propeller) | Implemented 2026-10-13 |
 
 ## Limits and acceptance
 

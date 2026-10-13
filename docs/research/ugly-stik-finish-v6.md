@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading and throttle linkage (US-V09a–c)
+# Ugly Stik · covering, shading, throttle linkage and propeller (US-V09a–d)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -62,6 +62,16 @@ The undetected case is harmless: the map is flat there, and Godot's default fram
 - **Contract:** `verify_controls.gd` (376 checks, 0 failed) sweeps 21 throttle values. It checks closure, no node allocation, lever angle against command, the tip moving up and aft, and that the lever stays at least 15 mm behind the propeller plane. A clearance probe tests the rod axis and four 1.3 mm parallels against every engine and nose-gear triangle in millimetres, with a positive control (see [LEARNINGS](../../LEARNINGS.md)). It caught both forced-collision mutations of the servo station. `verify_model.gd`: 817 checks, 0 failed. The render contract, catalog, propeller blur, smoke, crash, controls and projected-shadow tests pass, and the production flight capture runs without engine errors.
 
 Evidence: [idle vs full throttle, left engine view](ugly-stik-finish-v6-evidence/v09c-throttle-idle-full.png) ([hashes](ugly-stik-finish-v6-evidence/v09c-SHA256SUMS)). Reproduce with `research/ugly-stik/finish-v6/capture.sh <dir> --view throttle --throttle 0` (or `1`).
+
+## US-V09d · varnished wooden propeller
+
+2026-10-13. The blades were flat, untextured matte tan (`wood`, roughness 0.64), so they read as plastic in the Home preview and in close views. They now use a varnished-wood material: roughness 0.26 and dielectric specular, an estimate. A procedural grain texture is generated once from deterministic hash noise.
+
+- **UVs:** U runs tip to tip through the hub, because the propeller is one blank. V is the absolute chord offset (widest chord = 0..1), so the straight grain runs out at the edges toward the narrowing tips instead of converging. A first version normalised V per station and showed uniform converging "corduroy" lines (committed as `b41cf37`, refined here).
+- **Grain:** irregular latewood lines with varying spacing and strength, broad heartwood bands and fine pores. The texture only darkens, within 0.79–1.0, with a mean above 0.86. `propeller_blur.gd` builds its disc from `albedo_color`, which is unchanged, so the spinning disc keeps the measured blade colour within a few percent (`test_propeller_blur.gd` 114/0).
+- **Contract (`visual_checks.gd`, within `verify_model.gd` 817/0):** the grain material is in use, the texture range and mean hold, and the UVs stay in range with U following the blade side. Two mutations on a disposable copy, the texture removed and U reversed, were each detected.
+
+Evidence (left `218361d`, right US-V09d; [hashes](ugly-stik-finish-v6-evidence/v09d-SHA256SUMS)): [propeller view](ugly-stik-finish-v6-evidence/v09d-propeller-ab.png), [blade zoom](ugly-stik-finish-v6-evidence/v09d-blade-zoom-ab.png). Reproduce with `research/ugly-stik/finish-v6/capture.sh <dir> --view propeller`.
 
 ## Limits and open findings
 

@@ -669,7 +669,9 @@ static func _prop_blades(st: SurfaceTool, radius: float) -> void:
 			upper.append(upper_station)
 			lower.append(lower_station)
 		# US-V09d grain UV: U runs tip to tip through the hub (one blank), V across the chord on both faces.
-		var uv := func(i: int, j: int) -> Vector2: return Vector2(0.5 + sign * 0.5 * radial_fractions[i], chord_samples[j])
+		# V is the absolute chord offset (widest chord = 0..1), so straight grain runs out at the edges toward the tip.
+		var widest: float = chord_scales.max()
+		var uv := func(i: int, j: int) -> Vector2: return Vector2(0.5 + sign * 0.5 * radial_fractions[i], 0.5 + (chord_samples[j] - 0.5) * chord_scales[i] / widest)
 		for i in range(radial_fractions.size() - 1):
 			var upper_a: Array = upper[i]
 			var upper_b: Array = upper[i + 1]

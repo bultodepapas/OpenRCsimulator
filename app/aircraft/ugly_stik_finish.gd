@@ -148,7 +148,7 @@ static func _bay_profile(supports: Array, size: int, column_x: Callable) -> Arra
 	return result
 
 # US-V09d: straight-grained propeller blank. U runs tip to tip across both blades (one piece of wood), V across the
-# chord. Grain lines follow the blade with slow waviness; values stay in 0.80..1.0 so the blade keeps the albedo the
+# chord. Grain lines follow the blank with slow waviness; values stay in 0.79..1.0 so the blade keeps the albedo the
 # propeller blur measures (its disc copies albedo_color). Deterministic hash noise; built once.
 static func grain() -> ImageTexture:
 	if _grain != null: return _grain
@@ -158,10 +158,13 @@ static func grain() -> ImageTexture:
 		var v := (y + 0.5) / GRAIN_SIZE.y
 		for x in GRAIN_SIZE.x:
 			var u := (x + 0.5) / GRAIN_SIZE.x
-			var phase := v * 23.0 + 0.9 * _noise(u * 3.0, 1.7) + 0.25 * _noise(u * 17.0, v * 3.0 + 5.0)
-			var line := pow(absf(sin(PI * phase)), 6.0) # thin dark latewood lines
-			var figure := 0.5 + 0.5 * _noise(u * 40.0, v * 9.0 + 11.0) # fine pores and streaks
-			var value := clampf(1.0 - 0.13 * line - 0.07 * figure, 0.0, 1.0)
+			# Irregular latewood lines (varying spacing and strength), broad heartwood bands and fine pore streaks.
+			var phase := v * 11.0 + 0.8 * _noise(u * 2.5, 1.7) + 0.35 * _noise(v * 6.0, u * 4.0 + 5.0)
+			var strength := 0.6 + 0.4 * _noise(floorf(phase) * 0.7, 3.0)
+			var line := pow(absf(sin(PI * phase)), 10.0) * strength
+			var band := 0.5 + 0.5 * _noise(v * 3.0 + 2.0, u * 1.2)
+			var pores := 0.5 + 0.5 * _noise(u * 60.0, v * 25.0 + 11.0)
+			var value := clampf(1.0 - 0.10 * line - 0.07 * band - 0.04 * pores, 0.0, 1.0)
 			var i := (y * GRAIN_SIZE.x + x) * 3
 			data[i] = roundi(255.0 * value)
 			data[i + 1] = roundi(255.0 * (value * 0.985))

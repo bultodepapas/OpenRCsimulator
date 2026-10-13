@@ -133,6 +133,39 @@ func _tangents_follow_uv(arrays: Array) -> bool:
 	return measured > 0 and aligned >= int(ceil(0.98 * measured))
 
 
+# US-V09d: varnished wooden blades with grain; the texture only darkens (0.79..1) and stays close to 1 on average so
+# the propeller blur disc, which copies albedo_color, keeps the blade colour within a few percent.
+func _check_propeller_wood(airplane: Dictionary) -> void:
+	var blades := airplane.propeller.find_child("propeller_blades", true, false) as MeshInstance3D
+	check("propeller blades exist", blades != null)
+	if blades == null: return
+	var mat := blades.mesh.surface_get_material(0) as StandardMaterial3D
+	check("propeller uses the varnished grain material", mat != null and mat.albedo_texture == Finish.grain() and mat.roughness < 0.4)
+	var image := Finish.grain().get_image()
+	var lo := 1.0
+	var hi := 0.0
+	var total := 0.0
+	var count := 0
+	for y in range(0, image.get_height(), 4):
+		for x in range(0, image.get_width(), 4):
+			var r := image.get_pixel(x, y).r
+			lo = minf(lo, r)
+			hi = maxf(hi, r)
+			total += r
+			count += 1
+	var mean := total / count
+	check("propeller grain only darkens within 0.79..1 (min %.3f max %.3f)" % [lo, hi], lo >= 0.78 and hi <= 1.0 and hi - lo > 0.05)
+	check("propeller grain mean stays near the measured blade albedo (%.3f)" % mean, mean > 0.86)
+	var uv: PackedVector2Array = blades.mesh.surface_get_arrays(0)[Mesh.ARRAY_TEX_UV]
+	var vertices: PackedVector3Array = blades.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var valid := uv.size() == vertices.size() and uv.size() > 0
+	for i in uv.size():
+		valid = valid and uv[i].x >= 0.0 and uv[i].x <= 1.0 and uv[i].y >= 0.0 and uv[i].y <= 1.0
+		# One blank: U follows the blade's spanwise position (left blade U < 0.5, right blade U > 0.5).
+		valid = valid and (uv[i].x - 0.5) * vertices[i].y >= -1e-6
+	check("propeller blade UVs run tip to tip through the hub", valid)
+
+
 # US-V09b: film sag between plan-traced ribs/spars. Samples the generated normal map in atlas pixels.
 func _check_film_structure(skin: StandardMaterial3D) -> void:
 	check("covering uses the film-structure normal map", skin.normal_enabled and skin.normal_texture == Finish.normal_map() and is_equal_approx(skin.normal_scale, 1.0 / Finish.NORMAL_MAP_GAIN))
@@ -239,6 +272,7 @@ func run(airplane: Dictionary) -> Dictionary:
 	check("inspection override stays local", b.get_active_material(0) == skin and a.get_active_material(0) != skin and skin.roughness != 0.99)
 	check("same color different finishes stay distinct", Finish.material(Color.GRAY, "rubber") != Finish.material(Color.GRAY, "steel"))
 	_check_film_structure(skin)
+	_check_propeller_wood(airplane)
 	var engine_probe_report := _check_engine_mesh(airplane)
 	a.free()
 	b.free()
