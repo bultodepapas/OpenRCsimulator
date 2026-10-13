@@ -9,6 +9,7 @@ const Grass := preload("res://render/near_grass.gd")
 const Mask := preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const MeshKit := preload("res://scenery/mesh_kit.gd")
 const SHADER := preload("res://scenery/botanicals.gdshader")
+const SOIL_SHADER := preload("res://scenery/crop_ground.gdshader")
 const SEED := 221013
 
 
@@ -140,18 +141,16 @@ static func build(field: Dictionary, scenery: Dictionary, theme: String, quality
 	root.set_meta("triangles", triangles)
 	root.set_meta("batches", keys.size())
 	if not plants.is_empty():
-		var soil := _crop_ground(field, theme)
+		var soil := _crop_ground(field)
 		root.add_child(soil)
 		root.set_meta("triangles", triangles + soil.mesh.surface_get_array_len(0) / 3)
 	return root
 
 
-static func _crop_ground(field: Dictionary, theme: String) -> MeshInstance3D:
+static func _crop_ground(field: Dictionary) -> MeshInstance3D:
 	var k := MeshKit.new()
-	var material := StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	material.vertex_color_is_srgb = true
-	material.roughness = 1.0
+	var material := ShaderMaterial.new()
+	material.shader = SOIL_SHADER
 	var pn: float = field.pilot.north
 	var pe: float = field.pilot.east
 	for plot in 2:

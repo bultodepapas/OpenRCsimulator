@@ -27,7 +27,7 @@ Dependencies to qualify, rather than assume delivered:
 - G1a/VAL-7 matched propeller torque/thrust data and G1b operating-domain accounting; the existing [UIUC importer](../research/propulsion/G1a1/README.md) preserves evidence but does not supply missing high-RPM measurements.
 - G2a/G2b coupled shaft/body balance, finite root checks, positive carrier inertia, event handling at rest and the G1d stopped/windmilling regime.
 - NITRO contract extension for finite tank/energy state, fuel chemistry and changing mass/CG/inertia. Current v2 explicitly rejects active tank burn; update its conditional contract before enabling it.
-- M5 atmosphere: moist density loads the propeller, oxygen-bearing dry charge drives naturally aspirated combustion. A YS boosted/regulated system needs its own charge/feed law.
+- M5 atmosphere: moist density loads the propeller, oxygen-bearing dry charge drives naturally aspirated combustion. Each YS boosted charge/feed system needs its own model-specific law.
 - AUD-09 and the [audio realism plan](audio-realism.md): engine-family metadata, cadence, native mixed-output captures and asset provenance. Audio consumes physics; it cannot create combustion failures.
 
 ## Research and modeling coverage

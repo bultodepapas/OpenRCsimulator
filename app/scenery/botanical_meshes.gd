@@ -70,7 +70,7 @@ static func mesh(species: String, theme: String, material: Material) -> ArrayMes
 				var root := Vector3(cos(a) * 0.10, 0, sin(a) * 0.10)
 				var top := root + Vector3(cos(a) * 0.045, 0.66 + 0.025 * float(i % 4), sin(a) * 0.025)
 				k.tri(root - Vector3(0.008, 0, 0), top, root + Vector3(0.008, 0, 0), Color("#aaa06c"))
-				_seed_head(k, top - Vector3(0, 0.035, 0), Vector3(0.012, 0.10, 0.005), 0.035, Color("#c5b580"))
+				_seed_head(k, top - Vector3(0, 0.035, 0), Vector3(0.012, 0.10, 0.005), 0.035, Color("#a99b71"))
 	return k.to_mesh(material)
 
 
