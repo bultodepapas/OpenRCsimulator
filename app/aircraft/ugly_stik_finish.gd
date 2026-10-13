@@ -235,6 +235,14 @@ static func hinge_gap() -> StandardMaterial3D:
 	return mat
 
 
+# US-V09e: fuselage sides and belly. z along the fuselage, s = skin arc length from the belly centre line (+X positive).
+static func fuselage_uv(z: float, arc_s: float) -> Vector2:
+	var f: Dictionary = Appearance.DATA.fuselage_unwrap
+	var x := lerpf(float(f.x_px[0]), float(f.x_px[1]), (z - float(f.z_m[0])) / (float(f.z_m[1]) - float(f.z_m[0])))
+	var y := lerpf(float(f.y_px[0]), float(f.y_px[1]), 0.5 + arc_s / float(f.perimeter_m))
+	return Vector2(x, y) / 1024.0
+
+
 static func uv(point: Vector3, region: String) -> Vector2:
 	match region:
 		"wing":
@@ -244,4 +252,14 @@ static func uv(point: Vector3, region: String) -> Vector2:
 		"dorsal":
 			return Vector2((544.0 + 464.0 * clampf((point.x + 0.055) / 0.11, 0, 1)) / 1024.0, (544.0 + 464.0 * clampf((point.z - 0.215) / 0.12, 0, 1)) / 1024.0)
 		"white": return Vector2(0.04, 0.54)
+		"hatch":
+			# US-V09g: flat top of the 1/4 in sheet hatch between the fuselage front and station 1.
+			var h: Dictionary = Appearance.DATA.hatch
+			return Vector2(lerpf(float(h.x_px[0]), float(h.x_px[1]), inverse_lerp(-float(h.half_width_m), float(h.half_width_m), point.x)),
+				lerpf(float(h.y_px[0]), float(h.y_px[1]), inverse_lerp(float(h.z_m[0]), float(h.z_m[1]), point.z))) / 1024.0
+		"stab_under":
+			# US-V09f: prism-local stabiliser/elevator underside (x span, z from the elevator hinge).
+			var f: Dictionary = Appearance.DATA.stab_unwrap
+			return Vector2(lerpf(float(f.x_px[0]), float(f.x_px[1]), inverse_lerp(float(f.x_m[0]), float(f.x_m[1]), point.x)),
+				lerpf(float(f.y_px[0]), float(f.y_px[1]), inverse_lerp(float(f.z_m[0]), float(f.z_m[1]), point.z))) / 1024.0
 	return Vector2(0.5, 0.01)

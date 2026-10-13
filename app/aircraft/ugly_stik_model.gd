@@ -84,7 +84,9 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 	var triangles := Geometry2D.triangulate_polygon(polygon)
 	assert(not triangles.is_empty(), "Invalid model outline: " + label)
 	var textured := label == "fin" or label == "rudder"
-	var st := _surface(color, textured)
+	# US-V09f: the stabiliser and elevator use the covering atlas too; only their undersides map to a painted region.
+	var stab := label == "stab" or label == "elevator_part"
+	var st := _surface(color, textured or stab)
 	var gap := SurfaceTool.new()
 	gap.begin(Mesh.PRIMITIVE_TRIANGLES)
 	gap.set_material(Finish.hinge_gap())
@@ -96,7 +98,7 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 			for k in 3:
 				var p := polygon[triangles[i + k]]
 				points.append(Vector3(side * thickness / 2, p.x, p.y) if vertical else Vector3(p.x, side * thickness / 2, p.y))
-			_triangle(st, points[0], points[1], points[2], normal, "fin" if textured else "")
+			_triangle(st, points[0], points[1], points[2], normal, "fin" if textured else ("stab_under" if side < 0.0 else "red") if stab else "")
 	var clockwise := Geometry2D.is_polygon_clockwise(polygon)
 	for i in polygon.size():
 		var p := polygon[i]
@@ -110,20 +112,20 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 		var d := Vector3(-thickness / 2, q.x, q.y) if vertical else Vector3(q.x, -thickness / 2, q.y)
 		var on_hinge := absf(p.y - gap_offset) < 1e-7 and absf(q.y - gap_offset) < 1e-7
 		has_gap = has_gap or on_hinge
-		_quad(gap if on_hinge else st, a, b, c, d, n, "white" if textured else "red" if on_hinge else "")
-	if textured: st.generate_tangents()
+		_quad(gap if on_hinge else st, a, b, c, d, n, "white" if textured else "red" if on_hinge or stab else "")
+	if textured or stab: st.generate_tangents()
 	var mesh := st.commit()
 	if has_gap: gap.commit(mesh)
 	return _instance(label, mesh, parent)
 
 
-static func _smooth_quad(st: SurfaceTool, points: Array, normals: Array, outward: Vector3, region: String) -> void:
+static func _smooth_quad(st: SurfaceTool, points: Array, normals: Array, outward: Vector3, region: String, uvs: Array = []) -> void:
 	for indices in [[0, 1, 2], [0, 2, 3]]:
 		if (points[indices[2]] - points[indices[0]]).cross(points[indices[1]] - points[indices[0]]).dot(outward) < 0:
 			indices = [indices[0], indices[2], indices[1]]
 		for index in indices:
 			st.set_normal(normals[index])
-			st.set_uv(Finish.uv(points[index], region))
+			st.set_uv(uvs[index] if not uvs.is_empty() else Finish.uv(points[index], region))
 			st.add_vertex(points[index])
 
 
@@ -151,6 +153,17 @@ static func _fuselage(root: Node3D) -> void:
 				directions.append(n)
 		rings.append(ring)
 	var count: int = directions.size()
+	# US-V09e unwrap: arc length from each ring's start (top-right edge of the flat top), then measured from the belly
+	# centre line, the middle of the flat bottom (between the last bottom-right and first bottom-left arc points).
+	var arcs: Array = []
+	for ring in rings:
+		var cumulative := [0.0]
+		for k in range(1, count): cumulative.append(cumulative[k - 1] + (ring[k] - ring[k - 1]).length())
+		var bottom_right := 2 * (FUSELAGE_CORNER_SEGMENTS + 1) - 1
+		var centre: float = cumulative[bottom_right] + 0.5 * (ring[bottom_right + 1] - ring[bottom_right]).length()
+		var arc: Array = []
+		for k in count: arc.append(centre - cumulative[k])
+		arcs.append(arc)
 	var st := _surface(RED, true)
 	for i in range(rings.size() - 1):
 		for j in count:
@@ -164,7 +177,14 @@ static func _fuselage(root: Node3D) -> void:
 				normals.append(n if n.dot(n2) > 0.0 else -n)
 			var outward: Vector3 = (directions[j] + directions[k]).normalized()
 			var top_flat: bool = directions[j].y > 0.999 and directions[k].y > 0.999
-			_smooth_quad(st, points, normals, outward, "dorsal" if top_flat else "red")
+			if top_flat:
+				# The first bay is exactly the plan's hatch (rear seam at station 1, Appearance.hatch).
+				_smooth_quad(st, points, normals, outward, "hatch" if i == 0 else "dorsal")
+			else:
+				var uvs: Array = []
+				for corner in [[i, j], [i, k], [i + 1, k], [i + 1, j]]:
+					uvs.append(Finish.fuselage_uv(rings[corner[0]][corner[1]].z, arcs[corner[0]][corner[1]]))
+				_smooth_quad(st, points, normals, outward, "", uvs)
 	for end in [0, rings.size() - 1]:
 		var center := Vector3.ZERO
 		for p in rings[end]: center += p
@@ -374,7 +394,7 @@ static func _curved_outline(outline: Array) -> Array:
 static func _elevator_mesh(outline: Array, t: Dictionary, parent: Node3D) -> void:
 	var polygon := PackedVector2Array()
 	for p in outline: polygon.append(Vector2(p[0], p[1]))
-	var combined := _surface(RED)
+	var combined := _surface(RED, true)
 	var combined_gap := SurfaceTool.new()
 	combined_gap.begin(Mesh.PRIMITIVE_TRIANGLES)
 	combined_gap.set_material(Finish.hinge_gap())
@@ -388,6 +408,7 @@ static func _elevator_mesh(outline: Array, t: Dictionary, parent: Node3D) -> voi
 		combined.append_from(part.mesh, 0, Transform3D.IDENTITY)
 		if part.mesh.get_surface_count() > 1: combined_gap.append_from(part.mesh, 1, Transform3D.IDENTITY)
 		part.free()
+	combined.generate_tangents()
 	var mesh := combined.commit()
 	combined_gap.commit(mesh)
 	_instance("elevator", mesh, parent)

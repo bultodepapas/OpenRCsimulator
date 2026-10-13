@@ -140,6 +140,11 @@ def run_checks(root, log, godot_override=None):
             compiler,
             mutation_root / "assets/aircraft/ugly-stik-60/compile_appearance.py",
         )
+        # US-V09e: the compiler reads the measured fuselage stations for the exhaust-residue path.
+        copy_file(
+            root / "assets/aircraft/ugly-stik-60/geometry.json",
+            mutation_root / "assets/aircraft/ugly-stik-60/geometry.json",
+        )
         copy_file(
             root / "app/aircraft/livery.svg",
             mutation_root / "app/aircraft/livery.svg",

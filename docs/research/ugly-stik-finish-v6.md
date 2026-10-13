@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading, throttle linkage and propeller (US-V09a–d)
+# Ugly Stik · covering, shading, throttle linkage, propeller and weathering (US-V09a–h)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -72,6 +72,33 @@ Evidence: [idle vs full throttle, left engine view](ugly-stik-finish-v6-evidence
 - **Contract (`visual_checks.gd`, within `verify_model.gd` 817/0):** the grain material is in use, the texture range and mean hold, and the UVs stay in range with U following the blade side. Two mutations on a disposable copy, the texture removed and U reversed, were each detected.
 
 Evidence (left `218361d`, right US-V09d; [hashes](ugly-stik-finish-v6-evidence/v09d-SHA256SUMS)): [propeller view](ugly-stik-finish-v6-evidence/v09d-propeller-ab.png), [blade zoom](ugly-stik-finish-v6-evidence/v09d-blade-zoom-ab.png). Reproduce with `research/ugly-stik/finish-v6/capture.sh <dir> --view propeller`.
+
+## US-V09e · glow-oil exhaust residue
+
+2026-10-13, at the owner's request. A flown glow two-stroke leaves oily residue streaming aft from the silencer. The muffler outlet in the engine build sits 25 mm outboard of the right (+X) side just ahead of the firewall, at y = −0.023 m, pointing aft, down and outboard.
+
+- **Atlas space:** the fuselage sides and belly previously sampled one red texel. They now unwrap into free atlas rows 280–520 (`appearance.json` → `fuselage_unwrap`). U runs along the fuselage at about 0.5 mm/px at 2048; V is the skin arc length from the belly centre line, positive on the exhaust side, about 0.6 mm/px. The flat top keeps the dorsal region, and the fuselage end caps stay plain red.
+- **Residue (`exhaust_residue`, an artistic estimate):** `compile_appearance.py` draws the residue in metres on the skin, using the measured fuselage stations and the builder's rounded-corner section. It starts at the outlet height, eases down to the bottom corner by z = 0.02 m, then runs inboard along the belly to z = 0.56 m, widening from 7 to 34 mm half-width and fading out. It has three stacked washes with user-space gradients, 70 flow streaks and 45 droplets near the outlet, all seeded (5175) so the output is reproducible. Set `exhaust_residue.enabled` to `false` and recompile for a factory-clean finish.
+- **Contract (`visual_checks.gd`, within `verify_model.gd` 817/0):** the unwrap holds every side/belly vertex inside its rows, and +X skin maps to the exhaust half; a mirrored-unwrap mutation was detected. The atlas is darkened behind the outlet on +X (red channel 0.37 against 0.78 clean), while the mirrored −X point and the tail stay exact red. `check_atlas.py` still passes (2048² editor/runtime byte match, stale SVG rejected); its disposable compiler copy now includes `geometry.json`.
+
+Evidence (left `f64900a`, right US-V09e, engine shadows off; [hashes](ugly-stik-finish-v6-evidence/v09e-SHA256SUMS)): [right side](ugly-stik-finish-v6-evidence/v09e-exhaust_side-ab.png), [belly](ugly-stik-finish-v6-evidence/v09e-belly-ab.png). Reproduce with `capture.sh <dir> --view exhaust_side` or `--view belly`.
+
+## US-V09f–h · tail spray, hatch seams and field wear
+
+2026-10-13, at the owner's request. These three steps follow US-V09e in the same atlas pipeline.
+
+- **US-V09f, stab spray:** the stabiliser and elevator now use the covering atlas. Their undersides map to free rows 532–636 (`stab_unwrap`, prism-local x span and z from the hinge, about 1.1 × 1.8 mm/unit); top faces and edges sample plain red. `exhaust_residue.stab` paints a light oil film on the right underside, from the root to x = 0.21 m: a gradient wash strongest at the leading edge, 34 tapered chordwise streaks and 60 droplets.
+- **US-V09g, hatch:** Jensen sheet 1 shows a 1/4 in sheet hatch from the fuselage front to 5.40 in aft, ahead of the fixed top piece bevelled into the wing saddle. The plan places the wing leading edge at 6.98 in, which matches the model's 0.176 m. The rear seam coincides with fuselage station 1, so the first top bay maps to its own region (x 914–1014, rows 646–986, about 0.4 mm/px). A 0.6 mm seam follows the front, the rear and both flat-top edges.
+- **US-V09h, field wear (`belly_wear`, an artistic estimate, `enabled` toggles it):** 160 grass and soil spots thrown by the nose wheel fade aft to the main gear; 26 light scuffs run between the gears and 18 tail-strike scrapes sit at the tail end. Seed 939.
+- **Contract (`visual_checks.gd`, within `verify_model.gd` 817/0):**
+  - Stab and elevator undersides sample the stab rows while their tops stay plain.
+  - The hatch spans the first bay, its lid triangles sample the hatch region, the rear seam is drawn and the lid centre stays clean.
+  - Spray appears only on the right stab underside.
+  - Wear sits behind the nose wheel, with a clean mid-belly.
+
+  Mutations on a disposable copy (hatch mapped to dorsal, stab underside unpainted, stab spray mirrored) were each detected. `check_atlas.py` passes.
+
+Evidence (left `f64900a`, which predates US-V09e, so the pairs show e–h together; engine shadows off; [hashes](ugly-stik-finish-v6-evidence/v09fgh-SHA256SUMS)): [stab underside](ugly-stik-finish-v6-evidence/v09f-stab-under-ab.png), [hatch](ugly-stik-finish-v6-evidence/v09g-hatch-ab.png), [front belly](ugly-stik-finish-v6-evidence/v09h-belly-front-ab.png). Bench views: `stab_under`, `hatch`, `belly_front`.
 
 ## Limits and open findings
 
