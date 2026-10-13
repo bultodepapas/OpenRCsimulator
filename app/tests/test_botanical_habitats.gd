@@ -3,6 +3,7 @@ extends SceneTree
 
 const FieldLoader := preload("res://data/field_loader.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
+const LakeLoader := preload("res://data/lake_loader.gd")
 const Scenery := preload("res://scenery/scenery.gd")
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 const Clock := preload("res://render/shader_clock.gd")
@@ -24,10 +25,15 @@ func _initialize() -> void:
 	if not bool(scenery_result.get("ok", false)):
 		quit(1)
 		return
+	var lake_result: Dictionary = LakeLoader.load_from(LakeLoader.DEFAULT_PATH)
+	_check("downloaded lake definition loads", bool(lake_result.get("ok", false)))
+	if not bool(lake_result.get("ok", false)):
+		quit(1)
+		return
 	var source_scenery: Dictionary = scenery_result.scenery
 	_check("generated default has no retired procedural cushion group",
 		not source_scenery.groups.any(func(group: Dictionary) -> bool: return str(group.get("id", "")) == "wildflowers"))
-	var built := Scenery.build(field, source_scenery, {audio = false, birds = false, theme = "", quality = "high"})
+	var built := Scenery.build(field, source_scenery, {audio = false, birds = false, theme = "", quality = "high"}, {}, lake_result.lake)
 	_test_imported_habitats(built.get_node_or_null("BotanicalHabitats") as Node3D)
 	_test_downloaded_damage(built.get_node_or_null("ImportedVegetationBatches") as Node3D)
 	built.free()
@@ -49,7 +55,7 @@ func _test_imported_habitats(root: Node3D) -> void:
 		if not plant_value is Dictionary:
 			continue
 		var plant: Dictionary = plant_value
-		var asset_id := str(plant.get("asset_id", ""))	
+		var asset_id := str(plant.get("asset_id", ""))
 		if str(plant.get("zone", "")) == "shore":
 			if asset_id == "reed_aredon":
 				reeds += 1

@@ -91,6 +91,10 @@ func _test_batch_build_and_damage() -> void:
 	_check("tree alias queues resolved asset", ImportedVegetation.queue(batches, "shade_tree", tree_transform, 1, "tree-damaged") == "common_tree_3")
 	_check("exact asset queues without changing ID", ImportedVegetation.queue(
 		batches, "wheat_4", second_transform, 2, "", Color(0.4, 1.2, 0.9, 0.0)) == "wheat_4")
+	var queued_tint: Color = batches["wheat_4"][0].get("tint", Color.WHITE)
+	_check("queue clamps tint RGB and keeps alpha opaque",
+		is_equal_approx(queued_tint.r, 0.86) and is_equal_approx(queued_tint.g, 1.0)
+		and is_equal_approx(queued_tint.b, 0.9) and is_equal_approx(queued_tint.a, 1.0))
 	var root := ImportedVegetation.build(batches)
 	var expected_part_nodes := ImportedVegetation.get_parts("common_tree_3").size() + ImportedVegetation.get_parts("wheat_4").size()
 	_check("builder emits one shared batch per source part", root.get_child_count() == expected_part_nodes)
@@ -101,11 +105,6 @@ func _test_batch_build_and_damage() -> void:
 			var multi_mesh := (child as MultiMeshInstance3D).multimesh
 			_check("batch has one queued plant", multi_mesh.instance_count == 1)
 			_check("batch retains instance color data", multi_mesh.use_colors)
-			if str(child.name).begins_with("wheat_4_"):
-				var instance_tint := multi_mesh.get_instance_color(0)
-				_check("bounded tint clamps RGB and keeps alpha opaque",
-					is_equal_approx(instance_tint.r, 0.86) and is_equal_approx(instance_tint.g, 1.0)
-					and is_equal_approx(instance_tint.b, 0.9) and is_equal_approx(instance_tint.a, 1.0))
 			if str(child.name).begins_with("common_tree_3_"):
 				var source_materials: Array = ImportedVegetation.get_parts("common_tree_3")[0].get("materials", [])
 				_check("default batch keeps original material per surface", multi_mesh.mesh.get_surface_count() == source_materials.size())
@@ -116,6 +115,14 @@ func _test_batch_build_and_damage() -> void:
 					)
 				checked_source_materials = true
 	_check("tree source material path was checked", checked_source_materials)
+	var bounds_records: Array = root.get_meta("_imported_vegetation_state", {}).get("bounds", [])
+	var wheat_tint_retained := false
+	for bounds_record: Dictionary in bounds_records:
+		if str(bounds_record.get("asset_id", "")) == "wheat_4":
+			var tint: Color = bounds_record.get("tint", Color.WHITE)
+			wheat_tint_retained = is_equal_approx(tint.r, 0.86) and is_equal_approx(tint.g, 1.0) \
+				and is_equal_approx(tint.b, 0.9) and is_equal_approx(tint.a, 1.0)
+	_check("builder retains bounded tint with CPU instance bounds", wheat_tint_retained)
 	var original_bounds := ImportedVegetation.bounds(root)
 	_check("bounds include both plants", original_bounds.position.x < 0.0 and original_bounds.end.x > 30.0)
 	_check("damage ID hides its source instances", ImportedVegetation.set_damage_hidden(root, "tree-damaged", true))

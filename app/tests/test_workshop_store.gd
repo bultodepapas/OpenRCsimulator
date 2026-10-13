@@ -26,6 +26,7 @@ func _initialize() -> void:
 	_check("exact base bytes are returned", first["base_bytes"] == base_bytes)
 	_check("base SHA-256 covers exact source bytes", str(first["base_sha256"]) == _sha256(base_bytes))
 	_check("parsed base retains its aircraft identity", str(first["base"].get("id", "")) == "jensen-das-ugly-stik-60")
+	_check("catalog descriptor is pinned with the exact source snapshot", typeof(first.get("workshop_descriptor", null)) == TYPE_DICTIONARY and str(first["workshop_descriptor"].get("base_sha256", "")) == _sha256(base_bytes))
 	_check("variant list discovers the saved item", _contains_variant(Store.list_variants(_root), id))
 
 	var renamed_recipe: Dictionary = _recipe()
@@ -37,6 +38,7 @@ func _initialize() -> void:
 		_check("revision increments monotonically", int(renamed["variant"]["revision"]) == 2)
 		_check("rename changes display metadata", str(renamed["variant"]["name"]) == "Renamed Stik")
 		_check("revision still pins original base bytes", renamed["variant"]["base_bytes"] == base_bytes)
+		_check("later revisions retain the original Workshop descriptor", renamed["variant"].get("workshop_descriptor", {}) == first.get("workshop_descriptor", {}))
 		_check("load returns latest saved revision", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
 
 	var edited_base: Dictionary = first["base"].duplicate(true)
@@ -127,6 +129,14 @@ func _test_persisted_integrity(id: String) -> void:
 	var rejected_version: Dictionary = Store.load_variant(id, _root)
 	_check("unknown persisted schema version is rejected", not bool(rejected_version["ok"]) and _has_error(rejected_version["errors"], "version"), str(rejected_version["errors"]))
 	_check("restore valid schema fixture", _write_file(record_path, original))
+	var descriptor_tamper: Dictionary = JSON.parse_string(original.get_string_from_utf8())
+	if typeof(descriptor_tamper.get("workshop_descriptor", null)) == TYPE_DICTIONARY:
+		descriptor_tamper["workshop_descriptor"]["base_sha256"] = "0".repeat(64)
+		var bad_descriptor: PackedByteArray = (JSON.stringify(descriptor_tamper, "\t", true, true) + "\n").to_utf8_buffer()
+		_check("tampered descriptor fixture writes", _write_file(record_path, bad_descriptor))
+		var rejected_descriptor: Dictionary = Store.load_variant(id, _root)
+		_check("pinned descriptor integrity is validated on load", not bool(rejected_descriptor["ok"]) and _has_error(rejected_descriptor["errors"], "descriptor source SHA-256"), str(rejected_descriptor["errors"]))
+		_check("restore valid descriptor fixture", _write_file(record_path, original))
 
 
 func _recipe() -> Dictionary:

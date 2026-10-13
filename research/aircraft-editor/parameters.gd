@@ -55,7 +55,7 @@ static func validate(recipe: Dictionary) -> Dictionary:
 		var bound: Array = bounds[key]
 		var number := float(values[key])
 		if number < float(bound[0]) or number > float(bound[1]):
-			errors.append("recipe.%s: %.6g outside [%.6g, %.6g]" % [key, number, bound[0], bound[1]])
+			errors.append("recipe.%s: %s outside [%s, %s]" % [key, str(number), str(bound[0]), str(bound[1])])
 	var mass_policy: Variant = recipe.get("mass_policy", values.mass_policy)
 	if typeof(mass_policy) != TYPE_STRING or mass_policy not in MASS_POLICIES:
 		errors.append("recipe.mass_policy: expected one of %s" % str(MASS_POLICIES))

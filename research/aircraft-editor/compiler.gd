@@ -61,7 +61,7 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 	var expected_mass: float = float(base_data.model.mass_kg) * mass_ratio
 	if absf(actual_mass - expected_mass) > maxf(1.0, expected_mass) * 1.0e-10:
 		var mass_error := PackedStringArray([
-			"inventory: compiled mass %.12g kg does not match target %.12g kg" % [actual_mass, expected_mass]
+			"inventory: compiled mass " + str(actual_mass) + " kg does not match target " + str(expected_mass) + " kg"
 		])
 		return {"ok": false, "errors": mass_error, "raw": {}, "data": _invalid_data(mass_error), "summary": {}}
 
@@ -125,10 +125,12 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 
 static func _transform_candidate(raw: Dictionary, base_id: String, scale: float, mass_ratio: float,
 		power_multiplier: float, control_multiplier: float, mass_policy: String) -> void:
-	var geometry_policy := "uniform %s virtual scale s=%.9g" % [mass_policy, scale]
+	var geometry_policy := "uniform " + mass_policy + " virtual scale s=" + str(scale)
 	_transform_q(raw.reference, "wing_area", scale * scale, base_id, geometry_policy + ": area × s²")
 	_transform_q(raw.reference, "wing_span", scale, base_id, geometry_policy + ": length × s")
 	_transform_q(raw.reference, "mean_chord", scale, base_id, geometry_policy + ": length × s")
+	_transform_q(raw.reference, "root_chord", scale, base_id, geometry_policy + ": root chord × s")
+	_transform_q(raw.reference, "tip_chord", scale, base_id, geometry_policy + ": tip chord × s")
 	_transform_q(raw.reference, "aero_reference_point", scale, base_id, geometry_policy + ": position × s")
 	_transform_q(raw.balance, "plan_cg", scale, base_id, geometry_policy + ": CG position × s")
 	_transform_q(raw.balance, "firewall", scale, base_id, geometry_policy + ": firewall position × s")
@@ -137,13 +139,17 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 		if not component_variant is Dictionary:
 			continue
 		var component: Dictionary = component_variant
-		_transform_q(component, "mass", mass_ratio, base_id, "uniform inventory mass × %.9g" % mass_ratio)
+		_transform_q(component, "mass", mass_ratio, base_id, "uniform inventory mass × " + str(mass_ratio))
 		_transform_q(component, "position", scale, base_id, geometry_policy + ": inventory position × s")
 		_transform_q(component, "size", scale, base_id, geometry_policy + ": inventory box dimensions × s")
 	_transform_q(raw.plausibility, "mass_range", mass_ratio, base_id,
-		"virtual consistency band × target mass ratio %.9g; original range retained in base evidence" % mass_ratio)
-	_transform_q(raw.plausibility, "inertia_reference", mass_ratio * scale * scale, base_id,
-		"comparison inertia × mass ratio × s²; donor evidence retained")
+		"virtual consistency band × target mass ratio " + str(mass_ratio) + "; original range retained in base evidence")
+	# inertia_reference is donor evidence used by AircraftData's plausibility comparison.
+	# The loader derives its expected scale from the compiled model, so mutating this
+	# source quantity would scale the comparison twice and misrepresent the donor.
+	if raw.has("start") and raw.start is Dictionary:
+		_transform_q(raw.start, "level_speed", sqrt(mass_ratio) / scale, base_id,
+			"similarity reference speed × sqrt(mass_ratio)/s")
 
 	var aero: Dictionary = raw.get("aero", {})
 	var surfaces: Dictionary = aero.get("surfaces", {})
@@ -156,7 +162,7 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 		_transform_q(surface, "position", scale, base_id, geometry_policy + ": surface position × s")
 
 	if raw.has("crash_hull"):
-		_transform_q(raw.crash_hull, "value", scale, base_id, geometry_policy + ": crash-hull points × s")
+		_transform_q(raw, "crash_hull", scale, base_id, geometry_policy + ": crash-hull points × s")
 	if raw.has("landing_gear"):
 		var gear: Dictionary = raw.landing_gear
 		var small_scale_anchor: float = maxf(scale, 1.0)
@@ -193,7 +199,7 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	var throws: Dictionary = controls.get("max_throw", {})
 	for throw_key: Variant in throws.keys():
 		_transform_q(throws, str(throw_key), control_multiplier, base_id,
-			"virtual surface travel × %.9g; normalized servo timing retained" % control_multiplier)
+			"virtual surface travel × " + str(control_multiplier) + "; normalized servo timing retained")
 
 
 static func _transform_slipstream(node: Variant, base_id: String, scale: float) -> void:
@@ -209,8 +215,7 @@ static func _transform_slipstream(node: Variant, base_id: String, scale: float) 
 		_transform_q(piece, "root", scale, base_id, "slipstream piece root position × s")
 		_transform_q(piece, "span", scale, base_id, "slipstream piece span × s")
 		_transform_q(piece, "chords", scale, base_id, "slipstream chord lengths × s")
-		if piece.has("profile") and piece.profile is Dictionary:
-			_transform_q(piece.profile, "value", scale, base_id, "slipstream profile coordinates/chords × s")
+		_transform_q(piece, "profile", scale, base_id, "slipstream profile coordinates/chords × s")
 
 
 static func _transform_q(parent: Dictionary, key: String, factor: float, base_id: String, operation: String) -> void:
@@ -284,9 +289,8 @@ static func _inherit_wheel_model(profiled_base: Dictionary, candidate_model: Dic
 					var quantity: Dictionary = source_provenance[field]
 					quantity.value = new_value
 					quantity.kind = "derived"
-					quantity.source = "%s; Workshop compiler v1 wheel transform from %s (factor %.9g)" % [
-						str(quantity.get("source", "base wheel profile evidence")), base_id, factor,
-					]
+					quantity.source = str(quantity.get("source", "base wheel profile evidence")) \
+						+ "; Workshop compiler v1 wheel transform from " + base_id + " (factor " + str(factor) + ")"
 					source_provenance[field] = quantity
 			target_contact.wheel_provenance = source_provenance
 			var radius := float(target_contact.get("wheel_radius", 0.0))
@@ -302,7 +306,7 @@ static func _inherit_wheel_model(profiled_base: Dictionary, candidate_model: Dic
 					errors.append("wheel profile '%s' contact '%s': physics_dt / spin_relaxation exceeds 0.25" % [effective_id, contact_name])
 			target_contacts[index] = target_contact
 		if wheel_effective_mass > float(candidate_model.get("mass_kg", 0.0)) * 0.1:
-			errors.append("wheel profile '%s': wheel effective mass exceeds 10%% of compiled aircraft mass" % effective_id)
+			errors.append("wheel profile '" + effective_id + "': wheel effective mass exceeds 10 percent of compiled aircraft mass")
 		if errors.is_empty():
 			candidate_gear.contacts = target_contacts
 			candidate_gear.rolling_reference_radius = largest_radius
@@ -341,7 +345,8 @@ static func _summary(base_model: Dictionary, model: Dictionary, values: Dictiona
 		"compiler_version": COMPILER_VERSION,
 	}
 	var propulsion: Dictionary = model.get("propulsion", {})
-	if propulsion.has("max_rpm") and propulsion.has("diameter") and propulsion.has("ct") and propulsion.has("cp"):
+	if support.power and propulsion.has("max_rpm") and propulsion.has("idle_rpm") and propulsion.has("diameter") \
+			and propulsion.has("ct") and propulsion.has("cp"):
 		var rpm := float(propulsion.max_rpm)
 		var diameter := float(propulsion.diameter)
 		var ct: PackedFloat64Array = propulsion.ct

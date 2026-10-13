@@ -13,6 +13,16 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var base_id: String = str(payload.get("base_id", ""))
 	if str(base.get("id", "")) != base_id:
 		return {ok = false, errors = PackedStringArray(["Workshop source does not match the selected aircraft."])}
+	var descriptor_loader: Script = load("res://workshop/descriptor.gd")
+	var supplied_descriptor: Variant = payload.get("workshop_descriptor", {})
+	var descriptor_result: Dictionary
+	if supplied_descriptor is Dictionary and supplied_descriptor.is_empty():
+		descriptor_result = descriptor_loader.load_for(base_id, base_bytes)
+	else:
+		descriptor_result = descriptor_loader.validate(supplied_descriptor, base_id, base_bytes)
+	if not descriptor_result.get("ok", false):
+		return descriptor_result
+	var descriptor_sha: String = _sha(JSON.stringify(descriptor_result.descriptor, "", true, true).to_utf8_buffer())
 	var compiler: Script = load("res://workshop/compiler.gd")
 	var recipe: Dictionary = compiler.defaults()
 	recipe.merge(payload.get("recipe", {}), true)
@@ -21,7 +31,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	recipe.erase("name")
 	var base_sha: String = _sha(base_bytes)
 	var recipe_sha: String = _sha(JSON.stringify(recipe, "", true, true).to_utf8_buffer())
-	var trial_id: String = "workshop-" + _sha((base_sha + ":" + recipe_sha + ":workshop-compiler-v1").to_utf8_buffer()).substr(0, 32)
+	var trial_id: String = "workshop-" + _sha((base_sha + ":" + recipe_sha + ":" + descriptor_sha + ":workshop-compiler-v1").to_utf8_buffer()).substr(0, 32)
 	recipe.id = trial_id
 	var result: Dictionary = compiler.compile(base, recipe)
 	if not result.get("ok", false):
@@ -35,6 +45,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		identity = {format = "openrc-aircraft-trial v1", trial_id = trial_id, base_id = base_id,
 			base_sha256 = base_sha, recipe_sha256 = recipe_sha, resolved_sha256 = resolved_sha,
 			resolved_model_sha256 = model_sha,
+			descriptor_sha256 = descriptor_sha,
 			ancestor_variant_id = ancestor_id, compiler = "workshop-compiler-v1", experimental = true}}
 
 

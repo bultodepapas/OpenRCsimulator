@@ -34,6 +34,14 @@ const PRESETS := {
 ## Set before adding this screen to the ScreenStack. Defaults to the current catalog aircraft.
 var initial_aircraft_id := Catalog.DEFAULT_ID
 
+## Public handles for UI integration and focused Workshop checks.
+var variant_name_input: LineEdit:
+	get:
+		return _variant_name
+var save_button: Button:
+	get:
+		return _save_button
+
 var _screen: Control
 var _base_selector: OptionButton
 var _variant_selector: OptionButton
@@ -56,12 +64,13 @@ var _aircraft_status_label: Label
 var _validation_label: Label
 var _trial_button: Button
 var _undo_button: Button
-var _preview: Control
+var _preview: WorkshopPreview
 var _delete_dialog: ConfirmationDialog
 
 var _base_id := ""
 var _base: Dictionary = {}
 var _base_bytes := PackedByteArray()
+var _workshop_descriptor: Dictionary = {}
 var _recipe: Dictionary = {}
 var _compiled: Dictionary = {"ok": false, "errors": ["Choose an aircraft to begin."]}
 var _capabilities: Dictionary = {}
@@ -71,6 +80,7 @@ var _undo_available := false
 var _slider_gesture := false
 var _syncing_controls := false
 var _closing := false
+var _trial_pending := false
 
 
 func _init() -> void:
@@ -92,15 +102,26 @@ func _ready() -> void:
 	_base_selector.grab_focus.call_deferred()
 
 
+func _enter_tree() -> void:
+	if _trial_pending:
+		_trial_pending = false
+		if is_instance_valid(_trial_button):
+			_trial_button.disabled = not bool(_compiled.get("ok", false))
+
+
 ## A start failure returns to the same Workshop instance; show the reason below its actions.
 func reject_start(message: String = "The trial could not start.") -> void:
 	set_note(message)
-	_trial_button.disabled = not bool(_compiled.get("ok", false))
 
 
 func set_note(message: String) -> void:
-	_status_label.text = tr(message) if message != "" else ""
-	_status_label.visible = message != ""
+	if is_instance_valid(_status_label):
+		_status_label.text = tr(message) if message != "" else ""
+		_status_label.visible = message != ""
+	if _trial_pending:
+		_trial_pending = false
+	if is_instance_valid(_trial_button):
+		_trial_button.disabled = not bool(_compiled.get("ok", false))
 
 
 ## Test and integration seam: update the recipe through the same constraints as the visible controls.
@@ -120,9 +141,27 @@ func get_compiled() -> Dictionary:
 	return _compiled.duplicate(true)
 
 
+func set_variant_name(value: String) -> void:
+	if is_instance_valid(_variant_name):
+		_variant_name.text = value
+
+
+func save_named_variant() -> void:
+	_save_variant()
+
+
 func set_aircraft(id: String) -> void:
+	if not is_node_ready():
+		initial_aircraft_id = id
+		return
+	_selected_variant_id = ""
+	if is_instance_valid(_variant_selector):
+		_variant_selector.select(0)
+	if is_instance_valid(_variant_name):
+		_variant_name.clear()
 	_load_catalog_aircraft(id, false)
 	_sync_controls()
+	_sync_variant_actions()
 
 
 func _build_ui() -> void:
@@ -138,6 +177,8 @@ func _build_ui() -> void:
 	var shell := PanelContainer.new()
 	shell.name = "WorkshopPanel"
 	shell.theme_type_variation = "Sidebar"
+	shell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	shell.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	outer.add_child(shell)
 
 	var page := VBoxContainer.new()
@@ -413,17 +454,23 @@ func _build_delete_dialog() -> void:
 
 
 func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
+	_workshop_descriptor.clear()
 	var entry := Catalog.entry(id)
 	if entry.is_empty():
 		entry = Catalog.entry(Catalog.DEFAULT_ID)
 		id = Catalog.DEFAULT_ID
 	_base_id = str(entry.get("id", Catalog.DEFAULT_ID))
 	_select_base(_base_id)
+	_capabilities = {"scale": false, "weight": false, "power": false, "controls": false}
+	_update_capabilities()
+	_selected_variant_id = ""
 	var path := str(entry.get("data", ""))
 	if path.is_empty():
 		_base = {}
 		_base_bytes = PackedByteArray()
 		_compiled = {"ok": false, "errors": ["This catalog entry has no flight data."]}
+		if is_instance_valid(_preview):
+			_preview.set_aircraft(_base_id, 1.0)
 		set_note("This aircraft is a visual preview and has no flight data.")
 		_update_aircraft_description(entry)
 		return
@@ -432,6 +479,8 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 		_base = {}
 		_base_bytes = PackedByteArray()
 		_compiled = {"ok": false, "errors": loaded.get("errors", ["Aircraft data could not be loaded."])}
+		if is_instance_valid(_preview):
+			_preview.set_aircraft(_base_id, 1.0)
 		_update_aircraft_description(entry)
 		return
 	var loaded_model: Dictionary = loaded.get("model", {})
@@ -439,6 +488,8 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	_base_bytes = FileAccess.get_file_as_bytes(path)
 	if _base_bytes.is_empty():
 		_compiled = {"ok": false, "errors": ["Source aircraft bytes could not be read."]}
+		if is_instance_valid(_preview):
+			_preview.set_aircraft(_base_id, 1.0)
 		_update_aircraft_description(entry)
 		return
 	if not preserve_recipe:
@@ -451,7 +502,7 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	_update_capabilities()
 	_update_undo_button()
 	if is_instance_valid(_preview):
-		_preview.set_aircraft(_base_id, float(_recipe.get("scale", 1.0)))
+		_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
 
 
@@ -539,6 +590,8 @@ func _load_selected_variant() -> void:
 		return
 	_base = (variant.base as Dictionary).duplicate(true)
 	_base_bytes = snapshot_bytes.duplicate()
+	var saved_descriptor: Variant = variant.get("workshop_descriptor", {})
+	_workshop_descriptor = saved_descriptor.duplicate(true) if saved_descriptor is Dictionary else {}
 	_recipe = Compiler.defaults()
 	if variant.get("recipe", {}) is Dictionary:
 		_recipe.merge(variant.recipe, true)
@@ -548,7 +601,7 @@ func _load_selected_variant() -> void:
 	_update_aircraft_description(Catalog.entry(_base_id))
 	_update_capabilities()
 	_sync_controls()
-	_preview.set_aircraft(_base_id, float(_recipe.get("scale", 1.0)))
+	_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
 	set_note("Saved build loaded. Review the experimental values before a trial.")
 	_sync_variant_actions()
@@ -558,11 +611,21 @@ func _save_variant() -> void:
 	var display_name := _variant_name.text.strip_edges()
 	if display_name.is_empty() or not bool(_compiled.get("ok", false)):
 		return
-	var result: Dictionary = Store.save_variant(display_name, _base_id, _base_bytes, _recipe.duplicate(true), "", VARIANT_ROOT)
+	var result: Dictionary = Store.save_variant(
+		display_name,
+		_base_id,
+		_base_bytes,
+		_recipe.duplicate(true),
+		"",
+		VARIANT_ROOT,
+		_workshop_descriptor.duplicate(true)
+	)
 	if not bool(result.get("ok", false)):
 		set_note(_messages(result.get("errors", []), "The build could not be saved."))
 		return
 	var variant: Dictionary = result.get("variant", {})
+	var saved_descriptor: Variant = variant.get("workshop_descriptor", {})
+	_workshop_descriptor = saved_descriptor.duplicate(true) if saved_descriptor is Dictionary else {}
 	set_note(tr("Saved build: %s") % str(variant.get("name", display_name)))
 	_refresh_variants()
 	_select_variant(str(variant.get("id", "")))
@@ -606,7 +669,7 @@ func _on_scale_selected(index: int) -> void:
 		return
 	_capture_undo()
 	_recipe["scale"] = float(_scale_selector.get_item_metadata(index))
-	_preview.set_aircraft(_base_id, float(_recipe.scale))
+	_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
 
 
@@ -683,8 +746,12 @@ func _set_recipe(next_recipe: Dictionary, remember_current: bool) -> void:
 	_recipe.merge(next_recipe, true)
 	_sync_controls()
 	if is_instance_valid(_preview):
-		_preview.set_aircraft(_base_id, float(_recipe.get("scale", 1.0)))
+		_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
+
+
+func _preview_scale() -> float:
+	return float(_recipe.get("scale", 1.0)) if bool(_capabilities.get("scale", false)) else 1.0
 
 
 func _capture_undo() -> void:
@@ -833,7 +900,7 @@ func _messages(value: Variant, fallback: String) -> String:
 		for item: Variant in value:
 			var message := str(item).strip_edges()
 			if message != "":
-			lines.append(tr(message))
+				lines.append(tr(message))
 	elif str(value).strip_edges() != "":
 		lines.append(tr(str(value).strip_edges()))
 	if lines.is_empty() and fallback != "":
@@ -849,11 +916,13 @@ func _request_trial() -> void:
 		set_note("This catalog aircraft has no flight model and cannot start a trial.")
 		return
 	_trial_button.disabled = true
+	_trial_pending = true
 	trial_requested.emit({
 		"base_id": _base_id,
 		"recipe": _recipe.duplicate(true),
 		"base": _base.duplicate(true),
 		"base_bytes": _base_bytes,
+		"workshop_descriptor": _workshop_descriptor.duplicate(true),
 		"compiled": _compiled.duplicate(true),
 	})
 

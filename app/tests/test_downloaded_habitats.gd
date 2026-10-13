@@ -198,15 +198,17 @@ func _test_build(field: Dictionary, scenery: Dictionary, lake: Dictionary, high:
 	var source_meshes_match := true
 	var tint_channels_valid := true
 	var tint_varies := false
+	for plant: Dictionary in built_plants:
+		var tint: Color = plant.get("instance_tint", Color.WHITE)
+		tint_channels_valid = tint_channels_valid and tint.r >= 0.86 and tint.r <= 1.0 \
+			and tint.g >= 0.86 and tint.g <= 1.0 and tint.b >= 0.86 and tint.b <= 1.0 \
+			and is_equal_approx(tint.a, 1.0)
+		tint_varies = tint_varies or tint.r < 0.999 or tint.g < 0.999 or tint.b < 0.999
+	var color_data_enabled := true
 	var drawn_triangles := 0
 	for child: Node in node.get_children():
 		var batch := child as MultiMeshInstance3D
-		for instance_index in range(batch.multimesh.instance_count):
-			var tint := batch.multimesh.get_instance_color(instance_index)
-			tint_channels_valid = tint_channels_valid and tint.r >= 0.86 and tint.r <= 1.0 \
-				and tint.g >= 0.86 and tint.g <= 1.0 and tint.b >= 0.86 and tint.b <= 1.0 \
-				and is_equal_approx(tint.a, 1.0)
-			tint_varies = tint_varies or tint.r < 0.999 or tint.g < 0.999 or tint.b < 0.999
+		color_data_enabled = color_data_enabled and batch.multimesh.use_colors
 		var asset_id := str(child.name).get_slice("_Part_", 0)
 		var part_index := int(str(child.name).get_slice("_Part_", 1))
 		var parts := PlantLibrary.get_parts(asset_id)
@@ -223,7 +225,15 @@ func _test_build(field: Dictionary, scenery: Dictionary, lake: Dictionary, high:
 				and mesh.surface_get_material(surface_index) == source_materials[surface_index]
 		drawn_triangles += int(source_part.get("source_triangles", 0)) * batch.multimesh.instance_count
 	_check("each batch retains the downloaded mesh surfaces and source materials", source_meshes_match)
-	_check("plant instance tints stay subtle and preserve alpha-tested source color", tint_channels_valid and tint_varies)
+	var bounds: Array = node.get_meta("_imported_vegetation_state", {}).get("bounds", [])
+	var retained_tints_valid := bounds.size() == built_plants.size()
+	for record: Dictionary in bounds:
+		var tint: Color = record.get("tint", Color.WHITE)
+		retained_tints_valid = retained_tints_valid and tint.r >= 0.86 and tint.r <= 1.0 \
+			and tint.g >= 0.86 and tint.g <= 1.0 and tint.b >= 0.86 and tint.b <= 1.0 \
+			and is_equal_approx(tint.a, 1.0)
+	_check("plant instance tints are retained within subtle bounds", tint_channels_valid and tint_varies and retained_tints_valid)
+	_check("MultiMesh batches enable instance color data", color_data_enabled)
 	_check("drawn batch geometry matches metadata", drawn_triangles == expected_triangles)
 	node.free()
 

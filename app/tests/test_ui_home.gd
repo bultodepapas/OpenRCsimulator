@@ -80,6 +80,8 @@ func _run() -> void:
 	_check("initial focus on Fly", ui.focus_name() == "Fly", ui.focus_name())
 	_check("focus outline visible (keyboard focus)", fly.has_focus(true))
 	await ui.tap(KEY_DOWN)
+	_check("Down -> Workshop", ui.focus_name() == "Workshop", ui.focus_name())
+	await ui.tap(KEY_DOWN)
 	_check("Down -> Language", ui.focus_name() == "Language", ui.focus_name())
 	await ui.tap(KEY_RIGHT)
 	_check("Right -> Help", ui.focus_name() == "Help", ui.focus_name())

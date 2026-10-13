@@ -98,6 +98,7 @@ func _default_and_switch() -> void:
 		TranslationServer.get_locale())
 	_check("language button names the language in itself", home.language_button.text == "Language: English", home.language_button.text)
 
+	await ui.tap(KEY_DOWN) # Workshop
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_ENTER)
 	_check("Enter on Language -> Spanish at once", TranslationServer.get_locale() == "es" and home.fly_button.atr(home.fly_button.text) == "VOLAR")
@@ -116,6 +117,7 @@ func _default_and_switch() -> void:
 	root.add_child(again)
 	await ui.settle()
 	_check("next start remembers Spanish", TranslationServer.get_locale() == "es" and again.home.language_button.text == "Idioma: Español")
+	await ui.tap(KEY_DOWN) # Workshop
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_ENTER)
 	_check("and cycles back to English", TranslationServer.get_locale() == "en" and Preferences.load_from(PREFS).language == "en")

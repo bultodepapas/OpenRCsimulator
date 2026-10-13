@@ -137,9 +137,9 @@ static func build(batches: Dictionary, enable_wind: bool = false) -> Node3D:
 			)
 			var multi_mesh := MultiMesh.new()
 			multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
-			multi_mesh.mesh = draw_mesh
 			multi_mesh.use_colors = true
 			multi_mesh.use_custom_data = true
+			multi_mesh.mesh = draw_mesh
 			multi_mesh.instance_count = records.size()
 			var part_transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
 			var bounds_indices: Array[int] = []
@@ -159,6 +159,7 @@ static func build(batches: Dictionary, enable_wind: bool = false) -> Node3D:
 					"bounds": source_bounds,
 					"transform": instance_transform,
 					"damage_id": damage_id,
+					"tint": instance_tint,
 					"hidden": false,
 				})
 				bounds_indices.append(bounds_index)

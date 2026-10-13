@@ -871,3 +871,15 @@ msgstr "AvPág"
 msgid "Elevator trim: %+.1f° (PgUp down / PgDn up)"
 msgstr "Trim de profundidad: %+.1f° (RePág baja / AvPág sube)"
 
+msgid "Aircraft Workshop"
+msgstr "Laboratorio de aviones"
+
+msgid "Return to Workshop"
+msgstr "Volver al laboratorio"
+
+msgid "Experimental Workshop trial · Esc to return"
+msgstr "Prueba experimental del laboratorio · Esc para volver"
+
+msgid "The source aircraft is not available in this catalog."
+msgstr "El avión original no está disponible en este catálogo."
+

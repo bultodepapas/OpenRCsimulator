@@ -2,6 +2,7 @@ extends RefCounted
 ## Durable local storage for immutable aircraft variant snapshots.
 ## All writes stay under user:// so shipped aircraft resources remain read-only.
 
+const WorkshopDescriptor = preload("res://workshop/descriptor.gd")
 const DEFAULT_ROOT: String = "user://aircraft_variants"
 const VARIANT_FORMAT: String = "openrc-aircraft-variant"
 const VARIANT_VERSION: int = 1
@@ -21,6 +22,21 @@ const RECIPE_KEYS: PackedStringArray = [
 	"name",
 ]
 const VARIANT_KEYS: PackedStringArray = [
+	"format",
+	"version",
+	"id",
+	"revision",
+	"name",
+	"base_id",
+	"recipe",
+	"base_sha256",
+	"recipe_sha256",
+	"base_bytes_base64",
+	"created_at_unix",
+	"updated_at_unix",
+	"workshop_descriptor",
+]
+const VARIANT_REQUIRED_KEYS: PackedStringArray = [
 	"format",
 	"version",
 	"id",
@@ -61,7 +77,8 @@ static func save_variant(
 		base_bytes: PackedByteArray,
 		recipe: Dictionary,
 		id: String = "",
-		root: String = DEFAULT_ROOT
+		root: String = DEFAULT_ROOT,
+		workshop_descriptor: Dictionary = {}
 ) -> Dictionary:
 	var errors := PackedStringArray()
 	var root_result: Dictionary = _resolve_root(root)
@@ -109,6 +126,7 @@ static func save_variant(
 		return _result(false, errors)
 	var variant_dir: String = root_path.path_join(safe_id)
 	var existing_variant: Dictionary = {}
+	var stored_descriptor: Dictionary = {}
 	var revision: int = 1
 	var created_at: int = int(Time.get_unix_time_from_system())
 	var directory_exists: bool = DirAccess.dir_exists_absolute(variant_dir)
@@ -124,11 +142,23 @@ static func save_variant(
 		if (existing_variant["base_bytes"] as PackedByteArray) != base_bytes:
 			errors.append("A saved variant's exact base snapshot is immutable.")
 			return _result(false, errors)
+		var pinned_descriptor: Dictionary = existing_variant.get("workshop_descriptor", {})
+		if not pinned_descriptor.is_empty():
+			if not workshop_descriptor.is_empty() and workshop_descriptor != pinned_descriptor:
+				errors.append("A saved variant's Workshop descriptor is immutable.")
+				return _result(false, errors)
+			stored_descriptor = pinned_descriptor.duplicate(true)
 		created_at = int(existing_variant["created_at_unix"])
 		revision = maxi(int(existing_variant["revision"]) + 1, _next_revision(variant_dir))
 	elif FileAccess.file_exists(variant_dir):
 		errors.append("Variant ID collides with a file in the local store.")
 		return _result(false, errors)
+	if stored_descriptor.is_empty():
+		var descriptor_result: Dictionary = _resolve_workshop_descriptor(base_id, base_bytes, workshop_descriptor)
+		if not bool(descriptor_result["ok"]):
+			errors.append_array(descriptor_result["errors"])
+			return _result(false, errors)
+		stored_descriptor = descriptor_result["descriptor"]
 	var revisions_dir: String = variant_dir.path_join("revisions")
 	root_error = _make_directory(revisions_dir)
 	if root_error != OK:
@@ -152,6 +182,8 @@ static func save_variant(
 		"created_at_unix": created_at,
 		"updated_at_unix": now,
 	}
+	if not stored_descriptor.is_empty():
+		record["workshop_descriptor"] = stored_descriptor.duplicate(true)
 	var record_validation: Dictionary = _validate_variant_record(record, safe_id)
 	if not bool(record_validation["ok"]):
 		errors.append_array(record_validation["errors"])
@@ -334,6 +366,8 @@ static func _load_from_directory(variant_dir: String, expected_id: String) -> Di
 		"updated_at_unix": int(record["updated_at_unix"]),
 		"recovered_from_manifest_backup": recovered,
 	}
+	if record.has("workshop_descriptor"):
+		variant["workshop_descriptor"] = (record["workshop_descriptor"] as Dictionary).duplicate(true)
 	if recovered:
 		errors.append("Recovered the last committed revision from its manifest backup.")
 	return _result(true, errors, variant)
@@ -363,9 +397,15 @@ static func _validate_variant_record(value: Variant, expected_id: String) -> Dic
 		errors.append("Variant revision must be a JSON object.")
 		return _result(false, errors)
 	var record: Dictionary = value
-	if record.size() != VARIANT_KEYS.size() or not record.has_all(VARIANT_KEYS):
+	var has_descriptor: bool = record.has("workshop_descriptor")
+	var allowed_record_size: int = VARIANT_REQUIRED_KEYS.size() + (1 if has_descriptor else 0)
+	if record.size() != allowed_record_size or not record.has_all(VARIANT_REQUIRED_KEYS):
 		errors.append("Variant revision has missing or unknown fields.")
 		return _result(false, errors)
+	for key: Variant in record.keys():
+		if typeof(key) != TYPE_STRING or not VARIANT_KEYS.has(str(key)):
+			errors.append("Variant revision has missing or unknown fields.")
+			return _result(false, errors)
 	if record["format"] != VARIANT_FORMAT or not _integer_number(record["version"]) or int(record["version"]) != VARIANT_VERSION:
 		errors.append("Variant format or version is unsupported.")
 	if record["id"] != expected_id or not _valid_uuid(str(record["id"])):
@@ -382,10 +422,10 @@ static func _validate_variant_record(value: Variant, expected_id: String) -> Dic
 		var recipe_result: Dictionary = _validate_recipe(record["recipe"])
 		if not bool(recipe_result["ok"]):
 			errors.append_array(recipe_result["errors"])
-			if record["recipe"].has("id") and record["recipe"]["id"] != expected_id:
-				errors.append("Recipe ID must match the variant ID.")
-			if record["recipe"].has("name") and record["recipe"]["name"] != record["name"]:
-				errors.append("Recipe name must match the variant name.")
+		if record["recipe"].has("id") and record["recipe"]["id"] != expected_id:
+			errors.append("Recipe ID must match the variant ID.")
+		if record["recipe"].has("name") and record["recipe"]["name"] != record["name"]:
+			errors.append("Recipe name must match the variant name.")
 	var base_hash: String = str(record["base_sha256"])
 	var recipe_hash: String = str(record["recipe_sha256"])
 	if typeof(record["base_sha256"]) != TYPE_STRING or not _valid_sha256(base_hash):
@@ -400,6 +440,13 @@ static func _validate_variant_record(value: Variant, expected_id: String) -> Dic
 			errors.append("Base snapshot bytes are malformed or exceed the size limit.")
 		elif _sha256(decoded) != base_hash:
 			errors.append("Base snapshot SHA-256 does not match its exact bytes.")
+		elif has_descriptor:
+			if typeof(record["workshop_descriptor"]) != TYPE_DICTIONARY:
+				errors.append("Pinned Workshop descriptor must be a JSON object.")
+			else:
+				var descriptor_result: Dictionary = WorkshopDescriptor.validate(record["workshop_descriptor"], str(record["base_id"]), decoded)
+				if not bool(descriptor_result["ok"]):
+					errors.append_array(descriptor_result["errors"])
 	var recipe_json: String = JSON.stringify(record.get("recipe", {}), "", true, true)
 	if _valid_sha256(recipe_hash) and _sha256(recipe_json.to_utf8_buffer()) != recipe_hash:
 		errors.append("Recipe SHA-256 does not match the saved recipe.")
@@ -442,6 +489,25 @@ static func _validate_recipe(value: Variant) -> Dictionary:
 	if not bool(tree_result["ok"]):
 		errors.append_array(tree_result["errors"])
 	return _result(errors.is_empty(), errors)
+
+
+static func _resolve_workshop_descriptor(
+		base_id: String,
+		base_bytes: PackedByteArray,
+		provided: Dictionary
+) -> Dictionary:
+	if not provided.is_empty():
+		var checked: Dictionary = WorkshopDescriptor.validate(provided, base_id, base_bytes)
+		if not bool(checked["ok"]):
+			return checked
+		return {"ok": true, "errors": PackedStringArray(), "descriptor": checked["descriptor"]}
+	var path: String = WorkshopDescriptor.DEFAULT_ROOT.path_join(base_id + ".json")
+	if not FileAccess.file_exists(path):
+		return {"ok": true, "errors": PackedStringArray(), "descriptor": {}}
+	var loaded: Dictionary = WorkshopDescriptor.load_for(base_id, base_bytes)
+	if not bool(loaded["ok"]):
+		return loaded
+	return {"ok": true, "errors": PackedStringArray(), "descriptor": loaded["descriptor"]}
 
 
 static func _parse_base_snapshot(base_id: String, bytes: PackedByteArray) -> Dictionary:

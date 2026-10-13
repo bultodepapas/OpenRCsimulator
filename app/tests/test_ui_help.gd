@@ -59,6 +59,7 @@ func _run() -> void:
 	app.preferences_path = PREFS
 	root.add_child(app)
 	await ui.settle()
+	await ui.tap(KEY_DOWN) # Workshop
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_RIGHT)
 	_check("Home: Help reachable by keyboard", ui.focus_name() == "Help", ui.focus_name())
@@ -105,6 +106,7 @@ func _run() -> void:
 	var session: Node = app.flight.session
 	app.open_pause()
 	await ui.settle()
+	await ui.tap(KEY_DOWN) # Workshop adds one reachable action before Help
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_DOWN)

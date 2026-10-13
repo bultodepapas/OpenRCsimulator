@@ -156,7 +156,7 @@ func _run() -> void:
 	await _wait(0.3)
 	app.open_pause()
 	await ui.settle()
-	for i in 5: # Continue, Restart, Time of day, Help, Flight overlays (HUD-06), End
+	for i in 6: # Continue, Restart, Workshop, Time of day, Help, Flight overlays, End
 		await ui.tap(KEY_DOWN)
 	_check("End flight reachable by keyboard", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)

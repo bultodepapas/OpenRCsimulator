@@ -200,6 +200,12 @@ func _init() -> void:
 	column.add_child(fly_row)
 	workshop_button = _button("Aircraft Workshop", "")
 	workshop_button.name = "Workshop"
+	workshop_button.add_theme_font_size_override("font_size", 16)
+	for state: String in ["normal", "hover", "pressed", "disabled"]:
+		var compact: StyleBoxFlat = theme.get_stylebox(state, "Button").duplicate()
+		compact.content_margin_top = 2
+		compact.content_margin_bottom = 2
+		workshop_button.add_theme_stylebox_override(state, compact)
 	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
 	column.add_child(workshop_button)
 	column.add_child(_gap(10))
