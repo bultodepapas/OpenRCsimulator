@@ -5,6 +5,7 @@ const Soundscape = preload("res://audio/soundscape.gd")
 const Frames = preload("res://render/frames.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Propulsion = preload("res://physics/propulsion.gd")
+const Turbine = preload("res://physics/turbine.gd")
 const P51Geometry = preload("res://aircraft/p51d_geometry.gd")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
@@ -60,6 +61,19 @@ func snapshot() -> Dictionary:
 	var s: PackedFloat64Array = session.sim.state
 	var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
 	var velocity: Vector3 = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))))
+	# AUD-10: jet velocity V_j = gross thrust / mass flow from the accepted state (read-only pure functions), and the
+	# exhaust direction (opposite the thrust axis) for directivity. Static V_j at maximum rpm normalizes it.
+	var jet_velocity: float = 0.0
+	var jet_velocity_max: float = 1.0
+	var exhaust: Vector3 = Vector3.ZERO
+	if Turbine.is_turbine(prop):
+		var rho: float = session.air_density()
+		var u: float = M.dot(air.v_air, prop.axis)
+		var flow: float = Turbine.mass_flow(rpm, prop, rho, u)
+		jet_velocity = Turbine.gross_thrust(rpm, prop, rho, u) / flow if flow > 0.0 else 0.0
+		jet_velocity_max = Turbine.gross_thrust(float(prop.max_rpm), prop, rho) / Turbine.mass_flow(float(prop.max_rpm), prop, rho)
+		var axis: PackedFloat64Array = prop.axis
+		exhaust = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(-axis[0], -axis[1], -axis[2]))))
 	# Turbine load uses throttle; propellers use accepted-state aerodynamic torque.
 	return {
 		rpm = rpm, max_rpm = EngineSound.reference_rpm(prop),
@@ -70,6 +84,7 @@ func snapshot() -> Dictionary:
 		wind_speed = wind.length(), wind_direction = wind,
 		source = flight._airplane.root.global_position, listener = flight._camera.global_position, source_velocity = velocity,
 		paused = session.sim.paused, sun_elevation = elevation,
+		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
 	}
 
 

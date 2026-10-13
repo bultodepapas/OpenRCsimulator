@@ -1,0 +1,7 @@
+KILLED   scatter bursts outward from the core again: 1 failing checks (e.g. debris trails along the horizontal momentum)
+KILLED   C2 never releases a part: 4 failing checks (e.g. C2 spinner hit releases only the propeller)
+KILLED   C3 ignores the struck component: 6 failing checks (e.g. C3 left wing-tip hit releases only the left wing)
+KILLED   contact point ignored for delays: 3 failing checks (e.g. nearer sections never release later than farther ones)
+KILLED   farther sections release first: 2 failing checks (e.g. nearer sections never release later than farther ones)
+KILLED   C3 nose hit releases wings too: 1 failing checks (e.g. C3 nose hit releases propeller, engine and canopy)
+KILLED   C2 wing tip releases the wing: 1 failing checks (e.g. C2 wing-tip hit keeps the airframe together)

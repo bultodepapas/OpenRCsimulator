@@ -30,6 +30,7 @@ class Snapshot:
 	var has_compression: bool = false
 	var compression_m: float = 0.0 # Unknown unless has_compression.
 	var travel_limit_m: float = 0.0 # Unknown unless has_compression.
+	var soft_rule: String = "" # E3d1: why a soft hull contact became a crash ("impact", "depth"); empty otherwise.
 
 	func description() -> String:
 		if trigger == "gear_limit":
@@ -57,6 +58,22 @@ static func hull_contact(s: PackedFloat64Array, tick: int, hull: PackedFloat64Ar
 			_hull_kinematics(out, s, q)
 			break
 	if out.point_index >= 0 and not previous.is_empty():
+		out.crossing = HullCrossing.reconstruct(previous, s, hull)
+	return out
+
+
+## E3d1: snapshot of one named hull point (the soft-contact rule's choice), with the same kinematics and crossing
+## as hull_contact(). `rule` ("impact" or "depth") says why the soft contact became a crash.
+static func hull_point(s: PackedFloat64Array, tick: int, hull: PackedFloat64Array, index: int,
+		previous: PackedFloat64Array = PackedFloat64Array(), rule := "") -> Snapshot:
+	var out: Snapshot = _start(s, tick, "hull_contact")
+	if index < 0 or 3 * index + 3 > hull.size():
+		return out
+	out.point_index = index
+	out.body_point = hull.slice(3 * index, 3 * index + 3)
+	out.soft_rule = rule
+	_hull_kinematics(out, s, RB._att(s))
+	if not previous.is_empty():
 		out.crossing = HullCrossing.reconstruct(previous, s, hull)
 	return out
 

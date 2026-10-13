@@ -583,6 +583,16 @@
       ]
     ]
   },
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "spinner",
+    "tail_end",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top",
+    "belly"
+  ],
   "description": "Jensen Das Ugly Stik (Phil Kraft design), 60 in span, .61 two-stroke glow. Physics data only; visual geometry lives in assets/aircraft/ugly-stik-60/geometry.json.",
   "format": "openrc-aircraft v2",
   "frames": {

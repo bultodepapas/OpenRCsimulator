@@ -56,7 +56,7 @@ The Avanti covers 70 → 353 m in 14 s, while the Stik reaches 136 m. Normalized
 
 Rejected: random start offsets for the motor and propeller loops. The blade-pass loop is a harmonic of the firing loop at the same pitch. With independent offsets their phase changed the engine level by −4 to +3 dB and halved the dominant line (`offsets-*` in summary.json). Both loops start together again.
 
-Checks: `test_soundscape.gd` **103/103** (deliberate mutations of 07a, b, c, d and e each fail their checks); `test_wildlife.gd` 26/26; `test_crash_audio` 12/12, `test_crash_integration` 95/95, `test_engine_audio` 146/146, `test_engine_sound` 12/12, `test_ui_pause`, `test_scenery_ambience`, `test_time_of_day_edit` 57/57, `test_time_of_day_checkpoint` 48/48, `test_electric_input` 6/6. `check_parity.gd` fleet and electric: **pass** (audio on/off, `--audio-seed=4102026`). The full `app/test.sh` suite was not run for this step.
+Checks: `test_soundscape.gd` **103/103** (deliberate mutations of 07a, b, c, d and e each fail their checks); `test_wildlife.gd` 26/26; `test_crash_audio` 12/12, `test_crash_integration` 95/95, `test_engine_audio` 146/146, `test_engine_sound` 12/12, `test_ui_pause`, `test_scenery_ambience`, `test_time_of_day_edit` 57/57, `test_time_of_day_checkpoint` 48/48, `test_electric_input` 6/6, `test_ui_weather`, `test_ui_time_of_day`, all rerun on the final code. `check_parity.gd` fleet and electric: **pass** (audio on/off, `--audio-seed=4102026`). The full `app/test.sh` suite was not run for this step.
 
 ## Limits
 

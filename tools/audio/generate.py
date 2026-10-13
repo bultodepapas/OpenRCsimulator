@@ -28,6 +28,10 @@ ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "app" / "assets" / "audio" / "soundscape"
 RATE = 22_050
 TARGET_PEAK = 0.48
+# Pitch-shifted content lands in the mix at band limit x pitch. It must stay below the output Nyquist
+# (22,050 Hz on the slowest supported 44.1 kHz device), not the source Nyquist; 20 kHz keeps a margin.
+# The source Nyquist (11,025 Hz) only caps the band limit itself (audio realism plan, F1/F6).
+SHIFTED_LIMIT_HZ = 20_000
 MANIFEST_NAME = "manifest.json"
 FORMAT_NAME = "openrc-audio-soundscape-v1"
 GENERATOR_VERSION = "2"
@@ -54,7 +58,10 @@ ASSETS = (
     AssetSpec("motor_combustion.wav", 1, 0xA00205, "motor", 100, "100 Hz firing cycle with harmonic body and mild cycle-rate wobble", None, 4.0, 2_400),
     AssetSpec("motor_propeller.wav", 1, 0xA00206, "motor", 200, "200 Hz blade-pass tone with harmonic airflow texture", None, 4.0, 2_400),
     AssetSpec("motor_electric.wav", 1, 0xA00207, "motor", 600, "600 Hz electrical whine with harmonics and switching hiss", None, 4.0, 2_400),
-    AssetSpec("motor_turbine.wav", 5, 0xA00208, "motor", 760, "760 Hz tonal whistle over modulated jet hiss, source-limited to 4,300 Hz", None, 2.4, 4_300),
+    # AUD-10: turbine layers. Whine reference 82,320 rpm (shaft order 1,372 Hz); runtime pitch N/82,320 spans 0.53-1.87.
+    AssetSpec("turbine_whine.wav", 8, 0xA00209, "motor", 1_372, "Shaft-order whine: harmonics 1-7 of 1,372 Hz (82,320 rpm) with compressor hiss, source-limited to 10,000 Hz", None, 1.88, 10_000),
+    # Roar reference: spectral peak near 1.5 kHz; runtime pitch follows jet velocity (Strouhal scaling), at most 1.40.
+    AssetSpec("turbine_roar.wav", 10, 0xA0020A, "motor", None, "Jet mixing noise peaking near 1.5 kHz with turbulent modulation and low rumble, source-limited to 10,000 Hz", None, 1.40, 10_000),
     AssetSpec("birds_01.wav", 2.4, 0xA00211, "bird_phrase", None, "Stylized synthetic whistles; not species-specific", 1, 1.06, 10_000),
     AssetSpec("birds_02.wav", 1.9, 0xA00212, "bird_phrase", None, "Stylized synthetic whistles; not species-specific", 2, 1.06, 10_000),
     AssetSpec("birds_03.wav", 2.76, 0xA00213, "bird_phrase", None, "Stylized synthetic whistles; not species-specific", 3, 1.06, 10_000),
@@ -228,21 +235,28 @@ def make_electric(spec: AssetSpec) -> np.ndarray:
     return modulation * whine + rotor + 0.055 * switching
 
 
-def make_turbine(spec: AssetSpec) -> np.ndarray:
+def make_turbine_whine(spec: AssetSpec) -> np.ndarray:
+    """Compressor/shaft whine. Every component completes whole cycles in the loop (1,372 Hz x 8 s)."""
     seconds = spec.seconds
     t = timebase(seconds)
-    spool = band_noise(seconds, spec.seed + 100, 0.18, 3.2, tilt=0.45)
-    phase = 2.0 * np.pi * (spec.base_hz * t + 0.0045 * spool)
-    whistle = (
-        0.90 * np.sin(phase)
-        + 0.27 * np.sin(2.0 * phase + 0.26)
-        + 0.12 * np.sin(3.0 * phase + 0.57)
-        + 0.045 * np.sin(4.0 * phase + 0.91)
-    )
-    jet_hiss = band_noise(seconds, spec.seed, 500, 10_700, tilt=-0.10, resonances=((2_450, 720, 0.3),))
-    low_roar = band_noise(seconds, spec.seed + 200, 75, 1_050, tilt=0.48)
-    hiss_level = slow_envelope(seconds, spec.seed + 300, depth=0.12, low_hz=0.16, high_hz=1.1)
-    return whistle + 0.48 * jet_hiss * hiss_level + 0.16 * low_roar * (0.92 + 0.08 * spool)
+    wander = 0.0035 * band_noise(seconds, spec.seed + 100, 0.2, 6.0, tilt=0.3)
+    phase = 2.0 * np.pi * (spec.base_hz * t + wander)
+    weights = (1.0, 0.45, 0.30, 0.22, 0.15, 0.10, 0.07)
+    tone = np.zeros(t.size, dtype=np.float64)
+    for harmonic, weight in enumerate(weights, start=1):
+        tone += weight * np.sin(harmonic * phase + 0.21 * (harmonic - 1))
+    level = slow_envelope(seconds, spec.seed + 200, depth=0.06, low_hz=0.15, high_hz=1.5)
+    hiss = band_noise(seconds, spec.seed, 1_800, 9_600, tilt=-0.2, resonances=((4_200, 900, 0.6),))
+    return level * tone + 0.35 * hiss
+
+
+def make_turbine_roar(spec: AssetSpec) -> np.ndarray:
+    """Jet mixing noise: one broad peak (Strouhal-scaled at runtime), turbulent amplitude modulation, rumble."""
+    seconds = spec.seconds
+    roar = band_noise(seconds, spec.seed, 80, 9_400, tilt=0.8, resonances=((1_500, 1_100, 1.5),))
+    turbulence = band_noise(seconds, spec.seed + 100, 4.0, 40.0, tilt=0.4)
+    rumble = band_noise(seconds, spec.seed + 200, 40, 400, tilt=0.6)
+    return roar * (1.0 + 0.18 * turbulence) + 0.10 * rumble
 
 
 BIRD_PHRASES: dict[int, tuple[tuple[float, float, float, float, float, float, float], ...]] = {
@@ -289,7 +303,8 @@ GENERATORS = {
         "motor_combustion.wav": make_combustion,
         "motor_propeller.wav": make_propeller,
         "motor_electric.wav": make_electric,
-        "motor_turbine.wav": make_turbine,
+        "turbine_whine.wav": make_turbine_whine,
+        "turbine_roar.wav": make_turbine_roar,
     },
     "bird_phrase": {f"birds_{i:02d}.wav": make_bird for i in range(1, 7)},
 }
@@ -463,8 +478,8 @@ def check_existing(expected: dict[str, tuple[bytes, np.ndarray]], expected_manif
             failures.append(f"unusually large loop-boundary sample step in {spec.filename}: {report['seam_step_to_interior_p99']}")
         if spec.bandlimit_hz is not None:
             highest_shifted = spec.bandlimit_hz * spec.playback_pitch_factor
-            if highest_shifted >= RATE / 2.0:
-                failures.append(f"{spec.filename}: shifted band limit reaches Nyquist ({highest_shifted:.1f} Hz)")
+            if highest_shifted >= SHIFTED_LIMIT_HZ:
+                failures.append(f"{spec.filename}: shifted band limit reaches the output Nyquist margin ({highest_shifted:.1f} Hz)")
             if report["quantized_out_of_band_energy_db"] > -65.0:
                 failures.append(f"{spec.filename}: too much quantized energy above {spec.bandlimit_hz:g} Hz ({report['quantized_out_of_band_energy_db']} dB)")
 

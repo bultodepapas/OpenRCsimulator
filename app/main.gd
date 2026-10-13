@@ -469,6 +469,9 @@ func _ready() -> void:
 		add_child(_crash_director)
 		_crash_director.configure(self, physics_path, str(args.get("soundscape", "on")) != "off")
 		session.crash_auto_restart = false
+	# E3d1: interactive flights get soft hull contacts (a wingtip brush or belly slide continues); scripted, capture
+	# and trace routes keep "any hull contact is a crash". -- --soft-contacts=off restores it interactively.
+	session.soft_hull_contacts = not _scripted and not args.has("capture") and str(args.get("soft-contacts", "on")) != "off"
 	if bool(frametime_options.enabled):
 		_frametimes_path = str(frametime_options.path)
 		_frametimes_warmup_s = float(frametime_options.warmup_s)

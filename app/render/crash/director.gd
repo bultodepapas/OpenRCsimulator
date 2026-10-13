@@ -111,6 +111,11 @@ func _start() -> void:
 		_scenery_contacts = SceneryBodies.build_near(flight.session.collision_world(true), point)
 		add_child(_scenery_contacts)
 	report["trigger"] = impact.trigger
+	# E3d1: the soft-contact rule ends a flight only at C2 energy (transfer-free), so it never shows as a scrape.
+	var soft_rule := str(impact.get("soft_rule")) if impact.get("soft_rule") != null else ""
+	if not soft_rule.is_empty():
+		report["soft_rule"] = soft_rule
+		report["class"] = maxi(int(report.get("class", 0)), 2)
 	report["component_is_estimate"] = named.is_estimate
 	report["component_basis"] = named.basis
 	report["kinematics"] = "detected rigid contact point" if impact.has_kinematics else "detected CG proxy; deforming gear velocity unavailable"
@@ -129,6 +134,8 @@ func _start() -> void:
 	report["tank_ruptured"] = int(report["class"]) == 4 or (int(report["class"]) == 3 and str(report.get("component_group","")) in ["fuselage","engine","propeller"] and float(report["estimated_energy_j"]) >= 600.0)
 	report["tank_rupture_kind"] = "estimated: C4, or C3 central impact >=600 J; uncalibrated"
 	report["tick"] = impact.tick
+	# CR-09b: the wreck releases sections in order of distance from this point (render world space).
+	report["contact_point_world"] = _impact_point
 	var velocity := Frames.ned_to_render(Array(v_ned))
 	var angular := Frames.ned_to_render(Array(M.q_rotate(q,s.slice(RB.RATE,RB.RATE+3))))
 	var pose: Dictionary = flight._current_pose()

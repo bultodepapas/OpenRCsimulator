@@ -55,9 +55,10 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 	rng.seed = seed_value
 	_setup_buses()
 	_find_trees(field)
-	var motor_name: String = "motor_electric" if kind == "electric_prop" else ("motor_turbine" if kind == "turbine" else "motor_combustion")
+	var motor_name: String = "motor_electric" if kind == "electric_prop" else ("turbine_whine" if kind == "turbine" else "motor_combustion")
 	_voice("Motor", motor_name, AIRCRAFT_BUS, 8.0)
-	_voice("Propeller", "motor_propeller", AIRCRAFT_BUS, 8.0)
+	# A turbine has no propeller: its second aircraft voice carries the jet roar (AUD-10).
+	_voice("Propeller", "turbine_roar" if kind == "turbine" else "motor_propeller", AIRCRAFT_BUS, 8.0)
 	_voice("Airframe", "airframe", AIRCRAFT_BUS, 10.0)
 	_voice("WindLow", "wind_low", AMBIENCE_BUS, 20.0)
 	_voice("WindHigh", "wind_high", AMBIENCE_BUS, 20.0)

@@ -15,6 +15,14 @@ const MAX_SCATTER_ENERGY_FRACTION := 0.12
 const SHADOW_FADE_HEIGHT_M := 7.0
 const MIN_BOX_EDGE_M := 0.035
 const MAX_C3_CONTACT_EXPOSURE_INDEX_J := 1000.0
+# CR-09b: sections release in order of distance from the contact. Estimated presentation speed of the
+# break travelling through the airframe, not a measured stress-wave speed.
+const BREAK_PROPAGATION_MPS := 15.0
+const MIN_PROPAGATION_DELAY_S := 0.02
+const MAX_PROPAGATION_DELAY_S := 0.35
+# CR-09b: horizontal momentum leads the scatter direction; the outward share only separates parts.
+const SCATTER_OUTWARD_SHARE := 0.35
+const SCATTER_LIFT_SHARE := 0.25
 
 # Provisional cosmetic breakup exposure thresholds; these are not material limits.
 const C3_CONTACT_RELEASE_ORDER := ["propeller", "gear", "canopy", "engine"]
@@ -87,6 +95,9 @@ var _last_cg_model := Vector3.ZERO
 var _c3_contact_exposure_index_j := 0.0
 var _c3_contact_release_pending := false
 var _run_generation := 0
+var _release_kinds: Array = []
+var _contact_model := Vector3.ZERO
+var _has_contact := false
 var _rng := RandomNumberGenerator.new()
 
 
@@ -154,6 +165,9 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	if class_level < 3:
 		scatter_budget = 0.0
 	var component_hint := _component_description(severity).to_lower()
+	_release_kinds = _release_kinds_for(class_level, component_hint)
+	_has_contact = severity.get("contact_point_world") is Vector3 and _finite_vector(severity.contact_point_world) == severity.contact_point_world
+	_contact_model = pose.affine_inverse() * Vector3(severity.contact_point_world) if _has_contact else Vector3.ZERO
 	_last_class_level = class_level
 	_last_mass_kg = total_mass
 	_last_component_hint = component_hint
@@ -199,6 +213,10 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		group.due_s = float(GROUP_DELAYS_S.get(group.kind, 0.10))
 		if _component_matches(String(group.kind), component_hint):
 			group.due_s = 0.0
+		elif _has_contact:
+			# The break travels from the contact: nearer sections let go first.
+			var distance: float = (Vector3(group.center) - _contact_model).length()
+			group.due_s = clampf(distance / BREAK_PROPAGATION_MPS, MIN_PROPAGATION_DELAY_S, MAX_PROPAGATION_DELAY_S)
 		elif class_level == 3:
 			group.due_s = 0.14 if String(group.kind).begins_with("wing_") else 0.32
 		group.base_velocity = safe_velocity
@@ -312,6 +330,9 @@ func reset() -> void:
 	_last_group_weight_total = 0.0
 	_last_component_hint = ""
 	_last_cg_model = Vector3.ZERO
+	_release_kinds = []
+	_has_contact = false
+	_contact_model = Vector3.ZERO
 
 
 func get_stats() -> Dictionary:
@@ -345,6 +366,8 @@ func get_stats() -> Dictionary:
 		"class_level": _last_class_level,
 		"mass_kg": _last_mass_kg,
 		"component_hint": _last_component_hint,
+		"release_kinds": _release_kinds.duplicate(),
+		"contact_point_model": _contact_model if _has_contact else null,
 		"cg_model": _last_cg_model
 	}
 
@@ -603,7 +626,12 @@ func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transfor
 		if outward.length_squared() < 0.01:
 			outward = Vector3.UP
 		var variation := Vector3(_rng.randf_range(-0.18, 0.18), _rng.randf_range(-0.08, 0.20), _rng.randf_range(-0.18, 0.18))
-		var direction: Vector3 = (outward + aircraft_pose.basis * variation).normalized()
+		# CR-09b: debris trails along the horizontal momentum instead of bursting from the core centre.
+		var travel := Vector3(body.linear_velocity.x, 0.0, body.linear_velocity.z)
+		var lead: Vector3 = outward
+		if travel.length_squared() > 1.0:
+			lead = travel.normalized() + outward * SCATTER_OUTWARD_SHARE + Vector3.UP * SCATTER_LIFT_SHARE
+		var direction: Vector3 = (lead + aircraft_pose.basis * variation).normalized()
 		if direction.length_squared() > 0.5:
 			var before_velocity := body.linear_velocity
 			var parallel_speed := before_velocity.dot(direction)
@@ -740,13 +768,57 @@ func _component_description(severity: Dictionary) -> String:
 
 
 func _should_detach(kind: String, class_level: int, component_hint: String) -> bool:
-	if class_level < 3:
+	if class_level < 2:
 		return false
 	if class_level >= 4:
 		return true
+	if class_level == 2:
+		return _release_kinds.has(kind)
+	if not _release_kinds.is_empty():
+		return _release_kinds.has(kind)
 	if _component_matches(kind, component_hint):
 		return true
 	return kind in ["wing_left", "wing_right", "wing_center", "horizontal_tail", "vertical_tail"]
+
+
+## CR-09b: sections a named struck component releases. C2 loses only the small struck part; C3 the struck
+## section and its usual load-path neighbours. An empty C3 list keeps the legacy wings-and-tails set (fuselage,
+## belly or unnamed hits). Presentation estimates of typical RC outcomes, not material limits.
+func _release_kinds_for(class_level: int, hint: String) -> Array:
+	var h := hint.replace("-", "_").replace(" ", "_")
+	var kinds: Array = []
+	if class_level == 2:
+		if h.contains("spinner") or h.contains("propeller") or h.contains("nose"):
+			kinds = ["propeller"]
+		elif h.contains("stab") or h.contains("elevator"):
+			kinds = ["horizontal_tail"]
+		elif h.contains("fin") or h.contains("rudder"):
+			kinds = ["vertical_tail"]
+		elif h.contains("canopy") or h.contains("hatch"):
+			kinds = ["canopy"]
+		elif h.contains("gear") or h.contains("wheel"):
+			kinds = ["gear"]
+	elif class_level == 3:
+		if h.contains("left_wing") or h.contains("wing_left") or h.contains("left_tip"):
+			kinds = ["wing_left"]
+		elif h.contains("right_wing") or h.contains("wing_right") or h.contains("right_tip"):
+			kinds = ["wing_right"]
+		elif h.contains("spinner") or h.contains("propeller") or h.contains("nose") or h.contains("engine"):
+			kinds = ["propeller", "engine", "canopy"]
+		elif h.contains("stab") or h.contains("fin") or h.contains("tail") or h.contains("rudder") or h.contains("elevator"):
+			kinds = ["horizontal_tail", "vertical_tail"]
+		elif h.contains("canopy"):
+			kinds = ["canopy", "vertical_tail"]
+		elif h.contains("gear") or h.contains("wheel"):
+			kinds = ["gear", "propeller"]
+	# A model without split wing halves releases its single wing section instead.
+	var present: Array = []
+	for group: Dictionary in _prepared_groups:
+		present.append(String(group.get("kind", "")))
+	for i in kinds.size():
+		if String(kinds[i]).begins_with("wing_") and not present.has(kinds[i]) and present.has("wing_center"):
+			kinds[i] = "wing_center"
+	return kinds
 
 
 func _component_matches(kind: String, component_hint: String) -> bool:
