@@ -1,7 +1,7 @@
 # Camera and views plan
 
-**Date:** 2026-10-13. **Status:** proposed; nothing implemented. **Prefix:** CAM-00…CAM-22 (to register; see CAM-00). **Owner:** camera-views track, under the main line's acceptance (Gate 2 readability).
-**Would own:** `app/render/camera/`, `app/tests/test_camera_*.gd`, `docs/research/camera-views/`; after CAM-02, `app/render/pilot_camera.gd`.
+**Date:** 2026-10-13. **Status:** CAM-00, 01, 02, 04, 05, 08 and 10 implemented; CAM-03 partial; the rest proposed ([evidence](../research/camera-views/CAM-01-10/README.md)). **Prefix:** CAM-00…CAM-22 ([registry](../README.md#tracks-plans-and-step-ids)). **Owner:** camera-views track, under the main line's acceptance (Gate 2 readability).
+**Owns:** `app/render/camera/`, `app/tests/test_camera_*.gd`, `docs/research/camera-views/`; `app/render/pilot_camera.gd` remains the pilot-view law the rig calls.
 **Coordinated, not owned:** `app/main.gd` seams (main line); `app/render/crash/director.gd` (crash track); `app/audio/flight_audio.gd` (audio); `app/render/overlays/` (HUD track); `app/ui/`, `app/app_state/preferences.gd`, `app/i18n/es.po` (menu track); `app/data/fields/` and `openrc-field` (field-world/scenery); aircraft camera mounts (aircraft contract and each model team); `app/scenery/runway_scenario.gd` capture views (scenery).
 **Builds on:** [research 10: audio, perception and presentation](../research/roadmap-investigations/10-audio-perception-presentation.md) (X-PERC-1…9), [DT-00-R1-05 DPI and readability](../research/desktop-delivery-investigations/DT-00-R1/05-dpi-camera-readability.md), [VISUAL-QUALITY-PLAN](../VISUAL-QUALITY-PLAN.md) VQ-03, [DECISIONS](../../DECISIONS.md) 2026-10-05 "fixed ground pilot camera". External survey: [§10](#10-external-evidence).
 
@@ -81,7 +81,9 @@ New facts from the 2026-10-13 survey ([§10](#10-external-evidence)) that change
 | `camera_collision.gd` | pure | Terrain clearance from `GroundTerrain.sample`, proxy clearance from `CollisionWorld.nearby` |
 | `lens_distortion.gdshader` | shader | Optional FPV barrel distortion (CAM-12) |
 
-`main.gd` keeps one seam: it builds the rig instead of `PilotCamera.create`, and `_render_pose` calls `rig.update(ctx)` instead of `PilotCamera.aim/look`. `_view_name()` delegates to the rig. Key handling for camera keys moves to `rig.handles_input()`. `PilotCamera`'s static functions stay as compatibility wrappers until every caller (tests, `runway_scenario.gd`, `telemetry.gd`) migrates.
+`main.gd` keeps one seam: it builds the rig next to `PilotCamera.create`, and `_render_pose` calls `rig.update(...)` instead of `PilotCamera.aim/look`. `_view_name()` delegates to the rig.
+
+As built (CAM-02): the rig is a `RefCounted` with explicit arguments (target, airplane transform, body basis, dt, paused, terrain callable) rather than a context object; views with state are `chase_view.gd` and `orbit_view.gd`; pilot, close-up and look call `PilotCamera` directly, which keeps their pictures byte-identical. Camera keys stay in `main.gd` `_unhandled_input`, because `test_controls_reference.gd` reads the handled keys from that function; they call rig methods. `_inspect` remains a property mapped to the close-up view for existing fixtures. `camera_context.gd`, `camera_pose.gd`, `camera_mode.gd`, `camera_transition.gd` and `camera_collision.gd` are introduced only when a later step needs them.
 
 ### 4.2 Frame order
 
@@ -118,7 +120,7 @@ Camera follow runs in `_process` on the interpolated float64 pose, as Godot reco
 | **Shift+C** | Previous view | RealFlight uses Shift+C for its follow camera |
 | **1…7** (top row) | Direct view: 1 pilot, 2 chase, 3 onboard/FPV, 4 fly-by, 5 orbit, 6 field camera, 7 PiP on/off | Number keys are free today; aerofly RC 10 uses 1–4 for its camera modes |
 | **Z** | Pilot: zoom law on/off (today's auto-zoom); Shift+Z cycles the law (constant / partial / KGIV) | Unchanged meaning; RealFlight's Z changes zoom mode |
-| **+ / −**, mouse wheel | Zoom (pilot: manual FOV factor; chase/orbit: distance) | `KEY_EQUAL/KEY_MINUS/KEY_KP_ADD/KEY_KP_SUBTRACT`; same keys in RealFlight |
+| **= / −**, mouse wheel | Zoom (pilot: manual FOV factor; chase/orbit: distance) | `KEY_EQUAL/KEY_MINUS`; RealFlight uses +/−. Numpad keys are not bound: Help has no room for another key cap at 720p |
 | **Backspace** | Reset zoom and the current view's offsets | RealFlight's zoom reset |
 | **X / Shift+X** | Next / previous pilot station (CAM-15) | RealFlight's pit-position keys; X is free |
 | **G** (hold) | Look at the horizon/ground under the aircraft; release returns | SeligSIM G snap; G is free |
@@ -163,6 +165,8 @@ Hard constraints: the eye never moves with the aircraft; the look direction is e
 A camera behind the aircraft, for familiarization, aerobatic learning and filming.
 
 Two styles (D5). Horizon-locked is the norm elsewhere: FlightGear's fixed-angle chase does not inherit roll and pitch, aerofly's model camera ignores roll and pitch, and Cinemachine's "Lock To Target With World Up" is the same binding.
+
+As built (CAM-08), the position spring acts on the camera's **offset from the airplane**, not on its world position: a spring chasing a moving point lags by 2v/ω (≈ 7 m at 20 m/s), so straight flight would drag the camera to its lag cap. Wherever this section says "position follows p\*", read "the offset follows p\* − cg".
 
 - **Horizon-locked follow** (default). The camera's yaw follows an alignment heading; its up vector is world up. Alignments (SeligSIM offers all four): **track** (horizontal velocity heading; default), **heading** (body yaw), **air** (relative-wind heading; shows crab in wind), **north** (fixed). Position target: `p* = cg − D·ĥ + H·ŷ`. Below 3 m/s ground speed, track blends to heading over 1 m/s; on the ground it is heading. Position follows `p*` with a critically damped spring (half-life ≈ 0.25 s); yaw follows with half-life ≈ 0.35 s. A lag cap (Unreal `CameraLagMaxDistance`) keeps the boom within 1.5·D. Aim point: `cg + v·t_la` (look-ahead 0.15 s, clamped to 0.6·D; vertical look-ahead ignored, as Cinemachine's "Lookahead Ignore Y") so the aircraft sits slightly below centre.
 - **3D follow** (aerobatic). The camera rides a damped copy of the body attitude: `q_cam = slerp_damped(q_cam, q_body, half-life ≈ 0.2 s)`, offset `(−D, H, 0)` in that frame; up vector blended between world up and body up by `roll_follow ∈ [0, 1]` (0.3 default; Cinemachine "Lock To Target No Roll" is 0, "Lock To Target" is 1). Loops and rolls then look like an on-rails chase without the nausea of a rigid mount.
@@ -258,20 +262,20 @@ Software checks prove behavior and cost on the VM only. Readability and comfort 
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| CAM-00 | Register prefix and paths in the [registry](../README.md#tracks-plans-and-step-ids); owner decisions D1–D10; DECISIONS row; confirm keys | Registry row, DECISIONS row / proposed |
-| CAM-01 | `camera_math.gd`: exponential damping, analytic critically damped spring, damped slerp, look basis with zenith handling, FOV conversions (vertical/horizontal/diagonal, focal length), `projected_px`, zoom laws (constant, partial k, KGIV), natural FOV | `test_camera_math.gd`: known values, step responses at 30/60/144 fps equal at matched times, no NaN at vertical look / proposed |
-| CAM-02 | `camera_rig.gd`, context, pose, mode base; port pilot, close-up and landscape `look` as modes; `main.gd` seam; `PilotCamera` wrappers kept | Pixel-identical captures vs `main` for pilot (auto-zoom on/off), close-up and three `--look_*` cases; trace identity; `test_pilot_aids` unchanged / proposed |
+| CAM-00 | Register prefix and paths in the [registry](../README.md#tracks-plans-and-step-ids); owner decisions D1–D10; DECISIONS row; confirm keys | Registry row, DECISIONS row / done: registry row, DECISIONS row; D1–D12 defaults adopted provisionally ("proceed") |
+| CAM-01 | `camera_math.gd`: exponential damping, analytic critically damped spring, damped slerp, look basis with zenith handling, FOV conversions (vertical/horizontal/diagonal, focal length), `projected_px`, zoom laws (constant, partial k, KGIV), natural FOV | `test_camera_math.gd`: known values, step responses at 30/60/144 fps equal at matched times, no NaN at vertical look / done: 21 checks; spring frame-rate equality to float32 rounding |
+| CAM-02 | `camera_rig.gd`, context, pose, mode base; port pilot, close-up and landscape `look` as modes; `main.gd` seam; `PilotCamera` wrappers kept | Pixel-identical captures vs `main` for pilot (auto-zoom on/off), close-up and three `--look_*` cases; trace identity; `test_pilot_aids` unchanged / done: six byte-identical captures, trace identity, existing tests pass |
 | CAM-02b | Per-mode near/far (§4.3); pilot near 0.1 → 0.5 m | Depth-error table recomputed; treeline/runway/shadow captures at 100 m, 1 km, 3 km before/after (less z-fighting, no clipping of the station barrier or people); explained capture change / proposed |
-| CAM-03 | Crash director through `rig.request_focus`; remove its direct camera writes | `test_crash_pose` and crash captures unchanged for pilot and close-up / proposed (crash track reviews) |
-| CAM-04 | View selection input (C, Shift+C, 1…7, Backspace), `--view=`; controls reference, FIRST-LAUNCH, es.po | Key consistency test; trace identity per view / proposed |
-| CAM-05 | Pilot: smoothed FOV, manual zoom (+/−, wheel) | Step test: Z toggle reaches 95 % in 3τ with no overshoot; capture series / proposed |
+| CAM-03 | Crash director through `rig.request_focus`; remove its direct camera writes | `test_crash_pose` and crash captures unchanged for pilot and close-up / partial: `main.gd` passes "not pilot" to `director.aim`; the director (crash track) still writes the camera |
+| CAM-04 | View selection input (C, Shift+C, 1…7, Backspace), `--view=`; controls reference, FIRST-LAUNCH, es.po | Key consistency test; trace identity per view / done for 1, 2, 5, C, Shift+C, =, −, Backspace, wheel, right-drag, `--view`; G, Y, X with their views |
+| CAM-05 | Pilot: smoothed FOV, manual zoom (+/−, wheel) | Step test: Z toggle reaches 95 % in 3τ with no overshoot; capture series / done: no frame jumps > 3°, exact law FOV restored |
 | CAM-06 | Pilot: zoom law family (constant, partial k, CRRCSim form) and Shift+Z (implements X-PERC-2) | On-screen size ∝ d<sup>−k</sup> within 5 % from 20–300 m; CRRCSim form reproduces 35°/26°/20° at 21.5/200/400 m / proposed |
 | CAM-06b | Pilot: vertical shift (off-axis frustum) and KGIV | Ground point under the aircraft stays in frame for KGIV over a recorded circuit at 30–150 m height; no tilt of the horizon line; captures / proposed |
 | CAM-06c | Pilot: hold-to-look snaps (G, Y), dead zone/soft zone and flying-area bias (VQ-03) | Release returns to the exact tracking pose; aircraft never leaves the frame in a recorded aerobatic sequence; options default off until CAM-22 / proposed |
 | CAM-07 | Natural FOV from screen size and distance (implements X-PERC-1) | Pure test vs research 10 table; rendered span within ±1 px of prediction / proposed |
-| CAM-08 | Chase, horizon-locked style, terrain clearance | Synthetic trajectories (circle, loop, vertical line, tail slide, ground roll, reset): continuity, clearance ≥ 0.6 m, jitter budget; captures / proposed |
+| CAM-08 | Chase, horizon-locked style, terrain clearance | Synthetic trajectories (circle, loop, vertical line, tail slide, ground roll, reset): continuity, clearance ≥ 0.6 m, jitter budget; captures / done: offset spring (see §5.2), 12 s circle, vertical, tail slide, terrain, teleport, paused |
 | CAM-09 | Chase, 3D follow style, roll-follow, look-ahead, obstacle shortening | Loop and four-point roll captures; boom shortens at the pavilion fixture; frame-rate independence / proposed |
-| CAM-10 | Orbit/inspect replacing the rigid close-up; works paused | Close-up preset capture comparable to CAM-02; mouse never steals focus from overlays/pause / proposed |
+| CAM-10 | Orbit/inspect replacing the rigid close-up; works paused | Close-up preset capture comparable to CAM-02; mouse never steals focus from overlays/pause / done: orbit added beside the close-up (not replacing it yet); continuity and clamps tested |
 | CAM-11 | Onboard/FPV with derived default mounts; near/far per mode; depth check on the shadow | Captures for every catalog aircraft; z-fighting check on the ground shadow at 1, 5, 50 m / proposed |
 | CAM-12 | FPV lens: supersampled `SubViewport` (1.2–1.5×) + barrel warp | Distortion matches the chosen lens model within 1 % of radius; propeller blur and smoke visible (no screen-texture copy); cost within budget, or rejected / proposed |
 | CAM-13 | Aircraft camera mounts in the contract (optional capability), then per-aircraft data by each model team | Contract tests: invalid mounts refuse; aircraft without mounts fly unchanged / proposed (AS owner) |
@@ -288,6 +292,8 @@ Software checks prove behavior and cost on the VM only. Readability and comfort 
 Order: CAM-00 → 01 → 02 → 02b → 03/04 → 05 → 06 → 07 → 08 → 10 → 06b → 09 → 16 → 11 → 17 → 18 → 06c → 14 → 13 → 12 → 15 → 19 → 20 → 21 → 22. The pilot-view improvements come early because they serve Gate 2; the magnifier (CAM-18) moves ahead of the cinematic views because three of the surveyed sims treat it as a readability aid.
 
 ## 9. Decisions for the owner
+
+Status: the recommended defaults are adopted provisionally (2026-10-13, owner: "proceed with the implementation"); any of them can be overridden.
 
 | ID | Question | Recommended default | Alternatives |
 | --- | --- | --- | --- |

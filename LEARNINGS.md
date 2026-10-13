@@ -60,6 +60,14 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-13 · CAM-08 — spring the camera's offset, not its world position
+
+A critically damped spring that follows a moving point trails it by 2v/ω in steady motion: about 7 m at 20 m/s with a 0.25 s half-life, so a chase camera sprung in world space slides back to its lag cap whenever the airplane flies straight. Spring the offset from the target instead, in the target's frame or as a world-axis offset, and smooth only changes of heading, height or zoom. Test steady straight flight at several frame rates, not only a step response. Also, compare render results (`Vector3`, 32-bit) to about 1e-6. [CAM evidence](docs/research/camera-views/CAM-01-10/README.md)
+
+## 2026-10-13 · CAM-04 — Help has no spare row at 720p; key caps set the column width
+
+Help fit 598 of 600 px at 1280×720 before the camera keys. One extra row overflows, and a single wide key name ("Retroceso" in Spanish) widens the cap column so other rows wrap. Fold new keys into existing rows, prefer short key names, and run `test_ui_help.gd` in both languages before adding a shortcut. [CAM evidence](docs/research/camera-views/CAM-01-10/README.md)
+
 ## 2026-10-13 · AUD-07a — Godot loops click at every wrap; measure the mixer, not the asset
 
 Godot 4.7.2 plays a forward-looping `AudioStreamWAV` by interpolating past `loop_end` into the stream's silent padding. A perfectly seamless PCM source therefore clicks at every wrap, at any pitch and with or without 3D positioning: the second difference at the seam is hundreds of times its median. Source seam metrics and earlier speaker reviews passed it. Append a copy of the loop's first frames after `loop_end` (`Soundscape.seamless_loop`), and check loops in the mixed output. On the display-less Linux host, `--write-movie <x>.png --fixed-fps 60` under Xvfb writes the real Master mix to `<x>.wav`, frame-aligned with the simulation; `tools/audio/bench.sh` wraps it. [Audio realism plan, F14](docs/plans/audio-realism.md)
