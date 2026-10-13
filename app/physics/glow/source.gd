@@ -17,10 +17,22 @@ class PreparedEvaluator extends RefCounted:
 
 	func _init(model: Dictionary) -> void:
 		_model = model.duplicate(true)
+		_make_read_only(_model)
 		_family = str(_model.family)
 		_parameters = _model.parameters
 		_operation = _model.operation
 		_identity = _model.identity
+
+	func _make_read_only(value: Variant) -> void:
+		if value is Dictionary:
+			var keys: Array = value.keys()
+			for key: Variant in keys:
+				_make_read_only(value[key])
+			value.make_read_only()
+		elif value is Array:
+			for index: int in range(value.size()):
+				_make_read_only(value[index])
+			value.make_read_only()
 
 
 static func evaluate(model: Dictionary, rpm: float, admission: float, mixture: float,
@@ -60,7 +72,10 @@ static func prepare_evaluator(model: Dictionary) -> Dictionary:
 	if not normalized.get("ok", false):
 		return {ok = false, message = "Glow profile provenance is invalid: " + str(normalized.errors[0])}
 	var expected: Dictionary = normalized.model
-	var input_hash: Variant = model.get("identity", {}).get("input_sha256")
+	var model_identity: Variant = model.get("identity")
+	if not model_identity is Dictionary:
+		return {ok = false, message = "Glow normalized model identity is malformed"}
+	var input_hash: Variant = model_identity.get("input_sha256")
 	if input_hash != null:
 		if typeof(input_hash) != TYPE_STRING or not _is_sha256(str(input_hash)):
 			return {ok = false, message = "Glow profile input identity is malformed"}
@@ -78,7 +93,6 @@ static func evaluate_prepared(evaluator: PreparedEvaluator, rpm: float, admissio
 		firing_fraction: float = 1.0) -> Dictionary:
 	if not evaluator is PreparedEvaluator:
 		return {ok = false, message = "A prepared glow evaluator is required"}
-	var model: Dictionary = evaluator._model
 	var family: String = evaluator._family
 	if not is_finite(rpm) or rpm < 0.0 or rpm > float(evaluator._operation.max_rpm):
 		return {ok = false, message = "RPM query outside the declared profile envelope"}
@@ -131,7 +145,7 @@ static func unit_fuel_flow_prepared(evaluator: PreparedEvaluator, rpm: float,
 		unit_flow = delivered_fuel_kg_s / mixture if mixture > 0.0 else 0.0
 	if not is_finite(unit_flow) or unit_flow < 0.0:
 		return {ok = false, message = "Fuel-flow scale is nonfinite"}
-	return {ok = true, message = "", unit_fuel_flow_kg_s_per_mixture: unit_flow}
+	return {"ok": true, "message": "", "unit_fuel_flow_kg_s_per_mixture": unit_flow}
 
 
 static func _is_sha256(value: String) -> bool:

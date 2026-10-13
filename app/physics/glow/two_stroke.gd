@@ -16,6 +16,34 @@ static func evaluate(
 		running: bool = true,
 		firing_fraction: float = 1.0
 	) -> Dictionary:
+	return _evaluate_impl(rpm, admission, mixture, dry_density_kg_m3, parameters,
+		running, firing_fraction, false)
+
+
+## Internal entry used only with detached, profile-validated parameters.
+static func _evaluate_prevalidated(
+		rpm: float,
+		admission: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		parameters: Dictionary,
+		running: bool,
+		firing_fraction: float
+	) -> Dictionary:
+	return _evaluate_impl(rpm, admission, mixture, dry_density_kg_m3, parameters,
+		running, firing_fraction, true)
+
+
+static func _evaluate_impl(
+		rpm: float,
+		admission: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		parameters: Dictionary,
+		running: bool,
+		firing_fraction: float,
+		prevalidated: bool
+	) -> Dictionary:
 	var result := _empty_result("")
 
 	if not is_finite(rpm) or rpm < 0.0:
@@ -29,57 +57,111 @@ static func evaluate(
 	if not is_finite(firing_fraction) or firing_fraction < 0.0 or firing_fraction > 1.0:
 		return _empty_result("firing_fraction must be finite and in [0, 1]")
 
-	var scalar_result: Dictionary = _read_number(parameters, "displacement_m3", 0.0, false, INF, true)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var displacement_m3: float = float(scalar_result["value"])
+	var displacement_m3: float
+	var oil_fraction: float
+	var stoich_air_fuel_ratio: float
+	var fuel_lhv_j_kg: float
+	var delivery_table: PackedFloat64Array
+	var trapping_table: PackedFloat64Array
+	var scavenge_table: PackedFloat64Array
+	var mechanical_table: PackedFloat64Array
+	var combustion_table: PackedFloat64Array
+	var indicated_table: PackedFloat64Array
+	if prevalidated:
+		displacement_m3 = float(parameters.displacement_m3)
+		oil_fraction = float(parameters.oil_fraction)
+		stoich_air_fuel_ratio = float(parameters.stoich_air_fuel_ratio)
+		fuel_lhv_j_kg = float(parameters.fuel_lhv_j_kg)
+		delivery_table = parameters.delivery_ratio
+		trapping_table = parameters.trapping_efficiency
+		scavenge_table = parameters.scavenge_pressure_pa
+		mechanical_table = parameters.mechanical_torque_nm
+		combustion_table = parameters.combustion_efficiency
+		indicated_table = parameters.indicated_efficiency
+		if (rpm < delivery_table[0] or rpm > delivery_table[delivery_table.size() - 2]
+			or rpm < trapping_table[0] or rpm > trapping_table[trapping_table.size() - 2]
+			or rpm < scavenge_table[0] or rpm > scavenge_table[scavenge_table.size() - 2]
+			or rpm < mechanical_table[0] or rpm > mechanical_table[mechanical_table.size() - 2]
+			or rpm < indicated_table[0] or rpm > indicated_table[indicated_table.size() - 2]):
+			return _empty_result("RPM table does not cover the query")
+		if mixture < combustion_table[0] or mixture > combustion_table[combustion_table.size() - 2]:
+			return _empty_result("combustion_efficiency does not cover the query")
+	else:
+		var scalar_result: Dictionary = _read_number(parameters, "displacement_m3", 0.0, false, INF, true)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		displacement_m3 = float(scalar_result["value"])
 
-	scalar_result = _read_number(parameters, "oil_fraction", 0.0, true, 1.0, false)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var oil_fraction: float = float(scalar_result["value"])
+		scalar_result = _read_number(parameters, "oil_fraction", 0.0, true, 1.0, false)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		oil_fraction = float(scalar_result["value"])
 
-	scalar_result = _read_number(parameters, "stoich_air_fuel_ratio", 0.0, false, INF, true)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var stoich_air_fuel_ratio: float = float(scalar_result["value"])
+		scalar_result = _read_number(parameters, "stoich_air_fuel_ratio", 0.0, false, INF, true)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		stoich_air_fuel_ratio = float(scalar_result["value"])
 
-	scalar_result = _read_number(parameters, "fuel_lhv_j_kg", 0.0, false, INF, true)
-	if not scalar_result["ok"]:
-		return _empty_result(str(scalar_result["message"]))
-	var fuel_lhv_j_kg: float = float(scalar_result["value"])
+		scalar_result = _read_number(parameters, "fuel_lhv_j_kg", 0.0, false, INF, true)
+		if not scalar_result["ok"]:
+			return _empty_result(str(scalar_result["message"]))
+		fuel_lhv_j_kg = float(scalar_result["value"])
 
-	var delivery_result: Dictionary = _read_table(parameters, "delivery_ratio", rpm, 0.0, true, INF, true)
-	if not delivery_result["ok"]:
-		return _empty_result(str(delivery_result["message"]))
-	var delivery_table: PackedFloat64Array = delivery_result["values"]
+		var delivery_result: Dictionary = _read_table(parameters, "delivery_ratio", rpm, 0.0, true, INF, true)
+		if not delivery_result["ok"]:
+			return _empty_result(str(delivery_result["message"]))
+		delivery_table = delivery_result["values"]
 
-	var trapping_result: Dictionary = _read_table(parameters, "trapping_efficiency", rpm, 0.0, true, 1.0, true)
-	if not trapping_result["ok"]:
-		return _empty_result(str(trapping_result["message"]))
-	var trapping_table: PackedFloat64Array = trapping_result["values"]
+		var trapping_result: Dictionary = _read_table(parameters, "trapping_efficiency", rpm, 0.0, true, 1.0, true)
+		if not trapping_result["ok"]:
+			return _empty_result(str(trapping_result["message"]))
+		trapping_table = trapping_result["values"]
 
-	var scavenge_result: Dictionary = _read_table(parameters, "scavenge_pressure_pa", rpm, 0.0, true, INF, true)
-	if not scavenge_result["ok"]:
-		return _empty_result(str(scavenge_result["message"]))
-	var scavenge_table: PackedFloat64Array = scavenge_result["values"]
+		var scavenge_result: Dictionary = _read_table(parameters, "scavenge_pressure_pa", rpm, 0.0, true, INF, true)
+		if not scavenge_result["ok"]:
+			return _empty_result(str(scavenge_result["message"]))
+		scavenge_table = scavenge_result["values"]
 
-	var mechanical_result: Dictionary = _read_table(parameters, "mechanical_torque_nm", rpm, 0.0, true, INF, true)
-	if not mechanical_result["ok"]:
-		return _empty_result(str(mechanical_result["message"]))
-	var mechanical_table: PackedFloat64Array = mechanical_result["values"]
+		var mechanical_result: Dictionary = _read_table(parameters, "mechanical_torque_nm", rpm, 0.0, true, INF, true)
+		if not mechanical_result["ok"]:
+			return _empty_result(str(mechanical_result["message"]))
+		mechanical_table = mechanical_result["values"]
 
-	var combustion_result: Dictionary = _read_table(parameters, "combustion_efficiency", mixture, 0.0, true, 1.0, true)
-	if not combustion_result["ok"]:
-		return _empty_result(str(combustion_result["message"]))
-	var combustion_table: PackedFloat64Array = combustion_result["values"]
+		var combustion_result: Dictionary = _read_table(parameters, "combustion_efficiency", mixture, 0.0, true, 1.0, true)
+		if not combustion_result["ok"]:
+			return _empty_result(str(combustion_result["message"]))
+		combustion_table = combustion_result["values"]
 
-	var indicated_result: Dictionary = _read_table(parameters, "indicated_efficiency", rpm, 0.0, true, 1.0, true)
-	if not indicated_result["ok"]:
-		return _empty_result(str(indicated_result["message"]))
-	var indicated_table: PackedFloat64Array = indicated_result["values"]
+		var indicated_result: Dictionary = _read_table(parameters, "indicated_efficiency", rpm, 0.0, true, 1.0, true)
+		if not indicated_result["ok"]:
+			return _empty_result(str(indicated_result["message"]))
+		indicated_table = indicated_result["values"]
 
-	var cycle_frequency_hz: float = rpm / 60.0
+	return _calculate_validated(rpm, admission, mixture, dry_density_kg_m3,
+		displacement_m3, oil_fraction, stoich_air_fuel_ratio, fuel_lhv_j_kg,
+		delivery_table, trapping_table, scavenge_table, mechanical_table,
+		combustion_table, indicated_table, running, firing_fraction)
+
+
+static func _calculate_validated(
+		rpm: float,
+		admission: float,
+		mixture: float,
+		dry_density_kg_m3: float,
+		displacement_m3: float,
+		oil_fraction: float,
+		stoich_air_fuel_ratio: float,
+		fuel_lhv_j_kg: float,
+		delivery_table: PackedFloat64Array,
+		trapping_table: PackedFloat64Array,
+		scavenge_table: PackedFloat64Array,
+		mechanical_table: PackedFloat64Array,
+		combustion_table: PackedFloat64Array,
+		indicated_table: PackedFloat64Array,
+		running: bool,
+		firing_fraction: float
+	) -> Dictionary:
+	var result := _empty_result("")	var cycle_frequency_hz: float = rpm / 60.0
 	var opportunity_frequency_hz: float = cycle_frequency_hz
 	var omega_rad_s: float = 2.0 * PI * rpm / 60.0
 	var delivery_ratio: float = _sample(delivery_table, rpm)
@@ -161,120 +243,6 @@ static func evaluate(
 	result["opportunity_frequency_hz"] = opportunity_frequency_hz
 	result["firing_frequency_hz"] = firing_frequency_hz
 
-	if not _finite_outputs(result):
-		return _empty_result("calculation produced a nonfinite output")
-	return result
-
-
-## Internal fast path for immutable tables already checked by Profile.prepare().
-## Dynamic domains and mixture-table coverage remain checked at every stage.
-static func _evaluate_prevalidated(
-		rpm: float,
-		admission: float,
-		mixture: float,
-		dry_density_kg_m3: float,
-		parameters: Dictionary,
-		running: bool,
-		firing_fraction: float
-	) -> Dictionary:
-	if not is_finite(rpm) or rpm < 0.0:
-		return _empty_result("rpm must be finite and nonnegative")
-	if not is_finite(admission) or admission < 0.0 or admission > 1.0:
-		return _empty_result("admission must be finite and in [0, 1]")
-	if not is_finite(mixture) or mixture < 0.0:
-		return _empty_result("mixture must be finite and nonnegative")
-	if not is_finite(dry_density_kg_m3) or dry_density_kg_m3 <= 0.0:
-		return _empty_result("dry_density_kg_m3 must be finite and positive")
-	if not is_finite(firing_fraction) or firing_fraction < 0.0 or firing_fraction > 1.0:
-		return _empty_result("firing_fraction must be finite and in [0, 1]")
-	var delivery_table: PackedFloat64Array = parameters.delivery_ratio
-	var trapping_table: PackedFloat64Array = parameters.trapping_efficiency
-	var scavenge_table: PackedFloat64Array = parameters.scavenge_pressure_pa
-	var mechanical_table: PackedFloat64Array = parameters.mechanical_torque_nm
-	var combustion_table: PackedFloat64Array = parameters.combustion_efficiency
-	var indicated_table: PackedFloat64Array = parameters.indicated_efficiency
-	if mixture < combustion_table[0] or mixture > combustion_table[combustion_table.size() - 2]:
-		return _empty_result("combustion_efficiency does not cover the query")
-	var displacement_m3: float = float(parameters.displacement_m3)
-	var oil_fraction: float = float(parameters.oil_fraction)
-	var stoich_air_fuel_ratio: float = float(parameters.stoich_air_fuel_ratio)
-	var fuel_lhv_j_kg: float = float(parameters.fuel_lhv_j_kg)
-	var cycle_frequency_hz: float = rpm / 60.0
-	var opportunity_frequency_hz: float = cycle_frequency_hz
-	var omega_rad_s: float = 2.0 * PI * rpm / 60.0
-	var delivery_ratio: float = _sample(delivery_table, rpm)
-	var trapping_efficiency: float = _sample(trapping_table, rpm)
-	var air_delivered_kg_cycle: float = (
-		dry_density_kg_m3 * displacement_m3 * admission * delivery_ratio
-	)
-	var air_charge_kg_cycle: float = air_delivered_kg_cycle * trapping_efficiency
-	var indicated_torque_nm: float = 0.0
-	var mechanical_torque_nm: float = 0.0
-	var pumping_torque_nm: float = 0.0
-	var delivered_fuel_kg_s: float = 0.0
-	var burned_fuel_kg_s: float = 0.0
-	var fuel_input_power_w: float = 0.0
-	var chemical_power_w: float = 0.0
-	var indicated_power_w: float = 0.0
-	var cycle_work_j: float = 0.0
-	var firing_frequency_hz: float = 0.0
-	if rpm > 0.0:
-		mechanical_torque_nm = _sample(mechanical_table, rpm)
-		var scavenge_pressure_pa: float = _sample(scavenge_table, rpm)
-		var scavenge_work_j: float = (
-			scavenge_pressure_pa * displacement_m3 * delivery_ratio * admission
-		)
-		pumping_torque_nm = scavenge_work_j / CYCLE_ANGLE_RAD
-		if running:
-			var gross_premix_kg_cycle: float = (
-				air_delivered_kg_cycle * mixture
-				/ stoich_air_fuel_ratio
-				/ (1.0 - oil_fraction)
-			)
-			var gross_combustible_kg_cycle: float = gross_premix_kg_cycle * (1.0 - oil_fraction)
-			var combustible_trapped_kg_cycle: float = gross_combustible_kg_cycle * trapping_efficiency
-			var oxygen_limited_fuel_kg_cycle: float = air_charge_kg_cycle / stoich_air_fuel_ratio
-			var combustion_efficiency: float = _sample(combustion_table, mixture)
-			var burned_kg_cycle: float = minf(
-				combustible_trapped_kg_cycle, oxygen_limited_fuel_kg_cycle
-			) * combustion_efficiency * firing_fraction
-			var indicated_efficiency: float = _sample(indicated_table, rpm)
-			delivered_fuel_kg_s = gross_premix_kg_cycle * opportunity_frequency_hz
-			burned_fuel_kg_s = burned_kg_cycle * opportunity_frequency_hz
-			if burned_kg_cycle > 0.0:
-				firing_frequency_hz = opportunity_frequency_hz * firing_fraction
-			fuel_input_power_w = gross_combustible_kg_cycle * opportunity_frequency_hz * fuel_lhv_j_kg
-			chemical_power_w = burned_fuel_kg_s * fuel_lhv_j_kg
-			cycle_work_j = burned_kg_cycle * fuel_lhv_j_kg * indicated_efficiency
-			indicated_torque_nm = cycle_work_j / CYCLE_ANGLE_RAD
-			indicated_power_w = indicated_torque_nm * omega_rad_s
-	var mechanical_loss_w: float = mechanical_torque_nm * omega_rad_s
-	var pumping_loss_w: float = pumping_torque_nm * omega_rad_s
-	var valve_loss_w: float = 0.0
-	var unburned_fuel_kg_s: float = delivered_fuel_kg_s - burned_fuel_kg_s
-	var shaft_torque_nm: float = indicated_torque_nm - mechanical_torque_nm - pumping_torque_nm
-	var result := _empty_result("")
-	result["ok"] = true
-	result["message"] = ""
-	result["indicated_torque_nm"] = indicated_torque_nm
-	result["mechanical_torque_nm"] = mechanical_torque_nm
-	result["pumping_torque_nm"] = pumping_torque_nm
-	result["valve_torque_nm"] = 0.0
-	result["shaft_torque_nm"] = shaft_torque_nm
-	result["delivered_fuel_kg_s"] = delivered_fuel_kg_s
-	result["burned_fuel_kg_s"] = burned_fuel_kg_s
-	result["unburned_fuel_kg_s"] = unburned_fuel_kg_s
-	result["fuel_input_power_w"] = fuel_input_power_w
-	result["chemical_power_w"] = chemical_power_w
-	result["indicated_power_w"] = indicated_power_w
-	result["mechanical_loss_w"] = mechanical_loss_w
-	result["pumping_loss_w"] = pumping_loss_w
-	result["valve_loss_w"] = 0.0
-	result["cycle_work_j"] = cycle_work_j
-	result["air_charge_kg_cycle"] = air_charge_kg_cycle
-	result["cycle_frequency_hz"] = cycle_frequency_hz
-	result["opportunity_frequency_hz"] = opportunity_frequency_hz
-	result["firing_frequency_hz"] = firing_frequency_hz
 	if not _finite_outputs(result):
 		return _empty_result("calculation produced a nonfinite output")
 	return result

@@ -1,8 +1,8 @@
 # D6e-R1 — reported climb and pilot elevator trim
 
-2026-10-13. **Status: manual trim implemented and verified; the reported hands-off Timber climb at 25% throttle is not reproduced and remains unresolved.** Main physics/input track; this report does not close a flight-validation gate.
+2026-10-13. **Status: the owner's Ugly Stik loops are captured, reproduced and internally explained; real-aircraft fidelity remains unvalidated. Manual trim is implemented and verified. The earlier hands-off Timber climb at 25% throttle remains unreproduced and unresolved.** Main physics/input track; this report does not close a flight-validation gate.
 
-The owner reports a common tendency to climb, especially Timber at low power with keyboard controls and no elevator input; the Stik feels incorrectly trimmed. The initial power-step hypothesis alone does **not** explain that report. The owner confirmed running this repository on Windows. The actual flight's launch choice and state history remain unconfirmed.
+The owner reports a common tendency to climb, especially Timber at low power with keyboard controls and no elevator input; the Stik feels incorrectly trimmed. The initial power-step hypothesis alone does **not** explain that report. The owner confirmed running this repository on Windows. A later actual Stik flight establishes its airborne launch and control history below; it does not establish the history of the original Timber report.
 
 ## Evidence
 

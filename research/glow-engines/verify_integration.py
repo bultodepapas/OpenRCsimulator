@@ -28,6 +28,15 @@ def main():
     out.mkdir(parents=True, exist_ok=False)
     godot = args.godot.resolve()
     results = []
+    source_paths = sorted({p for p in (ROOT/'app').rglob('*.gd') if '.godot' not in p.parts} |
+                          set((ROOT/'app/data/glow').glob('*.json')) |
+                          set((ROOT/'research/glow-engines').glob('*.py')) |
+                          set((ROOT/'app/data/aircraft').glob('stik_glow*.json')))
+    def fingerprints():
+        return {p.relative_to(ROOT).as_posix():
+                hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else 'missing'
+                for p in source_paths}
+    sources_before = fingerprints()
 
     def run(label, command, timeout=180):
         try:
@@ -50,6 +59,8 @@ def main():
         ('research/glow-engines/test_profiles.py',[]),
         ('research/glow-engines/installation_schema.py',['--check']),
         ('research/glow-engines/test_installation_schema.py',[]),
+        ('research/glow-engines/test_refinement_report.py',[]),
+        ('research/glow-engines/test_pilot_review.py',[]),
         ('research/glow-engines/reference/test_reference.py',[]),
         ('research/aircraft-standardization/build_schema.py',['--check']),
         ('app/tests/check_transcendentals.py',[]),
@@ -72,15 +83,19 @@ def main():
         run(p.stem,base+['--script','res://tests/'+p.name])
     run('glow-catalog-cli', [sys.executable, 'research/glow-engines/packaged_smoke.py',
         '--godot', str(godot), '--out', str(out/'cli')])
-    sources = sorted(set(scripts) | tests | set((ROOT/'app/data/glow').glob('*.json')) |
-                     set((ROOT/'research/glow-engines').glob('*.py')) |
-                     set((ROOT/'app/data/aircraft').glob('stik_glow*.json')))
-    report = dict(format='openrc-glow-integration-proof v1',results=results,
-                  ok=all(r['passed'] for r in results),
-                  source_sha256={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
+    sources_after = fingerprints()
+    unchanged = sources_before == sources_after
+    report = dict(format='openrc-glow-integration-proof v2',results=results,
+                  ok=all(r['passed'] for r in results) and unchanged,
+                  source_sha256=sources_before, source_sha256_after=sources_after,
+                  sources_unchanged=unchanged,
+                  source_hash_scope='Declared app GDScripts and glow data/Python sources before and after verification; drift refuses a single-snapshot pass',
                   claim='Software verification of both candidate engine families; physical/pilot/release gates remain separate')
     (out/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(f"{sum(r['passed'] for r in results)}/{len(results)} commands passed",flush=True)
+    if not unchanged:
+        print('Source changed during verification: ' + ', '.join(p for p in sources_before
+              if sources_before[p] != sources_after[p]), flush=True)
     raise SystemExit(0 if report['ok'] else 1)
 
 if __name__=='__main__': main()

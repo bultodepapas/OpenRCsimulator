@@ -30,7 +30,20 @@ class PreparedEvaluator extends RefCounted:
 	func _init(model: Dictionary, settings: Dictionary, source: Source.PreparedEvaluator) -> void:
 		_model = model.duplicate(true)
 		_settings = settings.duplicate(true)
+		_make_read_only(_model)
+		_make_read_only(_settings)
 		_source = source
+
+	func _make_read_only(value: Variant) -> void:
+		if value is Dictionary:
+			var keys: Array = value.keys()
+			for key: Variant in keys:
+				_make_read_only(value[key])
+			value.make_read_only()
+		elif value is Array:
+			for index: int in range(value.size()):
+				_make_read_only(value[index])
+			value.make_read_only()
 
 
 ## Explicit fixture values only. None are calibrated or suitable as an installation profile.
@@ -287,7 +300,7 @@ static func _evaluate_validated(
 		return _fail("Glow source failed: " + str(source.get("message", "unknown source error")))
 	var thermal: Dictionary
 	if prepared_source is Source.PreparedEvaluator:
-		thermal = Thermal.evaluate_prepared(
+		thermal = Thermal._evaluate_prepared(
 			source, float(state.temperature_k), ambient_k, cooling_airspeed_mps, settings.thermal
 		)
 	else:

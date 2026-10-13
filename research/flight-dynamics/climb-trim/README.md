@@ -27,3 +27,19 @@ To capture an actual user reproduction without pressing T:
 `watch.gd` opens the normal Home and settings. Fly normally. Its independent recorder saves five-simulated-second CSV segments under `.tools/climb-observed/<UTC timestamp>-<pid>/`, plus raw keyboard/radio inputs, sampled pitch and elevator trim. Reset and aircraft changes start new segments; normal T recordings remain available. Graceful exit saves the final segment. `test_watch.gd` verifies exact checkpoint equality with an unobserved flight, segmentation, reset and detach. These diagnostic scripts stay outside the production app.
 
 Pausing also closes the current segment. Independent `telemetry-*.jsonl` files retain full-precision state, loads, commands, auxiliary/continuous state, raw input and trim on every sampled tick, flushing every simulated second. These diagnostic samples survive a rejected replay CSV; they are not validated replays. The observer test checks pause saving and telemetry round-trip accuracy as well as unchanged simulation checkpoints.
+
+## Captured Ugly Stik loops
+
+`ugly-loop-inputs.json` retains raw-command change points and observed state checkpoints from the owner's 49.092-second flight on 2026-10-13. Commands remain held until the next sample. The original telemetry segment hashes identify the capture. `loop_probe.gd` replays those inputs through the real session and fails if the baseline state checkpoints differ by more than 1e-8 or the replay ends early. This is a diagnostic reproduction of a reported behavior, not an acceptance test requiring future models to loop.
+
+```powershell
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/loop_probe.gd" -- --replay-only
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/loop_probe.gd"
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/loop_probe.gd" -- --isolate-trim
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/loop_probe.gd" -- --prop-sensitivity
+python research/flight-dynamics/climb-trim/analyze_loop.py .tools/climb-observed/2026-10-13T19-28-33-88100 docs/research/flight-dynamics/climb-trim
+```
+
+The default comparison includes calm air, alternative starting trims and constant-power controls. `--isolate-trim` keeps the original starting state and moves only the elevator trim at five seconds, or removes rotor gyroscopic coupling. Counterfactuals that stop at ground contact are reported with their actual duration. An absence of loops before an early crash is not proof of satisfactory handling. The analyzer requires Python with matplotlib and reads the full captured CSV files; replay only needs pinned Godot and the compact fixture.
+
+`--prop-sensitivity` runs the first fifteen seconds, switching only the Ct/Cp curves at five seconds, either preserving the prescribed maximum RPM or changing it to the estimated static torque-balance RPM. The comparison curves and their source/provenance are in the evidence directory. Both use one RPM slice throughout each run, retain the legacy RPM-lag law, and extrapolate beyond the slice using the legacy law. First inversion and first out-of-domain times are reported separately: do not describe either case as an installed, validated O.S./APC powertrain. Component-load diagnostics include the sampled downwash lag but omit ground effect/contact loads; they describe the airborne first-loop interval, not the last low-altitude ticks of a counterfactual.

@@ -9,7 +9,15 @@ static func evaluate(rpm: float, axial_speed: float, rho: float, p: Dictionary) 
 	for key in ["diameter_m", "pitch_m", "chord_m", "lift_slope", "cd0", "induced_drag", "blades"]:
 		if typeof(p.get(key)) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(p[key])) or p[key] <= 0.0:
 			return {ok = false}
-	var radius: float = 0.5 * p.diameter_m
+	# Hoist validated installation values out of the 12-annulus loop.
+	var diameter_m: float = float(p.diameter_m)
+	var pitch_m: float = float(p.pitch_m)
+	var chord_m: float = float(p.chord_m)
+	var lift_slope: float = float(p.lift_slope)
+	var cd0: float = float(p.cd0)
+	var induced_drag: float = float(p.induced_drag)
+	var blades: float = float(p.blades)
+	var radius: float = 0.5 * diameter_m
 	var omega: float = rpm * TAU / 60.0
 	var thrust: float = 0.0
 	var torque: float = 0.0
@@ -24,13 +32,13 @@ static func evaluate(rpm: float, axial_speed: float, rho: float, p: Dictionary) 
 			continue
 		var speed: float = M.sqrt_(speed_sq)
 		var phi: float = M.atan2_(axial_speed, tangential)
-		var beta: float = M.atan2_(p.pitch_m, TAU * r)
+		var beta: float = M.atan2_(pitch_m, TAU * r)
 		var alpha: float = beta - phi
-		var cl: float = p.lift_slope * M.sin_(2.0 * alpha) / 2.0
+		var cl: float = lift_slope * M.sin_(2.0 * alpha) / 2.0
 		# At large alpha lift is bounded; pressure drag increases to the flat-plate limit.
 		cl = clampf(cl, -1.25, 1.25)
-		var cd: float = p.cd0 + p.induced_drag * cl * cl + 1.2 * M.pow_(M.sin_(alpha), 2.0)
-		var area_pressure: float = 0.5 * rho * speed_sq * p.chord_m * dr * p.blades
+		var cd: float = cd0 + induced_drag * cl * cl + 1.2 * M.pow_(M.sin_(alpha), 2.0)
+		var area_pressure: float = 0.5 * rho * speed_sq * chord_m * dr * blades
 		var lift: float = area_pressure * cl
 		var drag: float = area_pressure * cd
 		thrust += (lift * tangential - drag * axial_speed) / speed

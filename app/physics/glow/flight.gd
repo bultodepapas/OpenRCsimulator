@@ -15,6 +15,8 @@ const Boundary := preload("res://physics/electric_battery_step.gd")
 const SIZE := 17
 const LAW := "glow-mean-cycle-finite-tank-fixed-datum-v1"
 const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat"]
+const EVALUATOR_META := &"_glow_prepared_evaluator"
+const EVALUATOR_IDENTITY_META := &"_glow_prepared_identity"
 
 static func valid(values: PackedFloat64Array, install: Dictionary) -> bool:
 	var state: Dictionary=unpack(values,install)
@@ -46,6 +48,14 @@ static func put_state(values: PackedFloat64Array, state: Dictionary) -> PackedFl
 
 static func initial(owner: Node, aux: PackedFloat64Array) -> PackedFloat64Array:
 	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	# A fresh immutable installation evaluator on every reset/reload. This owns no
+	# physical state and is excluded from model serialization and checkpoints.
+	var prepared: Dictionary=Life.prepare_evaluator(install.profile,install.settings)
+	if not prepared.ok:
+		if owner.has_meta(EVALUATOR_META): owner.remove_meta(EVALUATOR_META)
+		return PackedFloat64Array([NAN])
+	owner.set_meta(EVALUATOR_META,prepared.evaluator)
+	owner.set_meta(EVALUATOR_IDENTITY_META,install.identity.duplicate(true))
 	var made: Dictionary=Life.create(install.profile,install.settings,install.initial_fuel_kg,
 		install.initial_temperature_k,aux[0],owner.engine_running)
 	if not made.ok: return PackedFloat64Array([NAN])
@@ -83,8 +93,16 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	var load: Dictionary=Blade.evaluate(rpm,M.dot(air.v_air,prop.axis),owner.air_density(),install.propeller)
 	if not load.ok: return {ok=false}
 	local_cooling += M.sqrt_(maxf(0.0,load.thrust_n)/(2.0*owner.air_density()*PI*prop.diameter*prop.diameter/4.0))
-	var evaluation: Dictionary=Life.evaluate(install.profile,install.settings,state,rpm,owner.sim.inputs[3],values[12],
-		1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
+	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
+	var evaluation: Dictionary
+	if evaluator is Life.PreparedEvaluator and owner.get_meta(EVALUATOR_IDENTITY_META,{})==install.identity:
+		evaluation=Life.evaluate_prepared(evaluator,state,rpm,owner.sim.inputs[3],values[12],
+			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
+	else:
+		# Standalone fixtures may run before initialization; a failed reload can
+		# restore a different installation. Both use the fully validated path.
+		evaluation=Life.evaluate(install.profile,install.settings,state,rpm,owner.sim.inputs[3],values[12],
+			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
 	if not evaluation.ok: return evaluation
 	evaluation.air=air
 	evaluation.propeller=load
