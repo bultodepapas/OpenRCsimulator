@@ -20,8 +20,10 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	await _aircraft("jensen-das-ugly-stik-60", "engine O.S. MAX-61FX", "engine")
-	await _aircraft("turbo-lumber-evolution", "800 Kv motor", "engine")
+	_units()
+	await _floor()
+	await _aircraft("jensen-das-ugly-stik-60", "engine O.S. MAX-61FX", "engine", ["nose gear and 2.75 in wheel", "main gear and 3 in wheels"])
+	await _aircraft("turbo-lumber-evolution", "800 Kv motor", "engine", ["main gear and wheels", "tailwheel and fork"])
 	await _production()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
@@ -68,17 +70,66 @@ func _production() -> void:
 	await process_frame
 
 
-func _aircraft(id: String, engine_item: String, engine_kind: String) -> void:
+func _units() -> void:
+	var bounds := AABB(Vector3(0, 0, 0), Vector3(1, 1, 1))
+	_check("a box half inside a section puts half its mass there", is_equal_approx(WreckController._overlap_fraction(Vector3(1.0, 0.5, 0.5), Vector3(1, 0.2, 0.2), bounds), 0.5))
+	_check("a box fully inside puts all of it there", is_equal_approx(WreckController._overlap_fraction(Vector3(0.5, 0.5, 0.5), Vector3(0.2, 0.2, 0.2), bounds), 1.0))
+	_check("a point item counts when inside, not when outside", WreckController._overlap_fraction(Vector3(0.5, 0.5, 0.5), Vector3.ZERO, bounds) == 1.0
+		and WreckController._overlap_fraction(Vector3(1.5, 0.5, 0.5), Vector3.ZERO, bounds) == 0.0)
+	_check("a thin skin's region is thickened, a bulky part's barely", is_equal_approx(WreckController._inventory_region(AABB(Vector3.ZERO, Vector3(1, 0.002, 1))).size.y, WreckController.INVENTORY_MIN_THICKNESS_M)
+		and is_equal_approx(WreckController._inventory_region(AABB(Vector3.ZERO, Vector3(1, 0.5, 1))).size.y, 0.5 + 2.0 * WreckController.INVENTORY_MARGIN_M))
+
+
+## A section that no inventory item reaches still gets the floor mass, taken from the core: the total never changes.
+func _floor() -> void:
+	var airplane := Node3D.new()
+	airplane.name = "airplane"
+	var body := MeshInstance3D.new()
+	body.name = "airframe"
+	body.mesh = BoxMesh.new()
+	airplane.add_child(body)
+	var tail := Node3D.new()
+	tail.name = "tail_frame"
+	tail.position = Vector3(0, 0, 3.0)
+	var stab := MeshInstance3D.new()
+	stab.mesh = BoxMesh.new()
+	tail.add_child(stab)
+	airplane.add_child(tail)
+	root.add_child(airplane)
+	var wreck: Variant = WreckController.new()
+	root.add_child(wreck)
+	await process_frame
+	wreck.set_process(false)
+	wreck.prepare(airplane)
+	wreck.start(Transform3D(Basis.IDENTITY, Vector3(0, 3, 0)), Vector3(0, -10, 0), Vector3.ZERO, {"class": 4, "mass_kg": 1.0, "seed": 1,
+		"inventory_boxes": [{mass = 1.0, center = Vector3.ZERO, size = Vector3(0.2, 0.2, 0.2)}]})
+	wreck._process(0.5)
+	var masses := {}
+	var total := 0.0
+	for i in wreck._groups.size():
+		if wreck._bodies[i].visible:
+			masses[String(wreck._groups[i].kind)] = wreck._bodies[i].mass
+			total += wreck._bodies[i].mass
+	_check("a section without items gets the floor mass from the core", is_equal_approx(float(masses.get("horizontal_tail", 0.0)), WreckController.MIN_SECTION_MASS_KG)
+		and is_equal_approx(total, 1.0), str(masses))
+	wreck.free()
+	airplane.free()
+
+
+func _aircraft(id: String, engine_item: String, engine_kind: String, gear_items: Array = []) -> void:
 	var path := str(Catalog.entry(id).data)
 	var model: Dictionary = AircraftData.load_file(path).model
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
 	var datum := AirplaneBuilder.datum(id)
 	var boxes: Array = []
 	var engine_mass := 0.0
+	var gear_mass := 0.0
 	for item: Dictionary in raw.inventory:
 		boxes.append(Director.inventory_box(item, datum))
 		if item.name == engine_item:
 			engine_mass = float(item.mass.value)
+		if gear_items.has(item.name):
+			gear_mass += float(item.mass.value)
 	var mass := float(model.mass_kg)
 	var cg_model := Frames.cg_in_model_frame(model.cg_le, datum.x, datum.y)
 	var airplane: Node3D = AirplaneBuilder.build(id).root
@@ -113,6 +164,8 @@ func _aircraft(id: String, engine_item: String, engine_kind: String) -> void:
 	_check("%s wing halves weigh the same" % id, masses.has("wing_left") and absf(float(masses.wing_left) - float(masses.wing_right)) < 0.02 * mass,
 		"%s / %s" % [str(masses.get("wing_left")), str(masses.get("wing_right"))])
 	_check("%s wing halves carry real wing mass" % id, float(masses.get("wing_left", 0.0)) > 0.1)
+	_check("%s gear section does not swallow tank and battery" % id, float(masses.get("gear", 0.0)) <= 1.3 * gear_mass,
+		"%.3f vs gear items %.3f" % [float(masses.get("gear", 0.0)), gear_mass])
 	_check("%s %s section carries the engine" % [id, engine_kind], float(masses.get(engine_kind, 0.0)) >= 0.9 * engine_mass,
 		"%.3f vs engine %.3f" % [float(masses.get(engine_kind, 0.0)), engine_mass])
 	wreck.reset()

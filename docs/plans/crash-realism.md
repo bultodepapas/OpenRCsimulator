@@ -161,7 +161,7 @@ After E3d1, CR-01e, CR-03b, CR-09c and CR-22b, the largest remaining realism gap
 | Rank | Gap | Why it matters | Step | Status |
 | ---: | --- | --- | --- | --- |
 | 1 | A nose-over kept the propeller turning inside the ground | The most common RC mishap; soft contacts made it visible | E3d2 prop strike | **Done** ([evidence](../research/crash-damage-investigations/E3d2/README.md)) |
-| 2 | Wreck sections collide as boxes, slide equally on grass and asphalt, and carry fixed mass shares | Tumbling and slide length decide whether a wreck looks real | CR-09d: section masses from the inventory (heavy motor and battery nose), surface-aware friction and bounce, convex shapes from the real section meshes | Next |
+| 2 | Wreck sections collide as boxes, slide equally on grass and asphalt, and carry fixed mass shares | Tumbling and slide length decide whether a wreck looks real | CR-09d: section masses from the inventory (heavy motor and battery nose), surface-aware friction and bounce, convex shapes from the real section meshes | **CR-09d1 masses done** (wreck CoM now on the CG, was 231 mm off; [evidence](../research/crash-damage-investigations/CR-09d/README.md)); d2 friction, d3 shapes next |
 | 3 | A fuel fire starts as flames only | Kerosene or gasoline mist ignites as a brief fireball in a hard hit; glow and electric never do | CR-22d ignition flash, gated by CR-22b fire outcomes | Planned |
 | 4 | Scrape sound and dust stop at the first impact | A sliding wreck should keep scraping and trailing dust | CR-02c / CR-03c slide continuity from wreck contact speed | Planned |
 | 5 | A long wingtip slide is never a crash; flat ground only | Ground loops and hillside crashes | E3d3 (research 04 cartwheel rule), L12 terrain sampler | Waits for L12 |
