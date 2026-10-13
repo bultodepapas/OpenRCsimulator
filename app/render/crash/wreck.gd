@@ -106,6 +106,10 @@ var _run_generation := 0
 var _release_kinds: Array = []
 var _hidden_members: Array = [] # E3d2: propeller pieces hidden because the blades broke before the crash
 var _prop_broken := false
+## CR-09d1: section masses and mass moments (model frame) from the aircraft inventory, {kind: {mass, moment}} with
+## "core" for the remainder; empty → the fixed GROUP_MASS_WEIGHTS shares.
+var _section_masses := {}
+const MIN_SECTION_MASS_KG := 0.015
 var _contact_model := Vector3.ZERO
 var _has_contact := false
 var _rng := RandomNumberGenerator.new()
@@ -204,7 +208,9 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	_set_shape_bounds(0, core_bounds)
 	var core_center: Vector3 = _groups[0].center
 	_core_body = _bodies[0]
-	_core_body.mass = maxf(total_mass * (_group_weight("core") + float(_groups[0].undetached_weight)) / maxf(total_weight, 0.0001), 0.015)
+	_section_masses = _inventory_masses(severity.get("inventory_boxes", []), total_mass)
+	_core_body.mass = _core_mass(total_mass, total_weight)
+	_set_center_of_mass(_core_body, _core_moment(), _core_body.mass, core_center)
 	_core_body.global_transform = pose * Transform3D(Basis.IDENTITY, core_center)
 	_twin.reparent(_core_body, false)
 	_twin.transform = Transform3D(Basis.IDENTITY, -core_center)
@@ -222,9 +228,9 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 			body.collision_layer = 0
 			body.collision_mask = 0
 			continue
-		var mass_share: float = _group_weight(String(group.kind)) / maxf(total_weight, 0.0001)
-		body.mass = maxf(total_mass * mass_share, 0.015)
+		body.mass = _section_mass(String(group.kind), total_mass, total_weight)
 		group.mass = body.mass
+		_set_center_of_mass(body, _section_moment(String(group.kind)), body.mass, Vector3(group.center))
 		group.due_s = float(GROUP_DELAYS_S.get(group.kind, 0.10))
 		if _component_matches(String(group.kind), component_hint):
 			group.due_s = 0.0
@@ -359,6 +365,10 @@ func reset() -> void:
 			member.visible = true
 	_hidden_members.clear()
 	_prop_broken = false
+	_section_masses = {}
+	for body in _bodies:
+		if body != null:
+			body.center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_AUTO
 	_has_contact = false
 	_contact_model = Vector3.ZERO
 
@@ -692,6 +702,115 @@ func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transfor
 	_groups[0 if is_core else _group_index_for_body(body)] = group
 
 
+## CR-09d1: distributes each inventory box {mass, center, size} (model frame) over the section bounds by per-axis overlap
+## (a zero-size axis counts as inside or outside); what no section holds stays with the core. Every section keeps at
+## least MIN_SECTION_MASS_KG, taken from the core, so the total is conserved exactly. Empty input → {}.
+func _inventory_masses(boxes: Variant, total_mass: float) -> Dictionary:
+	if not boxes is Array or (boxes as Array).is_empty():
+		return {}
+	var out := {"core": {mass = 0.0, moment = Vector3.ZERO}}
+	var sum := 0.0
+	for box: Dictionary in boxes:
+		var mass := float(box.get("mass", 0.0))
+		var center: Vector3 = box.get("center", Vector3.ZERO)
+		var size: Vector3 = box.get("size", Vector3.ZERO)
+		if not is_finite(mass) or mass <= 0.0:
+			continue
+		sum += mass
+		var fractions := {}
+		var assigned := 0.0
+		for i in range(1, _groups.size()):
+			var f := _overlap_fraction(center, size, AABB(_groups[i].bounds).grow(0.01))
+			if f > 0.0:
+				fractions[String(_groups[i].kind)] = f
+				assigned += f
+		var scale := 1.0 / assigned if assigned > 1.0 else 1.0 # overlapping section bounds never create mass
+		for kind: String in fractions:
+			_add_mass(out, kind, mass * float(fractions[kind]) * scale, center)
+		_add_mass(out, "core", mass * (1.0 - minf(assigned, 1.0)), center)
+	if not is_finite(sum) or sum <= 0.0:
+		return {}
+	# Scale to the simulation's mass (the inventory defines it; guard rounding) and apply the per-section floor.
+	var k := total_mass / sum
+	for kind: String in out:
+		out[kind].mass *= k
+		out[kind].moment *= k
+	for i in range(1, _groups.size()):
+		var kind := String(_groups[i].kind)
+		if not out.has(kind):
+			out[kind] = {mass = 0.0, moment = Vector3.ZERO}
+		var missing := MIN_SECTION_MASS_KG - float(out[kind].mass)
+		if missing > 0.0:
+			out[kind].mass += missing
+			out[kind].moment += Vector3(_groups[i].center) * missing
+			out.core.mass -= missing
+			out.core.moment -= Vector3(_groups[i].center) * missing
+	return out
+
+
+static func _overlap_fraction(center: Vector3, size: Vector3, bounds: AABB) -> float:
+	var fraction := 1.0
+	for axis in 3:
+		var lo := center[axis] - 0.5 * size[axis]
+		var hi := center[axis] + 0.5 * size[axis]
+		var b_lo := bounds.position[axis]
+		var b_hi := bounds.end[axis]
+		if size[axis] <= 1.0e-6:
+			fraction *= 1.0 if center[axis] >= b_lo and center[axis] <= b_hi else 0.0
+		else:
+			fraction *= clampf((minf(hi, b_hi) - maxf(lo, b_lo)) / size[axis], 0.0, 1.0)
+	return fraction
+
+
+static func _add_mass(out: Dictionary, kind: String, mass: float, at: Vector3) -> void:
+	if mass <= 0.0:
+		return
+	if not out.has(kind):
+		out[kind] = {mass = 0.0, moment = Vector3.ZERO}
+	out[kind].mass += mass
+	out[kind].moment += at * mass
+
+
+func _section_mass(kind: String, total_mass: float, total_weight: float) -> float:
+	if _section_masses.has(kind):
+		return maxf(float(_section_masses[kind].mass), MIN_SECTION_MASS_KG)
+	return maxf(total_mass * _group_weight(kind) / maxf(total_weight, 0.0001), MIN_SECTION_MASS_KG)
+
+
+func _core_mass(total_mass: float, total_weight: float) -> float:
+	if _section_masses.is_empty():
+		return maxf(total_mass * (_group_weight("core") + float(_groups[0].undetached_weight)) / maxf(total_weight, 0.0001), MIN_SECTION_MASS_KG)
+	var mass := float(_section_masses.core.mass)
+	for i in range(1, _groups.size()):
+		if not bool(_groups[i].get("detached", false)):
+			mass += _section_mass(String(_groups[i].kind), total_mass, total_weight)
+	return maxf(mass, MIN_SECTION_MASS_KG)
+
+
+func _core_moment() -> Variant:
+	if _section_masses.is_empty():
+		return null
+	var moment: Vector3 = _section_masses.core.moment
+	for i in range(1, _groups.size()):
+		var kind := String(_groups[i].kind)
+		if not bool(_groups[i].get("detached", false)) and _section_masses.has(kind):
+			moment += Vector3(_section_masses[kind].moment)
+	return moment
+
+
+func _section_moment(kind: String) -> Variant:
+	return Vector3(_section_masses[kind].moment) if _section_masses.has(kind) else null
+
+
+## CR-09d1: a body's centre of mass at its inventory moment (model frame), relative to the body origin `origin`.
+static func _set_center_of_mass(body: RigidBody3D, moment: Variant, mass: float, origin: Vector3) -> void:
+	if moment == null or mass <= 0.0:
+		body.center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_AUTO
+		return
+	body.center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
+	body.center_of_mass = Vector3(moment) / mass - origin
+
+
 func _group_index_for_body(body: RigidBody3D) -> int:
 	return _bodies.find(body)
 
@@ -982,7 +1101,7 @@ func _release_pending_c3_contact_group(generation: int) -> void:
 	if _c3_contact_exposure_index_j + 0.0001 < threshold:
 		return
 	var group_weight := _group_weight(kind)
-	var release_mass := _last_mass_kg * group_weight / maxf(_last_group_weight_total, 0.0001)
+	var release_mass := _section_mass(kind, _last_mass_kg, _last_group_weight_total)
 	if not is_finite(release_mass) or release_mass <= 0.0 or release_mass >= _core_body.mass:
 		return
 	# Transfer the group's estimated mass out of the core; no new scatter impulse is added.

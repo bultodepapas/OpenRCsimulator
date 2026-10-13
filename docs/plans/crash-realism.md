@@ -153,3 +153,18 @@ The owner delegated these on 2026-10-13 ("you choose"); each took the recommende
 - Provisional cuts may be mistaken for calibration. Every output keeps `*_is_estimate` and a source basis.
 - `main.gd`, the session and the aircraft data are shared. Read `git status` first and stage only this track's paths.
 - Changing the bins changes the existing focused-test expectations. Update them in the same step as the reason, and never re-record flight goldens.
+
+## 8. Round 3: analysis and next steps (2026-10-13)
+
+After E3d1, CR-01e, CR-03b, CR-09c and CR-22b, the largest remaining realism gaps, ranked by how often a pilot sees them and how feasible each is now:
+
+| Rank | Gap | Why it matters | Step | Status |
+| ---: | --- | --- | --- | --- |
+| 1 | A nose-over kept the propeller turning inside the ground | The most common RC mishap; soft contacts made it visible | E3d2 prop strike | **Done** ([evidence](../research/crash-damage-investigations/E3d2/README.md)) |
+| 2 | Wreck sections collide as boxes, slide equally on grass and asphalt, and carry fixed mass shares | Tumbling and slide length decide whether a wreck looks real | CR-09d: section masses from the inventory (heavy motor and battery nose), surface-aware friction and bounce, convex shapes from the real section meshes | Next |
+| 3 | A fuel fire starts as flames only | Kerosene or gasoline mist ignites as a brief fireball in a hard hit; glow and electric never do | CR-22d ignition flash, gated by CR-22b fire outcomes | Planned |
+| 4 | Scrape sound and dust stop at the first impact | A sliding wreck should keep scraping and trailing dust | CR-02c / CR-03c slide continuity from wreck contact speed | Planned |
+| 5 | A long wingtip slide is never a crash; flat ground only | Ground loops and hillside crashes | E3d3 (research 04 cartwheel rule), L12 terrain sampler | Waits for L12 |
+| 6 | Damage never carries into flight | A lost tip or stab should change handling | CR-11–15 | Waits for H8/G4b/CR-07 |
+
+Order: CR-09d (inventory masses, then surface friction, then convex shapes), CR-22d, CR-02c/CR-03c. Each step is one commit with tests and mutations.
