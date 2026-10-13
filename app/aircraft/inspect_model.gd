@@ -393,7 +393,7 @@ func _details_capture_definitions() -> Array[Dictionary]:
 		_macro_capture("engine-front.png", "engine-front", "MOTOR · FRENTE", "Vista desde el eje de hélice; se ocultan solo las mallas de hélice para inspeccionar el motor", Vector3(0.0, 0.01, -0.64), Vector3(0.0, 0.005, -0.315), 32.0, ["propeller_*"]),
 		_macro_capture("wing-root.png", "wing-root", "RAÍZ ALAR · RETENCIÓN", "Unión central, bandas y recubrimiento · posición real del montaje", Vector3(0.27, 0.33, 0.25), Vector3(0.0, 0.055, 0.025), 36.0),
 		_macro_capture("gear-main.png", "gear-main", "TREN PRINCIPAL", "Macrofotografía del tren principal, anclaje y rueda", Vector3(0.36, -0.06, 0.36), Vector3(0.0, -0.17, 0.10), 34.0),
-		_macro_capture("gear-nose.png", "gear-nose", "TREN DE MORRO", "Macrofotografía de rueda, horquilla y dirección", Vector3(0.22, -0.09, -0.40), Vector3(0.0, -0.17, -0.25), 34.0),
+		_macro_capture("gear-nose.png", "gear-nose", "TREN DE MORRO", "Macrofotografía de rueda, resorte, bucle de torsión y dirección", Vector3(0.22, -0.09, -0.40), Vector3(0.0, -0.17, -0.25), 34.0),
 		_macro_capture("tail-controls.png", "tail-controls", "COLA · CUERNOS Y MANDOS", "Vista cercana de elevador, timón, cuernos y transmisiones", Vector3(0.24, 0.20, 0.63), Vector3(0.0, 0.025, 0.79), 35.0),
 		_macro_capture("elevator-linkage.png", "elevator-linkage", "ELEVADOR · TRANSMISIÓN INFERIOR", "Cuerno, varilla y guía · vista inferior con superficies montadas", Vector3(-0.18, -0.22, 0.65), Vector3(-0.035, -0.014, 0.79), 38.0),
 		_macro_capture("aileron-linkage.png", "aileron-linkage", "ALERÓN · TRANSMISIÓN EXTERIOR", "Cuerno y varilla bajo el ala montada", Vector3(0.28, -0.15, 0.24), Vector3(0.185, 0.025, 0.11), 38.0),

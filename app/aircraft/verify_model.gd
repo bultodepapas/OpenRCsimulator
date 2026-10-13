@@ -401,9 +401,14 @@ func _check_gear_animation() -> void:
 	var centers := {}
 	for key in ["left", "right", "nose"]:
 		centers[key] = _airplane.gear[key].global_position
-	AirplaneBuilder.apply_gear(_airplane, {left = 1.2, right = -0.7, nose = 0.5}, 0.3)
+	AirplaneBuilder.apply_gear(_airplane, {left = 1.2, right = -0.7, nose = 0.5}, 0.0)
 	for key in ["left", "right", "nose"]:
 		_check("wheel spin keeps %s axle fixed" % key, _airplane.gear[key].global_position.distance_to(centers[key]) < NUMERIC_EPSILON)
+	# US-V10b: the whole nose wire steers about its own axis, 17 mm beside the wheel centre, as on the real gear.
+	AirplaneBuilder.apply_gear(_airplane, {left = 1.2, right = -0.7, nose = 0.5}, 0.3)
+	var swing: float = _airplane.gear.nose.global_position.distance_to(centers.nose)
+	_check("steering swings the nose axle about the wire axis (%.4f m)" % swing, absf(swing - 2.0 * 0.017 * sin(0.15)) < 1e-5
+		and _airplane.gear.steering.global_position.distance_to(_airplane.gear.nose.global_position) - 0.017 < 1e-6)
 	_check("nose steering carries its wheel", _airplane.gear.nose.get_parent() == _airplane.gear.steering)
 	_check("nose steering takes requested angle", absf(_airplane.gear.steering.rotation.y - 0.3) < NUMERIC_EPSILON)
 	_check("left wheel takes independent angle", absf(_airplane.gear.left.rotation.x - 1.2) < NUMERIC_EPSILON)
