@@ -38,8 +38,10 @@ const C3_CONTACT_RELEASE_THRESHOLDS_J := {
 
 const GROUP_ORDER := [
 	"wing_left", "wing_right", "wing_center", "engine", "propeller",
-	"horizontal_tail", "vertical_tail", "gear", "canopy"
+	"horizontal_tail", "vertical_tail", "gear", "canopy", "tail_boom"
 ]
+## CR-09e: tail surfaces glued to a breaking tail boom ride with it (one body) unless the whole airframe is destroyed.
+const TAIL_BOOM_CARRIES := ["horizontal_tail", "vertical_tail"]
 ## CR-09c: an imported node may name its crash section explicitly: glTF extras "openrc_section" (set in Blender as a
 ## custom property) or meta "crash_section" (set by a builder or the section splitter). "core" keeps it with the body.
 const SECTION_EXTRAS_KEY := "openrc_section"
@@ -55,7 +57,8 @@ const GROUP_DELAYS_S := {
 	"horizontal_tail": 0.12,
 	"vertical_tail": 0.12,
 	"gear": 0.20,
-	"canopy": 0.28
+	"canopy": 0.28,
+	"tail_boom": 0.10
 }
 const GROUP_MASS_WEIGHTS := {
 	"core": 0.42,
@@ -67,7 +70,8 @@ const GROUP_MASS_WEIGHTS := {
 	"horizontal_tail": 0.07,
 	"vertical_tail": 0.045,
 	"gear": 0.05,
-	"canopy": 0.02
+	"canopy": 0.02,
+	"tail_boom": 0.06
 }
 
 var _twin: Node3D
@@ -124,6 +128,11 @@ const INVENTORY_MIN_THICKNESS_M := 0.06
 const INVENTORY_MARGIN_M := 0.01
 var _contact_model := Vector3.ZERO
 var _has_contact := false
+var _key_share := {} # CR-09e: share of its kind's weight for each group key
+## CR-09e: fracture detail (splinters, torn film, broken spar stubs) that a model ships hidden with meta
+## REVEAL_META = section kind; it appears only when that section breaks away. [{node, kind}]
+const REVEAL_META := "crash_reveal"
+var _reveal_nodes: Array = []
 var _rng := RandomNumberGenerator.new()
 
 
@@ -157,6 +166,8 @@ func prepare(airplane: Node3D) -> bool:
 	_collect_fragment_groups(_twin)
 	_build_group_records()
 	_prepared_groups = _copy_groups(_groups)
+	_reveal_nodes.clear()
+	_collect_reveal_nodes(_twin)
 	_configure_pool_shapes()
 	return true
 
@@ -208,12 +219,25 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	_groups[0].undetached_weight = 0.0
 	for i in range(1, _groups.size()):
 		var group: Dictionary = _groups[i]
-		total_weight += _group_weight(String(group.kind))
+		total_weight += _group_weight(String(group.key))
 		group.detached = _should_detach(String(group.kind), class_level, component_hint)
 		group.activated = false
-		if not bool(group.detached):
-			_groups[0].undetached_weight += _group_weight(String(group.kind))
 		_groups[i] = group
+	# CR-09e: a C2 releases only the struck part; of several same-kind parts, the one nearest the contact.
+	if class_level == 2 and _has_contact:
+		for kind in GROUP_ORDER:
+			var nearest := -1
+			for i in range(1, _groups.size()):
+				if String(_groups[i].kind) == kind and bool(_groups[i].detached):
+					if nearest < 0 or (Vector3(_groups[i].center) - _contact_model).length() < (Vector3(_groups[nearest].center) - _contact_model).length():
+						nearest = i
+			for i in range(1, _groups.size()):
+				if String(_groups[i].kind) == kind and i != nearest:
+					_groups[i].detached = false
+	_carry_tail_surfaces(class_level)
+	for i in range(1, _groups.size()):
+		if not bool(_groups[i].detached) and not bool(_groups[i].get("carried", false)):
+			_groups[0].undetached_weight += _group_weight(String(_groups[i].key))
 	_last_group_weight_total = total_weight
 	var core_bounds: AABB = _whole_bounds if class_level < 3 else _core_bounds
 	_groups[0].bounds = core_bounds
@@ -231,7 +255,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	var detached_weight_total := 0.0
 	for i in range(1, _groups.size()):
 		if bool(_groups[i].get("detached", false)):
-			detached_weight_total += _group_weight(String(_groups[i].kind))
+			detached_weight_total += _group_weight_with_carried(_groups[i])
 	for i in range(1, _groups.size()):
 		var group: Dictionary = _groups[i]
 		var body: RigidBody3D = _bodies[i]
@@ -241,9 +265,10 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 			body.collision_layer = 0
 			body.collision_mask = 0
 			continue
-		body.mass = _section_mass(String(group.kind), total_mass, total_weight)
+		_set_shape_bounds(i, group.bounds) # a carrying boom's box from this crash, not a previous one
+		body.mass = _group_mass(group, total_mass, total_weight)
 		group.mass = body.mass
-		_set_center_of_mass(body, _section_moment(String(group.kind)), body.mass, Vector3(group.center))
+		_set_center_of_mass(body, _group_moment(group), body.mass, Vector3(group.center))
 		group.due_s = float(GROUP_DELAYS_S.get(group.kind, 0.10))
 		if _component_matches(String(group.kind), component_hint):
 			group.due_s = 0.0
@@ -255,7 +280,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 			group.due_s = 0.14 if String(group.kind).begins_with("wing_") else 0.32
 		group.base_velocity = safe_velocity
 		group.base_angular_velocity = safe_angular
-		var detached_share := _group_weight(String(group.kind)) / maxf(detached_weight_total, 0.0001) if detached_weight_total > 0.0 else 0.0
+		var detached_share := _group_weight_with_carried(group) / maxf(detached_weight_total, 0.0001) if detached_weight_total > 0.0 else 0.0
 		group.scatter_energy_j = scatter_budget * detached_share
 		group.severity_scale = severity_scale
 		_groups[i] = group
@@ -353,6 +378,9 @@ func reset() -> void:
 			_twin.reparent(self, false)
 		_twin.transform = Transform3D.IDENTITY
 		_twin.visible = false
+		for record: Dictionary in _reveal_nodes:
+			if is_instance_valid(record.node):
+				(record.node as Node3D).visible = false
 	_started = false
 	_paused = false
 	_elapsed_s = 0.0
@@ -531,7 +559,11 @@ func _collect_fragment_groups(node: Node) -> void:
 				has_mesh = true
 				break
 		if has_mesh:
-			_groups.append({"kind": kind, "members": members})
+			# CR-09e: members of one kind that do not touch are separate parts (a nose leg and the main strap are
+			# not one rigid V); members whose boxes overlap (a strap and its wheels) stay one body.
+			var clusters := _connected_members(members)
+			for c in clusters.size():
+				_groups.append({"kind": kind, "members": clusters[c], "key": kind if c == 0 else "%s#%d" % [kind, c]})
 			for member: Node3D in members:
 				_selected_roots.append(member)
 	# Preserve all remaining copied nodes and hinges inside the central airframe body.
@@ -566,6 +598,8 @@ func _collect_fragment_groups(node: Node) -> void:
 		var bounds: AABB = aggregate.bounds
 		records.append({
 			"kind": group.kind,
+			"key": group.get("key", group.kind),
+			"volume": maxf(bounds.get_volume(), 1.0e-9),
 			"members": group.members,
 			"member_bounds": member_bounds,
 			"bounds": bounds,
@@ -574,6 +608,13 @@ func _collect_fragment_groups(node: Node) -> void:
 			"activated": false,
 		})
 	_groups = records
+	# CR-09e: same-kind parts share their kind's weight by box volume.
+	_key_share.clear()
+	var kind_volume := {}
+	for i in range(1, _groups.size()):
+		kind_volume[_groups[i].kind] = float(kind_volume.get(_groups[i].kind, 0.0)) + float(_groups[i].volume)
+	for i in range(1, _groups.size()):
+		_key_share[_groups[i].key] = float(_groups[i].volume) / float(kind_volume[_groups[i].kind])
 	_member_records.clear()
 	for group: Dictionary in _groups:
 		for member: Node3D in group.members:
@@ -583,6 +624,62 @@ func _collect_fragment_groups(node: Node) -> void:
 				"index": member.get_index(),
 				"transform": member.transform,
 			})
+
+
+func _collect_reveal_nodes(node: Node) -> void:
+	for child in node.get_children():
+		if child is Node3D and child.has_meta(REVEAL_META):
+			(child as Node3D).visible = false
+			_reveal_nodes.append({node = child, kind = String(child.get_meta(REVEAL_META))})
+		_collect_reveal_nodes(child)
+
+
+func _reveal(kind: String) -> void:
+	for record: Dictionary in _reveal_nodes:
+		if String(record.kind) == kind and is_instance_valid(record.node):
+			(record.node as Node3D).visible = true
+
+
+## CR-09e: union of members whose mesh boxes touch (within CONNECT_MARGIN_M), in member order; deterministic.
+const CONNECT_MARGIN_M := 0.02
+
+func _connected_members(members: Array) -> Array:
+	var boxes: Array = []
+	for member: Node3D in members:
+		var own := {"has": false, "bounds": AABB()}
+		_collect_mesh_bounds(member, _twin, [], own)
+		boxes.append((own.bounds as AABB).grow(CONNECT_MARGIN_M) if bool(own.has) else null)
+	var label: Array = []
+	for i in members.size(): label.append(i)
+	var changed := true
+	while changed:
+		changed = false
+		for i in members.size():
+			for j in range(i + 1, members.size()):
+				if boxes[i] == null or boxes[j] == null or label[i] == label[j]: continue
+				if (boxes[i] as AABB).intersects(boxes[j]):
+					var keep: int = mini(label[i], label[j])
+					var drop: int = maxi(label[i], label[j])
+					for k in members.size():
+						if label[k] == drop: label[k] = keep
+					changed = true
+	var order: Array = []
+	var clusters: Array = []
+	var boxless: Array = [] # hidden detail (e.g. fracture splinters) rides with the kind's first part
+	for i in members.size():
+		if boxes[i] == null:
+			boxless.append(members[i])
+			continue
+		var at := order.find(label[i])
+		if at < 0:
+			order.append(label[i])
+			clusters.append([members[i]])
+		else:
+			clusters[at].append(members[i])
+	if clusters.is_empty():
+		return [boxless] if not boxless.is_empty() else []
+	clusters[0].append_array(boxless)
+	return clusters
 
 
 func _collect_candidate_nodes(node: Node, groups_by_kind: Dictionary) -> void:
@@ -666,6 +763,7 @@ func _activate_group(index: int) -> void:
 	if bool(group.activated):
 		return
 	var body: RigidBody3D = _bodies[index]
+	_reveal(String(group.kind))
 	var aircraft_pose: Transform3D = _core_body.global_transform * _twin.transform
 	var center: Vector3 = group.center
 	body.global_transform = aircraft_pose * Transform3D(Basis.IDENTITY, center)
@@ -744,7 +842,7 @@ func _inventory_masses(boxes: Variant, total_mass: float) -> Dictionary:
 				f += _overlap_fraction(center, size, _inventory_region(member_box))
 			f = minf(f, 1.0)
 			if f > 0.0:
-				fractions[String(_groups[i].kind)] = f
+				fractions[String(_groups[i].key)] = f
 				assigned += f
 		var scale := 1.0 / assigned if assigned > 1.0 else 1.0 # overlapping section bounds never create mass
 		for kind: String in fractions:
@@ -758,7 +856,7 @@ func _inventory_masses(boxes: Variant, total_mass: float) -> Dictionary:
 		out[kind].mass *= k
 		out[kind].moment *= k
 	for i in range(1, _groups.size()):
-		var kind := String(_groups[i].kind)
+		var kind := String(_groups[i].key)
 		if not out.has(kind):
 			out[kind] = {mass = 0.0, moment = Vector3.ZERO}
 		var missing := MIN_SECTION_MASS_KG - float(out[kind].mass)
@@ -808,13 +906,67 @@ func _section_mass(kind: String, total_mass: float, total_weight: float) -> floa
 	return maxf(total_mass * _group_weight(kind) / maxf(total_weight, 0.0001), MIN_SECTION_MASS_KG)
 
 
+## CR-09e: a released tail boom carries the tail surfaces glued to it (C3). Their members, box, mass and weight join
+## the boom's group; their own bodies stay unused. C4 destroys the joint, so every surface flies on its own.
+func _carry_tail_surfaces(class_level: int) -> void:
+	var boom := -1
+	for i in range(1, _groups.size()):
+		if String(_groups[i].kind) == "tail_boom" and bool(_groups[i].detached):
+			boom = i
+	if boom < 0 or class_level >= 4:
+		return
+	var group: Dictionary = _groups[boom]
+	var bounds: AABB = group.bounds
+	var carried: Array = []
+	var members: Array = group.members.duplicate()
+	for i in range(1, _groups.size()):
+		if TAIL_BOOM_CARRIES.has(String(_groups[i].kind)):
+			members.append_array(_groups[i].members)
+			bounds = bounds.merge(_groups[i].bounds)
+			carried.append(String(_groups[i].key))
+			_groups[i].detached = false
+			_groups[i].carried = true
+	group.members = members
+	group.bounds = bounds
+	group.center = bounds.get_center()
+	group.carried_keys = carried
+	_groups[boom] = group
+	_set_shape_bounds(boom, bounds)
+
+
+func _group_mass(group: Dictionary, total_mass: float, total_weight: float) -> float:
+	var mass := _section_mass(String(group.key), total_mass, total_weight)
+	for key: String in group.get("carried_keys", []):
+		mass += _section_mass(key, total_mass, total_weight)
+	return mass
+
+
+func _group_moment(group: Dictionary) -> Variant:
+	var moment: Variant = _section_moment(String(group.key))
+	if moment == null:
+		return null
+	for key: String in group.get("carried_keys", []):
+		var extra: Variant = _section_moment(key)
+		if extra == null:
+			return null
+		moment = Vector3(moment) + Vector3(extra)
+	return moment
+
+
+func _group_weight_with_carried(group: Dictionary) -> float:
+	var weight := _group_weight(String(group.key))
+	for key: String in group.get("carried_keys", []):
+		weight += _group_weight(key)
+	return weight
+
+
 func _core_mass(total_mass: float, total_weight: float) -> float:
 	if _section_masses.is_empty():
 		return maxf(total_mass * (_group_weight("core") + float(_groups[0].undetached_weight)) / maxf(total_weight, 0.0001), MIN_SECTION_MASS_KG)
 	var mass := float(_section_masses.core.mass)
 	for i in range(1, _groups.size()):
-		if not bool(_groups[i].get("detached", false)):
-			mass += _section_mass(String(_groups[i].kind), total_mass, total_weight)
+		if not bool(_groups[i].get("detached", false)) and not bool(_groups[i].get("carried", false)):
+			mass += _section_mass(String(_groups[i].key), total_mass, total_weight)
 	return maxf(mass, MIN_SECTION_MASS_KG)
 
 
@@ -823,8 +975,8 @@ func _core_moment() -> Variant:
 		return null
 	var moment: Vector3 = _section_masses.core.moment
 	for i in range(1, _groups.size()):
-		var kind := String(_groups[i].kind)
-		if not bool(_groups[i].get("detached", false)) and _section_masses.has(kind):
+		var kind := String(_groups[i].key)
+		if not bool(_groups[i].get("detached", false)) and not bool(_groups[i].get("carried", false)) and _section_masses.has(kind):
 			moment += Vector3(_section_masses[kind].moment)
 	return moment
 
@@ -857,8 +1009,10 @@ func _group_index_for_body(body: RigidBody3D) -> int:
 	return _bodies.find(body)
 
 
-func _group_weight(kind: String) -> float:
-	return float(GROUP_MASS_WEIGHTS.get(kind, 0.03))
+## Weight of a section kind or of one group key ("gear#1"): same-kind groups split the kind's weight by volume.
+func _group_weight(key: String) -> float:
+	var kind := key.get_slice("#", 0)
+	return float(GROUP_MASS_WEIGHTS.get(kind, 0.03)) * float(_key_share.get(key, 1.0))
 
 
 func _scatter_energy_budget(severity: Dictionary, total_mass: float, impact_velocity: Vector3) -> float:
@@ -1011,7 +1165,7 @@ func _release_kinds_for(class_level: int, hint: String) -> Array:
 		elif h.contains("spinner") or h.contains("propeller") or h.contains("nose") or h.contains("engine"):
 			kinds = ["propeller", "engine", "canopy"]
 		elif h.contains("stab") or h.contains("fin") or h.contains("tail") or h.contains("rudder") or h.contains("elevator"):
-			kinds = ["horizontal_tail", "vertical_tail"]
+			kinds = ["horizontal_tail", "vertical_tail", "tail_boom"]
 		elif h.contains("canopy"):
 			kinds = ["canopy", "vertical_tail"]
 		elif h.contains("gear") or h.contains("wheel"):
@@ -1142,8 +1296,8 @@ func _release_pending_c3_contact_group(generation: int) -> void:
 	var threshold := float(C3_CONTACT_RELEASE_THRESHOLDS_J.get(kind, INF))
 	if _c3_contact_exposure_index_j + 0.0001 < threshold:
 		return
-	var group_weight := _group_weight(kind)
-	var release_mass := _section_mass(kind, _last_mass_kg, _last_group_weight_total)
+	var group_weight := _group_weight(String(group.get("key", kind)))
+	var release_mass := _section_mass(String(group.get("key", kind)), _last_mass_kg, _last_group_weight_total)
 	if not is_finite(release_mass) or release_mass <= 0.0 or release_mass >= _core_body.mass:
 		return
 	# Transfer the group's estimated mass out of the core; no new scatter impulse is added.

@@ -813,6 +813,8 @@ static func _add_nose_gear(root: Node3D, gear: Dictionary) -> void:
 	var steering := Node3D.new()
 	steering.name = "nose_steering_pivot"
 	steering.position = Vector3(-NOSE_WHEEL_OFFSET, y, z)
+	# CR-09e: in a crash the whole nose leg (bearing, spring, wire, wheel) tears out as one part.
+	steering.set_meta("crash_section", "gear")
 	root.add_child(steering)
 	gear["steering"] = steering
 	var nose_axle := Node3D.new()

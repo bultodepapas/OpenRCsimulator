@@ -57,7 +57,8 @@ func _start(class_label: String, component: String, velocity := Vector3(0.0, -8.
 	_wreck.start(_pose, velocity, Vector3.ZERO, _severity(class_label, component, contact))
 	var detached: Array = []
 	for group: Dictionary in _wreck._groups.slice(1):
-		if bool(group.detached):
+		# CR-09e: tail surfaces carried by a breaking tail boom leave the core too (on the boom's body).
+		if bool(group.detached) or bool(group.get("carried", false)):
 			detached.append(String(group.kind))
 	detached.sort()
 	return detached
@@ -95,7 +96,15 @@ func _class_three() -> void:
 	_check("C3 left wing-tip hit releases only the left wing", _start("C3", "left_wing_tip") == ["wing_left"])
 	_check("C3 right wing-tip hit releases only the right wing", _start("C3", "right_wing_tip") == ["wing_right"])
 	_check("C3 nose hit releases propeller, engine and canopy", _start("C3", "nose") == _sorted(_present(["propeller", "engine", "canopy"])))
-	_check("C3 fin hit releases both tail sections", _start("C3", "fin_top") == _sorted(_present(["horizontal_tail", "vertical_tail"])))
+	_check("C3 fin hit releases both tail sections and the boom they are glued to", _start("C3", "fin_top") == _sorted(_present(["horizontal_tail", "vertical_tail", "tail_boom"])))
+	if _present(["tail_boom"]).size() == 1:
+		var boom: Dictionary = _group("tail_boom")
+		var carried: Array = _wreck._groups.slice(1).filter(func(g: Dictionary) -> bool: return bool(g.get("carried", false)))
+		_check("C3 tail hit: stab and fin ride on the boom as one body", carried.size() == 2 and boom.detached
+			and boom.members.size() > 1 and carried.all(func(g: Dictionary) -> bool: return not bool(g.detached)))
+		_check("C3 tail hit: the boom carries its surfaces' mass", float(boom.mass) > 0.0 and boom.get("carried_keys", []).size() == 2)
+		_start("C4", "fin_top")
+		_check("C4 breaks the surfaces off the boom", _wreck._groups.slice(1).all(func(g: Dictionary) -> bool: return not bool(g.get("carried", false))))
 	_check("C3 inverted canopy hit releases canopy and fin", _start("C3", "canopy") == _sorted(_present(["canopy", "vertical_tail"])))
 	var legacy := _sorted(_present(["wing_left", "wing_right", "wing_center", "horizontal_tail", "vertical_tail"]))
 	_check("C3 belly hit keeps the legacy wings-and-tails set", _start("C3", "belly") == legacy)

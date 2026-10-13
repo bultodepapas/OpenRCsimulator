@@ -6,6 +6,7 @@ const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Controls := preload("res://aircraft/ugly_stik_controls.gd")
 const Equipment := preload("res://aircraft/ugly_stik_equipment.gd")
 const Finish := preload("res://aircraft/ugly_stik_finish.gd")
+const Fracture := preload("res://aircraft/ugly_stik_fracture.gd")
 const D: Dictionary = Geometry.DATA
 const RED := Finish.RED
 const CREAM := Color("f7eedb")
@@ -133,6 +134,7 @@ static func _smooth_quad(st: SurfaceTool, points: Array, normals: Array, outward
 # ends, so the measured half-width, top and bottom stay the envelope. Normals are smooth around the section and
 # per bay along the fuselage, keeping the straight-sheet creases at every measured station.
 const FUSELAGE_CORNER_SEGMENTS := 4
+const FUSELAGE_BREAK_STATION := 5 # z = 0.317 m, first measured station aft of the wing trailing edge (0.190 m)
 
 static func _fuselage(root: Node3D) -> void:
 	var rings: Array = []
@@ -192,7 +194,14 @@ static func _fuselage(root: Node3D) -> void:
 		for j in count:
 			_triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1 if end == 0 else 1), "red")
 	st.generate_tangents()
-	_instance("fuselage", st.commit(), root)
+	var fuselage := _instance("fuselage", st.commit(), root)
+	# CR-09e: in a heavy crash the boom snaps at the first station aft of the wing trailing edge (estimate: where the
+	# Stik's fuselage starts to taper behind the saddle). The map follows the triangle order above: bays, then the
+	# front and rear caps. Only the wreck's twin is split (render/crash/section_splitter.gd); this mesh never changes.
+	var bay_triangles := 2 * count
+	var bays := rings.size() - 1
+	fuselage.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
+		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles, 0, count, 1, count]]})
 
 
 # A traced tip tapers spanwise toward the leading edge, preserving nominal maximum span.
@@ -440,6 +449,8 @@ static func build() -> Dictionary:
 	_fuselage(root)
 	_wings(root, hinges)
 	_tail(root, hinges)
+	# CR-09e: hidden splinters, torn film and spar stubs, shown only when the wreck breaks these sections away.
+	Fracture.build(root, FUSELAGE_BREAK_STATION, {left = root.get_node("wing_frame_left"), right = root.get_node("wing_frame_right")})
 	Equipment.retainers(root)
 	var gear := {}
 	var propeller := Equipment.build(root, gear)

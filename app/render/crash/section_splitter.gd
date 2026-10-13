@@ -43,7 +43,7 @@ static func validate(mesh: Mesh, map: Variant) -> Dictionary:
 		return {ok = false, errors = errors}
 	for s in mesh.get_surface_count():
 		var runs: Array = surfaces[s]
-		var index: PackedInt32Array = mesh.surface_get_arrays(s)[Mesh.ARRAY_INDEX]
+		var index := _triangle_index(mesh.surface_get_arrays(s))
 		var covered := 0
 		if runs.size() % 2 != 0:
 			errors.append("surface %d: odd run list" % s)
@@ -70,7 +70,7 @@ static func split(mesh_instance: MeshInstance3D) -> Dictionary:
 	var triangles := 0
 	for s in mesh.get_surface_count():
 		var arrays := mesh.surface_get_arrays(s)
-		var index: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+		var index := _triangle_index(arrays)
 		var per_section := {}
 		var runs: Array = map.surfaces[s]
 		var tri := 0
@@ -113,6 +113,19 @@ static func split(mesh_instance: MeshInstance3D) -> Dictionary:
 
 ## The vertices a triangle subset uses, with every attribute array present copied for them, re-indexed in first-use
 ## order (deterministic).
+## CR-09e: a builder-made mesh (SurfaceTool without index()) has no index buffer; its triangles are the vertices in
+## order, so the sequential index is exact and the run-length map counts the same triangles.
+static func _triangle_index(arrays: Array) -> PackedInt32Array:
+	if arrays[Mesh.ARRAY_INDEX] != null:
+		return arrays[Mesh.ARRAY_INDEX]
+	var count := (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size()
+	var index := PackedInt32Array()
+	index.resize(count)
+	for i in count:
+		index[i] = i
+	return index
+
+
 static func _subset(arrays: Array, triangles: PackedInt32Array) -> Array:
 	var remap := {}
 	var order := PackedInt32Array()
