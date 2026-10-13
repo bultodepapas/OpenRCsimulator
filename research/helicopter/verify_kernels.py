@@ -31,6 +31,7 @@ def main() -> int:
     parser.add_argument("--godot", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--parse-all", action="store_true")
+    parser.add_argument("--native-only", action="store_true", help="focused rerun when Python references/freshness were already checked")
     args = parser.parse_args()
     godot = args.godot.resolve()
     out = args.out.resolve()
@@ -53,11 +54,12 @@ def main() -> int:
     def engine(app: Path, *arguments: str) -> list[str]:
         return [str(godot), "--headless", "--path", str(app), "--audio-driver", "Dummy", *arguments]
 
-    run("reference", [sys.executable, "-m", "unittest", "discover", "-s",
-                      "research/helicopter/reference", "-p", "test_*.py"])
-    run("oracle-current", [sys.executable, "research/helicopter/reference/make_oracle.py", "--check"])
-    run("dynamic-oracle-current", [sys.executable, "research/helicopter/reference/make_dynamic_oracle.py", "--check"])
-    run("main-oracle-current", [sys.executable, "research/helicopter/reference/make_main_rotor_oracle.py", "--check"])
+    if not args.native_only:
+        run("reference", [sys.executable, "-m", "unittest", "discover", "-s",
+                          "research/helicopter/reference", "-p", "test_*.py"])
+        run("oracle-current", [sys.executable, "research/helicopter/reference/make_oracle.py", "--check"])
+        run("dynamic-oracle-current", [sys.executable, "research/helicopter/reference/make_dynamic_oracle.py", "--check"])
+        run("main-oracle-current", [sys.executable, "research/helicopter/reference/make_main_rotor_oracle.py", "--check"])
     run("math-boundary", [sys.executable, "app/tests/check_transcendentals.py"])
     for index, script in enumerate(SCRIPTS):
         run(f"parse-kernel-{index}", engine(APP, "--check-only", "--script", f"res://{script}"))
@@ -142,7 +144,7 @@ def main() -> int:
         print(f"{'ok' if ok else 'FAIL'} all-application-scripts-parse ({len(parsed)})", flush=True)
 
     ok = all(record["ok"] for record in records)
-    (out / "summary.json").write_text(json.dumps({"ok": ok, "checks": records}, indent=2) + "\n", encoding="utf-8")
+    (out / "summary.json").write_text(json.dumps({"ok": ok, "native_only": args.native_only, "checks": records}, indent=2) + "\n", encoding="utf-8")
     return 0 if ok else 1
 
 

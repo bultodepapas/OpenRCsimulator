@@ -577,6 +577,7 @@ Each step is one small working change with its proof. A step that touches a coor
 | HELI-08 | Geared gyroscopic coupling in `rotor_coupling.gd` (b-vector form) | Momentum and work closure (extends `test_rotor_coupling`); airplane path byte-identical |
 | HELI-09 | `bench_rotorcraft.gd`: per-call kernel cost | ≤ 37 µs per full evaluation (150 µs per tick) on the H15 host, or stop and redesign before integration |
 | HELI-09a | Isolated equilibrium-inflow cost diagnostic `research/helicopter/bench_inflow.gd` | Measured on the Windows Ryzen 5900X host; [HELI-04 evidence](../research/helicopter/HELI-04/README.md). This does not close HELI-09 or the whole-tick budget. |
+| HELI-09b | Isolated joint main-disc/wake stage cost `research/helicopter/bench_main_stage.gd` | [HELI-05 measurements](../research/helicopter/HELI-05/README.md#heli-09b-isolated-stage-cost): compact payload verified, VRS cost still leaves insufficient full-load margin. Complete profiling/redesign before session integration; HELI-09 open. |
 
 ### Phase 2: data
 

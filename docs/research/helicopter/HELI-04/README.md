@@ -40,6 +40,8 @@ This reference models steady mean inflow only. It has no rotor/induced-flow time
 
 ## GDScript kernel and verification
 
+Follow-up: [HELI-04-R1](../HELI-04-R1/README.md) adds dimensional transient vi and qualifies a bounded known-event procedure. The literal steady law and oracle described here remain unchanged; automatic state-dependent session detection stays open.
+
 [`inflow.gd`](../../../../app/physics/rotorcraft/inflow.gd) implements the same normalized and dimensional targets, plus `derivative(lambda, lambda_target, omega, lambda_effective, lambda_floor)` for the planned zeroth-harmonic lag. The effective stage flow magnitude and positive floor are caller inputs. A stopped rotor returns zero ratio derivative and infinite diagnostic lag; dimensional residual wake and spool-up initialization require separate session work. The kernel rejects nonfinite values, negative crossflow magnitude, κ below one and normalized velocity magnitudes above 10⁶. These mathematical safety bounds do not establish an aircraft flight envelope.
 
 The crossflow momentum solve uses up to 12 safeguarded Newton iterations within the physical branch bracket, with 48-pass bisection as a fallback. Analytic upper bounds `v <= 1/x` (and `v <= 1/sqrt(x²+z²)` in climb) preserve relative accuracy for large accepted ratios. Axial branches use cancellation-safe closed forms. All simulation arithmetic remains float64 and transcendental calls go through `math3d.gd`.
