@@ -1,6 +1,6 @@
 # HUD-02…07/11: flight overlays. Settings validation and presets; a real mouse click on an X hides only that overlay
 # and leaves the flight keys working; warnings; the transmitter layout; no overlap at 1280×720; contrast; the
-# [hud] preferences round trip; and a real flight scene with overlays on (Home route), keys H and F3.
+# [hud] preferences round trip; and a real flight scene with overlays on (Home route), keys F2 and F3.
 # Run: godot --headless --path . --script res://tests/test_overlay_manager.gd
 extends SceneTree
 
@@ -167,12 +167,12 @@ func _manager() -> void:
 	_check("a flight key still arrives after the click", _keys_seen.has(KEY_UP), str(_keys_seen))
 
 	manager.cycle_preset()
-	_check("H after a custom set: Off", manager.settings.preset == "off" and _shown(manager).is_empty())
+	_check("F2 after a custom set: Off", manager.settings.preset == "off" and _shown(manager).is_empty())
 	var order: Array = []
 	for i in 4:
 		manager.cycle_preset()
 		order.append(manager.settings.preset)
-	_check("H cycles Pilot → Full → Developer → Off", order == ["pilot", "full", "developer", "off"], str(order))
+	_check("F2 cycles Pilot → Full → Developer → Off", order == ["pilot", "full", "developer", "off"], str(order))
 	manager.set_preset("pilot")
 	manager.toggle_developer()
 	_check("F3 adds diagnostics and performance", manager.is_overlay_visible("diagnostics") and manager.is_overlay_visible("performance") and manager.settings.preset == "custom")
@@ -252,8 +252,14 @@ func _flight_scene() -> void:
 	_check("legacy diagnostics still written (capture evidence reads _hud)", (flight.get("_hud") as Label).text.begins_with("airspeed"), (flight.get("_hud") as Label).text)
 	_check("transmitter footer names the keyboard", overlays.frames.transmitter.footer.text.begins_with("Keyboard"), overlays.frames.transmitter.footer.text)
 	var ui := UiDriver.new(self)
+	_check("Stik flight has the smoke installation", flight.get("_smoke") != null)
+	var pump_before: bool = flight.get("_smoke_key_on")
+	await ui.tap(KEY_F2)
+	_check("F2 in flight: Full → Developer, saved", overlays.settings.preset == "developer" and saved.size() == 1)
+	_check("F2 leaves the smoke pump unchanged", flight.get("_smoke_key_on") == pump_before)
 	await ui.tap(KEY_H)
-	_check("H in flight: Full → Developer, saved", overlays.settings.preset == "developer" and saved.size() == 1)
+	_check("H toggles the Stik smoke pump without changing overlays", flight.get("_smoke_key_on") != pump_before
+		and overlays.settings.preset == "developer" and saved.size() == 1)
 	await ui.tap(KEY_F3)
 	_check("F3 in flight hides the developer overlays", not overlays.is_overlay_visible("diagnostics") and overlays.settings.preset == "full")
 	flight.set_overlays_visible(false)

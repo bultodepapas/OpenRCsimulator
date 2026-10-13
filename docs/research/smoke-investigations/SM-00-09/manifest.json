@@ -1,0 +1,49 @@
+{
+  "date_local": "2026-10-12",
+  "timezone": "America/Bogota",
+  "implementation_integration_commit": "c5a00d0",
+  "baseline_regression_commit": "bb7e89caed14",
+  "final_source_base": "c5a00d000d3fd8e86e057a77f010a43ceaf4f2ec",
+  "assets": {
+    "license": "MIT",
+    "source": "Original project procedural 64x64 RGBA smoke mask; generated synchronously by app/render/smoke/exhaust.gd",
+    "third_party": []
+  },
+  "retained_images": [
+    {
+      "file": "segment-point-vs-sweep.png",
+      "sha256": "3960ca1532e904037485db66d5aec162552ee569461558aa7e45af43946eb7fd"
+    },
+    {
+      "file": "trim-exhaust__combined.png",
+      "sha256": "5d328495e7ce5061b16761f1ce2c51d193b677ceba7f182847240f12e02c6dc0"
+    },
+    {
+      "file": "pump-on__combined.png",
+      "sha256": "7eca1fbc96ec4cd0c0a86f986024be12e3725795541baa58aebb0764c0809c37"
+    },
+    {
+      "file": "actual-flight-bank-pump-on__combined.png",
+      "sha256": "ceaa61448eb6b0af9d1246264ba4791b7741bd2db0468bae443d58560aaa824a"
+    },
+    {
+      "file": "old-puffs-after-wind-change__combined.png",
+      "sha256": "fdd6b20a24e748252a3c6cbfe7f125081a00542630ceffffd33459a331158152"
+    },
+    {
+      "file": "runway-idle__combined.png",
+      "sha256": "14a170b7bae8cc20bf5ab6985bddcc441004100d822479a5538e03e2c90b54fe"
+    },
+    {
+      "file": "runway-ground-acceleration-pilot__combined.png",
+      "sha256": "d6028068ec394572d472acb3962082a0f244a1c8254c199a32d8fcd488ba6891"
+    }
+  ],
+  "limitations": [
+    "Combustion startup/shutdown, temperature, mixture, smoke-oil depletion and emissions rates are not physically modeled.",
+    "Only the Stik authors an installed RC exhaust anchor; other healthy propulsion types stay clear.",
+    "Puff entrainment/expansion/opacity and pump operating gates are visual estimates.",
+    "Dense low-speed pump clouds may surround the airframe; depth fade softens surfaces but is not fluid/solid coupling.",
+    "Real radios, other GPU/OS exports, night/intersection breadth and long native memory soak remain unqualified."
+  ]
+}

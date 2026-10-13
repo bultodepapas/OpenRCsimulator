@@ -6,6 +6,7 @@ const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const HullCrossing := preload("res://physics/hull_crossing.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
+const SceneryDamage := preload("res://sim/scenery_damage.gd")
 
 const WORLD_FORMAT := "openrc-collision-world v1"
 const CELL_SIZE_M := 32.0
@@ -26,6 +27,8 @@ const LIGHT_AIRFRAME_RESTITUTION := 0.25
 class Event:
 	extends ImpactSnapshot.Snapshot
 	var obstacle_id: String = ""
+	var damage_id: String = ""
+	var damage_profile: String = "none"
 	var obstacle_kind: String = ""
 	var obstacle_part: String = ""
 	var response_class: String = ""
@@ -57,7 +60,8 @@ class Event:
 ## Returns unique obstacle contacts sorted by first time of impact, stable ID, then hull probe index.
 ## Finds one deterministic first contact per proxy; responses are resolved at TOI by the session.
 static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, hull: PackedFloat64Array,
-		world: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array) -> Array[Event]:
+		world: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array,
+		damage: Dictionary = {}) -> Array[Event]:
 	var result: Array[Event] = []
 	if not _state_is_valid(previous) or not _state_is_valid(current) or hull.is_empty() or hull.size() % 3 != 0 \
 			or not _world_is_valid(world) or not is_finite(mass) or mass <= 0.0 or inertia.size() != 6:
@@ -83,6 +87,7 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 		maxf(previous[RB.POS + 1], current[RB.POS + 1]) + max_hull_radius,
 		minf(previous[RB.POS + 2], current[RB.POS + 2]) - max_hull_radius,
 		maxf(previous[RB.POS + 2], current[RB.POS + 2]) + max_hull_radius)
+	swept_candidates = _active_candidate_indices(world, swept_candidates, damage)
 	if swept_candidates.is_empty():
 		return result
 	# Each probe's padded sweep is contained in this whole-hull envelope. Query
@@ -105,6 +110,7 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 		or floori(broad_max_d / CELL_SIZE_M) > floori((maxf(previous[RB.POS + 2], current[RB.POS + 2]) + max_hull_radius) / CELL_SIZE_M):
 		broad_candidates = _candidate_indices(world, broad_min_n, broad_max_n, broad_min_e, broad_max_e,
 			broad_min_d, broad_max_d)
+	broad_candidates = _active_candidate_indices(world, broad_candidates, damage)
 	var overlapping_candidates: Array[int] = []
 	for proxy_index: int in broad_candidates:
 		if _aabb_overlap(world.proxies[proxy_index], broad_min_n, broad_max_n, broad_min_e, broad_max_e,
@@ -163,8 +169,9 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 
 
 static func first_hit(previous: PackedFloat64Array, current: PackedFloat64Array, hull: PackedFloat64Array,
-		world: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array) -> Event:
-	var hits := contacts(previous, current, hull, world, tick, mass, inertia)
+		world: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array,
+		damage: Dictionary = {}) -> Event:
+	var hits := contacts(previous, current, hull, world, tick, mass, inertia, damage)
 	return hits[0] if not hits.is_empty() else null
 
 
@@ -214,6 +221,8 @@ static func _event_at(previous: PackedFloat64Array, current: PackedFloat64Array,
 	out.speed_mps = M.norm(velocity)
 	out.down_speed_mps = velocity[2]
 	out.obstacle_id = str(proxy.id)
+	out.damage_id = str(proxy.get("damage_id", ""))
+	out.damage_profile = str(proxy.get("damage_profile", "none"))
 	out.obstacle_kind = str(proxy.kind)
 	out.obstacle_part = str(proxy.part)
 	out.response_class = str(proxy.response_class)
@@ -504,6 +513,19 @@ static func _candidate_indices(world: Dictionary, north_min: float, north_max: f
 	for key: Variant in seen.keys():
 		result.append(int(key))
 	result.sort()
+	return result
+
+
+## Broken damage groups are discarded before the per-probe swept geometry checks.
+static func _active_candidate_indices(world: Dictionary, candidates: Array[int], damage: Dictionary) -> Array[int]:
+	if damage.is_empty():
+		return candidates
+	var result: Array[int] = []
+	for index: int in candidates:
+		var proxy: Dictionary = world.proxies[index]
+		var damage_id := str(proxy.get("damage_id", ""))
+		if not SceneryDamage.id_is_broken(damage, damage_id):
+			result.append(index)
 	return result
 
 

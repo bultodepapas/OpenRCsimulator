@@ -1,0 +1,17 @@
+{
+  "format": "openrc-uiuc-source v1",
+  "id": "apcsp_11x7_static_kt0473",
+  "evidence": "measured-source",
+  "table_kind": "static",
+  "source_url": "https://m-selig.ae.illinois.edu/props/volume-1/data/apcsp_11x7_static_kt0473.txt",
+  "source_sha256": "7919e647c5bf478722560041466acfc87548a1d354db1cba710de75536eaf2f3",
+  "propeller": {
+    "manufacturer": "APC",
+    "family": "Sport (two blades)",
+    "nominal_size": "11x7",
+    "source": "UIUC Volume 1 APC Sport listing"
+  },
+  "coefficient_reference_diameter": null,
+  "run_rpm_label": null,
+  "notes": "Borrowed two-blade 11x7 map for 11x7.3 three-blade EFL5962; blade count/pitch/RPM and coefficient diameter mismatch unresolved. No matched hardware validation."
+}

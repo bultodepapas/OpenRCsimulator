@@ -1,6 +1,6 @@
 # Flight overlays plan
 
-**Date:** 2026-10-13. **Status:** HUD-00…10 implemented (b0b0347); HUD-11 done except a 1080p rendered capture; HUD-12 waits for owner reading on target hardware. **Prefix:** HUD-00…HUD-12 ([registry](../README.md#tracks-plans-and-step-ids)). **Owner:** flight-overlays track, under the main line's acceptance. Supersedes [MENU-REDESIGN-PLAN](../MENU-REDESIGN-PLAN.md) UI-27 (D1).
+**Date:** 2026-10-13. **Status:** HUD-00…10 implemented (b0b0347); HUD-11 done with 720p and 1080p rendered captures; HUD-12 waits for owner reading on target hardware. **Prefix:** HUD-00…HUD-12 ([registry](../README.md#tracks-plans-and-step-ids)). **Owner:** flight-overlays track, under the main line's acceptance. Supersedes [MENU-REDESIGN-PLAN](../MENU-REDESIGN-PLAN.md) UI-27 (D1).
 **Owns:** `app/render/overlays/`, `app/ui/overlays_dialog.gd`, `app/tests/test_overlay_*.gd`, `docs/research/flight-overlays/`.
 **Coordinated, not owned:** the seams in `app/main.gd` (main line), `app/app_root.gd`, `app/ui/pause_menu.gd`, `app/ui/controls_reference.gd`, `app/app_state/preferences.gd`, `app/i18n/es.po` (menu track). `render/hud.gd` and `render/panel.gd` are unchanged and still build the diagnostic text.
 **Evidence:** [HUD-01…10](../research/flight-overlays/HUD-01-10/README.md).
@@ -19,7 +19,7 @@ Home flights show seven independent overlays on one `CanvasLayer` (`render/overl
 | O6 | Diagnostics (developer) | top left | today's input panel and HUD text, unchanged |
 | O7 | Performance (developer) | bottom centre | fps, frame p95, physics µs/tick |
 
-Presets: Off, Pilot (O1–O4, default), Full (O1–O5), Developer (all), Custom (any other set). **H** cycles Off → Pilot → Full → Developer; **F3** toggles O6+O7; Pause → **Flight overlays** sets overlays, units and stick mode. Settings live under `[hud]` in `settings.cfg` (additive; older builds ignore it).
+Presets: Off, Pilot (O1–O4, default), Full (O1–O5), Developer (all), Custom (any other set). **F2** cycles Off → Pilot → Full → Developer; **F3** toggles O6+O7; Pause → **Flight overlays** sets overlays, units and stick mode. Settings live under `[hud]` in `settings.cfg` (additive; older builds ignore it).
 
 Rules the implementation keeps:
 
@@ -47,10 +47,10 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| HUD-00 | Decisions D1–D6 (owner accepted the defaults, 2026-10-13); registry row; key H free | [DECISIONS](../../DECISIONS.md) row / done |
+| HUD-00 | Decisions D1–D6 (owner accepted the defaults, 2026-10-13); registry row; F2 for presets (H remains the smoke pump) | [DECISIONS](../../DECISIONS.md) row / done |
 | HUD-01 | `units.gd`, `telemetry.gd` | `test_overlay_units` 23, `test_overlay_telemetry` 36 checks / done |
 | HUD-02 | `overlay_frame.gd`, `overlay_manager.gd`, legacy route for automation | trace identity; `test_overlay_manager` / done |
-| HUD-03 | ×, presets, H/F3 | real mouse click hides only its overlay, takes no focus, a flight key still arrives / done |
+| HUD-03 | ×, presets, F2/F3 | real mouse click hides only its overlay, takes no focus, a flight key still arrives / done |
 | HUD-04 | O1 Flight data | unit-formatted values in a live flight scene / done |
 | HUD-05 | O2 Transmitter | Mode 1/2 stick and trim layout checks / done |
 | HUD-06 | `[hud]` preferences, Pause → Flight overlays dialog | round trip and per-key fallback / done; no UI-driver capture of the dialog yet |
@@ -58,7 +58,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | HUD-08 | Height above ground and load factor | from existing public state; level n = 1, 60° turn n = 2, terrain AGL / done, no seam needed |
 | HUD-09 | O3 Warnings | one fixture per code, order, no STALL without a stall angle / done |
 | HUD-10 | O5 Telemetry | live flight scene / done |
-| HUD-11 | Spanish texts, contrast, layout | es entries; contrast ≥ 4.5:1 over any sky; no overlap at 1280×720 and 1920×1080 (Pilot, Full) and in Spanish; en/es rendered captures at 720p / done except a 1080p capture |
+| HUD-11 | Spanish texts, contrast, layout | es entries; contrast ≥ 4.5:1 over any sky; no overlap at 1280×720 and 1920×1080 (Pilot, Full) and in Spanish; en/es rendered captures at 720p and 1080p / done |
 | HUD-12 | Cost and pilot acceptance | VM (no GPU): ≈ 60 µs mean per frame, ≈ 0.26 ms on the 10 Hz refresh frames / owner reads Pilot preset in flight at 720p and 1080p: pending |
 
 ## 3. Decisions
@@ -74,7 +74,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 
 ## 4. Open work and limits
 
-- A 1080p rendered capture (HUD-11); pilot reading (HUD-12).
+- Pilot reading at 720p and 1080p on target hardware (HUD-12).
 - The developer preset may overlap at 720p with long diagnostic lines; only "on screen" is checked there.
 - Overlays have fixed anchors; dragging and per-overlay scale are not implemented.
 - Warning thresholds and the transmitter view are presentation aids, not validated against a real flight.

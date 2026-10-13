@@ -46,6 +46,8 @@ func _array_matches(encoded: String, values: PackedFloat64Array, tolerance: floa
 
 
 func _initialize() -> void:
+	_check("Timber runway policy is explicitly qualified", Session.runway_aircraft_supported("turbo-lumber-evolution"))
+	_check("Extra remains outside the runway policy", not Session.runway_aircraft_supported("gp-extra-300s-60"))
 	var field: Dictionary = _field()
 	if field.is_empty():
 		quit(1)

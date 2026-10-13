@@ -130,6 +130,9 @@ if grep -qE "^(SCRIPT )?ERROR:|differ" "$LOG"; then echo "Timber mesh measuremen
 python3 "$HERE/../assets/aircraft/turbo-lumber-evolution/build_geometry.py" --check || exit 1
 python3 "$HERE/../assets/aircraft/turbo-lumber-evolution/compile_geometry.py" --check || exit 1
 python3 "$HERE/../research/timber/tt03/check_asset.py" --check || exit 1
+python3 "$HERE/../research/timber/tt07/derive_physics.py" --check
+python3 "$HERE/../research/timber/tt07/sensitivity.py" --check
+python3 "$HERE/../research/timber/tt07/test_derive.py"
 
 echo "== Turbo Lumber Evolution model contract (aircraft/verify_timber.gd, TT-03/TT-05: imported scene, pivots, signs, propeller, gear)"
 run --script res://aircraft/verify_timber.gd 2>&1 | tee "$LOG" | tail -1
@@ -160,7 +163,7 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_time_of_day_cli.py"
 echo "== G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_shaft_cli.py"
 
-echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)"
+echo "== app: headless --trace starts in trimmed level flight (all five catalog aircraft)"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
@@ -176,6 +179,10 @@ TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=sebart-avanti-s-a200-p100rx --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "sebart-avanti-s-a200-p100rx" "$TRACE" || { echo "the Avanti trace does not name the Avanti"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
+TRACE="$(mktemp --suffix=.csv)"
+run -- --aircraft=turbo-lumber-evolution --trace="$TRACE" --t=3 > /dev/null 2>&1
+grep -q "turbo-lumber-evolution" "$TRACE" || { echo "the Timber trace does not name the Timber"; exit 1; }
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-input="$HERE/data/aircraft/turbo_lumber_evolution.json"; rm -f "$TRACE"
 echo "== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
 python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1
 echo "== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)"
@@ -241,6 +248,19 @@ if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $
   echo "final state depends on the rendering frame rate:$HASHES"; exit 1
 fi
 echo "identical"
+
+echo "== TT-08: Timber coupled electric flight is identical at 30/60/144 fps"
+HASHES=""
+for fps in 30 60 144; do
+  out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd -- --aircraft=turbo-lumber-evolution 2>&1)"
+  echo "$out" | grep -E "ticks=|ERROR"
+  if echo "$out" | grep -qE "^(SCRIPT )?ERROR:"; then echo "Timber engine error at $fps fps"; exit 1; fi
+  HASHES="$HASHES $(echo "$out" | sed -n 's/^flight_sha256=\([0-9a-f]*\)$/\1/p')"
+done
+if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $HASHES | tr -d ' ')" ]; then
+  echo "Timber complete checkpoint depends on the rendering frame rate:$HASHES"; exit 1
+fi
+echo "identical Timber complete checkpoints"
 
 echo "== E0b5: experimental wash transport at 30/60/144 fps"
 python3 "$HERE/../research/propwash/e0b5/check_frames.py" --godot "$GODOT"

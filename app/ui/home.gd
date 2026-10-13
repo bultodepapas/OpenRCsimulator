@@ -22,6 +22,7 @@ const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const FlightSession := preload("res://sim/flight_session.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
@@ -308,11 +309,11 @@ func set_aircraft(id: String) -> void:
 
 
 func set_start_choice(choice: String) -> void:
-	var supported: bool = aircraft_id == Catalog.DEFAULT_ID and runway_available
+	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
 	start_choice = "runway" if supported and choice == "runway" else "airborne"
 	start_button.disabled = not supported
 	start_button.text = "Start: runway (experimental)" if start_choice == "runway" else "Start: in the air"
-	limits_label.text = "Starts at idle on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
+	limits_label.text = "Starts on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
 
 
 ## Keeps only a complete validated config. A corrupt preference can never stop Home from opening.

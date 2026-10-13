@@ -6,6 +6,8 @@ const Frames = preload("res://render/frames.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Propulsion = preload("res://physics/propulsion.gd")
 const P51Geometry = preload("res://aircraft/p51d_geometry.gd")
+const EngineSound = preload("res://render/engine_sound.gd")
+const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
 var soundscape: Soundscape
 var _last_tick: int = -1
@@ -39,7 +41,7 @@ func snapshot() -> Dictionary:
 	var wind: Vector3 = Frames.ned_to_render(Array(session.wind_at(session.sim.time())))
 	var prop: Dictionary = session.aircraft.model.propulsion
 	var atmosphere: Dictionary = session.atmosphere_configuration()
-	var blades: int = int(P51Geometry.DATA.propeller.blades) if flight.aircraft_id == "p51d-mustang-120" else 2
+	var blades: int = propeller_blade_count(flight.aircraft_id)
 	var air: Dictionary = session.air_data(session.sim.state)
 	var rpm: float = session.sim.aux[0]
 	var load_amount: float = session.sim.inputs[3]
@@ -54,7 +56,7 @@ func snapshot() -> Dictionary:
 		elevation = float(Atmosphere.state.get("sun_elevation_deg", elevation))
 	# Turbine load uses throttle; propellers use accepted-state aerodynamic torque.
 	return {
-		rpm = rpm, max_rpm = prop.get("max_rpm", 12000.0),
+		rpm = rpm, max_rpm = EngineSound.reference_rpm(prop),
 		load = load_amount, throttle = session.sim.inputs[3], running = session.engine_running,
 		blades = blades, sound_speed = sqrt(1.4 * 287.05 * float(atmosphere.get("temperature_k", 288.15))),
 		airspeed = air.V,
@@ -63,6 +65,14 @@ func snapshot() -> Dictionary:
 		source = flight._airplane.root.global_position, listener = flight._camera.global_position,
 		paused = session.sim.paused, sun_elevation = elevation,
 	}
+
+
+static func propeller_blade_count(aircraft_id: String) -> int:
+	if aircraft_id == "p51d-mustang-120":
+		return int(P51Geometry.DATA.propeller.blades)
+	if aircraft_id == TIMBER_ID:
+		return 3
+	return 2
 
 
 func _on_resetting() -> void:

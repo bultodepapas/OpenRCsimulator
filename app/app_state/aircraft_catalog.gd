@@ -52,13 +52,13 @@ const ENTRIES := [
 	},
 	{
 		# TT-06: the author's r1 glTF model (assets/aircraft/turbo-lumber-evolution), inspired by the E-flite Turbo Timber
-		# Evolution; fictional name (Spanish "Turbo Tronco Evolución" in es.po). Electric physics data arrives with TT-07.
+		# Evolution; fictional name (Spanish "Turbo Tronco Evolución" in es.po). TT-07/08 estimated electric configuration.
 		id = "turbo-lumber-evolution",
 		name = "Turbo Lumber Evolution",
 		summary = "High-wing STOL · 1.55 m · 4S electric",
-		status = PREVIEW,
-		status_note = "Preview only: electric propulsion and flight data are not simulated yet.",
-		data = "",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off.",
+		data = "res://data/aircraft/turbo_lumber_evolution.json",
 	},
 ]
 

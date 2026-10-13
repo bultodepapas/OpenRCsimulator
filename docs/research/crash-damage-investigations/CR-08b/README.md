@@ -54,3 +54,9 @@ Healthy flight is untouched. The estimator runs only after a crash, and `test_cr
 - Body rates are ignored by the slapdown bound. A spinning airplane can carry rotational energy into the second contact.
 - The slapdown is charged to the struck component's `component_damage`, although a different part takes it. CR-09b should feed the wreck's real secondary contacts through `accumulate_damage` instead.
 - Hull points are sparse (8–14 per aircraft). The struck "point" is the nearest hull point, not the true first contact.
+
+## Merge verification (2026-10-13)
+
+Integrated `487b513` (local smoke, scenery destruction and overlay fixes) with `9cc60a6` (CR-08b and the camera proposal). Both decision sets and the CR-17a evidence remain linked. On the fresh LF WSL checkout with pinned Godot 4.7.2, import and the five changed/new application scripts parse; the transcendental guard passes. All 13 focused tests pass: crash, crash audio/effects/integration/pose/proportional/severity/snapshot/wreck, scenery damage session/runtime, engine smoke and overlay manager. CR-08b reports 49 checks, severity 44, overlays 64, with no failures.
+
+The unchanged CR-17a capture harness renders before/impact/after/reset under software OpenGL with successful exit and no script/shader errors; local impact/aftermath views were inspected. These checks verify integration, not physical strength, hardware timing or pilot acceptance. The five pre-existing full-suite failures documented in [HUD integration](../../flight-overlays/HUD-01-10/README.md#hud-030611-merge-integration-2026-10-13) remain outside this change.

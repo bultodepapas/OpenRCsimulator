@@ -18,6 +18,8 @@ COLUMNS = (
     "Fx_N Fy_N Fz_N Mx_Nm My_Nm Mz_Nm cmd_roll cmd_pitch cmd_yaw cmd_throttle "
     "engine_rpm srv_roll srv_pitch srv_yaw"
 ).split()
+ELECTRIC_COLUMNS = ('drive_enabled drive_duty bus_voltage_v motor_current_a drive_bus_current_a '
+                    'source_torque_nm shaft_power_w copper_loss_w rotational_loss_w').split()
 # Trace v3 prints time to nine decimal places. Allow rounding, not a missing tick.
 TIME_TOLERANCE = 1e-9
 STATE_LAYOUT = 'north_m east_m down_m u_mps v_mps w_mps qw qx qy qz p_radps q_radps r_radps'.split()
@@ -45,6 +47,44 @@ def _finite_number(value: object) -> bool:
         return False
 
 
+def check_fixed_bus_sample(metadata: dict, sample: dict) -> None:
+    """TT-08: independently reconstruct accepted-endpoint DC-equivalent telemetry."""
+    if metadata.get('propulsion_model') != 'electric-fixed-bus-coupled-stop-v1':
+        raise ValueError('calm electric v7 smoke requires the fixed-bus law')
+    if metadata.get('electric_sample_timing') != 'accepted endpoint; current tick input and source-enabled mode':
+        raise ValueError('missing or invalid electric sample timing')
+    try:
+        configuration = json.loads(metadata['electric_configuration'])
+        motor, battery, esc = (configuration[key] for key in ('motor', 'battery', 'esc'))
+        kv, resistance, idle_current = (motor[key] for key in (
+            'kv_rpm_per_volt', 'resistance_ohm', 'no_load_current_a'))
+        voltage = battery['voltage_v']
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError('missing or invalid electric configuration') from error
+    if (not all(_finite_number(x) for x in (kv, resistance, idle_current, voltage))
+            or kv <= 0 or resistance <= 0 or idle_current < 0 or voltage <= 0
+            or battery.get('kind') != 'fixed_voltage'
+            or esc != {'kind': 'ideal_motoring', 'command_mapping': 'identity'}):
+        raise ValueError('invalid fixed-bus electric configuration')
+    enabled, duty, rpm = (sample[key] for key in ('drive_enabled', 'drive_duty', 'engine_rpm'))
+    if enabled not in (0, 1) or not 0 <= duty <= 1 or rpm < 0 or (enabled == 0 and duty != 0):
+        raise ValueError('invalid electric endpoint mode')
+    if enabled != 1 or abs(duty - sample['cmd_throttle']) > 2e-9:
+        raise ValueError('trimmed electric drive disagrees with the sampled command')
+    current = max(0, (duty * voltage - rpm / kv) / resistance) if duty > 0 else 0
+    kt, omega = 60 / (2 * math.pi * kv), rpm * 2 * math.pi / 60
+    loss = kt * idle_current
+    if rpm == 0:
+        loss = min(loss, kt * current)
+    torque = kt * current - loss
+    expected = dict(bus_voltage_v=voltage, motor_current_a=current,
+                    drive_bus_current_a=duty * current, source_torque_nm=torque,
+                    shaft_power_w=torque * omega, copper_loss_w=current * current * resistance,
+                    rotational_loss_w=loss * omega)
+    for key, value in expected.items():
+        # Printed commands/RPM have nine decimal places; propagate their rounding to power.
+        if not math.isclose(sample[key], value, rel_tol=2e-7, abs_tol=2e-6):
+            raise ValueError('electric endpoint equation disagrees: ' + key)
 def check_input_identity(metadata: dict, allow_legacy: bool, aircraft_input: Path | None) -> str:
     """Never reinterpret the old rounded semantic digest as an exact file hash."""
     schema = metadata.get('metadata_schema')
@@ -311,8 +351,12 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
             if key in metadata:
                 raise ValueError(f"duplicate metadata: {key}")
             metadata[key] = value
-    if metadata.get("format") != "openrc-trace v3":
-        raise ValueError("expected openrc-trace v3")
+    electric = metadata.get('format') == 'openrc-trace v7'
+    if metadata.get("format") not in ('openrc-trace v3', 'openrc-trace v7'):
+        raise ValueError("expected openrc-trace v3 or calm fixed-bus v7")
+    if electric != (metadata.get('propulsion_model') == 'electric-fixed-bus-coupled-stop-v1'):
+        raise ValueError('trace format disagrees with the fixed-bus electric law')
+    columns = COLUMNS + ELECTRIC_COLUMNS if electric else COLUMNS
     try:
         dt = float(metadata["dt_s"])
     except (KeyError, ValueError) as error:
@@ -320,13 +364,13 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
     if not math.isfinite(dt) or not math.isclose(dt, 1 / hz, rel_tol=1e-6, abs_tol=0):
         raise ValueError("dt_s does not match the requested tick rate")
     rows = list(csv.reader(line for line in lines if not line.startswith("#")))
-    if not rows or rows[0] != COLUMNS:
+    if not rows or rows[0] != columns:
         raise ValueError("missing or unexpected trace columns")
     if len(rows) - 1 != expected_ticks + 1:
         raise ValueError(f"expected {expected_ticks + 1} samples, got {len(rows) - 1}")
     data = []
     for index, row in enumerate(rows[1:]):
-        if len(row) != len(COLUMNS):
+        if len(row) != len(columns):
             raise ValueError(f"sample {index}: wrong column count")
         try:
             values = [float(cell) for cell in row]
@@ -334,11 +378,13 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
             raise ValueError(f"sample {index}: nonnumeric value") from error
         if not all(math.isfinite(value) for value in values):
             raise ValueError(f"sample {index}: non-finite value")
-        sample = dict(zip(COLUMNS, values))
+        sample = dict(zip(columns, values))
         if sample["tick"] != index:
             raise ValueError(f"sample {index}: discontinuous tick")
         if abs(sample["t_s"] - index / hz) > TIME_TOLERANCE:
             raise ValueError(f"sample {index}: wrong elapsed time")
+        if electric:
+            check_fixed_bus_sample(metadata, sample)
         data.append(sample)
     first, last = data[0], data[-1]
     identity = check_input_identity(metadata, allow_legacy, aircraft_input)

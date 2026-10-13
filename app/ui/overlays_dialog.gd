@@ -45,7 +45,7 @@ func _init(overlay_manager: CanvasLayer) -> void:
 	column.add_theme_constant_override("separation", 8)
 	dialog_panel.add_child(column)
 	column.add_child(Widgets.label(tr("Flight overlays"), "TitleLabel", false, false))
-	column.add_child(Widgets.label(tr("Close any overlay with its × or press H to cycle presets; F3 shows the developer overlays."), "SecondaryLabel", true, false))
+	column.add_child(Widgets.label(tr("Close any overlay with its × or press F2 to cycle presets; F3 shows the developer overlays."), "SecondaryLabel", true, false))
 
 	preset_picker = _picker(column, tr("Preset"), "Preset")
 	for preset: String in Settings.PRESET_ORDER + ["custom"]:

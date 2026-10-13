@@ -1,0 +1,254 @@
+{
+  "initial_frozen_run": [
+    {
+      "name": "import",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 12.281
+    },
+    {
+      "name": "all_scripts_parse",
+      "scripts": 465,
+      "failures": [
+        "tests/capture_engine_smoke.gd"
+      ]
+    },
+    {
+      "name": "scenery_damage_session",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 2.5
+    },
+    {
+      "name": "scenery_destruction",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.219
+    },
+    {
+      "name": "scenery_build",
+      "exit_code": 1,
+      "errors": true,
+      "seconds": 4.5
+    },
+    {
+      "name": "scenery_loader",
+      "exit_code": 1,
+      "errors": true,
+      "seconds": 1.219
+    },
+    {
+      "name": "scenery_trace",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 18.234
+    },
+    {
+      "name": "scenery_ground_lu08",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 0.375
+    },
+    {
+      "name": "landscape_collision",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 0.766
+    },
+    {
+      "name": "landscape_collision_coverage",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 0.578
+    },
+    {
+      "name": "landscape_collision_oracle",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 3.172
+    },
+    {
+      "name": "landscape_collision_session",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.125
+    },
+    {
+      "name": "landscape_collision_setup",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.594
+    },
+    {
+      "name": "landscape_collision_support",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 0.39
+    },
+    {
+      "name": "landscape_collision_world",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.688
+    },
+    {
+      "name": "landscape_runtime",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 4.375
+    },
+    {
+      "name": "flightline_barrier",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 0.312
+    },
+    {
+      "name": "time_of_day_scenery_update",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.875
+    },
+    {
+      "name": "checkpoint",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.703
+    },
+    {
+      "name": "visual_checkpoint",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 0.297
+    },
+    {
+      "name": "crash",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 3.453
+    },
+    {
+      "name": "crash_snapshot",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.032
+    },
+    {
+      "name": "crash_pose",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 8.718
+    },
+    {
+      "name": "crash_severity",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 0.203
+    },
+    {
+      "name": "crash_wreck",
+      "exit_code": 1,
+      "errors": true,
+      "seconds": 44.079
+    },
+    {
+      "name": "crash_effects",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 0.296
+    },
+    {
+      "name": "crash_integration",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 19.735
+    },
+    {
+      "name": "propeller_blur",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.719
+    },
+    {
+      "name": "field_loader",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 1.203
+    },
+    {
+      "name": "field_integration",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 5.703
+    },
+    {
+      "name": "ui_pause",
+      "exit_code": 0,
+      "errors": false,
+      "seconds": 32.656
+    }
+  ],
+  "followup_live_checks": [
+    {
+      "name": "scenery_build",
+      "result": "pass",
+      "log": "scenery-build.log",
+      "resolves": "426 ms budget sample during concurrent native work; isolated live build passes"
+    },
+    {
+      "name": "scenery_loader",
+      "result": "pass",
+      "log": "scenery-loader.log",
+      "resolves": "app-only snapshot lacked the expected parent tools/scenery/place.py; live repository check passes"
+    },
+    {
+      "name": "capture_engine_smoke_parse",
+      "result": "pass",
+      "log": "smoke-parse.log",
+      "resolves": "concurrent smoke draft initially lacked Propulsion preload; its owner added it; updated script parses"
+    },
+    {
+      "name": "crash_wreck",
+      "result": "pass",
+      "checks": 163,
+      "log": "wreck.log",
+      "resolves": "merged Timber geometry must keep delayed-release expectations regardless of catalog menu status"
+    },
+    {
+      "name": "scenery_damage_session",
+      "result": "pass",
+      "checks": 51,
+      "log": "session.log"
+    },
+    {
+      "name": "scenery_destruction",
+      "result": "pass",
+      "checks": 78,
+      "log": "presentation.log"
+    },
+    {
+      "name": "scenery_destruction_runtime",
+      "result": "pass",
+      "checks": 8,
+      "log": "runtime.log"
+    },
+    {
+      "name": "landscape_runtime",
+      "result": "pass",
+      "checks": 56,
+      "log": "landscape-runtime.log"
+    },
+    {
+      "name": "transcendental_guard",
+      "result": "pass",
+      "log": "math-guard.log"
+    },
+    {
+      "name": "flight_modes",
+      "result": "pass",
+      "checks": 42,
+      "log": "modes.log"
+    }
+  ],
+  "remaining_failures": []
+}

@@ -27,7 +27,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 func _initialize() -> void:
 	_check("default is the Ugly Stik and it is in the catalog", Catalog.DEFAULT_ID == AirplaneBuilder.STIK_ID and Catalog.has(Catalog.DEFAULT_ID))
 	_check("five aircraft, unique IDs", Catalog.ids().size() == 5 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 5, str(Catalog.ids()))
-	_check("four flyable entries, the Timber preview skipped explicitly", Catalog.flyable_ids().size() == 4 and not Catalog.flyable_ids().has(AirplaneBuilder.TIMBER_ID)
+	_check("five simulated entries, including experimental Timber", Catalog.flyable_ids().size() == 5 and Catalog.flyable_ids().has(AirplaneBuilder.TIMBER_ID)
 		and Catalog.flyable_entries().all(func(e): return e.data != "" and e.status != Catalog.PREVIEW), str(Catalog.flyable_ids()))
 	_check("unknown ID: no entry, cannot fly", Catalog.entry("nope").is_empty() and not Catalog.can_fly("nope"))
 	_check("step wraps both ways", Catalog.step(Catalog.ids()[-1], 1) == Catalog.ids()[0] and Catalog.step(Catalog.ids()[0], -1) == Catalog.ids()[-1])

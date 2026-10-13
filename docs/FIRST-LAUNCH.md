@@ -41,9 +41,11 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 | Z | Toggle auto-zoom |
 | V | Ground-shadow aid: sun / vertical / off |
 | K · Enter | Start calibration · advance its step |
+| H | Toggle the Stik smoke pump with keyboard controls |
+| J · Enter | Assign the active radio's smoke AUX · advance its step |
 | T | Start / save a flight trace |
 | F3 | Toggle performance numbers (current source: developer overlays) |
-| H | Current source: cycle flight overlays off / pilot / full / developer |
+| F2 | Current source: cycle flight overlays off / pilot / full / developer |
 | F5 | Reload the aircraft data file |
 
 Letters refer to physical QWERTY positions; in-game Help shows your keyboard's labels. A connected USB radio/gamepad replaces the keyboard flight sticks.
@@ -56,11 +58,13 @@ Connect in USB joystick mode with RF modules off. EdgeTX/OpenTX's Advanced joyst
 
 Move throttle to low to arm. If channels or directions are wrong, press **K**, follow the on-screen steps with **Enter**, then move throttle away from low and back to low to rearm. Calibration is saved per radio. Unplugging pauses with idle throttle. Simulated-device tests do not certify your hardware.
 
+On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF, turn exactly one unused axis/button ON, then return it OFF, using Enter at each step. Buttons offer held-level or press-edge toggle. AETR axes cannot be assigned. The profile is saved per device; after assignment/reconnection, report OFF again before using smoke and rearm throttle before resuming. **H** controls the pump when no radio is connected. Ordinary glow exhaust is faint; the pump needs sufficient running RPM/throttle. Other aircraft currently have no configured smoke installation. [Feature and limits](SMOKE-PLAN.md).
+
 ## Current source
 
 New Home preferences select the Stik runway launch, gentle wind/gusts/turbulence, **Evening (time passing)**, scenery, birds, engine shadows and the live diagnostic marker. Existing explicit choices take precedence. Choose **Airborne**, **Calm** and **Day** for the earlier practice setup. Direct command-line flights ignore saved settings and default to airborne, calm/reference weather and fixed daylight.
 
-**Flight overlays.** Home flights show separate overlays instead of the diagnostic text: flight data (airspeed, ground speed, height above ground, vertical speed, throttle, distance from you, flight time), the transmitter's sticks and trims, short warnings (radio safe, failsafe, stall, sinking low, too far, battery) and the wind seen from where you stand. Telemetry and the developer diagnostics are optional. Close any overlay with its ×, press **H** to cycle presets, **F3** for the developer overlays, or choose overlays, units (km/h, mph or m/s; by language by default) and transmitter Mode 1/2 under Pause → **Flight overlays**. The choice is saved under `[hud]` in `settings.cfg`. Direct command-line flights keep the legacy text unless `--hud=overlays`. [Plan](plans/flight-overlays.md).
+**Flight overlays.** Home flights show separate overlays instead of the diagnostic text: flight data (airspeed, ground speed, height above ground, vertical speed, throttle, distance from you, flight time), the transmitter's sticks and trims, short warnings (radio safe, failsafe, stall, sinking low, too far, battery) and the wind seen from where you stand. Telemetry and the developer diagnostics are optional. Close any overlay with its ×, press **F2** to cycle presets, **F3** for the developer overlays, or choose overlays, units (km/h, mph or m/s; by language by default) and transmitter Mode 1/2 under Pause → **Flight overlays**. The choice is saved under `[hud]` in `settings.cfg`. Direct command-line flights keep the legacy text unless `--hud=overlays`. [Plan](plans/flight-overlays.md).
 
 **Weather** edits spatially uniform wind, repeating gusts, seeded temporal turbulence, field elevation, temperature, QNH and humidity. Apply validates and saves; Cancel/Esc keeps the previous settings. Wind direction is where it comes from; positive vertical gusts point upward. Restart repeats the configured forcing. These are authored practice conditions, not measured weather at a club. [Wind](WIND-PLAN.md) · [Atmosphere](ATMOSPHERE-PLAN.md).
 
@@ -70,7 +74,7 @@ Current source includes per-wheel spin/contact and approximate static tree/prop 
 
 **Updates.** While Home is open, an exported build asks GitHub once a day whether a newer release is published: one anonymous HTTPS request to `api.github.com` carrying only the app version and the OS name. A newer version shows a small card at the top right. **Download** opens the release page in your browser, where the three ZIPs, `SHA256SUMS` and the release notes are; **Hide** silences that version until a newer one exists. Updating is manual: download the ZIP for your platform and replace the extracted folder; settings and calibration live in your user data folder and are kept. To turn the check off, set `check=false` under `[updates]` in `settings.cfg` (Windows `%APPDATA%\Godot\app_userdata\OpenRC Simulator\`, macOS `~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/`, Linux `~/.local/share/godot/app_userdata/OpenRC Simulator/`). Builds run from the source tree do not check.
 
-The Extra, P-51 and Avanti remain experimental. Avanti starts airborne with gear and flaps up. Electric development fixtures are not selectable catalog aircraft. Turbo Lumber Evolution is a selectable visual preview; Fly is unavailable until its flight data and propulsion are integrated.
+The Extra, P-51, Avanti and Turbo Lumber Evolution remain experimental. Avanti starts airborne with gear and flaps up. Turbo Lumber Evolution flies with fixed wheels, flaps up, assists off and a prescribed 4S bus; battery depletion is not modeled. Its motor losses and borrowed propeller map need matched hardware measurements. Synthetic electric development fixtures remain separate from the catalog.
 
 ## 5. Measure frame times (for the landscape work)
 

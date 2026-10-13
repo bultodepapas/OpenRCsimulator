@@ -162,3 +162,11 @@ Coupled equations can need the same expensive loads to obtain forces and continu
 ## 2026-10-10 · Rendering — scene snapshots must retire global progression
 
 A scene-local lighting snapshot must retire any previous global sky progression before updates resume; changing only the Sun and Environment leaves a controller that can overwrite the new scene. Pass the same explicit snapshot to the sky, light and ground, while keeping empty arguments on the legacy route. Test the transition from a flowing world as well as each renderer separately. [Integration proof and limits](docs/research/branch-integration-2026-10-10.md).
+
+## 2026-10-12 · CR-17a — spend a local contact budget at the impact
+
+Splitting fences into visible bays increased the nearby proxy count; selecting the first 160 inventory IDs then omitted the car, trunk or lamp the wreck had just struck. Rank secondary-contact candidates by distance to the actual impact before applying the cap, and verify engine ray queries for the struck obstacle after the inventory grows. [Failure, correction and native checks](docs/research/crash-damage-investigations/CR-17a/README.md).
+
+## 2026-10-12 · TT-11 — seed ground equilibrium from the support plane
+
+A level Newton seed can converge to a two-main-wheel equilibrium for a taildragger even when the authored three-point gear supports the CG. A small residual does not establish the intended resting configuration. Seed height/roll/pitch from the actual contact plane, retain the established nosewheel branch, and require every selected contact to stick before accepting the start. [Timber diagnosis, static support and refinement](docs/research/timber-integration/TT-10/README.md).

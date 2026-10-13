@@ -26,6 +26,7 @@ const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const FlightSession := preload("res://sim/flight_session.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
@@ -161,7 +162,7 @@ func set_aircraft(id: String) -> void:
 		return
 	preferences.aircraft = id
 	home.set_aircraft(id)
-	if id != Catalog.DEFAULT_ID:
+	if not FlightSession.runway_aircraft_supported(id):
 		preferences.start_choice = "airborne"
 	if home_scene != null:
 		home_scene.show_aircraft(id)

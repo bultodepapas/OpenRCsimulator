@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: FAIL: turbo-lumber-evolution C4 releases progressive real submeshes
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_crash_wreck.gd:258)
+       [1] _check_aircraft (res://tests/test_crash_wreck.gd:84)
+163 checks, 1 failed

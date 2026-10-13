@@ -16,7 +16,7 @@ Follow [AGENTS](AGENTS.md) and [CONTRIBUTING](CONTRIBUTING.md): one small workin
 - **Extra:** [experimental model and realism guide](docs/EXTRA-300-PLAN.md); independent flight calibration remains open.
 - **Avanti:** [experimental turbine guide/plan](docs/AVANTI-S-PLAN.md); current configuration is airborne, gear and flaps up.
 - **P-51:** [P51-PLAN](docs/P51-PLAN.md) owns the experimental model and generated physics; [realism implementation](docs/P51-REALISM-PLAN.md) owns P51-15…18, the full-envelope audit and paired-hardware inertia correction; [visual plan](docs/P51-PLAN.md) owns appearance acceptance.
-- **Timber:** [integration plan](docs/TIMBER-INTEGRATION-PLAN.md); the r1 visual asset is frozen, measured, imported, articulated and listed as a catalog preview (TT-01…03, TT-05, TT-06: Fly refused, scripted circle only); electric physics data (TT-07) is next.
+- **Timber:** [integration plan](docs/TIMBER-INTEGRATION-PLAN.md); playable experimental electric aircraft with its own generated v2 data, airborne/runway starts and electric audio. [TT-07–12 baseline evidence](docs/research/timber-integration/TT-10/README.md) records software checks; flaps-up, prescribed-bus and physical-validation limits remain explicit.
 - **Product shell:** [implemented menus](docs/MENU-PLAN.md); UI-20/21 refactor delivered, UI-22…29 [redesign](docs/MENU-REDESIGN-PLAN.md) remains proposed.
 - **Field/readability:** [landscape step registry](docs/LANDSCAPE-PLAN.md) and [visual guide](docs/VISUAL-QUALITY-PLAN.md); Gate L needs pilot/target-display evidence.
 - **Landscape integration:** [active LU plan](LANDSCAPE_UPGRADE_PLAN.md) preserves the continuing LU-07…10 work and its separate cost/acceptance gates.
@@ -28,7 +28,7 @@ Follow [AGENTS](AGENTS.md) and [CONTRIBUTING](CONTRIBUTING.md): one small workin
 - **Propulsion:** [coupled shaft](docs/PROPULSION-CORE-PLAN.md) and [synthetic electric routes](docs/ELECTRIC-PROPULSION-PLAN.md) exist; default promotion, matched powerplant data and the 500 µs gate remain open.
 - **Radio/validation tools:** controller reports, latency marker/reducer, field-measurement reducers and the [VAL-3 dashboard](research/validation/dashboard.md) exist; synthetic fixtures do not count as physical measurements.
 - **Desktop/release:** [rc7](docs/releases/v0.1.0-rc7.md) is published; current source is newer. Packages are ZIP exports; [desktop qualification/installers/fullscreen](docs/DESKTOP-DELIVERY-PLAN.md) remain pending.
-- **Smoke:** [unimplemented proposal and research](docs/SMOKE-PLAN.md); no exhaust/pump-smoke runtime feature is shipped.
+- **Smoke:** [integrated Stik glow exhaust and optional AUX pump](docs/SMOKE-PLAN.md), with shared M5 wind and native visual/software evidence; other-aircraft anchors, physical radios and all-platform acceptance remain open.
 
 ## Execution order and release gates
 
@@ -75,7 +75,7 @@ Completed IDs below retain navigation to their tests/evidence. Reports record th
 
 D11a comparison is regenerated; D11b characterization, D11d strip consistency and D11f/g fin/oracle follow-ups have implementation evidence in [aero-consistency](docs/research/aero-consistency/). D11e needs measured inertia (VAL-6), D11h needs qualified cross-rate derivatives, and D11c remains conditional offline-tool research. Current local/oracle consistency does not validate borrowed coefficients for the real Stik.
 
-2026-10-13: the [elevator investigation](docs/plans/elevator-flight-dynamics-repair.md) found the generated aircraft (Extra, P-51, Avanti) without the Stik's free tail law: half the pitch damping and no Cmα̇ in the local regime, an inflated elevator τ that stalled the tail from half stick, and a P-51 static step between regimes. D11i (regime-consistency test, `test_regime_consistency.gd`), E0a2c (generators emit `downwash_gradient`), D11j (`wing_section_cm_ac` on the strips) and D8a-R2 (overdamped short period in `flight_modes.gd`) are implemented with [evidence](docs/research/aero-consistency/E0a2c/README.md). Open from the same plan: D6e rates/expo as an input feature, D8b-R2 post-stall lateral gain, and the Avanti/P-51 stall and neutral-point data.
+2026-10-13: the [elevator investigation](docs/plans/elevator-flight-dynamics-repair.md) found the generated aircraft (Extra, P-51, Avanti) without the Stik's free tail law: half the pitch damping and no Cmα̇ in the local regime, an inflated elevator τ that stalled the tail from half stick, and a P-51 static step between regimes. D11i (regime-consistency test, `test_regime_consistency.gd`), E0a2c (generators emit `downwash_gradient`), D11j (`wing_section_cm_ac` on the strips) and D8a-R2 (overdamped short period in `flight_modes.gd`) are implemented with [evidence](docs/research/aero-consistency/E0a2c/README.md). D6e input rates/expo are also implemented ([evidence](docs/research/radio-input/D6e/README.md)). Open from the same plan: D8b-R2 post-stall lateral gain, and the Avanti/P-51 stall and neutral-point data.
 
 ### Phase H — State contract and measured headroom
 

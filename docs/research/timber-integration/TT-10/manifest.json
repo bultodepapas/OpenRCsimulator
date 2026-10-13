@@ -1,0 +1,158 @@
+{
+  "format": "openrc-timber-playable-evidence v1",
+  "date": "2026-10-12",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "renderer": "Compatibility OpenGL 3.3 NVIDIA RTX 3090",
+  "aircraft_input_sha256": "120c6f0ad54ac06d865910de0f452165fd2f5953f706c7a3c91333349716d863",
+  "checks": [
+    {
+      "test": "test_aircraft_contract",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_aircraft_catalog",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_contact_policy",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_aero_flow",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_slipstream_scalar",
+      "exit": 1,
+      "passed": false
+    },
+    {
+      "test": "test_strip_induced",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_wash_transport",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_propulsion_scalar",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_attached_flow",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_aircraft_render_contract",
+      "passed": true,
+      "exit": 0
+    },
+    {
+      "test": "test_shaft_data",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_crash_pose",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_crash_integration",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_crash_wreck",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_projected_shadow",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_world_field_lights",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_landscape_population",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_timber_data",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_timber_handling",
+      "exit": 0,
+      "passed": true,
+      "note": "Final 36-check control-response extension passed; handling-final.log"
+    },
+    {
+      "test": "test_timber_ground",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_start_choice",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_ui_runway",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_engine_sound",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_soundscape",
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "test": "test_engine_audio",
+      "exit": 0,
+      "passed": true
+    }
+  ],
+  "files": {
+    "checks/baseline-slipstream.log": "968bd78a26d3bb57b2092fcedef647a5ef3e91fe5f15f3474075dbc27b3b2590",
+    "checks/fps-144.log": "48a5c87a964b46ad12fd09e61520d1ce7ccc578a863c499686dff9961878b335",
+    "checks/fps-30.log": "038bc537fe34ffa00a766f257d1216cfde7f6b6ba83b193242040ecddd676b36",
+    "checks/fps-60.log": "a654278d995f87c699a71eac37f7f4f068247b6c2ddb02bb47e4659327492b5f",
+    "checks/ground-final.log": "b5abeac9a97019a45fa39ef86febc4a98bb687b7c42e3c973653c2c73225b952",
+    "checks/handling-final.log": "4568459178daee228548cad5daaba703b6dd3d8456520d02ead4f12c5aa04599",
+    "checks/test_aero_flow.log": "413e6172632deda4d1add0b7d454e40f507290a4e0ee4e1cd85b19410fa96b19",
+    "checks/test_aircraft_render_contract.log": "62a16d3838927cb4a5bcfb023e429b21114b3ebf91f41515435584227b1909a4",
+    "checks/test_wash_transport.log": "c74990ae67be4c9ba47c8df9b1e99f100cd77763b26c8400f0366a62742770ae",
+    "checks/trace-fleet-final.log": "8f5aaea528e8104a12a973dddbd325914b32a2b4b2b338ee7032e235a662fed4",
+    "checks/trace-timber-final.log": "363ca17f6fa94e45e85fcfc3eedd38548e79dbcf3fd76c91db0676fbba01093b",
+    "checks/trim-check.log": "caa42f5c8844006b33da24877f41c5c983ea5717dc90f733fbfe2da43db83b37",
+    "flight.json": "62b3abb9650e197672c0d6f320b5b682164da38338686253daaeecab9b8ba2af",
+    "flight.png": "0c0b507021b4227785d682893f0d6636ce95c82df31f2c0a21f61bec86eee302",
+    "home-en.json": "4b60c1fa03a8fbd222386d7bd75bf72220dcb82134e4e96e2dec19c561004b11",
+    "home-en.png": "9cce339c9269dbf1171f177e458804fd62ce536cb483cf16a808e8ce6d8138c7",
+    "home-es.json": "288bc489b23fa19fa794b78595bb65c76df7d6e52e359c8148c3df788211d333",
+    "home-es.png": "448a5ea3eeac57dfa6c978cb55cdf06f217dbd771e2047470aa7ccd92226f7c3",
+    "runway.json": "3e2b63e8e23617a8c2e2ac55b1039530efe17c0e7273aab5e65645e569755343",
+    "runway.png": "db9bacdbebc2d37e49d0bc1b2aa04ecac43b045bf875ead2372b6e17ce4786bb",
+    "trim.csv": "018121646637ae09f0a52f8fb3ce9d820d1dc767cfa58fc9a6c14c3d09a4e249"
+  }
+}

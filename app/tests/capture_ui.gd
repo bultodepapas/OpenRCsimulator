@@ -17,6 +17,7 @@ const Commands := preload("res://input/commands.gd")
 const VisualEvidence := preload("res://render/visual_evidence.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const FlightSession := preload("res://sim/flight_session.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const TARGET_FLIGHT_TIME_S: float = 1.5
@@ -78,8 +79,8 @@ func _run() -> void:
 		push_error("Unknown UI capture start choice '%s'" % start_choice)
 		quit(ERR_INVALID_PARAMETER)
 		return
-	if start_choice == "runway" and aircraft != Catalog.DEFAULT_ID:
-		push_error("Runway UI captures require the supported Ugly Stik")
+	if start_choice == "runway" and not FlightSession.runway_aircraft_supported(aircraft):
+		push_error("Runway UI captures require a qualified runway aircraft")
 		quit(ERR_INVALID_PARAMETER)
 	if screen == "weather" and weather_tab not in ["wind", "turbulence", "atmosphere"]:
 		push_error("Weather capture tab must be wind, turbulence or atmosphere")

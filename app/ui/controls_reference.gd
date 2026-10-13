@@ -23,8 +23,10 @@ const SHORTCUTS := [
 	[[KEY_V], "Ground shadow: sun, vertical or off"],
 	[[KEY_T], "Record a flight trace (press again to save it)"],
 	[[KEY_K], "Calibrate the radio"],
+	[[KEY_H], "Stik smoke pump"],
+	[[KEY_J], "Assign smoke AUX"],
 	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
-	[[KEY_H, KEY_F3], "Overlay preset · developer overlays"],
+	[[KEY_F2, KEY_F3], "Overlay preset · developer overlays"],
 	[[KEY_F5], "Reload the aircraft data file"],
 ]
 

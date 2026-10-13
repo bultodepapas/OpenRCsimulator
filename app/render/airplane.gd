@@ -49,6 +49,8 @@ static func build(id := STIK_ID) -> Dictionary:
 			push_error("render/airplane.gd: unknown aircraft '%s'" % id)
 			return {}
 	airplane.aircraft_id = id
+	# Optional, aircraft-authored mouths; an absent anchor never falls back to the aircraft origin.
+	airplane.exhausts = airplane.root.get_meta("exhausts", [])
 	return airplane
 
 

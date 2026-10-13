@@ -8,11 +8,16 @@ const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const GroundGear := preload("res://render/ground_gear.gd")
 const PropellerBlur := preload("res://render/propeller_blur.gd")
+const EngineSmoke := preload("res://render/smoke/exhaust.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
+const Slipstream := preload("res://physics/slipstream.gd")
+const SmokeAssignment := preload("res://ui/smoke_aux_assignment.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const Commands := preload("res://input/commands.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const CrashDirector = preload("res://render/crash/director.gd")
+const SceneryDamageDirector = preload("res://render/crash/scenery_damage.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -43,7 +48,7 @@ const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
-## The player changed the flight overlays (X, [H], [F3]); Home saves them (docs/plans/flight-overlays.md).
+## The player changed the flight overlays (X, [F2], [F3]); Home saves them (docs/plans/flight-overlays.md).
 signal overlay_settings_changed(settings: Dictionary)
 
 ## Data path is injectable before entering the tree; normal routes use the packaged default.
@@ -124,6 +129,7 @@ var _soundscape_audio: FlightAudio
 ## Technical fixtures can retain the original diagnostic freeze route.
 var crash_effects_enabled := true
 var _crash_director: CrashDirector
+var _scenery_damage_director: SceneryDamageDirector
 var _cg_model := Vector3.ZERO
 var _env: Environment
 ## Landscape review view (L0): (azimuth, elevation) in degrees from the pilot's eye, or (NAN, NAN) to follow the airplane.
@@ -155,6 +161,10 @@ var _frametimes_sim_start_tick: int = 0
 ## Last one-off message (reload result), shown in the panel.
 var _note := ""
 var _visual_pose: Dictionary = {}
+var _smoke: EngineSmoke
+var _smoke_key_on := false
+var _smoke_assignment: SmokeAssignment
+var _smoke_assignment_was_paused := false
 var _last_render_pose: Dictionary = {}
 var _treeline_hidden: bool = false # L6c background-only capture (--hide_treeline)
 
@@ -360,6 +370,7 @@ func _ready() -> void:
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
 	add_child(session)
+	Input.joy_connection_changed.connect(_on_smoke_connection_changed)
 	if latency_options.enabled:
 		var latency_patch: LatencyPatch = LatencyPatch.new()
 		latency_patch.session = session
@@ -374,6 +385,15 @@ func _ready() -> void:
 	GroundGear.attach(_airplane, session)
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
 	PropellerBlur.attach(_airplane, session, self)
+	# SM: authored combustion outlet + accepted propulsion kind; previews/conversions stay clear.
+	if str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
+		var mouths: Array = _airplane.get("exhausts", [])
+		if mouths.size() == 1 and EngineSmoke.valid_anchor(mouths[0]) \
+				and Propulsion.source_kind(session.aircraft.model.propulsion) == mouths[0].kind:
+			_smoke = EngineSmoke.new()
+			add_child(_smoke)
+			_smoke.configure(mouths[0])
+			_smoke_key_on = str(args.get("smoke-pump", "off")) == "on" # explicit technical capture/profile request
 	if not _experimental_aircraft_path.is_empty() and (not session.is_flyable() or not session.surface_error.is_empty()):
 		var candidate_flight_error: String = session.start_error if not session.start_error.is_empty() else session.pause_reason
 		if candidate_flight_error.is_empty():
@@ -410,6 +430,11 @@ func _ready() -> void:
 			_engine_audio = _soundscape_audio.soundscape.voices[0] # retain legacy combustion/turbine inspection interface
 	elif str(args.get("soundscape", "on")) == "off":
 		FlightAudio.silence_legacy_ambience(self)
+	if not _scripted and _field_node != null and _capture_scene_id() == "field":
+		_scenery_damage_director = SceneryDamageDirector.new()
+		_scenery_damage_director.name = "SceneryDamageDirector"
+		add_child(_scenery_damage_director)
+		_scenery_damage_director.configure(self)
 	if crash_effects_enabled and not _scripted and not args.has("capture") and str(args.get("crash-effects", "on")) != "off":
 		_crash_director = CrashDirector.new()
 		_crash_director.name = "CrashDirector"
@@ -464,6 +489,8 @@ func _process(delta: float) -> void:
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
 	var sim: Node = session.sim
+	if _smoke_assignment != null and (not session.radio.connected or session.radio.device_id != _smoke_assignment.device_id):
+		_end_smoke_assignment(true)
 	_t += dt
 	if _frametimes_scripted_fixed:
 		_t = _frametimes_elapsed
@@ -482,6 +509,7 @@ func _process(delta: float) -> void:
 	var surfaces: Dictionary = session.surfaces()
 	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_render_pose(_current_pose(), surfaces, _prop_angle)
+	_update_smoke()
 	if _crash_director != null:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
@@ -499,6 +527,74 @@ func _update_cg_model() -> void:
 	if session.aircraft.ok:
 		var datum := AirplaneBuilder.datum(aircraft_id) # the data file's le frame in this aircraft's model
 		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, datum.x, datum.y)
+
+
+func _update_smoke() -> void:
+	if _smoke == null or session == null:
+		return
+	var sim: Node = session.sim
+	if sim.paused:
+		return # all pause owners freeze smoke on the last presented interval
+	var clock_s: float = sim.time()
+	if not sim.paused and sim.tick > 0:
+		clock_s = maxf(0.0, clock_s - sim.dt() + Engine.get_physics_interpolation_fraction() * sim.dt())
+	var prop: Dictionary = session.aircraft.model.propulsion
+	var request: float = session.radio.smoke_amount() if session.radio.connected else (1.0 if _smoke_key_on else 0.0)
+	var wash := Vector3.ZERO
+	if prop.has("slipstream"):
+		var air: Dictionary = session.air_data(sim.state, clock_s)
+		var rho: float = session.air_density()
+		var output: PackedFloat64Array = Propulsion.thrust_torque(air.v_air, sim.aux[0], prop, rho)
+		var flow: Dictionary = Slipstream.wake(air.v_air, output[0], output[1], prop, rho)
+		var axis: PackedFloat64Array = Propulsion.axis(prop)
+		wash = _airplane.root.global_basis * Vector3(-axis[1], axis[2], axis[0]) * maxf(flow.w, 0.0)
+	_smoke.advance(clock_s, _airplane.root.global_transform, Propulsion.source_kind(prop), sim.aux[0],
+		float(prop.get("idle_rpm", 0.0)), float(prop.get("max_rpm", 0.0)), sim.inputs[3], _render_wind(clock_s),
+		request, session.crash.is_empty() and sim.fault_reason.is_empty(), _camera.global_position.distance_to(_airplane.root.global_position), wash)
+
+
+func _begin_smoke_assignment() -> void:
+	if _smoke == null or not session.radio.connected or session.calibration != null or _smoke_assignment != null:
+		_note = tr("Connect a radio before assigning smoke AUX.")
+		return
+	_smoke_key_on = false
+	_smoke_assignment_was_paused = session.sim.paused
+	session.hold("smoke AUX assignment")
+	var layer := CanvasLayer.new()
+	layer.name = "SmokeAuxLayer"
+	layer.layer = 20
+	add_child(layer)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(center)
+	_smoke_assignment = SmokeAssignment.new()
+	center.add_child(_smoke_assignment)
+	_smoke_assignment.profile_ready.connect(func(profile: Dictionary) -> void:
+		var gamepad: bool = profile.get("kind", "") == "gamepad"
+		session.radio.use_profile(profile, "gamepad" if gamepad else "calibrated")
+		var saved: Error = session.RcCalibration.save_smoke_binding(session.profiles_path, session.radio.device_key, profile.aux.smoke) if gamepad \
+			else session.RcCalibration.save_profile(session.profiles_path, session.radio.device_key, profile)
+		_note = tr("Smoke AUX assigned. Move throttle and smoke control to OFF before resuming.") if saved == OK else tr("Smoke AUX assigned for this flight; profile could not be saved.")
+		_end_smoke_assignment(false))
+	_smoke_assignment.cancelled.connect(func() -> void: _end_smoke_assignment(true))
+	_smoke_assignment.begin(session.radio.device_id, session.radio.profile, session.radio.device_key, session.profiles_path, session.radio.axes)
+
+
+func _on_smoke_connection_changed(_device: int, _connected: bool) -> void:
+	_smoke_key_on = false
+	if _smoke != null:
+		_smoke.levels.pump = 0.0
+		_smoke.pump.emitting = false
+
+
+func _end_smoke_assignment(cancelled: bool) -> void:
+	var layer := get_node_or_null("SmokeAuxLayer")
+	_smoke_assignment = null
+	if layer != null:
+		layer.queue_free()
+	session.release("smoke AUX assignment")
+	if cancelled and not _smoke_assignment_was_paused:
+		session.resume()
 
 
 func _update_hud() -> void:
@@ -562,6 +658,8 @@ func _status() -> String:
 				line = "Battery %.1f%% | %.2f V | %.1f A%s\n" % [100.0 * battery.soc, battery.bus_voltage_v, battery.pack_current_a, " | depleted" if battery.exhausted else ""] + line
 	line += "\ntrims: ail %+.3f  elev %+.3f  rud %+.3f" % [trims.roll, trims.pitch, trims.yaw]
 	line += "\n" + session.radio.describe()
+	if _smoke != null:
+		line += "\n" + tr("[H] smoke pump %s  [J] assign radio AUX") % ("on" if _smoke.levels.pump > 0.0 else "off")
 	if session.calibration != null:
 		line += "\nCALIBRATION %s  [Esc] cancel" % session.calibration.prompt()
 		if session.calibration.error != "":
@@ -608,8 +706,16 @@ func _pose_of(s: PackedFloat64Array) -> Dictionary:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _smoke_assignment != null:
+		return
+	if event.is_action_pressed("smoke_pump") and not event.is_echo() and _smoke != null and not session.sim.paused and not session.radio.connected:
+		_smoke_key_on = not _smoke_key_on
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
+			KEY_J:
+				_begin_smoke_assignment()
 			KEY_R:
 				session.reset()
 			KEY_P:
@@ -639,7 +745,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					_overlays.toggle_developer()
 				else:
 					_show_perf = not _show_perf
-			KEY_H:
+			KEY_F2:
 				if _overlays != null:
 					_overlays.cycle_preset()
 			KEY_F5:
@@ -704,6 +810,11 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if not _commit_lighting(staged, decoded.config):
 		return {ok = false, physics_restored = true, errors = ["physics restored, but visual scene changed during restoration"]}
 	_visual_timeline = decoded.timeline.duplicate(true)
+	_smoke_key_on = false
+	if _smoke != null:
+		_smoke.reset() # a physical checkpoint carries no particle history
+	if _scenery_damage_director != null:
+		_scenery_damage_director.sync(true)
 	_visual_context_status = decoded.context_status
 	_prop_angle = 0.0 # propeller phase was never part of the physical checkpoint contract
 	if _engine_audio != null:
@@ -791,6 +902,9 @@ func _trace_meta() -> Dictionary:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	_smoke_key_on = false
+	if _smoke != null:
+		_smoke.reset()
 	_visual_timeline = VisualTimeline.create(lighting_config).timeline
 	_visual_context_status = "present"
 	_t = 0.0

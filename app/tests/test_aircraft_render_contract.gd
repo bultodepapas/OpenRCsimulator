@@ -41,8 +41,9 @@ func _initialize() -> void:
 				check(entry.id + " authored throw " + surface, absf(surfaces[surface] - expected[surface]) < 1e-12)
 				check(entry.id + " aerodynamic sign/unit " + surface, absf(physical[surface] + deg_to_rad(expected[surface])) < 1e-12)
 				var angle: float = deg_to_rad(expected[surface]) * (1.0 if surface == "rudder" else -1.0)
-				if entry.id == Builder.AVANTI_ID:
-					var hinges: Array = ["elevator_left", "elevator_right"] if surface == "elevator" else [surface]
+				if entry.id == Builder.AVANTI_ID or entry.id == Builder.TIMBER_ID:
+					var hinges: Array = ["elevator_left", "elevator_right"] \
+						if entry.id == Builder.AVANTI_ID and surface == "elevator" else [surface]
 					for hinge_name: String in hinges:
 						var hinge: Dictionary = airplane.hinges[hinge_name]
 						var relative: Basis = hinge.node.basis * hinge.rest.inverse()

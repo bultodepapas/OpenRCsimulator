@@ -45,4 +45,22 @@ Building the snapshot every frame cost 209 µs mean (373 µs p95); refreshing nu
 
 ## Not covered
 
-1920×1080 rendered capture, readability on a pilot's monitor, and validation of warning thresholds in real flight.
+Readability on a pilot's monitor and validation of warning thresholds in real flight. The 1080p capture was completed during merge integration below.
+
+## HUD-03/06/11 merge integration (2026-10-13)
+
+Integrated local `a48ca0f` and incoming `6e7c477`, checked in a fresh LF clone on WSL Ubuntu with Godot 4.7.2. The merged smoke feature already owns H, so overlay presets use F2; F3 still toggles developer overlays. Help, the dialog, Spanish text and the first-launch guide use the same binding. `test_overlay_manager` now has 64 checks, including real F2/H events proving that the overlay preset and Stik smoke pump are independent. The local Timber aircraft-route test also advances five pause-menu rows to End after HUD-06 adds its button; the complete corrected route passes.
+
+The five textual conflicts retain both smoke/overlay decisions and translation sets, the local H12 byte-parity and D11j analytic Timber couple checks, and the local regime-test UID. AS-01's parameter register was regenerated through its source and contains 159 paths. Schema/register/migration checks, the Extra/P-51/Avanti generators, offline tool regressions and 632 local documentation links pass.
+
+Three-second legacy/overlay traces are identical after removing only `created_utc` for all five catalog aircraft. Invalid `--hud` and `--rates` choices exit 31. Pilot-preset PNGs were rendered and visually checked in English and Spanish at 1280×720 and 1920×1080, with correct units and no clipping or overlap. The canonical capture runner accepts only 720p; the additional 1080p runs check successful engine exit, absence of engine errors, a fresh decodable PNG and its exact dimensions directly. This closes the rendered-capture part of HUD-11, not HUD-12's monitor/pilot acceptance.
+
+Existing failures reproduced at premerge `a48ca0f`:
+
+- `test_landscape_gravel` and `test_landscape_vegetation` expect 47 static cells; the accepted scenery builds 63.
+- The two coupled-shaft CLI failures recorded above abort the P-51 hot/high trace.
+- TT-07's strict generated-data freshness check passes on Windows/Python 3.11.9 and fails on Linux/Python 3.12.3: four numeric fields differ by at most 2.23e-16, identically before and after merging. The accepted data remains the runtime input; this check needs a separate cross-version generation repair.
+
+All 484 application GDScript files parse. Across `app/test.sh` and explicit continuations after its existing failures, 238 of 240 GDScript tests pass; the two scenery counts above remain red. The corrected Timber menu test passes separately. All subsequent tool/model/CLI/trace/FPS/ground-contact stages pass except TT-07 freshness and the same two of ten shaft CLI tests. The suite therefore remains red for five pre-existing checks; the merge corrections introduce no remaining observed failure.
+
+The complete capture workflow's image, repeatability, shader/cue, trace and runway-scenario checks pass. The initial L6c attempt stopped at case 45 after Godot saved a PNG and exited 141; the unmodified L6c tool rerendered all 64 cases successfully, then the runway scenario passed. The final capture inventory contains 46 primary images plus all required review manifests; it was published from the ordered successful initial capture log after rechecking every PNG/sidecar hash, and records the continuation and both log hashes. Software OpenGL captures do not close hardware readability or timing gates.

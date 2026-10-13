@@ -18,9 +18,9 @@ An open-source RC airplane simulator for a USB transmitter, gamepad or keyboard,
 | [Great Planes Extra 300S .60](docs/EXTRA-300-PLAN.md) | 1.63 m, .61 glow, taildragger | Experimental |
 | [P-51D Mustang 1/4](docs/P51-PLAN.md) | 2.82 m, 120 cc gasoline, taildragger | Experimental |
 | [SebArt Avanti S](docs/AVANTI-S-PLAN.md) | 2.00 m, JetCat P100-RX turbine | Experimental; airborne, flaps and gear up |
-| [Turbo Lumber Evolution](docs/TIMBER-INTEGRATION-PLAN.md) | 1.55 m, 4S electric visual model | Preview only; Fly unavailable |
+| [Turbo Lumber Evolution](docs/TIMBER-INTEGRATION-PLAN.md) | 1.55 m, 800 Kv, 4S electric, fixed wheels | Experimental; flaps up, assists off |
 
-Current source includes six-degree-of-freedom flight, stalls/spins, servos, propeller and turbine dynamics, wheel contact, wind/gusts/turbulence, field atmosphere, selectable lighting, scenery, audio and crash presentation. Static scenery collision proxies and wreck presentation use engineering estimates; flyable structural damage remains unimplemented. Takeoff/landing, controller compatibility and target-machine performance require further acceptance. Electric configurations are development fixtures; Turbo Lumber Evolution is a visual-only preview.
+Current source includes six-degree-of-freedom flight, stalls/spins, servos, combustion and electric propeller dynamics, turbine dynamics, wheel contact, wind/gusts/turbulence, field atmosphere, selectable lighting, scenery, audio and crash presentation. Static scenery collision proxies and wreck presentation use engineering estimates; flyable structural damage remains unimplemented. Takeoff/landing, controller compatibility and target-machine performance require further acceptance. Turbo Lumber Evolution flies with estimated motor losses and a borrowed two-blade propeller map; its fixed bus does not model battery depletion.
 
 ## Develop and contribute
 

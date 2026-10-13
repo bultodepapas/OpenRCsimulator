@@ -65,9 +65,17 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 	free.resize(gear.contacts.size() * Ground.ANCHOR_STRIDE)
 	# Stage 1: engine off, no tangential force; unknowns down, roll, pitch.
 	var lowest := 0.0 # deepest contact below the CG (body z, down)
-	for c in gear.contacts:
-		lowest = maxf(lowest, float(c.position[2]))
+	var support_pose: Dictionary = _aft_tricycle_support_pose(gear.contacts)
+	if support_pose.is_empty():
+		# Keep the established seed for nose-wheel aircraft and geometries without a three-point support plane.
+		for c in gear.contacts:
+			lowest = maxf(lowest, float(c.position[2]))
+	else:
+		lowest = maxf(0.0, float(support_pose.support_down))
 	var pose := PackedFloat64Array([north, east, -(lowest - float(gear.static_sag)), 0.0, 0.0, heading])
+	if not support_pose.is_empty():
+		pose[3] = float(support_pose.roll)
+		pose[4] = float(support_pose.pitch)
 	var rest_residual := func(x: PackedFloat64Array) -> PackedFloat64Array:
 		var p := PackedFloat64Array([north, east, x[0], x[1], x[2], heading])
 		var a := _accelerations(_state(p), model, inv, gear, surfaces, d, steer, 0.0, rho, g, free, false, wind_ned, enhanced)
@@ -100,6 +108,52 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 		return _fail("idle thrust exceeds the wheels' static hold: the airplane would roll")
 	return { ok = true, state = state, anchors = anchors, rest_state = rest_state, iterations = rest.iterations + idle.iterations,
 		residual = idle.residual, message = "" }
+
+
+## Seed an aft third contact from the rigid plane through two lateral main contacts and the aft wheel.
+## Nose-wheel aircraft retain the original level seed. Positions are AircraftData body-FRD coordinates.
+static func _aft_tricycle_support_pose(contacts: Array) -> Dictionary:
+	if contacts.size() != 3:
+		return {}
+	var positions: Array[PackedFloat64Array] = []
+	for contact: Dictionary in contacts:
+		var value: Variant = contact.get("position")
+		if typeof(value) != TYPE_PACKED_FLOAT64_ARRAY or value.size() != 3:
+			return {}
+		positions.append(value)
+	var pair_a := -1
+	var pair_b := -1
+	var widest := 0.0
+	for i in positions.size():
+		for j in range(i + 1, positions.size()):
+			var lateral_width: float = absf(positions[i][1] - positions[j][1])
+			if lateral_width > widest:
+				widest = lateral_width
+				pair_a = i
+				pair_b = j
+	if pair_a < 0 or pair_b < 0:
+		return {}
+	var aft := 3 - pair_a - pair_b
+	var axle_x: float = 0.5 * (positions[pair_a][0] + positions[pair_b][0])
+	if positions[aft][0] >= axle_x:
+		return {} # The lone contact is ahead of the main axle (a nose wheel).
+	var lateral_edge: PackedFloat64Array = M.sub(positions[pair_b], positions[pair_a])
+	var aft_edge: PackedFloat64Array = M.sub(positions[aft], positions[pair_a])
+	var normal: PackedFloat64Array = M.cross(lateral_edge, aft_edge)
+	var normal_length: float = M.norm(normal)
+	if not is_finite(normal_length) or normal_length <= 1e-9:
+		return {}
+	normal = M.scale(normal, 1.0 / normal_length)
+	if normal[2] < 0.0:
+		normal = M.scale(normal, -1.0)
+	if normal[2] <= 1e-6:
+		return {}
+	var pitch: float = M.atan2_(-normal[0], M.sqrt_(normal[1] * normal[1] + normal[2] * normal[2]))
+	var roll: float = M.atan2_(normal[1], normal[2])
+	var support_down := -INF
+	for position: PackedFloat64Array in positions:
+		support_down = maxf(support_down, M.dot(normal, position))
+	return { pitch = pitch, roll = roll, support_down = support_down }
 
 
 ## Body accelerations [u̇, v̇, ẇ, ṗ, q̇, ṙ] at state s (zero velocity and rates) from aero, propulsion (when running)

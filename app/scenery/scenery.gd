@@ -14,6 +14,8 @@ const Population = preload("res://scenery/population.gd")
 const SupportSurfaces = preload("res://scenery/support_surfaces.gd")
 const Palette = preload("res://scenery/palette.gd")
 const GroundFeatures = preload("res://scenery/ground_features.gd")
+const FenceParts = preload("res://scenery/fence_parts.gd")
+const DamageBatches = preload("res://scenery/damage_batches.gd")
 const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const Flowers = preload("res://scenery/flowers.gd")
 const Ambience = preload("res://scenery/ambience.gd")
@@ -243,7 +245,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 		var g0 := Time.get_ticks_usec()
 		match group.type:
 			"instances":
-				for pl: Dictionary in group.placements:
+				for placement_index: int in group.placements.size():
+					var pl: Dictionary = group.placements[placement_index]
+					var damage_id := "prop:%s:%02d" % [group.id, placement_index]
 					var prefab: String = pl.prefab
 					var spec: Dictionary = Prefabs.CATALOG[prefab] if Prefabs.CATALOG.has(prefab) else Models.CATALOG[prefab]
 					if not keep(spec.tier, pl.seed, quality):
@@ -253,6 +257,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					var kit: MeshKit = null
 					if not Population.handles(prefab):
 						kit = _kit(cells, _cell(pl.north, pl.east))
+					var damage_first := kit.verts.size() if kit != null else 0
 					if Population.handles(prefab):
 						var foot_height := SupportSurfaces.height_at(pl.north, pl.east, support_surfaces) if prefab.begins_with("person_") else 0.0
 						if prefab == "person_sitting":
@@ -263,7 +268,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						var moving: Array = Prefabs.build(prefab, kit, pl.seed, theme)
 						kit.xf = Transform3D.IDENTITY
 						for part: Dictionary in moving:
-							motion_parent.add_child(_motion_node(part, xf, pl.seed))
+							var moving_node := _motion_node(part, xf, pl.seed)
+							moving_node.set_meta("damage_motion_id", damage_id)
+							motion_parent.add_child(moving_node)
 							stats.motion += 1
 					else:
 						var arr := Models.arrays(prefab)
@@ -272,6 +279,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						var paint: Variant = Palette.pick(Palette.PAINTS, pl.seed, 17) if spec.get("paint", false) else null
 						kit.xf = Transform3D.IDENTITY
 						kit.append_arrays(arr.pos, arr.nrm, arr.col, xf, paint)
+					if kit != null:
+						kit.tag_damage(damage_first, damage_id)
 					stats.instances += 1
 					var mode: Variant = spec.get("shadow", false)
 					if mode != false and Vector2(pl.north, pl.east).distance_to(pilot) <= SHADOW_RANGE_M:
@@ -283,7 +292,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						elif prefab.begins_with("person_"):
 							shadow_mode = "person"
 							shadow_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
-						var shadow_source := {transform = shadow_xf, size = spec.size, mode = shadow_mode}
+						var shadow_source := {transform = shadow_xf, size = spec.size, mode = shadow_mode, damage_id = damage_id}
 						var population_shadow := shadow_mode == "person" or shadow_mode == "vehicle"
 						if population_shadow:
 							# These props live in MultiMeshes, outside the static cell mask.
@@ -298,7 +307,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 							GroundFeatures.contact_shadow(contact_kit, shadow_xf, spec.size, shadow_mode, sun)
 							stats.shadows += 1
 			"fleet": # baked snapshots (tools/scenery/bake_fleet.gd): merged into the shelter's cell, ~5 k triangles each
-				for pl: Dictionary in group.placements:
+				for placement_index: int in group.placements.size():
+					var pl: Dictionary = group.placements[placement_index]
+					var damage_id := "fleet:%s:%02d:%s" % [group.id, placement_index, pl.aircraft]
 					var model_id := str(Models.FLEET.find_key(str(pl.aircraft)))
 					var arr := Models.arrays(model_id)
 					if arr.is_empty():
@@ -307,9 +318,22 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					kit.xf = Transform3D.IDENTITY
 					var parked_xf := _placement_xf(pl.north, pl.east, pl.heading)
 					parked_xf.origin.y += Models.parked_base_height(model_id)
+					var damage_first := kit.verts.size()
 					kit.append_arrays(arr.pos, arr.nrm, arr.col, parked_xf)
+					kit.tag_damage(damage_first, damage_id)
 					stats.fleet += 1
-			"hedge", "fence":
+			"fence":
+				var points := PackedVector2Array()
+				for point: Vector2 in group.points:
+					points.append(_xz(point))
+				for piece: Dictionary in FenceParts.build(points, group.style, group.seed):
+					var center: Vector3 = (piece.a + piece.b) * 0.5
+					var kit := _kit(cells, _cell(-center.z, center.x))
+					var damage_first := kit.verts.size()
+					kit.beam(piece.a, piece.b, piece.width, piece.color)
+					kit.tag_damage(damage_first, "fence:%s:%s" % [group.id, piece.id])
+					kit.damage_ranges.back()["beam"] = piece
+			"hedge":
 				var pts: Array = group.points
 				for i in pts.size() - 1:
 					var a: Vector2 = pts[i]
@@ -354,6 +378,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 		var mi := MeshInstance3D.new()
 		mi.name = "cell_%d_%d" % [key.x, key.y]
 		mi.mesh = kit.to_mesh(gravel if ground_cells.has(key) else opaque)
+		DamageBatches.capture(mi, kit.damage_ranges)
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(mi)
 	var shadow_nodes: Dictionary = {}
@@ -390,12 +415,14 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	root.set_meta("directional_population_shadow_node", population_shadow_node)
 	root.set_meta("directional_shadow_signature", _shadow_signature(sun, shadow_strength))
 	root.set_meta("directional_shadow_strength", shadow_strength)
+	root.set_meta("damage_state", {})
+	root.set_meta("damage_lighting", lighting.duplicate(true))
 	return root
 
 
 ## Prepare scene-local scenery shadows from their retained source placements. No live scene resources are changed here,
 ## so callers can prepare all visual state before restoring physics or committing a checkpoint.
-static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictionary:
+static func prepare_lighting(field_node: Node3D, lighting: Dictionary, force_geometry: bool = false) -> Dictionary:
 	var started: int = Time.get_ticks_usec()
 	var root: Node3D = _find_scenery(field_node)
 	if root == null or not root.has_meta("directional_shadow_nodes"):
@@ -404,11 +431,12 @@ static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictio
 	var nodes: Dictionary = root.get_meta("directional_shadow_nodes")
 	var groups: Dictionary = root.get_meta("directional_shadow_groups")
 	var population_groups: Array = root.get_meta("directional_population_shadow_groups", [])
-	var population_node: MeshInstance3D = root.get_meta("directional_population_shadow_node") as MeshInstance3D
+	var population_node: MeshInstance3D = root.get_meta("directional_population_shadow_node") as MeshInstance3D if root.has_meta("directional_population_shadow_node") else null
 	var sun: Vector3 = Atmosphere.sun_direction(lighting)
 	var strength: float = Atmosphere.shadow_strength(lighting)
 	var signature: Dictionary = _shadow_signature(sun, strength)
-	var geometry_changed: bool = signature != root.get_meta("directional_shadow_signature", {})
+	var geometry_changed: bool = force_geometry or signature != root.get_meta("directional_shadow_signature", {})
+	var damage: Dictionary = root.get_meta("damage_state", {})
 	var strength_changed: bool = strength != float(root.get_meta("directional_shadow_strength", 1.0))
 	var prepared_batches: Array[Dictionary] = []
 	var triangles: int = 0
@@ -419,6 +447,8 @@ static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictio
 			var kit := MeshKit.new()
 			if strength > 0.0:
 				for source: Dictionary in groups.get(key, []):
+					if damage.get(source.get("damage_id", ""), {}).get("state", "") == "broken":
+						continue
 					GroundFeatures.contact_shadow(kit, source.transform, source.size, source.mode, sun)
 			triangles += kit.triangle_count()
 			prepared_batches.append({node = nodes[key], mesh = kit.to_mesh(material)})
@@ -426,6 +456,8 @@ static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictio
 			var population_kit := MeshKit.new()
 			if strength > 0.0:
 				for source: Dictionary in population_groups:
+					if damage.get(source.get("damage_id", ""), {}).get("state", "") == "broken":
+						continue
 					GroundFeatures.contact_shadow(population_kit, source.transform, source.size, source.mode, sun)
 			triangles += population_kit.triangle_count()
 			prepared_batches.append({node = population_node, mesh = population_kit.to_mesh(material)})
@@ -443,6 +475,7 @@ static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictio
 		geometry_changed = geometry_changed,
 		triangles = triangles,
 		prepare_ms = float(Time.get_ticks_usec() - started) / 1000.0,
+		lighting = lighting.duplicate(true),
 	}
 
 
@@ -477,6 +510,7 @@ static func commit_lighting(field_node: Node3D, prepared: Dictionary) -> bool:
 		node.mesh = replacement.get("mesh") as ArrayMesh
 	root.set_meta("directional_shadow_signature", prepared.get("signature", {}))
 	root.set_meta("directional_shadow_strength", float(prepared.get("strength", tint.a)))
+	root.set_meta("damage_lighting", prepared.lighting)
 	return true
 
 
@@ -485,6 +519,20 @@ static func update_lighting(field_node: Node3D, lighting: Dictionary) -> bool:
 	var prepared: Dictionary = prepare_lighting(field_node, lighting)
 	return commit_lighting(field_node, prepared)
 
+
+## Mesh resources stay cell-batched before and after damage; reset restores the exact original resources.
+static func apply_damage(field_node: Node3D, damage: Dictionary, force_shadows: bool = false) -> void:
+	var root := _find_scenery(field_node)
+	if root == null:
+		return
+	var changed := var_to_bytes(root.get_meta("damage_state", {})) != var_to_bytes(damage)
+	root.set_meta("damage_state", damage.duplicate(true))
+	if not changed and not force_shadows:
+		return
+	for child: Node in root.get_children():
+		if child is MeshInstance3D and child.has_meta("damage_ranges"):
+			DamageBatches.apply(child, damage)
+	commit_lighting(field_node, prepare_lighting(field_node, root.get_meta("damage_lighting", {}), true))
 
 static func _find_scenery(field_node: Node3D) -> Node3D:
 	if field_node == null:

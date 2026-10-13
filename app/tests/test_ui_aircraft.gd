@@ -1,7 +1,6 @@
-# UI-05 / EX-11 / AV-03: choosing the aircraft on Home with real key events (tests/ui_driver.gd). The card and the
+# UI-05 / EX-11 / AV-03 / TT-10: choosing the aircraft on Home with real key events (tests/ui_driver.gd). The card and
 # backdrop follow the choice, the choice is remembered, Fly starts exactly that airplane (model and physics), and a
-# stale or broken preference falls back to the default. Since TT-06 the Timber is the catalog's preview entry, so the
-# "a preview cannot be flown" path is driven by a real entry again (Fly disabled, arrows keep working).
+# stale or broken preference falls back to the default. The Timber is an experimental, estimated electric model.
 # Run: godot --headless --path . --script res://tests/test_ui_aircraft.gd
 extends SceneTree
 
@@ -77,12 +76,17 @@ func _run() -> void:
 	_check("Avanti: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
 	_check("choosing the Avanti never starts a flight", app.flight == null)
 
-	# The Timber preview (TT-06): shown on the card and in the backdrop, Fly disabled, the arrow keeps focus.
+	# The Timber is now the experimental, data-backed electric aircraft (TT-08/10).
 	await ui.tap(KEY_ENTER)
-	_check("Timber: shown, preview, Fly disabled", home.aircraft_id == TIMBER and home.fly_button.disabled
-		and home.aircraft_status_label.text.begins_with("Preview") and not home.limits_label.visible, home.aircraft_status_label.text)
+	_check("Timber: shown, experimental, Fly enabled", home.aircraft_id == TIMBER and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental") and home.limits_label.visible, home.aircraft_status_label.text)
+	var timber_note: String = home.aircraft_status_label.text.to_lower()
+	_check("Timber status states the estimated electric, flaps-up configuration",
+		timber_note.contains("electric") and timber_note.contains("estimated") and timber_note.contains("flaps up")
+		and timber_note.contains("fixed wheels") and timber_note.contains("assists off"), timber_note)
 	_check("Timber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
 	_check("Timber: counter 5 of 5", home.aircraft_count_label.text == "Aircraft 5 of 5", home.aircraft_count_label.text)
+	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
 	# Wraps to the Stik; Left twice goes back to the Avanti. Spanish texts follow the language.
 	await ui.tap(KEY_ENTER)
 	_check("next wraps around to the Ugly Stik", home.aircraft_id == STIK)
@@ -110,17 +114,78 @@ func _run() -> void:
 	_check("English: the Timber card shows its English name", Catalog.entry(TIMBER).name == "Turbo Lumber Evolution" and tr(Catalog.entry(TIMBER).name) == "Turbo Lumber Evolution")
 	await _close(app)
 
-	# A new start remembers the Avanti (Fly enabled) ...
+	# A new start remembers the Avanti; then fly the Timber through Home's real Fly action.
 	app = await _app()
 	home = app.home
 	_check("restart: the saved Avanti comes back, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled, ui.focus_name())
-	# ... and Fly with the Extra starts the Extra: its model with its physics.
-	app.set_aircraft(EXTRA)
+	app.set_aircraft(TIMBER)
 	await ui.settle()
+	_check("reselected Timber: Fly enabled and choice saved", home.aircraft_id == TIMBER and not home.fly_button.disabled
+		and Preferences.load_from(PREFS).aircraft == TIMBER)
 	home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
-	_check("Fly with the Extra: one flight, Extra model and Extra physics", app.flight != null and app.flight._airplane.aircraft_id == EXTRA
+	var timber_flight: Node = app.flight
+	var timber_session: Node = timber_flight.session if timber_flight != null else null
+	var timber_started: bool = (timber_flight != null and timber_session != null
+		and timber_flight._airplane.aircraft_id == TIMBER and timber_session.aircraft.ok
+		and timber_session.aircraft.model.id == TIMBER and timber_session.start.ok and app.home == null)
+	_check("Fly starts Timber with its own model and physics", timber_started)
+	if not timber_started:
+		await _close(app)
+		print("all UI aircraft checks failed to start Timber")
+		quit(1)
+		return
+
+	# Pause and restart from the visible menu; the same loaded Timber returns at its trimmed start.
+	await ui.tap(KEY_ESCAPE)
+	_check("Timber flight pauses from the keyboard", app.pause_menu != null and timber_session.sim.paused)
+	await ui.tap(KEY_DOWN)
+	_check("Restart is keyboard reachable", ui.focus_name() == "Restart", ui.focus_name())
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("Restart restores a fresh trimmed Timber flight", app.flight == timber_flight and app.pause_menu == null
+		and not timber_session.sim.paused and timber_session.aircraft.model.id == TIMBER and timber_session.sim.time() < 0.25,
+		"t=%.3f s" % timber_session.sim.time())
+
+	# End returns Home with the aircraft selected and persisted; choosing Fly again makes a clean session.
+	await ui.tap(KEY_ESCAPE)
+	for _step in 5: # Continue, Restart, Time of day, Help, Flight overlays (HUD-06), End
+		await ui.tap(KEY_DOWN)
+	_check("End flight is keyboard reachable", ui.focus_name() == "End", ui.focus_name())
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("End returns to Home and releases the old session", app.flight == null and app.home != null
+		and root.find_children("FlightSession", "", true, false).is_empty()
+		and Preferences.load_from(PREFS).aircraft == TIMBER)
+	home = app.home
+	home.fly_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("reselect after End starts Timber again", app.flight != null and app.flight._airplane.aircraft_id == TIMBER
+		and app.flight.session.aircraft.model.id == TIMBER)
+	await _close(app)
+
+	# A fresh app reads the persisted Timber choice and can fly it again.
+	app = await _app()
+	home = app.home
+	_check("new app remembers Timber and keeps Fly enabled", home.aircraft_id == TIMBER and not home.fly_button.disabled
+		and Preferences.load_from(PREFS).aircraft == TIMBER, home.aircraft_status_label.text)
+	home.fly_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("persisted Timber choice flies its matching physics", app.flight != null and app.flight._airplane.aircraft_id == TIMBER
+		and app.flight.session.aircraft.model.id == TIMBER)
+	await _close(app)
+
+	# Keep the existing Extra adapter roundtrip alongside the new Timber session checks.
+	app = await _app()
+	app.set_aircraft(EXTRA)
+	await ui.settle()
+	app.home.fly_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("Fly with the Extra still starts the matching model and physics", app.flight != null and app.flight._airplane.aircraft_id == EXTRA
 		and app.flight.session.aircraft.model.id == EXTRA and app.home == null)
 	await _close(app)
 

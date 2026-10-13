@@ -123,7 +123,7 @@ func set_overlay_visible(id: String, on: bool) -> void:
 	apply(Settings.with_visible(settings, shown))
 
 
-## [H]: Off → Pilot → Full → Developer → Off. A custom set continues with Off.
+## [F2]: Off → Pilot → Full → Developer → Off. A custom set continues with Off.
 func cycle_preset() -> void:
 	var index: int = Settings.PRESET_ORDER.find(settings.preset)
 	set_preset(Settings.PRESET_ORDER[(index + 1) % Settings.PRESET_ORDER.size()])

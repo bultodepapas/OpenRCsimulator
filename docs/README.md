@@ -48,7 +48,7 @@ This registry owns file boundaries and prefixes. Each linked guide/plan owns its
 | Atmosphere | [Atmosphere guide](ATMOSPHERE-PLAN.md) | M5-ATM-1…4 | Shared density, charge, trim and weather-v3 identity | Atmosphere kernel, bounded integration and tests | [Atmosphere evidence](research/atmosphere/M5-ATM-2/README.md) |
 | Coupled shaft / electric propulsion | [Shaft guide](PROPULSION-CORE-PLAN.md), [electric plan](ELECTRIC-PROPULSION-PLAN.md) | G2a/G2b, EL1…6 | Main physics; Timber data stays TT | Powertrain kernels, state/trace integration, electric tests/research | [Propulsion research](research/propulsion/) |
 | Desktop delivery | [Active desktop plan](DESKTOP-DELIVERY-PLAN.md) | DT-00…13; Gate DT | Export/CI maintainer; UI-23 implements display | Desktop-delivery research; installers and delivery tooling remain proposed | [Desktop research](research/README.md#desktop-delivery) |
-| Smoke | [Unimplemented proposal](SMOKE-PLAN.md) | SM-00…09 | Model exhaust anchor, controls and wind | Research only; no aircraft-smoke runtime module | [Smoke research](research/smoke-investigations/README.md) |
+| Smoke | [Integrated feature and remaining acceptance](SMOKE-PLAN.md) | SM-00…09 | Model exhaust anchor, controls and wind | `app/render/smoke/`, optional AUX profile/UI, smoke tests and `tools/smoke/` | [Implementation evidence](research/smoke-investigations/SM-00-09/README.md) |
 | Releases | [Notes by tag](releases/) | v* tags; PT1 | CI/export maintainers | `docs/releases/`, export build identity and packaging | [rc8 qualification](research/release-readiness/PT1-rc8/README.md) |
 
 ## Step-ID namespaces

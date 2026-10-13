@@ -1,5 +1,7 @@
 # Doce investigaciones para mejorar el humo RC
 
+Current implementation evidence (2026-10-12): [SM-00…09](SM-00-09/README.md). The dated investigations below retain their original research-only scope.
+
 **Fecha:** 2026-10-05. **Entrega:** segunda revisión del [plan de humo](../../SMOKE-PLAN.md). Se conserva la [investigación inicial](../rc-exhaust-smoke.md) como antecedente.
 
 Se investigaron doce preguntas distintas en documentación oficial, código fuente, repositorios de autores y manuales de fabricantes. Cada estudio distingue lo observado, la decisión para este proyecto y lo que falta comprobar. La referencia técnica es **Godot 4.7.2-stable con Compatibility**, no una demo ejecutada con Forward+.
