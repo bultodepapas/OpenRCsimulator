@@ -43,16 +43,18 @@ func _mass_speed_angle_surface_checks() -> void:
 	var mown: Dictionary = Severity.estimate(2.0, 5.0, 0.0, 90.0, 'mown', 'wing')
 	var rough: Dictionary = Severity.estimate(2.0, 5.0, 0.0, 90.0, 'rough', 'wing')
 	_check('controller surface ids have explicit profiles', mown.surface == 'mown' and rough.surface == 'rough')
-	var mown_slide: Dictionary = Severity.estimate(2.0, 0.0, 5.0, 0.0, 'mown', 'wing')
-	var mown_grass_slide: Dictionary = Severity.estimate(2.0, 0.0, 5.0, 0.0, 'mown_grass', 'wing')
-	var rough_slide: Dictionary = Severity.estimate(2.0, 0.0, 5.0, 0.0, 'rough', 'wing')
-	var dirt_slide: Dictionary = Severity.estimate(2.0, 0.0, 5.0, 0.0, 'dirt', 'wing')
-	_check('tangential surface aliases share their estimates', mown_slide.estimated_energy_j == mown_grass_slide.estimated_energy_j and rough_slide.estimated_energy_j == dirt_slide.estimated_energy_j)
+	var slide_angle: float = rad_to_deg(atan2(1.0, 5.0))
+	var mown_slide: Dictionary = Severity.estimate(2.0, 1.0, 5.0, slide_angle, 'mown', 'wing')
+	var mown_grass_slide: Dictionary = Severity.estimate(2.0, 1.0, 5.0, slide_angle, 'mown_grass', 'wing')
+	var rough_slide: Dictionary = Severity.estimate(2.0, 1.0, 5.0, slide_angle, 'rough', 'wing')
+	var dirt_slide: Dictionary = Severity.estimate(2.0, 1.0, 5.0, slide_angle, 'dirt', 'wing')
+	_check('tangential surface aliases share their estimates', mown_slide.friction_work_j > 0.0 and mown_slide.friction_work_j == mown_grass_slide.friction_work_j and rough_slide.friction_work_j == dirt_slide.friction_work_j)
 	_check("raw kinematic energy is surface independent", grass.energy_j == concrete.energy_j)
 	_check("class is within C0 to C4", base["class"] >= 0 and base["class"] <= 4)
-	for fixture in [[0.5, 0], [2.0, 1], [20.0, 2], [500.0, 3], [2500.0, 4]]:
-		var sample: Dictionary = Severity.estimate(2.0, sqrt(2.0 * fixture[0] / 2.0), 0.0, 90.0, 'concrete', 'fuselage')
-		_check('class energy bin %d' % fixture[1], sample['class'] == fixture[1])
+	# CR-08b: bins are specific energy (J per kg of aircraft); concrete transfers 1.0.
+	for fixture in [[0.25, 0], [2.0, 1], [20.0, 2], [100.0, 3], [400.0, 4]]:
+		var sample: Dictionary = Severity.estimate(2.0, sqrt(2.0 * fixture[0]), 0.0, 90.0, 'concrete', 'fuselage')
+		_check('class specific-energy bin %d' % fixture[1], sample['class'] == fixture[1])
 
 func _component_and_bounds_checks() -> void:
 	var wing: Dictionary = Severity.estimate(3.0, 8.0, 1.0, 82.9, "grass", "wingtip_left")
