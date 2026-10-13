@@ -1,5 +1,7 @@
 # HELI-04-R1 — Dimensional transient inflow reference
 
+**Date:** 2026-10-13 · **Status:** independent numerical qualification of a selected lag approximation.
+
 This note qualifies a small independent Python reference for transient induced velocity. It is a numerical comparison for the chosen approximation, not physical validation and not a claim that the simulator's runtime event detector or helicopter session is ready.
 
 ## Model and source limits
@@ -14,22 +16,22 @@ Veff   = hypot(crossflow_mps, vi_mps + climb_mps)
 
 The fixed-flow cases pass their declared effective speed directly to the lag law. `Vfloor` is positive, so the lag remains finite at zero rotor speed and residual wake can decay toward zero. The normalized `lambda = vi/(omega R)` is an output diagnostic; `vi_mps` is the integrated state.
 
-Gavrilets, Mettler and Feron's hover relation is `tau_lambda = 0.849/(4 lambda_trim Omega_mr)` (their §4.1.1, Eq. 1). Substituting `lambda_trim Omega_mr = vi/R` gives the dimensional hover form `0.849 R/(4 vi)`. This reference extends that hover relation by replacing trim induced speed with a stage-dependent effective-flow magnitude and adding a floor. That extension is a selected first-order model approximation: it is neither the Johnson steady law nor a transient law validated by Johnson.
+Gavrilets, Mettler and Feron's hover relation is `tau_lambda = 0.849/(4 lambda_trim Omega_mr)` (their §4.1.1, Eq. 1). Substituting `lambda_trim Omega_mr = vi/R` gives the dimensional hover form `0.849 R/(4 vi)`. Their thrust model assumes steady, uniform inflow and notes that maneuvers with large thrust changes may substantially change the time constant. This reference extends that hover relation by replacing trim induced speed with a stage-dependent effective-flow magnitude and adding a 0.25 m/s fixture floor. That extension is a selected first-order model approximation: it is neither the Johnson steady law nor a transient law validated by Johnson.
 
 Chen and Hindson's NASA TM-88327 compares linearized Carpenter–Fridovich and Pitt–Peters dynamic-inflow models against helicopter transient and frequency-response measurements. Those models include inflow and flapping modes and show response behavior such as collective-step overshoot. They provide primary evidence that real dynamic inflow is richer than a single scalar lag; they do not validate this reference's flow-dependent time constant or floor. The chosen lag should remain provisional until model-to-data or an appropriate flight-response comparison is completed.
 
 ## Reference and oracle
 
-`research/helicopter/reference/dynamic_inflow.py` provides `derivative(vi_mps, target_mps, radius_m, effective_speed_mps, velocity_floor_mps)` and the stage-coupled `evaluate(...)`. Returned rates use m/s² and time constants use seconds. `evaluate` gets the equilibrium target from the existing literal Johnson reference, then computes `Veff` from the current induced-velocity state and flight flow.
+[`dynamic_inflow.py`](../../../../research/helicopter/reference/dynamic_inflow.py) provides `derivative(vi_mps, target_mps, radius_m, effective_speed_mps, velocity_floor_mps)` and the stage-coupled `evaluate(...)`. Returned rates use m/s² and time constants use seconds. `evaluate` gets the equilibrium target from the existing literal Johnson reference, then computes `Veff` from the current induced-velocity state and flight flow.
 
-`dynamic_oracle.json` uses schema `openrc-dynamic-inflow-oracle-v1`. It contains six fixtures and 102 samples total, with 17 entries per fixture. Each fixture has its constants, dimensional initial state, forcing profile, known event metadata, and samples containing `time_s`, `expected_vi_mps`, and diagnostic `expected_lambda`. The profiles include:
+[`dynamic_oracle.json`](../../../../research/helicopter/reference/dynamic_oracle.json) uses schema `openrc-dynamic-inflow-oracle-v1`. It contains six fixtures and 102 samples total, with 17 entries per fixture. Each fixture has its constants, dimensional initial state, forcing profile, known event metadata, and samples containing `time_s`, `expected_vi_mps`, and diagnostic `expected_lambda`. The profiles include:
 
 - an exact hover target step at 0.0173 s with fixed effective flow;
 - increasing and decreasing sweeps through C = 0.75 at 0.0373 s, with `z = -1.428` and instability disabled;
 - increasing and decreasing sweeps through M = 0.95 at 0.03873 s, with `z = -1.3` and instability enabled;
 - a smooth feedback-flow ramp that exercises stage-dependent `Veff`.
 
-The C and M crossing times do not align with the 240 Hz tick. Their JSON event records preserve the normalized epsilon and left/right target limits, so a consumer can reproduce one-sided endpoint inputs without replacing the literal source branches. The step event is also serialized with its exact before/after target values. `make_dynamic_oracle.py` regenerates the JSON and supports `--check`.
+The C and M crossing times do not align with the 240 Hz tick. Their JSON event records preserve the normalized epsilon and left/right target limits, so a consumer can reproduce one-sided endpoint inputs without replacing the literal source branches. The step event is also serialized with its exact before/after target values. [`make_dynamic_oracle.py`](../../../../research/helicopter/reference/make_dynamic_oracle.py) regenerates the JSON and supports `--check`.
 
 For the trajectories, the independent reference predicts the midpoint state and integrates each frozen-coefficient first-order lag by its exponential convolution at 10 μs intervals; known discontinuities split its microsteps. The target-step fixture uses the closed-form exponential directly. A 5 μs refinement agrees with the 10 μs path within 1e-6 m/s for the worst seam and feedback cases.
 
@@ -57,7 +59,7 @@ Run the independent checks with:
 python -m unittest discover -s research/helicopter/reference -p test_dynamic_inflow.py -v
 ```
 
-The tests cover finite zero-flow decay, sign symmetry, the analytic step response, dense-reference refinement, literal seam values, raw and split RK4 error, local refinement, event metadata, and deterministic oracle generation. Passing these checks establishes numerical consistency of this reference and fixture set only.
+[`test_dynamic_inflow.py`](../../../../research/helicopter/reference/test_dynamic_inflow.py) covers finite zero-flow decay, sign symmetry, the analytic step response, dense-reference refinement, literal seam values, raw and split RK4 error, local refinement, event metadata, and deterministic oracle generation. Passing these checks establishes numerical consistency of this reference and fixture set only.
 
 ## Sources
 
