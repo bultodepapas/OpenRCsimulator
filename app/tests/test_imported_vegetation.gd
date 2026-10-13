@@ -1,5 +1,7 @@
 extends SceneTree
 
+const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
+
 var _failures := 0
 
 
@@ -52,6 +54,20 @@ func _test_catalog_and_parts() -> void:
 
 func _test_fit_and_aliases() -> void:
 	_check("shade tree alias resolves by seed", ImportedVegetation.resolve_id("shade_tree", 7) == "common_tree_3")
+	_check("sapling alias is restricted to downloaded broadleaf variants",
+		ImportedVegetation.resolve_id("sapling", 0) == "common_tree_1"
+		and ImportedVegetation.resolve_id("sapling", 1) == "common_tree_3"
+		and ImportedVegetation.resolve_id("sapling", 2) == "common_tree_1")
+	var sapling_assets: Dictionary = {}
+	var sapling_heights_valid := true
+	for seed in 32:
+		var sapling: Dictionary = VegetationPlacement.spec("sapling", seed)
+		sapling_assets[sapling.get("asset_id", "")] = true
+		sapling_heights_valid = sapling_heights_valid and float(sapling.get("height", 0.0)) >= 3.2 \
+			and float(sapling.get("height", 99.0)) <= 4.8 and float(sapling.get("triangles", 0)) > 0
+	_check("sapling placement keeps natural height and source triangle metadata", sapling_heights_valid)
+	_check("saplings sample both downloaded broadleaf variants", sapling_assets.size() == 2 \
+		and sapling_assets.has("common_tree_1") and sapling_assets.has("common_tree_3"))
 	_check("bush alias resolves deterministically", ImportedVegetation.resolve_id("bush", 5) == "bush_common_flowers")
 	_check("unknown alias is rejected", ImportedVegetation.resolve_id("missing_plant", 0).is_empty())
 	var source: Dictionary = ImportedVegetation.get_asset("common_tree_3")

@@ -169,7 +169,7 @@ func _init() -> void:
 	card_lines.add_child(limits_label)
 	start_button = _button("", "")
 	start_button.name = "StartChoice"
-	start_button.pressed.connect(func() -> void: start_requested.emit("runway" if start_choice == "airborne" else "airborne"))
+	start_button.pressed.connect(_cycle_start_choice)
 	card_lines.add_child(start_button)
 	card.add_child(card_lines)
 	column.add_child(card)
@@ -310,10 +310,25 @@ func set_aircraft(id: String) -> void:
 
 func set_start_choice(choice: String) -> void:
 	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
+	var half_power: bool = FlightSession.half_power_start_supported(aircraft_id)
 	start_choice = "runway" if supported and choice == "runway" else "airborne"
-	start_button.disabled = not supported
+	if half_power and choice == FlightSession.START_HALF_POWER:
+		start_choice = FlightSession.START_HALF_POWER
+	start_button.disabled = not supported and not half_power
 	start_button.text = "Start: runway (experimental)" if start_choice == "runway" else "Start: in the air"
 	limits_label.text = "Starts on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
+	if start_choice == FlightSession.START_HALF_POWER:
+		start_button.text = "Start: in the air at 50% throttle"
+		limits_label.text = "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
+
+
+func _cycle_start_choice() -> void:
+	var choices: Array[String] = ["airborne"]
+	if FlightSession.runway_aircraft_supported(aircraft_id) and runway_available:
+		choices.append("runway")
+	if FlightSession.half_power_start_supported(aircraft_id):
+		choices.append(FlightSession.START_HALF_POWER)
+	start_requested.emit(choices[(choices.find(start_choice) + 1) % choices.size()])
 
 
 ## Keeps only a complete validated config. A corrupt preference can never stop Home from opening.

@@ -17,8 +17,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 FIELD = ROOT / "app/data/fields/default.json"
+LAKE = ROOT / "app/data/fields/lake.json"
 OUT = ROOT / "app/data/scenery/default.json"
 EYE_M = 1.7
+BALE_RADIUS_M = math.sqrt(0.6 ** 2 + 0.6 ** 2)  # round_bale's conservative horizontal circumscribed radius
+BALE_LAKE_CLEARANCE_M = 2.0
+BALE_CENTER_GAP_M = BALE_RADIUS_M * 2.0 + 0.25
+SAPLING_FOOTPRINT_RADIUS_M = 2.2
+SAPLING_LAKE_CLEARANCE_M = 8.0
 
 
 def catalog_fleet_ids():
@@ -211,6 +217,106 @@ def grid(x, step=0.25):
     return round(round(x / step) * step, 2)
 
 
+def lake_bank_polygon():
+    """Read the canonical lake-bank footprint in the field's absolute N/E frame."""
+    lake = json.loads(LAKE.read_text())
+    origin = lake["origin"]
+    north = float(origin["north_m"])
+    east = float(origin["east_m"])
+    return [(north + float(point[0]), east + float(point[1]))
+            for point in lake["bank_offsets_ne_m"]]
+
+
+def _point_in_polygon(point, polygon):
+    """Boundary-inclusive point-in-polygon test in north/east coordinates."""
+    if any(_point_segment_distance(point, polygon[i], polygon[(i + 1) % len(polygon)]) <= 1e-9
+           for i in range(len(polygon))):
+        return True
+    north, east = point
+    inside = False
+    for i, a in enumerate(polygon):
+        b = polygon[(i + 1) % len(polygon)]
+        if (a[1] > east) != (b[1] > east):
+            crossing_north = (b[0] - a[0]) * (east - a[1]) / (b[1] - a[1]) + a[0]
+            if north < crossing_north:
+                inside = not inside
+    return inside
+
+
+def bank_footprint_clearance(north, east, radius, bank=None):
+    """Signed edge gap from a circular conservative footprint to the lake bank."""
+    bank = lake_bank_polygon() if bank is None else bank
+    center = (north, east)
+    edge_distance = min(_point_segment_distance(center, bank[i], bank[(i + 1) % len(bank)])
+                        for i in range(len(bank)))
+    if _point_in_polygon(center, bank):
+        return -(edge_distance + radius)
+    return edge_distance - radius
+
+
+def bale_bank_clearance(north, east, bank=None):
+    """Signed edge gap from a round bale's conservative footprint to the lake bank."""
+    return bank_footprint_clearance(north, east, BALE_RADIUS_M, bank)
+
+
+def original_hay_bales():
+    """Stable source rows: their sequence defines runtime prop IDs."""
+    bales = []
+    for row in range(6):
+        for k in range(8):
+            north = 80.0 + row * 24.0 + (h01(row, k, 1) - 0.5) * 6.0
+            east = 70.0 + k * 18.0 + (h01(row, k, 2) - 0.5) * 8.0 + (row % 2) * 9.0
+            if h01(row, k, 3) < 0.78:
+                bales.append((grid(north), grid(east), round(h01(row, k, 4) * 360.0 % 360.0, 1)))
+    return bales
+
+
+def relocate_hay_bales(rows=None, bank=None):
+    """Move only bales whose full footprint is too close to the lake, preserving row order.
+
+    A deterministic quarter-metre expanding grid chooses the nearest bank-safe position
+    that also keeps the bale clear of every other bale. Since the caller retains the
+    row index, runtime damage/placement IDs do not change.
+    """
+    bank = lake_bank_polygon() if bank is None else bank
+    source = original_hay_bales() if rows is None else rows
+    result = [[grid(row[0]), grid(row[1]), round(float(row[2]) % 360.0, 1)] for row in source]
+    moved_indices = [i for i, row in enumerate(result)
+                     if bale_bank_clearance(row[0], row[1], bank) + 1e-9 < BALE_LAKE_CLEARANCE_M]
+    accepted = [tuple((row[0], row[1])) for i, row in enumerate(result) if i not in moved_indices]
+    for index in moved_indices:
+        original_north, original_east = result[index][0], result[index][1]
+        relocated = None
+        # Search nearest grid ring first; sorting each ring by distance and then N/E
+        # makes ties stable across Python versions and platforms.
+        for ring in range(1, 601):
+            offsets = []
+            for delta in range(-ring, ring + 1):
+                offsets.append((delta, -ring))
+                offsets.append((delta, ring))
+            for delta in range(-ring + 1, ring):
+                offsets.append((-ring, delta))
+                offsets.append((ring, delta))
+            offsets.sort(key=lambda pair: (pair[0] * pair[0] + pair[1] * pair[1], pair[0], pair[1]))
+            for dn, de in offsets:
+                north = round(original_north + dn * 0.25, 2)
+                east = round(original_east + de * 0.25, 2)
+                if bale_bank_clearance(north, east, bank) + 1e-9 < BALE_LAKE_CLEARANCE_M:
+                    continue
+                if any(math.hypot(north - other_n, east - other_e) + 1e-9 < BALE_CENTER_GAP_M
+                       for other_n, other_e in accepted):
+                    continue
+                relocated = (north, east)
+                break
+            if relocated is not None:
+                break
+        if relocated is None:
+            raise ValueError("could not relocate hay bale %d outside the lake-bank clearance" % index)
+        result[index][0], result[index][1] = relocated
+        accepted.append(relocated)
+    return result, moved_indices
+
+
 def build():
     field, trees, runway = load_field()
     sky = skyline(trees)
@@ -246,6 +352,10 @@ def build():
     club_trees = [(-49.0, -22.0), (-52.5, -13.0), (-48.5, -4.0), (-53.0, 4.5), (-49.5, 12.0), (-31.5, -9.0), (-32.0, 10.5), (-28.0, -52.0), (-29.0, 52.0), (-44.0, -40.0)]
     inst("shade-trees", "club", ["shade_tree"], [(n, e, h01(n, e) * 360) for n, e in club_trees], "estimated",
          photo + "; shade-tree clump behind the car row")
+    saplings = [(-66.0, -32.0), (-66.0, -22.0), (-66.0, -12.0), (-66.0, -2.0),
+                (-66.0, 8.0), (-66.0, 18.0), (-66.0, 28.0)]
+    inst("saplings", "club", ["sapling"], [(n, e, h01(e, n) * 360) for n, e in saplings], "estimated",
+         "LU-22 downloaded CommonTree_1/CommonTree_3 saplings behind the club; outside the lake bank and north approach")
     bushes = [(-19.8, -6.4), (-24.5, -6.3), (-19.8, 6.4), (-24.8, 6.3), (-15.5, -20.5), (-15.5, 20.0)]
     inst("bushes", "club", ["bush"], [(n, e, h01(e, n) * 360) for n, e in bushes], "estimated", "Planting around the pavilion")
     clumps = [(-15.4, -5.0 + i * 1.1) for i in range(4)] + [(-15.4, 1.8 + i * 1.1) for i in range(3)]
@@ -313,14 +423,9 @@ def build():
                                 [-13.8, 9.0], [-13.8, 31.0], [-15.5, 31.0]],
                                "m", "estimated", "Worn pedestrian path around the flower border to the east shelter's open front bay")})
     # --- the countryside, in front ---
-    bales = []
-    for row in range(6):
-        for k in range(8):
-            n = 80.0 + row * 24.0 + (h01(row, k, 1) - 0.5) * 6.0
-            e = 70.0 + k * 18.0 + (h01(row, k, 2) - 0.5) * 8.0 + (row % 2) * 9.0
-            if h01(row, k, 3) < 0.78:
-                bales.append((n, e, h01(row, k, 4) * 360))
-    inst("hay-bales", "flight_box", ["round_bale"], bales, "estimated", "Round bales along mown rows (SC-12: the in-flight scale cue)")
+    bales, _relocated_bale_indices = relocate_hay_bales()
+    inst("hay-bales", "flight_box", ["round_bale"], bales, "estimated",
+         "Round bales along mown rows (SC-12); row IDs stay stable while bank-near bales move to 2 m footprint clearance")
     hedge = [[242.0, -300.0], [243.5, -150.0], [241.5, 40.0], [242.0, 58.0]]
     hedge2 = [[242.0, 72.0], [244.0, 180.0], [242.5, 300.0]]
     for gid, pts in (("hedge-north-w", hedge), ("hedge-north-e", hedge2)):
@@ -382,28 +487,8 @@ def build():
         n, e = polar(1250.0 + i * 90.0, p_az - 3.0 + i * 1.5)
         pylons.append((n, e, p_az + 90.0))
     inst("pylons", "horizon", ["pylon"], pylons, "estimated", "Transmission line in the tree-free east corridor, in front of the wind farm")
-    # --- wildflower cushions (SC-16): sizes >= d/386 m so each covers >= 2 px where it stands (report 02) ---
-    flowers = []
-    def strip(n0, n1, e0, e1, count, salt, min_size):
-        """Clustered, like real meadow flowers: patch centres, then cushions spread around each (integers only)."""
-        patches = max(1, count // 14)
-        for i in range(count):
-            c = i % patches
-            cn = n0 + (n1 - n0) * h01(c, salt, 7)
-            ce = e0 + (e1 - e0) * h01(c, salt, 8)
-            spread = 0.6 + 2.4 * h01(c, salt, 9) * max(1.0, (n1 - n0) / 8.0)
-            n = min(n1, max(n0, cn + (h01(i, salt, 1) + h01(i, salt, 4) - 1.0) * spread))
-            e = min(e1, max(e0, ce + (h01(i, salt, 2) + h01(i, salt, 5) - 1.0) * spread * 1.6))
-            d = max(1.0, math.hypot(n, e))
-            size = max(min_size, d / 386.0) * (1.0 + 0.6 * h01(i, salt, 3))
-            flowers.append([grid(n, 0.05), grid(e, 0.05), round(min(1.0, size), 3)])
-    strip(22.0, 26.0, -70.0, 70.0, 700, 1, 0.18)    # beyond the runway's far edge
-    strip(2.0, 7.5, -45.0, 45.0, 650, 2, 0.14)      # the grass between the pilot line and the runway
-    strip(-14.0, -11.0, -46.0, 46.0, 420, 3, 0.14)  # in front of the pits
-    strip(28.0, 62.0, -90.0, 90.0, 900, 4, 0.24)     # meadow patches in front
-    strip(232.0, 238.0, -280.0, 280.0, 300, 5, 0.6) # the uncut margin along the boundary (gov.uk hay-meadow practice)
-    groups.append({"id": "wildflowers", "type": "flowers", "zone": "countryside", "collides": False,
-                   "positions": q(flowers, "m, m, size m", "derived", "tools/scenery/place.py strips; sizes >= d/386 m (scenery report 02)")})
+    # LU-23: production meadow and flower instances are downloaded asset batches
+    # assembled by botanical_habitats.gd; this source emits no procedural cushions.
     report += [("village/church", v_az, v_sky, 32.0, 2100.0), ("turbines", t_az, t_sky, 121.0, 4000.0),
                ("pylons", p_az, p_sky, 30.0, 1400.0), ("farmstead silo", 30.0, sky_at(sky, 30.0), 15.0, 705.0)]
     data = {

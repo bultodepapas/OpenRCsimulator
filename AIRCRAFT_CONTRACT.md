@@ -133,3 +133,7 @@ Trace metadata records the real input format/hash, model ID, active propulsion/w
 5. Register the catalog and visual adapter together, add aircraft-specific tests, and retain measured gaps. Manufacturer limits, independent measurements and qualified pilot feedback decide physical acceptance. Unsupported features require a contract extension before use.
 
 Use the [AS-05 authoring commands and verification](docs/research/aircraft-standardization/AS-05/README.md) for generated-output checks and documented results. The v2 migration preserved force equations and numeric calibration; it does not close physical or target-machine acceptance. Never hand-edit a generated aircraft JSON.
+
+## Planned Workshop authoring standard
+
+The [Aircraft Workshop standard](docs/plans/aircraft-editor.md#21-common-aircraft-editing-standard) defines the proposed common editing interface for every compatible airplane. It adds a generated companion descriptor for component, presentation and dependency bindings; physical values remain in this v2 contract. Editing behavior is composed from shared physics modules, never selected by aircraft name or ID. Once the AE-19 fleet gate is delivered, registering another aircraft with existing capabilities must require data/assets and conformance evidence, with no aircraft-specific Workshop code. The plan owns the descriptor, module interfaces, migration and acceptance details; these are not additional fields accepted by today's v2 loader.

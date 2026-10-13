@@ -68,8 +68,4 @@ Limits: every range, installation angle and the 1.46 kg component ledger are the
 
 ## Requests for a r2 delivery
 
-1. Reproducible rebuild: the documented command sequence omits the BREP cache step and reads/writes different directories than the scripts expect (TT-00-R1 §1); pin the environment.
-2. A verifier that exits non-zero on a failed check (TT-00-R1 §4).
-3. Nose/cowl length: 50–60 mm too long by the author's photo comparison; needs a scaled side photo or the manufacturer drawing before any correction (decision D4 keeps r1).
-4. Mass ledger: replace "use for first flights only" with an explicit non-flight placeholder; the manual's 2.190 kg is the flight target (TT-07).
-5. Optional: slats and floats as separate exports if the owner ever wants them (out of scope).
+The self-contained [Blender delivery specification](../../../docs/BLENDER-AIRCRAFT-HANDOFF.md) owns the r2 request: editable game `.blend`, sectioned GLB with `openrc_section`, preserved pivots, rendering budgets, reproducible export and acceptance checks. Keep r1 geometry until a dimensional correction has supporting evidence; the simulator team owns regenerated bindings and physics data.

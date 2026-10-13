@@ -164,6 +164,8 @@ func set_aircraft(id: String) -> void:
 	home.set_aircraft(id)
 	if not FlightSession.runway_aircraft_supported(id):
 		preferences.start_choice = "airborne"
+	if preferences.start_choice == FlightSession.START_HALF_POWER and not FlightSession.half_power_start_supported(id):
+		preferences.start_choice = "airborne"
 	if home_scene != null:
 		home_scene.show_aircraft(id)
 	var err := Preferences.save_to(preferences_path, preferences)

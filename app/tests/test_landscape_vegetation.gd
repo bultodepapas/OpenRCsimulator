@@ -12,6 +12,7 @@ const Loader = preload("res://scenery/scenery_loader.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Population = preload("res://scenery/population.gd")
+const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
 
 const TREE_XZ_LIMIT := 3.84 # baseline max half-extent across the measured seed sample; catalog width remains 8 m.
 const TREE_TOP_LIMIT := 10.0 # measured baseline top is below 10.0 m; catalog/collision height remains 10.5 m.
@@ -189,15 +190,33 @@ func _test_complete_scenery_budget() -> void:
 		for kind: String in counts:
 			if str(part.name).begins_with(kind + "_"):
 				counts[kind] += 1
-	_check("vegetation keeps ten moving crowns/six shrub tips; people move in their population batch",
-		int(stats.motion) == 21 and motion.get_child_count() == 21 and counts.crown == 10 and counts.bush_tips == 6
+	_check("imported trees and shrubs stay out of the procedural motion tree; people use their population batch",
+		int(stats.motion) == 5 and motion.get_child_count() == 5 and counts.crown == 0 and counts.bush_tips == 0
 		and int(stats.moving_people) == 7)
 	var static_cells := 0
 	for child: Node in built.get_children():
 		if child is MeshInstance3D and str(child.name).begins_with("cell_"):
 			static_cells += 1
 	_check("static scenery remains within the current 63-cell budget", static_cells > 0 and static_cells <= 63, "actual=%d allocated=%d" % [static_cells, int(stats.cells)])
-	_check("wildflower instance population is unchanged", int(stats.flowers) == 2970)
+	var imported_plants: Node3D = built.get_node_or_null("ImportedVegetationBatches") as Node3D
+	var botanical: Node3D = built.get_node_or_null("BotanicalHabitats") as Node3D
+	var plants: Array = botanical.get_meta("plants", []) if botanical != null else []
+	_check("production trees and shrubs are downloaded source meshes",
+		imported_plants != null and int(stats.get("vegetation_instances", 0)) >= 16
+		and imported_plants.get_children().all(func(child: Node) -> bool: return child is MultiMeshInstance3D))
+	_check("downloaded flowers replace the retired 2,970 procedural cushions",
+		int(stats.flowers) == 0 and botanical != null and plants.size() == int(stats.get("botanical_plants", -1)))
+	_check("downloaded habitat triangles and batches meet their provisional budgets",
+		int(stats.get("botanical_triangles", 0)) > 0 and int(stats.botanical_triangles) <= 70000
+		and int(stats.get("botanical_batches", 99)) <= 24)
+	var state: Dictionary = imported_plants.get_meta("_imported_vegetation_state", {}) if imported_plants != null else {}
+	var damage_ids: Array = (state.get("damage", {}) as Dictionary).keys()
+	_check("production imported vegetation retains source damage IDs", not damage_ids.is_empty())
+	if not damage_ids.is_empty():
+		var damage_id := str(damage_ids[0])
+		var hidden := ImportedVegetation.set_damage_hidden(imported_plants, damage_id, true)
+		var restored := ImportedVegetation.set_damage_hidden(imported_plants, damage_id, false)
+		_check("source damage IDs hide and restore imported plants", hidden and restored, damage_id)
 	var triangles := _triangle_count(built)
 	_check("whole scenery stays below the approved LU-21 triangle ceiling", triangles <= TRIANGLE_LIMIT,
 		"triangles=%d" % triangles)

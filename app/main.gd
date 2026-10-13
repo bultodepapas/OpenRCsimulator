@@ -36,6 +36,7 @@ const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd") # legacy atmosphere fixture only
 const FieldLoader = preload("res://data/field_loader.gd")
 const FieldBuilder = preload("res://render/field.gd")
+const LakeWorld = preload("res://render/lake/lake_world.gd")
 const SceneryCollisionSetup = preload("res://scenery/collision_setup.gd")
 const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
@@ -47,6 +48,8 @@ const VisualEvidence = preload("res://render/visual_evidence.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const LatencyPatch = preload("res://input/latency_patch.gd")
 const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
+const WATER_CHECKPOINT_FORMAT := "openrc-visual-water-checkpoint v1"
+const WATER_CHECKPOINT_FIELDS: Array[String] = ["format", "visual", "water_render", "payload_sha256"]
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
@@ -141,6 +144,7 @@ var _prop_angle := 0.0
 var _scripted := false
 var _engine_audio: AudioStreamPlayer3D
 var _soundscape_audio: FlightAudio
+var _lake_ambience: AudioStreamPlayer3D
 ## Technical fixtures can retain the original diagnostic freeze route.
 var crash_effects_enabled := true
 var _crash_director: CrashDirector
@@ -329,6 +333,10 @@ func _ready() -> void:
 			return
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
+	# This explicit airborne operating point must be selected before setup solves trim.
+	# Runway selection still waits for field/contact configuration below.
+	if start_choice == FlightSession.START_HALF_POWER:
+		session.start_choice = start_choice
 	if args.has("shaft-integrator") and (not session.setup_shaft_integrator(args["shaft-integrator"]) or _scripted):
 		printerr("shaft integrator refused: ", session.shaft_error if not _scripted else "requires a physics flight")
 		session.free() # refused before add_child(): this owner would otherwise remain orphaned
@@ -490,6 +498,13 @@ func _ready() -> void:
 			_engine_audio = _soundscape_audio.soundscape.voices[0] # retain legacy combustion/turbine inspection interface
 	elif str(args.get("soundscape", "on")) == "off":
 		FlightAudio.silence_legacy_ambience(self)
+	_lake_ambience = LakeWorld.ambience_player(_field_node)
+	if _lake_ambience != null:
+		if _soundscape_audio != null:
+			var soundscape_buses: Variant = _soundscape_audio.soundscape.get("_bus_names")
+			if soundscape_buses is Array and soundscape_buses.size() >= 3:
+				LakeWorld.set_ambience_bus(_field_node, StringName(soundscape_buses[2]))
+		_lake_ambience.stream_paused = not session.holds.is_empty()
 	if not _scripted and _field_node != null and _capture_scene_id() == "field":
 		_scenery_damage_director = SceneryDamageDirector.new()
 		_scenery_damage_director.name = "SceneryDamageDirector"
@@ -569,6 +584,8 @@ func _process(delta: float) -> void:
 		_engine_audio.stream_paused = frozen
 		if not frozen:
 			EngineSound.update(_engine_audio, 0.0, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
+	if is_instance_valid(_lake_ambience):
+		_lake_ambience.stream_paused = not session.holds.is_empty()
 	var surfaces: Dictionary = session.surfaces()
 	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_camera_dt = dt
@@ -926,7 +943,20 @@ func checkpoint() -> Dictionary:
 	if not selection.ok or selection.config != lighting_config:
 		return {} # refuse an unrecorded visual edit
 	var saved: Dictionary = VisualCheckpoint.make(session.checkpoint(), _visual_timeline, _field_identity())
-	return saved.checkpoint if saved.ok else {}
+	if not saved.ok:
+		return {}
+	if _crash_director != null:
+		var water_render: Dictionary = _crash_director.water_checkpoint()
+		if not water_render.is_empty():
+			var paired: Dictionary = saved.checkpoint
+			var wrapped: Dictionary = {
+				"format": WATER_CHECKPOINT_FORMAT,
+				"visual": paired,
+				"water_render": water_render,
+			}
+			wrapped["payload_sha256"] = _water_checkpoint_digest(paired, water_render)
+			return wrapped
+	return saved.checkpoint
 
 
 ## Validate both halves and prepare detached shadow geometry before the physics owner commits.
@@ -934,7 +964,24 @@ func checkpoint() -> Dictionary:
 func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field" or not startup_error.is_empty():
 		return {ok = false, errors = ["visual checkpoint requires a ready production flight"]}
-	var decoded: Dictionary = VisualCheckpoint.read(candidate, _field_identity())
+	var visual_candidate: Variant = candidate
+	var water_restore: Dictionary = {}
+	var has_water_render: bool = false
+	if typeof(candidate) == TYPE_DICTIONARY and candidate.get("format") == WATER_CHECKPOINT_FORMAT:
+		if not _has_exact_keys(candidate, WATER_CHECKPOINT_FIELDS) \
+				or typeof(candidate.get("visual")) != TYPE_DICTIONARY \
+				or typeof(candidate.get("water_render")) != TYPE_DICTIONARY \
+				or typeof(candidate.get("payload_sha256")) != TYPE_STRING \
+				or candidate.payload_sha256 != _water_checkpoint_digest(candidate.visual, candidate.water_render):
+			return {ok = false, errors = ["water visual checkpoint envelope is invalid"]}
+		if _crash_director == null:
+			return {ok = false, errors = ["water visual checkpoint requires the crash director"]}
+		water_restore = _crash_director.prepare_water_restore(candidate.water_render)
+		if water_restore.is_empty():
+			return {ok = false, errors = ["water aftermath checkpoint is invalid or incompatible"]}
+		visual_candidate = candidate.visual
+		has_water_render = true
+	var decoded: Dictionary = VisualCheckpoint.read(visual_candidate, _field_identity())
 	if not decoded.ok:
 		return decoded
 	# TOD-09c1 defines progressing records before the live controller consumes them.
@@ -960,8 +1007,29 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if _engine_audio != null:
 		_engine_audio.stream_paused = true
 	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
+	if has_water_render:
+		if not _crash_director.restore_water_checkpoint(water_restore):
+			return {ok = false, physics_restored = true, errors = ["physics restored, but water aftermath could not be restored"]}
+	elif _crash_director != null:
+		_crash_director.reset()
 	_note = "Checkpoint restored; visual context: " + _visual_context_status
 	return {ok = true, context_status = _visual_context_status, errors = []}
+
+
+func _water_checkpoint_digest(visual: Dictionary, water_render: Dictionary) -> String:
+	var hashing := HashingContext.new()
+	hashing.start(HashingContext.HASH_SHA256)
+	hashing.update(var_to_bytes([visual, water_render]))
+	return hashing.finish().hex_encode()
+
+
+func _has_exact_keys(source: Dictionary, expected: Array[String]) -> bool:
+	if source.size() != expected.size():
+		return false
+	for key: Variant in source.keys():
+		if typeof(key) != TYPE_STRING or not expected.has(str(key)):
+			return false
+	return true
 
 
 ## Apply a visual-only edit while paused. Never restore physical state or change live input ownership.

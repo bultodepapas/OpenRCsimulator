@@ -11,6 +11,7 @@ import json
 import re
 import subprocess
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[2]
 REGRESSION = '''aircraft_catalog aircraft_data aircraft_contract aircraft_render_contract checkpoint checkpoint_integrity continuous_state
@@ -27,6 +28,12 @@ def main():
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=False)
     godot = args.godot.resolve()
+    # The Windows console launcher starts a child GUI binary. Run that binary
+    # directly so a timeout terminates the process that owns the test and pipes.
+    if sys.platform == 'win32' and godot.name.endswith('_console.exe'):
+        executable = godot.with_name(godot.name.replace('_console.exe', '.exe'))
+        if executable.is_file():
+            godot = executable
     results = []
     source_paths = sorted({p for p in (ROOT/'app').rglob('*.gd') if '.godot' not in p.parts} |
                           set((ROOT/'app/data/glow').glob('*.json')) |
@@ -39,14 +46,18 @@ def main():
     sources_before = fingerprints()
 
     def run(label, command, timeout=180):
+        started = time.monotonic()
         try:
             result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
             text = result.stdout + result.stderr
             passed = result.returncode == 0 and not re.search(r'^(?:SCRIPT |SHADER )?ERROR:|^FAIL', text, re.M)
             entry = dict(check=label, exit_code=result.returncode, passed=bool(passed))
         except subprocess.TimeoutExpired as exc:
-            text = str(exc)
+            def decoded(value):
+                return value.decode('utf-8', errors='replace') if isinstance(value, bytes) else value or ''
+            text = decoded(exc.stdout) + decoded(exc.stderr) + '\n' + str(exc) + '\n'
             entry = dict(check=label, passed=False, timeout=timeout)
+        entry['wall_time_s'] = time.monotonic() - started
         (out/(label+'.log')).write_text(text, encoding='utf-8')
         results.append(entry)
         if not label.startswith('parse-') or not entry['passed']:
@@ -87,6 +98,8 @@ def main():
     unchanged = sources_before == sources_after
     report = dict(format='openrc-glow-integration-proof v2',results=results,
                   ok=all(r['passed'] for r in results) and unchanged,
+                  godot_executable=str(godot),
+                  godot_executable_sha256=hashlib.sha256(godot.read_bytes()).hexdigest(),
                   source_sha256=sources_before, source_sha256_after=sources_after,
                   sources_unchanged=unchanged,
                   source_hash_scope='Declared app GDScripts and glow data/Python sources before and after verification; drift refuses a single-snapshot pass',

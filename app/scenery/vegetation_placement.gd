@@ -4,7 +4,7 @@ const Library := preload("res://scenery/imported_vegetation.gd")
 const Palette := preload("res://scenery/palette.gd")
 
 static func handles(prefab: String) -> bool:
-	return prefab in ["shade_tree", "bush", "flower_clump"]
+	return prefab in ["shade_tree", "sapling", "bush", "flower_clump"]
 
 static func spec(prefab: String, seed: int) -> Dictionary:
 	var asset_id := Library.resolve_id(prefab, seed)
@@ -17,6 +17,8 @@ static func spec(prefab: String, seed: int) -> Dictionary:
 	elif prefab == "flower_clump":
 		height = 0.32 + 0.06 * Palette.hash01(seed, 1)
 	var bounds: Dictionary = asset.source_bounds_m
+	if prefab == "sapling":
+		height = 3.2 + 1.6 * Palette.hash01(seed, 1)
 	var scale := height / float(bounds.height)
 	var source_size: Array = bounds.size
 	return {asset_id = asset_id, height = height, scale = scale,

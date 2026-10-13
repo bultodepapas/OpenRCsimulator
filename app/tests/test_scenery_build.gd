@@ -8,6 +8,8 @@ const Loader = preload("res://scenery/scenery_loader.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
 const Models = preload("res://scenery/models.gd")
 const Population = preload("res://scenery/population.gd")
+const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
+const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
@@ -16,7 +18,7 @@ const ShaderClock = preload("res://render/shader_clock.gd")
 
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
 const BUDGET_TRIANGLES := 600000 # all scenery and population surfaces, counting indexed triangles and every MultiMesh instance
-const BUDGET_BUILD_MS := 400.0 # generous on the shared CI/VM CPU; the plan's 150 ms target is reported, not gated here
+const BUDGET_BUILD_MS := 400.0 # smoke ceiling includes first-load imported meshes; the plan's 150 ms target is reported, not gated
 
 var _failures := 0
 var _field: Dictionary
@@ -63,14 +65,7 @@ func _test_off_is_noop() -> void:
 
 
 func _mesh_triangles(mesh: Mesh) -> int:
-	if mesh == null:
-		return 0
-	var total := 0
-	for surface in mesh.get_surface_count():
-		var indices: int = mesh.surface_get_array_index_len(surface)
-		var vertices: int = mesh.surface_get_array_len(surface)
-		total += (indices if indices > 0 else vertices) / 3
-	return total
+	return Population.triangles(mesh)
 
 
 func _triangles(root: Node) -> int:
@@ -101,10 +96,10 @@ func _test_build() -> void:
 				motion_counts[kind] += 1
 	_check("moving parts preserve 4 rotors + 1 flag", motion_counts.rotor == 4 and motion_counts.flag == 1,
 		str(motion_counts))
-	_check("moving shade crowns and shrub tips are present", motion_counts.crown == 10 and motion_counts.bush_tips == 6,
-		str(motion_counts))
-	_check("legacy Motion retains only the 21 rotor, flag, crown, and shrub nodes",
-		motion_node.get_child_count() == 21 and motion_counts.rotor + motion_counts.flag + motion_counts.crown + motion_counts.bush_tips == 21,
+	_check("trees and shrubs use imported source batches instead of procedural motion nodes",
+		motion_counts.crown == 0 and motion_counts.bush_tips == 0)
+	_check("Motion contains only the 4 rotor and 1 flag source meshes",
+		motion_node.get_child_count() == 5 and motion_counts.rotor + motion_counts.flag == 5,
 		str(motion_counts))
 	_check("motion stats count every emitted animated mesh", int(stats.motion) == motion_node.get_child_count(),
 		"stats=%d nodes=%d" % [int(stats.motion), motion_node.get_child_count()])
@@ -119,8 +114,25 @@ func _test_build() -> void:
 	_check("population triangle stats match indexed MultiMesh geometry",
 		population != null and int(stats.get("population_triangles", -1)) == _triangles(population),
 		"stats=%s rendered=%s" % [stats.get("population_triangles", -1), _triangles(population) if population != null else -1])
+	var primitive_quad := QuadMesh.new()
+	var quad_triangles := Population.triangles(primitive_quad)
+	_check("mesh triangle counting handles primitive QuadMesh surfaces", quad_triangles == 2,
+		"actual=%d" % quad_triangles)
 	_check("contact shadows for the near props", int(stats.shadows) > 50)
-	_check("wildflowers placed", int(stats.flowers) > 2000)
+	var imported_plants: Node3D = root.get_node_or_null("ImportedVegetationBatches") as Node3D
+	var botanical: Node3D = root.get_node_or_null("BotanicalHabitats") as Node3D
+	var botanical_plants: Array = botanical.get_meta("plants", []) if botanical != null else []
+	_check("downloaded trees and shrubs are source-material MultiMesh batches",
+		imported_plants != null and int(stats.get("vegetation_instances", 0)) >= 16
+		and int(stats.get("vegetation_triangles", 0)) > 0
+		and imported_plants.get_children().all(func(child: Node) -> bool: return child is MultiMeshInstance3D))
+	_check("downloaded habitat flowers replace the procedural cushion group",
+		int(stats.flowers) == 0 and botanical != null and botanical_plants.size() == int(stats.get("botanical_plants", -1)))
+	_check("downloaded habitat geometry stays within the 70k plant-triangle and 24-batch limits",
+		int(stats.get("botanical_triangles", -1)) > 0 and int(stats.botanical_triangles) <= 70000
+		and int(stats.get("botanical_batches", 99)) <= 24,
+		"triangles=%s batches=%s" % [stats.get("botanical_triangles", -1), stats.get("botanical_batches", -1)])
+	_check_imported_vegetation_damage(imported_plants)
 	_check("compact cells (≤ 64 merged meshes)", int(stats.cells) <= 64)
 	var cell_surfaces := 0
 	for c in root.get_children():
@@ -167,6 +179,14 @@ func _test_determinism() -> void:
 func _test_catalog_sizes() -> void:
 	for id: String in Prefabs.CATALOG:
 		var spec: Dictionary = Prefabs.CATALOG[id]
+		if bool(spec.get("imported_vegetation", false)):
+			var imported_spec := VegetationPlacement.spec(id, 1234)
+			_check("%s downloaded source fits its catalog height" % id,
+				not imported_spec.is_empty() and float(imported_spec.height) <= spec.size.y \
+				and float(imported_spec.height) >= 3.2)
+			_check("%s has evidence (kind and source)" % id,
+				["borrowed", "estimated", "manual", "measured"].has(spec.kind) and not str(spec.source).is_empty())
+			continue
 		var k := MeshKit.new()
 		var moving: Array = Prefabs.build(id, k, 1234, "temperate")
 		var box := AABB(k.verts[0], Vector3.ZERO)
@@ -253,15 +273,17 @@ func _test_tiers() -> void:
 		r.free()
 	_check("tiers: low < balanced < high instances", int(counts.low.instances) < int(counts.balanced.instances) and int(counts.balanced.instances) < int(counts.high.instances))
 	_check("tiers: low keeps no ornamental flowers", int(counts.low.flowers) == 0)
-	_check("tiers: low retains the 4 rotors, flag and 10 standard tree crowns",
-		motion_counts.low.rotor == 4 and motion_counts.low.flag == 1 and motion_counts.low.crown == 10
+	_check("tiers: low retains flightline rotors and flag without vegetation motion nodes",
+		motion_counts.low.rotor == 4 and motion_counts.low.flag == 1 and motion_counts.low.crown == 0
 		and motion_counts.low.bush_tips == 0 and int(counts.low.moving_people) == 0, str(motion_counts.low))
-	_check("tiers: high retains landmarks, shrub tips, and bounded population motion",
-		motion_counts.high.rotor == 4 and motion_counts.high.flag == 1 and motion_counts.high.crown == 10
-		and motion_counts.high.bush_tips == 6 and int(counts.high.moving_people) >= 2
-		and int(counts.high.moving_people) <= 9,
+	_check("tiers: high retains flightline landmarks and bounded population motion",
+		motion_counts.high.rotor == 4 and motion_counts.high.flag == 1 and motion_counts.high.crown == 0
+		and motion_counts.high.bush_tips == 0 and int(counts.high.moving_people) >= 2
+		and int(counts.high.moving_people) <= 9 and int(counts.high.botanical_plants) > 0,
 		"%s moving_people=%d" % [motion_counts.high, int(counts.high.moving_people)])
-	_check("tiers: balanced keeps a fixed half of the flowers", absf(float(counts.balanced.flowers) / float(counts.high.flowers) - 0.5) < 0.08)
+	_check("tiers: downloaded habitat plants use stable density subsets",
+		int(counts.low.botanical_plants) < int(counts.balanced.botanical_plants)
+		and int(counts.balanced.botanical_plants) < int(counts.high.botanical_plants))
 
 
 func _test_themes() -> void:
@@ -273,3 +295,29 @@ func _test_themes() -> void:
 	var r := Scenery.build(_field, _scenery, {audio = false, birds = false, theme = "autumn", quality = "high"})
 	_check("a themed build reports its theme", r.get_meta("stats").theme == "autumn")
 	r.free()
+
+
+func _check_imported_vegetation_damage(vegetation: Node3D) -> void:
+	if vegetation == null:
+		_check("downloaded vegetation exposes damage IDs", false)
+		return
+	var state: Dictionary = vegetation.get_meta("_imported_vegetation_state", {})
+	var damage: Dictionary = state.get("damage", {})
+	var damage_ids: Array = damage.keys()
+	damage_ids.sort()
+	if damage_ids.is_empty():
+		_check("downloaded vegetation exposes damage IDs", false)
+		return
+	var damage_id := str(damage_ids[0])
+	var hidden := ImportedVegetation.set_damage_hidden(vegetation, damage_id, true)
+	var after_hide: Dictionary = vegetation.get_meta("_imported_vegetation_state", {})
+	var all_records_hidden := hidden
+	var bounds_records: Array = after_hide.get("bounds", [])
+	for item: Dictionary in damage.get(damage_id, []):
+		var bounds_index := int(item.get("bounds_index", -1))
+		all_records_hidden = all_records_hidden and bounds_index >= 0 and bounds_index < bounds_records.size()
+		if bounds_index >= 0 and bounds_index < bounds_records.size():
+			all_records_hidden = all_records_hidden and bool(bounds_records[bounds_index].get("hidden", false))
+	_check("a production vegetation damage ID hides only its imported source record", all_records_hidden, damage_id)
+	var restored := ImportedVegetation.set_damage_hidden(vegetation, damage_id, false)
+	_check("the production vegetation source record restores after damage reset", restored)

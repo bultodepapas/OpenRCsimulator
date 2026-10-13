@@ -166,7 +166,8 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 			if best != null and best.probe_order == int(probe.order) \
 					and best.time_fraction <= fraction1 + FRACTION_TIE:
 				break
-		if str(probe.kind) == "hull" and soft_bank:
+		# A water/bank event from an earlier probe cannot be beaten by this end-of-tick crush check.
+		if str(probe.kind) == "hull" and soft_bank and best == null:
 			var final_event: WaterEvent = _deep_bank_event(lake, previous, candidate, probe,
 				tick, mass, inertia)
 			if final_event != null and (best == null or _event_precedes(final_event, best)):
@@ -245,22 +246,23 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	var slope_east: float = 0.0
 	var depth: float = 0.0
 	if material == "water":
-		surface_down = LakeSurface._water_height_down_validated(lake, point[0], point[1], time_s, lake.get("waves", []))
+		var shore_fade_override: float = float(local_hit.get("shore_fade_override", -1.0))
+		surface_down = LakeSurface._water_height_down_validated(lake, point[0], point[1], time_s,
+			lake.get("waves", []), shore_fade_override)
 		var slope_n: float = LakeSurface._water_height_down_validated(lake, point[0] + WATER_SLOPE_EPSILON_M,
-			point[1], time_s, lake.get("waves", []))
+			point[1], time_s, lake.get("waves", []), shore_fade_override)
 		var slope_s: float = LakeSurface._water_height_down_validated(lake, point[0] - WATER_SLOPE_EPSILON_M,
-			point[1], time_s, lake.get("waves", []))
+			point[1], time_s, lake.get("waves", []), shore_fade_override)
 		var slope_e: float = LakeSurface._water_height_down_validated(lake, point[0],
-			point[1] + WATER_SLOPE_EPSILON_M, time_s, lake.get("waves", []))
+			point[1] + WATER_SLOPE_EPSILON_M, time_s, lake.get("waves", []), shore_fade_override)
 		var slope_w: float = LakeSurface._water_height_down_validated(lake, point[0],
-			point[1] - WATER_SLOPE_EPSILON_M, time_s, lake.get("waves", []))
+			point[1] - WATER_SLOPE_EPSILON_M, time_s, lake.get("waves", []), shore_fade_override)
 		if not is_finite(surface_down) or not is_finite(slope_n) or not is_finite(slope_s) \
 				or not is_finite(slope_e) or not is_finite(slope_w):
 			return null
 		slope_north = (slope_n - slope_s) / (2.0 * WATER_SLOPE_EPSILON_M)
 		slope_east = (slope_e - slope_w) / (2.0 * WATER_SLOPE_EPSILON_M)
-		var basin: Dictionary = LakeSurface.sample_terrain_validated(lake, point[0], point[1])
-		depth = float(basin.get("bed_depth_m", 0.0))
+		depth = LakeSurface._bed_depth_at(lake, point[0], point[1])
 	else:
 		var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, point[0], point[1])
 		if not bool(terrain.get("covered", false)):
@@ -348,6 +350,8 @@ static func _deep_bank_event(lake: Dictionary, previous: PackedFloat64Array, can
 	probe: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array) -> WaterEvent:
 	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, 1.0)
 	var point: PackedFloat64Array = _probe_position(state, probe.body_point)
+	if not LakeSurface._contains(lake.bank_ne_m, point[0], point[1]):
+		return null
 	var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, point[0], point[1])
 	if not bool(terrain.get("covered", false)):
 		return null

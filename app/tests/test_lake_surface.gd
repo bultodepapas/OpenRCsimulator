@@ -70,6 +70,16 @@ func _test_terrain() -> void:
 	_check("sample exposes blend, signed distances, and depth-only slope", center.blend_fraction == 1.0
 		and center.signed_shore_distance_m > 0.0 and center.signed_bank_distance_m > 0.0
 		and is_finite(center.bed_depth_slope_north) and is_finite(center.bed_depth_slope_east))
+	var shore_center: float = Lake.shore_distance_validated(_lake, 110.0, 125.0)
+	var shore_bank: float = Lake.shore_distance_validated(_lake, 110.0, 174.0)
+	_check("shore-only distance matches terrain sign without a terrain sample",
+		absf(shore_center - center.signed_shore_distance_m) < 1e-9
+		and shore_center > 0.0 and shore_bank < 0.0)
+	_check("shore-only distance rejects non-finite and malformed geometry",
+		is_nan(Lake.shore_distance_validated(_lake, NAN, 125.0))
+		and is_nan(Lake.shore_distance_validated({}, 110.0, 125.0)))
+	_check("shore-only query does not require a bed profile or wave state",
+		Lake.shore_distance_validated({shoreline_ne_m = _lake.shoreline_ne_m}, 110.0, 125.0) > 0.0)
 	_check("deep floor is five metres under the mean waterline",
 		absf(center.water_down_m - 0.45) < 1e-12 and absf(center.depth_m - 5.0) < 1e-9
 		and absf(center.ground_down_m - 5.45) < 1e-9, str(center))

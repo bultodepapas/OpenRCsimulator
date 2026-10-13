@@ -444,6 +444,12 @@ msgstr "El vuelo no está disponible. Restaura los datos del campo y reinicia el
 msgid "Start: in the air"
 msgstr "Inicio: en el aire"
 
+msgid "Start: in the air at 50% throttle"
+msgstr "Inicio: en el aire al 50 % de acelerador"
+
+msgid "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
+msgstr "Empieza en vuelo nivelado al 50 % de acelerador. El trim queda fijo durante el vuelo."
+
 msgid "Start: runway (experimental)"
 msgstr "Inicio: pista (experimental)"
 

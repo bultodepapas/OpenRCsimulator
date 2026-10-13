@@ -16,6 +16,7 @@ func run() -> void:
 	var cases: Array = ["actual", "calm", "trim22", "trim25", "half", "quarter", "neutral"]
 	if "--isolate-trim" in OS.get_cmdline_user_args(): cases = ["manual22at5", "no_gyro"]
 	if "--replay-only" in OS.get_cmdline_user_args(): cases = ["actual"]
+	if "--half-power-start" in OS.get_cmdline_user_args(): cases = ["actual", "half_start_recorded", "half_start_hold", "half_start_quarter", "half_start_full"]
 	var prop_sensitivity := "--prop-sensitivity" in OS.get_cmdline_user_args()
 	var prop_cases: Array = []
 	if prop_sensitivity:
@@ -24,6 +25,8 @@ func run() -> void:
 	var last_tick: int = 3600 if prop_sensitivity else int(source.last_tick)
 	for case in cases:
 		var session = Session.new()
+		if case.begins_with("half_start"):
+			session.start_choice = Session.START_HALF_POWER
 		if case != "calm": assert(session.setup_weather(Weather.GENTLE_PRACTICE))
 		session.setup("res://data/aircraft/jensen_ugly_stik_60.json", "jensen-das-ugly-stik-60")
 		root.add_child(session)
@@ -46,6 +49,7 @@ func run() -> void:
 			assert(session.trim_at(22.0 if case == "trim22" else 25.0).ok)
 			session.reset()
 		var initial_power: float = session.commands.throttle
+		var initial_speed: float = session.start.get("V", NAN)
 		var max_error := 0.0
 		var max_q := 0.0
 		var inverted_ticks := 0
@@ -69,6 +73,9 @@ func run() -> void:
 			if case in ["half", "quarter", "neutral"]:
 				raw = {roll=0.0,pitch=0.0,yaw=0.0,throttle=0.0}
 				session.commands.throttle = 0.5 if case == "half" else (0.25 if case == "quarter" else initial_power)
+			if case in ["half_start_hold", "half_start_quarter", "half_start_full"]:
+				raw = {roll=0.0,pitch=0.0,yaw=0.0,throttle=0.0}
+				session.commands.throttle = initial_power if case == "half_start_hold" else (0.25 if case == "half_start_quarter" else 1.0)
 			session._physics_process(session.sim.dt())
 			if session.sim.paused: break
 			session.sim.step()
@@ -96,6 +103,6 @@ func run() -> void:
 			printerr("Observed replay mismatch: ", max_error, " tick ", session.sim.tick)
 			quit(1)
 			return
-		print("LOOP_RESULT ",JSON.stringify({case=case,seconds=session.sim.time(),completed=session.sim.tick == last_tick,fault=session.sim.fault_reason,crashed=not session.crash.is_empty(),first_inverted_s=first_inverted_s,first_outside_map_s=first_outside_map_s,outside_map_seconds=outside_map_ticks*session.sim.dt(),initial_power=initial_power,trim_deg=session.trims.pitch*20.0,max_q=max_q,inverted_seconds=inverted_ticks*session.sim.dt(),max_height=max_height,max_state_error=max_error,rows=rows}))
+		print("LOOP_RESULT ",JSON.stringify({case=case,seconds=session.sim.time(),completed=session.sim.tick == last_tick,fault=session.sim.fault_reason,crashed=not session.crash.is_empty(),first_inverted_s=first_inverted_s,first_outside_map_s=first_outside_map_s,outside_map_seconds=outside_map_ticks*session.sim.dt(),initial_power=initial_power,initial_speed=initial_speed,trim_deg=session.trims.pitch*20.0,max_q=max_q,inverted_seconds=inverted_ticks*session.sim.dt(),max_height=max_height,max_state_error=max_error,rows=rows}))
 		session.free()
 	quit()

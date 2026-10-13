@@ -22,6 +22,11 @@ func _launch() -> void:
 	app = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
 	root.add_child(app)
+	if "--half-power-start" in OS.get_cmdline_user_args():
+		# Explicit diagnostic preset; the player still presses Fly. Observation itself stays read-only.
+		app.set_aircraft("jensen-das-ugly-stik-60")
+		app.set_start_choice("airborne_half_power")
+		DisplayServer.window_set_title("OpenRC — Ugly Stik · inicio equilibrado al 50 % · registro activo")
 
 func _process(_delta: float) -> bool:
 	if is_instance_valid(session) and session.sim.paused:

@@ -72,6 +72,31 @@ func _run() -> void:
 			return
 		snapshot = SnapshotLighting.snapshot(lighting.config)
 	var built := World.build(parent, loaded.field, Callable(), {}, snapshot)
+	var lake: Node3D = built.field.get_node_or_null("Lake")
+	var lake_diagnostics := {}
+	if lake != null:
+		var basin: MeshInstance3D = lake.get_node("Basin")
+		var basin_arrays: Array = basin.mesh.surface_get_arrays(0)
+		var bverts: PackedVector3Array = basin_arrays[Mesh.ARRAY_VERTEX]
+		var binds: PackedInt32Array = basin_arrays[Mesh.ARRAY_INDEX]
+		lake_diagnostics = {identity = lake.get_meta("identity"), bounds = str(basin.mesh.get_aabb()),
+			vertices = bverts.size(), triangles = lake.get_meta("triangles"),
+			mask_mode = basin.material_override.get_shader_parameter("lake_mask_mode"),
+			mask_count = basin.material_override.get_shader_parameter("lake_bank_count"),
+			terrain_enabled = basin.material_override.get_shader_parameter("lake_terrain"),
+			grass_texture = str(basin.material_override.get_shader_parameter("grass")),
+			first_normal = str(basin_arrays[Mesh.ARRAY_NORMAL][0]),
+			first_cross = str((bverts[binds[1]]-bverts[binds[0]]).cross(bverts[binds[2]]-bverts[binds[0]]))}
+		if str(args.get("lake_diagnostic", "normal")) == "solid":
+			var debug_material := StandardMaterial3D.new()
+			debug_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			debug_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+			debug_material.albedo_color = Color(0.7, 0.4, 0.1)
+			basin.material_override = debug_material
+		elif str(args.get("lake_diagnostic", "normal")) == "two-sided":
+			var debug_shader := Shader.new()
+			debug_shader.code = basin.material_override.shader.code.replace("render_mode cull_back;", "render_mode cull_disabled;")
+			basin.material_override.shader = debug_shader
 	if built.field.get_node_or_null("DistantRidges") == null:
 		parent.add_child(Ridges.build())
 	# LU-16 diagnostic controls preserve camera/time/exposure while isolating the seam.
@@ -127,7 +152,7 @@ func _run() -> void:
 	var original_exposure: float = built.environment.tonemap_exposure
 	var report := {adapter = RenderingServer.get_video_adapter_name(), driver = RenderingServer.get_video_adapter_api_version(),
 		engine = Engine.get_version_info(), renderer = "gl_compatibility", width = root.size.x, height = root.size.y,
-		arguments = args, botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
+		arguments = args, lake = lake_diagnostics, botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
 	var cases := str(args.get("cases", "pilot_north,postcard_club,glare_clear,glare_off,glare_blocked,glare_aircraft,glare_side,glare_night")).split(",")
 	for case: String in cases:
 		if lighting_helper != null:

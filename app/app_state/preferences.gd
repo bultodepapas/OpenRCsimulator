@@ -73,7 +73,8 @@ static func load_from(path: String) -> Dictionary:
 	# Existing explicit airborne choices remain valid, and unsupported aircraft never inherit the runway default.
 	prefs.start_choice = "airborne"
 	if typeof(start_choice) == TYPE_STRING:
-		if start_choice == "airborne" or (start_choice == "runway" and FlightSession.runway_aircraft_supported(prefs.aircraft)):
+		if start_choice == "airborne" or (start_choice == "runway" and FlightSession.runway_aircraft_supported(prefs.aircraft)) \
+				or (start_choice == FlightSession.START_HALF_POWER and FlightSession.half_power_start_supported(prefs.aircraft)):
 			prefs.start_choice = start_choice
 	var latency_marker: Variant = cfg.get_value("flight", "latency_marker", DEFAULTS.latency_marker)
 	if typeof(latency_marker) == TYPE_BOOL:

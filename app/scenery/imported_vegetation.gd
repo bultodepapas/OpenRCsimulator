@@ -8,6 +8,7 @@ const DEFAULT_WIND_STRENGTH := 0.025
 const ALIASES := {
 	"shade_tree": ["common_tree_1", "common_tree_3", "pine_1"],
 	"tree": ["common_tree_1", "common_tree_3", "pine_1"],
+	"sapling": ["common_tree_1", "common_tree_3"],
 	"bush": [
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common_flowers",
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common",

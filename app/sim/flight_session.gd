@@ -297,6 +297,8 @@ const LakeCollision := preload("res://sim/lake_collision.gd")
 
 const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
+const START_HALF_POWER := "airborne_half_power"
+const PowerTrim := preload("res://physics/cruise_trim.gd")
 ## Aircraft whose runway starts have passed the ground qualification gate (TT-11).
 const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t"]
 const RUNWAY_FIELD_ID := "default"
@@ -304,6 +306,24 @@ const RUNWAY_FIELD_ID := "default"
 
 static func runway_aircraft_supported(aircraft_id: String) -> bool:
 	return RUNWAY_AIRCRAFT_IDS.has(aircraft_id)
+
+
+## D6e-R1: explicitly selected operating point, not an aircraft cruise-speed claim.
+static func half_power_start_supported(aircraft_id: String) -> bool:
+	return aircraft_id == "jensen-das-ugly-stik-60"
+
+
+func _selected_airborne_trim(model: Dictionary) -> Dictionary:
+	var speed: float = model.get("start_speed", 15.0)
+	if start_choice != START_HALF_POWER:
+		return Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, speed, air_density(), engine_charge_ratio())
+	if not half_power_start_supported(str(model.get("id", ""))):
+		return {ok = false, message = "half-power airborne start is not qualified for this aircraft"}
+	# Search bounds limit this opt-in policy; they do not prescribe a flight speed.
+	var t: Dictionary = PowerTrim.solve_level_at_throttle(speed, 0.5, 2.0 * speed, model, sim.gravity, model.controls.throw_rad, air_density(), engine_charge_ratio())
+	if t.ok:
+		t.state = Scenarios.Trim.state_for(t.V, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0), t.beta)
+	return t
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
@@ -759,7 +779,7 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "continuous turbine with dynamic wheel profiles is not qualified yet"}
 	# Each aircraft declares its own start speed (the Stik's 15 m/s is the loader's default).
-	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, model.get("start_speed", 15.0), air_density(), engine_charge_ratio())
+	var candidate_start := _selected_airborne_trim(model)
 	if not candidate_start.get("ok", false):
 		var trim_error := "trim: " + str(candidate_start.get("message", "trim failed"))
 		return { ok = false, data = data, start = candidate_start, trims = neutral_trims, message = trim_error }
@@ -1380,20 +1400,24 @@ func reset() -> void:
 		var speed: float = float(old_start.get("V", aircraft.model.get("start_speed", 15.0)))
 		if not is_finite(speed) or speed <= 0.0:
 			speed = float(aircraft.model.get("start_speed", 15.0))
-		var refit: Dictionary = trim_at(speed, str(old_start.get("mode", "level")))
+		var refit: Dictionary = _selected_airborne_trim(aircraft.model) if start_choice == START_HALF_POWER else trim_at(speed, str(old_start.get("mode", "level")))
 		if not refit.ok:
 			start = refit
 			_trim_density = NAN
 			_trim_charge = NAN
 			_fail_selected_start("atmosphere trim refused: " + str(refit.message))
 			return
+		if start_choice == START_HALF_POWER:
+			start = refit
+			_trim_density = air_density()
+			_trim_charge = engine_charge_ratio()
 		if Sim.state_is_valid(old_start.get("state", PackedFloat64Array())):
 			for axis: int in 3:
 				start.state[RB.POS + axis] = old_start.state[RB.POS + axis]
 	# D6e-R1: a restart must restore the solved equilibrium, including pilot-adjusted trim.
 	if _has_valid_start():
 		trims = {roll = start.roll_command, pitch = start.pitch_command, yaw = start.get("yaw_command", 0.0)}
-	if start_choice == START_AIRBORNE:
+	if start_choice == START_AIRBORNE or start_choice == START_HALF_POWER:
 		_reset_airborne_start()
 	elif start_choice == START_RUNWAY:
 		var result: Dictionary = _reset_selected_runway_start()

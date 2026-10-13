@@ -14,6 +14,9 @@ const Telemetry = preload("res://render/overlays/telemetry.gd")
 const GroundTerrain = preload("res://physics/ground_terrain.gd")
 const AirplaneBuilder = preload("res://render/airplane.gd")
 const WaterEffects = preload("res://render/lake/water_effects.gd")
+const WATER_CHECKPOINT_VERSION := 1
+const WATER_CHECKPOINT_FIELDS: Array[String] = ["version", "age_s", "event_count", "impact_point_world", "report", "effects"]
+const WATER_REPORT_FIELDS: Array[String] = ["trigger", "surface", "component", "speed_mps", "impact_depth_m", "water_level_down_m", "tick", "contact_point_world", "lake_id", "water_effects_started", "water_audio_enabled"]
 
 var flight: Node3D
 var wreck: Wreck
@@ -42,6 +45,7 @@ var _hidden_propeller: Node3D
 var _water_configured := false
 var _water_lake_identity := ""
 var _water_event_count := 0
+var _water_checkpoint_latched := false
 var _water_shadow: MeshInstance3D
 var _water_shadow_was_visible := false
 var _water_blur: Node3D
@@ -84,12 +88,25 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 func update(delta: float) -> void:
 	var began := Time.get_ticks_usec()
 	if flight.session.crash.is_empty():
+		if _water_checkpoint_latched and _water_active:
+			var paused: bool = not flight.session.holds.is_empty()
+			flight._shadow.visible = false
+			water_effects.update(delta, paused)
+			if not paused:
+				_age += minf(delta, 0.1)
+			if float(water_effects.checkpoint().get("elapsed_s", 0.0)) >= WaterEffects.MAX_EFFECT_DURATION_S:
+				reset()
+			last_update_usec = Time.get_ticks_usec() - began
+			return
 		if active:
 			reset()
 		_record_sample()
 		_prop_strike_feedback()
 		_touch_feedback()
 		return
+	if _water_checkpoint_latched:
+		# A later replayed collision supersedes the restored render-only aftermath.
+		reset()
 	if not active:
 		_start()
 	if not active:
@@ -268,18 +285,7 @@ func _start_water(impact: RefCounted, point_ned: PackedFloat64Array,
 		effects.reset()
 	if wreck != null:
 		wreck.reset()
-	if is_instance_valid(flight._shadow):
-		_water_shadow = flight._shadow
-		_water_shadow_was_visible = _water_shadow.visible
-		_water_shadow.visible = false
-	_water_blur = flight.get_node_or_null("PropellerBlur") as Node3D
-	if is_instance_valid(_water_blur) and _water_blur.has_method("update"):
-		_water_blur_was_processing = _water_blur.is_processing()
-		_water_blur.set_process(false)
-		_water_blur.call("update", 0.0)
-	else:
-		_water_blur = null
-		_water_blur_was_processing = false
+	_suppress_water_aircraft_presentation()
 	report = {
 		"trigger": "water",
 		"surface": "water",
@@ -298,6 +304,136 @@ func _start_water(impact: RefCounted, point_ned: PackedFloat64Array,
 	active = true
 	_age = 0.0
 	impact_usec = Time.get_ticks_usec() - began_usec
+
+
+## Capture only the water aftermath, not a general crash/director save format.
+## Empty means there is no started water effect worth placing beside a physics replay.
+func water_checkpoint() -> Dictionary:
+	if not _water_active or water_effects == null:
+		return {}
+	var effects_state: Dictionary = water_effects.checkpoint()
+	if not bool(effects_state.get("has_event", false)):
+		return {}
+	return {
+		"version": WATER_CHECKPOINT_VERSION,
+		"age_s": _age,
+		"event_count": _water_event_count,
+		"impact_point_world": _impact_point,
+		"report": report.duplicate(true),
+		"effects": effects_state,
+	}
+
+
+## Preflight without changing the live director or the aircraft render root.
+func prepare_water_restore(raw: Variant) -> Dictionary:
+	if typeof(raw) != TYPE_DICTIONARY or not _water_configured or water_effects == null or not water_effects._configured:
+		return {}
+	var state: Dictionary = raw
+	if not _exact_keys(state, WATER_CHECKPOINT_FIELDS) or state.get("version") != WATER_CHECKPOINT_VERSION:
+		return {}
+	var age: Variant = state.get("age_s")
+	var event_count: Variant = state.get("event_count")
+	var point: Variant = state.get("impact_point_world")
+	var saved_report: Variant = state.get("report")
+	if not _finite_number(age) or float(age) < 0.0 or float(age) > 1.0e12 \
+			or typeof(event_count) != TYPE_INT or int(event_count) < 1 or int(event_count) > 2_147_483_647 \
+			or typeof(point) != TYPE_VECTOR3 or not _finite_vector3(point) \
+			or typeof(saved_report) != TYPE_DICTIONARY or not _exact_keys(saved_report, WATER_REPORT_FIELDS):
+		return {}
+	var effects_state: Dictionary = water_effects.prepare_restore(state.get("effects"))
+	if effects_state.is_empty() or not bool(effects_state.get("has_event", false)):
+		return {}
+	var point_ned: PackedFloat64Array = effects_state.point_ned
+	var expected_point: Vector3 = Frames.ned_to_render(Array(point_ned))
+	var lake_id: String = str(water_effects._lake.get("id", ""))
+	var saved_contact: Variant = saved_report.get("contact_point_world")
+	var speed: Variant = saved_report.get("speed_mps")
+	var depth: Variant = saved_report.get("impact_depth_m")
+	var water_level: Variant = saved_report.get("water_level_down_m")
+	var tick: Variant = saved_report.get("tick")
+	if saved_report.get("trigger") != "water" or saved_report.get("surface") != "water" \
+			or saved_report.get("component") != "airframe" \
+			or not _finite_number(speed) or float(speed) < 0.0 or float(speed) > 1000.0 \
+			or not _finite_number(depth) or absf(float(depth) - float(effects_state.impact_depth_m)) > 1.0e-6 \
+			or not _finite_number(water_level) or absf(float(water_level) - water_effects._water_level_down_m) > 1.0e-6 \
+			or typeof(tick) != TYPE_INT or int(tick) < 0 \
+			or typeof(saved_contact) != TYPE_VECTOR3 or not _finite_vector3(saved_contact) \
+			or saved_contact.distance_to(expected_point) > 0.001 or point.distance_to(expected_point) > 0.001 \
+			or saved_report.get("lake_id") != lake_id \
+			or saved_report.get("water_effects_started") != true \
+			or typeof(saved_report.get("water_audio_enabled")) != TYPE_BOOL \
+			or bool(saved_report.water_audio_enabled) != bool(effects_state.impact_audio_emitted):
+		return {}
+	return {
+		"version": WATER_CHECKPOINT_VERSION,
+		"age_s": float(age),
+		"event_count": int(event_count),
+		"impact_point_world": point,
+		"report": saved_report.duplicate(true),
+		"effects": effects_state,
+	}
+
+
+## Restore visuals only; WaterEffects.restore deliberately leaves the splash player stopped.
+func restore_water_checkpoint(raw: Variant) -> bool:
+	var prepared: Dictionary = prepare_water_restore(raw)
+	if prepared.is_empty() or flight == null or flight._airplane.is_empty():
+		return false
+	reset()
+	if not _configure_water_effects():
+		return false
+	var aircraft_root: Node3D = flight._airplane.root
+	if not water_effects.restore(prepared.effects, aircraft_root):
+		return false
+	_impact_point = prepared.impact_point_world
+	_age = float(prepared.age_s)
+	_water_event_count = int(prepared.event_count)
+	_water_active = true
+	_water_checkpoint_latched = true
+	active = true
+	report = prepared.report.duplicate(true)
+	if audio != null:
+		audio.reset()
+	if effects != null:
+		effects.reset()
+	if wreck != null:
+		wreck.reset()
+	_suppress_water_aircraft_presentation()
+	aircraft_root.visible = true
+	return true
+
+
+func _suppress_water_aircraft_presentation() -> void:
+	if is_instance_valid(flight._shadow):
+		_water_shadow = flight._shadow
+		_water_shadow_was_visible = _water_shadow.visible
+		_water_shadow.visible = false
+	_water_blur = flight.get_node_or_null("PropellerBlur") as Node3D
+	if is_instance_valid(_water_blur) and _water_blur.has_method("update"):
+		_water_blur_was_processing = _water_blur.is_processing()
+		_water_blur.set_process(false)
+		_water_blur.call("update", 0.0)
+	else:
+		_water_blur = null
+		_water_blur_was_processing = false
+
+
+static func _exact_keys(source: Dictionary, expected: Array[String]) -> bool:
+	if source.size() != expected.size():
+		return false
+	for key: Variant in source.keys():
+		if typeof(key) != TYPE_STRING or not expected.has(str(key)):
+			return false
+	return true
+
+
+static func _finite_number(value: Variant) -> bool:
+	return (typeof(value) == TYPE_FLOAT or typeof(value) == TYPE_INT) and is_finite(float(value))
+
+
+static func _finite_vector3(value: Vector3) -> bool:
+	return is_finite(value.x) and is_finite(value.y) and is_finite(value.z) \
+			and absf(value.x) <= 1_100_000.0 and absf(value.y) <= 1_100_000.0 and absf(value.z) <= 1_100_000.0
 
 ## E3d2: blade fragments, a crack and the engine dying once per strike; the source blades disappear.
 func _prop_strike_feedback() -> void:
@@ -445,6 +581,7 @@ func reset() -> void:
 	_scenery_contacts = null
 	active = false
 	_water_active = false
+	_water_checkpoint_latched = false
 	report = {}
 	_age = 0
 	if wreck != null:

@@ -63,3 +63,19 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 	if ambience != null:
 		node.add_child(ambience)
 	return node
+
+
+static func ambience_player(field_node: Node) -> AudioStreamPlayer3D:
+	if not is_instance_valid(field_node):
+		return null
+	return field_node.find_child("LakeWaterAmbience", true, false) as AudioStreamPlayer3D
+
+
+## The soundscape creates scene-local buses after the field is built. Route this
+## field-owned loop to that actual Environment bus once both owners are ready.
+static func set_ambience_bus(field_node: Node, bus_name: StringName) -> bool:
+	var player: AudioStreamPlayer3D = ambience_player(field_node)
+	if player == null or bus_name.is_empty() or AudioServer.get_bus_index(bus_name) < 0:
+		return false
+	player.bus = bus_name
+	return true
