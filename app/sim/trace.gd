@@ -140,7 +140,26 @@ func _prepare_weather() -> void:
 		_columns.append_array(ATMOSPHERE_COLUMNS)
 
 
+## AV-20 adds no CSV columns: engine_rpm is the committed continuous endpoint mirror.
+func _prepare_turbine_metadata() -> void:
+	if meta.get("propulsion_model") != Session.Turbine.CONTINUOUS_LAW or meta.get("turbine_integrator") != "rk4" \
+			or meta.get("continuous_layout") != Session.Turbine.CONTINUOUS_LAYOUT \
+			or meta.has("shaft_integrator") or meta.has("rotor_coupling") or meta.has("electric_configuration"):
+		_invalid_weather = true
+		return
+	var values: Variant = JSON.parse_string(str(meta.get("recording_start_continuous", "null")))
+	var sampled: Variant = JSON.parse_string(str(meta.get("recording_start_aux", "null")))
+	if not values is Array or values.size() != 1 or not sampled is Array or sampled.size() != 4 \
+			or typeof(values[0]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(values[0])) or float(values[0]) < 0.0 \
+			or typeof(sampled[0]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(sampled[0])) or values[0] != sampled[0]:
+		_invalid_weather = true
+		return
+
+
 func _prepare_shaft_metadata() -> void:
+	if meta.get("propulsion_model") == Session.Turbine.CONTINUOUS_LAW or meta.has("turbine_integrator"):
+		_prepare_turbine_metadata()
+		return
 	_battery = meta.get("propulsion_model") == Session.BATTERY_LAW
 	_electric = meta.get("propulsion_model") in [Session.ELECTRIC_LAW, Session.BATTERY_LAW]
 	if not _electric and (meta.has("electric_configuration") or meta.has("electric_sample_timing")):
@@ -152,6 +171,8 @@ func _prepare_shaft_metadata() -> void:
 			or meta.get("rotor_coupling") != "relative-spin-locked-inertia-reaction-v1":
 		_invalid_weather = true
 		return
+
+
 	var values: Variant = JSON.parse_string(str(meta.get("recording_start_continuous", "null")))
 	var sampled: Variant = JSON.parse_string(str(meta.get("recording_start_aux", "null")))
 	if not values is Array or values.is_empty() or not sampled is Array or sampled.size() != 4:

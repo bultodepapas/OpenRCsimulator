@@ -1,6 +1,6 @@
 # Helicopter plan: a realistic RC helicopter
 
-**Date:** 2026-10-13. **Status:** implementation started by the owner. HELI-00 scope/registration, the independent mean-inflow slice HELI-03a, HELI-04 standalone source law and HELI-13 pure swash kernel exist. No flyable helicopter, aircraft preset or session integration exists. HELI-04's published crossflow seams remain an integration gate; other steps and product choices remain open.
+**Date:** 2026-10-13. **Status:** implementation started by the owner. HELI-03a/04 supply the steady inflow reference; HELI-04-R1 adds dimensional transient flow and known-event numerical qualification; HELI-05/05a supply main-rotor loads, flapping and a joint main-rotor/inflow stage; HELI-13 supplies the pure swash kernel. No flyable helicopter, aircraft preset or session integration exists. Automatic state-dependent C/M detection, full loads/cost and other steps remain open.
 **Prefix:** HELI-00…HELI-36, registered in the [track registry](../README.md#tracks-plans-and-step-ids). `H1…H15` (Phase H) is a different namespace.
 **Owner:** helicopter track, under the main line's acceptance; owns the shared inflow law consumed by the drone track.
 **Owns:**
@@ -163,22 +163,24 @@ All angles are radians internally; data files use the contract's exact units. Th
 
 The air velocity at the hub is the CG air velocity plus ω × r_hub. It is resolved in the shaft frame, giving the advance ratio µ (in-plane) and µz (along the shaft), normalized by ΩR.
 
-**Quasi-static thrust** (Padfield form, sign-symmetric for 3D):
+**Main thrust** (Gavrilets §4.1.1, Eqs. 5/6, untwisted X-Cell blades):
 
-    C_T = (aσ/2)·[θ0(1/3 + µ²/2) + θtw(1/4 + µ²/4) + (µz − λ0)/2]   (+ cyclic terms)
-    C_T ← C_Tmax·tanh(C_T / C_Tmax)                                  (smooth saturation, both signs)
+    C_T = (aσ/2)·[θ75(1/3 + µ²/2) + (µz − λ0)/2]
+    C_T ← clamp(C_T, −C_Tmax, +C_Tmax)                              (published hard saturation)
     T   = C_T·ρ·πR²·(ΩR)²
 
-The displayed twist moments use pitch extrapolated to r/R = 0. Passing pitch at 0.75R directly would count twist twice. HELI-02/05 must pin the paper's pitch datum, cyclic terms and the mapping `µz = -climb/(ΩR)` against HELI-04's positive-climb convention before implementing these loads.
+The primary paper says the main blades have no twist, so θ75 = θ0. It omits cyclic/rate terms on thrust as second order in its µ < 0.15 range. HELI-05 follows that choice. A future twisted-blade model must derive its pitch datum and radial moments separately. `µz = -climb/(ΩR)` maps the shaft-relative air velocity to HELI-04's positive-climb convention.
 
-**Inflow state λ0** (continuous, zeroth-harmonic Pitt-Peters):
+**Dimensional inflow state vi** (continuous, selected first-order approximation):
 
-    τλ·λ̇0 = λ_target − λ0,      τλ = 0.849 / (4·λ_eff·Ω)
-    λ_target = κ·C_T / (2·η_w·√(µ² + (λ0 − µz)²))   in the momentum branches
+    τ·v̇i = vi_target − vi,     τ = 0.849R / (4·max(V_eff, V_floor))
+    V_eff = √(V_cross² + (vi + V_climb)²)
+    λ0 = vi/(ΩR)               diagnostic/conversion only while Ω > 0
 
-- Using the state λ0 inside C_T removes the thrust fixed-point iteration. The standalone HELI-04 equilibrium target solves Johnson's momentum relation with bounded, bracketed Newton iterations and a fixed-pass bisection fallback; its measured cost and source seams must be qualified before this becomes the session law.
-- `λ_eff` is the nonnegative stage flow magnitude, floored by an explicit model parameter. At Ω = 0 the ratio derivative freezes; dimensional stopped-rotor wake decay and spool-up initialization remain HELI-16/17 work.
-- κ ≈ 1.10–1.15 and η_w ≈ 0.9 are data fields.
+- The stage's current vi enters C_T once, then its actual T drives the Johnson equilibrium target. [HELI-05a](../research/helicopter/HELI-05/README.md#joint-main-rotor-stage) performs this joint evaluation without a persistent query cache or thrust fixed-point iteration.
+- The dimensional state retains residual wake when the disc becomes inactive, and never divides state by Ω at stop. V_floor is an explicit model parameter in m/s. The original HELI-04 ratio helper remains a research compatibility path.
+- The time law extends Gavrilets' hover Eq. 1; it is not a physically validated transient Johnson/Pitt-Peters model. [HELI-04-R1](../research/helicopter/HELI-04-R1/README.md) records its scope and the known-event integration procedure.
+- κ ≈ 1.10–1.15 is a Johnson target loss field. Gavrilets' η_w ≈ 0.9 belongs to his original momentum iteration and is not applied a second time to the chosen Johnson target.
 
 **Vortex ring and windmill-brake states** (Johnson NASA/TP-2005-213477):
 
@@ -186,7 +188,7 @@ The displayed twist moments use pitch extrapolated to r/R = 0. Passing pitch at 
 - Beyond Vz < −2v_h, the windmill-brake momentum branch takes over.
 - Everything is expressed relative to the thrust vector, so inverted descent uses the same curve.
 - At RC scale VRS begins at 1.5–6 m/s descent. That is reachable in normal flying, so this branch is core, not decoration.
-- **Source-law gate:** the literal Table 3 model has crossflow jumps at C = 0.75 and M = 0.95. [HELI-04 evidence](../research/helicopter/HELI-04/README.md) records the printed errata, independent one-sided values and the unresolved dynamic-flow refinement. No undocumented smoothing or flight-ready claim is permitted.
+- **Source-law gate:** literal Table 3 has C/M crossflow jumps. [HELI-04-R1](../research/helicopter/HELI-04-R1/README.md) shows that raw 240 Hz RK4 misses the 1e-3 m/s fixture tolerance; exact known-event splits plus bounded local refinement pass. The session still needs automatic state-dependent detection and complete-load cost qualification. No undocumented smoothing or flight-ready claim is permitted.
 
 **Ground effect** (Hayden near-hover correction): λ ← λ·0.9926/k_G with k_G = 0.9926 + 0.03794·(2R/z)². Normalizing the empirical intercept preserves unity at infinite clearance; this convention is explicit in the reference and GDScript kernel.
 
@@ -200,13 +202,14 @@ The displayed twist moments use pitch extrapolated to r/R = 0. Passing pitch at 
 
 ### 4.4 Flapping (first-order TPP, hybrid form)
 
-    ȧ1 = −q − a1/τe + (1/τe)·[−A_lon·δlon + (∂a1/∂µ)·µx + (∂a1/∂µz)·µz] + K_c·b1/τe
-    ḃ1 = −p − b1/τe + (1/τe)·[ B_lat·δlat − (∂a1/∂µ)·µy]               − K_c·a1/τe
+    ȧ1 = −q + [−a1 − A_lon·δforward + (∂a1/∂µ)·µx + (∂a1/∂µz)·µz]/τe
+    ḃ1 = −p + [−b1 + B_lat·δright + (∂a1/∂µ)·µy]/τe
 
 - **X-Cell (flybar lumped):** τe = 16/(γ_fb·Ω) and gains B_lat = A_lon = 4.2·(Ω/Ω_nom)².
 - **Flybarless:** τf = 16/(γ_eff·Ω) with γ_eff = γ/(1 + aσ/(16λ)).
 - Flap-back: ∂a1/∂µ = 2·Kµ·(4θ0/3 − λ0).
-- Cross-coupling: K_c = 0 initially (Heffley's advice). It enters only when matched to data (Walker: ±1.0).
+- Eq. 26 makes the substituted lateral-flow term positive. Body p/q already have units rad/s and remain outside the angle/τ bracket. Cross-coupling is omitted by the X-Cell source; it enters only with separately matched data.
+- The axial derivative follows Eq. 27 with total µ and explicit inferred `sign(u)` for backward flow. Its algebraic domain µ < √2 is distinct from the identified µ < 0.15 and |a1|/|b1| < 10° flags.
 - Cyclic inputs are blade-pitch angles produced by the swashplate (§4.9), not stick values.
 
 ### 4.5 Hub forces and moments
@@ -215,11 +218,11 @@ The displayed twist moments use pitch extrapolated to r/R = 0. Passing pitch at 
 - **Hub spring moment.** Add L_s = K_eff·b1 and M_s = K_eff·a1, with K_eff = n_b·Kβ/2 + n_b·Mβ·Ω²·e/2. The X-Cell data gives Kβ = 54 N·m/rad directly. Its spring is ≈ 74 % of the cyclic moment, so the hub term is not optional.
 - **Main-rotor torque:**
 
-      Q_mr = ρπR³(ΩR)²·[C_T·(λ0 − µz) + (σ·C_d(α̂)/8)·(1 + 4.65µ²)]
+      Q_mr = ρπR³(ΩR)²·[C_T·(λ0 − µz) + (σ·C_D0/8)·(1 + 7µ²/3)]
 
   - It is applied about the shaft with sign −`rotation_sense`.
-  - C_d(α̂) = C_d0 + d1·α̂ + d2·α̂², where α̂ is the mean blade-section angle at 0.75R. Profile drag therefore rises on collective punches, producing rpm "bog" and governor droop.
-  - Whether the µ² factor should be 4.65 (Padfield) or 7/3 (Gavrilets) is left open [U]. Start with the paper's 7/3 for the X-Cell and record the choice.
+  - HELI-05 follows constant C_D0 and 7/3 from Gavrilets Eqs. 11/12. A pitch-dependent profile-drag law is a separate extension requiring data; it is not silently imported into this reference.
+  - At Ω = 0 the azimuth-averaged disc is inactive: zero rotor loads/spring moments/flap rates and no λ/µ conversion. Parked individual-blade mechanics are excluded; the separate dimensional wake can still decay.
 - **Fuselage download:** Z_fus = −½ρS_z(w_a + v_i)·|·|, using quadratic three-axis drag areas S_x, S_y, S_z (Heffley form, no α/β singularities).
 
 ### 4.6 Tail rotor, fin and stabilizer
@@ -255,7 +258,7 @@ The airplane call path keeps its existing arithmetic, with a byte-identity test.
 | Tier | Entries | Notes |
 | --- | --- | --- |
 | Body (existing) | 13 | Unchanged |
-| `continuous` (RK stages) | Ω, a1, b1, λ0 (4); later +λ1c, λ1s, the flybar c/d pair, Ω_e | Joint evaluate returns `{loads, derivative, rotor_momentum}` |
+| `continuous` (RK stages) | Ω, a1, b1, vi (4); later +λ1c, λ1s, the flybar c/d pair, Ω_e | HELI-05a evaluates the three-state main disc/wake stage; complete drive/tail joint payload and rotor momentum remain HELI-16/17 |
 | `aux` (tick-held) | 4 servo positions (3 swash + tail); governor integral; gyro heading-hold integral and reference; telemetry mirrors (rpm, collective) | Sampled once per tick, like a real 240 Hz controller output |
 | `modes` (discrete) | `flight_mode` (normal / idle-up / hold); `electronics_mode` (rate / heading-hold / self-level where the hardware supports it) | Tick-transactional |
 
@@ -271,6 +274,7 @@ Real onboard controllers run at 1–4 kHz [U] and sample sensors discretely. Mod
   - Defaults come from the reference manual; the owner can edit them later (UI is out of scope here).
 - **CCPM mixing happens before the servos**, and rate limits apply **per servo**, not per axis. A large collective plus cyclic command therefore saturates the way a real swash does.
 - **Swash geometry** maps servo travel to blade pitch through declared linkage ratios. Phase 1 uses linear ratios with declared limits (X-Cell: 5.5° cyclic, 10.5° collective).
+  - The pure swash's pitch harmonics and the identified main-rotor logical cyclic inputs have different conventions. Pin the mechanical/azimuth phasing from aircraft data before connecting them; HELI-05 does not establish that mapping.
 - **Servo dynamics.** The existing rate limit, plus an optional first-order lag fitted to the published S9402/S9450 responses (data fields). A full second-order servo state is deferred.
 - **Tail gyro.** Heading-hold PI on yaw rate, with collective/cyclic torque precompensation feed-forward. Gains are `estimated` until a source is found (HELI-02).
 
@@ -556,7 +560,7 @@ Each step is one small working change with its proof. A step that touches a coor
 | --- | --- | --- |
 | HELI-00 | Scope extension, registry and ROADMAP pointer | Done, owner authorization 2026-10-13 and DECISIONS row. Reference direction D2–D6 selected for kernel work; D7/D9/D10 and aircraft-specific hardware choices remain open. |
 | HELI-01 | Research record: sources, parameters, derived values, seam map | [HELI-01](../research/helicopter/HELI-01/README.md) / done |
-| HELI-02 | Read the remaining primary sources in full: Gavrilets thesis (tail gyro, servo, governor details), Mettler 2004 identified table, Johnson Table 4 and the cubic segments, Padfield inflow and cyclic C_T terms, the X-Cell manual (pitch curves, travel) | Partial: Johnson Tables 3/4 and Hayden reproduced by Khromov/Rand checked against rendered primary pages; [errata and source seams](../research/helicopter/HELI-04/README.md). Other sources and [U] items remain open. |
+| HELI-02 | Read the remaining primary sources in full: Gavrilets thesis (tail gyro, servo, governor details), Mettler 2004 identified table, Johnson Table 4 and the cubic segments, Padfield inflow and cyclic C_T terms, the X-Cell manual (pitch curves, travel) | Partial: Gavrilets main-rotor §§4.1.1–3/Eqs. 1–27 checked against rendered pages, resolving no twist, hard clamp, drag law and rate/sign terms ([HELI-05](../research/helicopter/HELI-05/README.md)); Johnson/Hayden checked in HELI-04. Remaining thesis/manual/control/drive details and [U] items stay open. |
 | HELI-03 | **Offline reference model** `research/helicopter/reference/` (Python, stdlib + pinned NumPy): §4 equations, hover/forward trim, linearization, scripted time responses | Reproduces the paper's hover operating point and published figures (digitized, with provenance); emits oracle CSVs for GDScript known-answer tests |
 | HELI-03a | Independent stdlib steady mean-inflow reference and generated known-answer JSON | Implemented with tests and `make_oracle.py --check`; [HELI-04 evidence](../research/helicopter/HELI-04/README.md). Full HELI-03 trim/response model remains open. |
 
@@ -565,12 +569,15 @@ Each step is one small working change with its proof. A step that touches a coor
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | HELI-04 | `rotorcraft/inflow.gd`: momentum branches, Johnson VRS law, windmill brake, Hayden ground effect, λ0 derivative | Standalone implementation verified against HELI-03a, Table 4, momentum residuals, axial continuity, ground-effect cross-check and signed symmetry. [Evidence](../research/helicopter/HELI-04/README.md). **Integration gate open:** C/M crossflow jumps, dynamic-flow refinement and full-evaluation cost. |
-| HELI-05 | `rotorcraft/main_rotor.gd`: C_T, saturation, flapping derivatives, TPP thrust vector, hub spring, torque with C_d(α̂) | `test_heli_main_rotor`: Lock 3.71, τ 25.8 ms; steady a1 = −A_lon·δ at q = 0; hub moment = (K+Th)·a1 within 1 % at 2°; inverted mirror; matches HELI-03 oracle to 1e-9 relative |
+| HELI-04-R1 | `rotorcraft/dynamic_inflow.gd`: dimensional vi derivative, residual decay and stage effective flow; known-event RK4 qualification | Python dense/convolution reference, native tests and explicit raw-240 failure; bounded local known-event procedure passes 1e-3 m/s. [Evidence](../research/helicopter/HELI-04-R1/README.md). Automatic session detector and physical transient validation open. |
+| HELI-05 | `rotorcraft/main_rotor.gd`: untwisted two-blade C_T hard clamp, first-order flap rates, exact-normal force, hub spring/arm and constant-C_D0 torque | Standalone kernel implemented; source/math anchors, separate bare/flybar lags, p/q units, signed loads and independent oracle. [Evidence](../research/helicopter/HELI-05/README.md). Full-flight qualification and aircraft authoring open. |
+| HELI-05a | `rotorcraft/main_rotor_stage.gd`: joint main-rotor loads and [a1,b1,vi] derivatives | Fixed-body, fixed-speed stand settles to an independent hover quadratic and cyclic targets under RK4. [Evidence](../research/helicopter/HELI-05/README.md#joint-main-rotor-stage). Not complete trim, tail/airframe/drive or a flight session. |
 | HELI-06 | `rotorcraft/tail_rotor.gd` and `airframe.gd`: fixed-pass tail inflow, wake ramp, thrust cap with blockage, fuselage/fin/stabilizer quadratic forms | Oracle match; blowout cap known answer; no α/β singularity at V → 0 and in rearward flight |
 | HELI-07 | `rotorcraft/drive.gd`: rotor speed ODE, freewheel, hold, power-source engine, discrete governor | Energy closure ∫(P_in − P_out)dt = ΔE_rot within 1e-6 relative over 10 s; governor step vs HELI-03 (calibration, labelled) |
 | HELI-08 | Geared gyroscopic coupling in `rotor_coupling.gd` (b-vector form) | Momentum and work closure (extends `test_rotor_coupling`); airplane path byte-identical |
 | HELI-09 | `bench_rotorcraft.gd`: per-call kernel cost | ≤ 37 µs per full evaluation (150 µs per tick) on the H15 host, or stop and redesign before integration |
 | HELI-09a | Isolated equilibrium-inflow cost diagnostic `research/helicopter/bench_inflow.gd` | Measured on the Windows Ryzen 5900X host; [HELI-04 evidence](../research/helicopter/HELI-04/README.md). This does not close HELI-09 or the whole-tick budget. |
+| HELI-09b | Isolated joint main-disc/wake stage cost `research/helicopter/bench_main_stage.gd` | [HELI-05 measurements](../research/helicopter/HELI-05/README.md#heli-09b-isolated-stage-cost): compact payload verified, VRS cost still leaves insufficient full-load margin. Complete profiling/redesign before session integration; HELI-09 open. |
 
 ### Phase 2: data
 

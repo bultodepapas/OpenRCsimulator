@@ -61,6 +61,14 @@ python -m unittest discover -s research/helicopter/reference -p test_dynamic_inf
 
 [`test_dynamic_inflow.py`](../../../../research/helicopter/reference/test_dynamic_inflow.py) covers finite zero-flow decay, sign symmetry, the analytic step response, dense-reference refinement, literal seam values, raw and split RK4 error, local refinement, event metadata, and deterministic oracle generation. Passing these checks establishes numerical consistency of this reference and fixture set only.
 
+## Native implementation
+
+[`dynamic_inflow.gd`](../../../../app/physics/rotorcraft/dynamic_inflow.gd) implements the dimensional derivative and joint target/lag response. [`test_heli_dynamic_inflow.gd`](../../../../app/tests/test_heli_dynamic_inflow.gd) passes 240 checks on Godot 4.7.2 Windows and Ubuntu/WSL: analytic exponential refinement, rational zero-thrust decay before the floor becomes active, signed symmetry, stage-dependent effective flow and the 102 independent samples.
+
+The native forcing driver places vi beside a stationary 13-state body and uses the existing `Integrator.rk4_step_at`; it refines only the supplied known-event neighborhood. Peak error at serialized sample times is 0.00037627 m/s, while raw 240 Hz fails at 0.01155635 m/s. No source curve is smoothed. The native driver lives in the test, not in `Simulation` or `FlightSession`; automatic event detection and full coupled-flight qualification remain open.
+
+The original [HELI-04 ratio helper](../HELI-04/README.md) is unchanged. Its zero-speed freeze is a research compatibility behavior; the planned helicopter wake state is now dimensional vi. Native and Python commands, oracle checks and disposable-defect tests are composed by [`verify_kernels.py`](../../../../research/helicopter/verify_kernels.py); `--native-only` supports a focused rerun after references were already checked. The normal `app/test.sh` hook checks both new oracles before its usual application sweep.
+
 ## Sources
 
 1. V. Gavrilets, B. Mettler, and E. Feron, “Dynamic Model for a Miniature Aerobatic Helicopter,” §4.1.1, Eq. 1. [Paper PDF](https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf). The repository's source notes also link the [MIT thesis record](https://dspace.mit.edu/handle/1721.1/17609).

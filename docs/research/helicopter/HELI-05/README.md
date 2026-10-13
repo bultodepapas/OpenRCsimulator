@@ -79,3 +79,40 @@ python research/helicopter/reference/make_main_rotor_oracle.py --check
 ```
 
 The tests cover source-form thrust and torque, hard clamp behavior, pitch/cyclic signs, the body-rate terms outside the lag bracket, the Eq. 26 lateral-flow sign, backward-flow inference, FRD force and moment composition, explicit inflow forms, finite/domain rejection, the Ω = 0 closure, and deterministic oracle generation. Passing them establishes consistency between two implementations and the declared analytic anchors only; it does not validate the helicopter against flight data.
+
+## GDScript kernel
+
+[`main_rotor.gd`](../../../../app/physics/rotorcraft/main_rotor.gd) prepares a flat read-only scalar context; its hub arm is detached from the source array. Density is an explicit operating condition in this standalone context, so a density change requires a newly prepared context. No defaults or authored-aircraft data are supplied. Evaluation takes dimensional vi and packed float64 FRD hub velocity/body rates; the Python ratio path remains research-only.
+
+The main-rotor suite passes 768 checks on Godot 4.7.2 Windows and Ubuntu/WSL, including the ten independent oracle cases, hard clamp and power anchors, body-rate dimensions, source lateral-flow sign, one-count hub moment, context/input refusal and immutable preparation. Compact and full diagnostic evaluations return byte-identical loads and flap derivatives for every oracle case. The compact path avoids diagnostic-vector/dictionary allocation; input/context checks remain active. Three disposable defects—dividing q by the lag time, changing the lateral-flow sign and doubling the hub-arm moment—are rejected by the tests.
+
+```powershell
+.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_heli_main_rotor.gd -- --oracle=research/helicopter/reference/main_rotor_oracle.json
+```
+
+Use an absolute oracle path if the engine resolves user paths relative to `app/`. The shared [verification runner](../../../../research/helicopter/verify_kernels.py) supplies absolute paths and checks both reference freshness and native behavior.
+
+## Joint main-rotor stage
+
+[`main_rotor_stage.gd`](../../../../app/physics/rotorcraft/main_rotor_stage.gd) evaluates the main rotor once, uses that stage's actual thrust to obtain the literal Johnson target, and returns both loads and `[a1, b1, vi]` derivatives. The prescribed Ω is supplied by the caller; drive dynamics, tail rotor, airframe and rotor momentum are absent. Inflow uses the paper's shaft/body-frame approximation. Projecting flow into the exact tilted TPP would need a separate qualification. Swash harmonic phasing is also unresolved: the pure swash's geometric outputs cannot yet be connected directly to the identified logical cyclic inputs.
+
+The 25-check stage suite drives three continuous states through the existing nonautonomous RK4 core while holding the body and shaft speed fixed. It checks query purity, actual stage-vi feedback into thrust, signed reflection, residual wake at rotor stop and compact/full payload equivalence. With unsaturated hover `T=A-Bvi` and the ideal target `vi²=T/(2ρA_disk)`, the settled vi agrees with the independently solved positive quadratic root at h, h/2 and h/4. Cyclic flap targets also settle. This stand is not a whole-helicopter hover trim or a flight.
+
+All 42 Python reference tests and freshness checks pass. The application-wide Windows parse sweep covered 507 scripts; later main-kernel optimizations also pass focused parsing and execution on both platforms. Existing airplane goldens and Windows 30/60/144 FPS body-state identity pass. This track changes no airplane runtime path or golden file. The full application test suite and physical acceptance remain outside this report.
+
+## HELI-09b isolated stage cost
+
+```powershell
+.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script ../research/helicopter/bench_main_stage.gd
+```
+
+Windows, Ryzen 9 5900X, Godot 4.7.2 official, 2026-10-13; 20 warmed batches of 500 calls per regime, run alone:
+
+| Stage fixture | Median batch mean (µs/call) | p95 batch mean (µs/call) |
+| --- | ---: | ---: |
+| Hover | 22.07 | 24.11 |
+| Forward | 25.98 | 29.19 |
+| VRS crossflow | 41.24 | 42.83 |
+| Windmill crossflow | 27.87 | 30.30 |
+
+The first diagnostic-heavy implementation cost about 46–61 µs in a separate run. That sequential observation is not a paired speedup proof; compact/full exact payload checks establish numerical preservation. The table measures main-disc/wake work only, excluding tail, airframe, drive, body and seam localization. It is not individual-tick latency, the H15 host, HELI-09 acceptance or the 500 µs whole-tick gate. The VRS fixture leaves insufficient margin against the planned full-load budget; complete-stage profiling/redesign must precede session integration.

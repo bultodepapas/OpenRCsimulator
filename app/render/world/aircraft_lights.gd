@@ -12,7 +12,6 @@ extends RefCounted
 
 const SPRITE_SHADER := preload("res://render/world/light_sprite.gdshader")
 const STRIP_SHADER := preload("res://render/world/led_strip.gdshader")
-const Spec := preload("res://spec.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 
 ## LED luminance as scene-linear radiance (estimate: ~3× a sunlit white surface, ~10⁴–10⁵ cd/m²).
@@ -202,7 +201,6 @@ static func strip(name: String, line: PackedVector3Array) -> MeshInstance3D:
 	material.set_shader_parameter("light_color", STRIP_COLOR)
 	material.set_shader_parameter("radiance", STRIP_RADIANCE)
 	material.set_shader_parameter("width_m", STRIP_WIDTH_M)
-	material.set_shader_parameter("rad_per_px", deg_to_rad(Spec.CAMERA.fov_deg) / 720.0)
 	var mesh := st.commit()
 	mesh.surface_set_material(0, material)
 	var mi := MeshInstance3D.new()
@@ -250,7 +248,6 @@ static func sprite(name: String, color: Color, position: Vector3, size_m: float,
 	material.set_shader_parameter("light_color", color)
 	material.set_shader_parameter("radiance", radiance)
 	material.set_shader_parameter("size_m", size_m)
-	material.set_shader_parameter("rad_per_px", deg_to_rad(Spec.CAMERA.fov_deg) / 720.0)
 	material.set_shader_parameter("flash", flash)
 	material.set_shader_parameter("min_px", min_px)
 	material.set_shader_parameter("display_cap", display_cap)

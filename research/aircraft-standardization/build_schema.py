@@ -211,6 +211,9 @@ def add_v2_overlay(schema: dict, spec: dict):
     merge_required(turbine, ["kind"])
     add_text_field(turbine["properties"], "description", nonempty=True)
     add_text_field(turbine["properties"]["engine"]["properties"], "name", nonempty=True)
+    turbine["properties"]["engine"]["properties"]["spool_integrator"] = {
+        "type": "string", "enum": ["sampled", "rk4"]
+    }
 
     electric = schema["$defs"]["electricPropulsion"]
     add_text_field(schema["$defs"]["electricPropeller"]["properties"], "name", nonempty=True)

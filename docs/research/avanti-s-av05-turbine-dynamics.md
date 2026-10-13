@@ -38,9 +38,9 @@ No P100 thrust-vs-rpm table was found. Two P100 papers fit thrust to rpm, but th
 
 | Fact | Label | Source |
 | --- | --- | --- |
-| "ThrStick Curve — Gaskurve, Werkseinstellung ist 3.0. Bei diesem Wert verlaufen Schub und Gasknüppelstellung proportional. Beim Wert 1.0 ist die Drehzahl proportional zur Gasknüppelstellung. Bereich 0.1 bis 5.0" | manufacturer | [JetCat RX manual (DE), Limits menu, p. 49](https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf) |
-| Without an airspeed sensor the ECU always runs "Thrust-control": "vom Piloten über den Gasknüppel direkt der Turbinenschub vorgegeben" | manufacturer | same, Anhang Airspeed-Sensor |
-| Stick idle = "Minimum RPM" (idle rpm), full stick = "Maximum RPM" | manufacturer | same, Limits menu |
+| "ThrStick Curve — Gaskurve, Werkseinstellung ist 3.0. Bei diesem Wert verlaufen Schub und Gasknüppelstellung proportional. Beim Wert 1.0 ist die Drehzahl proportional zur Gasknüppelstellung. Bereich 0.1 bis 5.0" | manufacturer | [JetCat RX/RXi manual (DE, March 2015), Limits menu, p. 51](https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_RXi_120218.pdf) |
+| Without an airspeed sensor the ECU always runs "Thrust-control": "vom Piloten über den Gasknüppel direkt der Turbinenschub vorgegeben" | manufacturer | same, Airspeed Sensor appendix, pp. 64–71 |
+| Stick idle = "Minimum RPM" (idle rpm), full stick = "Maximum RPM" | manufacturer | same, Limits menu, p. 51 |
 | JetCat ECU maps input u ∈ [0, 100] to an rpm set-point and closes a loop on pump voltage. In thrust-proportional mode the measured steady state is `ω = a1·u^b1 + c1` with **b1 = 0.3338 (P160) and 0.3332 (P220)**, c1 = idle krpm, R² 99.92 % | measured, other engine | [Momin et al. 2022, Sec. II-C, Table III](https://arxiv.org/pdf/2205.08330) |
 
 Inference (**derived**): the curve parameter c acts as `n_cmd = n_idle + (n_max − n_idle)·s^(1/c)`, with s the stick from 0 to 1. With c = 1 the manual's "rpm proportional" holds exactly, and with c = 3 the result is the measured exponent of 1/3. Applied to the P100 thrust law, half stick gives ≈61 % thrust and quarter stick ≈38 %. JetCat's "thrust-proportional" is therefore approximate, and the P160 fit gives the same 61 %. The P100 identified models (IIT, TUM) show thrust nearly linear in PWM, but their PWM endpoints relative to the ECU's learned stick range are not stated: idle sat at 25 % (IIT) and 33 % (TUM). They do not settle the question.
@@ -54,9 +54,9 @@ Inference (**derived**): the curve parameter c acts as `n_cmd = n_idle + (n_max 
 | Large sweeps: "the engine could not follow the directed throttle input anymore" above ≈0.6 Hz; smaller amplitudes followed up to ≈1.2 Hz | amplitude-dependent bandwidth, i.e. **rate limiting** | measured | same |
 | P100 second-order thrust model, Table IV EKF parameters, simulated here: 15 → 73 N in 2.0 s with a convex rising curve; down 87 → 15 N reaches 63 % in 0.7 s and 90 % in 1.4 s | up slower than down; acceleration grows with rpm | derived from measured fit | [L'Erario et al. 2020](https://arxiv.org/pdf/1909.13296) |
 | P100 bench step traces: up-steps of 14–35 N take ≈2–3 s; an 88 → 58 N down-step ≈2 s; from idle the first step is slowest. The command ramp of the test's microcontroller is unknown, so these are upper bounds | seconds, not tenths | measured (read from plots) | [Wright et al. 2023, Figs. 6–7](https://arxiv.org/pdf/2312.09978) |
-| ECU options: IdleThrResponse Fast/Normal/Slow ("Slow ≈ old P160 and already very fast"); FullThrResponse Normal/Fast acts "ab ca. 70000 U/min". The manual says "Standard RX-Einstellung ist Normal" on p. 13 but marks "Fast (=Standardeinstellung)" in the Limits table | two regimes; no seconds given | manufacturer | [JetCat RX manual, pp. 12–13, 49](https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf) |
-| Low-idle → idle: "benötigt die Turbine je nach Type 2–5 Sekunden" | 2–5 s | manufacturer | same, Limits menu |
-| JetCat PRO engines: idle → max "5 s (5 % to 95 % thrust)", deceleration to idle 5 s (95 → 5 %) | 5 s each | manufacturer, other engine (250 N) | [P250-PRO-S technical information](https://www.jetcat.de/jetcat/anleitungen/JetCat-P250-PRO-Basic-Technical-Information-V1-2.pdf) |
+| ECU options: IdleThrResponse Fast/Normal/Slow ("Slow ≈ old P160 and already very fast"); FullThrResponse Normal/Fast acts "ab ca. 70000 U/min". The manual says "Standard RX-Einstellung ist Normal" in its narrative but marks "Fast (=Standardeinstellung)" in the Limits table | two regimes; no seconds given | manufacturer | [JetCat RX/RXi manual (March 2015), pp. 13–14 and 51](https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_RXi_120218.pdf) |
+| Low-idle → idle: "benötigt die Turbine je nach Type 2–5 Sekunden" | 2–5 s | manufacturer | same, p. 48 |
+| JetCat PRO engines: idle → max "5 s (5 % to 95 % thrust)", deceleration to idle 5 s (95 → 5 %) | 5 s each | manufacturer, other engine (250 N) | [P250-PRO-S-V2 basic technical information V1-4, p. 5](https://www.jetcat.de/jetcat/anleitungen/P250-PRO-BasicTechn-Information-V1-4.pdf) |
 | Scaling: spool time ∝ Jω²/P ∝ rotor diameter. P100 ≈0.6× the P250 diameter gives ≈3 s for 5 → 95 % | ≈3 s | derived (estimate) | – |
 | Forum reports of P120/P160 idle → full 3.3–4 s, surfaced by search; the pages were not readable (HTTP 403) | 3–4 s | anecdotal, unverified | RCU threads, not linked |
 
@@ -98,7 +98,7 @@ At full power the lapse is ≈9 % at 70 m/s, or 10–11 % with 80 % ram recovery
 
 | Fact | Value | Label | Source |
 | --- | --- | --- | --- |
-| Auto-off: rpm held at ≈55,000 then shut off after ≈6 s; starter cool-down until EGT < 100 °C | – | manufacturer | [JetCat RX manual, p. 31](https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf) |
+| AutoOff targets `StabilRPM`, then shuts down after approximately 6 s | – | manufacturer | [JetCat RX manual (DE, August 2011), p. 35](https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf) |
 | SlowDown state: pump off, kero valve closed, stays until rpm < 800 and EGT < 95 °C | – | manufacturer | [JetCat RX/RXi manual 2015, p. 38](https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_RXi_120218.pdf) |
 | Low-battery/fuel warning: above 50 % stick the ECU drops to idle for 5 s, back for 10 s, repeating (off by default) | – | manufacturer | RX manual p. 32 |
 | Fuel-cut rundown, max → idle speed: compressor power ∝ n³ with no turbine work gives dn/dt = −n²/(n_max·t_c), t_c = Jω_max²/P_c ≈ 0.29–0.52 s → idle speed in **0.7–1.3 s**; thrust < 10 % in < 0.5 s | – | derived (lower bound: residual turbine work slows it) | – |
@@ -137,10 +137,10 @@ At full power the lapse is ≈9 % at 70 m/s, or 10–11 % with 80 % ram recovery
 ## Sources
 
 - JetCat, catalog 2017 (Lieferprogramm): https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf
-- JetCat, RX turbines manual (DE): https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf
+- JetCat, RX-only operating manual (DE, August 2011): https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf
 - JetCat, RX/RXi manual (DE, March 2015): https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_RXi_120218.pdf
 - JetCat, P100 RX dimension drawing: https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX%20Size.PDF
-- JetCat, P250-PRO-S basic technical information V1-2: https://www.jetcat.de/jetcat/anleitungen/JetCat-P250-PRO-Basic-Technical-Information-V1-2.pdf
+- JetCat, P250-PRO-S-V2 basic technical information V1-4 (02/2023): https://www.jetcat.de/jetcat/anleitungen/P250-PRO-BasicTechn-Information-V1-4.pdf
 - JetCat, P1000-PRO basic technical information 2023 (5 s / 5 s, other engine): https://www.jetcat.de/jetcat/anleitungen/P1000-BasicTechn-Information-2023-01-02.pdf
 - L'Erario et al., "Modeling, Identification and Control of Model Jet Engines for Jet Powered Robotics", IEEE RA-L 2020 (P100-RX, P220-RXi): https://arxiv.org/pdf/1909.13296
 - Momin et al., "Nonlinear Model Identification and Observer Design for Thrust Estimation of Small-scale Turbojet Engines", 2022 (P160, P220): https://arxiv.org/pdf/2205.08330

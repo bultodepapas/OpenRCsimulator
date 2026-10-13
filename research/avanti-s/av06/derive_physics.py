@@ -749,6 +749,7 @@ data = {
         "description": "JetCat P100-RX (2017 catalog, non-BL) in a fixed thrust tube: ECU throttle map, acceleration/deceleration-limited spool with a governor lag, bench thrust at STP x installed factor, momentum ram drag and inlet normal force at the intakes (physics/turbine.gd, docs/research/avanti-s-av05-turbine-dynamics.md).",
         "engine": {
             "name": "JetCat P100-RX (catalog 2017, 44 000-154 000 rpm, 2-100 N)",
+            "spool_integrator": IN["turbine"]["spool_integrator"],
             "idle_rpm": tq("idle_rpm", "rpm"),
             "max_rpm": tq("max_rpm", "rpm"),
             "static_thrust": tq("static_thrust", "rpm, N"),

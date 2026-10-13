@@ -3528,6 +3528,13 @@
               "type": "string",
               "minLength": 1,
               "pattern": "[^\\u0001-\\u0020]"
+            },
+            "spool_integrator": {
+              "type": "string",
+              "enum": [
+                "sampled",
+                "rk4"
+              ]
             }
           },
           "additionalProperties": false

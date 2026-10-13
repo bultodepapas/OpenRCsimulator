@@ -1193,6 +1193,8 @@ static func _wash_profile(errors: PackedStringArray, path: String, node: Variant
 static func _turbine(errors: PackedStringArray, node: Dictionary) -> Dictionary:
 	var e := _dictionary(errors, "propulsion.engine", node.get("engine", {}))
 	var p := "propulsion.engine."
+	if e.has("spool_integrator") and (typeof(e.spool_integrator) != TYPE_STRING or e.spool_integrator not in ["sampled", "rk4"]):
+		errors.append(p + "spool_integrator: must be sampled or rk4")
 	var idle = _q(errors, p + "idle_rpm", e.get("idle_rpm"), "rpm", 1000.0, 300000.0)
 	var max_rpm = _q(errors, p + "max_rpm", e.get("max_rpm"), "rpm", 1000.0, 300000.0)
 	var out := {
@@ -1214,6 +1216,8 @@ static func _turbine(errors: PackedStringArray, node: Dictionary) -> Dictionary:
 		axis = PackedFloat64Array([1.0, 0.0, 0.0]),
 	}
 	# Optional ram recovery (fitted to a cycle model): ṁ grows by (1 + ram_flow·u²), V_jet² by ram_jet(N)·u².
+	if e.has("spool_integrator"):
+		out.spool_integrator = e.spool_integrator
 	if e.has("ram_flow"):
 		out.ram_flow = _q(errors, p + "ram_flow", e.get("ram_flow"), "s2/m2", 0.0, 1e-3)
 	if e.has("ram_jet"):

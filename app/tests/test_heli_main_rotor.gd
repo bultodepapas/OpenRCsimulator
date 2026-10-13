@@ -128,6 +128,11 @@ func _invalid() -> void:
 	var malformed: Dictionary = {"law": Rotor.LAW}
 	malformed.make_read_only()
 	check("readonly but incomplete context refused safely", not Rotor.evaluate(malformed, 167.0, 4.2, M.v3(0.0, 0.0, 0.0), M.v3(0.0, 0.0, 0.0), 0.1, 0.0, 0.0, 0.0, 0.0).ok)
+	for replacement: Variant in [NAN, "1.225", Rotor.LAW]:
+		var bad_context: Dictionary = model.duplicate()
+		bad_context.rho_kg_m3 = replacement
+		bad_context.make_read_only()
+		check("readonly malformed numeric field refused safely", not Rotor.evaluate(bad_context, 167.0, 4.2, M.v3(0.0, 0.0, 0.0), M.v3(0.0, 0.0, 0.0), 0.1, 0.0, 0.0, 0.0, 0.0).ok)
 	check("negative rotor speed refused", not _evaluate(-1.0).ok)
 	check("invalid physical vector shape refused", not _evaluate(167.0, 4.2, PackedFloat64Array()).ok)
 	check("nonfinite state refused", not _evaluate(167.0, NAN).ok)
@@ -154,6 +159,13 @@ func _oracle(path: String) -> void:
 		check("independent main-rotor oracle valid " + row.name, result.ok)
 		if not result.ok:
 			continue
+		var compact: Dictionary = Rotor.evaluate(prepared.model, inputs.omega_rad_s, inputs.induced_velocity_m_s,
+			PackedFloat64Array(inputs.hub_velocity_relative_to_air_body_frd_m_s), PackedFloat64Array(inputs.body_rates_body_frd_rad_s),
+			inputs.collective_pitch_75_rad, inputs.cyclic_forward_rad, inputs.cyclic_right_rad, inputs.a1_rad, inputs.b1_rad, false)
+		check("compact oracle payload valid " + row.name, compact.ok)
+		if compact.ok:
+			check("compact loads preserve exact bytes " + row.name, compact.loads.to_byte_array() == result.loads.to_byte_array())
+			check("compact flap rates preserve exact bytes " + row.name, compact.flap_rate.to_byte_array() == result.flap_rate.to_byte_array())
 		for key: String in row.expected:
 			# Input-kind/value tags belong to the Python ratio compatibility path;
 			# production kernel accepts only dimensional induced velocity.

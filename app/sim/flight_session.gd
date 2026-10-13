@@ -66,6 +66,11 @@ func shaft_is_coupled() -> bool:
 	return _shaft_integrator == "coupled-rk4"
 
 
+## AV-20: data selects stage-coupled turbine RPM independently of the propeller shaft route.
+func turbine_is_continuous() -> bool:
+	return aircraft.get("ok", false) and Turbine.is_continuous(aircraft.model.propulsion)
+
+
 func _supports_coupled_shaft(model: Dictionary) -> bool:
 	var prop: Dictionary = model.get("propulsion", {})
 	if Turbine.is_turbine(prop) or not Propulsion.has_rotor_dynamics(prop) or not _model_is_valid(model) \
@@ -619,6 +624,12 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 	if electric and not _electric_step_supported(model):
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "electric source is too stiff for the selected timestep (source step ratio > 0.25); qualify a slower source or a finer solver"}
+	if Turbine.is_continuous(model.propulsion) and not Turbine.step_supported(model.propulsion, sim.dt()):
+		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
+			message = "turbine governor/schedule is too stiff for the selected timestep (step ratio > 0.25)"}
+	if Turbine.is_continuous(model.propulsion) and _model_wheel_count(model) > 0:
+		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
+			message = "continuous turbine with dynamic wheel profiles is not qualified yet"}
 	# Each aircraft declares its own start speed (the Stik's 15 m/s is the loader's default).
 	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, model.get("start_speed", 15.0), air_density(), engine_charge_ratio())
 	if not candidate_start.get("ok", false):
@@ -675,6 +686,14 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 
 
 func _configure_continuous_callbacks() -> void:
+	if turbine_is_continuous():
+		sim.continuous_step = Callable()
+		sim.continuous_evaluate = _turbine_evaluate
+		sim.continuous_loads = Callable()
+		sim.continuous_derivative = Callable()
+		sim.continuous_rotor_momentum = Callable()
+		sim.continuous_aux = _turbine_aux
+		return
 	sim.continuous_step = _electric_step if Propulsion.is_electric(aircraft.model.propulsion) else Callable()
 	sim.continuous_evaluate = _coupled_evaluate if shaft_is_coupled() else (_wheel_evaluate if wheel_count() > 0 else Callable())
 	sim.continuous_loads = _coupled_loads if shaft_is_coupled() else _wash_loads
@@ -1316,7 +1335,71 @@ func _inputs() -> PackedFloat64Array:
 ## friction and the nose wheel steered by the rudder servo's actual position (E2), scaled by the surface under each
 ## wheel (E3a).
 func _loads(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	if turbine_is_continuous():
+		var result: Dictionary = _turbine_evaluate(s, sim.continuous, t)
+		return result.get("loads", PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN]))
 	return _wash_loads(s, sim.continuous, t)
+
+
+## Fixed layout: one turbine RPM, then optional wheel rim speeds. No independent aux rotor state.
+func _turbine_rpm(values: PackedFloat64Array) -> float:
+	if values.size() != 1 + wheel_count():
+		return NAN
+	var rpm: float = values[0]
+	return rpm if is_finite(rpm) and rpm >= 0.0 and rpm <= float(aircraft.model.propulsion.max_rpm) else NAN
+
+
+func _turbine_aux(values: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
+	var rpm: float = _turbine_rpm(values)
+	if not is_finite(rpm) or sampled.size() < AUX_ANCHORS:
+		return PackedFloat64Array([NAN])
+	var out: PackedFloat64Array = sampled.duplicate()
+	out[AUX_RPM] = rpm
+	return out
+
+
+## Pure RK stage response, using this stage's RPM, air velocity, body state and time.
+## Mounting reaction is unchanged: gyro only; gas angular-momentum flux is still unmeasured (AV-26).
+func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_time: float) -> Dictionary:
+	var rpm: float = _turbine_rpm(values)
+	if not is_finite(rpm) or (not engine_running and rpm != 0.0):
+		return {} # A hot cutoff needs AV-05b; do not invent a cold/hot rundown law here.
+	var prop: Dictionary = aircraft.model.propulsion
+	var a: PackedFloat64Array = sim.aux
+	var air: Dictionary = air_data(s, stage_time)
+	var lag: int = downwash_index()
+	var out: PackedFloat64Array = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
+		air_density(), air, a[lag] if lag >= 0 and lag < a.size() else NAN, PackedFloat64Array(), _ground_up(s))
+	if out.size() != 6:
+		return {}
+	var ground: Dictionary = _ground_evaluation(s, a, values)
+	if not ground.get("ok", false):
+		return {}
+	var ground_loads: PackedFloat64Array = ground.loads
+	for at: int in ground_loads.size():
+		out[at] += ground_loads[at]
+	var rate: float = Turbine.spool_rate(rpm, Turbine.demand_rpm(sim.inputs[3], prop), prop) if engine_running else 0.0
+	var derivative := PackedFloat64Array([rate])
+	derivative.append_array(ground.derivative)
+	return {loads = out, derivative = derivative, rotor_momentum = Turbine.rotor_momentum(rpm, prop)}
+
+
+## Accepted-endpoint engine observations. Flow is the current map estimate; prescribed fuel never depletes mass.
+func turbine_state() -> Dictionary:
+	if not aircraft.get("ok", false) or not Turbine.is_turbine(aircraft.model.propulsion) or not _flight_ready():
+		return {ok = false}
+	var prop: Dictionary = aircraft.model.propulsion
+	var rpm: float = _turbine_rpm(sim.continuous) if turbine_is_continuous() else sim.aux[AUX_RPM]
+	if not is_finite(rpm):
+		return {ok = false}
+	var air: Dictionary = air_data(sim.state, sim.time())
+	var axial_speed: float = M.dot(air.v_air, prop.axis)
+	return {ok = true, tick = sim.tick, time_s = sim.time(), rpm = rpm,
+		demand_rpm = Turbine.demand_rpm(sim.inputs[3], prop) if engine_running else 0.0,
+		engine_running = engine_running, axial_airspeed_m_s = axial_speed,
+		gross_thrust_n = Turbine.gross_thrust(rpm, prop, air_density(), axial_speed),
+		net_thrust_n = Turbine.thrust(rpm, axial_speed, prop, air_density()),
+		fuel_flow_kg_s = Turbine.fuel_flow(rpm, prop), fuel_mass_policy = "prescribed_fuel"}
 
 
 func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stage_time: float) -> PackedFloat64Array:
@@ -1432,6 +1515,8 @@ func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloa
 
 func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
 	var out: PackedFloat64Array = _settled_wash(s, aux)
+	if turbine_is_continuous():
+		out.append(aux[AUX_RPM])
 	if shaft_is_coupled():
 		out.append(aux[AUX_RPM])
 		if battery_is_dynamic():
@@ -1704,7 +1789,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		return PackedFloat64Array([NAN]) # configure→reset boundary cannot advance an old layout/RNG
 	var prop: Dictionary = aircraft.model.propulsion
 	var rpm := 0.0
-	if shaft_is_coupled():
+	if shaft_is_coupled() or turbine_is_continuous():
 		rpm = aux[AUX_RPM] # the continuous endpoint owns RPM; the boundary mirror is read-only here
 	elif engine_running and Turbine.is_turbine(prop):
 		# AV-05: the turbine spools toward the ECU demand within its acceleration/deceleration schedules.
@@ -1825,6 +1910,8 @@ func wheel_index() -> int:
 	var index: int = _rotor_index()
 	if shaft_is_coupled():
 		index += 1 + (3 if battery_is_dynamic() else 0)
+	elif turbine_is_continuous():
+		index += 1
 	return index
 
 
@@ -1975,6 +2062,15 @@ func trace_meta() -> Dictionary:
 		metadata.state_timing = "body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage"
 		if metadata.has("weather_timing"):
 			metadata.weather_timing = "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0"
+	if turbine_is_continuous():
+		metadata.propulsion_model = Turbine.CONTINUOUS_LAW
+		metadata.turbine_integrator = "rk4"
+		metadata.continuous_layout = Turbine.CONTINUOUS_LAYOUT
+		metadata.recording_start_continuous = JSON.stringify(Array(sim.continuous), "", true, true)
+		metadata.loads = "Fx..Mz: body-axis loads excluding gravity; k1 at previous body/turbine RPM and current sampled servos; gyro only"
+		metadata.state_timing = "body, continuous turbine RPM and mirrored aux at tick k; servos advance before RK4; turbine RPM/thrust/gyro evaluated at each stage"
+		if metadata.has("weather_timing"):
+			metadata.weather_timing = "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/turbine, current sampled servos); reset uses t=0"
 	if Propulsion.is_electric(prop):
 		metadata.propulsion_model = electric_law()
 		metadata.electric_configuration = JSON.stringify({motor = prop.motor, battery = prop.battery, esc = prop.esc}, "", true, true)
@@ -2002,6 +2098,9 @@ func trace_meta() -> Dictionary:
 func checkpoint() -> Dictionary:
 	if not _flight_ready():
 		return {}
+	if turbine_is_continuous() and (not is_finite(_turbine_rpm(sim.continuous)) \
+			or (not engine_running and sim.continuous[0] != 0.0)):
+		return {}
 	var snapshot: Dictionary = sim.checkpoint()
 	if snapshot.is_empty() or snapshot.modes.size() != (2 if _weather.has_turbulence() else 1) or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
 		return {}
@@ -2019,6 +2118,10 @@ func checkpoint() -> Dictionary:
 	if Propulsion.is_electric(aircraft.model.propulsion):
 		boundary.format = "openrc-flight-checkpoint v6" if battery_is_dynamic() else "openrc-flight-checkpoint v5"
 		boundary.electric_law = electric_law()
+	if turbine_is_continuous():
+		boundary.format = "openrc-flight-checkpoint v8"
+		boundary.turbine_law = Turbine.CONTINUOUS_LAW
+		boundary.weather_config = weather_configuration()
 	if wheel_count() > 0:
 		boundary.wheel_state_layout = wheel_state_layout()
 		boundary.wheel_profile_sha256 = str(aircraft.model.wheel_profile.get("profile_sha256", ""))
@@ -2048,6 +2151,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(BATTERY_LAYOUT if battery_is_dynamic() else "shaft-relative-rk4-locked-inertia-reaction-v1; wash-first,rpm-last")
 	if Propulsion.is_electric(aircraft.model.propulsion):
 		parts.append(electric_law())
+	if turbine_is_continuous():
+		parts.append(Turbine.CONTINUOUS_LAW + "; " + Turbine.CONTINUOUS_LAYOUT)
 	if soft_hull_contacts:
 		# E3d1: soft hull contacts change the dynamics near the ground; legacy hashes stay unchanged.
 		parts.append(HullContact.law())
@@ -2064,12 +2169,16 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
-			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7"] or typeof(candidate.get("configuration")) != TYPE_STRING \
+			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7", "openrc-flight-checkpoint v8"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
 		return false
 	var snapshot: Dictionary = candidate.simulation
 	var physics_format: String = str(candidate.get("physics_format", candidate.get("format", "")))
-	if physics_format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]:
+	if physics_format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v8"]:
+		return false
+	if turbine_is_continuous() != (physics_format == "openrc-flight-checkpoint v8") \
+			or (turbine_is_continuous() and candidate.get("turbine_law") != Turbine.CONTINUOUS_LAW) \
+			or (not turbine_is_continuous() and candidate.has("turbine_law")):
 		return false
 	var has_collision_world := not _collision_world.is_empty()
 	if candidate.format == "openrc-flight-checkpoint v7":
@@ -2095,7 +2204,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			or (shaft_is_coupled() and candidate.get("shaft_integrator") != shaft_integrator()):
 		return false
 	var restored_weather: WeatherField = _weather
-	if physics_format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6"]:
+	if physics_format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v8"]:
 		var built: Dictionary = WeatherField.build(candidate.get("weather_config"))
 		if not built.ok:
 			return false
@@ -2122,6 +2231,8 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	var expected_modes: int = 2 if turbulent else 1
 	if not sim.can_restore_checkpoint(snapshot, expected_aux, expected_modes) \
 			or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
+		return false
+	if turbine_is_continuous() and snapshot.modes[0] == 0 and snapshot.continuous[0] != 0.0:
 		return false
 	if turbulent:
 		var expected_time: float = max(0, snapshot.tick - 1) * snapshot.dt
