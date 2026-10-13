@@ -1,6 +1,6 @@
 // FIELD-WORLD-PLAN FW-33/FW-35: a self-luminous point (LED, lamp, beacon) as a camera-facing quad.
 // Physical core: `size_m` across at `radiance` (scene-linear, sun irradiance = 1). Far away the quad is held at
-// `min_px` reference pixels and its radiance scaled down by the area ratio, so the light's flux is conserved: a
+// `min_px` pixels in the current camera and its radiance scaled down by the area ratio, so flux is conserved: a
 // navigation LED vanishes in daylight but blazes under the night exposure, as real ones do.
 // `display_cap` / `world_exposure` limits the on-screen value after exposure, so a saturated LED keeps its hue instead of
 // clipping to white under the night exposure (ACES desaturates very bright values); it never brightens anything.
@@ -18,7 +18,6 @@ uniform vec3 light_color : source_color = vec3(1.0);
 uniform float radiance = 2.0;
 uniform float size_m = 0.02;
 uniform float min_px = 2.5;
-uniform float rad_per_px = 0.001212;   // reference 50° / 720 px
 uniform vec4 flash = vec4(1.0, 0.0, 0.0, 0.0);
 uniform float display_cap = 1.5;
 
@@ -26,8 +25,9 @@ varying float gain;
 
 void vertex() {
 	vec3 center = (MODELVIEW_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-	float dist = length(center);
-	float size = max(size_m, dist * min_px * rad_per_px);
+	float depth_scale = PROJECTION_MATRIX[3][3] == 0.0 ? max(-center.z, 0.001) : 1.0;
+	float metres_per_pixel = 2.0 * depth_scale / (VIEWPORT_SIZE.y * abs(PROJECTION_MATRIX[1][1]));
+	float size = max(size_m, min_px * metres_per_pixel);
 	VERTEX = center + vec3(VERTEX.xy * size, 0.0);
 	NORMAL = vec3(0.0, 0.0, 1.0);
 	gain = (size_m * size_m) / (size * size);

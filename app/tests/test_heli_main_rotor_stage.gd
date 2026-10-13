@@ -37,6 +37,9 @@ func _initialize() -> void:
 	check("joint stage valid", first.ok and last.ok and again.ok)
 	check("stage queries do not mutate state", z == PackedFloat64Array([0.0, 0.0, 1.0]))
 	check("stage has no previous-query cache", first.loads == again.loads and first.derivative == again.derivative)
+	var diagnostic: Dictionary = Stage.evaluate(model, z, 167.0, M.v3(0.0, 0.0, 0.0), M.v3(0.0, 0.0, 0.0),
+		0.09624751257538011, 0.0, 0.0, 0.1, -1.0, 1.0, 0.0, true)
+	check("diagnostic and compact stages have identical physical payload", diagnostic.loads == first.loads and diagnostic.derivative == first.derivative)
 	check("stage vi feeds actual thrust", first.rotor.thrust_n > last.rotor.thrust_n and first.inflow.target > last.inflow.target)
 	var opposite: Dictionary = _response(PackedFloat64Array([0.0, 0.0, -1.0]), 167.0, -0.09624751257538011)
 	close("joint negative collective/inflow reflects vertical load", opposite.loads[2], -first.loads[2])

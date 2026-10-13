@@ -159,6 +159,13 @@ func _oracle(path: String) -> void:
 		check("independent main-rotor oracle valid " + row.name, result.ok)
 		if not result.ok:
 			continue
+		var compact: Dictionary = Rotor.evaluate(prepared.model, inputs.omega_rad_s, inputs.induced_velocity_m_s,
+			PackedFloat64Array(inputs.hub_velocity_relative_to_air_body_frd_m_s), PackedFloat64Array(inputs.body_rates_body_frd_rad_s),
+			inputs.collective_pitch_75_rad, inputs.cyclic_forward_rad, inputs.cyclic_right_rad, inputs.a1_rad, inputs.b1_rad, false)
+		check("compact oracle payload valid " + row.name, compact.ok)
+		if compact.ok:
+			check("compact loads preserve exact bytes " + row.name, compact.loads.to_byte_array() == result.loads.to_byte_array())
+			check("compact flap rates preserve exact bytes " + row.name, compact.flap_rate.to_byte_array() == result.flap_rate.to_byte_array())
 		for key: String in row.expected:
 			# Input-kind/value tags belong to the Python ratio compatibility path;
 			# production kernel accepts only dimensional induced velocity.

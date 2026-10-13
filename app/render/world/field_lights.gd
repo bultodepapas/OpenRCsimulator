@@ -165,7 +165,6 @@ static func _sprite_material(color: Color, radiance: float, size_m: float, min_p
 	m.set_shader_parameter("size_m", size_m)
 	m.set_shader_parameter("min_px", min_px)
 	m.set_shader_parameter("display_cap", display_cap)
-	m.set_shader_parameter("rad_per_px", deg_to_rad(Spec.CAMERA.fov_deg) / 720.0)
 	return m
 
 

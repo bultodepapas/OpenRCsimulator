@@ -104,8 +104,7 @@ def main() -> int:
     rotor_defects = {
         "body-rate-divided-by-lag": ("var a_rate: float = -body_rates[1] +", "var a_rate: float = -body_rates[1] / tau +"),
         "wrong-lateral-flap-sign": ("(-b1 + flapback * mu_y", "(-b1 - flapback * mu_y"),
-        "hub-arm-counted-twice": ("var moment: PackedFloat64Array = M.add(M.add(arm_moment, spring), reaction)",
-                                  "var moment: PackedFloat64Array = M.add(M.add(M.scale(arm_moment, 2.0), spring), reaction)"),
+        "hub-arm-counted-twice": ("var my: float = arm_y + spring_y", "var my: float = 2.0 * arm_y + spring_y"),
     }
     for name, (old, new) in rotor_defects.items():
         if rotor_source.count(old) != 1:

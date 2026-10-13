@@ -11,11 +11,12 @@ const STATE_LAYOUT: Array = ["a1_rad", "b1_rad", "induced_velocity_mps"]
 static func evaluate(model: Dictionary, state: PackedFloat64Array, omega: float,
 		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
 		collective_75: float, cyclic_forward: float, cyclic_right: float, flow_floor: float,
-		height_over_radius: float = -1.0, loss: float = 1.0, instability: float = 1.0) -> Dictionary:
+		height_over_radius: float = -1.0, loss: float = 1.0, instability: float = 1.0,
+		diagnostics: bool = false) -> Dictionary:
 	if state.size() != 3:
 		return {"ok": false}
 	var rotor: Dictionary = Rotor.evaluate(model, omega, state[2], hub_air_velocity, body_rates,
-		collective_75, cyclic_forward, cyclic_right, state[0], state[1])
+		collective_75, cyclic_forward, cyclic_right, state[0], state[1], diagnostics)
 	if not rotor.ok:
 		return rotor
 	# Match the paper's shaft/body-frame inflow approximation. Projecting this

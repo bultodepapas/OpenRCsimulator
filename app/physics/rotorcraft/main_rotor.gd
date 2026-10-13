@@ -77,7 +77,7 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 static func evaluate(model: Dictionary, omega: float, induced_velocity: float,
 		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
 		collective_75: float, cyclic_forward: float, cyclic_right: float,
-		a1: float, b1: float) -> Dictionary:
+		a1: float, b1: float, diagnostics: bool = true) -> Dictionary:
 	if not _prepared(model) \
 		or not _vector(hub_air_velocity) or not _vector(body_rates) \
 		or not _finite([omega, induced_velocity, collective_75, cyclic_forward, cyclic_right, a1, b1]) or omega < 0.0:
@@ -86,6 +86,12 @@ static func evaluate(model: Dictionary, omega: float, induced_velocity: float,
 		if absf(angle) > PI / 2.0:
 			return {"ok": false}
 	if omega == 0.0:
+		if not diagnostics:
+			return {"ok": true, "rotor_active": false, "thrust_n": 0.0, "torque_nm": 0.0,
+				"within_identified_advance_ratio": false,
+				"within_small_flap_angle_range": absf(a1) < PI / 18.0 and absf(b1) < PI / 18.0,
+				"flap_rate_a1_rad_s": 0.0, "flap_rate_b1_rad_s": 0.0,
+				"loads": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), "flap_rate": PackedFloat64Array([0.0, 0.0])}
 		# Inactive azimuth-averaged disc; parked individual-blade mechanics are
 		# outside this law. No fictitious isotropic hub spring at zero rpm.
 		return {"ok": true, "rotor_active": false, "theta0_rad": collective_75, "solidity": model.solidity,
@@ -119,13 +125,25 @@ static func evaluate(model: Dictionary, omega: float, induced_velocity: float,
 	var thrust: float = ct * scale
 	var cq: float = ct * (lambda0 - mu_z) + model.blade_section_cd0 * model.solidity / 8.0 * (1.0 + (7.0 / 3.0) * mu2)
 	var torque: float = cq * scale * radius
-	var normal: PackedFloat64Array = M.v3(-M.sin_(a1), M.sin_(b1), -M.cos_(a1) * M.cos_(b1))
-	normal = M.scale(normal, 1.0 / M.norm(normal)) # Explicit geometric extension of paper's small-angle moments.
-	var force: PackedFloat64Array = M.scale(normal, thrust)
-	var arm_moment: PackedFloat64Array = M.cross(M.v3(model.hub_x_m, model.hub_y_m, model.hub_z_m), force)
-	var spring: PackedFloat64Array = M.v3(model.hub_spring_stiffness_nm_per_rad * b1, model.hub_spring_stiffness_nm_per_rad * a1, 0.0)
-	var reaction: PackedFloat64Array = M.v3(0.0, 0.0, -model.rotation_sense * torque)
-	var moment: PackedFloat64Array = M.add(M.add(arm_moment, spring), reaction)
+	var nx: float = -M.sin_(a1)
+	var ny: float = M.sin_(b1)
+	var nz: float = -M.cos_(a1) * M.cos_(b1)
+	var inverse_length: float = 1.0 / M.sqrt_(nx * nx + ny * ny + nz * nz)
+	nx *= inverse_length
+	ny *= inverse_length
+	nz *= inverse_length
+	var fx: float = nx * thrust
+	var fy: float = ny * thrust
+	var fz: float = nz * thrust
+	var arm_x: float = model.hub_y_m * fz - model.hub_z_m * fy
+	var arm_y: float = model.hub_z_m * fx - model.hub_x_m * fz
+	var arm_z: float = model.hub_x_m * fy - model.hub_y_m * fx
+	var spring_x: float = model.hub_spring_stiffness_nm_per_rad * b1
+	var spring_y: float = model.hub_spring_stiffness_nm_per_rad * a1
+	var reaction_z: float = -model.rotation_sense * torque
+	var mx: float = arm_x + spring_x
+	var my: float = arm_y + spring_y
+	var mz: float = arm_z + reaction_z
 	var tau: float = 16.0 / (model.gamma_flybar * omega)
 	var speed_ratio: float = omega / model.omega_nominal_rad_s
 	var gain_scale: float = speed_ratio * speed_ratio
@@ -139,21 +157,27 @@ static func evaluate(model: Dictionary, omega: float, induced_velocity: float,
 	# Eqs. 17 and 26 together give PLUS flapback*mu_y (the initial plan had minus).
 	var b_rate: float = -body_rates[0] + (-b1 + flapback * mu_y \
 		+ model.cyclic_lateral_gain_nominal_rad_per_rad * gain_scale * cyclic_right) / tau
-	if not _finite([ct_ideal, ct, thrust, cq, torque, tau, a_rate, b_rate]) or tau <= 0.0 \
-		or not _vector(force) or not _vector(moment):
+	if not _finite([ct_ideal, ct, thrust, cq, torque, tau, a_rate, b_rate, fx, fy, fz, mx, my, mz]) or tau <= 0.0:
 		return {"ok": false}
+	var loads: PackedFloat64Array = PackedFloat64Array([fx, fy, fz, mx, my, mz])
+	var flap_rate: PackedFloat64Array = PackedFloat64Array([a_rate, b_rate])
+	if not diagnostics:
+		return {"ok": true, "rotor_active": true, "thrust_n": thrust, "torque_nm": torque,
+			"within_identified_advance_ratio": mu < 0.15,
+			"within_small_flap_angle_range": absf(a1) < PI / 18.0 and absf(b1) < PI / 18.0,
+			"flap_rate_a1_rad_s": a_rate, "flap_rate_b1_rad_s": b_rate,
+			"loads": loads, "flap_rate": flap_rate}
 	return {"ok": true, "rotor_active": true, "theta0_rad": collective_75, "solidity": model.solidity,
 		"lambda0": lambda0, "induced_velocity_m_s": induced_velocity, "mu_x": mu_x, "mu_y": mu_y,
 		"mu_z": mu_z, "mu": mu, "within_identified_advance_ratio": mu < 0.15,
 		"within_small_flap_angle_range": absf(a1) < PI / 18.0 and absf(b1) < PI / 18.0,
 		"lock_number": model.lock_number, "bare_flap_time_constant_nominal_s": model.bare_flap_time_constant_nominal_s,
 		"thrust_coefficient_ideal": ct_ideal, "thrust_coefficient": ct, "thrust_n": thrust,
-		"torque_coefficient": cq, "torque_nm": torque, "thrust_normal_body_frd": normal,
-		"force_body_frd_n": force, "moment_body_frd_nm": moment, "hub_arm_moment_body_frd_nm": arm_moment,
-		"flap_spring_moment_body_frd_nm": spring, "reaction_torque_moment_body_frd_nm": reaction,
+		"torque_coefficient": cq, "torque_nm": torque, "thrust_normal_body_frd": M.v3(nx, ny, nz),
+		"force_body_frd_n": M.v3(fx, fy, fz), "moment_body_frd_nm": M.v3(mx, my, mz), "hub_arm_moment_body_frd_nm": M.v3(arm_x, arm_y, arm_z),
+		"flap_spring_moment_body_frd_nm": M.v3(spring_x, spring_y, 0.0), "reaction_torque_moment_body_frd_nm": M.v3(0.0, 0.0, reaction_z),
 		"effective_flap_time_constant_s": tau, "flap_rate_a1_rad_s": a_rate, "flap_rate_b1_rad_s": b_rate,
-		"loads": PackedFloat64Array([force[0], force[1], force[2], moment[0], moment[1], moment[2]]),
-		"flap_rate": PackedFloat64Array([a_rate, b_rate])}
+		"loads": loads, "flap_rate": flap_rate}
 
 
 static func _vector(value: PackedFloat64Array) -> bool:
