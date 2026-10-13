@@ -153,7 +153,7 @@ func _test_prefab_flower_clump() -> void:
 	_check("prefab flower border replaces its mound with six visible stems and petals",
 		stem_triangles >= 72 and petal_triangles >= 48,
 		"triangles=%d stems=%d petals=%d" % [count, stem_triangles, petal_triangles])
-	_check("prefab flower cluster stays within its old 154-triangle budget", count <= 154, "triangles=%d" % count)
+	_check("rounded prefab flowers stay within the LU-24 300-triangle budget", count <= 300, "triangles=%d" % count)
 	_check("prefab flower cluster stays inside the old 0.62 m footprint and 0.42 m height",
 		box.position.x >= -0.31 and box.end.x <= 0.31 and box.position.z >= -0.31 and box.end.z <= 0.31
 		and box.position.y >= -0.001 and box.end.y <= 0.42, str(box))

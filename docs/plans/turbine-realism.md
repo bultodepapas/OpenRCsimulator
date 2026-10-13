@@ -42,6 +42,18 @@ The inspected inventory is 11.705089 kg with 1.28 kg of declared fuel. These are
 
 ## 3. What the research supports
 
+The following anchors are published specifications, not measured maps of the installed Ventage Jet. Flow refers to liquid fuel/oil mixture where the publication specifies it; missing idle flow is not zero.
+
+| Identified engine | Idle / maximum RPM | Idle / maximum thrust | Published consumption | Timing interpretation |
+| --- | ---: | ---: | --- | --- |
+| P100-RX, 2017 catalog (R1) | 44,000 / 154,000 | 2 / 100 N | 80 / 390 ml/min at idle/max | No matched large-step duration |
+| P100-RX-BL, current page (R4) | 44,000 / 154,000 | 2 / 100 N | 80 / 390 ml/min at idle/full load | Different controller/pump revision |
+| Xicoy X52, current page (R5) | 60,000 / 225,000 | 1.8 / 52 N | 160 g/min at 52 N; idle unpublished | No quantitative response time |
+| P250-PRO-S-V2, V1-4 (R7) | 35,000 / 117,000 | 12 / 250 N | 138 / 820 ml/min at idle/max | 5 s for 5→95% rated thrust; 5 s for reverse; separate startup |
+| KingTech K-210G5, current page (R8) | Idle unpublished / 121,000 | Idle unpublished / 21 kgf interpreted as 205.94 N | 590 g/min; operating point unspecified | 10–15 s **start time**, endpoints/conditions unspecified |
+
+The numbered source links below resolve to the exact official publications and their qualification in AV-18. Do not rank engines by these unmatched figures or transfer their schedules.
+
 | Evidence | Supported use | Boundary |
 | --- | --- | --- |
 | [R1: P100-RX 2017](../research/turbine-realism/AV-18/README.md#r1--jetcat-p100-rx-selected-historical-configuration) | Selected static endpoints and catalog conditions | No intermediate, in-flight or transient map |
