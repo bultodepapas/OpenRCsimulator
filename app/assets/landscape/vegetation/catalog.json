@@ -12,18 +12,58 @@
     "license": "CC0-1.0, embedded License_Standard.txt",
     "license_sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
   },
+  "sources": [
+    {
+      "id": "quaternius_standard",
+      "title": "Quaternius Stylized Nature MegaKit Standard",
+      "author": "Quaternius",
+      "url": "https://quaternius.itch.io/stylized-nature-megakit",
+      "upload_id": "11055123",
+      "archive": "assets/landscape/vegetation/source/quaternius_stylized_nature_megakit_standard.zip",
+      "archive_bytes": 104088529,
+      "archive_sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
+      "license": "CC0-1.0, embedded License_Standard.txt",
+      "license_sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+      "license_evidence": "assets/landscape/vegetation/source/License_Standard.txt"
+    },
+    {
+      "id": "quaternius_crops",
+      "title": "LowPoly Crops Pack",
+      "author": "Quaternius",
+      "url": "https://opengameart.org/content/lowpoly-crops-pack",
+      "archive": "assets/landscape/vegetation/source/quaternius_lowpoly_crops_cc0.zip",
+      "archive_bytes": 13368975,
+      "archive_sha256": "48de7f1e092750a3832501e79d1463abeec8218c76090fc4b81fa8dfccacdb52",
+      "license": "CC0-1.0, as shown on the OpenGameArt source page",
+      "license_evidence": "assets/landscape/vegetation/source/Quaternius_Crops_CC0.txt"
+    },
+    {
+      "id": "aredon_reed",
+      "title": "LowPoly Reed",
+      "author": "Aredon",
+      "url": "https://opengameart.org/content/lowpoly-reed",
+      "archive": "assets/landscape/vegetation/source/aredon_lowpoly_reed_cc0.zip",
+      "archive_bytes": 140207,
+      "archive_sha256": "03fd4f90d92618090829bac1152e4280327edb179139ae3f0c66542af31b89bd",
+      "license": "CC0-1.0, as shown on the OpenGameArt source page",
+      "license_evidence": "assets/landscape/vegetation/source/Aredon_Reed_CC0.txt"
+    }
+  ],
   "import": {
-    "format": "glTF 2.0",
+    "format": "glTF 2.0 and Wavefront OBJ/MTL",
     "geometry_policy": "unmodified downloaded geometry",
-    "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled",
-    "shared_material_policy": "original downloaded glTF materials and textures; shared source files extracted once"
+    "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; Wavefront OBJ assets use supplied geometry",
+    "shared_material_policy": "original downloaded glTF materials and textures or OBJ/MTL diffuse materials; shared source files extracted once"
   },
   "counts": {
-    "trees": 2,
+    "trees": 3,
     "shrubs": 2,
     "grass_and_herbs": 4,
     "flowers": 3,
-    "source_triangles_one_of_each": 16695
+    "crops": 2,
+    "reeds": 1,
+    "total_assets": 15,
+    "source_triangles_one_of_each": 21640
   },
   "files": [
     {
@@ -31,6 +71,42 @@
       "source_entry": "License_Standard.txt",
       "bytes": 852,
       "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    {
+      "path": "models/additional/aredon_reed/reed.mtl",
+      "source_entry": "reed.mtl",
+      "bytes": 795,
+      "sha256": "4ab5740f9bb8d9319614a0e5e33fdd405eb842d39fb390fc028b693e4cca0e14"
+    },
+    {
+      "path": "models/additional/aredon_reed/reed.obj",
+      "source_entry": "reed.obj",
+      "bytes": 26870,
+      "sha256": "58a7224445ea159f1a90315e0e68ece3dd46bc69a1e8aea70febd58ce7ed9774"
+    },
+    {
+      "path": "models/additional/quaternius_crops/Corn_4.mtl",
+      "source_entry": "Nature Crops Pack - Jan 2020/OBJ/Corn_4.mtl",
+      "bytes": 595,
+      "sha256": "25a6abdaf9bc8e9b49e8a1e2c9511ab8c40f1e882c0cbb165e06fee732718548"
+    },
+    {
+      "path": "models/additional/quaternius_crops/Corn_4.obj",
+      "source_entry": "Nature Crops Pack - Jan 2020/OBJ/Corn_4.obj",
+      "bytes": 48075,
+      "sha256": "b04cf3a5d23a276f9e72aa9ca49d5b65b86b4661ad576c91add11ae77dd19102"
+    },
+    {
+      "path": "models/additional/quaternius_crops/Wheat_4.mtl",
+      "source_entry": "Nature Crops Pack - Jan 2020/OBJ/Wheat_4.mtl",
+      "bytes": 235,
+      "sha256": "dce58b2d125b0ed1b0b1ddfba47697ce8eacea09bbf3087b1ab70261d279456e"
+    },
+    {
+      "path": "models/additional/quaternius_crops/Wheat_4.obj",
+      "source_entry": "Nature Crops Pack - Jan 2020/OBJ/Wheat_4.obj",
+      "bytes": 4439,
+      "sha256": "d56017278085219ca8d035883bf33abd913e6b35d14baa7af50bea7a4723ed4c"
     },
     {
       "path": "models/Bark_NormalTree.png",
@@ -91,6 +167,18 @@
       "source_entry": "glTF/CommonTree_1.gltf",
       "bytes": 3869,
       "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa"
+    },
+    {
+      "path": "models/CommonTree_3.bin",
+      "source_entry": "glTF/CommonTree_3.bin",
+      "bytes": 296984,
+      "sha256": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49"
+    },
+    {
+      "path": "models/CommonTree_3.gltf",
+      "source_entry": "glTF/CommonTree_3.gltf",
+      "bytes": 3864,
+      "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976"
     },
     {
       "path": "models/Fern_1.bin",
@@ -216,20 +304,52 @@
   "assets": [
     {
       "id": "common_tree_1",
+      "source_id": "quaternius_standard",
       "source_name": "CommonTree_1",
       "description": "mature broadleaf tree",
       "role": "tree",
       "scene": "res://assets/landscape/vegetation/models/CommonTree_1.gltf",
       "source_entry": "glTF/CommonTree_1.gltf",
       "source_sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+      "source_format": "glTF 2.0",
       "source_triangles": 6265,
       "source_surfaces": 2,
       "source_materials": 2,
       "source_bounds_m": {
-        "min_y": -0.242772,
-        "max_y": 7.022013,
+        "min": [
+          -2.194459,
+          -0.242772,
+          -2.224519
+        ],
+        "max": [
+          2.116964,
+          7.022013,
+          2.353195
+        ],
+        "size": [
+          4.311423,
+          7.264785,
+          4.577714
+        ],
         "height": 7.264785,
         "ground_offset": 0.242772
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -2.194459,
+          0.0,
+          -2.224519
+        ],
+        "max": [
+          2.116964,
+          7.264785,
+          2.353195
+        ],
+        "size": [
+          4.311423,
+          7.264785,
+          4.577714
+        ]
       },
       "textures": [
         {
@@ -258,21 +378,128 @@
       }
     },
     {
+      "id": "common_tree_3",
+      "source_id": "quaternius_standard",
+      "source_name": "CommonTree_3",
+      "description": "upright broadleaf tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/CommonTree_3.gltf",
+      "source_entry": "glTF/CommonTree_3.gltf",
+      "source_sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+      "source_format": "glTF 2.0",
+      "source_triangles": 3505,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min": [
+          -1.986465,
+          -0.242772,
+          -2.060966
+        ],
+        "max": [
+          2.076381,
+          9.182418,
+          2.180111
+        ],
+        "size": [
+          4.062846,
+          9.42519,
+          4.241077
+        ],
+        "height": 9.42519,
+        "ground_offset": 0.242772
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -1.986465,
+          0.0,
+          -2.060966
+        ],
+        "max": [
+          2.076381,
+          9.42519,
+          2.180111
+        ],
+        "size": [
+          4.062846,
+          9.42519,
+          4.241077
+        ]
+      },
+      "textures": [
+        {
+          "uri": "Bark_NormalTree.png",
+          "source_entry": "glTF/Bark_NormalTree.png"
+        },
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "source_entry": "glTF/Bark_NormalTree_Normal.png"
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "source_entry": "glTF/Leaves_NormalTree_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bark_NormalTree.png",
+        "glTF/Bark_NormalTree_Normal.png",
+        "glTF/CommonTree_3.bin",
+        "glTF/CommonTree_3.gltf",
+        "glTF/Leaves_NormalTree_C.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
       "id": "pine_1",
+      "source_id": "quaternius_standard",
       "source_name": "Pine_1",
       "description": "mature pine tree",
       "role": "tree",
       "scene": "res://assets/landscape/vegetation/models/Pine_1.gltf",
       "source_entry": "glTF/Pine_1.gltf",
       "source_sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+      "source_format": "glTF 2.0",
       "source_triangles": 3947,
       "source_surfaces": 2,
       "source_materials": 2,
       "source_bounds_m": {
-        "min_y": -0.235089,
-        "max_y": 7.081829,
+        "min": [
+          -2.448819,
+          -0.235089,
+          -2.476933
+        ],
+        "max": [
+          2.495879,
+          7.081829,
+          2.061471
+        ],
+        "size": [
+          4.944698,
+          7.316918,
+          4.538403
+        ],
         "height": 7.316918,
         "ground_offset": 0.235089
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -2.448819,
+          0.0,
+          -2.476933
+        ],
+        "max": [
+          2.495879,
+          7.316918,
+          2.061471
+        ],
+        "size": [
+          4.944698,
+          7.316918,
+          4.538403
+        ]
       },
       "textures": [
         {
@@ -302,20 +529,52 @@
     },
     {
       "id": "bush_common",
+      "source_id": "quaternius_standard",
       "source_name": "Bush_Common",
       "description": "leafy shrub",
       "role": "shrub",
       "scene": "res://assets/landscape/vegetation/models/Bush_Common.gltf",
       "source_entry": "glTF/Bush_Common.gltf",
       "source_sha256": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90",
+      "source_format": "glTF 2.0",
       "source_triangles": 900,
       "source_surfaces": 1,
       "source_materials": 1,
       "source_bounds_m": {
-        "min_y": -0.234695,
-        "max_y": 1.347091,
+        "min": [
+          -0.923476,
+          -0.234695,
+          -0.974389
+        ],
+        "max": [
+          0.991369,
+          1.347091,
+          0.990752
+        ],
+        "size": [
+          1.914845,
+          1.581786,
+          1.965141
+        ],
         "height": 1.581786,
         "ground_offset": 0.234695
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.923476,
+          0.0,
+          -0.974389
+        ],
+        "max": [
+          0.991369,
+          1.581786,
+          0.990752
+        ],
+        "size": [
+          1.914845,
+          1.581786,
+          1.965141
+        ]
       },
       "textures": [
         {
@@ -335,20 +594,52 @@
     },
     {
       "id": "bush_common_flowers",
+      "source_id": "quaternius_standard",
       "source_name": "Bush_Common_Flowers",
       "description": "flowering shrub",
       "role": "shrub",
       "scene": "res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf",
       "source_entry": "glTF/Bush_Common_Flowers.gltf",
       "source_sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
+      "source_format": "glTF 2.0",
       "source_triangles": 1368,
       "source_surfaces": 2,
       "source_materials": 2,
       "source_bounds_m": {
-        "min_y": -0.234695,
-        "max_y": 1.347091,
+        "min": [
+          -0.923476,
+          -0.234695,
+          -0.974389
+        ],
+        "max": [
+          0.991369,
+          1.347091,
+          0.990752
+        ],
+        "size": [
+          1.914845,
+          1.581786,
+          1.965141
+        ],
         "height": 1.581786,
         "ground_offset": 0.234695
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.923476,
+          0.0,
+          -0.974389
+        ],
+        "max": [
+          0.991369,
+          1.581786,
+          0.990752
+        ],
+        "size": [
+          1.914845,
+          1.581786,
+          1.965141
+        ]
       },
       "textures": [
         {
@@ -373,20 +664,52 @@
     },
     {
       "id": "grass_common_short",
+      "source_id": "quaternius_standard",
       "source_name": "Grass_Common_Short",
       "description": "short meadow grass clump",
       "role": "grass",
       "scene": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
       "source_entry": "glTF/Grass_Common_Short.gltf",
       "source_sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
+      "source_format": "glTF 2.0",
       "source_triangles": 155,
       "source_surfaces": 1,
       "source_materials": 1,
       "source_bounds_m": {
-        "min_y": -0.022385,
-        "max_y": 1.311718,
+        "min": [
+          -0.355642,
+          -0.022385,
+          -0.479378
+        ],
+        "max": [
+          0.283228,
+          1.311718,
+          0.257887
+        ],
+        "size": [
+          0.63887,
+          1.334103,
+          0.737265
+        ],
         "height": 1.334103,
         "ground_offset": 0.022385
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.355642,
+          0.0,
+          -0.479378
+        ],
+        "max": [
+          0.283228,
+          1.334103,
+          0.257887
+        ],
+        "size": [
+          0.63887,
+          1.334103,
+          0.737265
+        ]
       },
       "textures": [
         {
@@ -406,20 +729,52 @@
     },
     {
       "id": "grass_common_tall",
+      "source_id": "quaternius_standard",
       "source_name": "Grass_Common_Tall",
       "description": "tall meadow grass clump",
       "role": "grass",
       "scene": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf",
       "source_entry": "glTF/Grass_Common_Tall.gltf",
       "source_sha256": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70",
+      "source_format": "glTF 2.0",
       "source_triangles": 326,
       "source_surfaces": 1,
       "source_materials": 1,
       "source_bounds_m": {
-        "min_y": -0.031362,
-        "max_y": 1.841333,
+        "min": [
+          -0.403568,
+          -0.031362,
+          -0.479033
+        ],
+        "max": [
+          0.491522,
+          1.841333,
+          0.514078
+        ],
+        "size": [
+          0.895089,
+          1.872695,
+          0.993112
+        ],
         "height": 1.872695,
         "ground_offset": 0.031362
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.403568,
+          0.0,
+          -0.479033
+        ],
+        "max": [
+          0.491522,
+          1.872695,
+          0.514078
+        ],
+        "size": [
+          0.895089,
+          1.872695,
+          0.993112
+        ]
       },
       "textures": [
         {
@@ -439,20 +794,52 @@
     },
     {
       "id": "grass_wispy_tall",
+      "source_id": "quaternius_standard",
       "source_name": "Grass_Wispy_Tall",
       "description": "wispy tall grass clump",
       "role": "grass",
       "scene": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
       "source_entry": "glTF/Grass_Wispy_Tall.gltf",
       "source_sha256": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b",
+      "source_format": "glTF 2.0",
       "source_triangles": 622,
       "source_surfaces": 1,
       "source_materials": 1,
       "source_bounds_m": {
-        "min_y": -0.036052,
-        "max_y": 1.635751,
+        "min": [
+          -0.739245,
+          -0.036052,
+          -0.818591
+        ],
+        "max": [
+          0.800828,
+          1.635751,
+          0.775125
+        ],
+        "size": [
+          1.540073,
+          1.671802,
+          1.593716
+        ],
         "height": 1.671802,
         "ground_offset": 0.036052
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.739245,
+          0.0,
+          -0.818591
+        ],
+        "max": [
+          0.800828,
+          1.671802,
+          0.775125
+        ],
+        "size": [
+          1.540073,
+          1.671802,
+          1.593716
+        ]
       },
       "textures": [
         {
@@ -472,20 +859,52 @@
     },
     {
       "id": "fern_1",
+      "source_id": "quaternius_standard",
       "source_name": "Fern_1",
       "description": "fern",
       "role": "herb",
       "scene": "res://assets/landscape/vegetation/models/Fern_1.gltf",
       "source_entry": "glTF/Fern_1.gltf",
       "source_sha256": "d41915cffe9dbbde1ae88be381eb9c60f7caa2274511436cc78fe4de627468ab",
+      "source_format": "glTF 2.0",
       "source_triangles": 288,
       "source_surfaces": 1,
       "source_materials": 1,
       "source_bounds_m": {
-        "min_y": -0.24747,
-        "max_y": 2.441308,
+        "min": [
+          -4.419975,
+          -0.24747,
+          -4.091316
+        ],
+        "max": [
+          4.626213,
+          2.441308,
+          4.396108
+        ],
+        "size": [
+          9.046188,
+          2.688778,
+          8.487424
+        ],
         "height": 2.688778,
         "ground_offset": 0.24747
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -4.419975,
+          0.0,
+          -4.091316
+        ],
+        "max": [
+          4.626213,
+          2.688778,
+          4.396108
+        ],
+        "size": [
+          9.046188,
+          2.688778,
+          8.487424
+        ]
       },
       "textures": [
         {
@@ -505,20 +924,52 @@
     },
     {
       "id": "flower_3_group",
+      "source_id": "quaternius_standard",
       "source_name": "Flower_3_Group",
       "description": "flower group, family 3",
       "role": "flower",
       "scene": "res://assets/landscape/vegetation/models/Flower_3_Group.gltf",
       "source_entry": "glTF/Flower_3_Group.gltf",
       "source_sha256": "4df1612371982c543f930d6b213967372e0d459622d7eff7fc2ed1ddbfaa3b6c",
+      "source_format": "glTF 2.0",
       "source_triangles": 755,
       "source_surfaces": 2,
       "source_materials": 2,
       "source_bounds_m": {
-        "min_y": -0.034584,
-        "max_y": 2.020252,
+        "min": [
+          -0.613601,
+          -0.034584,
+          -0.801762
+        ],
+        "max": [
+          0.874875,
+          2.020252,
+          0.789365
+        ],
+        "size": [
+          1.488477,
+          2.054835,
+          1.591127
+        ],
         "height": 2.054835,
         "ground_offset": 0.034584
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.613601,
+          0.0,
+          -0.801762
+        ],
+        "max": [
+          0.874875,
+          2.054835,
+          0.789365
+        ],
+        "size": [
+          1.488477,
+          2.054835,
+          1.591127
+        ]
       },
       "textures": [
         {
@@ -543,20 +994,52 @@
     },
     {
       "id": "flower_4_group",
+      "source_id": "quaternius_standard",
       "source_name": "Flower_4_Group",
       "description": "flower group, family 4",
       "role": "flower",
       "scene": "res://assets/landscape/vegetation/models/Flower_4_Group.gltf",
       "source_entry": "glTF/Flower_4_Group.gltf",
       "source_sha256": "69ead56b36b50f06a0cf18380797fce7434302e9b2da7bf68a85014b993c6134",
+      "source_format": "glTF 2.0",
       "source_triangles": 1690,
       "source_surfaces": 2,
       "source_materials": 2,
       "source_bounds_m": {
-        "min_y": -0.056998,
-        "max_y": 2.429771,
+        "min": [
+          -0.931386,
+          -0.056998,
+          -0.63615
+        ],
+        "max": [
+          0.84914,
+          2.429771,
+          0.731378
+        ],
+        "size": [
+          1.780526,
+          2.486768,
+          1.367529
+        ],
         "height": 2.486768,
         "ground_offset": 0.056998
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.931386,
+          0.0,
+          -0.63615
+        ],
+        "max": [
+          0.84914,
+          2.486768,
+          0.731378
+        ],
+        "size": [
+          1.780526,
+          2.486768,
+          1.367529
+        ]
       },
       "textures": [
         {
@@ -581,20 +1064,52 @@
     },
     {
       "id": "clover_1",
+      "source_id": "quaternius_standard",
       "source_name": "Clover_1",
       "description": "clover groundcover",
       "role": "flower",
       "scene": "res://assets/landscape/vegetation/models/Clover_1.gltf",
       "source_entry": "glTF/Clover_1.gltf",
       "source_sha256": "05fe48cdf1f3db879371a6ba0d843fcd407667b7680def5716c9f286efe0306b",
+      "source_format": "glTF 2.0",
       "source_triangles": 379,
       "source_surfaces": 1,
       "source_materials": 1,
       "source_bounds_m": {
-        "min_y": -0.012792,
-        "max_y": 1.13194,
+        "min": [
+          -0.502298,
+          -0.012792,
+          -0.399562
+        ],
+        "max": [
+          0.293991,
+          1.13194,
+          0.364324
+        ],
+        "size": [
+          0.796289,
+          1.144732,
+          0.763886
+        ],
         "height": 1.144732,
         "ground_offset": 0.012792
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.502298,
+          0.0,
+          -0.399562
+        ],
+        "max": [
+          0.293991,
+          1.144732,
+          0.364324
+        ],
+        "size": [
+          0.796289,
+          1.144732,
+          0.763886
+        ]
       },
       "textures": [
         {
@@ -610,6 +1125,192 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": true
+      }
+    },
+    {
+      "id": "corn_4",
+      "source_id": "quaternius_crops",
+      "source_name": "Corn_4",
+      "description": "mature corn plant",
+      "role": "crop",
+      "mesh": "res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj",
+      "source_entry": "Nature Crops Pack - Jan 2020/OBJ/Corn_4.obj",
+      "source_sha256": "b04cf3a5d23a276f9e72aa9ca49d5b65b86b4661ad576c91add11ae77dd19102",
+      "source_dependency_sha256": {
+        "mesh": "b04cf3a5d23a276f9e72aa9ca49d5b65b86b4661ad576c91add11ae77dd19102",
+        "Corn_4.mtl": "25a6abdaf9bc8e9b49e8a1e2c9511ab8c40f1e882c0cbb165e06fee732718548"
+      },
+      "source_format": "Wavefront OBJ",
+      "source_material_format": "Wavefront MTL",
+      "source_triangles": 958,
+      "source_surfaces": 3,
+      "source_materials": 3,
+      "source_bounds_m": {
+        "min": [
+          -0.436688,
+          0.003481,
+          -0.365146
+        ],
+        "max": [
+          0.450592,
+          1.970578,
+          0.283851
+        ],
+        "size": [
+          0.88728,
+          1.967097,
+          0.648997
+        ],
+        "height": 1.967097,
+        "ground_offset": -0.003481
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.436688,
+          0.0,
+          -0.365146
+        ],
+        "max": [
+          0.450592,
+          1.967097,
+          0.283851
+        ],
+        "size": [
+          0.88728,
+          1.967097,
+          0.648997
+        ]
+      },
+      "material_libraries": [
+        "Corn_4.mtl"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": false
+      }
+    },
+    {
+      "id": "wheat_4",
+      "source_id": "quaternius_crops",
+      "source_name": "Wheat_4",
+      "description": "mature wheat stalk",
+      "role": "crop",
+      "mesh": "res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj",
+      "source_entry": "Nature Crops Pack - Jan 2020/OBJ/Wheat_4.obj",
+      "source_sha256": "d56017278085219ca8d035883bf33abd913e6b35d14baa7af50bea7a4723ed4c",
+      "source_dependency_sha256": {
+        "mesh": "d56017278085219ca8d035883bf33abd913e6b35d14baa7af50bea7a4723ed4c",
+        "Wheat_4.mtl": "dce58b2d125b0ed1b0b1ddfba47697ce8eacea09bbf3087b1ab70261d279456e"
+      },
+      "source_format": "Wavefront OBJ",
+      "source_material_format": "Wavefront MTL",
+      "source_triangles": 102,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min": [
+          -0.082665,
+          0.0,
+          -0.040682
+        ],
+        "max": [
+          0.015179,
+          0.947993,
+          0.015178
+        ],
+        "size": [
+          0.097844,
+          0.947993,
+          0.05586
+        ],
+        "height": 0.947993,
+        "ground_offset": -0.0
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.082665,
+          0.0,
+          -0.040682
+        ],
+        "max": [
+          0.015179,
+          0.947993,
+          0.015178
+        ],
+        "size": [
+          0.097844,
+          0.947993,
+          0.05586
+        ]
+      },
+      "material_libraries": [
+        "Wheat_4.mtl"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": false
+      }
+    },
+    {
+      "id": "reed_aredon",
+      "source_id": "aredon_reed",
+      "source_name": "reed",
+      "description": "low-poly reed clump",
+      "role": "reed",
+      "mesh": "res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj",
+      "source_entry": "reed.obj",
+      "source_sha256": "58a7224445ea159f1a90315e0e68ece3dd46bc69a1e8aea70febd58ce7ed9774",
+      "source_dependency_sha256": {
+        "mesh": "58a7224445ea159f1a90315e0e68ece3dd46bc69a1e8aea70febd58ce7ed9774",
+        "reed.mtl": "4ab5740f9bb8d9319614a0e5e33fdd405eb842d39fb390fc028b693e4cca0e14"
+      },
+      "source_format": "Wavefront OBJ",
+      "source_material_format": "Wavefront MTL",
+      "source_triangles": 380,
+      "source_surfaces": 4,
+      "source_materials": 4,
+      "source_bounds_m": {
+        "min": [
+          -0.660827,
+          -0.01776,
+          -0.394296
+        ],
+        "max": [
+          0.269579,
+          3.015389,
+          0.433063
+        ],
+        "size": [
+          0.930406,
+          3.033149,
+          0.827359
+        ],
+        "height": 3.033149,
+        "ground_offset": 0.01776
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.660827,
+          0.0,
+          -0.394296
+        ],
+        "max": [
+          0.269579,
+          3.033149,
+          0.433063
+        ],
+        "size": [
+          0.930406,
+          3.033149,
+          0.827359
+        ]
+      },
+      "material_libraries": [
+        "reed.mtl"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": false
       }
     }
   ]

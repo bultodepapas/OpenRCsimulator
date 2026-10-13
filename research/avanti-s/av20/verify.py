@@ -26,7 +26,7 @@ def execute(binary: Path, app: Path, script: Path, log: Path, *arguments: str,
         raise RuntimeError(f'{log.name}: runtime error, not a completed assertion run')
     if expected_success and result.returncode:
         raise RuntimeError(f'{log.name}: native process returned {result.returncode}')
-    if not expected_success and (result.returncode == 0 or 'FAIL ' not in output or '45 checks,' not in output):
+    if not expected_success and (result.returncode == 0 or 'FAIL ' not in output or '46 checks,' not in output):
         raise RuntimeError(f'{log.name}: mutation did not reach and fail the completed test suite')
     return output
 
@@ -80,11 +80,16 @@ def main() -> None:
             raise ValueError('turbine candidate did not change integration')
         pairs.append({'id': before['id'], 'complete_state_identical': identical,
                       'endpoint_rpm_delta': after['final_rpm'] - before['final_rpm'],
-                      'endpoint_body_max_abs_delta': max(abs(a-b) for a, b in zip(after['final_state'], before['final_state']))})
+                      'endpoint_delta': {
+                          'position_max_m': max(abs(after['final_state'][i] - before['final_state'][i]) for i in range(3)),
+                          'velocity_max_m_s': max(abs(after['final_state'][i] - before['final_state'][i]) for i in range(3, 6)),
+                          'attitude_chord': math.sqrt(sum((after['final_state'][i] - before['final_state'][i])**2 for i in range(6, 10))),
+                          'angular_rate_max_rad_s': max(abs(after['final_state'][i] - before['final_state'][i]) for i in range(10, 13)),
+                      }})
     candidate = args.candidate / 'app'
     native_test = candidate / 'tests/test_turbine_continuous.gd'
     control = execute(args.godot, candidate, native_test, args.out / 'positive-control.log')
-    if '45 checks, 0 failed' not in control:
+    if '46 checks, 0 failed' not in control:
         raise RuntimeError('positive control incomplete')
     flight_source = (candidate / 'sim/flight_session.gd').read_text(encoding='utf8')
     test_source = native_test.read_text(encoding='utf8')

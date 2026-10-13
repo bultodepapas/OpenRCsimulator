@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+723 checks, 15 failed (36 oracle vectors)
+FAIL four_stroke_analytic.shaft_torque_nm matches independent reference got -0.01083556345123245, expected -0.01183556345123245
+FAIL four_stroke_cut.shaft_torque_nm matches independent reference got -0.010875352187005425, expected -0.01187535218700542
+FAIL four_stroke_zero_admission.shaft_torque_nm matches independent reference got -0.011193662073189215, expected -0.01219366207318921
+FAIL four_stroke_zero_mixture.shaft_torque_nm matches independent reference got -0.010875352187005425, expected -0.01187535218700542
+FAIL four_stroke_zero_completion.shaft_torque_nm matches independent reference got -0.010875352187005425, expected -0.01187535218700542
+FAIL four_stroke_upper_bound.shaft_torque_nm matches independent reference got -0.01072813386464542, expected -0.01172813386464542
+FAIL four_stroke_valve_and_pump_loss.shaft_torque_nm matches independent reference got -0.01103202033411151, expected -0.0140320203341115
+FAIL four_stroke_random_00.shaft_torque_nm matches independent reference got 1.1472796686805775, expected 1.1436175963484008
+FAIL four_stroke_random_01.shaft_torque_nm matches independent reference got 0.02743294625194787, expected 0.02611681269183267
+FAIL four_stroke_random_02.shaft_torque_nm matches independent reference got -0.024023349567049566, expected -0.03176358229314531
+FAIL four_stroke_random_03.shaft_torque_nm matches independent reference got -0.01816434523787113, expected -0.02542078698857851
+FAIL four_stroke_random_04.shaft_torque_nm matches independent reference got 0.0962107360723893, expected 0.09408431204655142
+FAIL four_stroke_random_05.shaft_torque_nm matches independent reference got 0.1753344865255947, expected 0.17131537371102307
+FAIL four_stroke_random_06.shaft_torque_nm matches independent reference got -0.024346488063859074, expected -0.02588543154005492
+FAIL four_stroke_random_07.shaft_torque_nm matches independent reference got 0.0473280780847015, expected 0.04624981584057811

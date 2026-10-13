@@ -1,0 +1,74 @@
+{
+  "schema": "openrc.av20.verification/v1",
+  "physical_validation": false,
+  "paired_flights": [
+    {
+      "id": "jensen-das-ugly-stik-60",
+      "complete_state_identical": true,
+      "endpoint_rpm_delta": 0.0,
+      "endpoint_body_max_abs_delta": 0.0
+    },
+    {
+      "id": "gp-extra-300s-60",
+      "complete_state_identical": true,
+      "endpoint_rpm_delta": 0.0,
+      "endpoint_body_max_abs_delta": 0.0
+    },
+    {
+      "id": "p51d-mustang-120",
+      "complete_state_identical": true,
+      "endpoint_rpm_delta": 0.0,
+      "endpoint_body_max_abs_delta": 0.0
+    },
+    {
+      "id": "turbo-lumber-evolution",
+      "complete_state_identical": true,
+      "endpoint_rpm_delta": 0.0,
+      "endpoint_body_max_abs_delta": 0.0
+    },
+    {
+      "id": "sebart-avanti-s-a200-p100rx",
+      "complete_state_identical": false,
+      "endpoint_rpm_delta": 64.42980907104356,
+      "endpoint_body_max_abs_delta": 0.00823586305454782
+    }
+  ],
+  "mutations_rejected": [
+    {
+      "id": "endpoint-rpm-in-stage",
+      "failed_assertions": [
+        "FAIL stage force uses stage RPM rather than sampled mirror ",
+        "FAIL stage gyro uses stage RPM ",
+        "FAIL malformed or out-of-domain state rejected ",
+        "FAIL governor/impulse/displacement analytic agreement at 120 Hz [2.13941686163889, 0.00025440159672, 0.00012411474033]",
+        "FAIL governor/impulse/displacement analytic agreement at 240 Hz [1.06927044823533, 0.00012702529533, 0.00006197605589]",
+        "FAIL governor/impulse/displacement analytic agreement at 480 Hz [0.534522455142, 0.00006346891271, 0.0000309677307]",
+        "FAIL smooth RPM refinement exhibits fourth-order error reduction [2.13941686163889, 1.06927044823533, 0.534522455142]"
+      ]
+    },
+    {
+      "id": "stale-endpoint-mirror",
+      "failed_assertions": [
+        "FAIL k1 load uses old RPM while aux mirrors accepted endpoint at 120 Hz ",
+        "FAIL k1 load uses old RPM while aux mirrors accepted endpoint at 240 Hz ",
+        "FAIL k1 load uses old RPM while aux mirrors accepted endpoint at 480 Hz ",
+        "FAIL inconsistent endpoint mirror refused transactionally "
+      ]
+    }
+  ],
+  "source_sha256": {
+    "physics/turbine.gd": {
+      "baseline": "b49a67326fbe5d8103a0ea737e6a8ad3b2f4fb40ea2bf2834d7b3514d9fee0f3",
+      "candidate": "f4f45e86f58ca1c9a1e919080516043d5488556d6cd12de0ac3d85c446e26042"
+    },
+    "sim/flight_session.gd": {
+      "baseline": "3bdb837f6198ab6595c32970e904465ba3d8a06264b0bcb8b140b0c510721d22",
+      "candidate": "95e64368b09555de344e4682a23c86404ce1d61190d20cb991dc016ff2cb2ad9"
+    },
+    "data/aircraft/sebart_avanti_s_a200.json": {
+      "baseline": "e57b9053d6134663d49bee334f9d15370ff1e33fc0bc30a9de490b601c2e1a32",
+      "candidate": "e8d5fef8712cba625d42814a59d9f0f9b0c0eab2e917817f90af4234bb8d52c2"
+    }
+  },
+  "timing_scope": "observational probe timing only; not the idle-host Gate P measurement"
+}

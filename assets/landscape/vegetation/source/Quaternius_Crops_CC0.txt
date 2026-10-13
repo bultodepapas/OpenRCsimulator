@@ -1,0 +1,9 @@
+Downloaded source: LowPoly Crops Pack
+Author: Quaternius
+Source page: https://opengameart.org/content/lowpoly-crops-pack
+License: CC0 1.0 Universal (license shown on the OpenGameArt source page).
+Original archive: quaternius_lowpoly_crops_cc0.zip
+Retrieved: 2026-10-13
+Bytes: 13368975
+SHA-256: 48de7f1e092750a3832501e79d1463abeec8218c76090fc4b81fa8dfccacdb52
+Selected files are copied byte-for-byte from the archive's OBJ directory.

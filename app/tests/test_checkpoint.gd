@@ -124,11 +124,18 @@ func replay_aircraft(id: String) -> void:
 	var flight := Flight.new()
 	flight.setup(Catalog.entry(id).data)
 	flight.input_enabled = false
+	# AV-20 has no hot-cut law yet. Its non-default mode fixture is an explicit cold glide start.
+	var continuous_turbine: bool = flight.turbine_is_continuous()
+	if continuous_turbine:
+		var gliding: Dictionary = flight.trim_at(flight.aircraft.model.start_speed, "glide")
+		check(id + " unpowered turbine start trims", gliding.ok)
+		flight.reset()
 	for i in 50:
 		flight.sim.inputs[0] = 0.1
 		flight.sim.inputs[3] = 0.6
 		flight.sim.step()
-	flight.engine_running = false
+	if not continuous_turbine:
+		flight.engine_running = false
 	flight.sim.step() # commit a non-default discrete state and decaying/slewed auxiliary state
 	var cp: Dictionary = flight.checkpoint()
 	check(id + " complete boundary captured", not cp.is_empty() and cp.simulation.tick == 51 and cp.simulation.modes[0] == 0)
@@ -136,6 +143,9 @@ func replay_aircraft(id: String) -> void:
 		flight.sim.inputs[1] = -0.1
 		flight.sim.step()
 	var expected: Dictionary = flight.sim.checkpoint()
+	if continuous_turbine:
+		var powered: Dictionary = flight.trim_at(flight.aircraft.model.start_speed, "level")
+		check(id + " powered reset start trims", powered.ok)
 	flight.reset()
 	check(id + " reset restores initial state and engine mode", flight.sim.tick == 0 and flight.engine_running and flight.sim.state == flight.start.state)
 	check(id + " restore after reset", flight.restore_checkpoint(bytes_to_var(var_to_bytes(cp))))

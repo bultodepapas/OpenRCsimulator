@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+723 checks, 18 failed (36 oracle vectors)
+FAIL two_stroke_analytic.indicated_torque_nm matches independent reference got 0.012732395447351632, expected 0.02546479089470326
+FAIL two_stroke_analytic.shaft_torque_nm matches independent reference got 0.0011408460164326782, expected 0.01387324146378431
+FAIL two_stroke_analytic.indicated_power_w matches independent reference got 8.000000000000004, expected 16.000000000000007
+FAIL two_stroke_upper_bound.indicated_torque_nm matches independent reference got 0.0343774677078494, expected 0.0687549354156988
+FAIL two_stroke_upper_bound.shaft_torque_nm matches independent reference got 0.02151267873219528, expected 0.05589014644004468
+FAIL two_stroke_upper_bound.indicated_power_w matches independent reference got 43.20000000000001, expected 86.40000000000002
+FAIL two_stroke_port_loss.indicated_torque_nm matches independent reference got 0.02100845248813019, expected 0.04201690497626038
+FAIL two_stroke_port_loss.shaft_torque_nm matches independent reference got 0.009576058000303131, expected 0.03058451048843331
+FAIL two_stroke_port_loss.indicated_power_w matches independent reference got 13.200000000000003, expected 26.40000000000001
+FAIL two_stroke_random_02.indicated_torque_nm matches independent reference got 0.003504090972874107, expected 0.00700818194574821
+FAIL two_stroke_random_02.shaft_torque_nm matches independent reference got -0.004868524327027619, expected -0.00136443335415351
+FAIL two_stroke_random_02.indicated_power_w matches independent reference got 0.07429614801728696, expected 0.1485922960345738
+FAIL two_stroke_random_03.indicated_torque_nm matches independent reference got 0.7472199580829298, expected 1.49443991616586
+FAIL two_stroke_random_03.shaft_torque_nm matches independent reference got 0.7133536611463833, expected 1.4605736192293135
+FAIL two_stroke_random_03.indicated_power_w matches independent reference got 166.04528857296737, expected 332.09057714593484
+FAIL two_stroke_random_05.indicated_torque_nm matches independent reference got 4.818491261547352, expected 9.636982523094703
+FAIL two_stroke_random_05.shaft_torque_nm matches independent reference got 4.769119791899065, expected 9.587611053446416
+FAIL two_stroke_random_05.indicated_power_w matches independent reference got 1387.8435667310105, expected 2775.687133462021

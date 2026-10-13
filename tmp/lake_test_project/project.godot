@@ -1,0 +1,5 @@
+[application]
+config/name="Lake tests"
+[rendering]
+renderer/rendering_method="gl_compatibility"
+

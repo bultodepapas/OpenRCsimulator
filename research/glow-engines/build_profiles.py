@@ -1,0 +1,198 @@
+"""Generate standalone, explicitly estimated glow profiles and their closed contract.
+
+These are bench candidates, not accepted aircraft data or measured engine maps.
+All generated files are checked by --check. No third-party curves are redistributed.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import math
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+DEST = ROOT / 'app/data/glow'
+KINDS = ['manual', 'measured', 'borrowed', 'estimated', 'derived']
+PAPER = 'https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC'
+EST = 'NITRO-01 candidate assumption; unmeasured and not physically validated'
+
+
+def scalar(unit, minimum=0.0, maximum=1e100, positive=False):
+    return dict(unit=unit, shape='scalar', minimum=minimum, maximum=maximum, positive=positive)
+
+
+def curve(unit, maximum=1e100, positive=False, axis='rpm'):
+    return dict(unit=unit, shape='curve', minimum=0.0, maximum=maximum,
+                positive=positive, axis=axis)
+
+
+SPEC = {
+    'format': 'openrc-glow-profile-contract v1',
+    'profile_format': 'openrc-glow-engine v1',
+    'common': {
+        'displacement_m3': scalar('m3', positive=True),
+        'mechanical_torque_nm': curve('rpm, N·m'),
+        'combustion_efficiency': curve('1, 1', 1.0, axis='mixture'),
+        'indicated_efficiency': curve('rpm, 1', 1.0),
+    },
+    'families': {
+        'glow_2t': {'delivery_ratio': curve('rpm, 1'),
+                    'trapping_efficiency': curve('rpm, 1', 1.0),
+                    'scavenge_pressure_pa': curve('rpm, Pa')},
+        'glow_4t': {'volumetric_efficiency': curve('rpm, 1', positive=True),
+                    'pumping_pressure_pa': curve('rpm, Pa'),
+                    'intake_pressure_drop_pa': scalar('Pa'),
+                    'valve_torque_nm': curve('rpm, N·m')},
+    },
+    'fuel': {
+        'nitromethane_volume_fraction': scalar('1', maximum=1.0),
+        'lubricant_volume_fraction': scalar('1', maximum=1.0),
+        'methanol_density_kg_m3': scalar('kg/m3', positive=True),
+        'nitromethane_density_kg_m3': scalar('kg/m3', positive=True),
+        'lubricant_density_kg_m3': scalar('kg/m3', positive=True),
+        'methanol_lhv_j_kg': scalar('J/kg', positive=True),
+        'nitromethane_lhv_j_kg': scalar('J/kg', positive=True),
+        'methanol_stoich_air_fuel_ratio': scalar('1', positive=True),
+        'nitromethane_stoich_air_fuel_ratio': scalar('1', positive=True),
+    },
+    'operation': {
+        'max_rpm': scalar('rpm', positive=True),
+        'rated_rpm': scalar('rpm', positive=True),
+        'rated_power_w': scalar('W', positive=True),
+        'reference_dry_density_kg_m3': scalar('kg/m3', positive=True),
+        'nominal_mixture': scalar('1', positive=True),
+    },
+}
+
+
+def quantity(value, rule, kind='estimated', source=EST):
+    return dict(value=value, unit=rule['unit'], kind=kind, source=source)
+
+
+def fuel():
+    values = [.10, .18, 792., 1137., 961., 20e6, 11.3e6, 6.429, 1.687]
+    return {k: quantity(v, r, 'borrowed', PAPER) for (k, r), v in zip(SPEC['fuel'].items(), values)}
+
+
+def blend(f):
+    """Volume fractions -> premix mass density, inert oil fraction, combustible AFR/LHV."""
+    v = {k: q['value'] for k, q in f.items()}
+    nitro = v['nitromethane_volume_fraction']; oil = v['lubricant_volume_fraction']
+    masses = [(1-nitro-oil)*v['methanol_density_kg_m3'],
+              nitro*v['nitromethane_density_kg_m3'], oil*v['lubricant_density_kg_m3']]
+    combustible = masses[0]+masses[1]; density = sum(masses)
+    afr = (masses[0]*v['methanol_stoich_air_fuel_ratio'] +
+           masses[1]*v['nitromethane_stoich_air_fuel_ratio'])/combustible
+    lhv = (masses[0]*v['methanol_lhv_j_kg']+masses[1]*v['nitromethane_lhv_j_kg'])/combustible
+    return dict(density_kg_m3=density, oil_fraction=masses[2]/density,
+                stoich_air_fuel_ratio=afr, fuel_lhv_j_kg=lhv)
+
+
+def candidate(family):
+    two = family == 'glow_2t'
+    name = 'MAX-55AX' if two else 'FS-64V'
+    url = ('https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm'
+           if two else 'https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html')
+    rated = 16000. if two else 11000.
+    rated_w = (1.7 if two else 1.14)*735.49875  # PS, explicitly not mechanical hp
+    rpm = [0., 2000., 4000., 7000., 10000., 13000., rated, 17000.] if two else [0., 2400., 4000., 6000., 8000., 10000., rated]
+    # Net WOT torque hypotheses. Only the rated-power knot is manufacturer anchored.
+    q = [0., .18, .30, .52, .70, .78, rated_w/(rated*math.tau/60), .70] if two else [0., .17, .45, .65, .80, .77, rated_w/(rated*math.tau/60)]
+    volume = (8.93 if two else 10.46)*1e-6
+    p = {'displacement_m3': quantity(volume, SPEC['common']['displacement_m3'], 'derived', url+'; cc × 1e-6 -> m3')}
+    mech = [.008+.000002*r for r in rpm]
+    p['mechanical_torque_nm'] = quantity(list(map(list, zip(rpm, mech))), SPEC['common']['mechanical_torque_nm'])
+    p['combustion_efficiency'] = quantity([[0., 0.], [.5, .5], [.8, .90], [1., .98], [1.15, 1.], [1.6, .85], [2.5, .2]], SPEC['common']['combustion_efficiency'])
+    angle = math.tau if two else 2*math.tau
+    if two:
+        delivery = [.45, .55, .66, .8, .95, 1.02, 1.0, .96]
+        trap = [.6, .65, .70, .74, .76, .76, .74, .72]
+        scav = [2000.+.4*r for r in rpm]
+        family_values = {'delivery_ratio': list(map(list, zip(rpm, delivery))),
+                         'trapping_efficiency': list(map(list, zip(rpm, trap))),
+                         'scavenge_pressure_pa': list(map(list, zip(rpm, scav)))}
+        air_factor = [a*b for a,b in zip(delivery,trap)]
+        pump = [s*volume*d/angle for s,d in zip(scav,delivery)]
+        valve = [0.]*len(rpm)
+    else:
+        ve = [.35, .5, .68, .79, .88, .89, .85]
+        pumping = [2000.+.3*r for r in rpm]
+        valve = [.006+.000001*r for r in rpm]
+        family_values = {'volumetric_efficiency': list(map(list, zip(rpm,ve))),
+                         'pumping_pressure_pa': list(map(list, zip(rpm,pumping))),
+                         'intake_pressure_drop_pa': 35000.,
+                         'valve_torque_nm': list(map(list, zip(rpm,valve)))}
+        air_factor = ve
+        pump = [s*volume/angle for s in pumping]
+    for key, value in family_values.items():
+        p[key] = quantity(value, SPEC['families'][family][key])
+    f = fuel(); b = blend(f)
+    # Infer independent cycle-conversion coefficients from candidate brake torque and declared losses.
+    eta = [(torque+loss+qp+qv)*angle/(1.225*volume*af/b['stoich_air_fuel_ratio']*b['fuel_lhv_j_kg'])
+           for torque,loss,qp,qv,af in zip(q,mech,pump,valve,air_factor)]
+    assert all(0 <= e <= 1 for e in eta)
+    p['indicated_efficiency'] = quantity(list(map(list, zip(rpm,eta))), SPEC['common']['indicated_efficiency'],
+        'derived', 'build_profiles.py: independently inferred WOT torque knots + estimated gas-exchange/loss curves; ONLY rated-power knot constrained by '+url)
+    op_values = [rpm[-1], rated, rated_w, 1.225, 1.15]
+    op = {k: quantity(v, r, 'manual' if k in ['max_rpm','rated_rpm'] else 'estimated', url if k in ['max_rpm','rated_rpm'] else EST)
+          for (k,r),v in zip(SPEC['operation'].items(),op_values)}
+    op['rated_power_w'] = quantity(rated_w, SPEC['operation']['rated_power_w'], 'derived', url+'; metric PS × 735.49875 W/PS')
+    return dict(format='openrc-glow-engine v1', id='os_max_55ax_candidate' if two else 'os_fs_64v_candidate',
+                manufacturer='O.S. Engines', model=name, family=family, status='candidate',
+                feed='naturally_aspirated', oil_model='inert', parameters=p, fuel=f, operation=op)
+
+
+def quantity_schema(rule):
+    num = dict(type='number', maximum=rule['maximum'])
+    num['exclusiveMinimum' if rule['positive'] else 'minimum'] = rule['minimum']
+    if rule['shape']=='curve':
+        value = dict(type='array', minItems=2, items=dict(type='array', minItems=2,maxItems=2,
+            prefixItems=[dict(type='number',minimum=0),num],items=False))
+    else:
+        value = num
+    return dict(type='object', additionalProperties=False, required=['value','unit','kind','source'],
+                properties=dict(value=value, unit=dict(const=rule['unit']), kind=dict(enum=KINDS),
+                                source=dict(type='string',minLength=1,pattern=r'\S')))
+
+
+def group_schema(rules):
+    return dict(type='object',additionalProperties=False,required=list(rules),
+                properties={k:quantity_schema(v) for k,v in rules.items()})
+
+
+def schema():
+    root = dict(type='object',additionalProperties=False,
+                required=['format','id','manufacturer','model','family','status','feed','oil_model','parameters','fuel','operation'],
+                properties={k:dict(type='string',minLength=1,pattern=r'\S') for k in ['id','manufacturer','model']})
+    root['properties'].update(format=dict(const='openrc-glow-engine v1'),family=dict(enum=list(SPEC['families'])),
+        status=dict(const='candidate'),feed=dict(const='naturally_aspirated'),oil_model=dict(const='inert'),
+        fuel=group_schema(SPEC['fuel']),operation=group_schema(SPEC['operation']),parameters=dict(type='object'))
+    root['allOf'] = []
+    for fam, fields in SPEC['families'].items():
+        root['allOf'].append({'if':dict(properties=dict(family=dict(const=fam))),
+                             'then':dict(properties=dict(parameters=group_schema(SPEC['common']|fields)))})
+    root['$schema']='https://json-schema.org/draft/2020-12/schema'
+    root['title']='Standalone experimental RC glow engine profile v1'
+    root['description']='Generated by research/glow-engines/build_profiles.py. Runtime validates ordered support, fuel blend and derived finite output. Not an aircraft capability.'
+    return root
+
+
+def outputs():
+    return {'profile_contract.json': SPEC, 'openrc-glow-engine-v1.schema.json': schema(),
+            **{candidate(f)['id']+'.json':candidate(f) for f in SPEC['families']}}
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__); parser.add_argument('--check',action='store_true'); args=parser.parse_args()
+    stale=[]
+    for name,data in outputs().items():
+        text=json.dumps(data,ensure_ascii=False,indent=2,allow_nan=False)+'\n'; path=DEST/name
+        if args.check:
+            if not path.exists() or path.read_text(encoding='utf-8')!=text:stale.append(name)
+        else:
+            DEST.mkdir(parents=True,exist_ok=True); path.write_text(text,encoding='utf-8',newline='\n')
+    if stale: raise SystemExit('Stale generated profiles: '+', '.join(stale))
+    print('Glow profile generator: '+('current' if args.check else 'generated')+' (4 files)')
+
+
+if __name__=='__main__': main()

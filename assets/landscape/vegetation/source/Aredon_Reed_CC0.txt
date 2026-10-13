@@ -1,0 +1,9 @@
+Downloaded source: LowPoly Reed
+Author: Aredon
+Source page: https://opengameart.org/content/lowpoly-reed
+License: CC0 Public Domain (license shown on the OpenGameArt source page).
+Original archive: aredon_lowpoly_reed_cc0.zip
+Retrieved: 2026-10-13
+Bytes: 140207
+SHA-256: 03fd4f90d92618090829bac1152e4280327edb179139ae3f0c66542af31b89bd
+Selected OBJ and MTL files are copied byte-for-byte from the archive.

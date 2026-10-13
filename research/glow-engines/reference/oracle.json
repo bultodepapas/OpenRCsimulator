@@ -1,0 +1,2916 @@
+{
+  "schema": "openrc-glow-kernel-oracle-v1",
+  "random_seed": 20261013,
+  "cases": [
+    {
+      "id": "two_stroke_analytic",
+      "family": "two_stroke",
+      "rpm": 6000.0,
+      "admission": 0.5,
+      "mixture": 0.8,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.025464790894703264,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0015915494309189536,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.013873241463784311,
+        "delivered_fuel_kg_s": 8.88888888888889e-05,
+        "burned_fuel_kg_s": 3.200000000000001e-05,
+        "unburned_fuel_kg_s": 5.6888888888888895e-05,
+        "fuel_input_power_w": 80.00000000000001,
+        "chemical_power_w": 32.000000000000014,
+        "indicated_power_w": 16.000000000000007,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 1.0000000000000002,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.16000000000000006,
+        "air_charge_kg_cycle": 5e-06,
+        "cycle_frequency_hz": 100.0,
+        "opportunity_frequency_hz": 100.0,
+        "firing_frequency_hz": 100.0
+      }
+    },
+    {
+      "id": "four_stroke_analytic",
+      "family": "four_stroke",
+      "rpm": 6000.0,
+      "admission": 0.8,
+      "mixture": 1.0,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 0.5,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 3.9788735772973844e-05,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0008753521870054244,
+        "valve_torque_nm": 0.001,
+        "shaft_torque_nm": -0.011835563451232451,
+        "delivered_fuel_kg_s": 0.0004444444444444445,
+        "burned_fuel_kg_s": 0.00010000000000000002,
+        "unburned_fuel_kg_s": 0.00034444444444444453,
+        "fuel_input_power_w": 0.4000000000000001,
+        "chemical_power_w": 0.10000000000000002,
+        "indicated_power_w": 0.02500000000000001,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 0.55,
+        "valve_loss_w": 0.6283185307179586,
+        "cycle_work_j": 0.0005000000000000001,
+        "air_charge_kg_cycle": 8e-05,
+        "cycle_frequency_hz": 50.0,
+        "opportunity_frequency_hz": 50.0,
+        "firing_frequency_hz": 25.0
+      }
+    },
+    {
+      "id": "two_stroke_stopped",
+      "family": "two_stroke",
+      "rpm": 0.0,
+      "admission": 0.5,
+      "mixture": 0.8,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.0,
+        "pumping_torque_nm": 0.0,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.0,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 0.0,
+        "pumping_loss_w": 0.0,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 5e-06,
+        "cycle_frequency_hz": 0.0,
+        "opportunity_frequency_hz": 0.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_stopped",
+      "family": "four_stroke",
+      "rpm": 0.0,
+      "admission": 0.8,
+      "mixture": 1.0,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.0,
+        "pumping_torque_nm": 0.0,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.0,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 0.0,
+        "pumping_loss_w": 0.0,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 8e-05,
+        "cycle_frequency_hz": 0.0,
+        "opportunity_frequency_hz": 0.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_cut",
+      "family": "two_stroke",
+      "rpm": 6000.0,
+      "admission": 0.5,
+      "mixture": 0.8,
+      "dry_density_kg_m3": 1.0,
+      "running": false,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0015915494309189536,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.011591549430918953,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 1.0000000000000002,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 5e-06,
+        "cycle_frequency_hz": 100.0,
+        "opportunity_frequency_hz": 100.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_cut",
+      "family": "four_stroke",
+      "rpm": 6000.0,
+      "admission": 0.8,
+      "mixture": 1.0,
+      "dry_density_kg_m3": 1.0,
+      "running": false,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0008753521870054244,
+        "valve_torque_nm": 0.001,
+        "shaft_torque_nm": -0.011875352187005424,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 0.55,
+        "valve_loss_w": 0.6283185307179586,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 8e-05,
+        "cycle_frequency_hz": 50.0,
+        "opportunity_frequency_hz": 50.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_zero_admission",
+      "family": "two_stroke",
+      "rpm": 6000.0,
+      "admission": 0.0,
+      "mixture": 0.8,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.01,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 0.0,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 0.0,
+        "cycle_frequency_hz": 100.0,
+        "opportunity_frequency_hz": 100.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_zero_admission",
+      "family": "four_stroke",
+      "rpm": 6000.0,
+      "admission": 0.0,
+      "mixture": 1.0,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0011936620731892152,
+        "valve_torque_nm": 0.001,
+        "shaft_torque_nm": -0.012193662073189216,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 0.7500000000000001,
+        "valve_loss_w": 0.6283185307179586,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 0.0,
+        "cycle_frequency_hz": 50.0,
+        "opportunity_frequency_hz": 50.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_zero_mixture",
+      "family": "two_stroke",
+      "rpm": 6000.0,
+      "admission": 0.5,
+      "mixture": 0.0,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0015915494309189536,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.011591549430918953,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 1.0000000000000002,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 5e-06,
+        "cycle_frequency_hz": 100.0,
+        "opportunity_frequency_hz": 100.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_zero_mixture",
+      "family": "four_stroke",
+      "rpm": 6000.0,
+      "admission": 0.8,
+      "mixture": 0.0,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0008753521870054244,
+        "valve_torque_nm": 0.001,
+        "shaft_torque_nm": -0.011875352187005424,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 0.55,
+        "valve_loss_w": 0.6283185307179586,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 8e-05,
+        "cycle_frequency_hz": 50.0,
+        "opportunity_frequency_hz": 50.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_zero_completion",
+      "family": "two_stroke",
+      "rpm": 6000.0,
+      "admission": 0.5,
+      "mixture": 0.8,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.0,
+          2.0,
+          0.0
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0015915494309189536,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.011591549430918953,
+        "delivered_fuel_kg_s": 8.88888888888889e-05,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 8.88888888888889e-05,
+        "fuel_input_power_w": 80.00000000000001,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 1.0000000000000002,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 5e-06,
+        "cycle_frequency_hz": 100.0,
+        "opportunity_frequency_hz": 100.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_zero_completion",
+      "family": "four_stroke",
+      "rpm": 6000.0,
+      "admission": 0.8,
+      "mixture": 1.0,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.0,
+          2.0,
+          0.0
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0008753521870054244,
+        "valve_torque_nm": 0.001,
+        "shaft_torque_nm": -0.011875352187005424,
+        "delivered_fuel_kg_s": 0.0004444444444444445,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0004444444444444445,
+        "fuel_input_power_w": 0.4000000000000001,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 0.55,
+        "valve_loss_w": 0.6283185307179586,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 8e-05,
+        "cycle_frequency_hz": 50.0,
+        "opportunity_frequency_hz": 50.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_lower_bound",
+      "family": "two_stroke",
+      "rpm": 0.0,
+      "admission": 0.2,
+      "mixture": 0.0,
+      "dry_density_kg_m3": 0.9,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.0,
+        "pumping_torque_nm": 0.0,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.0,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 0.0,
+        "pumping_loss_w": 0.0,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 1.8000000000000001e-06,
+        "cycle_frequency_hz": 0.0,
+        "opportunity_frequency_hz": 0.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_upper_bound",
+      "family": "two_stroke",
+      "rpm": 12000.0,
+      "admission": 0.9,
+      "mixture": 2.0,
+      "dry_density_kg_m3": 1.2,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0687549354156988,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0028647889756541166,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.05589014644004468,
+        "delivered_fuel_kg_s": 0.0009599999999999999,
+        "burned_fuel_kg_s": 0.00017280000000000003,
+        "unburned_fuel_kg_s": 0.0007871999999999998,
+        "fuel_input_power_w": 864.0000000000001,
+        "chemical_power_w": 172.80000000000004,
+        "indicated_power_w": 86.40000000000002,
+        "mechanical_loss_w": 12.566370614359172,
+        "pumping_loss_w": 3.6000000000000005,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.43200000000000005,
+        "air_charge_kg_cycle": 1.08e-05,
+        "cycle_frequency_hz": 200.0,
+        "opportunity_frequency_hz": 200.0,
+        "firing_frequency_hz": 200.0
+      }
+    },
+    {
+      "id": "four_stroke_lower_bound",
+      "family": "four_stroke",
+      "rpm": 0.0,
+      "admission": 0.2,
+      "mixture": 0.0,
+      "dry_density_kg_m3": 0.9,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.0,
+        "pumping_torque_nm": 0.0,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.0,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 0.0,
+        "pumping_loss_w": 0.0,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 1.8e-05,
+        "cycle_frequency_hz": 0.0,
+        "opportunity_frequency_hz": 0.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_upper_bound",
+      "family": "four_stroke",
+      "rpm": 12000.0,
+      "admission": 0.9,
+      "mixture": 2.0,
+      "dry_density_kg_m3": 1.2,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.00010742958658702937,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0008355634512324506,
+        "valve_torque_nm": 0.001,
+        "shaft_torque_nm": -0.01172813386464542,
+        "delivered_fuel_kg_s": 0.0024000000000000002,
+        "burned_fuel_kg_s": 0.0005400000000000001,
+        "unburned_fuel_kg_s": 0.00186,
+        "fuel_input_power_w": 2.1600000000000006,
+        "chemical_power_w": 0.5400000000000001,
+        "indicated_power_w": 0.13500000000000004,
+        "mechanical_loss_w": 12.566370614359172,
+        "pumping_loss_w": 1.05,
+        "valve_loss_w": 1.2566370614359172,
+        "cycle_work_j": 0.0013500000000000003,
+        "air_charge_kg_cycle": 0.00010800000000000001,
+        "cycle_frequency_hz": 100.0,
+        "opportunity_frequency_hz": 100.0,
+        "firing_frequency_hz": 100.0
+      }
+    },
+    {
+      "id": "two_stroke_port_loss",
+      "family": "two_stroke",
+      "rpm": 6000.0,
+      "admission": 0.75,
+      "mixture": 0.8,
+      "dry_density_kg_m3": 1.1,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          600.0,
+          12000.0,
+          600.0
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.04201690497626038,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0014323944878270583,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.030584510488433317,
+        "delivered_fuel_kg_s": 0.0001466666666666667,
+        "burned_fuel_kg_s": 5.2800000000000016e-05,
+        "unburned_fuel_kg_s": 9.386666666666668e-05,
+        "fuel_input_power_w": 132.00000000000003,
+        "chemical_power_w": 52.80000000000002,
+        "indicated_power_w": 26.400000000000006,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 0.9000000000000001,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.26400000000000007,
+        "air_charge_kg_cycle": 8.25e-06,
+        "cycle_frequency_hz": 100.0,
+        "opportunity_frequency_hz": 100.0,
+        "firing_frequency_hz": 100.0
+      }
+    },
+    {
+      "id": "four_stroke_valve_and_pump_loss",
+      "family": "four_stroke",
+      "rpm": 6000.0,
+      "admission": 0.75,
+      "mixture": 1.0,
+      "dry_density_kg_m3": 1.1,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          130.0,
+          12000.0,
+          130.0
+        ],
+        "intake_pressure_drop_pa": 40.0,
+        "valve_torque_nm": [
+          0.0,
+          0.003,
+          12000.0,
+          0.003
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 8.206426753175854e-05,
+        "mechanical_torque_nm": 0.01,
+        "pumping_torque_nm": 0.0011140846016432673,
+        "valve_torque_nm": 0.003,
+        "shaft_torque_nm": -0.014032020334111509,
+        "delivered_fuel_kg_s": 0.0004583333333333333,
+        "burned_fuel_kg_s": 0.00020625000000000003,
+        "unburned_fuel_kg_s": 0.0002520833333333333,
+        "fuel_input_power_w": 0.41250000000000003,
+        "chemical_power_w": 0.20625000000000002,
+        "indicated_power_w": 0.051562500000000004,
+        "mechanical_loss_w": 6.283185307179586,
+        "pumping_loss_w": 0.7,
+        "valve_loss_w": 1.884955592153876,
+        "cycle_work_j": 0.00103125,
+        "air_charge_kg_cycle": 8.250000000000001e-05,
+        "cycle_frequency_hz": 50.0,
+        "opportunity_frequency_hz": 50.0,
+        "firing_frequency_hz": 50.0
+      }
+    },
+    {
+      "id": "two_stroke_unsupported_rpm",
+      "family": "two_stroke",
+      "rpm": 13000.0,
+      "admission": 0.5,
+      "mixture": 0.8,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 1e-05,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8,
+          2.0,
+          0.8
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.0,
+          12000.0,
+          2.0
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5,
+          12000.0,
+          0.5
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1000.0,
+          12000.0,
+          1000.0
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "message": "delivery_ratio does not cover the query",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.0,
+        "pumping_torque_nm": 0.0,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.0,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 0.0,
+        "pumping_loss_w": 0.0,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 0.0,
+        "cycle_frequency_hz": 0.0,
+        "opportunity_frequency_hz": 0.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_unsupported_mixture",
+      "family": "four_stroke",
+      "rpm": 6000.0,
+      "admission": 0.8,
+      "mixture": 2.1,
+      "dry_density_kg_m3": 1.0,
+      "running": true,
+      "firing_fraction": 1.0,
+      "parameters": {
+        "displacement_m3": 0.0001,
+        "oil_fraction": 0.1,
+        "stoich_air_fuel_ratio": 10.0,
+        "fuel_lhv_j_kg": 1000.0,
+        "mechanical_torque_nm": [
+          0.0,
+          0.01,
+          12000.0,
+          0.01
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5,
+          2.0,
+          0.5
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25,
+          12000.0,
+          0.25
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0,
+          12000.0,
+          1.0
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          100.0,
+          12000.0,
+          100.0
+        ],
+        "intake_pressure_drop_pa": 50.0,
+        "valve_torque_nm": [
+          0.0,
+          0.001,
+          12000.0,
+          0.001
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "message": "combustion_efficiency does not cover the query",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.0,
+        "pumping_torque_nm": 0.0,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 0.0,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 0.0,
+        "pumping_loss_w": 0.0,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 0.0,
+        "cycle_frequency_hz": 0.0,
+        "opportunity_frequency_hz": 0.0,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_random_00",
+      "family": "two_stroke",
+      "rpm": 8038.194528149492,
+      "admission": 0.2630644367733321,
+      "mixture": 1.1715201122789363,
+      "dry_density_kg_m3": 1.1151378605324826,
+      "running": false,
+      "firing_fraction": 0.3968986005881131,
+      "parameters": {
+        "displacement_m3": 6.492990084843563e-05,
+        "oil_fraction": 0.0748061473926859,
+        "stoich_air_fuel_ratio": 13.27452938074161,
+        "fuel_lhv_j_kg": 39267739.188989155,
+        "mechanical_torque_nm": [
+          0.0,
+          0.013789057130063807,
+          6000.0,
+          0.019471577143536502,
+          12000.0,
+          0.017184045905563498
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.6064512144036031,
+          1.0,
+          0.5848955836002578,
+          2.0,
+          0.7948406305091194
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.4375566876331226,
+          6000.0,
+          0.4227910689366062,
+          12000.0,
+          0.14651661877883992
+        ],
+        "delivery_ratio": [
+          0.0,
+          1.1645934008867025,
+          6000.0,
+          2.226089849365441,
+          12000.0,
+          2.4299517308737975
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.2573198134592878,
+          6000.0,
+          0.36494539830094663,
+          12000.0,
+          0.2754043931415992
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          832.558333018239,
+          6000.0,
+          1218.7351004357452,
+          12000.0,
+          265.367485544832
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.018694504868168565,
+        "pumping_torque_nm": 0.005583900498926839,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.024278405367095406,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 15.736244590594897,
+        "pumping_loss_w": 4.7002915905130305,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 1.4625669404983484e-05,
+        "cycle_frequency_hz": 133.96990880249152,
+        "opportunity_frequency_hz": 133.96990880249152,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_random_01",
+      "family": "two_stroke",
+      "rpm": 1768.18593859157,
+      "admission": 0.5522264121029683,
+      "mixture": 0.8525509670634739,
+      "dry_density_kg_m3": 1.2093950173473618,
+      "running": false,
+      "firing_fraction": 0.9540444420334211,
+      "parameters": {
+        "displacement_m3": 7.804381430556061e-05,
+        "oil_fraction": 0.10110473760118403,
+        "stoich_air_fuel_ratio": 12.292316576989437,
+        "fuel_lhv_j_kg": 34668314.37505188,
+        "mechanical_torque_nm": [
+          0.0,
+          0.024059945381253674,
+          6000.0,
+          0.019519839626058275,
+          12000.0,
+          0.017817270769651103
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.9319316603444608,
+          1.0,
+          0.4059864433085496,
+          2.0,
+          0.8788128901953013
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.405408355520244,
+          6000.0,
+          0.12372786776808802,
+          12000.0,
+          0.1733491015997444
+        ],
+        "delivery_ratio": [
+          0.0,
+          1.5793008716337131,
+          6000.0,
+          1.1942831405639498,
+          12000.0,
+          1.964605117979118
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.7378707603669958,
+          6000.0,
+          0.6563208392986188,
+          12000.0,
+          0.5114913496000039
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1500.2324469268028,
+          6000.0,
+          860.3543473890243,
+          12000.0,
+          963.4013744599039
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.02272198685524448,
+        "pumping_torque_nm": 0.013188134907858176,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.035910121763102654,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 4.20729393987551,
+        "pumping_loss_w": 2.441967792234926,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 5.453926854715837e-05,
+        "cycle_frequency_hz": 29.469765643192833,
+        "opportunity_frequency_hz": 29.469765643192833,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_random_02",
+      "family": "two_stroke",
+      "rpm": 202.47075720079766,
+      "admission": 0.47596249325518325,
+      "mixture": 0.38332039994025213,
+      "dry_density_kg_m3": 1.226929845485111,
+      "running": true,
+      "firing_fraction": 0.06788418096506343,
+      "parameters": {
+        "displacement_m3": 2.8359651220589502e-05,
+        "oil_fraction": 0.07547559361713997,
+        "stoich_air_fuel_ratio": 13.463901422556908,
+        "fuel_lhv_j_kg": 36336499.97205672,
+        "mechanical_torque_nm": [
+          0.0,
+          0.00251436747849771,
+          6000.0,
+          0.039901358572295154,
+          12000.0,
+          0.03939948864855882
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.3169163670537179,
+          1.0,
+          0.08522724282452795,
+          2.0,
+          0.3151043298812743
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.30023377284229624,
+          6000.0,
+          0.28589636491702697,
+          12000.0,
+          0.1723905045484646
+        ],
+        "delivery_ratio": [
+          0.0,
+          1.8592333656319562,
+          6000.0,
+          1.5470775766503926,
+          12000.0,
+          2.453898444645006
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.28705647342270063,
+          6000.0,
+          0.6564549264729196,
+          12000.0,
+          0.6912895107198043
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1160.5562445567061,
+          6000.0,
+          1066.6244738951027,
+          12000.0,
+          1098.636865259561
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.00700818194574821,
+        "mechanical_torque_nm": 0.0037759962112011514,
+        "pumping_torque_nm": 0.004596619088700576,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.0013644333541535172,
+        "delivered_fuel_kg_s": 3.1815839475506253e-06,
+        "burned_fuel_kg_s": 1.3642503503185075e-08,
+        "unburned_fuel_kg_s": 3.1679414440474404e-06,
+        "fuel_input_power_w": 106.88207089612136,
+        "chemical_power_w": 0.49572082816226815,
+        "indicated_power_w": 0.1485922960345738,
+        "mechanical_loss_w": 0.08006126998181522,
+        "pumping_loss_w": 0.097460680911795,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0440337058315664,
+        "air_charge_kg_cycle": 9.170399189124404e-06,
+        "cycle_frequency_hz": 3.374512620013294,
+        "opportunity_frequency_hz": 3.374512620013294,
+        "firing_frequency_hz": 0.2290760253658728
+      }
+    },
+    {
+      "id": "two_stroke_random_03",
+      "family": "two_stroke",
+      "rpm": 2122.020015737453,
+      "admission": 0.789117869353428,
+      "mixture": 0.7166365472910348,
+      "dry_density_kg_m3": 1.0918573151343933,
+      "running": true,
+      "firing_fraction": 0.9395666700950823,
+      "parameters": {
+        "displacement_m3": 7.610419357763156e-05,
+        "oil_fraction": 0.11049114688849382,
+        "stoich_air_fuel_ratio": 8.70990588822927,
+        "fuel_lhv_j_kg": 19800831.24221051,
+        "mechanical_torque_nm": [
+          0.0,
+          0.025961106694464466,
+          6000.0,
+          0.013779745243424537,
+          12000.0,
+          0.027699761157163612
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.5647180781593775,
+          1.0,
+          0.4682902241901218,
+          2.0,
+          0.39465986074339304
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.13652520423131123,
+          6000.0,
+          0.3516463215640934,
+          12000.0,
+          0.4133939419502871
+        ],
+        "delivery_ratio": [
+          0.0,
+          1.1573812008444369,
+          6000.0,
+          2.5437700344223657,
+          12000.0,
+          1.1640699823152507
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.39178116924654605,
+          6000.0,
+          0.8075346959608038,
+          12000.0,
+          0.8823453243293338
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          583.7249951913573,
+          6000.0,
+          1125.9861943293822,
+          12000.0,
+          566.0436198574115
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 1.4944399161658601,
+        "mechanical_torque_nm": 0.021652924558124575,
+        "pumping_torque_nm": 0.012213372378421902,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 1.4605736192293137,
+        "delivered_fuel_kg_s": 0.00035345110647809865,
+        "burned_fuel_kg_s": 7.888517377515232e-05,
+        "unburned_fuel_kg_s": 0.00027456593270294634,
+        "fuel_input_power_w": 6225.339530211358,
+        "chemical_power_w": 1561.9920134342415,
+        "indicated_power_w": 332.09057714593484,
+        "mechanical_loss_w": 4.811656952963048,
+        "pumping_loss_w": 2.7140240555500523,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 9.389842923716024,
+        "air_charge_kg_cycle": 5.821570919871131e-05,
+        "cycle_frequency_hz": 35.36700026229088,
+        "opportunity_frequency_hz": 35.36700026229088,
+        "firing_frequency_hz": 33.22965466769254
+      }
+    },
+    {
+      "id": "two_stroke_random_04",
+      "family": "two_stroke",
+      "rpm": 7246.6321403445145,
+      "admission": 0.6428246773394323,
+      "mixture": 0.39843592168659225,
+      "dry_density_kg_m3": 0.9788448372175753,
+      "running": false,
+      "firing_fraction": 0.679945357326811,
+      "parameters": {
+        "displacement_m3": 7.29540189166349e-05,
+        "oil_fraction": 0.0882080885414635,
+        "stoich_air_fuel_ratio": 9.383219430452506,
+        "fuel_lhv_j_kg": 26411915.14432066,
+        "mechanical_torque_nm": [
+          0.0,
+          0.013783831462854956,
+          6000.0,
+          0.008667076268122319,
+          12000.0,
+          0.009933472518007923
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.6770897441253827,
+          1.0,
+          0.06818662518094484,
+          2.0,
+          0.3451179119886173
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.32083408288368764,
+          6000.0,
+          0.436752234257167,
+          12000.0,
+          0.28236924842320976
+        ],
+        "delivery_ratio": [
+          0.0,
+          1.4806221652463696,
+          6000.0,
+          1.6331100557421032,
+          12000.0,
+          1.1943534273072935
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.44375861793326354,
+          6000.0,
+          0.7847557591089129,
+          12000.0,
+          0.6728370032989552
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          663.782825894713,
+          6000.0,
+          1126.3939687695934,
+          12000.0,
+          220.65510175634876
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.008930197979375512,
+        "pumping_torque_nm": 0.010797678268038723,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.019727876247414233,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 6.776819540315999,
+        "pumping_loss_w": 8.193985983948732,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 5.3900983478324416e-05,
+        "cycle_frequency_hz": 120.77720233907525,
+        "opportunity_frequency_hz": 120.77720233907525,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_random_05",
+      "family": "two_stroke",
+      "rpm": 2750.43143458057,
+      "admission": 0.45638131726005177,
+      "mixture": 1.1792372778932254,
+      "dry_density_kg_m3": 1.2170452634692508,
+      "running": true,
+      "firing_fraction": 0.9777907636919131,
+      "parameters": {
+        "displacement_m3": 9.473599856292761e-05,
+        "oil_fraction": 0.11455578291598123,
+        "stoich_air_fuel_ratio": 13.738787867884932,
+        "fuel_lhv_j_kg": 40253539.00482001,
+        "mechanical_torque_nm": [
+          0.0,
+          0.03185693432384996,
+          6000.0,
+          0.022555925875986933,
+          12000.0,
+          0.027872555840340648
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.3584084938362711,
+          1.0,
+          0.860755279484363,
+          2.0,
+          0.7821920969877154
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.4341157952119513,
+          6000.0,
+          0.13556945991960778,
+          12000.0,
+          0.3645294134331102
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.4208705053979545,
+          6000.0,
+          2.240762661682993,
+          12000.0,
+          1.9983016943706813
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.8215521827108598,
+          6000.0,
+          0.5182538721844657,
+          12000.0,
+          0.5759617571247265
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          1204.3439976672057,
+          6000.0,
+          1529.7125679163366,
+          12000.0,
+          549.3234340764382
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 9.636982523094703,
+        "mechanical_torque_nm": 0.027593303322466307,
+        "pumping_torque_nm": 0.021778166325820265,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": 9.587611053446416,
+        "delivered_fuel_kg_s": 0.0005467546842197983,
+        "burned_fuel_kg_s": 0.00023196854943763703,
+        "unburned_fuel_kg_s": 0.0003147861347821613,
+        "fuel_input_power_w": 19487.574431317473,
+        "chemical_power_w": 9337.555052679441,
+        "indicated_power_w": 2775.687133462021,
+        "mechanical_loss_w": 7.947547566713784,
+        "pumping_loss_w": 6.272645604172289,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 60.55094699465509,
+        "air_charge_kg_cycle": 8.397806935481332e-05,
+        "cycle_frequency_hz": 45.84052390967617,
+        "opportunity_frequency_hz": 45.84052390967617,
+        "firing_frequency_hz": 44.82244088167967
+      }
+    },
+    {
+      "id": "two_stroke_random_06",
+      "family": "two_stroke",
+      "rpm": 5911.221821303941,
+      "admission": 0.3411117034945207,
+      "mixture": 0.1519475108901851,
+      "dry_density_kg_m3": 0.7881616207912782,
+      "running": false,
+      "firing_fraction": 0.983091991637127,
+      "parameters": {
+        "displacement_m3": 1.928634446154983e-05,
+        "oil_fraction": 0.13135570493905904,
+        "stoich_air_fuel_ratio": 10.461119908162775,
+        "fuel_lhv_j_kg": 14924583.06751484,
+        "mechanical_torque_nm": [
+          0.0,
+          0.011087399054806952,
+          6000.0,
+          0.015250991235446015,
+          12000.0,
+          0.03805050100601567
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.6469423812929098,
+          1.0,
+          0.6789057520050326,
+          2.0,
+          0.8414574659858789
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.3519642159818036,
+          6000.0,
+          0.28776218679608767,
+          12000.0,
+          0.2175989744858448
+        ],
+        "delivery_ratio": [
+          0.0,
+          2.2352665718662266,
+          6000.0,
+          0.73034735078831,
+          12000.0,
+          1.4717144829692828
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.35990739814940526,
+          6000.0,
+          0.22642517112812843,
+          12000.0,
+          0.5109269488237984
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          428.11716193231337,
+          6000.0,
+          935.4640954161787,
+          12000.0,
+          872.4562064255354
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.0151893852136743,
+        "pumping_torque_nm": 0.0007312524024837712,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.01592063761615807,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 9.402559080997761,
+        "pumping_loss_w": 0.452661106473578,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 8.913146234007679e-07,
+        "cycle_frequency_hz": 98.52036368839903,
+        "opportunity_frequency_hz": 98.52036368839903,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "two_stroke_random_07",
+      "family": "two_stroke",
+      "rpm": 6251.055242504674,
+      "admission": 0.6072855331114868,
+      "mixture": 1.8480746819614664,
+      "dry_density_kg_m3": 0.8993417530712691,
+      "running": false,
+      "firing_fraction": 0.16325824844478776,
+      "parameters": {
+        "displacement_m3": 7.313558187734504e-05,
+        "oil_fraction": 0.21098829217157042,
+        "stoich_air_fuel_ratio": 11.603705704201783,
+        "fuel_lhv_j_kg": 5200888.1213015355,
+        "mechanical_torque_nm": [
+          0.0,
+          0.002357555383889134,
+          6000.0,
+          0.002658545650702689,
+          12000.0,
+          0.018906074100569364
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.7125033475088117,
+          1.0,
+          0.3174995580359,
+          2.0,
+          0.7182285351626719
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.25054557319555526,
+          6000.0,
+          0.39885565883261087,
+          12000.0,
+          0.4509935662506528
+        ],
+        "delivery_ratio": [
+          0.0,
+          0.9728439447507857,
+          6000.0,
+          2.057398289847784,
+          12000.0,
+          1.4142209153384317
+        ],
+        "trapping_efficiency": [
+          0.0,
+          0.5472303691380039,
+          6000.0,
+          0.5049413252828041,
+          12000.0,
+          0.7367465060654996
+        ],
+        "scavenge_pressure_pa": [
+          0.0,
+          727.9141935081963,
+          6000.0,
+          883.3754635982522,
+          12000.0,
+          1014.760692384462
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.0033383835165498345,
+        "pumping_torque_nm": 0.012757967886951629,
+        "valve_torque_nm": 0.0,
+        "shaft_torque_nm": -0.016096351403501463,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 2.1853358093702333,
+        "pumping_loss_w": 8.351480271794799,
+        "valve_loss_w": 0.0,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 4.1739814808883845e-05,
+        "cycle_frequency_hz": 104.18425404174458,
+        "opportunity_frequency_hz": 104.18425404174458,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_random_00",
+      "family": "four_stroke",
+      "rpm": 9571.244634476463,
+      "admission": 0.35152943414575055,
+      "mixture": 1.4429587613281916,
+      "dry_density_kg_m3": 1.1346978208429994,
+      "running": true,
+      "firing_fraction": 0.648566565482085,
+      "parameters": {
+        "displacement_m3": 8.025142182859106e-05,
+        "oil_fraction": 0.08518688862659199,
+        "stoich_air_fuel_ratio": 10.71983899145767,
+        "fuel_lhv_j_kg": 42106429.437133856,
+        "mechanical_torque_nm": [
+          0.0,
+          0.002683195721070254,
+          6000.0,
+          0.038716443088660055,
+          12000.0,
+          0.03431230040310847
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8464879680843266,
+          1.0,
+          0.8623009422835669,
+          2.0,
+          0.49581011021917415
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.18996754324419973,
+          6000.0,
+          0.36072582808559933,
+          12000.0,
+          0.37165438339184603
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          0.7761486725897989,
+          6000.0,
+          0.5663622626809118,
+          12000.0,
+          0.8090735890982854
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          461.756380393654,
+          6000.0,
+          368.3516430992057,
+          12000.0,
+          247.64742638150864
+        ],
+        "intake_pressure_drop_pa": 104.46995957682634,
+        "valve_torque_nm": [
+          0.0,
+          0.003995030924853469,
+          6000.0,
+          0.006626338696378979,
+          12000.0,
+          0.0016461147112975384
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 1.1857009295430312,
+        "mechanical_torque_nm": 0.036095064599452574,
+        "pumping_torque_nm": 0.002326196263000947,
+        "valve_torque_nm": 0.003662072332176798,
+        "shaft_torque_nm": 1.1436175963484008,
+        "delivered_fuel_kg_s": 0.0002670412249933329,
+        "burned_fuel_kg_s": 7.685726651782063e-05,
+        "unburned_fuel_kg_s": 0.0001901839584755123,
+        "fuel_input_power_w": 10286.298130526262,
+        "chemical_power_w": 3236.1850693636047,
+        "indicated_power_w": 1188.4261378160948,
+        "mechanical_loss_w": 36.17802529064568,
+        "pumping_loss_w": 2.3315427792621284,
+        "valve_loss_w": 3.670489218397889,
+        "cycle_work_j": 14.899957318427903,
+        "air_charge_kg_cycle": 2.2754005795857432e-05,
+        "cycle_frequency_hz": 79.76037195397052,
+        "opportunity_frequency_hz": 79.76037195397052,
+        "firing_frequency_hz": 51.72991049976028
+      }
+    },
+    {
+      "id": "four_stroke_random_01",
+      "family": "four_stroke",
+      "rpm": 7084.214377605124,
+      "admission": 0.7027536384524458,
+      "mixture": 0.2579668295242328,
+      "dry_density_kg_m3": 0.9936074355893164,
+      "running": true,
+      "firing_fraction": 0.24652112080622968,
+      "parameters": {
+        "displacement_m3": 4.843466856274321e-05,
+        "oil_fraction": 0.13308250758779927,
+        "stoich_air_fuel_ratio": 10.292908060768386,
+        "fuel_lhv_j_kg": 41795175.084384866,
+        "mechanical_torque_nm": [
+          0.0,
+          0.021653995732484208,
+          6000.0,
+          0.029636031755231253,
+          12000.0,
+          0.038679875032616405
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.7155122213335264,
+          1.0,
+          0.09121984162606928,
+          2.0,
+          0.06336620301757948
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.1336338547697785,
+          6000.0,
+          0.16318841809089954,
+          12000.0,
+          0.33282097905006075
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          0.9922894693275686,
+          6000.0,
+          0.7466129443921459,
+          12000.0,
+          1.1012832527088725
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          385.9242751943714,
+          6000.0,
+          483.28413182460804,
+          12000.0,
+          317.7597632916448
+        ],
+        "intake_pressure_drop_pa": 91.45986882058274,
+        "valve_torque_nm": [
+          0.0,
+          0.003218634331039273,
+          6000.0,
+          0.0002895755970342684,
+          12000.0,
+          0.005970507251981235
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.06055544707121432,
+        "mechanical_torque_nm": 0.031270275906922655,
+        "pumping_torque_nm": 0.0018522249123437953,
+        "valve_torque_nm": 0.0013161335601151974,
+        "shaft_torque_nm": 0.02611681269183267,
+        "delivered_fuel_kg_s": 4.6794450621398126e-05,
+        "burned_fuel_kg_s": 5.5449901326205444e-06,
+        "unburned_fuel_kg_s": 4.124946048877758e-05,
+        "fuel_input_power_w": 1695.5018496817174,
+        "chemical_power_w": 231.7538334340621,
+        "indicated_power_w": 44.92349409641092,
+        "mechanical_loss_w": 23.19807916611936,
+        "pumping_loss_w": 1.3740863776803942,
+        "valve_loss_w": 0.9763831509391863,
+        "cycle_work_j": 0.7609621906150899,
+        "air_charge_kg_cycle": 2.741800791532004e-05,
+        "cycle_frequency_hz": 59.035119813376035,
+        "opportunity_frequency_hz": 59.035119813376035,
+        "firing_frequency_hz": 14.553403903323517
+      }
+    },
+    {
+      "id": "four_stroke_random_02",
+      "family": "four_stroke",
+      "rpm": 5506.240175323223,
+      "admission": 0.5619444970150521,
+      "mixture": 1.1846520870969834,
+      "dry_density_kg_m3": 0.7735297549412381,
+      "running": false,
+      "firing_fraction": 0.21936076311718145,
+      "parameters": {
+        "displacement_m3": 6.742448129226205e-05,
+        "oil_fraction": 0.19603963323656973,
+        "stoich_air_fuel_ratio": 8.135313651717793,
+        "fuel_lhv_j_kg": 42352664.57851014,
+        "mechanical_torque_nm": [
+          0.0,
+          0.020877380517931435,
+          6000.0,
+          0.0215402446379712,
+          12000.0,
+          0.020974585350678598
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.8466312944561816,
+          1.0,
+          0.09476745857764966,
+          2.0,
+          0.25732834861067566
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.4437479082978964,
+          6000.0,
+          0.39719590931029936,
+          12000.0,
+          0.263375894368632
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          0.9340454743021511,
+          6000.0,
+          1.2219960464889612,
+          12000.0,
+          0.8025611383448623
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          303.17433435961175,
+          6000.0,
+          477.77818697572195,
+          12000.0,
+          72.2475893607681
+        ],
+        "intake_pressure_drop_pa": 21.802822529973295,
+        "valve_torque_nm": [
+          0.0,
+          0.008249731472914346,
+          6000.0,
+          0.007694544560688497,
+          12000.0,
+          0.0038141598669928457
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.02148569535935531,
+        "pumping_torque_nm": 0.0025376542076942627,
+        "valve_torque_nm": 0.007740232726095743,
+        "shaft_torque_nm": -0.03176358229314531,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 12.388912410774548,
+        "pumping_loss_w": 1.463242179605261,
+        "valve_loss_w": 4.46311202308177,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 3.5119917783025516e-05,
+        "cycle_frequency_hz": 45.8853347943602,
+        "opportunity_frequency_hz": 45.8853347943602,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_random_03",
+      "family": "four_stroke",
+      "rpm": 9690.88336500394,
+      "admission": 0.6364656219437148,
+      "mixture": 0.8781520096996935,
+      "dry_density_kg_m3": 0.9405560373662144,
+      "running": false,
+      "firing_fraction": 0.5361344367433912,
+      "parameters": {
+        "displacement_m3": 6.260717253719463e-05,
+        "oil_fraction": 0.09091111441709732,
+        "stoich_air_fuel_ratio": 8.37838024413396,
+        "fuel_lhv_j_kg": 4858666.205566259,
+        "mechanical_torque_nm": [
+          0.0,
+          0.007515729739658475,
+          6000.0,
+          0.015620752369537118,
+          12000.0,
+          0.016836155856146832
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.48141500287096956,
+          1.0,
+          0.4426649142111847,
+          2.0,
+          0.44662235578314674
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.1519643694685243,
+          6000.0,
+          0.3151441205296913,
+          12000.0,
+          0.2602763287288404
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0967928448511246,
+          6000.0,
+          0.700697837271454,
+          12000.0,
+          0.9661105667526906
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          323.3639718937854,
+          6000.0,
+          201.49431641166404,
+          12000.0,
+          373.64870529983233
+        ],
+        "intake_pressure_drop_pa": 146.01803688872937,
+        "valve_torque_nm": [
+          0.0,
+          0.004483460078744489,
+          6000.0,
+          0.004240373199954556,
+          12000.0,
+          0.009143375954282338
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.016368404454619716,
+        "pumping_torque_nm": 0.0017959407832514214,
+        "valve_torque_nm": 0.007256441750707374,
+        "shaft_torque_nm": -0.02542078698857851,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 16.61109768876208,
+        "pumping_loss_w": 1.822569076694674,
+        "valve_loss_w": 7.364032525466596,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 3.2380253085229326e-05,
+        "cycle_frequency_hz": 80.75736137503283,
+        "opportunity_frequency_hz": 80.75736137503283,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_random_04",
+      "family": "four_stroke",
+      "rpm": 8046.745376792132,
+      "admission": 0.5213557580366862,
+      "mixture": 0.40746467000498354,
+      "dry_density_kg_m3": 1.239828812679232,
+      "running": true,
+      "firing_fraction": 0.6035909777258233,
+      "parameters": {
+        "displacement_m3": 8.969415292972236e-05,
+        "oil_fraction": 0.19741790834124837,
+        "stoich_air_fuel_ratio": 12.584864197035948,
+        "fuel_lhv_j_kg": 8581078.933529027,
+        "mechanical_torque_nm": [
+          0.0,
+          0.036087032217015376,
+          6000.0,
+          0.019434255815248408,
+          12000.0,
+          0.023779685627681277
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.47893529191131534,
+          1.0,
+          0.17475815828014574,
+          2.0,
+          0.6328342250045483
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.1841557432780862,
+          6000.0,
+          0.3408400053530617,
+          12000.0,
+          0.3712848035503803
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          1.0296646462546697,
+          6000.0,
+          1.2477292871302068,
+          12000.0,
+          1.2243602937256939
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          127.10209885579636,
+          6000.0,
+          280.26796889690934,
+          12000.0,
+          258.0062725214881
+        ],
+        "intake_pressure_drop_pa": 153.17436568121738,
+        "valve_torque_nm": [
+          0.0,
+          0.006955175264241946,
+          6000.0,
+          0.00015063618283334357,
+          12000.0,
+          0.005942625353761403
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.11959687318826871,
+        "mechanical_torque_nm": 0.020916587211710354,
+        "pumping_torque_nm": 0.0024695499041690713,
+        "valve_torque_nm": 0.0021264240258378605,
+        "shaft_torque_nm": 0.09408431204655142,
+        "delivered_fuel_kg_s": 0.00019444096573182414,
+        "burned_fuel_kg_s": 3.343803985611764e-05,
+        "unburned_fuel_kg_s": 0.0001610029258757065,
+        "fuel_input_power_w": 1339.1188740946393,
+        "chemical_power_w": 286.93445938783503,
+        "indicated_power_w": 100.77868854407606,
+        "mechanical_loss_w": 17.62542925930551,
+        "pumping_loss_w": 2.0809741425641235,
+        "valve_loss_w": 1.7918380213436438,
+        "cycle_work_j": 1.5028986328023004,
+        "air_charge_kg_cycle": 7.187813437310797e-05,
+        "cycle_frequency_hz": 67.05621147326777,
+        "opportunity_frequency_hz": 67.05621147326777,
+        "firing_frequency_hz": 40.47452424573926
+      }
+    },
+    {
+      "id": "four_stroke_random_05",
+      "family": "four_stroke",
+      "rpm": 2278.7702211430383,
+      "admission": 0.38747042296015183,
+      "mixture": 1.2110427798044605,
+      "dry_density_kg_m3": 1.2904744717243044,
+      "running": true,
+      "firing_fraction": 0.3511561372876376,
+      "parameters": {
+        "displacement_m3": 5.0933074260891675e-05,
+        "oil_fraction": 0.17083920034966288,
+        "stoich_air_fuel_ratio": 11.273801780031544,
+        "fuel_lhv_j_kg": 40661077.170478076,
+        "mechanical_torque_nm": [
+          0.0,
+          0.02599870611578265,
+          6000.0,
+          0.01543836577317087,
+          12000.0,
+          0.03608988466615251
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.886341726376938,
+          1.0,
+          0.1491488992175032,
+          2.0,
+          0.7487685956946003
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.3570189396401411,
+          6000.0,
+          0.20650154705744955,
+          12000.0,
+          0.27471023028517244
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          0.8138712274479432,
+          6000.0,
+          1.1318994991075004,
+          12000.0,
+          1.117161441613513
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          210.2564975028291,
+          6000.0,
+          90.91806263506199,
+          12000.0,
+          87.12753679893746
+        ],
+        "intake_pressure_drop_pa": 134.18089318411924,
+        "valve_torque_nm": [
+          0.0,
+          0.0036616826421862836,
+          6000.0,
+          0.004602795973585299,
+          12000.0,
+          0.002640160156619258
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.19832404469234477,
+        "mechanical_torque_nm": 0.021987941266136117,
+        "pumping_torque_nm": 0.0010016169006138128,
+        "valve_torque_nm": 0.0040191128145717495,
+        "shaft_torque_nm": 0.17131537371102307,
+        "delivered_fuel_kg_s": 5.856115674173552e-05,
+        "burned_fuel_kg_s": 3.881655462050803e-06,
+        "unburned_fuel_kg_s": 5.4679501279684716e-05,
+        "fuel_input_power_w": 1974.3642921144358,
+        "chemical_power_w": 157.83229229165545,
+        "indicated_power_w": 47.32651490447385,
+        "mechanical_loss_w": 5.2470321067965475,
+        "pumping_loss_w": 0.23901810417898486,
+        "valve_loss_w": 0.9590899722555617,
+        "cycle_work_j": 2.4922134473427366,
+        "air_charge_kg_cycle": 2.3803456676972086e-05,
+        "cycle_frequency_hz": 18.989751842858652,
+        "opportunity_frequency_hz": 18.989751842858652,
+        "firing_frequency_hz": 6.668367905189042
+      }
+    },
+    {
+      "id": "four_stroke_random_06",
+      "family": "four_stroke",
+      "rpm": 8004.78206735257,
+      "admission": 0.9332436539034789,
+      "mixture": 0.37309351164526805,
+      "dry_density_kg_m3": 1.0340454441678926,
+      "running": false,
+      "firing_fraction": 0.2313702515662932,
+      "parameters": {
+        "displacement_m3": 2.1486119710539052e-05,
+        "oil_fraction": 0.20905910439806208,
+        "stoich_air_fuel_ratio": 9.080820838915683,
+        "fuel_lhv_j_kg": 16168577.712858789,
+        "mechanical_torque_nm": [
+          0.0,
+          0.031619566395580306,
+          6000.0,
+          0.02670933777390451,
+          12000.0,
+          0.0185071387292621
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.3484308261753836,
+          1.0,
+          0.5140648563471879,
+          2.0,
+          0.8964052920909047
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.43790839891337074,
+          6000.0,
+          0.3323151150517834,
+          12000.0,
+          0.3541017251076506
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          0.8403664564743789,
+          6000.0,
+          0.7823460729405085,
+          12000.0,
+          0.9196600833559236
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          281.60938980558296,
+          6000.0,
+          66.03620726070545,
+          12000.0,
+          496.09371675679796
+        ],
+        "intake_pressure_drop_pa": 167.79889261712722,
+        "valve_torque_nm": [
+          0.0,
+          0.00958954502803296,
+          6000.0,
+          0.001849593009370355,
+          12000.0,
+          0.0009198674150525487
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.0,
+        "mechanical_torque_nm": 0.023968734180978595,
+        "pumping_torque_nm": 0.0003777538828804773,
+        "valve_torque_nm": 0.001538943476195847,
+        "shaft_torque_nm": -0.02588543154005492,
+        "delivered_fuel_kg_s": 0.0,
+        "burned_fuel_kg_s": 0.0,
+        "unburned_fuel_kg_s": 0.0,
+        "fuel_input_power_w": 0.0,
+        "chemical_power_w": 0.0,
+        "indicated_power_w": 0.0,
+        "mechanical_loss_w": 20.092002780612805,
+        "pumping_loss_w": 0.3166555233127441,
+        "valve_loss_w": 1.290032939139153,
+        "cycle_work_j": 0.0,
+        "air_charge_kg_cycle": 1.717283384430691e-05,
+        "cycle_frequency_hz": 66.70651722793808,
+        "opportunity_frequency_hz": 66.70651722793808,
+        "firing_frequency_hz": 0.0
+      }
+    },
+    {
+      "id": "four_stroke_random_07",
+      "family": "four_stroke",
+      "rpm": 339.49998709501506,
+      "admission": 0.41052650060842155,
+      "mixture": 0.5187751107157033,
+      "dry_density_kg_m3": 0.9716733740132046,
+      "running": true,
+      "firing_fraction": 0.6408987817129391,
+      "parameters": {
+        "displacement_m3": 8.956031187406049e-05,
+        "oil_fraction": 0.18916041251570703,
+        "stoich_air_fuel_ratio": 12.358003878141679,
+        "fuel_lhv_j_kg": 35030280.48443383,
+        "mechanical_torque_nm": [
+          0.0,
+          0.03223936369176231,
+          6000.0,
+          0.014615066840580958,
+          12000.0,
+          0.024815626602330016
+        ],
+        "combustion_efficiency": [
+          0.0,
+          0.058623573234184656,
+          1.0,
+          0.43061366633744474,
+          2.0,
+          0.06248095103478844
+        ],
+        "indicated_efficiency": [
+          0.0,
+          0.12526727431529433,
+          6000.0,
+          0.2900170454966467,
+          12000.0,
+          0.34977352535779643
+        ],
+        "volumetric_efficiency": [
+          0.0,
+          0.8778785191694074,
+          6000.0,
+          1.0938781339805028,
+          12000.0,
+          1.1767488452656805
+        ],
+        "pumping_pressure_pa": [
+          0.0,
+          225.34576542612214,
+          6000.0,
+          319.42555252466826,
+          12000.0,
+          409.8449593270972
+        ],
+        "intake_pressure_drop_pa": 129.9222730117053,
+        "valve_torque_nm": [
+          0.0,
+          0.0010523246252446528,
+          6000.0,
+          0.0015107214417050586,
+          12000.0,
+          0.003690359547745885
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "message": "",
+        "indicated_torque_nm": 0.08076000049636543,
+        "mechanical_torque_nm": 0.031242122266173178,
+        "pumping_torque_nm": 0.002189800145490716,
+        "valve_torque_nm": 0.0010782622441234367,
+        "shaft_torque_nm": 0.04624981584057811,
+        "delivered_fuel_kg_s": 4.65768932311128e-06,
+        "burned_fuel_kg_s": 6.089902416696207e-07,
+        "unburned_fuel_kg_s": 4.0486990814416585e-06,
+        "fuel_input_power_w": 132.29671958345622,
+        "chemical_power_w": 21.333098977969957,
+        "indicated_power_w": 2.8712082487732764,
+        "mechanical_loss_w": 1.1107310377475383,
+        "pumping_loss_w": 0.07785255327209693,
+        "valve_loss_w": 0.03833476263793889,
+        "cycle_work_j": 1.0148600970531587,
+        "air_charge_kg_cycle": 3.1799196050338275e-05,
+        "cycle_frequency_hz": 2.8291665591251256,
+        "opportunity_frequency_hz": 2.8291665591251256,
+        "firing_frequency_hz": 1.813209401006281
+      }
+    }
+  ]
+}

@@ -1,0 +1,1325 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "id",
+    "manufacturer",
+    "model",
+    "family",
+    "status",
+    "feed",
+    "oil_model",
+    "parameters",
+    "fuel",
+    "operation"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "manufacturer": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "format": {
+      "const": "openrc-glow-engine v1"
+    },
+    "family": {
+      "enum": [
+        "glow_2t",
+        "glow_4t"
+      ]
+    },
+    "status": {
+      "const": "candidate"
+    },
+    "feed": {
+      "const": "naturally_aspirated"
+    },
+    "oil_model": {
+      "const": "inert"
+    },
+    "fuel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nitromethane_volume_fraction",
+        "lubricant_volume_fraction",
+        "methanol_density_kg_m3",
+        "nitromethane_density_kg_m3",
+        "lubricant_density_kg_m3",
+        "methanol_lhv_j_kg",
+        "nitromethane_lhv_j_kg",
+        "methanol_stoich_air_fuel_ratio",
+        "nitromethane_stoich_air_fuel_ratio"
+      ],
+      "properties": {
+        "nitromethane_volume_fraction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "lubricant_volume_fraction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "methanol_density_kg_m3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "kg/m3"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "nitromethane_density_kg_m3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "kg/m3"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "lubricant_density_kg_m3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "kg/m3"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "methanol_lhv_j_kg": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "J/kg"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "nitromethane_lhv_j_kg": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "J/kg"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "methanol_stoich_air_fuel_ratio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "nitromethane_stoich_air_fuel_ratio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_rpm",
+        "rated_rpm",
+        "rated_power_w",
+        "reference_dry_density_kg_m3",
+        "nominal_mixture"
+      ],
+      "properties": {
+        "max_rpm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "rpm"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "rated_rpm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "rpm"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "rated_power_w": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "W"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "reference_dry_density_kg_m3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "kg/m3"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "nominal_mixture": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "maximum": 1e+100,
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "family": {
+            "const": "glow_2t"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameters": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "displacement_m3",
+              "mechanical_torque_nm",
+              "combustion_efficiency",
+              "indicated_efficiency",
+              "delivery_ratio",
+              "trapping_efficiency",
+              "scavenge_pressure_pa"
+            ],
+            "properties": {
+              "displacement_m3": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "exclusiveMinimum": 0.0
+                  },
+                  "unit": {
+                    "const": "m3"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "mechanical_torque_nm": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1e+100,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, N·m"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "combustion_efficiency": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1.0,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "1, 1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "indicated_efficiency": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1.0,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, 1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "delivery_ratio": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1e+100,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, 1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "trapping_efficiency": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1.0,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, 1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "scavenge_pressure_pa": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1e+100,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, Pa"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "family": {
+            "const": "glow_4t"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameters": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "displacement_m3",
+              "mechanical_torque_nm",
+              "combustion_efficiency",
+              "indicated_efficiency",
+              "volumetric_efficiency",
+              "pumping_pressure_pa",
+              "intake_pressure_drop_pa",
+              "valve_torque_nm"
+            ],
+            "properties": {
+              "displacement_m3": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "exclusiveMinimum": 0.0
+                  },
+                  "unit": {
+                    "const": "m3"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "mechanical_torque_nm": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1e+100,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, N·m"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "combustion_efficiency": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1.0,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "1, 1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "indicated_efficiency": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1.0,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, 1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "volumetric_efficiency": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1e+100,
+                          "exclusiveMinimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, 1"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "pumping_pressure_pa": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1e+100,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, Pa"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "intake_pressure_drop_pa": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 1e+100,
+                    "minimum": 0.0
+                  },
+                  "unit": {
+                    "const": "Pa"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "valve_torque_nm": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "number",
+                          "maximum": 1e+100,
+                          "minimum": 0.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  },
+                  "unit": {
+                    "const": "rpm, N·m"
+                  },
+                  "kind": {
+                    "enum": [
+                      "manual",
+                      "measured",
+                      "borrowed",
+                      "estimated",
+                      "derived"
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Standalone experimental RC glow engine profile v1",
+  "description": "Generated by research/glow-engines/build_profiles.py. Runtime validates ordered support, fuel blend and derived finite output. Not an aircraft capability."
+}

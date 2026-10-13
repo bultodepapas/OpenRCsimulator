@@ -101,6 +101,8 @@ Each reducer README lists its `test_*.py` command and measurement contract. Thos
 
 ## Flight and physics experiments
 
+Glow foundation: [interface and commands](../research/glow-engines/README.md), [NITRO-01 proof](research/glow-engines/NITRO-01/README.md). `python3 research/glow-engines/verify.py --godot /absolute/pinned/godot --out /absolute/fresh/glow-proof` checks generated profiles, independent Python/Godot oracles, separate family kernels, thermal balance, disposable formula defects and six coupled refinement benches. These are standalone candidate profiles; aircraft integration and physical calibration remain open. The script needs Python standard library and the pinned Godot, and requires a new output directory.
+
 Helicopter foundations: [HELI-03a/04](research/helicopter/HELI-04/README.md), [transient HELI-04-R1](research/helicopter/HELI-04-R1/README.md) and [main-rotor HELI-05/05a](research/helicopter/HELI-05/README.md) document the independent oracles, native tests, joint stand and cost diagnostics. `research/helicopter/verify_kernels.py` composes freshness, native kernel checks, airplane regression and disposable defects; `--native-only` is a focused rerun after references were checked. [HELI-13](research/helicopter/HELI-13/README.md) documents swash conventions. No helicopter or multirotor flight session is integrated.
 
 Procedural audio qualification: [G3b tools](../research/audio/g3b/README.md) run focused tests and disposable defects, native mixer capture at 30/60/144 FPS, synthesis timing and four-aircraft observer timing. Use a fresh output directory. Dummy-driver burst stability and native response are separate; captured audio and reported driver latency do not establish acoustic calibration or speaker onset.

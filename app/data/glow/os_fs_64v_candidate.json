@@ -1,0 +1,322 @@
+{
+  "format": "openrc-glow-engine v1",
+  "id": "os_fs_64v_candidate",
+  "manufacturer": "O.S. Engines",
+  "model": "FS-64V",
+  "family": "glow_4t",
+  "status": "candidate",
+  "feed": "naturally_aspirated",
+  "oil_model": "inert",
+  "parameters": {
+    "displacement_m3": {
+      "value": 1.046e-05,
+      "unit": "m3",
+      "kind": "derived",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html; cc × 1e-6 -> m3"
+    },
+    "mechanical_torque_nm": {
+      "value": [
+        [
+          0.0,
+          0.008
+        ],
+        [
+          2400.0,
+          0.012799999999999999
+        ],
+        [
+          4000.0,
+          0.016
+        ],
+        [
+          6000.0,
+          0.02
+        ],
+        [
+          8000.0,
+          0.024
+        ],
+        [
+          10000.0,
+          0.028
+        ],
+        [
+          11000.0,
+          0.03
+        ]
+      ],
+      "unit": "rpm, N·m",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "combustion_efficiency": {
+      "value": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.8,
+          0.9
+        ],
+        [
+          1.0,
+          0.98
+        ],
+        [
+          1.15,
+          1.0
+        ],
+        [
+          1.6,
+          0.85
+        ],
+        [
+          2.5,
+          0.2
+        ]
+      ],
+      "unit": "1, 1",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "volumetric_efficiency": {
+      "value": [
+        [
+          0.0,
+          0.35
+        ],
+        [
+          2400.0,
+          0.5
+        ],
+        [
+          4000.0,
+          0.68
+        ],
+        [
+          6000.0,
+          0.79
+        ],
+        [
+          8000.0,
+          0.88
+        ],
+        [
+          10000.0,
+          0.89
+        ],
+        [
+          11000.0,
+          0.85
+        ]
+      ],
+      "unit": "rpm, 1",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "pumping_pressure_pa": {
+      "value": [
+        [
+          0.0,
+          2000.0
+        ],
+        [
+          2400.0,
+          2720.0
+        ],
+        [
+          4000.0,
+          3200.0
+        ],
+        [
+          6000.0,
+          3800.0
+        ],
+        [
+          8000.0,
+          4400.0
+        ],
+        [
+          10000.0,
+          5000.0
+        ],
+        [
+          11000.0,
+          5300.0
+        ]
+      ],
+      "unit": "rpm, Pa",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "intake_pressure_drop_pa": {
+      "value": 35000.0,
+      "unit": "Pa",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "valve_torque_nm": {
+      "value": [
+        [
+          0.0,
+          0.006
+        ],
+        [
+          2400.0,
+          0.0084
+        ],
+        [
+          4000.0,
+          0.01
+        ],
+        [
+          6000.0,
+          0.012
+        ],
+        [
+          8000.0,
+          0.014
+        ],
+        [
+          10000.0,
+          0.016
+        ],
+        [
+          11000.0,
+          0.017
+        ]
+      ],
+      "unit": "rpm, N·m",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "indicated_efficiency": {
+      "value": [
+        [
+          0.0,
+          0.01334439222436456
+        ],
+        [
+          2400.0,
+          0.1153648229056686
+        ],
+        [
+          4000.0,
+          0.20987687228898888
+        ],
+        [
+          6000.0,
+          0.2585889231106124
+        ],
+        [
+          8000.0,
+          0.28516641100228757
+        ],
+        [
+          10000.0,
+          0.27408945266536044
+        ],
+        [
+          11000.0,
+          0.2733565474724011
+        ]
+      ],
+      "unit": "rpm, 1",
+      "kind": "derived",
+      "source": "build_profiles.py: independently inferred WOT torque knots + estimated gas-exchange/loss curves; ONLY rated-power knot constrained by https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html"
+    }
+  },
+  "fuel": {
+    "nitromethane_volume_fraction": {
+      "value": 0.1,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "lubricant_volume_fraction": {
+      "value": 0.18,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "methanol_density_kg_m3": {
+      "value": 792.0,
+      "unit": "kg/m3",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "nitromethane_density_kg_m3": {
+      "value": 1137.0,
+      "unit": "kg/m3",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "lubricant_density_kg_m3": {
+      "value": 961.0,
+      "unit": "kg/m3",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "methanol_lhv_j_kg": {
+      "value": 20000000.0,
+      "unit": "J/kg",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "nitromethane_lhv_j_kg": {
+      "value": 11300000.0,
+      "unit": "J/kg",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "methanol_stoich_air_fuel_ratio": {
+      "value": 6.429,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "nitromethane_stoich_air_fuel_ratio": {
+      "value": 1.687,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    }
+  },
+  "operation": {
+    "max_rpm": {
+      "value": 11000.0,
+      "unit": "rpm",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html"
+    },
+    "rated_rpm": {
+      "value": 11000.0,
+      "unit": "rpm",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html"
+    },
+    "rated_power_w": {
+      "value": 838.4685749999999,
+      "unit": "W",
+      "kind": "derived",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html; metric PS × 735.49875 W/PS"
+    },
+    "reference_dry_density_kg_m3": {
+      "value": 1.225,
+      "unit": "kg/m3",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "nominal_mixture": {
+      "value": 1.15,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    }
+  }
+}

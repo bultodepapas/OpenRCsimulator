@@ -192,6 +192,12 @@ func _lifecycle() -> void:
 	f.reset()
 	_check("explicit reset clears fault and rebuilds settled RPM", f.sim.fault_reason.is_empty()
 		and f.sim.continuous[0] == f.start.rpm and f.sim.aux[0] == f.start.rpm)
+	var running_bits: PackedByteArray = _bits(f.sim)
+	f.engine_running = false
+	f.sim.step()
+	_check("unsupported hot mode switch refuses an instantaneous RPM cut", not f.sim.fault_reason.is_empty()
+		and _bits(f.sim) == running_bits)
+	f.reset()
 	var recorder: RefCounted = Recorder.new(f.sim)
 	recorder.start(f.trace_meta())
 	_advance(f, 12)
@@ -237,6 +243,6 @@ func _initialize() -> void:
 		str([coarse[0], standard[0], fine[0]]))
 	Engine.physics_ticks_per_second = original_hz
 	_lifecycle()
-	_check("all planned checks executed", checks == 44)
+	_check("all planned checks executed", checks == 45)
 	print("%d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

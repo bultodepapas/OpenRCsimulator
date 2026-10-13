@@ -1,0 +1,77 @@
+{
+  "evidence": "synthetic native engine law, not physical calibration",
+  "reports": {
+    "baseline": {
+      "idle-full": {
+        "direction": "up",
+        "endpoints": {
+          "f0_n": 1.84644,
+          "f0_uncertainty_n": null,
+          "f1_n": 92.00000000000001,
+          "f1_uncertainty_n": null,
+          "rated_thrust_n": 92.00000000000001,
+          "rated_thrust_uncertainty_n": null
+        },
+        "command_to_progress_s": {
+          "10": 1.418433494850619,
+          "50": 2.590467756270716,
+          "90": 3.3243936452482243,
+          "95": 3.6016550045937548
+        }
+      },
+      "full-idle": {
+        "direction": "down",
+        "endpoints": {
+          "f0_n": 92.00000000000001,
+          "f0_uncertainty_n": null,
+          "f1_n": 1.84644,
+          "f1_uncertainty_n": null,
+          "rated_thrust_n": 92.00000000000001,
+          "rated_thrust_uncertainty_n": null
+        },
+        "command_to_progress_s": {
+          "10": 0.05742160802876417,
+          "50": 0.3619442729103768,
+          "90": 1.141673064310126,
+          "95": 1.4288766461654028
+        }
+      }
+    },
+    "candidate": {
+      "idle-full": {
+        "direction": "up",
+        "endpoints": {
+          "f0_n": 1.84644,
+          "f0_uncertainty_n": null,
+          "f1_n": 92.00000000000001,
+          "f1_uncertainty_n": null,
+          "rated_thrust_n": 92.00000000000001,
+          "rated_thrust_uncertainty_n": null
+        },
+        "command_to_progress_s": {
+          "10": 1.4172532051994318,
+          "50": 2.5883115942146118,
+          "90": 3.3221098869095824,
+          "95": 3.599366956578919
+        }
+      },
+      "full-idle": {
+        "direction": "down",
+        "endpoints": {
+          "f0_n": 92.00000000000001,
+          "f0_uncertainty_n": null,
+          "f1_n": 1.84644,
+          "f1_uncertainty_n": null,
+          "rated_thrust_n": 92.00000000000001,
+          "rated_thrust_uncertainty_n": null
+        },
+        "command_to_progress_s": {
+          "10": 0.05749345060804045,
+          "50": 0.3623969805219669,
+          "90": 1.1431037070674388,
+          "95": 1.430666585703856
+        }
+      }
+    }
+  }
+}

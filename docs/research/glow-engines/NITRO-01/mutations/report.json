@@ -1,0 +1,36 @@
+{
+  "format": "openrc-glow-mutation-proof v1",
+  "cases": [
+    {
+      "case": "control",
+      "exit_code": 0,
+      "expected_failure": false,
+      "passed": true
+    },
+    {
+      "case": "two-stroke-cycle-angle",
+      "exit_code": 1,
+      "expected_failure": true,
+      "passed": true
+    },
+    {
+      "case": "four-stroke-opportunity-rate",
+      "exit_code": 1,
+      "expected_failure": true,
+      "passed": true
+    },
+    {
+      "case": "two-stroke-premix-oil",
+      "exit_code": 1,
+      "expected_failure": true,
+      "passed": true
+    },
+    {
+      "case": "four-stroke-valve-loss",
+      "exit_code": 1,
+      "expected_failure": true,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

@@ -1,10 +1,10 @@
 # Fuel-powered RC turbine realism and integration plan
 
-**Date:** 2026-10-13. **Status:** researched proposal; implementation and physical acceptance pending. **Owner:** Ventage Jet / physics track. **Parent:** [Ventage Jet guide](../AVANTI-S-PLAN.md). **Steps:** existing AV-05b and AV-10, plus AV-18…30. This document owns detailed turbine work and its status; the parent retains aircraft-wide work. Consolidate completed guidance into the parent/contract and retain evidence before deleting this active plan.
+**Date:** 2026-10-13. **Status:** AV-18/19/20 software implemented; ECU/fuel integration and physical acceptance pending. **Owner:** Ventage Jet / physics track. **Parent:** [Ventage Jet guide](../AVANTI-S-PLAN.md). **Steps:** existing AV-05b and AV-10, plus AV-18…30. This document owns detailed turbine work and its status; the parent retains aircraft-wide work. Consolidate completed guidance into the parent/contract and retain evidence before deleting this active plan.
 
 **Owns:** `app/physics/turbine.gd`, bounded new turbine/fuel kernels, `app/tests/test_turbine*.gd`, Ventage Jet propulsion scenarios, `research/avanti-s/` turbine source/reducers and `docs/research/turbine-realism/`. Aircraft changes go through `research/avanti-s/av06/inputs.json` and `derive_physics.py`; generated `app/data/aircraft/sebart_avanti_s_a200.json` is never edited directly.
 
-**Shared boundaries:** aircraft contract/schema/loader; `app/sim/flight_session.gd`, `simulation.gd`, trace/replay; rigid-body equations and mass properties; M5 atmosphere/wind; AV-09 gear/flaps; AUD-08/10 sound; HUD, input, menu and CR terminal-flight behavior. Inspect status and coordinate those seams before implementation. Other tracks retain ownership. The requested deliverable is this plan; its proposed design choices are not recorded as adopted production decisions.
+**Shared boundaries:** aircraft contract/schema/loader; `app/sim/flight_session.gd`, `simulation.gd`, trace/replay; rigid-body equations and mass properties; M5 atmosphere/wind; AV-09 gear/flaps; AUD-08/10 sound; HUD, input, menu and CR terminal-flight behavior. Inspect status and coordinate those seams before implementation. Other tracks retain ownership. The owner authorized implementation on 2026-10-13. Adopted choices go to DECISIONS; future choices remain proposals.
 
 ## 1. Objective and definition of realism
 
@@ -374,20 +374,20 @@ Mutation controls in disposable copies: instantaneous RPM cut, stage RPM replace
 
 ## 13. Incremental implementation sequence
 
-All statuses below describe future work; only the dated research document has been produced. Each integration slice should be independently reviewable and working. No large combined turbine/fuel/aero/UI retune.
+Each integration slice is independently reviewable. [AV-18…20 evidence](../research/turbine-realism/AV-20/README.md) distinguishes delivered software from pending calibration and later ECU/fuel work. No combined turbine/fuel/aero/UI retune.
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| AV-18 | Source/runtime audit, baseline and metrics | Research snapshot delivered; fresh executable baseline, source-citation corrections, complete checkpoint traces and response reducer **pending** |
-| AV-18a | Repair affected historical manual URLs/pages and record variant/thermal differences | Exact old/new citation diff, source-page readback; preserve historical calibration scope **pending** |
-| AV-19 | Contract/model-law/state proposal; isolated loader/validation fixtures | Field-to-consumer register, schema/quantity rules, unsupported combinations rejected; no generated production-data change yet **pending** |
-| AV-20 | Continuous turbine RPM with existing maps/settings, prescribed mass | Stage/analytic/refinement oracles, endpoint mirror, full-state continuation; explain changed transient integration without retuning **pending** |
+| AV-18 | Source/runtime audit, baseline and metrics | Delivered: dated sources, native paired snapshots and [response reducer](../../research/avanti-s/av18/response_metrics.py), 11 analytic tests; no measured engine calibration |
+| AV-18a | Repair affected historical manual URLs/pages and record variant/thermal differences | Delivered: AV-05 cites the correct March 2015 ECU manual and February 2023 P250 publication; historical fit scope retained |
+| AV-19 | Explicit turbine integration and state/identity contract | Delivered: optional `spool_integrator` category, strict loader/schema and stiffness preflight; supported one-RPM layout, versioned snapshots/trace and generated aircraft selection |
+| AV-20 | Continuous turbine RPM with existing maps/settings, prescribed mass | Delivered: stage thrust/gyro/governor, endpoint mirror, analytic impulse/refinement, rollback/replay, trace guards and inactive-fleet exactness; evidence and full-suite limits linked above |
 | AV-21 | Steady/response identification and bounded empirical maps | Run-separated validation, schedule/curve joins, parameter sensitivity; estimated fallback labeled **pending** |
 | AV-22 | Thermal/history and state-specific cold/hot flow/rundown kernels outside `app/` | EGT/sensor distinction, no cold hot-thrust leakage, thermal/history and numerical tests **pending** |
 | AV-05b | Integrate ECU start/idle/normal stop/fuel cut/flameout/cooling | Source-backed permissions/events, residual energy, fault/lifecycle/trace proof; low idle/relight only when supported **pending** |
 | AV-23 | Optional calibrated pump and separate supply-battery behavior | Delivered-flow/voltage/saturation/start/cooling data, energy/rollback checks; deferred if data insufficient **pending** |
 | AV-10a | Tank inventory binding, usable volume and depletion kernel | No duplicated fuel; constant-flow and mission integrals; empty-event localization in isolated harness **pending** |
-| AV-10b | Derive and independently verify variable-mass equations/state datum | Open-system fixtures, reference-transform equivalence and stage mass properties; implementation architecture decision **pending** |
+| AV-10b | Derive and independently verify variable-mass equations/state datum | [Independent reference](../../research/avanti-s/av10/README.md) and 5 analytic/transform fixtures delivered; tank distribution/flux assumptions and production architecture **pending** |
 | AV-10c | Integrate finite fuel and changing mass/CG/inertia | Actual-session empty event, trim/start/reset/replay; continuous structural geometry, full/half/reserve fixed-build comparison **pending** |
 | AV-24 | Installed force budget, ambient corrected coordinates and domain policy | Static/flight-speed/crossflow/pressure-temperature comparison; no unmeasured force-map promotion **pending** |
 | AV-25 | Optional hopper/pickup and supply interruptions; slosh experiment if justified | Buffer/transfer mass conservation and measured effective-acceleration behavior; slosh remains opt-in until validated **pending** |

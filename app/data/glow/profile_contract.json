@@ -1,0 +1,200 @@
+{
+  "format": "openrc-glow-profile-contract v1",
+  "profile_format": "openrc-glow-engine v1",
+  "common": {
+    "displacement_m3": {
+      "unit": "m3",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "mechanical_torque_nm": {
+      "unit": "rpm, N·m",
+      "shape": "curve",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": false,
+      "axis": "rpm"
+    },
+    "combustion_efficiency": {
+      "unit": "1, 1",
+      "shape": "curve",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "positive": false,
+      "axis": "mixture"
+    },
+    "indicated_efficiency": {
+      "unit": "rpm, 1",
+      "shape": "curve",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "positive": false,
+      "axis": "rpm"
+    }
+  },
+  "families": {
+    "glow_2t": {
+      "delivery_ratio": {
+        "unit": "rpm, 1",
+        "shape": "curve",
+        "minimum": 0.0,
+        "maximum": 1e+100,
+        "positive": false,
+        "axis": "rpm"
+      },
+      "trapping_efficiency": {
+        "unit": "rpm, 1",
+        "shape": "curve",
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "positive": false,
+        "axis": "rpm"
+      },
+      "scavenge_pressure_pa": {
+        "unit": "rpm, Pa",
+        "shape": "curve",
+        "minimum": 0.0,
+        "maximum": 1e+100,
+        "positive": false,
+        "axis": "rpm"
+      }
+    },
+    "glow_4t": {
+      "volumetric_efficiency": {
+        "unit": "rpm, 1",
+        "shape": "curve",
+        "minimum": 0.0,
+        "maximum": 1e+100,
+        "positive": true,
+        "axis": "rpm"
+      },
+      "pumping_pressure_pa": {
+        "unit": "rpm, Pa",
+        "shape": "curve",
+        "minimum": 0.0,
+        "maximum": 1e+100,
+        "positive": false,
+        "axis": "rpm"
+      },
+      "intake_pressure_drop_pa": {
+        "unit": "Pa",
+        "shape": "scalar",
+        "minimum": 0.0,
+        "maximum": 1e+100,
+        "positive": false
+      },
+      "valve_torque_nm": {
+        "unit": "rpm, N·m",
+        "shape": "curve",
+        "minimum": 0.0,
+        "maximum": 1e+100,
+        "positive": false,
+        "axis": "rpm"
+      }
+    }
+  },
+  "fuel": {
+    "nitromethane_volume_fraction": {
+      "unit": "1",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "positive": false
+    },
+    "lubricant_volume_fraction": {
+      "unit": "1",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "positive": false
+    },
+    "methanol_density_kg_m3": {
+      "unit": "kg/m3",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "nitromethane_density_kg_m3": {
+      "unit": "kg/m3",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "lubricant_density_kg_m3": {
+      "unit": "kg/m3",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "methanol_lhv_j_kg": {
+      "unit": "J/kg",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "nitromethane_lhv_j_kg": {
+      "unit": "J/kg",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "methanol_stoich_air_fuel_ratio": {
+      "unit": "1",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "nitromethane_stoich_air_fuel_ratio": {
+      "unit": "1",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    }
+  },
+  "operation": {
+    "max_rpm": {
+      "unit": "rpm",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "rated_rpm": {
+      "unit": "rpm",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "rated_power_w": {
+      "unit": "W",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "reference_dry_density_kg_m3": {
+      "unit": "kg/m3",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "nominal_mixture": {
+      "unit": "1",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    }
+  }
+}

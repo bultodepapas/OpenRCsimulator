@@ -1362,6 +1362,8 @@ func _turbine_aux(values: PackedFloat64Array, sampled: PackedFloat64Array) -> Pa
 ## Mounting reaction is unchanged: gyro only; gas angular-momentum flux is still unmeasured (AV-26).
 func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_time: float) -> Dictionary:
 	var rpm: float = _turbine_rpm(values)
+	if sim.modes.size() != (2 if _weather.has_turbulence() else 1) or sim.modes[0] not in [0, 1]:
+		return {}
 	if not is_finite(rpm) or (not engine_running and rpm != 0.0):
 		return {} # A hot cutoff needs AV-05b; do not invent a cold/hot rundown law here.
 	var prop: Dictionary = aircraft.model.propulsion
@@ -1387,6 +1389,8 @@ func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_
 ## Accepted-endpoint engine observations. Flow is the current map estimate; prescribed fuel never depletes mass.
 func turbine_state() -> Dictionary:
 	if not aircraft.get("ok", false) or not Turbine.is_turbine(aircraft.model.propulsion) or not _flight_ready():
+		return {ok = false}
+	if sim.modes.size() != (2 if _weather.has_turbulence() else 1) or sim.modes[0] not in [0, 1]:
 		return {ok = false}
 	var prop: Dictionary = aircraft.model.propulsion
 	var rpm: float = _turbine_rpm(sim.continuous) if turbine_is_continuous() else sim.aux[AUX_RPM]
@@ -2098,11 +2102,11 @@ func trace_meta() -> Dictionary:
 func checkpoint() -> Dictionary:
 	if not _flight_ready():
 		return {}
-	if turbine_is_continuous() and (not is_finite(_turbine_rpm(sim.continuous)) \
-			or (not engine_running and sim.continuous[0] != 0.0)):
-		return {}
 	var snapshot: Dictionary = sim.checkpoint()
 	if snapshot.is_empty() or snapshot.modes.size() != (2 if _weather.has_turbulence() else 1) or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
+		return {}
+	if turbine_is_continuous() and (not is_finite(_turbine_rpm(sim.continuous)) \
+			or (not engine_running and sim.continuous[0] != 0.0)):
 		return {}
 	var boundary: Dictionary = {format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot}
 	if not weather_is_calm():

@@ -1,0 +1,371 @@
+{
+  "format": "openrc-glow-foundation-proof v1",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "gdscript_checks": 1210,
+  "python_checks": 15,
+  "results": [
+    {
+      "check": "generator",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-python",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "reference-python",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "oracle-current",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "math-boundary",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-four_stroke",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-profile",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-source",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-thermal",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-two_stroke",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-test_glow_coupling",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-test_glow_four_stroke",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-test_glow_oracle",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-test_glow_profiles",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-test_glow_thermal",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "parse-test_glow_two_stroke",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "test_glow_coupling",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "test_glow_four_stroke",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "test_glow_oracle",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "test_glow_profiles",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "test_glow_thermal",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "test_glow_two_stroke",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "mutations",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "bench-2t-240",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "bench-2t-480",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "bench-2t-960",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "bench-4t-240",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "bench-4t-480",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "bench-4t-960",
+      "exit_code": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "unsupported-stop",
+      "exit_code": 2,
+      "expected": 2,
+      "passed": true
+    }
+  ],
+  "benches": [
+    {
+      "family": "2t",
+      "hz": 240,
+      "file": "2t-240.json",
+      "metrics": {
+        "axial_angular_momentum_change_nms": -0.9302475567247067,
+        "axial_angular_momentum_closure_error_nms": 1.1102230246251565e-15,
+        "burned_fuel_kg": 0.0003466562724024327,
+        "delivered_fuel_kg": 0.0006614371887507223,
+        "energy_change_j": 721.2216805351461,
+        "engine_work_j": 1049.5163148657534,
+        "external_angular_impulse_nms": -0.9302475567247078,
+        "final_rpm": 11600.867993608486,
+        "initial_rpm": 5000.0,
+        "maximum_forward_inflow_mps": 72.3138169452607,
+        "maximum_prop_torque_nm": 0.749819030441147,
+        "maximum_rpm": 12702.71930258031,
+        "maximum_thrust_n": 15.909065473203546,
+        "minimum_rpm": 4756.307497838783,
+        "propeller_absorbed_work_j": 981.9566240319662,
+        "thrust_work_j": 653.6610142164701,
+        "unburned_delivered_fuel_kg": 0.0003147809163482896,
+        "work_closure_error_j": 0.0009754848887268963
+      }
+    },
+    {
+      "family": "2t",
+      "hz": 480,
+      "file": "2t-480.json",
+      "metrics": {
+        "axial_angular_momentum_change_nms": -0.930446296919823,
+        "axial_angular_momentum_closure_error_nms": 1.3322676295501878e-15,
+        "burned_fuel_kg": 0.0003467565261802432,
+        "delivered_fuel_kg": 0.0006616272913160742,
+        "energy_change_j": 721.4573802096288,
+        "engine_work_j": 1049.8494557399179,
+        "external_angular_impulse_nms": -0.9304462969198243,
+        "final_rpm": 11602.564896700438,
+        "initial_rpm": 5000.0,
+        "maximum_forward_inflow_mps": 72.32541373122093,
+        "maximum_prop_torque_nm": 0.7500322890530948,
+        "maximum_rpm": 12708.966915397199,
+        "maximum_thrust_n": 15.909039628661569,
+        "minimum_rpm": 4756.30707372886,
+        "propeller_absorbed_work_j": 982.263000816852,
+        "thrust_work_j": 653.8706838657388,
+        "unburned_delivered_fuel_kg": 0.00031487076513583097,
+        "work_closure_error_j": 0.00024142082418165955
+      }
+    },
+    {
+      "family": "2t",
+      "hz": 960,
+      "file": "2t-960.json",
+      "metrics": {
+        "axial_angular_momentum_change_nms": -0.9305460217446918,
+        "axial_angular_momentum_closure_error_nms": 9.992007221626409e-16,
+        "burned_fuel_kg": 0.0003468065489459454,
+        "delivered_fuel_kg": 0.0006617221223463312,
+        "energy_change_j": 721.5729296553976,
+        "engine_work_j": 1050.0158790636697,
+        "external_angular_impulse_nms": -0.9305460217446928,
+        "final_rpm": 11603.395926355219,
+        "initial_rpm": 5000.0,
+        "maximum_forward_inflow_mps": 72.33109301613835,
+        "maximum_prop_torque_nm": 0.7501388717345582,
+        "maximum_rpm": 12712.088464368791,
+        "maximum_thrust_n": 15.90904889913427,
+        "minimum_rpm": 4756.306862290558,
+        "propeller_absorbed_work_j": 982.4163867229114,
+        "thrust_work_j": 653.9733771100395,
+        "unburned_delivered_fuel_kg": 0.0003149155734003858,
+        "work_closure_error_j": 6.020459989031224e-05
+      }
+    },
+    {
+      "family": "4t",
+      "hz": 240,
+      "file": "4t-240.json",
+      "metrics": {
+        "axial_angular_momentum_change_nms": -1.0306882946649805,
+        "axial_angular_momentum_closure_error_nms": 2.220446049250313e-16,
+        "burned_fuel_kg": 0.0002306318278173694,
+        "delivered_fuel_kg": 0.0003323068979402424,
+        "energy_change_j": 690.627157797437,
+        "engine_work_j": 1028.571843216666,
+        "external_angular_impulse_nms": -1.0306882946649802,
+        "final_rpm": 10409.789943959042,
+        "initial_rpm": 5000.0,
+        "maximum_forward_inflow_mps": 70.98206616308133,
+        "maximum_prop_torque_nm": 0.7552466654446119,
+        "maximum_rpm": 10836.411838793812,
+        "maximum_thrust_n": 18.156855522772606,
+        "minimum_rpm": 4693.151444978821,
+        "propeller_absorbed_work_j": 967.7524287451536,
+        "thrust_work_j": 629.8067131506623,
+        "unburned_delivered_fuel_kg": 0.000101675070122873,
+        "work_closure_error_j": 0.001030175262371813
+      }
+    },
+    {
+      "family": "4t",
+      "hz": 480,
+      "file": "4t-480.json",
+      "metrics": {
+        "axial_angular_momentum_change_nms": -1.0308642743914007,
+        "axial_angular_momentum_closure_error_nms": 6.661338147750939e-16,
+        "burned_fuel_kg": 0.00023067974082770833,
+        "delivered_fuel_kg": 0.0003323759336149253,
+        "energy_change_j": 690.7552394838059,
+        "engine_work_j": 1028.804582201862,
+        "external_angular_impulse_nms": -1.0308642743914014,
+        "final_rpm": 10410.611728195408,
+        "initial_rpm": 5000.0,
+        "maximum_forward_inflow_mps": 70.98837199751422,
+        "maximum_prop_torque_nm": 0.7552463172255942,
+        "maximum_rpm": 10839.078614111238,
+        "maximum_thrust_n": 18.156593123201755,
+        "minimum_rpm": 4693.167634186925,
+        "propeller_absorbed_work_j": 967.9682111262415,
+        "thrust_work_j": 629.9186197711166,
+        "unburned_delivered_fuel_kg": 0.00010169619278721699,
+        "work_closure_error_j": 0.0002486370686938244
+      }
+    },
+    {
+      "family": "4t",
+      "hz": 960,
+      "file": "4t-960.json",
+      "metrics": {
+        "axial_angular_momentum_change_nms": -1.0309527605821334,
+        "axial_angular_momentum_closure_error_nms": 0.0,
+        "burned_fuel_kg": 0.00023070372772475805,
+        "delivered_fuel_kg": 0.0003324104952425424,
+        "energy_change_j": 690.8185165650667,
+        "engine_work_j": 1028.9214276900539,
+        "external_angular_impulse_nms": -1.0309527605821334,
+        "final_rpm": 10411.01716647108,
+        "initial_rpm": 5000.0,
+        "maximum_forward_inflow_mps": 70.99148303800611,
+        "maximum_prop_torque_nm": 0.7552464530460209,
+        "maximum_rpm": 10840.409624810794,
+        "maximum_thrust_n": 18.15659989483105,
+        "minimum_rpm": 4693.16655944923,
+        "propeller_absorbed_work_j": 968.0768057765562,
+        "thrust_work_j": 629.9738329867072,
+        "unburned_delivered_fuel_kg": 0.00010170676751778435,
+        "work_closure_error_j": 6.166486184611131e-05
+      }
+    }
+  ],
+  "source_sha256": {
+    "app/data/glow/openrc-glow-engine-v1.schema.json": "d4eccccdc95af7e145e6fd7269ea05953632e2b54d574ab618b1a8e90a1746e7",
+    "app/data/glow/os_fs_64v_candidate.json": "718b25a99d3310b52cf53e473dbb5de23ab33335fbaa0d127c72bcd41f9c83ec",
+    "app/data/glow/os_max_55ax_candidate.json": "65eb2bde46db0dd516630cbeccc93d597a79f914b91614cdf8719bff13f1b51c",
+    "app/data/glow/profile_contract.json": "1e4d668fa434b1430f6344a282c058c93701fa9ca4198c15475eec60206d0ec2",
+    "app/physics/glow/four_stroke.gd": "0ffbff0e40ffa57a1096b449e36414b0bcb8e90530bb2a61790d4eea1e1d072c",
+    "app/physics/glow/profile.gd": "1c220c09634ae75ab4bc129cebc361e066541d76a6d92e0a360a37f172ae037d",
+    "app/physics/glow/source.gd": "83740c6b4a3cb62c570febf39f49135ae5215e3f9907183373923dfdf1a3a71e",
+    "app/physics/glow/thermal.gd": "88de0a611390a5d9a8c9516cfceabd868634a4d5c2cf88c46c41100ecec7d320",
+    "app/physics/glow/two_stroke.gd": "9be44a5994ae9c19c1e6f5a5ef2cc35295a7745fe1779c13f7ba70161a4d02cd",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "app/physics/propulsion.gd": "8c9818e153fe32d4d53bf935431894646421ca3c137e57fc22b91a8b6cdd62ac",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+    "app/sim/simulation.gd": "edaf012561e96714ca4ddb05b07fdbbb9eb9f3faed930ce4fafe265d3e5f7c6c",
+    "app/tests/test_glow_coupling.gd": "f437a4fcc465fb3e359fa7d2b5ee5954b1b2a784d13e1897bcb7011897ebdcef",
+    "app/tests/test_glow_four_stroke.gd": "69cc37a62792225a0c31f0b4809653e7c1f029b636d6ad2bc399a2cc163a861f",
+    "app/tests/test_glow_oracle.gd": "24745a3b0ea76273ac68129db0def61e37472c0fb2671f33b9396aa1e8808f4c",
+    "app/tests/test_glow_profiles.gd": "cbc24d4f8e321969f4d5ccf96bfe2551ba9c6de87a5930831e4ac17127d40be8",
+    "app/tests/test_glow_thermal.gd": "69d9d20a76811268c663e56660b3d6816113e737546640a3c2f6c68f9fe6d7b5",
+    "app/tests/test_glow_two_stroke.gd": "52c041e214d64a636c6dfddcde7ad7b226938d8106842a352afbebba0682c2d5",
+    "research/glow-engines/bench.gd": "3d71eff336edcc4ce7d0048ff2f688e2f19a91712dddb4bbdf4650919d542ebb",
+    "research/glow-engines/build_profiles.py": "076e3487820529f1f49e63065d03e936bbbcb8cbd2dcd294ff4f7282fe306812",
+    "research/glow-engines/mutations.py": "e747e160e0f447b249112bb337871f4a00ff02cbccdd840e70d11b1fca558f4c",
+    "research/glow-engines/reference/oracle.json": "03dd32ed67cc77b56a32560f6f4f57f40639415e77059b1ffd4d0493fd7370c4",
+    "research/glow-engines/reference/reference.py": "091d69803582a084354f50cf80139b48ed5287893a876213da15c8e6f4d19e39",
+    "research/glow-engines/reference/test_reference.py": "122112309a7a240bb30359ca9640352939b5f327a0f8640479a72bf5a30feaea",
+    "research/glow-engines/test_profiles.py": "2ffccf3d7bf1a1bd9d6228fcba321077e62e5ab926632d630c27f6613e474ba6",
+    "research/glow-engines/verify.py": "e608972c0e61ef459797e9c6c80c6e1c1a2938d255a0de3032547f93e2febd6f"
+  },
+  "claim": "Software proof of standalone candidate mean-cycle kernels; physical and catalog acceptance remain open"
+}
