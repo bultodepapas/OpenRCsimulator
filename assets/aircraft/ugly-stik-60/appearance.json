@@ -7,7 +7,7 @@
     "white": "#f7f6f1",
     "black": "#111216"
   },
-  "atlas_size_px": 1024,
+  "atlas_size_px": 2048,
   "wing": {
     "field_semispan_fraction": [
       0.53,
@@ -41,9 +41,9 @@
   },
   "materials": {
     "kind": "artistic_estimate",
-    "note": "Profiles in ugly_stik_finish.gd; roughness chosen by comparable captures, not measured BRDF"
+    "note": "Profiles in ugly_stik_finish.gd; roughness chosen by comparable captures, not measured BRDF. US-V09a: glossy film (roughness 0.2, specular 0.5)"
   },
-  "rasterization": "Godot SVG Image.load_svg_from_string from compiled source at 1024px, mipmaps, linear anisotropic; same SVG checked in for editing/import comparison; no editor cache required at runtime",
+  "rasterization": "Godot SVG Image.load_svg_from_string from compiled source at atlas_size_px (artwork in a 1024 viewBox), mipmaps, linear anisotropic; same SVG checked in for editing/import comparison; no editor cache required at runtime",
   "rib_hints": {
     "kind": "artistic_estimate",
     "pitch_m": 0.0508,

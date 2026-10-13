@@ -113,7 +113,7 @@ func run(airplane: Dictionary) -> Dictionary:
 	if skin.albedo_texture == null: return {"checks": checks, "failures": failures, "ok": false}
 	var image := skin.albedo_texture.get_image()
 	check("atlas has mip chain", image.has_mipmaps())
-	check("atlas is square and intended resolution", image.get_size() == Vector2i(1024, 1024))
+	check("atlas is square and intended resolution", image.get_size() == Vector2i.ONE * int(Finish.Appearance.DATA.atlas_size_px))
 	check("atlas does not multiply colored tint", skin.albedo_color.is_equal_approx(Color.WHITE))
 	var total_uvs := 0
 	var winding_triangles := 0

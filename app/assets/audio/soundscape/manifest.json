@@ -183,29 +183,55 @@
       "source": "original procedural synthesis in tools/audio/generate.py"
     },
     {
-      "bandlimit_hz": 4300,
-      "base_frequency_hz": 760,
+      "bandlimit_hz": 10000,
+      "base_frequency_hz": 1372,
       "category": "motor",
       "channels": 1,
-      "duration_s": 5.0,
-      "file": "motor_turbine.wav",
-      "frequency_note": "760 Hz tonal whistle over modulated jet hiss, source-limited to 4,300 Hz",
-      "highest_pitch_shifted_hz": 10320.0,
+      "duration_s": 8.0,
+      "file": "turbine_whine.wav",
+      "frequency_note": "Shaft-order whine: harmonics 1-7 of 1,372 Hz (82,320 rpm) with compressor hiss, source-limited to 10,000 Hz",
+      "highest_pitch_shifted_hz": 18800.0,
       "loop": true,
       "metrics": {
-        "duration_s": 5.0,
-        "interior_step_p99": 0.14424194,
+        "duration_s": 8.0,
+        "interior_step_p99": 0.38998474,
         "peak": 0.47998047,
-        "quantized_out_of_band_energy_db": -86.79384931,
-        "rms": 0.15061381,
-        "sample_count": 110250,
-        "seam_step": 0.11242676,
-        "seam_step_to_interior_p99": 0.7794318
+        "quantized_out_of_band_energy_db": -95.31185646,
+        "rms": 0.15551008,
+        "sample_count": 176400,
+        "seam_step": 0.47976685,
+        "seam_step_to_interior_p99": 1.23021953
       },
-      "playback_pitch_factor": 2.4,
+      "playback_pitch_factor": 1.88,
       "sample_format": "signed 16-bit PCM little-endian",
       "sample_rate_hz": 22050,
-      "sha256": "a06f807e0f29ec2854b343aad80b889e78b07671dabc7df9d9cbd43bfe9af65b",
+      "sha256": "d53f432782c290ea28363975f0bb5e6dfae073d5cf468d164afe565224c2ae06",
+      "source": "original procedural synthesis in tools/audio/generate.py"
+    },
+    {
+      "bandlimit_hz": 10000,
+      "base_frequency_hz": null,
+      "category": "motor",
+      "channels": 1,
+      "duration_s": 10.0,
+      "file": "turbine_roar.wav",
+      "frequency_note": "Jet mixing noise peaking near 1.5 kHz with turbulent modulation and low rumble, source-limited to 10,000 Hz",
+      "highest_pitch_shifted_hz": 14000.0,
+      "loop": true,
+      "metrics": {
+        "duration_s": 10.0,
+        "interior_step_p99": 0.1404425,
+        "peak": 0.47998047,
+        "quantized_out_of_band_energy_db": -90.58864439,
+        "rms": 0.09053445,
+        "sample_count": 220500,
+        "seam_step": 0.04959106,
+        "seam_step_to_interior_p99": 0.35310581
+      },
+      "playback_pitch_factor": 1.4,
+      "sample_format": "signed 16-bit PCM little-endian",
+      "sample_rate_hz": 22050,
+      "sha256": "5494cb49acc697174134c8a6ddb8e3160028a187395150a64f47dbf09bc06928",
       "source": "original procedural synthesis in tools/audio/generate.py"
     },
     {
@@ -392,6 +418,6 @@
   "sample_rate_hz": 22050,
   "toolchain": {
     "numpy": "2.4.6",
-    "python": "3.11.9"
+    "python": "3.12.3"
   }
 }

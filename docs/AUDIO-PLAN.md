@@ -10,7 +10,7 @@
 
 The soundscape reads simulation and view state without writing to the flight model, shared random state or trace. Aircraft audio remains the foreground cue; wind and wildlife sit behind it. Dynamic gains, filters, pause/restart and camera transitions are bounded. Legacy engine sound remains available with --soundscape=legacy.
 
-The source library contains original generated PCM with per-asset provenance. The current build has 29 soundscape sources; the procedural wildlife layer varies birds and adds distant dogs, nocturnal owls and crickets. No external recordings were required for the qualified release.
+The source library contains original generated PCM with per-asset provenance. The current build has 30 soundscape sources (the turbine has whine and roar layers since AUD-10a); the procedural wildlife layer varies birds and adds distant dogs, nocturnal owls and crickets. No external recordings were required for the qualified release.
 
 | Step | Result and evidence |
 | --- | --- |
@@ -19,6 +19,7 @@ The source library contains original generated PCM with per-asset provenance. Th
 | AUD-03 | Read-only dynamic mix, spatial environment and aircraft audio; 76 focused checks and five exact simulation pairs: [implementation](research/audio/AUD-03/README.md). |
 | AUD-04 | Native gameplay captures and stereo-speaker review: [evidence](research/audio/AUD-04/README.md). Dedicated mixer timing was not qualified. |
 | AUD-05 | Wildlife variation and export qualification: [evidence](research/audio/AUD-05/README.md). Speaker feedback and the frozen regression suite are recorded there. |
+| AUD-06/07/10a | Linux Movie Maker bench; loop-wrap clicks, start pop, stuck limiter, Doppler camera-cut chirp and near-field clamp fixed; two-layer directional turbine voice: [evidence](research/audio/AUD-06/README.md), [plan](plans/audio-realism.md). Owner listening pending. |
 
 ## Remaining qualification
 

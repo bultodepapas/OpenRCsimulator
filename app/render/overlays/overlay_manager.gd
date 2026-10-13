@@ -22,6 +22,9 @@ const IDS := Settings.IDS
 ## Numbers refresh at 10 Hz (readable, less churn); sticks and the visibility of warnings follow every frame.
 const TEXT_PERIOD_S := 0.1
 const MARGIN := 12.0
+const FLIGHT_LAYER := 1
+## While the Overlays dialog is open: above the pause menu (10), below the dialog (≥ 12), so every switch shows at once.
+const PREVIEW_LAYER := 11
 
 var settings: Dictionary = Settings.DEFAULTS.duplicate(true)
 var language := "en"
@@ -38,7 +41,7 @@ var _warning_codes := PackedStringArray()
 
 func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> void:
 	name = "FlightOverlays"
-	layer = 1 # the flight's own layer; the pause menu (10) and dialogs draw above
+	layer = FLIGHT_LAYER # the pause menu (10) and dialogs draw above
 	language = interface_language
 	root = Control.new()
 	root.name = "Root"
@@ -106,6 +109,13 @@ func apply(value: Variant, announce := true) -> void:
 	_since_text = INF # show the new choice at once
 	if announce:
 		settings_changed.emit(settings.duplicate(true))
+
+
+## Live preview for the pause-menu dialog: shown above the pause menu while `on`; back to the flight layer and hidden
+## (the paused picture shows the airplane alone) when the dialog closes.
+func preview(on: bool) -> void:
+	layer = PREVIEW_LAYER if on else FLIGHT_LAYER
+	visible = on
 
 
 func is_overlay_visible(id: String) -> bool:

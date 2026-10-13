@@ -13,6 +13,7 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
+const WarningsBar := preload("res://render/overlays/warnings_bar.gd")
 const PREFS := "user://test_overlay_settings.cfg"
 
 var _failures := 0
@@ -48,6 +49,7 @@ func _run() -> void:
 	await _dialog()
 	await _spanish_layout()
 	await _flight_scene()
+	await _pause_preview()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("overlay manager: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)
@@ -227,6 +229,23 @@ func _spanish_layout() -> void:
 	await process_frame
 	_check("Spanish: metric by language", manager.frames.flight.values.airspeed.text == "72 km/h")
 	_check("Spanish pilot layout with three long warnings: no overlap at 1280×720", _layout_ok(manager, false), _rects(manager))
+	var every := PackedStringArray(["failsafe", "safe", "stall", "low", "far", "battery", "experimental"])
+	var calm := _snapshot(every)
+	calm.telemetry.wind_up = 0.0
+	manager.refresh_numbers(calm)
+	await process_frame
+	await process_frame
+	var wind_calm_up: Vector2 = manager.frames.wind.size
+	_check("all seven Spanish warnings wrap inside the bar's width", manager.frames.warnings.chips.size.x <= WarningsBar.MAX_WIDTH + 0.5
+		and manager.frames.warnings.chips.size.y > 40.0, str(manager.frames.warnings.chips.size))
+	_check("seven warnings still overlap nothing at 1280×720", _layout_ok(manager, false), _rects(manager))
+	var gust := _snapshot(every)
+	gust.telemetry.wind_up = 1.2
+	manager.refresh_numbers(gust)
+	await process_frame
+	await process_frame
+	_check("wind box keeps its size when an updraft line appears", manager.frames.wind.size == wind_calm_up,
+		"%s → %s" % [wind_calm_up, manager.frames.wind.size])
 	manager.queue_free()
 	TranslationServer.set_locale("en")
 	await process_frame
@@ -304,3 +323,49 @@ func _layout_ok(manager: CanvasLayer, overlap_allowed: bool, size := Vector2(128
 				if rects[i].intersects(rects[j]):
 					return false
 	return true
+
+
+## Home → Fly → Pause → Flight overlays: the overlays preview above the pause menu, and hide again on close.
+func _pause_preview() -> void:
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
+	var app: Node = load("res://app_root.tscn").instantiate()
+	app.user_args = PackedStringArray()
+	app.preferences_path = PREFS
+	root.add_child(app)
+	var ui := UiDriver.new(self)
+	await ui.settle()
+	await ui.tap(KEY_ENTER) # Fly
+	await create_timer(0.4).timeout
+	var overlays: CanvasLayer = app.flight.get("_overlays")
+	var hints: Array[Node] = app.flight.find_children("FirstFlightHint", "", true, false)
+	_check("a first Home flight shows the first-flight hint", hints.size() == 1)
+	if hints.size() == 1:
+		var card: Rect2 = (hints[0].find_child("Card", true, false) as Control).get_global_rect()
+		var clear := Rect2(Vector2.ZERO, Vector2(1280, 720)).encloses(card)
+		for id: String in _shown(overlays):
+			clear = clear and not card.intersects(overlays.frames[id].get_global_rect())
+		_check("the first-flight hint overlaps no Pilot overlay at 1280×720", clear, "hint %s; %s" % [card, _rects(overlays)])
+	var patch: Node = app.flight.get_node_or_null("LatencyPatch")
+	_check("Home flights show the default latency marker", patch != null)
+	if patch != null:
+		var area: Rect2 = (patch.get_child(0) as Control).get_global_rect()
+		var marker_clear := Rect2(Vector2.ZERO, Vector2(1280, 720)).encloses(area)
+		for id: String in _shown(overlays):
+			marker_clear = marker_clear and not area.intersects(overlays.frames[id].get_global_rect())
+		_check("the latency marker overlaps no Pilot overlay at 1280×720", marker_clear, "marker %s; %s" % [area, _rects(overlays)])
+	await ui.tap(KEY_ESCAPE)
+	_check("pause hides the overlays", overlays != null and not overlays.visible)
+	app.open_overlays()
+	await ui.settle()
+	_check("the dialog previews the overlays above the pause menu", overlays.visible and overlays.layer > app.pause_menu.layer
+		and overlays.layer < app.screens.top().layer, "overlays %d pause %d dialog %d" % [overlays.layer, app.pause_menu.layer, app.screens.top().layer])
+	_check("the suspended pause column steps aside during the preview", not app.pause_menu.visible)
+	await ui.tap(KEY_ESCAPE)
+	_check("closing the dialog hides them again under the pause menu", app.pause_menu != null and not overlays.visible
+		and overlays.layer == Manager.FLIGHT_LAYER and app.pause_menu.visible)
+	_check("focus returns to the pause menu's Flight overlays button", ui.focus_name() == "Overlays", ui.focus_name())
+	await ui.tap(KEY_ESCAPE) # Continue
+	await ui.settle()
+	_check("continue shows them at the flight layer", overlays.visible and overlays.layer == Manager.FLIGHT_LAYER)
+	app.queue_free()
+	await process_frame

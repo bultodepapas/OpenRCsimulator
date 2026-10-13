@@ -386,6 +386,7 @@ static func _estimate_core(
 		"surface": surface,
 		"impact_angle_deg": impact_angle_deg,
 		"speed_mps": sqrt(speed_squared),
+		"tangential_speed_mps": tangential_velocity_mps,
 		"trigger": trigger,
 		"kinematics_is_proxy": false,
 		"sample_time": "supplied",

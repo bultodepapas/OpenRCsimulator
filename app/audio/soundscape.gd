@@ -38,6 +38,9 @@ var _screen_goal: float = 0.0
 var _previous_source: Vector3
 var _previous_listener: Vector3
 var _primed: bool = false
+## AUD-07e: loops start on the first update, after positioning. A player started at the origin next to the
+## listener plays one mix block at max_db whatever its volume (a pop at every flight start).
+var _start_offsets: Dictionary = {}
 var _previous_paused: bool = false
 var _levels: PackedFloat64Array = PackedFloat64Array()
 var _bus_names: Array[StringName] = []
@@ -52,9 +55,10 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 	rng.seed = seed_value
 	_setup_buses()
 	_find_trees(field)
-	var motor_name: String = "motor_electric" if kind == "electric_prop" else ("motor_turbine" if kind == "turbine" else "motor_combustion")
+	var motor_name: String = "motor_electric" if kind == "electric_prop" else ("turbine_whine" if kind == "turbine" else "motor_combustion")
 	_voice("Motor", motor_name, AIRCRAFT_BUS, 8.0)
-	_voice("Propeller", "motor_propeller", AIRCRAFT_BUS, 8.0)
+	# A turbine has no propeller: its second aircraft voice carries the jet roar (AUD-10).
+	_voice("Propeller", "turbine_roar" if kind == "turbine" else "motor_propeller", AIRCRAFT_BUS, 8.0)
 	_voice("Airframe", "airframe", AIRCRAFT_BUS, 10.0)
 	_voice("WindLow", "wind_low", AMBIENCE_BUS, 20.0)
 	_voice("WindHigh", "wind_high", AMBIENCE_BUS, 20.0)
@@ -97,9 +101,12 @@ func _setup_buses() -> void:
 		AudioServer.set_bus_send(index, &"Master" if _bus_names.is_empty() else _bus_names[0])
 		_bus_names.append(bus_name)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(_bus_names[1]), AIRCRAFT_TRIM_DB)
-	var limiter: AudioEffectHardLimiter = AudioEffectHardLimiter.new()
+	# AUD-07d: Godot 4.7.2's AudioEffectHardLimiter never fully releases: after an overshoot it stays about
+	# 0.15 dB·s / release low for the rest of the session (-1.3 dB at 0.12 s). This stateless limiter recovers
+	# at once and holds the same -1 dBFS ceiling (research/audio/review-2026-10-13, limiter probe).
+	var limiter: AudioEffectLimiter = AudioEffectLimiter.new()
 	limiter.ceiling_db = -1.0
-	limiter.release = 0.12
+	limiter.threshold_db = -1.0
 	AudioServer.add_bus_effect(AudioServer.get_bus_index(_bus_names[0]), limiter)
 
 
@@ -124,8 +131,9 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 			return
 		var wav: AudioStreamWAV = seamless_loop(source)
 		player.stream = wav
-		# Independent offsets: motor and propeller loops must not wrap or modulate in step (F5).
-		player.play(rng.randf_range(0.0, source.get_length()))
+		# Motor, propeller and airframe start together: the blade-pass loop is a harmonic of the firing loop at the
+		# same pitch, so their phase decides level and timbre. A random offset changed the mix by up to 5 dB (AUD-07).
+		_start_offsets[voices.size() - 1] = rng.randf_range(0.0, source.get_length()) if voices.size() > 3 else 0.0
 
 
 ## AUD-07a: Godot 4.7.2 interpolates past loop_end into the stream's silent padding, so a seamless
@@ -277,6 +285,10 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	for i: int in 2:
 		var breathing: float = 0.78 + 0.22 * sin(clock_s * (0.11 + 0.03 * i) + 2.2 * i)
 		_level(CRICKET_FIRST + i, 0.11 * float(wildlife_presence.cricket) * breathing * duck, dt)
+	if not _start_offsets.is_empty():
+		for index: int in _start_offsets:
+			voices[index].play(float(_start_offsets[index]))
+		_start_offsets.clear()
 	last_update_usec = Time.get_ticks_usec() - started
 	peak_update_usec = maxi(peak_update_usec, last_update_usec)
 

@@ -76,7 +76,8 @@ static func _strut(label: String, a: Vector3, b: Vector3, radius: float, parent:
 
 
 # Extrude an arbitrary x/z outline; vertical maps outline x to height and thickness to x.
-static func _prism(label: String, outline: Array, thickness: float, color: Color, parent: Node3D, vertical := false) -> MeshInstance3D:
+# Edges lying on the relieved hinge line (both ends at gap_offset) get the hinge-gap finish (US-V09a).
+static func _prism(label: String, outline: Array, thickness: float, color: Color, parent: Node3D, vertical := false, gap_offset := NAN) -> MeshInstance3D:
 	var polygon := PackedVector2Array()
 	for point in outline:
 		polygon.append(Vector2(point[0], point[1]))
@@ -84,6 +85,10 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 	assert(not triangles.is_empty(), "Invalid model outline: " + label)
 	var textured := label == "fin" or label == "rudder"
 	var st := _surface(color, textured)
+	var gap := SurfaceTool.new()
+	gap.begin(Mesh.PRIMITIVE_TRIANGLES)
+	gap.set_material(Finish.hinge_gap())
+	var has_gap := false
 	for side in [-1.0, 1.0]:
 		var normal := Vector3(side, 0, 0) if vertical else Vector3(0, side, 0)
 		for i in range(0, triangles.size(), 3):
@@ -103,35 +108,68 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 		var b := Vector3(thickness / 2, p.x, p.y) if vertical else Vector3(p.x, thickness / 2, p.y)
 		var c := Vector3(thickness / 2, q.x, q.y) if vertical else Vector3(q.x, thickness / 2, q.y)
 		var d := Vector3(-thickness / 2, q.x, q.y) if vertical else Vector3(q.x, -thickness / 2, q.y)
-		_quad(st, a, b, c, d, n, "white" if textured else "")
-	return _instance(label, st.commit(), parent)
+		var on_hinge := absf(p.y - gap_offset) < 1e-7 and absf(q.y - gap_offset) < 1e-7
+		has_gap = has_gap or on_hinge
+		_quad(gap if on_hinge else st, a, b, c, d, n, "white" if textured else "red" if on_hinge else "")
+	var mesh := st.commit()
+	if has_gap: gap.commit(mesh)
+	return _instance(label, mesh, parent)
 
+
+static func _smooth_quad(st: SurfaceTool, points: Array, normals: Array, outward: Vector3, region: String) -> void:
+	for indices in [[0, 1, 2], [0, 2, 3]]:
+		if (points[indices[2]] - points[indices[0]]).cross(points[indices[1]] - points[indices[0]]).dot(outward) < 0:
+			indices = [indices[0], indices[2], indices[1]]
+		for index in indices:
+			st.set_normal(normals[index])
+			st.set_uv(Finish.uv(points[index], region))
+			st.add_vertex(points[index])
+
+
+# US-V09a: sanded balsa-box corners. Each bevel becomes a quarter arc tangent to both flat sides at the old chamfer
+# ends, so the measured half-width, top and bottom stay the envelope. Normals are smooth around the section and
+# per bay along the fuselage, keeping the straight-sheet creases at every measured station.
+const FUSELAGE_CORNER_SEGMENTS := 4
 
 static func _fuselage(root: Node3D) -> void:
 	var rings: Array = []
+	var directions: Array = [] # cross-section outward normals, shared by every station
 	for station in D.fuselage_stations:
 		var z: float = station[0]
 		var w: float = station[1]
 		var top: float = station[2]
 		var bottom: float = station[3]
 		var bevel := minf(w * 0.16, (top - bottom) * 0.12)
-		rings.append([Vector3(-w + bevel, top, z), Vector3(w - bevel, top, z), Vector3(w, top - bevel, z), Vector3(w, bottom + bevel, z), Vector3(w - bevel, bottom, z), Vector3(-w + bevel, bottom, z), Vector3(-w, bottom + bevel, z), Vector3(-w, top - bevel, z)])
+		var ring: Array = []
+		directions.clear()
+		for corner in [[w - bevel, top - bevel, 90.0], [w - bevel, bottom + bevel, 0.0], [-w + bevel, bottom + bevel, -90.0], [-w + bevel, top - bevel, -180.0]]:
+			for k in FUSELAGE_CORNER_SEGMENTS + 1:
+				var angle := deg_to_rad(float(corner[2]) - 90.0 * k / FUSELAGE_CORNER_SEGMENTS)
+				var n := Vector3(cos(angle), sin(angle), 0)
+				ring.append(Vector3(corner[0], corner[1], z) + n * bevel)
+				directions.append(n)
+		rings.append(ring)
+	var count: int = directions.size()
 	var st := _surface(RED, true)
 	for i in range(rings.size() - 1):
-		for j in 8:
-			var k := (j + 1) % 8
-			var a: Vector3 = rings[i][j]
-			var b: Vector3 = rings[i][k]
-			var c: Vector3 = rings[i + 1][k]
-			var d: Vector3 = rings[i + 1][j]
-			var n := (d - a).cross(b - a).normalized()
-			_quad(st, a, b, c, d, n, "dorsal" if j == 0 else "red")
+		for j in count:
+			var k := (j + 1) % count
+			var points := [rings[i][j], rings[i][k], rings[i + 1][k], rings[i + 1][j]]
+			var normals: Array = []
+			for corner in [[i, j], [i, k], [i + 1, k], [i + 1, j]]:
+				var n2: Vector3 = directions[corner[1]]
+				var along: Vector3 = rings[i + 1][corner[1]] - rings[i][corner[1]]
+				var n: Vector3 = Vector3(-n2.y, n2.x, 0).cross(along).normalized()
+				normals.append(n if n.dot(n2) > 0.0 else -n)
+			var outward: Vector3 = (directions[j] + directions[k]).normalized()
+			var top_flat: bool = directions[j].y > 0.999 and directions[k].y > 0.999
+			_smooth_quad(st, points, normals, outward, "dorsal" if top_flat else "red")
 	for end in [0, rings.size() - 1]:
 		var center := Vector3.ZERO
 		for p in rings[end]: center += p
-		center /= 8.0
-		for j in 8:
-			_triangle(st, center, rings[end][j], rings[end][(j + 1) % 8], Vector3(0, 0, -1 if end == 0 else 1), "red")
+		center /= float(count)
+		for j in count:
+			_triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1 if end == 0 else 1), "red")
 	_instance("fuselage", st.commit(), root)
 
 
@@ -174,6 +212,11 @@ static func _wing_quad(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, d: V
 # Section points are [chord fraction, height/chord].
 static func _wing_panel(label: String, x0: float, x1: float, section: Array, color: Color, parent: Node3D, z_offset := 0.0, span_offset := 0.0, chord_origin := 0.0) -> void:
 	var st := _surface(color, true)
+	# US-V09a: the hinge-gap closing faces sit in a shadowed slot; with glossy film they otherwise mirror the sky as a
+	# bright aliased line. They keep the atlas colour but get the occluded gap finish.
+	var gap := SurfaceTool.new()
+	gap.begin(Mesh.PRIMITIVE_TRIANGLES)
+	gap.set_material(Finish.hinge_gap())
 	var count := maxi(1, int(ceil((x1 - x0) / 0.01016))) if chord_origin > 0 else 1
 	var uv_offset := Vector3(span_offset, 0, chord_origin * float(D.wing.chord) - z_offset)
 	for span_i in count:
@@ -184,7 +227,8 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 			var p := Vector3(0, section[i][1] * D.wing.chord, section[i][0] * D.wing.chord + z_offset)
 			var q := Vector3(0, section[j][1] * D.wing.chord, section[j][0] * D.wing.chord + z_offset)
 			var n := Vector3(0, q.z - p.z, p.y - q.y).normalized()
-			_wing_quad(st, _wing_vertex(lo, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[j], z_offset, span_offset, chord_origin), _wing_vertex(lo, section[j], z_offset, span_offset, chord_origin), n, _section_normal(section, i, n), _section_normal(section, j, n), uv_offset)
+			var closing := is_equal_approx(float(section[i][0]), float(section[j][0]))
+			_wing_quad(gap if closing else st, _wing_vertex(lo, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[j], z_offset, span_offset, chord_origin), _wing_vertex(lo, section[j], z_offset, span_offset, chord_origin), n, _section_normal(section, i, n), _section_normal(section, j, n), uv_offset)
 	var polygon := PackedVector2Array()
 	for p in section: polygon.append(Vector2(p[0] * D.wing.chord + z_offset, p[1] * D.wing.chord))
 	var triangles := Geometry2D.triangulate_polygon(polygon)
@@ -198,7 +242,10 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 				st.set_normal(n)
 				st.set_uv(Finish.uv(point + uv_offset, "wing"))
 				st.add_vertex(point)
-	_instance(label, st.commit(), parent)
+	var mesh := st.commit()
+	var gap_vertices: Variant = gap.commit_to_arrays()[Mesh.ARRAY_VERTEX]
+	if gap_vertices != null and not gap_vertices.is_empty(): gap.commit(mesh)
+	_instance(label, mesh, parent)
 
 
 static func _hinge(label: String, parent: Node3D, pos: Vector3, hinges: Dictionary) -> Node3D:
@@ -260,37 +307,78 @@ static func _relieved_outline(outline: Array, offset: float) -> Array:
 	return result
 
 
+# US-V09a: the fin and rudder are sanded curves traced as polylines. A centripetal Catmull-Rom spline passes through
+# every traced point; the closing root line and the hinge line stay straight, and no point crosses the hinge.
+const OUTLINE_SUBDIVISIONS := 4
+
+static func _curved_outline(outline: Array) -> Array:
+	var n := outline.size()
+	var curved := func(i: int) -> bool:
+		var a: Array = outline[posmod(i, n)]
+		var b: Array = outline[posmod(i + 1, n)]
+		return posmod(i, n) != n - 1 and not (absf(a[1]) < 1e-9 and absf(b[1]) < 1e-9)
+	var result: Array = []
+	for i in n:
+		var p1 := Vector2(outline[i][0], outline[i][1])
+		result.append([p1.x, p1.y])
+		if not curved.call(i): continue
+		var p2 := Vector2(outline[(i + 1) % n][0], outline[(i + 1) % n][1])
+		var p0 := Vector2(outline[posmod(i - 1, n)][0], outline[posmod(i - 1, n)][1]) if curved.call(i - 1) else 2.0 * p1 - p2
+		var p3 := Vector2(outline[(i + 2) % n][0], outline[(i + 2) % n][1]) if curved.call(i + 1) else 2.0 * p2 - p1
+		var t1 := sqrt(p0.distance_to(p1))
+		var t2 := t1 + sqrt(p1.distance_to(p2))
+		var t3 := t2 + sqrt(p2.distance_to(p3))
+		for k in range(1, OUTLINE_SUBDIVISIONS):
+			var t := lerpf(t1, t2, float(k) / OUTLINE_SUBDIVISIONS)
+			var a1 := p0.lerp(p1, (t - 0.0) / t1)
+			var a2 := p1.lerp(p2, (t - t1) / (t2 - t1))
+			var a3 := p2.lerp(p3, (t - t2) / (t3 - t2))
+			var b1 := a1.lerp(a2, (t - 0.0) / t2)
+			var b2 := a2.lerp(a3, (t - t1) / (t3 - t1))
+			var c := b1.lerp(b2, (t - t1) / (t2 - t1))
+			if p1.y <= 0.0 and p2.y <= 0.0: c.y = minf(c.y, 0.0)
+			elif p1.y >= 0.0 and p2.y >= 0.0: c.y = maxf(c.y, 0.0)
+			result.append([c.x, c.y])
+	return result
+
+
 # Keep one named mesh/hinge interface while relieving the elevator around the rudder sweep.
 static func _elevator_mesh(outline: Array, t: Dictionary, parent: Node3D) -> void:
 	var polygon := PackedVector2Array()
 	for p in outline: polygon.append(Vector2(p[0], p[1]))
 	var combined := _surface(RED)
+	var combined_gap := SurfaceTool.new()
+	combined_gap.begin(Mesh.PRIMITIVE_TRIANGLES)
+	combined_gap.set_material(Finish.hinge_gap())
 	var width: float = t.elevator_cutout_half_width
 	var start: float = t.elevator_cutout_start
 	var notch := PackedVector2Array([Vector2(-width, start), Vector2(width, start), Vector2(width, 1), Vector2(-width, 1)])
 	for contour in Geometry2D.clip_polygons(polygon, notch):
 		var points: Array = []
 		for point in contour: points.append([point.x, point.y])
-		var part := _prism("elevator_part", points, t.thickness, RED, parent)
+		var part := _prism("elevator_part", points, t.thickness, RED, parent, false, t.hinge_gap / 2)
 		combined.append_from(part.mesh, 0, Transform3D.IDENTITY)
+		if part.mesh.get_surface_count() > 1: combined_gap.append_from(part.mesh, 1, Transform3D.IDENTITY)
 		part.free()
-	_instance("elevator", combined.commit(), parent)
+	var mesh := combined.commit()
+	combined_gap.commit(mesh)
+	_instance("elevator", mesh, parent)
 
 
 static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	var t: Dictionary = D.tail
-	var fixed := _prism("stab", _relieved_outline(t.stab_outline, -t.hinge_gap / 2), t.thickness, RED, root)
+	var fixed := _prism("stab", _relieved_outline(t.stab_outline, -t.hinge_gap / 2), t.thickness, RED, root, false, -t.hinge_gap / 2)
 	fixed.position = Vector3(0, t.y, t.hinge_z)
 	var elevator := _hinge("elevator", root, fixed.position, hinges)
 	_elevator_mesh(_relieved_outline(t.elevator_outline, t.hinge_gap / 2), t, elevator)
-	var fin := _prism("fin", _relieved_outline(t.fin_outline, -t.hinge_gap / 2), t.fin_thickness, Finish.WHITE, root, true)
+	var fin := _prism("fin", _relieved_outline(_curved_outline(t.fin_outline), -t.hinge_gap / 2), t.fin_thickness, Finish.WHITE, root, true, -t.hinge_gap / 2)
 	fin.position = Vector3(0, t.fin_y, t.rudder_hinge_z)
 	var ventral := _prism("ventral_fin", t.ventral_outline, t.ventral_thickness, RED, root, true)
 	ventral.position = fin.position
 	var skid_base: Vector3 = fin.position + Vector3(0, t.ventral_outline[2][0], t.ventral_outline[2][1])
 	_strut("tail_skid", skid_base + Vector3(0, 0.018, -0.012), skid_base + Vector3(0, -0.003, 0.012), 0.0008, root)
 	var rudder := _hinge("rudder", root, fin.position, hinges)
-	_prism("rudder", _relieved_outline(t.rudder_outline, t.hinge_gap / 2), t.fin_thickness, Finish.WHITE, rudder, true)
+	_prism("rudder", _relieved_outline(_curved_outline(t.rudder_outline), t.hinge_gap / 2), t.fin_thickness, Finish.WHITE, rudder, true, t.hinge_gap / 2)
 
 
 static func build() -> Dictionary:

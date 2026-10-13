@@ -9,9 +9,11 @@ signal close_requested(id: String)
 
 const DANGER := ["failsafe", "stall", "low"]
 const INFO := ["experimental"]
+## The chips wrap inside this width (px), so many warnings never reach the corner overlays (Wind is ≈ 232 px wide).
+const MAX_WIDTH := 640.0
 
 var id := "warnings"
-var chips: HBoxContainer
+var chips: HFlowContainer
 var close_button: Button
 var codes := PackedStringArray()
 
@@ -20,11 +22,16 @@ func _init() -> void:
 	name = "WarningsOverlay"
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_theme_constant_override("separation", 6)
-	chips = HBoxContainer.new()
+	chips = HFlowContainer.new()
+	chips.name = "Chips"
 	chips.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	chips.add_theme_constant_override("separation", 6)
+	chips.alignment = FlowContainer.ALIGNMENT_CENTER
+	chips.custom_minimum_size.x = MAX_WIDTH
+	chips.add_theme_constant_override("h_separation", 6)
+	chips.add_theme_constant_override("v_separation", 6)
 	add_child(chips)
 	close_button = Frame.close_x(func() -> void: close_requested.emit(id))
+	close_button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	close_button.add_theme_stylebox_override("normal", Frame.backplate())
 	add_child(close_button)
 	visible = false

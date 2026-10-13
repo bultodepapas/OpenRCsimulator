@@ -21,5 +21,5 @@ func _initialize() -> void:
 				okay = okay and wav.mix_rate == 22050 and not wav.stereo and wav.format == AudioStreamWAV.FORMAT_16_BITS
 				okay = okay and wav.data.size() / 2 == int(entry.metrics.sample_count)
 				count += 1
-	print("AUD-05 exported audio: %d/29 sources, manifests and MIT notices: %s" % [count, "PASS" if okay and count == 29 else "FAIL"])
-	quit(0 if okay and count == 29 else 1)
+	print("AUD-05 exported audio: %d/30 sources, manifests and MIT notices: %s" % [count, "PASS" if okay and count == 30 else "FAIL"])
+	quit(0 if okay and count == 30 else 1)

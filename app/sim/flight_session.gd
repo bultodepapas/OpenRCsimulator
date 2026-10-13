@@ -230,6 +230,7 @@ const Ground := preload("res://physics/ground_contact.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
+const HullContact := preload("res://physics/hull_contact.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
@@ -312,6 +313,13 @@ var engine_running: bool:
 const CRASH_HOLD_S := 1.5
 ## Presentation may retain the aftermath until explicit reset; technical sessions keep the legacy timer.
 var crash_auto_restart := true
+## E3d1: crash-hull points become soft ground contacts (HullContact): light touches continue the flight and only a
+## C2-grade impact or a deep crush ends it. Off by default so trace, scripted and golden routes keep D9d's "any hull
+## contact is a crash"; Main turns it on for interactive flights.
+var soft_hull_contacts := false
+var _hull_contact := {}
+## E3d1 presentation feed: the hull points touching after the latest tick (HullContact.contacts); read-only.
+var soft_contacts: Array = []
 ## The last crash while shown: CG speed/sink (m/s), ticks_left, why and a typed tick-boundary impact; empty while flying.
 var crash := {}
 ## Why the session paused the simulation ("" = it did not), for the panel.
@@ -661,6 +669,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	_trim_charge = engine_charge_ratio()
 	sim.mass = aircraft.model.mass_kg
 	sim.inertia = aircraft.model.inertia.duplicate()
+	_hull_contact = HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia)
 	_deflection_key = PackedFloat64Array()
 	_ground_effect_reach = GroundEffect.reach(aircraft.model)
 	sim.loads = _loads
@@ -949,7 +958,16 @@ func _physics_process(_delta: float) -> void:
 			reset()
 		return
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
-		if touches_ground(sim.state):
+		if soft_hull_contacts:
+			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+			var hit: Dictionary = HullContact.terminal(sim.previous, sim.state, _hull_contact)
+			if int(hit.index) >= 0:
+				_crash(ImpactSnapshot.hull_point(sim.state, sim.tick, aircraft.model.crash_hull, int(hit.index),
+					sim.previous, str(hit.rule)))
+			elif gear_collapsed(sim.state):
+				_crash(ImpactSnapshot.gear_limit(sim.state, sim.tick, aircraft.model.landing_gear,
+					ground_surfaces if wheel_count() > 0 else PackedFloat64Array()))
+		elif touches_ground(sim.state):
 			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
 		elif gear_collapsed(sim.state):
 			_crash(ImpactSnapshot.gear_limit(sim.state, sim.tick, aircraft.model.landing_gear,
@@ -998,7 +1016,8 @@ func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloa
 		aircraft.model.crash_hull, _collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)
 	var ground_hit: ImpactSnapshot.Snapshot = null
 	var ground_fraction := INF
-	if touches_ground(candidate):
+	# E3d1: with soft hull contacts the ground pushes back through the loads; the tick check decides crashes.
+	if not soft_hull_contacts and touches_ground(candidate):
 		ground_hit = ImpactSnapshot.hull_contact(candidate, next_tick, aircraft.model.crash_hull, previous)
 		if ground_hit.point_index >= 0:
 			ground_fraction = ground_hit.crossing.fraction if ground_hit.crossing != null and ground_hit.crossing.available else 0.0
@@ -1052,6 +1071,7 @@ func reset() -> void:
 	_shaft_pending_reset = false
 	resetting.emit()
 	_clear_scenery_damage(true)
+	soft_contacts = []
 	crash = {}
 	_last_scenery_event = null
 	if pause_reason.begins_with("CRASH"):
@@ -1425,8 +1445,9 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 	var gear: Dictionary = aircraft.model.get("landing_gear", {})
 	var steer: float = aux[AUX_SERVO + 2]
 	var anchors: PackedFloat64Array = aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
+	var hull: PackedFloat64Array = HullContact.loads(s, _hull_contact) if soft_hull_contacts else PackedFloat64Array()
 	if wheel_count() == 0:
-		return {ok = true, loads = Ground.loads(s, gear, steer, ground_surfaces, anchors), derivative = PackedFloat64Array()}
+		return {ok = true, loads = _add_loads(Ground.loads(s, gear, steer, ground_surfaces, anchors), hull), derivative = PackedFloat64Array()}
 	if values.size() != wheel_index() + wheel_count():
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	var speeds: PackedFloat64Array = values.slice(wheel_index(), wheel_index() + wheel_count())
@@ -1445,7 +1466,20 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 		if not is_finite(value):
 			return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	evaluation.ok = true
+	evaluation.loads = _add_loads(loads, hull)
 	return evaluation
+
+
+## Sums two optional 6-entry body load arrays; an empty array adds nothing (a free flight stays bit-identical).
+static func _add_loads(a: PackedFloat64Array, b: PackedFloat64Array) -> PackedFloat64Array:
+	if b.is_empty():
+		return a
+	if a.is_empty():
+		return b
+	var out := a.duplicate()
+	for i in 6:
+		out[i] += b[i]
+	return out
 
 
 func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
@@ -1942,6 +1976,8 @@ func trace_meta() -> Dictionary:
 		loads = "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
 		state_timing = "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
 	}
+	if soft_hull_contacts:
+		metadata.hull_contact_model = HullContact.law()
 	if not _collision_world.is_empty():
 		metadata.scenery_collision_model = "openrc-swept-landscape-contact v1"
 		metadata.collision_world_identity = str(_collision_world.identity)
@@ -2093,6 +2129,9 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(electric_law())
 	if turbine_is_continuous():
 		parts.append(Turbine.CONTINUOUS_LAW + "; " + Turbine.CONTINUOUS_LAYOUT)
+	if soft_hull_contacts:
+		# E3d1: soft hull contacts change the dynamics near the ground; legacy hashes stay unchanged.
+		parts.append(HullContact.law())
 	if not _collision_world.is_empty():
 		parts.append("scenery-damage-policy:" + SceneryDamage.POLICY_VERSION)
 		parts.append(SceneryDamage.THRESHOLDS_J)

@@ -34,7 +34,7 @@ func _init(overlay_manager: CanvasLayer) -> void:
 	var screen := Screen.mount(self, "Modal")
 	screen.dismiss_option_popup_first = true
 	screen.close_requested.connect(func() -> void: closed.emit())
-	screen.dim(0.5, "Dim")
+	screen.dim(0.2, "Dim") # light: the overlays preview behind it (the pause menu already dims the flight)
 	var center: CenterContainer = screen.center(16.0)
 	dialog_panel = PanelContainer.new()
 	dialog_panel.name = "OverlaysPanel"

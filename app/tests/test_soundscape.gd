@@ -36,7 +36,7 @@ func _run() -> void:
 	seed(739204)
 
 	var kinds: Array[String] = ["glow_prop", "electric_prop", "turbine"]
-	var motor_files: Array[String] = ["motor_combustion.wav", "motor_electric.wav", "motor_turbine.wav"]
+	var motor_files: Array[String] = ["motor_combustion.wav", "motor_electric.wav", "turbine_whine.wav"]
 	var global_rng_checked: bool = false
 	for index: int in range(kinds.size()):
 		var buses_before: int = AudioServer.bus_count
@@ -46,6 +46,21 @@ func _run() -> void:
 		_check("%s configures exactly 14 bounded voices" % kinds[index], rig.voices.size() == 14, "voices=%d" % rig.voices.size())
 		_check("%s adds three dedicated buses" % kinds[index], AudioServer.bus_count == buses_before + 3,
 			"before=%d after=%d" % [buses_before, AudioServer.bus_count])
+		# AUD-07e: nothing plays from the origin before the first update positions the voices (start pop).
+		var silent_until_positioned: bool = true
+		for voice: AudioStreamPlayer3D in rig.voices:
+			silent_until_positioned = silent_until_positioned and not voice.playing
+		rig.update_sound(_flight_snapshot(), 1.0 / 60.0)
+		var loops_started: bool = true
+		for voice_index: int in [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13]:
+			loops_started = loops_started and rig.voices[voice_index].playing
+		_check("loops start only after the first positioned update", silent_until_positioned and loops_started)
+		# AUD-07d: the stateless limiter recovers after an overshoot; Godot 4.7.2's HardLimiter does not.
+		var mix_index: int = AudioServer.get_bus_index(rig.output_bus())
+		_check("mix bus limits with the recovering stateless limiter at -1 dBFS",
+			AudioServer.get_bus_effect_count(mix_index) == 1
+			and AudioServer.get_bus_effect(mix_index, 0) is AudioEffectLimiter
+			and is_equal_approx((AudioServer.get_bus_effect(mix_index, 0) as AudioEffectLimiter).ceiling_db, -1.0))
 		var output_bus: StringName = rig.output_bus()
 		var aircraft_bus: StringName = rig.voices[0].bus
 		var environment_bus: StringName = rig.voices[3].bus
@@ -269,13 +284,45 @@ func _test_model_contracts() -> void:
 	_check("stopped engine is silent while its windmilling prop remains audible",
 		float(stopped_targets.motor_gain) == 0.0 and float(stopped_targets.prop_gain) > 0.0,
 		"motor=%.3f prop=%.3f" % [float(stopped_targets.motor_gain), float(stopped_targets.prop_gain)])
+	# AUD-10: whine on the true shaft order, jet roar (second voice) on jet velocity, both directional.
 	var turbine: Dictionary = calm_day.duplicate()
 	turbine.kind = "turbine"
-	turbine.rpm = 90000.0
-	var turbine_targets: Dictionary = Model.targets(turbine)
-	_check("turbine has motor sound without a propeller layer",
-		float(turbine_targets.motor_gain) > 0.0 and float(turbine_targets.prop_gain) == 0.0,
-		"motor=%.3f prop=%.3f" % [float(turbine_targets.motor_gain), float(turbine_targets.prop_gain)])
+	turbine.max_rpm = 154000.0
+	turbine.jet_velocity_max = 435.0
+	turbine.source = Vector3.ZERO
+	turbine.exhaust_direction = Vector3(0.0, 0.0, 1.0) # jet flows toward +z
+	turbine.listener = Vector3(0.0, 0.0, 100.0) * Basis(Vector3.UP, deg_to_rad(30.0)) # 30 deg off the plume
+	var idle: Dictionary = turbine.duplicate()
+	idle.rpm = 44000.0
+	idle.jet_velocity = 30.5
+	var full: Dictionary = turbine.duplicate()
+	full.rpm = 154000.0
+	full.jet_velocity = 435.0
+	var idle_targets: Dictionary = Model.targets(idle)
+	var full_targets: Dictionary = Model.targets(full)
+	_check("turbine whine pitch follows the shaft speed across its full x3.5 range",
+		is_equal_approx(float(full_targets.motor_pitch) / float(idle_targets.motor_pitch), 154000.0 / 44000.0)
+		and is_equal_approx(float(full_targets.motor_pitch), 154000.0 / Model.TURBINE_WHINE_REFERENCE_RPM),
+		"idle=%.3f full=%.3f" % [float(idle_targets.motor_pitch), float(full_targets.motor_pitch)])
+	_check("jet roar follows jet velocity: near silent at idle, dominant at full power",
+		float(idle_targets.prop_gain) < 0.05 * float(full_targets.prop_gain)
+		and float(full_targets.prop_gain) > float(full_targets.motor_gain)
+		and is_equal_approx(float(full_targets.prop_pitch), Model.TURBINE_ROAR_PITCH_AT_MAX_JET),
+		"roar idle=%.4f full=%.3f whine full=%.3f" % [float(idle_targets.prop_gain), float(full_targets.prop_gain), float(full_targets.motor_gain)])
+	var ahead: Dictionary = full.duplicate()
+	ahead.listener = Vector3(0.0, 0.0, -100.0) # in front of the intake
+	var ahead_targets: Dictionary = Model.targets(ahead)
+	_check("roar is loudest behind the jet, whine ahead of the intake",
+		absf(float(full_targets.exhaust_angle_deg) - 30.0) < 0.01 and absf(float(ahead_targets.exhaust_angle_deg) - 180.0) < 0.01
+		and float(full_targets.prop_gain) > db_to_linear(11.9) * float(ahead_targets.prop_gain) # 30 deg (0 dB) vs ahead (-12 dB)
+		and float(ahead_targets.motor_gain) > 1.9 * float(full_targets.motor_gain),
+		"roar aft/ahead=%.2f whine ahead/aft=%.2f" % [float(full_targets.prop_gain) / float(ahead_targets.prop_gain),
+			float(ahead_targets.motor_gain) / float(full_targets.motor_gain)])
+	var stopped_turbine: Dictionary = full.duplicate()
+	stopped_turbine.running = false
+	var stopped_turbine_targets: Dictionary = Model.targets(stopped_turbine)
+	_check("a stopped turbine is silent", float(stopped_turbine_targets.motor_gain) == 0.0
+		and float(stopped_turbine_targets.prop_gain) == 0.0)
 
 
 func _small_decoded_field() -> Dictionary:

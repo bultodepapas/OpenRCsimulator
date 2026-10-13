@@ -1,6 +1,6 @@
 # Crash realism plan: causes, proportional outcomes, fire and cost
 
-**Date:** 2026-10-13. **Status:** decisions D1–D5 taken; CR-08b and CR-01d implemented ([CR-08b](../research/crash-damage-investigations/CR-08b/README.md), [CR-01d](../research/crash-damage-investigations/CR-01d/README.md)); next CR-09b. **Prefix:** CR- (new slices of existing crash steps; see the [registry](../README.md#tracks-plans-and-step-ids)). **Parent:** [CRASH-DAMAGE-PLAN](../CRASH-DAMAGE-PLAN.md). When this plan is complete, consolidate it into the parent plan and delete this file.
+**Date:** 2026-10-13. **Status:** decisions D1–D5 taken; CR-08b, CR-01d and CR-09b implemented ([CR-08b](../research/crash-damage-investigations/CR-08b/README.md), [CR-01d](../research/crash-damage-investigations/CR-01d/README.md), [CR-09b](../research/crash-damage-investigations/CR-09b/README.md)); soft hull contacts ([E3d1](../research/crash-damage-investigations/E3d1/README.md)) implemented at the owner's request; CR-03b/CR-02b effects and sound ([evidence](../research/crash-damage-investigations/CR-03b/README.md)) and CR-01e causes ([evidence](../research/crash-damage-investigations/CR-01e/README.md)) implemented; next CR-22b energy-source fire, then CR-22c cost. **Prefix:** CR- (new slices of existing crash steps; see the [registry](../README.md#tracks-plans-and-step-ids)). **Parent:** [CRASH-DAMAGE-PLAN](../CRASH-DAMAGE-PLAN.md). When this plan is complete, consolidate it into the parent plan and delete this file.
 **Owner:** crash track. **Owns:** `app/render/crash/`, `app/tests/test_crash_*.gd`, `docs/research/crash-damage-investigations/`, `research/crash-damage/`.
 **Coordinated, not owned:** `app/physics/impact_snapshot.gd` (physics), `app/sim/scenery_collision.gd` (landscape LU-05), `app/sim/flight_session.gd` and `app/main.gd` (main line), aircraft data and generators (model owners, [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md)).
 
@@ -119,10 +119,11 @@ The crash card shows, for example, "Tip stall at 4 m: α 17°, 8.2 m/s, bank 35�
 | --- | --- | --- |
 | CR-01d | Semantic `crash_hull_components` per hull point, from each aircraft's generator; loader validation | **Done 2026-10-13.** 112 checks incl. geometry consistency on all nine files, 11/11 mutations killed; Timber needs an owner `--check` on its reference machine; [evidence](../research/crash-damage-investigations/CR-01d/README.md) |
 | CR-08b | Shared effective-mass helper; normal, slapdown and abrasion channels; J/kg class cuts; durability argument | **Done 2026-10-13.** 49 + 44 focused checks, fleet table, 9/9 mutations killed, scenery parity 1e-12; [evidence](../research/crash-damage-investigations/CR-08b/README.md) |
-| CR-01e | Pre-impact buffer, cause classifier, crash card and log line | One scripted crash per cause through the existing test drivers; trace parity; buffer cost measured |
-| CR-09b | Contact-ordered, momentum-directed breakup; C2 single-part release; no radial scatter | Wreck tests per class (released set, order, scatter energy ≤ cap); capture sequence |
-| CR-03b | Directional, surface- and material-aware dust, chips and sparks; counts by ε | Counts-per-class tests; captures per surface × class on the owner's host |
-| CR-02b | Audio layers mapped to the ladder; scrape held while the wreck slides | Focused layer-per-class tests; native peak ≤ −1 dBFS |
+| E3d1 | Soft hull contacts: spring-damper and friction per hull point; only C2-grade new impacts or deep crushes end an interactive flight; touch marks, puff and scrape | **Done 2026-10-13.** 26 + 10 checks, 13/13 mutations killed, goldens unchanged; [evidence](../research/crash-damage-investigations/E3d1/README.md) |
+| CR-01e | Pre-impact buffer, cause classifier, crash card and log line | **Done 2026-10-13:** 29 checks incl. two real production flights, 9/9 mutations killed; per-sample cost not yet measured (CR-22c); [evidence](../research/crash-damage-investigations/CR-01e/README.md) |
+| CR-09b | Contact-ordered, momentum-directed breakup; C2 single-part release; no radial scatter | **Done 2026-10-13** (software): 27 checks, 7/7 mutations killed; rendered capture sequence still open; [evidence](../research/crash-damage-investigations/CR-09b/README.md) |
+| CR-03b | Directional, surface- and material-aware dust, chips and sparks; counts by ε | **Done 2026-10-13** (software): 39 checks, 9/9 mutations killed; rendered captures on the owner's host still open; [evidence](../research/crash-damage-investigations/CR-03b/README.md) |
+| CR-02b | Audio layers mapped to the ladder; scrape held while the wreck slides | **Ladder done 2026-10-13** (pure `layers_for`, tested per class); held scrape during the wreck slide and the native peak capture remain open |
 | CR-22b | Energy-source research note; `energy_source` kind; fire, fluid and LiPo smoke matrix | Research note with sources; one test per propulsion kind; Ventage Jet fire unchanged |
 | CR-22c | Emitter pools or ratios, distance LOD, pre-warm, per-class budgets | Extended `qualify.py` p95 table; no pool growth over repeated crashes |
 
@@ -141,7 +142,7 @@ The owner delegated these on 2026-10-13 ("you choose"); each took the recommende
 | ID | Question | Decision |
 | --- | --- | --- |
 | D1 | Add `durability` and the inventory `energy_source` kind to aircraft data (contract change)? | Yes, with CR-01d through the generators. Default 1.0, `source: estimate`. Until then the estimator takes durability as an argument (default 1.0). |
-| D2 | C0/C1 should not end the flight. Wait for E3d1, or add an interim exception? | Wait for E3d1. Until then a C0 shows "Touch, no damage"; session timing is unchanged. |
+| D2 | C0/C1 should not end the flight. Wait for E3d1, or add an interim exception? | Superseded 2026-10-13 by the owner ("start working in the soft crash wing tips"): E3d1 soft hull contacts are implemented for interactive flights; scripted, capture and trace routes keep D9d. |
 | D3 | Glow and gasoline fire: never, or rare and gated? | Glow never; gasoline rare and gated; LiPo delayed venting. |
 | D4 | "Cost" as a repair list: list the broken parts, or put a price on them? | Parts list only. Prices would be invented data. |
 | D5 | Where the cause appears: crash card only, or also a flight log? | Card plus a log line now; a log screen later with the menu track. |
