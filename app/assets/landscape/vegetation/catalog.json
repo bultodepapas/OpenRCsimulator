@@ -1,0 +1,616 @@
+{
+  "format": "openrc-imported-vegetation v1",
+  "source": {
+    "title": "Quaternius Stylized Nature MegaKit Standard",
+    "author": "Quaternius",
+    "url": "https://quaternius.itch.io/stylized-nature-megakit",
+    "upload_id": "11055123",
+    "retrieved": "2026-10-13",
+    "archive": "assets/landscape/vegetation/source/quaternius_stylized_nature_megakit_standard.zip",
+    "archive_bytes": 104088529,
+    "archive_sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
+    "license": "CC0-1.0, embedded License_Standard.txt",
+    "license_sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+  },
+  "import": {
+    "format": "glTF 2.0",
+    "geometry_policy": "unmodified downloaded geometry",
+    "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled",
+    "shared_material_policy": "original downloaded glTF materials and textures; shared source files extracted once"
+  },
+  "counts": {
+    "trees": 2,
+    "shrubs": 2,
+    "grass_and_herbs": 4,
+    "flowers": 3,
+    "source_triangles_one_of_each": 16695
+  },
+  "files": [
+    {
+      "path": "LICENSE.txt",
+      "source_entry": "License_Standard.txt",
+      "bytes": 852,
+      "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    {
+      "path": "models/Bark_NormalTree.png",
+      "source_entry": "glTF/Bark_NormalTree.png",
+      "bytes": 3894788,
+      "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
+    },
+    {
+      "path": "models/Bark_NormalTree_Normal.png",
+      "source_entry": "glTF/Bark_NormalTree_Normal.png",
+      "bytes": 4384496,
+      "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
+    },
+    {
+      "path": "models/Bush_Common.bin",
+      "source_entry": "glTF/Bush_Common.bin",
+      "bytes": 91800,
+      "sha256": "a5e1a773c8ba78fd9c05a8b342131eba4879302a8fddd2c5186cab9ee1ef4966"
+    },
+    {
+      "path": "models/Bush_Common.gltf",
+      "source_entry": "glTF/Bush_Common.gltf",
+      "bytes": 2101,
+      "sha256": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90"
+    },
+    {
+      "path": "models/Bush_Common_Flowers.bin",
+      "source_entry": "glTF/Bush_Common_Flowers.bin",
+      "bytes": 128928,
+      "sha256": "15f56a013afe0eecaded0eb97fd8f323305af11e1f0f7bb9b68472ec4cdc20d5"
+    },
+    {
+      "path": "models/Bush_Common_Flowers.gltf",
+      "source_entry": "glTF/Bush_Common_Flowers.gltf",
+      "bytes": 3654,
+      "sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea"
+    },
+    {
+      "path": "models/Clover_1.bin",
+      "source_entry": "glTF/Clover_1.bin",
+      "bytes": 12956,
+      "sha256": "788fabaffc3f8f2825ad88399bd4725d8bc397225d93d00926c3223fdee9516b"
+    },
+    {
+      "path": "models/Clover_1.gltf",
+      "source_entry": "glTF/Clover_1.gltf",
+      "bytes": 2074,
+      "sha256": "05fe48cdf1f3db879371a6ba0d843fcd407667b7680def5716c9f286efe0306b"
+    },
+    {
+      "path": "models/CommonTree_1.bin",
+      "source_entry": "glTF/CommonTree_1.bin",
+      "bytes": 491576,
+      "sha256": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae"
+    },
+    {
+      "path": "models/CommonTree_1.gltf",
+      "source_entry": "glTF/CommonTree_1.gltf",
+      "bytes": 3869,
+      "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa"
+    },
+    {
+      "path": "models/Fern_1.bin",
+      "source_entry": "glTF/Fern_1.bin",
+      "bytes": 11448,
+      "sha256": "5e92b87a27f81a69fe15347a533df3c77d567b48298dceeef43168ccb7c22853"
+    },
+    {
+      "path": "models/Fern_1.gltf",
+      "source_entry": "glTF/Fern_1.gltf",
+      "bytes": 2058,
+      "sha256": "d41915cffe9dbbde1ae88be381eb9c60f7caa2274511436cc78fe4de627468ab"
+    },
+    {
+      "path": "models/Flower_3_Group.bin",
+      "source_entry": "glTF/Flower_3_Group.bin",
+      "bytes": 27772,
+      "sha256": "5ab387dd3d6fe181df3af4eeac4df85533e4c27e77545ae39a61e0c2aaaab248"
+    },
+    {
+      "path": "models/Flower_3_Group.gltf",
+      "source_entry": "glTF/Flower_3_Group.gltf",
+      "bytes": 3629,
+      "sha256": "4df1612371982c543f930d6b213967372e0d459622d7eff7fc2ed1ddbfaa3b6c"
+    },
+    {
+      "path": "models/Flower_4_Group.bin",
+      "source_entry": "glTF/Flower_4_Group.bin",
+      "bytes": 62220,
+      "sha256": "3ac30b4c9eaa5078a17c061aa29e2e9618cc9eb58cb6d5d2ab0c07fa0b851ae1"
+    },
+    {
+      "path": "models/Flower_4_Group.gltf",
+      "source_entry": "glTF/Flower_4_Group.gltf",
+      "bytes": 3645,
+      "sha256": "69ead56b36b50f06a0cf18380797fce7434302e9b2da7bf68a85014b993c6134"
+    },
+    {
+      "path": "models/Flowers.png",
+      "source_entry": "glTF/Flowers.png",
+      "bytes": 444609,
+      "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
+    },
+    {
+      "path": "models/Grass.png",
+      "source_entry": "glTF/Grass.png",
+      "bytes": 33605,
+      "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
+    },
+    {
+      "path": "models/Grass_Common_Short.bin",
+      "source_entry": "glTF/Grass_Common_Short.bin",
+      "bytes": 7052,
+      "sha256": "7a0f0f7a9ac39cfa4b303bac03a6594f43e48d873b73553fa06a79e4df1271e9"
+    },
+    {
+      "path": "models/Grass_Common_Short.gltf",
+      "source_entry": "glTF/Grass_Common_Short.gltf",
+      "bytes": 2023,
+      "sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a"
+    },
+    {
+      "path": "models/Grass_Common_Tall.bin",
+      "source_entry": "glTF/Grass_Common_Tall.bin",
+      "bytes": 14076,
+      "sha256": "d7422b9360dd644f4095ac77a00dfa5d1f1078af71ebf18865a28ef031651379"
+    },
+    {
+      "path": "models/Grass_Common_Tall.gltf",
+      "source_entry": "glTF/Grass_Common_Tall.gltf",
+      "bytes": 2025,
+      "sha256": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70"
+    },
+    {
+      "path": "models/Grass_Wispy_Tall.bin",
+      "source_entry": "glTF/Grass_Wispy_Tall.bin",
+      "bytes": 29492,
+      "sha256": "a46e091f39958242a96722ea331efa8d7fb055c6e24d21aea6b0ac091a7b1b66"
+    },
+    {
+      "path": "models/Grass_Wispy_Tall.gltf",
+      "source_entry": "glTF/Grass_Wispy_Tall.gltf",
+      "bytes": 2023,
+      "sha256": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b"
+    },
+    {
+      "path": "models/Leaf_Pine_C.png",
+      "source_entry": "glTF/Leaf_Pine_C.png",
+      "bytes": 70055,
+      "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
+    },
+    {
+      "path": "models/Leaves.png",
+      "source_entry": "glTF/Leaves.png",
+      "bytes": 2586432,
+      "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
+    },
+    {
+      "path": "models/Leaves_NormalTree_C.png",
+      "source_entry": "glTF/Leaves_NormalTree_C.png",
+      "bytes": 158796,
+      "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
+    },
+    {
+      "path": "models/Leaves_TwistedTree_C.png",
+      "source_entry": "glTF/Leaves_TwistedTree_C.png",
+      "bytes": 70353,
+      "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
+    },
+    {
+      "path": "models/Pine_1.bin",
+      "source_entry": "glTF/Pine_1.bin",
+      "bytes": 275492,
+      "sha256": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2"
+    },
+    {
+      "path": "models/Pine_1.gltf",
+      "source_entry": "glTF/Pine_1.gltf",
+      "bytes": 3832,
+      "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc"
+    }
+  ],
+  "assets": [
+    {
+      "id": "common_tree_1",
+      "source_name": "CommonTree_1",
+      "description": "mature broadleaf tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/CommonTree_1.gltf",
+      "source_entry": "glTF/CommonTree_1.gltf",
+      "source_sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+      "source_triangles": 6265,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min_y": -0.242772,
+        "max_y": 7.022013,
+        "height": 7.264785,
+        "ground_offset": 0.242772
+      },
+      "textures": [
+        {
+          "uri": "Bark_NormalTree.png",
+          "source_entry": "glTF/Bark_NormalTree.png"
+        },
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "source_entry": "glTF/Bark_NormalTree_Normal.png"
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "source_entry": "glTF/Leaves_NormalTree_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bark_NormalTree.png",
+        "glTF/Bark_NormalTree_Normal.png",
+        "glTF/CommonTree_1.bin",
+        "glTF/CommonTree_1.gltf",
+        "glTF/Leaves_NormalTree_C.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "pine_1",
+      "source_name": "Pine_1",
+      "description": "mature pine tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/Pine_1.gltf",
+      "source_entry": "glTF/Pine_1.gltf",
+      "source_sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+      "source_triangles": 3947,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min_y": -0.235089,
+        "max_y": 7.081829,
+        "height": 7.316918,
+        "ground_offset": 0.235089
+      },
+      "textures": [
+        {
+          "uri": "Bark_NormalTree.png",
+          "source_entry": "glTF/Bark_NormalTree.png"
+        },
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "source_entry": "glTF/Bark_NormalTree_Normal.png"
+        },
+        {
+          "uri": "Leaf_Pine_C.png",
+          "source_entry": "glTF/Leaf_Pine_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bark_NormalTree.png",
+        "glTF/Bark_NormalTree_Normal.png",
+        "glTF/Leaf_Pine_C.png",
+        "glTF/Pine_1.bin",
+        "glTF/Pine_1.gltf"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "bush_common",
+      "source_name": "Bush_Common",
+      "description": "leafy shrub",
+      "role": "shrub",
+      "scene": "res://assets/landscape/vegetation/models/Bush_Common.gltf",
+      "source_entry": "glTF/Bush_Common.gltf",
+      "source_sha256": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90",
+      "source_triangles": 900,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min_y": -0.234695,
+        "max_y": 1.347091,
+        "height": 1.581786,
+        "ground_offset": 0.234695
+      },
+      "textures": [
+        {
+          "uri": "Leaves_TwistedTree_C.png",
+          "source_entry": "glTF/Leaves_TwistedTree_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bush_Common.bin",
+        "glTF/Bush_Common.gltf",
+        "glTF/Leaves_TwistedTree_C.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "bush_common_flowers",
+      "source_name": "Bush_Common_Flowers",
+      "description": "flowering shrub",
+      "role": "shrub",
+      "scene": "res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf",
+      "source_entry": "glTF/Bush_Common_Flowers.gltf",
+      "source_sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
+      "source_triangles": 1368,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min_y": -0.234695,
+        "max_y": 1.347091,
+        "height": 1.581786,
+        "ground_offset": 0.234695
+      },
+      "textures": [
+        {
+          "uri": "Flowers.png",
+          "source_entry": "glTF/Flowers.png"
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "source_entry": "glTF/Leaves_NormalTree_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bush_Common_Flowers.bin",
+        "glTF/Bush_Common_Flowers.gltf",
+        "glTF/Flowers.png",
+        "glTF/Leaves_NormalTree_C.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "grass_common_short",
+      "source_name": "Grass_Common_Short",
+      "description": "short meadow grass clump",
+      "role": "grass",
+      "scene": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+      "source_entry": "glTF/Grass_Common_Short.gltf",
+      "source_sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
+      "source_triangles": 155,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min_y": -0.022385,
+        "max_y": 1.311718,
+        "height": 1.334103,
+        "ground_offset": 0.022385
+      },
+      "textures": [
+        {
+          "uri": "Grass.png",
+          "source_entry": "glTF/Grass.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Grass.png",
+        "glTF/Grass_Common_Short.bin",
+        "glTF/Grass_Common_Short.gltf"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "grass_common_tall",
+      "source_name": "Grass_Common_Tall",
+      "description": "tall meadow grass clump",
+      "role": "grass",
+      "scene": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf",
+      "source_entry": "glTF/Grass_Common_Tall.gltf",
+      "source_sha256": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70",
+      "source_triangles": 326,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min_y": -0.031362,
+        "max_y": 1.841333,
+        "height": 1.872695,
+        "ground_offset": 0.031362
+      },
+      "textures": [
+        {
+          "uri": "Grass.png",
+          "source_entry": "glTF/Grass.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Grass.png",
+        "glTF/Grass_Common_Tall.bin",
+        "glTF/Grass_Common_Tall.gltf"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "grass_wispy_tall",
+      "source_name": "Grass_Wispy_Tall",
+      "description": "wispy tall grass clump",
+      "role": "grass",
+      "scene": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+      "source_entry": "glTF/Grass_Wispy_Tall.gltf",
+      "source_sha256": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b",
+      "source_triangles": 622,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min_y": -0.036052,
+        "max_y": 1.635751,
+        "height": 1.671802,
+        "ground_offset": 0.036052
+      },
+      "textures": [
+        {
+          "uri": "Grass.png",
+          "source_entry": "glTF/Grass.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Grass.png",
+        "glTF/Grass_Wispy_Tall.bin",
+        "glTF/Grass_Wispy_Tall.gltf"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "fern_1",
+      "source_name": "Fern_1",
+      "description": "fern",
+      "role": "herb",
+      "scene": "res://assets/landscape/vegetation/models/Fern_1.gltf",
+      "source_entry": "glTF/Fern_1.gltf",
+      "source_sha256": "d41915cffe9dbbde1ae88be381eb9c60f7caa2274511436cc78fe4de627468ab",
+      "source_triangles": 288,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min_y": -0.24747,
+        "max_y": 2.441308,
+        "height": 2.688778,
+        "ground_offset": 0.24747
+      },
+      "textures": [
+        {
+          "uri": "Leaves.png",
+          "source_entry": "glTF/Leaves.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Fern_1.bin",
+        "glTF/Fern_1.gltf",
+        "glTF/Leaves.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "flower_3_group",
+      "source_name": "Flower_3_Group",
+      "description": "flower group, family 3",
+      "role": "flower",
+      "scene": "res://assets/landscape/vegetation/models/Flower_3_Group.gltf",
+      "source_entry": "glTF/Flower_3_Group.gltf",
+      "source_sha256": "4df1612371982c543f930d6b213967372e0d459622d7eff7fc2ed1ddbfaa3b6c",
+      "source_triangles": 755,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min_y": -0.034584,
+        "max_y": 2.020252,
+        "height": 2.054835,
+        "ground_offset": 0.034584
+      },
+      "textures": [
+        {
+          "uri": "Flowers.png",
+          "source_entry": "glTF/Flowers.png"
+        },
+        {
+          "uri": "Leaves.png",
+          "source_entry": "glTF/Leaves.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Flower_3_Group.bin",
+        "glTF/Flower_3_Group.gltf",
+        "glTF/Flowers.png",
+        "glTF/Leaves.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "flower_4_group",
+      "source_name": "Flower_4_Group",
+      "description": "flower group, family 4",
+      "role": "flower",
+      "scene": "res://assets/landscape/vegetation/models/Flower_4_Group.gltf",
+      "source_entry": "glTF/Flower_4_Group.gltf",
+      "source_sha256": "69ead56b36b50f06a0cf18380797fce7434302e9b2da7bf68a85014b993c6134",
+      "source_triangles": 1690,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min_y": -0.056998,
+        "max_y": 2.429771,
+        "height": 2.486768,
+        "ground_offset": 0.056998
+      },
+      "textures": [
+        {
+          "uri": "Flowers.png",
+          "source_entry": "glTF/Flowers.png"
+        },
+        {
+          "uri": "Leaves.png",
+          "source_entry": "glTF/Leaves.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Flower_4_Group.bin",
+        "glTF/Flower_4_Group.gltf",
+        "glTF/Flowers.png",
+        "glTF/Leaves.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "clover_1",
+      "source_name": "Clover_1",
+      "description": "clover groundcover",
+      "role": "flower",
+      "scene": "res://assets/landscape/vegetation/models/Clover_1.gltf",
+      "source_entry": "glTF/Clover_1.gltf",
+      "source_sha256": "05fe48cdf1f3db879371a6ba0d843fcd407667b7680def5716c9f286efe0306b",
+      "source_triangles": 379,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min_y": -0.012792,
+        "max_y": 1.13194,
+        "height": 1.144732,
+        "ground_offset": 0.012792
+      },
+      "textures": [
+        {
+          "uri": "Leaves.png",
+          "source_entry": "glTF/Leaves.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Clover_1.bin",
+        "glTF/Clover_1.gltf",
+        "glTF/Leaves.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    }
+  ]
+}
