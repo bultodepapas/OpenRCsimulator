@@ -70,7 +70,7 @@ static func evaluate(model: Dictionary, omega: float, induced_velocity: float,
 		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
 		collective_75: float, cyclic_forward: float, cyclic_right: float,
 		a1: float, b1: float) -> Dictionary:
-	if not model.is_read_only() or model.get("law") != LAW \
+	if not _prepared(model) \
 		or not _vector(hub_air_velocity) or not _vector(body_rates) \
 		or not _finite([omega, induced_velocity, collective_75, cyclic_forward, cyclic_right, a1, b1]) or omega < 0.0:
 		return {"ok": false}
@@ -166,3 +166,20 @@ static func _finite(values: Array) -> bool:
 
 static func _number(value: Variant) -> bool:
 	return (typeof(value) == TYPE_FLOAT or typeof(value) == TYPE_INT) and is_finite(float(value))
+
+
+# Cheap structural/numeric guard for the immutable owner-prepared context.
+# Coupled derived-value identity is established by prepare, not a file reader here.
+static func _prepared(model: Dictionary) -> bool:
+	if not model.is_read_only() or model.get("law") != LAW or model.size() != 22:
+		return false
+	for key: String in PARAMETER_KEYS:
+		if key != "hub_position_body_frd_m" and (not model.has(key) or not _number(model[key])):
+			return false
+	for key: String in ["hub_x_m", "hub_y_m", "hub_z_m", "solidity", "lock_number", "bare_flap_time_constant_nominal_s"]:
+		if not model.has(key) or not _number(model[key]):
+			return false
+	return model.rho_kg_m3 > 0.0 and model.rotor_radius_m > 0.0 and model.gamma_flybar > 0.0 \
+		and model.omega_nominal_rad_s > 0.0 and model.blade_lift_curve_slope_per_rad > 0.0 \
+		and model.thrust_coefficient_max > 0.0 and model.solidity > 0.0 and model.solidity < 1.0 \
+		and model.rotor_blade_count == 2.0 and absf(model.rotation_sense) == 1.0
