@@ -18,6 +18,7 @@ func _initialize() -> void:
 func _run() -> void:
 	await _splitter()
 	await _resolution()
+	await _no_wing_fallback()
 	await _timber_fallback()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
@@ -191,6 +192,40 @@ func _section_triangles(node: Node) -> int:
 		for s in mesh.get_surface_count():
 			n += (mesh.surface_get_arrays(s)[Mesh.ARRAY_INDEX] as PackedInt32Array).size() / 3
 	return n
+
+
+## CR-09c1 regression: a model without wing sections (like the merged r1 Timber before TT-13c) hit on a wing tip at
+## C3 must still release its legacy sections instead of nothing.
+func _no_wing_fallback() -> void:
+	var airplane := Node3D.new()
+	airplane.name = "airplane"
+	var body := MeshInstance3D.new()
+	body.name = "airframe"
+	body.mesh = BoxMesh.new()
+	airplane.add_child(body)
+	for pair in [["tail_frame", Vector3(0, 0, 1.0)], ["rudder_hinge", Vector3(0, 0.2, 1.1)]]:
+		var pivot := Node3D.new()
+		pivot.name = pair[0]
+		pivot.position = pair[1]
+		var mesh := MeshInstance3D.new()
+		mesh.mesh = BoxMesh.new()
+		pivot.add_child(mesh)
+		airplane.add_child(pivot)
+	root.add_child(airplane)
+	var wreck: Variant = WreckController.new()
+	root.add_child(wreck)
+	await process_frame
+	wreck.set_process(false)
+	wreck.prepare(airplane)
+	wreck.start(Transform3D(Basis.IDENTITY, Vector3(0, 3, 0)), Vector3(0, -10, -5), Vector3.ZERO, {"class": 3, "component": "left_wing_tip", "mass_kg": 2.0, "seed": 9})
+	var released: Array = []
+	for group: Dictionary in wreck._groups.slice(1):
+		if bool(group.detached):
+			released.append(String(group.kind))
+	released.sort()
+	_check("a wing-tip C3 hit on a model without wings releases its legacy sections", released == ["horizontal_tail", "vertical_tail"], str(released))
+	wreck.free()
+	airplane.free()
 
 
 func _timber_fallback() -> void:
