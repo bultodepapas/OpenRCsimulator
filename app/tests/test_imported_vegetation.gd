@@ -1,6 +1,8 @@
 extends SceneTree
 
 const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const SceneryLoader := preload("res://scenery/scenery_loader.gd")
 
 var _failures := 0
 
@@ -8,6 +10,7 @@ var _failures := 0
 func _initialize() -> void:
 	_test_catalog_and_parts()
 	_test_fit_and_aliases()
+	_test_default_sapling_group()
 	_test_batch_build_and_damage()
 	if _failures == 0:
 		print("imported vegetation tests passed")
@@ -132,7 +135,36 @@ func _test_batch_build_and_damage() -> void:
 	wind_root.free()
 
 
-func _check(label: String, condition: bool) -> void:
+func _test_default_sapling_group() -> void:
+	var field_result := FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+	_check("default field loads for sapling scene validation", bool(field_result.get("ok", false)))
+	if not bool(field_result.get("ok", false)):
+		return
+	var scenery_result := SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field_result.field)
+	_check("generated sapling group passes scene validation", bool(scenery_result.get("ok", false)), str(scenery_result.get("errors", [])))
+	if not bool(scenery_result.get("ok", false)):
+		return
+	var found := false
+	for group: Dictionary in scenery_result.scenery.groups:
+		if str(group.get("id", "")) != "saplings":
+			continue
+		found = true
+		var placements: Array = group.get("placements", [])
+		_check("default sapling group preserves seven stable source rows", placements.size() == 7)
+		var valid := true
+		var assets: Dictionary = {}
+		for placement: Dictionary in placements:
+			var plant: Dictionary = VegetationPlacement.spec("sapling", int(placement.seed))
+			assets[str(plant.get("asset_id", ""))] = true
+			valid = valid and float(placement.north) < 0.0 \
+				and plant.get("asset_id", "") in ["common_tree_1", "common_tree_3"] \
+				and float(plant.get("height", 0.0)) >= 3.2 and float(plant.get("height", 99.0)) <= 4.8
+		_check("sapling rows stay behind the club and fit downloaded sources proportionally", valid)
+		_check("sapling rows exercise both downloaded source variants", assets.has("common_tree_1") and assets.has("common_tree_3"))
+	_check("default layout contains its downloaded saplings group", found)
+
+
+func _check(label: String, condition: bool, detail: String = "") -> void:
 	if not condition:
 		_failures += 1
-		push_error("FAIL: %s" % label)
+		push_error("FAIL: %s %s" % [label, detail])

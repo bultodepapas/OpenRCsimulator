@@ -1395,7 +1395,8 @@ func reset() -> void:
 	if pause_reason.begins_with("CRASH"):
 		pause_reason = ""
 	start_error = ""
-	if aircraft.get("ok", false) and (_trim_density != air_density() or _trim_charge != engine_charge_ratio()):
+	var half_power_refit: bool = start_choice == START_HALF_POWER and start.get("requested_throttle", -1.0) != 0.5
+	if aircraft.get("ok", false) and (_trim_density != air_density() or _trim_charge != engine_charge_ratio() or half_power_refit):
 		var old_start: Dictionary = start
 		var speed: float = float(old_start.get("V", aircraft.model.get("start_speed", 15.0)))
 		if not is_finite(speed) or speed <= 0.0:

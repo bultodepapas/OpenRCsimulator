@@ -15,11 +15,15 @@ const TEST_TRUNK_HEIGHT_VARIATION_FRACTION := 0.025
 
 func _initialize() -> void:
 	var field := {pilot = {north = 0.0, east = 0.0, down = 0.0}, objects = []}
-	var scenery := {groups = [{id = "garden", type = "instances", placements = [
-		{north = 100.0, east = 50.0, heading = 37.0, prefab = "shade_tree", seed = 31, source_index = 17},
-		{north = 40.0, east = -20.0, heading = 123.0, prefab = "bush", seed = 5, source_index = 29},
-		{north = 80.0, east = -30.0, heading = 23.0, prefab = "sapling", seed = 12, source_index = 41},
-	]}]}
+	var scenery := {groups = [
+		{id = "garden", type = "instances", placements = [
+			{north = 100.0, east = 50.0, heading = 37.0, prefab = "shade_tree", seed = 31, source_index = 17},
+			{north = 40.0, east = -20.0, heading = 123.0, prefab = "bush", seed = 5, source_index = 29},
+		]},
+		{id = "saplings", type = "instances", placements = [
+			{north = 80.0, east = -30.0, heading = 23.0, prefab = "sapling", seed = 12, source_index = 41},
+		]},
+	]}
 	var built: Dictionary = CollisionWorld.build(field, scenery)
 	_check("imported vegetation proxy world builds", bool(built.get("ok", false)), str(built.get("errors", [])))
 	if not bool(built.get("ok", false)):
@@ -32,8 +36,8 @@ func _initialize() -> void:
 	var trunk := _proxy(world, "tree:shade-tree:garden:00:trunk")
 	var crown := _proxy(world, "tree:shade-tree:garden:00:crown")
 	var bush := _proxy(world, "vegetation:garden:01:bush")
-	var sapling_trunk := _proxy(world, "tree:sapling:garden:02:trunk")
-	var sapling_crown := _proxy(world, "tree:sapling:garden:02:crown")
+	var sapling_trunk := _proxy(world, "tree:sapling:saplings:00:trunk")
+	var sapling_crown := _proxy(world, "tree:sapling:saplings:00:crown")
 	_check("shade-tree source spec resolves", not tree_spec.is_empty())
 	_check("bush source spec resolves", not bush_spec.is_empty())
 	_check("sapling source spec resolves", not sapling_spec.is_empty())
@@ -80,8 +84,8 @@ func _initialize() -> void:
 		and is_equal_approx(float(sapling_crown.bounds_down_min), -float(sapling_spec.height))
 		and is_equal_approx(float(sapling_crown.bounds_down_max), -expected_sapling_trunk_height))
 	_check("sapling damage keys retain the source placement group and part",
-		str(sapling_trunk.damage_id) == "prop:garden:41:trunk"
-		and str(sapling_crown.damage_id) == "prop:garden:41:crown")
+		str(sapling_trunk.damage_id) == "prop:saplings:41:trunk"
+		and str(sapling_crown.damage_id) == "prop:saplings:41:crown")
 	_check("bush box uses imported uniform-height source bounds and wind margin",
 		bush.shape == "box" and bush.kind == "tree_foliage" and bush.part == "bush"
 		and is_equal_approx(float(bush.half_x), float(bush_spec.width) * 0.5 + float(bush_spec.wind_margin))
