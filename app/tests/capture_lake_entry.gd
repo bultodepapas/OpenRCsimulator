@@ -102,6 +102,11 @@ func _run() -> void:
 		await _abort(flight, "simulation rejected the bounded lake-entry initial state")
 		return
 	flight.session.sim.set_paused(false)
+	# Complete GPU shader/probe warmup before measuring real-time audio or taking the first picture.
+	flight._process(0.0)
+	for _frame in 60:
+		await process_frame
+		await RenderingServer.frame_post_draw
 	_audio_bus_index = AudioServer.get_bus_index(&"Master")
 	if _audio_bus_index < 0:
 		await _abort(flight, "native mixer has no Master output bus")

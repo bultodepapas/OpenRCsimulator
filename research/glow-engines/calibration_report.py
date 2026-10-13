@@ -900,18 +900,24 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
             ]
             stable_corner_roots = [row for row in corner_roots if row["stable_restoring_root"]]
             stable_sensitivity_roots = stable_corner_roots + nominal_stable
-            rejected_examples = [
-                {
-                    "sensitivity_case": row.get("sensitivity_case", "nominal"),
+            def refusal_example(row: dict[str, Any], scenario: str) -> dict[str, Any]:
+                bound = row["actuator_disk_power_bound"]
+                return {
+                    "sensitivity_case": row.get("sensitivity_case", scenario),
                     "rpm": rounded(float(row["rpm"])),
                     "geometry_chord_m": rounded(float(row.get("geometry_chord_m", nominal_chord))),
                     "thrust_n": rounded(float(row["thrust_n"])),
                     "shaft_power_w": rounded(float(row["shaft_power_w"])),
-                    "ideal_shaft_power_lower_bound_w": rounded(float(row["actuator_disk_power_bound"]["ideal_shaft_power_lower_bound_w"])),
-                    "shaft_to_ideal_power_ratio": rounded(float(row["actuator_disk_power_bound"]["shaft_to_ideal_power_ratio"])),
+                    "ideal_shaft_power_lower_bound_w": rounded(float(bound["ideal_shaft_power_lower_bound_w"])),
+                    "shaft_to_ideal_power_ratio": rounded(float(bound["shaft_to_ideal_power_ratio"])),
                     "decision": "refused; excluded from all candidate prediction and sensitivity extrema",
                 }
-                for row in [*nominal_rejected, *corner_rejected]
+
+            nominal_refusal_examples = [
+                refusal_example(row, "nominal") for row in nominal_rejected
+            ]
+            sensitivity_refusal_examples = [
+                refusal_example(row, "sensitivity") for row in corner_rejected
             ]
             envelope: dict[str, Any] = {
                 "axial_speed_m_s": axial_speed,
@@ -920,7 +926,7 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                 "stable_root_count_including_nominal": len(stable_sensitivity_roots),
                 "momentum_bound_accepted_sensitivity_root_count": len(corner_roots),
                 "momentum_bound_refused_sensitivity_root_count": len(corner_rejected),
-                "momentum_bound_refusals": rejected_examples,
+                "momentum_bound_refusals": sensitivity_refusal_examples,
                 "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
             }
             if stable_sensitivity_roots:
@@ -940,7 +946,9 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                 "nominal_uniform_chord_m": nominal_chord,
                 "nominal_all_roots": [{k: rounded(v) if isinstance(v, float) else v for k, v in root.items()} for root in nominal_roots],
                 "nominal_balance_root_count": len(nominal_assessments),
-                "nominal_rejected_by_momentum_bound": rejected_examples,
+                "nominal_momentum_bound_accepted_root_count": len(nominal_roots),
+                "nominal_momentum_bound_refused_root_count": len(nominal_rejected),
+                "nominal_rejected_by_momentum_bound": nominal_refusal_examples,
                 "nominal_stable_full_admission_equilibrium": (
                     {k: rounded(v) if isinstance(v, float) else v for k, v in chosen.items()}
                     if chosen is not None else None
@@ -991,8 +999,14 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
     }
 
     return {
-        "status": "paired propeller load inference; no propeller is physically calibrated or held out",
+        "status": "paired propeller load inference with ideal-power refusals; no propeller is physically calibrated or held out",
         "method": "Full-admission engine/propeller torque roots; runtime-matched blade-element surrogate; one measured OS 2T RPM anchor only.",
+        "actuator_disk_bound_method": {
+            "source": NASA_PROPELLER_THRUST_URL,
+            "equations": "A=pi*D^2/4; V_disk=(V_infinity+sqrt(V_infinity^2+2*T/(rho*A)))/2; P_ideal=T*V_disk",
+            "decision": "For positive thrust in forward flow, reject a prop-surrogate equilibrium if its shaft power falls below this ideal momentum-theory lower bound. Nonpositive-thrust and reverse-flow cases are outside this check.",
+            "scope": "Independent inference/report audit only. This is not measured induced flow, propeller calibration, aircraft validation, or a runtime operating-limit implementation.",
+        },
         "nominal_axial_scenarios_m_s": [0.0, 10.0, 20.0, 30.0],
         "common_section_assumptions": section,
         "uncertainty_method": {
@@ -1107,7 +1121,7 @@ def report(profile_path: Path) -> dict[str, Any]:
     rated_torque = op["rated_power_w"] / (TAU * rated_rpm / 60.0)
     propeller_report = paired_propeller_inference(profile)
     return {
-        "format": "openrc-glow-inference-audit v1",
+        "format": "openrc-glow-inference-audit v2",
         "engine_id": profile["id"],
         "family": family,
         "profile_status": profile["status"],
@@ -1170,6 +1184,8 @@ def report(profile_path: Path) -> dict[str, Any]:
             "engine_specific_curve_fit": "NOT PERFORMED: no matched multi-point MAX-55AX or FS-64V torque/flow dataset",
             "propeller_map_fit": "NOT PERFORMED: the MAX-55AX 12x7 datum is RPM-only and only conditions a uniform-chord surrogate; no matched FS-64V RPM datum or Ct/Cp map exists",
             "paired_static_advancing_scenarios": "computed from candidates and inferred uniform-chord assumptions; not measurements, held-out propeller tests or aircraft-flight validation",
+            "positive_thrust_ideal_power_bound": "audited over 6,000 RPM/speed samples per family; all nominal positive-thrust prop samples pass, and impossible positive-thrust equilibrium roots are refused/excluded from prediction envelopes",
+            "bound_scope": "NASA ideal momentum-theory lower bound only; the audit does not estimate actual induced velocity, Ct/Cp, or propeller efficiency",
             "independent_held_out_validation": "NOT PERFORMED",
             "physical_engine_validation": "NOT PERFORMED",
             "experienced_pilot_validation": "NOT PERFORMED",

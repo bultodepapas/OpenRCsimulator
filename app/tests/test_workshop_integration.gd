@@ -122,17 +122,19 @@ func _run() -> void:
 
 
 func _check_wreck_scale(airplane: Node3D, visual_id: String, scale_value: float) -> void:
-	var original: Dictionary = Builder.build(visual_id)
-	root.add_child(original.root)
+	# Preserve the same propeller phase and surface deflections in the reference.
+	var original := airplane.duplicate(0) as Node3D
+	original.scale = Vector3.ONE
+	root.add_child(original)
 	var baseline := Wreck.new()
 	var scaled := Wreck.new()
 	root.add_child(baseline)
 	root.add_child(scaled)
-	var prepared := baseline.prepare(original.root) and scaled.prepare(airplane)
+	var prepared := baseline.prepare(original) and scaled.prepare(airplane)
 	check("wreck geometry follows %s at %.0f%%" % [visual_id, scale_value * 100.0], prepared
 		and scaled._whole_bounds.size.is_equal_approx(baseline._whole_bounds.size * scale_value))
 	check("wreck rigid bodies keep unit scale", scaled._bodies.all(func(body: RigidBody3D) -> bool:
 		return body.scale.is_equal_approx(Vector3.ONE)))
 	scaled.free()
 	baseline.free()
-	original.root.free()
+	original.free()

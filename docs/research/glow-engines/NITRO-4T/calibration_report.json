@@ -431,7 +431,7 @@
     "common_section_assumptions": {
       "lift_slope_per_rad": 5.5,
       "cd0": 0.022,
-      "induced_drag": 0.06,
+      "induced_drag": 0.075,
       "blades": 2.0
     },
     "uncertainty_method": {
@@ -443,13 +443,18 @@
             "charge_scale": 0.9,
             "losses_scale": 1.5
           },
+          "section_overrides": {
+            "lift_slope_per_rad": 6.5,
+            "cd0": 0.035,
+            "induced_drag": 0.12
+          },
+          "density_scale": 1.1,
           "section": {
             "lift_slope_per_rad": 6.5,
             "cd0": 0.035,
             "induced_drag": 0.12,
             "blades": 2.0
-          },
-          "density_scale": 1.1
+          }
         },
         {
           "name": "higher_candidate_torque_and_lighter_prop_load",
@@ -458,13 +463,18 @@
             "charge_scale": 1.1,
             "losses_scale": 0.5
           },
+          "section_overrides": {
+            "lift_slope_per_rad": 4.5,
+            "cd0": 0.015,
+            "induced_drag": 0.03
+          },
+          "density_scale": 0.9,
           "section": {
             "lift_slope_per_rad": 4.5,
             "cd0": 0.015,
             "induced_drag": 0.03,
             "blades": 2.0
-          },
-          "density_scale": 0.9
+          }
         }
       ],
       "meaning": "conservative paired assumptions combining profile efficiency/charge/loss sensitivity, air density and section coefficients. The reported min/max are scenario sensitivity envelopes, not probability intervals, confidence intervals or physical bounds."
@@ -476,8 +486,8 @@
       "alternate_geometry_sensitivity": "24.6591530641 mm at 14x6 and 22.8977849881 mm at 13x6 if the 2T fitted c/D is transferred; neither is manufacturer blade geometry",
       "numeric_operating_guidance": "Nominal static roots are reported per prop; keep the O.S. recommended maximum at 11,000 RPM. Retain profile numerical support to 15,000 RPM only for unloading-flight model scenarios with an over-recommendation flag.",
       "candidate_static_rpm_by_configuration_id": {
-        "fs64v_apc_sport_13x6": 9384.07,
-        "fs64v_master_airscrew_k_14x6": 8284.84
+        "fs64v_apc_sport_13x6": 8924.37,
+        "fs64v_master_airscrew_k_14x6": 7785.23
       },
       "manufacturer_recommended_max_rpm": 11000.0,
       "manufacturer_max_recommended_rpm_by_configuration_id": {
@@ -504,7 +514,30 @@
         "propeller_source": "https://www.apcprop.com/product/13x6/",
         "observed_engine_prop_source": null,
         "apc_glow_rpm_ceiling": 14615.384615384615,
+        "nominal_diameter_m": 0.3302,
+        "nominal_pitch_m": 0.15239999999999998,
         "nominal_chord_m": 0.027857142857142858,
+        "installation_source": {
+          "configuration_id": "fs64v_apc_sport_13x6",
+          "path": "app/data/glow/stik_fs64v_4t_apc_13x6.json",
+          "sha256": "e4c1f402fe236d40b3ec89262f5999ac0702d7ef52c514eb99cb551c2a41357e",
+          "family": "glow_4t",
+          "geometry": {
+            "diameter_m": 0.3302,
+            "pitch_m": 0.15239999999999998,
+            "chord_m": 0.027857142857142858,
+            "blades": 2.0
+          },
+          "section": {
+            "lift_slope_per_rad": 5.5,
+            "cd0": 0.022,
+            "induced_drag": 0.075,
+            "blades": 2.0
+          },
+          "runtime_static_rpm_cap": 10000.0,
+          "aircraft_path": "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+          "aircraft_sha256": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf"
+        },
         "chord_basis": "scaled from 30 mm Master Airscrew 14x6 screening geometry; no APC blade chord data",
         "anchor_rpm": null,
         "refit_chord_in_uncertainty_cases": false,
@@ -526,15 +559,90 @@
             15000.0
           ],
           "profile_recommended_max_rpm": 11000.0,
-          "effective_recommended_rpm_for_configuration": 11000.0
+          "effective_recommended_rpm_for_configuration": 11000.0,
+          "generated_aircraft_max_rpm_static_field": 10000.0,
+          "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium; the profile search range and generated aircraft max_rpm_static field are separate limits."
         },
         "section_assumptions": {
           "lift_slope_per_rad": 5.5,
           "cd0": 0.022,
-          "induced_drag": 0.06,
+          "induced_drag": 0.075,
           "blades": 2.0
         },
         "reference_air_density_kg_m3": 1.225,
+        "actuator_disk_power_bound_map_audit": {
+          "status": "PASS",
+          "method": "Independent ideal actuator-disk lower-bound audit on the repository-matched 12-annulus surrogate; positive-thrust samples only.",
+          "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+          "grid": {
+            "rpm_range": [
+              0.0,
+              15000.0
+            ],
+            "rpm_samples": 150,
+            "forward_speed_range_m_s": [
+              0.0,
+              30.0
+            ],
+            "forward_speed_samples": 20,
+            "sample_count": 3000
+          },
+          "positive_thrust_sample_count": 1810,
+          "refused_positive_thrust_sample_count": 0,
+          "minimum_positive_thrust_power_ratio": 1.11009719,
+          "minimum_ratio_at": {
+            "rpm": 302.01342282,
+            "axial_speed_m_s": 0.0,
+            "thrust_n": 0.05168479,
+            "shaft_power_w": 0.02847738,
+            "ideal_shaft_power_lower_bound_w": 0.02565306,
+            "shaft_to_ideal_power_ratio": 1.11009719
+          },
+          "refusal_examples": [],
+          "interpretation": "An ideal momentum-theory lower bound, not an inferred/measured induced velocity, Ct/Cp map, validated thrust, or calibration result."
+        },
+        "sensitivity_cases": [
+          {
+            "name": "lower_candidate_torque_and_heavier_prop_load",
+            "engine": {
+              "indicated_efficiency_scale": 0.9,
+              "charge_scale": 0.9,
+              "losses_scale": 1.5
+            },
+            "section_overrides": {
+              "lift_slope_per_rad": 6.5,
+              "cd0": 0.035,
+              "induced_drag": 0.12
+            },
+            "density_scale": 1.1,
+            "section": {
+              "lift_slope_per_rad": 6.5,
+              "cd0": 0.035,
+              "induced_drag": 0.12,
+              "blades": 2.0
+            }
+          },
+          {
+            "name": "higher_candidate_torque_and_lighter_prop_load",
+            "engine": {
+              "indicated_efficiency_scale": 1.1,
+              "charge_scale": 1.1,
+              "losses_scale": 0.5
+            },
+            "section_overrides": {
+              "lift_slope_per_rad": 4.5,
+              "cd0": 0.015,
+              "induced_drag": 0.03
+            },
+            "density_scale": 0.9,
+            "section": {
+              "lift_slope_per_rad": 4.5,
+              "cd0": 0.015,
+              "induced_drag": 0.03,
+              "blades": 2.0
+            }
+          }
+        ],
         "static_and_advancing_full_admission_predictions": [
           {
             "axial_speed_m_s": 0.0,
@@ -546,6 +654,20 @@
                 "stable_restoring_root": false,
                 "net_torque_slope_nm_per_rpm": 0.00010195,
                 "engine_torque_nm": -0.0,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.08563356396747712,
+                  "axial_speed_m_s": 0.0,
+                  "thrust_n": 5.601050585607777e-35,
+                  "ideal_disk_speed_m_s": 1.6339158875662394e-17,
+                  "ideal_shaft_power_lower_bound_w": 9.151645538886736e-52,
+                  "surrogate_shaft_power_w": 1.015921599754289e-51,
+                  "shaft_to_ideal_power_ratio": 1.1100971901036631,
+                  "relative_tolerance": 1e-10
+                },
                 "thrust_n": 0.0,
                 "torque_nm": 0.0,
                 "shaft_power_w": 0.0,
@@ -554,26 +676,77 @@
                 "within_o_s_practical_rpm_range": false
               },
               {
-                "rpm": 9384.06615039,
+                "rpm": 8924.36959662,
                 "stable_restoring_root": true,
-                "net_torque_slope_nm_per_rpm": -0.00018117,
-                "engine_torque_nm": 0.77931819,
-                "thrust_n": 49.8990639,
-                "torque_nm": 0.77931819,
-                "shaft_power_w": 765.83372904,
+                "net_torque_slope_nm_per_rpm": -0.00019118,
+                "engine_torque_nm": 0.7862268,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.08563356396747712,
+                  "axial_speed_m_s": 0.0,
+                  "thrust_n": 45.130004133680515,
+                  "ideal_disk_speed_m_s": 14.666538778581566,
+                  "ideal_shaft_power_lower_bound_w": 661.9009557041717,
+                  "surrogate_shaft_power_w": 734.77439105413,
+                  "shaft_to_ideal_power_ratio": 1.110097190103663,
+                  "relative_tolerance": 1e-10
+                },
+                "thrust_n": 45.13000413,
+                "torque_nm": 0.7862268,
+                "shaft_power_w": 734.77439105,
                 "thrust_power_w": 0.0,
                 "advance_ratio": 0.0,
                 "within_o_s_practical_rpm_range": true
               }
             ],
+            "nominal_balance_root_count": 2,
+            "nominal_rejected_by_momentum_bound": [
+              {
+                "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
+                "rpm": 11889.24780257,
+                "geometry_chord_m": 0.02785714,
+                "thrust_n": 61.51312045,
+                "shaft_power_w": 909.13762149,
+                "ideal_shaft_power_lower_bound_w": 1110.26163056,
+                "shaft_to_ideal_power_ratio": 0.8188499,
+                "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+              },
+              {
+                "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
+                "rpm": 12328.27708767,
+                "geometry_chord_m": 0.02289778,
+                "thrust_n": 54.3651607,
+                "shaft_power_w": 833.16411336,
+                "ideal_shaft_power_lower_bound_w": 922.47521775,
+                "shaft_to_ideal_power_ratio": 0.90318319,
+                "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+              }
+            ],
             "nominal_stable_full_admission_equilibrium": {
-              "rpm": 9384.06615039,
+              "rpm": 8924.36959662,
               "stable_restoring_root": true,
-              "net_torque_slope_nm_per_rpm": -0.00018117,
-              "engine_torque_nm": 0.77931819,
-              "thrust_n": 49.8990639,
-              "torque_nm": 0.77931819,
-              "shaft_power_w": 765.83372904,
+              "net_torque_slope_nm_per_rpm": -0.00019118,
+              "engine_torque_nm": 0.7862268,
+              "actuator_disk_power_bound": {
+                "status": "accepted",
+                "checked": true,
+                "passed": true,
+                "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                "disk_area_m2": 0.08563356396747712,
+                "axial_speed_m_s": 0.0,
+                "thrust_n": 45.130004133680515,
+                "ideal_disk_speed_m_s": 14.666538778581566,
+                "ideal_shaft_power_lower_bound_w": 661.9009557041717,
+                "surrogate_shaft_power_w": 734.77439105413,
+                "shaft_to_ideal_power_ratio": 1.110097190103663,
+                "relative_tolerance": 1e-10
+              },
+              "thrust_n": 45.13000413,
+              "torque_nm": 0.7862268,
+              "shaft_power_w": 734.77439105,
               "thrust_power_w": 0.0,
               "advance_ratio": 0.0,
               "within_o_s_practical_rpm_range": true
@@ -582,25 +755,55 @@
               "axial_speed_m_s": 0.0,
               "sensitivity_case_count_excluding_nominal": 4,
               "nominal_case_included_in_min_max": true,
-              "stable_root_count_including_nominal": 5,
+              "stable_root_count_including_nominal": 3,
+              "momentum_bound_accepted_sensitivity_root_count": 4,
+              "momentum_bound_refused_sensitivity_root_count": 2,
+              "momentum_bound_refusals": [
+                {
+                  "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
+                  "rpm": 11889.24780257,
+                  "geometry_chord_m": 0.02785714,
+                  "thrust_n": 61.51312045,
+                  "shaft_power_w": 909.13762149,
+                  "ideal_shaft_power_lower_bound_w": 1110.26163056,
+                  "shaft_to_ideal_power_ratio": 0.8188499,
+                  "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+                },
+                {
+                  "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
+                  "rpm": 12328.27708767,
+                  "geometry_chord_m": 0.02289778,
+                  "thrust_n": 54.3651607,
+                  "shaft_power_w": 833.16411336,
+                  "ideal_shaft_power_lower_bound_w": 922.47521775,
+                  "shaft_to_ideal_power_ratio": 0.90318319,
+                  "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+                }
+              ],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 5005.67567881,
-                12328.27708767
+                8924.36959662
               ],
               "thrust_n": [
                 17.4175999,
-                61.51312045
+                45.13000413
               ],
               "torque_nm": [
                 0.44206056,
-                0.77931819
+                0.7862268
               ],
               "shaft_power_w": [
                 231.72510996,
-                909.13762149
+                734.77439105
               ]
-            }
+            },
+            "generated_runtime_static_rpm_cap": 10000.0,
+            "profile_numeric_search_range_rpm": [
+              0.0,
+              15000.0
+            ],
+            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
           },
           {
             "axial_speed_m_s": 10.0,
@@ -608,28 +811,58 @@
             "nominal_uniform_chord_m": 0.027857142857142858,
             "nominal_all_roots": [
               {
-                "rpm": 9837.48051286,
+                "rpm": 9639.21027219,
                 "stable_restoring_root": true,
-                "net_torque_slope_nm_per_rpm": -0.00019481,
-                "engine_torque_nm": 0.77246553,
-                "thrust_n": 35.53720689,
-                "torque_nm": 0.77246553,
-                "shaft_power_w": 795.77741823,
-                "thrust_power_w": 355.37206893,
-                "advance_ratio": 0.18470995,
+                "net_torque_slope_nm_per_rpm": -0.00020423,
+                "engine_torque_nm": 0.77546678,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.08563356396747712,
+                  "axial_speed_m_s": 10.0,
+                  "thrust_n": 33.64116578665948,
+                  "ideal_disk_speed_m_s": 18.614221790871355,
+                  "ideal_shaft_power_lower_bound_w": 626.2041212563528,
+                  "surrogate_shaft_power_w": 782.7683684531828,
+                  "shaft_to_ideal_power_ratio": 1.2500211063490214,
+                  "relative_tolerance": 1e-10
+                },
+                "thrust_n": 33.64116579,
+                "torque_nm": 0.77546678,
+                "shaft_power_w": 782.76836845,
+                "thrust_power_w": 336.41165787,
+                "advance_ratio": 0.18850928,
                 "within_o_s_practical_rpm_range": true
               }
             ],
+            "nominal_balance_root_count": 1,
+            "nominal_rejected_by_momentum_bound": [],
             "nominal_stable_full_admission_equilibrium": {
-              "rpm": 9837.48051286,
+              "rpm": 9639.21027219,
               "stable_restoring_root": true,
-              "net_torque_slope_nm_per_rpm": -0.00019481,
-              "engine_torque_nm": 0.77246553,
-              "thrust_n": 35.53720689,
-              "torque_nm": 0.77246553,
-              "shaft_power_w": 795.77741823,
-              "thrust_power_w": 355.37206893,
-              "advance_ratio": 0.18470995,
+              "net_torque_slope_nm_per_rpm": -0.00020423,
+              "engine_torque_nm": 0.77546678,
+              "actuator_disk_power_bound": {
+                "status": "accepted",
+                "checked": true,
+                "passed": true,
+                "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                "disk_area_m2": 0.08563356396747712,
+                "axial_speed_m_s": 10.0,
+                "thrust_n": 33.64116578665948,
+                "ideal_disk_speed_m_s": 18.614221790871355,
+                "ideal_shaft_power_lower_bound_w": 626.2041212563528,
+                "surrogate_shaft_power_w": 782.7683684531828,
+                "shaft_to_ideal_power_ratio": 1.2500211063490214,
+                "relative_tolerance": 1e-10
+              },
+              "thrust_n": 33.64116579,
+              "torque_nm": 0.77546678,
+              "shaft_power_w": 782.76836845,
+              "thrust_power_w": 336.41165787,
+              "advance_ratio": 0.18850928,
               "within_o_s_practical_rpm_range": true
             },
             "assumption_envelope": {
@@ -637,6 +870,9 @@
               "sensitivity_case_count_excluding_nominal": 4,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 5,
+              "momentum_bound_accepted_sensitivity_root_count": 4,
+              "momentum_bound_refused_sensitivity_root_count": 0,
+              "momentum_bound_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 7111.6059268,
@@ -648,13 +884,19 @@
               ],
               "torque_nm": [
                 0.56567067,
-                0.77246553
+                0.77546678
               ],
               "shaft_power_w": [
                 421.26944478,
                 920.9187452
               ]
-            }
+            },
+            "generated_runtime_static_rpm_cap": 10000.0,
+            "profile_numeric_search_range_rpm": [
+              0.0,
+              15000.0
+            ],
+            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
           },
           {
             "axial_speed_m_s": 20.0,
@@ -662,28 +904,58 @@
             "nominal_uniform_chord_m": 0.027857142857142858,
             "nominal_all_roots": [
               {
-                "rpm": 11224.51358374,
+                "rpm": 11190.53513427,
                 "stable_restoring_root": true,
-                "net_torque_slope_nm_per_rpm": -0.00038818,
-                "engine_torque_nm": 0.68684944,
-                "thrust_n": 23.29729818,
-                "torque_nm": 0.68684944,
-                "shaft_power_w": 807.34228001,
-                "thrust_power_w": 465.94596358,
-                "advance_ratio": 0.32377003,
+                "net_torque_slope_nm_per_rpm": -0.00039622,
+                "engine_torque_nm": 0.69299182,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.08563356396747712,
+                  "axial_speed_m_s": 20.0,
+                  "thrust_n": 22.96518332138554,
+                  "ideal_disk_speed_m_s": 24.472771027505203,
+                  "ideal_shaft_power_lower_bound_w": 562.0216730289497,
+                  "surrogate_shaft_power_w": 812.096389334436,
+                  "shaft_to_ideal_power_ratio": 1.4449556454962635,
+                  "relative_tolerance": 1e-10
+                },
+                "thrust_n": 22.96518332,
+                "torque_nm": 0.69299182,
+                "shaft_power_w": 812.09638933,
+                "thrust_power_w": 459.30366643,
+                "advance_ratio": 0.32475311,
                 "within_o_s_practical_rpm_range": false
               }
             ],
+            "nominal_balance_root_count": 1,
+            "nominal_rejected_by_momentum_bound": [],
             "nominal_stable_full_admission_equilibrium": {
-              "rpm": 11224.51358374,
+              "rpm": 11190.53513427,
               "stable_restoring_root": true,
-              "net_torque_slope_nm_per_rpm": -0.00038818,
-              "engine_torque_nm": 0.68684944,
-              "thrust_n": 23.29729818,
-              "torque_nm": 0.68684944,
-              "shaft_power_w": 807.34228001,
-              "thrust_power_w": 465.94596358,
-              "advance_ratio": 0.32377003,
+              "net_torque_slope_nm_per_rpm": -0.00039622,
+              "engine_torque_nm": 0.69299182,
+              "actuator_disk_power_bound": {
+                "status": "accepted",
+                "checked": true,
+                "passed": true,
+                "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                "disk_area_m2": 0.08563356396747712,
+                "axial_speed_m_s": 20.0,
+                "thrust_n": 22.96518332138554,
+                "ideal_disk_speed_m_s": 24.472771027505203,
+                "ideal_shaft_power_lower_bound_w": 562.0216730289497,
+                "surrogate_shaft_power_w": 812.096389334436,
+                "shaft_to_ideal_power_ratio": 1.4449556454962635,
+                "relative_tolerance": 1e-10
+              },
+              "thrust_n": 22.96518332,
+              "torque_nm": 0.69299182,
+              "shaft_power_w": 812.09638933,
+              "thrust_power_w": 459.30366643,
+              "advance_ratio": 0.32475311,
               "within_o_s_practical_rpm_range": false
             },
             "assumption_envelope": {
@@ -691,6 +963,9 @@
               "sensitivity_case_count_excluding_nominal": 4,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 5,
+              "momentum_bound_accepted_sensitivity_root_count": 4,
+              "momentum_bound_refused_sensitivity_root_count": 0,
+              "momentum_bound_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 9678.16649502,
@@ -702,13 +977,19 @@
               ],
               "torque_nm": [
                 0.5665033,
-                0.68684944
+                0.69299182
               ],
               "shaft_power_w": [
                 603.1724049,
                 821.75250042
               ]
-            }
+            },
+            "generated_runtime_static_rpm_cap": 10000.0,
+            "profile_numeric_search_range_rpm": [
+              0.0,
+              15000.0
+            ],
+            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
           },
           {
             "axial_speed_m_s": 30.0,
@@ -716,28 +997,58 @@
             "nominal_uniform_chord_m": 0.027857142857142858,
             "nominal_all_roots": [
               {
-                "rpm": 12769.27394971,
+                "rpm": 12766.43145285,
                 "stable_restoring_root": true,
-                "net_torque_slope_nm_per_rpm": -0.00038268,
-                "engine_torque_nm": 0.43349215,
-                "thrust_n": 7.30689617,
-                "torque_nm": 0.43349215,
-                "shaft_power_w": 579.66364619,
-                "thrust_power_w": 219.20688503,
-                "advance_ratio": 0.42690302,
+                "net_torque_slope_nm_per_rpm": -0.00038497,
+                "engine_torque_nm": 0.43391182,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.08563356396747712,
+                  "axial_speed_m_s": 30.0,
+                  "thrust_n": 7.279726192614928,
+                  "ideal_disk_speed_m_s": 31.115149389000752,
+                  "ideal_shaft_power_lower_bound_w": 226.50976799423515,
+                  "surrogate_shaft_power_w": 580.0956601428585,
+                  "shaft_to_ideal_power_ratio": 2.561018296383679,
+                  "relative_tolerance": 1e-10
+                },
+                "thrust_n": 7.27972619,
+                "torque_nm": 0.43391182,
+                "shaft_power_w": 580.09566014,
+                "thrust_power_w": 218.39178578,
+                "advance_ratio": 0.42699808,
                 "within_o_s_practical_rpm_range": false
               }
             ],
+            "nominal_balance_root_count": 1,
+            "nominal_rejected_by_momentum_bound": [],
             "nominal_stable_full_admission_equilibrium": {
-              "rpm": 12769.27394971,
+              "rpm": 12766.43145285,
               "stable_restoring_root": true,
-              "net_torque_slope_nm_per_rpm": -0.00038268,
-              "engine_torque_nm": 0.43349215,
-              "thrust_n": 7.30689617,
-              "torque_nm": 0.43349215,
-              "shaft_power_w": 579.66364619,
-              "thrust_power_w": 219.20688503,
-              "advance_ratio": 0.42690302,
+              "net_torque_slope_nm_per_rpm": -0.00038497,
+              "engine_torque_nm": 0.43391182,
+              "actuator_disk_power_bound": {
+                "status": "accepted",
+                "checked": true,
+                "passed": true,
+                "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                "disk_area_m2": 0.08563356396747712,
+                "axial_speed_m_s": 30.0,
+                "thrust_n": 7.279726192614928,
+                "ideal_disk_speed_m_s": 31.115149389000752,
+                "ideal_shaft_power_lower_bound_w": 226.50976799423515,
+                "surrogate_shaft_power_w": 580.0956601428585,
+                "shaft_to_ideal_power_ratio": 2.561018296383679,
+                "relative_tolerance": 1e-10
+              },
+              "thrust_n": 7.27972619,
+              "torque_nm": 0.43391182,
+              "shaft_power_w": 580.09566014,
+              "thrust_power_w": 218.39178578,
+              "advance_ratio": 0.42699808,
               "within_o_s_practical_rpm_range": false
             },
             "assumption_envelope": {
@@ -745,6 +1056,9 @@
               "sensitivity_case_count_excluding_nominal": 4,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 5,
+              "momentum_bound_accepted_sensitivity_root_count": 4,
+              "momentum_bound_refused_sensitivity_root_count": 0,
+              "momentum_bound_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 11940.56067772,
@@ -756,17 +1070,25 @@
               ],
               "torque_nm": [
                 0.35879466,
-                0.43349215
+                0.43391182
               ],
               "shaft_power_w": [
                 498.92205645,
-                579.66364619
+                580.09566014
               ]
-            }
+            },
+            "generated_runtime_static_rpm_cap": 10000.0,
+            "profile_numeric_search_range_rpm": [
+              0.0,
+              15000.0
+            ],
+            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
           }
         ],
         "model_limits": [
           "Uses the engine candidate curve and the runtime's 12-annulus no-induced-velocity uniform-chord surrogate.",
+          "Every positive-thrust prediction is checked against ideal actuator-disk power; impossible surrogate roots are refused and excluded from prediction extrema.",
+          "The momentum check uses ideal actuator-disk theory as a lower bound, not measured induced flow or an induced-velocity calibration.",
           "The real propeller's radial chord, twist, airfoil, Reynolds correction, induced flow, rotating inertia and production variation are unavailable.",
           "Advancing cases are axial-speed scenarios at 10, 20 and 30 m/s, not aircraft telemetry or validated flight points.",
           "Static RPM, thrust and torque for unobserved combinations are engineering inferences, not measurements."
@@ -787,7 +1109,30 @@
         "manufacturer_max_recommended_rpm": 11785.714285714286,
         "rpm_limit_basis": "Generic Master Airscrew plastic-prop safety instruction: 165000 divided by diameter in inches; applied provisionally because the K-series product page specifies glass-fiber reinforced composite but no SKU-specific RPM ceiling",
         "rpm_limit_source": "https://www.masterairscrew.com/pages/downloads",
+        "nominal_diameter_m": 0.35559999999999997,
+        "nominal_pitch_m": 0.15239999999999998,
         "nominal_chord_m": 0.03,
+        "installation_source": {
+          "configuration_id": "fs64v_master_airscrew_k_14x6",
+          "path": "app/data/glow/stik_fs64v_4t.json",
+          "sha256": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+          "family": "glow_4t",
+          "geometry": {
+            "diameter_m": 0.35559999999999997,
+            "pitch_m": 0.15239999999999998,
+            "chord_m": 0.03,
+            "blades": 2.0
+          },
+          "section": {
+            "lift_slope_per_rad": 5.5,
+            "cd0": 0.022,
+            "induced_drag": 0.075,
+            "blades": 2.0
+          },
+          "runtime_static_rpm_cap": 10000.0,
+          "aircraft_path": "app/data/aircraft/stik_glow_fs64v_4t.json",
+          "aircraft_sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5"
+        },
         "chord_basis": "explicit unmeasured 30 mm wide-chord screening assumption, not fitted to an FS-64V RPM datum",
         "anchor_rpm": null,
         "refit_chord_in_uncertainty_cases": false,
@@ -806,15 +1151,90 @@
             15000.0
           ],
           "profile_recommended_max_rpm": 11000.0,
-          "effective_recommended_rpm_for_configuration": 11000.0
+          "effective_recommended_rpm_for_configuration": 11000.0,
+          "generated_aircraft_max_rpm_static_field": 10000.0,
+          "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium; the profile search range and generated aircraft max_rpm_static field are separate limits."
         },
         "section_assumptions": {
           "lift_slope_per_rad": 5.5,
           "cd0": 0.022,
-          "induced_drag": 0.06,
+          "induced_drag": 0.075,
           "blades": 2.0
         },
         "reference_air_density_kg_m3": 1.225,
+        "actuator_disk_power_bound_map_audit": {
+          "status": "PASS",
+          "method": "Independent ideal actuator-disk lower-bound audit on the repository-matched 12-annulus surrogate; positive-thrust samples only.",
+          "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+          "grid": {
+            "rpm_range": [
+              0.0,
+              15000.0
+            ],
+            "rpm_samples": 150,
+            "forward_speed_range_m_s": [
+              0.0,
+              30.0
+            ],
+            "forward_speed_samples": 20,
+            "sample_count": 3000
+          },
+          "positive_thrust_sample_count": 1810,
+          "refused_positive_thrust_sample_count": 0,
+          "minimum_positive_thrust_power_ratio": 1.08313703,
+          "minimum_ratio_at": {
+            "rpm": 2919.46308725,
+            "axial_speed_m_s": 0.0,
+            "thrust_n": 6.17192618,
+            "shaft_power_w": 33.66857642,
+            "ideal_shaft_power_lower_bound_w": 31.08431844,
+            "shaft_to_ideal_power_ratio": 1.08313703
+          },
+          "refusal_examples": [],
+          "interpretation": "An ideal momentum-theory lower bound, not an inferred/measured induced velocity, Ct/Cp map, validated thrust, or calibration result."
+        },
+        "sensitivity_cases": [
+          {
+            "name": "lower_candidate_torque_and_heavier_prop_load",
+            "engine": {
+              "indicated_efficiency_scale": 0.9,
+              "charge_scale": 0.9,
+              "losses_scale": 1.5
+            },
+            "section_overrides": {
+              "lift_slope_per_rad": 6.5,
+              "cd0": 0.035,
+              "induced_drag": 0.12
+            },
+            "density_scale": 1.1,
+            "section": {
+              "lift_slope_per_rad": 6.5,
+              "cd0": 0.035,
+              "induced_drag": 0.12,
+              "blades": 2.0
+            }
+          },
+          {
+            "name": "higher_candidate_torque_and_lighter_prop_load",
+            "engine": {
+              "indicated_efficiency_scale": 1.1,
+              "charge_scale": 1.1,
+              "losses_scale": 0.5
+            },
+            "section_overrides": {
+              "lift_slope_per_rad": 4.5,
+              "cd0": 0.015,
+              "induced_drag": 0.03
+            },
+            "density_scale": 0.9,
+            "section": {
+              "lift_slope_per_rad": 4.5,
+              "cd0": 0.015,
+              "induced_drag": 0.03,
+              "blades": 2.0
+            }
+          }
+        ],
         "static_and_advancing_full_admission_predictions": [
           {
             "axial_speed_m_s": 0.0,
@@ -826,6 +1246,20 @@
                 "stable_restoring_root": false,
                 "net_torque_slope_nm_per_rpm": 0.00010195,
                 "engine_torque_nm": -0.0,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.09931466590310954,
+                  "axial_speed_m_s": 0.0,
+                  "thrust_n": 7.157707775094164e-35,
+                  "ideal_disk_speed_m_s": 1.7151308026710588e-17,
+                  "ideal_shaft_power_lower_bound_w": 1.2276405081582131e-51,
+                  "surrogate_shaft_power_w": 1.3297028964437256e-51,
+                  "shaft_to_ideal_power_ratio": 1.0831370320604956,
+                  "relative_tolerance": 1e-10
+                },
                 "thrust_n": 0.0,
                 "torque_nm": 0.0,
                 "shaft_power_w": 0.0,
@@ -834,26 +1268,77 @@
                 "within_o_s_practical_rpm_range": false
               },
               {
-                "rpm": 8284.8418121,
+                "rpm": 7785.2308448,
                 "stable_restoring_root": true,
-                "net_torque_slope_nm_per_rpm": -0.00020697,
-                "engine_torque_nm": 0.79577275,
-                "thrust_n": 49.70306686,
-                "torque_nm": 0.79577275,
-                "shaft_power_w": 690.40177803,
+                "net_torque_slope_nm_per_rpm": -0.00012303,
+                "engine_torque_nm": 0.78312333,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.09931466590310954,
+                  "axial_speed_m_s": 0.0,
+                  "thrust_n": 43.88920712663128,
+                  "ideal_disk_speed_m_s": 13.430405718729402,
+                  "ideal_shaft_power_lower_bound_w": 589.4498583840079,
+                  "surrogate_shaft_power_w": 638.4549701585338,
+                  "shaft_to_ideal_power_ratio": 1.0831370320604956,
+                  "relative_tolerance": 1e-10
+                },
+                "thrust_n": 43.88920713,
+                "torque_nm": 0.78312333,
+                "shaft_power_w": 638.45497016,
                 "thrust_power_w": 0.0,
                 "advance_ratio": 0.0,
                 "within_o_s_practical_rpm_range": true
               }
             ],
+            "nominal_balance_root_count": 2,
+            "nominal_rejected_by_momentum_bound": [
+              {
+                "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
+                "rpm": 11285.98058037,
+                "geometry_chord_m": 0.03,
+                "thrust_n": 70.28041914,
+                "shaft_power_w": 1010.35321096,
+                "ideal_shaft_power_lower_bound_w": 1259.04288886,
+                "shaft_to_ideal_power_ratio": 0.8024772,
+                "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+              },
+              {
+                "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
+                "rpm": 11739.45949121,
+                "geometry_chord_m": 0.02465915,
+                "thrust_n": 62.50414954,
+                "shaft_power_w": 934.66619712,
+                "ideal_shaft_power_lower_bound_w": 1055.97171552,
+                "shaft_to_ideal_power_ratio": 0.88512427,
+                "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+              }
+            ],
             "nominal_stable_full_admission_equilibrium": {
-              "rpm": 8284.8418121,
+              "rpm": 7785.2308448,
               "stable_restoring_root": true,
-              "net_torque_slope_nm_per_rpm": -0.00020697,
-              "engine_torque_nm": 0.79577275,
-              "thrust_n": 49.70306686,
-              "torque_nm": 0.79577275,
-              "shaft_power_w": 690.40177803,
+              "net_torque_slope_nm_per_rpm": -0.00012303,
+              "engine_torque_nm": 0.78312333,
+              "actuator_disk_power_bound": {
+                "status": "accepted",
+                "checked": true,
+                "passed": true,
+                "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                "disk_area_m2": 0.09931466590310954,
+                "axial_speed_m_s": 0.0,
+                "thrust_n": 43.88920712663128,
+                "ideal_disk_speed_m_s": 13.430405718729402,
+                "ideal_shaft_power_lower_bound_w": 589.4498583840079,
+                "surrogate_shaft_power_w": 638.4549701585338,
+                "shaft_to_ideal_power_ratio": 1.0831370320604956,
+                "relative_tolerance": 1e-10
+              },
+              "thrust_n": 43.88920713,
+              "torque_nm": 0.78312333,
+              "shaft_power_w": 638.45497016,
               "thrust_power_w": 0.0,
               "advance_ratio": 0.0,
               "within_o_s_practical_rpm_range": true
@@ -862,25 +1347,55 @@
               "axial_speed_m_s": 0.0,
               "sensitivity_case_count_excluding_nominal": 4,
               "nominal_case_included_in_min_max": true,
-              "stable_root_count_including_nominal": 5,
+              "stable_root_count_including_nominal": 3,
+              "momentum_bound_accepted_sensitivity_root_count": 4,
+              "momentum_bound_refused_sensitivity_root_count": 2,
+              "momentum_bound_refusals": [
+                {
+                  "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
+                  "rpm": 11285.98058037,
+                  "geometry_chord_m": 0.03,
+                  "thrust_n": 70.28041914,
+                  "shaft_power_w": 1010.35321096,
+                  "ideal_shaft_power_lower_bound_w": 1259.04288886,
+                  "shaft_to_ideal_power_ratio": 0.8024772,
+                  "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+                },
+                {
+                  "sensitivity_case": "higher_candidate_torque_and_lighter_prop_load",
+                  "rpm": 11739.45949121,
+                  "geometry_chord_m": 0.02465915,
+                  "thrust_n": 62.50414954,
+                  "shaft_power_w": 934.66619712,
+                  "ideal_shaft_power_lower_bound_w": 1055.97171552,
+                  "shaft_to_ideal_power_ratio": 0.88512427,
+                  "decision": "refused; excluded from all candidate prediction and sensitivity extrema"
+                }
+              ],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 4079.82510249,
-                11739.45949121
+                7785.2308448
               ],
               "thrust_n": [
                 14.91924352,
-                70.28041914
+                43.88920713
               ],
               "torque_nm": [
                 0.38958572,
-                0.8548803
+                0.78312333
               ],
               "shaft_power_w": [
                 166.44593513,
-                1010.35321096
+                638.45497016
               ]
-            }
+            },
+            "generated_runtime_static_rpm_cap": 10000.0,
+            "profile_numeric_search_range_rpm": [
+              0.0,
+              15000.0
+            ],
+            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
           },
           {
             "axial_speed_m_s": 10.0,
@@ -888,28 +1403,58 @@
             "nominal_uniform_chord_m": 0.03,
             "nominal_all_roots": [
               {
-                "rpm": 8866.0013921,
+                "rpm": 8713.22856779,
                 "stable_restoring_root": true,
-                "net_torque_slope_nm_per_rpm": -0.0002261,
-                "engine_torque_nm": 0.78710119,
-                "thrust_n": 33.85998226,
-                "torque_nm": 0.78710119,
-                "shaft_power_w": 730.78055408,
-                "thrust_power_w": 338.59982263,
-                "advance_ratio": 0.19031004,
+                "net_torque_slope_nm_per_rpm": -0.00023656,
+                "engine_torque_nm": 0.78938681,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.09931466590310954,
+                  "axial_speed_m_s": 10.0,
+                  "thrust_n": 32.22360882381101,
+                  "ideal_disk_speed_m_s": 17.54721241240822,
+                  "ideal_shaft_power_lower_bound_w": 565.4345087257636,
+                  "surrogate_shaft_power_w": 720.2737565390306,
+                  "shaft_to_ideal_power_ratio": 1.2738411706816504,
+                  "relative_tolerance": 1e-10
+                },
+                "thrust_n": 32.22360882,
+                "torque_nm": 0.78938681,
+                "shaft_power_w": 720.27375654,
+                "thrust_power_w": 322.23608824,
+                "advance_ratio": 0.19364683,
                 "within_o_s_practical_rpm_range": true
               }
             ],
+            "nominal_balance_root_count": 1,
+            "nominal_rejected_by_momentum_bound": [],
             "nominal_stable_full_admission_equilibrium": {
-              "rpm": 8866.0013921,
+              "rpm": 8713.22856779,
               "stable_restoring_root": true,
-              "net_torque_slope_nm_per_rpm": -0.0002261,
-              "engine_torque_nm": 0.78710119,
-              "thrust_n": 33.85998226,
-              "torque_nm": 0.78710119,
-              "shaft_power_w": 730.78055408,
-              "thrust_power_w": 338.59982263,
-              "advance_ratio": 0.19031004,
+              "net_torque_slope_nm_per_rpm": -0.00023656,
+              "engine_torque_nm": 0.78938681,
+              "actuator_disk_power_bound": {
+                "status": "accepted",
+                "checked": true,
+                "passed": true,
+                "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                "disk_area_m2": 0.09931466590310954,
+                "axial_speed_m_s": 10.0,
+                "thrust_n": 32.22360882381101,
+                "ideal_disk_speed_m_s": 17.54721241240822,
+                "ideal_shaft_power_lower_bound_w": 565.4345087257636,
+                "surrogate_shaft_power_w": 720.2737565390306,
+                "shaft_to_ideal_power_ratio": 1.2738411706816504,
+                "relative_tolerance": 1e-10
+              },
+              "thrust_n": 32.22360882,
+              "torque_nm": 0.78938681,
+              "shaft_power_w": 720.27375654,
+              "thrust_power_w": 322.23608824,
+              "advance_ratio": 0.19364683,
               "within_o_s_practical_rpm_range": true
             },
             "assumption_envelope": {
@@ -917,6 +1462,9 @@
               "sensitivity_case_count_excluding_nominal": 4,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 5,
+              "momentum_bound_accepted_sensitivity_root_count": 4,
+              "momentum_bound_refused_sensitivity_root_count": 0,
+              "momentum_bound_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 6321.24209039,
@@ -934,7 +1482,13 @@
                 344.32225225,
                 1017.64103667
               ]
-            }
+            },
+            "generated_runtime_static_rpm_cap": 10000.0,
+            "profile_numeric_search_range_rpm": [
+              0.0,
+              15000.0
+            ],
+            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
           },
           {
             "axial_speed_m_s": 20.0,
@@ -942,28 +1496,58 @@
             "nominal_uniform_chord_m": 0.03,
             "nominal_all_roots": [
               {
-                "rpm": 10625.51023398,
+                "rpm": 10587.70348355,
                 "stable_restoring_root": true,
-                "net_torque_slope_nm_per_rpm": -0.00029526,
-                "engine_torque_nm": 0.74363645,
-                "thrust_n": 22.72171352,
-                "torque_nm": 0.74363645,
-                "shaft_power_w": 827.4448983,
-                "thrust_power_w": 454.43427041,
-                "advance_ratio": 0.31759211,
+                "net_torque_slope_nm_per_rpm": -0.00030258,
+                "engine_torque_nm": 0.74522772,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.09931466590310954,
+                  "axial_speed_m_s": 20.0,
+                  "thrust_n": 22.30801973632085,
+                  "ideal_disk_speed_m_s": 23.84490758830882,
+                  "ideal_shaft_power_lower_bound_w": 531.93266909074,
+                  "surrogate_shaft_power_w": 826.2650606347618,
+                  "shaft_to_ideal_power_ratio": 1.5533264051014941,
+                  "relative_tolerance": 1e-10
+                },
+                "thrust_n": 22.30801974,
+                "torque_nm": 0.74522772,
+                "shaft_power_w": 826.26506063,
+                "thrust_power_w": 446.16039473,
+                "advance_ratio": 0.31872617,
                 "within_o_s_practical_rpm_range": true
               }
             ],
+            "nominal_balance_root_count": 1,
+            "nominal_rejected_by_momentum_bound": [],
             "nominal_stable_full_admission_equilibrium": {
-              "rpm": 10625.51023398,
+              "rpm": 10587.70348355,
               "stable_restoring_root": true,
-              "net_torque_slope_nm_per_rpm": -0.00029526,
-              "engine_torque_nm": 0.74363645,
-              "thrust_n": 22.72171352,
-              "torque_nm": 0.74363645,
-              "shaft_power_w": 827.4448983,
-              "thrust_power_w": 454.43427041,
-              "advance_ratio": 0.31759211,
+              "net_torque_slope_nm_per_rpm": -0.00030258,
+              "engine_torque_nm": 0.74522772,
+              "actuator_disk_power_bound": {
+                "status": "accepted",
+                "checked": true,
+                "passed": true,
+                "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                "disk_area_m2": 0.09931466590310954,
+                "axial_speed_m_s": 20.0,
+                "thrust_n": 22.30801973632085,
+                "ideal_disk_speed_m_s": 23.84490758830882,
+                "ideal_shaft_power_lower_bound_w": 531.93266909074,
+                "surrogate_shaft_power_w": 826.2650606347618,
+                "shaft_to_ideal_power_ratio": 1.5533264051014941,
+                "relative_tolerance": 1e-10
+              },
+              "thrust_n": 22.30801974,
+              "torque_nm": 0.74522772,
+              "shaft_power_w": 826.26506063,
+              "thrust_power_w": 446.16039473,
+              "advance_ratio": 0.31872617,
               "within_o_s_practical_rpm_range": true
             },
             "assumption_envelope": {
@@ -971,6 +1555,9 @@
               "sensitivity_case_count_excluding_nominal": 4,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 5,
+              "momentum_bound_accepted_sensitivity_root_count": 4,
+              "momentum_bound_refused_sensitivity_root_count": 0,
+              "momentum_bound_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 9111.23624493,
@@ -982,13 +1569,19 @@
               ],
               "torque_nm": [
                 0.59796449,
-                0.74363645
+                0.74522772
               ],
               "shaft_power_w": [
                 575.65686294,
                 907.73524307
               ]
-            }
+            },
+            "generated_runtime_static_rpm_cap": 10000.0,
+            "profile_numeric_search_range_rpm": [
+              0.0,
+              15000.0
+            ],
+            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
           },
           {
             "axial_speed_m_s": 30.0,
@@ -996,28 +1589,58 @@
             "nominal_uniform_chord_m": 0.03,
             "nominal_all_roots": [
               {
-                "rpm": 12416.64733799,
+                "rpm": 12415.42373674,
                 "stable_restoring_root": true,
-                "net_torque_slope_nm_per_rpm": -0.00044906,
-                "engine_torque_nm": 0.48686342,
-                "thrust_n": 5.46003362,
-                "torque_nm": 0.48686342,
-                "shaft_power_w": 633.05305217,
-                "thrust_power_w": 163.80100863,
-                "advance_ratio": 0.4076678,
+                "net_torque_slope_nm_per_rpm": -0.00045087,
+                "engine_torque_nm": 0.48705321,
+                "actuator_disk_power_bound": {
+                  "status": "accepted",
+                  "checked": true,
+                  "passed": true,
+                  "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                  "disk_area_m2": 0.09931466590310954,
+                  "axial_speed_m_s": 30.0,
+                  "thrust_n": 5.446256552916006,
+                  "ideal_disk_speed_m_s": 30.728414320298043,
+                  "ideal_shaft_power_lower_bound_w": 167.35482785264128,
+                  "surrogate_shaft_power_w": 633.2374257010371,
+                  "shaft_to_ideal_power_ratio": 3.7838013628062956,
+                  "relative_tolerance": 1e-10
+                },
+                "thrust_n": 5.44625655,
+                "torque_nm": 0.48705321,
+                "shaft_power_w": 633.2374257,
+                "thrust_power_w": 163.38769659,
+                "advance_ratio": 0.40770797,
                 "within_o_s_practical_rpm_range": false
               }
             ],
+            "nominal_balance_root_count": 1,
+            "nominal_rejected_by_momentum_bound": [],
             "nominal_stable_full_admission_equilibrium": {
-              "rpm": 12416.64733799,
+              "rpm": 12415.42373674,
               "stable_restoring_root": true,
-              "net_torque_slope_nm_per_rpm": -0.00044906,
-              "engine_torque_nm": 0.48686342,
-              "thrust_n": 5.46003362,
-              "torque_nm": 0.48686342,
-              "shaft_power_w": 633.05305217,
-              "thrust_power_w": 163.80100863,
-              "advance_ratio": 0.4076678,
+              "net_torque_slope_nm_per_rpm": -0.00045087,
+              "engine_torque_nm": 0.48705321,
+              "actuator_disk_power_bound": {
+                "status": "accepted",
+                "checked": true,
+                "passed": true,
+                "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
+                "disk_area_m2": 0.09931466590310954,
+                "axial_speed_m_s": 30.0,
+                "thrust_n": 5.446256552916006,
+                "ideal_disk_speed_m_s": 30.728414320298043,
+                "ideal_shaft_power_lower_bound_w": 167.35482785264128,
+                "surrogate_shaft_power_w": 633.2374257010371,
+                "shaft_to_ideal_power_ratio": 3.7838013628062956,
+                "relative_tolerance": 1e-10
+              },
+              "thrust_n": 5.44625655,
+              "torque_nm": 0.48705321,
+              "shaft_power_w": 633.2374257,
+              "thrust_power_w": 163.38769659,
+              "advance_ratio": 0.40770797,
               "within_o_s_practical_rpm_range": false
             },
             "assumption_envelope": {
@@ -1025,6 +1648,9 @@
               "sensitivity_case_count_excluding_nominal": 4,
               "nominal_case_included_in_min_max": true,
               "stable_root_count_including_nominal": 5,
+              "momentum_bound_accepted_sensitivity_root_count": 4,
+              "momentum_bound_refused_sensitivity_root_count": 0,
+              "momentum_bound_refusals": [],
               "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
               "rpm": [
                 11596.04065496,
@@ -1036,17 +1662,25 @@
               ],
               "torque_nm": [
                 0.42683693,
-                0.48686342
+                0.48705321
               ],
               "shaft_power_w": [
                 543.59149595,
                 658.1531992
               ]
-            }
+            },
+            "generated_runtime_static_rpm_cap": 10000.0,
+            "profile_numeric_search_range_rpm": [
+              0.0,
+              15000.0
+            ],
+            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
           }
         ],
         "model_limits": [
           "Uses the engine candidate curve and the runtime's 12-annulus no-induced-velocity uniform-chord surrogate.",
+          "Every positive-thrust prediction is checked against ideal actuator-disk power; impossible surrogate roots are refused and excluded from prediction extrema.",
+          "The momentum check uses ideal actuator-disk theory as a lower bound, not measured induced flow or an induced-velocity calibration.",
           "The real propeller's radial chord, twist, airfoil, Reynolds correction, induced flow, rotating inertia and production variation are unavailable.",
           "Advancing cases are axial-speed scenarios at 10, 20 and 30 m/s, not aircraft telemetry or validated flight points.",
           "Static RPM, thrust and torque for unobserved combinations are engineering inferences, not measurements."
@@ -1061,8 +1695,8 @@
     "alternate_geometry_sensitivity": "24.6591530641 mm at 14x6 and 22.8977849881 mm at 13x6 if the 2T fitted c/D is transferred; neither is manufacturer blade geometry",
     "numeric_operating_guidance": "Nominal static roots are reported per prop; keep the O.S. recommended maximum at 11,000 RPM. Retain profile numerical support to 15,000 RPM only for unloading-flight model scenarios with an over-recommendation flag.",
     "candidate_static_rpm_by_configuration_id": {
-      "fs64v_apc_sport_13x6": 9384.07,
-      "fs64v_master_airscrew_k_14x6": 8284.84
+      "fs64v_apc_sport_13x6": 8924.37,
+      "fs64v_master_airscrew_k_14x6": 7785.23
     },
     "manufacturer_recommended_max_rpm": 11000.0,
     "manufacturer_max_recommended_rpm_by_configuration_id": {

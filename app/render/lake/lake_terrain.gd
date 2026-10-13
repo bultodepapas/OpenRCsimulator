@@ -97,7 +97,7 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 	probe.position = Vector3(float(lake.origin_east_m), 1.8, -float(lake.origin_north_m))
 	probe.size = Vector3(maximum.y - minimum.y + 10.0, 16.0, maximum.x - minimum.x + 10.0)
 	probe.max_distance = 250.0
-	probe.cull_mask = 1
+	probe.cull_mask = 8
 	probe.reflection_mask = 2
 	probe.mesh_lod_threshold = 4.0
 	probe.update_mode = ReflectionProbe.UPDATE_ONCE
