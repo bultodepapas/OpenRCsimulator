@@ -98,6 +98,17 @@ TARGET_CASES = (
         },
     ),
     (
+        "positive_thrust_mirror",
+        {
+            "thrust": 100.0,
+            "density": 1.225,
+            "radius": 1.0,
+            "climb": 2.0,
+            "crossflow": 1.5,
+            "height_over_radius": 0.5,
+        },
+    ),
+    (
         "negative_thrust_mirror",
         {
             "thrust": -100.0,

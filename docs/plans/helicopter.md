@@ -148,7 +148,7 @@ Rotor quantities:
 | `rotation_sense` ±1 | Explicit data field (clockwise from above is +1) |
 | a1 > 0 | TPP tilted aft: thrust tilts aft, nose-up moment |
 | b1 > 0 | TPP tilted right: right-roll moment |
-| θ0 | Collective pitch at 0.75R |
+| θ0 | Root-extrapolated collective pitch in the blade-element formula; swash θ75 converts as θ0 = θ75 − 0.75·θtw |
 | A1, B1 | Lateral and longitudinal cyclic blade pitch |
 | θ_tr | Tail-rotor pitch |
 
@@ -169,12 +169,14 @@ The air velocity at the hub is the CG air velocity plus ω × r_hub. It is resol
     C_T ← C_Tmax·tanh(C_T / C_Tmax)                                  (smooth saturation, both signs)
     T   = C_T·ρ·πR²·(ΩR)²
 
+The displayed twist moments use pitch extrapolated to r/R = 0. Passing pitch at 0.75R directly would count twist twice. HELI-02/05 must pin the paper's pitch datum, cyclic terms and the mapping `µz = -climb/(ΩR)` against HELI-04's positive-climb convention before implementing these loads.
+
 **Inflow state λ0** (continuous, zeroth-harmonic Pitt-Peters):
 
     τλ·λ̇0 = λ_target − λ0,      τλ = 0.849 / (4·λ_eff·Ω)
     λ_target = κ·C_T / (2·η_w·√(µ² + (λ0 − µz)²))   in the momentum branches
 
-- Using the state λ0 inside C_T removes the thrust fixed-point iteration. The standalone HELI-04 equilibrium target solves Johnson's momentum relation with bracketed, fixed-pass roots; its measured cost and source seams must be qualified before this becomes the session law.
+- Using the state λ0 inside C_T removes the thrust fixed-point iteration. The standalone HELI-04 equilibrium target solves Johnson's momentum relation with bounded, bracketed Newton iterations and a fixed-pass bisection fallback; its measured cost and source seams must be qualified before this becomes the session law.
 - `λ_eff` is the nonnegative stage flow magnitude, floored by an explicit model parameter. At Ω = 0 the ratio derivative freezes; dimensional stopped-rotor wake decay and spool-up initialization remain HELI-16/17 work.
 - κ ≈ 1.10–1.15 and η_w ≈ 0.9 are data fields.
 
@@ -190,7 +192,7 @@ The air velocity at the hub is the CG air velocity plus ω × r_hub. It is resol
 
 - z is the hub height above the terrain under the hub, measured along the thrust axis and clamped at z/R ≥ 0.5.
 - The session already supplies the terrain height (`GroundTerrain.sample_validated`).
-- The standalone API uses `height_over_radius = -1` to disable it. It applies the correction only to positive upright thrust; a tilted rotor whose wake misses the ground also disables it. Full reflected forward-flight flow is deferred.
+- The standalone API uses `height_over_radius = -1` to disable it. A nonnegative value means the caller established that the downstream wake meets terrain; the sign of body-axis thrust cannot establish that geometry during inverted flight. Full reflected forward-flight flow is deferred.
 - Cheeseman–Bennett is an independent check in tests.
 - Ground effect is strong on the pad: an X-Cell on skids is at z/R ≈ 0.5–0.6.
 
@@ -568,6 +570,7 @@ Each step is one small working change with its proof. A step that touches a coor
 | HELI-07 | `rotorcraft/drive.gd`: rotor speed ODE, freewheel, hold, power-source engine, discrete governor | Energy closure ∫(P_in − P_out)dt = ΔE_rot within 1e-6 relative over 10 s; governor step vs HELI-03 (calibration, labelled) |
 | HELI-08 | Geared gyroscopic coupling in `rotor_coupling.gd` (b-vector form) | Momentum and work closure (extends `test_rotor_coupling`); airplane path byte-identical |
 | HELI-09 | `bench_rotorcraft.gd`: per-call kernel cost | ≤ 37 µs per full evaluation (150 µs per tick) on the H15 host, or stop and redesign before integration |
+| HELI-09a | Isolated equilibrium-inflow cost diagnostic `research/helicopter/bench_inflow.gd` | Measured on the Windows Ryzen 5900X host; [HELI-04 evidence](../research/helicopter/HELI-04/README.md). This does not close HELI-09 or the whole-tick budget. |
 
 ### Phase 2: data
 

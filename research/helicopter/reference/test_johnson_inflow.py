@@ -148,7 +148,7 @@ class HaydenAndDimensionalTarget(unittest.TestCase):
             places=12,
         )
 
-    def test_hayden_guard_is_upright_only(self) -> None:
+    def test_hayden_guard_uses_explicit_geometry_for_either_thrust_sign(self) -> None:
         negative = target(
             -100.0, 1.225, 1.0, 0.0, 0.0, height_over_radius=0.5
         )
@@ -157,8 +157,31 @@ class HaydenAndDimensionalTarget(unittest.TestCase):
         )
         self.assertTrue(negative["ok"], negative)
         self.assertTrue(disabled["ok"], disabled)
-        self.assertEqual(negative["ground_factor"], 1.0)
-        self.assertAlmostEqual(negative["velocity"], disabled["velocity"], places=13)
+        factor = hayden_ground_factor(0.5)
+        self.assertAlmostEqual(negative["ground_factor"], factor, places=14)
+        self.assertAlmostEqual(
+            negative["velocity"], disabled["velocity"] * factor, places=13
+        )
+
+    def test_signed_thrust_symmetry_with_ground_geometry_enabled(self) -> None:
+        positive = target(
+            80.4, 1.225, 0.7, 3.2, 1.7, height_over_radius=0.8
+        )
+        negative = target(
+            -80.4, 1.225, 0.7, -3.2, 1.7, height_over_radius=0.8
+        )
+        self.assertTrue(positive["ok"], positive)
+        self.assertTrue(negative["ok"], negative)
+        self.assertAlmostEqual(
+            float(positive["ground_factor"]),
+            float(negative["ground_factor"]),
+            places=14,
+        )
+        self.assertAlmostEqual(
+            float(positive["velocity"]),
+            -float(negative["velocity"]),
+            places=12,
+        )
 
 
 class OracleAndDomain(unittest.TestCase):

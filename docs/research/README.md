@@ -127,9 +127,13 @@ The [smoke guide](../SMOKE-PLAN.md) records the unintegrated feature and its pro
 
 The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begin with [primary sources](wind-physics-primary-sources.md), [implementation evidence](wind-implementation/README.md), [M5-W04a turbulence](wind-implementation/M5-W04a/README.md), and the [investigation index](wind-investigations/README.md). Atmospheric density research is in [M5-ATM-1](atmosphere/M5-ATM-1/kernel/README.md) and [M5-ATM-2/3](atmosphere/M5-ATM-2/README.md).
 
-### Drone racing (proposed)
+### Helicopter and shared rotor foundations
 
-[DR-01](drone-racing/DR-01/README.md) records the identified quadrotor models and datasets, small-propeller data limits, Betaflight rate and mixer semantics, racing formats and timing systems, FPV camera and OSD facts, Compatibility-renderer limits and the code-seam map for a multirotor. The [drone racing plan](../plans/drone-racing.md) owns the proposed steps; nothing is implemented.
+[HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the independent mean-inflow reference, generated oracle and standalone GDScript checks, including the published crossflow seams that must be qualified before session use. [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.
+
+### Drone racing (shared-foundation review)
+
+[DR-01](drone-racing/DR-01/README.md) records the identified quadrotor models and datasets, small-propeller data limits, Betaflight rate and mixer semantics, racing formats and timing systems, FPV camera and OSD facts, Compatibility-renderer limits and the code-seam map for a multirotor. The [drone racing plan](../plans/drone-racing.md) consumes HELI's shared inflow evidence; multirotor flight and racing remain proposed.
 
 ### Cross-aircraft
 

@@ -18,9 +18,25 @@
     },
     {
       "expected": {
-        "ground_factor": 1.0,
+        "ground_factor": 0.620514615789,
         "hover": 3.604475031457,
-        "velocity": -2.655998883341
+        "velocity": 1.648086126631
+      },
+      "inputs": {
+        "climb": 2.0,
+        "crossflow": 1.5,
+        "density": 1.225,
+        "height_over_radius": 0.5,
+        "radius": 1.0,
+        "thrust": 100.0
+      },
+      "name": "positive_thrust_mirror"
+    },
+    {
+      "expected": {
+        "ground_factor": 0.620514615789,
+        "hover": 3.604475031457,
+        "velocity": -1.648086126631
       },
       "inputs": {
         "climb": -2.0,

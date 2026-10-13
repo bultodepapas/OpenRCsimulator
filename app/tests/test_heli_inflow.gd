@@ -55,6 +55,12 @@ func _momentum() -> void:
 			if r.ok:
 				close("actuator disc momentum residual", r.ratio * M.sqrt_(x * x + (z + r.ratio) * (z + r.ratio)), 1.0, 2e-12)
 	check("translational lift reduces ideal hover inflow", Inflow.normalized(0.0, 2.0).ratio < 1.0)
+	for z: float in [-1e6, -20.0, 0.0, 20.0, 1e6]:
+		for x: float in [1e-8, 0.5, 1e6]:
+			var r: Dictionary = Inflow.normalized(z, x, 0.0)
+			check("extreme accepted ratios remain finite", r.ok)
+			if r.ok:
+				close("extreme momentum residual", r.ratio * M.sqrt_(x * x + (z + r.ratio) * (z + r.ratio)), 1.0, 2e-12)
 
 
 func _continuity() -> void:
@@ -105,10 +111,11 @@ func _signed_and_ground() -> void:
 	close("X-Cell ideal induced hover velocity", hover.hover, 4.170686852391147, 1e-12)
 	for climb: float in [-12.0, -6.0, -2.0, 0.0, 4.0]:
 		for crossflow: float in [0.0, 2.0, 10.0]:
-			var upright: Dictionary = Inflow.target(80.0, 1.225, 0.775, climb, crossflow, -1.0, 1.15)
-			var reverse: Dictionary = Inflow.target(-80.0, 1.225, 0.775, -climb, crossflow, -1.0, 1.15)
-			check("mirrored thrust valid", upright.ok and reverse.ok)
-			close("inverted sign symmetry", reverse.velocity, -upright.velocity)
+			for height: float in [-1.0, 0.5, 2.0]:
+				var upright: Dictionary = Inflow.target(80.0, 1.225, 0.775, climb, crossflow, height, 1.15)
+				var reverse: Dictionary = Inflow.target(-80.0, 1.225, 0.775, -climb, crossflow, height, 1.15)
+				check("mirrored thrust valid", upright.ok and reverse.ok)
+				close("inverted sign symmetry with declared ground geometry", reverse.velocity, -upright.velocity)
 	close("ground disabled is unity", Inflow.ground_factor(-1.0), 1.0)
 	close("Hayden ground floor", Inflow.ground_factor(0.0), 0.9926 / 1.59964)
 	close("below floor matches floor", Inflow.ground_factor(0.2), Inflow.ground_factor(0.5))
@@ -144,6 +151,7 @@ func _invalid() -> void:
 		check("nonfinite thrust refused", not Inflow.target(bad, 1.225, 0.775, 0.0, 0.0).ok)
 		check("nonfinite lag state refused", not Inflow.derivative(bad, 0.0, 167.0, 0.032).ok)
 	check("negative crossflow magnitude refused", not Inflow.normalized(0.0, -0.1).ok)
+	check("normalized domain limit enforced", not Inflow.normalized(1e7, 0.0).ok)
 	check("instability outside range refused", not Inflow.normalized(0.0, 0.0, 1.1).ok)
 	check("induced loss below unity refused", not Inflow.normalized(0.0, 0.0, 1.0, 0.9).ok)
 	check("zero density refused", not Inflow.target(80.0, 0.0, 0.775, 0.0, 0.0).ok)

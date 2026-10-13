@@ -36,7 +36,7 @@ def main():
         with Image.open(path) as image:
             if image.size != (640, 360):
                 raise ValueError(f'Wrong frame size: {path}')
-            frames.append(image.convert('RGB'))
+            frames.append(image.convert('RGB').quantize(colors=128, dither=Image.Dither.NONE))
     args.destination.mkdir(parents=True, exist_ok=True)
     gif = args.destination / 'aircraft-tour.gif'
     frames[0].save(gif, save_all=True, append_images=frames[1:], duration=110,

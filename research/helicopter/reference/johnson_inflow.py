@@ -331,13 +331,14 @@ def target(
     loss: float = 1.0,
     instability: float = 1.0,
 ) -> dict[str, Any]:
-    """Dimensional signed-thrust target, with optional upright Hayden effect.
+    """Dimensional signed-thrust target, with caller-gated Hayden effect.
 
     climb is positive upward. The signed-thrust extension reflects Johnson's
     positive-thrust curve about the thrust axis. The hover scale is
     sqrt(abs(T)/(2*rho*pi*R^2)); returned velocity is positive downward for
-    positive thrust. A height of -1 disables ground effect. Hayden's correction
-    is only applied to positive, upright thrust.
+    positive thrust. A height of -1 disables ground effect. A nonnegative
+    height enables Hayden's correction for either thrust sign; the caller must
+    pass it only when the downstream wake geometry meets the ground.
     """
     try:
         t = _number(thrust, "thrust")
@@ -365,7 +366,7 @@ def target(
             raise ValueError("hover velocity scale is not finite and positive")
 
         ground_factor = 1.0
-        if direction > 0.0 and height >= 0.0:
+        if height >= 0.0:
             ground_factor = hayden_ground_factor(height)
 
         result = normalized(

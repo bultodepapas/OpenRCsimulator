@@ -41,14 +41,14 @@
     {
       "bounds": {
         "position": [
-          -1.41125750541687,
+          -1.41127383708954,
           -0.510500013828278,
-          -0.668599963188171
+          -0.671489119529724
         ],
         "size": [
-          2.82251501083374,
-          0.952000021934509,
-          2.45987820625305
+          2.82254767417908,
+          0.950000166893005,
+          2.4607892036438
         ]
       },
       "frames": 24,
@@ -72,18 +72,37 @@
       },
       "frames": 24,
       "id": "sebart-avanti-s-a200-p100rx",
-      "name": "SebArt Avanti S",
-      "status": "preview",
+      "name": "Ventage Jet",
+      "status": "experimental",
       "still": "avanti-s.png"
+    },
+    {
+      "bounds": {
+        "position": [
+          -0.773956000804901,
+          -0.256000012159348,
+          -0.291325956583023
+        ],
+        "size": [
+          1.5479120016098,
+          0.434000015258789,
+          1.12442517280579
+        ]
+      },
+      "frames": 24,
+      "id": "turbo-lumber-evolution",
+      "name": "Turbo Lumber Evolution",
+      "status": "experimental",
+      "still": "turbo-lumber-evolution.png"
     }
   ],
   "background": "#111820",
   "engine": "4.7.2-stable (official)",
   "format": "openrc-readme-renders v1",
-  "frame_count": 96,
+  "frame_count": 120,
   "purpose": "Studio model presentation; not gameplay or flight validation",
   "renderer": "gl_compatibility",
-  "source_commit": "a6a3abfab1a3262dbe6f468e4458c2773ff5a789",
+  "source_commit": "bc48fdd70cbdfc024390c9d081304e9896afeb61",
   "stills_size": [
     960,
     540
@@ -94,16 +113,17 @@
   ],
   "animation": {
     "file": "aircraft-tour.gif",
-    "duration_ms": 10560,
+    "duration_ms": 13200,
     "pillow": "12.3.0",
     "frame_duration_ms": 110
   },
   "sha256": {
-    "aircraft-tour.gif": "8152f24726f024aafdc71360efd844d203921ec94e0ecdb127157809f8e811d4",
-    "avanti-s.png": "e5f48cf56ee0aac2e4e211bf53e429042f0d457921fa2f4e79bd8f41fec9002f",
-    "extra-300s.png": "8ee8ead3eca1603ca72cefda1eb42627210dd57dc056002501eb56bc04765f2e",
-    "flight.png": "802b2186bf608c810607151eddff92560e944a04d76c5d31eaf82cdae7e953d0",
-    "p51d-mustang.png": "3a96d2cf61da50e7cbbffc728f7ffee4d3124ce0f235244fc6a690a6a1d3a713",
-    "ugly-stik.png": "fe2ddfbd735cdd34c0dabb6da229bcc22f06a022b3d19cc06c2f0c3d1390e01a"
+    "aircraft-tour.gif": "b691c44ccd5b40ca0bab56cb7d16c0342b314266752d5180b5ee1710d2ed869d",
+    "avanti-s.png": "8f0c1f88ca123fa891978c6233c9a9ad77cb356d87912a0866c6048f892cea42",
+    "extra-300s.png": "2428bd12707db00e116734537f91d5a6da5dedb0e312f6006cc15495e4f8e773",
+    "flight.png": "505a75ca931ff1d74b950e04ee69bee7fdb633d1de0c85126b1373e09195a10c",
+    "p51d-mustang.png": "26c0ba95641ada08d5ffae1329541c4e8de42792d907ddd0944823b11ef10270",
+    "turbo-lumber-evolution.png": "00aebd56a107ef0d2a2c4af519b5141c5157a0be39444674c6b3901124552aaf",
+    "ugly-stik.png": "390a66714606d74ba73fba20fc848419d24ef50dd5d0832bee46492a4102f1e3"
   }
 }

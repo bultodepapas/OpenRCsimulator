@@ -2,7 +2,9 @@
 
 An open-source RC airplane simulator for a USB transmitter, gamepad or keyboard. Fly from the pilot's position on the field, or use chase, orbit and close-up views. **Early alpha:** automated checks verify the software; flight models still need independent RC measurements and pilot validation.
 
-![Ugly Stik flying over the field](docs/media/flight.png)
+![Animated studio tour of all five aircraft](docs/media/aircraft-tour.gif)
+
+The five aircraft shown from changing angles. [Still views and render provenance](docs/media/README.md#aircraft-stills).
 
 ## Download and fly
 
@@ -44,6 +46,8 @@ All five aircraft have flight data in current source. Ventage Jet starts airborn
 | Recording and diagnostics | Flight CSV traces, complete-state checkpoints/replay, controller reports, frame-time/physics benchmarks, a filmed-latency marker and deterministic captures. [Tools and commands](docs/TOOLS.md) |
 
 Takeoff/landing calibration, controller compatibility, target-machine performance and pilot readability still require acceptance. Collision proxies, damage thresholds and wreck deformation are engineering estimates; flyable aircraft structural damage remains unimplemented. The [roadmap](ROADMAP.md) records the remaining gates.
+
+![Ugly Stik flying over the field](docs/media/flight.png)
 
 | Field by day | Runway at night |
 | --- | --- |

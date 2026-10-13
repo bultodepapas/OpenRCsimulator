@@ -130,7 +130,7 @@ static func step_servos(previous_positions: Variant, desired_positions: Variant,
 		if not _number_in_range(previous_positions[index], float(travel_min[index]), float(travel_max[index])):
 			return _failure("previous servo position is outside its declared travel")
 		if not _number_in_range(desired_positions[index], -SERVO_COMMAND_LIMIT, SERVO_COMMAND_LIMIT):
-			return _failure("desired servo command must be finite and in [-3, 3]")
+			return _failure("desired servo command must be finite and within the mixer-reachable range")
 
 	var positions := PackedFloat64Array()
 	var clamped_flags: Array[bool] = []

@@ -6,6 +6,7 @@ extends RefCounted
 
 const M = preload("res://physics/math3d.gd")
 const ROOT_PASSES: int = 48
+const NEWTON_PASSES: int = 12
 const MAX_RATIO: float = 1.0e6
 
 
@@ -43,16 +44,16 @@ static func normalized(z: float, x: float, instability: float = 1.0, loss: float
 
 # Signed velocity is along the wake direction for positive reference thrust.
 # climb is along the positive reference thrust axis; reverse thrust mirrors it.
-# height_over_radius=-1 disables ground effect (e.g. inverted/tilted away from ground).
+# height_over_radius=-1 disables ground effect. A nonnegative height means the
+# caller established that the downstream wake intersects terrain. Thrust sign
+# alone cannot establish that geometry (inverted lift can have negative T).
 static func target(thrust: float, density: float, radius: float, climb: float, crossflow: float,
 		height_over_radius: float = -1.0, loss: float = 1.0, instability: float = 1.0) -> Dictionary:
 	if not _finite([thrust, density, radius, climb, crossflow, height_over_radius, loss, instability]) \
 		or density <= 0.0 or radius <= 0.0 or crossflow < 0.0 or loss < 1.0 \
 		or instability < 0.0 or instability > 1.0 or (height_over_radius < 0.0 and height_over_radius != -1.0):
 		return {"ok": false}
-	# The empirical near-hover ground law applies to an upright lifting rotor.
-	# A tilted rotor whose wake does not meet the ground uses the -1 sentinel.
-	var factor: float = ground_factor(height_over_radius) if thrust > 0.0 else 1.0
+	var factor: float = ground_factor(height_over_radius) if thrust != 0.0 else 1.0
 	if thrust == 0.0:
 		return {"ok": true, "velocity": 0.0, "hover": 0.0, "ground_factor": factor}
 	var hover: float = M.sqrt_(absf(thrust) / (2.0 * density * PI * radius * radius))
@@ -114,7 +115,8 @@ static func _baseline(z: float, x: float) -> PackedFloat64Array:
 
 # Bracket the physical root of v*sqrt(x^2+(z+v)^2)=1. The derivative's
 # stationary points delimit the normal (largest) and windmill (smallest) roots.
-# Axial branches have cancellation-safe closed forms; crossflow uses fixed passes.
+# Axial branches have cancellation-safe closed forms. Crossflow uses bounded,
+# bracketed Newton iterations, retaining fixed-pass bisection as the fallback.
 static func _momentum(z: float, x: float, windmill: bool) -> PackedFloat64Array:
 	if x == 0.0:
 		var root: float
@@ -143,13 +145,29 @@ static func _momentum(z: float, x: float, windmill: bool) -> PackedFloat64Array:
 			hi = minf(hi, turn_a)
 		elif not windmill and _residual(turn_b, z, x) <= 0.0:
 			lo = turn_b
-	for _pass: int in range(ROOT_PASSES):
-		var mid: float = 0.5 * (lo + hi)
-		if _residual(mid, z, x) > 0.0:
-			hi = mid
+	var v: float = 0.5 * (lo + hi) if lo > 0.0 else minf(hi, 1.0 / M.sqrt_(1.0 + x * x + z * z))
+	var converged: bool = false
+	for _pass: int in range(NEWTON_PASSES):
+		var flow: float = M.sqrt_(x * x + (z + v) * (z + v))
+		var residual: float = v * flow - 1.0
+		if absf(residual) <= 1e-13:
+			converged = true
+			break
+		if residual > 0.0:
+			hi = v
 		else:
-			lo = mid
-	var v: float = 0.5 * (lo + hi)
+			lo = v
+		var gradient: float = flow + v * (z + v) / flow
+		var next: float = v - residual / gradient if gradient > 0.0 else NAN
+		v = next if is_finite(next) and next > lo and next < hi else 0.5 * (lo + hi)
+	if not converged:
+		for _pass: int in range(ROOT_PASSES):
+			var mid: float = 0.5 * (lo + hi)
+			if _residual(mid, z, x) > 0.0:
+				hi = mid
+			else:
+				lo = mid
+		v = 0.5 * (lo + hi)
 	var den: float = x * x + (z + v) * (z + 2.0 * v)
 	var slope: float = -v * (z + v) / den
 	return PackedFloat64Array([v, slope])
