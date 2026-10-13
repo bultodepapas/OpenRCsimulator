@@ -14,7 +14,9 @@ def cross(cx, cy, sx, sy, black):
 
 def build(d):
     red, white, black=(d['palette'][k] for k in ('red','white','black'))
-    s=['<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">',f'<rect width="1024" height="1024" fill="{red}"/>']
+    size=d['atlas_size_px']
+    # Artwork coordinates stay in the 1024 viewBox; width/height set the raster resolution for runtime and editor import.
+    s=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" viewBox="0 0 1024 1024">',f'<rect width="1024" height="1024" fill="{red}"/>']
     wing=d['wing']
     for sign in (-1,1):
         x0,x1=sorted((512+sign*512*f for f in wing['field_semispan_fraction']))

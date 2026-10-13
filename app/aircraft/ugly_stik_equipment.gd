@@ -678,26 +678,8 @@ static func _wheel_lathe(st: SurfaceTool, radius: float, width: float) -> void:
 		Vector2(half_width, radius * 0.77), Vector2(half_width, 0.010),
 		Vector2(-half_width, 0.010)
 	]
-	var segments: int = 28
-	var axis: Vector3 = Vector3.RIGHT
-	var frame: Array[Vector3] = _frame(axis)
-	var u: Vector3 = frame[0]
-	var v: Vector3 = frame[1]
-	for i in range(profile.size() - 1):
-		var dx: float = profile[i + 1].x - profile[i].x
-		var dr: float = profile[i + 1].y - profile[i].y
-		for j in range(segments):
-			var k: int = (j + 1) % segments
-			var angle_a: float = TAU * float(j) / float(segments)
-			var angle_b: float = TAU * float(k) / float(segments)
-			var ra: Vector3 = (u * cos(angle_a) + v * sin(angle_a)).normalized()
-			var rb: Vector3 = (u * cos(angle_b) + v * sin(angle_b)).normalized()
-			var a: Vector3 = axis * profile[i].x + ra * profile[i].y
-			var b: Vector3 = axis * profile[i + 1].x + ra * profile[i + 1].y
-			var c: Vector3 = axis * profile[i + 1].x + rb * profile[i + 1].y
-			var d: Vector3 = axis * profile[i].x + rb * profile[i].y
-			var outward: Vector3 = (axis * (-dr) + (ra + rb).normalized() * dx).normalized()
-			_quad(st, a, b, c, d, outward)
+	# US-V09a: smooth lathe normals (a moulded tyre has no facets); the hidden bore keeps its inward normal.
+	_turned(st, Vector3.ZERO, Vector3.RIGHT, profile, 40, true)
 
 
 static func _add_wheel(parent: Node3D, label: String, radius: float, width: float, outer_sign: float) -> MeshInstance3D:
@@ -835,6 +817,8 @@ static func build(root: Node3D, gear: Dictionary) -> Node3D:
 
 	var blades := _surface(WOOD_COLOR, "wood")
 	_prop_blades(blades, float(e.prop_diameter) * 0.5)
+	# US-V09a: one smooth group per blade surface; the zero-thickness leading and trailing edges round off.
+	blades.generate_normals()
 	_flush(propeller, "propeller_blades", {"wood": blades})
 	var hub_buckets: Dictionary = _buckets([
 		["aluminum", CASE_COLOR, "aluminum"],

@@ -15,8 +15,12 @@ static func material(color: Color, profile: String = "skin") -> StandardMaterial
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = color
 	mat.roughness = 0.48
-	mat.metallic_specular = 0.16 if profile == "skin" else 0.5
+	mat.metallic_specular = 0.5
 	match profile:
+		"skin":
+			# US-V09a: glossy heat-shrink film (dielectric F0 ≈ 0.04), not the earlier matte paint. Roughness is an
+			# artistic estimate chosen from matched captures; no measured BRDF.
+			mat.roughness = 0.2
 		"aluminum":
 			mat.metallic = 0.72
 			mat.roughness = 0.48
@@ -66,6 +70,20 @@ static func covering() -> StandardMaterial3D:
 	mat.resource_name = key
 	_materials[key] = mat
 	return mat
+
+# Hinge-gap faces: same atlas colour, darkened and without specular reflection (a narrow slot sees little sky).
+static func hinge_gap() -> StandardMaterial3D:
+	var key := "classic-covering-gap-v1"
+	if _materials.has(key): return _materials[key]
+	var mat := covering().duplicate() as StandardMaterial3D
+	# Below the crash director's chip luminance threshold (CR-03b), so gaps never become a debris colour.
+	mat.albedo_color = Color(0.1, 0.1, 0.1)
+	mat.roughness = 1.0
+	mat.metallic_specular = 0.0
+	mat.resource_name = key
+	_materials[key] = mat
+	return mat
+
 
 static func uv(point: Vector3, region: String) -> Vector2:
 	match region:
