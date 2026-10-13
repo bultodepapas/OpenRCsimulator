@@ -315,6 +315,10 @@ var soft_hull_contacts := false
 var _hull_contact := {}
 ## E3d1 presentation feed: the hull points touching after the latest tick (HullContact.contacts); read-only.
 var soft_contacts: Array = []
+## E3d2: the propeller strike of this flight (empty until one): {tick, rpm, point_ned, velocity_ned}. The engine is
+## stopped through engine_running (a simulation mode); presentation hides the broken blades.
+var prop_strike: Dictionary = {}
+var _prop_disc := {}
 ## The last crash while shown: CG speed/sink (m/s), ticks_left, why and a typed tick-boundary impact; empty while flying.
 var crash := {}
 ## Why the session paused the simulation ("" = it did not), for the panel.
@@ -659,6 +663,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	sim.mass = aircraft.model.mass_kg
 	sim.inertia = aircraft.model.inertia.duplicate()
 	_hull_contact = HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia)
+	_prop_disc = HullContact.prop_disc(aircraft.model.propulsion)
 	_deflection_key = PackedFloat64Array()
 	_ground_effect_reach = GroundEffect.reach(aircraft.model)
 	sim.loads = _loads
@@ -940,6 +945,7 @@ func _physics_process(_delta: float) -> void:
 		return
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if soft_hull_contacts:
+			_check_prop_strike()
 			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
 			var hit: Dictionary = HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
@@ -953,6 +959,21 @@ func _physics_process(_delta: float) -> void:
 		elif gear_collapsed(sim.state):
 			_crash(ImpactSnapshot.gear_limit(sim.state, sim.tick, aircraft.model.landing_gear,
 				ground_surfaces if wheel_count() > 0 else PackedFloat64Array()))
+
+
+## E3d2: a turning propeller whose disc reaches the field breaks: the engine stops (dead stick) and the flight goes on.
+## Once per flight; scripted and trace routes never call it (soft_hull_contacts off).
+func _check_prop_strike() -> void:
+	if not prop_strike.is_empty() or not engine_running or _prop_disc.is_empty() or sim.aux[AUX_RPM] < HullContact.STRIKE_MIN_RPM:
+		return
+	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc)
+	if float(disc.depth) <= 0.0:
+		return
+	var q := RB._att(sim.state)
+	prop_strike = {tick = sim.tick, rpm = sim.aux[AUX_RPM], point_ned = disc.point_ned,
+		velocity_ned = M.q_rotate(q, RB._slice3(sim.state, RB.VEL))}
+	engine_running = false
+	print("PROP STRIKE at %.0f rpm, %.1f m/s: engine stopped" % [prop_strike.rpm, M.norm(prop_strike.velocity_ned)])
 
 
 ## True when any landing-gear contact at state `s` is compressed past its travel (E1). Always false without gear.
@@ -1053,6 +1074,7 @@ func reset() -> void:
 	resetting.emit()
 	_clear_scenery_damage(true)
 	soft_contacts = []
+	prop_strike = {}
 	crash = {}
 	_last_scenery_event = null
 	if pause_reason.begins_with("CRASH"):
