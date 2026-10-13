@@ -704,6 +704,10 @@ data = {
         "surfaces": {
             "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("|Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips")),
             "wing_station_incidence": q([float(x) for x in strip_inc], "rad", "derived", D("per-strip angle offsets root -> tip, zero mean: linear washout + Schrenk loading + Re-dependent section clmax (NACA TN 1945); see derivation.md 'stall'")),
+            # D11j: the cambered section's pitching moment about its aerodynamic centre, carried by every strip of the
+            # local wing as a pure couple; the oracle's Cm0 already contains cm_ac x MAC / c_ref, so the two regimes
+            # agree statically (docs/plans/elevator-flight-dynamics-repair.md).
+            "wing_section_cm_ac": q(cm_ac, "1", "derived", D("section Cm_ac: thin-airfoil over the UIUC NAA 45-100 root and tip camber lines (research/p51/p51-13/section.json), blended root -> tip and chord-weighted, x 0.8 (theory/measured, NACA TN 1945)")),
             "attached_limit": same("attached_limit"),
             "tail_local_limit": same("tail_local_limit"),
             "tail_stall_end": same("tail_stall_end"),

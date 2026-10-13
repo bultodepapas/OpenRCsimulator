@@ -1428,6 +1428,12 @@
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: per-strip angle offsets root -> tip, zero mean: linear washout + Schrenk loading + Re-dependent section clmax (NACA TN 1945); see derivation.md 'stall'"
       },
+      "wing_section_cm_ac": {
+        "value": -0.028628,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/p51/p51-05/derive_physics.py: section Cm_ac: thin-airfoil over the UIUC NAA 45-100 root and tip camber lines (research/p51/p51-13/section.json), blended root -> tip and chord-weighted, x 0.8 (theory/measured, NACA TN 1945)"
+      },
       "attached_limit": {
         "value": 8.0,
         "unit": "deg",

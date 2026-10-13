@@ -20,6 +20,7 @@ func _initialize() -> void:
 		var model: Dictionary = flight.aircraft.model.duplicate(true)
 		for key in ["downwash_gradient", "free_slope", "elevator_tau", "downwash_per_cl", "free_incidence", "wing_cl0"]:
 			model.surfaces.horizontal.erase(key) # E0a2a: the frozen oracle predates the tail downwash split
+		model.surfaces.erase("wing_cm_ac") # D11j: the frozen oracle predates the strips' section pitching moment
 		var state: PackedFloat64Array = flight.sim.state.duplicate()
 		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()
 		for sample in 2500:
@@ -71,6 +72,7 @@ func _check_local_loads() -> void:
 			model.envelope.erase(key)
 		for key in ["downwash_gradient", "free_slope", "elevator_tau", "downwash_per_cl", "free_incidence", "wing_cl0"]:
 			model.surfaces.horizontal.erase(key) # E0a2a: the frozen oracles predate the tail downwash split
+		model.surfaces.erase("wing_cm_ac") # D11j: the frozen oracles predate the strips' section pitching moment
 		var state: PackedFloat64Array = flight.sim.state.duplicate()
 		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()
 		for sample in 2500:
