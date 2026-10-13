@@ -8,5 +8,6 @@ Field world tools ([FIELD-WORLD-PLAN](../../docs/FIELD-WORLD-PLAN.md)). Python t
 | `sky_table.py [--check]` | FW-21 | Physical sky per sun elevation → `app/data/sky/sky_table.json` (~30 s). `app/test.sh` runs `--check` |
 | `stars.py [--check]` | FW-24 | Naked-eye stars from `assets/sky/bsc5.dat.gz` (SHA-256 checked) → `app/data/sky/stars.json`. `app/test.sh` runs `--check` |
 | `capture_times.sh [out] [preset ...]` | FW-22…35 | Five views per time-of-day preset and a contact sheet (`index.html`) |
+| `godot --path app --script res://tests/capture_aircraft_lights.gd -- --out=<absolute folder>` | FW-62-R1 | Real-renderer checks for dark wing blocks, underside visibility, zoom/resolution sizing and opaque foreground occlusion; writes PNGs and `summary.json`, exits nonzero on failure. Use the pinned engine; `app/capture.sh` also runs it under Xvfb. |
 
 On WSL without root, `xvfb-run` is usually missing: WSLg's `$DISPLAY` works, and software GL is forced by the scripts (`LIBGL_ALWAYS_SOFTWARE=1`), so results compare only with runs on the same machine.

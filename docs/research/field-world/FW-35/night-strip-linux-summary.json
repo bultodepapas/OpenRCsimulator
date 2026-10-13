@@ -1,0 +1,615 @@
+{
+  "checks": [
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e0.6-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d30-f50-a-30 underside light remains visible",
+      "detail": "26 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d200-f6-a-30 underside light remains visible",
+      "detail": "35 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d600-f1-a-30 underside light remains visible",
+      "detail": "67 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "jensen-das-ugly-stik-60-e30.0-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e0.6-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d30-f50-a-30 underside light remains visible",
+      "detail": "27 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d200-f6-a-30 underside light remains visible",
+      "detail": "33 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d600-f1-a-30 underside light remains visible",
+      "detail": "66 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "gp-extra-300s-60-e30.0-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e0.6-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d30-f50-a-30 underside light remains visible",
+      "detail": "33 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d200-f6-a-30 underside light remains visible",
+      "detail": "42 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d600-f1-a-30 underside light remains visible",
+      "detail": "81 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "sebart-avanti-s-a200-p100rx-e30.0-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e0.6-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d30-f50-a-30 underside light remains visible",
+      "detail": "43 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d200-f6-a-30 underside light remains visible",
+      "detail": "58 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d600-f1-a-30 underside light remains visible",
+      "detail": "114 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "p51d-mustang-120-e30.0-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e0.6-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d30-f50-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d30-f50-a-30 underside light remains visible",
+      "detail": "23 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d30-f50-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d30-f50-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d200-f6-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d200-f6-a-30 underside light remains visible",
+      "detail": "32 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d200-f6-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d200-f6-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d600-f1-a-30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d600-f1-a-30 underside light remains visible",
+      "detail": "65 brightened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d600-f1-a30 adds light without dark blocks",
+      "detail": "0 darkened pixels",
+      "ok": true
+    },
+    {
+      "check": "turbo-lumber-evolution-e30.0-d600-f1-a30 underside cue hidden from above",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "strip-720p-f50 respects pixel size under zoom",
+      "detail": "2 lit rows",
+      "ok": true
+    },
+    {
+      "check": "sprite-720p-f50 respects pixel size under zoom",
+      "detail": "4 lit rows",
+      "ok": true
+    },
+    {
+      "check": "strip-720p-f6 respects pixel size under zoom",
+      "detail": "2 lit rows",
+      "ok": true
+    },
+    {
+      "check": "sprite-720p-f6 respects pixel size under zoom",
+      "detail": "4 lit rows",
+      "ok": true
+    },
+    {
+      "check": "strip-720p-f1 respects pixel size under zoom",
+      "detail": "2 lit rows",
+      "ok": true
+    },
+    {
+      "check": "sprite-720p-f1 respects pixel size under zoom",
+      "detail": "4 lit rows",
+      "ok": true
+    },
+    {
+      "check": "strip-1080p-f50 respects pixel size under zoom",
+      "detail": "2 lit rows",
+      "ok": true
+    },
+    {
+      "check": "sprite-1080p-f50 respects pixel size under zoom",
+      "detail": "4 lit rows",
+      "ok": true
+    },
+    {
+      "check": "strip-1080p-f6 respects pixel size under zoom",
+      "detail": "2 lit rows",
+      "ok": true
+    },
+    {
+      "check": "sprite-1080p-f6 respects pixel size under zoom",
+      "detail": "4 lit rows",
+      "ok": true
+    },
+    {
+      "check": "strip-1080p-f1 respects pixel size under zoom",
+      "detail": "2 lit rows",
+      "ok": true
+    },
+    {
+      "check": "sprite-1080p-f1 respects pixel size under zoom",
+      "detail": "4 lit rows",
+      "ok": true
+    },
+    {
+      "check": "opaque foreground hides strip",
+      "detail": "",
+      "ok": true
+    },
+    {
+      "check": "opaque foreground hides sprite",
+      "detail": "",
+      "ok": true
+    }
+  ],
+  "format": "openrc-aircraft-lights-capture v1",
+  "ok": true,
+  "renderer": {
+    "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+    "driver": "opengl3",
+    "godot": "4.7.2-stable (official)",
+    "method": "gl_compatibility"
+  },
+  "shader_overrides": {
+    "sprite": "",
+    "strip": ""
+  },
+  "source_sha256": {
+    "sprite": "b7d4210424746273eb9972910636593a16e49f400f3fd6a62398e65a2f40e095",
+    "strip": "2ee66074b66f1af26ad91346ac786290fa4c318769ea33011e5c167ab4831e80"
+  }
+}

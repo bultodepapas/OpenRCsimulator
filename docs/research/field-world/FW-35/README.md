@@ -23,3 +23,34 @@ Light counts and per-pixel cost on the owner's GPU (FW-30 still open). Whether t
 ## Reproduce
 
 `$(app/get-godot.sh) --headless --path app --script res://tests/test_world_field_lights.gd`; `tools/world/capture_times.sh <out> night night_dark` (pilot and close-up views).
+
+## 2026-10-13 · FW-62-R1: distant wing blocks
+
+The owner supplied three Windows screenshots of the Ugly Stik during Evening flight. Native RTX 3090 captures reproduced the dark rectangles: hiding only `NightKit/strip_left` and `strip_right` restored the wing paint. The previous depth-range investigation addressed a different artifact; the camera near/far settings remain unchanged.
+
+The strip shader expanded an **opaque** ribbon using the fixed 50°/720p reference even when pilot zoom narrowed the camera to 6° or 1°. At dusk its flux-compensated radiance was darker than the wing. The ribbon covered the paint, extended beyond the wing, and could leak through its upper surface. Point-light sprites shared the wrong projection scale, producing oversized halos.
+
+The shaders now derive metres per pixel from the live projection matrix, viewport height and view-space depth, including the orthographic projection branch. Physical emitter sizes remain the lower bound and radiance retains width/area compensation. Strips use additive emission, soft transverse edges and a root-frame underside visibility gate; normal depth testing still hides them behind foreground geometry. Model geometry, flight physics and camera clipping are unchanged.
+
+![Native comparison: original strips, corrected strips, and strips hidden; 100, 200 and 300 metres](distant-night-kit.png)
+
+### Rendered evidence
+
+Godot **4.7.2.stable.official.ed1daf0bf**, Compatibility/OpenGL, NVIDIA RTX 3090, driver **610.88**, 4× MSAA. [Native result](night-strip-summary.json), [old-shader rejection control](night-strip-old-control.json), [Linux llvmpipe result](night-strip-linux-summary.json). The control injects copies of the original shaders into test materials; it does not mutate production files.
+
+| Probe | Original | Corrected |
+| --- | ---: | ---: |
+| Stik, 200 m, 6°, exposure 0.6, underside: darkened subject pixels | 287 | 0 |
+| Isolated unresolved strip, 720p, FOV 50° / 6° / 1°: lit rows | 2 / 18 / 100 | 2 / 2 / 2 |
+| Isolated unresolved sprite, 720p, FOV 50° / 6° / 1°: lit rows | 4 / 34 / ≥128 (ROI clipped) | 4 / 4 / 4 |
+| GPU checks rejected | 75 of 119 | 0 of 119 |
+
+The fleet checks use all five aircraft, 30/200/600 m, FOV 50°/6°/1°, exposures 0.6 and 30, and views above/below. They reject darkening, require the underside light to remain visible, and require byte-identical upper views with strips hidden. Isolated emitters test both 720p and 1080p. Opaque blocker controls reject lights showing through foreground objects. A production blue-hour capture at 200 m also confirmed removal of oversized halos.
+
+All 119 GPU checks passed on Windows/NVIDIA and in a fresh Linux source snapshot under Xvfb with llvmpipe. The capture regression runs in `app/capture.sh` and its summary hash is included in the capture-set manifest. Focused headless checks passed: field lights **49**, camera views **39**, world flow **26**, camera route **19**. These captures establish the defect and software correction; Gate FW-N still needs the owner's flight review.
+
+```powershell
+& ./.tools/Godot_v4.7.2-stable_win64_console.exe --path app --audio-driver Dummy --rendering-driver opengl3 --script res://tests/capture_aircraft_lights.gd -- --out=C:/Temp/openrc-aircraft-lights
+```
+
+On Linux, use the pinned engine under `xvfb-run -a -s "-screen 0 1920x1080x24"`. Optional `--strip-shader=<absolute path>` and `--sprite-shader=<absolute path>` reproduce shader rejection controls. Use a fresh output folder and inspect both the exit status and engine log.

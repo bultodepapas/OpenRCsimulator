@@ -149,6 +149,18 @@ func _sizes() -> void:
 				var label := "%s-%dp-f%d" % ["sprite" if point else "strip", size.y, int(fov)]
 				image.save_png(_out.path_join(label + ".png"))
 				_check(label + " respects pixel size under zoom", height >= 1 and height <= (6 if point else 4), "%d lit rows" % height)
+	for aspect in [Camera3D.KEEP_HEIGHT, Camera3D.KEEP_WIDTH]:
+		_camera.keep_aspect = aspect
+		_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+		_camera.size = 20.0
+		for point in [false, true]:
+			strip.visible = not point
+			sprite.visible = point
+			var height := _height(await _grab())
+			_check("orthographic aspect %d %s remains pixel-sized" % [aspect, "sprite" if point else "strip"],
+				height >= 1 and height <= (6 if point else 4), "%d lit rows" % height)
+	_camera.projection = Camera3D.PROJECTION_PERSPECTIVE
+	_camera.keep_aspect = Camera3D.KEEP_HEIGHT
 	var blocker := MeshInstance3D.new()
 	var box := BoxMesh.new()
 	box.size = Vector3(10, 1, 10)

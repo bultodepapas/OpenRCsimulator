@@ -60,7 +60,7 @@ Water should have a darker blue-green deep centre, translucent shallows, shoreli
 
 ## Lake siting and actual depth
 
-**Initial placement estimate:** north-east of the club, centre approximately **N=110 m, E=125 m**, with an irregular footprint around **90 m east–west × 60 m north–south**. For the present runway this places the closest approximate shore about **60–70 m from its edge**. Verify the complete bank footprint against current scenery, approach corridors and ground data before accepting this location. These are design estimates, not surveyed or regulatory distances.
+**Initial placement estimate:** north-east of the club, centre approximately **N=110 m, E=125 m**, with an irregular footprint around **90 m east–west × 60 m north–south**. For the present runway this places the closest approximate shore roughly **65–85 m from its edge**, depending on the final shoreline. Verify the complete bank footprint against current scenery, approach corridors and ground data before accepting this location. These are design estimates, not surveyed or regulatory distances.
 
 | Element | Initial design estimate |
 | --- | --- |
@@ -72,7 +72,7 @@ Water should have a darker blue-green deep centre, translucent shallows, shoreli
 
 Depth requires a **real basin mesh and a matching scalar terrain sampler**. The existing nearby ground presentation does not displace a metre-deep basin, and the ground-physics guide describes separate millimetre relief ([GP-05](../research/ground-physics/GP-05/README.md)). Extend the local terrain contract explicitly. Cut the existing ground surface out of the lake footprint, connect the bank/bed mesh continuously, and use the same source boundary/heights for rendering and contacts. The old flat ground must not occlude the bed or falsely support an aircraft over the water.
 
-Bank height, water level, bed depth, plant exclusions and shoreline distance should come from one validated lake definition. Record units and estimated provenance. Leave terrain and runway behaviour outside the bounded lake region unchanged. Imported shoreline plants and rocks must be grounded against this terrain, with appropriate obstacle proxies for solid objects.
+Bank height, water level, bed depth, plant exclusions and shoreline distance should come from one validated lake definition. Record units and estimated provenance. Leave terrain and runway behaviour outside the bounded lake region unchanged. Imported shoreline plants and rocks must be grounded against this terrain, with appropriate obstacle proxies for solid objects. Remove or relocate existing grass, wildflowers, bales and other land props from the basin footprint; retain stable identities and update their placement source rather than hiding unexplained intersections.
 
 ## Water impacts, sound and presentation
 
