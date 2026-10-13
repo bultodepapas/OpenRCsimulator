@@ -26,7 +26,7 @@ def execute(binary: Path, app: Path, script: Path, log: Path, *arguments: str,
         raise RuntimeError(f'{log.name}: runtime error, not a completed assertion run')
     if expected_success and result.returncode:
         raise RuntimeError(f'{log.name}: native process returned {result.returncode}')
-    if not expected_success and (result.returncode == 0 or 'FAIL ' not in output or '41 checks,' not in output):
+    if not expected_success and (result.returncode == 0 or 'FAIL ' not in output or '45 checks,' not in output):
         raise RuntimeError(f'{log.name}: mutation did not reach and fail the completed test suite')
     return output
 
@@ -84,7 +84,7 @@ def main() -> None:
     candidate = args.candidate / 'app'
     native_test = candidate / 'tests/test_turbine_continuous.gd'
     control = execute(args.godot, candidate, native_test, args.out / 'positive-control.log')
-    if '41 checks, 0 failed' not in control:
+    if '45 checks, 0 failed' not in control:
         raise RuntimeError('positive control incomplete')
     flight_source = (candidate / 'sim/flight_session.gd').read_text(encoding='utf8')
     test_source = native_test.read_text(encoding='utf8')

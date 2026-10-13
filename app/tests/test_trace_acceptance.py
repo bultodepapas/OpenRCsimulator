@@ -123,6 +123,7 @@ class TraceAcceptance(unittest.TestCase):
             ('recording_start_continuous', '[-1]'),
             ('recording_start_continuous', '[NaN]'),
             ('recording_start_continuous', '[1]'),
+            ('recording_start_aux', '[44000, null, 0, 0]'),
             ('shaft_integrator', 'coupled-rk4'),
             ('propulsion_model', 'turbine-ecu-spool-v1'),
         ]:

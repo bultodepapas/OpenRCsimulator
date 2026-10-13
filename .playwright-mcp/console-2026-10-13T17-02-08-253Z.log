@@ -1,0 +1,2 @@
+[    6152ms] [LOG] ga event: {hitType: event, eventCategory: buy_form, eventAction: skip_buy, eventLabel: 2862214, eventValue: undefined} @ https://static.itch.io/bundle.min.js?1791909661:0
+[   11625ms] [LOG] ga event: {hitType: event, eventCategory: game_download, eventAction: download, eventLabel: 2862214, eventValue: undefined} @ https://static.itch.io/bundle.min.js?1791909661:0

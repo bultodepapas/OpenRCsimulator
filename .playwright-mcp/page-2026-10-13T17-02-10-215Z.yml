@@ -1,0 +1,76 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - heading [level=1] [ref=e5]:
+      - link "Stylized Nature MegaKit" [ref=e6] [cursor=pointer]:
+        - /url: https://quaternius.itch.io/stylized-nature-megakit
+    - generic [ref=e7]: 110+ Unique nature models. Ideal for creating enchanting, Ghibli-inspired scenes. With projects in UE, Godot and Unity.
+    - generic [ref=e8]:
+      - text: by
+      - link "Quaternius" [ref=e9] [cursor=pointer]:
+        - /url: https://quaternius.itch.io
+  - generic [ref=e13]:
+    - paragraph [ref=e14]: This asset pack is free but the developer accepts your support by letting you pay what you think is fair for the asset pack.
+    - paragraph [ref=e15]:
+      - link "No thanks, just take me to the downloads" [ref=e16] [cursor=pointer]:
+        - /url: ""
+    - text: 
+    - textbox "$0.00" [ref=e18]: $2.00
+    - generic [ref=e19]:
+      - paragraph [ref=e20]: Included files
+      - generic [ref=e21]:
+        - generic [aria-hidden] [ref=e22]: 
+        - strong [ref=e23]: Stylized Nature MegaKit[Standard].zip
+        - generic [ref=e24]: (99 MB)
+      - generic [ref=e25] [cursor=pointer]:
+        - generic [aria-hidden] [ref=e26]: 
+        - strong [ref=e27]: Stylized Nature MegaKit[Pro].zip
+        - generic [ref=e28]: (172 MB)
+        - text: at
+        - strong [ref=e29]: $9.99 USD
+      - generic [ref=e30] [cursor=pointer]:
+        - generic [aria-hidden] [ref=e31]: 
+        - strong [ref=e32]: Stylized Nature MegaKit[Source].zip
+        - generic [ref=e33]: (684 MB)
+        - text: at
+        - strong [ref=e34]: $14.99 USD
+    - paragraph [ref=e35]:
+      - generic [ref=e36]: 
+      - text: Support the developer with an additional contribution
+    - generic [ref=e37]:
+      - button "$1.00" [ref=e38] [cursor=pointer]:
+        - generic [ref=e39]: 
+        - strong [ref=e40]: $1.00
+      - button "$2.00" [ref=e41] [cursor=pointer]:
+        - generic [ref=e42]: 
+        - strong [ref=e43]: $2.00
+      - button "$5.00" [ref=e44] [cursor=pointer]:
+        - generic [ref=e45]: 
+        - strong [ref=e46]: $5.00
+      - button "$10.00" [ref=e47] [cursor=pointer]:
+        - generic [ref=e48]: 
+        - strong [ref=e49]: $10.00
+    - generic [ref=e51]:
+      - generic [ref=e52]: Your email address — Your payment confirmation will be sent here
+      - textbox "Your email address — Your payment confirmation will be sent here" [ref=e53]:
+        - /placeholder: Required
+    - generic [ref=e54]:
+      - button " Pay with PayPal" [ref=e55] [cursor=pointer]:
+        - generic [ref=e56]: 
+        - text: Pay with PayPal
+      - button " Pay with Card" [ref=e57] [cursor=pointer]:
+        - generic [ref=e58]: 
+        - text: Pay with Card
+    - generic [ref=e59]:
+      - text: By completing a payment you agree to itch.io's
+      - link "Terms of Service" [ref=e60] [cursor=pointer]:
+        - /url: https://itch.io/docs/legal/terms
+      - text: and
+      - link "Privacy Policy" [ref=e61] [cursor=pointer]:
+        - /url: https://itch.io/docs/legal/privacy-policy
+      - text: .
+    - link "I already paid for this…" [ref=e63] [cursor=pointer]:
+      - /url: https://itch.io/docs/buying/already-bought
+  - generic [ref=e64]:
+    - text: powered by
+    - link [ref=e65] [cursor=pointer]:
+      - /url: https://itch.io/

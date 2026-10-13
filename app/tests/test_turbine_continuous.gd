@@ -203,6 +203,26 @@ func _lifecycle() -> void:
 	trace.meta = malformed
 	trace.record(f.sim.tick, f.sim.time(), f.sim.state, f.sim.last_loads, f.sim.inputs, f.sim.aux)
 	_check("writer refuses invalid turbine metadata", trace.to_csv().is_empty())
+	var bad_header: Dictionary = f.trace_meta()
+	bad_header.recording_start_aux = JSON.stringify([f.sim.aux[0], null, 0.0, 0.0])
+	var bad_servo: RefCounted = Trace.new()
+	bad_servo.meta = bad_header
+	bad_servo.record(f.sim.tick, f.sim.time(), f.sim.state, f.sim.last_loads, f.sim.inputs, f.sim.aux)
+	_check("calm writer refuses null servo in turbine header", bad_servo.to_csv().is_empty())
+	var bad_row: RefCounted = Trace.new()
+	bad_row.meta = f.trace_meta()
+	var bad_aux: PackedFloat64Array = f.sim.aux.duplicate()
+	bad_aux[1] = NAN
+	bad_row.record(f.sim.tick, f.sim.time(), f.sim.state, f.sim.last_loads, f.sim.inputs, bad_aux)
+	_check("calm writer refuses nonfinite servo row", bad_row.to_csv().is_empty())
+	var frozen: RefCounted = Trace.new()
+	frozen.meta = f.trace_meta()
+	frozen.record(f.sim.tick, f.sim.time(), f.sim.state, f.sim.last_loads, f.sim.inputs, f.sim.aux)
+	var frozen_csv: String = frozen.to_csv()
+	frozen.meta.turbine_integrator = "sampled"
+	_check("physical turbine metadata freezes at first sample", not frozen_csv.is_empty() and frozen.to_csv() == frozen_csv)
+	frozen.record(f.sim.tick + 2, (f.sim.tick + 2) * f.sim.dt(), f.sim.state, f.sim.last_loads, f.sim.inputs, f.sim.aux)
+	_check("calm turbine writer refuses a missing tick", frozen.to_csv().is_empty())
 	f.free()
 
 
@@ -217,6 +237,6 @@ func _initialize() -> void:
 		str([coarse[0], standard[0], fine[0]]))
 	Engine.physics_ticks_per_second = original_hz
 	_lifecycle()
-	_check("all planned checks executed", checks == 40)
+	_check("all planned checks executed", checks == 44)
 	print("%d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
