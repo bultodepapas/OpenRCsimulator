@@ -964,7 +964,6 @@ func _physics_process(_delta: float) -> void:
 		return
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if soft_hull_contacts:
-			_check_prop_strike()
 			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
 			var hit: Dictionary = HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
@@ -973,6 +972,9 @@ func _physics_process(_delta: float) -> void:
 			elif gear_collapsed(sim.state):
 				_crash(ImpactSnapshot.gear_limit(sim.state, sim.tick, aircraft.model.landing_gear,
 					ground_surfaces if wheel_count() > 0 else PackedFloat64Array()))
+			else:
+				# Only a flight that goes on can lose its propeller: a crash freezes the checkpoint untouched.
+				_check_prop_strike()
 		elif touches_ground(sim.state):
 			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
 		elif gear_collapsed(sim.state):

@@ -1,0 +1,8 @@
+KILLED   a strike needs an impossible rpm: 9 failing checks (e.g. a nose-over at full power strikes the propeller  tick -1)
+KILLED   a strike also needs no rotation: 1 failing checks (e.g. the strike stops the engine  rpm 0)
+KILLED   disc lowest point ignores the radius: 10 failing checks (e.g. level: the lowest blade tip is one radius below the hub  -1.05)
+KILLED   strike keeps the engine running: 2 failing checks (e.g. the strike stops the engine  rpm 10996)
+KILLED   strike checked before the crash: 2 failing checks (e.g. jensen-das-ugly-stik-60: crash detection preserves the complete simulation checkpoint)
+KILLED   blades stay visible: 1 failing checks (e.g. the broken blades disappear)
+KILLED   wreck throws the broken propeller: 1 failing checks (e.g. the wreck does not throw the broken propeller again)
+KILLED   restart keeps the propeller hidden: 1 failing checks (e.g. restart restores the propeller and clears the strike)
