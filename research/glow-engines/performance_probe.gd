@@ -22,6 +22,7 @@ const CASES := [
 const SOURCE_PATHS := [
 	"research/glow-engines/performance_probe.gd",
 	"research/glow-engines/release_probe_wrapper.gd",
+	"research/glow-engines/release_probe_wrapper.tscn",
 	"research/glow-engines/build_release_probe_project.py",
 	"app/sim/flight_session.gd",
 	"app/sim/simulation.gd",
@@ -64,6 +65,8 @@ var output_path: String = ""
 var runtime_pack_path: String = ""
 var repository_root_override: String = ""
 var runtime_mode: String = "standalone_script"
+var release_manifest: Dictionary = {}
+var release_manifest_sha256: String = ""
 var _probe_started: bool = false
 var report: Dictionary = {}
 
@@ -146,8 +149,12 @@ func _initialize() -> void:
 			],
 		},
 		"started_at_local": Time.get_datetime_string_from_system(true, true),
-		"source_hashes": _hash_paths(SOURCE_PATHS),
-		"input_hashes": _hash_paths(INPUT_PATHS),
+		"hash_scope": String(release_manifest.get("hash_scope", "working_tree_at_probe_start")),
+		"release_manifest_sha256": release_manifest_sha256 if not release_manifest_sha256.is_empty() else "not_embedded",
+		"release_manifest_provenance": String(release_manifest.get("provenance", "Hashes read directly from repository files at probe start.")),
+		"source_hashes": release_manifest.get("source_hashes", _hash_paths(SOURCE_PATHS)),
+		"input_hashes": release_manifest.get("input_hashes", _hash_paths(INPUT_PATHS)),
+		"build_configuration_hashes": release_manifest.get("build_configuration_hashes", {}),
 		"propeller_inertia_basis": "Candidate propeller polar inertia follows the inventory's uniform-box surrogate geometry; engine crank polar inertia is inferred (2e-5 kg m2 for the 2T, 3e-5 kg m2 for the 4T). These are estimated mass distributions and inferred terms, with no matched propeller/crank inertia measurements.",
 		"configuration": {
 			"physics_hz": hz,
@@ -162,8 +169,8 @@ func _initialize() -> void:
 		},
 		"cases": [],
 	}
-	report["source_tree_sha256"] = _combined_hash(report.source_hashes)
-	report["input_tree_sha256"] = _combined_hash(report.input_hashes)
+	report["source_tree_sha256"] = String(release_manifest.get("source_tree_sha256", _combined_hash(report.source_hashes)))
+	report["input_tree_sha256"] = String(release_manifest.get("input_tree_sha256", _combined_hash(report.input_hashes)))
 	var ordered_cases: Array[Dictionary] = []
 	for case: Dictionary in CASES:
 		var first: Dictionary = case.duplicate(true)

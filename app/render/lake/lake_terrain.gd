@@ -77,6 +77,7 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 	mask_parameters(basin_material, lake)
 	basin_material.set_shader_parameter("lake_mask_mode", 2)
 	basin_material.set_shader_parameter("lake_terrain", true)
+	basin_material.set_shader_parameter("terrain_relief_enabled", false)
 	basin.material_override = basin_material
 	basin.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(basin)

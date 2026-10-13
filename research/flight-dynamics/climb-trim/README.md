@@ -25,3 +25,5 @@ To capture an actual user reproduction without pressing T:
 ```
 
 `watch.gd` opens the normal Home and settings. Fly normally. Its independent recorder saves five-simulated-second CSV segments under `.tools/climb-observed/<UTC timestamp>-<pid>/`, plus raw keyboard/radio inputs, sampled pitch and elevator trim. Reset and aircraft changes start new segments; normal T recordings remain available. Graceful exit saves the final segment. `test_watch.gd` verifies exact checkpoint equality with an unobserved flight, segmentation, reset and detach. These diagnostic scripts stay outside the production app.
+
+Pausing also closes the current segment. Independent `telemetry-*.jsonl` files retain full-precision state, loads, commands, auxiliary/continuous state, raw input and trim on every sampled tick, flushing every simulated second. These diagnostic samples survive a rejected replay CSV; they are not validated replays. The observer test checks pause saving and telemetry round-trip accuracy as well as unchanged simulation checkpoints.

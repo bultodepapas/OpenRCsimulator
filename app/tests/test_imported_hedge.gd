@@ -79,6 +79,12 @@ func _test_source_atlas() -> void:
 		and ImportedVegetation.get_asset("bush_common").get("source_triangles", 0) == 900
 		and ImportedVegetation.resolve_id("green_bush") == "bush_common_flowers"
 		and ImportedVegetation.resolve_id("red_bush") == "bush_common")
+	var bush_palette_is_green_first := true
+	for seed: int in range(7):
+		bush_palette_is_green_first = bush_palette_is_green_first \
+			and ImportedVegetation.resolve_id("bush", seed) == "bush_common_flowers"
+	_check("generic bush variety reserves red source for a sparse accent", bush_palette_is_green_first
+		and ImportedVegetation.resolve_id("bush", 7) == "bush_common")
 	var atlas_texture := load(ATLAS_PATH) as Texture2D
 	var atlas := atlas_texture.get_image() if atlas_texture != null else null
 	_check("source render atlas loads as a 1024 by 256 image", atlas != null and atlas.get_width() == 1024 and atlas.get_height() == 256)
@@ -86,19 +92,27 @@ func _test_source_atlas() -> void:
 		return
 	var transparent_samples := 0
 	var foliage_samples := 0
+	var green_foliage_samples := 0
+	var warm_flower_samples := 0
 	for frame_index: int in range(4):
 		var frame_has_foliage := false
 		var frame_has_transparency := false
 		for y: int in range(0, atlas.get_height(), 8):
 			for x: int in range(frame_index * 256, (frame_index + 1) * 256, 8):
-				var alpha := atlas.get_pixel(x, y).a
+				var pixel := atlas.get_pixel(x, y)
+				var alpha := pixel.a
 				if alpha > 0.2:
 					foliage_samples += 1
 					frame_has_foliage = true
+					if pixel.g > pixel.r * 1.15 and pixel.g > pixel.b * 1.25:
+						green_foliage_samples += 1
+					if pixel.r > pixel.g * 1.15 and pixel.r > pixel.b * 1.15:
+						warm_flower_samples += 1
 				elif alpha <= 0.01:
 					transparent_samples += 1
 					frame_has_transparency = true
 		_check("each source view retains both foliage and transparent cutout", frame_has_foliage and frame_has_transparency)
+	_check("green source foliage dominates while authored flower accents remain", green_foliage_samples > 500 and warm_flower_samples >= 8)
 
 
 func _test_stable_layouts() -> void:

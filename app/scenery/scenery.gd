@@ -155,7 +155,7 @@ static func _finite_number(value: Variant) -> bool:
 
 
 ## Called by render/field.gd after it built the field. No-op when the switch is off.
-static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}) -> void:
+static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> void:
 	var opts := options()
 	if not opts.enabled:
 		return
@@ -167,7 +167,7 @@ static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary =
 		for e: String in loaded.errors:
 			push_error("scenery: " + e)
 		return
-	field_node.add_child(build(field, loaded.scenery, opts, lighting))
+	field_node.add_child(build(field, loaded.scenery, opts, lighting, lake))
 
 
 static func opaque_material() -> StandardMaterial3D:
@@ -216,10 +216,11 @@ static func _placement_xf(n: float, e: float, heading_deg: float) -> Transform3D
 	return Transform3D(Basis(Vector3.UP, -deg_to_rad(heading_deg)), Frames.ned_to_render([n, e, 0.0]))
 
 
-static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, lighting: Dictionary = {}) -> Node3D:
+static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> Node3D:
 	var t0 := Time.get_ticks_usec()
 	var root := Node3D.new()
 	root.name = "Scenery"
+	root.set_meta("source_definition", scenery.duplicate(true))
 	root.set_meta("grass_exclusions", GrassMask.footprints(scenery))
 	var theme: String = opts.theme if Palette.THEMES.has(opts.theme) else scenery.theme
 	var quality: String = opts.quality if QUALITIES.has(opts.quality) else "high"
@@ -385,7 +386,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	stats.population_triangles = population.get_meta("triangles", 0)
 	stats.moving_people = population.get_meta("moving_people", 0)
 	var botanical_started := Time.get_ticks_usec()
-	var habitats := BotanicalHabitats.build(field, scenery, theme, quality)
+	var habitats := BotanicalHabitats.build(field, scenery, theme, quality, lake)
 	root.add_child(habitats)
 	stats.botanical_plants = habitats.get_meta("plants", []).size()
 	stats.botanical_triangles = habitats.get_meta("triangles", 0)

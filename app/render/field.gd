@@ -6,6 +6,8 @@ const Frames = preload("res://render/frames.gd")
 const Treeline = preload("res://render/treeline.gd")
 const Ground = preload("res://render/ground.gd")
 const NearGrass = preload("res://render/near_grass.gd")
+const ImportedNearGrass = preload("res://scenery/imported_near_grass.gd")
+const LakeWorld = preload("res://render/lake/lake_world.gd")
 const Horizon = preload("res://render/horizon.gd")
 const PilotStation = preload("res://render/pilot_station.gd")
 const FlightlineBarrier = preload("res://render/flightline_barrier.gd")
@@ -65,10 +67,24 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 			result.add_child(Windsock.build(cue))
 	if not field.get("flight_cues", []).is_empty():
 		result.add_child(FlightCueShadows.build(field.flight_cues, lighting.has("solar")))
-	Scenery.attach(result, field, lighting)
+	var scenery_options := Scenery.options()
+	var lake_resolution := LakeWorld.resolve(field, scenery_options)
+	if not lake_resolution.ok:
+		push_error("lake: " + "; ".join(lake_resolution.errors))
+		result.set_meta("lake_error", "; ".join(lake_resolution.errors))
+	var lake: Dictionary = lake_resolution.lake
+	Scenery.attach(result, field, lighting, lake)
+	var lake_node := LakeWorld.attach(result, field, grass, lake, lighting, bool(scenery_options.audio))
+	if lake_node != null:
+		materials.append_array(lake_node.get_meta("lighting_materials"))
 	var scenery_node := result.get_node_or_null("Scenery")
 	var exclusions: Array = scenery_node.get_meta("grass_exclusions", []) if scenery_node != null else []
-	var near_grass: Node3D = NearGrass.build(field, grass, exclusions)
+	var near_grass: Node3D
+	if scenery_node != null and field.id == "default":
+		var masks := ImportedNearGrass.exclusions_for(scenery_node.get_meta("source_definition", {}), lake)
+		near_grass = ImportedNearGrass.build(field, str(scenery_options.quality), masks)
+	else:
+		near_grass = NearGrass.build(field, grass, exclusions)
 	result.add_child(near_grass)
 	if near_grass.has_meta("lighting_material"):
 		materials.append(near_grass.get_meta("lighting_material") as ShaderMaterial)

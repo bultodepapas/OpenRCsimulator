@@ -4,8 +4,9 @@
   "scope": "compiled PCK in empty project",
   "runtime": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
   "runtime_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "engine_binary_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
   "pack_sha256": "ecfc57512450413e6fc423487bf93b91c67dee6324b714d70f5108b5684a88f1",
-  "checker_sha256": "f0ce619d430090e907699b3934ce82eafcf88ddace96971f1e8f61c09708459e",
+  "checker_sha256": "bb6bfecd4d3ede53ce0c4b51d0afa387fc34fb7d6d57a9a4e37c08f70c770047",
   "cases": [
     {
       "aircraft": "stik-glow-55ax-2t",
@@ -23,7 +24,7 @@
       "final_rpm": 8119.004399726,
       "consumed_fuel_kg": 0.00034501199999999177,
       "successful_fires": 405.0,
-      "trace_sha256": "af156893b410c3d7b3a01b2e02a2b8d92175ba7436f190dfdbe9ca0edb703fd9"
+      "trace_sha256": "8b0346263097af159b6d680322a23f5cde95e205fb4f88f3434067b139de0a84"
     },
     {
       "aircraft": "stik-glow-fs64v-4t",
@@ -41,7 +42,7 @@
       "final_rpm": 8648.913849946,
       "consumed_fuel_kg": 0.00026370600000000244,
       "successful_fires": 216.0,
-      "trace_sha256": "d35d37bb063c63c3eaca421bffc314708b36b24f7ec66ef7014a5ecaf31de872"
+      "trace_sha256": "626ce51f64019cc23576f0ffc806ebe20bc0acfbd57b1aa86dd1fa8b78d21ec8"
     }
   ],
   "claim": "Resource/CLI software smoke, not physical, acoustic or release-performance acceptance"

@@ -6,6 +6,7 @@ var app: Node
 var session: Node
 var recorder: RefCounted
 var raw_file: FileAccess
+var telemetry_file: FileAccess
 var output_dir: String
 var part := 0
 var started_tick := 0
@@ -21,6 +22,11 @@ func _launch() -> void:
 	app = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
 	root.add_child(app)
+
+func _process(_delta: float) -> bool:
+	if is_instance_valid(session) and session.sim.paused:
+		_finish()
+	return false
 
 func _node_added(node: Node) -> void:
 	var script: Script = node.get_script()
@@ -43,7 +49,13 @@ func _begin() -> void:
 	started_tick = session.sim.tick
 	recorder.start(session.trace_meta())
 	raw_file = FileAccess.open(output_dir.path_join("input-%03d.csv" % part), FileAccess.WRITE)
-	raw_file.store_line("tick,time_s,raw_roll,raw_pitch,raw_yaw,raw_throttle,stick_pitch,trim_pitch,radio_connected")
+	if raw_file != null:
+		raw_file.store_line("tick,time_s,raw_roll,raw_pitch,raw_yaw,raw_throttle,stick_pitch,trim_pitch,radio_connected")
+	# Independent samples survive a rejected replay CSV. They are diagnostic data,
+	# not a validated replay, and never bypass the production trace validator.
+	telemetry_file = FileAccess.open(output_dir.path_join("telemetry-%03d.jsonl" % part), FileAccess.WRITE)
+	if telemetry_file != null:
+		telemetry_file.store_line(JSON.stringify({"kind":"metadata", "meta":session.trace_meta()}, "", false, true))
 
 func _sample(tick: int, time: float, _state: PackedFloat64Array, _loads: PackedFloat64Array,
 		_inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
@@ -51,6 +63,13 @@ func _sample(tick: int, time: float, _state: PackedFloat64Array, _loads: PackedF
 	if raw_file != null:
 		raw_file.store_line("%d,%.9f,%.12f,%.12f,%.12f,%.12f,%.12f,%.12f,%s" % [tick,time,
 			session.raw.roll,session.raw.pitch,session.raw.yaw,session.raw.throttle,session.commands.pitch,session.trims.pitch,session.radio.connected])
+	if telemetry_file != null:
+		telemetry_file.store_line(JSON.stringify({"kind":"sample", "tick":tick, "time_s":time,
+			"state":Array(_state), "loads":Array(_loads), "inputs":Array(_inputs), "aux":Array(_aux),
+			"continuous":Array(session.sim.continuous), "raw":session.raw, "trim":session.trims}, "", false, true))
+	if tick % 240 == 0:
+		if raw_file != null: raw_file.flush()
+		if telemetry_file != null: telemetry_file.flush()
 	if tick - started_tick >= 1200:
 		_finish() # save every five simulated seconds, so an abrupt close loses at most one segment
 
@@ -60,6 +79,9 @@ func _finish() -> void:
 	if raw_file != null:
 		raw_file.close()
 		raw_file = null
+	if telemetry_file != null:
+		telemetry_file.close()
+		telemetry_file = null
 
 func _detach() -> void:
 	_finish()
