@@ -113,7 +113,7 @@ The [field-world guide](../FIELD-WORLD-PLAN.md) owns composition and night accep
 
 ### Immersive audio
 
-The [audio guide](../AUDIO-PLAN.md) owns the current soundscape. Read [AUD-01 sources and licenses](audio/AUD-01/sources.md), [AUD-02 asset record](audio/AUD-02/assets.md), [AUD-03 integration](audio/AUD-03/README.md), [AUD-04 acceptance](audio/AUD-04/README.md), and [AUD-05 export qualification](audio/AUD-05/README.md). The earlier [G3b engine-audio research](audio/G3b/README.md) is a separate responsive-engine path.
+The [audio guide](../AUDIO-PLAN.md) owns the current soundscape. Read [AUD-01 sources and licenses](audio/AUD-01/sources.md), [AUD-02 asset record](audio/AUD-02/assets.md), [AUD-03 integration](audio/AUD-03/README.md), [AUD-04 acceptance](audio/AUD-04/README.md), [AUD-05 export qualification](audio/AUD-05/README.md), and the [AUD-06/07 bench and first fixes](audio/AUD-06/README.md) for the [audio realism plan](../plans/audio-realism.md). The earlier [G3b engine-audio research](audio/G3b/README.md) is a separate responsive-engine path.
 
 ### Smoke
 
