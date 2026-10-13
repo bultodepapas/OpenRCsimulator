@@ -1390,7 +1390,7 @@ func turbine_state() -> Dictionary:
 		return {ok = false}
 	var prop: Dictionary = aircraft.model.propulsion
 	var rpm: float = _turbine_rpm(sim.continuous) if turbine_is_continuous() else sim.aux[AUX_RPM]
-	if not is_finite(rpm):
+	if not is_finite(rpm) or (turbine_is_continuous() and not engine_running and rpm != 0.0):
 		return {ok = false}
 	var air: Dictionary = air_data(sim.state, sim.time())
 	var axial_speed: float = M.dot(air.v_air, prop.axis)
@@ -2121,7 +2121,8 @@ func checkpoint() -> Dictionary:
 	if turbine_is_continuous():
 		boundary.format = "openrc-flight-checkpoint v8"
 		boundary.turbine_law = Turbine.CONTINUOUS_LAW
-		boundary.weather_config = weather_configuration()
+		# Reference atmosphere ignores stored custom values. Do not make them change a pure-reference snapshot.
+		boundary.weather_config = WeatherConfig.defaults() if weather_is_calm() and atmosphere_is_reference() else weather_configuration()
 	if wheel_count() > 0:
 		boundary.wheel_state_layout = wheel_state_layout()
 		boundary.wheel_profile_sha256 = str(aircraft.model.wheel_profile.get("profile_sha256", ""))

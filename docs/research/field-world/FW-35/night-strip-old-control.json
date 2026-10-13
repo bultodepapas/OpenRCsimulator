@@ -586,6 +586,26 @@
       "ok": false
     },
     {
+      "check": "orthographic aspect 1 strip remains pixel-sized",
+      "detail": "128 lit rows",
+      "ok": false
+    },
+    {
+      "check": "orthographic aspect 1 sprite remains pixel-sized",
+      "detail": "128 lit rows",
+      "ok": false
+    },
+    {
+      "check": "orthographic aspect 0 strip remains pixel-sized",
+      "detail": "128 lit rows",
+      "ok": false
+    },
+    {
+      "check": "orthographic aspect 0 sprite remains pixel-sized",
+      "detail": "128 lit rows",
+      "ok": false
+    },
+    {
       "check": "opaque foreground hides strip",
       "detail": "",
       "ok": true

@@ -64,7 +64,8 @@ func _initialize() -> void:
 		check("golden v1 refuses changed atmosphere",Golden.record(s,"roll_15").is_empty() and not Golden.replay(s,{}).ok)
 		r.detach()
 		var saved: Dictionary = s.checkpoint()
-		check("atmosphere checkpoint v3",saved.format=="openrc-flight-checkpoint v3" and saved.weather_config==config)
+		var expected_format: String = "openrc-flight-checkpoint v8" if s.turbine_is_continuous() else "openrc-flight-checkpoint v3"
+		check("atmosphere checkpoint identifies the active physics law",saved.format==expected_format and saved.weather_config==config)
 		for tick: int in 100:
 			s.sim.step()
 		var final: PackedByteArray = var_to_bytes(s.checkpoint())

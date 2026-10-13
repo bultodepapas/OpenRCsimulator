@@ -190,3 +190,7 @@ A level Newton seed can converge to a two-main-wheel equilibrium for a taildragg
 ## 2026-10-13 · HELI-04 — check crossflow joins as well as axial joins
 
 Johnson's published inflow table contains printed endpoint/derivative errata, and its moving axial polynomials still jump when an entire crossflow branch switches off at C or M. Matching values and slopes inside one slice does not prove continuity across another parameter. Inspect the rendered equations, verify one-sided values with an independent implementation and retain source-law limitations as integration gates; do not silently fit a smoother. Ground-effect activation also needs downstream-wake geometry: signed body-axis thrust alone cannot distinguish upright descent from inverted lift. [Primary-source interpretation and checks](docs/research/helicopter/HELI-04/README.md).
+
+## 2026-10-13 · HELI-05 — isolate rate terms before trusting an oracle
+
+A first transcription put the rotor's body-rate terms inside the angle/lag bracket, turning rad/s into rad/s² while zero-rate fixtures still looked correct. At zero flap, cyclic and translational flow, the source requires `a1dot=-q` and `b1dot=-p` at every active rotor speed. This dimensional known answer caught the reference error before acceptance; a duplicated numerical oracle alone would not. Test terms with distinct units separately, then compare the complete response. [Source equations and independent checks](docs/research/helicopter/HELI-05/README.md).

@@ -1,10 +1,10 @@
 # Models and rendering
 
+**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-13; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+
 ## Camera-dependent emitters must use the live projection
 
 A fixed FOV/viewport reference makes a minimum-pixel light grow into a large surface when the camera zooms. An opaque flux-compensated LED strip then becomes a dark patch over the airframe at dusk. Use the current projection and viewport, additive emission and a directional visibility guard. Prove the repair with on/off rendered pairs, a visible-light control, zoom/resolution changes and an opaque blocker; geometry placement tests alone missed this defect. [FW-62-R1](../research/field-world/FW-35/README.md#2026-10-13--fw-62-r1-distant-wing-blocks).
-
-**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-12; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Aircraft models and references
 

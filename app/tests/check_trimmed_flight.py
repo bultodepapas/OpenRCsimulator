@@ -189,7 +189,7 @@ def check_coupled_metadata(metadata: dict) -> None:
         if (not isinstance(continuous, list) or len(continuous) != 1
                 or not _finite_number(continuous[0]) or continuous[0] < 0
                 or not isinstance(aux, list) or len(aux) != 4
-                or not _finite_number(aux[0]) or continuous[0] != aux[0]):
+                or any(not _finite_number(value) for value in aux) or continuous[0] != aux[0]):
             raise ValueError('continuous turbine RPM does not match its endpoint mirror')
         return
     wheel_keys = {

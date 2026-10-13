@@ -43,11 +43,11 @@ Godot **4.7.2.stable.official.ed1daf0bf**, Compatibility/OpenGL, NVIDIA RTX 3090
 | Stik, 200 m, 6°, exposure 0.6, underside: darkened subject pixels | 287 | 0 |
 | Isolated unresolved strip, 720p, FOV 50° / 6° / 1°: lit rows | 2 / 18 / 100 | 2 / 2 / 2 |
 | Isolated unresolved sprite, 720p, FOV 50° / 6° / 1°: lit rows | 4 / 34 / ≥128 (ROI clipped) | 4 / 4 / 4 |
-| GPU checks rejected | 75 of 119 | 0 of 119 |
+| GPU checks rejected | 79 of 123 | 0 of 123 |
 
-The fleet checks use all five aircraft, 30/200/600 m, FOV 50°/6°/1°, exposures 0.6 and 30, and views above/below. They reject darkening, require the underside light to remain visible, and require byte-identical upper views with strips hidden. Isolated emitters test both 720p and 1080p. Opaque blocker controls reject lights showing through foreground objects. A production blue-hour capture at 200 m also confirmed removal of oversized halos.
+The fleet checks use all five aircraft, 30/200/600 m, FOV 50°/6°/1°, exposures 0.6 and 30, and views above/below. They reject darkening, require the underside light to remain visible, and require byte-identical upper views with strips hidden. Isolated emitters test both 720p and 1080p, plus orthographic projection with both aspect modes. Opaque blocker controls reject lights showing through foreground objects. A production blue-hour capture at 200 m also confirmed removal of oversized halos.
 
-All 119 GPU checks passed on Windows/NVIDIA and in a fresh Linux source snapshot under Xvfb with llvmpipe. The capture regression runs in `app/capture.sh` and its summary hash is included in the capture-set manifest. Focused headless checks passed: field lights **49**, camera views **39**, world flow **26**, camera route **19**. These captures establish the defect and software correction; Gate FW-N still needs the owner's flight review.
+All 123 GPU checks passed on Windows/NVIDIA and in a fresh Linux source snapshot under Xvfb with llvmpipe. The capture regression runs in `app/capture.sh` and its summary hash is included in the capture-set manifest. The native parse sweep passed all **516** scripts in its starting inventory. Focused headless checks passed: field lights **49**, camera views **39**, world flow **26**, camera route **19**. These captures establish the defect and software correction; Gate FW-N still needs the owner's flight review.
 
 ```powershell
 & ./.tools/Godot_v4.7.2-stable_win64_console.exe --path app --audio-driver Dummy --rendering-driver opengl3 --script res://tests/capture_aircraft_lights.gd -- --out=C:/Temp/openrc-aircraft-lights

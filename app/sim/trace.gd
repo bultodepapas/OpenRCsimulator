@@ -44,6 +44,7 @@ var _battery_initial_charge_c: float = NAN
 const BATTERY_COLUMNS: Array = ["battery_soc", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j", "pack_exhausted"]
 const BATTERY_KEYS: Array[String] = ["soc", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j"]
 var _coupled_shaft: bool = false
+var _continuous_turbine: bool = false
 var _coupled_start_rpm: float = NAN
 
 
@@ -56,6 +57,7 @@ func clear() -> void:
 	_invalid_weather = false
 	_weather_meta = {}
 	_coupled_shaft = false
+	_continuous_turbine = false
 	_electric = false
 	_battery = false
 	_battery_capacity_c = NAN
@@ -154,6 +156,16 @@ func _prepare_turbine_metadata() -> void:
 			or typeof(sampled[0]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(sampled[0])) or values[0] != sampled[0]:
 		_invalid_weather = true
 		return
+	for component: Variant in sampled:
+		if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)):
+			_invalid_weather = true
+			return
+	if typeof(meta.get("dt_s")) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(meta.dt_s)) or float(meta.dt_s) <= 0.0:
+		_invalid_weather = true
+		return
+	_continuous_turbine = true
+	_coupled_start_rpm = values[0]
+	_weather_meta = meta.duplicate(true)
 
 
 func _prepare_shaft_metadata() -> void:
@@ -309,6 +321,12 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			or (_rows.is_empty() and aux[0] != _coupled_start_rpm)):
 		_invalid_weather = true
 		return
+	if _continuous_turbine and (tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
+			or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, 4) or aux.size() < 4 or not _finite(aux) \
+			or aux[0] < 0.0 or (_last_recorded_tick >= 0 and tick != _last_recorded_tick + 1) \
+			or (_rows.is_empty() and (aux[0] != _coupled_start_rpm or str(meta.get("recording_start_tick")) != str(tick)))):
+		_invalid_weather = true
+		return
 	var electric_row: PackedFloat64Array = PackedFloat64Array()
 	if _electric:
 		var point: Variant = electrical_sample.call()
@@ -431,7 +449,7 @@ func to_csv() -> String:
 		return ""
 	var lines := PackedStringArray()
 	lines.append("# format: %s" % ("openrc-trace v8" if _battery else ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT))))))
-	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft else meta).duplicate(true)
+	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine else meta).duplicate(true)
 	# Physical metadata stays frozen at the first sample. Paused visual edits can extend the same recording.
 	for visual_key: String in ["visual_context", "visual_timeline"]:
 		if meta.has(visual_key):
