@@ -1,5 +1,12 @@
 # OpenRC Simulator
 
+> [!NOTE]
+> **Thank you, OpenAI, for supporting open source.**
+>
+> I'm grateful to [OpenAI](https://openai.com/) for providing a **ChatGPT Pro subscription** to support my open-source projects, including OpenRC Simulator. That support gives me more room to build, experiment and share this work with the RC community.
+>
+> **AI development contributor:** [Codex by OpenAI](https://openai.com/codex/).
+
 An open-source RC airplane simulator for a USB transmitter, gamepad or keyboard. Fly from the pilot's position on the field, or use chase, orbit and close-up views. **Early alpha:** automated checks verify the software; flight models still need independent RC measurements and pilot validation.
 
 ![Animated studio tour of all five aircraft](docs/media/aircraft-tour.gif)
