@@ -21,11 +21,11 @@ For dimensional targets, the signed-thrust extension reflects the normalized cli
 
 `johnson_inflow.py` exposes:
 
-- `normalized(vz, vx, instability=1, loss=1)` → `{ok, ratio}`. `vz` and the magnitude `vx` are already normalized by `v_h`; `instability` is `f`; `loss` is `κ`.
-- `target(thrust, density, radius, climb, crossflow, height_over_radius=-1, loss=1, instability=1)` → `{ok, velocity, hover, ground_factor}`. Inputs are SI quantities, climb is positive upward, and crossflow is treated as a magnitude. The returned induced velocity is positive downward for positive thrust.
+- `normalized(vz, vx, instability=1, loss=1)` → `{ok, ratio}`. `vz` and `vx` are already normalized by `v_h`; `instability` is `f`; `loss` is `κ`.
+- `target(thrust, density, radius, climb, crossflow, height_over_radius=-1, loss=1, instability=1)` → `{ok, velocity, hover, ground_factor}`. Inputs are SI quantities, climb is positive upward, and crossflow is a magnitude. The returned induced velocity is positive downward for positive thrust.
 - `hayden_ground_factor(height_over_radius)` → the far-field-normalized Hayden multiplier.
 
-`oracle.json` stores 11 normalized cases and 2 dimensional target cases, rounded to 12 decimal places. Its anchors include hover `1`, axial climb `z=1` ratio `0.61803398875`, forward hover `x=1` ratio `0.786151377757`, windmill `z=-2.5` ratio `0.5`, and Table 4's N/X full-VRS results `1.3` and `2.75`. The tests derive analytic momentum answers independently, check the baseline splice from separate endpoint constraints, and verify Table 4 anchors, symmetry, ground-effect behavior, oracle reproducibility, and the known seams.
+`oracle.json` stores 89 normalized cases and 5 dimensional target cases, rounded to 12 decimal places. Alongside the analytic and Table 4 anchors, it covers a small descent/crossflow grid, one-sided vectors at C and M, and signed dimensional targets. Its anchors include hover `1`, axial climb `z=1` ratio `0.61803398875`, forward hover `x=1` ratio `0.786151377757`, windmill `z=-2.5` ratio `0.5`, and Table 4's N/X full-VRS results `1.3` and `2.75`. The Python reference folds a negative crossflow input through `abs`; the GDScript-facing interface requires a nonnegative magnitude. The tests derive analytic momentum answers independently, check the baseline splice from separate endpoint constraints, and verify Table 4 anchors, symmetry, ground-effect behavior, oracle reproducibility, and the known seams.
 
 Run from the repository root:
 

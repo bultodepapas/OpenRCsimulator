@@ -1,6 +1,6 @@
 # HELI-13: pure swash kernel
 
-**Date:** 2026-10-13. **Scope:** a standalone, parameterized swashplate kernel for the [helicopter plan](../../../plans/helicopter.md#heli-13). It contains no session, input, or aircraft-data integration.
+**Date:** 2026-10-13. **Scope:** a standalone, parameterized swashplate kernel for [HELI-13 in the helicopter plan](../../../plans/helicopter.md#phase-3-controls-and-electronics). It contains no session, input, or aircraft-data integration.
 
 ## Contract
 
