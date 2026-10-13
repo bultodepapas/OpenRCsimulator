@@ -222,6 +222,8 @@ const Turbine := preload("res://physics/turbine.gd")
 const WashTransport := preload("res://physics/wash_transport.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
+const GroundEffect := preload("res://physics/ground_effect.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
@@ -308,6 +310,8 @@ var _deflection_key := PackedFloat64Array()
 var _deflection_cache := {}
 ## The field id the surfaces came from ("" = none: pavement), and why they could not be built ("" = fine).
 var ground_field_id := ""
+## M5-GE-1: CG height above the ground beyond which no wing strip is in ground effect; 0 = no aero.ground_effect module.
+var _ground_effect_reach: float = 0.0
 var surface_error := ""
 ## Detached scalar proxy inventory; empty keeps the legacy no-world path byte-for-byte unchanged.
 var _collision_world: Dictionary = {}
@@ -574,6 +578,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	sim.mass = aircraft.model.mass_kg
 	sim.inertia = aircraft.model.inertia.duplicate()
 	_deflection_key = PackedFloat64Array()
+	_ground_effect_reach = GroundEffect.reach(aircraft.model)
 	sim.loads = _loads
 	_configure_continuous_callbacks()
 	sim.pre_step = _pre_step
@@ -1144,7 +1149,7 @@ func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stag
 	var lag := downwash_index()
 	var wash_state: PackedFloat64Array = transported_dv if wheel_count() == 0 else transported_dv.slice(0, expected)
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
-		air_density(), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, wash_state)
+		air_density(), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, wash_state, _ground_up(s))
 	var ground: Dictionary = _ground_evaluation(s, a, transported_dv)
 	if not ground.get("ok", false):
 		return PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN])
@@ -1180,7 +1185,8 @@ func _wheel_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_ti
 	var a: PackedFloat64Array = sim.aux
 	var lag: int = downwash_index()
 	var out: PackedFloat64Array = Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
-		air_density(), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, expected))
+		air_density(), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, expected),
+		_ground_up(s))
 	var ground: Dictionary = _ground_evaluation(s, a, values)
 	if not ground.get("ok", false):
 		return {}
@@ -1329,7 +1335,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	var a: PackedFloat64Array = sim.aux
 	var lag: int = downwash_index()
 	var external: PackedFloat64Array = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
-		air_density(), air, a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, _rotor_index()))
+		air_density(), air, a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, _rotor_index()), _ground_up(s))
 	var ground: Dictionary = _ground_evaluation(s, a, values)
 	if not ground.get("ok", false):
 		return {ok = false}
@@ -1574,7 +1580,18 @@ func aux_component(i: int) -> String:
 ## The wing strips' mean section lift coefficient at state s with the servos in aux (E0a2b lag input).
 func _wing_cl(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float = NAN) -> float:
 	var air: Dictionary = air_data(s, time_s)
-	return Aero.wing_lift_coefficient(s, air, _deflections(aux), aircraft.model)
+	return Aero.wing_lift_coefficient(s, air, _deflections(aux), aircraft.model, _ground_up(s))
+
+
+## M5-GE-1: the ground height (m above the NED datum) under the CG for the aero ground-effect factors, from the same
+## terrain the wheels use. NAN when the aircraft has no aero.ground_effect module or flies above its reach, which is
+## the unchanged byte-identical load path. Static solves (trim, linearisation, runway equilibrium) never pass a ground.
+func _ground_up(s: PackedFloat64Array) -> float:
+	if _ground_effect_reach <= 0.0:
+		return NAN
+	if -s[RB.POS + 2] >= _ground_effect_reach + GroundTerrain.max_height_validated(ground_surfaces):
+		return NAN
+	return GroundTerrain.sample_validated(s[RB.POS], s[RB.POS + 1], ground_surfaces)[0]
 
 
 ## Compatibility helper for tests/captures: one-shot runway start at (north, east), facing `heading` (rad, 0 = north).
@@ -1672,6 +1689,7 @@ func trace_meta() -> Dictionary:
 		configuration = aircraft.model.get("configuration", "unspecified"),
 		aero_model = "global-derivatives-v1" if model.get("envelope", {}).is_empty() else "local-surfaces-v1 with bounded attached oracle",
 		wing_polar_model = "tabulated-wing-v1 (experimental finite-wing strip reference)" if model.get("envelope", {}).has("wing_polar") else "legacy attached-to-flat-plate blend",
+		ground_effect_model = ("image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above %.1f spans)" % GroundEffect.FADE_SPAN_RATIO) if GroundEffect.enabled(model) else "none",
 		propulsion_model = propulsion_model,
 		propwash_model = "tail-slipstream-axial-transport-v1" if WashTransport.enabled(prop) else (
 			"none" if prop.get("slipstream", {}).is_empty() else "tail-slipstream-increment-v1"),

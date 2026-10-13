@@ -1246,6 +1246,32 @@
         }
       }
     },
+    "ground_effect": {
+      "induced_coefficient": {
+        "value": 33.0,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "Raymer, Aircraft Design: A Conceptual Approach, ground-effect factor K_eff/K = 33(h/b)^1.5 / (1 + 33(h/b)^1.5) (after McCormick); within 0.05 in sigma of Wieselsberger's image theory (NACA TM 77) and of the AR 5 image-VLM induced-drag ratios in docs/research/roadmap-investigations/02-aerodynamics-rc-scale.md T6 for h/b 0.10-0.25; the Phillips-Hunsaker 2013 and McCormick forms are weaker. Generic rectangular-wing fit, not measured on this airplane; docs/research/ground-effect/M5-GE-1/README.md"
+      },
+      "induced_exponent": {
+        "value": 1.5,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "Raymer, Aircraft Design: A Conceptual Approach, ground-effect factor K_eff/K = 33(h/b)^1.5 / (1 + 33(h/b)^1.5) (after McCormick); within 0.05 in sigma of Wieselsberger's image theory (NACA TM 77) and of the AR 5 image-VLM induced-drag ratios in docs/research/roadmap-investigations/02-aerodynamics-rc-scale.md T6 for h/b 0.10-0.25; the Phillips-Hunsaker 2013 and McCormick forms are weaker. Generic rectangular-wing fit, not measured on this airplane; docs/research/ground-effect/M5-GE-1/README.md"
+      },
+      "downwash_coefficient": {
+        "value": 25.0,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fit of the T6 image-VLM tail downwash ratios per unit wing lift (same-alpha ratios 0.27/0.49/0.67/0.90/0.98 divided by the same-alpha lift ratios 1.35/1.16/1.09/1.03/1.01 at wing h/b 0.10/0.17/0.25/0.5/1.0) by 25(h/b)^2 / (1 + 25(h/b)^2), within 0.03 up to h/b 0.5; estimated for the AR 5 wing with the tail 0.05 m below it; docs/research/ground-effect/M5-GE-1/README.md"
+      },
+      "downwash_exponent": {
+        "value": 2.0,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fit of the T6 image-VLM tail downwash ratios per unit wing lift (same-alpha ratios 0.27/0.49/0.67/0.90/0.98 divided by the same-alpha lift ratios 1.35/1.16/1.09/1.03/1.01 at wing h/b 0.10/0.17/0.25/0.5/1.0) by 25(h/b)^2 / (1 + 25(h/b)^2), within 0.03 up to h/b 0.5; estimated for the AR 5 wing with the tail 0.05 m below it; docs/research/ground-effect/M5-GE-1/README.md"
+      }
+    },
     "reference_coefficients": {
       "CLadot": {
         "value": 1.9724,

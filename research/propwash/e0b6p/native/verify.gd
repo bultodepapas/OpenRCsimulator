@@ -84,6 +84,7 @@ func _build_valid_models(rng: RandomNumberGenerator) -> Array[Dictionary]:
 		var centred_geometry: bool = model_index % 4 == 0
 		if model_index % 4 == 1:
 			raw.aero.surfaces.horizontal.erase("downwash_gradient")
+			raw.aero.erase("ground_effect") # M5-GE-1: the module requires the free tail law
 		smooth.edge_fraction.value = rng.randf_range(0.035, 0.44)
 		smooth.swirl_factor.value = rng.randf_range(0.18, 0.95)
 		smooth.vertical_drift.value = rng.randf_range(0.05, 0.95)

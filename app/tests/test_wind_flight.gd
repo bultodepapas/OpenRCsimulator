@@ -171,7 +171,7 @@ func _test_same_state_wind_loads_and_ground_separation() -> void:
 	var downwash_cl: float = session.sim.aux[lag_index] if lag_index >= 0 else NAN
 	var expected_aircraft: PackedFloat64Array = Dynamics.loads(state, session.aircraft.model,
 		session._deflections(session.sim.aux), session.sim.aux[FlightSession.AUX_RPM], Air.RHO_SEA_LEVEL,
-		session.wind_at(stage_time), downwash_cl, session.sim.continuous)
+		session.wind_at(stage_time), downwash_cl, session.sim.continuous, session._ground_up(state)) # M5-GE-1: same ground
 	var anchors: PackedFloat64Array = session.sim.aux.slice(FlightSession.AUX_ANCHORS,
 		FlightSession.AUX_ANCHORS + session.anchor_count() * Ground.ANCHOR_STRIDE)
 	var expected_ground: PackedFloat64Array
@@ -188,7 +188,7 @@ func _test_same_state_wind_loads_and_ground_separation() -> void:
 		expected_total[axis] += expected_ground[axis]
 	var calm_aircraft: PackedFloat64Array = Dynamics.loads(state, session.aircraft.model,
 		session._deflections(session.sim.aux), session.sim.aux[FlightSession.AUX_RPM], Air.RHO_SEA_LEVEL,
-		M.v3(0.0, 0.0, 0.0), downwash_cl, session.sim.continuous)
+		M.v3(0.0, 0.0, 0.0), downwash_cl, session.sim.continuous, session._ground_up(state))
 	_check("same-state session loads equal Dynamics(wind, lag, wash) plus ground contacts",
 		actual.to_byte_array() == expected_total.to_byte_array(),
 		"total %s; wind aircraft delta %.9f N" % [str(actual), _max_diff(expected_aircraft, calm_aircraft)])

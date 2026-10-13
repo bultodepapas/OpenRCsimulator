@@ -1254,6 +1254,71 @@
               "$ref": "#/$defs/wingPolarSamples"
             }
           }
+        },
+        "ground_effect": {
+          "type": "object",
+          "description": "M5-GE-1 optional wing/tail ground-effect law constants (app/physics/ground_effect.gd): sigma = c*(h/b)^e/(1+c*(h/b)^e) for the strips' induced angle/drag and for the tail downwash. Runtime also requires the coupled strip map and the free tail law.",
+          "required": [
+            "induced_coefficient",
+            "induced_exponent",
+            "downwash_coefficient",
+            "downwash_exponent"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "induced_coefficient": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 1000.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "induced_exponent": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.5,
+                  "maximum": 4.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "downwash_coefficient": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 1000.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "downwash_exponent": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.5,
+                  "maximum": 4.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          }
         }
       },
       "additionalProperties": true

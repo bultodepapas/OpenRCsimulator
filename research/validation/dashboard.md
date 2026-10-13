@@ -2,7 +2,7 @@
 
 **Status:** generated, report-only. This does not validate the owner's Stik or close Gate 2.
 
-Engine: `4.7.2-stable (official)`. Input inventory SHA-256: `f49fae75d37f8684ecd0d67ea78a3914d5084a4b2273bd9ecfe62af62d875c5a`.
+Engine: `4.7.2-stable (official)`. Input inventory SHA-256: `9da3e4fc9b94f332f5355967e3971283039fb05fe6beec0ea61a1cf8a8afcac7`.
 
 Regenerate: `python3 research/validation/dashboard.py`; verify freshness: append `--check`.
 

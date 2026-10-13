@@ -11,6 +11,8 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
+const GroundEffect := preload("res://physics/ground_effect.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 
 ## Residual accelerations (m/s², rad/s²) below which the pose counts as solved.
@@ -108,7 +110,11 @@ static func _accelerations(s: PackedFloat64Array, model: Dictionary, inv: Packed
 		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]), enhanced := false) -> PackedFloat64Array:
 	var loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	if engine or wind_ned[0] != 0.0 or wind_ned[1] != 0.0 or wind_ned[2] != 0.0:
-		loads = Dynamics.loads(s, model, d, rpm if engine else 0.0, rho, wind_ned)
+		# M5-GE-1: on the runway the session evaluates aero with the terrain height under the CG; the static solve must
+		# see the same ground (zero airspeed gives zero aero either way; wind does not).
+		var ground_up: float = GroundTerrain.sample_validated(s[RB.POS], s[RB.POS + 1], surfaces)[0] \
+			if GroundEffect.enabled(model) else NAN
+		loads = Dynamics.loads(s, model, d, rpm if engine else 0.0, rho, wind_ned, NAN, PackedFloat64Array(), ground_up)
 	var wheels := PackedFloat64Array()
 	if enhanced:
 		wheels.resize(gear.contacts.size())

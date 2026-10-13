@@ -5,12 +5,14 @@
 # stall deficits or residual damping moments. The tail replaces global derivatives, never adds them.
 # Parameters/provenance: aero.surfaces in aircraft JSON. See docs/research/flight-repair-implementation.md.
 # coefficients() describes the reference empirical curve, not summed nonlinear surface loads.
-# No propwash, dynamic stall memory or ground effect yet.
+# No propwash or dynamic stall memory. M5-GE-1: an opt-in aero.ground_effect module (physics/ground_effect.gd)
+# scales the strips' induced angle/drag and the tail's downwash by their height above the ground the caller supplies.
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const WingPolar := preload("res://physics/wing_polar.gd")
+const GroundEffect := preload("res://physics/ground_effect.gd")
 
 ## Equal-area elements per wing side (numerical resolution, not an aircraft parameter).
 const WING_STATIONS_PER_SIDE := 3
@@ -94,7 +96,7 @@ static func coefficients(air: Dictionary, rates: PackedFloat64Array, d: Dictiona
 ## Body loads about the CG [Fx, Fy, Fz, Mx, My, Mz], gravity excluded.
 ## model: AircraftData model (reference S, b, c, arp_le; cg_le; aero).
 static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
-		downwash_cl := NAN) -> PackedFloat64Array:
+		downwash_cl := NAN, ge := PackedFloat64Array()) -> PackedFloat64Array:
 	var ref: Dictionary = model.reference
 	var a: Dictionary = model.aero
 	var S: float = ref.S
@@ -138,13 +140,53 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 	var co_roll: float = a.Clb * beta_eff + a.Clda_right * dar + a.Clda_left * dal + a.Cldr * dr
 	var co_pitch: float = cm_alpha + a.Cmde * de + a.Cmda_each * (dar + dal)
 	var co_yaw: float = a.Cnb * beta_eff + a.Cnda_right * dar + a.Cnda_left * dal + a.Cndr * dr
+	if not ge.is_empty():
+		# M5-GE-1: ground effect in the oracle (GroundEffect.factors: σ per strip, mean σ, σ_ε). At uniform α strip i's
+		# induced angle is a0·(α + α_s)·(1 − Σ_k E_ik); the image system frees (1 − σ_i) of it: more attached lift at the
+		# same α and a roll moment when one wing is lower. Induced drag at the same CL scales by the mean σ. The tail's
+		# static free-air downwash k_ε·CL_free becomes k_ε·σ_ε·CL_ge: a free-slope increment at the tail's arm, as the
+		# D11g lag term below. The local strips apply the same law; test_ground_effect.gd pins the two regimes together.
+		var ys: PackedFloat64Array = env.station_ys
+		var stations := ys.size()
+		var a0: float = env.strip_slope
+		var alpha_zero: float = env.strip_alpha_zero
+		var row_sum: PackedFloat64Array = env.strip_row_sum
+		var attached: float = 1.0 - w
+		var wing_gain := 0.0
+		var roll_gain := 0.0
+		for i in stations:
+			var dcl: float = a0 * (alpha + alpha_zero) * (1.0 - ge[i]) * (1.0 - row_sum[i])
+			wing_gain += dcl / stations
+			roll_gain -= dcl * ys[i] / stations / b
+		co_cl += attached * wing_gain
+		co_roll += attached * roll_gain
+		var cd_ge: float = cd0 + ge[stations] * a.k_induced * M.pow_(co_cl - a.CL_minD, 2)
+		if w != 0.0:
+			var sin_ge := M.sin_(alpha)
+			cd_ge = (1.0 - w) * cd_ge + w * (cd0 + float(env.CD90) * sin_ge * sin_ge)
+		co_cd = cd_ge + absf(a.CDda_each * dar) + absf(a.CDda_each * dal) + absf(a.CDdr * dr) + absf(a.CDde * de)
+		# The oracle's static tail sees the free-air downwash k_ε·CL_free(now); the ground leaves k_ε·σ_ε·CL_ge(now), so the
+		# tail's angle grows by k_ε·(CL_free − σ_ε·CL_ge) on the free slope. The strips' tail law gives the same difference.
+		var ge_tail: Dictionary = model.surfaces.horizontal
+		var cl_free_now: float = _wing_lift_coefficient_with(s, air, d, model, PackedFloat64Array())
+		var cl_ge_now: float = _wing_lift_coefficient_with(s, air, d, model, ge)
+		var tail_cl: float = float(ge_tail.free_slope) * float(ge_tail.area) / S * float(ge_tail.downwash_per_cl) \
+			* (cl_free_now - ge[stations + 1] * cl_ge_now)
+		co_cl += tail_cl
+		co_pitch -= tail_cl * (float(ge_tail.position[0]) - float(ref.arp_le[0])) / c
 	if not is_nan(downwash_cl):
 		# D11g: the tail's downwash lag (E0a2b) in the oracle. Its static coefficients hold the settled downwash; a lagged
 		# wing CL turns the tail's angle by k_ε·(CL_wing − lag) on the free slope, at the tail's arm: the oracle's CLα̇ and
 		# Cmα̇, the same as the local tail's. Zero once settled; NAN (trim, static solves) adds nothing.
+		# M5-GE-1: in ground effect the lag acts on the reduced downwash, k_ε·σ_ε·(CL_ge − lag), as in the strips' tail.
 		var tail: Dictionary = model.surfaces.horizontal
-		var lag_cl: float = float(tail.free_slope) * float(tail.area) / S * float(tail.downwash_per_cl) \
-			* (wing_lift_coefficient(s, air, d, model) - downwash_cl)
+		var lag_cl: float
+		if ge.is_empty():
+			lag_cl = float(tail.free_slope) * float(tail.area) / S * float(tail.downwash_per_cl) \
+				* (wing_lift_coefficient(s, air, d, model) - downwash_cl)
+		else:
+			lag_cl = float(tail.free_slope) * float(tail.area) / S * float(tail.downwash_per_cl) * ge[ge.size() - 1] \
+				* (_wing_lift_coefficient_with(s, air, d, model, ge) - downwash_cl)
 		co_cl += lag_cl
 		co_pitch -= lag_cl * (float(tail.position[0]) - float(ref.arp_le[0])) / c
 
@@ -232,7 +274,8 @@ static func _tail_curve(alpha: float, slope: float, surfaces: Dictionary) -> flo
 ## oracle's order (including the + 0.0 arm terms, which turn -0.0 into +0.0); test_aero_flow.gd compares bytes.
 ## downwash_cl: E0a2b's lagged wing CL for the tail's downwash (FlightSession aux); NAN = the instantaneous wing CL.
 static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
-		downwash_cl := NAN, strip_diagnostics: Variant = null) -> PackedFloat64Array:
+		downwash_cl := NAN, strip_diagnostics: Variant = null, ge := PackedFloat64Array()) -> PackedFloat64Array:
+	var ge_active := not ge.is_empty() # M5-GE-1: σ per strip (station order), then mean σ and the tail's σ_ε
 	var p: float = s[RB.RATE]
 	var q: float = s[RB.RATE+1]
 	var r: float = s[RB.RATE+2]
@@ -312,13 +355,27 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			base = strip_cl0[i] + strip_slope * mapped
 		else:
 			base = cl0 + cla * effective
-		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
-		var cd: float = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
-		if not polar.is_empty():
-			var sample := WingPolar.evaluate(effective, base, polar)
-			cl = sample[0]
-			weight = 1.0-sample[2]
-			cd = sample[1] + sample[2]*k_induced*M.pow_(cl-cl_min_d, 2)
+		var cl: float
+		var cd: float
+		if ge_active:
+			# Ground effect frees (1 − σ_i) of the strip's induced angle a0·(α_i + α_s) − base/a0 and scales its
+			# induced drag at the same CL by σ_i; the flat-plate (separated) share is unchanged.
+			base += (1.0 - ge[i]) * (strip_slope * (effective + float(env.strip_alpha_zero)) - base)
+			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+			cd = cd0 + (1.0-weight)*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+			if not polar.is_empty():
+				var sample := WingPolar.evaluate(effective, base, polar)
+				cl = sample[0]
+				weight = 1.0-sample[2]
+				cd = sample[1] + sample[2]*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2)
+		else:
+			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+			cd = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+			if not polar.is_empty():
+				var sample := WingPolar.evaluate(effective, base, polar)
+				cl = sample[0]
+				weight = 1.0-sample[2]
+				cd = sample[1] + sample[2]*k_induced*M.pow_(cl-cl_min_d, 2)
 		wing_cl += cl / stations
 		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
 		if speed < 1e-10:
@@ -372,8 +429,13 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		var slope: float
 		if not vertical and tail.has("free_slope"):
 			# E0a2: downwash from the wing's lift; pitch rate (in the flow) and elevator act on the free tail slope.
-			effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * (wing_cl if is_nan(downwash_cl) else downwash_cl)
-				+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
+			if ge_active: # M5-GE-1: the ground's image reduces the wing's downwash at the tail by σ_ε
+				effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * ge[stations + 1]
+					* (wing_cl if is_nan(downwash_cl) else downwash_cl)
+					+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
+			else:
+				effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * (wing_cl if is_nan(downwash_cl) else downwash_cl)
+					+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
 			slope = tail.free_slope
 		else:
 			effective = wrapf(M.atan2_(normal, f0) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
@@ -410,11 +472,11 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 ## Rows describe the LOCAL wing before the global/local blend and exclude tail/propulsion/gyro.
 ## alpha_geometric_rad includes control/incidence offsets, alpha_effective_rad is induced attached flow.
 static func wing_strip_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
-		downwash_cl := NAN) -> Array:
+		downwash_cl := NAN, ground_up := NAN) -> Array:
 	var rows: Array = []
 	if model.get("envelope", {}).is_empty() or not model.envelope.has("station_ys"):
 		return rows
-	_local_loads(s, air, d, model, rho, downwash_cl, rows)
+	_local_loads(s, air, d, model, rho, downwash_cl, rows, GroundEffect.factors(s, model, ground_up))
 	return rows
 
 
@@ -564,7 +626,15 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 
 ## E0a2b: the wing strips' mean section lift coefficient at state s (the quantity whose lag drives the tail's
 ## downwash), with exactly _local_loads' strip law; test_downwash_lag.gd pins the two together.
-static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary) -> float:
+## ground_up: M5-GE-1 ground height under the CG (m above the NED datum); NAN = out of ground effect.
+static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
+		ground_up := NAN) -> float:
+	return _wing_lift_coefficient_with(s, air, d, model, GroundEffect.factors(s, model, ground_up))
+
+
+static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
+		ge: PackedFloat64Array) -> float:
+	var ge_active := not ge.is_empty()
 	var p: float = s[RB.RATE]
 	var q: float = s[RB.RATE+1]
 	var r: float = s[RB.RATE+2]
@@ -618,6 +688,8 @@ static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dic
 			base = strip_cl0[i] + strip_slope * mapped
 		else:
 			base = float(a.CL0) + float(a.CLa) * effective
+		if ge_active: # M5-GE-1, exactly _local_loads' strip law
+			base += (1.0 - ge[i]) * (strip_slope * (effective + float(env.strip_alpha_zero)) - base)
 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 		if not polar.is_empty():
 			cl = WingPolar.evaluate(effective, base, polar)[0]
@@ -625,17 +697,20 @@ static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dic
 	return wing_cl
 
 
+## ground_up: M5-GE-1 ground height under the CG (m above the NED datum) for an aircraft with aero.ground_effect;
+## NAN (trim, linearisation, static solves, aircraft without the module) leaves every path byte-identical.
 static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
-		downwash_cl := NAN) -> PackedFloat64Array:
+		downwash_cl := NAN, ground_up := NAN) -> PackedFloat64Array:
 	if model.get("envelope", {}).is_empty():
 		return _global_loads(s, air, d, model, rho)
+	var ge := GroundEffect.factors(s, model, ground_up)
 	var blend := local_flow_weight(s, air, d, model)
 	if blend == 0.0:
-		return _global_loads(s, air, d, model, rho, downwash_cl)
-	var local := _local_loads(s, air, d, model, rho, downwash_cl)
+		return _global_loads(s, air, d, model, rho, downwash_cl, ge)
+	var local := _local_loads(s, air, d, model, rho, downwash_cl, null, ge)
 	if blend == 1.0:
 		return local
-	var global := _global_loads(s, air, d, model, rho, downwash_cl)
+	var global := _global_loads(s, air, d, model, rho, downwash_cl, ge)
 	for k in 6:
 		global[k] = lerpf(global[k], local[k], blend)
 	return global

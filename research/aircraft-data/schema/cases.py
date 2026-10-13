@@ -150,9 +150,18 @@ def build_cases():
         change('optional-gear:' + repr(value), stik, ('landing_gear',), value, valid=True,
                aircraft_id=NO_GEAR_FIXTURE_ID)
     for path in [('landing_gear', 'contacts', 0, 'max_steering'),
-                 ('landing_gear', 'breakaway_factor'),
-                 ('aero', 'surfaces', 'horizontal', 'downwash_gradient')]:
+                 ('landing_gear', 'breakaway_factor')]:
         change('nullable:' + str(path), stik, path, None, valid=True)
+    # M5-GE-1: the Stik's aero.ground_effect module requires the free tail law, so nulling downwash_gradient
+    # alone is a schema-pass/loader-fail coupled case; without the module it stays a valid nullable optional.
+    downwash = ('aero', 'surfaces', 'horizontal', 'downwash_gradient')
+    change('nullable-with-ground-effect:' + str(downwash), stik, downwash, None, physical=True)
+    stik_free_air = deepcopy(stik)
+    del stik_free_air['aero']['ground_effect']
+    change('nullable:' + str(downwash), stik_free_air, downwash, None, valid=True)
+    change('ground-effect-unknown-field', stik, ('aero', 'ground_effect', 'gain'),
+           dict(value=1.0, unit='1', kind='estimated', source='x'))
+    change('ground-effect-exponent-out-of-range', stik, ('aero', 'ground_effect', 'induced_exponent', 'value'), 9.0)
     for path in [('description',), ('frames',), ('id',)]:
         change('ignored-metadata:' + str(path), stik, path, delete=True, valid=True)
     change('extra-metadata', stik, ('notes',), {'not_a_quantity': [1, 2]}, valid=True)

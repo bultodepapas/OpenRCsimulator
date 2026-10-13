@@ -39,6 +39,7 @@ def consumer(path: str) -> str:
         ("aero.envelope.", "AircraftData._envelope → Aero stall/sideslip blend and local plate loads"),
         ("aero.surfaces.", "AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash"),
         ("aero.wing_polar.", "AircraftData._wing_polar → WingPolar.prepare / Aero local wing"),
+        ("aero.ground_effect.", "AircraftData._ground_effect → GroundEffect.factors / Aero strip induced angle, induced drag and tail downwash near the ground"),
         ("controls.", "AircraftData._controls → Commands surface mapping, session servo integration, rendering"),
         ("crash_hull", "AircraftData._hull_body → hull_crossing / ImpactSnapshot / FlightSession crash"),
         ("landing_gear.", "AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash"),

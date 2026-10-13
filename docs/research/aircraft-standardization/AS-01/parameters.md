@@ -50,6 +50,10 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `aero.envelope.CL_min` | 1 | ≥-3, ≤-0.1 | AircraftData._envelope → Aero stall/sideslip blend and local plate loads |
 | `aero.envelope.sideslip_blend` | deg | length 2…2, each(≥1, ≤89) | AircraftData._envelope → Aero stall/sideslip blend and local plate loads |
 | `aero.envelope.stall_blend_width` | deg | ≥1, ≤30 | AircraftData._envelope → Aero stall/sideslip blend and local plate loads |
+| `aero.ground_effect.downwash_coefficient` | 1 | ≥1, ≤1000 | AircraftData._ground_effect → GroundEffect.factors / Aero strip induced angle, induced drag and tail downwash near the ground |
+| `aero.ground_effect.downwash_exponent` | 1 | ≥0.5, ≤4 | AircraftData._ground_effect → GroundEffect.factors / Aero strip induced angle, induced drag and tail downwash near the ground |
+| `aero.ground_effect.induced_coefficient` | 1 | ≥1, ≤1000 | AircraftData._ground_effect → GroundEffect.factors / Aero strip induced angle, induced drag and tail downwash near the ground |
+| `aero.ground_effect.induced_exponent` | 1 | ≥0.5, ≤4 | AircraftData._ground_effect → GroundEffect.factors / Aero strip induced angle, induced drag and tail downwash near the ground |
 | `aero.reference_coefficients.CLadot` | 1/rad | ≥-100, ≤100 | AircraftData reference validation only; no alpha-dot force consumer |
 | `aero.surfaces.attached_limit` | deg | ≥1, ≤8 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.horizontal.area` | m2 | ≥0.001, ≤1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
@@ -162,4 +166,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 148 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 152 distinct quantity paths. Shared paths retain branch-dependent ranges.

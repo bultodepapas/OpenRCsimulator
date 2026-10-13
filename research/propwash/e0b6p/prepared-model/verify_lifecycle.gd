@@ -50,6 +50,7 @@ func _build_model(classic_tail: bool, swirl: float) -> Dictionary:
 	var raw: Dictionary = Fixture.combined_raw()
 	if classic_tail:
 		raw.aero.surfaces.horizontal.erase("downwash_gradient")
+		raw.aero.erase("ground_effect") # M5-GE-1: the module requires the free tail law
 	var slipstream: Dictionary = raw.propulsion.propeller.slipstream
 	slipstream.swirl_factor.value = swirl
 	if swirl > 0.5:

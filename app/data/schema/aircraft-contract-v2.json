@@ -235,7 +235,8 @@
         "reference_coefficients",
         "envelope",
         "surfaces",
-        "wing_polar"
+        "wing_polar",
+        "ground_effect"
       ]
     },
     {
@@ -430,6 +431,21 @@
         "basis",
         "positive",
         "negative"
+      ]
+    },
+    {
+      "path": "/aero/ground_effect",
+      "required": [
+        "induced_coefficient",
+        "induced_exponent",
+        "downwash_coefficient",
+        "downwash_exponent"
+      ],
+      "allowed": [
+        "induced_coefficient",
+        "induced_exponent",
+        "downwash_coefficient",
+        "downwash_exponent"
       ]
     },
     {
@@ -807,6 +823,7 @@
     "/aero/surfaces/*/*",
     "/aero/wing_polar/positive",
     "/aero/wing_polar/negative",
+    "/aero/ground_effect/*",
     "/landing_gear/rolling_resistance",
     "/landing_gear/side_friction",
     "/landing_gear/peak_slip_angle",

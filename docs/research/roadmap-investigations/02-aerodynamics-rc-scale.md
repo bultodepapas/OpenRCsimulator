@@ -345,6 +345,8 @@ A fix that keeps everything physical: VLM Clp (×0.89) plus explicit apparent ro
 | X-perf-1 | Flatten aircraft aero data into a load-time "aero plan"; decide on GDExtension | µs/tick before/after on the dev VM and the owner's slowest machine | X-aero-5 |
 | M5-GE-1 | Ground effect on wing strips (per-strip height, Wieselsberger or VLM table, fade by h/b 1) | T6 table reproduced; continuity; banked sign | E0a-2 |
 | M5-GE-2 | Ground effect on tail downwash | Flare trace: ≈ 4° extra up-elevator at h/b 0.17 (± 50 %); on/off traces | M5-GE-1 |
+
+**Status 2026-10-12:** M5-GE-1 and the tail downwash part of M5-GE-2 are implemented as the opt-in `aero.ground_effect` module (Raymer's 33(h/b)^1.5 induced factor, a 32(h/b)² tail-downwash fit of the T6 table, C¹ fade at two spans instead of one); the Stik declares it. The implementation applies σ to the strips' induced angle, so its lift gain on the wheels is below the T6 image-VLM value (the bound-vortex image is not modelled); [evidence and measured increments](../ground-effect/M5-GE-1/README.md). Flare on/off traces against a pilot remain open.
 | M5-STALL-1 | Per-strip 360° tables (Viterna/Lindenburg 3-D) replacing analytic flat plate; data format v2 | Continuity sweep; CL/CD ≈ 1/tanα post-stall; CD90(AR) | X-aero-5, X-perf-1 |
 | M5-STALL-2 | Goman–Khrabrov separation state per strip (Kirchhoff to ~25°, then flat plate) | α̇ = 0 bit-identical to static; ramp delay τ2·α̇; closed hysteresis loop; cycle passivity | M5-STALL-1 |
 | M5-STALL-3 | Control effectiveness vs strip separation (per-deflection tables or a capped shift) | Slow-flight aileron reversal sign test; PicaSim-like 30 % stalled authority band | M5-STALL-1 |

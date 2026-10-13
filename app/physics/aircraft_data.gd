@@ -251,6 +251,10 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 		if not polar.is_empty():
 			envelope.wing_polar = polar
 			warnings.append("Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed")
+	if errors.is_empty() and aero_node.has("ground_effect"):
+		var ground_effect := _ground_effect(errors, aero_node.ground_effect, envelope, surfaces)
+		if not ground_effect.is_empty():
+			envelope.ground_effect = ground_effect
 	var prop := _propulsion(errors, raw.get("propulsion"))
 	var hull := _crash_hull(errors, raw.get("crash_hull"))
 	var controls := _controls(errors, raw.get("controls"))
@@ -605,6 +609,7 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 	if not is_finite(alpha_s):
 		return false
 	var cl0 := PackedFloat64Array()
+	var row_sums := PackedFloat64Array()
 	for i in n:
 		var row := 0.0
 		for k in n:
@@ -613,9 +618,14 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 		if not is_finite(offset):
 			return false
 		cl0.append(offset)
+		row_sums.append(row)
 	envelope.strip_slope = a0
 	envelope.strip_cl0 = cl0
 	envelope.induced_map = e_map
+	# M5-GE-1: the strips' zero-lift shift and map row sums; strip i's induced angle at uniform α is
+	# (α + strip_alpha_zero)·(1 − strip_row_sum[i]). Derived bookkeeping, not additional aircraft data.
+	envelope.strip_alpha_zero = alpha_s
+	envelope.strip_row_sum = row_sums
 	if horizontal.has("downwash_gradient"):
 		# E0a2: free tail law. Static tail lift is unchanged: free_slope·((1 − dε/dα)·α − k_ε·CL_w0 + i_free) equals
 		# lift_slope·(α + incidence), with CL_w = CLα_w·α + CL_w0 the local wing (D11d) and k_ε = (dε/dα)/CLα_w. The
@@ -1331,6 +1341,38 @@ static func _envelope(errors: PackedStringArray, node: Variant, aero: Dictionary
 	if not errors.is_empty():
 		return {}
 	return { a1 = a1, a2 = a1 + w, n1 = n1, n2 = n1 + w, b1 = deg_to_rad(sb[0]), b2 = deg_to_rad(sb[1]), CD90 = cd90, CL_max = cl_max, CL_min = cl_min }
+
+
+## M5-GE-1 (optional): aero.ground_effect, the wing's image-vortex correction near the ground (physics/ground_effect.gd):
+## σ = c·(h/b)^e / (1 + c·(h/b)^e) frees (1 − σ) of each strip's induced angle and scales its induced drag; a second
+## law of the same form scales the wing's downwash at the horizontal tail. The four constants are fitted law
+## coefficients with their own provenance, not force gains. Requires the coupled strip map (an induced angle to free)
+## and the E0a2 free tail law (a downwash to reduce); absence of the module adds nothing anywhere.
+static func _ground_effect(errors: PackedStringArray, node: Variant, envelope: Dictionary, surfaces: Dictionary) -> Dictionary:
+	var path := "aero.ground_effect"
+	var raw := _dictionary(errors, path, node)
+	var specs := {
+		induced_coefficient = [1.0, 1000.0],
+		induced_exponent = [0.5, 4.0],
+		downwash_coefficient = [1.0, 1000.0],
+		downwash_exponent = [0.5, 4.0],
+	}
+	var out := {}
+	for key in specs:
+		var bounds: Array = specs[key]
+		var value = _q(errors, path + "." + key, raw.get(key), "1", bounds[0], bounds[1])
+		if value != null:
+			out[key] = float(value)
+	for key in raw:
+		if not specs.has(key):
+			errors.append("%s.%s: unknown field" % [path, key])
+	if not envelope.has("induced_map"):
+		errors.append("%s: requires the calibrated local wing (aero.envelope and the strip induced map)" % path)
+	if not surfaces.get("horizontal", {}).has("free_slope"):
+		errors.append("%s: requires aero.surfaces.horizontal.downwash_gradient (the free tail law whose downwash it reduces)" % path)
+	if out.size() != specs.size() or not errors.is_empty():
+		return {}
+	return out
 
 
 ## D8b-R2d: a closed, optional branch; legacy aircraft and their exact arithmetic remain unchanged.
