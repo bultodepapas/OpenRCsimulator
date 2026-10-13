@@ -1,0 +1,148 @@
+{
+  "aircraft": "jensen-das-ugly-stik-60",
+  "blade_angle_deg": 25.0,
+  "checks": [
+    {
+      "check": "attached at 0 rpm is byte-identical",
+      "detail": "pristine vs attached+update(0)",
+      "ok": true
+    },
+    {
+      "check": "hidden propeller hides the disc",
+      "detail": "disc visible=false blur=0.00",
+      "ok": true
+    },
+    {
+      "check": "blade change falls with speed",
+      "detail": "0.4517 at 0 rpm -> 0.1214 at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "disc changes pixels outside the blade silhouette",
+      "detail": "66141 pixels at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "repeated frame is byte-identical",
+      "detail": "two frames at 6000 rpm",
+      "ok": true
+    }
+  ],
+  "format": "openrc-propeller-blur-capture v1",
+  "images": [
+    {
+      "blur": 0.0,
+      "changed_outside_blades": 0,
+      "image": "jensen-das-ugly-stik-60-quarter-rpm0.png",
+      "mask_pixels": 19097,
+      "mean_change_on_blades": 0.451724037739125,
+      "rpm": 0.0,
+      "sha256": "cceb2a5ec9fd80eb3d6ff206ebf6e4778d452bba04ed76e1ccf11709009be2c2"
+    },
+    {
+      "blur": 0.0,
+      "changed_outside_blades": 0,
+      "image": "jensen-das-ugly-stik-60-quarter-rpm300.png",
+      "mask_pixels": 19097,
+      "mean_change_on_blades": 0.451724037739125,
+      "rpm": 300.0,
+      "sha256": "cceb2a5ec9fd80eb3d6ff206ebf6e4778d452bba04ed76e1ccf11709009be2c2"
+    },
+    {
+      "blur": 0.126200274348422,
+      "changed_outside_blades": 2,
+      "image": "jensen-das-ugly-stik-60-quarter-rpm600.png",
+      "mask_pixels": 19097,
+      "mean_change_on_blades": 0.402345306018321,
+      "rpm": 600.0,
+      "sha256": "8be611da7de43671cf43aacb861b4958fedf64d46b9dfd73529735791f91f946"
+    },
+    {
+      "blur": 0.873799725651577,
+      "changed_outside_blades": 61780,
+      "image": "jensen-das-ugly-stik-60-quarter-rpm1200.png",
+      "mask_pixels": 19097,
+      "mean_change_on_blades": 0.154478284566208,
+      "rpm": 1200.0,
+      "sha256": "7ee0b3cf2cefa9135d198405486dac6acbe5b2e8cc58c9fad9cc3cc2f2d2c979"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 66141,
+      "image": "jensen-das-ugly-stik-60-quarter-rpm2400.png",
+      "mask_pixels": 19097,
+      "mean_change_on_blades": 0.121418512990629,
+      "rpm": 2400.0,
+      "sha256": "ab7c33f0f944a8b05e514b310d563e32d91cae957136e58e0dbe309219948728"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 66141,
+      "image": "jensen-das-ugly-stik-60-quarter-rpm6000.png",
+      "mask_pixels": 19097,
+      "mean_change_on_blades": 0.121418512990629,
+      "rpm": 6000.0,
+      "sha256": "ab7c33f0f944a8b05e514b310d563e32d91cae957136e58e0dbe309219948728"
+    }
+  ],
+  "ok": true,
+  "profile": {
+    "blades": 2,
+    "coverage": [
+      0.0,
+      0.0,
+      0.0,
+      0.283333333333333,
+      0.433333333333333,
+      0.416666666666667,
+      0.383333333333333,
+      0.358333333333333,
+      0.325,
+      0.308333333333333,
+      0.291666666666667,
+      0.266666666666667,
+      0.25,
+      0.233333333333333,
+      0.216666666666667,
+      0.2,
+      0.183333333333333,
+      0.183333333333333,
+      0.166666666666667,
+      0.15,
+      0.15,
+      0.133333333333333,
+      0.133333333333333,
+      0.116666666666667,
+      0.108333333333333,
+      0.1,
+      0.0916666666666667,
+      0.0916666666666667,
+      0.0833333333333333,
+      0.075,
+      0.0666666666666667,
+      0.0583333333333333,
+      0.0583333333333333,
+      0.0416666666666667,
+      0.0416666666666667,
+      0.025
+    ],
+    "hub_radius_m": 0.0,
+    "inner_radius_m": 0.0105000007897615,
+    "plane_z_m": 0.0,
+    "radius_m": 0.152452737092972
+  },
+  "region_px": [
+    407.897186279297,
+    93.6180648803711,
+    411.085235595703,
+    515.834106445312
+  ],
+  "renderer": {
+    "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+    "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+    "driver": "opengl3",
+    "godot": "4.7.2-stable (official)",
+    "method": "gl_compatibility"
+  },
+  "view": "quarter"
+}

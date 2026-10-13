@@ -1,0 +1,121 @@
+{
+  "aircraft": "gp-extra-300s-60",
+  "blade_angle_deg": 25.0,
+  "checks": [
+    {
+      "check": "attached at 0 rpm is byte-identical",
+      "detail": "pristine vs attached+update(0)",
+      "ok": true
+    },
+    {
+      "check": "hidden propeller hides the disc",
+      "detail": "disc visible=false blur=0.00",
+      "ok": true
+    },
+    {
+      "check": "blade change falls with speed",
+      "detail": "0.4096 at 0 rpm -> 0.0323 at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "disc changes pixels outside the blade silhouette",
+      "detail": "95122 pixels at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "repeated frame is byte-identical",
+      "detail": "two frames at 6000 rpm",
+      "ok": true
+    }
+  ],
+  "format": "openrc-propeller-blur-capture v1",
+  "images": [
+    {
+      "blur": 0.0,
+      "changed_outside_blades": 0,
+      "image": "gp-extra-300s-60-front-rpm0.png",
+      "mask_pixels": 13257,
+      "mean_change_on_blades": 0.4095617085711,
+      "rpm": 0.0,
+      "sha256": "087aba05fd2f7b1ea08b3028d099298a8503ff7db98be9fef05e8bc32241df53"
+    },
+    {
+      "blur": 0.5,
+      "changed_outside_blades": 13753,
+      "image": "gp-extra-300s-60-front-rpm900.png",
+      "mask_pixels": 13257,
+      "mean_change_on_blades": 0.212517742456345,
+      "rpm": 900.0,
+      "sha256": "620b3cd22c328ab9baf65ab83a867dc8630a0b06ff873df5e07e422b762643f5"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 95122,
+      "image": "gp-extra-300s-60-front-rpm6000.png",
+      "mask_pixels": 13257,
+      "mean_change_on_blades": 0.032297252901319,
+      "rpm": 6000.0,
+      "sha256": "c839189f7f3c1e19cf7026b8c3ecb6d0a2b2c90764f4e2c2a8752b9153200867"
+    }
+  ],
+  "ok": true,
+  "profile": {
+    "blades": 2,
+    "coverage": [
+      0.0,
+      0.0,
+      0.183333333333333,
+      0.2,
+      0.191666666666667,
+      0.183333333333333,
+      0.175,
+      0.166666666666667,
+      0.166666666666667,
+      0.158333333333333,
+      0.158333333333333,
+      0.158333333333333,
+      0.141666666666667,
+      0.141666666666667,
+      0.133333333333333,
+      0.125,
+      0.116666666666667,
+      0.116666666666667,
+      0.108333333333333,
+      0.108333333333333,
+      0.1,
+      0.0916666666666667,
+      0.0916666666666667,
+      0.0833333333333333,
+      0.075,
+      0.075,
+      0.0666666666666667,
+      0.0666666666666667,
+      0.0666666666666667,
+      0.0583333333333333,
+      0.05,
+      0.05,
+      0.0416666666666667,
+      0.0416666666666667,
+      0.0416666666666667,
+      0.025
+    ],
+    "hub_radius_m": 0.0,
+    "inner_radius_m": 0.0325000025331974,
+    "plane_z_m": 0.00013913477979886,
+    "radius_m": 0.15242825448513
+  },
+  "region_px": [
+    375.256469726562,
+    94.1240539550781,
+    519.013244628906,
+    518.16162109375
+  ],
+  "renderer": {
+    "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+    "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+    "driver": "opengl3",
+    "godot": "4.7.2-stable (official)",
+    "method": "gl_compatibility"
+  },
+  "view": "front"
+}

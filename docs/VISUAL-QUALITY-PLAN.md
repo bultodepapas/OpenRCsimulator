@@ -1,8 +1,8 @@
 # Visual quality: implementation guide and open work
 
-2026-10-12 · Revision 2 · Step prefix: **VQ-**
+2026-10-12 · Revision 3 · Step prefix: **VQ-**
 
-**Status:** VQ-01a/b and VQ-04a are delivered. VQ-02/03/04b/05/06/07 remain open; L6c owner readability review and Gates L/2 remain independent acceptance points.
+**Status:** VQ-01a/b, VQ-04a and VQ-05 are delivered. VQ-02/03/04b/06/07 remain open; L6c owner readability review and Gates L/2 remain independent acceptance points.
 
 **Owns:** visual-quality coordination and its VQ steps. Landscape implementation lives in [LANDSCAPE-PLAN](LANDSCAPE-PLAN.md); field composition and time of day live in [FIELD-WORLD-PLAN](FIELD-WORLD-PLAN.md) and [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md). Aircraft appearance stays with each model team.
 
@@ -12,6 +12,8 @@ The app uses Godot 4.7.2 with the Compatibility renderer. A validated field and 
 
 VQ-04a derives an opaque projected silhouette from each aircraft's visible mesh and model datum, then places a soft receiver on the flat ground. Field silhouettes cover the fence, pilot station, windsock, nearby scenery and people. Isolated 256² mask viewports avoid changing Compatibility shadow blending or aircraft paint; the legacy mask remains an empty-model fallback. The implementation caps field masks at 16 maps and 8,388,608 pixels; default optional scenery uses 10 maps and 4,784,128 pixels. The all-aircraft and field evidence includes native captures, an independent GPU projection oracle, lifecycle checks, a frame-time budget and unchanged flight samples: [VQ-04a evidence](research/visual-quality-implementation/VQ-04a/README.md). A separate shadow-map comparison is still optional.
 
+VQ-05 blurs every propeller from the live rotor speed. `app/render/propeller_blur.gd` measures the aircraft's own propeller meshes: the share of a revolution the blades cover at each radius (blade triangles rasterized in polar space), the blade colour along the radius, the blade count and the opaque hub (the Timber's spinner, backplate and bell share one mesh with its blades). It cross-fades by blade-passing frequency, 12 Hz to 48 Hz (perceptual estimates around flicker fusion), between the model's blades and a vertex-alpha disc lit like any other surface, so an idling glow engine shows a translucent disc while an electric motor spinning down shows its blades reappear. The node sits beside the model in the flight scene, follows the propeller each frame and only shows or hides the model's blade nodes: a stopped rotor renders byte-identically to the previous build, and the Home preview, projected silhouette and crash wreck duplicate are unchanged. Opacity is the measured time-averaged occlusion (gain 1.0, an art control). Evidence, probes and limits: [VQ-05](research/visual-quality-implementation/VQ-05/README.md).
+
 ## Open work
 
 | ID | Work | Status and proof |
@@ -19,7 +21,6 @@ VQ-04a derives an opaque projected silhouette from each aircraft's visible mesh 
 | VQ-02 | Improve one aircraft material at a time with matched lighting and distances. Coordinate with model owners. | Open; use 20/50/100 m and close views; previews are not flight validation. |
 | VQ-03 | Optional horizon-aware camera composition experiment. | Open; reject it if tracking delay or readability worsens. |
 | VQ-04b | Compare native shadow maps with the projected silhouette. | Open and optional; keep the existing projection if colour, contact or cost regresses. |
-| VQ-05 | Derive propeller blur from live RPM and the existing auxiliary source. | Open; pause, crash, reset and captures must agree without changing traces. |
 | VQ-06a/b | Apply renderer quality settings and expose saved presets through the menu. | Open with the UI-22…24 theme/display/Settings work; include repeated apply, invalid settings, restore and frame-time evidence. |
 | VQ-07 | Compare Forward+ in an isolated build. | Open; no renderer migration or Ultra preset until colour, shaders, export and recovery are measured. |
 

@@ -1,0 +1,175 @@
+{
+  "aircraft": "jensen-das-ugly-stik-60",
+  "blade_angle_deg": 25.0,
+  "checks": [
+    {
+      "check": "attached at 0 rpm is byte-identical",
+      "detail": "pristine vs attached+update(0)",
+      "ok": true
+    },
+    {
+      "check": "hidden propeller hides the disc",
+      "detail": "disc visible=false blur=0.00",
+      "ok": true
+    },
+    {
+      "check": "blade change falls with speed",
+      "detail": "0.3671 at 0 rpm -> 0.0702 at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "disc changes pixels outside the blade silhouette",
+      "detail": "104319 pixels at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "repeated frame is byte-identical",
+      "detail": "two frames at 6000 rpm",
+      "ok": true
+    }
+  ],
+  "format": "openrc-propeller-blur-capture v1",
+  "images": [
+    {
+      "blur": 0.0,
+      "changed_outside_blades": 0,
+      "image": "jensen-das-ugly-stik-60-front-rpm0.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.367149811064252,
+      "rpm": 0.0,
+      "sha256": "930ec8268385fa1e31f805425032382658a98c3814fe79763af85ac593b8d0aa"
+    },
+    {
+      "blur": 0.00401361581059798,
+      "changed_outside_blades": 0,
+      "image": "jensen-das-ugly-stik-60-front-rpm400.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.365910118664066,
+      "rpm": 400.0,
+      "sha256": "4f010a5ef99d2d4824cd7edd0c31a502a5bc023ba696a6a513b0be8522d80997"
+    },
+    {
+      "blur": 0.126200274348422,
+      "changed_outside_blades": 6,
+      "image": "jensen-das-ugly-stik-60-front-rpm600.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.323964059361701,
+      "rpm": 600.0,
+      "sha256": "af09e47bf5212bf197152b09ff2f1d5420ac23b1dbb60476e6fece9266f95b48"
+    },
+    {
+      "blur": 0.362698775593152,
+      "changed_outside_blades": 19812,
+      "image": "jensen-das-ugly-stik-60-front-rpm800.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.246146571044464,
+      "rpm": 800.0,
+      "sha256": "1dd98e7fc6d28671da32664409767e970288612f40208499ffd26870390e88c9"
+    },
+    {
+      "blur": 0.637301224406849,
+      "changed_outside_blades": 60994,
+      "image": "jensen-das-ugly-stik-60-front-rpm1000.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.164048751671355,
+      "rpm": 1000.0,
+      "sha256": "aa76abf3c56a899808c037a5af374397ede652faddcf7c9300a25391e0285ffc"
+    },
+    {
+      "blur": 0.873799725651577,
+      "changed_outside_blades": 95540,
+      "image": "jensen-das-ugly-stik-60-front-rpm1200.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.101111709578775,
+      "rpm": 1200.0,
+      "sha256": "a9102d3426e61664666b2f83f7111a2f647ce4d1b28be26ccda66ade4b0077e1"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 104319,
+      "image": "jensen-das-ugly-stik-60-front-rpm1500.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.0701946290706104,
+      "rpm": 1500.0,
+      "sha256": "05f0164ac884b3a903ece5224e5b74d1181d1169422d4e049b9ea4753df0bc40"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 104319,
+      "image": "jensen-das-ugly-stik-60-front-rpm2400.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.0701946290706104,
+      "rpm": 2400.0,
+      "sha256": "05f0164ac884b3a903ece5224e5b74d1181d1169422d4e049b9ea4753df0bc40"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 104319,
+      "image": "jensen-das-ugly-stik-60-front-rpm6000.png",
+      "mask_pixels": 23666,
+      "mean_change_on_blades": 0.0701946290706104,
+      "rpm": 6000.0,
+      "sha256": "05f0164ac884b3a903ece5224e5b74d1181d1169422d4e049b9ea4753df0bc40"
+    }
+  ],
+  "ok": true,
+  "profile": {
+    "blades": 2,
+    "coverage": [
+      0.0,
+      0.0,
+      0.0,
+      0.283333333333333,
+      0.433333333333333,
+      0.416666666666667,
+      0.383333333333333,
+      0.358333333333333,
+      0.325,
+      0.308333333333333,
+      0.291666666666667,
+      0.266666666666667,
+      0.25,
+      0.233333333333333,
+      0.216666666666667,
+      0.2,
+      0.183333333333333,
+      0.183333333333333,
+      0.166666666666667,
+      0.15,
+      0.15,
+      0.133333333333333,
+      0.133333333333333,
+      0.116666666666667,
+      0.108333333333333,
+      0.1,
+      0.0916666666666667,
+      0.0916666666666667,
+      0.0833333333333333,
+      0.075,
+      0.0666666666666667,
+      0.0583333333333333,
+      0.0583333333333333,
+      0.0416666666666667,
+      0.0416666666666667,
+      0.025
+    ],
+    "hub_radius_m": 0.0,
+    "inner_radius_m": 0.0105000007897615,
+    "plane_z_m": 0.0,
+    "radius_m": 0.152452737092972
+  },
+  "region_px": [
+    374.323944091797,
+    94.2899703979492,
+    517.0146484375,
+    518.561645507812
+  ],
+  "renderer": {
+    "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+    "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+    "driver": "opengl3",
+    "godot": "4.7.2-stable (official)",
+    "method": "gl_compatibility"
+  },
+  "view": "front"
+}

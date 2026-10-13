@@ -1,0 +1,177 @@
+{
+  "format": "openrc-vq05-field-captures v2",
+  "source": "two git worktrees at HEAD db54ab8: 'before' unchanged, 'after' with only this change applied (app/render/propeller_blur.gd, app/tests/*propeller_blur.gd, the two main.gd lines)",
+  "renderer": "llvmpipe (Mesa 25.2.8) Compatibility opengl3 under Xvfb; OPENRC_SCENERY=off, birds and engine shadows off; LP_NUM_THREADS=3",
+  "captures": [
+    {
+      "name": "stik-inspect",
+      "before": {
+        "sha256": "93a4274f25c08daf7bce1bdcc7a8f0103edc648a29401e6532e9567d21f2cf69",
+        "draw_calls": 124,
+        "primitives": 174006,
+        "args": "--capture --t=1.5 --inspect --out=stik-inspect.png"
+      },
+      "after": {
+        "sha256": "ed3692e323c1df75d825ed45ac1874b8f26e95bfcd06be2c15040b86cb75e23d",
+        "draw_calls": 124,
+        "primitives": 178286,
+        "args": "--capture --t=1.5 --inspect --out=stik-inspect.png"
+      },
+      "changed_pixels_over_0.02": 1817,
+      "changed_bbox": [
+        550,
+        284,
+        613,
+        335
+      ],
+      "darker_pixels": 246,
+      "brighter_pixels": 828
+    },
+    {
+      "name": "stik-pilot",
+      "before": {
+        "sha256": "9a356c3c863d32478783db3ee1584c88176f7a557e8bd7e61d28f62ea1a06dee",
+        "draw_calls": 115,
+        "primitives": 141168,
+        "args": "--capture --t=1.5 --out=stik-pilot.png"
+      },
+      "after": {
+        "sha256": "0d36979f70625f439f7ae7a607a5143e046460bb1eec0845f1558989324d99a2",
+        "draw_calls": 115,
+        "primitives": 145448,
+        "args": "--capture --t=1.5 --out=stik-pilot.png"
+      },
+      "changed_pixels_over_0.02": 7,
+      "changed_bbox": [
+        647,
+        356,
+        648,
+        360
+      ],
+      "darker_pixels": 2,
+      "brighter_pixels": 4
+    },
+    {
+      "name": "extra-inspect",
+      "before": {
+        "sha256": "aaf58a333ff4b1c998619e8fa8bc966f73362eaccbc78279c8965adbecadddea",
+        "draw_calls": 53,
+        "primitives": 136419,
+        "args": "--capture --aircraft=gp-extra-300s-60 --t=1.5 --inspect --out=extra-inspect.png"
+      },
+      "after": {
+        "sha256": "d6b88a9353d5a295b722d52ac96cf88c5e3f02f2ad7e5af6a56df12d82ca2ab4",
+        "draw_calls": 52,
+        "primitives": 137487,
+        "args": "--capture --aircraft=gp-extra-300s-60 --t=1.5 --inspect --out=extra-inspect.png"
+      },
+      "changed_pixels_over_0.02": 1030,
+      "changed_bbox": [
+        560,
+        278,
+        614,
+        358
+      ],
+      "darker_pixels": 332,
+      "brighter_pixels": 222
+    },
+    {
+      "name": "p51-inspect",
+      "before": {
+        "sha256": "48f1ef60c2783b2d3fbb3439be4a690ed4a577c6ae41d4974a517043bec662c8",
+        "draw_calls": 160,
+        "primitives": 169608,
+        "args": "--capture --aircraft=p51d-mustang-120 --t=1.5 --inspect --out=p51-inspect.png"
+      },
+      "after": {
+        "sha256": "b784edc6d5c46d7ef246134b40faf3812ac9763dd39279c0830dc6ec219a4a3e",
+        "draw_calls": 154,
+        "primitives": 166952,
+        "args": "--capture --aircraft=p51d-mustang-120 --t=1.5 --inspect --out=p51-inspect.png"
+      },
+      "changed_pixels_over_0.02": 13486,
+      "changed_bbox": [
+        453,
+        184,
+        612,
+        355
+      ],
+      "darker_pixels": 8682,
+      "brighter_pixels": 3793
+    },
+    {
+      "name": "stik-low-inspect",
+      "before": {
+        "sha256": "a2eb11528645a4e5486116f4652bb427c66db3de03961e641240debf0f7c75dd",
+        "draw_calls": 121,
+        "primitives": 163751,
+        "args": "--capture --t=1.5 --alt=0.8 --inspect --out=stik-low-inspect.png"
+      },
+      "after": {
+        "sha256": "571d8ca5f12c8c7fa632be0b44c20042260fe2d666460db872587988553de136",
+        "draw_calls": 121,
+        "primitives": 168031,
+        "args": "--capture --t=1.5 --alt=0.8 --inspect --out=stik-low-inspect.png"
+      },
+      "changed_pixels_over_0.02": 1547,
+      "changed_bbox": [
+        552,
+        284,
+        612,
+        335
+      ],
+      "darker_pixels": 243,
+      "brighter_pixels": 453
+    },
+    {
+      "name": "capture-land-30m",
+      "before": {
+        "sha256": "2e3e8162a2ccae8e53a99153e2a83d4a6f4dab63613edcfcaaf0af16db9f7281",
+        "draw_calls": 119,
+        "primitives": 149090,
+        "args": "--capture --t=1.5 --autozoom=0 --shadow=off --out=capture-land-30m.png"
+      },
+      "after": {
+        "sha256": "4eb27de5b1814e2740db9099c556a7f963442618e02f939d0255a24d2b4806d0",
+        "draw_calls": 119,
+        "primitives": 153370,
+        "args": "--capture --t=1.5 --autozoom=0 --shadow=off --out=capture-land-30m.png"
+      },
+      "changed_pixels_over_0.02": 2,
+      "changed_bbox": [
+        644,
+        358,
+        644,
+        359
+      ],
+      "darker_pixels": 1,
+      "brighter_pixels": 0
+    },
+    {
+      "name": "capture-land-low3m",
+      "before": {
+        "sha256": "43f3fb97c6cfdb1739576bb8e7f36196d5a2c03221e8c9ae02c8aecca9c7c4db",
+        "draw_calls": 123,
+        "primitives": 173602,
+        "args": "--capture --t=1.5 --alt=3 --autozoom=0 --shadow=off --out=capture-land-low3m.png"
+      },
+      "after": {
+        "sha256": "a57ec75e9d94a24c0d371a3d795336dd1b5114dcf5358f2dc8f9db0ba250a9e9",
+        "draw_calls": 123,
+        "primitives": 177882,
+        "args": "--capture --t=1.5 --alt=3 --autozoom=0 --shadow=off --out=capture-land-low3m.png"
+      },
+      "changed_pixels_over_0.02": 3,
+      "changed_bbox": [
+        644,
+        358,
+        644,
+        360
+      ],
+      "darker_pixels": 3,
+      "brighter_pixels": 0
+    }
+  ],
+  "readability_before": "capture-land-30m.png: 65 airplane pixels, Weber contrast -0.426, 9.2 % with |contrast| < 0.1, mean \u0394E 41.5, background saturation 54.1\ncapture-land-low3m.png: 52 airplane pixels, Weber contrast -0.339, 15.4 % with |contrast| < 0.1, mean \u0394E 39.4, background saturation 29.8\nFAIL readability: capture-land-low3m.png: contrast -0.339 > -0.40; capture-land-low3m.png: 15.4 % nearly invisible > 15 %\n",
+  "readability_after": "capture-land-30m.png: 67 airplane pixels, Weber contrast -0.416, 10.4 % with |contrast| < 0.1, mean \u0394E 40.5, background saturation 54.1\ncapture-land-low3m.png: 51 airplane pixels, Weber contrast -0.341, 17.6 % with |contrast| < 0.1, mean \u0394E 39.7, background saturation 29.8\nFAIL readability: capture-land-low3m.png: contrast -0.341 > -0.40; capture-land-low3m.png: 17.6 % nearly invisible > 15 %\n"
+}

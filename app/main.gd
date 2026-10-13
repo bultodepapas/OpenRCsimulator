@@ -7,6 +7,7 @@ const Scripted := preload("res://sim/scripted.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const GroundGear := preload("res://render/ground_gear.gd")
+const PropellerBlur := preload("res://render/propeller_blur.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const Commands := preload("res://input/commands.gd")
 const InputPanel := preload("res://render/panel.gd")
@@ -343,6 +344,8 @@ func _ready() -> void:
 		_engine_audio = EngineSound.create(_airplane.root, session.sim, session.aircraft.model.propulsion.max_rpm)
 	session.reset()
 	GroundGear.attach(_airplane, session)
+	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
+	PropellerBlur.attach(_airplane, session, self)
 	if not _experimental_aircraft_path.is_empty() and (not session.is_flyable() or not session.surface_error.is_empty()):
 		var candidate_flight_error: String = session.start_error if not session.start_error.is_empty() else session.pause_reason
 		if candidate_flight_error.is_empty():
