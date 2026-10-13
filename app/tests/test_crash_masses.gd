@@ -7,6 +7,9 @@ const AirplaneBuilder = preload("res://render/airplane.gd")
 const AircraftData = preload("res://physics/aircraft_data.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const Frames = preload("res://render/frames.gd")
+const MainScene = preload("res://main.tscn")
+const M = preload("res://physics/math3d.gd")
+const RB = preload("res://physics/rigid_body.gd")
 
 var _checks := 0
 var _failures := 0
@@ -19,6 +22,7 @@ func _initialize() -> void:
 func _run() -> void:
 	await _aircraft("jensen-das-ugly-stik-60", "engine O.S. MAX-61FX", "engine")
 	await _aircraft("turbo-lumber-evolution", "800 Kv motor", "engine")
+	await _production()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
@@ -28,6 +32,40 @@ func _check(label: String, ok: bool, detail := "") -> void:
 	if not ok:
 		_failures += 1
 	print(("ok   " if ok else "FAIL ") + label + ("  " + detail if not detail.is_empty() else ""))
+
+
+## The production crash path hands the inventory to the wreck: a real crash through main.tscn uses inventory masses.
+func _production() -> void:
+	var main: Variant = MainScene.instantiate()
+	main.set("aircraft_id", "jensen-das-ugly-stik-60")
+	root.add_child(main)
+	await process_frame
+	var session: Variant = main.get("session")
+	var director: Variant = main.get("_crash_director")
+	session.input_enabled = false
+	session.set_physics_process(false)
+	var s: PackedFloat64Array = session.sim.state.duplicate()
+	var hull: PackedFloat64Array = session.aircraft.model.crash_hull
+	var deepest := -INF
+	for i in range(0, hull.size(), 3):
+		deepest = maxf(deepest, M.q_rotate(RB._att(s), hull.slice(i, i + 3))[2])
+	s[RB.POS + 2] = -deepest + 0.001
+	var v_body := M.q_rotate(M.q_conj(RB._att(s)), PackedFloat64Array([0.0, 0.0, 20.0]))
+	for k in 3:
+		s[RB.VEL + k] = v_body[k]
+		s[RB.RATE + k] = 0.0
+	var before := s.duplicate()
+	before[RB.POS + 2] -= 0.05
+	session.sim.state = s
+	session.sim.previous = before
+	session.sim.set_paused(false)
+	session._physics_process(session.sim.dt())
+	director.update(session.sim.dt())
+	_check("production crash hands the inventory to the wreck", director.active and (director.report.get("inventory_boxes", []) as Array).size() == 20)
+	_check("production wreck uses inventory section masses", not director.wreck._section_masses.is_empty())
+	main.queue_free()
+	await process_frame
+	await process_frame
 
 
 func _aircraft(id: String, engine_item: String, engine_kind: String) -> void:

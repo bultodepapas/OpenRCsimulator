@@ -1,0 +1,7 @@
+KILLED   inventory ignored (fixed shares): 6 failing checks (e.g. jensen-das-ugly-stik-60 intact wreck's centre of mass is the aircraft CG  (0.0, -0.039957, 0.234711) vs (0.0, -0.005, 0.0059) (231.5 mm))
+KILLED   no custom centre of mass: 4 failing checks (e.g. jensen-das-ugly-stik-60 intact wreck's centre of mass is the aircraft CG  (0.0, -0.039957, 0.234711) vs (0.0, -0.005, 0.0059) (231.5 mm))
+SURVIVED overlap ignores the box size: 0 failing checks
+SURVIVED section floor creates mass: 0 failing checks
+SURVIVED union box instead of member boxes: 0 failing checks
+KILLED   model frame axes swapped: 2 failing checks (e.g. jensen-das-ugly-stik-60 wing halves carry real wing mass)
+KILLED   director passes no inventory: 2 failing checks (e.g. production crash hands the inventory to the wreck)
