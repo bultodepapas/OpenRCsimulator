@@ -6,9 +6,9 @@ An open-source RC airplane simulator for a USB transmitter, gamepad or keyboard,
 
 ## Download and fly
 
-[Download the rc7 alpha](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc7) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. Packages are unsigned; see the [first-launch guide](docs/FIRST-LAUNCH.md) for platform setup, controls, radio calibration and diagnostics.
+[Download the rc8 alpha](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc8) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. Packages are unsigned; see the [first-launch guide](docs/FIRST-LAUNCH.md) for platform setup, controls, radio calibration and diagnostics.
 
-**Release and source differ.** rc7 starts airborne in calm daylight. Current source starts new Home preferences on the Stik runway with gentle wind and passing evening; saved choices take precedence. [Release notes](docs/releases/v0.1.0-rc7.md) describe the download. The [player guide](docs/FIRST-LAUNCH.md#current-source) describes the newer source.
+**rc8 first flight:** new Home preferences start on the Stik runway with gentle wind and passing evening; saved choices take precedence. [Release notes](docs/releases/v0.1.0-rc8.md) describe the download; the [player guide](docs/FIRST-LAUNCH.md#current-source) explains the flight setup.
 
 ## Aircraft
 

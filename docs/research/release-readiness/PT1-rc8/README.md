@@ -1,6 +1,6 @@
 # PT1 — rc8 release verification
 
-2026-10-12 · Status: candidate qualification in progress. Native GUI, physical-radio, target-GPU and pilot acceptance remain open.
+2026-10-12 (America/Bogota) · Status: rc8 published; tagged CI, all downloaded checksums and Linux standalone smoke passed. Native GUI, physical-radio, target-GPU and pilot acceptance remain open.
 
 ## Candidate scope
 
@@ -33,3 +33,17 @@ The complete capture inventory passed in the isolated Linux checkout after the r
 An independent clean Linux checkout at `9e25b71`, with an isolated local rc8 tag, exported all three packages and passed Linux flight, resource-pack, identity, platform-version and macOS architecture/signature checks. [Export log](preflight-export.log) · [Preflight checksums](preflight-SHA256SUMS). These hashes identify local preflight builds; published CI packages have their own checksums.
 
 The exported Linux binary refuses a Turbo Lumber real-flight request with exit 1 and the explicit preview-only message. Its scripted visual route runs and writes a complete frame-time report; it also logs the expected absence of flight data. Native Windows/macOS GUI, hardware radios, target-GPU and pilot acceptance remain open.
+
+## Tagged publication
+
+Tag `v0.1.0-rc8` identifies `9e25b71d2a36dbeb1eb44d4b65d3da9e622b4375`. [Tagged CI 38317830534](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38317830534) passed all four jobs, including the full headless app suite, complete capture sequence, three-platform exports and publication. The prerelease was published at **2026-10-12 19:05:50 America/Bogota** (**2026-10-13 00:05:50 UTC**) with exactly three ZIPs and `SHA256SUMS`. [Release](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc8).
+
+The release is frozen at the selected candidate. Subsequent ground-effect and propeller-blur work in the shared checkout is outside this release and remains with its owners.
+
+## Downloaded release verification
+
+All four expected assets were downloaded with `gh release download`. The three ZIPs match the published [SHA256SUMS](SHA256SUMS); every local file, including the checksum file, also matches its GitHub asset digest. The prerelease flag and the remote tag's exact candidate commit were independently checked.
+
+The extracted Linux executable ran headless with Dummy audio for three seconds from an initially empty working directory, with isolated user data. It exited **0** and left the working directory empty. The frozen candidate's `check_trimmed_flight.py --duration=3` passed: **720 ticks**, exactly **3.000000000 s**, finite samples, altitude **30.000 → 30.000 m** and airspeed **15.0000 m/s**. The trace identifies build `v0.1.0-rc8`; it emits no commit field. [Engine log](linux-engine.log) retains the existing estimated-inertia warning and contains no engine errors. This qualifies the downloaded Linux pack's headless execution, not native GUI, radio or physical handling.
+
+Main's download links now point to the verified rc8 release. The frozen tag and published packages are unchanged by this evidence/documentation promotion.
