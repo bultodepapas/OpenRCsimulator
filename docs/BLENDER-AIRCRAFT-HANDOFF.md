@@ -183,7 +183,7 @@ Keep the r1 metadata structure where practical. Add a `sections` list containing
 
 Record the GLB hash, exact tool versions, export settings and per-mesh/total triangle and surface counts. New metadata is delivery information, not a replacement for the simulator's `openrc-aircraft v2` physics file. Document renamed/deleted nodes and changes to dimensions, datum, hinges or materials in the changelog.
 
-Fix the r1 rebuild instructions: include the BREP-cache generation step and make the producer/consumer paths agree for that cache, `escena.json` and `stl_juego`. One clean-copy command must generate all required intermediates without files from the author's machine. Re-exporting the delivered game `.blend` must also work independently of CAD regeneration. The verifier must exit nonzero when a mandatory check fails.
+Document a complete r2 export path that works from a clean copy without files from the author's machine. Re-exporting the delivered game `.blend` must work independently of CAD regeneration. If r2 also retains the CAD rebuild pipeline, include the missing BREP-cache step and reconcile producer/consumer paths for that cache, `escena.json` and `stl_juego`; otherwise label CAD rebuilding unsupported and preserve the source as reference. The verifier must exit nonzero when a mandatory check fails.
 
 Keep authorship and the owner's chosen asset terms in `LICENSE.txt`; do not infer them from the simulator code license. Reuse supplied or suitably licensed assets instead of creating additional stock props or textures.
 
@@ -197,6 +197,7 @@ The r1 **1.46 kg partial estimated ledger is not flight-ready mass data**. Label
 
 - [ ] A clean machine can open the game `.blend`, inspect every part and export using the documented command without missing files.
 - [ ] A clean Blender scene can reimport `aircraft.glb` with the same dimensions, neutral pose, hierarchy and materials.
+- [ ] Matching orthographic views of the master and game model preserve the silhouette; top/bottom markings remain readable in representative flight views.
 - [ ] Root identity, metres, D0, left/right and axis conversion are correct. Metadata and exported landmarks/pivots agree within 0.1 mm, and axes within 0.01°. These are export-consistency tolerances, not real-aircraft accuracy claims.
 - [ ] All 13 existing moving pivots remain present with their expected parents; each moving mesh follows its correct pivot, including horns and markings.
 - [ ] Positive/negative witness poses and the full requested clearance sweep pass. Returning to zero restores the delivered neutral pose.

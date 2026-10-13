@@ -51,3 +51,16 @@ The default comparison includes calm air, alternative starting trims and constan
 & .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/energy_probe.gd" -- --calm
 & .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/energy_probe.gd" -- --calm --480
 ```
+
+## Explicit half-throttle start
+
+Home's standard Stik start selector cycles through the legacy airborne, runway and optional airborne-at-50%-throttle choices. The latter solves its speed and all trims; it is not an automatic in-flight assist or a measured cruise prescription. It does **not** eliminate inversion under all power histories.
+
+```powershell
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_cruise_trim.gd
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_half_power_start.gd
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/loop_probe.gd" -- --half-power-start
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --path app --script "$PWD/research/flight-dynamics/climb-trim/watch.gd" -- --half-power-start
+```
+
+The observer command opens normal Home with this explicit choice selected; press Fly to begin. Input and flight recording then work as before. The comparison probe repeats the captured raw keyboard events from the different initial state, plus fixed half/quarter/full-throttle controls; early ground contacts and persistent inversions are reported explicitly.

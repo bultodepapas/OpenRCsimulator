@@ -14,6 +14,13 @@ EST = 'NITRO-02 experimental installation estimate; no matched hardware measurem
 def q(value, unit='1', kind='estimated', source=EST):
     return dict(value=value, unit=unit, kind=kind, source=source)
 
+def left_to_right_sum(values):
+    """Accumulate inventory values in a Python-version-independent order."""
+    total = 0.0
+    for value in values:
+        total += value
+    return total
+
 def installation(two, diameter=13, pitch=6):
     family = 'glow_2t' if two else 'glow_4t'
     settings = {
@@ -79,8 +86,8 @@ def aircraft(two, install, suffix=''):
     # Recompute the existing virtual balance fixture; never pretend ballast was measured.
     cg=raw['balance']['plan_cg']['value']
     parts=inv[:-1]
-    mass=sum(i['mass']['value'] for i in parts)
-    first=[sum(i['mass']['value']*i['position']['value'][k] for i in parts) for k in range(3)]
+    mass=left_to_right_sum(i['mass']['value'] for i in parts)
+    first=[left_to_right_sum(i['mass']['value']*i['position']['value'][k] for i in parts) for k in range(3)]
     x=.85
     ballast=(mass*cg[0]-first[0])/(x-cg[0])
     inv[-1]['mass']=q(ballast,'kg','derived',EST+'; virtual first-moment balance')

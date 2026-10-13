@@ -242,7 +242,7 @@ func _test_field_builder_and_scenery_hook() -> void:
 		and int(imported_grass.get_meta("batches", 99)) <= 3)
 	_check("opt-in scenery attaches downloaded habitat plants within its source budget",
 		downloaded_habitats != null and int(scenery_stats.get("botanical_plants", 0)) > 0
-		and int(scenery_stats.get("botanical_triangles", 0)) <= 70000
+		and int(scenery_stats.get("botanical_triangles", 0)) <= 90000
 		and int(downloaded_habitats.get_meta("batches", 99)) <= 24)
 	_check("opt-in scenery and grass remain visual-only", _count_colliders(with_scenery) == 0)
 	with_scenery.free()

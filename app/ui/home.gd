@@ -27,6 +27,7 @@ const UpdateNotice := preload("res://ui/update_notice.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
+signal workshop_requested(from: Control)
 signal quit_requested
 ## The player asked for the next interface language (a Preferences.LANGUAGES code).
 signal language_requested(code: String)
@@ -55,6 +56,7 @@ var time_of_day: String = "day"
 var start_button: Button
 
 var fly_button: Button
+var workshop_button: Button
 var weather_button: Button
 var time_button: Button
 var language_button: Button
@@ -196,6 +198,10 @@ func _init() -> void:
 	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
 	fly_row.add_child(weather_button)
 	column.add_child(fly_row)
+	workshop_button = _button("Aircraft Workshop", "")
+	workshop_button.name = "Workshop"
+	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
+	column.add_child(workshop_button)
 	column.add_child(_gap(10))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
@@ -252,7 +258,9 @@ func _init() -> void:
 func _ready() -> void:
 	# Down from Fly lands on the row's first button (geometry alone picks the middle one, Help). Left and right from
 	# Fly reach the aircraft arrows, so changing airplane is two keys away from the start.
-	fly_button.focus_neighbor_bottom = fly_button.get_path_to(language_button)
+	fly_button.focus_neighbor_bottom = fly_button.get_path_to(workshop_button)
+	workshop_button.focus_neighbor_top = workshop_button.get_path_to(fly_button)
+	workshop_button.focus_neighbor_bottom = workshop_button.get_path_to(language_button)
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button)
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)

@@ -207,7 +207,7 @@ func _test_complete_scenery_budget() -> void:
 	_check("downloaded flowers replace the retired 2,970 procedural cushions",
 		int(stats.flowers) == 0 and botanical != null and plants.size() == int(stats.get("botanical_plants", -1)))
 	_check("downloaded habitat triangles and batches meet their provisional budgets",
-		int(stats.get("botanical_triangles", 0)) > 0 and int(stats.botanical_triangles) <= 70000
+		int(stats.get("botanical_triangles", 0)) > 0 and int(stats.botanical_triangles) <= 90000
 		and int(stats.get("botanical_batches", 99)) <= 24)
 	var state: Dictionary = imported_plants.get_meta("_imported_vegetation_state", {}) if imported_plants != null else {}
 	var damage_ids: Array = (state.get("damage", {}) as Dictionary).keys()

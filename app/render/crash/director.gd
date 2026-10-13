@@ -75,10 +75,12 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 	_configure_water_effects()
 	# Declared inventory state, not a fuel-burn simulation. CR-22b: energy is read from the explicit
 	# energy_source tag, never inferred from a name or the propulsion kind.
-	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(data_path))
+	var trial: Dictionary = flight.get("workshop_trial") if flight.get("workshop_trial") is Dictionary else {}
+	var raw: Variant = JSON.parse_string(trial.raw_bytes.get_string_from_utf8()) if not trial.is_empty() else JSON.parse_string(FileAccess.get_file_as_string(data_path))
+	var datum: Vector2 = AirplaneBuilder.datum(str(flight.get("aircraft_id"))) * float(trial.get("scale", 1.0))
 	if raw is Dictionary:
 		for item: Dictionary in raw.get("inventory",[]):
-			inventory_boxes.append(inventory_box(item, AirplaneBuilder.datum(str(flight.get("aircraft_id")))))
+			inventory_boxes.append(inventory_box(item, datum))
 			var kind := str(item.get("energy_source",""))
 			if not kind.is_empty():
 				energy_sources[kind] = float(energy_sources.get(kind, 0.0)) + maxf(0.0,float(item.get("mass",{}).get("value",0.0)))

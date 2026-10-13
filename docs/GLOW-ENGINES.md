@@ -17,6 +17,8 @@ Propeller diameter controls the rendered blade and blur radius, aerodynamic load
 
 Edit the source generators `research/glow-engines/build_profiles.py` and `build_installations.py`, then regenerate. Do not edit generated aircraft/profile JSON. Engine profiles declare family, fuel chemistry, independent charge/loss maps, operating support and provenance. Aircraft `propulsion.engine.glow_installation` references a closed `openrc-glow-installation v1` file, and `capabilities.energy` must be `finite_glow_fuel`. Its named fuel inventory supplies the initial usable mass and tank geometry. Every quantity carries unit, evidence kind and source. Malformed, mismatched or unsupported modules fail before flight.
 
+Exact input bytes identify checkpoints and retained experiments. The targeted `.gitattributes` rules preserve LF for the engine profiles and flight records, and the existing CRLF representation for generated Stik installations/aircraft. The installation generator writes that representation explicitly and accumulates inventory quantities in a fixed order across Python versions. Run `test_installation_line_endings.py` alongside the generator checks when changing this pipeline.
+
 ## Runtime model
 
 The 2T model accounts for delivered/trapped charge, scavenging loss and one combustion opportunity per revolution. The 4T model accounts for independent valve intake, pumping and valve-train losses over two revolutions. Rich 2T missed firing remains a two-stroke mechanical cycle. Neither model derives from an RPM-scaled version of the other. Per-profile efficiencies and losses determine consumption; there is no universal torque or efficiency ranking.

@@ -1,4 +1,5 @@
 # D6e-R1: selected initial operating point, fixed trim, lifecycle and failure controls.
+# Run: godot --headless --path app --script res://tests/test_half_power_start.gd
 extends SceneTree
 const Session = preload("res://sim/flight_session.gd")
 const Weather = preload("res://physics/wind_config.gd")

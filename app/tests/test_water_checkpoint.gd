@@ -135,7 +135,12 @@ func _run() -> void:
 			and flight._crash_director.wreck.stats().started)
 
 	flight.session.reset()
+	flight.recorder.detach()
+	if lake_ambience != null:
+		lake_ambience.stop()
+		lake_ambience.stream = null
 	flight.free()
+	await process_frame
 	await process_frame
 	print("LU-27 water checkpoint: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)

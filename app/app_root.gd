@@ -71,6 +71,11 @@ var update_running_version := ""
 var open_url: Callable = OS.shell_open
 var update_checker: Node
 var _update_info := {}
+## The editor and previous flight stay detached while a trial runs; return restores their exact state.
+var _workshop_screens: Array[Dictionary] = []
+var _workshop_previous_flight: Node
+var _workshop_previous_keyboard: Callable
+var _workshop_home_detached := false
 
 
 func _ready() -> void:
@@ -129,6 +134,7 @@ func show_home() -> void:
 	home.set_lighting_config(lighting_config)
 	home.set_time_of_day(world_preset)
 	home.fly_requested.connect(start_flight)
+	home.workshop_requested.connect(open_workshop)
 	home.aircraft_requested.connect(set_aircraft)
 	home.start_requested.connect(set_start_choice)
 	home.quit_requested.connect(func() -> void: get_tree().quit())
@@ -339,6 +345,10 @@ func open_pause() -> void:
 	var pause_menu := PauseMenu.new(has_home)
 	pause_menu.continue_requested.connect(continue_flight)
 	pause_menu.restart_requested.connect(restart_flight)
+	pause_menu.workshop_requested.connect(open_workshop)
+	if not _workshop_screens.is_empty():
+		pause_menu.workshop_button.text = "Return to Workshop"
+		pause_menu.end_button.text = "Return to Workshop"
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.overlays_requested.connect(open_overlays)
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
@@ -359,6 +369,126 @@ func open_help(from: Control = null) -> void:
 	var help := HelpScreen.new(from)
 	help.closed.connect(close_help)
 	screens.push("help", help, from)
+
+
+## One editor route for the whole catalog. Trial flights never replace the original selection.
+func open_workshop(from: Control = null) -> void:
+	if not _workshop_screens.is_empty():
+		_return_to_workshop()
+		return
+	if not (screens.is_top("home") or screens.is_top("pause")):
+		return
+	var editor: CanvasLayer = load("res://ui/workshop.gd").new()
+	editor.initial_aircraft_id = flight.aircraft_id if flight != null else home.aircraft_id
+	editor.closed.connect(close_workshop)
+	editor.trial_requested.connect(_start_workshop_trial)
+	screens.push("workshop", editor, from)
+
+
+func close_workshop() -> void:
+	if screens.is_top("workshop"):
+		screens.pop()
+
+
+func _start_workshop_trial(payload: Dictionary) -> void:
+	if not screens.is_top("workshop") or not _workshop_screens.is_empty():
+		return
+	var editor: Node = screens.top()
+	var trial: Dictionary = load("res://workshop/trial.gd").freeze(payload)
+	if not trial.get("ok", false):
+		editor.set_note("; ".join(trial.get("errors", [])))
+		return
+	var base_id: String = str(payload.get("base_id", ""))
+	if not Catalog.can_fly(base_id):
+		editor.set_note(tr("The source aircraft is not available in this catalog."))
+		return
+	# Suspend, but retain the old world and recorder until the complete new flight passes startup.
+	var previous: Node = flight
+	if previous != null:
+		remove_child(previous)
+	if home_scene != null and home_scene.is_inside_tree():
+		remove_child(home_scene)
+		_workshop_home_detached = true
+	var candidate: Node = load(FLIGHT_SCENE).instantiate()
+	candidate.field_path = field_path
+	candidate.aircraft_id = base_id
+	candidate.workshop_trial = trial.duplicate(true)
+	candidate.start_choice = "airborne"
+	candidate.interactive_start = true
+	candidate.weather_config = preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
+	candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
+	if previous != null:
+		candidate.weather_config = previous.weather_config.duplicate(true)
+		candidate.lighting_config = previous.lighting_config.duplicate(true)
+	candidate.overlays_enabled = true
+	candidate.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud).duplicate(true)
+	add_child(candidate)
+	if not candidate.startup_error.is_empty():
+		var reason: String = candidate.startup_error
+		if candidate.recorder != null:
+			candidate.recorder.detach()
+		remove_child(candidate)
+		candidate.queue_free()
+		if previous != null:
+			add_child(previous)
+		if _workshop_home_detached:
+			add_child(home_scene)
+			home_scene.camera.make_current()
+			_workshop_home_detached = false
+		editor.set_note(tr("Could not start flight: %s") % reason)
+		return
+	_workshop_previous_flight = previous
+	_workshop_previous_keyboard = _keyboard_reader
+	while screens.top() != null:
+		var node: Node = screens.top()
+		var id: String = "workshop" if node == editor else ("home" if node == home else "pause")
+		_workshop_screens.push_front({id = id, node = screens.pop(false, false)})
+	flight = candidate
+	screens.set_session(flight.session)
+	_keyboard_reader = flight.session.read_raw
+	flight.pause_requested.connect(open_pause)
+	flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
+	flight._note = tr("Experimental Workshop trial · Esc to return")
+
+
+func _return_to_workshop() -> void:
+	if _workshop_screens.is_empty() or flight == null:
+		return
+	if not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
+		return
+	screens.clear()
+	screens.set_session(null)
+	if flight.recorder != null:
+		flight.recorder.detach()
+	remove_child(flight)
+	flight.queue_free()
+	flight = _workshop_previous_flight
+	_workshop_previous_flight = null
+	_keyboard_reader = _workshop_previous_keyboard
+	if flight != null:
+		add_child(flight)
+		flight._camera.make_current()
+		screens.set_session(flight.session)
+	if _workshop_home_detached:
+		add_child(home_scene)
+		home_scene.camera.make_current()
+		_workshop_home_detached = false
+	var restored: Array[Dictionary] = _workshop_screens
+	_workshop_screens = []
+	for entry: Dictionary in restored:
+		screens.push(entry.id, entry.node)
+
+
+func _exit_tree() -> void:
+	# Suspended nodes are intentionally outside the tree, so the host must own their cleanup.
+	for entry: Dictionary in _workshop_screens:
+		if is_instance_valid(entry.node):
+			entry.node.free()
+	_workshop_screens.clear()
+	if is_instance_valid(_workshop_previous_flight):
+		_workshop_previous_flight.free()
+	if _workshop_home_detached and is_instance_valid(home_scene):
+		home_scene.free()
 
 
 ## HUD-06: the flight overlays panel over the pause menu; changes apply and save at once.
@@ -529,6 +659,9 @@ func restart_flight() -> void:
 ## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again
 ## ends without it (an explicit discard).
 func end_flight() -> void:
+	if not _workshop_screens.is_empty():
+		_return_to_workshop()
+		return
 	if flight == null or not has_home or (screens.top() != null and not screens.is_top("pause")) \
 		or not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
 		return

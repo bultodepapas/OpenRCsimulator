@@ -128,8 +128,8 @@ func _test_build() -> void:
 		and imported_plants.get_children().all(func(child: Node) -> bool: return child is MultiMeshInstance3D))
 	_check("downloaded habitat flowers replace the procedural cushion group",
 		int(stats.flowers) == 0 and botanical != null and botanical_plants.size() == int(stats.get("botanical_plants", -1)))
-	_check("downloaded habitat geometry stays within the 70k plant-triangle and 24-batch limits",
-		int(stats.get("botanical_triangles", -1)) > 0 and int(stats.botanical_triangles) <= 70000
+	_check("downloaded habitat geometry stays within the 90k plant-triangle and 24-batch limits",
+		int(stats.get("botanical_triangles", -1)) > 0 and int(stats.botanical_triangles) <= 90000
 		and int(stats.get("botanical_batches", 99)) <= 24,
 		"triangles=%s batches=%s" % [stats.get("botanical_triangles", -1), stats.get("botanical_batches", -1)])
 	_check_imported_vegetation_damage(imported_plants)

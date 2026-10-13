@@ -86,7 +86,8 @@ static func queue(
 	asset_id: String,
 	placement: Transform3D,
 	seed: int,
-	damage_id: String = ""
+	damage_id: String = "",
+	tint: Color = Color.WHITE
 ) -> String:
 	var canonical_id := resolve_id(asset_id, seed)
 	if canonical_id.is_empty():
@@ -99,6 +100,7 @@ static func queue(
 		"transform": grounded,
 		"seed": seed,
 		"damage_id": damage_id,
+		"tint": _bounded_instance_tint(tint),
 	})
 	return canonical_id
 
@@ -148,7 +150,8 @@ static func build(batches: Dictionary, enable_wind: bool = false) -> Node3D:
 				multi_mesh.set_instance_transform(instance_index, instance_transform)
 				var phase := fposmod(float(record.get("seed", 0)) * 0.61803398875, 1.0)
 				multi_mesh.set_instance_custom_data(instance_index, Color(phase, 0.0, 0.0, 1.0))
-				multi_mesh.set_instance_color(instance_index, Color.WHITE)
+				var instance_tint: Color = record.get("tint", Color.WHITE)
+				multi_mesh.set_instance_color(instance_index, instance_tint)
 				var damage_id := str(record.get("damage_id", ""))
 				var bounds_index := (state["bounds"] as Array).size()
 				(state["bounds"] as Array).append({
@@ -256,6 +259,11 @@ static func _ensure_catalog() -> void:
 		for asset in _catalog_data.get("assets", []):
 			if asset is Dictionary and asset.has("id"):
 				_asset_index[str(asset["id"])] = asset
+
+
+static func _bounded_instance_tint(value: Color) -> Color:
+	return Color(clampf(value.r, 0.86, 1.0), clampf(value.g, 0.86, 1.0),
+		clampf(value.b, 0.86, 1.0), 1.0)
 
 
 static func _load_parts(asset_id: String) -> Array[Dictionary]:

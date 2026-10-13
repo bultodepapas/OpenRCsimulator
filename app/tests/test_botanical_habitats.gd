@@ -41,10 +41,34 @@ func _test_imported_habitats(root: Node3D) -> void:
 	var budget := int(root.get_meta("triangle_budget", 0)) if root != null else 0
 	var batch_limit := int(root.get_meta("batch_limit", 0)) if root != null else 0
 	var batches := int(root.get_meta("batches", 0)) if root != null else 0
+	var reeds := 0
+	var dry_bank_plants := 0
+	var green_shrubs := 0
+	var tints_valid := true
+	for plant_value: Variant in plants:
+		if not plant_value is Dictionary:
+			continue
+		var plant: Dictionary = plant_value
+		var asset_id := str(plant.get("asset_id", ""))	
+		if str(plant.get("zone", "")) == "shore":
+			if asset_id == "reed_aredon":
+				reeds += 1
+			elif asset_id == "bush_common_flowers":
+				green_shrubs += 1
+			else:
+				dry_bank_plants += 1
+		var tint: Color = plant.get("instance_tint", Color.WHITE)
+		tints_valid = tints_valid and tint.r >= 0.86 and tint.r <= 1.0 \
+			and tint.g >= 0.86 and tint.g <= 1.0 and tint.b >= 0.86 and tint.b <= 1.0 \
+			and is_equal_approx(tint.a, 1.0)
 	_check("production attaches downloaded habitat batches", root != null and not plants.is_empty()
 		and root.get_children().all(func(child: Node) -> bool: return child is MultiMeshInstance3D))
 	_check("source geometry stays within the provisional triangle budget",
-		triangle_total > 0 and budget == 70000 and triangle_total <= budget)
+		triangle_total > 0 and budget == 90000 and triangle_total <= budget)
+	_check("shore habitats contain 28 reeds, 24 low source plants and four green shrubs",
+		reeds == 28 and dry_bank_plants == 24 and green_shrubs == 4,
+		"reeds=%d dry-bank=%d shrubs=%d" % [reeds, dry_bank_plants, green_shrubs])
+	_check("source vegetation carries bounded subtle instance tints", tints_valid)
 	_check("source meshes share no more than 24 runtime batches", batch_limit == 24 and batches <= batch_limit
 		and batches == root.get_child_count())
 	var only_downloads := true

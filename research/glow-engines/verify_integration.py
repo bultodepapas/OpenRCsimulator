@@ -92,7 +92,10 @@ def main():
     tests.update((ROOT/'app/tests').glob('test_electric_*.gd'))
     tests.update((ROOT/'app/tests').glob('test_turbine_*.gd'))
     for p in sorted(tests):
-        run(p.stem,base+['--script','res://tests/'+p.name])
+        # These fixtures rebuild several complete aircraft/scenery scenes. Their
+        # wall-time ceiling is separate from the measured physics-tick budget.
+        scene_fixture = p.stem in {'test_aircraft_catalog', 'test_ui_aircraft', 'test_ui_runway'}
+        run(p.stem,base+['--script','res://tests/'+p.name], timeout=600 if scene_fixture else 180)
     run('glow-catalog-cli', [sys.executable, 'research/glow-engines/packaged_smoke.py',
         '--godot', str(godot), '--out', str(out/'cli')])
     sources_after = fingerprints()

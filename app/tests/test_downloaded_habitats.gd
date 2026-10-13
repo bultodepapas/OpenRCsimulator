@@ -22,6 +22,7 @@ const ALLOWED_ASSETS := {
 	"corn_4": true,
 	"wheat_4": true,
 	"reed_aredon": true,
+	"bush_common_flowers": true,
 }
 const FLOWER_ASSETS := ["clover_1", "flower_3_group", "flower_4_group"]
 const GRASS_ASSETS := ["grass_common_short", "grass_common_tall", "grass_wispy_tall", "fern_1"]
@@ -77,6 +78,10 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 	var flower_count := 0
 	var crop_count := 0
 	var reed_count := 0
+	var shore_count := 0
+	var shore_bank_plant_count := 0
+	var shore_shrub_count := 0
+	var reed_clusters: Dictionary = {}
 	var grasses_seen: Dictionary = {}
 	var flowers_seen: Dictionary = {}
 	var all_roots_match_physical_ground := true
@@ -98,15 +103,28 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 			and absf(float(plant.ground_up_m) - ground_sample[0]) < 1e-10 \
 			and absf(float(plant.ground_down_m) + ground_sample[0]) < 1e-10
 		if zone == "shore":
-			reed_count += 1
+			shore_count += 1
 			var bank_sample := LakeSurface.sample_terrain_validated(lake, float(plant.north), float(plant.east))
 			shore_roots_match_lake_ground = shore_roots_match_lake_ground \
 				and str(bank_sample.get("region", "")) == "bank" \
 				and float(bank_sample.get("signed_shore_distance_m", 0.0)) <= -0.75 \
 				and absf(float(plant.get("lake_ground_down_m", NAN)) - float(bank_sample.get("ground_down_m", NAN))) < 1e-9
-			heights_valid = heights_valid and float(plant.height_m) >= 1.1 and float(plant.height_m) <= 1.4
 			clear_of_collision_proxies = clear_of_collision_proxies \
 				and Grass.accepts(float(plant.north), float(plant.east), field, shared_exclusions)
+			if asset_id == "reed_aredon":
+				reed_count += 1
+				var cluster_id := str(plant.get("cluster_id", ""))
+				reed_clusters[cluster_id] = int(reed_clusters.get(cluster_id, 0)) + 1
+				heights_valid = heights_valid and float(plant.height_m) >= 0.9 and float(plant.height_m) <= 1.5
+			elif asset_id == "bush_common_flowers":
+				shore_shrub_count += 1
+				heights_valid = heights_valid and float(plant.height_m) >= 0.72 and float(plant.height_m) <= 1.0
+			elif asset_id in FLOWER_ASSETS or asset_id in GRASS_ASSETS:
+				shore_bank_plant_count += 1
+				if asset_id in FLOWER_ASSETS:
+					heights_valid = heights_valid and float(plant.height_m) >= 0.3 and float(plant.height_m) <= 0.65
+				else:
+					heights_valid = heights_valid and float(plant.height_m) >= 0.2 and float(plant.height_m) <= 0.5
 		else:
 			meadow_clear_of_bank = meadow_clear_of_bank \
 				and not bool(LakeSurface.sample_terrain_validated(lake, float(plant.north), float(plant.east)).get("covered", false))
@@ -124,13 +142,20 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 	_check("field, club and meadow use only downloaded grass, fern, clover and flower groups", grasses_seen.size() == 4 and flowers_seen.size() == 3)
 	_check("downloaded flower clusters replace the removed synthetic meadow", flower_count >= 45 and flower_count <= 60)
 	_check("two modest downloaded crop plots are populated", crop_count >= 70 and zone_counts.get("farm", 0) == crop_count)
-	_check("shoreline planting is sparse", reed_count > 0 and reed_count <= 24)
+	var clusters_valid := reed_clusters.size() == 4
+	for cluster_count: Variant in reed_clusters.values():
+		clusters_valid = clusters_valid and int(cluster_count) == 7
+	_check("shore reeds form four irregular seven-clump clusters", reed_count == 28 and clusters_valid,
+		"reeds=%d clusters=%s" % [reed_count, reed_clusters])
+	_check("dry bank adds 24 downloaded grass, fern and flower clumps", shore_bank_plant_count == 24)
+	_check("dry bank adds four downloaded green shrubs", shore_shrub_count == 4)
+	_check("all shoreline plants remain on dry bank ground outside water", shore_count == 56)
 	_check("every recipe includes the physical field and lake ground sample", all_roots_match_physical_ground)
 	_check("shore reeds use the sampled dry lake bank", shore_roots_match_lake_ground)
 	_check("meadow and crops stay outside the lake bank footprint", meadow_clear_of_bank)
 	_check("all planting clears shared paths, structures and surface proxies", clear_of_collision_proxies)
 	_check("uniform target heights stay in natural ranges", heights_valid)
-	_check("imported plants stay below the 70k provisional triangle budget", triangle_total <= 70000,
+	_check("imported plants stay below the 90k provisional triangle budget", triangle_total <= 90000,
 		"%d triangles" % triangle_total)
 	_check("zone metadata can distinguish club, edge, meadow, farm and shore", ["club", "edge", "meadow", "farm", "shore"].all(func(zone: String) -> bool: return zone_counts.has(zone)))
 	_check("recipe has all expected zones", zone_counts.get("club", 0) > 0 and zone_counts.get("edge", 0) > 0 \
@@ -160,7 +185,7 @@ func _test_build(field: Dictionary, scenery: Dictionary, lake: Dictionary, high:
 	_check("runtime uses every accepted source placement", built_plants.size() == high.size())
 	_check("runtime reports source triangles only", int(node.get_meta("triangles", -1)) == expected_triangles \
 		and int(node.get_meta("imported_triangles", -1)) == expected_triangles)
-	_check("runtime records its hard budget", int(node.get_meta("triangle_budget", 0)) == 70000 \
+	_check("runtime records its hard budget", int(node.get_meta("triangle_budget", 0)) == 90000 \
 		and expected_triangles <= int(node.get_meta("triangle_budget", 0)))
 	_check("runtime draw batches meet target", node.get_child_count() <= 24 \
 		and int(node.get_meta("batches", 99)) == node.get_child_count())
@@ -171,9 +196,17 @@ func _test_build(field: Dictionary, scenery: Dictionary, lake: Dictionary, high:
 	_check("runtime retains source-group to placement-zone counts", group_zones.size() > 0 \
 		and group_zones.has("reed_aredon") and zones.has("shore"))
 	var source_meshes_match := true
+	var tint_channels_valid := true
+	var tint_varies := false
 	var drawn_triangles := 0
 	for child: Node in node.get_children():
 		var batch := child as MultiMeshInstance3D
+		for instance_index in range(batch.multimesh.instance_count):
+			var tint := batch.multimesh.get_instance_color(instance_index)
+			tint_channels_valid = tint_channels_valid and tint.r >= 0.86 and tint.r <= 1.0 \
+				and tint.g >= 0.86 and tint.g <= 1.0 and tint.b >= 0.86 and tint.b <= 1.0 \
+				and is_equal_approx(tint.a, 1.0)
+			tint_varies = tint_varies or tint.r < 0.999 or tint.g < 0.999 or tint.b < 0.999
 		var asset_id := str(child.name).get_slice("_Part_", 0)
 		var part_index := int(str(child.name).get_slice("_Part_", 1))
 		var parts := PlantLibrary.get_parts(asset_id)
@@ -190,6 +223,7 @@ func _test_build(field: Dictionary, scenery: Dictionary, lake: Dictionary, high:
 				and mesh.surface_get_material(surface_index) == source_materials[surface_index]
 		drawn_triangles += int(source_part.get("source_triangles", 0)) * batch.multimesh.instance_count
 	_check("each batch retains the downloaded mesh surfaces and source materials", source_meshes_match)
+	_check("plant instance tints stay subtle and preserve alpha-tested source color", tint_channels_valid and tint_varies)
 	_check("drawn batch geometry matches metadata", drawn_triangles == expected_triangles)
 	node.free()
 

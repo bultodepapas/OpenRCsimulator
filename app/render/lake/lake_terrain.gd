@@ -3,6 +3,8 @@ extends RefCounted
 const Surface := preload("res://physics/lake_surface.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const WaterMaterial := preload("res://render/lake/water_material.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
+const BANK_SHADER := preload("res://render/lake/bank.gdshader")
 const STEP_M := 0.75
 const WATER_EDGE_M := 2.0
 const MAX_MASK_POINTS := 64
@@ -51,10 +53,9 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 			var n := origin.x + float(row) * STEP_M
 			var e := origin.y + float(column) * STEP_M
 			var terrain := GroundTerrain.sample_validated(n, e, surfaces, lake)
-			var sample := Surface.sample_terrain_validated(lake, n, e)
 			verts.append(Vector3(e, terrain[0], -n))
 			normals.append(Vector3(-terrain[2], 1.0, terrain[1]).normalized())
-			uv.append(Vector2(float(sample.get("signed_shore_distance_m", -10.0)), float(sample.get("bed_depth_m", 0.0))))
+			uv.append(Vector2(Surface.shore_distance_validated(lake, n, e), maxf(0.0, -terrain[0] - float(lake.water_level_down_m))))
 	for row in count_n:
 		for column in count_e:
 			var a := row * (count_e + 1) + column
@@ -73,11 +74,11 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 	var basin := MeshInstance3D.new()
 	basin.name = "Basin"
 	basin.mesh = basin_mesh
-	var basin_material := ground_material.duplicate() as ShaderMaterial
+	var basin_material := ShaderMaterial.new()
+	basin_material.shader = BANK_SHADER
+	basin_material.set_shader_parameter("grass", ground_material.get_shader_parameter("grass"))
+	Atmosphere.update_ground_material(basin_material, lighting)
 	mask_parameters(basin_material, lake)
-	basin_material.set_shader_parameter("lake_mask_mode", 2)
-	basin_material.set_shader_parameter("lake_terrain", true)
-	basin_material.set_shader_parameter("terrain_relief_enabled", false)
 	basin.material_override = basin_material
 	basin.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(basin)
@@ -136,8 +137,7 @@ static func _refine_water(a: Vector2, b: Vector2, c: Vector2, lake: Dictionary,
 	var p2 := Vector3(c.x, 0, c.y)
 	var ordered := PackedVector2Array([a, c, b] if (p1 - p0).cross(p2 - p0).y > 0.0 else [a, b, c])
 	for point: Vector2 in ordered:
-		var sample := Surface.sample_terrain_validated(lake, -point.y, point.x)
 		vertices.append(Vector3(point.x, 0, point.y))
 		normals.append(Vector3.UP)
 		uvs.append(point * 0.25)
-		shores.append(Vector2(maxf(0.0, float(sample.signed_shore_distance_m)), 0.0))
+		shores.append(Vector2(maxf(0.0, Surface.shore_distance_validated(lake, -point.y, point.x)), 0.0))

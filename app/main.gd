@@ -64,6 +64,8 @@ var session: Node
 var recorder: RefCounted
 ## The catalog aircraft to fly. Set before adding the node (Home does); otherwise --aircraft=<id>, else the Ugly Stik.
 var aircraft_id := ""
+## Detached Workshop compilation; aircraft_id remains the catalog visual identity.
+var workshop_trial: Dictionary = {}
 var _experimental_aircraft_path := ""
 var _electric_demo: String = ""
 ## Interactive Home choice only; CLI and scripted routes retain the airborne default.
@@ -346,7 +348,11 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
-	session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
+	if workshop_trial.is_empty():
+		session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
+	else:
+		session.workshop_identity = workshop_trial.identity.duplicate(true)
+		session.setup("workshop://" + str(workshop_trial.identity.trial_id), str(workshop_trial.data.model.id), workshop_trial.data)
 	# Glow visuals use the exact propeller selected by the validated runtime model. Applying from the base geometry
 	# each time also handles installation-profile reloads that retain the same aircraft ID.
 	if session.aircraft.get("ok", false):
@@ -607,7 +613,8 @@ func _process(delta: float) -> void:
 func _update_cg_model() -> void:
 	if session.aircraft.ok:
 		var datum := AirplaneBuilder.datum(aircraft_id) # the data file's le frame in this aircraft's model
-		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, datum.x, datum.y)
+		var scale_factor: float = float(workshop_trial.get("scale", 1.0))
+		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, datum.x * scale_factor, datum.y * scale_factor)
 
 
 func _update_smoke() -> void:
@@ -1193,8 +1200,9 @@ func _build_world() -> void:
 	_sun = built.sun
 
 	_airplane = AirplaneBuilder.build(aircraft_id)
+	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	add_child(_airplane.root)
-	_extent = Shadow.model_extent(_airplane.root)
+	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
 	_shadow = Shadow.create(self)
 	Shadow.bind_model(_shadow, _airplane.root)
 	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
@@ -1236,6 +1244,8 @@ func _capture_scene_id() -> String:
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_last_render_pose = pose
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
+	# root_transform replaces the basis each frame; restore the presentation-only uniform scale.
+	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
 	AirplaneBuilder.apply_throttle(_airplane, float(c.get("throttle", 0.0))) # US-V09c carburettor lever, visual only

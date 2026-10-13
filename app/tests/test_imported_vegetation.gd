@@ -89,7 +89,8 @@ func _test_batch_build_and_damage() -> void:
 	var tree_transform := Transform3D(Basis.IDENTITY, Vector3.ZERO)
 	var second_transform := Transform3D(Basis.IDENTITY, Vector3(30.0, 0.0, 0.0))
 	_check("tree alias queues resolved asset", ImportedVegetation.queue(batches, "shade_tree", tree_transform, 1, "tree-damaged") == "common_tree_3")
-	_check("exact asset queues without changing ID", ImportedVegetation.queue(batches, "wheat_4", second_transform, 2) == "wheat_4")
+	_check("exact asset queues without changing ID", ImportedVegetation.queue(
+		batches, "wheat_4", second_transform, 2, "", Color(0.4, 1.2, 0.9, 0.0)) == "wheat_4")
 	var root := ImportedVegetation.build(batches)
 	var expected_part_nodes := ImportedVegetation.get_parts("common_tree_3").size() + ImportedVegetation.get_parts("wheat_4").size()
 	_check("builder emits one shared batch per source part", root.get_child_count() == expected_part_nodes)
@@ -100,6 +101,11 @@ func _test_batch_build_and_damage() -> void:
 			var multi_mesh := (child as MultiMeshInstance3D).multimesh
 			_check("batch has one queued plant", multi_mesh.instance_count == 1)
 			_check("batch retains instance color data", multi_mesh.use_colors)
+			if str(child.name).begins_with("wheat_4_"):
+				var instance_tint := multi_mesh.get_instance_color(0)
+				_check("bounded tint clamps RGB and keeps alpha opaque",
+					is_equal_approx(instance_tint.r, 0.86) and is_equal_approx(instance_tint.g, 1.0)
+					and is_equal_approx(instance_tint.b, 0.9) and is_equal_approx(instance_tint.a, 1.0))
 			if str(child.name).begins_with("common_tree_3_"):
 				var source_materials: Array = ImportedVegetation.get_parts("common_tree_3")[0].get("materials", [])
 				_check("default batch keeps original material per surface", multi_mesh.mesh.get_surface_count() == source_materials.size())

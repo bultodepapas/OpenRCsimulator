@@ -68,6 +68,26 @@ The captured loop has an internally consistent mechanism: **fixed launch elevato
 
 The robust next correction must calibrate the aircraft as a coupled system: establish the target build's CG and thrust line, use the matching propeller map with an evidenced engine torque/RPM model, then constrain trim/elevator and pitch response at multiple airspeeds using flight measurements or an independently validated aerodynamic model. Change the source generator and verify both attached and separated-regime consistency, trim, dynamic response and replay behavior. Current evidence is sufficient to reproduce and investigate the defect report; it is insufficient to select physically validated numerical replacements. The original Timber low-power report remains a separate unresolved observation.
 
+## Follow-up: explicit half-throttle airborne operating point
+
+After the adversarial audit, the owner requested an actionable next step. Home now offers **Start: in the air at 50% throttle** for the standard Stik as a separate choice. It does not replace the existing airborne/runway defaults or prescribe a manufacturer cruise setting. `cruise_trim.gd` searches a bounded increasing-speed branch using the existing six-axis trim solver; it refuses failed, nonfinite, excessive-angle or unbracketed solutions. No runtime aerodynamic/propulsion parameters or generated aircraft data change. No trim changes automatically during flight.
+
+At reference atmosphere, the selected operating point is **20.56138 m/s, throttle 0.500000006, elevator 2.69422° up**, with six-axis residual about 1.34e-14. The old launch remains 15 m/s and 5.25673° up. The new setting holds altitude within 1 mm for ten seconds in calm air, responds naturally to power increases, and descends at quarter throttle. Reset, reload and an atmosphere change retain the selected power condition; unavailable equilibria refuse launch. Trace metadata records the selected profile separately from the actual airborne launch. This is a physically consistent initialization choice, **not a correction of the aircraft's uncertain coefficients**.
+
+The required counterexample remains: replaying the owner's keyboard sequence with the new initial condition still produces inversion. [Complete comparison](half-power-start.json):
+
+| Start/input case | Duration | First inverted attitude | Result |
+| --- | ---: | ---: | --- |
+| Original start, recorded keyboard sequence | 49.092 s | 9.542 s | Exact baseline reproduction |
+| Half-throttle start, recorded keyboard sequence | 45.458 s | 13.567 s | Inversion remains; ends at ground contact |
+| Half-throttle start, hold starting power | 49.092 s | None | No crash; gentle-weather altitude peaks at 32.390 m from 30 m |
+| Half-throttle start, hold quarter power | 7.825 s | None | Descends to ground contact |
+| Half-throttle start, hold full power | 49.092 s | 6.958 s | Inversion remains |
+
+The replay comparison changes initial speed, all solved trims and starting throttle. The recorded case repeats **raw keyboard events**, not an identical absolute throttle history. These results do not justify calling the new option a loop fix. It gives the owner a defined operating point and a controlled comparison while physical qualification remains open.
+
+Verification: 22 power-trim helper checks; 14 selected-start checks covering equilibrium, fixed trim, restart, reload, atmosphere, late profile selection and unsupported-aircraft refusal; 36 existing start-choice checks; 92 checkpoint checks; unchanged observer checkpoint parity. The final real Home/Fly test passes all 87 checks, including the new selection, persistence, launch, restart and unsupported-aircraft checks. A stale process first encountered a concurrently changed scenery catalog; a fresh run resolved that error. The test now navigates to End by its focus identity rather than a fixed number of rows, and verifies that a field without runway support still allows both airborne choices. Existing UI teardown ObjectDB warnings remain. The fleet pilot-trim run passed the original aircraft but failed its exact ten-second equilibrium assertion for both newly added finite-fuel glow variants; that run is not a passing full-fleet qualification. Full WSL suite was not run. [Focused verification record](half-power-verification.json).
+
 ## Options and chosen improvement
 
 - Reducing lift, changing CG/incidence or adding a universal nose-down moment has no supporting reproduction and would disturb the verified equilibrium. Rejected.

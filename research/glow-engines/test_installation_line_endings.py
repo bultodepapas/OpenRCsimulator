@@ -19,6 +19,12 @@ def expected_crlf(value: dict) -> bytes:
 
 
 class InstallationLineEndingTests(unittest.TestCase):
+    def test_balance_accumulation_is_left_to_right(self) -> None:
+        # This order deliberately distinguishes sequential += from newer
+        # compensated built-in sum implementations.
+        self.assertEqual(build_installations.left_to_right_sum([1e16, 1.0, -1e16]), 0.0)
+        self.assertEqual(build_installations.left_to_right_sum([1e16, -1e16, 1.0]), 1.0)
+
     def test_generator_writes_identical_crlf_bytes_on_any_host(self) -> None:
         payload = {"engine": "fixture", "nested": [1, {"enabled": True}]}
         with tempfile.TemporaryDirectory() as directory:

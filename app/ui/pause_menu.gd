@@ -9,6 +9,7 @@ const Widgets := preload("res://ui/widgets.gd")
 
 signal continue_requested
 signal restart_requested
+signal workshop_requested(from: Control)
 signal time_of_day_requested(from: Control)
 signal overlays_requested(from: Control)
 signal end_requested
@@ -20,6 +21,7 @@ const WIDTH := 400
 
 var continue_button: Button
 var restart_button: Button
+var workshop_button: Button
 var time_of_day_button: Button
 var overlays_button: Button
 var end_button: Button
@@ -63,6 +65,9 @@ func _init(can_end := true) -> void:
 	restart_button = _button("Restart flight", "", "Restart")
 	restart_button.pressed.connect(func() -> void: restart_requested.emit())
 	column.add_child(restart_button)
+	workshop_button = _button("Aircraft Workshop", "", "Workshop")
+	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
+	column.add_child(workshop_button)
 	time_of_day_button = _button("Time of day", "", "TimeOfDay")
 	time_of_day_button.pressed.connect(func() -> void: time_of_day_requested.emit(time_of_day_button))
 	column.add_child(time_of_day_button)

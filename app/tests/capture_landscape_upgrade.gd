@@ -97,6 +97,12 @@ func _run() -> void:
 			var debug_shader := Shader.new()
 			debug_shader.code = basin.material_override.shader.code.replace("render_mode cull_back;", "render_mode cull_disabled;")
 			basin.material_override.shader = debug_shader
+		elif str(args.get("lake_diagnostic", "normal")) == "unlit":
+			var debug_shader := Shader.new()
+			debug_shader.code = basin.material_override.shader.code.replace("render_mode cull_back;", "render_mode unshaded, cull_back;")
+			basin.material_override.shader = debug_shader
+		elif str(args.get("lake_diagnostic", "normal")) == "maskless":
+			basin.material_override.set_shader_parameter("lake_mask_mode", 0)
 	if built.field.get_node_or_null("DistantRidges") == null:
 		parent.add_child(Ridges.build())
 	# LU-16 diagnostic controls preserve camera/time/exposure while isolating the seam.

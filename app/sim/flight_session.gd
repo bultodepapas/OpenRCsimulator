@@ -441,16 +441,22 @@ func _init() -> void:
 
 
 ## Loads the aircraft, solves the trimmed start and creates the simulation. Call once, before adding to the tree.
-func setup(path := Scenarios.AIRCRAFT, expected_id: String = "") -> void:
+## Workshop trials resolve once. Reload/reset must retain that exact immutable candidate.
+var _frozen_aircraft: Dictionary = {}
+var workshop_identity: Dictionary = {}
+
+
+func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Dictionary = {}) -> void:
 	aircraft_path = path
 	expected_aircraft_id = expected_id
+	_frozen_aircraft = frozen_data.duplicate(true)
 	sim = Sim.new()
 	sim.modes = PackedInt64Array([1])
 	if _has_collision_query():
 		sim.post_step = Callable(self, "_resolve_collision_step")
 	sim.faulted.connect(_on_sim_faulted)
 	sim.stepped.connect(_on_sim_stepped)
-	var prepared := _prepare_aircraft(AircraftData.load_file(path))
+	var prepared := _prepare_aircraft(_load_selected_aircraft())
 	if prepared.ok:
 		_commit_aircraft(prepared)
 	else:
@@ -459,6 +465,10 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "") -> void:
 		sim.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(sim)
 	reset()
+
+
+func _load_selected_aircraft() -> Dictionary:
+	return _frozen_aircraft.duplicate(true) if not _frozen_aircraft.is_empty() else AircraftData.load_file(aircraft_path)
 
 
 func _ready() -> void:
@@ -999,7 +1009,7 @@ func set_start_altitude(altitude: float) -> void:
 ## [F5] Reloads the aircraft data file, re-trims and restarts: tune a coefficient without restarting the app.
 ## Invalid data keeps the current aircraft flying. Returns a message for the panel.
 func reload() -> String:
-	var prepared := _prepare_aircraft(AircraftData.load_file(aircraft_path))
+	var prepared := _prepare_aircraft(_load_selected_aircraft())
 	if not prepared.ok:
 		return "reload failed; previous aircraft and flight retained: %s" % prepared.message
 	if start_choice == START_RUNWAY:
@@ -2434,6 +2444,9 @@ func trace_meta() -> Dictionary:
 		metadata.continuous_layout="rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
 		metadata.fuel_mass_policy="finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG"
 		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
+	if not workshop_identity.is_empty():
+		metadata.workshop = workshop_identity.duplicate(true)
+		metadata.aircraft_input_hash_convention = "sha256 of exact frozen Workshop aircraft bytes"
 	return metadata
 
 

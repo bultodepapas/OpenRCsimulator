@@ -172,7 +172,9 @@ func _home_fly_roundtrip_and_radio() -> void:
 	# End through the real pause-menu buttons, return to Home, then launch the remembered runway choice again.
 	app.call("open_pause")
 	await ui.settle()
-	for i in 5: # Continue, Restart, Time of day, Help, Flight overlays (HUD-06), End
+	for i in 12: # Other menu tracks may add actions; still reach End through real key events.
+		if ui.focus_name() == "End":
+			break
 		await ui.tap(KEY_DOWN)
 	_check("pause navigation reaches End", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)
@@ -347,7 +349,12 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	var app: Node = await _new_app(PREFS, ALT_FIELD)
 	var home: Control = app.get("home") as Control
 	_check("runway is disabled outside the existing default field", home.get("runway_available") == false
-		and home.get("start_button").disabled and home.get("start_choice") == AIRBORNE)
+		and home.get("start_choice") == AIRBORNE)
+	home.get("start_button").grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("alternate field can select airborne half power without offering runway", home.get("start_choice") == "airborne_half_power")
+	await ui.tap(KEY_ENTER)
+	_check("alternate field start cycle returns to legacy airborne", home.get("start_choice") == AIRBORNE)
 	await _close_app(app)
 
 	_cleanup()

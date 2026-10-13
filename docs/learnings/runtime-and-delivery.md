@@ -1,6 +1,6 @@
 # Runtime, input and delivery lessons
 
-**Status:** curated reference. Evidence comes from the 2026-10-05–11 work on Godot 4.7.2; platform observations are scoped to those experiments. Start with [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+**Status:** curated reference. Evidence comes from the 2026-10-05–13 work on Godot 4.7.2; platform observations are scoped to those experiments. Start with [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Godot execution and test isolation
 
@@ -51,6 +51,8 @@
 - **Test hooks can have engine lifetime side effects.** A lambda stored in a static script variable caused repeatable exit aborts in the UI-04 probe. Passing the mapping as a parameter avoided that lifetime. Physical-key-label APIs also emit errors under the headless display server; exercise the supported fallback. [UI-04 record](../MENU-PLAN.md), [controls tests](../../app/tests/test_controls_reference.gd).
 
 ## Clean builds and desktop evidence
+
+- **Hashed data needs stable generation and checkout bytes.** Git newline conversion changed glow profile identities in a clean checkout; Python 3.12's revised float summation changed generated ballast digits. Pin text formats and the intended arithmetic order, then compare actual bytes under both checkout modes and supported Python versions. Equivalent parsed values do not preserve checkpoint or experiment hashes. [NITRO-02](../research/glow-engines/NITRO-02/README.md), [generator byte tests](../../research/glow-engines/test_installation_line_endings.py).
 
 - **An update check reads the release list; it cannot ask for "latest".** GitHub's `/releases/latest` returns the newest non-prerelease release, so a project that only publishes prereleases gets 404: list the releases and order them locally, skipping drafts. A conditional request with the cached ETag answers 304 without a body but still counts against the anonymous 60/h limit, so throttle by time (once a day) rather than relying on 304. Godot 4.7's `HTTPRequest` reaches `api.github.com` from the engine's bundled CA set and decodes gzip; it must be inside the tree before `request()` (calling from `_initialize()` returns `ERR_UNCONFIGURED`), and `JSON.parse_string` prints an engine `ERROR:` on bad input that the test runner treats as a failure, so parse with a `JSON` instance. Never set `use_threads` on a desktop `HTTPRequest`: the worker reads in blocking mode, so a peer that accepts and then stays silent makes `timeout` and quitting the app wait forever on the thread join; unthreaded, the request works a little per frame and the timeout really fires. Do not rely on `HTTPRequest.timeout` for a request started at launch: it is wall clock, and a cold start's first frames (shader compilation, scenery) can spend it before the request runs; count processed frames with a per-frame cap instead. A test for a timeout needs a server that accepts and never answers, not a closed port. [UI-16](../research/menu-investigations/UI-16/README.md).
 
