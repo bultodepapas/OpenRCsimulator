@@ -44,10 +44,13 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 | H | Toggle the Stik smoke pump with keyboard controls |
 | J · Enter | Assign the active radio's smoke AUX · advance its step |
 | T | Start / save a flight trace |
-| F3 | Toggle performance numbers |
+| F3 | Toggle performance numbers (current source: developer overlays) |
+| F2 | Current source: cycle flight overlays off / pilot / full / developer |
 | F5 | Reload the aircraft data file |
 
 Letters refer to physical QWERTY positions; in-game Help shows your keyboard's labels. A connected USB radio/gamepad replaces the keyboard flight sticks.
+
+Keyboard and gamepad sticks use the aircraft's normal-flight dual rates and expo where its manual states them (Extra, P-51, Avanti; the status line shows `rates: normal`); a radio keeps its own rates. The direct route's `--rates=full` flies the maximum throws, as the Ugly Stik always does.
 
 ### Radio setup
 
@@ -60,6 +63,8 @@ On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF,
 ## Current source
 
 New Home preferences select the Stik runway launch, gentle wind/gusts/turbulence, **Evening (time passing)**, scenery, birds, engine shadows and the live diagnostic marker. Existing explicit choices take precedence. Choose **Airborne**, **Calm** and **Day** for the earlier practice setup. Direct command-line flights ignore saved settings and default to airborne, calm/reference weather and fixed daylight.
+
+**Flight overlays.** Home flights show separate overlays instead of the diagnostic text: flight data (airspeed, ground speed, height above ground, vertical speed, throttle, distance from you, flight time), the transmitter's sticks and trims, short warnings (radio safe, failsafe, stall, sinking low, too far, battery) and the wind seen from where you stand. Telemetry and the developer diagnostics are optional. Close any overlay with its ×, press **F2** to cycle presets, **F3** for the developer overlays, or choose overlays, units (km/h, mph or m/s; by language by default) and transmitter Mode 1/2 under Pause → **Flight overlays**. The choice is saved under `[hud]` in `settings.cfg`. Direct command-line flights keep the legacy text unless `--hud=overlays`. [Plan](plans/flight-overlays.md).
 
 **Weather** edits spatially uniform wind, repeating gusts, seeded temporal turbulence, field elevation, temperature, QNH and humidity. Apply validates and saves; Cancel/Esc keeps the previous settings. Wind direction is where it comes from; positive vertical gusts point upward. Restart repeats the configured forcing. These are authored practice conditions, not measured weather at a club. [Wind](WIND-PLAN.md) · [Atmosphere](ATMOSPHERE-PLAN.md).
 

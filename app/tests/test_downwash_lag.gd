@@ -10,6 +10,8 @@ const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
+const Ground := preload("res://physics/ground_contact.gd")
+const AD := preload("res://physics/aircraft_data.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 
 const V := 15.0
@@ -37,11 +39,24 @@ func _initialize() -> void:
 	var model: Dictionary = _session.aircraft.model
 	var lag: int = _session.downwash_index()
 	_check("Stik: one lagged wing CL after the anchors", lag == FlightSession.AUX_ANCHORS + 9 and _session.sim.aux.size() == lag + 1)
+	# E0a2c: the generated aircraft declare their downwash gradient too, so each carries the lag after its anchors; the
+	# same data without the gradient (in memory) has no lag entry, which keeps the layout rule explicit.
 	for id in ["gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx"]:
 		var other := FlightSession.new()
 		other.setup(Catalog.entry(id).data)
 		root.add_child(other)
-		_check("%s (no downwash gradient): no lag entry" % id, other.downwash_index() == -1)
+		var other_lag: int = other.downwash_index()
+		_check("%s (downwash gradient declared): one lagged wing CL after the anchors" % id,
+			other_lag == FlightSession.AUX_ANCHORS + other.anchor_count() * Ground.ANCHOR_STRIDE and other.sim.aux.size() == other_lag + 1)
+		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(id).data))
+		raw.aero.surfaces.horizontal.erase("downwash_gradient")
+		var stripped := FlightSession.new()
+		stripped.setup(Catalog.entry(id).data)
+		root.add_child(stripped)
+		stripped.expected_aircraft_id = ""
+		_check("%s without the gradient (in memory): applies and has no lag entry" % id,
+			stripped._apply(AD.validate_and_derive(raw)) and stripped.downwash_index() == -1)
+		stripped.queue_free()
 		other.queue_free()
 	var start: PackedFloat64Array = _session.sim.state
 	_check("reset starts the lag settled at the start state's wing CL", _session.sim.aux[lag] == _session._wing_cl(start, _session.sim.aux))

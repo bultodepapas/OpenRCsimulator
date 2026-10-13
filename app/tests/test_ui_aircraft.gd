@@ -150,7 +150,7 @@ func _run() -> void:
 
 	# End returns Home with the aircraft selected and persisted; choosing Fly again makes a clean session.
 	await ui.tap(KEY_ESCAPE)
-	for _step in 4:
+	for _step in 5: # Continue, Restart, Time of day, Help, Flight overlays (HUD-06), End
 		await ui.tap(KEY_DOWN)
 	_check("End flight is keyboard reachable", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)

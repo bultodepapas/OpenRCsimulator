@@ -227,6 +227,7 @@ Cm0 = note("aero", "Cm0 about ARP", cm_ac * mac / c_ref - slope_h * Sh / S * l_h
 # hangar9_mustang_150.pdf, read 2026-10-06): aileron 18, elevator 15, rudder 30 deg; full-size P-51D rudder +-30 deg (NACA
 # RM L6J25). The millimetre throws of the 60cc and Top Flite manuals convert to the same range on our chords.
 THROWS_DEG = {"aileron": 18.0, "elevator": 15.0, "rudder": 30.0}
+LOW_THROWS_DEG = {"aileron": 14.0, "elevator": 12.0, "rudder": 20.0}  # the same manual's low rates (D6e)
 THROWS_SRC = "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329)"
 throws = {k: note("controls", f"{k} (deg)", v, THROWS_SRC) for k, v in THROWS_DEG.items()}
 k_flap = note("controls", "flap effectiveness correction", 0.8, "estimated: real/thin-airfoil effectiveness with gap and large throws (DATCOM range 0.6-0.9)")
@@ -688,6 +689,14 @@ data = {
     },
     "controls": {
         "max_throw": {k: q(float(v), "deg", "estimated", THROWS_SRC) for k, v in throws.items()},
+        # D6e: the manual's low rates as travel fractions of the high rates above, applied by the session to the
+        # keyboard sticks as a radio would (controls.rates.normal); the manual lists no expo.
+        "rates": {
+            "normal": {
+                **{k: q(LOW_THROWS_DEG[k] / THROWS_DEG[k], "1", "estimated", THROWS_SRC + "; low rate as the fraction of the high-rate throw") for k in ["aileron", "elevator", "rudder"]},
+                **{k + "_expo": q(0.0, "1", "estimated", "the Hangar 9 Mustang 1.50 manual lists no expo; 0 until a transmitter setup is documented") for k in ["aileron", "elevator", "rudder"]},
+            },
+        },
         "servo_full_throw_time": q(0.18, "s", "estimated", "placeholder: one normalized command from neutral to this aircraft's full modeled throw in 0.18 s; actual servo speed, voltage/load, horn geometry and linkage ratio are unknown, so a published no-load rate per 60 deg cannot determine surface rate"),
     },
     "aero": {
@@ -704,6 +713,10 @@ data = {
         "surfaces": {
             "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("|Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips")),
             "wing_station_incidence": q([float(x) for x in strip_inc], "rad", "derived", D("per-strip angle offsets root -> tip, zero mean: linear washout + Schrenk loading + Re-dependent section clmax (NACA TN 1945); see derivation.md 'stall'")),
+            # D11j: the cambered section's pitching moment about its aerodynamic centre, carried by every strip of the
+            # local wing as a pure couple; the oracle's Cm0 already contains cm_ac x MAC / c_ref, so the two regimes
+            # agree statically (docs/plans/elevator-flight-dynamics-repair.md).
+            "wing_section_cm_ac": q(cm_ac, "1", "derived", D("section Cm_ac: thin-airfoil over the UIUC NAA 45-100 root and tip camber lines (research/p51/p51-13/section.json), blended root -> tip and chord-weighted, x 0.8 (theory/measured, NACA TN 1945)")),
             "attached_limit": same("attached_limit"),
             "tail_local_limit": same("tail_local_limit"),
             "tail_stall_end": same("tail_stall_end"),

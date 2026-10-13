@@ -686,6 +686,18 @@ data = {
             "rudder": qi("controls.rudder", "deg"),
         },
         "servo_full_throw_time": qi("controls.servo_full_throw_time", "s"),
+        # D6e: the manual's normal-flight dual rates and expo, applied by the session to the keyboard sticks as a
+        # radio would (controls.rates.normal); the throws above stay the mechanical maxima.
+        "rates": {
+            "normal": {
+                "aileron": qi("controls.rates_normal_aileron", "1"),
+                "elevator": qi("controls.rates_normal_elevator", "1"),
+                "rudder": qi("controls.rates_normal_rudder", "1"),
+                "aileron_expo": qi("controls.rates_normal_aileron_expo", "1"),
+                "elevator_expo": qi("controls.rates_normal_elevator_expo", "1"),
+                "rudder_expo": qi("controls.rates_normal_rudder_expo", "1"),
+            },
+        },
     },
     "aero": {
         "source": f"Derived by {SCRIPT} (Helmbold/DATCOM with sweep, Munk-Multhopp fuselage, tail volume, strip theory, drag build-up); report research/avanti-s/av06/derivation.md. Not flight-identified: EXPERIMENTAL.",

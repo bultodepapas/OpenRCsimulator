@@ -1284,7 +1284,23 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 			deg.aileron_down = down
 			rad.aileron_down = deg_to_rad(down)
 	var t = _q(errors, "controls.servo_full_throw_time", node.get("servo_full_throw_time"), "s", 0.01, 2.0)
-	return { throw_deg = deg, throw_rad = rad, servo_rate = 1.0 / t if t != null else 0.0 }
+	var out := { throw_deg = deg, throw_rad = rad, servo_rate = 1.0 / t if t != null else 0.0 }
+	# Optional (D6e): the manual's normal-flight dual rates and expo as stick shaping (travel fraction of the maximum
+	# throw per axis, expo per axis). Absent = the maximum throws with no expo. Never an aerodynamic quantity.
+	if node.has("rates"):
+		var rates := _dictionary(errors, "controls.rates", node.get("rates"))
+		var normal := _dictionary(errors, "controls.rates.normal", rates.get("normal"))
+		var profile := {}
+		for axis in ["aileron", "elevator", "rudder"]:
+			var travel = _q(errors, "controls.rates.normal." + axis, normal.get(axis), "1", 0.05, 1.0)
+			var expo = _q(errors, "controls.rates.normal." + axis + "_expo", normal.get(axis + "_expo"), "1", 0.0, 0.9)
+			if travel != null:
+				profile[axis] = float(travel)
+			if expo != null:
+				profile[axis + "_expo"] = float(expo)
+		if profile.size() == 6:
+			out.rates = { normal = profile }
+	return out
 
 
 ## Full-envelope parameters (D9a). The stall start angles are SOLVED so that the blended lift curve peaks exactly at

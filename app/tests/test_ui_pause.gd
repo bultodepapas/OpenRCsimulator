@@ -156,10 +156,8 @@ func _run() -> void:
 	await _wait(0.3)
 	app.open_pause()
 	await ui.settle()
-	await ui.tap(KEY_DOWN)
-	await ui.tap(KEY_DOWN)
-	await ui.tap(KEY_DOWN)
-	await ui.tap(KEY_DOWN)
+	for i in 5: # Continue, Restart, Time of day, Help, Flight overlays (HUD-06), End
+		await ui.tap(KEY_DOWN)
 	_check("End flight reachable by keyboard", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	var note: String = recorder.note

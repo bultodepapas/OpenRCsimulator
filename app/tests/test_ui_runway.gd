@@ -171,7 +171,7 @@ func _home_fly_roundtrip_and_radio() -> void:
 	# End through the real pause-menu buttons, return to Home, then launch the remembered runway choice again.
 	app.call("open_pause")
 	await ui.settle()
-	for i in 4:
+	for i in 5: # Continue, Restart, Time of day, Help, Flight overlays (HUD-06), End
 		await ui.tap(KEY_DOWN)
 	_check("pause navigation reaches End", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)

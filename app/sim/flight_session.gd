@@ -272,6 +272,11 @@ var _launch_metadata: Dictionary = {}
 var _has_committed_aircraft: bool = false
 ## Trims in pilot units (−1…1), like radio trim tabs: solved at the start, added to the sticks.
 var trims := { roll = 0.0, pitch = 0.0, yaw = 0.0 }
+## D6e: the sticks' rate profile. "full": the data's maximum throws, no expo (scripted maneuvers, tests, radios).
+## "normal": the aircraft's controls.rates.normal (the manual's normal-flight dual rates and expo) shapes the keyboard
+## sticks, and the travel alone the gamepad's (it has its own expo); a radio always passes through with its own rates.
+## Aircraft without controls.rates fly their maximum throws under either name. The flight scene sets it (--rates=full).
+var rate_profile := "full"
 ## Stick commands after shaping (−1…1, throttle 0…1), and the raw input sample they came from.
 var commands := Commands.neutral_commands()
 var raw := Commands.neutral_raw()
@@ -1227,9 +1232,18 @@ func _flight_ready() -> bool:
 	return _has_valid_start() and not _weather_pending_reset and not _shaft_pending_reset and sim.fault_reason.is_empty()
 
 
-## Stick commands plus trims: what the surfaces actually do (and what the physics sees).
+## D6e: true while the aircraft's normal rate profile shapes the sticks (see rate_profile).
+func rates_active() -> bool:
+	return rate_profile == "normal" and aircraft.get("ok", false) and aircraft.model.controls.has("rates") \
+		and not (radio.connected and not radio.is_rate_throttle())
+
+
+## Stick commands (shaped by the active rate profile) plus trims: what the surfaces actually do (and what the physics
+## sees). Trims are in units of the maximum throw, like a radio's trim tabs, so they are added after the rates.
 func flown_commands() -> Dictionary:
 	var c := commands.duplicate()
+	if rates_active():
+		c = Commands.shape_sticks(c, aircraft.model.controls.rates.normal, not radio.connected)
 	c.roll = clampf(c.roll + trims.roll, -1.0, 1.0)
 	c.pitch = clampf(c.pitch + trims.pitch, -1.0, 1.0)
 	c.yaw = clampf(c.yaw + trims.yaw, -1.0, 1.0)

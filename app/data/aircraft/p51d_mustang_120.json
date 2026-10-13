@@ -1164,6 +1164,46 @@
         "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329)"
       }
     },
+    "rates": {
+      "normal": {
+        "aileron": {
+          "value": 0.777778,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329); low rate as the fraction of the high-rate throw"
+        },
+        "elevator": {
+          "value": 0.8,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329); low rate as the fraction of the high-rate throw"
+        },
+        "rudder": {
+          "value": 0.666667,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329); low rate as the fraction of the high-rate throw"
+        },
+        "aileron_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "the Hangar 9 Mustang 1.50 manual lists no expo; 0 until a transmitter setup is documented"
+        },
+        "elevator_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "the Hangar 9 Mustang 1.50 manual lists no expo; 0 until a transmitter setup is documented"
+        },
+        "rudder_expo": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "the Hangar 9 Mustang 1.50 manual lists no expo; 0 until a transmitter setup is documented"
+        }
+      }
+    },
     "servo_full_throw_time": {
       "value": 0.18,
       "unit": "s",
@@ -1427,6 +1467,12 @@
         "unit": "rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: per-strip angle offsets root -> tip, zero mean: linear washout + Schrenk loading + Re-dependent section clmax (NACA TN 1945); see derivation.md 'stall'"
+      },
+      "wing_section_cm_ac": {
+        "value": -0.028628,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/p51/p51-05/derive_physics.py: section Cm_ac: thin-airfoil over the UIUC NAA 45-100 root and tip camber lines (research/p51/p51-13/section.json), blended root -> tip and chord-weighted, x 0.8 (theory/measured, NACA TN 1945)"
       },
       "attached_limit": {
         "value": 8.0,

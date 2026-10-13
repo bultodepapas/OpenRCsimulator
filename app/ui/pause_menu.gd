@@ -10,6 +10,7 @@ const Widgets := preload("res://ui/widgets.gd")
 signal continue_requested
 signal restart_requested
 signal time_of_day_requested(from: Control)
+signal overlays_requested(from: Control)
 signal end_requested
 signal help_requested(from: Control)
 signal quit_requested
@@ -20,6 +21,7 @@ const WIDTH := 400
 var continue_button: Button
 var restart_button: Button
 var time_of_day_button: Button
+var overlays_button: Button
 var end_button: Button
 var help_button: Button
 var quit_button: Button
@@ -67,6 +69,10 @@ func _init(can_end := true) -> void:
 	help_button = _button("Help", "", "Help")
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
 	column.add_child(help_button)
+	overlays_button = _button("Flight overlays", "", "Overlays") # HUD-06; hidden when the flight has none
+	overlays_button.pressed.connect(func() -> void: overlays_requested.emit(overlays_button))
+	overlays_button.visible = false
+	column.add_child(overlays_button)
 	end_button = _button("End flight", "", "End")
 	end_button.pressed.connect(func() -> void: end_requested.emit())
 	end_button.visible = can_end

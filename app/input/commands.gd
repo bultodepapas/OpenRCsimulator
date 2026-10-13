@@ -34,6 +34,25 @@ static func step_commands(c: Dictionary, raw: Dictionary, dt: float) -> Dictiona
 	}
 
 
+## Transmitter expo on one stick position x (−1…1): y = (1 − e)·x + e·x³ keeps the ends and softens the centre
+## (positive e in the JR/Spektrum sense, as rc_input.gd shapes gamepads).
+static func expo(x: float, e: float) -> float:
+	return (1.0 - e) * x + e * x * x * x
+
+
+## D6e: dual rates and expo on the pilot's sticks, as a radio applies them before the servo: each axis is shaped by
+## its expo and scaled by its travel fraction of the maximum throw. profile = controls.rates.normal of the aircraft
+## data ({ aileron, elevator, rudder, aileron_expo, elevator_expo, rudder_expo }). with_expo = false applies the
+## travel only (a gamepad already has its own expo). Trims are not sticks and are added afterwards by the session.
+static func shape_sticks(c: Dictionary, profile: Dictionary, with_expo := true) -> Dictionary:
+	return {
+		roll = expo(c.roll, profile.aileron_expo if with_expo else 0.0) * profile.aileron,
+		pitch = expo(c.pitch, profile.elevator_expo if with_expo else 0.0) * profile.elevator,
+		yaw = expo(c.yaw, profile.rudder_expo if with_expo else 0.0) * profile.rudder,
+		throttle = c.throttle,
+	}
+
+
 ## Maximum throws in degrees { aileron, elevator, rudder } from the aircraft data file, loaded once.
 static func data_throws_deg() -> Dictionary:
 	if _data_throws_deg.is_empty():

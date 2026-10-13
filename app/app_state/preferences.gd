@@ -8,6 +8,7 @@ const FlightSession := preload("res://sim/flight_session.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
+const OverlaySettings := preload("res://render/overlays/overlay_settings.gd")
 
 const DEFAULT_PATH := "user://settings.cfg"
 const SCHEMA := 4
@@ -31,6 +32,8 @@ const DEFAULTS := {
 	# A separate, visual-only selection. Its default preserves the original fixed daylight image.
 	lighting_config = TimeOfDay.DEFAULTS,
 	lighting_invalid = false,
+	# HUD-06: flight overlays ([hud] in the file). An additive section: older builds ignore it, no schema change.
+	hud = OverlaySettings.DEFAULTS,
 }
 
 
@@ -82,6 +85,12 @@ static func load_from(path: String) -> Dictionary:
 	var checked_weather := WeatherSettings.validate(weather)
 	if checked_weather.ok:
 		prefs.weather_config = checked_weather.config.duplicate(true)
+	if cfg.has_section("hud"):
+		var hud := {}
+		for key: String in ["preset", "visible", "units", "stick_mode"]:
+			if cfg.has_section_key("hud", key):
+				hud[key] = cfg.get_value("hud", key)
+		prefs.hud = OverlaySettings.validate(hud)
 	if cfg.has_section_key("flight", "lighting_config"):
 		var lighting: Variant = cfg.get_value("flight", "lighting_config", null)
 		var checked_lighting: Dictionary = TimeOfDay.validate(lighting)
@@ -123,6 +132,11 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("flight", "weather_config", checked_weather.config.duplicate(true))
 	if checked_lighting.config != TimeOfDay.defaults():
 		cfg.set_value("flight", "lighting_config", checked_lighting.config.duplicate(true))
+	var hud: Dictionary = OverlaySettings.validate(prefs.get("hud", DEFAULTS.hud))
+	cfg.set_value("hud", "preset", hud.preset)
+	cfg.set_value("hud", "visible", hud.visible)
+	cfg.set_value("hud", "units", hud.units)
+	cfg.set_value("hud", "stick_mode", hud.stick_mode)
 	return cfg.save(path)
 
 

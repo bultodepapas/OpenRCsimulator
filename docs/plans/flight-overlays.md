@@ -1,0 +1,80 @@
+# Flight overlays plan
+
+**Date:** 2026-10-13. **Status:** HUD-00…10 implemented (b0b0347); HUD-11 done with 720p and 1080p rendered captures; HUD-12 waits for owner reading on target hardware. **Prefix:** HUD-00…HUD-12 ([registry](../README.md#tracks-plans-and-step-ids)). **Owner:** flight-overlays track, under the main line's acceptance. Supersedes [MENU-REDESIGN-PLAN](../MENU-REDESIGN-PLAN.md) UI-27 (D1).
+**Owns:** `app/render/overlays/`, `app/ui/overlays_dialog.gd`, `app/tests/test_overlay_*.gd`, `docs/research/flight-overlays/`.
+**Coordinated, not owned:** the seams in `app/main.gd` (main line), `app/app_root.gd`, `app/ui/pause_menu.gd`, `app/ui/controls_reference.gd`, `app/app_state/preferences.gd`, `app/i18n/es.po` (menu track). `render/hud.gd` and `render/panel.gd` are unchanged and still build the diagnostic text.
+**Evidence:** [HUD-01…10](../research/flight-overlays/HUD-01-10/README.md).
+
+## 1. What exists
+
+Home flights show seven independent overlays on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus.
+
+| ID | Overlay | Anchor | Content |
+| --- | --- | --- | --- |
+| O1 | Flight data | bottom left | airspeed, ground speed, height above ground, vertical speed, throttle, slant distance from the pilot's eye, flight time |
+| O2 | Transmitter | bottom right | both gimbals (Mode 1/2), trim marks, input device, ARMED/SAFE, rate profile |
+| O3 | Warnings | top centre | FAILSAFE, RADIO SAFE, STALL, LOW, FAR, BATTERY LOW, EXPERIMENTAL; hidden when empty |
+| O4 | Wind | top right | downwind arrow relative to the view, speed, "from" bearing, updraft |
+| O5 | Telemetry | right | α, β, pitch/bank angle, heading, load factor, engine rpm |
+| O6 | Diagnostics (developer) | top left | today's input panel and HUD text, unchanged |
+| O7 | Performance (developer) | bottom centre | fps, frame p95, physics µs/tick |
+
+Presets: Off, Pilot (O1–O4, default), Full (O1–O5), Developer (all), Custom (any other set). **F2** cycles Off → Pilot → Full → Developer; **F3** toggles O6+O7; Pause → **Flight overlays** sets overlays, units and stick mode. Settings live under `[hud]` in `settings.cfg` (additive; older builds ignore it).
+
+Rules the implementation keeps:
+
+- Overlays read the session; they never write to it. A 3 s trace with `--hud=overlays` equals the legacy trace except its creation time (Stik and Extra).
+- Automation keeps the legacy labels: `--hud=legacy` is the direct-route default; `--hud=overlays` opts in. `capture_ui` still reads `_hud.text`.
+- Numbers come from 64-bit state in `telemetry.gd` (pure): load factor = −F<sub>z,body</sub>/(m·g) from `sim.last_loads` (gravity excluded); height above ground from `GroundTerrain.sample` on the session's own surface table. No session accessor was added.
+- Units (`units.gd`): metric km/h·m·m/s, imperial mph·ft·ft/min, SI m/s·m; "auto" = imperial for English, metric otherwise (D3). Exact factors 0.44704 m/s and 0.3048 m.
+- Numbers refresh at 10 Hz; sticks every frame.
+
+### Warning triggers
+
+| Code | Trigger | Source |
+| --- | --- | --- |
+| failsafe | pause reason "radio disconnected" | session |
+| safe | radio connected, not armed | `radio.armed` |
+| stall | airborne (> 1 m), airspeed ≥ 3 m/s, α within 2° of the solved stall-blend start `envelope.a1`/`n1` (D5) | aircraft v2 envelope; none if absent |
+| low | airborne, sinking > 2 m/s, ground reached within 2 s | telemetry |
+| far | slant distance beyond where the 6° minimum auto-zoom FOV shows the span below 30 px at 720 px (Stik ≈ 349 m) | `Spec.AUTO_ZOOM`, model span |
+| battery | modelled battery exhausted or SOC < 20 % | `electrical_state()` |
+| experimental | experimental aircraft-data route | main |
+
+The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, and await pilot review.
+
+## 2. Steps
+
+| ID | Work | Proof / status |
+| --- | --- | --- |
+| HUD-00 | Decisions D1–D6 (owner accepted the defaults, 2026-10-13); registry row; F2 for presets (H remains the smoke pump) | [DECISIONS](../../DECISIONS.md) row / done |
+| HUD-01 | `units.gd`, `telemetry.gd` | `test_overlay_units` 23, `test_overlay_telemetry` 36 checks / done |
+| HUD-02 | `overlay_frame.gd`, `overlay_manager.gd`, legacy route for automation | trace identity; `test_overlay_manager` / done |
+| HUD-03 | ×, presets, F2/F3 | real mouse click hides only its overlay, takes no focus, a flight key still arrives / done |
+| HUD-04 | O1 Flight data | unit-formatted values in a live flight scene / done |
+| HUD-05 | O2 Transmitter | Mode 1/2 stick and trim layout checks / done |
+| HUD-06 | `[hud]` preferences, Pause → Flight overlays dialog | round trip and per-key fallback / done; no UI-driver capture of the dialog yet |
+| HUD-07 | O4 Wind | arrow angle for view headings; calm hides the arrow / done |
+| HUD-08 | Height above ground and load factor | from existing public state; level n = 1, 60° turn n = 2, terrain AGL / done, no seam needed |
+| HUD-09 | O3 Warnings | one fixture per code, order, no STALL without a stall angle / done |
+| HUD-10 | O5 Telemetry | live flight scene / done |
+| HUD-11 | Spanish texts, contrast, layout | es entries; contrast ≥ 4.5:1 over any sky; no overlap at 1280×720 and 1920×1080 (Pilot, Full) and in Spanish; en/es rendered captures at 720p and 1080p / done |
+| HUD-12 | Cost and pilot acceptance | VM (no GPU): ≈ 60 µs mean per frame, ≈ 0.26 ms on the 10 Hz refresh frames / owner reads Pilot preset in flight at 720p and 1080p: pending |
+
+## 3. Decisions
+
+| ID | Question | Chosen (2026-10-13) |
+| --- | --- | --- |
+| D1 | Replace UI-27? | Yes |
+| D2 | Default preset | Pilot |
+| D3 | Default units | By language (en imperial, es metric) |
+| D4 | Default stick mode | Mode 2 |
+| D5 | Stall source | Aircraft envelope `a1`/`n1`, 2° margin |
+| D6 | Height reference | Above the ground under the aircraft |
+
+## 4. Open work and limits
+
+- Pilot reading at 720p and 1080p on target hardware (HUD-12).
+- The developer preset may overlap at 720p with long diagnostic lines; only "on screen" is checked there.
+- Overlays have fixed anchors; dragging and per-overlay scale are not implemented.
+- Warning thresholds and the transmitter view are presentation aids, not validated against a real flight.

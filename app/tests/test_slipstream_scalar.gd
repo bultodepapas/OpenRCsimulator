@@ -28,6 +28,11 @@ func _initialize() -> void:
 		if model.propulsion.get("slipstream", {}).is_empty():
 			flight.free()
 			continue
+		# E0a2c/D11j: the frozen H13 oracle predates the P-51's free tail law and the strips' section pitching moment;
+		# the scalar form is compared on the same legacy law (test_aero_flow.gd does the same for its oracle).
+		for key in ["downwash_gradient", "free_slope", "elevator_tau", "downwash_per_cl", "free_incidence", "wing_cl0"]:
+			model.surfaces.horizontal.erase(key)
+		model.surfaces.erase("wing_cm_ac")
 		aircraft += 1
 		var state: PackedFloat64Array = flight.sim.state.duplicate()
 		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()

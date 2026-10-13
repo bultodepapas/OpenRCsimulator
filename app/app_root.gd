@@ -20,6 +20,7 @@ const HeldKeys := preload("res://ui/held_keys.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const TimeOfDayDialog := preload("res://ui/time_of_day_dialog.gd")
+const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
@@ -220,6 +221,9 @@ func start_flight() -> void:
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	flight.interactive_start = has_home
 	flight.latency_marker_enabled = has_home and bool(preferences.get("latency_marker", Preferences.DEFAULTS.latency_marker))
+	# HUD: the Home route flies with the player's overlays; the direct route keeps the legacy labels (--hud=).
+	flight.overlays_enabled = has_home
+	flight.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud)
 	add_child(flight)
 	if has_home and not flight.startup_error.is_empty():
 		var reason: String = flight.startup_error
@@ -247,11 +251,18 @@ func start_flight() -> void:
 	if flight.session != null:
 		screens.set_session(flight.session)
 		flight.pause_requested.connect(open_pause)
+		if has_home:
+			flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
 		_keyboard_reader = flight.session.read_raw
 		if has_home and not preferences.get("first_flight_hint_seen", false):
 			var hint := FirstFlightHint.new(flight.session)
 			hint.done.connect(_on_first_flight_hint_done)
 			flight.add_child(hint) # freed with the flight
+
+
+func _on_overlay_settings_changed(settings: Dictionary) -> void:
+	preferences.hud = settings.duplicate(true)
+	Preferences.save_to(preferences_path, preferences) # a failed save only means the old layout returns next flight
 
 
 func _on_first_flight_hint_done() -> void:
@@ -327,6 +338,8 @@ func open_pause() -> void:
 	pause_menu.continue_requested.connect(continue_flight)
 	pause_menu.restart_requested.connect(restart_flight)
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
+	pause_menu.overlays_requested.connect(open_overlays)
+	pause_menu.overlays_button.visible = flight.get("_overlays") != null
 	pause_menu.end_requested.connect(end_flight)
 	pause_menu.quit_requested.connect(quit_app)
 	pause_menu.help_requested.connect(open_help)
@@ -344,6 +357,20 @@ func open_help(from: Control = null) -> void:
 	var help := HelpScreen.new(from)
 	help.closed.connect(close_help)
 	screens.push("help", help, from)
+
+
+## HUD-06: the flight overlays panel over the pause menu; changes apply and save at once.
+func open_overlays(from: Control = null) -> void:
+	if not screens.is_top("pause") or flight == null or flight.get("_overlays") == null:
+		return
+	var dialog := OverlaysDialog.new(flight.get("_overlays"))
+	dialog.closed.connect(close_overlays)
+	screens.push("overlays", dialog, from if from != null else pause_menu.overlays_button)
+
+
+func close_overlays() -> void:
+	if screens.is_top("overlays"):
+		screens.pop()
 
 
 func close_help() -> void:

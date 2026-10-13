@@ -26,7 +26,7 @@ const SHORTCUTS := [
 	[[KEY_H], "Stik smoke pump"],
 	[[KEY_J], "Assign smoke AUX"],
 	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
-	[[KEY_F3], "Performance numbers"],
+	[[KEY_F2, KEY_F3], "Overlay preset · developer overlays"],
 	[[KEY_F5], "Reload the aircraft data file"],
 ]
 
