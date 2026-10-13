@@ -30,6 +30,7 @@ const PRESETS := {
 	"agile": {"scale": 1.0, "mass_policy": "geometric", "weight_multiplier": 0.9, "power_multiplier": 1.0, "control_multiplier": 1.2},
 	"slow": {"scale": 1.0, "mass_policy": "constant_wing_loading", "weight_multiplier": 0.65, "power_multiplier": 0.65, "control_multiplier": 0.8},
 }
+const PRESET_LABELS := {"mini": "Mini", "giant": "Giant", "light": "Light", "heavy": "Heavy", "fast": "More power", "agile": "More travel", "slow": "Light / low power"}
 
 ## Set before adding this screen to the ScreenStack. Defaults to the current catalog aircraft.
 var initial_aircraft_id := Catalog.DEFAULT_ID
@@ -52,6 +53,8 @@ var _variant_name: LineEdit
 var _save_button: Button
 var _load_button: Button
 var _delete_button: Button
+var _restore_button: Button
+var _last_deleted_id := ""
 var _scale_selector: OptionButton
 var _mass_policy_selector: OptionButton
 var _factor_sliders: Dictionary = {}
@@ -352,6 +355,10 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_delete_button.disabled = true
 	_delete_button.pressed.connect(_confirm_delete_selected)
 	variant_actions.add_child(_delete_button)
+	_restore_button = _button("Undo delete", "", "RestoreVariant")
+	_restore_button.disabled = true
+	_restore_button.pressed.connect(_restore_last_deleted)
+	variant_actions.add_child(_restore_button)
 	content.add_child(variant_actions)
 
 	_variant_name = LineEdit.new()
@@ -381,7 +388,7 @@ func _build_presets_panel(parent: VBoxContainer) -> void:
 	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 8)
 	for preset_id: String in PRESETS:
-		var preset_button := _button(preset_id.capitalize(), "", "Preset" + preset_id.capitalize())
+		var preset_button := _button(PRESET_LABELS[preset_id], "", "Preset" + preset_id.capitalize())
 		preset_button.pressed.connect(_apply_preset.bind(preset_id))
 		grid.add_child(preset_button)
 		_preset_buttons[preset_id] = preset_button
@@ -736,8 +743,29 @@ func _delete_selected_variant() -> void:
 	if not bool(result.get("ok", false)):
 		set_note(_messages(result.get("errors", []), "The saved build could not be deleted."))
 		return
+	_last_deleted_id = deleting_id
+	_restore_button.disabled = false
+	if _saved_variant_id == deleting_id:
+		_saved_variant_id = ""
+		_saved_variant_revision = 0
+		_saved_compiler_version = ""
 	_refresh_variants()
 	set_note("Saved build deleted.")
+
+
+func _restore_last_deleted() -> void:
+	if _last_deleted_id.is_empty():
+		return
+	var result: Dictionary = Store.restore_variant(_last_deleted_id, variants_root)
+	if not bool(result.get("ok", false)):
+		set_note(_messages(result.get("errors", []), "The saved build could not be restored."))
+		return
+	_refresh_variants()
+	_select_variant(_last_deleted_id)
+	_sync_variant_actions()
+	_last_deleted_id = ""
+	_restore_button.disabled = true
+	set_note("Saved build restored. Load it to continue editing that revision.")
 
 
 func _select_variant(id: String) -> void:

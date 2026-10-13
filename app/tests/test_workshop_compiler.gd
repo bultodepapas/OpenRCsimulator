@@ -300,7 +300,7 @@ func _test_recipe_validation(base: Dictionary) -> void:
 
 
 func _test_scaled_flight(base: Dictionary, label: String) -> void:
-	for scale_value: float in [0.5, 1.0, 2.0]:
+	for scale_value: float in [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]:
 		var built: Dictionary = Compiler.compile(base, {"scale": scale_value})
 		_check("%s %.0f%% candidate compiles for flight" % [label, scale_value * 100.0], built.ok, str(built.errors))
 		if not built.ok:

@@ -6,6 +6,8 @@ The shared-code audit also uses `shared_code_probe.gd`: 400 seeded synthetic sta
 
 `frame_covariance_probe.gd` changes the body-coordinate basis, including inertia, force and rotor momentum, in 1,000 seeded rigid-body evaluations and checks the torque/power identity. `integration_probe.gd` compares a 0.5 s throttle transient at 120/240/480 Hz against 960 Hz for glow, electric and turbine configurations. It reports errors and rejects failed runs; it does not impose a universal convergence order on sampled auxiliary states or nonlinear electrical events.
 
+`aero_power_probe.gd` tests mechanical power in isolated local-force and global-rate terms across the fleet (28,000 samples each). It disables the intrinsic wing pitching moment for the local-force check; this is a diagnostic of dissipative terms, not a physical-validation claim for every aerodynamic contribution.
+
 Use the repository's pinned Godot from the root:
 
 ```powershell

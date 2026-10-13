@@ -5,6 +5,7 @@ const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const WaterMaterial := preload("res://render/lake/water_material.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const BANK_SHADER := preload("res://render/lake/bank.gdshader")
+const LakeReflection := preload("res://render/lake/lake_reflection.gd")
 const STEP_M := 0.75
 const WATER_EDGE_M := 2.0
 const MAX_MASK_POINTS := 64
@@ -89,7 +90,19 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 	water.position.y = -float(lake.water_level_down_m)
 	water.custom_aabb = water.mesh.get_aabb().grow(float(lake.wave_bounds.max_amplitude_m) + 0.02)
 	water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	water.layers = 2 # visible to ordinary cameras, excluded from its own cubemap
 	root.add_child(water)
+	var probe := LakeReflection.new()
+	probe.name = "Reflection"
+	probe.position = Vector3(float(lake.origin_east_m), 1.8, -float(lake.origin_north_m))
+	probe.size = Vector3(maximum.y - minimum.y + 10.0, 16.0, maximum.x - minimum.x + 10.0)
+	probe.max_distance = 250.0
+	probe.cull_mask = 1
+	probe.reflection_mask = 2
+	probe.mesh_lod_threshold = 4.0
+	probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	probe.water_material = water.material_override
+	root.add_child(probe)
 	root.set_meta("lighting_materials", [basin_material, water.material_override])
 	root.set_meta("triangles", indices.size() / 3 + water.mesh.surface_get_array_len(0) / 3)
 	return root

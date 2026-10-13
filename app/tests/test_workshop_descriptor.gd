@@ -18,7 +18,7 @@ func _initialize() -> void:
 
 func _test_catalog_descriptors() -> void:
 	var ids: PackedStringArray = Catalog.ids()
-	_check("all seven current catalog aircraft are discovered", ids.size() == 7, str(ids))
+	_check("every current catalog aircraft is discovered", ids.size() == Catalog.ENTRIES.size() and not ids.is_empty(), str(ids))
 	for id: String in ids:
 		var entry: Dictionary = Catalog.entry(id)
 		var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(str(entry.get("data", "")))

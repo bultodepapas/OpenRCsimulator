@@ -57,7 +57,10 @@ func _run() -> void:
 		var panel := _find(workshop, "WorkshopPanel") as Control
 		_check("layout fits %dp height" % viewport_size.y,
 			panel != null and panel.get_rect().size.x > 0.0 and panel.get_rect().size.y > 0.0
-			and preview.is_visible_in_tree() and test_fly.is_visible_in_tree())
+			and preview.is_visible_in_tree() and test_fly.is_visible_in_tree()
+			and Rect2(Vector2.ZERO, Vector2(viewport_size)).encloses(test_fly.get_global_rect())
+			and Rect2(Vector2.ZERO, Vector2(viewport_size)).encloses(title.get_global_rect()))
+	_check("opening starts at the top of the editor", workshop.get("_body_scroll").scroll_vertical == 0)
 
 	# The same menu labels can translate while the screen is open.
 	TranslationServer.set_locale("es")
@@ -169,12 +172,36 @@ func _run() -> void:
 	_check("Delete removes the saved variant and disables its actions", Store.list_variants(store_root).is_empty()
 		and (_find(workshop, "LoadVariant") as Button).disabled
 		and (_find(workshop, "DeleteVariant") as Button).disabled)
+	_check("deleting the current variant leaves an unsaved draft", str(workshop.get("_saved_variant_id")).is_empty()
+		and int(workshop.get("_saved_variant_revision")) == 0)
+	(_find(workshop, "RestoreVariant") as Button).pressed.emit()
+	await _ui.settle()
+	var restored: Dictionary = Store.load_variant(saved_id, store_root)
+	_check("Undo delete restores the original revision", restored.get("ok", false)
+		and restored.get("variant", {}).get("revision", 0) == 2)
+	workshop.save_named_variant()
+	await _ui.settle()
+	_check("saving the retained draft creates a separate variant", Store.list_variants(store_root).size() == 2
+		and str(workshop.get("_saved_variant_id")) != saved_id)
 
 	workshop.queue_free()
 	await _ui.settle()
 	var absolute_root := ProjectSettings.globalize_path(store_root)
 	if DirAccess.dir_exists_absolute(absolute_root):
-		DirAccess.remove_absolute(absolute_root)
+		_remove_fixture(absolute_root, absolute_root)
 	TranslationServer.set_locale("en")
 	print("Workshop UI: %d failed" % _failures)
 	quit(1 if _failures else 0)
+
+
+func _remove_fixture(path: String, fixture_root: String) -> void:
+	assert(path == fixture_root or path.begins_with(fixture_root + "/"))
+	var directory := DirAccess.open(path)
+	if directory == null:
+		return
+	for child: String in directory.get_files():
+		DirAccess.remove_absolute(path.path_join(child))
+	for child: String in directory.get_directories():
+		_remove_fixture(path.path_join(child), fixture_root)
+	directory = null
+	DirAccess.remove_absolute(path)

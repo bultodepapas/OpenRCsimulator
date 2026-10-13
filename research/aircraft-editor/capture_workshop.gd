@@ -13,6 +13,9 @@ func _run() -> void:
 			language = argument.trim_prefix("--language=")
 		if argument.begins_with("--out="):
 			output = argument.trim_prefix("--out=")
+		if argument == "--1080p":
+			root.size = Vector2i(1920, 1080)
+			root.content_scale_size = Vector2i(1920, 1080)
 	TranslationServer.set_locale(language)
 	var workshop: CanvasLayer = load("res://ui/workshop.gd").new()
 	workshop.variants_root = "user://workshop_capture_empty_library"

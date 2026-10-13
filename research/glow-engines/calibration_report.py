@@ -30,12 +30,61 @@ DOSSIER_NAMES = {
     "glow_2t": "NITRO-2T/calibration_report.json",
     "glow_4t": "NITRO-4T/calibration_report.json",
 }
+INSTALLATIONS = {
+    "max55ax_apc_sport_12x7": "stik_55ax_2t.json",
+    "max55ax_apc_sport_13x6": "stik_55ax_2t_apc_13x6.json",
+    "fs64v_apc_sport_13x6": "stik_fs64v_4t_apc_13x6.json",
+    "fs64v_master_airscrew_k_14x6": "stik_fs64v_4t.json",
+}
+AIRCRAFT_CONFIGURATIONS = {
+    "max55ax_apc_sport_12x7": "stik_glow_55ax_2t.json",
+    "max55ax_apc_sport_13x6": "stik_glow_55ax_2t_apc_13x6.json",
+    "fs64v_apc_sport_13x6": "stik_glow_fs64v_4t_apc_13x6.json",
+    "fs64v_master_airscrew_k_14x6": "stik_glow_fs64v_4t.json",
+}
+NASA_PROPELLER_THRUST_URL = "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/"
 PS_W = 735.49875
 TAU = math.tau
 
 
 def qvalue(group: dict[str, Any], key: str) -> Any:
     return group[key]["value"]
+
+
+def installation_inputs(configuration_id: str) -> dict[str, Any]:
+    """Read generated installation coefficients and their source identity."""
+    if configuration_id not in INSTALLATIONS:
+        raise ValueError(f"unknown generated glow installation: {configuration_id}")
+    path = PROFILE_DIR / INSTALLATIONS[configuration_id]
+    raw = path.read_bytes()
+    data = json.loads(raw)
+    prop = data["propeller"]
+    aircraft_path = ROOT / "app" / "data" / "aircraft" / AIRCRAFT_CONFIGURATIONS[configuration_id]
+    aircraft_raw = aircraft_path.read_bytes()
+    aircraft = json.loads(aircraft_raw)
+    return {
+        "configuration_id": configuration_id,
+        "path": path.relative_to(ROOT).as_posix(),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "family": data["family"],
+        "geometry": {
+            "diameter_m": float(qvalue(prop, "diameter_m")),
+            "pitch_m": float(qvalue(prop, "pitch_m")),
+            "chord_m": float(qvalue(prop, "chord_m")),
+            "blades": float(qvalue(prop, "blades")),
+        },
+        "section": {
+            "lift_slope_per_rad": float(qvalue(prop, "lift_slope")),
+            "cd0": float(qvalue(prop, "cd0")),
+            "induced_drag": float(qvalue(prop, "induced_drag")),
+            "blades": float(qvalue(prop, "blades")),
+        },
+        "runtime_static_rpm_cap": float(qvalue(
+            aircraft["propulsion"]["engine"], "max_rpm_static"
+        )),
+        "aircraft_path": aircraft_path.relative_to(ROOT).as_posix(),
+        "aircraft_sha256": hashlib.sha256(aircraft_raw).hexdigest(),
+    }
 
 
 def sample(table: list[list[float]], x: float) -> float:
@@ -250,7 +299,8 @@ def fit_single_prop_rpm_anchor(profile: dict[str, Any]) -> dict[str, Any]:
     diameter = 12.0 * 0.0254
     pitch = 7.0 * 0.0254
     chord = 0.025
-    section = {"lift_slope_per_rad": 5.5, "cd0": 0.022, "induced_drag": 0.06, "blades": 2}
+    installed = installation_inputs("max55ax_apc_sport_12x7")
+    section = installed["section"]
     prop_q = annular_static_prop_torque(
         reference_rpm, diameter, pitch, chord, reference_density,
         section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], section["blades"],
@@ -347,6 +397,8 @@ def fit_single_prop_rpm_anchor(profile: dict[str, Any]) -> dict[str, Any]:
             "induced_drag": section["induced_drag"],
             "static_prop_air_density_kg_m3": reference_density,
             "density_note": "profile reference density is used because the O.S. article reports temperature but not barometric pressure; actual test density is unknown",
+            "generated_installation_path": installed["path"],
+            "generated_installation_sha256": installed["sha256"],
         },
         "conditional_fit": {
             "candidate_engine_torque_at_anchor_nm": engine_q,
@@ -404,6 +456,134 @@ def annular_prop_performance(
         "shaft_power_w": torque * omega,
         "thrust_power_w": thrust * axial_speed_m_s,
         "advance_ratio": axial_speed_m_s / (max(rpm, 1.0) / 60.0 * diameter_m),
+    }
+
+
+def actuator_disk_power_bound(
+    thrust_n: float,
+    shaft_power_w: float,
+    axial_speed_m_s: float,
+    diameter_m: float,
+    air_density_kg_m3: float,
+    relative_tolerance: float = 1.0e-10,
+) -> dict[str, Any]:
+    """Check positive-thrust power against ideal actuator-disk momentum power.
+
+    NASA's simple momentum theory gives V_disk = (V_inf + V_exit) / 2 and
+    T = rho*A*V_disk*(V_exit - V_inf). Solving for V_disk and multiplying by
+    thrust gives the ideal lower-bound input power. This is a theoretical
+    bound check, not a model for measured or resolved induced flow.
+    """
+    if diameter_m <= 0.0 or air_density_kg_m3 <= 0.0:
+        raise ValueError("diameter and air density must be positive")
+    if axial_speed_m_s < 0.0:
+        return {
+            "status": "outside_forward_flow_scope",
+            "checked": False,
+            "passed": None,
+            "source": NASA_PROPELLER_THRUST_URL,
+        }
+    if thrust_n <= 0.0:
+        return {
+            "status": "not_applicable_nonpositive_thrust",
+            "checked": False,
+            "passed": None,
+            "source": NASA_PROPELLER_THRUST_URL,
+        }
+
+    disk_area_m2 = math.pi * diameter_m * diameter_m / 4.0
+    exit_speed_m_s = math.sqrt(
+        axial_speed_m_s * axial_speed_m_s
+        + 2.0 * thrust_n / (air_density_kg_m3 * disk_area_m2)
+    )
+    disk_speed_m_s = 0.5 * (axial_speed_m_s + exit_speed_m_s)
+    ideal_power_w = thrust_n * disk_speed_m_s
+    ratio = shaft_power_w / ideal_power_w
+    passed = shaft_power_w + ideal_power_w * relative_tolerance >= ideal_power_w
+    return {
+        "status": "accepted" if passed else "refused_impossible_positive_thrust_load",
+        "checked": True,
+        "passed": passed,
+        "source": NASA_PROPELLER_THRUST_URL,
+        "disk_area_m2": disk_area_m2,
+        "axial_speed_m_s": axial_speed_m_s,
+        "thrust_n": thrust_n,
+        "ideal_disk_speed_m_s": disk_speed_m_s,
+        "ideal_shaft_power_lower_bound_w": ideal_power_w,
+        "surrogate_shaft_power_w": shaft_power_w,
+        "shaft_to_ideal_power_ratio": ratio,
+        "relative_tolerance": relative_tolerance,
+    }
+
+
+def map_actuator_disk_audit(
+    geometry: dict[str, float],
+    section: dict[str, float],
+    air_density_kg_m3: float,
+    rpm_range: list[float],
+    rpm_samples: int = 150,
+    speed_range_m_s: list[float] | None = None,
+    speed_samples: int = 20,
+) -> dict[str, Any]:
+    """Audit an explicit RPM/forward-speed grid without treating it as data."""
+    speed_range_m_s = speed_range_m_s or [0.0, 30.0]
+    if rpm_samples < 2 or speed_samples < 2:
+        raise ValueError("map audit requires at least two RPM and speed samples")
+    rpms = [rpm_range[0] + (rpm_range[1] - rpm_range[0]) * i / (rpm_samples - 1)
+            for i in range(rpm_samples)]
+    speeds = [speed_range_m_s[0] + (speed_range_m_s[1] - speed_range_m_s[0]) * i / (speed_samples - 1)
+              for i in range(speed_samples)]
+    checked: list[dict[str, float]] = []
+    refused: list[dict[str, float]] = []
+    positive_thrust_count = 0
+    for speed in speeds:
+        for rpm in rpms:
+            result = annular_prop_performance(
+                rpm, speed, geometry["diameter_m"], geometry["pitch_m"], geometry["chord_m"],
+                air_density_kg_m3, section,
+            )
+            bound = actuator_disk_power_bound(
+                result["thrust_n"], result["shaft_power_w"], speed,
+                geometry["diameter_m"], air_density_kg_m3,
+            )
+            if not bound["checked"]:
+                continue
+            positive_thrust_count += 1
+            entry = {
+                "rpm": rpm,
+                "axial_speed_m_s": speed,
+                "thrust_n": result["thrust_n"],
+                "shaft_power_w": result["shaft_power_w"],
+                "ideal_shaft_power_lower_bound_w": bound["ideal_shaft_power_lower_bound_w"],
+                "shaft_to_ideal_power_ratio": bound["shaft_to_ideal_power_ratio"],
+            }
+            checked.append(entry)
+            if not bound["passed"]:
+                refused.append(entry)
+    minimum = min(checked, key=lambda row: row["shaft_to_ideal_power_ratio"]) if checked else None
+    return {
+        "status": "PASS" if not refused else "REFUSAL_POINTS_FOUND",
+        "method": "Independent ideal actuator-disk lower-bound audit on the repository-matched 12-annulus surrogate; positive-thrust samples only.",
+        "source": NASA_PROPELLER_THRUST_URL,
+        "grid": {
+            "rpm_range": rpm_range,
+            "rpm_samples": rpm_samples,
+            "forward_speed_range_m_s": speed_range_m_s,
+            "forward_speed_samples": speed_samples,
+            "sample_count": rpm_samples * speed_samples,
+        },
+        "positive_thrust_sample_count": positive_thrust_count,
+        "refused_positive_thrust_sample_count": len(refused),
+        "minimum_positive_thrust_power_ratio": (
+            rounded(minimum["shaft_to_ideal_power_ratio"]) if minimum is not None else None
+        ),
+        "minimum_ratio_at": (
+            {key: rounded(value) for key, value in minimum.items()} if minimum is not None else None
+        ),
+        "refusal_examples": [
+            {key: rounded(value) for key, value in row.items()} for row in refused[:20]
+        ],
+        "interpretation": "An ideal momentum-theory lower bound, not an inferred/measured induced velocity, Ct/Cp map, validated thrust, or calibration result.",
     }
 
 
@@ -470,12 +650,17 @@ def prop_balance_roots(
             root, axial_speed_m_s, diameter_m, pitch_m, chord_m,
             air_density_kg_m3, section,
         )
+        power_bound = actuator_disk_power_bound(
+            prop["thrust_n"], prop["shaft_power_w"], axial_speed_m_s,
+            diameter_m, air_density_kg_m3,
+        )
         engine = evaluate(profile, root, **engine_sensitivity)
         out.append({
             "rpm": root,
             "stable_restoring_root": slope < 0.0,
             "net_torque_slope_nm_per_rpm": slope,
             "engine_torque_nm": engine["brake_shaft_torque_nm"],
+            "actuator_disk_power_bound": power_bound,
             **prop,
             "within_o_s_practical_rpm_range": practical_low <= root <= practical_high,
         })
@@ -486,25 +671,32 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
     """Build paired static/advancing operating scenarios without inventing data."""
     family = profile["family"]
     is_two_stroke = family == "glow_2t"
-    section = {"lift_slope_per_rad": 5.5, "cd0": 0.022, "induced_drag": 0.06, "blades": 2.0}
+    default_id = "max55ax_apc_sport_12x7" if is_two_stroke else "fs64v_master_airscrew_k_14x6"
+    alternate_id = "max55ax_apc_sport_13x6" if is_two_stroke else "fs64v_apc_sport_13x6"
+    installed_by_id = {key: installation_inputs(key) for key in [default_id, alternate_id]}
+    two_stroke_installed = installation_inputs("max55ax_apc_sport_12x7")
+    section = installed_by_id[default_id]["section"]
+    two_stroke_section = two_stroke_installed["section"]
     reference_density = float(qvalue(profile["operation"], "reference_dry_density_kg_m3"))
     two_stroke_anchor_rpm = 10330.0
     diameter_12 = 12.0 * 0.0254
     pitch_7 = 7.0 * 0.0254
     starting_prop_torque = annular_prop_performance(
         two_stroke_anchor_rpm, 0.0, diameter_12, pitch_7, 0.025,
-        reference_density, section,
+        reference_density, two_stroke_section,
     )["torque_nm"]
     if is_two_stroke:
         anchor_engine_torque = evaluate(profile, two_stroke_anchor_rpm)["brake_shaft_torque_nm"]
         chord_12 = 0.025 * anchor_engine_torque / starting_prop_torque
+        chord_13 = float(installed_by_id[alternate_id]["geometry"]["chord_m"])
         chord_14 = None
         chord_14_alt = None
     else:
         # No matched FS-64V prop RPM point exists. This 30 mm wide-chord geometry
         # is an explicit screening assumption; the alternative transfers the
         # 12x7 inferred chord/diameter ratio and is retained as sensitivity.
-        chord_14 = 0.030
+        chord_14 = float(installed_by_id[default_id]["geometry"]["chord_m"])
+        chord_13 = float(installed_by_id[alternate_id]["geometry"]["chord_m"])
         chord_14_alt = (0.025 * evaluate(
             json.loads((PROFILE_DIR / PROFILE_NAMES["glow_2t"]).read_text(encoding="utf-8")),
             two_stroke_anchor_rpm,
@@ -522,7 +714,10 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                 "propeller_source": "https://www.apcprop.com/product/12x7/",
                 "observed_engine_prop_source": "https://www.os-engines.co.jp/web_content/202102/index1.html",
                 "apc_glow_rpm_ceiling": 190000.0 / 12.0,
-                "nominal_chord_m": chord_12,
+                "nominal_diameter_m": installed_by_id["max55ax_apc_sport_12x7"]["geometry"]["diameter_m"],
+                "nominal_pitch_m": installed_by_id["max55ax_apc_sport_12x7"]["geometry"]["pitch_m"],
+                "nominal_chord_m": float(installed_by_id["max55ax_apc_sport_12x7"]["geometry"]["chord_m"]),
+                "installation_source": installed_by_id["max55ax_apc_sport_12x7"],
                 "chord_basis": "conditional one-point fit to O.S. field RPM observation",
                 "anchor_rpm": two_stroke_anchor_rpm,
                 "refit_chord_in_uncertainty_cases": True,
@@ -537,7 +732,10 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                 "propeller_source": "https://www.apcprop.com/product/13x6/",
                 "observed_engine_prop_source": None,
                 "apc_glow_rpm_ceiling": 190000.0 / 13.0,
-                "nominal_chord_m": chord_12 * 13.0 / 12.0,
+                "nominal_diameter_m": installed_by_id["max55ax_apc_sport_13x6"]["geometry"]["diameter_m"],
+                "nominal_pitch_m": installed_by_id["max55ax_apc_sport_13x6"]["geometry"]["pitch_m"],
+                "nominal_chord_m": chord_13,
+                "installation_source": installed_by_id["max55ax_apc_sport_13x6"],
                 "chord_basis": "unobserved configuration: 12x7 fitted chord/diameter ratio transferred",
                 "anchor_rpm": None,
                 "refit_chord_in_uncertainty_cases": True,
@@ -555,7 +753,10 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                 "propeller_source": "https://www.apcprop.com/product/13x6/",
                 "observed_engine_prop_source": None,
                 "apc_glow_rpm_ceiling": 190000.0 / 13.0,
-                "nominal_chord_m": chord_14 * 13.0 / 14.0,
+                "nominal_diameter_m": installed_by_id["fs64v_apc_sport_13x6"]["geometry"]["diameter_m"],
+                "nominal_pitch_m": installed_by_id["fs64v_apc_sport_13x6"]["geometry"]["pitch_m"],
+                "nominal_chord_m": chord_13,
+                "installation_source": installed_by_id["fs64v_apc_sport_13x6"],
                 "chord_basis": "scaled from 30 mm Master Airscrew 14x6 screening geometry; no APC blade chord data",
                 "anchor_rpm": None,
                 "refit_chord_in_uncertainty_cases": False,
@@ -574,7 +775,10 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                 "manufacturer_max_recommended_rpm": 165000.0 / 14.0,
                 "rpm_limit_basis": "Generic Master Airscrew plastic-prop safety instruction: 165000 divided by diameter in inches; applied provisionally because the K-series product page specifies glass-fiber reinforced composite but no SKU-specific RPM ceiling",
                 "rpm_limit_source": "https://www.masterairscrew.com/pages/downloads",
+                "nominal_diameter_m": installed_by_id["fs64v_master_airscrew_k_14x6"]["geometry"]["diameter_m"],
+                "nominal_pitch_m": installed_by_id["fs64v_master_airscrew_k_14x6"]["geometry"]["pitch_m"],
                 "nominal_chord_m": chord_14,
+                "installation_source": installed_by_id["fs64v_master_airscrew_k_14x6"],
                 "chord_basis": "explicit unmeasured 30 mm wide-chord screening assumption, not fitted to an FS-64V RPM datum",
                 "anchor_rpm": None,
                 "refit_chord_in_uncertainty_cases": False,
@@ -585,25 +789,46 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
 
     # These deliberately combine favorable/adverse ends of separate inferred
     # terms. They expose sensitivity; they are not probability bounds or CIs.
-    corners = [
+    corner_specs = [
         {
             "name": "lower_candidate_torque_and_heavier_prop_load",
             "engine": {"indicated_efficiency_scale": 0.9, "charge_scale": 0.9, "losses_scale": 1.5},
-            "section": section | {"lift_slope_per_rad": 6.5, "cd0": 0.035, "induced_drag": 0.12},
+            "section_overrides": {"lift_slope_per_rad": 6.5, "cd0": 0.035, "induced_drag": 0.12},
             "density_scale": 1.1,
         },
         {
             "name": "higher_candidate_torque_and_lighter_prop_load",
             "engine": {"indicated_efficiency_scale": 1.1, "charge_scale": 1.1, "losses_scale": 0.5},
-            "section": section | {"lift_slope_per_rad": 4.5, "cd0": 0.015, "induced_drag": 0.03},
+            "section_overrides": {"lift_slope_per_rad": 4.5, "cd0": 0.015, "induced_drag": 0.03},
             "density_scale": 0.9,
         },
     ]
     predictions: list[dict[str, Any]] = []
     for prop in propellers:
-        diameter = prop["diameter_in"] * 0.0254
-        pitch = prop["pitch_in"] * 0.0254
+        installed = prop["installation_source"]
+        prop_section = installed["section"]
+        corners = [
+            {
+                **spec,
+                "section": prop_section | spec["section_overrides"],
+            }
+            for spec in corner_specs
+        ]
+        diameter = float(prop["nominal_diameter_m"])
+        pitch = float(prop["nominal_pitch_m"])
         nominal_chord = float(prop["nominal_chord_m"])
+        geometry = {
+            "diameter_m": diameter,
+            "pitch_m": pitch,
+            "chord_m": nominal_chord,
+        }
+        rpm_search_range = [
+            float(qvalue(profile["parameters"], "mechanical_torque_nm")[0][0]),
+            float(qvalue(profile["parameters"], "mechanical_torque_nm")[-1][0]),
+        ]
+        power_bound_map_audit = map_actuator_disk_audit(
+            geometry, prop_section, reference_density, rpm_search_range,
+        )
         if prop["name"].startswith("APC Sport"):
             prop["manufacturer_max_recommended_rpm"] = 190000.0 / prop["diameter_in"]
             prop["rpm_limit_basis"] = "APC glow/Sport propeller limit: 190000 divided by diameter in inches"
@@ -617,12 +842,20 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
         speed_rows: list[dict[str, Any]] = []
         uncertainty_rows: list[dict[str, Any]] = []
         for axial_speed in [0.0, 10.0, 20.0, 30.0]:
-            nominal_roots = prop_balance_roots(
+            nominal_assessments = prop_balance_roots(
                 profile, diameter, pitch, nominal_chord, axial_speed,
-                reference_density, section,
+                reference_density, prop_section,
             )
+            nominal_rejected = [
+                row for row in nominal_assessments
+                if row["actuator_disk_power_bound"]["status"] == "refused_impossible_positive_thrust_load"
+            ]
+            nominal_roots = [
+                row for row in nominal_assessments
+                if row["actuator_disk_power_bound"]["status"] != "refused_impossible_positive_thrust_load"
+            ]
             nominal_stable = [row for row in nominal_roots if row["stable_restoring_root"]]
-            corner_roots: list[dict[str, Any]] = []
+            corner_assessments: list[dict[str, Any]] = []
             for corner in corners:
                 density = reference_density * corner["density_scale"]
                 case_chord = nominal_chord
@@ -638,22 +871,56 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                 elif not is_two_stroke and "alternative_chord_m" in prop:
                     # Include both explicit FS64 geometry priors in the envelope.
                     for geometry_chord in [nominal_chord, float(prop["alternative_chord_m"])]:
-                        corner_roots.extend(prop_balance_roots(
+                        for root in prop_balance_roots(
                             profile, diameter, pitch, geometry_chord, axial_speed,
                             density, corner["section"], corner["engine"],
-                        ))
+                        ):
+                            corner_assessments.append({
+                                **root,
+                                "sensitivity_case": corner["name"],
+                                "geometry_chord_m": geometry_chord,
+                            })
                     continue
-                corner_roots.extend(prop_balance_roots(
+                for root in prop_balance_roots(
                     profile, diameter, pitch, case_chord, axial_speed,
                     density, corner["section"], corner["engine"],
-                ))
+                ):
+                    corner_assessments.append({
+                        **root,
+                        "sensitivity_case": corner["name"],
+                        "geometry_chord_m": case_chord,
+                    })
+            corner_rejected = [
+                row for row in corner_assessments
+                if row["actuator_disk_power_bound"]["status"] == "refused_impossible_positive_thrust_load"
+            ]
+            corner_roots = [
+                row for row in corner_assessments
+                if row["actuator_disk_power_bound"]["status"] != "refused_impossible_positive_thrust_load"
+            ]
             stable_corner_roots = [row for row in corner_roots if row["stable_restoring_root"]]
             stable_sensitivity_roots = stable_corner_roots + nominal_stable
+            rejected_examples = [
+                {
+                    "sensitivity_case": row.get("sensitivity_case", "nominal"),
+                    "rpm": rounded(float(row["rpm"])),
+                    "geometry_chord_m": rounded(float(row.get("geometry_chord_m", nominal_chord))),
+                    "thrust_n": rounded(float(row["thrust_n"])),
+                    "shaft_power_w": rounded(float(row["shaft_power_w"])),
+                    "ideal_shaft_power_lower_bound_w": rounded(float(row["actuator_disk_power_bound"]["ideal_shaft_power_lower_bound_w"])),
+                    "shaft_to_ideal_power_ratio": rounded(float(row["actuator_disk_power_bound"]["shaft_to_ideal_power_ratio"])),
+                    "decision": "refused; excluded from all candidate prediction and sensitivity extrema",
+                }
+                for row in [*nominal_rejected, *corner_rejected]
+            ]
             envelope: dict[str, Any] = {
                 "axial_speed_m_s": axial_speed,
                 "sensitivity_case_count_excluding_nominal": len(corners) * (2 if not is_two_stroke and "alternative_chord_m" in prop else 1),
                 "nominal_case_included_in_min_max": True,
                 "stable_root_count_including_nominal": len(stable_sensitivity_roots),
+                "momentum_bound_accepted_sensitivity_root_count": len(corner_roots),
+                "momentum_bound_refused_sensitivity_root_count": len(corner_rejected),
+                "momentum_bound_refusals": rejected_examples,
                 "interpretation": "min/max over deliberately combined engineering scenarios; not statistical uncertainty or a validated flight envelope",
             }
             if stable_sensitivity_roots:
@@ -664,7 +931,7 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                     vals = [float(row[source_key]) for row in stable_sensitivity_roots]
                     envelope[target_key] = [rounded(min(vals)), rounded(max(vals))]
             else:
-                envelope["prediction"] = "no restoring equilibrium found in profile support for these corner assumptions"
+                envelope["prediction"] = "no restoring equilibrium passing the ideal momentum power lower bound was found in profile support for these assumptions"
             uncertainty_rows.append(envelope)
             chosen = nominal_stable[-1] if nominal_stable else None
             row: dict[str, Any] = {
@@ -672,11 +939,16 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                 "static_condition": axial_speed == 0.0,
                 "nominal_uniform_chord_m": nominal_chord,
                 "nominal_all_roots": [{k: rounded(v) if isinstance(v, float) else v for k, v in root.items()} for root in nominal_roots],
+                "nominal_balance_root_count": len(nominal_assessments),
+                "nominal_rejected_by_momentum_bound": rejected_examples,
                 "nominal_stable_full_admission_equilibrium": (
                     {k: rounded(v) if isinstance(v, float) else v for k, v in chosen.items()}
                     if chosen is not None else None
                 ),
                 "assumption_envelope": envelope,
+                "generated_runtime_static_rpm_cap": installed["runtime_static_rpm_cap"],
+                "profile_numeric_search_range_rpm": rpm_search_range,
+                "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter.",
             }
             if prop["anchor_rpm"] is not None and axial_speed == 0.0:
                 row["anchor_status"] = "static RPM root is constrained to the O.S. single observation by construction"
@@ -688,18 +960,21 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
             "direct_fit_check": "1/4-in prop bore matches the O.S. 1/4-28 shaft/nut size; verify actual hub centering and clamping on the test article",
             "engine_rpm_guidance": {
                 "o_s_published_practical_rpm": MANUFACTURER_PRACTICAL_RPM[family],
-                "profile_numeric_support_rpm": [
-                    float(qvalue(profile["parameters"], "mechanical_torque_nm")[0][0]),
-                    float(qvalue(profile["parameters"], "mechanical_torque_nm")[-1][0]),
-                ],
+                "profile_numeric_support_rpm": rpm_search_range,
                 "profile_recommended_max_rpm": float(qvalue(profile["operation"], "recommended_max_rpm")),
                 "effective_recommended_rpm_for_configuration": effective_limit,
+                "generated_aircraft_max_rpm_static_field": installed["runtime_static_rpm_cap"],
+                "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium; the profile search range and generated aircraft max_rpm_static field are separate limits.",
             },
-            "section_assumptions": section,
+            "section_assumptions": prop_section,
             "reference_air_density_kg_m3": reference_density,
+            "actuator_disk_power_bound_map_audit": power_bound_map_audit,
+            "sensitivity_cases": corners,
             "static_and_advancing_full_admission_predictions": speed_rows,
             "model_limits": [
                 "Uses the engine candidate curve and the runtime's 12-annulus no-induced-velocity uniform-chord surrogate.",
+                "Every positive-thrust prediction is checked against ideal actuator-disk power; impossible surrogate roots are refused and excluded from prediction extrema.",
+                "The momentum check uses ideal actuator-disk theory as a lower bound, not measured induced flow or an induced-velocity calibration.",
                 "The real propeller's radial chord, twist, airfoil, Reynolds correction, induced flow, rotating inertia and production variation are unavailable.",
                 "Advancing cases are axial-speed scenarios at 10, 20 and 30 m/s, not aircraft telemetry or validated flight points.",
                 "Static RPM, thrust and torque for unobserved combinations are engineering inferences, not measurements.",

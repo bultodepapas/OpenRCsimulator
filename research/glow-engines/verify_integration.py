@@ -24,6 +24,8 @@ def main():
     parser.add_argument('--godot', required=True, type=Path)
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--parse-all', action='store_true')
+    parser.add_argument('--scope', choices=['full', 'physics'], default='full',
+                        help='physics omits scene/catalog UI checks and the app CLI smoke; run native smokes separately')
     args = parser.parse_args()
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=False)
@@ -87,7 +89,8 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         list(pool.map(parse,scripts))
     tests = set((ROOT/'app/tests').glob('test_glow_*.gd'))
-    tests.update(ROOT/'app/tests'/('test_'+name+'.gd') for name in REGRESSION)
+    omitted = {'aircraft_catalog', 'ui_aircraft', 'ui_home', 'ui_runway'} if args.scope == 'physics' else set()
+    tests.update(ROOT/'app/tests'/('test_'+name+'.gd') for name in REGRESSION if name not in omitted)
     # Dynamic electric and turbine integration live in later track-specific files.
     tests.update((ROOT/'app/tests').glob('test_electric_*.gd'))
     tests.update((ROOT/'app/tests').glob('test_turbine_*.gd'))
@@ -96,11 +99,14 @@ def main():
         # wall-time ceiling is separate from the measured physics-tick budget.
         scene_fixture = p.stem in {'test_aircraft_catalog', 'test_ui_aircraft', 'test_ui_runway'}
         run(p.stem,base+['--script','res://tests/'+p.name], timeout=600 if scene_fixture else 180)
-    run('glow-catalog-cli', [sys.executable, 'research/glow-engines/packaged_smoke.py',
-        '--godot', str(godot), '--out', str(out/'cli')])
+    if args.scope == 'full':
+        run('glow-catalog-cli', [sys.executable, 'research/glow-engines/packaged_smoke.py',
+            '--godot', str(godot), '--out', str(out/'cli')])
     sources_after = fingerprints()
     unchanged = sources_before == sources_after
     report = dict(format='openrc-glow-integration-proof v2',results=results,
+                  scope=args.scope,
+                  omitted_checks=sorted('test_'+name for name in omitted) + (['glow-catalog-cli'] if omitted else []),
                   ok=all(r['passed'] for r in results) and unchanged,
                   godot_executable=str(godot),
                   godot_executable_sha256=hashlib.sha256(godot.read_bytes()).hexdigest(),

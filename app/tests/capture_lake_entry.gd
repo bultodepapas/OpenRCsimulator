@@ -137,13 +137,12 @@ func _run() -> void:
 		return
 	var event_sim_tick: int = int(flight.session.sim.tick)
 	var impact: Variant = flight.session.crash.get("impact")
-	if impact == null or str(impact.get("trigger", "")) != "water" \
-			or str(actual_event.get("material", "")) != "water":
+	if impact == null or impact.trigger != "water" or actual_event.material != "water":
 		await _abort(flight, "the actual simulation event was not a water contact")
 		return
 
 	var effects: WaterEffects = flight._crash_director.water_effects
-	var point_ned: PackedFloat64Array = actual_event.get("point_ned", PackedFloat64Array())
+	var point_ned: PackedFloat64Array = actual_event.point_ned
 	if point_ned.size() != 3:
 		await _abort(flight, "water event did not provide contact-point kinematics")
 		return
@@ -215,18 +214,19 @@ func _run() -> void:
 		"starting_position_ned_m": START_NED,
 		"starting_velocity_body_frd_mps": START_VELOCITY_BODY,
 		"event": {
-			"trigger": str(impact.get("trigger", "")),
-			"material": str(actual_event.get("material", "")),
-			"response_status": str(actual_event.get("response_status", "")),
-			"tick": int(actual_event.get("tick", -1)),
-			"time_fraction": float(actual_event.get("time_fraction", NAN)),
-			"probe_kind": str(actual_event.get("probe_kind", "")),
-			"probe_order": int(actual_event.get("probe_order", -1)),
-			"point_index": int(actual_event.get("point_index", -1)),
+			"trigger": str(impact.trigger),
+			"material": str(actual_event.material),
+			"obstacle_kind": str(actual_event.obstacle_kind),
+			"response_status": str(actual_event.response_status),
+			"tick": int(actual_event.tick),
+			"time_fraction": float(actual_event.time_fraction),
+			"probe_kind": str(actual_event.probe_kind),
+			"probe_order": int(actual_event.probe_order),
+			"point_index": int(actual_event.point_index),
 			"point_ned_m": Array(point_ned),
-			"surface_down_m": float(actual_event.get("surface_down_m", NAN)),
-			"depth_m": float(actual_event.get("depth_m", NAN)),
-			"normal_speed_mps": float(actual_event.get("normal_speed_mps", NAN)),
+			"surface_down_m": float(actual_event.surface_down_m),
+			"depth_m": float(actual_event.depth_m),
+			"normal_speed_mps": float(actual_event.normal_speed_mps),
 			"sim_tick_after_event": event_sim_tick,
 			"fixed_step_hz": Engine.physics_ticks_per_second,
 			"fixed_duration_to_event_s": float(event_sim_tick) / float(Engine.physics_ticks_per_second),
@@ -264,7 +264,7 @@ func _run() -> void:
 			or int(report.audio_capture.frames) <= 0 or float(report.audio_capture.peak_linear) <= 0.0001:
 		_failure = "water aftermath pause, resume, or reset contract failed"
 	print("lake-entry capture: actual water tick %d at NED %s, depth %.3f m; shots=%d; report=%s" % [
-		int(actual_event.get("tick", -1)), str(point_ned), float(actual_event.get("depth_m", NAN)),
+		int(actual_event.tick), str(point_ned), float(actual_event.depth_m),
 		_shots.size(), report_path])
 	if not _failure.is_empty():
 		printerr(_failure)

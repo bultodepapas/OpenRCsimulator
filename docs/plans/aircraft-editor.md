@@ -1,6 +1,6 @@
 # Aircraft experiment editor plan
 
-**Date:** 2026-10-13. **Revision:** 2 — fleet-wide authoring standard and capability-based composition. **Status:** proposed; no editor implementation is claimed. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track. **Repository baseline:** initial working-tree audit at `37103e0b`; current catalog/loader/render seams rechecked for this revision. Concurrent work remains owned by its tracks.
+**Date:** 2026-10-13. **Revision:** 2 — fleet-wide authoring standard and capability-based composition. **Status:** plan with a partial implementation in the current working tree; acceptance-step reconciliation remains pending, and fleet delivery is not claimed. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track. **Repository baseline:** initial working-tree audit at `37103e0b`; current catalog/loader/render seams rechecked for this revision. Concurrent work remains owned by its tracks.
 
 Build one **Aircraft Workshop** for every compatible aircraft. A player can clone a catalog aircraft, make it lighter, heavier, smaller, larger or more powerful, save the result and fly it. The same workshop supports matching a real RC build and inventing miniature or giant airplanes. The Ugly Stik is the first numerical example and test fixture; its name must not select editing behavior. The first delivery proves the same workflow on both the Stik and Extra, including 50% and 200% Stik examples, a dedicated menu, persistent variants and a repeatable test-flight loop.
 

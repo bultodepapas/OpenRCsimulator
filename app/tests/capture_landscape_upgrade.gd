@@ -75,6 +75,8 @@ func _run() -> void:
 	var lake: Node3D = built.field.get_node_or_null("Lake")
 	var lake_diagnostics := {}
 	if lake != null:
+		if str(args.get("lake_reflection", "on")) == "off":
+			lake.get_node("Reflection").queue_free()
 		var basin: MeshInstance3D = lake.get_node("Basin")
 		var basin_arrays: Array = basin.mesh.surface_get_arrays(0)
 		var bverts: PackedVector3Array = basin_arrays[Mesh.ARRAY_VERTEX]

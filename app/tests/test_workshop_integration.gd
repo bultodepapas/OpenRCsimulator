@@ -6,6 +6,7 @@ const Driver := preload("res://tests/ui_driver.gd")
 const Frames := preload("res://render/frames.gd")
 const Builder := preload("res://render/airplane.gd")
 const Shadow := preload("res://render/shadow.gd")
+const Wreck := preload("res://render/crash/wreck.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -58,11 +59,28 @@ func _run() -> void:
 		var visual := Builder.build(Catalog.DEFAULT_ID)
 		check("camera extent follows scaled geometry", flight._extent.is_equal_approx(Shadow.model_extent(visual.root) * 2.0))
 		visual.root.free()
+		_check_wreck_scale(flight._airplane.root, Catalog.DEFAULT_ID, 2.0)
 		host.open_pause()
 		host.end_flight()
 		await ui.settle()
 		check("return restores same editor instance", host.screens.top() == editor and host.flight == null)
 		check("Home is still behind editor", host.home != null and host.home_scene.is_inside_tree())
+	for scale_value: float in [0.5, 2.0]:
+		editor.set_aircraft("gp-extra-300s-60")
+		editor.set_recipe({scale = scale_value})
+		(editor.find_child("TestFly", true, false) as Button).pressed.emit()
+		check("Extra %.0f%% starts through the same Workshop action" % (scale_value * 100.0),
+			host.flight != null and host.flight.startup_error.is_empty())
+		if host.flight != null:
+			host.flight.session.physics_enabled = false
+			host.flight.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
+			host.flight._render_pose(host.flight._current_pose(), host.flight.session.surfaces(), 0.3)
+			_check_wreck_scale(host.flight._airplane.root, "gp-extra-300s-60", scale_value)
+			host.open_pause()
+			host.end_flight()
+			await ui.settle()
+			check("Extra returns to the same draft", host.screens.top() == editor
+				and is_equal_approx(editor.get_recipe().scale, scale_value))
 	host.close_workshop()
 	host.home.set_start_choice("airborne")
 	host.start_flight()
@@ -101,3 +119,20 @@ func _run() -> void:
 	DirAccess.remove_absolute("user://test_workshop_integration.cfg")
 	print("Workshop integration: %d failed" % failures)
 	quit(1 if failures else 0)
+
+
+func _check_wreck_scale(airplane: Node3D, visual_id: String, scale_value: float) -> void:
+	var original: Dictionary = Builder.build(visual_id)
+	root.add_child(original.root)
+	var baseline := Wreck.new()
+	var scaled := Wreck.new()
+	root.add_child(baseline)
+	root.add_child(scaled)
+	var prepared := baseline.prepare(original.root) and scaled.prepare(airplane)
+	check("wreck geometry follows %s at %.0f%%" % [visual_id, scale_value * 100.0], prepared
+		and scaled._whole_bounds.size.is_equal_approx(baseline._whole_bounds.size * scale_value))
+	check("wreck rigid bodies keep unit scale", scaled._bodies.all(func(body: RigidBody3D) -> bool:
+		return body.scale.is_equal_approx(Vector3.ONE)))
+	scaled.free()
+	baseline.free()
+	original.root.free()

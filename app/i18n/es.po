@@ -1105,3 +1105,21 @@ msgstr "Este avión no tiene un modelo de vuelo para iniciar la prueba."
 
 msgid "This aircraft is a visual preview and has no flight data."
 msgstr "Este avión es una vista previa y aún no tiene datos de vuelo."
+
+msgid "Undo delete"
+msgstr "Recuperar"
+
+msgid "The saved build could not be restored."
+msgstr "No se pudo recuperar la variante."
+
+msgid "Saved build restored. Load it to continue editing that revision."
+msgstr "Variante recuperada. Cárgala para seguir editando esa revisión."
+
+msgid "More power"
+msgstr "Más potencia"
+
+msgid "More travel"
+msgstr "Más recorrido"
+
+msgid "Light / low power"
+msgstr "Ligero / suave"
