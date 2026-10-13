@@ -9,6 +9,9 @@ const RB = preload("res://physics/rigid_body.gd")
 const EffectiveMass = preload("res://physics/effective_mass.gd")
 const M = preload("res://physics/math3d.gd")
 const SceneryBodies = preload("res://render/landscape_upgrade/scenery_bodies.gd")
+const CrashCause = preload("res://render/crash/cause.gd")
+const Telemetry = preload("res://render/overlays/telemetry.gd")
+const GroundTerrain = preload("res://physics/ground_terrain.gd")
 
 var flight: Node3D
 var wreck: Wreck
@@ -25,6 +28,8 @@ var _audio_enabled := true
 var _scenery_contacts: Node3D
 ## E3d1: per-point time of the last skid mark, so a slide leaves a trail without a mark every frame.
 var _touch_marks: Dictionary = {}
+## CR-01e: the last CrashCause.HISTORY_S of flight, sampled every SAMPLE_INTERVAL_S of sim time (oldest first).
+var history: Array = []
 const TOUCH_TRAIL_S := 0.12
 const TOUCH_SLIDE_MPS := 1.5
 
@@ -55,6 +60,7 @@ func update(delta: float) -> void:
 	if flight.session.crash.is_empty():
 		if active:
 			reset()
+		_record_sample()
 		_touch_feedback()
 		return
 	if not active:
@@ -140,6 +146,13 @@ func _start() -> void:
 	report["tank_ruptured"] = int(report["class"]) == 4 or (int(report["class"]) == 3 and str(report.get("component_group","")) in ["fuselage","engine","propeller"] and float(report["estimated_energy_j"]) >= 600.0)
 	report["tank_rupture_kind"] = "estimated: C4, or C3 central impact >=600 J; uncalibrated"
 	report["tick"] = impact.tick
+	# CR-01e: why it happened, from the recorded history (card line and one log line).
+	var envelope: Dictionary = flight.session.aircraft.model.get("envelope", {})
+	report["cause"] = CrashCause.classify(history, {
+		trigger = str(impact.trigger), obstacle_kind = str(impact.get("obstacle_kind")) if impact.get("obstacle_kind") != null else "",
+		component_group = str(report.get("component_group", "")), speed_mps = float(report.get("speed_mps", 0.0)),
+	}, {stall_alpha_deg = rad_to_deg(float(envelope.a1)) if envelope.has("a1") else INF, start_speed = float(flight.session.aircraft.model.start_speed)})
+	print("CRASH CAUSE: ", CrashCause.line(report.cause))
 	# CR-09b: the wreck releases sections in order of distance from this point (render world space).
 	report["contact_point_world"] = _impact_point
 	var velocity := Frames.ned_to_render(Array(v_ned))
@@ -177,6 +190,29 @@ static func component_for(trigger: String, point_index: int, body_point: PackedF
 	elif body_point[0] > chord:
 		component = "engine"
 	return {component = component, is_estimate = true, basis = "geometric hull region; crash_hull_components unavailable"}
+
+## CR-01e: one history sample per SAMPLE_INTERVAL_S of sim time, from the HUD's 64-bit telemetry. A restart or a
+## rewind (time going backwards) clears the history; a paused session adds nothing.
+func _record_sample() -> void:
+	var session: Node = flight.session
+	if session.sim == null or not session.aircraft.get("ok", false):
+		return
+	var t: float = session.sim.time()
+	if not history.is_empty():
+		var last_t := float(history.back().t)
+		if t < last_t:
+			history.clear()
+		elif t < last_t + CrashCause.SAMPLE_INTERVAL_S:
+			return
+	var s: PackedFloat64Array = session.sim.state
+	var air: Dictionary = session.air_data(s, t)
+	var ground: PackedFloat64Array = GroundTerrain.sample(s[0], s[1], session.ground_surfaces)
+	var telemetry := Telemetry.compute(s, session.wind_at(t), air, {terrain_up = ground[0], last_loads = session.sim.last_loads,
+		mass = session.sim.mass, gravity = session.sim.gravity, throttle = session.sim.inputs[3], time_s = t})
+	history.append(CrashCause.sample(t, telemetry, s[RB.RATE], s[RB.RATE + 2], session.engine_running))
+	while not history.is_empty() and float(history[0].t) < t - CrashCause.HISTORY_S:
+		history.pop_front()
+
 
 ## CR-03b: up to six distinct albedo colours of the airplane's own materials, most-used first, so crash chips look
 ## like its covering. Dark and transparent materials (tyres, hardware, canopy glass) are skipped.
@@ -257,9 +293,11 @@ func description() -> String:
 	if not active:
 		return ""
 	var names := ["Touch, no damage","Scrape","Damage","Structural breakup","Destroyed"]
-	return "%s\nImpact %.1f m/s · %s\nEstimated %s damage\n\n[R] Restart flight   [C] Change view\n[Esc] Menu" % [names[clampi(int(report.get("class",0)),0,4)],float(report.get("speed_mps",0.0)),str(report.get("surface","ground")),str(report.get("component","airframe"))]
+	var cause_line := "\nCause: %s" % CrashCause.line(report.cause) if report.has("cause") else ""
+	return "%s\nImpact %.1f m/s · %s\nEstimated %s damage%s\n\n[R] Restart flight   [C] Change view\n[Esc] Menu" % [names[clampi(int(report.get("class",0)),0,4)],float(report.get("speed_mps",0.0)),str(report.get("surface","ground")),str(report.get("component","airframe")),cause_line]
 
 func reset() -> void:
+	history.clear()
 	if is_instance_valid(_scenery_contacts):
 		_scenery_contacts.free()
 	_scenery_contacts = null

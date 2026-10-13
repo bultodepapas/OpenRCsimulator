@@ -16,8 +16,9 @@ const SPIN_YAW_DPS := 90.0
 const SPIN_MIN_S := 0.5
 const TIP_ROLL_DPS := 120.0
 const TIP_BANK_CHANGE_DEG := 45.0
-const DIVE_PITCH_DEG := -45.0
+const DIVE_PATH_DEG := -45.0
 const DIVE_SPEED_FACTOR := 1.3
+const DIVE_WINDOW_S := 2.0
 const HARD_SINK_MPS := 2.0
 const LEVEL_PITCH_DEG := 20.0
 const LEVEL_BANK_DEG := 30.0
@@ -28,7 +29,7 @@ const DEAD_STICK_S := 2.0
 const LOW_SPEED_FACTOR := 0.8
 
 
-## samples: oldest first, each {t, airspeed, alpha_deg, pitch_deg, bank_deg, roll_rate_dps, yaw_rate_dps,
+## samples: oldest first, each {t, airspeed, ground_speed, alpha_deg, pitch_deg, bank_deg, roll_rate_dps, yaw_rate_dps,
 ## height_agl, vertical_speed, throttle, engine_running}. impact: {trigger, obstacle_kind, component_group, speed_mps}.
 ## reference: {stall_alpha_deg, start_speed}. Returns {id, label, detail, factors (Array of String)}.
 static func classify(samples: Array, impact: Dictionary, reference: Dictionary) -> Dictionary:
@@ -42,9 +43,9 @@ static func classify(samples: Array, impact: Dictionary, reference: Dictionary) 
 	if trigger == "scenery":
 		var obstacle := str(impact.get("obstacle_kind", "obstacle")).replace("_", " ")
 		return _cause("obstacle", "Hit a %s" % obstacle, "%.1f m/s" % float(impact.get("speed_mps", 0.0)), factors)
-	if trigger == "gear_limit":
-		return _cause("gear_collapse", "Hard landing: landing gear collapsed", _state_text(last), factors)
 	if samples.is_empty():
+		if trigger == "gear_limit":
+			return _cause("gear_collapse", "Hard landing: landing gear collapsed", "", factors)
 		return _cause("unknown", "Crash", "no flight history", factors)
 	if _all_within(samples, t_end - GROUND_TIME_S, func(s: Dictionary) -> bool: return float(s.height_agl) < GROUND_HEIGHT_M):
 		if group == "propeller":
@@ -57,6 +58,9 @@ static func classify(samples: Array, impact: Dictionary, reference: Dictionary) 
 	if _duration(stalled) >= MIN_STALL_S:
 		var first: Dictionary = stalled[0]
 		var after := window.filter(func(s: Dictionary) -> bool: return float(s.t) >= float(first.t))
+		# Bank change is measured from the attitude just before the stall began.
+		var before := samples.filter(func(s: Dictionary) -> bool: return float(s.t) < float(first.t))
+		var bank_reference := float((before.back() if not before.is_empty() else first).bank_deg)
 		var spinning := after.filter(func(s: Dictionary) -> bool: return absf(float(s.yaw_rate_dps)) >= SPIN_YAW_DPS)
 		var stall_text := "at %.0f m: α %.0f°, %.1f m/s, bank %.0f°" % [float(first.height_agl), float(first.alpha_deg), float(first.airspeed), float(first.bank_deg)]
 		if _duration(spinning) >= SPIN_MIN_S:
@@ -66,12 +70,22 @@ static func classify(samples: Array, impact: Dictionary, reference: Dictionary) 
 		for s: Dictionary in after:
 			max_roll = maxf(max_roll, absf(float(s.roll_rate_dps)))
 			if float(s.t) <= float(first.t) + 1.0:
-				bank_change = maxf(bank_change, absf(_wrap(float(s.bank_deg) - float(first.bank_deg))))
+				bank_change = maxf(bank_change, absf(_wrap(float(s.bank_deg) - bank_reference)))
 		if max_roll >= TIP_ROLL_DPS or bank_change >= TIP_BANK_CHANGE_DEG:
 			return _cause("tip_stall", "Tip stall", stall_text, factors)
 		return _cause("stall", "Stall", stall_text, factors)
-	if float(last.pitch_deg) <= DIVE_PITCH_DEG and float(last.airspeed) >= DIVE_SPEED_FACTOR * start_speed:
-		return _cause("dive", "Steep high-speed dive into the ground", _state_text(last), factors)
+	# A dive is a flight-path condition over the last seconds: the nose may already be coming up when it hits.
+	var path_deg := _path_deg(last)
+	var steepest := 0.0
+	for s: Dictionary in samples.filter(func(s: Dictionary) -> bool: return float(s.t) >= t_end - DIVE_WINDOW_S):
+		if float(s.airspeed) >= DIVE_SPEED_FACTOR * start_speed:
+			steepest = minf(steepest, _path_deg(s))
+	if steepest <= DIVE_PATH_DEG and float(last.airspeed) >= DIVE_SPEED_FACTOR * start_speed:
+		if path_deg <= DIVE_PATH_DEG:
+			return _cause("dive", "Steep high-speed dive into the ground", "path %.0f°, %.1f m/s" % [path_deg, float(last.airspeed)], factors)
+		return _cause("dive", "Too late to pull out of a dive", "path %.0f° → %.0f°, %.1f m/s" % [steepest, path_deg, float(last.airspeed)], factors)
+	if trigger == "gear_limit":
+		return _cause("gear_collapse", "Hard landing: landing gear collapsed", "sink %.1f m/s, %.1f m/s" % [-float(last.vertical_speed), float(last.airspeed)], factors)
 	if absf(float(last.pitch_deg)) <= LEVEL_PITCH_DEG and absf(float(last.bank_deg)) <= LEVEL_BANK_DEG and float(last.vertical_speed) <= -HARD_SINK_MPS:
 		return _cause("hard_landing", "Landed too hard", "sink %.1f m/s, %.1f m/s" % [-float(last.vertical_speed), float(last.airspeed)], factors)
 	if absf(float(last.bank_deg)) >= STEEP_BANK_DEG:
@@ -90,7 +104,7 @@ static func line(cause: Dictionary) -> String:
 
 ## A sample from 64-bit telemetry (Telemetry.compute) and the body rates of `state`.
 static func sample(t: float, telemetry: Dictionary, roll_rate_rad_s: float, yaw_rate_rad_s: float, engine_running: bool) -> Dictionary:
-	return {t = t, airspeed = float(telemetry.airspeed), alpha_deg = float(telemetry.alpha_deg),
+	return {t = t, airspeed = float(telemetry.airspeed), ground_speed = float(telemetry.ground_speed), alpha_deg = float(telemetry.alpha_deg),
 		pitch_deg = float(telemetry.pitch_deg), bank_deg = float(telemetry.bank_deg),
 		roll_rate_dps = rad_to_deg(roll_rate_rad_s), yaw_rate_dps = rad_to_deg(yaw_rate_rad_s),
 		height_agl = float(telemetry.height_agl), vertical_speed = float(telemetry.vertical_speed),
@@ -114,6 +128,11 @@ static func _state_text(s: Dictionary) -> String:
 	if s.is_empty():
 		return ""
 	return "at %.1f m/s, pitch %.0f°, bank %.0f°" % [float(s.get("airspeed", 0.0)), float(s.get("pitch_deg", 0.0)), float(s.get("bank_deg", 0.0))]
+
+
+## Flight-path angle (deg, negative descending) from vertical and ground speed.
+static func _path_deg(s: Dictionary) -> float:
+	return rad_to_deg(atan2(float(s.vertical_speed), maxf(float(s.get("ground_speed", 0.0)), 0.001)))
 
 
 static func _cause(id: String, label: String, detail: String, factors: Array) -> Dictionary:
