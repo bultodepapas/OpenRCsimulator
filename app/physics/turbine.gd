@@ -21,10 +21,46 @@ const M := preload("res://physics/math3d.gd")
 const RHO_REFERENCE := 1.225
 ## Below this the shaft is stopped: no thrust, no flow.
 const STOPPED_RPM := 1.0
+## AV-20 changes integration/sampling, not the empirical engine schedules or mounting-torque model.
+const CONTINUOUS_LAW := "turbine-rpm-governor-rk4-v1"
+const CONTINUOUS_LAYOUT := "turbine shaft rpm; RK4 coupled; prescribed fuel mass"
+const MAX_STEP_RATIO := 0.25
 
 
 static func is_turbine(prop: Dictionary) -> bool:
 	return prop.get("kind", "") == "turbine"
+
+
+static func is_continuous(prop: Dictionary) -> bool:
+	return is_turbine(prop) and prop.get("spool_integrator", "sampled") == "rk4"
+
+
+## Conservative explicit-stage envelope for the piecewise-linear closed-loop RPM law.
+## A validated table can still have very steep adjacent knots. Reject before accepting a flight.
+static func step_supported(prop: Dictionary, dt: float) -> bool:
+	if not is_continuous(prop) or not is_finite(dt) or dt <= 0.0:
+		return false
+	var tau: float = prop.get("governor_tau", NAN)
+	if not is_finite(tau) or tau <= 0.0:
+		return false
+	var fastest: float = 1.0 / tau
+	for key: String in ["accel_limit", "decel_limit"]:
+		var schedule: PackedFloat64Array = prop.get(key, PackedFloat64Array())
+		if schedule.size() < 4 or schedule.size() % 2 != 0:
+			return false
+		for at: int in range(0, schedule.size(), 2):
+			if not is_finite(schedule[at]) or not is_finite(schedule[at + 1]) or schedule[at + 1] <= 0.0:
+				return false
+			if at == 0:
+				continue
+			var span: float = schedule[at] - schedule[at - 2]
+			if not is_finite(span) or span <= 0.0:
+				return false
+			var slope: float = absf((schedule[at + 1] - schedule[at - 1]) / span)
+			if not is_finite(slope):
+				return false
+			fastest = maxf(fastest, slope)
+	return is_finite(fastest * dt) and fastest * dt <= MAX_STEP_RATIO
 
 
 ## Piecewise-linear table [x0, y0, x1, y1, …] (x increasing), clamped to the end values outside its range.

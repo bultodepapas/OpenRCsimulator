@@ -42,7 +42,9 @@ direction, all subsequent crossings in that direction, time spent on the far
 side before a recrossing or capture end, and the sample bracket for each time.
 It rejects non-finite data, non-increasing time, a missing command-edge
 bracket, insufficient samples, a missing requested crossing, and a capture
-that ends before a requested dwell window can be observed.
+that ends before a requested dwell window can be observed. ``max_sample_gap_s``
+is an optional temporal-resolution limit; when supplied, any larger sample gap
+rejects the trace instead of silently accepting a poorly sampled crossing.
 
 CSV input is one trial per file. It has ``time_s`` and ``thrust_n`` columns;
 optional ``time_uncertainty_s`` and ``thrust_uncertainty_n`` columns are
@@ -50,7 +52,8 @@ accepted. Trial metadata is supplied through the CLI, for example::
 
     uv run --no-project python research/avanti-s/av18/response_metrics.py capture.csv \
       --edge-time-s 1.0 --command-before 0 --command-after 1 \
-      --f0-n 2 --f1-n 100 --rated-thrust-n 100 --dwell-required-s 0.1
+      --f0-n 2 --f1-n 100 --rated-thrust-n 100 --dwell-required-s 0.1 \
+      --max-sample-gap-s 0.05
 
 JSON is the canonical batch input. Output defaults to JSON; ``--output-format
 csv`` writes one row per applicable progress or rated-thrust crossing. Crossing
@@ -117,6 +120,7 @@ class Trial:
     f0_uncertainty_n: float | None = None
     f1_uncertainty_n: float | None = None
     rated_thrust_uncertainty_n: float | None = None
+    max_sample_gap_s: float | None = None
 
 
 def _number(value: Any, name: str) -> float:
@@ -182,6 +186,14 @@ def _trial_from_mapping(record: Any, index: int, defaults: dict[str, Any]) -> Tr
     dwell_value = _number(dwell, f"trials[{index}].dwell_required_s")
     if dwell_value < 0:
         raise InputError(f"trials[{index}].dwell_required_s must be non-negative")
+    max_gap_record = record.get("max_sample_gap_s", defaults.get("max_sample_gap_s"))
+    max_gap = (
+        None
+        if max_gap_record is None
+        else _number(max_gap_record, f"trials[{index}].max_sample_gap_s")
+    )
+    if max_gap is not None and max_gap <= 0:
+        raise InputError(f"trials[{index}].max_sample_gap_s must be positive")
     trial_id = record.get("id", f"trial-{index + 1}")
     if not isinstance(trial_id, str) or not trial_id.strip():
         raise InputError(f"trials[{index}].id must be a non-empty string")
@@ -203,6 +215,7 @@ def _trial_from_mapping(record: Any, index: int, defaults: dict[str, Any]) -> Tr
         rated_thrust_uncertainty_n=_optional_uncertainty(
             record, "rated_thrust_uncertainty_n", "rated_thrust_uncertainty_n"
         ),
+        max_sample_gap_s=max_gap,
     )
 
 
@@ -238,6 +251,7 @@ def load_json_document(stream: TextIO) -> tuple[list[Trial], Any]:
     defaults = {
         "rated_thrust_n": document.get("rated_thrust_n"),
         "dwell_required_s": document.get("dwell_required_s", 0.0),
+        "max_sample_gap_s": document.get("max_sample_gap_s"),
     }
     trials = [_trial_from_mapping(record, i, defaults) for i, record in enumerate(records)]
     return trials, document.get("source")
@@ -258,6 +272,7 @@ def csv_trial(
     f0_uncertainty_n: float | None = None,
     f1_uncertainty_n: float | None = None,
     rated_thrust_uncertainty_n: float | None = None,
+    max_sample_gap_s: float | None = None,
 ) -> Trial:
     reader = csv.DictReader(stream)
     required = {"time_s", "thrust_n"}
@@ -293,6 +308,7 @@ def csv_trial(
         f0_uncertainty_n=f0_uncertainty_n,
         f1_uncertainty_n=f1_uncertainty_n,
         rated_thrust_uncertainty_n=rated_thrust_uncertainty_n,
+        max_sample_gap_s=max_sample_gap_s,
     )
 
 
@@ -318,6 +334,10 @@ def _validate_trial(trial: Trial) -> tuple[list[float], list[float], list[float]
     ):
         if value is not None and (not math.isfinite(value) or value < 0):
             raise InputError(f"{trial.trial_id}: {name} must be finite and non-negative")
+    if trial.max_sample_gap_s is not None and (
+        not math.isfinite(trial.max_sample_gap_s) or trial.max_sample_gap_s <= 0
+    ):
+        raise InputError(f"{trial.trial_id}: max_sample_gap_s must be finite and positive")
     if trial.command_before == trial.command_after:
         raise InputError(f"{trial.trial_id}: command edge has no command change")
     if trial.f0_n == trial.f1_n:
@@ -361,6 +381,11 @@ def _validate_trial(trial: Trial) -> tuple[list[float], list[float], list[float]
             f"{trial.trial_id}: insufficient samples around command edge; need at least "
             f"{MIN_PRE_EDGE_SAMPLES} before and {MIN_POST_EDGE_SAMPLES} after, got "
             f"{pre_count} before and {post_count} after"
+        )
+    if trial.max_sample_gap_s is not None and max(gaps) > trial.max_sample_gap_s:
+        raise InputError(
+            f"{trial.trial_id}: sample gap {max(gaps):.6g} s exceeds the "
+            f"{trial.max_sample_gap_s:.6g} s maximum"
         )
     return times, thrusts, gaps
 
@@ -648,6 +673,7 @@ def analyze_trial(trial: Trial) -> dict[str, Any]:
             "interval_min_s": min(gaps),
             "interval_median_s": statistics.median(gaps),
             "interval_max_s": max(gaps),
+            "max_sample_gap_limit_s": trial.max_sample_gap_s,
         },
         "summary": summary,
         "progress_crossings": progress,
@@ -763,6 +789,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--f1-n", type=float)
     parser.add_argument("--rated-thrust-n", type=float)
     parser.add_argument("--dwell-required-s", type=float, default=0.0)
+    parser.add_argument("--max-sample-gap-s", type=float)
     parser.add_argument("--edge-uncertainty-s", type=float)
     parser.add_argument("--f0-uncertainty-n", type=float)
     parser.add_argument("--f1-uncertainty-n", type=float)
@@ -790,6 +817,7 @@ def main(argv: list[str] | None = None) -> int:
                     args.f0_uncertainty_n,
                     args.f1_uncertainty_n,
                     args.rated_thrust_uncertainty_n,
+                    args.max_sample_gap_s,
                 )
                 if any(value is not None for value in csv_metadata[0:6]) or any(
                     value != 0.0 and value is not None for value in csv_metadata[6:]
@@ -823,6 +851,7 @@ def main(argv: list[str] | None = None) -> int:
                         f0_uncertainty_n=args.f0_uncertainty_n,
                         f1_uncertainty_n=args.f1_uncertainty_n,
                         rated_thrust_uncertainty_n=args.rated_thrust_uncertainty_n,
+                        max_sample_gap_s=args.max_sample_gap_s,
                     )
                 ]
                 source = str(args.input)

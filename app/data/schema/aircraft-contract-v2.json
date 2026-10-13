@@ -633,7 +633,8 @@
         "rotor_inertia",
         "rotor_sense",
         "ram_flow",
-        "ram_jet"
+        "ram_jet",
+        "spool_integrator"
       ]
     },
     {
@@ -959,6 +960,10 @@
     }
   ],
   "enum_paths": [
+    {
+      "path": "/propulsion/engine/spool_integrator",
+      "values": ["sampled", "rk4"]
+    },
     {
       "path": "/format",
       "values": [

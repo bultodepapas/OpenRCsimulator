@@ -679,6 +679,7 @@
   }
  ],
  "turbine": {
+  "spool_integrator": "rk4",
   "idle_rpm": {
    "value": 44000.0,
    "unit": "rpm",

@@ -85,6 +85,51 @@ class ResponseMetricsTests(unittest.TestCase):
             result["rated_thrust_crossings"]["95"]["crossing_time_s"],
         )
 
+    def test_exponential_response_matches_closed_form_on_irregular_samples(self):
+        onset_s = 1.3
+        tau_s = 1.5
+        f0, f1 = 2.0, 100.0
+        times = {0.0, 1.0, onset_s}
+        steps = (0.07, 0.11, 0.09, 0.13)
+        current = 0.0
+        step_index = 0
+        while current < 7.0:
+            current += steps[step_index % len(steps)]
+            times.add(min(current, 7.0))
+            step_index += 1
+        samples = tuple(
+            metrics.Sample(
+                time_s,
+                f0 if time_s <= onset_s else f1 - (f1 - f0) * math.exp(-(time_s - onset_s) / tau_s),
+            )
+            for time_s in sorted(times)
+        )
+        trial = metrics.Trial(
+            trial_id="exponential-oracle",
+            command_edge_time_s=1.0,
+            command_before=0.0,
+            command_after=1.0,
+            f0_n=f0,
+            f1_n=f1,
+            rated_thrust_n=100.0,
+            samples=samples,
+            dwell_required_s=0.1,
+        )
+        result = metrics.analyze_trial(trial)
+        for percent in metrics.PROGRESS_LEVELS:
+            expected = onset_s - tau_s * math.log1p(-percent / 100.0)
+            self.assertAlmostEqual(
+                result["progress_crossings"][str(percent)]["crossing_time_s"],
+                expected,
+                delta=0.01,
+            )
+        expected_duration = tau_s * math.log(18.0)
+        self.assertAlmostEqual(
+            result["summary"]["transition_duration_10_to_95_progress_s"],
+            expected_duration,
+            delta=0.02,
+        )
+
     def test_reversal_reports_first_crossing_count_and_crossing_dwell(self):
         samples = tuple(
             metrics.Sample(t, y)
@@ -156,7 +201,7 @@ class ResponseMetricsTests(unittest.TestCase):
         )
         result = metrics.analyze_trial(trial)
         crossing = result["progress_crossings"]["50"]
-        self.assertAlmostEqual(crossing["crossing_time_s"], 1.75)
+        self.assertAlmostEqual(crossing["crossing_time_s"], 1.25)
         self.assertAlmostEqual(crossing["crossing_time_standard_uncertainty_s"], 0.05)
         self.assertAlmostEqual(crossing["after_command_standard_uncertainty_s"], math.sqrt(0.0029))
         self.assertEqual(crossing["sample_support_s"], [0.75, 1.75])
@@ -171,9 +216,15 @@ class ResponseMetricsTests(unittest.TestCase):
         with self.assertRaisesRegex(metrics.InputError, "must be finite"):
             metrics.analyze_trial(replace(base, samples=(*base.samples[:3], bad_sample, *base.samples[4:])))
 
-        short = replace(base, samples=base.samples[:5])
-        with self.assertRaisesRegex(metrics.InputError, "inside the sample time span|insufficient samples"):
+        short = replace(
+            base,
+            samples=(base.samples[0], base.samples[1], base.samples[4], base.samples[-1]),
+        )
+        with self.assertRaisesRegex(metrics.InputError, "insufficient samples"):
             metrics.analyze_trial(short)
+
+        with self.assertRaisesRegex(metrics.InputError, "sample gap .* exceeds"):
+            metrics.analyze_trial(replace(base, max_sample_gap_s=0.24))
 
     def test_rejects_trace_missing_a_required_progress_crossing(self):
         base = linear_step_trial()
@@ -183,6 +234,10 @@ class ResponseMetricsTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(metrics.InputError, "does not cross normalized progress level"):
             metrics.analyze_trial(replace(base, samples=samples))
+
+    def test_rejects_capture_that_ends_before_requested_dwell_window(self):
+        with self.assertRaisesRegex(metrics.InputError, "capture ends before the 3 s dwell window"):
+            metrics.analyze_trial(replace(linear_step_trial(), dwell_required_s=3.0))
 
     def test_json_rejects_duplicate_keys_and_nonfinite_literals(self):
         with self.assertRaisesRegex(metrics.InputError, "duplicate key"):
@@ -202,6 +257,7 @@ class ResponseMetricsTests(unittest.TestCase):
             completed = subprocess.run(
                 [
                     sys.executable,
+                    "-B",
                     str(SCRIPT),
                     str(csv_path),
                     "--edge-time-s",
@@ -237,6 +293,47 @@ class ResponseMetricsTests(unittest.TestCase):
             self.assertAlmostEqual(float(progress_ten["after_command_s"]), 0.9)
             self.assertAlmostEqual(float(progress_ten["sample_support_width_s"]), 0.25)
             self.assertAlmostEqual(float(progress_ten["transition_duration_10_to_95_progress_s"]), 3.4)
+
+    def test_json_cli_reads_batch_schema_and_preserves_source_label(self):
+        trial = linear_step_trial()
+        document = {
+            "schema": metrics.INPUT_SCHEMA,
+            "source": "synthetic analytic fixture",
+            "rated_thrust_n": trial.rated_thrust_n,
+            "dwell_required_s": trial.dwell_required_s,
+            "trials": [
+                {
+                    "id": trial.trial_id,
+                    "command_edge_time_s": trial.command_edge_time_s,
+                    "command_before": trial.command_before,
+                    "command_after": trial.command_after,
+                    "f0_n": trial.f0_n,
+                    "f1_n": trial.f1_n,
+                    "samples": [
+                        {"time_s": sample.time_s, "thrust_n": sample.thrust_n}
+                        for sample in trial.samples
+                    ],
+                }
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            input_path = Path(directory) / "trace.json"
+            output_path = Path(directory) / "metrics.json"
+            input_path.write_text(json.dumps(document), encoding="utf-8")
+            completed = subprocess.run(
+                [sys.executable, "-B", str(SCRIPT), str(input_path), "--output", str(output_path)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            report = json.loads(output_path.read_text(encoding="utf-8"))
+        self.assertEqual(report["schema"], metrics.OUTPUT_SCHEMA)
+        self.assertEqual(report["source"], "synthetic analytic fixture")
+        self.assertEqual(report["trials"][0]["id"], trial.trial_id)
+        self.assertAlmostEqual(
+            report["trials"][0]["summary"]["response_latency_to_10_progress_s"], 0.9
+        )
 
 
 if __name__ == "__main__":
