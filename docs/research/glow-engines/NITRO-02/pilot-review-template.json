@@ -94,7 +94,7 @@
         "id": "os_max_55ax_candidate",
         "status": "candidate",
         "path": "app/data/glow/os_max_55ax_candidate.json",
-        "sha256": "41b636d09292ed0e440a7c4f80562536f26a5dab6cc1dee88113324e4a4906d1"
+        "sha256": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258"
       },
       "installation": {
         "path": "app/data/glow/stik_55ax_2t.json",
@@ -136,7 +136,7 @@
         "id": "os_fs_64v_candidate",
         "status": "candidate",
         "path": "app/data/glow/os_fs_64v_candidate.json",
-        "sha256": "1c0060777d56af47b91c0a9f56cb6ad9d4a50bdb212dba426f86ec8d79ba506d"
+        "sha256": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39"
       },
       "installation": {
         "path": "app/data/glow/stik_fs64v_4t.json",

@@ -193,10 +193,14 @@ func _test_animated_parts(field: Dictionary, scenery: Dictionary) -> void:
 				counts[kind] += 1
 	var stats: Dictionary = root.get_meta("stats")
 	var population: Node3D = root.get_node_or_null("Population") as Node3D
+	var imported_plants: Node3D = root.get_node_or_null("ImportedVegetationBatches") as Node3D
 	var moving_people := int(stats.get("moving_people", -1))
 	_check("scenery retains the original rotor and flag count", counts.rotor == 4 and counts.flag == 1, str(counts))
-	_check("tree and shrub tip motions match 10 shade trees and 6 shrubs",
-		counts.crown == 10 and counts.bush_tips == 6, str(counts))
+	_check("downloaded trees and shrubs use source batches without procedural tip motions",
+		counts.crown == 0 and counts.bush_tips == 0 and imported_plants != null
+		and int(stats.get("vegetation_instances", 0)) >= 16
+		and imported_plants.get_children().all(func(child: Node) -> bool: return child is MultiMeshInstance3D),
+		"motion=%s instances=%d" % [counts, int(stats.get("vegetation_instances", 0))])
 	_check("people animate through the bounded population shader, not per-person Motion nodes",
 		counts.person == 0 and moving_people >= 2 and moving_people <= 9,
 		"legacy nodes=%d population moving=%d" % [counts.person, moving_people])

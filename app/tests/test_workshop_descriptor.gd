@@ -12,6 +12,7 @@ func _initialize() -> void:
 	_test_stale_binding()
 	_test_unfamiliar_identity()
 	_test_rejections()
+	_test_legacy_and_presentation()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -28,7 +29,7 @@ func _test_catalog_descriptors() -> void:
 			continue
 		var descriptor: Dictionary = loaded["descriptor"]
 		_check("exact source bytes are pinned for " + id, str(descriptor["base_sha256"]) == _sha256(base_bytes))
-		_check("catalog identity and scale root are bound for " + id, descriptor["base_id"] == id and descriptor["presentation"]["visual_id"] == id and descriptor["presentation"]["scale_root"] == "airplane")
+		_check("catalog identity and scale root are bound for " + id, descriptor["base_id"] == id and descriptor["presentation"]["visual_family"] == Catalog.visual_family(id) and descriptor["presentation"]["scale_root"] == "airplane")
 		_check("inventory bindings cover every source item for " + id, descriptor["inventory_bindings"].size() == JSON.parse_string(base_bytes.get_string_from_utf8())["inventory"].size())
 		_check("descriptor names its generated source for " + id, str(descriptor["_generated_do_not_edit"]).contains("do not edit"))
 
@@ -65,7 +66,6 @@ func _test_unfamiliar_identity() -> void:
 	var unfamiliar_descriptor: Dictionary = source_descriptor.duplicate(true)
 	unfamiliar_descriptor["base_id"] = unfamiliar_id
 	unfamiliar_descriptor["base_sha256"] = _sha256(unfamiliar_bytes)
-	unfamiliar_descriptor["presentation"]["visual_id"] = unfamiliar_id
 	var accepted: Dictionary = Descriptor.validate(unfamiliar_descriptor, unfamiliar_id, unfamiliar_bytes)
 	_check("unfamiliar data-only identity validates from its descriptor", bool(accepted["ok"]), str(accepted["errors"]))
 	if bool(accepted["ok"]):
@@ -95,6 +95,34 @@ func _test_rejections() -> void:
 	_check("descriptor cannot bind another aircraft source", not bool(wrong_identity["ok"]))
 	var unsafe_root: Dictionary = Descriptor.load_for(id, bytes, "res://data/../aircraft")
 	_check("path traversal descriptor roots are rejected", not bool(unsafe_root["ok"]))
+
+
+func _test_legacy_and_presentation() -> void:
+	var id: String = Catalog.DEFAULT_ID
+	var bytes := FileAccess.get_file_as_bytes(Catalog.entry(id).data)
+	var current: Dictionary = Descriptor.load_for(id, bytes).descriptor
+	_check("current descriptor names model contract v2", current.format == Descriptor.FORMAT)
+	var resolved: Dictionary = Descriptor.verify_presentation(current)
+	_check("v2 model dependencies resolve before flight", resolved.ok, str(resolved.errors))
+	var legacy: Dictionary = current.duplicate(true)
+	legacy.format = Descriptor.LEGACY_FORMAT
+	legacy.presentation = {"visual_id": id, "scale_root": "airplane"}
+	var legacy_result: Dictionary = Descriptor.validate(legacy, id, bytes)
+	_check("v1 saved descriptor remains readable", legacy_result.ok, str(legacy_result.errors))
+	_check("v1 catalog compatibility bridge resolves the same family", Descriptor.verify_presentation(legacy).ok)
+	var stale: Dictionary = current.duplicate(true)
+	stale.presentation.model_manifest_sha256 = "0".repeat(64)
+	_check("stale model still allows reading a saved variant", Descriptor.validate(stale, id, bytes).ok)
+	_check("stale model cannot start a trial", not Descriptor.verify_presentation(stale).ok)
+	var malformed: Dictionary = current.duplicate(true)
+	malformed.presentation.model_manifest_sha256 = "invalid-hash"
+	_check("malformed model pin is rejected structurally", not Descriptor.validate(malformed, id, bytes).ok)
+	var wrong_family: Dictionary = current.duplicate(true)
+	wrong_family.presentation.visual_family = "gp-extra-300s-60"
+	_check("presentation cannot substitute another catalog family", not Descriptor.verify_presentation(wrong_family).ok)
+	var unsafe: Dictionary = current.duplicate(true)
+	unsafe.presentation.visual_family = "../source"
+	_check("presentation rejects path traversal", not Descriptor.validate(unsafe, id, bytes).ok)
 
 
 func _has_error(errors: PackedStringArray, needle: String) -> bool:

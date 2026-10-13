@@ -35,7 +35,7 @@ def inspect_trace(path, aircraft, family):
     assert meta['glow_family'] == family, meta
     assert aircraft in text
     identity = json.loads(meta['glow_identity'])
-    assert identity and meta['propulsion_model'] == 'glow-mean-cycle-finite-tank-fixed-datum-v1'
+    assert identity and meta['propulsion_model'] == 'glow-mean-cycle-finite-tank-hub-inflow-v2'
     assert all(math.isfinite(float(value)) for row in rows for value in row.values())
     assert all(float(row['engine_rpm']) > 0 and float(row['glow_running']) == 1 for row in rows)
     fuel = [float(row['glow_fuel_kg']) for row in rows]

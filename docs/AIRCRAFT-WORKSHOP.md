@@ -43,12 +43,15 @@ These changes retain estimated aerodynamic coefficients and do not model Reynold
 After adding or regenerating an aircraft through its owning pipeline, run:
 
 ```powershell
+python research/aircraft-standardization/build_models.py
 python research/aircraft-editor/build_descriptors.py
 python research/aircraft-editor/build_descriptors.py --check
 python research/aircraft-editor/test_descriptor_checkout.py
 ```
 
-Commit the generated `app/data/workshop/<catalog-id>.json` with its source change. The current closed `openrc-aircraft-workshop v1` descriptor binds exact aircraft bytes, inventory index/name hashes, declared module assertions and the catalog visual ID/root. It contains no copied physical constants. Inventory keys are snapshot-local: renaming/reordering an inventory requires regeneration and is not a stable cross-version component migration. The richer authoring manifest and module dependency composer in AE-01/19 remain future work.
+Commit the generated `app/data/workshop/<catalog-id>.json` with its source change. The current closed `openrc-aircraft-workshop v2` descriptor binds exact aircraft bytes, snapshot-local inventory index/name hashes, shared module assertions, visual family, model-manifest hash and stable root. It contains no copied physical constants. Renaming/reordering an inventory requires regeneration; these inventory keys do not supply cross-version component migration. Model manifests and their generator are defined in the [aircraft contract](../AIRCRAFT_CONTRACT.md#model-and-package-contract).
+
+The v1 descriptor reader remains explicit for saved variants. Structural validation never resolves current model dependencies, so an unavailable/changed model cannot hide a saved record. Trial preparation verifies the current dependencies and passes its accepted model hash to the renderer; a replacement between freezing and building is rejected. The library record stays unchanged.
 
 Adding an aircraft with existing supported capabilities requires catalog/data/assets, a generated descriptor and conformance evidence. It does not require a new Workshop screen or transformation branch. A new propulsion law requires a shared capability implementation and its tests. Descriptor generation does not automatically qualify that law for editing.
 
@@ -66,7 +69,7 @@ Variants live under Godot's `user://aircraft_variants/`. The record uses `format
 
 Trials normalize omitted recipe defaults and exclude cosmetic names from physical identity. Their fingerprint binds source, physical recipe, descriptor, dependencies and compiler. Trace metadata also records the ancestor variant/revision and exact resolved-input/model hashes. Flight restart/reload uses the frozen in-memory result, not a newly read catalog source.
 
-External dependencies are **hash-pinned, not embedded and replayed from a bundle**. Changed wheel/glow dependencies or an incompatible compiler prevent a saved variant from starting; the library record remains intact. A new copy from current catalog data is the current manual migration path. Removing the catalog visual adapter also prevents an old variant from loading. Portable frozen dependency loading and explicit migrations remain AE-16/19.
+External dependencies are **hash-pinned, not embedded and replayed from a bundle**. Changed wheel/glow/model dependencies or an incompatible compiler prevent a saved variant from starting; the library record remains intact. A new copy from current catalog data is the current manual migration path. Removing the catalog visual family prevents a saved variant from flying; its record remains readable. Portable frozen dependency loading and explicit migrations remain AE-16/19.
 
 ## Verification
 

@@ -38,6 +38,11 @@ python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --che
 python3 "$HERE/../research/aircraft-standardization/migrate.py" --check-known
 python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
 
+echo "== AS-07/09: shared aircraft modules and generated model bindings"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../research/aircraft-standardization/test_modules.py"
+python3 "$HERE/../research/aircraft-standardization/build_models.py" --check
+python3 "$HERE/../research/aircraft-standardization/test_models.py"
+
 echo "== AE-01: generated Workshop descriptors and exact-byte checkout bindings"
 python3 "$HERE/../research/aircraft-editor/build_descriptors.py" --check
 python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"
@@ -86,6 +91,10 @@ python3 "$HERE/../research/propwash/e0b2/test_geometry.py"
 echo "== E0b3b: neutral Stik wash profiles stay current"
 python3 "$HERE/../research/propwash/e0b3b/derive_profile.py" --check
 python3 "$HERE/../research/propwash/e0b3b/test_profile.py"
+
+echo "== RCV-04a: independent suspension reference and headless bench exports"
+python3 "$HERE/../research/rc-monster-truck/generate_suspension_reference.py" --check
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_suspension_cli.py"
 
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.

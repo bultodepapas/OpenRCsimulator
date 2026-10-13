@@ -315,7 +315,13 @@ func _ready() -> void:
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
 		_look_height = float(args.get("look_alt", field.pilot.eye_height))
 	Atmosphere.engine_shadows = Atmosphere.engine_shadows_enabled(args, interactive_start)
-	_build_world()
+	if not _build_world():
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_DATA)
+		return
 	_rig.set_view(_initial_view)
 	_rig.auto_zoom = _auto_zoom
 	_rig.look = _look
@@ -1104,6 +1110,8 @@ func _prepare_checkpoint_lighting(config: Dictionary) -> Dictionary:
 ## the ZIP name. "development" when running from the source tree.
 func _trace_meta() -> Dictionary:
 	var meta: Dictionary = session.trace_meta()
+	meta.aircraft_visual_family = str(_airplane.get("visual_family", ""))
+	meta.aircraft_model_manifest_sha256 = str(_airplane.get("model_manifest_sha256", ""))
 	var build := BuildInfo.current()
 	meta.app_build = build.describe if build.source == "export" else "development"
 	meta.app_version = build.parsed.semver if build.source == "export" else build.version + " (development)"
@@ -1191,7 +1199,11 @@ func _view_name() -> String:
 	return _rig.view_name()
 
 
-func _build_world() -> void:
+func _build_world() -> bool:
+	_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}))
+	if _airplane.is_empty():
+		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
+		return false
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
 	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot)
 	_field_world_lighting = bool(built.conditions.time_of_day)
@@ -1199,7 +1211,6 @@ func _build_world() -> void:
 	_world_environment = built.world_environment
 	_sun = built.sun
 
-	_airplane = AirplaneBuilder.build(aircraft_id)
 	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
@@ -1217,6 +1228,7 @@ func _build_world() -> void:
 	else:
 		_panel = InputPanel.create(self)
 		_hud = Hud.create(self)
+	return true
 
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.

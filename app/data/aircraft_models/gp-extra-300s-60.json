@@ -1,0 +1,157 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 1,
+  "family_id": "gp-extra-300s-60",
+  "builder": {
+    "script": "res://aircraft/extra_300s_model.gd",
+    "adapter": "euler_hinges"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": -0.1088,
+    "model_y_thrust": 0.0
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "9748ccc8c193da6c39247678e271e56c83d4948dbf0a9c9accd89e9850f31f16",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/extra_300s_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/extra-300s-60/geometry.json",
+      "sha256": "71d8a095c0fc6b8d3cf63b4abed6aab3af15604b9e81f116d1cff60fdcecc79c",
+      "hash_mode": "lf_text"
+    },
+    "revision": "gp-extra-300s-60-v1",
+    "datum_source": {
+      "model_z_le": {
+        "path": "wing.le_z_root"
+      },
+      "model_y_thrust": {
+        "value": 0.0
+      }
+    }
+  },
+  "asset": {
+    "kind": "procedural",
+    "identity": "gp-extra-300s-60-v1",
+    "revision": "gp-extra-300s-60-v1"
+  },
+  "bindings": {
+    "controls": {
+      "aileron_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_left",
+            "node": "aileron_left_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "aileron_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_right",
+            "node": "aileron_right_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "elevator": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevator",
+            "node": "elevator_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "rudder": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "rudder",
+            "node": "rudder_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "",
+      "authored_diameter_m": 0.3048,
+      "source": "builder",
+      "geometry_ref": ""
+    },
+    "gear": {
+      "keys": {
+        "left": "left",
+        "right": "right",
+        "tail": "tail",
+        "steering": "steering"
+      }
+    },
+    "crash": {
+      "provider": "none",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/extra-300s-60/geometry.json",
+      "sha256": "71d8a095c0fc6b8d3cf63b4abed6aab3af15604b9e81f116d1cff60fdcecc79c",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    },
+    {
+      "path": "assets/aircraft/extra-300s-60/appearance.json",
+      "sha256": "70ecc6fb8bddcbefc555856b5ef666417bc8d76e2228b1982a219d233480d7ad",
+      "hash_mode": "lf_text",
+      "role": "appearance"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/extra_300s_appearance.gd",
+      "sha256": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/extra_300s_finish.gd",
+      "sha256": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/extra_300s_geometry.gd",
+      "sha256": "4ea01c5ba8f546224faeb4f1a3a3ad5b6e3cf7848acf7a19b06a0587275c6f42",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/extra_300s_model.gd",
+      "sha256": "b4a6d5b4784985b042c3ac59bdaf422d0c8ab5007b70b39a113124f6e82d6c51",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    }
+  ]
+}

@@ -19,9 +19,12 @@ class CheckoutBindings(unittest.TestCase):
             source.mkdir()
             paths = [Path(".gitattributes"), Path("app/app_state/aircraft_catalog.gd"),
                      Path("app/data/ground/wheel_profiles.json"),
+                     Path("app/data/schema/aircraft-modules-v1.json"),
+                     Path("research/aircraft-standardization/modules.py"),
                      Path("research/aircraft-editor/build_descriptors.py")]
             paths.extend(path.relative_to(ROOT) for path in (ROOT / "app/data/aircraft").glob("*.json"))
             paths.extend(path.relative_to(ROOT) for path in (ROOT / "app/data/workshop").glob("*.json"))
+            paths.extend(path.relative_to(ROOT) for path in (ROOT / "app/data/aircraft_models").glob("*.json"))
             for relative in paths:
                 target = source / relative
                 target.parent.mkdir(parents=True, exist_ok=True)

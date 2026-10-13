@@ -17,16 +17,16 @@ O.S. cautions that same-size propellers differ by maker and recommends practical
 
 The inference report includes a deliberately conditional **single-point chord fit** for the O.S. 10,330-RPM APC 12×7 observation. With the live candidate engine curve, the fitted torque is **0.70858259936 N·m**. At the report's **1.225 kg/m³ reference density** (the O.S. article gives 3 °C but no barometric pressure), the 12-annulus surrogate's guessed 25 mm uniform chord produces 0.83810634 N·m; scaling only chord gives **0.84545668× / 21.1364169 mm** and a zero residual by construction. This is an RPM-only conditional parameter fit, not measured engine torque or recovered APC blade geometry. For the unobserved APC 13×6, the same fitted chord/diameter ratio gives **22.8977850 mm**. The report's 19.21–23.80 mm single-point sensitivity span varies assumed section coefficients/density only; it is not a confidence interval or a bound on the actual propeller.
 
-The paired operating predictions use the live candidate torque curves and the runtime's 12-annulus uniform-chord, no-induced-velocity propeller law. Each is full admission at the shown **axial-flow scenario speed**, not a measured flight condition. The sensitivity spans combine deliberately adverse/favorable curve, density and section cases; they are not statistical uncertainty intervals. The 12×7 static point is constrained to the O.S. observation by chord fitting.
+The paired operating predictions use the live candidate torque curves and the runtime's 12-annulus uniform-chord, no-induced-velocity propeller law. Each is full admission at the shown **axial-flow scenario speed**, not a measured flight condition. The sensitivity spans combine deliberately adverse/favorable curve, density and section cases; they are not statistical uncertainty intervals. The report excludes positive-thrust roots that fail its 5% screening margin over ideal actuator-disk power, distinguishing impossible loads from insufficient margin. See the [momentum-bound correction](../NITRO-02/README.md#momentum-bound-correction). The 12×7 static point is constrained to the O.S. observation by chord fitting; its accepted coefficients and nominal predictions are unchanged by that audit.
 
 | Propeller | Axial speed | Candidate equilibrium RPM (scenario span) | Surrogate thrust |
 | --- | ---: | ---: | ---: |
 | APC 12×7 | 0 m/s | 10,330 (10,330 by construction) | 41.4 N |
-| APC 12×7 | 10 m/s | 10,413 (10,022–10,801) | 32.0 N |
+| APC 12×7 | 10 m/s | 10,413 (10,413–10,801) | 32.0 N |
 | APC 12×7 | 20 m/s | 11,865 (11,366–12,572) | 27.6 N |
 | APC 12×7 | 30 m/s | 13,918 (13,515–14,562) | 24.1 N |
 | APC 13×6 | 0 m/s | 9,651 (9,651–9,754) | 43.4 N |
-| APC 13×6 | 10 m/s | 10,323 (9,753–11,174) | 33.1 N |
+| APC 13×6 | 10 m/s | 10,323 (10,323–11,174) | 33.1 N |
 | APC 13×6 | 20 m/s | 12,323 (11,735–13,380) | 27.9 N |
 | APC 13×6 | 30 m/s | 14,711 (14,304–15,615) | 21.6 N |
 

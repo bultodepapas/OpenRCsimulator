@@ -5,7 +5,7 @@
   "profile_status": "candidate",
   "interpretation": "generated candidate inference; never a measured or held-out data fit",
   "profile_path": "app/data/glow/os_fs_64v_candidate.json",
-  "profile_sha256": "1c0060777d56af47b91c0a9f56cb6ad9d4a50bdb212dba426f86ec8d79ba506d",
+  "profile_sha256": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
   "rating_constraint": {
     "source": "O.S. manufacturer rated-power/RPM point retained in the candidate profile",
     "rated_rpm": 11000.0,
@@ -540,7 +540,7 @@
             "induced_drag": 0.075,
             "blades": 2.0
           },
-          "runtime_static_rpm_cap": 10000.0,
+          "legacy_static_rpm_reference": 10000.0,
           "aircraft_path": "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
           "aircraft_sha256": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf"
         },
@@ -564,10 +564,11 @@
             0.0,
             15000.0
           ],
+          "profile_operation_max_rpm": 15000.0,
           "profile_recommended_max_rpm": 11000.0,
           "effective_recommended_rpm_for_configuration": 11000.0,
-          "generated_aircraft_max_rpm_static_field": 10000.0,
-          "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium; the profile search range and generated aircraft max_rpm_static field are separate limits."
+          "generated_legacy_max_rpm_static_reference": 10000.0,
+          "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium. Generated max_rpm_static is a legacy normalization reference, not a Glow runtime cap; profile operation.max_rpm and table support bound the solver, while recommended_max_rpm drives the operating recommendation/telemetry flag."
         },
         "section_assumptions": {
           "lift_slope_per_rad": 5.5,
@@ -608,7 +609,7 @@
             "shaft_to_ideal_power_ratio": 1.11009719
           },
           "refusal_examples": [],
-          "interpretation": "An ideal momentum-theory lower bound, not an inferred/measured induced velocity, Ct/Cp map, validated thrust, or calibration result."
+          "interpretation": "Positive-thrust samples pass only at a power ratio of at least 1.05. Ratios below 1.0 violate the ideal momentum-theory lower bound; ratios from 1.0 to 1.05 fail the required screening margin. This is not an inferred/measured induced velocity, Ct/Cp map, validated thrust, or calibration result."
         },
         "sensitivity_cases": [
           {
@@ -799,12 +800,12 @@
                 734.77439105
               ]
             },
-            "generated_runtime_static_rpm_cap": 10000.0,
+            "generated_legacy_max_rpm_static_reference": 10000.0,
             "profile_numeric_search_range_rpm": [
               0.0,
               15000.0
             ],
-            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
+            "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver."
           },
           {
             "axial_speed_m_s": 10.0,
@@ -912,12 +913,12 @@
                 846.23187699
               ]
             },
-            "generated_runtime_static_rpm_cap": 10000.0,
+            "generated_legacy_max_rpm_static_reference": 10000.0,
             "profile_numeric_search_range_rpm": [
               0.0,
               15000.0
             ],
-            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
+            "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver."
           },
           {
             "axial_speed_m_s": 20.0,
@@ -1013,12 +1014,12 @@
                 821.75250042
               ]
             },
-            "generated_runtime_static_rpm_cap": 10000.0,
+            "generated_legacy_max_rpm_static_reference": 10000.0,
             "profile_numeric_search_range_rpm": [
               0.0,
               15000.0
             ],
-            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
+            "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver."
           },
           {
             "axial_speed_m_s": 30.0,
@@ -1114,12 +1115,12 @@
                 580.09566014
               ]
             },
-            "generated_runtime_static_rpm_cap": 10000.0,
+            "generated_legacy_max_rpm_static_reference": 10000.0,
             "profile_numeric_search_range_rpm": [
               0.0,
               15000.0
             ],
-            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
+            "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver."
           }
         ],
         "model_limits": [
@@ -1166,7 +1167,7 @@
             "induced_drag": 0.075,
             "blades": 2.0
           },
-          "runtime_static_rpm_cap": 10000.0,
+          "legacy_static_rpm_reference": 10000.0,
           "aircraft_path": "app/data/aircraft/stik_glow_fs64v_4t.json",
           "aircraft_sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5"
         },
@@ -1187,10 +1188,11 @@
             0.0,
             15000.0
           ],
+          "profile_operation_max_rpm": 15000.0,
           "profile_recommended_max_rpm": 11000.0,
           "effective_recommended_rpm_for_configuration": 11000.0,
-          "generated_aircraft_max_rpm_static_field": 10000.0,
-          "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium; the profile search range and generated aircraft max_rpm_static field are separate limits."
+          "generated_legacy_max_rpm_static_reference": 10000.0,
+          "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium. Generated max_rpm_static is a legacy normalization reference, not a Glow runtime cap; profile operation.max_rpm and table support bound the solver, while recommended_max_rpm drives the operating recommendation/telemetry flag."
         },
         "section_assumptions": {
           "lift_slope_per_rad": 5.5,
@@ -1231,7 +1233,7 @@
             "shaft_to_ideal_power_ratio": 1.08313703
           },
           "refusal_examples": [],
-          "interpretation": "An ideal momentum-theory lower bound, not an inferred/measured induced velocity, Ct/Cp map, validated thrust, or calibration result."
+          "interpretation": "Positive-thrust samples pass only at a power ratio of at least 1.05. Ratios below 1.0 violate the ideal momentum-theory lower bound; ratios from 1.0 to 1.05 fail the required screening margin. This is not an inferred/measured induced velocity, Ct/Cp map, validated thrust, or calibration result."
         },
         "sensitivity_cases": [
           {
@@ -1422,12 +1424,12 @@
                 638.45497016
               ]
             },
-            "generated_runtime_static_rpm_cap": 10000.0,
+            "generated_legacy_max_rpm_static_reference": 10000.0,
             "profile_numeric_search_range_rpm": [
               0.0,
               15000.0
             ],
-            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
+            "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver."
           },
           {
             "axial_speed_m_s": 10.0,
@@ -1523,12 +1525,12 @@
                 1017.64103667
               ]
             },
-            "generated_runtime_static_rpm_cap": 10000.0,
+            "generated_legacy_max_rpm_static_reference": 10000.0,
             "profile_numeric_search_range_rpm": [
               0.0,
               15000.0
             ],
-            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
+            "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver."
           },
           {
             "axial_speed_m_s": 20.0,
@@ -1624,12 +1626,12 @@
                 907.73524307
               ]
             },
-            "generated_runtime_static_rpm_cap": 10000.0,
+            "generated_legacy_max_rpm_static_reference": 10000.0,
             "profile_numeric_search_range_rpm": [
               0.0,
               15000.0
             ],
-            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
+            "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver."
           },
           {
             "axial_speed_m_s": 30.0,
@@ -1725,12 +1727,12 @@
                 658.1531992
               ]
             },
-            "generated_runtime_static_rpm_cap": 10000.0,
+            "generated_legacy_max_rpm_static_reference": 10000.0,
             "profile_numeric_search_range_rpm": [
               0.0,
               15000.0
             ],
-            "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter."
+            "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver."
           }
         ],
         "model_limits": [

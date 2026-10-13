@@ -1,6 +1,6 @@
 # Aircraft standardization and Blender onboarding plan
 
-**Date:** 2026-10-13. **Revision:** 1. **Status:** proposed continuation of delivered AS-00–05; implementation steps below are pending. **Owner:** aircraft-standardization track. **Prefix:** AS-06…AS-18. **Review baseline:** `969c9fee` plus the working tree inspected on this date. Concurrent Workshop, scenery and physics work must be reconciled before implementation.
+**Date:** 2026-10-13. **Revision:** 2. **Status:** AS-06–14 foundation delivered; remaining acceptance and AS-15–18 are tracked below. **Owner:** aircraft-standardization track. **Prefix:** AS-06…AS-18. **Review baseline:** `969c9fee` plus the working tree inspected on this date. Implementation retained concurrent Workshop, scenery and physics changes; exact source snapshots and results are in the [foundation evidence](../research/aircraft-standardization/AS-06-14/README.md).
 
 Make adding an airplane a repeatable authoring operation: supply its Blender delivery, physical data and declared bindings; run common checks; register it. An airplane using supported capabilities must not require changes to the flight solver, shared presentation, Workshop operations, audio or crash logic. A genuinely new capability adds a tested shared module that subsequent aircraft can reuse.
 
@@ -23,7 +23,7 @@ Integrate shared loader/session/render files serially. Use the [ownership regist
 
 ## Findings in the current source
 
-These findings describe the inspected code, not acceptance results for the evolving working tree.
+These findings describe the preimplementation audit. Current implemented behavior is documented in the [aircraft contract](../../AIRCRAFT_CONTRACT.md); delivery status below distinguishes implemented interfaces from remaining acceptance.
 
 | Boundary | What exists | Standardization gap |
 | --- | --- | --- |
@@ -47,7 +47,7 @@ Two mismatches need explicit reconciliation. Timber's shipped data declares `fix
 | `stik-glow-55ax-2t` | Explicit 2T installation/profile, finite fuel and thermal/lifecycle state; current wheel-profile fallback |
 | `stik-glow-fs64v-4t` | Independent 4T law and finite-fuel lifecycle; current wheel-profile fallback |
 | `gp-extra-300s-60` | Legacy propeller and fixed taildragger; physical ground support does not itself grant product runway qualification |
-| `p51d-mustang-120` | Gasoline hardware under historical `glow_prop`, coupled shaft, angled thrust and wake; gear locked down |
+| `p51d-mustang-120` | Gasoline hardware under historical `glow_prop`, shaft balance (split by default; coupled route separately tested), angled thrust and wake; gear locked down |
 | `sebart-avanti-s-a200-p100rx` | Turbine, declared spool integration policy, gear locked up, airborne-only product route |
 | `turbo-lumber-evolution` | Imported r1 model, electric motor/ESC, fixed-voltage bus, taildragger, flaps up and qualified runway route |
 
@@ -165,7 +165,19 @@ A broken visual wing is not a flightworthy partial-damage model. Structural fail
 
 ## Implementation sequence
 
-Every row is pending. Split shared-file changes into reviewable substeps; each must leave the existing application working. Proof is retained under the existing AS evidence hierarchy and linked to the owning physical track where appropriate.
+The table retains the full acceptance targets. The foundation below implements their shared interfaces without closing every target. Subsequent substeps must preserve the existing application and link their evidence to the owning physical track.
+
+| Delivered slice | Result and remaining gate |
+| --- | --- |
+| AS-06/07 | Seven-entry, policy-specific flight baseline; shared versioned Python/GDScript module classification consumed by Workshop; corrected current battery/contact documentation. No physical law change |
+| AS-08/09 | Five generated visual manifests, strict source/scene validation, Workshop v2 hash pinning with v1 reader, source/package preflight, malformed-package mutations and LF/CRLF generator checkout tests. Durable physical inventory/contact/section IDs, full landmark coverage, asset budgets and a second Blender delivery remain open |
+| AS-10/11 | Shared manifest-driven renderer and conventional control conversions; actual fleet rest/full-travel poses and independent instances checked. Existing model builders retained; no new control topology enabled |
+| AS-12 | Existing single-installation callback preparation and read-only family/state observation share an adapter; existing laws/checkpoints remain intact. New propulsion topology and target-machine performance qualification remain open |
+| AS-13 | Preparation validates support/probe/rotor bindings and exposes the selected wheel/hull/strike policy. Pure event normalization is tested; it does not yet replace the session's accepted-tick event/rollback state or bind probes to detachable sections |
+| AS-14 | Seven catalog configurations use generated descriptors and shared model bindings; fourteen policy-specific flight/replay cases match exactly. Full onboarding and the independent AE-19 gate remain open |
+| AS-15–18 | Pending capability extensions and second-delivery onboarding experiment |
+
+See [retained evidence and reproduction](../research/aircraft-standardization/AS-06-14/README.md). Partial rows are not claims of full physical or authoring acceptance.
 
 | Step | Work and dependencies | Acceptance evidence |
 | --- | --- | --- |
@@ -206,4 +218,4 @@ Use the [canonical tooling](../TOOLS.md), [AS authoring checks](../research/airc
 
 The finished author workflow is: select a supported configuration → prepare the Blender package → bind physical components and measured/source-backed data → generate → run one conformance entrypoint → inspect poses/contact overlays → register with its actual qualification status. The tool must distinguish an importable visual model, a numerically admissible airplane and an externally validated airplane.
 
-This planning change modifies documentation only. It does not assert that the new interfaces exist or that the inspected concurrent working tree has passed the implementation gates.
+The implemented foundation is described in the contract and linked evidence. It does not enable physical flaps, multiple engines, new contact laws or universal code-free Blender import. Those require the remaining independently verified slices above.

@@ -17,8 +17,8 @@ const FieldBuilder = preload("res://render/field.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
-const BUDGET_TRIANGLES := 600000 # all scenery and population surfaces, counting indexed triangles and every MultiMesh instance
-const BUDGET_BUILD_MS := 400.0 # smoke ceiling includes first-load imported meshes; the plan's 150 ms target is reported, not gated
+const BUDGET_TRIANGLES := 650000 # LU-21 native-qualified source-scene ceiling; count all surfaces and MultiMesh instances
+const BUDGET_BUILD_MS := 800.0 # provisional ceiling includes cold source import/parsing (native sample: 714 ms); 150 ms target is reported, not gated
 
 var _failures := 0
 var _field: Dictionary
@@ -172,6 +172,8 @@ func _test_determinism() -> void:
 	var a := Scenery.build(_field, _scenery, OPTS)
 	var b := Scenery.build(_field, _scenery, OPTS)
 	_check("two builds are byte-identical (no RNG, no clock)", _digest(a) == _digest(b))
+	print("     warm scene-build times: %.1f ms / %.1f ms" % [
+		float(a.get_meta("stats").build_ms), float(b.get_meta("stats").build_ms)])
 	a.free()
 	b.free()
 

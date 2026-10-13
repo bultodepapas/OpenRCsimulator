@@ -494,7 +494,7 @@ static func _bisection_iterations(lake: Dictionary, from_ned: PackedFloat64Array
 	if not is_finite(residual_span):
 		return TOI_ITERATIONS
 	var ratio: float = maxf(1.0, residual_span / CONTACT_EPSILON_M)
-	return clampi(ceili(log(ratio) / LOG_TWO), 1, TOI_ITERATIONS)
+	return clampi(ceili(M.log_(ratio) / LOG_TWO), 1, TOI_ITERATIONS)
 
 
 static func _event_at(lake: Dictionary, from_ned: PackedFloat64Array, to_ned: PackedFloat64Array,

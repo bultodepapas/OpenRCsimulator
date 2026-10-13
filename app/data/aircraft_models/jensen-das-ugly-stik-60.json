@@ -1,0 +1,163 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 1,
+  "family_id": "jensen-das-ugly-stik-60",
+  "builder": {
+    "script": "res://aircraft/ugly_stik_model.gd",
+    "adapter": "euler_hinges"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": -0.115,
+    "model_y_thrust": -0.005
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "9748ccc8c193da6c39247678e271e56c83d4948dbf0a9c9accd89e9850f31f16",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/ugly_stik_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/ugly-stik-60/geometry.json",
+      "sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+      "hash_mode": "lf_text"
+    },
+    "revision": "jensen-60-nitro-61-v3",
+    "datum_source": {
+      "model_z_le": {
+        "path": "wing.leading_z"
+      },
+      "model_y_thrust": {
+        "path": "equipment.shaft_y"
+      }
+    }
+  },
+  "asset": {
+    "kind": "procedural",
+    "identity": "jensen-60-nitro-61-v3",
+    "revision": "jensen-60-nitro-61-v3"
+  },
+  "bindings": {
+    "controls": {
+      "aileron_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_left",
+            "node": "aileron_left_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "aileron_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_right",
+            "node": "aileron_right_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "elevator": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevator",
+            "node": "elevator_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "rudder": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "rudder",
+            "node": "rudder_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "",
+      "authored_diameter_m": 0.3048,
+      "source": "builder",
+      "geometry_ref": ""
+    },
+    "gear": {
+      "keys": {
+        "left": "left",
+        "right": "right",
+        "steering": "steering",
+        "nose": "nose"
+      }
+    },
+    "crash": {
+      "provider": "none",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/ugly-stik-60/geometry.json",
+      "sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/ugly_stik_appearance.gd",
+      "sha256": "88a19672c7039ef3f72cefb4e97a87b1e7e59d63269811592922283e23e21b36",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_controls.gd",
+      "sha256": "0b1c71f0e33b191fbbe5c5e37b7229631dc20f6094a97cfc0d6226cd0cd8110b",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_equipment.gd",
+      "sha256": "d4dcc15a447c2c02d9796927cea9feac8b9e512cf0f48b4db398e86094bc1196",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_finish.gd",
+      "sha256": "e0e2bf588e60f308098f34d38a164a7fef16c9eb982f81431ac24e4156567997",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_geometry.gd",
+      "sha256": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_model.gd",
+      "sha256": "568ef9ddde6dfebac8dabdc59f29d9a2e8e5eee477a9d103bb4d6b3f2b5419db",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    }
+  ]
+}

@@ -3,8 +3,8 @@
   "passed": true,
   "scope": "native exported application in empty directory",
   "runtime": "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/glow-momentum-export-20261013/openrc-simulator.x86_64",
-  "runtime_sha256": "61f61d23560e62d5d8a4cb65b412070b9e1d11ce8cb0c879b009823d52f11576",
-  "engine_binary_sha256": "61f61d23560e62d5d8a4cb65b412070b9e1d11ce8cb0c879b009823d52f11576",
+  "runtime_sha256": "f92738801c971cf2e856a11458b4268b2f17323eb0daa67f30252eb09bbdc4de",
+  "engine_binary_sha256": "f92738801c971cf2e856a11458b4268b2f17323eb0daa67f30252eb09bbdc4de",
   "pack_sha256": null,
   "checker_sha256": "70cab1e303c0950caa54fbc055634634455c34b4ce4c574a15be3130aa6071b9",
   "cases": [
@@ -24,7 +24,7 @@
       "final_rpm": 8119.004399726,
       "consumed_fuel_kg": 0.00034501199999999177,
       "successful_fires": 405.0,
-      "trace_sha256": "660d15a4958c3a1d97e47ab411e25471787c993c740035f9cd4b44135edfdbb8"
+      "trace_sha256": "82757a9e09a21c25be76d34a0559d98a6f25eb30073be1c7c79f59337c961473"
     },
     {
       "aircraft": "stik-glow-fs64v-4t",
@@ -42,7 +42,7 @@
       "final_rpm": 8649.210792795,
       "consumed_fuel_kg": 0.00026442299999999974,
       "successful_fires": 216.0,
-      "trace_sha256": "1d5a3e271a2792aed329ea5b2a9a15c8457a2e9fcf76f583c4158d07224ee8ba"
+      "trace_sha256": "a60652a0b481d7c90b822434978dc43e08f77dc424fa0fbb33e123076a97801a"
     }
   ],
   "claim": "Resource/CLI software smoke, not physical, acoustic or release-performance acceptance"

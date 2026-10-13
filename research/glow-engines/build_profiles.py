@@ -31,6 +31,10 @@ SPEC = {
     'profile_format': 'openrc-glow-engine v1',
     'common': {
         'displacement_m3': scalar('m3', positive=True),
+        'bore_m': scalar('m', positive=True),
+        'stroke_m': scalar('m', positive=True),
+        'rod_to_crank_radius_ratio': scalar('1', minimum=2.0),
+        'reciprocating_mass_kg': scalar('kg', positive=True),
         'mechanical_torque_nm': curve('rpm, N·m'),
         'combustion_efficiency': curve('1, 1', 1.0, axis='mixture'),
         'indicated_efficiency': curve('rpm, 1', 1.0),
@@ -94,13 +98,24 @@ def candidate(family):
     name = 'MAX-55AX' if two else 'FS-64V'
     url = ('https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm'
            if two else 'https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html')
+    geometry_url = ('https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15610.htm'
+                    if two else 'https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html')
+    bore_m, stroke_m, dry_engine_mass_kg = ((.023, .0215, .404) if two else (.025, .0213, .442))
     rated = 16000. if two else 11000.
     rated_w = (1.7 if two else 1.14)*735.49875  # PS, explicitly not mechanical hp
     rpm = [0., 2000., 4000., 7000., 10000., 13000., rated, 17000.] if two else [0., 2400., 4000., 6000., 8000., 10000., rated, 13000., 15000.]
     # Net WOT torque hypotheses. Only the rated-power knot is manufacturer anchored.
     q = [0., .18, .30, .52, .70, .78, rated_w/(rated*math.tau/60), .70] if two else [0., .35, .50, .65, .80, .77, rated_w/(rated*math.tau/60), .40, .05]
     volume = (8.93 if two else 10.46)*1e-6
-    p = {'displacement_m3': quantity(volume, SPEC['common']['displacement_m3'], 'derived', url+'; cc × 1e-6 -> m3')}
+    p = {
+        'displacement_m3': quantity(volume, SPEC['common']['displacement_m3'], 'derived', url+'; cc × 1e-6 -> m3'),
+        'bore_m': quantity(bore_m, SPEC['common']['bore_m'], 'manual', geometry_url+'; manufacturer bore specification converted from mm to m'),
+        'stroke_m': quantity(stroke_m, SPEC['common']['stroke_m'], 'manual', geometry_url+'; manufacturer stroke specification converted from mm to m'),
+        'rod_to_crank_radius_ratio': quantity(3.5, SPEC['common']['rod_to_crank_radius_ratio'], 'estimated',
+            'NITRO-03 explicit unmeasured slider-crank geometry estimate; connecting-rod length / crank radius = 3.5; matched internal dimension unavailable'),
+        'reciprocating_mass_kg': quantity(.025*dry_engine_mass_kg, SPEC['common']['reciprocating_mass_kg'], 'estimated',
+            f'NITRO-03 explicit unmeasured equivalent-mass estimate: 2.5% of manufacturer dry engine mass ({dry_engine_mass_kg*1000:.0f} g); 1–5% sensitivity retained in vibration evidence; no matched component measurement; {geometry_url}'),
+    }
     mech = [.008+.000002*r for r in rpm]
     p['mechanical_torque_nm'] = quantity(list(map(list, zip(rpm, mech))), SPEC['common']['mechanical_torque_nm'])
     p['combustion_efficiency'] = quantity([[0., 0.], [.5, .5], [.8, .90], [1., .98], [1.15, 1.], [1.6, .85], [2.5, .2], [3.,0.], [20.,0.]], SPEC['common']['combustion_efficiency'])

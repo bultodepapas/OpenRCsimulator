@@ -1,0 +1,205 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 1,
+  "family_id": "turbo-lumber-evolution",
+  "builder": {
+    "script": "res://aircraft/timber_model.gd",
+    "adapter": "imported_glb"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": 0.0,
+    "model_y_thrust": 0.0
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "9748ccc8c193da6c39247678e271e56c83d4948dbf0a9c9accd89e9850f31f16",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/timber_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
+      "sha256": "522a3f4c7fa9cd5030c54a78538b144f06f23c243956d6eb0f6c1c3a5e49aef1",
+      "hash_mode": "lf_text"
+    },
+    "revision": "r1-fb7586f19029",
+    "datum_source": {
+      "model_z_le": {
+        "value": 0.0
+      },
+      "model_y_thrust": {
+        "value": 0.0
+      }
+    }
+  },
+  "asset": {
+    "kind": "imported_glb",
+    "identity": "eflite_turbo_timber_evolution",
+    "revision": "r1-fb7586f19029",
+    "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+    "sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5"
+  },
+  "bindings": {
+    "controls": {
+      "aileron_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_left",
+            "node": "aileron_left_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.aileron_left_hinge"
+          }
+        ]
+      },
+      "aileron_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_right",
+            "node": "aileron_right_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.aileron_right_hinge"
+          }
+        ]
+      },
+      "elevator": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevator",
+            "node": "elevator_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.elevator_hinge"
+          }
+        ]
+      },
+      "rudder": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "rudder",
+            "node": "rudder_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.rudder_hinge"
+          }
+        ]
+      },
+      "flap_left": {
+        "visual_only": true,
+        "hinges": [
+          {
+            "key": "flap_left",
+            "node": "flap_left_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_left_hinge"
+          }
+        ]
+      },
+      "flap_right": {
+        "visual_only": true,
+        "hinges": [
+          {
+            "key": "flap_right",
+            "node": "flap_right_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_right_hinge"
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "propeller_spin",
+      "authored_diameter_m": 0.280642,
+      "source": "geometry_articulation",
+      "geometry_ref": "articulations.propeller_spin"
+    },
+    "gear": {
+      "keys": {
+        "left": "left",
+        "right": "right",
+        "tail": "tail",
+        "steering": "steering"
+      }
+    },
+    "crash": {
+      "provider": "generated_triangle_map",
+      "metadata_script": "res://aircraft/timber_crash_sections.gd",
+      "asset_node": "airframe"
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
+      "sha256": "522a3f4c7fa9cd5030c54a78538b144f06f23c243956d6eb0f6c1c3a5e49aef1",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
+      "sha256": "cc54e81e56eb1bc624d07ea86b1ba7ec6ddca037810dbd4010502fa9fe1e83b1",
+      "hash_mode": "lf_text",
+      "role": "asset_identity"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json",
+      "sha256": "3cf103a4f839cd973eb9e58005306f68e15c9e69b940ee2bbdef0b0247aa3434",
+      "hash_mode": "lf_text",
+      "role": "mesh_measurements"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/manual.json",
+      "sha256": "7018fc436d98686a18daa8712b649eb22f216c26b1f97f9a2278e84adddb219d",
+      "hash_mode": "lf_text",
+      "role": "manual_metadata"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/timber_crash_sections.gd",
+      "sha256": "8695aedce5f4a5f8c662f0b58753c71eaf3b3af28658c80f0a90ac5faaba2580",
+      "hash_mode": "lf_text",
+      "role": "crash_metadata"
+    },
+    {
+      "path": "res://aircraft/timber_geometry.gd",
+      "sha256": "79a4ff031974af22b778525731bfa5497007402df565ab303df9aaa3aa95c6e4",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/timber_model.gd",
+      "sha256": "a1993a4f4d3c14bef216c8c5f29d5f605d43ff7b5bf8c0de28f65a9113a1b37e",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    },
+    {
+      "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+      "sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5",
+      "hash_mode": "raw",
+      "role": "imported_asset"
+    },
+    {
+      "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb.import",
+      "sha256": "d70e24d0e7a236dbf8cbd63681fee735e12af0beabdb80efe36e2309d937dbf3",
+      "hash_mode": "lf_text",
+      "role": "resource_dependency"
+    },
+    {
+      "path": "res://render/crash/section_splitter.gd",
+      "sha256": "91697ef99aa117837ec1964011d24801d42e2b3032f4d33a416e2ffabf1c946b",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    }
+  ]
+}

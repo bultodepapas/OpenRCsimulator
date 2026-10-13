@@ -33,6 +33,13 @@ func _initialize():
 		check(id+" finite fuel and phase",f.sim.continuous[1]<init[1] and f.sim.continuous[9]>0. and f.sim.continuous[10]>0.)
 		var snapshot: Dictionary=f.checkpoint()
 		check(id+" explicit checkpoint",snapshot.get("format")=="openrc-flight-checkpoint v9")
+		var legacy_law: Dictionary=snapshot.duplicate(true)
+		legacy_law.glow_law="glow-mean-cycle-finite-tank-fixed-datum-v1"
+		check(id+" pre-hub-inflow law checkpoint rejected",not f.restore_checkpoint(legacy_law))
+		var observed: Dictionary=f.glow_state()
+		check(id+" source vibration is a constant-speed inertial estimate",observed.source_vibration.ok
+			and observed.source_vibration.constant_speed_assumption and observed.source_vibration.order_1x_force_peak_n>0.
+			and observed.source_vibration.firing_order==1./f.aircraft.model.propulsion.glow.profile.identity.cycle_revolutions)
 		f.sim.inputs[3]=1.
 		check(id+" throttle response",advance(f,180) and f.sim.continuous[0]>init[0])
 		var expected: PackedByteArray=var_to_bytes([f.sim.state,f.sim.continuous,f.sim.aux,f.sim.modes])

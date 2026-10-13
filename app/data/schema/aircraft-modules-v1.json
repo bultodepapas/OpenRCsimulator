@@ -9,25 +9,52 @@
     "controls": {
       "conventional": {
         "module": "controls.conventional.v1",
-        "law": "controls.conventional_surface_mapping.v1"
+        "law": "controls.conventional_surface_mapping.v1",
+        "compiler_transforms": {
+          "controls": true
+        }
       }
     },
     "gear": {
       "fixed_tricycle": {
         "module": "gear.fixed_tricycle.v1",
-        "law": "gear.point_contacts.v1"
+        "law": "gear.point_contacts.v1",
+        "presence_relations": [
+          {
+            "path": "landing_gear",
+            "present": true
+          }
+        ]
       },
       "fixed_taildragger": {
         "module": "gear.fixed_taildragger.v1",
-        "law": "gear.point_contacts.v1"
+        "law": "gear.point_contacts.v1",
+        "presence_relations": [
+          {
+            "path": "landing_gear",
+            "present": true
+          }
+        ]
       },
       "locked_down_taildragger": {
         "module": "gear.locked_down_taildragger.v1",
-        "law": "gear.point_contacts.v1"
+        "law": "gear.point_contacts.v1",
+        "presence_relations": [
+          {
+            "path": "landing_gear",
+            "present": true
+          }
+        ]
       },
       "locked_up": {
         "module": "gear.locked_up.v1",
-        "law": "gear.no_contacts.v1"
+        "law": "gear.no_contacts.v1",
+        "presence_relations": [
+          {
+            "path": "landing_gear",
+            "present": false
+          }
+        ]
       }
     },
     "propulsion_layout": {
@@ -143,13 +170,13 @@
           "compiler_reason": ""
         },
         {
-          "name": "coupled_shaft",
+          "name": "shaft_balance",
           "when": {
             "engine.shaft": true,
             "engine.glow_installation": false
           },
           "energy": "prescribed_fuel",
-          "law": "propulsion.glow_prop.coupled_shaft.v1",
+          "law": "propulsion.glow_prop.shaft_balance.v1",
           "modules": [
             "propulsion.shaft.v1"
           ],
@@ -179,7 +206,11 @@
           "compiler_reason": "finite-glow installation data must remain fixed until its module transform is qualified"
         }
       ],
-      "unsupported_compiler_reason": "the propulsion family is '{kind}'"
+      "compiler_transforms": {
+        "scale": false,
+        "weight": false,
+        "power": false
+      }
     },
     "electric_prop": {
       "module": "propulsion.electric_prop.v1",

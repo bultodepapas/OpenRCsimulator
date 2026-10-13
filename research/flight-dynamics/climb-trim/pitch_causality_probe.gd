@@ -85,4 +85,7 @@ func _run() -> void:
 			attached_pitch_moment_closure_nm = max_moment_closure, fault = session.sim.fault_reason, crashed = not session.crash.is_empty(), rows = rows})
 		session.free()
 	print("PITCH_CAUSALITY ", JSON.stringify(reports))
-	quit(0 if reports[0].source_checkpoint_error < 1e-8 else 1)
+	var complete := reports.size() == 4 and reports.all(func(report: Dictionary) -> bool:
+		return absf(report.seconds - 15.0) < 1e-10 and report.fault.is_empty() and not report.crashed \
+			and report.attached_pitch_moment_closure_nm < 1e-10)
+	quit(0 if complete and reports[0].source_checkpoint_error < 1e-8 else 1)

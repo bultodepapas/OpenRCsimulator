@@ -11,6 +11,7 @@ extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const WingPolar := preload("res://physics/wing_polar.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 
@@ -22,12 +23,7 @@ const WING_STATIONS_PER_SIDE := 3
 ## as in input/commands.gd surface_deflections_deg) → the data's conventions (radians, +TE down / +TE left).
 ## The only place where the two sign conventions meet.
 static func deflections_from_surfaces(surfaces_deg: Dictionary) -> Dictionary:
-	return {
-		elevator = -deg_to_rad(surfaces_deg.elevator),
-		aileron_right = -deg_to_rad(surfaces_deg.aileron_right),
-		aileron_left = -deg_to_rad(surfaces_deg.aileron_left),
-		rudder = -deg_to_rad(surfaces_deg.rudder),
-	}
+	return ControlSurfaces.deflections_from_surfaces(surfaces_deg)
 
 
 ## Stall blend weight at angle of attack α (rad): 0 in attached flow, 1 in separated (flat-plate) flow.

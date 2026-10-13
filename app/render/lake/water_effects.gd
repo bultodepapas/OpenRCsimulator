@@ -310,7 +310,7 @@ func _ensure_nodes() -> void:
 	_plume.name = "WaterPlume"
 	_plume.mesh = plume_mesh
 	_plume.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_plume_material = _new_effect_material(Color(0.39, 0.68, 0.68, 0.42), 0.004)
+	_plume_material = _new_effect_material(Color(0.72, 0.84, 0.81, 0.42), 0.004)
 	_plume.material_override = _plume_material
 	add_child(_plume)
 
@@ -435,13 +435,13 @@ func _sync_visuals() -> void:
 		return
 	_set_effect_materials(_elapsed_s)
 	var surface := _surface_world_position()
-	var shallow_scale := clampf(1.0 - _impact_depth_m / maxf(_lake_depth_m, 0.1), 0.45, 1.0)
+	var shallow_scale := clampf(1.0 - 0.15 * _impact_depth_m / maxf(_lake_depth_m, 0.1), 0.85, 1.0)
 	var plume_fade_in := smoothstep(0.0, 0.10, _elapsed_s)
 	var plume_fade_out := 1.0 - smoothstep(0.48, PLUME_DURATION_S, _elapsed_s)
 	var plume_alpha := clampf(plume_fade_in * plume_fade_out, 0.0, 1.0)
 	_plume.visible = plume_alpha > 0.01
-	var plume_height := lerpf(0.08, 0.34, smoothstep(0.0, 0.24, _elapsed_s)) * shallow_scale
-	var plume_width := lerpf(0.65, 1.0, smoothstep(0.0, 0.18, _elapsed_s)) * shallow_scale
+	var plume_height := lerpf(0.12, 0.85, smoothstep(0.0, 0.24, _elapsed_s)) * shallow_scale
+	var plume_width := lerpf(1.5, 2.8, smoothstep(0.0, 0.18, _elapsed_s)) * shallow_scale
 	_plume.global_transform = Transform3D(
 		Basis.IDENTITY.scaled(Vector3(plume_width, plume_height / 0.36, plume_width)),
 		surface + Vector3.UP * plume_height * 0.5
@@ -453,7 +453,7 @@ func _sync_visuals() -> void:
 		var duration := 1.55 + float(ring_index) * 0.55
 		var progress := clampf((_elapsed_s - start_delay) / duration, 0.0, 1.0)
 		var ring_alpha := (1.0 - smoothstep(0.58, 1.0, progress)) if _elapsed_s >= start_delay else 0.0
-		var ring_radius := lerpf(0.10, 0.78 + float(ring_index) * 0.50, smoothstep(0.0, 1.0, progress))
+		var ring_radius := lerpf(0.10, 1.5 + float(ring_index) * 0.85, smoothstep(0.0, 1.0, progress))
 		var ring := _rings[ring_index]
 		ring.visible = ring_alpha > 0.01 and _elapsed_s < start_delay + duration
 		ring.global_transform = Transform3D(Basis.IDENTITY.scaled(Vector3(ring_radius, 1.0, ring_radius)), surface + Vector3.UP * (0.012 + 0.004 * ring_index))

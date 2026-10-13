@@ -1,0 +1,163 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 1,
+  "family_id": "p51d-mustang-120",
+  "builder": {
+    "script": "res://aircraft/p51d_model.gd",
+    "adapter": "euler_hinges"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": 0.0,
+    "model_y_thrust": 0.0
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "9748ccc8c193da6c39247678e271e56c83d4948dbf0a9c9accd89e9850f31f16",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/p51d_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/p51d-mustang-120/geometry.json",
+      "sha256": "fee3e65d024bf63cc6e7ba26e2818ce35bb6f8d3db8932f96293837565e9bd30",
+      "hash_mode": "lf_text"
+    },
+    "revision": "p51d-mustang-120-v1",
+    "datum_source": {
+      "model_z_le": {
+        "path": "wing.le_z_root"
+      },
+      "model_y_thrust": {
+        "value": 0.0
+      }
+    }
+  },
+  "asset": {
+    "kind": "procedural",
+    "identity": "p51d-mustang-120-v1",
+    "revision": "p51d-mustang-120-v1"
+  },
+  "bindings": {
+    "controls": {
+      "aileron_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_left",
+            "node": "aileron_left_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "aileron_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_right",
+            "node": "aileron_right_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "elevator": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevator",
+            "node": "elevator_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "rudder": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "rudder",
+            "node": "rudder_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "",
+      "authored_diameter_m": 0.6604,
+      "source": "builder",
+      "geometry_ref": ""
+    },
+    "gear": {
+      "keys": {
+        "left": "left",
+        "right": "right",
+        "tail": "tail",
+        "steering": "steering"
+      }
+    },
+    "crash": {
+      "provider": "none",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/p51d-mustang-120/geometry.json",
+      "sha256": "fee3e65d024bf63cc6e7ba26e2818ce35bb6f8d3db8932f96293837565e9bd30",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    },
+    {
+      "path": "assets/aircraft/p51d-mustang-120/source.json",
+      "sha256": "df5ec9c65e3660fc9370ca8bf812b3324b85a6198eb845a2a46153f0d2518d0d",
+      "hash_mode": "lf_text",
+      "role": "geometry_input"
+    },
+    {
+      "path": "assets/aircraft/p51d-mustang-120/appearance.json",
+      "sha256": "604ddc69780cb8009fe5f0bb59cf2031d3d5f6fe517f1a940234d607f92299a3",
+      "hash_mode": "lf_text",
+      "role": "appearance"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/p51d_appearance.gd",
+      "sha256": "9dad3008e70cb8e1f04f24da6a10f0a76a843f31f47bb15b45b47a235590812b",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/p51d_finish.gd",
+      "sha256": "4e536c5061fbea389fad0265c50a4859515b7af494f95dbb86c25a477720a51c",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/p51d_geometry.gd",
+      "sha256": "9c2d2ea44c112b12a83ba83e6950f456b0db44dd482e12ad7a792f6a62f15704",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/p51d_model.gd",
+      "sha256": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    }
+  ]
+}

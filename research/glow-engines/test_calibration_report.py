@@ -71,9 +71,13 @@ class GeneratedInstallationAuditTests(unittest.TestCase):
             self.assertEqual(prop["section_assumptions"], inputs["section"])
             self.assertEqual(prop["installation_source"]["sha256"], inputs["sha256"])
             self.assertEqual(
-                prop["engine_rpm_guidance"]["generated_aircraft_max_rpm_static_field"],
-                inputs["runtime_static_rpm_cap"],
+                prop["engine_rpm_guidance"]["generated_legacy_max_rpm_static_reference"],
+                inputs["legacy_static_rpm_reference"],
             )
+            self.assertEqual(
+                prop["engine_rpm_guidance"]["profile_operation_max_rpm"], 15000.0
+            )
+            self.assertIn("not a Glow runtime cap", prop["engine_rpm_guidance"]["equilibrium_vs_limit"])
             audit = prop["actuator_disk_power_bound_map_audit"]
             self.assertEqual(audit["grid"]["sample_count"], 3000)
             self.assertEqual(audit["status"], "PASS")

@@ -1,0 +1,260 @@
+{
+  "cases": {
+    "damped": {
+      "samples": [
+        {
+          "state": {
+            "v_s_m_per_s": -0.022387866477006454,
+            "v_u_m_per_s": 0.0004178681791164249,
+            "z_s_m": 0.17016152914199953,
+            "z_u_m": 0.082914015487441
+          },
+          "time_s": 0.05
+        },
+        {
+          "state": {
+            "v_s_m_per_s": -0.011013408559277361,
+            "v_u_m_per_s": -0.0029522675686523554,
+            "z_s_m": 0.16920568618608164,
+            "z_u_m": 0.0828334835315961
+          },
+          "time_s": 0.1
+        },
+        {
+          "state": {
+            "v_s_m_per_s": -0.0019253777089305191,
+            "v_u_m_per_s": -0.0005646126551715564,
+            "z_s_m": 0.1704150872633168,
+            "z_u_m": 0.08298787904386366
+          },
+          "time_s": 0.25
+        },
+        {
+          "state": {
+            "v_s_m_per_s": -0.0020579417641203015,
+            "v_u_m_per_s": -0.00043074720592713574,
+            "z_s_m": 0.17016537600895967,
+            "z_u_m": 0.08295628090628392
+          },
+          "time_s": 0.5
+        },
+        {
+          "state": {
+            "v_s_m_per_s": -0.0012627710095286552,
+            "v_u_m_per_s": -0.00020766836750461018,
+            "z_s_m": 0.16994088302563648,
+            "z_u_m": 0.08292910366104134
+          },
+          "time_s": 1.0
+        }
+      ],
+      "state_matrix_row_major": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -750.0,
+          750.0,
+          -5.833333333333334,
+          5.833333333333334
+        ],
+        [
+          5000.0,
+          -41111.11111111111,
+          38.88888888888889,
+          -38.88888888888889
+        ]
+      ],
+      "suspension_damping_n_s_per_m": 7.0
+    },
+    "undamped": {
+      "samples": [
+        {
+          "state": {
+            "v_s_m_per_s": -0.02480026817483369,
+            "v_u_m_per_s": 0.00721425328506305,
+            "z_s_m": 0.17012879973364614,
+            "z_u_m": 0.0828961580890728
+          },
+          "time_s": 0.05
+        },
+        {
+          "state": {
+            "v_s_m_per_s": -0.013738074419411658,
+            "v_u_m_per_s": -0.017092097552405438,
+            "z_s_m": 0.1690034195703713,
+            "z_u_m": 0.08282354176458938
+          },
+          "time_s": 0.1
+        },
+        {
+          "state": {
+            "v_s_m_per_s": -0.003100931017730059,
+            "v_u_m_per_s": -0.00756302251683378,
+            "z_s_m": 0.17083462493967772,
+            "z_u_m": 0.08310832639833611
+          },
+          "time_s": 0.25
+        },
+        {
+          "state": {
+            "v_s_m_per_s": -0.006180534068520888,
+            "v_u_m_per_s": -0.013491939147776699,
+            "z_s_m": 0.17081127198902818,
+            "z_u_m": 0.08308137096693087
+          },
+          "time_s": 0.5
+        },
+        {
+          "state": {
+            "v_s_m_per_s": -0.012155767625452767,
+            "v_u_m_per_s": -0.01604683797494395,
+            "z_s_m": 0.17071926654510935,
+            "z_u_m": 0.08299982657295418
+          },
+          "time_s": 1.0
+        }
+      ],
+      "state_matrix_row_major": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -750.0,
+          750.0,
+          -0.0,
+          0.0
+        ],
+        [
+          5000.0,
+          -41111.11111111111,
+          0.0,
+          -0.0
+        ]
+      ],
+      "suspension_damping_n_s_per_m": 0.0
+    }
+  },
+  "equilibrium": {
+    "z_s_m": 0.16984243943589744,
+    "z_u_m": 0.08291797276923077
+  },
+  "generator": "research/rc-monster-truck/generate_suspension_reference.py",
+  "initial_perturbation": {
+    "v_s_m_per_s": 0.0,
+    "v_u_m_per_s": 0.0,
+    "z_s_m": 0.001,
+    "z_u_m": 0.0002
+  },
+  "initial_state": {
+    "v_s_m_per_s": 0.0,
+    "v_u_m_per_s": 0.0,
+    "z_s_m": 0.17084243943589744,
+    "z_u_m": 0.08311797276923077
+  },
+  "method": {
+    "equations": "xdot = A x for displacement from static equilibrium; x=[zs, zu, vs, vu]",
+    "matrix_exponential": "scaled Taylor series with infinity-norm scaling to <=0.5, followed by repeated squaring",
+    "scaled_matrix_infinity_norm_limit": 0.5,
+    "state_position_sign": "upward-positive",
+    "taylor_term_relative_tolerance": 1e-17,
+    "time_integration": "none; each requested state is exp(A*t) times the initial displacement"
+  },
+  "parameters": {
+    "gravity_m_per_s2": 9.80665,
+    "sprung_mass_kg": 1.2,
+    "suspension_damping_n_s_per_m": 7.0,
+    "suspension_rest_length_m": 0.1,
+    "suspension_stiffness_n_per_m": 900.0,
+    "tire_radius_m": 0.085,
+    "tire_stiffness_n_per_m": 6500.0,
+    "unsprung_mass_kg": 0.18
+  },
+  "purpose": "synthetic linear quarter-car software reference; not physical validation",
+  "sample_times_s": [
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "schema_version": 1,
+  "state_order": [
+    "z_s_m",
+    "z_u_m",
+    "v_s_m_per_s",
+    "v_u_m_per_s"
+  ],
+  "state_units": {
+    "v_s_m_per_s": "m/s",
+    "v_u_m_per_s": "m/s",
+    "z_s_m": "m",
+    "z_u_m": "m"
+  },
+  "verification": {
+    "acceptance_limits": {
+      "maximum_thirds_semigroup_matrix_residual_relative": 2e-11,
+      "maximum_undamped_energy_relative_drift": 5e-10,
+      "minimum_tire_normal_load_n_exclusive_lower_bound": 0.0
+    },
+    "cases": {
+      "damped": {
+        "max_final_taylor_term_norm_inf": 2.4479725261852065e-18,
+        "max_halves_semigroup_matrix_residual_abs": 0.0,
+        "max_scaling_squarings": 17,
+        "max_taylor_terms": 6,
+        "max_thirds_semigroup_matrix_residual_abs": 2.05648831297367e-11,
+        "max_thirds_semigroup_matrix_residual_relative": 8.124058575888863e-12
+      },
+      "undamped": {
+        "max_final_taylor_term_norm_inf": 2.1480119703064624e-20,
+        "max_halves_semigroup_matrix_residual_abs": 0.0,
+        "max_scaling_squarings": 17,
+        "max_taylor_terms": 6,
+        "max_thirds_semigroup_matrix_residual_abs": 2.653166575328214e-09,
+        "max_thirds_semigroup_matrix_residual_relative": 1.3967016150734776e-11
+      }
+    },
+    "dense_contact_and_energy_check_case": "undamped",
+    "dense_contact_checks": {
+      "damped": {
+        "dense_sample_count_including_initial": 5001,
+        "dense_sample_interval_s": 0.0002,
+        "minimum_contact_margin_n": 12.233177000000005,
+        "minimum_tire_normal_load_n": 12.233177000000005
+      },
+      "undamped": {
+        "dense_sample_count_including_initial": 5001,
+        "dense_sample_interval_s": 0.0002,
+        "maximum_undamped_energy_absolute_drift_j": 8.733790600456981e-16,
+        "maximum_undamped_energy_relative_drift": 2.0894235886260718e-12,
+        "minimum_contact_margin_n": 12.233177000000005,
+        "minimum_tire_normal_load_n": 12.233177000000005
+      }
+    },
+    "maximum_thirds_semigroup_matrix_residual_abs": 2.653166575328214e-09,
+    "maximum_thirds_semigroup_matrix_residual_relative": 1.3967016150734776e-11,
+    "maximum_undamped_energy_absolute_drift_j": 8.733790600456981e-16,
+    "maximum_undamped_energy_relative_drift": 2.0894235886260718e-12,
+    "minimum_contact_margin_n": 12.233177000000005,
+    "minimum_tire_normal_load_n": 12.233177000000005
+  }
+}

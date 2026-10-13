@@ -80,7 +80,7 @@ def installation_inputs(configuration_id: str) -> dict[str, Any]:
             "induced_drag": float(qvalue(prop, "induced_drag")),
             "blades": float(qvalue(prop, "blades")),
         },
-        "runtime_static_rpm_cap": float(qvalue(
+        "legacy_static_rpm_reference": float(qvalue(
             aircraft["propulsion"]["engine"], "max_rpm_static"
         )),
         "aircraft_path": aircraft_path.relative_to(ROOT).as_posix(),
@@ -1018,9 +1018,9 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
                     if chosen is not None else None
                 ),
                 "assumption_envelope": envelope,
-                "generated_runtime_static_rpm_cap": installed["runtime_static_rpm_cap"],
+                "generated_legacy_max_rpm_static_reference": installed["legacy_static_rpm_reference"],
                 "profile_numeric_search_range_rpm": rpm_search_range,
-                "equilibrium_cap_interpretation": "A torque-balance root is a load-dependent candidate equilibrium, not the generated aircraft max_rpm_static field or a speed limiter.",
+                "equilibrium_domain_interpretation": "A torque-balance root is a load-dependent candidate equilibrium. The generated max_rpm_static field is a legacy normalization reference, not a Glow root/flight cap; profile operation.max_rpm and table support bound the Glow solver.",
             }
             if prop["anchor_rpm"] is not None and axial_speed == 0.0:
                 row["anchor_status"] = "static RPM root is constrained to the O.S. single observation by construction"
@@ -1033,10 +1033,11 @@ def paired_propeller_inference(profile: dict[str, Any]) -> dict[str, Any]:
             "engine_rpm_guidance": {
                 "o_s_published_practical_rpm": MANUFACTURER_PRACTICAL_RPM[family],
                 "profile_numeric_support_rpm": rpm_search_range,
+                "profile_operation_max_rpm": float(qvalue(profile["operation"], "max_rpm")),
                 "profile_recommended_max_rpm": float(qvalue(profile["operation"], "recommended_max_rpm")),
                 "effective_recommended_rpm_for_configuration": effective_limit,
-                "generated_aircraft_max_rpm_static_field": installed["runtime_static_rpm_cap"],
-                "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium; the profile search range and generated aircraft max_rpm_static field are separate limits.",
+                "generated_legacy_max_rpm_static_reference": installed["legacy_static_rpm_reference"],
+                "equilibrium_vs_limit": "The reported torque-balance RPM is a load-dependent equilibrium. Generated max_rpm_static is a legacy normalization reference, not a Glow runtime cap; profile operation.max_rpm and table support bound the solver, while recommended_max_rpm drives the operating recommendation/telemetry flag.",
             },
             "section_assumptions": prop_section,
             "reference_air_density_kg_m3": reference_density,

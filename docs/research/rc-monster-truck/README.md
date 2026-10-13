@@ -4,6 +4,8 @@
 
 Three Luna Max sub-agents investigated repository integration, vehicle/ground physics and Blender/reference assets. The lead inspected shared shell/catalog/camera code, checked primary sources and reconciled the recommendations. A second review examined mechanics and integration. Intermediate reports were working notes under ignored `tmp/`; the durable findings are consolidated here and in the plan.
 
+Subsequent implementation evidence is recorded separately in [RCV-04a: suspension bench](RCV-04a/README.md). This source-investigation snapshot retains its original planning scope.
+
 ## Evidence method and boundaries
 
 The initial repository commit was `fe4891bdccb8acff7e00975234a0d94106ef63c9`. This was a live, dirty workspace, not a clean immutable release. Other tracks changed flight, lake, crash, glow, menu and Workshop files during the investigation. No assertion here attributes those changes to RCV work. Recheck current files before implementation.

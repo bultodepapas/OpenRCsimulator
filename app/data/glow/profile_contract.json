@@ -9,6 +9,34 @@
       "maximum": 1e+100,
       "positive": true
     },
+    "bore_m": {
+      "unit": "m",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "stroke_m": {
+      "unit": "m",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
+    "rod_to_crank_radius_ratio": {
+      "unit": "1",
+      "shape": "scalar",
+      "minimum": 2.0,
+      "maximum": 1e+100,
+      "positive": false
+    },
+    "reciprocating_mass_kg": {
+      "unit": "kg",
+      "shape": "scalar",
+      "minimum": 0.0,
+      "maximum": 1e+100,
+      "positive": true
+    },
     "mechanical_torque_nm": {
       "unit": "rpm, N·m",
       "shape": "curve",

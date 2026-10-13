@@ -117,6 +117,31 @@ The coordinate/force review used the [JSBSim frame definitions](https://jsbsim-t
 
 These are native Windows software checks in a concurrently edited checkout. Full WSL qualification and physical validation were not performed. Some scene teardown checks emit existing ObjectDB leak warnings; they are not treated as a cause of pitch motion.
 
+## Physical causality follow-up (2026-10-13)
+
+Three further reviews challenged the longitudinal equilibrium, coefficient transfer, and startup branch. The startup roots of all seven current aircraft are attached (`blend=0`), at alpha 1.50–5.38°, below the 8° attached-flow limit. The standard Stik starts at 1.58 times its model-estimated stall speed. Its root is not a hidden post-stall solution, and no duplicate trim/sign conversion was found. These checks do not validate the chosen physical airspeeds or elevator angles.
+
+**Steady-flight existence is distinct from stability.** With launch surfaces fixed, zero body rates/sideslip and settled downwash, projected longitudinal equilibrium requires both `My=0` and `sqrt(Fx²+Fz²)=mg`, where the forces exclude gravity. Pitch attitude comes from the force direction and flight-path angle is attitude minus alpha. The retained probe enumerates pitch-moment sign roots in −8° to +8° and scans speeds 1–60 m/s. One attached root occurs at alpha 4.260299°; checks at 5, 9, 15, 24.728 and 40 m/s confirm zero local blend and pitch-moment residual below 1.7e-15 N·m.
+
+| Fixed launch elevator; power | Upper-speed projected equilibrium | Climb angle |
+| --- | ---: | ---: |
+| Launch, 28.44% | 15.000 m/s | Approximately 0° |
+| 50% | 14.581 m/s | 15.31° |
+| 75% | 12.381 m/s | 42.94° |
+| 85% and 100% | None in the analyzed branch/range | — |
+
+At full power, the minimum resultant-force magnitude still exceeds the 28.293 N weight by **8.825 N**, at 9.071 m/s. The last force-root threshold is approximately 83.05% throttle, at an already very steep 69.60° climb. This is a property of this model and fixed surface setting, not a proposed throttle limit. It shows why assuming the model must settle into a straight climb at full power is unjustified. It does not prove that a loop is inevitable; banked, unsteady and separated-flow motions are outside this equilibrium calculation. Lateral/roll/yaw balance is not solved. [Equilibrium measurements](fixed-trim-power-equilibrium.json).
+
+**The transient supplies the causal evidence.** Replaying the first 15 s while bounding only the absolute throttle command at 100%, 85%, 75% and 50% gives first inverted attitudes at 9.542, 10.079, 10.708 s and none, respectively; all four complete the interval without contact/fault. The 75% result matters: existence of a steady climb does not ensure that this transient reaches it. This experiment supports the power/trim interaction, but a 15-second non-inversion is not a handling qualification or a reason to install a limiter. The unchanged baseline matches the capture to 1.42e-14. [Power interventions and pitch-moment terms](pitch-causality.json).
+
+At 8 s the accepted endpoint's attached pitch-moment terms are, in N·m: zero-angle −1.474, alpha −1.856, elevator +4.130, pitch-rate damping −1.205, force-arm +0.364, downwash −0.0166, and direct propulsion 0. Their total is −0.0578 N·m while body pitch rate remains +0.493 rad/s. Full component closure is within 2.45e-15 N·m. This endpoint differs slightly from the earlier next-tick k1 load sample; both are temporally identified. The previously measured lift/trajectory curvature explains continued upward rotation even while pitch acceleration is negative. Inversion is coupled roll/pitch, not a pure 360° pitch-loop detector: at 9 s the recorded Euler bank is −51.5° and pitch +60.0°; at 10 s they are −117.1° and +51.3°.
+
+**A data-transfer inconsistency survives review, but not as the first-loop explanation.** The target's assertion that moving the borrowed moments to its CG preserves donor static margin omits the donor's 1.8%-chord AERORP-to-CG separation. An approximate three-coefficient transfer gives `Cm0=−0.0258776`, `Cma=−0.64056`, `Cmde=−0.8470306`. Recomputing startup trim with those values reduces elevator-up from 5.257° to 4.715°, but first inversion moves only from 9.542 to 9.654 s and remains. This is a bounded sensitivity study, not a complete transport or a calibrated production replacement: nonlinear force projection, other derivatives and local-tail incidence are not rederived. [Counterfactual measurements](donor-reference-sensitivity.json).
+
+Separately, using the whole-aircraft coefficient reference as the local wing force location conflates two different concepts. Here it puts wing lift through the CG. The estimated local horizontal tail also predicts `CLde≈0.423/rad` versus the global donor's `0.0983/rad`, while `Cmde` differs much less. These are model-construction consistency issues requiring explicit reference geometry and joint force/moment qualification. The recorded first inversion remains in the global model, so neither local mismatch is its trigger.
+
+The diagnosis established for the capture is a powered, fixed-trim transient with excess lift and coupled attitude motion. There is no evidence here that Godot or the integrator invents the climb, and no demonstrated shared defect explaining all reported low-power climbs. Realistic severity remains unqualified because the target's aerodynamic and installed powertrain data are surrogates. Source reference transport and cross-regime force/moment consistency should be corrected in their generators as explicit model work, then checked against independent trim and response evidence. No production coefficient, automatic trim or power limiter was introduced in this follow-up. The [NASA throttles-only flight-control study](https://ntrs.nasa.gov/citations/19950026600) supports the general coupling of thrust, speed and pitch dynamics; it supplies no coefficients or handling validation for this RC airplane.
+
 ## Options and chosen improvement
 
 - Reducing lift, changing CG/incidence or adding a universal nose-down moment has no supporting reproduction and would disturb the verified equilibrium. Rejected.

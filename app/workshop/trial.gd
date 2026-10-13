@@ -22,6 +22,9 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		descriptor_result = descriptor_loader.validate(supplied_descriptor, base_id, base_bytes)
 	if not descriptor_result.get("ok", false):
 		return descriptor_result
+	var presentation: Dictionary = descriptor_loader.verify_presentation(descriptor_result.descriptor)
+	if not presentation.get("ok", false):
+		return presentation
 	var descriptor_sha: String = _sha(JSON.stringify(descriptor_result.descriptor, "", true, true).to_utf8_buffer())
 	var dependency_loader: Script = load("res://workshop/dependencies.gd")
 	var supplied_dependencies: Variant = payload.get("dependencies", {})
@@ -58,16 +61,23 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var unchanged: Dictionary = dependency_loader.verify(base, dependencies)
 	if not unchanged.get("ok", false):
 		return unchanged
+	var model_unchanged: Dictionary = descriptor_loader.verify_presentation(descriptor_result.descriptor)
+	if not model_unchanged.get("ok", false):
+		return model_unchanged
+	if model_unchanged.manifest_sha256 != presentation.manifest_sha256:
+		return {ok = false, errors = PackedStringArray(["Model presentation changed while compiling the trial."])}
+	var presentation_binding: Dictionary = {visual_family = presentation.manifest.family_id,
+		model_manifest_sha256 = presentation.manifest_sha256}
 	var resolved_bytes: PackedByteArray = JSON.stringify(result.raw, "", true, true).to_utf8_buffer()
 	var resolved_sha: String = _sha(resolved_bytes)
 	result.data.input_identity = {format = "openrc-aircraft v2", sha256 = resolved_sha}
 	var model_sha: String = _sha(var_to_bytes(result.data.model))
 	return {ok = true, errors = PackedStringArray(), data = result.data.duplicate(true),
-		scale = float(recipe.get("scale", 1.0)), raw_bytes = resolved_bytes,
+		scale = float(recipe.get("scale", 1.0)), raw_bytes = resolved_bytes, presentation = presentation_binding.duplicate(true),
 		identity = {format = "openrc-aircraft-trial v1", trial_id = trial_id, base_id = base_id,
 			base_sha256 = base_sha, recipe_sha256 = recipe_sha, resolved_sha256 = resolved_sha,
 			resolved_model_sha256 = model_sha,
-			descriptor_sha256 = descriptor_sha,
+			descriptor_sha256 = descriptor_sha, presentation = presentation_binding.duplicate(true),
 			dependencies = dependencies.duplicate(true), dependencies_sha256 = dependency_sha,
 			ancestor_variant_id = ancestor_id, ancestor_revision = ancestor_revision,
 			compiler = compiler_version, experimental = true}}

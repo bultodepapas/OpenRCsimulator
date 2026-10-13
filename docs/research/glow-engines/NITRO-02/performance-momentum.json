@@ -1,0 +1,816 @@
+{
+  "build_configuration_hashes": {
+    "export_presets.cfg": "39780f528cbb665958d6e33679f314d4d02e040cb984304f37a34acd357897d0",
+    "project.godot": "b13b3694a59424bd85eb9982f64aa7cccfb73c7369b346985251dff066e95ea4"
+  },
+  "cases": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "aircraft_input": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "aircraft_input_sha256": "b2f2b88e41e5e640974610e8ce925765b5734d31d9b86a7ce9487ff376d523a9",
+      "case": "legacy_stik",
+      "glow_active": false,
+      "microprofile": {
+        "dynamics_loads": {
+          "calls_per_group": 24,
+          "groups": 25,
+          "maximum": 46.416666666666664,
+          "p50": 31.416666666666668,
+          "p95": 45.875
+        }
+      },
+      "ok": true,
+      "round": 1,
+      "shaft_integrator": "split",
+      "start_time_s": 0.5,
+      "step_cost_us": {
+        "maximum": 871.0,
+        "p50": 408.0,
+        "p95": 613.0
+      },
+      "step_p95_to_500us_budget_ratio": 1.226
+    },
+    {
+      "aircraft_id": "stik-glow-55ax-2t",
+      "aircraft_input": "app/data/aircraft/stik_glow_55ax_2t.json",
+      "aircraft_input_sha256": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+      "case": "glow_2t",
+      "glow_active": true,
+      "microprofile": {
+        "callable_dispatch_noop": {
+          "calls_per_group": 96,
+          "groups": 25,
+          "maximum": 0.11458333333333333,
+          "p50": 0.10416666666666667,
+          "p95": 0.11458333333333333
+        },
+        "results": {
+          "blade_evaluate": {
+            "calls_per_group": 96,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 26.71875,
+            "median_kernel_estimate_us": 24.739583333333332,
+            "p50": 24.84375,
+            "p95": 26.427083333333332
+          },
+          "dynamics_loads": {
+            "calls_per_group": 24,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 108.375,
+            "median_kernel_estimate_us": 80.9375,
+            "p50": 81.04166666666667,
+            "p95": 87.29166666666667
+          },
+          "flight_evaluate": {
+            "calls_per_group": 4,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 721.75,
+            "median_kernel_estimate_us": 218.64583333333334,
+            "p50": 218.75,
+            "p95": 306.0
+          },
+          "flight_point": {
+            "calls_per_group": 12,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 203.83333333333334,
+            "median_kernel_estimate_us": 119.97916666666666,
+            "p50": 120.08333333333333,
+            "p95": 187.58333333333334
+          },
+          "fuel_mass_evaluate": {
+            "calls_per_group": 48,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 12.9375,
+            "median_kernel_estimate_us": 5.333333333333333,
+            "p50": 5.4375,
+            "p95": 7.6875
+          },
+          "lifecycle_evaluate": {
+            "calls_per_group": 24,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 239.66666666666666,
+            "median_kernel_estimate_us": 172.8125,
+            "p50": 172.91666666666666,
+            "p95": 211.875
+          },
+          "source_evaluate": {
+            "calls_per_group": 48,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 59.0625,
+            "median_kernel_estimate_us": 52.3125,
+            "p50": 52.416666666666664,
+            "p95": 57.666666666666664
+          }
+        }
+      },
+      "ok": true,
+      "round": 1,
+      "shaft_integrator": "coupled-rk4",
+      "start_time_s": 0.5,
+      "step_cost_us": {
+        "maximum": 2165.0,
+        "p50": 1248.0,
+        "p95": 1564.0
+      },
+      "step_p95_to_500us_budget_ratio": 3.128
+    },
+    {
+      "aircraft_id": "stik-glow-fs64v-4t",
+      "aircraft_input": "app/data/aircraft/stik_glow_fs64v_4t.json",
+      "aircraft_input_sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+      "case": "glow_4t",
+      "glow_active": true,
+      "microprofile": {
+        "callable_dispatch_noop": {
+          "calls_per_group": 96,
+          "groups": 25,
+          "maximum": 0.0625,
+          "p50": 0.0625,
+          "p95": 0.0625
+        },
+        "results": {
+          "blade_evaluate": {
+            "calls_per_group": 96,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 26.770833333333332,
+            "median_kernel_estimate_us": 26.166666666666668,
+            "p50": 26.229166666666668,
+            "p95": 26.46875
+          },
+          "dynamics_loads": {
+            "calls_per_group": 24,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 85.125,
+            "median_kernel_estimate_us": 80.8125,
+            "p50": 80.875,
+            "p95": 84.20833333333333
+          },
+          "flight_evaluate": {
+            "calls_per_group": 4,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 228.25,
+            "median_kernel_estimate_us": 154.4375,
+            "p50": 154.5,
+            "p95": 206.5
+          },
+          "flight_point": {
+            "calls_per_group": 12,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 137.25,
+            "median_kernel_estimate_us": 113.6875,
+            "p50": 113.75,
+            "p95": 124.66666666666667
+          },
+          "fuel_mass_evaluate": {
+            "calls_per_group": 48,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 12.104166666666666,
+            "median_kernel_estimate_us": 9.229166666666666,
+            "p50": 9.291666666666666,
+            "p95": 10.583333333333334
+          },
+          "lifecycle_evaluate": {
+            "calls_per_group": 24,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 196.33333333333334,
+            "median_kernel_estimate_us": 127.6875,
+            "p50": 127.75,
+            "p95": 185.5
+          },
+          "source_evaluate": {
+            "calls_per_group": 48,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 59.020833333333336,
+            "median_kernel_estimate_us": 56.791666666666664,
+            "p50": 56.854166666666664,
+            "p95": 57.854166666666664
+          }
+        }
+      },
+      "ok": true,
+      "round": 1,
+      "shaft_integrator": "coupled-rk4",
+      "start_time_s": 0.5,
+      "step_cost_us": {
+        "maximum": 2297.0,
+        "p50": 1266.0,
+        "p95": 1688.0
+      },
+      "step_p95_to_500us_budget_ratio": 3.376
+    },
+    {
+      "aircraft_id": "stik-glow-fs64v-4t",
+      "aircraft_input": "app/data/aircraft/stik_glow_fs64v_4t.json",
+      "aircraft_input_sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+      "case": "glow_4t",
+      "glow_active": true,
+      "microprofile": {
+        "callable_dispatch_noop": {
+          "calls_per_group": 96,
+          "groups": 25,
+          "maximum": 0.11458333333333333,
+          "p50": 0.10416666666666667,
+          "p95": 0.11458333333333333
+        },
+        "results": {
+          "blade_evaluate": {
+            "calls_per_group": 96,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 26.28125,
+            "median_kernel_estimate_us": 21.958333333333332,
+            "p50": 22.0625,
+            "p95": 23.78125
+          },
+          "dynamics_loads": {
+            "calls_per_group": 24,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 92.66666666666667,
+            "median_kernel_estimate_us": 67.52083333333333,
+            "p50": 67.625,
+            "p95": 80.16666666666667
+          },
+          "flight_evaluate": {
+            "calls_per_group": 4,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 313.75,
+            "median_kernel_estimate_us": 222.64583333333334,
+            "p50": 222.75,
+            "p95": 246.25
+          },
+          "flight_point": {
+            "calls_per_group": 12,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 123.41666666666667,
+            "median_kernel_estimate_us": 100.72916666666666,
+            "p50": 100.83333333333333,
+            "p95": 120.33333333333333
+          },
+          "fuel_mass_evaluate": {
+            "calls_per_group": 48,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 10.604166666666666,
+            "median_kernel_estimate_us": 8.8125,
+            "p50": 8.916666666666666,
+            "p95": 10.104166666666666
+          },
+          "lifecycle_evaluate": {
+            "calls_per_group": 24,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 200.625,
+            "median_kernel_estimate_us": 140.9375,
+            "p50": 141.04166666666666,
+            "p95": 190.66666666666666
+          },
+          "source_evaluate": {
+            "calls_per_group": 48,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 71.27083333333333,
+            "median_kernel_estimate_us": 50.145833333333336,
+            "p50": 50.25,
+            "p95": 64.6875
+          }
+        }
+      },
+      "ok": true,
+      "round": 2,
+      "shaft_integrator": "coupled-rk4",
+      "start_time_s": 0.5,
+      "step_cost_us": {
+        "maximum": 2652.0,
+        "p50": 1219.0,
+        "p95": 1567.0
+      },
+      "step_p95_to_500us_budget_ratio": 3.134
+    },
+    {
+      "aircraft_id": "stik-glow-55ax-2t",
+      "aircraft_input": "app/data/aircraft/stik_glow_55ax_2t.json",
+      "aircraft_input_sha256": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+      "case": "glow_2t",
+      "glow_active": true,
+      "microprofile": {
+        "callable_dispatch_noop": {
+          "calls_per_group": 96,
+          "groups": 25,
+          "maximum": 0.11458333333333333,
+          "p50": 0.10416666666666667,
+          "p95": 0.11458333333333333
+        },
+        "results": {
+          "blade_evaluate": {
+            "calls_per_group": 96,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 26.479166666666668,
+            "median_kernel_estimate_us": 22.666666666666664,
+            "p50": 22.770833333333332,
+            "p95": 26.427083333333332
+          },
+          "dynamics_loads": {
+            "calls_per_group": 24,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 87.20833333333333,
+            "median_kernel_estimate_us": 76.6875,
+            "p50": 76.79166666666667,
+            "p95": 85.29166666666667
+          },
+          "flight_evaluate": {
+            "calls_per_group": 4,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 241.5,
+            "median_kernel_estimate_us": 162.64583333333334,
+            "p50": 162.75,
+            "p95": 194.75
+          },
+          "flight_point": {
+            "calls_per_group": 12,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 151.08333333333334,
+            "median_kernel_estimate_us": 110.89583333333333,
+            "p50": 111.0,
+            "p95": 133.91666666666666
+          },
+          "fuel_mass_evaluate": {
+            "calls_per_group": 48,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 9.5,
+            "median_kernel_estimate_us": 5.125,
+            "p50": 5.229166666666667,
+            "p95": 6.25
+          },
+          "lifecycle_evaluate": {
+            "calls_per_group": 24,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 200.54166666666666,
+            "median_kernel_estimate_us": 155.97916666666669,
+            "p50": 156.08333333333334,
+            "p95": 186.375
+          },
+          "source_evaluate": {
+            "calls_per_group": 48,
+            "dispatch_adjustment_note": "gross minus the measured no-op callable median; approximate only",
+            "groups": 25,
+            "maximum": 60.583333333333336,
+            "median_kernel_estimate_us": 45.0625,
+            "p50": 45.166666666666664,
+            "p95": 55.270833333333336
+          }
+        }
+      },
+      "ok": true,
+      "round": 2,
+      "shaft_integrator": "coupled-rk4",
+      "start_time_s": 0.5,
+      "step_cost_us": {
+        "maximum": 2063.0,
+        "p50": 1246.0,
+        "p95": 1562.0
+      },
+      "step_p95_to_500us_budget_ratio": 3.124
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "aircraft_input": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "aircraft_input_sha256": "b2f2b88e41e5e640974610e8ce925765b5734d31d9b86a7ce9487ff376d523a9",
+      "case": "legacy_stik",
+      "glow_active": false,
+      "microprofile": {
+        "dynamics_loads": {
+          "calls_per_group": 24,
+          "groups": 25,
+          "maximum": 49.583333333333336,
+          "p50": 40.416666666666664,
+          "p95": 46.916666666666664
+        }
+      },
+      "ok": true,
+      "round": 2,
+      "shaft_integrator": "split",
+      "start_time_s": 0.5,
+      "step_cost_us": {
+        "maximum": 1019.0,
+        "p50": 544.0,
+        "p95": 631.0
+      },
+      "step_p95_to_500us_budget_ratio": 1.262
+    }
+  ],
+  "configuration": {
+    "counterbalanced_rounds": 2,
+    "flight_state": "trimmed airborne steady scenario at each aircraft's default launch state; neutral controls",
+    "full_step_budget_us": 500.0,
+    "measured_ticks_per_case": 600,
+    "micro_timing": "median/p95/max of batch mean per-call times; callable-dispatch no-op measured separately",
+    "microprofile_groups": 25,
+    "physics_hz": 240,
+    "step_timing": "Time.get_ticks_usec around each manual Simulation.step(); p50/p95/max of individual ticks",
+    "warmup_ticks": 120
+  },
+  "format": "openrc-glow-performance-probe v1",
+  "godot": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "hash_scope": "copied_project_files_after_overlay_before_export",
+  "host": {
+    "isolation": "Shared-host diagnostic; owner confirmed no other root-owned Godot benchmarks were active at preflight. Other tracks/processes may use the host; the launcher sampled aggregate CPU every second and total/Godot/probe process counts before and after the run. No process command lines were collected or processes terminated.",
+    "logical_processors": 24,
+    "os": "Windows",
+    "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+    "embedded_isolation_note_before_report_correction": "Shared-host diagnostic; owner confirmed no other root-owned Godot benchmarks were active at preflight. Other tracks/processes may use the host; the launcher sampled CPU and process names every second. No process command lines were collected or processes terminated.",
+    "external_workload_samples": {
+      "started_at_utc": "2026-10-13T21:23:24.622182+00:00",
+      "duration_s": 10.047,
+      "preflight": {
+        "cpu_percent_0_5s_sample": 23.9,
+        "process_count": 1940,
+        "godot_process_count": 7,
+        "openrc_probe_process_count": 0
+      },
+      "postflight_process_inventory": {
+        "process_count": 1950,
+        "godot_process_count": 11,
+        "openrc_probe_process_count": 0
+      },
+      "sample_interval_s": 1,
+      "sample_count": 10,
+      "host_cpu_percent": {
+        "mean": 28.5,
+        "p95": 43.9,
+        "maximum": 43.9
+      },
+      "probe_process_cpu_percent": {
+        "mean": 89.7,
+        "maximum": 104.7,
+        "peak_rss_mb": 93.7
+      },
+      "samples": [
+        {
+          "elapsed_s": 1.01,
+          "host_cpu_percent": 27.0,
+          "own_probe_cpu_percent": 104.7
+        },
+        {
+          "elapsed_s": 2.01,
+          "host_cpu_percent": 19.2,
+          "own_probe_cpu_percent": 100.0
+        },
+        {
+          "elapsed_s": 3.01,
+          "host_cpu_percent": 26.3,
+          "own_probe_cpu_percent": 98.4
+        },
+        {
+          "elapsed_s": 4.01,
+          "host_cpu_percent": 33.5,
+          "own_probe_cpu_percent": 98.4
+        },
+        {
+          "elapsed_s": 5.01,
+          "host_cpu_percent": 43.9,
+          "own_probe_cpu_percent": 98.4
+        },
+        {
+          "elapsed_s": 6.01,
+          "host_cpu_percent": 23.3,
+          "own_probe_cpu_percent": 98.4
+        },
+        {
+          "elapsed_s": 7.01,
+          "host_cpu_percent": 29.2,
+          "own_probe_cpu_percent": 98.4
+        },
+        {
+          "elapsed_s": 8.01,
+          "host_cpu_percent": 26.1,
+          "own_probe_cpu_percent": 100.0
+        },
+        {
+          "elapsed_s": 9.01,
+          "host_cpu_percent": 31.2,
+          "own_probe_cpu_percent": 100.0
+        },
+        {
+          "elapsed_s": 10.01,
+          "host_cpu_percent": 25.1,
+          "own_probe_cpu_percent": 0.0
+        }
+      ],
+      "privacy_scope": "Total process counts and Godot/probe process counts before/after; no command lines, paths, or user data collected.",
+      "host_limit": "Shared host; independent work from other tracks may overlap. Do not treat timing as isolated-machine qualification."
+    }
+  },
+  "input_hashes": {
+    "app/data/aircraft/jensen_ugly_stik_60.json": "b2f2b88e41e5e640974610e8ce925765b5734d31d9b86a7ce9487ff376d523a9",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+    "app/data/glow/os_fs_64v_candidate.json": "1c0060777d56af47b91c0a9f56cb6ad9d4a50bdb212dba426f86ec8d79ba506d",
+    "app/data/glow/os_max_55ax_candidate.json": "41b636d09292ed0e440a7c4f80562536f26a5dab6cc1dee88113324e4a4906d1",
+    "app/data/glow/profile_contract.json": "20f8cddbd653069cdb47c5b1a5be9b4d17dab060a9fea8d23bb60c12616faa2d",
+    "app/data/glow/stik_55ax_2t.json": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+    "app/data/glow/stik_fs64v_4t.json": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4"
+  },
+  "input_tree_sha256": "892a14be22193f746fe408038c10f8fb8d7888c5c2fbcf1a131a77dd53a78b36",
+  "prior_release_override_attempt": {
+    "binary_path": ".tools/rc7-proof/windows-smoke/OpenRC Simulator.exe",
+    "binary_sha256": "e2f8f6637b059805b5449e198348a450ccf7824dc528af965e733168bd94bc78",
+    "feature_flags": "unavailable; external probe could not execute in release runtime",
+    "observed_release_errors": [
+      "--main-pack: Godot binary compiled without support for path overrides",
+      "--script alone: release application parsed --warmup as its own option and required --frametimes"
+    ],
+    "pack_path": ".tools/glow-package-20261013/nitro02-candidate.pck",
+    "pack_sha256": "5d7af7bee1635f2d5d8319220bad4f890ec38beb16bfe919f9b2f4b6144b22e7",
+    "probe_status": "blocked: --main-pack aborts because path overrides were disabled at Godot build time; --script alone did not execute the external probe"
+  },
+  "propeller_inertia_basis": "Candidate propeller polar inertia follows the inventory's uniform-box surrogate geometry; engine crank polar inertia is inferred (2e-5 kg m2 for the 2T, 3e-5 kg m2 for the 4T). These are estimated mass distributions and inferred terms, with no matched propeller/crank inertia measurements.",
+  "purpose": "diagnostic interpreter timing; not a release qualification or physical validation",
+  "release_manifest_provenance": "SHA-256 values computed from the isolated copied project after probe overlay and export configuration edits, immediately before export; these files are bundled in the exported main pack.",
+  "release_manifest_sha256": "d95fcc47a5638622119e108d9e24192b2175c54f412a258826b65fc7a47194c7",
+  "runtime": {
+    "binary_path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/glow-release-probe-momentum-20261013/OpenRC-Glow-Probe.exe",
+    "binary_sha256": "30820b9f9affda4e4fbcb478ab916e9186835052761fd06a1563b90439c2dca8",
+    "debug_feature": false,
+    "main_pack_path": "embedded in executable",
+    "main_pack_sha256": "embedded_in_executable; see binary_sha256",
+    "probe_mode": "wrapped_exported_release",
+    "release_feature": true
+  },
+  "source_hashes": {
+    "app/physics/aero.gd": "2816c33538e4eea94f186b9098b7c4169fd60fcf67659fbc75589eb4a1e2b1ae",
+    "app/physics/air_data.gd": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+    "app/physics/dynamics.gd": "b5146afd7fb97b745c449b170efb1742ede5350fab117204e7ecb52b93c20c89",
+    "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+    "app/physics/glow/flight.gd": "93eae6fc2e6704ac24feca33da3b6c5f5718313ab8af35ee8537cc6cf0064c70",
+    "app/physics/glow/four_stroke.gd": "130b8fe0c651fb2467f2cc6c54c079fe1ce08cae62ebab700517c36989bd84de",
+    "app/physics/glow/fuel_mass.gd": "31d082a0f9626dc53a78a4188fdf435ec64f1920508397ec381fe53c8f6c6509",
+    "app/physics/glow/installation.gd": "43d8a87610c5e396573c0d7e2229e6d17638ed31f4a645d4f271cf5a8cf45134",
+    "app/physics/glow/lifecycle.gd": "cda757040d41bb8c773a91d5880a3c97af4e453529de4c6cd1a2ddfd0dc45a34",
+    "app/physics/glow/profile.gd": "0116ffd10f03228f3606244b6f517ed576fae90172d1f5c5850e7da01d4f1fe8",
+    "app/physics/glow/propeller.gd": "6dd77516580f012aeb490910c46bc297b41a77a88d1e5328ae0f80b3b59f4877",
+    "app/physics/glow/source.gd": "a5343da8944a1c7cca097305b4cbb63148ca2bb735cecf83e723b5b1eee04c34",
+    "app/physics/glow/thermal.gd": "d7d9a82866a9d4ded954117a1ef1550dcee1ccd1d79386b7f07640b63c06fe71",
+    "app/physics/glow/two_stroke.gd": "1b89305e9b86d1153a8ab9da3957d3933738b3b436d26f7474689c25cfc11902",
+    "app/physics/ground_contact.gd": "6cf15589da65921359c2a32042f93116e3376ce3ca8a889cce1a9079c7a41293",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "app/physics/propulsion.gd": "8024e54f1c7ba4738949b10c60bdd723bad6317ab33ecaba0123deb46bb25bcb",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+    "app/sim/flight_session.gd": "313a75dc2434b63a1b16d4e291e071668b11ce0645efa3fa3ea37dfcefbe7792",
+    "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+    "research/glow-engines/build_release_probe_project.py": "03dd1e5eb7cfcb5e9ca5a591805e7f506ba01908c9948acc9f3b14c17ff6b138",
+    "research/glow-engines/performance_probe.gd": "dccaec4eeb2eeb6ef6a4403e4ab21e672bd08a4c92797fed0c71f1e08bf3df2b",
+    "research/glow-engines/release_probe_wrapper.gd": "b31657c341961489529bbc13554eea32ec10a80b2d1abd61ac674ed32d16b581",
+    "research/glow-engines/release_probe_wrapper.tscn": "9fc4b7ef17a3ca144fdd7444135efb051ead04547660ec14786b425118ed501a"
+  },
+  "source_tree_sha256": "1a8467aca5ae86f10a70ced6d887a3cb392da2d2b5585939993b9e7104b4b757",
+  "started_at_local": "2026-10-13 21:23:26",
+  "summary": {
+    "glow_2t": {
+      "median_of_round_step_p50_us": 1247.0,
+      "median_of_round_step_p95_us": 1563.0,
+      "microprofile": {
+        "blade_evaluate": {
+          "median_of_round_us_per_call": 23.807291666666664,
+          "round_p50_us_per_call": [
+            22.770833333333332,
+            24.84375
+          ]
+        },
+        "dynamics_loads": {
+          "median_of_round_us_per_call": 78.91666666666667,
+          "round_p50_us_per_call": [
+            76.79166666666667,
+            81.04166666666667
+          ]
+        },
+        "flight_evaluate": {
+          "median_of_round_us_per_call": 190.75,
+          "round_p50_us_per_call": [
+            162.75,
+            218.75
+          ]
+        },
+        "flight_point": {
+          "median_of_round_us_per_call": 115.54166666666666,
+          "round_p50_us_per_call": [
+            111.0,
+            120.08333333333333
+          ]
+        },
+        "fuel_mass_evaluate": {
+          "median_of_round_us_per_call": 5.333333333333334,
+          "round_p50_us_per_call": [
+            5.229166666666667,
+            5.4375
+          ]
+        },
+        "lifecycle_evaluate": {
+          "median_of_round_us_per_call": 164.5,
+          "round_p50_us_per_call": [
+            156.08333333333334,
+            172.91666666666666
+          ]
+        },
+        "source_evaluate": {
+          "median_of_round_us_per_call": 48.791666666666664,
+          "round_p50_us_per_call": [
+            45.166666666666664,
+            52.416666666666664
+          ]
+        }
+      },
+      "round_step_p95_us": [
+        1562.0,
+        1564.0
+      ],
+      "rounds": 2,
+      "worst_round_step_p95_us": 1564.0
+    },
+    "glow_4t": {
+      "median_of_round_step_p50_us": 1242.5,
+      "median_of_round_step_p95_us": 1627.5,
+      "microprofile": {
+        "blade_evaluate": {
+          "median_of_round_us_per_call": 24.145833333333336,
+          "round_p50_us_per_call": [
+            22.0625,
+            26.229166666666668
+          ]
+        },
+        "dynamics_loads": {
+          "median_of_round_us_per_call": 74.25,
+          "round_p50_us_per_call": [
+            67.625,
+            80.875
+          ]
+        },
+        "flight_evaluate": {
+          "median_of_round_us_per_call": 188.625,
+          "round_p50_us_per_call": [
+            154.5,
+            222.75
+          ]
+        },
+        "flight_point": {
+          "median_of_round_us_per_call": 107.29166666666666,
+          "round_p50_us_per_call": [
+            100.83333333333333,
+            113.75
+          ]
+        },
+        "fuel_mass_evaluate": {
+          "median_of_round_us_per_call": 9.104166666666666,
+          "round_p50_us_per_call": [
+            8.916666666666666,
+            9.291666666666666
+          ]
+        },
+        "lifecycle_evaluate": {
+          "median_of_round_us_per_call": 134.39583333333331,
+          "round_p50_us_per_call": [
+            127.75,
+            141.04166666666666
+          ]
+        },
+        "source_evaluate": {
+          "median_of_round_us_per_call": 53.55208333333333,
+          "round_p50_us_per_call": [
+            50.25,
+            56.854166666666664
+          ]
+        }
+      },
+      "round_step_p95_us": [
+        1567.0,
+        1688.0
+      ],
+      "rounds": 2,
+      "worst_round_step_p95_us": 1688.0
+    },
+    "legacy_stik": {
+      "median_of_round_step_p50_us": 476.0,
+      "median_of_round_step_p95_us": 622.0,
+      "microprofile": {
+        "dynamics_loads": {
+          "median_of_round_us_per_call": 35.916666666666664,
+          "round_p50_us_per_call": [
+            31.416666666666668,
+            40.416666666666664
+          ]
+        }
+      },
+      "round_step_p95_us": [
+        613.0,
+        631.0
+      ],
+      "rounds": 2,
+      "worst_round_step_p95_us": 631.0
+    }
+  },
+  "source_snapshot": {
+    "path": ".tools\\glow-final-verify-snapshot\\app",
+    "scope": "all app files by relative path and content; regenerable .godot cache excluded",
+    "tree_sha256": "ca8b357b62afcfbb395c75bc8a18a55e4311d357ebcfc4e4e702c4f4d091e8c6",
+    "file_count": 1549,
+    "private_copy_tree_sha256": "ca8b357b62afcfbb395c75bc8a18a55e4311d357ebcfc4e4e702c4f4d091e8c6",
+    "private_copy_file_count": 1549,
+    "app_tree_unchanged_after_run": true,
+    "corrected_fs64v_installation_sha256": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+    "corrected_fs64v_k_value": 0.075
+  },
+  "runner_provenance": {
+    "builder_manifest_path": ".tools\\glow-release-probe-momentum-20261013\\runner-root\\.tools\\glow-probe-project\\build_manifest.json",
+    "builder_manifest_sha256": "a7f7a4ff92f88d118f88dac71169aa196602c63dcf2a435d069b2728f2c0936c",
+    "embedded_manifest_sha256": "d95fcc47a5638622119e108d9e24192b2175c54f412a258826b65fc7a47194c7",
+    "probe_script_hashes": {
+      "build_release_probe_project.py": "03dd1e5eb7cfcb5e9ca5a591805e7f506ba01908c9948acc9f3b14c17ff6b138",
+      "performance_probe.gd": "95be1b084fbeaeb27fe08548d2d318818125ecd55164d9e28f699576964dbc5b",
+      "release_probe_wrapper.gd": "b31657c341961489529bbc13554eea32ec10a80b2d1abd61ac674ed32d16b581",
+      "release_probe_wrapper.tscn": "9fc4b7ef17a3ca144fdd7444135efb051ead04547660ec14786b425118ed501a",
+      "performance_probe.gd_original_sha256": "95be1b084fbeaeb27fe08548d2d318818125ecd55164d9e28f699576964dbc5b",
+      "performance_probe.gd_private_host_note_patch_sha256": "dccaec4eeb2eeb6ef6a4403e4ab21e672bd08a4c92797fed0c71f1e08bf3df2b"
+    },
+    "private_host_note_change": "The exported benchmark binary was unchanged on the repeat. Its embedded host note is preserved separately; report metadata records the lightweight external sampler actually used. Timing/configuration code was unchanged.",
+    "native_raw_report_path": ".tools\\glow-release-probe-momentum-20261013\\performance-momentum.raw.json",
+    "native_raw_report_sha256_before_external_host_sampling": "1199f5a3a96dbe8e07303760d4b527ca00c4e8cc8023d5fee26a782a3f298f58",
+    "godot_exporter_path": ".tools\\Godot_v4.7.2-stable_win64.exe",
+    "godot_exporter_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "godot_exporter_version": "4.7.2.stable.official.ed1daf0bf",
+    "runtime_executable_path": ".tools\\glow-release-probe-momentum-20261013\\OpenRC-Glow-Probe.exe",
+    "runtime_executable_sha256": "30820b9f9affda4e4fbcb478ab916e9186835052761fd06a1563b90439c2dca8"
+  },
+  "gate_500us": {
+    "metric": "per-tick full Simulation.step() latency; both median-of-round p95 and worst-round p95 must be <= 500 us",
+    "passed": false,
+    "cases": {
+      "legacy_stik": {
+        "round_step_p95_us": [
+          613.0,
+          631.0
+        ],
+        "median_of_round_step_p50_us": 476.0,
+        "median_of_round_step_p95_us": 622.0,
+        "worst_round_step_p95_us": 631.0,
+        "median_p95_within_500us": false,
+        "worst_round_within_500us": false
+      },
+      "glow_2t": {
+        "round_step_p95_us": [
+          1562.0,
+          1564.0
+        ],
+        "median_of_round_step_p50_us": 1247.0,
+        "median_of_round_step_p95_us": 1563.0,
+        "worst_round_step_p95_us": 1564.0,
+        "median_p95_within_500us": false,
+        "worst_round_within_500us": false
+      },
+      "glow_4t": {
+        "round_step_p95_us": [
+          1567.0,
+          1688.0
+        ],
+        "median_of_round_step_p50_us": 1242.5,
+        "median_of_round_step_p95_us": 1627.5,
+        "worst_round_step_p95_us": 1688.0,
+        "median_p95_within_500us": false,
+        "worst_round_within_500us": false
+      }
+    }
+  },
+  "comparison_note": "The prior optimized report predates the corrected 4T installation/input hash. This is a new native measurement; any numerical difference is diagnostic and is not attributed to the propeller correction because the shared host is uncontrolled."
+}

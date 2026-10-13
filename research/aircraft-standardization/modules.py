@@ -51,10 +51,11 @@ def _result(
         "modules": sorted(set(modules or [])) if ok else [],
         "laws": sorted(set(laws or [])) if ok else [],
         "parameters": parameters or {} if ok else {},
-        "compiler_transforms": transforms or {"scale": False, "weight": False, "power": False} if ok else {
+        "compiler_transforms": transforms or {"scale": False, "weight": False, "power": False, "controls": False} if ok else {
             "scale": False,
             "weight": False,
             "power": False,
+            "controls": False,
         },
         "compiler_transform_reasons": transform_reasons or [] if ok else [],
     }
@@ -92,6 +93,7 @@ def classify(base: Any) -> dict[str, Any]:
     parameters: dict[str, str] = {}
     transform_reasons: list[str] = []
     selected_values: dict[str, str] = {}
+    control_transform_supported = False
 
     capabilities = base.get("capabilities")
     if not isinstance(capabilities, dict):
@@ -120,6 +122,24 @@ def classify(base: Any) -> dict[str, Any]:
         law_id = entry.get("law")
         if type(law_id) is str and law_id:
             laws.append(law_id)
+        control_transform_supported = control_transform_supported or bool(
+            entry.get("compiler_transforms", {}).get("controls", False)
+        )
+        for relation in entry.get("presence_relations", []):
+            if not isinstance(relation, dict):
+                continue
+            related_path = relation.get("path")
+            expected_presence = relation.get("present")
+            if type(related_path) is not str or type(expected_presence) is not bool:
+                continue
+            related_exists, _ = _at_path(base, related_path)
+            if related_exists is not expected_presence:
+                requirement = "present" if expected_presence else "absent"
+                issue(
+                    "module.capability.relation",
+                    f"capabilities.{key}",
+                    f"requires {related_path} to be {requirement}",
+                )
 
     propulsion = base.get("propulsion")
     if not isinstance(propulsion, dict):
@@ -154,13 +174,20 @@ def classify(base: Any) -> dict[str, Any]:
                 f"{value!r} is incompatible with propulsion family {propulsion_kind!r}",
             )
 
-    for section_name, section_fields in family.get("sections", {}).items():
+    section_variants = family.get("section_variants", {})
+    for section_name, default_fields in family.get("sections", {}).items():
         if section_name not in propulsion:
             continue
         section = propulsion[section_name]
         if not isinstance(section, dict):
             issue("module.section.type", f"propulsion.{section_name}", "must be an object")
             continue
+        section_fields = default_fields
+        selector = section_variants.get(section_name)
+        if isinstance(selector, dict):
+            selector_exists, selector_value = _at_path(propulsion, selector.get("selector_path", ""))
+            if selector_exists and type(selector_value) is str:
+                section_fields = selector.get("fields", {}).get(selector_value, default_fields)
         for key in sorted(set(section) - set(section_fields)):
             issue(
                 "module.field.unknown",
@@ -248,24 +275,11 @@ def classify(base: Any) -> dict[str, Any]:
                 laws.append(integrator_law)
                 parameters[f"propulsion.{integrator_key}"] = integrator
 
-    if selected_values.get("propulsion_layout") not in family.get("allowed_capabilities", {}).get("propulsion_layout", []):
-        if "propulsion_layout" in selected_values:
-            issue(
-                "module.relation.layout",
-                "capabilities.propulsion_layout",
-                f"is incompatible with propulsion family {propulsion_kind!r}",
-            )
-    if selected_values.get("energy") not in family.get("allowed_capabilities", {}).get("energy", []):
-        if "energy" in selected_values:
-            issue(
-                "module.relation.energy",
-                "capabilities.energy",
-                f"is incompatible with propulsion family {propulsion_kind!r}",
-            )
-
-    unsupported_reason = family.get("unsupported_compiler_reason", "")
-    if type(unsupported_reason) is str and unsupported_reason and not all(family_transforms.get(key, False) for key in ("scale", "weight", "power")):
-        transform_reasons.insert(0, unsupported_reason.replace("{kind}", propulsion_kind))
+    family_reason = family.get("compiler_family_transform_reason", "")
+    if type(family_reason) is str and family_reason and not all(
+        family_transforms.get(key, False) for key in ("scale", "weight", "power")
+    ):
+        transform_reasons.insert(0, family_reason.replace("{kind}", propulsion_kind))
 
     for conditional in registry.get("conditional_laws", []):
         if conditional.get("family") != propulsion_kind:
@@ -290,7 +304,10 @@ def classify(base: Any) -> dict[str, Any]:
         modules=modules,
         laws=laws,
         parameters=parameters,
-        transforms={key: bool(family_transforms.get(key, False)) for key in ("scale", "weight", "power")},
+        transforms={
+            **{key: bool(family_transforms.get(key, False)) for key in ("scale", "weight", "power")},
+            "controls": control_transform_supported,
+        },
         transform_reasons=transform_reasons,
     )
 

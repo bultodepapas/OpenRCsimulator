@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded, cull_disabled, depth_draw_opaque;
+render_mode cull_disabled, depth_draw_opaque;
 
 uniform sampler2D impostor_atlas : source_color, filter_linear, repeat_disable;
 uniform float alpha_cutoff : hint_range(0.0, 1.0) = 0.32;
@@ -44,6 +44,10 @@ void fragment() {
 	vec2 atlas_uv = vec2((selected_frame + local_u) / atlas_frames, local_v);
 	vec4 leaf_sample = texture(impostor_atlas, atlas_uv);
 	ALBEDO = leaf_sample.rgb;
+	// The downloaded atlas contains source albedo, with no baked light. Let the world light its canopy.
+	NORMAL = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
+	ROUGHNESS = 1.0;
+	SPECULAR = 0.0;
 	ALPHA = leaf_sample.a;
 	ALPHA_SCISSOR_THRESHOLD = alpha_cutoff;
 }

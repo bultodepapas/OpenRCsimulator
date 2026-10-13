@@ -2,7 +2,7 @@
 extends SceneTree
 const Vegetation := preload("res://scenery/vegetation.gd")
 const MeshKit := preload("res://scenery/mesh_kit.gd")
-const STATIC_TRIANGLE_BUDGET := 1700 # LU-23: leaf structure; retain measured collision/wind bounds and 600k whole-scene gate.
+const STATIC_TRIANGLE_BUDGET := 1700 # LU-23: leaf structure; retain measured collision/wind bounds and 650k whole-scene gate.
 var failures := 0
 func _initialize() -> void:
 	var max_triangles := 0

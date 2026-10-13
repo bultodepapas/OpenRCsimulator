@@ -9,6 +9,7 @@
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
+const RB := preload("res://physics/rigid_body.gd")
 const GlowProp := preload("res://physics/glow/propeller.gd")
 const GlowOperating := preload("res://physics/glow/operating_point.gd")
 const Turbine := preload("res://physics/turbine.gd")
@@ -484,6 +485,17 @@ static func _shaft_net_torque(rpm: float, throttle: float, u: float, prop: Dicti
 static func axis(prop: Dictionary) -> PackedFloat64Array:
 	return prop.get("axis", PackedFloat64Array([1.0, 0.0, 0.0]))
 
+
+## Velocity at the propeller hub relative to locally uniform air, in FRD axes.
+## offset uses the aircraft-data convention [aft, right, up] from the fixed datum.
+static func hub_air_velocity(body: PackedFloat64Array, datum_air: PackedFloat64Array, offset: PackedFloat64Array) -> PackedFloat64Array:
+	var x: float=-offset[0]
+	var y: float=offset[1]
+	var z: float=-offset[2]
+	var p: float=body[RB.RATE]
+	var q: float=body[RB.RATE+1]
+	var r: float=body[RB.RATE+2]
+	return PackedFloat64Array([datum_air[0]+q*z-r*y,datum_air[1]+r*x-p*z,datum_air[2]+p*y-q*x])
 
 ## Propeller normal force and P-factor moment at a disc angle of attack (McCormick's blade-element result as used by
 ## Selig 2010, AIAA 2010-7938; Ribner NACA TR 819 agrees within ~20 %). With the crossflow v_c (air-relative body

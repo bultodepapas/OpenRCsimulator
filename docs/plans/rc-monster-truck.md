@@ -1,6 +1,6 @@
 # RC monster truck: physics laboratory and playable vehicle
 
-**Date:** 2026-10-13. **Status:** researched proposal; no truck, vehicle physics or menu integration is implemented by this document. The user requested planning and a Blender developer brief, not construction of the model. **Owner:** proposed RC ground-vehicle track. **Prefix:** RCV-00…RCV-34, registered in the [ownership index](../README.md#tracks-plans-and-step-ids). **Evidence:** [dated repository audit and primary-source review](../research/rc-monster-truck/README.md). That record distinguishes inspected code, published facts and unresolved measurements.
+**Date:** 2026-10-13. **Status:** implementation started at the user's request while the Blender developer prepares the model. RCV-04a delivers an isolated suspension bench and independent numerical reference; no selectable truck or menu integration exists yet. **Owner:** RC ground-vehicle track. **Prefix:** RCV-00…RCV-34, registered in the [ownership index](../README.md#tracks-plans-and-step-ids). **Evidence:** [source investigation](../research/rc-monster-truck/README.md), [RCV-04a implementation and limits](../research/rc-monster-truck/RCV-04a/README.md). The [bench guide](../../research/rc-monster-truck/README.md) owns runnable commands.
 
 This plan adds one large RC monster truck as another selectable vehicle in OpenRC Simulator. It has two equally important uses: expose physical behavior through repeatable experiments, and provide enjoyable driving, jumps and recovery. The same physical model serves both. A successful numerical experiment does not establish real-truck accuracy, and an attractive jump does not establish correct mechanics.
 
@@ -378,7 +378,7 @@ Existing commands stay in [TOOLS](../TOOLS.md): `app/test.sh`, `research/test-to
 
 ## 11. Execution order and reviewable steps
 
-RCV-00 is this planning delivery. All implementation steps below are pending. Each step lands with one focused proof and a link to its dated evidence; no phase may mark physical or user gates closed from headless results alone.
+RCV-00 is the planning delivery. RCV-04a is the first bounded implementation slice; its strict research-bench input does not close the full vehicle schema or mechanical architecture gates. Other implementation work remains pending. Each step lands with focused proof and dated evidence; no phase may mark physical or user gates closed from headless results alone.
 
 | ID | Work and dependency | Proof / status |
 | --- | --- | --- |
@@ -386,7 +386,7 @@ RCV-00 is this planning delivery. All implementation steps below are pending. Ea
 | RCV-01 | Freeze test envelope, baseline source hashes, candidate powertrain and numerical acceptance protocol | Baseline aircraft outputs and a decision/evidence matrix / pending |
 | RCV-02 | Blender asset reuse audit, reference mechanism and proposed dimensions; no final mesh before fit/license review | Source/license inventory and dimensioned proposal / pending |
 | RCV-03 | Strict ground-vehicle quantity/schema/loader and source pipeline | Positive/negative data fixtures, reproducible generator check / pending |
-| RCV-04 | Mechanical-state/integrator spike and independent reduced suspension oracles | Fixed versus variable inertia analysis, energy/momentum, refinement and early complete-tick cost; state/version contract and architecture selected / pending |
+| RCV-04 | Mechanical-state/integrator spike and independent reduced suspension oracles | **Partial:** RCV-04a quarter-car kernel, strict bench input, independent reference and experiments [verified](../research/rc-monster-truck/RCV-04a/README.md). Fixed versus variable inertia analysis, half-car/full-body energy/momentum, complete-tick cost and production state/version selection remain pending |
 | RCV-05 | Flat-ground reduced truck: support, mass properties, basic suspension and a minimal versioned flat-pad descriptor for P1 | Static corner loads, analytical heave/roll fixtures and valid spawn / pending |
 | RCV-06 | Tire spin, low-speed friction and contact-state transitions | Reverse, stick/slip, force/power signs, no ground force in air; early tire/complete-tick cost gate / pending |
 | RCV-07 | Steering/servo and left/right kinematics | Turning geometry and sign witnesses; bounded hardware rate / pending |

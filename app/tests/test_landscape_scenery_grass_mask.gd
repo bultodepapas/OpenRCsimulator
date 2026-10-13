@@ -5,7 +5,10 @@ extends SceneTree
 const FieldLoader := preload("res://data/field_loader.gd")
 const FieldBuilder := preload("res://render/field.gd")
 const NearGrass := preload("res://render/near_grass.gd")
+const ImportedNearGrass := preload("res://scenery/imported_near_grass.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
+const Scenery := preload("res://scenery/scenery.gd")
+const LakeWorld := preload("res://render/lake/lake_world.gd")
 const GrassMask := preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 
 var _checks := 0
@@ -149,16 +152,41 @@ func _test_field_builder_mask_integration(field: Dictionary, scenery: Dictionary
 	var furnished_chunks: Array = NearGrass.clipped_chunks(field, rows, exclusions)
 	var furnished_centers := _layout_centers(furnished_chunks)
 	var furnished_overlaps := _count_excluded(furnished_centers, default_footprints)
-	var furnished_expected := _layout_count(furnished_chunks)
+	var furnished_legacy_expected := _layout_count(furnished_chunks)
 	_check("enabled full-field build attaches normalized grass exclusions to Scenery",
 		scenery_node != null and not exclusions.is_empty())
 	_check("enabled full-field build removes centers under concrete while scenery-off retains them",
 		plain_overlaps > 0 and furnished_overlaps == 0 and furnished_centers.size() < plain_centers.size(),
 		"off=%d on=%d clumps off=%d on=%d" % [plain_overlaps, furnished_overlaps, plain_centers.size(), furnished_centers.size()])
-	_check("enabled NearGrass consumes the attached exclusion array",
-		furnished_centers.size() == furnished_expected and grass_node != null
-		and int(grass_node.get_meta("clumps", -1)) == furnished_expected,
-		"actual=%d expected=%d exclusions=%d" % [furnished_centers.size(), furnished_expected, exclusions.size()])
+	_check("legacy NearGrass clipping consumes the attached exclusion array",
+		furnished_centers.size() == furnished_legacy_expected and furnished_overlaps == 0,
+		"centers=%d expected=%d exclusions=%d" % [furnished_centers.size(), furnished_legacy_expected, exclusions.size()])
+	var source_definition: Dictionary = scenery_node.get_meta("source_definition", {}) if scenery_node != null else {}
+	var lake: Dictionary = LakeWorld.resolve(field, Scenery.options()).get("lake", {})
+	var production_masks := ImportedNearGrass.exclusions_for(source_definition, lake)
+	var imported_expected := ImportedNearGrass.layout(field, "high", production_masks)
+	var imported_unmasked := ImportedNearGrass.layout(field, "high")
+	var imported_placements: Array = grass_node.get_meta("cpu_placements", []) if grass_node != null else []
+	var imported_indices: Dictionary = {}
+	for plant: Dictionary in imported_placements:
+		imported_indices[int(plant.get("row_index", -1))] = true
+	var expected_indices: Dictionary = {}
+	for plant: Dictionary in imported_expected:
+		expected_indices[int(plant.get("row_index", -1))] = true
+	var unmasked_indices: Dictionary = {}
+	for plant: Dictionary in imported_unmasked:
+		unmasked_indices[int(plant.get("row_index", -1))] = true
+	var imported_clear := grass_node != null and bool(grass_node.get_meta("imported", false))
+	for plant: Dictionary in imported_placements:
+		imported_clear = imported_clear and NearGrass.accepts(float(plant.north), float(plant.east), field, production_masks)
+	_check("production NearGrass batches only downloaded clumps allowed by attached exclusions",
+		imported_clear and imported_indices == expected_indices and imported_placements.size() == imported_expected.size()
+		and _multimesh_count(grass_node) == imported_expected.size()
+		and not production_masks.is_empty() and imported_indices != unmasked_indices,
+		"actual=%d expected=%d unmasked=%d clear=%s row_ids_match=%s changed_by_masks=%s meshes=%d masks=%d"
+		% [imported_placements.size(), imported_expected.size(), imported_unmasked.size(), imported_clear,
+		imported_indices == expected_indices, imported_indices != unmasked_indices,
+		_multimesh_count(grass_node), production_masks.size()])
 	furnished_field.free()
 
 	var translated := _translated_ineligible_field(1.0, 0.5)

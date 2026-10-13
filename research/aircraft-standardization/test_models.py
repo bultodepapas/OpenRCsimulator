@@ -1,0 +1,217 @@
+"""AS-08/09/10 checks for generated visual-family model manifests."""
+
+from __future__ import annotations
+
+import copy
+import json
+import shutil
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+from build_models import (
+    ModelManifestError,
+    _normal_bytes,
+    build_manifest,
+    validate_dependency_hashes,
+    validate_registry,
+)
+
+
+ROOT = Path(__file__).resolve().parents[2]
+REGISTRY_PATH = ROOT / "assets" / "aircraft" / "model-bindings.json"
+OUTPUT_DIR = ROOT / "app" / "data" / "aircraft_models"
+FAMILIES = {
+    "jensen-das-ugly-stik-60",
+    "gp-extra-300s-60",
+    "p51d-mustang-120",
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution",
+}
+
+
+def load_json(path: Path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+class AircraftModelManifestTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.registry = load_json(REGISTRY_PATH)
+        cls.by_family = {item["family_id"]: item for item in cls.registry["families"]}
+        cls.manifests = {path.stem: load_json(path) for path in OUTPUT_DIR.glob("*.json")}
+
+    def test_generated_manifests_are_current_and_cover_five_visual_builders(self):
+        result = subprocess.run(
+            ["python", "research/aircraft-standardization/build_models.py", "--check"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(set(self.by_family), FAMILIES)
+        self.assertEqual(set(self.manifests), FAMILIES)
+        self.assertFalse(validate_registry(self.registry))
+
+    def test_fleet_values_and_existing_visual_adapters_are_preserved(self):
+        expected = {
+            "jensen-das-ugly-stik-60": (-0.115, -0.005, 0.3048, "euler_hinges"),
+            "gp-extra-300s-60": (-0.1088, 0.0, 0.3048, "euler_hinges"),
+            "p51d-mustang-120": (0.0, 0.0, 0.6604, "euler_hinges"),
+            "sebart-avanti-s-a200-p100rx": (0.0, 0.0, 0.0, "axis_hinges"),
+            "turbo-lumber-evolution": (0.0, 0.0, 0.280642, "imported_glb"),
+        }
+        for family_id, (datum_z, datum_y, diameter, adapter) in expected.items():
+            with self.subTest(family=family_id):
+                manifest = self.manifests[family_id]
+                self.assertEqual(manifest["builder"]["adapter"], adapter)
+                self.assertEqual(manifest["datum"]["model_z_le"], datum_z)
+                self.assertEqual(manifest["datum"]["model_y_thrust"], datum_y)
+                self.assertEqual(manifest["bindings"]["rotor"]["authored_diameter_m"], diameter)
+                self.assertEqual(
+                    set(manifest["bindings"]["controls"]),
+                    {"aileron_left", "aileron_right", "elevator", "rudder"}
+                    | ({"flap_left", "flap_right"} if family_id in {"sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"} else set()),
+                )
+        avanti = self.manifests["sebart-avanti-s-a200-p100rx"]
+        self.assertEqual(
+            [(hinge["key"], hinge["node"]) for hinge in avanti["bindings"]["controls"]["elevator"]["hinges"]],
+            [("elevator_left", "elevator_left_hinge"), ("elevator_right", "elevator_right_hinge")],
+        )
+
+    def test_timber_bindings_reference_generated_articulations_without_copying_them(self):
+        timber = self.manifests["turbo-lumber-evolution"]
+        geometry = load_json(ROOT / self.by_family["turbo-lumber-evolution"]["geometry"]["source"])
+        for role, binding in timber["bindings"]["controls"].items():
+            for hinge in binding["hinges"]:
+                self.assertEqual(hinge["source"], "geometry_articulation")
+                _, articulation_key = hinge["geometry_ref"].split(".", 1)
+                referenced = geometry["articulations"][articulation_key]
+                self.assertEqual(hinge["node"], referenced["node"])
+                self.assertEqual(hinge["geometry_ref"], "articulations." + articulation_key)
+                self.assertNotIn("positive", hinge)
+                self.assertNotIn("range_deg", hinge)
+        self.assertEqual(timber["bindings"]["rotor"]["geometry_ref"], "articulations.propeller_spin")
+        self.assertEqual(timber["bindings"]["crash"]["provider"], "generated_triangle_map")
+
+    def test_unknown_roles_missing_roles_and_duplicate_hinges_reject(self):
+        unknown_role = copy.deepcopy(self.registry)
+        unknown_role["families"][0]["bindings"]["controls"]["future_surface"] = copy.deepcopy(
+            unknown_role["families"][0]["bindings"]["controls"]["rudder"]
+        )
+        self.assertTrue(validate_registry(unknown_role))
+
+        missing_role = copy.deepcopy(self.registry)
+        del missing_role["families"][0]["bindings"]["controls"]["rudder"]
+        self.assertTrue(validate_registry(missing_role))
+
+        duplicate_hinge = copy.deepcopy(self.registry)
+        controls = duplicate_hinge["families"][0]["bindings"]["controls"]
+        controls["rudder"]["hinges"][0]["key"] = controls["elevator"]["hinges"][0]["key"]
+        self.assertTrue(validate_registry(duplicate_hinge))
+
+    def test_geometry_articulation_reference_cannot_dangle(self):
+        family = copy.deepcopy(self.by_family["turbo-lumber-evolution"])
+        family["bindings"]["controls"]["aileron_left"]["hinges"][0]["geometry_ref"] = "articulations.future_hinge"
+        with self.assertRaisesRegex(ModelManifestError, "missing source field"):
+            build_manifest(ROOT, REGISTRY_PATH, family)
+
+    def test_dependency_hash_and_path_mutations_reject(self):
+        manifest = copy.deepcopy(self.manifests["jensen-das-ugly-stik-60"])
+        manifest["dependencies"][0]["sha256"] = "0" * 64
+        diagnostics = validate_dependency_hashes(ROOT, manifest)
+        self.assertTrue(any("SHA-256 mismatch" in item["message"] for item in diagnostics), diagnostics)
+
+        manifest = copy.deepcopy(self.manifests["jensen-das-ugly-stik-60"])
+        manifest["dependencies"][0]["path"] = "res://aircraft/../outside.gd"
+        diagnostics = validate_dependency_hashes(ROOT, manifest)
+        self.assertTrue(diagnostics, "unsafe dependency paths must not be normalized or ignored")
+
+    def test_lf_text_hashing_is_independent_of_checkout_line_endings(self):
+        with self.subTest(mode="lf_text"):
+            source = ROOT / "assets" / "aircraft" / "model-bindings.json"
+            raw = source.read_bytes()
+            lf = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+            crlf = lf.replace(b"\n", b"\r\n")
+            self.assertEqual(_normal_bytes(source, "lf_text"), lf)
+            self.assertEqual(lf, crlf.replace(b"\r\n", b"\n"))
+        with tempfile.TemporaryDirectory(prefix="model-hash-") as directory:
+            path = Path(directory) / "source.bin"
+            path.write_bytes(b"model\r\nbytes")
+            self.assertEqual(_normal_bytes(path, "raw"), b"model\r\nbytes")
+
+    def test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts(self):
+        relative_files = {
+            ".gitattributes",
+            "assets/aircraft/model-bindings.json",
+            "research/aircraft-standardization/build_models.py",
+        }
+        relative_files.update(
+            path.relative_to(ROOT).as_posix() for path in OUTPUT_DIR.glob("*.json")
+        )
+        for manifest in self.manifests.values():
+            relative_files.add(manifest["source_registry"]["path"])
+            relative_files.add(manifest["geometry"]["source"]["path"])
+            relative_files.update(source["path"] for source in manifest["authoring_sources"])
+            for dependency in manifest["dependencies"]:
+                resource = dependency["path"]
+                self.assertTrue(resource.startswith("res://"), resource)
+                relative_files.add("app/" + resource.removeprefix("res://"))
+
+        temp_parent = (ROOT / ".tools").resolve()
+        workspace = ROOT.resolve()
+        temp_parent.mkdir(parents=True, exist_ok=True)
+        self.assertTrue(temp_parent.is_relative_to(workspace), temp_parent)
+        with tempfile.TemporaryDirectory(prefix="model-clone-proof-", dir=temp_parent) as raw_temp:
+            temp_root = Path(raw_temp).resolve()
+            self.assertEqual(temp_root.parent, temp_parent)
+            seed = temp_root / "seed"
+            seed.mkdir()
+            for relative in sorted(relative_files):
+                source = ROOT / Path(relative)
+                self.assertTrue(source.is_file(), f"missing clone fixture source: {relative}")
+                destination = seed / Path(relative)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+
+            self._run_checked(["git", "init", "-q"], seed)
+            self._run_checked(["git", "config", "user.name", "Model manifest tests"], seed)
+            self._run_checked(["git", "config", "user.email", "model-tests@example.invalid"], seed)
+            self._run_checked(["git", "add", "--all"], seed)
+            self._run_checked(["git", "commit", "-q", "-m", "manifest checkout fixture"], seed)
+
+            for name, autocrlf in (("lf", "false"), ("crlf", "true")):
+                with self.subTest(checkout=name):
+                    checkout = temp_root / ("clone-" + name)
+                    self._run_checked(["git", "clone", "--quiet", "--no-checkout", str(seed), str(checkout)], temp_root)
+                    self._run_checked(["git", "config", "core.autocrlf", autocrlf], checkout)
+                    self._run_checked(["git", "checkout", "--quiet", "--force", "HEAD"], checkout)
+
+                    source_registry = (checkout / "assets/aircraft/model-bindings.json").read_bytes()
+                    if autocrlf == "true":
+                        self.assertIn(b"\r\n", source_registry, "CRLF clone should exercise normalized text hashes")
+                    else:
+                        self.assertNotIn(b"\r", source_registry, "LF clone should retain LF source bytes")
+                    for manifest_path in (checkout / "app/data/aircraft_models").glob("*.json"):
+                        self.assertNotIn(b"\r", manifest_path.read_bytes(), f"generated manifest must stay LF: {manifest_path}")
+
+                    result = subprocess.run(
+                        [sys.executable, "research/aircraft-standardization/build_models.py", "--check"],
+                        cwd=checkout,
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def _run_checked(self, command: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
+        result = subprocess.run(command, cwd=cwd, capture_output=True, text=True, check=False)
+        self.assertEqual(result.returncode, 0, f"{command!r} failed in {cwd}:\n{result.stdout}{result.stderr}")
+        return result
+
+
+if __name__ == "__main__":
+    unittest.main()

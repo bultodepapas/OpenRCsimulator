@@ -1,0 +1,12 @@
+NITRO-02 corrected-propeller native performance probe
+Source snapshot SHA-256: ca8b357b62afcfbb395c75bc8a18a55e4311d357ebcfc4e4e702c4f4d091e8c6
+Corrected FS-64V installation SHA-256: 216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4 (K=0.075)
+Runtime: Windows Release export using 4.7.2.stable.official.ed1daf0bf; binary SHA-256 30820b9f9affda4e4fbcb478ab916e9186835052761fd06a1563b90439c2dca8
+Configuration: 240 Hz; 120 warm-up + 600 measured ticks/case; 2 counterbalanced rounds; 2T, 4T, legacy Stik.
+500 us gate requires both median-of-round p95 and worst-round p95 at or below budget:
+  legacy_stik: round p95=[613.0, 631.0] us; median=622.0 us; worst=631.0 us — FAIL
+  glow_2t: round p95=[1562.0, 1564.0] us; median=1563.0 us; worst=1564.0 us — FAIL
+  glow_4t: round p95=[1567.0, 1688.0] us; median=1627.5 us; worst=1688.0 us — FAIL
+Host CPU during run: mean=28.5%, p95=43.9%, max=43.9%; 10 one-second samples; probe peak RSS=93.7 MB.
+The shared host is uncontrolled; no command lines were collected and no processes were terminated.
+No performance attribution or physical-accuracy claim is made.

@@ -82,7 +82,14 @@ static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d
 		rho: float, air: Dictionary, downwash_cl: float, transported_dv: PackedFloat64Array,
 		ground_up := NAN, stage_propulsion_loads := PackedFloat64Array()) -> Dictionary:
 	var aero_loads := Aero.loads(state, air, d, model, rho, downwash_cl, ground_up)
-	var propulsion_loads: PackedFloat64Array = stage_propulsion_loads if not stage_propulsion_loads.is_empty() else Propulsion.loads(air.v_air, rpm, model.propulsion, rho)
+	# Glow's axial blade surrogate uses flow at the offset hub. The stage-reuse
+	# route already evaluated that same point; legacy routes retain their convention.
+	var propulsion_loads: PackedFloat64Array = stage_propulsion_loads
+	if propulsion_loads.is_empty():
+		var prop_air: PackedFloat64Array = air.v_air
+		if Propulsion.is_glow(model.propulsion):
+			prop_air = Propulsion.hub_air_velocity(state, air.v_air, model.propulsion.offset)
+		propulsion_loads = Propulsion.loads(prop_air, rpm, model.propulsion, rho)
 	var total := aero_loads.duplicate()
 	for i in 6:
 		total[i] += propulsion_loads[i]

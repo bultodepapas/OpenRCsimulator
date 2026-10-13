@@ -83,9 +83,9 @@ func _run() -> void:
 		var binds: PackedInt32Array = basin_arrays[Mesh.ARRAY_INDEX]
 		lake_diagnostics = {identity = lake.get_meta("identity"), bounds = str(basin.mesh.get_aabb()),
 			vertices = bverts.size(), triangles = lake.get_meta("triangles"),
-			mask_mode = basin.material_override.get_shader_parameter("lake_mask_mode"),
+			mask_mode = built.field.get_node("rough").material_override.get_shader_parameter("lake_mask_mode"),
 			mask_count = basin.material_override.get_shader_parameter("lake_bank_count"),
-			terrain_enabled = basin.material_override.get_shader_parameter("lake_terrain"),
+			bank_shader = basin.material_override.shader.resource_path,
 			grass_texture = str(basin.material_override.get_shader_parameter("grass")),
 			first_normal = str(basin_arrays[Mesh.ARRAY_NORMAL][0]),
 			first_cross = str((bverts[binds[1]]-bverts[binds[0]]).cross(bverts[binds[2]]-bverts[binds[0]]))}
@@ -160,7 +160,9 @@ func _run() -> void:
 	var original_exposure: float = built.environment.tonemap_exposure
 	var report := {adapter = RenderingServer.get_video_adapter_name(), driver = RenderingServer.get_video_adapter_api_version(),
 		engine = Engine.get_version_info(), renderer = "gl_compatibility", width = root.size.x, height = root.size.y,
-		arguments = args, lake = lake_diagnostics, botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
+		arguments = args, lake = lake_diagnostics, field_build_ms = built.field_build_ms,
+		reflection_slots = ProjectSettings.get_setting("rendering/reflections/reflection_atlas/reflection_count"),
+		botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
 	var cases := str(args.get("cases", "pilot_north,postcard_club,glare_clear,glare_off,glare_blocked,glare_aircraft,glare_side,glare_night")).split(",")
 	for case: String in cases:
 		if lighting_helper != null:

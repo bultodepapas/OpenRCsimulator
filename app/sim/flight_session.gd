@@ -277,6 +277,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const PropulsionRuntime := preload("res://sim/aircraft_propulsion_runtime.gd")
 const RotorCoupling = preload("res://physics/rotor_coupling.gd")
 const GroundStart := preload("res://physics/ground_start.gd")
 const Turbine := preload("res://physics/turbine.gd")
@@ -287,6 +288,7 @@ const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
+const ContactContract := preload("res://physics/aircraft_contact_contract.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
@@ -779,6 +781,10 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 	if not _model_is_valid(model):
 		var invalid_model := "aircraft model has invalid mass properties or control throws"
 		return { ok = false, data = data, start = { ok = false, message = invalid_model }, trims = neutral_trims, message = invalid_model }
+	var contact_binding: Dictionary = ContactContract.describe(model, soft_hull_contacts)
+	if not contact_binding.ok:
+		var contact_error: String = "aircraft contact contract: " + "; ".join(contact_binding.errors)
+		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims, message = contact_error}
 	if electric and not _electric_step_supported(model):
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "electric source is too stiff for the selected timestep (source step ratio > 0.25); qualify a slower source or a finer solver"}
@@ -844,28 +850,17 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 
 
 func _configure_continuous_callbacks() -> void:
-	if glow_is_active():
-		sim.continuous_step = GlowFlight.step.bind(self)
-		sim.continuous_evaluate = GlowFlight.evaluate.bind(self)
-		sim.continuous_loads = Callable()
-		sim.continuous_derivative = Callable()
-		sim.continuous_rotor_momentum = Callable()
-		sim.continuous_aux = _coupled_aux
+	var prepared: Dictionary = PropulsionRuntime.prepare_callbacks(self)
+	if not prepared.ok:
+		push_error("Cannot prepare aircraft propulsion: " + str(prepared.get("errors", [])))
 		return
-	if turbine_is_continuous():
-		sim.continuous_step = Callable()
-		sim.continuous_evaluate = _turbine_evaluate
-		sim.continuous_loads = Callable()
-		sim.continuous_derivative = Callable()
-		sim.continuous_rotor_momentum = Callable()
-		sim.continuous_aux = _turbine_aux
-		return
-	sim.continuous_step = _electric_step if Propulsion.is_electric(aircraft.model.propulsion) else Callable()
-	sim.continuous_evaluate = _coupled_evaluate if shaft_is_coupled() else (_wheel_evaluate if wheel_count() > 0 else Callable())
-	sim.continuous_loads = _coupled_loads if shaft_is_coupled() else _wash_loads
-	sim.continuous_derivative = _coupled_derivative if shaft_is_coupled() else _wash_derivative
-	sim.continuous_rotor_momentum = _coupled_rotor if shaft_is_coupled() else Callable()
-	sim.continuous_aux = _coupled_aux if shaft_is_coupled() else Callable()
+	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
+		sim.set(field, prepared[field])
+
+
+## Family-independent accepted-endpoint observation; never called from a force evaluation.
+func propulsion_observation() -> Dictionary:
+	return PropulsionRuntime.observe(self)
 
 
 func _set_initial_failure(prepared: Dictionary) -> void:
@@ -2272,6 +2267,17 @@ func wheel_state_layout() -> String:
 
 
 ## Header lines for a flight trace of this session.
+## Preparation/inspection metadata only. No new solver or checkpoint state is introduced.
+func contact_contract() -> Dictionary:
+	if not aircraft.get("ok", false):
+		return {ok = false, errors = PackedStringArray(["Aircraft is unavailable."])}
+	var result: Dictionary = ContactContract.describe(aircraft.model, soft_hull_contacts)
+	result.format = "openrc-aircraft-contact-bindings v1"
+	result.scenery_policy = SceneryDamage.POLICY_VERSION if not _collision_world.is_empty() else "not_selected"
+	result.lake_identity = _lake_identity()
+	return result
+
+
 func trace_meta() -> Dictionary:
 	var model: Dictionary = aircraft.model
 	var prop: Dictionary = model.propulsion

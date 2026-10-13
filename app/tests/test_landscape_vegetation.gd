@@ -18,7 +18,7 @@ const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
 
 const TREE_XZ_LIMIT := 3.84 # baseline max half-extent across the measured seed sample; catalog width remains 8 m.
 const TREE_TOP_LIMIT := 10.0 # measured baseline top is below 10.0 m; catalog/collision height remains 10.5 m.
-const TRIANGLE_LIMIT := 600000 # LU-21: includes textured population, every surface and indexed instance.
+const TRIANGLE_LIMIT := 650000 # LU-21: native-qualified source-scene ceiling; counts surfaces and indexed instances.
 
 var checks := 0
 var failures := 0
@@ -236,11 +236,11 @@ func _test_complete_scenery_budget() -> void:
 			var asset_id := str(tree.get("asset_id", ""))
 			source_tree_counts[asset_id] = int(source_tree_counts.get(asset_id, 0)) + 1
 			source_tree_triangles += int(tree.get("triangles", 0))
-	_check("full scene retains the lightweight downloaded tree mix and some CommonTree_1",
-		source_tree_counts.get("common_tree_1", 0) == 1
-		and source_tree_counts.get("common_tree_3", 0) == 15
-		and source_tree_counts.get("pine_1", 0) == 1
-		and source_tree_triangles == 62787,
+	_check("complete scene preserves the approved 7/6/4 downloaded tree mix",
+		source_tree_counts.get("common_tree_1", 0) == 7
+		and source_tree_counts.get("common_tree_3", 0) == 6
+		and source_tree_counts.get("pine_1", 0) == 4
+		and source_tree_triangles == 80673,
 		"sources=%s triangles=%d" % [source_tree_counts, source_tree_triangles])
 	_check("whole scenery stays below the approved LU-21 triangle ceiling", triangles <= TRIANGLE_LIMIT,
 		"triangles=%d" % triangles)

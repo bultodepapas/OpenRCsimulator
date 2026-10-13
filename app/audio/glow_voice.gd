@@ -9,6 +9,8 @@ const FAMILY_4T := "glow_4t"
 const TAU_VALUE := 2.0 * PI
 const HARMONICS_2T: Array[float] = [1.0, 0.48, 0.30, 0.18, 0.11, 0.065, 0.035]
 const HARMONICS_4T: Array[float] = [1.0, 0.32, 0.43, 0.17, 0.13, 0.055, 0.025]
+const SOURCE_FORCE_PCM_GAIN := 0.0003
+const MAX_SOURCE_MECHANICAL_PEAK := 0.12
 
 ## The render(rpm, max_rpm, frames) signature matches render/engine_voice.gd.
 ## Call set_telemetry() before render() to supply the family and combustion telemetry.
@@ -54,6 +56,70 @@ static func blade_pass_frequency_hz(rpm: float, blade_count: int) -> float:
 	if not is_finite(rpm):
 		return 0.0
 	return maxf(rpm, 0.0) / 60.0 * float(maxi(blade_count, 1))
+
+
+## Source-force-to-PCM conversion is an authored presentation gain, not a mount/acoustic model.
+## Returns constant-speed source order peaks only when the observer snapshot matches this voice.
+static func source_vibration_pcm_peaks(source_vibration: Variant, family: String, rpm: float) -> Dictionary:
+	if not source_vibration is Dictionary or not is_finite(rpm) or rpm < 0.0:
+		return _source_vibration_levels_failure()
+	var cycle_revs: int = cycle_revolutions(family)
+	if cycle_revs == 0 or source_vibration.get("ok", false) != true or source_vibration.get("family", "") != family:
+		return _source_vibration_levels_failure()
+	if source_vibration.get("constant_speed_assumption", false) != true:
+		return _source_vibration_levels_failure()
+	var cycle_value: Variant = source_vibration.get("cycle_revolutions", null)
+	var omega_value: Variant = source_vibration.get("omega_rad_s", null)
+	if not _is_number(cycle_value) or not is_finite(float(cycle_value)) or float(cycle_value) != float(cycle_revs) or not _is_number(omega_value):
+		return _source_vibration_levels_failure()
+	var expected_omega: float = rpm * TAU_VALUE / 60.0
+	var source_omega: float = float(omega_value)
+	if not is_finite(source_omega) or source_omega < 0.0 or absf(source_omega - expected_omega) > maxf(1e-6, expected_omega * 1e-8):
+		return _source_vibration_levels_failure()
+	var one_value: Variant = source_vibration.get("order_1x_force_peak_n", null)
+	var two_value: Variant = source_vibration.get("order_2x_force_peak_n", null)
+	var one_cosine_value: Variant = source_vibration.get("order_1x_force_cosine_n", null)
+	var one_sine_value: Variant = source_vibration.get("order_1x_force_sine_n", null)
+	var two_cosine_value: Variant = source_vibration.get("order_2x_force_cosine_n", null)
+	var two_sine_value: Variant = source_vibration.get("order_2x_force_sine_n", null)
+	if not _is_number(one_value) or not _is_number(two_value) or not _is_number(one_cosine_value) \
+			or not _is_number(one_sine_value) or not _is_number(two_cosine_value) or not _is_number(two_sine_value):
+		return _source_vibration_levels_failure()
+	var force_one: float = float(one_value)
+	var force_two: float = float(two_value)
+	var force_one_cosine: float = float(one_cosine_value)
+	var force_one_sine: float = float(one_sine_value)
+	var force_two_cosine: float = float(two_cosine_value)
+	var force_two_sine: float = float(two_sine_value)
+	if not is_finite(force_one) or not is_finite(force_two) or force_one < 0.0 or force_two < 0.0 \
+			or not is_finite(force_one_cosine) or not is_finite(force_one_sine) \
+			or not is_finite(force_two_cosine) or not is_finite(force_two_sine):
+		return _source_vibration_levels_failure()
+	var component_peak_one: float = sqrt(force_one_cosine * force_one_cosine + force_one_sine * force_one_sine)
+	var component_peak_two: float = sqrt(force_two_cosine * force_two_cosine + force_two_sine * force_two_sine)
+	if not is_finite(component_peak_one) or not is_finite(component_peak_two) \
+			or absf(component_peak_one - force_one) > maxf(1e-8, force_one * 1e-8) \
+			or absf(component_peak_two - force_two) > maxf(1e-8, force_two * 1e-8):
+		return _source_vibration_levels_failure()
+	var one_peak: float = force_one * SOURCE_FORCE_PCM_GAIN
+	var two_peak: float = force_two * SOURCE_FORCE_PCM_GAIN
+	var total_peak: float = one_peak + two_peak
+	if not is_finite(total_peak):
+		return _source_vibration_levels_failure()
+	var limiter_scale: float = 1.0 if total_peak <= MAX_SOURCE_MECHANICAL_PEAK else MAX_SOURCE_MECHANICAL_PEAK / total_peak
+	var result: Dictionary = {
+		ok = true,
+		order_1x_cosine_pcm = force_one_cosine * SOURCE_FORCE_PCM_GAIN * limiter_scale,
+		order_1x_sine_pcm = force_one_sine * SOURCE_FORCE_PCM_GAIN * limiter_scale,
+		order_2x_cosine_pcm = force_two_cosine * SOURCE_FORCE_PCM_GAIN * limiter_scale,
+		order_2x_sine_pcm = force_two_sine * SOURCE_FORCE_PCM_GAIN * limiter_scale,
+		order_1x_peak_pcm = one_peak * limiter_scale,
+		order_2x_peak_pcm = two_peak * limiter_scale,
+		common_gain_pcm_per_n = SOURCE_FORCE_PCM_GAIN,
+		limiter_scale = limiter_scale,
+	}
+	result.make_read_only()
+	return result
 
 
 func set_telemetry(snapshot: Dictionary) -> void:
@@ -114,6 +180,7 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 	var load: float = clampf(_finite_nonnegative(snapshot.get("load", snapshot.get("throttle", 0.45)), 0.45), 0.0, 1.0)
 	var blade_count: int = clampi(int(snapshot.get("blade_count", 2)), 1, 8)
 	var running: bool = bool(snapshot.get("running", false))
+	var source_mechanical: Dictionary = source_vibration_pcm_peaks(snapshot.get("source_vibration", null), family, rpm)
 	if family != last_family:
 		_scheduled_opportunity = -1
 		_fraction_accumulator = 0.0
@@ -196,9 +263,17 @@ func render_telemetry(snapshot: Dictionary, frames: int) -> PackedVector2Array:
 		var crank_phase: float = fposmod(_shaft_phase_cycles, 1.0)
 		var mechanical: float = 0.0
 		if rpm > 0.0 and frequency < nyquist:
-			mechanical = mechanical_gain * sin(TAU_VALUE * crank_phase)
-			if frequency * 2.0 < nyquist:
-				mechanical += mechanical_gain * 0.20 * sin(TAU_VALUE * 2.0 * crank_phase)
+			if source_mechanical.ok:
+				var crank_angle: float = TAU_VALUE * crank_phase
+				mechanical = source_mechanical.order_1x_cosine_pcm * cos(crank_angle) \
+					+ source_mechanical.order_1x_sine_pcm * sin(crank_angle)
+				if frequency * 2.0 < nyquist:
+					mechanical += source_mechanical.order_2x_cosine_pcm * cos(2.0 * crank_angle) \
+						+ source_mechanical.order_2x_sine_pcm * sin(2.0 * crank_angle)
+			else:
+				mechanical = mechanical_gain * sin(TAU_VALUE * crank_phase)
+				if frequency * 2.0 < nyquist:
+					mechanical += mechanical_gain * 0.20 * sin(TAU_VALUE * 2.0 * crank_phase)
 		var valve: float = 0.0
 		if family == FAMILY_4T and rpm > 0.0 and cycle_frequency < nyquist:
 			valve = valve_gain * (sin(TAU_VALUE * cycle_phase) + 0.28 * _bandlimited_sine(cycle_phase, 2, cycle_frequency, nyquist))
@@ -266,3 +341,11 @@ static func _finite_nonnegative(value: Variant, fallback: float) -> float:
 
 static func _is_number(value: Variant) -> bool:
 	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
+
+
+static func _source_vibration_levels_failure() -> Dictionary:
+	var result: Dictionary = {ok = false, order_1x_cosine_pcm = 0.0, order_1x_sine_pcm = 0.0,
+		order_2x_cosine_pcm = 0.0, order_2x_sine_pcm = 0.0, order_1x_peak_pcm = 0.0, order_2x_peak_pcm = 0.0,
+		common_gain_pcm_per_n = SOURCE_FORCE_PCM_GAIN, limiter_scale = 0.0}
+	result.make_read_only()
+	return result

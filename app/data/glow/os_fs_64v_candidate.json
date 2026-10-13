@@ -14,6 +14,30 @@
       "kind": "derived",
       "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html; cc × 1e-6 -> m3"
     },
+    "bore_m": {
+      "value": 0.025,
+      "unit": "m",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html; manufacturer bore specification converted from mm to m"
+    },
+    "stroke_m": {
+      "value": 0.0213,
+      "unit": "m",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html; manufacturer stroke specification converted from mm to m"
+    },
+    "rod_to_crank_radius_ratio": {
+      "value": 3.5,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-03 explicit unmeasured slider-crank geometry estimate; connecting-rod length / crank radius = 3.5; matched internal dimension unavailable"
+    },
+    "reciprocating_mass_kg": {
+      "value": 0.01105,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "NITRO-03 explicit unmeasured equivalent-mass estimate: 2.5% of manufacturer dry engine mass (442 g); 1–5% sensitivity retained in vibration evidence; no matched component measurement; https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html"
+    },
     "mechanical_torque_nm": {
       "value": [
         [

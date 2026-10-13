@@ -54,6 +54,18 @@ The default comparison includes calm air, alternative starting trims and constan
 
 `energy_probe.gd` independently integrates load work over the first fifteen seconds and compares it with body mechanical-energy change. It includes the sampled downwash lag; calm 240/480 Hz cases preserve the input-event times. Its airborne load audit omits ground contact/effect and is scoped to this interval. Energy closure tests numerical consistency, not aircraft parameter accuracy.
 
+`pitch_causality_probe.gd` repeats the first fifteen seconds with absolute throttle caps of 1.0, 0.85, 0.75 and 0.5, preserving the recorded raw pitch and fixed launch elevator. It reconstructs the attached-model pitch moment from zero-angle, angle-of-attack, elevator, aileron, pitch-rate, force-arm, downwash and propulsion terms. The uncapped case must match the original state checkpoints. Caps are experimental interventions, not proposed flight assists. Its `PITCH_CAUSALITY` JSON output is retained in the evidence directory as `pitch-causality.json` with scope and source hashes.
+
+`fixed_trim_power_equilibrium.gd` searches the standard Stik's projected longitudinal steady-flight conditions with the launch surfaces fixed: zero pitch moment and non-gravitational XZ force magnitude equal to weight. It recovers climb angle from force direction, enumerates the sampled attached pitch roots, and scans speed/power. It holds body rates and sideslip at zero with settled downwash; lateral equilibrium and real-aircraft calibration are outside this diagnostic. A missing equilibrium does not prove that a loop is inevitable.
+
+`donor_reference_probe.gd` repeats the same interval with an approximate donor AERORP-to-CG transfer of only `Cm0`, `Cma` and `Cmde` in memory, recomputing the normal startup trim first. It keeps production data untouched, requires complete runs and historical baseline parity, and records omitted transport terms explicitly. Its `DONOR_REFERENCE_SENSITIVITY` output is preserved as `donor-reference-sensitivity.json`.
+
+```powershell
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/pitch_causality_probe.gd"
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/fixed_trim_power_equilibrium.gd"
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/donor_reference_probe.gd"
+```
+
 ```powershell
 & .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/energy_probe.gd"
 & .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/energy_probe.gd" -- --calm

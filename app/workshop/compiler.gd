@@ -2,6 +2,7 @@ extends RefCounted
 class_name WorkshopCompiler
 
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const AircraftModules := preload("res://physics/aircraft_modules.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Parameters := preload("res://workshop/parameters.gd")
 const COMPILER_VERSION := "openrc-aircraft-workshop-v1-generic-compiler-1"
@@ -22,6 +23,18 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 	var base_id := str(base_raw.get("id", ""))
 	var effective_id: String = str(values.get("id", base_id))
 	var support: Dictionary = _capabilities_for(base_raw, base_data.model)
+	var classification: Dictionary = support.classification
+	if not classification.ok:
+		return {
+			"ok": false,
+			"errors": classification.errors,
+			"diagnostics": classification.diagnostics,
+			"modules": [],
+			"laws": [],
+			"raw": {},
+			"data": _invalid_data(classification.errors),
+			"summary": {},
+		}
 	var scale: float = float(values.scale)
 	var weight_multiplier: float = float(values.weight_multiplier)
 	var power_multiplier: float = float(values.power_multiplier)
@@ -88,27 +101,27 @@ static func defaults() -> Dictionary:
 
 
 static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
-	var propulsion: Dictionary = raw.get("propulsion", {})
-	var engine: Dictionary = propulsion.get("engine", {})
-	var propeller: Dictionary = propulsion.get("propeller", {})
-	var family_is_legacy_rpm: bool = str(propulsion.get("kind", "glow_prop")) == "glow_prop"
-	var complex_power: bool = engine.has("shaft") or engine.has("glow_installation") or propeller.has("normal_force")
-	var scale_supported: bool = family_is_legacy_rpm and not complex_power
-	var weight_supported: bool = scale_supported
-	var power_supported: bool = family_is_legacy_rpm and not complex_power
+	var classification: Dictionary = AircraftModules.classify(raw)
+	if not classification.ok:
+		return {
+			"scale": false,
+			"weight": false,
+			"power": false,
+			"controls": false,
+			"note": "Aircraft modules could not be classified: %s" % "; ".join(classification.errors),
+			"classification": classification,
+		}
+	var transform_support: Dictionary = classification.compiler_transforms
+	var scale_supported: bool = bool(transform_support.get("scale", false))
+	var weight_supported: bool = bool(transform_support.get("weight", false))
+	var power_supported: bool = bool(transform_support.get("power", false))
 	var raw_controls: Dictionary = raw.get("controls", {})
 	var control_shape_ok: bool = raw_controls.get("max_throw", {}) is Dictionary
-	var controls_supported: bool = str(raw.get("capabilities", {}).get("controls", "")) == "conventional" \
+	var controls_supported: bool = bool(transform_support.get("controls", false)) \
 		and control_shape_ok and model.get("controls", {}).has("throw_deg")
 	var reasons := PackedStringArray()
-	if not family_is_legacy_rpm:
-		reasons.append("the propulsion family is '%s'" % str(propulsion.get("kind", "glow_prop")))
-	if engine.has("shaft"):
-		reasons.append("coupled shaft propulsion has no V1 virtual scale/power transform")
-	if engine.has("glow_installation"):
-		reasons.append("finite-glow installation data must remain fixed until its module transform is qualified")
-	if propeller.has("normal_force"):
-		reasons.append("normal-force propeller coupling has no V1 virtual transform")
+	for reason_variant: Variant in classification.compiler_transform_reasons:
+		reasons.append(str(reason_variant))
 	var note := "V1 supports virtual scale, uniform mass, prescribed-RPM power and conventional controls; copied aerodynamic similarity is an estimate."
 	if not scale_supported:
 		note = "No-op compilation remains available. " + "; ".join(reasons)
@@ -120,6 +133,7 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 		"power": power_supported,
 		"controls": controls_supported,
 		"note": note,
+		"classification": classification,
 	}
 
 

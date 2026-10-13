@@ -28,9 +28,10 @@ func _initialize() -> void:
 			if sample % 11 == 0: rpm = 0.
 			var rho: float = rng.randf_range(.8, 1.3)
 			var air: Dictionary = Air.compute(body, PackedFloat64Array([0., 0., 0.]), rho)
-			var point: Dictionary = Blade.evaluate(rpm, M.dot(air.v_air, prop.axis), rho, prop.glow.propeller)
-			var reused: PackedFloat64Array = Propulsion.loads_from_thrust_torque(air.v_air, rpm, prop, rho, point.thrust_n, point.torque_nm)
-			var separate: PackedFloat64Array = Propulsion.loads(air.v_air, rpm, prop, rho)
+			var hub_air: PackedFloat64Array = Propulsion.hub_air_velocity(body, air.v_air, prop.offset)
+			var point: Dictionary = Blade.evaluate(rpm, M.dot(hub_air, prop.axis), rho, prop.glow.propeller)
+			var reused: PackedFloat64Array = Propulsion.loads_from_thrust_torque(hub_air, rpm, prop, rho, point.thrust_n, point.torque_nm)
+			var separate: PackedFloat64Array = Propulsion.loads(hub_air, rpm, prop, rho)
 			_check(reused.to_byte_array() == separate.to_byte_array(), name + " propeller stage " + str(sample))
 			var d := {aileron_left = .01, aileron_right = -.01, elevator = .03, rudder = -.02}
 			var reference: PackedFloat64Array = Dynamics.loads_from_air(body, model, d, rpm, rho, air)
@@ -52,13 +53,16 @@ func _test_evaluator_identity() -> void:
 			_check(expected.ok, "initialized prepared stage succeeds")
 			var alternate: Node = four if owner == two else two
 			var evaluator: Variant = owner.get_meta(Flight.EVALUATOR_META)
+			var blade_evaluator: Variant = owner.get_meta(Flight.PROPELLER_EVALUATOR_META)
 			var identity: Variant = owner.get_meta(Flight.EVALUATOR_IDENTITY_META)
 			# Simulate a failed reload leaving an evaluator from another installation.
 			owner.set_meta(Flight.EVALUATOR_META, alternate.get_meta(Flight.EVALUATOR_META))
+			owner.set_meta(Flight.PROPELLER_EVALUATOR_META, alternate.get_meta(Flight.PROPELLER_EVALUATOR_META))
 			owner.set_meta(Flight.EVALUATOR_IDENTITY_META, alternate.get_meta(Flight.EVALUATOR_IDENTITY_META))
 			var fallback: Dictionary = Flight.point(owner, owner.sim.state, owner.sim.continuous, 0.)
 			_check(fallback == expected, "stale prepared installation falls back to correct validated source")
 			owner.set_meta(Flight.EVALUATOR_META, evaluator)
+			owner.set_meta(Flight.PROPELLER_EVALUATOR_META, blade_evaluator)
 			owner.set_meta(Flight.EVALUATOR_IDENTITY_META, identity)
 	two.free()
 	four.free()

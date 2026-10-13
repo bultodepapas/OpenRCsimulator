@@ -32,7 +32,14 @@ var _manual_step_timings: Array[Dictionary] = []
 
 
 func _initialize() -> void:
-	root.size = Vector2i(1280, 720)
+	var width := 1280
+	var height := 720
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--width="):
+			width = int(arg.get_slice("=", 1))
+		elif arg.begins_with("--height="):
+			height = int(arg.get_slice("=", 1))
+	root.size = Vector2i(width, height)
 	Engine.max_fps = 60
 	_out_dir = _output_directory()
 	if DirAccess.make_dir_recursive_absolute(_out_dir) != OK:

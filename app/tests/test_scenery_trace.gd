@@ -16,7 +16,7 @@ func _trace(mode: String, upgrade: bool = true) -> Dictionary:
 	var output: Array = []
 	var code := OS.execute(OS.get_executable_path(), ["--headless", "--path", ProjectSettings.globalize_path("res://"),
 		"--audio-driver", "Dummy", "--", "--scenery=%s" % mode, "--scenery_audio=off",
-		"--landscape-upgrade=%s" % ("on" if upgrade else "off"), "--trace=%s" % path, "--t=2"], output, true)
+		"--landscape-upgrade=%s" % ("on" if upgrade else "off"), "--lake=off", "--trace=%s" % path, "--t=2"], output, true)
 	_check("app ran with scenery %s, collision integration %s" % [mode, upgrade],
 		code == 0 and not str(output).contains("ERROR:"), "exit %d; %s" % [code, output])
 	var lines := FileAccess.get_file_as_string(path).split("\n")

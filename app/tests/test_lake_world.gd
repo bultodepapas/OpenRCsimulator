@@ -1,4 +1,4 @@
-## LU-28: the default field attaches matching lake masks and baked basin/water meshes.
+## LU-27: the default field attaches matching lake masks and baked basin/water meshes.
 ## Run: godot --headless --path app --script res://tests/test_lake_world.gd
 extends SceneTree
 

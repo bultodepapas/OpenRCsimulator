@@ -127,7 +127,19 @@ The owner's instruction to implement both glow families, using internet evidence
 
 Use stage-coupled shaft/body dynamics with one passive propeller force/torque law. Keep the body datum at the initial wet CG and solve with instantaneous fuel-dependent mass, CG and full inertia, including co-moving efflux cancellation. All evolving engine state lives in the simulation transaction/checkpoint; sound observes it. Runway starts use a stopped warm engine because a static idle hold can be physically impossible. Reject unsupported reverse rotation and incompatible propeller side-force/wake modules. [Contract, limitations and evidence](docs/GLOW-ENGINES.md).
 
+Require the quasi-steady propeller's positive forward thrust to respect ideal actuator-disk power as well as passivity. Reject impossible points rather than clamping thrust or adding unaccounted torque. The two initial 4T polar estimates violated that lower bound; constrain their estimated loss coefficient independently and retain a 5% screening margin for candidate data. The 2T conditional fit stays unchanged. These necessary checks do not substitute for induced-flow or measured propeller validation. [Correction and independent evidence](docs/research/glow-engines/NITRO-02/README.md#momentum-bound-correction).
+
+Use hub-point velocity for the offset glow propeller and its local cooling estimate, with the same fixed-datum lever arm as the thrust moment. Version the changed kinematic law and preserve old source-bound reports rather than treating previous flight trajectories as current. Uniform local wind and the mean axial-propeller reduction remain explicit limitations. [Hub correction](docs/research/glow-engines/NITRO-02/README.md#hub-inflow-correction).
+
 Revisit the mean-cycle reduction with matched crank-angle/vibration data, propeller loads with measured advancing maps, and transport/thermal coefficients with independent observations. The numerical support tail above the FS-64V manufacturer's practical RPM recommendation does not extend its recommended operating range. The 500 µs performance target and physical/pilot release gates remain explicit.
+
+## 2026-10-13 — Shared aircraft authoring interfaces (AS-06–14 foundation)
+
+Keep the accepted physical `openrc-aircraft v2` format and existing solver laws. Centralize module classification, conventional control conversions and preparation/observation of the existing single propulsion installation. Generate one hash-bound model manifest per visual family from model authoring sources; several physical configurations can share it. Shared rendering resolves the manifest rather than dispatching by aircraft ID. Workshop descriptors advance to v2 to pin that manifest; an explicit v1 reader preserves saved variants. Resolve presentation dependencies at trial/build time without hiding an unreadable dependency's saved record from the library.
+
+Export verified source-proof bytes alongside compiled/imported resources so source identity remains checkable in a package; never fall back to adjacent checkout files when package proofs are missing. These proofs identify exporter inputs, not platform-specific compiled bytes. Keep contact support/probe/rotor identities distinct, expose the actual selected policy, and preserve current soft versus terminal routes without changing contact coefficients. Existing ordered hull/index bindings remain snapshot-local until their source pipelines provide durable IDs. [Implemented contract](AIRCRAFT_CONTRACT.md), [evidence and remaining gates](docs/research/aircraft-standardization/AS-06-14/README.md).
+
+The owner's instruction to implement the standardization plan authorizes this compatibility foundation. Revisit topology/versioning when physical flaps, multiple propulsion installations or durable component/section IDs are implemented; measured flight fidelity and target-machine timing remain separate gates.
 
 ## Open (deliberately not decided yet)
 
@@ -139,6 +151,10 @@ The researched electric Ultra Stick 25e remains a comparison specimen. Only its 
 
 
 ## Notes
+
+### 2026-10-13 — Start truck mechanics with an isolated suspension bench (RCV-04a)
+
+The user's implementation request authorizes a float64 two-mass suspension bench while the external Blender model is prepared. Keep its strict `openrc-suspension-bench` input separate from aircraft data and the future full ground-vehicle schema. The four-value state reuses `Integrator.axpy`, not the aircraft quaternion finalizer. Two fixed equal RK4 substeps per public tick replace the initial single step after the 240 Hz undamped oracle exceeded the predeclared error limit; parameters and that limit are unchanged. This choice qualifies only the synthetic bench, not production truck mechanics or performance. [Guide](research/rc-monster-truck/README.md), [evidence and remaining gates](docs/research/rc-monster-truck/RCV-04a/README.md).
 
 ### 2026-10-12 — Local scenery damage after the accepted tick (CR-17a)
 

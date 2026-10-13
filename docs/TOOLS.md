@@ -1,6 +1,6 @@
 # Tooling index
 
-**Updated:** 2026-10-12
+**Updated:** 2026-10-13
 
 **Status:** Canonical developer setup, command and tool index. Runtime code and data define behavior; owning plans record step status, and tool READMEs describe usage contracts.
 
@@ -50,6 +50,7 @@ act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app
 | Physics benchmark | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Measures simulation cost per tick; this is a performance measurement, not physical validation. |
 | Both glow engine families | `python research/glow-engines/verify_integration.py --godot <pinned-godot> --out <fresh-output-directory> --parse-all` | Closed profile/installation generators, all-script parse, 2T/4T lifecycle/energy/session/audio/trace tests and legacy/electric/turbine regressions. [Flight refinement and limitations](research/glow-engines/NITRO-02/README.md), [controls/configuration](GLOW-ENGINES.md). |
 | Sensitivity sweep | `"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/sensitivity/sensitivity.gd"` | Reproducible parameter sensitivity table. This is a simulation study, not independent physical validation. |
+| Aircraft authoring conformance | `python research/aircraft-standardization/conformance.py --godot <pinned-godot> --out <evidence-directory> --parse-all` | Shared classification, generated models/descriptors, actual poses, focused lifecycle tests and fleet replay; `--baseline <fleet.json>` compares exact same-platform states; `--package` also checks exported model dependencies. [Contract](../AIRCRAFT_CONTRACT.md#model-and-package-contract). |
 | Build release packages | `app/export.sh` | Windows, Linux and macOS builds, smoke checks, archives and SHA256SUMS in `dist/`; export templates are downloaded and verified as needed. |
 | Check the exported runway route | `python3 docs/research/menu-investigations/UI-06c/run_export_smoke.py --binary dist/linux/openrc-simulator.x86_64 --out /tmp/runway-export-review` | Linux/Xvfb native keyboard smoke, Recorder traces, export identity, CLI parity and isolated preferences. Requires X11/XTest and the pinned visual Python environment; [contract and pilot card](research/menu-investigations/UI-06c/README.md). This is software verification, not a pilot trial. |
 | Run the app | `"$(app/get-godot.sh)" --path app` | Opens Home. See [first-launch controls](FIRST-LAUNCH.md) and the [aircraft catalog](../app/app_state/aircraft_catalog.gd). |

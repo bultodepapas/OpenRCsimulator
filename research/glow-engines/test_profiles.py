@@ -48,6 +48,28 @@ class ProfileGenerationTests(unittest.TestCase):
         self.assertIn('valve_torque_nm',four);self.assertNotIn('valve_torque_nm',two)
         self.assertNotEqual(two['indicated_efficiency']['value'],four['indicated_efficiency']['value'])
 
+    def test_slider_crank_inputs_have_manufacturer_dimensions_and_explicit_common_estimates(self):
+        expected = {
+            'glow_2t': (.023, .0215, .404, 'https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15610.htm'),
+            'glow_4t': (.025, .0213, .442, 'https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html'),
+        }
+        for family, (bore, stroke, dry_mass, source) in expected.items():
+            params = candidate(family)['parameters']
+            self.assertEqual(params['bore_m']['value'], bore)
+            self.assertEqual(params['stroke_m']['value'], stroke)
+            self.assertEqual(params['bore_m']['kind'], 'manual')
+            self.assertEqual(params['stroke_m']['kind'], 'manual')
+            self.assertIn(source, params['bore_m']['source'])
+            self.assertIn(source, params['stroke_m']['source'])
+            self.assertAlmostEqual(math.pi * bore*bore*stroke/4, params['displacement_m3']['value'], delta=params['displacement_m3']['value']*.005)
+            self.assertEqual(params['rod_to_crank_radius_ratio']['value'], 3.5)
+            self.assertEqual(params['rod_to_crank_radius_ratio']['kind'], 'estimated')
+            self.assertIn('unmeasured', params['rod_to_crank_radius_ratio']['source'])
+            self.assertAlmostEqual(params['reciprocating_mass_kg']['value'], .025*dry_mass)
+            self.assertEqual(params['reciprocating_mass_kg']['kind'], 'estimated')
+            self.assertIn('1–5% sensitivity', params['reciprocating_mass_kg']['source'])
+        self.assertNotEqual(expected['glow_2t'][2], expected['glow_4t'][2])
+
     def test_profile_status_and_unmeasured_values_remain_explicit(self):
         for family in SPEC['families']:
             p=candidate(family)
@@ -65,6 +87,9 @@ class ProfileGenerationTests(unittest.TestCase):
             parameters=branch['then']['properties']['parameters']
             self.assertFalse(parameters['additionalProperties'])
             self.assertEqual(set(parameters['required']),set(SPEC['common'])|set(SPEC['families'][family]))
+        for key in ['bore_m', 'stroke_m', 'reciprocating_mass_kg']:
+            self.assertTrue(SPEC['common'][key]['positive'])
+        self.assertEqual(SPEC['common']['rod_to_crank_radius_ratio']['minimum'], 2.0)
 
 
 if __name__=='__main__': unittest.main()

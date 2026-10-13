@@ -1,0 +1,16 @@
+{
+  "format": "openrc-suspension-bench",
+  "version": 1,
+  "id": "rcv-quarter-car-synthetic-v1",
+  "description": "Synthetic two-mass suspension verification bench. Not measured truck data; no full-vehicle or tire calibration claim.",
+  "parameters": {
+    "sprung_mass_kg": {"value": 1.2, "unit": "kg", "kind": "estimated", "source": "RCV-04a synthetic numerical test mass; not a weighed vehicle corner"},
+    "unsprung_mass_kg": {"value": 0.18, "unit": "kg", "kind": "estimated", "source": "RCV-04a synthetic numerical test mass; not a measured wheel assembly"},
+    "suspension_stiffness_n_per_m": {"value": 900.0, "unit": "N/m", "kind": "estimated", "source": "RCV-04a synthetic linear wheel-rate test parameter; not shock stiffness or a motion-ratio conversion"},
+    "suspension_damping_n_s_per_m": {"value": 7.0, "unit": "N*s/m", "kind": "estimated", "source": "RCV-04a synthetic linear wheel damping; not a measured shock curve"},
+    "tire_stiffness_n_per_m": {"value": 6500.0, "unit": "N/m", "kind": "estimated", "source": "RCV-04a synthetic unilateral normal spring; not a calibrated RC tire"},
+    "gravity_m_per_s2": {"value": 9.80665, "unit": "m/s^2", "kind": "manual", "source": "Conventional standard gravity selected for this numerical bench"},
+    "suspension_rest_length_m": {"value": 0.1, "unit": "m", "kind": "estimated", "source": "RCV-04a synthetic vertical mass-center separation at zero spring force; not shock eye length"},
+    "tire_radius_m": {"value": 0.085, "unit": "m", "kind": "estimated", "source": "RCV-04a synthetic undeformed rolling radius; Blender dimensions do not establish tire mechanics"}
+  }
+}

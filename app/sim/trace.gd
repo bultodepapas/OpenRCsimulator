@@ -52,7 +52,7 @@ const GLOW_COLUMNS: Array[String] = [
 ]
 const GLOW_CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
 const GLOW_TRACE_SCHEMA: String = "openrc-glow-trace v1"
-const GLOW_LAW: String = "glow-mean-cycle-finite-tank-fixed-datum-v1"
+const GLOW_LAW: String = GlowFlight.LAW
 var _coupled_shaft: bool = false
 var _continuous_turbine: bool = false
 var _coupled_start_rpm: float = NAN
