@@ -331,16 +331,13 @@ msgid "Resume after a radio failsafe"
 msgstr "Reanudar tras un failsafe de la radio"
 
 msgid "Views: next (Shift+C back), pilot, chase, orbit"
-msgstr "Vistas: siguiente (Mayús+C atrás), piloto, persecución, órbita"
+msgstr "Vistas (Mayús+C atrás): piloto, seguir, órbita"
 
 msgid "Zoom: auto on/off, in, out, reset"
-msgstr "Zoom: auto sí/no, acercar, alejar, restablecer"
+msgstr "Zoom: auto, acercar, alejar, reiniciar"
 
 msgid "Backspace"
-msgstr "Retroceso"
-
-msgid "Auto-zoom on or off"
-msgstr "Autozoom sí o no"
+msgstr "Borrar"
 
 msgid "Ground shadow: sun, vertical or off"
 msgstr "Sombra en el suelo: sol, vertical o ninguna"

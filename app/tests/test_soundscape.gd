@@ -135,6 +135,26 @@ func _run() -> void:
 		rig.update_sound(moving, 0.1)
 		_check("runtime detects an approaching source", float(rig.last_doppler) > 1.0,
 			"ratio=%.4f" % float(rig.last_doppler))
+		# AUD-07b: the accepted simulation velocity drives Doppler; a camera cut is not listener motion.
+		var reported: Dictionary = _flight_snapshot()
+		reported.source_velocity = Vector3(-40.0, 0.0, 0.0) # toward the listener at the origin, position held
+		rig.update_sound(reported, 1.0 / 60.0)
+		_check("simulation velocity sets Doppler without frame differencing",
+			absf(float(rig.last_doppler) - 343.0 / 303.0) < 1e-4, "ratio=%.5f" % float(rig.last_doppler))
+		var cut: Dictionary = _flight_snapshot()
+		rig.update_sound(cut, 1.0 / 60.0)
+		cut.listener = Vector3(8.0, 0.0, 0.0) # inspect toggle near the pilot: 8 m in one frame
+		rig.update_sound(cut, 1.0 / 60.0)
+		_check("a camera cut does not chirp the Doppler ratio", absf(float(rig.last_doppler) - 1.0) < 1e-6,
+			"ratio=%.5f" % float(rig.last_doppler))
+		# AUD-07c: aircraft voices run AIRCRAFT_TRIM_DB low into a bus raised by the same amount.
+		var trim_db: float = SoundscapeScript.AIRCRAFT_TRIM_DB
+		_check("aircraft bus carries the near-field trim",
+			is_equal_approx(AudioServer.get_bus_volume_db(AudioServer.get_bus_index(rig.voices[0].bus)), trim_db))
+		var motor_untrimmed: float = linear_to_db(maxf(float(rig._levels[0]) * float(rig.gain), 0.0001))
+		_check("motor voice volume is trimmed by the same amount",
+			absf(float(rig.voices[0].volume_db) - (motor_untrimmed - trim_db)) < 1e-4,
+			"voice=%.2f untrimmed=%.2f" % [float(rig.voices[0].volume_db), motor_untrimmed])
 		var any_bird_playing: bool = false
 		for voice_index: int in range(9, 12):
 			any_bird_playing = any_bird_playing or rig.voices[voice_index].playing

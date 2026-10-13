@@ -64,6 +64,8 @@ def spectrum_stats(x: np.ndarray, rate: int) -> dict:
     frames = np.lib.stride_tricks.sliding_window_view(x, n)[:: n // 2]
     power = np.mean(np.abs(np.fft.rfft(frames * np.hanning(n), axis=1)) ** 2, axis=0)
     freqs = np.fft.rfftfreq(n, 1.0 / rate)
+    if power.sum() <= 1e-30:
+        return {"silent": True}
     cumulative = np.cumsum(power) / max(power.sum(), 1e-30)
     band = (freqs >= 40) & (freqs <= 4000)
     return {
