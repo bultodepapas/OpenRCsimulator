@@ -118,8 +118,8 @@ static func _set_wave_parameters(material: ShaderMaterial, config: Dictionary, b
 	for raw_wave: Variant in raw_waves:
 		if not raw_wave is Dictionary:
 			push_error("Every normalized lake wave must be a Dictionary; no waves were applied.")
-		material.set_shader_parameter("wave_params", packed_waves)
-		material.set_shader_parameter("wave_phase_rad", packed_phases)
+			material.set_shader_parameter("wave_params", packed_waves)
+			material.set_shader_parameter("wave_phase_rad", packed_phases)
 			material.set_shader_parameter("wave_count", 0)
 			return
 		var values: Array[float] = []
