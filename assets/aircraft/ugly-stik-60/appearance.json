@@ -112,5 +112,128 @@
       "law": "depth x (short side / reference)^2, sin x sin profile per open bay, film sags inward on both skins",
       "note": "Normal map only; geometry, contacts and aerodynamics unchanged"
     }
+  },
+  "fuselage_unwrap": {
+    "kind": "layout",
+    "x_px": [
+      8,
+      1016
+    ],
+    "y_px": [
+      280,
+      520
+    ],
+    "z_m": [
+      -0.291276,
+      0.791018
+    ],
+    "perimeter_m": 0.3,
+    "note": "US-V09e: fuselage sides and belly unwrapped; U along the fuselage, V = skin arc length s from the belly centre line, +X (exhaust) side positive. The flat top keeps the dorsal region; end caps keep plain red."
+  },
+  "exhaust_residue": {
+    "kind": "artistic_estimate",
+    "enabled": true,
+    "source": "Glow two-stroke oil carried aft by the exhaust (owner request 2026-10-13). Outlet from the engine build: x 0.064, y -0.023, z -0.309 m, pointing aft, down and outboard.",
+    "colour": [
+      "#1f150c",
+      "#3b2814"
+    ],
+    "start_z_m": -0.285,
+    "start_y_m": -0.027,
+    "corner_z_m": 0.02,
+    "end_z_m": 0.56,
+    "belly_end_s_m": 0.018,
+    "half_width_m": [
+      0.007,
+      0.034
+    ],
+    "opacity": [
+      0.62,
+      0.0
+    ],
+    "streaks": 70,
+    "droplets": 45,
+    "seed": 5175,
+    "note": "Path, spread and fade are visual estimates of a used sport model, not measured residue. Set enabled false for a factory-clean finish.",
+    "stab": {
+      "kind": "artistic_estimate",
+      "note": "Spray that reaches the tail settles on the right stabiliser underside near the fuselage, strongest at the leading edge.",
+      "x_m": [
+        0.012,
+        0.21
+      ],
+      "opacity": 0.38,
+      "streaks": 34,
+      "droplets": 60
+    }
+  },
+  "stab_unwrap": {
+    "kind": "layout",
+    "x_px": [
+      520,
+      1016
+    ],
+    "y_px": [
+      532,
+      636
+    ],
+    "x_m": [
+      -0.2794,
+      0.2794
+    ],
+    "z_m": [
+      -0.146558,
+      0.03683
+    ],
+    "note": "US-V09f: underside of the stabiliser and elevator (prism-local x span, z from the elevator hinge, negative forward). Top faces and edges keep plain red."
+  },
+  "hatch": {
+    "kind": "plan_trace",
+    "source": "Jensen oz1253 sheet 1 side view, local 100 dpi raster: 1/4 in sheet hatch from the fuselage front to 5.40 in aft, ahead of the fixed top piece bevelled into the wing saddle (wing leading edge 6.98 in, model 0.176 m).",
+    "z_m": [
+      -0.291276,
+      -0.153862
+    ],
+    "note": "The rear seam coincides with fuselage station 1; the side seams follow the flat-top edges where the 1/4 in sides meet the rounded corners.",
+    "x_px": [
+      914,
+      1014
+    ],
+    "y_px": [
+      646,
+      986
+    ],
+    "half_width_m": 0.041,
+    "seam_width_m": 0.0006,
+    "seam_colour": "#3a0710",
+    "seam_opacity": 0.7
+  },
+  "belly_wear": {
+    "kind": "artistic_estimate",
+    "enabled": true,
+    "source": "Tricycle-gear grass field use (owner request 2026-10-13): wheel-thrown grass and soil behind the nose wheel, light scuffs between the gears, tail-strike scrapes at the tail end.",
+    "grass_colour": [
+      "#4f5b29",
+      "#5d4a31"
+    ],
+    "scuff_colour": "#e7c2bd",
+    "grass_z_m": [
+      -0.27,
+      0.06
+    ],
+    "grass_half_width_m": 0.05,
+    "grass_spots": 160,
+    "scuff_z_m": [
+      -0.16,
+      0.08
+    ],
+    "scuffs": 26,
+    "tail_scrape_z_m": [
+      0.62,
+      0.79
+    ],
+    "tail_scrapes": 18,
+    "seed": 939,
+    "note": "Set enabled false for an unflown finish."
   }
 }

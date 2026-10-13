@@ -4,6 +4,7 @@ extends RefCounted
 
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Finish := preload("res://aircraft/ugly_stik_finish.gd")
+const GearFlex := preload("res://aircraft/ugly_stik_gear_flex.gd")
 const D: Dictionary = Geometry.DATA
 
 const CASE_COLOR := Color("858d91")
@@ -764,7 +765,9 @@ static func _add_main_gear(root: Node3D, gear: Dictionary) -> void:
 		var center: Vector3 = Vector3(side * float(e.main_track) * 0.5, float(e.wheel_y), float(e.main_axle_z))
 		var root_z: float = float(e.main_axle_z) - 0.050
 		var root_point: Vector3 = Vector3(side * 0.025, _fuselage_height(root_z, false) + 0.004, root_z)
-		_bar(steel, root_point, center, 0.014, 0.0034)
+		# US-V10: twelve strap segments so the leg can take the bending shape (GearFlex).
+		for k in GearFlex.LEG_SEGMENTS:
+			_bar(steel, root_point.lerp(center, float(k) / GearFlex.LEG_SEGMENTS), root_point.lerp(center, float(k + 1) / GearFlex.LEG_SEGMENTS), 0.014, 0.0034)
 		_box(aluminum, Vector3(side * 0.026, root_point.y + 0.003, root_z + 0.002), Vector3(0.027, 0.006, 0.030))
 		for z_offset in [-0.009, 0.009]:
 			var bolt_pos: Vector3 = Vector3(side * 0.026, root_point.y + 0.0065, root_z + z_offset)
@@ -778,64 +781,110 @@ static func _add_main_gear(root: Node3D, gear: Dictionary) -> void:
 		var pivot := Node3D.new()
 		pivot.name = "wheel_" + label + "_pivot"
 		pivot.position = center
+		pivot.set_meta("crash_section", "wheel") # CR-09f: a wheel can pop off its axle in a destroying crash
 		root.add_child(pivot)
 		gear[label] = pivot
 		_add_wheel(pivot, "gear_" + label, float(e.main_wheel_diameter) * 0.5, 0.024, side)
-	_flush(root, "main_gear_structure", structure)
+	var main := _flush(root, "main_gear_structure", structure)
+	var legs: Array = []
+	for side in [-1.0, 1.0]:
+		var root_z: float = float(e.main_axle_z) - 0.050
+		legs.append({root = Vector3(side * 0.025, _fuselage_height(root_z, false) + 0.004, root_z),
+			tip = Vector3(side * float(e.main_track) * 0.5, float(e.wheel_y), float(e.main_axle_z)), side = side, rigid_radius = 0.02})
+	main.set_meta("flex_legs", legs)
 
+
+# US-V10b: sprung, steerable wire nose gear (Jensen sheet 1: 5/32 in wire through nylon bearings just aft of F1, torsion
+# coil below the fuselage, single-sided wheel; the owner's reference photo 2026-10-13 adds the compression spring and
+# collar between the bearing and the coil). The whole wire turns about its own axis, so the steering pivot sits on the
+# wire and the wheel hangs 17 mm to its side, centred on the physics contact. Proportions are estimates.
+const NOSE_WIRE_RADIUS := 0.002
+const NOSE_WHEEL_OFFSET := 0.017
+const NOSE_SPRING_LENGTH := 0.055
+const NOSE_SPRING_TURNS := 9
+const NOSE_SPRING_WIRE := 0.0006
+const NOSE_SPRING_RADIUS := 0.0045
+const NOSE_COIL_RADIUS := 0.007
+const NOSE_COIL_SHIFT := -0.0045 # the coil steps away from the wheel
 
 static func _add_nose_gear(root: Node3D, gear: Dictionary) -> void:
 	var e: Dictionary = D.equipment
 	var y: float = float(e.wheel_y)
 	var z: float = float(e.nose_axle_z)
-	var nose_position: Vector3 = Vector3(0, y, z)
-	var strut: Dictionary = _buckets([
-		["steel", STEEL_COLOR, "steel"],
-		["aluminum", DARK_METAL_COLOR, "aluminum"],
-		["bright", FIN_COLOR, "aluminum"]
-	])
-	var steel: SurfaceTool = strut.steel
-	var aluminum: SurfaceTool = strut.aluminum
-	var bright: SurfaceTool = strut.bright
-	var start: Vector3 = Vector3(0, _fuselage_height(float(e.firewall_z), false) + 0.012, float(e.firewall_z) + 0.009)
-	var end: Vector3 = Vector3(0, y + 0.067, z)
-	_sweep_tube(steel, _cubic(start, Vector3(0, start.y - 0.035, start.z + 0.020), Vector3(0, end.y + 0.048, end.z - 0.008), end, 8), 0.0033, 10)
-	_cylinder(aluminum, Vector3(0, y + 0.078, z), Vector3(0, y + 0.052, z), 0.0052, 0.0047, 12)
-	for x_sign in [-1.0, 1.0]:
-		var bolt: Vector3 = Vector3(x_sign * 0.004, start.y + 0.003, start.z)
-		_cylinder(steel, bolt, bolt + Vector3(x_sign * 0.001, 0, 0), 0.0021, 0.0021, 6)
-		_washer(bright, bolt, Vector3.RIGHT, 0.0038, 0.0015, 0.0008, 8)
-	_flush(root, "nose_gear_strut", strut)
-
 	var steering := Node3D.new()
 	steering.name = "nose_steering_pivot"
-	steering.position = nose_position
+	steering.position = Vector3(-NOSE_WHEEL_OFFSET, y, z)
+	# CR-09e: in a crash the whole nose leg (bearing, spring, wire, wheel) tears out as one part.
+	steering.set_meta("crash_section", "gear")
 	root.add_child(steering)
 	gear["steering"] = steering
 	var nose_axle := Node3D.new()
 	nose_axle.name = "wheel_nose_pivot"
-	nose_axle.position = Vector3.ZERO
+	nose_axle.position = Vector3(NOSE_WHEEL_OFFSET, 0, 0)
+	nose_axle.set_meta("crash_section", "wheel")
 	steering.add_child(nose_axle)
 	gear["nose"] = nose_axle
 	_add_wheel(nose_axle, "nosewheel", float(e.nose_wheel_diameter) * 0.5, 0.022, 1.0)
 
-	var fork: Dictionary = _buckets([
-		["steel", STEEL_COLOR, "steel"],
-		["aluminum", DARK_METAL_COLOR, "aluminum"],
-		["bright", FIN_COLOR, "aluminum"]
-	])
-	var fork_steel: SurfaceTool = fork.steel
-	var fork_aluminum: SurfaceTool = fork.aluminum
-	var fork_bright: SurfaceTool = fork.bright
-	# Coaxial steering stem stays inside the fixed bearing at every yaw angle.
-	_cylinder(fork_steel, Vector3(0, 0.047, 0), Vector3(0, 0.075, 0), 0.0033, 0.0033, 12)
-	_bar(fork_steel, Vector3(-0.012, 0.055, 0.004), Vector3(0.012, 0.055, 0.004), 0.006, 0.007)
-	for side in [-1.0, 1.0]:
-		_bar(fork_steel, Vector3(side * 0.012, 0.060, 0.004), Vector3(side * 0.012, -0.003, 0.004), 0.0048, 0.003)
-		_cylinder(fork_aluminum, Vector3(side * 0.012, -0.001, -0.002), Vector3(side * 0.012, 0.004, -0.002), 0.004, 0.004, 10)
-		_bar(fork_bright, Vector3(0, 0.047, 0.004), Vector3(side * 0.024, 0.048, 0.004), 0.003, 0.002)
-		_cylinder(fork_steel, Vector3(side * 0.012, 0.000, -0.002), Vector3(side * 0.012, 0.003, -0.002), 0.0024, 0.0024, 6)
-	_flush(steering, "nose_fork_and_steering_arm", fork)
+	# Heights in the steering frame (origin on the wire axis at axle height).
+	var exit_y: float = _fuselage_height(z, false) - y
+	var bearing_bottom := exit_y - 0.006
+	var collar_top := bearing_bottom - NOSE_SPRING_LENGTH
+	var coil_y := collar_top - 0.006 - NOSE_COIL_RADIUS - 0.004
+
+	# Fixed: the nylon bearing where the wire leaves the fuselage (coaxial, so steering does not show).
+	var bearing: Dictionary = _buckets([["nylon", Color("e9e4d8"), "plastic"]])
+	_cylinder(bearing.nylon, Vector3(0, exit_y + 0.001, 0), Vector3(0, bearing_bottom, 0), 0.0055, 0.0055, 20)
+	_flush(steering, "nose_bearing", bearing)
+
+	# Compression spring between bearing and collar: built at free length downward from its top, scaled by GearFlex.
+	var spring_node := Node3D.new()
+	spring_node.name = "nose_spring_mount"
+	spring_node.position = Vector3(0, bearing_bottom, 0)
+	spring_node.set_meta("free_length_m", NOSE_SPRING_LENGTH)
+	steering.add_child(spring_node)
+	var spring: Dictionary = _buckets([["steel", STEEL_COLOR, "steel"]])
+	var helix: Array[Vector3] = []
+	var steps := NOSE_SPRING_TURNS * 16
+	for k in steps + 1:
+		var a := TAU * NOSE_SPRING_TURNS * float(k) / steps
+		helix.append(Vector3(NOSE_SPRING_RADIUS * cos(a), -NOSE_SPRING_LENGTH * float(k) / steps, NOSE_SPRING_RADIUS * sin(a)))
+	_sweep_tube(spring.steel, helix, NOSE_SPRING_WIRE, 6)
+	_flush(spring_node, "nose_spring", spring)
+
+	# Sliding wire: top inside the fuselage, collar, torsion coil, leg and axle stub; GearFlex lifts and bends it.
+	var slider := Node3D.new()
+	slider.name = "nose_strut_slider"
+	steering.add_child(slider)
+	var strut: Dictionary = _buckets([["steel", STEEL_COLOR, "steel"], ["dark", DARK_METAL_COLOR, "aluminum"]])
+	var wire: Array[Vector3] = [Vector3(0, exit_y + 0.030, 0), Vector3(0, coil_y, 0)]
+	_sweep_tube(strut.steel, wire, NOSE_WIRE_RADIUS, 10)
+	# Torsion coil: one turn, tangent to the vertical wire at its front point (the wire runs down into it and leaves
+	# downward again), centred aft of the wire, stepping NOSE_COIL_SHIFT sideways per turn.
+	var coil: Array[Vector3] = []
+	var coil_steps := 40
+	for k in coil_steps + 1:
+		var a := TAU * float(k) / coil_steps
+		coil.append(Vector3(NOSE_COIL_SHIFT * a / TAU, coil_y - NOSE_COIL_RADIUS * sin(a), NOSE_COIL_RADIUS * (1.0 - cos(a))))
+	_sweep_tube(strut.steel, coil, NOSE_WIRE_RADIUS, 10)
+	var leg_x := NOSE_COIL_SHIFT
+	# Leg down to the axle bend, then the stub through the hub and an outboard wheel collar.
+	var leg: Array[Vector3] = []
+	for k in GearFlex.LEG_SEGMENTS + 1:
+		leg.append(Vector3(leg_x, lerpf(coil_y, 0.006, float(k) / GearFlex.LEG_SEGMENTS), 0))
+	leg.append_array([Vector3(leg_x + 0.003, 0, 0), Vector3(NOSE_WHEEL_OFFSET + 0.014, 0, 0)])
+	_sweep_tube(strut.steel, leg, NOSE_WIRE_RADIUS, 10)
+	_cylinder(strut.dark, Vector3(0, collar_top, 0), Vector3(0, collar_top - 0.006, 0), 0.0042, 0.0042, 16)
+	_cylinder(strut.steel, Vector3(0.004, collar_top - 0.003, 0), Vector3(0.0055, collar_top - 0.003, 0), 0.0011, 0.0011, 6)
+	_cylinder(strut.dark, Vector3(NOSE_WHEEL_OFFSET + 0.0125, 0, 0), Vector3(NOSE_WHEEL_OFFSET + 0.0165, 0, 0), 0.0045, 0.0045, 14)
+	var strut_mesh := _flush(slider, "nose_gear_strut", strut)
+	# Below the coil (measured from the coil's lowest point, so the loop itself never deforms) the leg bows aft once
+	# the spring is solid (GearFlex column mode).
+	strut_mesh.set_meta("flex_leg", {root = Vector3(leg_x, coil_y - NOSE_COIL_RADIUS - NOSE_WIRE_RADIUS, 0), tip = Vector3(leg_x, 0, 0), side = 0.0, rigid_radius = 0.008, column = true, bow_axis = Vector3.BACK})
+	slider.set_meta("spring_travel_m", NOSE_SPRING_LENGTH - (NOSE_SPRING_TURNS + 1) * 2.0 * NOSE_SPRING_WIRE)
+	# US-V10: legs bend (main) and the nose wire telescopes into its spring (GearFlex).
+	var main := root.find_child("main_gear_structure", false, false) as MeshInstance3D
+	GearFlex.attach(root, gear, main, main.get_meta("flex_legs"), strut_mesh, strut_mesh.get_meta("flex_leg"), slider, spring_node)
 
 
 static func _fuselage_height(z: float, top: bool) -> float:

@@ -60,6 +60,14 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-13 · CR-09f — a SceneTree test that hits a script error hangs instead of failing
+
+When a `--script` SceneTree test raises a runtime script error (indexing `[0]` of an empty list, `.field` on `{}`), Godot prints the error and never reaches `quit()`; the runner only sees its timeout. Two CR-09f mutations looked like hangs for this reason. Fetch optional sections through helpers that return `{}` and read keys with `.get(key, default)`, so a missing part fails its checks and the summary line still prints. [CR-09e/f evidence](docs/research/crash-damage-investigations/CR-09e/README.md)
+
+## 2026-10-13 · US-V10 — bend presentation meshes with relative per-axis blend shapes
+
+The Compatibility renderer in 4.7.2 applies blend shapes. With `BLEND_SHAPE_MODE_RELATIVE` and three unit shapes per deforming part (X, Y, Z offsets weighted by a shape function), a physics offset in any direction becomes three blend weights: no per-frame vertex rebuild and no attitude assumptions. Two traps showed up. Boxes from `_bar` have vertices only at their ends, so a "bent" leg stays straight until it is segmented. And a test that computes its expected value with the function under test passed a linear-shape mutation, so check against an independent analytic value (5/16 of the tip at cantilever mid-span). [US-V10 evidence](docs/research/ugly-stik-finish-v6.md#us-v10--landing-gear-flex)
+
 ## 2026-10-13 · US-V09c — Geometry3D intersections miss millimetre triangles expressed in metres
 
 `Geometry3D.segment_intersects_triangle` and `ray_intersects_triangle` treat a determinant below their 1e-5 epsilon as parallel. A mesh built in metres with millimetre-sized triangles therefore returns no hit at all, and an interference check passes while the throttle pushrod runs straight through the exhaust casting. Scale points and triangles to millimetres, as `visual_checks.gd` already does. Keep a positive-control segment that must hit, and mutate the installation once to prove the probe fails. [US-V09c evidence](docs/research/ugly-stik-finish-v6.md#us-v09c--throttle-linkage)

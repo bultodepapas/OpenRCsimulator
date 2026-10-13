@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading, throttle linkage and propeller (US-V09a–d)
+# Ugly Stik · covering, shading, linkage, propeller, weathering and gear flex (US-V09a–h, US-V10)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -72,6 +72,54 @@ Evidence: [idle vs full throttle, left engine view](ugly-stik-finish-v6-evidence
 - **Contract (`visual_checks.gd`, within `verify_model.gd` 817/0):** the grain material is in use, the texture range and mean hold, and the UVs stay in range with U following the blade side. Two mutations on a disposable copy, the texture removed and U reversed, were each detected.
 
 Evidence (left `218361d`, right US-V09d; [hashes](ugly-stik-finish-v6-evidence/v09d-SHA256SUMS)): [propeller view](ugly-stik-finish-v6-evidence/v09d-propeller-ab.png), [blade zoom](ugly-stik-finish-v6-evidence/v09d-blade-zoom-ab.png). Reproduce with `research/ugly-stik/finish-v6/capture.sh <dir> --view propeller`.
+
+## US-V09e · glow-oil exhaust residue
+
+2026-10-13, at the owner's request. A flown glow two-stroke leaves oily residue streaming aft from the silencer. The muffler outlet in the engine build sits 25 mm outboard of the right (+X) side just ahead of the firewall, at y = −0.023 m, pointing aft, down and outboard.
+
+- **Atlas space:** the fuselage sides and belly previously sampled one red texel. They now unwrap into free atlas rows 280–520 (`appearance.json` → `fuselage_unwrap`). U runs along the fuselage at about 0.5 mm/px at 2048; V is the skin arc length from the belly centre line, positive on the exhaust side, about 0.6 mm/px. The flat top keeps the dorsal region, and the fuselage end caps stay plain red.
+- **Residue (`exhaust_residue`, an artistic estimate):** `compile_appearance.py` draws the residue in metres on the skin, using the measured fuselage stations and the builder's rounded-corner section. It starts at the outlet height, eases down to the bottom corner by z = 0.02 m, then runs inboard along the belly to z = 0.56 m, widening from 7 to 34 mm half-width and fading out. It has three stacked washes with user-space gradients, 70 flow streaks and 45 droplets near the outlet, all seeded (5175) so the output is reproducible. Set `exhaust_residue.enabled` to `false` and recompile for a factory-clean finish.
+- **Contract (`visual_checks.gd`, within `verify_model.gd` 817/0):** the unwrap holds every side/belly vertex inside its rows, and +X skin maps to the exhaust half; a mirrored-unwrap mutation was detected. The atlas is darkened behind the outlet on +X (red channel 0.37 against 0.78 clean), while the mirrored −X point and the tail stay exact red. `check_atlas.py` still passes (2048² editor/runtime byte match, stale SVG rejected); its disposable compiler copy now includes `geometry.json`.
+
+Evidence (left `f64900a`, right US-V09e, engine shadows off; [hashes](ugly-stik-finish-v6-evidence/v09e-SHA256SUMS)): [right side](ugly-stik-finish-v6-evidence/v09e-exhaust_side-ab.png), [belly](ugly-stik-finish-v6-evidence/v09e-belly-ab.png). Reproduce with `capture.sh <dir> --view exhaust_side` or `--view belly`.
+
+## US-V09f–h · tail spray, hatch seams and field wear
+
+2026-10-13, at the owner's request. These three steps follow US-V09e in the same atlas pipeline.
+
+- **US-V09f, stab spray:** the stabiliser and elevator now use the covering atlas. Their undersides map to free rows 532–636 (`stab_unwrap`, prism-local x span and z from the hinge, about 1.1 × 1.8 mm/unit); top faces and edges sample plain red. `exhaust_residue.stab` paints a light oil film on the right underside, from the root to x = 0.21 m: a gradient wash strongest at the leading edge, 34 tapered chordwise streaks and 60 droplets.
+- **US-V09g, hatch:** Jensen sheet 1 shows a 1/4 in sheet hatch from the fuselage front to 5.40 in aft, ahead of the fixed top piece bevelled into the wing saddle. The plan places the wing leading edge at 6.98 in, which matches the model's 0.176 m. The rear seam coincides with fuselage station 1, so the first top bay maps to its own region (x 914–1014, rows 646–986, about 0.4 mm/px). A 0.6 mm seam follows the front, the rear and both flat-top edges.
+- **US-V09h, field wear (`belly_wear`, an artistic estimate, `enabled` toggles it):** 160 grass and soil spots thrown by the nose wheel fade aft to the main gear; 26 light scuffs run between the gears and 18 tail-strike scrapes sit at the tail end. Seed 939.
+- **Contract (`visual_checks.gd`, within `verify_model.gd` 817/0):**
+  - Stab and elevator undersides sample the stab rows while their tops stay plain.
+  - The hatch spans the first bay, its lid triangles sample the hatch region, the rear seam is drawn and the lid centre stays clean.
+  - Spray appears only on the right stab underside.
+  - Wear sits behind the nose wheel, with a clean mid-belly.
+
+  Mutations on a disposable copy (hatch mapped to dorsal, stab underside unpainted, stab spray mirrored) were each detected. `check_atlas.py` passes.
+
+Evidence (left `f64900a`, which predates US-V09e, so the pairs show e–h together; engine shadows off; [hashes](ugly-stik-finish-v6-evidence/v09fgh-SHA256SUMS)): [stab underside](ugly-stik-finish-v6-evidence/v09f-stab-under-ab.png), [hatch](ugly-stik-finish-v6-evidence/v09g-hatch-ab.png), [front belly](ugly-stik-finish-v6-evidence/v09h-belly-front-ab.png). Bench views: `stab_under`, `hatch`, `belly_front`.
+
+## US-V10 · landing-gear flex
+
+2026-10-13, at the owner's request ("gear with some flexibility like the real ones"). `render/ground_gear.gd` already lifts each wheel pivot by the physics contact compression along world up. The legs stayed rigid, so the leg end poked past the hub even at the 16–23 mm static sag. The Stik's main gear is a bent 0.090 in 2024-T3 aluminium strap (Jensen sheet 1); the nose gear is a wire leg.
+
+- **Shape:** `app/aircraft/ugly_stik_gear_flex.gd` bends each leg as a clamped cantilever whose tip follows the axle, N(t) = (3t² − t³)/2 along the leg from the fuselage clamp (0) to the axle (1). Axle hardware within 20 mm of the main axle (16 mm at the nose) moves rigidly, like the strap end clamped by the axle bolt. The main straps are now 12 segments, so the bend has interior vertices. The nose gear was rebuilt as a sprung wire in [US-V10b](#us-v10b--sprung-nose-gear), so the cantilever bend now applies to the main legs only.
+- **GPU deformation:** each leg carries three relative blend shapes, unit X, Y and Z, so any attitude-dependent "world up" maps onto the leg at zero CPU cost per frame. The node runs after `GroundGearMotion` (`process_priority` 10) and never writes simulation state. Compatibility 4.7.2 renders the blend shapes, confirmed in the bench and the production scene.
+- **Magnitudes:** the bend uses the physics compression unchanged: 18 mm static sag, about 0.10 m at a 2 m/s sink and 0.12 m maximum, from `jensen_ugly_stik_60.json`. That contact is the equivalent compliance of leg plus foam tyre, softened for the 240 Hz stability rule, so the drawn bend includes the tyre's share. The axle moves straight up as the contact does; a real strap also splays the track outward, which the contact model does not represent.
+- **Proof:** `app/tests/test_gear_flex.gd`, 18/0, rebuilds the deformed meshes on the CPU (base + Σ weight × blend offset). It checks that the clamp is fixed, the axle follows the wheel, mid-span equals 5/16 of the tip (an analytic value, independent of the code under test), the legs are independent, an attitude-tilted contact direction is honoured, a steered nose strut follows the axle in root space, the fork rides with its wheel, release restores the built legs, and the node is ordered after GroundGear. Mutations on a disposable copy (linear shape, no rigid axle hardware, wrong process order) were each detected. `verify_model` 818/0; render contract, propeller blur, projected shadows, crash and ground-contact tests pass.
+
+Evidence ([hashes](ugly-stik-finish-v6-evidence/v10-SHA256SUMS)): [bench, front view at 0 / 18 / 80 mm](ugly-stik-finish-v6-evidence/v10-gear-flex-0-18-80mm.png) (`capture.sh <dir> --view gear_front --gear-compression 0.08`); [production scene resting on the runway, before/after](ugly-stik-finish-v6-evidence/v10-runway-rest-ab.png) (physics compressions 0.017/0.016/0.023 m; a scratch script started `main.tscn` with `start_choice = "runway"`, because CLI launches are always airborne).
+
+## US-V10b · sprung nose gear
+
+2026-10-13, from the owner's reference photo of a sprung nose gear (compression spring above a collar, torsion loop, single-sided wheel). The Jensen plan (sheet 1) shows the same family: a 5/32 in wire through nylon bearings just aft of F1, a collar and steering arm inside, a torsion coil below the fuselage and a single-sided 2-3/4 in wheel. The previous model used a fixed curved wire with a two-sided fork, and US-V10 bent that wire like a cantilever. Neither matched.
+
+- **Geometry (estimates in the photo's proportions):** a nylon bearing sits where the wire leaves the fuselage. Below it are a 55 mm, 9-turn compression spring, a collar with set screw, and a one-turn torsion coil tangent to the wire (stepping away from the wheel). Then comes a straight leg and an axle stub through the hub with an outboard collar. The whole wire steers about its own axis, so the steering pivot is on the wire and the wheel hangs 17 mm beside it, centred on the physics contact (x = 0). At the 20° steering limit the wheel swings ±5.8 mm, as on the real gear.
+- **Springing:** the physics nose contact is already a spring-damper (440 N/m, 16.5 N·s/m, 23 mm static sag). The wire now telescopes through its bearing and the spring shortens by the same amount, up to its 43 mm working travel; a few-N/mm spring in series with the wire takes essentially all of it. Past solid, the leg below the coil bows aft while its ends approach (half-sine column geometry, a = 2·√(L·Δ)/π, so the axle stays on the wheel), capped at 15 mm, where linear vertex offsets still read as a round wire. Only near the soft contact's 0.12 m breaking compression does the remaining excess drive the solid spring, collar and wire up into the fuselage, as a yielding gear mount would.
+- **Proof:** `test_gear_flex.gd`, 27/0, covers spring travel below free length; slide = compression up to travel; spring length = free − slide; axle = slide + bend = compression; bow = 2√(LΔ)/π against an independent leg length; the bow cap and mount excess at 0.12 m; the steering frame; and release. Mutations on a disposable copy (no bow, spring never slides, bow forward) were each detected. `verify_model` 827/0, with the spin/steering check split because the steered axle now swings about the wire axis (17 mm radius, checked). `verify_controls` 376/0, its throttle-rod probe now also covering the bearing and spring. The render contract, propeller blur, shadows, crash and ground-contact tests pass.
+
+Evidence ([hashes](ugly-stik-finish-v6-evidence/v10b-SHA256SUMS)): [before/after at 0 and 23 mm](ugly-stik-finish-v6-evidence/v10b-nose-before-after-0-23mm.png) (left pair: `HEAD` fork design; right pair: sprung gear), [spring sequence at 23 / 50 / 80 mm](ugly-stik-finish-v6-evidence/v10b-nose-spring-23-50-80mm.png). Bench: `capture.sh <dir> --view nose_gear --gear-compression 0.023`.
 
 ## Limits and open findings
 

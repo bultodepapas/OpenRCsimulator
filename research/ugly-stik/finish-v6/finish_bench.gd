@@ -14,6 +14,14 @@ const VIEWS := {
 	"under": [Vector3(-1.6, -1.4, -1.5), Vector3(0, 0, 0.1), 32.0],
 	"tail": [Vector3(-0.7, 0.35, 1.55), Vector3(0, 0.08, 0.75), 30.0],
 	"nose": [Vector3(-0.55, 0.2, -0.75), Vector3(0, 0, -0.2), 32.0],
+	"exhaust_side": [Vector3(1.25, -0.12, -0.05), Vector3(0.0, -0.03, 0.08), 34.0],
+	"belly": [Vector3(0.55, -1.25, 0.05), Vector3(0.0, -0.04, 0.10), 40.0],
+	"stab_under": [Vector3(0.42, -0.62, 0.42), Vector3(0.10, -0.05, 0.74), 34.0],
+	"hatch": [Vector3(-0.22, 0.30, -0.52), Vector3(0.0, 0.035, -0.22), 30.0],
+	"belly_front": [Vector3(0.10, -0.62, -0.30), Vector3(0.0, -0.05, -0.08), 40.0],
+	"gear_front": [Vector3(-0.35, -0.10, -1.25), Vector3(0.0, -0.16, 0.0), 30.0],
+	"gear_side": [Vector3(-1.1, -0.12, -0.05), Vector3(0.0, -0.15, -0.05), 30.0],
+	"nose_gear": [Vector3(-0.34, -0.13, -0.40), Vector3(-0.01, -0.15, -0.255), 30.0],
 	"propeller": [Vector3(-0.22, 0.10, -0.66), Vector3(0.0, 0.03, -0.41), 30.0],
 	"throttle": [Vector3(-0.20, 0.11, -0.42), Vector3(-0.012, 0.018, -0.36), 24.0],
 }
@@ -27,10 +35,12 @@ func _run() -> void:
 	var out := ""
 	var only := ""
 	var throttle := 0.5
+	var compression := 0.0
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="): out = arg.trim_prefix("--out=")
 		elif arg.begins_with("--view="): only = arg.trim_prefix("--view=")
 		elif arg.begins_with("--throttle="): throttle = float(arg.trim_prefix("--throttle="))
+		elif arg.begins_with("--gear_compression="): compression = float(arg.trim_prefix("--gear_compression="))
 	DirAccess.make_dir_recursive_absolute(out)
 	await process_frame
 	var world := WorldEnvironment.new()
@@ -43,6 +53,12 @@ func _run() -> void:
 	var builder: GDScript = AirplaneBuilder
 	for method in builder.get_script_method_list():
 		if method.name == "apply_throttle": builder.call("apply_throttle", airplane, throttle)
+	# Same as render/ground_gear.gd: the contact compression lifts each axle along world up (level airplane here).
+	if compression != 0.0:
+		for key in ["left", "right", "nose"]:
+			if airplane.gear.has(key): airplane.gear[key].position += Vector3.UP * compression
+		var flex: Node = airplane.root.find_child("gear_flex", false, false)
+		if flex != null: flex.call("update")
 	var camera := Camera3D.new()
 	root.add_child(camera)
 	camera.current = true

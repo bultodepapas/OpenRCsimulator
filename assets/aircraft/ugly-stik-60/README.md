@@ -4,7 +4,7 @@
 
 Edit [geometry.json](geometry.json). Each parameter group records evidence and limitations. Coordinates are metres, +X right, +Y up, −Z nose. The assembly datum is not a measured center of gravity. Mass, inertia, thrust and aerodynamic coefficients belong to physics data.
 
-Edit [appearance.json](appearance.json) for the classic red/white/black composition. These are artistic estimates informed by the owner's photographs, separate from geometry and flight data. `compile_appearance.py` generates both the original vector atlas `app/aircraft/livery.svg` and `ugly_stik_appearance.gd`. The latter embeds the same SVG for a single runtime rasterization with mipmaps: editor cache and third-party images are not needed to run or export the model.
+Edit [appearance.json](appearance.json) for the classic red/white/black composition. These are artistic estimates informed by the owner's photographs, separate from geometry and flight data. Since US-V09e the atlas also carries glow-oil exhaust residue on the right side and belly; set `exhaust_residue.enabled` (also the stab spray, US-V09f) or `belly_wear.enabled` (US-V09h) to `false` and recompile for a clean finish. The hatch seams (US-V09g) are plan geometry and stay. The compiler reads `geometry.json` for the fuselage stations. `compile_appearance.py` generates both the original vector atlas `app/aircraft/livery.svg` and `ugly_stik_appearance.gd`. The latter embeds the same SVG for a single runtime rasterization with mipmaps: editor cache and third-party images are not needed to run or export the model.
 
 From the repository root:
 

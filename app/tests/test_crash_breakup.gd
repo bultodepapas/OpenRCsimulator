@@ -57,7 +57,8 @@ func _start(class_label: String, component: String, velocity := Vector3(0.0, -8.
 	_wreck.start(_pose, velocity, Vector3.ZERO, _severity(class_label, component, contact))
 	var detached: Array = []
 	for group: Dictionary in _wreck._groups.slice(1):
-		if bool(group.detached):
+		# CR-09e: tail surfaces carried by a breaking tail boom leave the core too (on the boom's body).
+		if bool(group.detached) or bool(group.get("carried", false)):
 			detached.append(String(group.kind))
 	detached.sort()
 	return detached
@@ -69,6 +70,23 @@ func _sorted(kinds: Array) -> Array:
 	return out
 
 
+# CR-09f: parts fixed to a released section ride with it (render/crash/wreck.gd CARRIERS), so they leave the core too.
+const CHILDREN := {
+	"wing_left": ["aileron_left"], "wing_right": ["aileron_right"], "wing_center": ["aileron_left", "aileron_right"],
+	"horizontal_tail": ["elevator"], "vertical_tail": ["rudder"],
+	"tail_boom": ["horizontal_tail", "vertical_tail", "elevator", "rudder"],
+}
+
+
+## Expected released kinds: the sections plus the parts attached to them, as far as this model has them.
+func _expect(kinds: Array) -> Array:
+	var out: Array = []
+	for kind in kinds:
+		for k in [kind] + CHILDREN.get(kind, []):
+			if not out.has(k): out.append(k)
+	return _sorted(_present(out))
+
+
 func _present(kinds: Array) -> Array:
 	var names: Array = _wreck.stats().fragment_groups
 	return kinds.filter(func(kind: String) -> bool: return names.has(kind))
@@ -78,8 +96,8 @@ func _class_two() -> void:
 	_check("C2 spinner hit releases only the propeller", _start("C2", "spinner") == ["propeller"])
 	_check("C2 release adds no scatter energy", is_zero_approx(float(_wreck.stats().scatter_energy_j)))
 	_check("C2 nose hit releases only the propeller", _start("C2", "nose") == ["propeller"])
-	_check("C2 stab-tip hit releases only the tailplane", _start("C2", "left_stab_tip") == _present(["horizontal_tail"]))
-	_check("C2 fin-top hit releases only the fin", _start("C2", "fin_top") == _present(["vertical_tail"]))
+	_check("C2 stab-tip hit releases only the tailplane", _start("C2", "left_stab_tip") == _expect(["horizontal_tail"]))
+	_check("C2 fin-top hit releases only the fin", _start("C2", "fin_top") == _expect(["vertical_tail"]))
 	_check("C2 wing-tip hit keeps the airframe together", _start("C2", "left_wing_tip").is_empty())
 	_check("C2 belly hit keeps the airframe together", _start("C2", "belly").is_empty())
 	_check("C2 geometric fuselage estimate keeps the airframe together", _start("C2", "fuselage").is_empty())
@@ -92,14 +110,25 @@ func _class_two() -> void:
 
 
 func _class_three() -> void:
-	_check("C3 left wing-tip hit releases only the left wing", _start("C3", "left_wing_tip") == ["wing_left"])
-	_check("C3 right wing-tip hit releases only the right wing", _start("C3", "right_wing_tip") == ["wing_right"])
+	_check("C3 left wing-tip hit releases only the left wing", _start("C3", "left_wing_tip") == _expect(["wing_left"]))
+	_check("C3 right wing-tip hit releases only the right wing", _start("C3", "right_wing_tip") == _expect(["wing_right"]))
 	_check("C3 nose hit releases propeller, engine and canopy", _start("C3", "nose") == _sorted(_present(["propeller", "engine", "canopy"])))
-	_check("C3 fin hit releases both tail sections", _start("C3", "fin_top") == _sorted(_present(["horizontal_tail", "vertical_tail"])))
-	_check("C3 inverted canopy hit releases canopy and fin", _start("C3", "canopy") == _sorted(_present(["canopy", "vertical_tail"])))
-	var legacy := _sorted(_present(["wing_left", "wing_right", "wing_center", "horizontal_tail", "vertical_tail"]))
+	_check("C3 fin hit releases both tail sections and the boom they are glued to", _start("C3", "fin_top") == _expect(["horizontal_tail", "vertical_tail", "tail_boom"]))
+	if _present(["tail_boom"]).size() == 1:
+		var boom: Dictionary = _group("tail_boom")
+		var carried: Array = _wreck._groups.slice(1).filter(func(g: Dictionary) -> bool: return bool(g.get("carried", false)))
+		var tail_parts := _present(["horizontal_tail", "vertical_tail", "elevator", "rudder"]).size()
+		_check("C3 tail hit: stab, fin and their hinged surfaces ride on the boom as one body", carried.size() == tail_parts and boom.detached
+			and boom.members.size() > 1 and carried.all(func(g: Dictionary) -> bool: return not bool(g.detached)))
+		_check("C3 tail hit: the boom carries its surfaces' mass", float(boom.mass) > 0.0 and boom.get("carried_keys", []).size() == tail_parts)
+		_start("C4", "fin_top")
+		_check("C4 breaks the surfaces off the boom", _wreck._groups.slice(1).all(func(g: Dictionary) -> bool: return not bool(g.get("carried", false))))
+	_check("C3 inverted canopy hit releases canopy and fin", _start("C3", "canopy") == _expect(["canopy", "vertical_tail"]))
+	var legacy := _expect(["wing_left", "wing_right", "wing_center", "horizontal_tail", "vertical_tail"])
 	_check("C3 belly hit keeps the legacy wings-and-tails set", _start("C3", "belly") == legacy)
-	_check("C3 records its release set", _sorted(_wreck.stats().release_kinds) == [] and _start("C3", "fin_top") == _sorted(_wreck.stats().release_kinds))
+	var before: Array = _wreck.stats().release_kinds
+	var got := _start("C3", "fin_top")
+	_check("C3 records its release set (plus the parts riding with it)", _sorted(before) == [] and got == _expect(_wreck.stats().release_kinds))
 	_check("C4 still releases every section", _start("C4", "left_wing_tip").size() == _wreck._groups.size() - 1)
 
 

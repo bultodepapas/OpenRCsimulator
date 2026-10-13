@@ -178,7 +178,7 @@ func _transformed_horn_matches(root: Node3D, mechanism: Dictionary) -> bool:
 # millimetres, at 11 throttles.
 func _throttle_rod_engine_hits(root: Node3D, controls: Dictionary, airplane: Dictionary) -> Array:
 	var triangles := PackedVector3Array()
-	for mesh_name in ["engine_assembly", "nose_gear_strut", "nose_fork_and_steering_arm"]:
+	for mesh_name in ["engine_assembly", "nose_gear_strut", "nose_bearing", "nose_spring"]:
 		var part := root.find_child(mesh_name, true, false) as MeshInstance3D
 		if part == null: return ["missing " + mesh_name]
 		var to_root := Transform3D.IDENTITY

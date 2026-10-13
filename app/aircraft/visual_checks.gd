@@ -133,6 +133,97 @@ func _tangents_follow_uv(arrays: Array) -> bool:
 	return measured > 0 and aligned >= int(ceil(0.98 * measured))
 
 
+# US-V09e: the sides and belly unwrap into their own atlas rows; glow-oil residue sits only behind the exhaust (+X).
+func _check_exhaust_residue(airplane: Dictionary, atlas: Image) -> void:
+	var f: Dictionary = Finish.Appearance.DATA.fuselage_unwrap
+	var fuselage := airplane.root.find_child("fuselage", false, false) as MeshInstance3D
+	var uv: PackedVector2Array = fuselage.mesh.surface_get_arrays(0)[Mesh.ARRAY_TEX_UV]
+	var vertices: PackedVector3Array = fuselage.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var unwrapped := 0
+	var inside := true
+	var sided := true
+	for i in uv.size():
+		var y := uv[i].y * 1024.0
+		if y < float(f.y_px[0]) - 0.5 or y > float(f.y_px[1]) + 0.5: continue # dorsal top or plain end caps
+		unwrapped += 1
+		var x := uv[i].x * 1024.0
+		inside = inside and x >= float(f.x_px[0]) - 0.01 and x <= float(f.x_px[1]) + 0.01
+		# +X skin maps below the belly centre row (positive arc length), −X above it.
+		var mid := 0.5 * (float(f.y_px[0]) + float(f.y_px[1]))
+		if absf(vertices[i].x) > 0.004: sided = sided and signf(vertices[i].x) == signf(y - mid)
+	check("fuselage sides and belly use the unwrap region (%d vertices)" % unwrapped, unwrapped > 100 and inside)
+	check("fuselage unwrap keeps +X skin on the exhaust half", sided)
+	var r: Dictionary = Finish.Appearance.DATA.exhaust_residue
+	if not r.enabled: return
+	var sample := func(z: float, arc_s: float) -> Color:
+		var p := Finish.fuselage_uv(z, arc_s) * float(atlas.get_width())
+		return atlas.get_pixel(int(p.x), int(p.y))
+	var stained: Color = sample.call(-0.24, 0.056)
+	var mirror: Color = sample.call(-0.24, -0.056)
+	var tail: Color = sample.call(0.70, 0.02)
+	check("exhaust residue darkens the +X side behind the outlet (%s)" % stained, stained.r < 0.6 * Finish.RED.r)
+	check("no residue on the −X side or the tail (%s %s)" % [mirror, tail], mirror.is_equal_approx(Finish.RED) and tail.is_equal_approx(Finish.RED))
+
+
+# US-V09f–h: stab underside spray (+X only), hatch seams on the plan's hatch bay, belly wear behind the nose wheel.
+func _check_hatch_and_wear(atlas: Image) -> void:
+	var scale := float(atlas.get_width())
+	var mean_red := func(uv: Vector2) -> float:
+		var total := 0.0
+		for dy in range(-4, 5):
+			for dx in range(-4, 5):
+				total += atlas.get_pixel(clampi(int(uv.x * scale) + dx, 0, atlas.get_width() - 1), clampi(int(uv.y * scale) + dy, 0, atlas.get_height() - 1)).r
+		return total / 81.0
+	var stations: Array = Geometry.DATA.fuselage_stations
+	var h: Dictionary = Finish.Appearance.DATA.hatch
+	check("hatch spans the first fuselage bay", is_equal_approx(float(h.z_m[0]), float(stations[0][0])) and is_equal_approx(float(h.z_m[1]), float(stations[1][0])))
+	var rear_seam: Color = atlas.get_pixel(int(Finish.uv(Vector3(0, 0, float(h.z_m[1]) - float(h.seam_width_m)), "hatch").x * scale), int(Finish.uv(Vector3(0, 0, float(h.z_m[1]) - float(h.seam_width_m)), "hatch").y * scale))
+	var lid: Color = atlas.get_pixel(int(Finish.uv(Vector3(0, 0, -0.22), "hatch").x * scale), int(Finish.uv(Vector3(0, 0, -0.22), "hatch").y * scale))
+	check("hatch rear seam is drawn and the lid stays clean (%s %s)" % [rear_seam, lid], rear_seam.r < 0.75 * Finish.RED.r and lid.is_equal_approx(Finish.RED))
+	var right_stab: float = mean_red.call(Finish.uv(Vector3(0.03, 0, -0.13), "stab_under"))
+	var left_stab: float = mean_red.call(Finish.uv(Vector3(-0.03, 0, -0.13), "stab_under"))
+	check("stabiliser spray only on the right underside (%.3f vs %.3f)" % [right_stab, left_stab], right_stab < 0.93 * Finish.RED.r and is_equal_approx(left_stab, Finish.RED.r))
+	if Finish.Appearance.DATA.belly_wear.enabled:
+		var front: float = mean_red.call(Finish.fuselage_uv(-0.21, 0.0))
+		var clean: float = mean_red.call(Finish.fuselage_uv(0.35, -0.04))
+		check("belly wear behind the nose wheel (%.3f) and a clean mid-belly (%.3f)" % [front, clean], front < 0.97 * Finish.RED.r and is_equal_approx(clean, Finish.RED.r))
+
+
+# Meshes must actually sample the painted regions: stab/elevator undersides and the hatch lid.
+func _check_painted_regions(airplane: Dictionary) -> void:
+	var stab_rows: Array = Finish.Appearance.DATA.stab_unwrap.y_px
+	for mesh_name in ["stab", "elevator"]:
+		var node := airplane.root.find_child(mesh_name, true, false) as MeshInstance3D
+		var arrays := node.mesh.surface_get_arrays(0)
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+		var under := 0
+		var mapped := true
+		for i in normals.size():
+			if normals[i].y < -0.99:
+				under += 1
+				mapped = mapped and uv[i].y * 1024.0 >= float(stab_rows[0]) - 0.01 and uv[i].y * 1024.0 <= float(stab_rows[1]) + 0.01
+			elif normals[i].y > 0.99:
+				mapped = mapped and uv[i].is_equal_approx(Finish.uv(Vector3.ZERO, "red"))
+		check("%s underside samples the painted stab rows, top stays plain (%d)" % [mesh_name, under], under > 0 and mapped)
+	var fuselage := airplane.root.find_child("fuselage", false, false) as MeshInstance3D
+	var arrays := fuselage.mesh.surface_get_arrays(0)
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	var lid := 0
+	var lid_mapped := true
+	var h: Dictionary = Finish.Appearance.DATA.hatch
+	for i in range(0, vertices.size(), 3):
+		# Lid triangles: all three normals vertical, ahead of the rear seam (corner-arc triangles share edge vertices).
+		var flat_top := true
+		for k in 3: flat_top = flat_top and normals[i + k].y > 0.99 and vertices[i + k].z <= float(h.z_m[1]) + 1e-6
+		if not flat_top: continue
+		lid += 1
+		for k in 3: lid_mapped = lid_mapped and uv[i + k].x * 1024.0 >= float(h.x_px[0]) - 0.01 and uv[i + k].x * 1024.0 <= float(h.x_px[1]) + 0.01 and uv[i + k].y * 1024.0 >= float(h.y_px[0]) - 0.01 and uv[i + k].y * 1024.0 <= float(h.y_px[1]) + 0.01
+	check("hatch lid samples the hatch region (%d triangles)" % lid, lid > 0 and lid_mapped)
+
+
 # US-V09d: varnished wooden blades with grain; the texture only darkens (0.79..1) and stays close to 1 on average so
 # the propeller blur disc, which copies albedo_color, keeps the blade colour within a few percent.
 func _check_propeller_wood(airplane: Dictionary) -> void:
@@ -273,6 +364,9 @@ func run(airplane: Dictionary) -> Dictionary:
 	check("same color different finishes stay distinct", Finish.material(Color.GRAY, "rubber") != Finish.material(Color.GRAY, "steel"))
 	_check_film_structure(skin)
 	_check_propeller_wood(airplane)
+	_check_exhaust_residue(airplane, image)
+	_check_hatch_and_wear(image)
+	_check_painted_regions(airplane)
 	var engine_probe_report := _check_engine_mesh(airplane)
 	a.free()
 	b.free()

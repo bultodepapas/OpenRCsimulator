@@ -6,6 +6,7 @@ const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Controls := preload("res://aircraft/ugly_stik_controls.gd")
 const Equipment := preload("res://aircraft/ugly_stik_equipment.gd")
 const Finish := preload("res://aircraft/ugly_stik_finish.gd")
+const Fracture := preload("res://aircraft/ugly_stik_fracture.gd")
 const D: Dictionary = Geometry.DATA
 const RED := Finish.RED
 const CREAM := Color("f7eedb")
@@ -84,7 +85,9 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 	var triangles := Geometry2D.triangulate_polygon(polygon)
 	assert(not triangles.is_empty(), "Invalid model outline: " + label)
 	var textured := label == "fin" or label == "rudder"
-	var st := _surface(color, textured)
+	# US-V09f: the stabiliser and elevator use the covering atlas too; only their undersides map to a painted region.
+	var stab := label == "stab" or label == "elevator_part"
+	var st := _surface(color, textured or stab)
 	var gap := SurfaceTool.new()
 	gap.begin(Mesh.PRIMITIVE_TRIANGLES)
 	gap.set_material(Finish.hinge_gap())
@@ -96,7 +99,7 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 			for k in 3:
 				var p := polygon[triangles[i + k]]
 				points.append(Vector3(side * thickness / 2, p.x, p.y) if vertical else Vector3(p.x, side * thickness / 2, p.y))
-			_triangle(st, points[0], points[1], points[2], normal, "fin" if textured else "")
+			_triangle(st, points[0], points[1], points[2], normal, "fin" if textured else ("stab_under" if side < 0.0 else "red") if stab else "")
 	var clockwise := Geometry2D.is_polygon_clockwise(polygon)
 	for i in polygon.size():
 		var p := polygon[i]
@@ -110,20 +113,20 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 		var d := Vector3(-thickness / 2, q.x, q.y) if vertical else Vector3(q.x, -thickness / 2, q.y)
 		var on_hinge := absf(p.y - gap_offset) < 1e-7 and absf(q.y - gap_offset) < 1e-7
 		has_gap = has_gap or on_hinge
-		_quad(gap if on_hinge else st, a, b, c, d, n, "white" if textured else "red" if on_hinge else "")
-	if textured: st.generate_tangents()
+		_quad(gap if on_hinge else st, a, b, c, d, n, "white" if textured else "red" if on_hinge or stab else "")
+	if textured or stab: st.generate_tangents()
 	var mesh := st.commit()
 	if has_gap: gap.commit(mesh)
 	return _instance(label, mesh, parent)
 
 
-static func _smooth_quad(st: SurfaceTool, points: Array, normals: Array, outward: Vector3, region: String) -> void:
+static func _smooth_quad(st: SurfaceTool, points: Array, normals: Array, outward: Vector3, region: String, uvs: Array = []) -> void:
 	for indices in [[0, 1, 2], [0, 2, 3]]:
 		if (points[indices[2]] - points[indices[0]]).cross(points[indices[1]] - points[indices[0]]).dot(outward) < 0:
 			indices = [indices[0], indices[2], indices[1]]
 		for index in indices:
 			st.set_normal(normals[index])
-			st.set_uv(Finish.uv(points[index], region))
+			st.set_uv(uvs[index] if not uvs.is_empty() else Finish.uv(points[index], region))
 			st.add_vertex(points[index])
 
 
@@ -131,6 +134,7 @@ static func _smooth_quad(st: SurfaceTool, points: Array, normals: Array, outward
 # ends, so the measured half-width, top and bottom stay the envelope. Normals are smooth around the section and
 # per bay along the fuselage, keeping the straight-sheet creases at every measured station.
 const FUSELAGE_CORNER_SEGMENTS := 4
+const FUSELAGE_BREAK_STATION := 5 # z = 0.317 m, first measured station aft of the wing trailing edge (0.190 m)
 
 static func _fuselage(root: Node3D) -> void:
 	var rings: Array = []
@@ -151,6 +155,17 @@ static func _fuselage(root: Node3D) -> void:
 				directions.append(n)
 		rings.append(ring)
 	var count: int = directions.size()
+	# US-V09e unwrap: arc length from each ring's start (top-right edge of the flat top), then measured from the belly
+	# centre line, the middle of the flat bottom (between the last bottom-right and first bottom-left arc points).
+	var arcs: Array = []
+	for ring in rings:
+		var cumulative := [0.0]
+		for k in range(1, count): cumulative.append(cumulative[k - 1] + (ring[k] - ring[k - 1]).length())
+		var bottom_right := 2 * (FUSELAGE_CORNER_SEGMENTS + 1) - 1
+		var centre: float = cumulative[bottom_right] + 0.5 * (ring[bottom_right + 1] - ring[bottom_right]).length()
+		var arc: Array = []
+		for k in count: arc.append(centre - cumulative[k])
+		arcs.append(arc)
 	var st := _surface(RED, true)
 	for i in range(rings.size() - 1):
 		for j in count:
@@ -164,7 +179,14 @@ static func _fuselage(root: Node3D) -> void:
 				normals.append(n if n.dot(n2) > 0.0 else -n)
 			var outward: Vector3 = (directions[j] + directions[k]).normalized()
 			var top_flat: bool = directions[j].y > 0.999 and directions[k].y > 0.999
-			_smooth_quad(st, points, normals, outward, "dorsal" if top_flat else "red")
+			if top_flat:
+				# The first bay is exactly the plan's hatch (rear seam at station 1, Appearance.hatch).
+				_smooth_quad(st, points, normals, outward, "hatch" if i == 0 else "dorsal")
+			else:
+				var uvs: Array = []
+				for corner in [[i, j], [i, k], [i + 1, k], [i + 1, j]]:
+					uvs.append(Finish.fuselage_uv(rings[corner[0]][corner[1]].z, arcs[corner[0]][corner[1]]))
+				_smooth_quad(st, points, normals, outward, "", uvs)
 	for end in [0, rings.size() - 1]:
 		var center := Vector3.ZERO
 		for p in rings[end]: center += p
@@ -172,7 +194,42 @@ static func _fuselage(root: Node3D) -> void:
 		for j in count:
 			_triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1 if end == 0 else 1), "red")
 	st.generate_tangents()
-	_instance("fuselage", st.commit(), root)
+	var mesh := st.commit()
+	# CR-09f: raw balsa inside the box (Jensen sheet 1: 1/4 in sides, 1/8 in top, 3/32 in bottom), facing the cavity:
+	# the same rounded section shrunk by each wall's sheet, with a smaller corner radius. A separate mesh, so the skin
+	# stays the closed solid the clearance tools probe; enclosed in flight and seen only where the wreck breaks it open.
+	var inner := SurfaceTool.new()
+	inner.begin(Mesh.PRIMITIVE_TRIANGLES)
+	inner.set_material(Finish.material(Fracture.BALSA, "wood"))
+	var inner_rings: Array = []
+	for station in D.fuselage_stations:
+		var wi: float = float(station[1]) - Fracture.SIDE_SHEET_M
+		var top_i: float = float(station[2]) - Fracture.TOP_SHEET_M
+		var bottom_i: float = float(station[3]) + Fracture.BOTTOM_SHEET_M
+		var radius := clampf(minf(float(station[1]) * 0.16, (float(station[2]) - float(station[3])) * 0.12) - 0.003, 0.0004, 0.45 * minf(wi, top_i - bottom_i))
+		var ring: Array = []
+		for corner in [[wi - radius, top_i - radius, 90.0], [wi - radius, bottom_i + radius, 0.0], [-wi + radius, bottom_i + radius, -90.0], [-wi + radius, top_i - radius, -180.0]]:
+			for k in FUSELAGE_CORNER_SEGMENTS + 1:
+				var angle := deg_to_rad(float(corner[2]) - 90.0 * k / FUSELAGE_CORNER_SEGMENTS)
+				ring.append(Vector3(corner[0], corner[1], float(station[0])) + Vector3(cos(angle), sin(angle), 0) * radius)
+		inner_rings.append(ring)
+	for i in range(inner_rings.size() - 1):
+		for j in count:
+			var k := (j + 1) % count
+			var points := [inner_rings[i][j], inner_rings[i][k], inner_rings[i + 1][k], inner_rings[i + 1][j]]
+			var normals := [-directions[j], -directions[k], -directions[k], -directions[j]]
+			_smooth_quad(inner, points, normals, -(directions[j] + directions[k]).normalized(), "")
+	var lining := _instance("fuselage_lining", inner.commit(), root)
+	var fuselage := _instance("fuselage", mesh, root)
+	# CR-09e: in a heavy crash the boom snaps at the first station aft of the wing trailing edge (estimate: where the
+	# Stik's fuselage starts to taper behind the saddle). The map follows the triangle order above: bays, then the
+	# front and rear caps. Only the wreck's twin is split (render/crash/section_splitter.gd); this mesh never changes.
+	var bay_triangles := 2 * count
+	var bays := rings.size() - 1
+	fuselage.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
+		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles, 0, count, 1, count]]})
+	lining.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
+		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles]]})
 
 
 # A traced tip tapers spanwise toward the leading edge, preserving nominal maximum span.
@@ -259,20 +316,29 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 	var polygon := PackedVector2Array()
 	for p in section: polygon.append(Vector2(p[0] * D.wing.chord + z_offset, p[1] * D.wing.chord))
 	var triangles := Geometry2D.triangulate_polygon(polygon)
+	# CR-09f: the cap on the centre line is the 1/4 in balsa root rib (W1), hidden against the other half in flight and
+	# bare wood once the wreck tears the half off.
+	var rib := SurfaceTool.new()
+	rib.begin(Mesh.PRIMITIVE_TRIANGLES)
+	rib.set_material(Finish.material(Fracture.BALSA, "wood"))
 	for x in [x0, x1]:
+		var root_rib := is_zero_approx(x + span_offset)
+		var target := rib if root_rib else st
 		for i in range(0, triangles.size(), 3):
 			# Closed caps use the same planar atlas and winding as the adjacent skin.
 			var vertices := [_wing_vertex(x, section[triangles[i]], z_offset, span_offset, chord_origin), _wing_vertex(x, section[triangles[i + 1]], z_offset, span_offset, chord_origin), _wing_vertex(x, section[triangles[i + 2]], z_offset, span_offset, chord_origin)]
 			var n := Vector3(-1 if x == x0 else 1, 0, 0)
 			if (vertices[2] - vertices[0]).cross(vertices[1] - vertices[0]).dot(n) < 0: vertices.reverse()
 			for point in vertices:
-				st.set_normal(n)
-				st.set_uv(Finish.uv(point + uv_offset, "wing"))
-				st.add_vertex(point)
+				target.set_normal(n)
+				target.set_uv(Finish.uv(point + uv_offset, "wing"))
+				target.add_vertex(point)
 	st.generate_tangents() # US-V09b: the covering's film-structure normal map needs a tangent frame
 	var mesh := st.commit()
 	var gap_vertices: Variant = gap.commit_to_arrays()[Mesh.ARRAY_VERTEX]
 	if gap_vertices != null and not gap_vertices.is_empty(): gap.commit(mesh)
+	var rib_vertices: Variant = rib.commit_to_arrays()[Mesh.ARRAY_VERTEX]
+	if rib_vertices != null and not rib_vertices.is_empty(): rib.commit(mesh)
 	_instance(label, mesh, parent)
 
 
@@ -280,6 +346,8 @@ static func _hinge(label: String, parent: Node3D, pos: Vector3, hinges: Dictiona
 	var pivot := Node3D.new()
 	pivot.name = label + "_hinge"
 	pivot.position = pos
+	# CR-09f: each hinged surface can tear off its hinges as its own wreck part (render/crash/wreck.gd CARRIERS).
+	pivot.set_meta("crash_section", label)
 	parent.add_child(pivot)
 	hinges[label] = pivot
 	return pivot
@@ -374,7 +442,7 @@ static func _curved_outline(outline: Array) -> Array:
 static func _elevator_mesh(outline: Array, t: Dictionary, parent: Node3D) -> void:
 	var polygon := PackedVector2Array()
 	for p in outline: polygon.append(Vector2(p[0], p[1]))
-	var combined := _surface(RED)
+	var combined := _surface(RED, true)
 	var combined_gap := SurfaceTool.new()
 	combined_gap.begin(Mesh.PRIMITIVE_TRIANGLES)
 	combined_gap.set_material(Finish.hinge_gap())
@@ -388,6 +456,7 @@ static func _elevator_mesh(outline: Array, t: Dictionary, parent: Node3D) -> voi
 		combined.append_from(part.mesh, 0, Transform3D.IDENTITY)
 		if part.mesh.get_surface_count() > 1: combined_gap.append_from(part.mesh, 1, Transform3D.IDENTITY)
 		part.free()
+	combined.generate_tangents()
 	var mesh := combined.commit()
 	combined_gap.commit(mesh)
 	_instance("elevator", mesh, parent)
@@ -419,6 +488,8 @@ static func build() -> Dictionary:
 	_fuselage(root)
 	_wings(root, hinges)
 	_tail(root, hinges)
+	# CR-09e: hidden splinters, torn film and spar stubs, shown only when the wreck breaks these sections away.
+	Fracture.build(root, FUSELAGE_BREAK_STATION, {left = root.get_node("wing_frame_left"), right = root.get_node("wing_frame_right")})
 	Equipment.retainers(root)
 	var gear := {}
 	var propeller := Equipment.build(root, gear)
