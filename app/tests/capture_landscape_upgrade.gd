@@ -14,7 +14,7 @@ const SceneryMaterials := preload("res://scenery/scenery.gd")
 const FLEET_VIEWS := {
 	"lake_overview": {eye = [45.0, 50.0, -45.0], at = [110.0, 125.0, 0.45], fov = 55.0},
 	"lake_shore": {eye = [78.0, 113.0, -1.5], at = [112.0, 130.0, 0.45], fov = 58.0},
-	"lake_bottom": {eye = [110.0, 125.0, -55.0], at = [110.0, 125.0, 4.5], fov = 58.0},
+	"lake_bottom": {eye = [109.5, 125.0, -55.0], at = [110.0, 125.0, 4.5], fov = 58.0},
 	"hedge_detail": {eye = [238.0, 45.0, -1.65], at = [242.0, 43.0, -0.85], fov = 55.0},
 	"herb_border": {eye = [-12.5, -2.0, -0.8], at = [-15.0, -3.0, -0.25], fov = 48.0},
 	"meadow_low": {eye = [50.0, 92.0, -1.25], at = [61.0, 103.0, -0.4], fov = 48.0},

@@ -73,6 +73,12 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 		push_error("lake: " + "; ".join(lake_resolution.errors))
 		result.set_meta("lake_error", "; ".join(lake_resolution.errors))
 	var lake: Dictionary = lake_resolution.lake
+	if not lake.is_empty():
+		# A ground plane's optimized opaque shadow pass does not retain its shoreline discard.
+		# It must not cast a solid lid over the excavated bank and bed.
+		for surface: Dictionary in field.surfaces:
+			if surface.type == "rough":
+				(result.get_node(surface.id) as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	Scenery.attach(result, field, lighting, lake)
 	var lake_node := LakeWorld.attach(result, field, grass, lake, lighting, bool(scenery_options.audio))
 	if lake_node != null:
