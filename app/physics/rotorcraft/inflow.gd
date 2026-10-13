@@ -50,7 +50,9 @@ static func target(thrust: float, density: float, radius: float, climb: float, c
 		or density <= 0.0 or radius <= 0.0 or crossflow < 0.0 or loss < 1.0 \
 		or instability < 0.0 or instability > 1.0 or (height_over_radius < 0.0 and height_over_radius != -1.0):
 		return {"ok": false}
-	var factor: float = ground_factor(height_over_radius)
+	# The empirical near-hover ground law applies to an upright lifting rotor.
+	# A tilted rotor whose wake does not meet the ground uses the -1 sentinel.
+	var factor: float = ground_factor(height_over_radius) if thrust > 0.0 else 1.0
 	if thrust == 0.0:
 		return {"ok": true, "velocity": 0.0, "hover": 0.0, "ground_factor": factor}
 	var hover: float = M.sqrt_(absf(thrust) / (2.0 * density * PI * radius * radius))
@@ -60,21 +62,21 @@ static func target(thrust: float, density: float, radius: float, climb: float, c
 	var result: Dictionary = normalized(sense * climb / hover, crossflow / hover, instability, loss)
 	if not result.ok:
 		return result
-	var velocity: float = sense * hover * result.ratio / factor
+	var velocity: float = sense * hover * result.ratio * factor
 	if not is_finite(velocity):
 		return {"ok": false}
 	return {"ok": true, "velocity": velocity, "hover": hover, "ground_factor": factor}
 
 
-# Hayden's empirical intercept is below one. Clamp to unity to avoid inducing
-# a fictitious out-of-ground-effect penalty at large height; z/R floors at 0.5.
+# Applied inflow multiplier: normalize Hayden's empirical intercept so the
+# far-field limit is unity, and clamp the near-ground domain to z/R >= 0.5.
 static func ground_factor(height_over_radius: float) -> float:
 	if not is_finite(height_over_radius) or (height_over_radius < 0.0 and height_over_radius != -1.0):
 		return NAN
 	if height_over_radius == -1.0:
 		return 1.0
 	var ratio: float = 2.0 / maxf(0.5, height_over_radius)
-	return maxf(1.0, 0.9926 + 0.03794 * ratio * ratio)
+	return 0.9926 / (0.9926 + 0.03794 * ratio * ratio)
 
 
 # Zeroth-harmonic lag, separate from the equilibrium mean-inflow law.
@@ -128,13 +130,17 @@ static func _momentum(z: float, x: float, windmill: bool) -> PackedFloat64Array:
 		return PackedFloat64Array([root, slope])
 	var lo: float = 0.0
 	var hi: float = absf(z) + 2.0
+	# Scale the bracket to the small root in deep windmill flight. A bracket
+	# of order |z| loses relative accuracy when v is of order 1/|z|.
+	if windmill and z < -2.0:
+		hi = 2.0 / M.sqrt_(x * x + z * z)
 	var disc: float = z * z - 8.0 * x * x
 	if z < 0.0 and disc > 0.0:
 		var d: float = M.sqrt_(disc)
 		var turn_a: float = (-3.0 * z - d) / 4.0
 		var turn_b: float = (-3.0 * z + d) / 4.0
 		if windmill and _residual(turn_a, z, x) >= 0.0:
-			hi = turn_a
+			hi = minf(hi, turn_a)
 		elif not windmill and _residual(turn_b, z, x) <= 0.0:
 			lo = turn_b
 	for _pass: int in range(ROOT_PASSES):
