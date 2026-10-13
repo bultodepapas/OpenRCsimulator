@@ -6,6 +6,8 @@ const Frames = preload("res://render/frames.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Propulsion = preload("res://physics/propulsion.gd")
 const P51Geometry = preload("res://aircraft/p51d_geometry.gd")
+const M = preload("res://physics/math3d.gd")
+const RB = preload("res://physics/rigid_body.gd")
 const EngineSound = preload("res://render/engine_sound.gd")
 const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
@@ -54,6 +56,10 @@ func snapshot() -> Dictionary:
 	var elevation: float = float(flight._lighting.get("solar", {}).get("elevation_deg", flight._lighting.get("sun_elevation_deg", 45.0)))
 	if not Atmosphere.state.is_empty():
 		elevation = float(Atmosphere.state.get("sun_elevation_deg", elevation))
+	# Doppler source velocity: accepted body velocity rotated to NED, converted at the render boundary.
+	var s: PackedFloat64Array = session.sim.state
+	var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
+	var velocity: Vector3 = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))))
 	# Turbine load uses throttle; propellers use accepted-state aerodynamic torque.
 	return {
 		rpm = rpm, max_rpm = EngineSound.reference_rpm(prop),
@@ -62,7 +68,7 @@ func snapshot() -> Dictionary:
 		airspeed = air.V,
 		temperature_c = float(atmosphere.get("temperature_k", 288.15)) - 273.15,
 		wind_speed = wind.length(), wind_direction = wind,
-		source = flight._airplane.root.global_position, listener = flight._camera.global_position,
+		source = flight._airplane.root.global_position, listener = flight._camera.global_position, source_velocity = velocity,
 		paused = session.sim.paused, sun_elevation = elevation,
 	}
 

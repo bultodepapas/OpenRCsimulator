@@ -12,6 +12,11 @@ const EVENT_FIRST: int = 9
 const EVENT_COUNT: int = 3
 const CRICKET_FIRST: int = 12
 const LOOP_GUARD_FRAMES: int = 64
+## Faster listener motion is a camera cut. Above any flying or chase-camera speed in this simulator.
+const MAX_LISTENER_SPEED: float = 150.0
+## AUD-07c (F7): Godot clamps volume_db + distance gain to max_db. Aircraft voices run this much lower
+## and their bus this much higher: the far field is unchanged and the clamp moves 4x closer.
+const AIRCRAFT_TRIM_DB: float = 12.0
 var voices: Array[AudioStreamPlayer3D] = []
 var trees: Array[Vector3] = []
 var canopies: Array[AABB] = []
@@ -91,6 +96,7 @@ func _setup_buses() -> void:
 		AudioServer.set_bus_name(index, bus_name)
 		AudioServer.set_bus_send(index, &"Master" if _bus_names.is_empty() else _bus_names[0])
 		_bus_names.append(bus_name)
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(_bus_names[1]), AIRCRAFT_TRIM_DB)
 	var limiter: AudioEffectHardLimiter = AudioEffectHardLimiter.new()
 	limiter.ceiling_db = -1.0
 	limiter.release = 0.12
@@ -118,7 +124,8 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 			return
 		var wav: AudioStreamWAV = seamless_loop(source)
 		player.stream = wav
-		player.play(rng.randf_range(0.0, source.get_length()) if voices.size() > 3 else 0.0)
+		# Independent offsets: motor and propeller loops must not wrap or modulate in step (F5).
+		player.play(rng.randf_range(0.0, source.get_length()))
 
 
 ## AUD-07a: Godot 4.7.2 interpolates past loop_end into the stream's silent padding, so a seamless
@@ -195,9 +202,15 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	_previous_paused = paused
 	var source_velocity: Vector3 = Vector3.ZERO
 	var listener_velocity: Vector3 = Vector3.ZERO
-	if _primed and delta > 0.0 and delta < 0.2 and source.distance_to(_previous_source) < 30.0 and listener.distance_to(_previous_listener) < 10.0:
-		source_velocity = (source - _previous_source) / delta
+	if _primed and delta > 0.0 and delta < 0.2:
 		listener_velocity = (listener - _previous_listener) / delta
+		# AUD-07b: a camera cut (inspect toggle, reset framing) is a jump, not motion.
+		if listener_velocity.length() > MAX_LISTENER_SPEED:
+			listener_velocity = Vector3.ZERO
+		if snapshot.has("source_velocity"):
+			source_velocity = snapshot.source_velocity # accepted simulation velocity, no frame differencing
+		elif source.distance_to(_previous_source) < 30.0:
+			source_velocity = (source - _previous_source) / delta
 	_previous_source = source
 	_previous_listener = listener
 	_primed = not paused
@@ -270,7 +283,8 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 
 func _level(index: int, target: float, dt: float) -> void:
 	_levels[index] = lerpf(_levels[index], target, 1.0 - exp(-dt / 0.09))
-	voices[index].volume_db = linear_to_db(maxf(_levels[index] * gain, 0.0001))
+	var trim: float = AIRCRAFT_TRIM_DB if index < 3 else 0.0
+	voices[index].volume_db = linear_to_db(maxf(_levels[index] * gain, 0.0001)) - trim
 
 
 func _pitch(index: int, target: float, dt: float) -> void:
