@@ -197,7 +197,7 @@
     },
     {
       "path": "res://render/crash/section_splitter.gd",
-      "sha256": "91697ef99aa117837ec1964011d24801d42e2b3032f4d33a416e2ffabf1c946b",
+      "sha256": "40fd45844e281f26cecb4e9ae761b997a0ee7225906df9ecab2cea44e053e8cb",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     }
