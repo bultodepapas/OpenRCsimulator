@@ -1348,11 +1348,13 @@ func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_
 	var lag: int = downwash_index()
 	var out: PackedFloat64Array = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
 		air_density(), air, a[lag] if lag >= 0 and lag < a.size() else NAN, PackedFloat64Array(), _ground_up(s))
+	if out.size() != 6:
+		return {}
 	var ground: Dictionary = _ground_evaluation(s, a, values)
 	if not ground.get("ok", false):
 		return {}
 	var ground_loads: PackedFloat64Array = ground.loads
-	for at: int in 6:
+	for at: int in ground_loads.size():
 		out[at] += ground_loads[at]
 	var rate: float = Turbine.spool_rate(rpm, Turbine.demand_rpm(sim.inputs[3], prop), prop) if engine_running else 0.0
 	var derivative := PackedFloat64Array([rate])

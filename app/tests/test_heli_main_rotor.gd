@@ -128,6 +128,11 @@ func _invalid() -> void:
 	var malformed: Dictionary = {"law": Rotor.LAW}
 	malformed.make_read_only()
 	check("readonly but incomplete context refused safely", not Rotor.evaluate(malformed, 167.0, 4.2, M.v3(0.0, 0.0, 0.0), M.v3(0.0, 0.0, 0.0), 0.1, 0.0, 0.0, 0.0, 0.0).ok)
+	for replacement: Variant in [NAN, "1.225", Rotor.LAW]:
+		var bad_context: Dictionary = model.duplicate()
+		bad_context.rho_kg_m3 = replacement
+		bad_context.make_read_only()
+		check("readonly malformed numeric field refused safely", not Rotor.evaluate(bad_context, 167.0, 4.2, M.v3(0.0, 0.0, 0.0), M.v3(0.0, 0.0, 0.0), 0.1, 0.0, 0.0, 0.0, 0.0).ok)
 	check("negative rotor speed refused", not _evaluate(-1.0).ok)
 	check("invalid physical vector shape refused", not _evaluate(167.0, 4.2, PackedFloat64Array()).ok)
 	check("nonfinite state refused", not _evaluate(167.0, NAN).ok)

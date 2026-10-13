@@ -81,7 +81,7 @@ class TraceAcceptance(unittest.TestCase):
             ('jensen-das-ugly-stik-60', 'propeller-rpm-lag-v1', 'none', False),
             ('gp-extra-300s-60', 'propeller-rpm-lag-v1', 'none', False),
             ('p51d-mustang-120', 'propeller-shaft-balance-v1', 'tail-slipstream-increment-v1', True),
-            ('sebart-avanti-s-a200-p100rx', 'turbine-ecu-spool-v1', 'none', False),
+            ('sebart-avanti-s-a200-p100rx', 'turbine-rpm-governor-rk4-v1', 'none', False),
             ('turbo-lumber-evolution', 'electric-fixed-bus-coupled-stop-v1', 'none', False),
         ]
         for aircraft, propulsion, propwash, crossflow in cases:

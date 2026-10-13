@@ -131,13 +131,14 @@ def check_metadata(metadata: dict, first: dict) -> None:
     for key, allowed in {
         'aero_model': ('global-derivatives-v1', 'local-surfaces-v1 with bounded attached oracle'),
         'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1',
+                             'turbine-rpm-governor-rk4-v1',
                              'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',
                              'electric-ocv-resistance-coupled-events-v1'),
         'propwash_model': ('none', 'tail-slipstream-increment-v1', 'tail-slipstream-axial-transport-v1'),
     }.items():
         if metadata.get(key) not in allowed:
             raise ValueError(f'missing or unsupported {key}')
-    turbine = metadata['propulsion_model'] == 'turbine-ecu-spool-v1'
+    turbine = metadata['propulsion_model'] in ('turbine-ecu-spool-v1', 'turbine-rpm-governor-rk4-v1')
     if metadata.get('engine_rpm_semantics') != ('turbine spool rpm' if turbine else 'propeller shaft rpm'):
         raise ValueError('engine_rpm_semantics disagrees with propulsion_model')
     try:
@@ -173,6 +174,24 @@ def check_metadata(metadata: dict, first: dict) -> None:
 
 def check_coupled_metadata(metadata: dict) -> None:
     """Optional model extension shared by calm, wind and atmosphere readers."""
+    turbine = metadata.get('propulsion_model') == 'turbine-rpm-governor-rk4-v1'
+    if turbine or 'turbine_integrator' in metadata:
+        if (not turbine or metadata.get('turbine_integrator') != 'rk4'
+                or metadata.get('continuous_layout') != 'turbine shaft rpm; RK4 coupled; prescribed fuel mass'
+                or any(key in metadata for key in ('shaft_integrator', 'rotor_coupling',
+                                                  'electric_configuration', 'wheel_state_model'))):
+            raise ValueError('missing or unsupported continuous turbine semantics')
+        try:
+            continuous = json.loads(metadata['recording_start_continuous'])
+            aux = json.loads(metadata['recording_start_aux'])
+        except (KeyError, ValueError) as error:
+            raise ValueError('missing continuous turbine recording state') from error
+        if (not isinstance(continuous, list) or len(continuous) != 1
+                or not _finite_number(continuous[0]) or continuous[0] < 0
+                or not isinstance(aux, list) or len(aux) != 4
+                or not _finite_number(aux[0]) or continuous[0] != aux[0]):
+            raise ValueError('continuous turbine RPM does not match its endpoint mirror')
+        return
     wheel_keys = {
         'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
         'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes',

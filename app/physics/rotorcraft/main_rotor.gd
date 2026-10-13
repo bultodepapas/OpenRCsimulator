@@ -11,6 +11,14 @@ const PARAMETER_KEYS: Array = [
 	"cyclic_longitudinal_gain_nominal_rad_per_rad", "cyclic_lateral_gain_nominal_rad_per_rad",
 	"hub_spring_stiffness_nm_per_rad", "hub_position_body_frd_m", "rotation_sense",
 ]
+const PREPARED_KEYS: Array = [
+	"law", "rho_kg_m3", "rotor_radius_m", "blade_chord_m", "rotor_blade_count",
+	"blade_lift_curve_slope_per_rad", "blade_section_cd0", "thrust_coefficient_max",
+	"blade_flapping_inertia_kg_m2", "gamma_flybar", "flapback_k_mu", "omega_nominal_rad_s",
+	"cyclic_longitudinal_gain_nominal_rad_per_rad", "cyclic_lateral_gain_nominal_rad_per_rad",
+	"hub_spring_stiffness_nm_per_rad", "rotation_sense", "hub_x_m", "hub_y_m", "hub_z_m",
+	"solidity", "lock_number", "bare_flap_time_constant_nominal_s",
+]
 
 
 # Operating density is explicit in this standalone context. The future weather
@@ -171,13 +179,15 @@ static func _number(value: Variant) -> bool:
 # Cheap structural/numeric guard for the immutable owner-prepared context.
 # Coupled derived-value identity is established by prepare, not a file reader here.
 static func _prepared(model: Dictionary) -> bool:
-	if not model.is_read_only() or model.get("law") != LAW or model.size() != 22:
+	if not model.is_read_only() or model.get("law") != LAW or model.size() != PREPARED_KEYS.size() \
+		or not model.has_all(PREPARED_KEYS):
 		return false
-	for key: String in PARAMETER_KEYS:
-		if key != "hub_position_body_frd_m" and (not model.has(key) or not _number(model[key])):
-			return false
-	for key: String in ["hub_x_m", "hub_y_m", "hub_z_m", "solidity", "lock_number", "bare_flap_time_constant_nominal_s"]:
-		if not model.has(key) or not _number(model[key]):
+	# prepare converts every numeric field to float. Batch the native dictionary
+	# read and inline finite/type checks rather than 21 script dispatches.
+	var numbers: Array = model.values()
+	numbers.erase(LAW)
+	for value: Variant in numbers:
+		if typeof(value) != TYPE_FLOAT or not is_finite(value):
 			return false
 	return model.rho_kg_m3 > 0.0 and model.rotor_radius_m > 0.0 and model.gamma_flybar > 0.0 \
 		and model.omega_nominal_rad_s > 0.0 and model.blade_lift_curve_slope_per_rad > 0.0 \
