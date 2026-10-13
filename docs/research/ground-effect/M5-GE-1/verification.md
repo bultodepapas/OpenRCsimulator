@@ -42,4 +42,4 @@
 
 ## Complete suite
 
-FULL-SUITE-RESULT
+`app/test.sh` on the integrated tree (with the concurrent VQ-05 propeller-blur work present): import, generator freshness, guards, parse check of every script, 227 test scripts and every tail check (H7, L5, model contracts, trace acceptance, D8b-R2, weather/turbulence/atmosphere/time-of-day/shaft CLIs, per-aircraft trimmed traces, frame-time logger, fixed-step parity at 30/60/144 fps, E0b5/E0b6p wash transport, E5a/E5b taildragger fixtures): exit 0, 2026-10-12T23:51Z to 2026-10-13T00:29Z. A first complete run stopped at `test_swirl_optimization.gd` before its fixture adaptation; everything before that point had passed. `app/capture.sh` (Xvfb renders) was not run on this VM.
