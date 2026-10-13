@@ -16,6 +16,21 @@ const DUST_COLORS := {
 	"leaves": [Color(0.20, 0.32, 0.12), Color(0.28, 0.36, 0.16)],
 }
 const DEFAULT_DEBRIS := [Color(0.62, 0.40, 0.19)]
+# CR-22b (research.md): burn rates and venting timing are presentation estimates, not measurements.
+const KEROSENE_BURN_KG_S := 0.035
+const GASOLINE_BURN_KG_S := 0.05
+const KEROSENE_FIRE_MAX_S := 50.0
+const GASOLINE_FIRE_MAX_S := 40.0
+const VENT_DELAY_MAX_S := 30.0
+const VENT_DELAY_MIN_S := 5.0
+const VENT_DURATION_S := 20.0
+const FLARE_S := 3.0
+const FLARE_MIN_SEVERITY := 0.8
+const CENTRAL_GROUPS := ["fuselage", "engine", "propeller"]
+var vent: CPUParticles3D # CR-22b: grey-white smoke from a damaged LiPo pack
+var _vent_start_s := INF
+var _vent_end_s := INF
+var _flare_end_s := -INF
 var debris_colors: Array = DEFAULT_DEBRIS.duplicate()
 var emitters: Array[CPUParticles3D] = []
 var dust: CPUParticles3D
@@ -84,6 +99,15 @@ func prepare() -> void:
 	sparks.scale_amount_min = 0.015
 	sparks.scale_amount_max = 0.035
 	sparks.color_ramp = _gradient([Color(1,0.95,0.7,1),Color(1,0.22,0.025,0)], [0.0,1.0])
+	vent = _particles(120, 5.0, puff, false)
+	vent.initial_velocity_min = 0.4
+	vent.initial_velocity_max = 1.2
+	vent.spread = 12.0
+	vent.gravity = Vector3(0, 0.5, 0)
+	vent.scale_amount_min = 0.15
+	vent.scale_amount_max = 0.4
+	vent.scale_amount_curve = _curve([Vector2(0,0.4),Vector2(0.5,1.6),Vector2(1,2.6)])
+	vent.color_ramp = _gradient([Color(0.85,0.85,0.82,0),Color(0.82,0.82,0.80,0.7),Color(0.70,0.70,0.68,0)], [0.0,0.1,1.0])
 	touch_dust = _particles(24, 1.2, puff, false)
 	touch_dust.one_shot = true
 	touch_dust.explosiveness = 0.9
@@ -199,7 +223,7 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	var radius := 0.15 + 0.35*power
 	var surface := str(severity.get("surface",""))
 	var slide := Vector3(velocity.x,0.0,velocity.z)
-	_fire_duration = minf(50.0, fuel_kg / 0.035) if hot_turbine and level >= 3 and fuel_kg > 0.0 and severity.get("tank_ruptured",false) else 0.0
+	_fire_duration = minf(KEROSENE_FIRE_MAX_S, fuel_kg / KEROSENE_BURN_KG_S) if hot_turbine and level >= 3 and fuel_kg > 0.0 and severity.get("tank_ruptured",false) else 0.0
 	for p in emitters:
 		p.global_position = _origin
 		p.visible = true
@@ -215,6 +239,8 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	dust.restart()
 	dust.emitting = level > 0 and not profile.is_empty()
 	touch_dust.emitting = false
+	vent.emitting = false
+	vent.gravity = Vector3(0, 0.5, 0) + wind.limit_length(10.0)*0.2
 	sparks.restart()
 	sparks.emitting = sparks_for(level, surface, str(severity.get("component_group","")), float(severity.get("tangential_speed_mps", 0.0)), hot_turbine)
 	flame.emission_sphere_radius = 0.25 + 0.4*power
@@ -281,7 +307,7 @@ func chip_color(index: int, hot_turbine: bool) -> Color:
 	return debris_colors[index % debris_colors.size()]
 
 
-func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = false) -> void:
+func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = false) -> MeshInstance3D:
 	# Reserve the primary gouge/scorch for the lifetime of this aftermath.
 	var slot := 0 if _mark_index == 0 else 1+((_mark_index-1) % (MAX_MARKS-1))
 	var item := marks[slot]
@@ -293,6 +319,7 @@ func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = fals
 	item.scale = Vector3(clampf(radius*0.8,0.12,1.4),1,clampf(radius+slide_speed*0.035,0.2,2.5))
 	(item.material_override as StandardMaterial3D).albedo_color = Color(0.035,0.029,0.025,0.88) if burned else Color(0.12,0.075,0.025,0.78)
 	item.visible = true
+	return item
 
 ## E3d1: a soft hull contact that continues the flight: a scuff along the slide and a small puff thrown along it,
 ## sized by `strength` (0..1). Never a radial burst; the crash aftermath (start) supersedes it.
@@ -329,6 +356,11 @@ func update(delta: float, paused: bool) -> void:
 	var dt := clampf(delta,0,0.05)
 	_age += dt
 	var burning := fire_strength()
+	var venting := _age >= _vent_start_s and _age < _vent_end_s
+	vent.emitting = venting
+	var flaring := _age >= _vent_start_s and _age < _flare_end_s
+	if flaring:
+		burning = maxf(burning, 1.0)
 	flame.emitting = burning > 0
 	smoke.emitting = burning > 0
 	light.visible = burning > 0
@@ -353,13 +385,64 @@ func update(delta: float, paused: bool) -> void:
 	last_update_usec = Time.get_ticks_usec()-began
 
 func fire_strength() -> float:
-	return clampf((_fire_duration-_age)/3.0,0,1) if _active else 0.0
+	if not _active:
+		return 0.0
+	var flare := 1.0 if _age >= _vent_start_s and _age < _flare_end_s else 0.0
+	return maxf(clampf((_fire_duration-_age)/3.0,0,1), flare)
+
+
+## CR-22b: what each tagged energy source does in this crash (research.md). Pure. sources: {kind: kg};
+## report: the director's crash report (class, severity, component_group, tank_ruptured).
+## Returns {fire_kind, fire_s, stain, vent_delay_s (−1 = none), vent_s, flare}.
+static func energy_outcome(sources: Dictionary, report: Dictionary, engine_running: bool, hot_turbine: bool) -> Dictionary:
+	var level := clampi(int(report.get("class", 0)), 0, 4)
+	var severity := clampf(float(report.get("severity", 0.0)), 0.0, 1.0)
+	var central := CENTRAL_GROUPS.has(str(report.get("component_group", "")))
+	var ruptured := bool(report.get("tank_ruptured", false))
+	var out := {fire_kind = "", fire_s = 0.0, stain = false, vent_delay_s = -1.0, vent_s = 0.0, flare = false}
+	var kerosene := float(sources.get("kerosene", 0.0))
+	var gasoline := float(sources.get("gasoline", 0.0))
+	var glow := float(sources.get("glow_fuel", 0.0))
+	var lipo := float(sources.get("lipo", 0.0))
+	if kerosene > 0.0 and hot_turbine and ruptured and level >= 3:
+		out.fire_kind = "kerosene"
+		out.fire_s = minf(KEROSENE_FIRE_MAX_S, kerosene / KEROSENE_BURN_KG_S)
+	elif gasoline > 0.0 and engine_running and level == 4 and central:
+		out.fire_kind = "gasoline"
+		out.fire_s = minf(GASOLINE_FIRE_MAX_S, gasoline / GASOLINE_BURN_KG_S)
+	if (glow > 0.0 or gasoline > 0.0 or kerosene > 0.0) and ruptured and out.fire_kind.is_empty():
+		out.stain = true # methanol burns nearly invisibly; a spill shows as a dark wet stain
+	if lipo > 0.0 and level >= 3 and central:
+		out.vent_delay_s = lerpf(VENT_DELAY_MAX_S, VENT_DELAY_MIN_S, severity)
+		out.vent_s = VENT_DURATION_S
+		out.flare = level == 4 and severity >= FLARE_MIN_SEVERITY
+	return out
+
+
+## CR-22b: applies the non-kerosene outcomes (kerosene fire stays in start()): gasoline fire, fuel stain, LiPo venting.
+func apply_energy(outcome: Dictionary) -> void:
+	if not _active:
+		return
+	if str(outcome.get("fire_kind", "")) == "gasoline":
+		_fire_duration = float(outcome.fire_s)
+		light.visible = true
+	if bool(outcome.get("stain", false)):
+		var stain := mark(_origin, Vector3.ZERO, 0.7)
+		(stain.material_override as StandardMaterial3D).albedo_color = Color(0.05, 0.05, 0.04, 0.55)
+	if float(outcome.get("vent_delay_s", -1.0)) >= 0.0:
+		_vent_start_s = float(outcome.vent_delay_s)
+		_vent_end_s = _vent_start_s + float(outcome.vent_s)
+		_flare_end_s = _vent_start_s + FLARE_S if bool(outcome.get("flare", false)) else -INF
+		vent.global_position = _origin + Vector3.UP * 0.1
 
 func reset() -> void:
 	_active = false
 	_paused = false
 	_age = 0
 	_fire_duration = 0
+	_vent_start_s = INF
+	_vent_end_s = INF
+	_flare_end_s = -INF
 	_mark_index = 0
 	_fragment_count = 0
 	_rng.seed = 220031
@@ -375,4 +458,4 @@ func reset() -> void:
 		light.visible = false
 
 func stats() -> Dictionary:
-	return {particles=580, splinters=_fragment_count, marks=mini(_mark_index,MAX_MARKS), fire=fire_strength(), update_usec=last_update_usec}
+	return {particles=emitters.reduce(func(total: int, p: CPUParticles3D) -> int: return total + p.amount, 0), splinters=_fragment_count, marks=mini(_mark_index,MAX_MARKS), fire=fire_strength(), update_usec=last_update_usec}

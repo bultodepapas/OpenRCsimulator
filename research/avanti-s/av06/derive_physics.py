@@ -328,6 +328,8 @@ CLda_each = a_strip * tau_a * sum(c * dy for _, _, c, _, dy in ail) / S
 Clda = note("aero", "Clda_right (1/rad)", -a_strip * tau_a * sum(c * y * dy for y, _, c, _, dy in ail) / (S * b), "strip theory over the aileron span")
 
 # --- Inventory (le frame) ------------------------------------------------------------------------------------------
+# CR-22b: which inventory items carry energy (crash fire/smoke presentation only).
+ENERGY_SOURCES = {"kerosene + 5 % oil (declared fuel state)": "kerosene"}
 items = []
 # Structure measured by owners (airframe research): placed from the geometry.
 ST = IN["structure"]
@@ -663,7 +665,8 @@ data = {
     },
     "inventory": [
         dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(x) for x in it[4]], "m", it[6], it[7])},
-             **({"size": q([float(x) for x in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}))
+             **({"size": q([float(x) for x in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),
+             **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
     "crash_hull": q([

@@ -229,6 +229,8 @@ note("aero", "Clda_right (1/rad)", Clda, "strip theory")
 
 # --- Inventory (le frame) -----------------------------------------------------------------------------------
 fw = g["firewall_z"]
+# CR-22b: which inventory items carry energy (crash fire/smoke presentation only).
+ENERGY_SOURCES = {"fuel (half tank)": "glow_fuel"}
 items = [
     ("engine O.S. MAX-61FX", 0.55, "manual", "O.S. catalog 17750 (same engine as the Stik); manual p3 prototype engine", le(fw - 0.045), [0.1, 0.05, 0.1], "estimated", "crankcase ~1.8 in ahead of the firewall"),
     ("in-cowl muffler Slimline Pitts #3217", 0.13, "estimated", "manual p3 names it; ~4.5 oz typical for a .61 Pitts-style muffler (no catalog mass found)", le(fw - 0.03, -0.06), None, "estimated", "below the engine inside the cowl"),
@@ -513,7 +515,8 @@ data = {
     },
     "inventory": [
         dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
-             **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}))
+             **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),
+             **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
     "crash_hull": q([

@@ -64,6 +64,10 @@ def derive(inputs=None):
         items.append(dict(name=it["name"], mass=q(it["mass_kg"] * v("component_mass_scale"), "kg", "estimated", it["source"]),
                           position=q(p, "m", "estimated", it["source"] + "; D0 structural frame"),
                           size=q(it["size"], "m", "estimated", it["source"] + "; aligned box inertia envelope")))
+    # CR-22b: the flight pack carries energy (crash smoke presentation only).
+    for item in items:
+        if item["name"] == "4S 3200 mAh battery":
+            item["energy_source"] = "lipo"
     mass = g["manual"]["mass_flying_kg"]["value"]
     residue = mass - sum(it["mass"]["value"] for it in items)
     if residue < 0.001:

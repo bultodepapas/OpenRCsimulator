@@ -114,7 +114,8 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary) -> PackedFloat64A
 ## normal_speed_mps, depth_m}.
 static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepared: Dictionary) -> Dictionary:
 	var none := {index = -1, rule = "", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = 0.0}
-	if prepared.is_empty() or previous.size() != s.size():
+	# CR-22c: runs every tick; nothing can touch above the hull's reach, and points in the air cost no allocation.
+	if prepared.is_empty() or previous.size() != s.size() or -s[RB.POS + 2] > float(prepared.reach):
 		return none
 	var hull: PackedFloat64Array = prepared.points
 	var down_now: PackedFloat64Array = _down_row(s)
@@ -122,10 +123,10 @@ static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	var q_before := RB._att(previous)
 	var worst := none.duplicate()
 	for i in range(0, hull.size(), 3):
-		var r := hull.slice(i, i + 3)
-		var depth := s[RB.POS + 2] + down_now[0] * r[0] + down_now[1] * r[1] + down_now[2] * r[2]
+		var depth := s[RB.POS + 2] + down_now[0] * hull[i] + down_now[1] * hull[i + 1] + down_now[2] * hull[i + 2]
 		if depth <= 0.0:
 			continue
+		var r := hull.slice(i, i + 3)
 		if depth > CRASH_DEPTH_M:
 			return {index = i / 3, rule = "depth", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = depth}
 		var depth_before := previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
@@ -154,10 +155,10 @@ static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	var q := RB._att(s)
 	var q_before := RB._att(previous)
 	for i in range(0, hull.size(), 3):
-		var r := hull.slice(i, i + 3)
-		var depth := s[RB.POS + 2] + down_now[0] * r[0] + down_now[1] * r[1] + down_now[2] * r[2]
+		var depth := s[RB.POS + 2] + down_now[0] * hull[i] + down_now[1] * hull[i + 1] + down_now[2] * hull[i + 2]
 		if depth <= 0.0:
 			continue
+		var r := hull.slice(i, i + 3)
 		var depth_before := previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
 		var v_before := M.q_rotate(q_before, M.add(RB._slice3(previous, RB.VEL), M.cross(RB._slice3(previous, RB.RATE), r)))
 		var v_now := M.q_rotate(q, M.add(RB._slice3(s, RB.VEL), M.cross(RB._slice3(s, RB.RATE), r)))

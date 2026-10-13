@@ -22,6 +22,8 @@ var report: Dictionary = {}
 var last_update_usec := 0
 var impact_usec := 0
 var _fuel_kg := 0.0
+## CR-22b: tagged energy per kind (inventory energy_source), kg.
+var energy_sources: Dictionary = {}
 var _impact_point := Vector3.ZERO
 var _age := 0.0
 var _audio_enabled := true
@@ -47,12 +49,15 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 	audio = CrashAudio.new()
 	add_child(audio)
 	audio.setup()
-	# Declared inventory state, not a fuel-burn simulation. Keep source quantity.
+	# Declared inventory state, not a fuel-burn simulation. CR-22b: energy is read from the explicit
+	# energy_source tag, never inferred from a name or the propulsion kind.
 	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(data_path))
 	if raw is Dictionary:
 		for item: Dictionary in raw.get("inventory",[]):
-			if str(item.get("name","")).begins_with("kerosene +"):
-				_fuel_kg += maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
+			var kind := str(item.get("energy_source",""))
+			if not kind.is_empty():
+				energy_sources[kind] = float(energy_sources.get(kind, 0.0)) + maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
+	_fuel_kg = float(energy_sources.get("kerosene", 0.0))
 	flight.session.resetting.connect(reset)
 
 func update(delta: float) -> void:
@@ -165,6 +170,9 @@ func _start() -> void:
 	var turbine: bool = flight.session.aircraft.model.propulsion.get("kind","") == "turbine"
 	var hot: bool = turbine and flight.session.engine_running and flight.session.sim.aux[0] > 0
 	effects.start(_impact_point,velocity,report,_fuel_kg,hot,flight._render_wind(flight.session.sim.time()))
+	report["energy"] = Effects.energy_outcome(energy_sources, report, bool(flight.session.engine_running), hot)
+	report["energy_sources"] = energy_sources.duplicate()
+	effects.apply_energy(report.energy)
 	if _audio_enabled:
 		audio.impact(_impact_point,report,turbine)
 	active = true

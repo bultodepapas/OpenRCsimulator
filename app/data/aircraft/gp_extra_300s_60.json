@@ -714,6 +714,7 @@
         "kind": "estimated",
         "source": "same as the tank"
       },
+      "energy_source": "glow_fuel",
       "size": {
         "value": [
           0,
