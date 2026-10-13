@@ -26,6 +26,77 @@ static func build(root: Node3D, break_station: int, wing_frames: Dictionary) -> 
 		# Children of the wing frame ride with its section; only the reveal meta is needed.
 		var stub := _node(frame, "fracture_wing_root_" + str(side), "", kind)
 		_wing_root(stub, -1.0 if str(side) == "right" else 1.0, 7300 + (1 if str(side) == "right" else 2))
+		_aileron_hinges(frame, str(side), 7400 + (1 if str(side) == "right" else 2))
+	_tail_hinges(root, 7500)
+
+
+# CR-09f: torn CA hinges along each hinge line, revealed with the surface that tears off. A hinge is a 1 in white
+# strip glued half into each part; whichever side keeps it (seeded) shows it sticking out with a ragged edge.
+const HINGE_WIDTH_M := 0.022
+const HINGE_THICKNESS_M := 0.0004
+const HINGE_COLOR := Color("efede4")
+
+
+static func _aileron_hinges(frame: Node3D, side: String, seed: int) -> void:
+	var w: Dictionary = D.wing
+	var sign := 1.0 if side == "right" else -1.0
+	var pivot := frame.get_node("aileron_%s_hinge" % side) as Node3D
+	var fixed := _node(frame, "fracture_hinges_wing_" + side, "", "aileron_" + side)
+	var moving := _node(pivot, "fracture_hinges_aileron_" + side, "", "aileron_" + side)
+	var hinge_z: float = float(w.hinge_fraction) * float(w.chord)
+	var stations: Array = []
+	for f in [0.0, 1.0 / 3.0, 2.0 / 3.0, 1.0]:
+		stations.append(sign * lerpf(float(w.aileron_inner) + 0.03, float(w.aileron_outer) - 0.03, f))
+	_hinge_set(fixed, moving, stations, pivot.position, hinge_z, false, seed)
+
+
+static func _tail_hinges(root: Node3D, seed: int) -> void:
+	var stab := root.get_node("stab") as Node3D
+	var elevator := root.get_node("elevator_hinge") as Node3D
+	_hinge_set(_node(stab, "fracture_hinges_stab", "", "elevator"), _node(elevator, "fracture_hinges_elevator", "", "elevator"),
+		[-0.20, -0.08, 0.08, 0.20], Vector3.ZERO, 0.0, false, seed)
+	var fin := root.get_node("fin") as Node3D
+	var rudder := root.get_node("rudder_hinge") as Node3D
+	_hinge_set(_node(fin, "fracture_hinges_fin", "", "rudder"), _node(rudder, "fracture_hinges_rudder", "", "rudder"),
+		[0.04, 0.11, 0.17], Vector3.ZERO, 0.0, true, seed + 1)
+
+
+# `stations` run along the hinge line: span x (horizontal surfaces) or height y (vertical). The fixed part lies
+# forward of hinge_z, the moving part aft; the moving node's origin is `pivot` in the fixed node's frame.
+static func _hinge_set(fixed: Node3D, moving: Node3D, stations: Array, pivot: Vector3, hinge_z: float, vertical: bool, seed: int) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed
+	var fixed_st := _surface(HINGE_COLOR, "plastic", true)
+	var moving_st := _surface(HINGE_COLOR, "plastic", true)
+	for along: float in stations:
+		var keep_fixed := rng.randf() < 0.6
+		var out := rng.randf_range(0.005, 0.012)
+		var origin := Vector3(0, along, hinge_z) if vertical else Vector3(along, 0, hinge_z)
+		if keep_fixed:
+			_hinge_tab(fixed_st, origin, -0.006, out, vertical, rng)
+		else:
+			_hinge_tab(moving_st, origin - pivot, 0.006, -out, vertical, rng)
+	_commit(fixed, "strips", fixed_st)
+	_commit(moving, "strips", moving_st)
+
+
+# A thin strip from `inside` (buried in its own part) to `out` across the gap (signed along Z), ragged at the tip.
+static func _hinge_tab(st: SurfaceTool, origin: Vector3, inside: float, out: float, vertical: bool, rng: RandomNumberGenerator) -> void:
+	var across := Vector3.UP if vertical else Vector3.RIGHT # along the hinge line
+	var normal := Vector3.RIGHT if vertical else Vector3.UP # strip thickness direction
+	var half := across * HINGE_WIDTH_M * 0.5
+	var base := origin + Vector3(0, 0, inside)
+	var teeth := 5
+	var prev := origin - half + Vector3(0, 0, out * rng.randf_range(0.6, 1.0))
+	for k in teeth:
+		var t1 := float(k + 1) / teeth
+		var edge := origin - half + across * HINGE_WIDTH_M * t1 + Vector3(0, 0, out * rng.randf_range(0.55, 1.0))
+		var root_a := base - half + across * HINGE_WIDTH_M * (float(k) / teeth)
+		var root_b := base - half + across * HINGE_WIDTH_M * t1
+		for face in [1.0, -1.0]:
+			var lift: Vector3 = normal * (HINGE_THICKNESS_M * 0.5 * face)
+			_quad(st, root_a + lift, root_b + lift, edge + lift, prev + lift, normal * face)
+		prev = edge
 
 
 static func _node(parent: Node3D, label: String, section: String, reveal: String) -> Node3D:
@@ -70,6 +141,9 @@ static func _quad(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, d: Vector
 
 
 static func _commit(parent: Node3D, label: String, st: SurfaceTool) -> void:
+	var vertices: Variant = st.commit_to_arrays()[Mesh.ARRAY_VERTEX]
+	if vertices == null or (vertices as PackedVector3Array).is_empty():
+		return # e.g. every torn hinge stayed in the other part
 	var instance := MeshInstance3D.new()
 	instance.name = String(parent.name) + "_" + label # node names are unique across the model (verify_model)
 	instance.mesh = st.commit()
