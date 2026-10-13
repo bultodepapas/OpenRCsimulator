@@ -128,6 +128,14 @@ python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv"
 # VQ-01b extends this same guarded producer: 66 fixed images, metadata/parity/readability checks.
 "$VPY" "$HERE/tests/test_visual_quality_cases.py"
 "$VPY" "$HERE/tests/visual_quality_cases.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/vq01b"
+# FW-62-R1: the night kit must add light, retain its underside cue, and stay bounded under camera zoom.
+mkdir -p "$HERE/captures/aircraft-lights"
+if ! timeout 120 xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$HERE" \
+  --rendering-driver opengl3 --audio-driver Dummy --script res://tests/capture_aircraft_lights.gd \
+  -- --out="$HERE/captures/aircraft-lights" > "$HERE/captures/aircraft-lights/run.log" 2>&1 \
+  || grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$HERE/captures/aircraft-lights/run.log"; then
+  cat "$HERE/captures/aircraft-lights/run.log"; exit 1
+fi
 # L5: both interactive error routes must show a usable error instead of starting an invalid field.
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_interactive_routes_show_a_focused_localized_error_panel
 # L6b real GPU path: custom-data packing, sector bounds/draws and deterministic tree views.
@@ -175,6 +183,8 @@ for name in sys.argv[2:]:
                     'manifest_sha256': hashlib.sha256(sidecar.read_bytes()).hexdigest()})
 trace = hashlib.sha256((root / 'trace-physics.csv').read_bytes()).hexdigest()
 manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': entries, 'trace_sha256': trace,
+            'aircraft_lights_review': 'aircraft-lights/summary.json',
+            'aircraft_lights_review_sha256': hashlib.sha256((root / 'aircraft-lights/summary.json').read_bytes()).hexdigest(),
             'treeline_review': 'l6b/repeat-1/review.json',
             'treeline_review_sha256': hashlib.sha256((root / 'l6b/repeat-1/review.json').read_bytes()).hexdigest(),
             'horizon_review': 'l7/capture-summary.json',
