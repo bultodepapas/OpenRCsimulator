@@ -192,7 +192,11 @@ func _test_complete_scenery_budget() -> void:
 	_check("vegetation keeps ten moving crowns/six shrub tips; people move in their population batch",
 		int(stats.motion) == 21 and motion.get_child_count() == 21 and counts.crown == 10 and counts.bush_tips == 6
 		and int(stats.moving_people) == 7)
-	_check("47 nonempty static cells remain after cars move to MultiMeshes", int(stats.cells) == 47)
+	var static_cells := 0
+	for child: Node in built.get_children():
+		if child is MeshInstance3D and str(child.name).begins_with("cell_"):
+			static_cells += 1
+	_check("47 nonempty static cells remain after cars move to MultiMeshes", static_cells == 47)
 	_check("wildflower instance population is unchanged", int(stats.flowers) == 2970)
 	var triangles := _triangle_count(built)
 	_check("whole scenery stays below the approved LU-21 triangle ceiling", triangles <= TRIANGLE_LIMIT,

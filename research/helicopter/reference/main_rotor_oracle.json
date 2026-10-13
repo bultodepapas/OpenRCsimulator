@@ -1,0 +1,797 @@
+{
+  "format": "openrc-main-rotor-oracle-v1",
+  "parameters": {
+    "rho_kg_m3": 1.225,
+    "rotor_radius_m": 0.775,
+    "blade_chord_m": 0.058,
+    "rotor_blade_count": 2,
+    "blade_lift_curve_slope_per_rad": 5.5,
+    "blade_section_cd0": 0.024,
+    "thrust_coefficient_max": 0.0055,
+    "blade_flapping_inertia_kg_m2": 0.038,
+    "gamma_flybar": 0.8,
+    "flapback_k_mu": 0.2,
+    "omega_nominal_rad_s": 167.0,
+    "cyclic_longitudinal_gain_nominal_rad_per_rad": 4.2,
+    "cyclic_lateral_gain_nominal_rad_per_rad": 4.2,
+    "hub_spring_stiffness_nm_per_rad": 54.0,
+    "hub_position_body_frd_m": [
+      0.0,
+      0.0,
+      -0.235
+    ],
+    "rotation_sense": 1
+  },
+  "cases": [
+    {
+      "name": "hover_8_2kg_analytic_thrust",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 4.2,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "collective_pitch_75_rad": 0.09624751257538011,
+        "cyclic_forward_rad": 0.0,
+        "cyclic_right_rad": 0.0,
+        "a1_rad": 0.0,
+        "b1_rad": 0.0
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": 0.096247512575,
+        "solidity": 0.047643802319,
+        "lambda0": 0.032451226579,
+        "induced_velocity_m_s": 4.2,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 4.2,
+        "mu_x": 0.0,
+        "mu_y": 0.0,
+        "mu_z": 0.0,
+        "mu": 0.0,
+        "within_identified_advance_ratio": true,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": 0.002077577083,
+        "thrust_coefficient": 0.002077577083,
+        "thrust_n": 80.442,
+        "torque_coefficient": 0.000210351332,
+        "torque_nm": 6.312082722266,
+        "thrust_normal_body_frd": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "force_body_frd_n": [
+          0.0,
+          0.0,
+          -80.442
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -6.312082722266
+        ],
+        "moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -6.312082722266
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": 0.0,
+        "flap_rate_b1_rad_s": 0.0
+      }
+    },
+    {
+      "name": "forward_flight_identified_range",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 4.2,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          15.0,
+          2.0,
+          -1.2
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.11,
+          -0.07,
+          0.02
+        ],
+        "collective_pitch_75_rad": 0.14,
+        "cyclic_forward_rad": 0.025,
+        "cyclic_right_rad": -0.012,
+        "a1_rad": -0.045,
+        "b1_rad": 0.032
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": 0.14,
+        "solidity": 0.047643802319,
+        "lambda0": 0.032451226579,
+        "induced_velocity_m_s": 4.2,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 4.2,
+        "mu_x": 0.115897237782,
+        "mu_y": 0.015452965038,
+        "mu_z": -0.009271779023,
+        "mu": 0.116922897048,
+        "within_identified_advance_ratio": true,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": 0.003506386661,
+        "thrust_coefficient": 0.003506386661,
+        "thrust_n": 135.764279528081,
+        "torque_coefficient": 0.000293787754,
+        "torque_nm": 8.815787344462,
+        "thrust_normal_body_frd": [
+          0.044984767445,
+          0.031994505808,
+          -0.998475198638
+        ],
+        "force_body_frd_n": [
+          6.107324541889,
+          4.343711029893,
+          -135.557265969802
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          1.020772092025,
+          -1.435221267344,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          1.728,
+          -2.43,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -8.815787344462
+        ],
+        "moment_body_frd_nm": [
+          2.748772092025,
+          -3.865221267344,
+          -8.815787344462
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": 0.14034836831,
+        "flap_rate_b1_rad_s": -1.598580493415
+      }
+    },
+    {
+      "name": "backward_flow_sign_inference",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 3.6,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          -10.0,
+          0.8,
+          0.5
+        ],
+        "body_rates_body_frd_rad_s": [
+          -0.04,
+          0.06,
+          0.01
+        ],
+        "collective_pitch_75_rad": 0.11,
+        "cyclic_forward_rad": 0.01,
+        "cyclic_right_rad": 0.015,
+        "a1_rad": 0.02,
+        "b1_rad": -0.03
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": 0.11,
+        "solidity": 0.047643802319,
+        "lambda0": 0.027815337068,
+        "induced_velocity_m_s": 3.6,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 3.6,
+        "mu_x": -0.077264825188,
+        "mu_y": 0.006181186015,
+        "mu_z": 0.003863241259,
+        "mu": 0.077511678294,
+        "within_identified_advance_ratio": true,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": 0.003278270972,
+        "thrust_coefficient": 0.003278270972,
+        "thrust_n": 126.931836010046,
+        "torque_coefficient": 0.000223456595,
+        "torque_nm": 6.705336748493,
+        "thrust_normal_body_frd": [
+          -0.019998663095,
+          -0.029995494806,
+          -0.999349950601
+        ],
+        "force_body_frd_n": [
+          -2.538467024412,
+          -3.80738322771,
+          -126.849324046305
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          -0.894735058512,
+          0.596539750737,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          -1.62,
+          1.08,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -6.705336748493
+        ],
+        "moment_body_frd_nm": [
+          -2.514735058512,
+          1.676539750737,
+          -6.705336748493
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": -1.050076481849,
+        "flap_rate_b1_rad_s": 1.113003704869
+      }
+    },
+    {
+      "name": "pure_sideflow_zero_axial_gradient",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 3.4,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          0.0,
+          8.0,
+          -0.25
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.02,
+          -0.01,
+          0.0
+        ],
+        "collective_pitch_75_rad": 0.09,
+        "cyclic_forward_rad": 0.0,
+        "cyclic_right_rad": 0.02,
+        "a1_rad": 0.01,
+        "b1_rad": -0.015
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": 0.09,
+        "solidity": 0.047643802319,
+        "lambda0": 0.026270040564,
+        "induced_velocity_m_s": 3.4,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 3.4,
+        "mu_x": 0.0,
+        "mu_y": 0.061811860151,
+        "mu_z": -0.00193162063,
+        "mu": 0.061811860151,
+        "within_identified_advance_ratio": true,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": 0.002105643011,
+        "thrust_coefficient": 0.002105643011,
+        "thrust_n": 81.528688614871,
+        "torque_coefficient": 0.000203588268,
+        "torque_nm": 6.109141226459,
+        "thrust_normal_body_frd": [
+          -0.009999833222,
+          -0.014999437338,
+          -0.999837496904
+        ],
+        "force_body_frd_n": [
+          -0.815273288931,
+          -1.222884456096,
+          -81.515439950552
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          -0.287377847182,
+          0.191589222899,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          -0.81,
+          0.54,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -6.109141226459
+        ],
+        "moment_body_frd_nm": [
+          -1.097377847182,
+          0.731589222899,
+          -6.109141226459
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": 0.0,
+        "flap_rate_b1_rad_s": 0.679000701303
+      }
+    },
+    {
+      "name": "zero_thrust_profile_torque_7_over_3",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 3.1,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          12.0,
+          0.0,
+          -0.5
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "collective_pitch_75_rad": 0.041191841625990176,
+        "cyclic_forward_rad": 0.0,
+        "cyclic_right_rad": 0.0,
+        "a1_rad": 0.0,
+        "b1_rad": 0.0
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": 0.041191841626,
+        "solidity": 0.047643802319,
+        "lambda0": 0.023952095808,
+        "induced_velocity_m_s": 3.1,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 3.1,
+        "mu_x": 0.092717790226,
+        "mu_y": 0.0,
+        "mu_z": -0.003863241259,
+        "mu": 0.092717790226,
+        "within_identified_advance_ratio": true,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": 0.0,
+        "thrust_coefficient": 0.0,
+        "thrust_n": 0.0,
+        "torque_coefficient": 0.000145798426,
+        "torque_nm": 4.375022109697,
+        "thrust_normal_body_frd": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "force_body_frd_n": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -4.375022109697
+        ],
+        "moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -4.375022109697
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": 0.008702959533,
+        "flap_rate_b1_rad_s": 0.0
+      }
+    },
+    {
+      "name": "positive_thrust_hard_clamp",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 3.0,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "collective_pitch_75_rad": 1.0,
+        "cyclic_forward_rad": 0.0,
+        "cyclic_right_rad": 0.0,
+        "a1_rad": 0.0,
+        "b1_rad": 0.0
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": 1.0,
+        "solidity": 0.047643802319,
+        "lambda0": 0.023179447556,
+        "induced_velocity_m_s": 3.0,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 3.0,
+        "mu_x": 0.0,
+        "mu_y": 0.0,
+        "mu_z": 0.0,
+        "mu": 0.0,
+        "within_identified_advance_ratio": true,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": 0.04215499456,
+        "thrust_coefficient": 0.0055,
+        "thrust_n": 212.955275486663,
+        "torque_coefficient": 0.000270418369,
+        "torque_nm": 8.114534377715,
+        "thrust_normal_body_frd": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "force_body_frd_n": [
+          0.0,
+          0.0,
+          -212.955275486663
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -8.114534377715
+        ],
+        "moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -8.114534377715
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": 0.0,
+        "flap_rate_b1_rad_s": 0.0
+      }
+    },
+    {
+      "name": "negative_thrust_hard_clamp",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 3.0,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "collective_pitch_75_rad": -1.0,
+        "cyclic_forward_rad": 0.0,
+        "cyclic_right_rad": 0.0,
+        "a1_rad": 0.0,
+        "b1_rad": 0.0
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": -1.0,
+        "solidity": 0.047643802319,
+        "lambda0": 0.023179447556,
+        "induced_velocity_m_s": 3.0,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 3.0,
+        "mu_x": 0.0,
+        "mu_y": 0.0,
+        "mu_z": 0.0,
+        "mu": 0.0,
+        "within_identified_advance_ratio": true,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": -0.045191976358,
+        "thrust_coefficient": -0.0055,
+        "thrust_n": -212.955275486663,
+        "torque_coefficient": 1.5444445e-05,
+        "torque_nm": 0.463446635679,
+        "thrust_normal_body_frd": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "force_body_frd_n": [
+          0.0,
+          0.0,
+          212.955275486663
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -0.463446635679
+        ],
+        "moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -0.463446635679
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": 0.0,
+        "flap_rate_b1_rad_s": 0.0
+      }
+    },
+    {
+      "name": "forward_flow_algebraic_outside_identified_range",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 3.5,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          35.0,
+          0.0,
+          0.0
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "collective_pitch_75_rad": 0.13,
+        "cyclic_forward_rad": 0.0,
+        "cyclic_right_rad": 0.0,
+        "a1_rad": 0.02,
+        "b1_rad": 0.0
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": 0.13,
+        "solidity": 0.047643802319,
+        "lambda0": 0.027042688816,
+        "induced_velocity_m_s": 3.5,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 3.5,
+        "mu_x": 0.270426888159,
+        "mu_y": 0.0,
+        "mu_z": 0.0,
+        "mu": 0.270426888159,
+        "within_identified_advance_ratio": false,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": 0.00452878556,
+        "thrust_coefficient": 0.00452878556,
+        "thrust_n": 175.350686645048,
+        "torque_coefficient": 0.000289791518,
+        "torque_nm": 8.695870964649,
+        "thrust_normal_body_frd": [
+          -0.019998666693,
+          0.0,
+          -0.999800006667
+        ],
+        "force_body_frd_n": [
+          -3.506779936661,
+          0.0,
+          -175.315617676708
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          0.0,
+          0.824093285115,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          0.0,
+          1.08,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -8.695870964649
+        ],
+        "moment_body_frd_nm": [
+          0.0,
+          1.904093285115,
+          -8.695870964649
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": -0.034866514629,
+        "flap_rate_b1_rad_s": 0.0
+      }
+    },
+    {
+      "name": "flap_angle_beyond_small_angle_range",
+      "inputs": {
+        "omega_rad_s": 167.0,
+        "induced_velocity_m_s": 3.5,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          4.0,
+          1.0,
+          0.0
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "collective_pitch_75_rad": 0.12,
+        "cyclic_forward_rad": 0.0,
+        "cyclic_right_rad": 0.0,
+        "a1_rad": 0.2,
+        "b1_rad": -0.1
+      },
+      "expected": {
+        "rotor_active": true,
+        "theta0_rad": 0.12,
+        "solidity": 0.047643802319,
+        "lambda0": 0.027042688816,
+        "induced_velocity_m_s": 3.5,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 3.5,
+        "mu_x": 0.030905930075,
+        "mu_y": 0.007726482519,
+        "mu_z": 0.0,
+        "mu": 0.03185710354,
+        "within_identified_advance_ratio": true,
+        "within_small_flap_angle_range": false,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": 0.003477223703,
+        "thrust_coefficient": 0.003477223703,
+        "thrust_n": 134.635114853422,
+        "torque_coefficient": 0.000237303353,
+        "torque_nm": 7.120841039259,
+        "thrust_normal_body_frd": [
+          -0.198630265937,
+          -0.099813786147,
+          -0.974978576969
+        ],
+        "force_body_frd_n": [
+          -26.742608667796,
+          -13.438440561866,
+          -131.266352689867
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          -3.158033532038,
+          6.284513036932,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          -5.4,
+          10.8,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -7.120841039259
+        ],
+        "moment_body_frd_nm": [
+          -8.558033532038,
+          17.084513036932,
+          -7.120841039259
+        ],
+        "effective_flap_time_constant_s": 0.119760479042,
+        "flap_rate_a1_rad_s": -1.656275374329,
+        "flap_rate_b1_rad_s": 0.838431156418
+      }
+    },
+    {
+      "name": "stopped_rotor_inactive_disk_closure",
+      "inputs": {
+        "omega_rad_s": 0.0,
+        "induced_velocity_m_s": 3.0,
+        "hub_velocity_relative_to_air_body_frd_m_s": [
+          6.0,
+          -2.0,
+          0.5
+        ],
+        "body_rates_body_frd_rad_s": [
+          0.1,
+          -0.1,
+          0.05
+        ],
+        "collective_pitch_75_rad": 0.2,
+        "cyclic_forward_rad": 0.03,
+        "cyclic_right_rad": -0.02,
+        "a1_rad": 0.1,
+        "b1_rad": -0.1
+      },
+      "expected": {
+        "rotor_active": false,
+        "theta0_rad": 0.2,
+        "solidity": 0.047643802319,
+        "lambda0": null,
+        "induced_velocity_m_s": null,
+        "inflow_input_kind": "induced_velocity_m_s",
+        "inflow_input_value": 3.0,
+        "mu_x": null,
+        "mu_y": null,
+        "mu_z": null,
+        "mu": null,
+        "within_identified_advance_ratio": false,
+        "within_small_flap_angle_range": true,
+        "lock_number": 3.709795628855,
+        "bare_flap_time_constant_nominal_s": 0.025825784711,
+        "thrust_coefficient_ideal": null,
+        "thrust_coefficient": null,
+        "thrust_n": 0.0,
+        "torque_coefficient": null,
+        "torque_nm": 0.0,
+        "thrust_normal_body_frd": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "force_body_frd_n": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hub_arm_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "flap_spring_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "reaction_torque_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "effective_flap_time_constant_s": null,
+        "flap_rate_a1_rad_s": 0.0,
+        "flap_rate_b1_rad_s": 0.0
+      }
+    }
+  ]
+}

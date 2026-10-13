@@ -459,22 +459,23 @@ static func _flower_clump(k: MeshKit, seed: int, theme: String) -> void:
 		k.quad(p0, p1, p2, p3, leaf)
 		k.quad(p3, p2, p1, p0, leaf.darkened(0.08)) # back face stays visible from the path
 
-		var index := int(Palette.hash01(seed, i, 6) * species.size()) % species.size()
+		# One species per bouquet; rounded petals with a shallow cup replace star-like spikes.
+		var index := int(Palette.hash01(seed, 6) * species.size()) % species.size()
 		var petal: Color = Palette.FLOWERS[species[index]]
 		if theme == "autumn":
 			petal = Palette.vegetation(petal, theme)
 		var center := head + Vector3(0, 0.008, 0)
-		for petal_index in 4:
-			var pa := TAU * float(petal_index) / 4.0 + 0.18 * float(i % 3)
-			var root_a := center + Vector3(cos(pa - 0.42) * 0.020, 0.0, sin(pa - 0.42) * 0.020)
-			var outer := center + Vector3(cos(pa) * 0.075, 0.028, sin(pa) * 0.075)
-			var root_b := center + Vector3(cos(pa + 0.42) * 0.020, 0.0, sin(pa + 0.42) * 0.020)
-			if (outer - root_a).cross(root_b - root_a).y < 0.0:
-				k.tri(root_a, root_b, outer, petal)
-				k.tri(root_a, outer, root_b, petal)
-			else:
-				k.tri(root_a, outer, root_b, petal)
-				k.tri(root_a, root_b, outer, petal)
+		var petals := 8 if species[index] == "daisy" else 6
+		for petal_index in petals:
+			var pa := TAU * float(petal_index) / float(petals) + 0.18 * float(i % 3)
+			var root := center + Vector3(cos(pa) * 0.018, 0, sin(pa) * 0.018)
+			var left := center + Vector3(cos(pa - 0.22) * 0.060, 0.009, sin(pa - 0.22) * 0.060)
+			var outer := center + Vector3(cos(pa) * 0.075, 0.012, sin(pa) * 0.075)
+			var right := center + Vector3(cos(pa + 0.22) * 0.060, 0.009, sin(pa + 0.22) * 0.060)
+			k.tri(root, left, outer, petal)
+			k.tri(root, outer, left, petal)
+			k.tri(root, outer, right, petal)
+			k.tri(root, right, outer, petal)
 		var pollen_a := center + Vector3(0.012, 0.008, 0.0)
 		var pollen_b := center + Vector3(-0.006, 0.008, 0.010)
 		var pollen_c := center + Vector3(-0.006, 0.008, -0.010)
