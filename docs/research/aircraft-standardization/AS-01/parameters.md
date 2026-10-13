@@ -84,6 +84,12 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `controls.max_throw.aileron_down` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.max_throw.elevator` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.max_throw.rudder` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
+| `controls.rates.normal.aileron` | 1 | ≥0.05, ≤1 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
+| `controls.rates.normal.aileron_expo` | 1 | ≥0, ≤0.9 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
+| `controls.rates.normal.elevator` | 1 | ≥0.05, ≤1 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
+| `controls.rates.normal.elevator_expo` | 1 | ≥0, ≤0.9 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
+| `controls.rates.normal.rudder` | 1 | ≥0.05, ≤1 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
+| `controls.rates.normal.rudder_expo` | 1 | ≥0, ≤0.9 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.servo_full_throw_time` | s | ≥0.01, ≤2 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `crash_hull` | m | length 4…unbounded, each(length 3…3, each(≥-3, ≤3)) | AircraftData._hull_body → hull_crossing / ImpactSnapshot / FlightSession crash |
 | `inventory[].mass` | kg | ≥0.001, ≤5 | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
@@ -167,4 +173,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 153 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 159 distinct quantity paths. Shared paths retain branch-dependent ranges.

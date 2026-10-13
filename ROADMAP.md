@@ -75,6 +75,8 @@ Completed IDs below retain navigation to their tests/evidence. Reports record th
 
 D11a comparison is regenerated; D11b characterization, D11d strip consistency and D11f/g fin/oracle follow-ups have implementation evidence in [aero-consistency](docs/research/aero-consistency/). D11e needs measured inertia (VAL-6), D11h needs qualified cross-rate derivatives, and D11c remains conditional offline-tool research. Current local/oracle consistency does not validate borrowed coefficients for the real Stik.
 
+2026-10-13: the [elevator investigation](docs/plans/elevator-flight-dynamics-repair.md) found the generated aircraft (Extra, P-51, Avanti) without the Stik's free tail law: half the pitch damping and no Cmα̇ in the local regime, an inflated elevator τ that stalled the tail from half stick, and a P-51 static step between regimes. D11i (regime-consistency test, `test_regime_consistency.gd`), E0a2c (generators emit `downwash_gradient`), D11j (`wing_section_cm_ac` on the strips) and D8a-R2 (overdamped short period in `flight_modes.gd`) are implemented with [evidence](docs/research/aero-consistency/E0a2c/README.md). Open from the same plan: D6e rates/expo as an input feature, D8b-R2 post-stall lateral gain, and the Avanti/P-51 stall and neutral-point data.
+
 ### Phase H — State contract and measured headroom
 
 H1…H9, H8a/R1, H9-R1 and H11…H15 delivered profiling, float64/transcendental guards, bounded state ownership, atomic RK updates, replay/refinement policy and measured allocation reductions. H10 found no justified contributor-interface extraction. [State evidence](docs/research/README.md#flight-model-and-simulation) retains exact refactor/parity records.

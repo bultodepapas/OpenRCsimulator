@@ -1580,6 +1580,107 @@
           },
           "additionalProperties": false
         },
+        "rates": {
+          "type": "object",
+          "required": [
+            "normal"
+          ],
+          "properties": {
+            "normal": {
+              "type": "object",
+              "required": [
+                "aileron",
+                "elevator",
+                "rudder",
+                "aileron_expo",
+                "elevator_expo",
+                "rudder_expo"
+              ],
+              "properties": {
+                "aileron": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.05,
+                      "maximum": 1.0
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                "elevator": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.05,
+                      "maximum": 1.0
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                "rudder": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.05,
+                      "maximum": 1.0
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                "aileron_expo": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.0,
+                      "maximum": 0.9
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                "elevator_expo": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.0,
+                      "maximum": 0.9
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                "rudder_expo": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.0,
+                      "maximum": 0.9
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
         "servo_full_throw_time": {
           "$ref": "#/$defs/evidence",
           "properties": {

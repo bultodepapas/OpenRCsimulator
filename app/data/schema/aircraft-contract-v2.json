@@ -202,7 +202,8 @@
       ],
       "allowed": [
         "max_throw",
-        "servo_full_throw_time"
+        "servo_full_throw_time",
+        "rates"
       ]
     },
     {
@@ -217,6 +218,34 @@
         "aileron_down",
         "elevator",
         "rudder"
+      ]
+    },
+    {
+      "path": "/controls/rates",
+      "required": [
+        "normal"
+      ],
+      "allowed": [
+        "normal"
+      ]
+    },
+    {
+      "path": "/controls/rates/normal",
+      "required": [
+        "aileron",
+        "elevator",
+        "rudder",
+        "aileron_expo",
+        "elevator_expo",
+        "rudder_expo"
+      ],
+      "allowed": [
+        "aileron",
+        "elevator",
+        "rudder",
+        "aileron_expo",
+        "elevator_expo",
+        "rudder_expo"
       ]
     },
     {
@@ -817,6 +846,7 @@
     "/plausibility/*",
     "/controls/max_throw/*",
     "/controls/servo_full_throw_time",
+    "/controls/rates/*/*",
     "/aero/coefficients/*",
     "/aero/reference_coefficients/*",
     "/aero/envelope/*",

@@ -1,6 +1,6 @@
 # Elevator flight dynamics: root-cause investigation and repair plan
 
-2026-10-13 · Revision 1 · **Status: diagnosis complete (software evidence); no repair implemented.** Owner: main physics ([ROADMAP](../../ROADMAP.md)); step IDs below are proposals for that owner. Evidence and reproducible harness: [research/flight-dynamics/elevator-repair/](../../research/flight-dynamics/elevator-repair/README.md). This file was created at the path the investigation request named; the repository keeps active plans at `docs/<NAME>-PLAN.md`, so the owner may relocate it.
+2026-10-13 · Revision 2 · **Status: diagnosis complete; roadmap steps 1–4 (D11i, E0a2c, D8a-R2, D11j) implemented and verified by software checks, see §11; steps 5–8 open.** Owner: main physics ([ROADMAP](../../ROADMAP.md)). Evidence and reproducible harness: [research/flight-dynamics/elevator-repair/](../../research/flight-dynamics/elevator-repair/README.md). This file was created at the path the investigation request named; the repository keeps active plans at `docs/<NAME>-PLAN.md`, so the owner may relocate it.
 
 ## 1. Executive diagnosis
 
@@ -264,3 +264,17 @@ Acceptance criteria with a physical basis: at 1.6 Vs the maximum attached load f
 | 8 | M5 (future) | Tail stall law with flap CL_max (E1), dynamic stall (E2), pilot cues (E3) | Separate plans |
 
 Steps 1–4 are small, independently reviewable and need no new aircraft data beyond values the generators already compute; they restore one pitch dynamics per aircraft in every regime. Steps 5–7 decide how much of the remaining violence is realism and how much is estimated data, which only measurements and the owner's flights can settle.
+
+## 11. Implementation record (2026-10-13)
+
+Steps 1–4 are implemented; the evidence page [E0a2c](../research/aero-consistency/E0a2c/README.md) lists the files, the measured deltas and the checks run.
+
+| Step | Result |
+| --- | --- |
+| D11i | `app/tests/test_regime_consistency.gd`: 13 failures on the pre-repair data (every Cmq check of the three generated aircraft plus the P-51 static Cm), 0 after. |
+| E0a2c | The three generators emit `downwash_gradient`; regenerated JSON and derivation tables; local Cmq −4.5/−4.5/−3.5 → −8.6/−8.1/−7.2 against the oracle's −8.9/−7.5/−6.9; full-stick nose-up Cm restored to the oracle's (Extra +0.382, Avanti +0.420). |
+| D8a-R2 | `flight_modes.gd` reports an overdamped short period (P-51: roots −6.9 and −2.8 s⁻¹) instead of failing; `test_modes.gd` unchanged and green. |
+| D11j | `wing_section_cm_ac` (contract, schemas, loader, strips, P-51 generator): the P-51's static regime step +0.031 → +0.001. |
+| Steps (§3.2 cases) | Extra 17 m/s quarter stick: α 13.3° → 12.0°, roll 115 → 11 °/s; P-51 25 m/s quarter stick: 19.6° → 12.8°, roll 229 → 29 °/s; Avanti full stick: 83° → 32° α; Ugly Stik byte-identical. Rows `prod_repaired` in [steps-comparison.md](../../research/flight-dynamics/elevator-repair/results/steps-comparison.md). |
+
+Still open from this plan: D6e (rates and expo as an input feature), the D8b-R2 post-stall lateral work, and the Avanti/P-51 stall and neutral-point data items.
