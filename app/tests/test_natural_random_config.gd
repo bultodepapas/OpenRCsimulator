@@ -13,6 +13,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_policy_copy()
+	_test_identity_precision()
 	var generated: Dictionary = NaturalRandom.generate(0)
 	_check("seed zero generates a valid resolved scenario", bool(generated.get("ok", false)), str(generated.get("errors", [])))
 	if not bool(generated.get("ok", false)):
@@ -41,6 +42,20 @@ func _test_policy_copy() -> void:
 	first.recipes[0].speed_mps[0] = -1000.0
 	var second: Dictionary = ScenarioConfig.policy_catalog()
 	_check("policy catalog callers receive detached data", float(second.recipes[0].speed_mps[0]) == expected_low)
+
+
+func _test_identity_precision() -> void:
+	_check("uint32 integer and float values share canonical identity",
+		ScenarioConfig.identity_for({"seed": 4294967295}) == ScenarioConfig.identity_for({"seed": 4294967295.0}))
+	_check("12-digit identity precision is stable for very small values",
+		ScenarioConfig.identity_for({"value": 1.2345678901231e-200})
+			== ScenarioConfig.identity_for({"value": 1.2345678901234e-200}))
+	_check("12-digit identity precision is stable for large negative values",
+		ScenarioConfig.identity_for({"value": -1.2345678901231e200})
+			== ScenarioConfig.identity_for({"value": -1.2345678901234e200}))
+	_check("values crossing a 12-digit rounding boundary change identity",
+		ScenarioConfig.identity_for({"value": 1.2345678901248})
+			!= ScenarioConfig.identity_for({"value": 1.2345678901251}))
 
 
 func _test_strict_mutations(scenario: Dictionary) -> void:
@@ -117,8 +132,36 @@ func _json_round_trip_is_valid(scenario: Dictionary) -> bool:
 	if parser.parse(JSON.stringify(scenario, "", true, true)) != OK:
 		return false
 	var checked: Dictionary = ScenarioConfig.validate(parser.data)
+	# Godot's JSON parser can shift a float by one ULP; validation must preserve the decoded values
+	# while the published 12-significant-digit identity remains stable across the transport.
 	return bool(checked.get("ok", false)) and checked.scenario.identity == scenario.identity \
-			and JSON.stringify(checked.scenario, "", true, true) == JSON.stringify(scenario, "", true, true)
+			and _same_full_precision_value(checked.scenario, parser.data)
+
+
+func _same_full_precision_value(actual: Variant, expected: Variant) -> bool:
+	var actual_type := typeof(actual)
+	var expected_type := typeof(expected)
+	var actual_is_number := actual_type in [TYPE_INT, TYPE_FLOAT]
+	var expected_is_number := expected_type in [TYPE_INT, TYPE_FLOAT]
+	if actual_is_number or expected_is_number:
+		return actual_is_number and expected_is_number and float(actual) == float(expected)
+	if actual_type != expected_type:
+		return false
+	if actual_type == TYPE_DICTIONARY:
+		if actual.size() != expected.size():
+			return false
+		for key: Variant in actual:
+			if not expected.has(key) or not _same_full_precision_value(actual[key], expected[key]):
+				return false
+		return true
+	if actual_type == TYPE_ARRAY:
+		if actual.size() != expected.size():
+			return false
+		for index: int in actual.size():
+			if not _same_full_precision_value(actual[index], expected[index]):
+				return false
+		return true
+	return actual == expected
 
 
 func _has_exact_scenario_keys(scenario: Dictionary) -> bool:

@@ -6,6 +6,7 @@ const ScenarioConfig := preload("res://scenarios/scenario_config.gd")
 const DISTRIBUTION_SAMPLE_COUNT := 10000
 const AIRCRAFT_TOLERANCE_PCT := 2.0
 const CATEGORY_TOLERANCE_PCT := 2.0
+const JOINT_SIGMA_LIMIT := 5.0
 
 var _failures := 0
 
@@ -100,7 +101,7 @@ func _test_distribution() -> void:
 		for aircraft_id: String in ScenarioConfig.EXPECTED_AIRCRAFT_IDS:
 			var count := int(joint_counts["%s|%s" % [aircraft_id, recipe_id]])
 			_check("aircraft/recipe cell %s × %s shows independent selection" % [aircraft_id, recipe_id],
-				absf(float(count) - 500.0) <= 125.0, str(count))
+				_within_joint_distribution(count, weight), str(count))
 	for daylight_value: Variant in policy.get("daylight", []):
 		var daylight: Dictionary = daylight_value
 		var daylight_id := str(daylight.id)
@@ -113,6 +114,14 @@ func _within_pct(count: int, target_pct: float, tolerance_pct: float) -> bool:
 	var expected := float(DISTRIBUTION_SAMPLE_COUNT) * target_pct / 100.0
 	var tolerance := float(DISTRIBUTION_SAMPLE_COUNT) * tolerance_pct / 100.0
 	return absf(float(count) - expected) <= tolerance
+
+
+func _within_joint_distribution(count: int, recipe_weight_pct: float) -> bool:
+	var aircraft_probability := 1.0 / float(ScenarioConfig.EXPECTED_AIRCRAFT_IDS.size())
+	var joint_probability := aircraft_probability * recipe_weight_pct / 100.0
+	var expected := float(DISTRIBUTION_SAMPLE_COUNT) * joint_probability
+	var standard_deviation := sqrt(float(DISTRIBUTION_SAMPLE_COUNT) * joint_probability * (1.0 - joint_probability))
+	return absf(float(count) - expected) <= JOINT_SIGMA_LIMIT * standard_deviation
 
 
 func _check(label: String, ok: bool, detail: String = "") -> void:

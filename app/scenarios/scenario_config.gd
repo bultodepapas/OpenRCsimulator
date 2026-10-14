@@ -635,7 +635,7 @@ static func _file_stamp(path: String) -> String:
 static func _sorted_value(value: Variant) -> Variant:
 	# Normalize integer and float variants before the 12-significant-digit digest serialization.
 	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
-		return ("%.12g" % float(value)).to_float()
+		return _rounded_significant_value(float(value))
 	if typeof(value) == TYPE_DICTIONARY:
 		var sorted_keys: Array = value.keys()
 		sorted_keys.sort()
@@ -649,6 +649,31 @@ static func _sorted_value(value: Variant) -> Variant:
 			result.append(_sorted_value(item))
 		return result
 	return value
+
+
+static func _rounded_significant_value(value: float) -> float:
+	if value == 0.0:
+		return 0.0
+	var representation := String.num_scientific(value)
+	var exponent := 0
+	var significand := representation
+	var exponent_index := representation.find("e")
+	if exponent_index >= 0:
+		significand = representation.substr(0, exponent_index)
+		exponent = representation.substr(exponent_index + 1).to_int()
+	else:
+		var unsigned_representation := representation.trim_prefix("-")
+		var decimal_index := unsigned_representation.find(".")
+		var digits_before_decimal: int = decimal_index if decimal_index >= 0 else unsigned_representation.length()
+		var digits := unsigned_representation.replace(".", "")
+		var first_nonzero := 0
+		while first_nonzero < digits.length() and digits[first_nonzero] == "0":
+			first_nonzero += 1
+		exponent = digits_before_decimal - first_nonzero - 1
+		var normalized_digits := digits.substr(first_nonzero)
+		var sign := "-" if value < 0.0 else ""
+		significand = sign + normalized_digits.substr(0, 1) + "." + normalized_digits.substr(1)
+	return (String.num(significand.to_float(), 11) + "e" + str(exponent)).to_float()
 
 
 static func _failure(errors: PackedStringArray) -> Dictionary:
