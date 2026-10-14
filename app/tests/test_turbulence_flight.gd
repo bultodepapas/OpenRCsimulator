@@ -168,6 +168,7 @@ func _trace_checks(config: Dictionary) -> void:
 	r.recording = false
 	var late: Dictionary = s.checkpoint()
 	late.simulation.tick = 100000000 # exercise late recording without simulating days of flight
+	late.contact_state.tick = late.simulation.tick # keep owner metadata on the same committed boundary
 	late.simulation.aux[-1] = (late.simulation.tick - 1) * late.simulation.dt
 	check("late-clock checkpoint restores", s.restore_checkpoint(late))
 	r.start(s.trace_meta())
