@@ -15,7 +15,7 @@ const GroundSurfaces = preload("res://physics/ground_surfaces.gd")
 signal resetting
 var sim: Node = Sim.new()
 var aircraft: Dictionary = {ok=false}
-var aircraft_path: String = "res://data/aircraft/xcell_60_research.json"
+var aircraft_path: String = "res://data/rotorcraft/xcell_60_research.json"
 var physics_enabled: bool = true
 var input_enabled: bool = true
 var commands: Dictionary = {roll=0.0,pitch=0.0,yaw=0.0,throttle=.5}

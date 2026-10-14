@@ -45,7 +45,7 @@ func _initialize() -> void:
 		and helicopter_entry.get("visual_family", "") == "hx-700"
 		and helicopter_entry.get("name", "") == "RC Helicopter Research Trainer"
 		and helicopter_entry.get("summary", "") == "X-Cell reference physics · HX-700 visual"
-		and helicopter_entry.get("data", "") == "res://data/aircraft/xcell_60_research.json"
+		and helicopter_entry.get("data", "") == "res://data/rotorcraft/xcell_60_research.json"
 		and Catalog.is_rotorcraft("xcell-60-research") and not Catalog.is_rotorcraft(AirplaneBuilder.STIK_ID))
 	_check("glow Stik variants are explicitly experimental and identify inferred profiles",
 		Catalog.entry(AirplaneBuilder.STIK_GLOW_55AX_ID).status == Catalog.EXPERIMENTAL

@@ -91,7 +91,7 @@ const ENTRIES := [
 		summary = "X-Cell reference physics · HX-700 visual",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: X-Cell .60 reference physics with an HX-700 visual surrogate; hover start only; not flight-validated.",
-		data = "res://data/aircraft/xcell_60_research.json",
+		data = "res://data/rotorcraft/xcell_60_research.json",
 	},
 ]
 

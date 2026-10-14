@@ -597,7 +597,7 @@ Each step is one small working change with its proof. A step that touches a coor
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | HELI-10 | `openrc-rotorcraft v1` spec, generated schema and `rotorcraft_data.gd` (validation, derivation, identity); shared kernels extracted only if needed | Invalid-data suite (missing, extra, wrong unit, null, out of range, inconsistent CG/inertia); airplane loader untouched or byte-identical |
-| HELI-11 | X-Cell source table and generator `research/helicopter/xcell/derive.py --check` → `app/data/aircraft/xcell-60-mit.json` | Every row cites Table 1 with its kind; `--check` in `test.sh` |
+| HELI-11 | X-Cell source table and generator `research/helicopter/xcell/derive.py --check` → `app/data/rotorcraft/xcell-60-mit.json` | Every row cites Table 1 with its kind; `--check` in `test.sh` |
 | HELI-12 | Contract text: rotorcraft section in AIRCRAFT_CONTRACT (with the AS owner) | Reviewed diff |
 
 ### Phase 3: controls and electronics

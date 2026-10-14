@@ -1,6 +1,7 @@
 # Keep hashed glow profiles, schemas and flight evidence byte-stable across checkouts.
 # Workshop descriptors bind exact aircraft bytes on every platform.
 /app/data/aircraft/*.json text eol=crlf
+/app/data/rotorcraft/*.json text eol=crlf
 /app/data/workshop/*.json text eol=lf
 /app/data/ground/wheel_profiles.json text eol=lf
 /app/data/glow/*_candidate.json text eol=lf

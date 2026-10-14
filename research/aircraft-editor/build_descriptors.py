@@ -27,6 +27,7 @@ ENTRY_RE = re.compile(
 )
 FAMILY_RE = re.compile(r'\bvisual_family\s*=\s*"(?P<family>[^\"]+)"')
 DATA_RE = re.compile(r"\bdata\s*=\s*\"(?P<path>[^\"]*)\"")
+VEHICLE_RE = re.compile(r'\bvehicle\s*=\s*"(?P<vehicle>[^"]+)"')
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 INVENTORY_ID_RE = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
 LEGACY_FORMAT = "openrc-aircraft-workshop v2"
@@ -50,17 +51,21 @@ def catalog_entries() -> list[tuple[str, str]]:
     seen: set[str] = set()
     for match in ENTRY_RE.finditer(source):
         base_id = match.group("id")
+        if not ID_RE.fullmatch(base_id) or base_id in seen:
+            raise ValueError(f"invalid or duplicate catalog ID: {base_id!r}")
+        seen.add(base_id)
+        vehicle_match = VEHICLE_RE.search(match.group("body"))
+        vehicle = vehicle_match.group("vehicle") if vehicle_match else "airplane"
+        if vehicle != "airplane":
+            continue
         data_match = DATA_RE.search(match.group("body"))
         if data_match is None:
             raise ValueError(f"catalog entry {base_id!r} has no data path")
         data_path = data_match.group("path")
         if not data_path:
             continue
-        if not ID_RE.fullmatch(base_id) or base_id in seen:
-            raise ValueError(f"invalid or duplicate catalog ID: {base_id!r}")
         if not data_path.startswith("res://data/aircraft/"):
             raise ValueError(f"catalog entry {base_id} uses an unsupported data path: {data_path}")
-        seen.add(base_id)
         entries.append((base_id, data_path))
     if not entries:
         raise ValueError("no aircraft catalog data entries were found")
@@ -146,6 +151,8 @@ def build_descriptor(base_id: str, resource_path: str) -> dict[str, Any]:
         raise ValueError(f"{resource_path}: expected an openrc-aircraft v2 object")
     if base.get("id") != base_id:
         raise ValueError(f"{resource_path}: source ID does not match catalog ID {base_id}")
+    if base.get("vehicle", "airplane") != "airplane":
+        raise ValueError(f"{resource_path}: Workshop descriptors support airplane catalog entries only")
     descriptor_format, bindings = inventory_binding_contract(base_id, base)
     return {
         "_generated_do_not_edit": GENERATED_MARKER,

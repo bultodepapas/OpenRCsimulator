@@ -84,7 +84,8 @@ def derive():
     }
 
 if __name__ == "__main__":
-    path = ROOT / "app/data/aircraft/xcell_60_research.json"
+    path = ROOT / "app/data/rotorcraft/xcell_60_research.json"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(derive(), indent=2) + "\n", encoding="utf-8")
+    output = json.dumps(derive(), indent=2) + "\n"
+    path.write_bytes(output.replace("\n", "\r\n").encode("utf-8"))
     print(path)

@@ -93,6 +93,15 @@ class InventoryBindings(unittest.TestCase):
             {"key", "index", "name_sha256"}, {"key", "index", "name_sha256"}])
         self.assertEqual([item["index"] for item in bindings], [0, 1])
 
+    def test_catalog_descriptor_discovery_skips_rotorcraft(self):
+        entries = build_descriptors.catalog_entries()
+        ids = {base_id for base_id, _ in entries}
+        self.assertEqual(len(entries), 7)
+        self.assertNotIn("xcell-60-research", ids)
+        self.assertNotIn("xcell-60-research.json", {
+            path.name for path in build_descriptors.expected_descriptors()
+        })
+
     def test_partial_duplicate_and_invalid_identity_sets_are_rejected(self):
         source = identified_source()
         del source["inventory"][0]["id"]
