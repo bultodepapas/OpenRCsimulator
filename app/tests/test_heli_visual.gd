@@ -5,7 +5,6 @@ extends SceneTree
 const Model := preload("res://aircraft/hx700_model.gd")
 const RotorVisual := preload("res://render/rotor/heli_rotor_visual.gd")
 const RotorBlur := preload("res://render/rotor/heli_rotor_blur.gd")
-const PropellerBlur := preload("res://render/propeller_blur.gd")
 
 var _count := 0
 var _failures := 0
@@ -43,8 +42,11 @@ func _initialize() -> void:
 		and (tail_hub_model - Vector3(0.0, 0.197, 0.942)).length() < 0.003,
 		"main %s; tail %s" % [main_hub_model, tail_hub_model])
 
-	var main_profile: Dictionary = PropellerBlur.profile(model.main_rotor_mount, root)
-	var tail_profile: Dictionary = PropellerBlur.profile(model.tail_rotor, root)
+	var main_profile: Dictionary = RotorBlur.measured_profile(model.main_rotor_mount, root)
+	var tail_profile: Dictionary = RotorBlur.measured_profile(model.tail_rotor, root)
+	_check("rotor profiles load from hash-bound static coverage data", 
+		main_profile.get("profile_source") == "verified_static_analysis"
+		and tail_profile.get("profile_source") == "verified_static_analysis")
 	_check("source main rotor profile is measured in its authored frame",
 		main_profile.has("radius") and absf(float(main_profile.radius) - 0.791367365) < 0.003
 		and int(main_profile.get("blades", 0)) == 2, str(main_profile.get("radius", 0.0)))

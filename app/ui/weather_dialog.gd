@@ -7,6 +7,7 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 const SLIDER_GRABBER: Texture2D = preload("res://ui/slider_grabber.svg")
 
 signal applied(config: Dictionary)
@@ -87,6 +88,7 @@ var apply_button: Button
 var error_label: Label
 var _base_config: Dictionary
 var applied_lighting_config: Dictionary = {}
+var applied_night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
 var _initial_text: Dictionary = {}
 var _initial_turbulence_text: Dictionary = {}
 var _initial_atmosphere_text: Dictionary = {}
@@ -99,7 +101,7 @@ var _setting_fields: bool = false
 var _scroll_update_queued: bool = false
 
 
-func _init(initial_config: Variant = null, initial_lighting_config: Variant = null) -> void:
+func _init(initial_config: Variant = null, initial_lighting_config: Variant = null, initial_night_options: Variant = null) -> void:
 	name = "WeatherDialog"
 	layer = LAYER
 	var checked: Dictionary = WeatherSettings.validate(initial_config if initial_config != null else WeatherSettings.defaults())
@@ -239,7 +241,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	atmosphere_preview.name = "AtmospherePreview"
 	atmosphere_preview.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	atmosphere_page.add_child(atmosphere_preview)
-	time_of_day_controls = TimeOfDayControls.new(applied_lighting_config) as VBoxContainer
+	time_of_day_controls = TimeOfDayControls.new(applied_lighting_config, initial_night_options) as VBoxContainer
 	time_of_day_controls.name = "TimeOfDayPage"
 	time_of_day_controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	time_of_day_controls.visible = false
@@ -547,6 +549,10 @@ func _on_apply() -> void:
 	if not lighting_result.get("ok", false):
 		_show_error()
 		return
+	var night_result: Dictionary = time_of_day_controls.call("read_night_options")
+	if not night_result.get("ok", false):
+		_show_error()
+		return
 	var raw: Dictionary = _base_config.duplicate(true)
 	for key: String in EDITED_KEYS:
 		var edit: LineEdit = field_inputs[key]
@@ -616,6 +622,7 @@ func _on_apply() -> void:
 		_show_error()
 		return
 	applied_lighting_config = lighting_result.config.duplicate(true)
+	applied_night_options = night_result.options.duplicate(true)
 	applied.emit(checked.config.duplicate(true))
 
 

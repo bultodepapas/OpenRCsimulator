@@ -92,7 +92,7 @@ def main() -> int:
             ok = parsed and ok
         print(f"{'PASS' if parsed else 'FAIL'} parsed {len(scripts)} scripts", flush=True)
     model_tests = ["aircraft_package_proofs", "aircraft_modules", "aircraft_model_manifest", "imported_aircraft_model", "aircraft_render_contract", "workshop_descriptor"]
-    physics_tests = ["physical_identity", "control_surfaces", "aircraft_contact_contract", "aircraft_contact_events", "aircraft_contact_session",
+    physics_tests = ["physical_identity", "aircraft_physical_identity_contacts", "control_surfaces", "aircraft_contact_contract", "aircraft_contact_events", "aircraft_contact_session",
                      "landscape_collision_session", "scenery_damage_session", "lake_session", "crash_snapshot",
                      "aircraft_propulsion_runtime", "aircraft_contract",
                      "aircraft_data", "controls", "servo", "checkpoint", "checkpoint_integrity", "session_guards",

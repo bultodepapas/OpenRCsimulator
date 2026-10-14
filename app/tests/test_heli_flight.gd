@@ -113,6 +113,18 @@ func _initialize() -> void:
 		check("whole derivative concatenates the body and six continuous rates",
 			result.state_derivative.slice(0, 13) == result.body_derivative
 			and result.state_derivative.slice(13, 19) == result.derivative)
+	var close_ground: Dictionary = Flight.evaluate(state, context, sticks, "normal", false, false,
+		wind, false, PackedFloat64Array(), {}, 0.5)
+	var far_ground: Dictionary = Flight.evaluate(state, context, sticks, "normal", false, false,
+		wind, false, PackedFloat64Array(), {}, 10.0)
+	check("RK-stage height overrides feed finite ground-effect evaluations", close_ground.ok and far_ground.ok)
+	if close_ground.ok and far_ground.ok:
+		check("near-ground inflow uses live hub height and does not retain prepared height",
+			close_ground.aero.inflow.ground_factor < far_ground.aero.inflow.ground_factor)
+	var hub_strike: Dictionary = Flight.evaluate(state, context, sticks, "normal", false, false,
+		wind, false, PackedFloat64Array(), {}, -0.01)
+	check("negative live hub height is rejected as a physical rotor ground strike",
+		not hub_strike.ok and hub_strike.fault == "rotor_hub_ground_strike")
 	var turning: PackedFloat64Array = state.duplicate()
 	turning[10] = 1.5
 	turning[11] = -1.5

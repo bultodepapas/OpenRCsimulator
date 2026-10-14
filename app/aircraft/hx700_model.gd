@@ -4,6 +4,7 @@
 extends RefCounted
 
 const SCENE_PATH := "res://assets/aircraft/hx-700/hx-700.glb"
+const GLB_SHA256 := "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764"
 const SOURCE_ROOT := "HX-700"
 const MAIN_SOURCE_PIVOT := "Pivote_Rotor_Principal"
 const TAIL_SOURCE_PIVOT := "Pivote_Rotor_Cola"

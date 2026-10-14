@@ -5,6 +5,7 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 
 signal applied(config: Dictionary)
 signal cancelled
@@ -21,11 +22,14 @@ var cancel_button: Button
 var apply_button: Button
 var error_label: Label
 var _focus_order: Array[Control] = []
+var night_only: bool = false
+var applied_night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
 
 
-func _init(initial_config: Variant = null) -> void:
+func _init(initial_config: Variant = null, initial_night_options: Variant = null, field_world_only: bool = false) -> void:
 	name = "TimeOfDayDialog"
 	layer = LAYER
+	night_only = field_world_only
 	var initial: Variant = initial_config if initial_config != null else TimeOfDay.defaults()
 
 	var screen := Screen.mount(self, "Modal")
@@ -53,13 +57,15 @@ func _init(initial_config: Variant = null) -> void:
 
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.name = "TimeOfDayScroll"
-	scroll.custom_minimum_size.y = 180.0
+	scroll.custom_minimum_size.y = 120.0 if night_only else 180.0
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
 	column.add_child(scroll)
-	controls = TimeOfDayControls.new(initial) as VBoxContainer
+	controls = TimeOfDayControls.new(initial, initial_night_options) as VBoxContainer
+	if night_only:
+		controls.call("set_time_editing_visible", false)
 	controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls.focus_order_changed.connect(_set_focus_order)
 	_use_native_option_popups_when_supported()
@@ -101,14 +107,17 @@ func _notification(what: int) -> void:
 func _update_texts() -> void:
 	if cancel_button == null:
 		return
-	title_label.text = tr("Time of day")
-	description_label.text = tr("Choose the lighting for this flight. Apply updates the paused flight and its future restarts.")
+	title_label.text = tr("Field lighting") if night_only else tr("Time of day")
+	description_label.text = tr("Choose the field lights and campfire for this paused flight. These visual options do not change flight behavior.") \
+		if night_only else tr("Choose the lighting for this flight. Apply updates the paused flight and its future restarts.")
 	cancel_button.text = tr("Cancel")
 	apply_button.text = tr("Apply")
 
 
 func _focus_initial_control() -> void:
-	if controls != null and controls.mode_picker != null:
+	if controls != null and night_only and controls.field_lighting_picker != null:
+		controls.field_lighting_picker.grab_focus()
+	elif controls != null and controls.mode_picker != null:
 		controls.mode_picker.grab_focus()
 	else:
 		cancel_button.grab_focus()
@@ -121,6 +130,8 @@ func _use_native_option_popups_when_supported() -> void:
 	var pickers: Array[OptionButton] = [
 		controls.get("mode_picker") as OptionButton,
 		controls.get("preset_picker") as OptionButton,
+		controls.get("field_lighting_picker") as OptionButton,
+		controls.get("campfire_picker") as OptionButton,
 	]
 	for picker: OptionButton in pickers:
 		picker.get_popup().force_native = true
@@ -130,7 +141,7 @@ func _sync_panel_size() -> void:
 	if dialog_panel == null or not is_inside_tree():
 		return
 	var available_height: float = get_viewport().get_visible_rect().size.y - 32.0
-	dialog_panel.custom_minimum_size.y = clampf(available_height, 480.0, 640.0)
+	dialog_panel.custom_minimum_size.y = clampf(available_height, 320.0 if night_only else 480.0, 640.0)
 
 
 func _set_focus_order() -> void:
@@ -155,12 +166,18 @@ func _set_focus_order() -> void:
 
 
 func _on_apply() -> void:
-	var result: Dictionary = controls.call("read_draft")
+	var night_result: Dictionary = controls.call("read_night_options")
+	if not night_result.get("ok", false):
+		error_label.text = tr(INPUT_ERROR)
+		error_label.visible = true
+		return
+	var result: Dictionary = {"ok": true, "config": {}} if night_only else controls.call("read_draft")
 	if not result.get("ok", false):
 		error_label.text = tr(INPUT_ERROR)
 		error_label.visible = true
 		return
 	error_label.visible = false
+	applied_night_options = night_result.options.duplicate(true)
 	applied.emit(result.config.duplicate(true))
 
 

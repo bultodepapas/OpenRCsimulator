@@ -42,6 +42,7 @@ act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app
 | --- | --- | --- |
 | Get the engine | `app/get-godot.sh` | Downloads the pinned engine and verifies its SHA-512. |
 | Run checks | `app/test.sh` | Headless parse, unit, app-route, model-contract, trace and frame-rate checks. It checks every GDScript in `app/`; a parse error fails the run. |
+| Natural Random focused checks | `python research/natural-random/verify.py --godot <native-godot-path> --out <fresh-directory>` | Import, parse and focused scenario/menu/flight regressions with per-check logs. Native captures and pack-smoke commands: [NR evidence](research/natural-random/README.md). Does not replace the full suite or pilot acceptance. |
 | Offline tool regressions | `research/test-tools.sh` | Bounded reducer/importer/audit harness tests used by CI; synthetic fixtures do not close physical gates. |
 | Capture app visuals | `app/capture.sh` | Xvfb render set, image checks, traces, scenario comparisons and a complete run manifest under ignored `app/captures/`. |
 | Launch the complete field | `app/run-landscape.sh` | Opens the app with scenery forced on, including when `OPENRC_SCENERY=off` is inherited. Scenery is on by default in regular launches; opt out with `OPENRC_SCENERY=off` or `-- --scenery=off`. |

@@ -59,14 +59,20 @@ static func evaluate(main_model: Dictionary, tail_model: Dictionary, airframe_mo
 static func fast_evaluate(context: Dictionary, state: PackedFloat64Array, omega: float,
 		cg_air: PackedFloat64Array, rates: PackedFloat64Array, collective: float,
 		cyclic_forward: float, cyclic_right: float, tail_collective: float,
-		diagnostics: bool = false) -> Dictionary:
+		diagnostics: bool = false, height_over_radius_override: float = NAN) -> Dictionary:
 	if not PerformanceContext.has_valid_header(context) or state.size() != 3 \
 		or not _vector(state) or not _vector(cg_air) or not _vector(rates) \
-		or not _finite([omega, collective, cyclic_forward, cyclic_right, tail_collective]):
+		or not _finite([omega, collective, cyclic_forward, cyclic_right, tail_collective]) \
+		or (not is_nan(height_over_radius_override) and not is_finite(height_over_radius_override)) \
+		or (not is_nan(height_over_radius_override) and height_over_radius_override < 0.0 \
+			and height_over_radius_override != -1.0):
 		return {"ok": false}
+	var stage_height_over_radius: float = context.height_over_radius
+	if not is_nan(height_over_radius_override):
+		stage_height_over_radius = height_over_radius_override
 	return _evaluate_models(context.main_model, context.tail_model, context.airframe_model,
 		state, omega, cg_air, rates, collective, cyclic_forward, cyclic_right, tail_collective,
-		context.flow_floor_m_s, context.fin_tail_wake_fraction, context.height_over_radius,
+		context.flow_floor_m_s, context.fin_tail_wake_fraction, stage_height_over_radius,
 		context.loss, context.instability, diagnostics, true)
 
 

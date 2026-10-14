@@ -20,7 +20,7 @@ class CandidateFlight extends Main:
 
 class TestApp extends AppRoot:
 	var refuse_world: bool = false
-	func _create_flight() -> Node:
+	func _create_flight(_aircraft_id: String = "") -> Node:
 		var candidate := CandidateFlight.new()
 		candidate.refuse_world = refuse_world
 		return candidate

@@ -109,10 +109,12 @@ static func prepare(configuration: Dictionary) -> Dictionary:
 static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: PackedFloat64Array,
 		flight_mode: String, trainer_enabled: bool, zero_drive_hold: bool,
 		wind_ned_m_s: PackedFloat64Array, diagnostics: bool = false,
-		extra_loads: PackedFloat64Array = PackedFloat64Array(), trim: Dictionary = {}) -> Dictionary:
+		extra_loads: PackedFloat64Array = PackedFloat64Array(), trim: Dictionary = {},
+		height_over_radius: float = NAN) -> Dictionary:
 	if not _context_is_prepared(context) or state.size() != STATE_SIZE or sticks.size() != 4 \
 			or wind_ned_m_s.size() != 3 or (extra_loads.size() != 0 and extra_loads.size() != 6) or flight_mode.is_empty() \
-			or typeof(trainer_enabled) != TYPE_BOOL or typeof(zero_drive_hold) != TYPE_BOOL:
+			or typeof(trainer_enabled) != TYPE_BOOL or typeof(zero_drive_hold) != TYPE_BOOL \
+			or (not is_nan(height_over_radius) and not is_finite(height_over_radius)):
 		return _failure("invalid helicopter evaluation arguments", "invalid_flight_input")
 	for value: float in state:
 		if not is_finite(value):
@@ -122,6 +124,8 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 			return _failure("wind state is nonfinite", "nonfinite_environment")
 	if state[OMEGA] < 0.0:
 		return _failure("main rotor crossed zero speed; locate the stop event", "rotor_zero_speed_event")
+	if not is_nan(height_over_radius) and height_over_radius < 0.0 and height_over_radius != -1.0:
+		return _failure("main-rotor hub is below the ground-effect plane", "rotor_hub_ground_strike")
 	var quaternion: PackedFloat64Array = PackedFloat64Array([state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3]])
 	var qnorm2: float = M.dot(quaternion.slice(1, 4), quaternion.slice(1, 4)) + quaternion[0] * quaternion[0]
 	if not is_finite(qnorm2) or qnorm2 <= 1.0e-24:
@@ -145,7 +149,7 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 	var rotor_state: PackedFloat64Array = PackedFloat64Array([state[A1], state[B1], state[VI]])
 	var aero: Dictionary = Stage.fast_evaluate(context.aero_context, rotor_state, state[OMEGA],
 		air_velocity_body, body_rates, electronics.collective_75_rad, electronics.cyclic_forward_rad,
-		electronics.cyclic_right_rad, electronics.tail_collective_rad, diagnostics)
+		electronics.cyclic_right_rad, electronics.tail_collective_rad, diagnostics, height_over_radius)
 	if not aero.get("ok", false):
 		return _failure("joint aerodynamic stage refused the flight state", "aerodynamic_stage_refused")
 	var drive: Dictionary = Drive.evaluate(context.drive_model, state[OMEGA], electronics.drive_fraction,

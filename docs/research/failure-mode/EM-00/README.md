@@ -126,6 +126,8 @@ These identify the bytes reviewed, not bundled simulator resources. The download
 
 HEAD observed during review was `7265b2e0dc10bfcc7f220544998e21be28159380`, with other tracks' modified/untracked files. This is not a pristine-checkout test result. Discovery used the existing `C-DEVELOPMENT-OpenRCsimulator` graph. Stale snippet spans required current-source verification; no reindex or application mutation was needed.
 
+The shared checkout advanced to `6841da28` during final review. Current-source readback then found initial Natural Random runtime files and launch integration: `ScenarioConfig` has a closed NR-only v1 record; `app_root.start_flight(request)` interprets nonempty requests as NR and requires that screen; `main.bind_scenario()` verifies the matching accepted flight. The plan was updated to require explicit launch-mode/modifier handling instead of treating that parameter as a generic failure request. This observation does not claim those concurrent changes passed their owners' acceptance gates.
+
 | Seam | Observed constraint | Design consequence |
 | --- | --- | --- |
 | `app/sim/flight_session.gd` | Base aux contains engine RPM plus roll/pitch/yaw servo positions; actual surfaces feed loads. | One-side control faults need independent physical state and a shared topology extension. |

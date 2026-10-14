@@ -50,7 +50,7 @@ Two relevant cases are Todd Bridges at Tucson in 2009, described by [the person 
 
 ## 3. Current repository and integration seams
 
-This snapshot was inspected on 2026-10-13 while other tracks had active edits. The graph was used for discovery, then current source was checked because indexed line ranges were stale. Recheck these seams at implementation time; do not treat the file list as permission to replace concurrent work.
+This snapshot was inspected on 2026-10-13 while other tracks had active edits. The graph was used for discovery, then current source was checked because indexed line ranges were stale. A final readback found Natural Random's initial runtime integration had arrived during this review; its current restrictions are included below. Recheck these seams at implementation time; do not treat the file list as permission to replace concurrent work.
 
 | Existing file or contract | What exists | Planned use or limitation |
 | --- | --- | --- |
@@ -65,7 +65,7 @@ This snapshot was inspected on 2026-10-13 while other tracks had active edits. T
 | [screen.gd](../../app/ui/screen.gd), [screen_stack.gd](../../app/ui/screen_stack.gd), [widgets.gd](../../app/ui/widgets.gd) | Current shared screen, focus and input isolation components. | Add one small configuration screen now; the proposed UI redesign can move its entry point later. |
 | [preferences.gd](../../app/app_state/preferences.gd), [es.po](../../app/i18n/es.po) | Versioned preferences and localization. | Add validated keys through the owner's migration path. Do not hardcode the next preference version while UI-24 is also planned. |
 | [Crash guide](../CRASH-DAMAGE-PLAN.md) | Soft hull contacts, prop-strike continuation and experimental postcrash breakup; damaged flight CR-11…15 remains open. | A training fault does not call the terminal crash path. Reuse the eventual damage adapter; postcrash pieces are not evidence of flyable structural damage. |
-| [Natural Random plan](natural-random-flight.md) | Proposed resolved scenario and launch-request seams; its ordinary mode explicitly has no hidden faults. | Reuse an accepted scenario envelope when available. NR remains fault-free by default; a later explicit combined mode needs NR qualification. |
+| [Natural Random plan](natural-random-flight.md), [scenario_config.gd](../../app/scenarios/scenario_config.gd), [natural_random.gd](../../app/scenarios/natural_random.gd) | Initial runtime integration is present. `openrc-flight-scenario v1` has exact keys, five stock IDs and `mode == natural_random`; no failure module. | Reuse its identity/preparation conventions, but extend the schema deliberately. NR remains fault-free by default; a later explicit combined mode needs NR qualification. |
 | [Workshop](../AIRCRAFT-WORKSHOP.md), generated bindings | Detached experiments and generated model/physical sources. | Training failures are session effects, never saved into aircraft experiments or hand-edited into generated JSON. |
 
 Current fleet coverage must be reported for all seven catalog configurations: base Stik, Extra, P-51, Ventage Jet, Timber, Stik 2T and Stik 4T. Five visual families are not seven different control topologies. Future catalog additions should inherit applicable mechanisms through capabilities, while their training envelope still needs qualification.
@@ -118,6 +118,8 @@ Do not immediately end control at first wheel contact. Let the airplane settle t
 ### 4.4 Natural Random and future Home
 
 Failure configuration belongs to a reusable flight modifier, not a second weather/aircraft selector. Ordinary Natural Random remains as specified by NR. Later, an explicitly labeled **Natural Random + failures** option can combine its resolved conditions with this feature after joint qualification; it must not consume the weather RNG or overwrite normal preferences. UI-25 can place the same configuration under **Next flight → Failures**, and a later Training action can offer lessons without duplicating its controls.
+
+The current `app_root.start_flight(request)` treats every nonempty request as Natural Random and requires its briefing screen; `main.bind_scenario()` also validates that exact mode and prepared identity. EM-09 must introduce an explicit launch-mode/modifier distinction while preserving those checks. Passing an ordinary-flight failure dictionary into today's parameter would be invalid. Do not relax NR's five-aircraft allowlist merely to give failures access to all seven conventional configurations.
 
 ## 5. Exact probability, time and repeat semantics
 
@@ -445,7 +447,7 @@ Repeatable seeds and short challenges supply variety without progression locks, 
 
 A proposed `openrc-failure-scenario v1` record contains the player request, eligible-set digest, resolved occurrence/category/mechanism/target/parameters, source provenance, policy and definition versions, seed streams, onset rule/window, stop/recovery behavior, fallback branch if any, aircraft/model/field/environment identities and its own canonical digest. A healthy draw is explicit. Presentation preferences are distinct from physical episode identity.
 
-If NR's outer scenario envelope is accepted first, nest the failure record as an explicitly supported optional versioned module. Otherwise use a small detached launch context and migrate deliberately; do not implement a second weather or lighting format. No ad-hoc fields in sealed `openrc-aircraft`, weather or visual checkpoint dictionaries.
+NR's current scenario envelope is closed and mode-specific. Coordinate an explicit outer launch context or versioned extension that can carry ordinary-flight failure settings and, later, a combined NR/failure record. Preserve existing NR v1 validation and healthy replay; do not add unknown keys to its current dictionaries or reuse its mode label for a different flight. Reuse nested weather/lighting contracts and identity conventions rather than implementing duplicates. No ad-hoc fields in sealed `openrc-aircraft`, weather or visual checkpoint dictionaries.
 
 ### 12.2 Checkpoint content
 
@@ -529,7 +531,7 @@ Phase 1 exits with deterministic, developer-injected faults working through a re
 | ID | Work | Dependencies and proof/status |
 | --- | --- | --- |
 | **EM-08** | Seeded per-flight selector, category/family weighting, onset profiles and resolved fallback branch. | EM-02/06/07; G1 distribution report, p=100 bounded activation, end-before-onset accounting, independent RNG streams. |
-| **EM-09** | Home configuration screen, launch-context plumbing and preferences migration. | EM-08 + UI owner; ordinary routes unchanged, candidate launch failure restores state, Apply/Cancel and keyboard/radio isolation. |
+| **EM-09** | Home configuration screen, explicit launch-mode/modifier distinction and preferences migration. | EM-08 + UI/NR owners; preserve current NR request/identity checks and ordinary routes, candidate launch failure restores state, Apply/Cancel and keyboard/radio isolation. |
 | **EM-10** | Notice checkbox, nonmodal overlay, hidden mode and concise postflight explanation. | EM-07/09 + HUD/AUD/CR owners; actual committed state drives copy/sound; notices do not change trajectory; EN/ES/focus/capture proof. |
 | **EM-11** | Repeat same flight versus new draw, pause-setting scope, CLI/direct-route opt-in and lifecycle/export checks. | EM-09/10; repeated cycles, trace-save failures, no interactive preference use in existing automation. CLI spelling chosen through main's parser owner. |
 | **EM-12** | Qualify a bounded ordinary pool across the complete current conventional fleet; release the initial mode with its feature matrix. | EM-03…11; G0…G7 with pilot review and target hardware. Explicitly list split-elevator, finite-energy and structural cases still unavailable. |
