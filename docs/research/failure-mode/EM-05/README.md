@@ -48,6 +48,7 @@ Godot 4.7.2 stable, Linux binary through WSL, production 240 Hz for session/onse
 | `test_electric_session.gd` / `test_electric_battery_session.gd` | 86 / 103 checks, 0 failed | Existing electric shaft and finite-pack behavior. |
 | `test_glow_audio.gd` / `test_glow_trace.gd` | 42 / 276 checks, 0 failed | Existing audio lifecycle and trace observables; not a listening qualification of the new event. |
 | `test_failure_launch.gd` | 24 checks, 0 failed | Direct configuration and optional incident card. |
+| `test_ui_language.gd` | Pass; 491 Spanish catalog texts, none untranslated | Both new labels/hints and existing Home/direct-route language isolation. The stale route-only fixture now uses a live `--quick-flight` instead of invalid zero-duration trace arguments. |
 | `test_golden.gd` | Four flights, 0 failed | Existing healthy flight references. |
 | Transcendental guard and self-test | Pass | Shared float64 math boundary. |
 

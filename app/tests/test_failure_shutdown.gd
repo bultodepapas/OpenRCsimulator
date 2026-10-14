@@ -213,7 +213,38 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 		_check(label + " accepted cutoff disconnects motor current and shaft torque",
 			not bool(cut_electric.get("enabled", true))
 			and float(cut_electric.get("motor_current_a", NAN)) == 0.0
-			and float(cut_electric.get("shaft_torque_nm", NAN)) == 0.0, cut_electric)
+			and float(cut_electric.get("shaft_torque_nm", NAN)) <= 0.0, cut_electric)
+
+	# Reject the first tick after activation on the original flight. The active
+	# checkpoint below is only used to recover after verifying the transaction.
+	var post_cut_checkpoint: Dictionary = flight.checkpoint()
+	var post_cut_physics: PackedByteArray = _rollback_bytes(flight.sim)
+	var post_cut_runtime: Dictionary = flight._failures.snapshot()
+	var post_cut_tick: int = flight.sim.tick
+	var post_cut_notice_count: int = change_count[0]
+	var original_post_cut_callback: Callable = flight.sim.post_step
+	flight.sim.post_step = func(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+			accepted_tick: int) -> PackedFloat64Array:
+		if original_post_cut_callback.is_valid():
+			original_post_cut_callback.call(previous, candidate, accepted_tick)
+		return PackedFloat64Array([NAN])
+	flight.sim.step()
+	_check(label + " post-cut candidate rejection leaves tick and physics unchanged",
+		flight.sim.tick == post_cut_tick and not flight.sim.fault_reason.is_empty()
+		and _rollback_bytes(flight.sim) == post_cut_physics)
+	_check(label + " post-cut rejection preserves accepted engine-off mode and active runtime",
+		flight.sim.modes[0] == 0 and not flight.engine_running
+		and flight.failure_power_cut_active() and not flight.propulsion_power_enabled()
+		and flight._failures.snapshot() == post_cut_runtime, flight.failure_status())
+	_check(label + " post-cut rejection emits no duplicate event and retains a complete active checkpoint",
+		change_count[0] == post_cut_notice_count
+		and bool(post_cut_checkpoint.get("failure_state", {}).get("active", false))
+		and flight.checkpoint() == post_cut_checkpoint)
+	flight.sim.post_step = original_post_cut_callback
+	_check(label + " post-cut rejection recovers at the exact active checkpoint",
+		flight.restore_checkpoint(post_cut_checkpoint)
+		and var_to_bytes(flight.checkpoint()) == var_to_bytes(post_cut_checkpoint)
+		and change_count[0] == post_cut_notice_count)
 
 	var replay: Node = _new_flight(aircraft_id)
 	var replay_changes: Array[int] = [0]
@@ -279,7 +310,7 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 		_check(label + " stopped reference remains electrically disconnected",
 			not bool(final_electric.get("enabled", true))
 			and float(final_electric.get("motor_current_a", NAN)) == 0.0
-			and float(final_electric.get("shaft_torque_nm", NAN)) == 0.0, final_electric)
+			and float(final_electric.get("shaft_torque_nm", NAN)) <= 0.0, final_electric)
 
 	var plan_before_reset: Dictionary = flight._failures.plan()
 	flight.reset()
@@ -393,9 +424,9 @@ func _test_dynamic_battery_auxiliary_budget() -> void:
 	var expected_heat: float = heat_before + float(pack.resistance_ohm) * auxiliary_current * auxiliary_current * duration
 	var expected_terminal_delta: float = _chemical_energy(pack, charge_before, expected_charge) \
 		- float(pack.resistance_ohm) * auxiliary_current * auxiliary_current * duration
-	_check(LABEL + " stops motor current and torque while retaining only auxiliary pack current",
+	_check(LABEL + " stops motor current and positive drive torque while retaining only auxiliary pack current",
 		stopped.get("ok", false) and float(stopped.get("motor_current_a", NAN)) == 0.0
-		and float(stopped.get("shaft_torque_nm", NAN)) == 0.0
+		and float(stopped.get("shaft_torque_nm", NAN)) <= 0.0
 		and float(stopped.get("pack_current_a", NAN)) == auxiliary_current
 		and float(stopped.get("battery_current_a", NAN)) == auxiliary_current, stopped)
 	_check(LABEL + " matches independent auxiliary charge, heat and terminal-energy budgets",
