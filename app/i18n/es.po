@@ -1522,5 +1522,5 @@ msgstr "Un cielo gris denso con capas bajas y oscuras."
 msgid "A distant towering cloud bank with a broad cap, dark base and rain shafts."
 msgstr "Un banco de nubes alto y lejano, con cima amplia, base oscura y cortinas de lluvia."
 
-msgid "Dark layered clouds with branching lightning, cloud flashes and delayed thunder."
-msgstr "Capas de nubes oscuras con rayos ramificados, relámpagos y truenos retardados."
+msgid "A towering storm lit from within, with branching lightning, rain shafts and delayed thunder."
+msgstr "Una tormenta alta iluminada desde dentro, con rayos ramificados, cortinas de lluvia y truenos con retardo."

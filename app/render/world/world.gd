@@ -457,6 +457,11 @@ static func weather_snapshot(environment: Environment) -> Dictionary:
 	return bank.snapshot() if bank != null else {}
 
 
+## Scene-local presentation binding. Consumers must keep only a WeakRef to this node.
+static func storm_bank_node(environment: Environment) -> Node3D:
+	return _weather_bank(environment)
+
+
 ## Reapply the shared cloud mask after a paused visual preset edit or a cloud transport step.
 static func refresh_star_cloud_appearance(environment: Environment) -> void:
 	if environment == null or not is_instance_valid(environment) or not environment.has_meta("fw_star_field"):

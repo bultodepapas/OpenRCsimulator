@@ -124,8 +124,9 @@ func _modal_draft_apply_cancel_and_flight_cycle() -> void:
 	_check("Home begins with the legacy daylight selection", app.home.lighting_config == TimeOfDay.defaults())
 	await _open_weather(app)
 	var dialog: CanvasLayer = app.weather_dialog
-	_check("existing dialog keeps its weather signal and adds a fourth tab",
-		dialog.tab_container.tab_count == 4 and dialog.tab_container.get_tab_title(3) == "Time of day")
+	_check("weather dialog keeps the time and sky tabs",
+		dialog.tab_container.tab_count == 5 and dialog.tab_container.get_tab_title(3) == "Time of day"
+		and dialog.tab_container.get_tab_title(4) == "Sky & clouds")
 	var controls: VBoxContainer = dialog.get("time_of_day_controls")
 	var mode_picker: OptionButton = controls.find_child("LightingMode", true, false) as OptionButton
 	var preset_picker: OptionButton = controls.find_child("TimePreset", true, false) as OptionButton
@@ -320,7 +321,7 @@ func _localization_and_800_layout() -> void:
 	root.size = Vector2i(800, 600)
 	await ui.settle()
 	var panel_rect: Rect2 = dialog.panel.get_global_rect()
-	_check("four-tab dialog fits inside an 800×600 viewport", panel_rect.position.x >= 0.0
+	_check("five-tab dialog fits inside an 800×600 viewport", panel_rect.position.x >= 0.0
 		and panel_rect.position.y >= 0.0 and panel_rect.end.x <= 800.0 and panel_rect.end.y <= 600.0,
 		str(panel_rect))
 	app.set_language("es")

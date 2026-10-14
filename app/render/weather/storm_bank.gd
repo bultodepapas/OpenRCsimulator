@@ -14,6 +14,7 @@ var _puffs: Array[MeshInstance3D] = []
 var _rain: Array[MeshInstance3D] = []
 var _period_m := 57600.0
 var _clock_s := 0.0
+var _flash := {event_id = "", level = 0.0, source_world = [0.0, 0.0, 0.0], radiance = 0.0}
 
 
 func configure(profile: Dictionary, visual_seed: int) -> void:
@@ -22,6 +23,7 @@ func configure(profile: Dictionary, visual_seed: int) -> void:
 		return
 	_spec = next.duplicate(true)
 	_seed = visual_seed
+	_flash = {event_id = "", level = 0.0, source_world = [0.0, 0.0, 0.0], radiance = 0.0}
 	for child: Node in get_children():
 		child.free()
 	_materials.clear()
@@ -137,6 +139,36 @@ func _nearest_copy(coordinate: float, eye_coordinate: float) -> float:
 	return coordinate + floor((eye_coordinate - coordinate) / _period_m + 0.5) * _period_m
 
 
+## Detached descriptor for emission-time lightning placement; no node is owned by the scheduler.
+func cell_spec() -> Dictionary:
+	return _spec.duplicate(true)
+
+
+## Scene-linear addition inside the existing cloud mask. Exposure is applied once by GLES3.
+## The inverse cap bounds the added display radiance only; base sky lighting is never changed.
+func apply_flash(event: Dictionary, level: float, exposure: float) -> void:
+	var strength := clampf(level, 0.0, 1.0) if is_finite(level) and visible and not event.is_empty() else 0.0
+	var safe_exposure := maxf(exposure, 0.001) if is_finite(exposure) else 1.0
+	var source := Vector3.ZERO
+	var raw: Variant = event.get("source_world", [])
+	if (raw is Array or raw is PackedFloat64Array) and raw.size() == 3:
+		source = Vector3(float(raw[0]), float(raw[1]), float(raw[2]))
+	else:
+		strength = 0.0
+	if not source.is_finite():
+		strength = 0.0
+		source = Vector3.ZERO
+	var radiance := strength * 0.85 / safe_exposure
+	_flash = {event_id = str(event.get("event_id", "")) if strength > 0.0 else "",
+		level = strength, source_world = [source.x, source.y, source.z], radiance = radiance}
+	for material: ShaderMaterial in _materials:
+		material.set_shader_parameter("flash_source", source)
+		material.set_shader_parameter("flash_radiance", radiance)
+	if _rain_material != null:
+		_rain_material.set_shader_parameter("flash_source", source)
+		_rain_material.set_shader_parameter("flash_radiance", radiance * 0.16)
+
+
 ## Detached diagnostic data for captures/tests. No rendering state is stored in the simulation.
 func snapshot() -> Dictionary:
 	var centers: Array = []
@@ -145,4 +177,5 @@ func snapshot() -> Dictionary:
 	return {enabled = visible and not _spec.is_empty(), layout_version = int(_spec.get("layout_version", 0)),
 		seed = _seed, center = [position.x, position.y, position.z], puff_centers = centers,
 		target = [position.x, (float(_spec.get("base_m", 0.0)) + float(_spec.get("top_m", 0.0))) * 0.5, position.z],
-		puff_count = _puffs.size(), rain_count = _rain.size(), period_m = _period_m, clock_s = _clock_s}
+		puff_count = _puffs.size(), rain_count = _rain.size(), period_m = _period_m, clock_s = _clock_s,
+		flash = _flash.duplicate(true)}

@@ -7,6 +7,8 @@ uniform vec3 rain_lin = vec3(0.13, 0.15, 0.18);
 uniform vec3 haze_lin = vec3(0.6, 0.7, 0.8);
 uniform float haze_density = 0.00005;
 uniform float opacity = 0.5;
+uniform vec3 flash_source = vec3(0.0);
+uniform float flash_radiance = 0.0;
 varying vec3 world_position;
 void vertex() { world_position = VERTEX; }
 void fragment() {
@@ -17,6 +19,8 @@ void fragment() {
 	float vertical = smoothstep(0.0, 0.15, UV.y) * smoothstep(0.0, 0.20, 1.0 - UV.y);
 	float alpha = (0.24 + shaft * 0.55 + fine * 0.21) * edge * vertical * opacity;
 	float transmission = exp(-length(CAMERA_POSITION_WORLD - world_position) * haze_density);
-	ALBEDO = encode_for_engine(mix(haze_lin, rain_lin, transmission));
+	vec3 delta = (world_position - flash_source) / vec3(2800.0, 4500.0, 2800.0);
+	vec3 lit_rain = rain_lin + vec3(0.64, 0.78, 1.0) * flash_radiance * exp(-dot(delta, delta));
+	ALBEDO = encode_for_engine(mix(haze_lin, lit_rain, transmission));
 	ALPHA = alpha;
 }

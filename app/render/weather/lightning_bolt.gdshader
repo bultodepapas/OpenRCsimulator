@@ -1,12 +1,13 @@
 // FW-84 seeded storm channel ribbon: no particles, timers, collision queries or TIME.
 shader_type spatial;
 render_mode blend_add, unshaded, cull_disabled, depth_draw_never, fog_disabled;
+#include "res://render/world/engine_srgb.gdshaderinc"
 
 uniform vec3 bolt_color = vec3(0.69, 0.82, 1.0);
 uniform float bolt_intensity = 0.0;
 uniform bool core_pass = false;
 uniform float display_cap = 2.0;
-uniform float albedo_display_cap = 0.75;
+uniform float scene_exposure = 1.0;
 
 void fragment() {
 	float across = abs(UV.x * 2.0 - 1.0);
@@ -18,11 +19,8 @@ void fragment() {
 	if (glow <= 0.001) {
 		discard;
 	}
-	// Unshaded material output is not scaled by Environment exposure in the same
-	// way as lit surfaces. Keep its capped color independent of the exposure input.
-	ALBEDO = bolt_color * min(1.0, albedo_display_cap);
-	float base_emission = core_pass ? 4.8 : 1.5;
-	float output_gain = min(glow * base_emission, display_cap);
-	EMISSION = bolt_color * output_gain;
+	// GLES3 linearizes ALBEDO then applies exposure even for unshaded materials.
+	// Encode a bounded scene-linear contribution; MODE_UNSHADED ignores EMISSION.
+	ALBEDO = encode_for_engine(bolt_color * display_cap / max(scene_exposure, 0.001));
 	ALPHA = clamp(glow * (core_pass ? 0.95 : 0.42), 0.0, 0.88);
 }

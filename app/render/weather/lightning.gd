@@ -15,7 +15,6 @@ const CLOUD_FLASH_RADIUS_M: float = 4200.0
 const MAX_PATH_SEGMENTS: int = 28
 const BOLT_HALO_HALF_WIDTH_M: float = 120.0
 const BOLT_CORE_HALF_WIDTH_M: float = 28.0
-const LIGHTNING_ALBEDO_DISPLAY_CAP: float = 0.75
 
 enum FlashMode { FULL, REDUCED, OFF }
 
@@ -45,6 +44,11 @@ var _bolt_core: MeshInstance3D = null
 var _halo_material: ShaderMaterial = null
 var _core_material: ShaderMaterial = null
 var _bolt_event_id: String = ""
+var _bank_ref: WeakRef
+var _cell_transport: Dictionary = {}
+var _presented_event: Dictionary = {}
+var _presented_level := 0.0
+var _event_placement: Dictionary = {}
 
 
 func configure(config: Dictionary) -> void:
@@ -78,6 +82,9 @@ func update_at(sim_time_s: float, listener_position: Vector3, paused: bool,
 		exposure: float = 1.0) -> void:
 	if not _active:
 		return
+	var bank := _bank()
+	_events.set_cell_context(bank.cell_spec() if bank != null and bank.visible else {},
+		_cell_transport, listener_position)
 	var now_s: float = maxf(sim_time_s, 0.0)
 	var now_tick: int = _events.tick_for_time(now_s)
 	if paused:
@@ -94,11 +101,15 @@ func update_at(sim_time_s: float, listener_position: Vector3, paused: bool,
 		_last_time_s = now_s
 		_last_tick = now_tick
 		_clear_visuals()
+		_event_placement.clear()
+		_bolt_event_id = ""
 		return
 	var discontinuity: bool = _last_time_s >= 0.0 and now_s - _last_time_s > 0.5
 	if discontinuity:
 		_audio.reset()
 		_audio_rebuild_pending = _audio_allowed
+		_event_placement.clear()
+		_bolt_event_id = ""
 	var from_s: float = now_s - (1.0 / float(_events.tick_rate_hz())) if _last_time_s < 0.0 else _last_time_s
 	# A large seek/hitch should not flash historical pulses or queue a backlog of old cracks.
 	from_s = maxf(from_s, now_s - EVENT_LOOKBACK_S)
@@ -122,6 +133,40 @@ func update_at(sim_time_s: float, listener_position: Vector3, paused: bool,
 	_audio.update_at(now_s, listener_position, false, _sound_speed_mps, new_audio_events)
 	_last_time_s = now_s
 	_last_tick = now_tick
+
+
+func bind_storm_bank(bank: Node3D) -> void:
+	if bank == _bank():
+		return
+	var previous := _bank()
+	if previous != null:
+		previous.apply_flash({}, 0.0, 1.0)
+	_bank_ref = weakref(bank) if bank != null else null
+	_bolt_event_id = ""
+	_event_placement.clear()
+
+
+func set_cell_transport(transport: Dictionary) -> void:
+	if transport != _cell_transport:
+		_cell_transport = transport.duplicate(true)
+
+
+func _bank() -> Node3D:
+	return _bank_ref.get_ref() as Node3D if _bank_ref != null else null
+
+
+func _exit_tree() -> void:
+	# A retained World may outlive the presentation consumer (Workshop/scene replacement).
+	_clear_visuals()
+
+
+func snapshot() -> Dictionary:
+	return {event_id = _current_event_id, level = _presented_level,
+		source_world = _presented_event.get("source_world", PackedFloat64Array()).duplicate(),
+		mode = _flash_mode, bank_bound = _bank() != null,
+		light_energy = _world_light.light_energy if _world_light != null else 0.0,
+		pending_thunder = _audio._pending.size() if _audio != null else 0,
+		node_count = get_child_count()}
 
 
 func _restore_audio_events(now_s: float, now_tick: int) -> Array[Dictionary]:
@@ -212,6 +257,7 @@ func reset() -> void:
 	_last_tick = -1
 	_current_event_id = ""
 	_bolt_event_id = ""
+	_event_placement.clear()
 	_events.reset()
 	_clear_visuals()
 	if _audio != null:
@@ -232,7 +278,6 @@ func _ensure_visuals() -> void:
 		_cloud_material = ShaderMaterial.new()
 		_cloud_material.shader = CLOUD_FLASH_SHADER
 		_cloud_material.set_shader_parameter("display_cap", LIGHTNING_DISPLAY_CAP)
-		_cloud_material.set_shader_parameter("albedo_display_cap", LIGHTNING_ALBEDO_DISPLAY_CAP)
 		_cloud_material.set_shader_parameter("flash_radius_m", CLOUD_FLASH_RADIUS_M)
 		_cloud_deck = MeshInstance3D.new()
 		_cloud_deck.name = "StormCloudFlashDeck"
@@ -250,7 +295,6 @@ func _ensure_visuals() -> void:
 		_halo_material.set_shader_parameter("core_pass", false)
 		_halo_material.set_shader_parameter("bolt_intensity", 0.0)
 		_halo_material.set_shader_parameter("display_cap", LIGHTNING_DISPLAY_CAP)
-		_halo_material.set_shader_parameter("albedo_display_cap", LIGHTNING_ALBEDO_DISPLAY_CAP)
 		_bolt_halo = MeshInstance3D.new()
 		_bolt_halo.name = "StormBoltHalo"
 		_bolt_halo.material_override = _halo_material
@@ -262,7 +306,6 @@ func _ensure_visuals() -> void:
 		_core_material.set_shader_parameter("core_pass", true)
 		_core_material.set_shader_parameter("bolt_intensity", 0.0)
 		_core_material.set_shader_parameter("display_cap", LIGHTNING_DISPLAY_CAP)
-		_core_material.set_shader_parameter("albedo_display_cap", LIGHTNING_ALBEDO_DISPLAY_CAP)
 		_bolt_core = MeshInstance3D.new()
 		_bolt_core.name = "StormBoltCore"
 		_bolt_core.material_override = _core_material
@@ -301,14 +344,26 @@ func _apply_event(event: Dictionary, level: float, listener_position: Vector3, e
 		return
 	var event_id: String = str(event.event_id)
 	var event_changed: bool = _current_event_id != event_id
+	# Freeze one emitted channel through all its pulses and camera cuts. Future schedule queries
+	# stay pure; only this bounded presentation record retains the already displayed world copy.
+	if str(_event_placement.get("event_id", "")) != event_id:
+		_event_placement = event.duplicate(true)
+	event = _event_placement
 	_current_event_id = event_id
+	_presented_event = event.duplicate(true)
+	_presented_level = bounded_level * (0.18 if _flash_mode == FlashMode.REDUCED else 1.0)
 	var source: Vector3 = _as_vector3(event.get("source_world", PackedFloat64Array()))
+	var bank := _bank()
+	var has_bank := bank != null and bank.visible and not _cell_transport.is_empty()
+	if has_bank:
+		bank.apply_flash(event, _presented_level, exposure)
 	if _cloud_material != null:
+		_cloud_material.set_shader_parameter("scene_exposure", exposure)
 		if event_changed:
 			_cloud_material.set_shader_parameter("flash_source", source)
 		_cloud_material.set_shader_parameter("flash_intensity",
 			bounded_level * (0.27 if _flash_mode == FlashMode.REDUCED else 0.9))
-		_cloud_deck.visible = _cloud_state_valid and _flash_mode != FlashMode.OFF
+		_cloud_deck.visible = _cloud_state_valid and _flash_mode != FlashMode.OFF and not has_bank
 	if _flash_mode == FlashMode.FULL and str(event.get("kind", "")) == "cloud_to_ground":
 		if _bolt_event_id != event_id:
 			_build_bolt_meshes(event)
@@ -317,6 +372,8 @@ func _apply_event(event: Dictionary, level: float, listener_position: Vector3, e
 		_bolt_core.visible = _bolt_core.mesh != null
 		_halo_material.set_shader_parameter("bolt_intensity", bounded_level)
 		_core_material.set_shader_parameter("bolt_intensity", bounded_level)
+		_halo_material.set_shader_parameter("scene_exposure", exposure)
+		_core_material.set_shader_parameter("scene_exposure", exposure)
 	else:
 		_bolt_halo.visible = false
 		_bolt_core.visible = false
@@ -482,6 +539,12 @@ func _pulse_peak_in_interval(event: Dictionary, from_s: float, to_s: float) -> f
 
 
 func _clear_visuals() -> void:
+	_current_event_id = ""
+	_presented_event = {}
+	_presented_level = 0.0
+	var bank := _bank()
+	if bank != null:
+		bank.apply_flash({}, 0.0, 1.0)
 	if _world_light != null:
 		_world_light.light_energy = 0.0
 	if _cloud_deck != null:

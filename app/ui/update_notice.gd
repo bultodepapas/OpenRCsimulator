@@ -42,6 +42,8 @@ func _init() -> void:
 	hide_button.add_theme_font_size_override("font_size", 16)
 	hide_button.pressed.connect(_on_hide)
 	row.add_child(hide_button)
+	download_button.focus_neighbor_right = download_button.get_path_to(hide_button)
+	hide_button.focus_neighbor_left = hide_button.get_path_to(download_button)
 
 
 ## Shows `info` ({ tag, version, url, published }); calling it again with another release replaces the text.

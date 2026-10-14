@@ -3,6 +3,7 @@
 shader_type spatial;
 render_mode blend_add, unshaded, cull_disabled, depth_draw_never, fog_disabled, world_vertex_coords;
 #include "res://render/cloud_field.gdshaderinc"
+#include "res://render/world/engine_srgb.gdshaderinc"
 
 uniform float cloud_altitude_m = 3900.0;
 uniform float cloud_scale_m = 6000.0;
@@ -14,7 +15,7 @@ uniform float cluster_strength = 0.65;
 uniform vec3 flash_source = vec3(0.0, 3600.0, -9000.0);
 uniform float flash_intensity = 0.0;
 uniform float display_cap = 2.0;
-uniform float albedo_display_cap = 0.75;
+uniform float scene_exposure = 1.0;
 uniform float flash_radius_m = 4200.0;
 uniform float flash_vertical_radius_m = 1350.0;
 uniform vec3 flash_color = vec3(0.72, 0.84, 1.0);
@@ -49,10 +50,7 @@ void fragment() {
 	if (glow <= 0.001) {
 		discard;
 	}
-	// This unshaded local overlay is already capped in shader color space; dividing
-	// again by scene exposure makes real-time night flashes disappear.
-	ALBEDO = flash_color * min(1.0, albedo_display_cap);
-	float output_gain = min(glow * 1.4, display_cap);
-	EMISSION = flash_color * output_gain;
+	// Match the pinned unshaded GLES3 ALBEDO/exposure contract; do not use ignored EMISSION.
+	ALBEDO = encode_for_engine(flash_color * min(1.4, display_cap) / max(scene_exposure, 0.001));
 	ALPHA = clamp(glow * 0.68, 0.0, 0.78);
 }

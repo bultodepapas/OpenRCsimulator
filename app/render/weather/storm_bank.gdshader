@@ -9,6 +9,8 @@ uniform vec3 haze_lin = vec3(0.6, 0.7, 0.8);
 uniform float haze_density = 0.00005;
 uniform float bank_base = 1450.0;
 uniform float bank_top = 6200.0;
+uniform vec3 flash_source = vec3(0.0);
+uniform float flash_radiance = 0.0;
 varying vec3 world_position;
 
 void vertex() {
@@ -26,6 +28,9 @@ void fragment() {
 	float relief = smoothstep(0.015, 0.46, dot(shape.rgb, vec3(0.3333)));
 	float shade = mix(0.20, 0.95, relief) * mix(0.44, 1.12, smoothstep(0.05, 0.85, height));
 	vec3 color = cloud_lin * shade;
+	vec3 flash_delta = (world_position - flash_source) / vec3(2500.0, 1900.0, 2500.0);
+	float flash_weight = exp(-dot(flash_delta, flash_delta)) * mix(0.30, 1.0, relief);
+	color += vec3(0.64, 0.78, 1.0) * flash_radiance * flash_weight;
 	float transmission = exp(-length(CAMERA_POSITION_WORLD - world_position) * haze_density);
 	ALBEDO = encode_for_engine(mix(haze_lin, color, transmission));
 	ALPHA = opacity;

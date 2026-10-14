@@ -1316,6 +1316,8 @@ func _refresh_sky(retained_exposure: float = -1.0) -> void:
 func _update_storm(clock_s: float, paused: bool) -> void:
 	if _storm_fx == null or _camera == null or sky_config.preset != "electrical_storm":
 		return
+	_storm_fx.bind_storm_bank(World.storm_bank_node(_env))
+	_storm_fx.set_cell_transport(Atmosphere.cloud_transport_checkpoint())
 	_storm_fx.set_cloud_state(Atmosphere.cloud_state_snapshot())
 	if _soundscape_audio != null:
 		_storm_fx.set_sound_speed(float(_soundscape_audio.snapshot().sound_speed))
@@ -1818,6 +1820,7 @@ func capture_evidence() -> Dictionary:
 		format = "openrc-visual-evidence v1", lighting = TimeOfDayLighting.context(lighting_config, _lighting),
 		world_lighting = {enabled = _field_world_lighting, state = Atmosphere.state.duplicate(true) if _field_world_lighting else {}},
 		storm_bank = World.weather_snapshot(_env),
+		electrical_storm = _storm_fx.snapshot() if _storm_fx != null else {},
 		sky = _sky_context(),
 		night_options = night_options.duplicate(true), provenance = VisualEvidence.provenance(),
 		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,

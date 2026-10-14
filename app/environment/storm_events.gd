@@ -8,6 +8,7 @@ const MAX_EVENT_SECONDS: float = 1.25
 const MAX_QUERY_SLOTS: int = 64
 const DEFAULT_ANCHOR_WORLD: Vector3 = Vector3(0.0, 3000.0, -9000.0)
 const DEFAULT_GROUND_WORLD: Vector3 = Vector3(0.0, 0.0, -9000.0)
+const StormCell := preload("res://render/weather/storm_cell.gd")
 
 var _enabled: bool = false
 var _seed: int = 1
@@ -16,9 +17,14 @@ var _slot_ticks: int = 720
 var _appearance_generation: int = 0
 var _anchor_world: Vector3 = DEFAULT_ANCHOR_WORLD
 var _ground_world: Vector3 = DEFAULT_GROUND_WORLD
+var _cell_spec: Dictionary = {}
+var _cell_transport: Dictionary = {}
+var _cell_reference_world: Vector3 = Vector3.ZERO
+var _cell_context_valid: bool = false
 
 
 func configure(config: Dictionary) -> void:
+	_clear_cell_context()
 	_enabled = str(config.get("preset", "classic")) == "electrical_storm"
 	_seed = int(config.get("seed", 1))
 	_tick_rate_hz = clampi(int(config.get("tick_rate_hz", Engine.physics_ticks_per_second)), 1, 1000)
@@ -36,6 +42,34 @@ func reset() -> void:
 func set_cloud_altitude(altitude_m: float) -> void:
 	# Presentation anchor only; the simulation state and event identity do not change.
 	_anchor_world.y = maxf(altitude_m, 100.0)
+
+
+## Optional FW-84b placement context. Empty or malformed input clears back to legacy placement.
+## Event schedules remain pure: each emitted position is reconstructed from its own start time.
+func set_cell_context(spec: Dictionary, transport: Dictionary, reference_world: Vector3) -> void:
+	if spec.is_empty() and transport.is_empty():
+		_clear_cell_context()
+		return
+	if not is_finite(reference_world.x) or not is_finite(reference_world.y) or not is_finite(reference_world.z):
+		_clear_cell_context()
+		return
+	if _cell_context_valid and spec == _cell_spec and transport == _cell_transport:
+		_cell_reference_world = reference_world
+		return
+	if not StormCell.context_is_valid(spec, transport, reference_world):
+		_clear_cell_context()
+		return
+	_cell_spec = spec.duplicate(true)
+	_cell_transport = transport.duplicate(true)
+	_cell_reference_world = reference_world
+	_cell_context_valid = true
+
+
+func _clear_cell_context() -> void:
+	_cell_spec.clear()
+	_cell_transport.clear()
+	_cell_reference_world = Vector3.ZERO
+	_cell_context_valid = false
 
 
 func enabled() -> bool:
@@ -108,13 +142,27 @@ func _event_for_slot(slot_index: int) -> Dictionary:
 		return {}
 	var start_s: float = float(slot_index) * SLOT_SECONDS + rng.randf_range(1.25, 10.75)
 	var start_tick: int = int(round(start_s * float(_tick_rate_hz)))
+	var start_time_s: float = float(start_tick) / float(_tick_rate_hz)
 	var kind: String = "cloud_to_ground" if rng.randf() < 0.16 else "intracloud"
-	var source: Vector3 = _anchor_world + Vector3(rng.randf_range(-1500.0, 1500.0),
-		rng.randf_range(-220.0, 420.0), rng.randf_range(-1200.0, 1200.0))
-	var ground: Vector3 = _ground_world + Vector3(source.x - _anchor_world.x + rng.randf_range(-500.0, 500.0),
-		0.0, source.z - _anchor_world.z + rng.randf_range(-500.0, 500.0))
+	# Keep these private-stream draws and their order identical to FW-84's legacy schedule.
+	var source_offset_x: float = rng.randf_range(-1500.0, 1500.0)
+	var source_offset_y: float = rng.randf_range(-220.0, 420.0)
+	var source_offset_z: float = rng.randf_range(-1200.0, 1200.0)
+	var source: Vector3 = _anchor_world + Vector3(source_offset_x, source_offset_y, source_offset_z)
+	var ground_offset_x: float = rng.randf_range(-500.0, 500.0)
+	var ground_offset_z: float = rng.randf_range(-500.0, 500.0)
+	var ground: Vector3 = _ground_world + Vector3(source.x - _anchor_world.x + ground_offset_x,
+		0.0, source.z - _anchor_world.z + ground_offset_z)
 	var channel: Vector3 = source.lerp(ground, 0.48) if kind == "cloud_to_ground" else source + Vector3(850.0, -170.0, -240.0)
 	var geometry_seed: int = int(rng.randi() & 0x7fffffff)
+	var placement_mode: String = "legacy"
+	if _cell_context_valid:
+		var placed: Dictionary = _place_in_cell(start_time_s, source_offset_x, source_offset_z,
+			ground_offset_x, ground_offset_z, kind)
+		source = placed.source
+		ground = placed.ground
+		channel = placed.channel
+		placement_mode = "storm_cell"
 	var pulses: Array[Dictionary] = []
 	if kind == "cloud_to_ground":
 		pulses = [
@@ -128,13 +176,13 @@ func _event_for_slot(slot_index: int) -> Dictionary:
 			{"offset_s": 0.29, "duration_s": 0.12, "intensity": 0.42},
 			{"offset_s": 0.78, "duration_s": 0.16, "intensity": 0.56},
 		]
-	return {
+	var event := {
 		"version": SCHEDULE_VERSION,
 		"event_id": "%d:%d" % [_appearance_generation, slot_index],
 		"slot_index": slot_index,
 		"appearance_generation": _appearance_generation,
 		"start_tick": start_tick,
-		"start_time_s": float(start_tick) / float(_tick_rate_hz),
+		"start_time_s": start_time_s,
 		"kind": kind,
 		"geometry_seed": geometry_seed,
 		"source_world": _to_f64(source),
@@ -145,6 +193,28 @@ func _event_for_slot(slot_index: int) -> Dictionary:
 		"intensity": 1.0 if kind == "cloud_to_ground" else 0.72,
 		"thunder_asset_id": "rubberduck_100_cc0_thunder_01",
 	}
+	if placement_mode == "storm_cell":
+		event["placement_mode"] = placement_mode
+	return event
+
+
+func _place_in_cell(start_time_s: float, source_offset_x: float, source_offset_z: float,
+		ground_offset_x: float, ground_offset_z: float, kind: String) -> Dictionary:
+	var center: Vector3 = StormCell.center_at(_cell_spec, _cell_transport, start_time_s, _cell_reference_world)
+	var width_m: float = float(_cell_spec.width_m)
+	var depth_m: float = float(_cell_spec.depth_m)
+	var source_x: float = source_offset_x / 1500.0 * width_m * 0.12
+	var source_z: float = source_offset_z / 1200.0 * depth_m * 0.16
+	var source_height: float = float(_cell_spec.base_m) \
+		+ (float(_cell_spec.top_m) - float(_cell_spec.base_m)) * 0.65
+	var source: Vector3 = Vector3(center.x + source_x, source_height, center.z + source_z)
+	var ground: Vector3 = Vector3(
+		center.x + source_x + ground_offset_x / 500.0 * width_m * 0.08,
+		0.0,
+		center.z + source_z + ground_offset_z / 500.0 * depth_m * 0.08)
+	var channel: Vector3 = source.lerp(ground, 0.48) if kind == "cloud_to_ground" \
+		else source + Vector3(850.0, -170.0, -240.0)
+	return {"source": source, "ground": ground, "channel": channel}
 
 
 static func _as_vector3(value: Variant, fallback: Vector3) -> Vector3:

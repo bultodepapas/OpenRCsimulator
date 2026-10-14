@@ -456,10 +456,11 @@ func start_flight(request: Dictionary = {}) -> void:
 		add_child(home_scene)
 		home_scene.camera.make_current()
 		screens.push("home", departing_home)
-		departing_home.reject_start(tr("Could not start flight: %s") % reason)
 		# Any candidate World.build may change shared sky state, including a failed normal flight.
 		Conditions.session_preset = departing_home.time_of_day
 		_rebuild_home_scene()
+		# Keep the launch failure visible even if restoring the backdrop also fails.
+		departing_home.reject_start(tr("Could not start flight: %s") % reason)
 		if is_random:
 			screens.push("natural_random", departing_random, departing_home.natural_random_button)
 			departing_random.show_error(tr("Could not start flight: %s") % reason)
