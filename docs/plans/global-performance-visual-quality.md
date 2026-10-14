@@ -209,3 +209,20 @@ Keep experiment switches outside the ordinary product flow. A rejected optimizat
 The first reviewable milestone is a **current baseline plus one measured CPU or loading improvement**, with no visual or numerical regression. The second is **one coherent ground/aircraft material comparison plus qualified quality controls**. The third closes the affected native/pilot gates. Only then select the optional renderer or terrain experiment based on the remaining limitation.
 
 Completion means those chosen slices meet their declared gates, failures are visible, and the owner can fly takeoff/circuit/landing comfortably at the chosen profile. It does not mean every P2 idea must become a feature. Once this coordination plan is fulfilled or superseded, consolidate accepted rationale into the owning guides, retain the dated research and remove the redundant plan under the repository's documentation rules.
+
+## 9. Exploratory prototypes from the second research round
+
+The [second research round](../research/godot-global-review-2026-10-14.md#9-second-research-round-creative-directions) adds 24 ideas and three ambitious branches, with sources, first experiments and failure conditions. It explores perception, contrast-preserving textures, foliage coverage, semantic materials, coherent weather, real-field references and debrief tools. These are candidates alongside the execution sequence, not additions to every owner's mandatory backlog. No prototype was implemented or benchmarked in this research.
+
+Select one small experiment at a time. Use existing assets and generators; allocate a repair or new step in the owning plan only when selected. Small visual/tooling studies may proceed in isolation while whole-flight CPU/loading qualification continues; production integration still passes the relevant gates above.
+
+| Prototype | Owning track / existing home | Bounded work | Decision evidence |
+| --- | --- | --- | --- |
+| Visibility lab and optional orientation skins (ideas 01/02) | CAM acceptance, VQ/L6c and aircraft authoring | One aircraft, two source-authored liveries, matched moving clips across sky/trees/dusk | Detection versus orientation errors, response times, projected size, resolution/FOV/aid state; retain the original skin |
+| Ground contrast comparison (05) | VQ-02 / L9 material follow-up | Existing turf blend versus one histogram or Laplacian alternative | Matched near/far motion, color/contrast and GPU cost; no new tile collection |
+| Foliage coverage comparison (07) | L/LU vegetation owner | One atlas: existing compensation versus alpha-to-coverage; custom mips only after proving an import route that retains them | Alpha-scissor interaction, coverage per mip, atlas bleeding, shimmer, night appearance and measured cost at current MSAA |
+| Path-to-shore material study (11/12) | L/LU/SC with FW water owner | One region using semantic wear/maintenance masks and dry/damp/shallow-water zones | Pilot and overview captures, visible collision boundaries, material continuity, texture memory and overdraw |
+| Consistent wind and smooth sky (13/15) | L15 / FW/TOD, read-only M5 interface | Compare static windsock with already wind-driven vegetation; separately test cloud clocks; use separate runtime PRs | Visual direction/lag, high-wind stepping, sky/radiance costs, pause/reset and deterministic capture behavior |
+| Orientation-loss debrief (21) | CAM/HUD with simulation/trace owner | Offline video/trace synchronization and one marker before a replay product | Correct time/view/pose alignment and a pilot finding that can be acted on; retention/size estimate |
+
+The first three are the recommended starting set for creative graphics work. The material-region and weather studies supply a more coherent field if the pilot finds the current appearance unconvincing. A full ghost/replay UI, octahedral forest replacement, photo-field, GIS terrain or second renderer requires a separate decision after its narrow probe. None requires changing the 240 Hz float64 simulation, enlarging the aircraft, lowering collision fidelity or purchasing content.
