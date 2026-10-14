@@ -191,6 +191,15 @@ def add_v2_overlay(schema: dict, spec: dict):
         },
     })
 
+    controls = root_props["controls"]
+    controls["properties"]["keyboard"] = {
+        "type": "object", "additionalProperties": False,
+        "required": ["pitch_press_time", "pitch_release_time"],
+        "properties": {key: {"$ref": "#/$defs/evidence", "properties": {
+            "unit": {"const": "s"}, "value": {"type": "number", "minimum": 0.05, "maximum": 5.0}}}
+            for key in ["pitch_press_time", "pitch_release_time"]}}
+    controls.setdefault("allOf", []).append({"if": {"required": ["keyboard"]}, "then": {"required": ["rates"]}})
+
     aero = root_props["aero"]
     aero_props = aero["properties"]
     add_text_field(aero_props, "source", nonempty=True)

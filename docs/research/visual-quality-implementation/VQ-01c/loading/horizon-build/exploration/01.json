@@ -1,0 +1,180 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"exact_pairs": 24,
+	"failures": [],
+	"samples": [
+		{
+			"pair": 0,
+			"usec": 58638,
+			"variant": "reference"
+		},
+		{
+			"pair": 0,
+			"usec": 53955,
+			"variant": "angles"
+		},
+		{
+			"pair": 0,
+			"usec": 49915,
+			"variant": "indices"
+		},
+		{
+			"pair": 0,
+			"usec": 46096,
+			"variant": "candidate"
+		},
+		{
+			"pair": 1,
+			"usec": 45599,
+			"variant": "candidate"
+		},
+		{
+			"pair": 1,
+			"usec": 49911,
+			"variant": "indices"
+		},
+		{
+			"pair": 1,
+			"usec": 56407,
+			"variant": "angles"
+		},
+		{
+			"pair": 1,
+			"usec": 58949,
+			"variant": "reference"
+		},
+		{
+			"pair": 2,
+			"usec": 63062,
+			"variant": "reference"
+		},
+		{
+			"pair": 2,
+			"usec": 53645,
+			"variant": "angles"
+		},
+		{
+			"pair": 2,
+			"usec": 51187,
+			"variant": "indices"
+		},
+		{
+			"pair": 2,
+			"usec": 46014,
+			"variant": "candidate"
+		},
+		{
+			"pair": 3,
+			"usec": 47380,
+			"variant": "candidate"
+		},
+		{
+			"pair": 3,
+			"usec": 49885,
+			"variant": "indices"
+		},
+		{
+			"pair": 3,
+			"usec": 54780,
+			"variant": "angles"
+		},
+		{
+			"pair": 3,
+			"usec": 57621,
+			"variant": "reference"
+		},
+		{
+			"pair": 4,
+			"usec": 56832,
+			"variant": "reference"
+		},
+		{
+			"pair": 4,
+			"usec": 56934,
+			"variant": "angles"
+		},
+		{
+			"pair": 4,
+			"usec": 52158,
+			"variant": "indices"
+		},
+		{
+			"pair": 4,
+			"usec": 45864,
+			"variant": "candidate"
+		},
+		{
+			"pair": 5,
+			"usec": 45997,
+			"variant": "candidate"
+		},
+		{
+			"pair": 5,
+			"usec": 51903,
+			"variant": "indices"
+		},
+		{
+			"pair": 5,
+			"usec": 55749,
+			"variant": "angles"
+		},
+		{
+			"pair": 5,
+			"usec": 59196,
+			"variant": "reference"
+		},
+		{
+			"pair": 6,
+			"usec": 57033,
+			"variant": "reference"
+		},
+		{
+			"pair": 6,
+			"usec": 53857,
+			"variant": "angles"
+		},
+		{
+			"pair": 6,
+			"usec": 51162,
+			"variant": "indices"
+		},
+		{
+			"pair": 6,
+			"usec": 47985,
+			"variant": "candidate"
+		},
+		{
+			"pair": 7,
+			"usec": 46398,
+			"variant": "candidate"
+		},
+		{
+			"pair": 7,
+			"usec": 50895,
+			"variant": "indices"
+		},
+		{
+			"pair": 7,
+			"usec": 58590,
+			"variant": "angles"
+		},
+		{
+			"pair": 7,
+			"usec": 61259,
+			"variant": "reference"
+		}
+	],
+	"scope": "native horizon mesh construction including profile validation; readback outside timing; shared host; not total field/startup or FPS"
+}

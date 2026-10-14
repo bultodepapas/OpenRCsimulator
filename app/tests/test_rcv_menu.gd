@@ -65,12 +65,21 @@ func _run() -> void:
 	check(app.ground_vehicle.field == home_field, "truck uses the exact field accepted by Home")
 	check(app.ground_vehicle.lighting_config == home_lighting and app.ground_vehicle.sky_config == home_sky, "Home lighting and sky carry into the truck")
 	var dashboard: CanvasLayer = app.ground_vehicle.dashboard
-	check(dashboard.airfield and dashboard.modes.item_count == 2 and dashboard.modes.get_item_id(1) == 2, "shared airfield exposes free drive and laboratory, without a nonexistent jump track")
-	check(dashboard.locations.item_count == 2, "garage offers two actual runway starts")
+	check(dashboard.airfield and dashboard.modes.item_count == 2 and dashboard.modes.get_item_id(1) == 2, "shared airfield exposes free drive and laboratory")
+	check(dashboard.locations.item_count == 5 and dashboard.track_available, "garage offers two runway starts and three obstacle circuit entries")
 	dashboard.modes.item_selected.emit(1)
 	check(app.ground_vehicle.mode == 2 and dashboard.lab.visible, "laboratory selection keeps its mode ID after removing the practice entry")
 	dashboard.locations.item_selected.emit(1)
 	check(app.ground_vehicle.session.spawn_id == "runway_end" and app.ground_vehicle.session.paused, "runway-end selector resets safely on the same field")
+	for location in range(2, 5):
+		dashboard.locations.item_selected.emit(location)
+		check(app.ground_vehicle.session.spawn_id == dashboard.spawn_ids[location] and app.ground_vehicle.session.paused and dashboard.locations.selected == location, "circuit entry %d resets safely and keeps selection synchronized" % location)
+	var before_view: PackedFloat64Array = app.ground_vehicle.session.state_snapshot()
+	app.ground_vehicle.handle_action("track_view")
+	app.ground_vehicle._process(0.0)
+	check(app.ground_vehicle.camera_rig.mode == 3 and before_view == app.ground_vehicle.session.state_snapshot(), "circuit overview is presentation-only")
+	app.ground_vehicle.handle_action("reset")
+	check(dashboard.locations.selected == dashboard.spawn_ids.find(app.ground_vehicle.session.spawn_id), "reset synchronizes location selector")
 	await process_frame
 	app.ground_vehicle.handle_action("home")
 	await process_frame
@@ -105,6 +114,7 @@ func _run() -> void:
 	if direct.ground_vehicle != null:
 		var truck: Node3D = direct.ground_vehicle
 		check(truck.field.id == custom.id, "direct route honors the selected aircraft field path")
+		check(not truck.dashboard.track_available and truck.dashboard.locations.item_count == 2, "custom fields do not receive misplaced default circuit entries")
 		var pose: PackedFloat64Array = truck.session.state_snapshot()
 		check(absf(pose[0] - 135.0) < 0.01 and absf(pose[1] + 90.0) < 0.01, "truck spawns at the shifted runway center")
 		check(truck.camera_rig.pilot_position.is_equal_approx(Frames.ned_to_render([120.0, -90.0, -1.7])), "driver camera uses the shared pilot station")

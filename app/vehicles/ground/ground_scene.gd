@@ -10,6 +10,8 @@ const CourseView = preload("res://vehicles/ground/course_view.gd")
 const Course = preload("res://physics/ground_vehicle/course.gd")
 const AirfieldCourse = preload("res://physics/ground_vehicle/airfield_course.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const FieldBuilder = preload("res://render/field.gd")
+const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const World = preload("res://render/world/world.gd")
 const LakeWorld = preload("res://render/lake/lake_world.gd")
 const Scenery = preload("res://scenery/scenery.gd")
@@ -106,7 +108,7 @@ func _ready() -> void:
 	add_child(_contact_debug)
 	if not use_practice_fixture and enable_course_visual:
 		Atmosphere.configure_appearance(sky_config)
-		_environment = World.build(self, field, Callable(), {}, _lighting, night_options).environment
+		_environment = World.build(self, field, _build_airfield, {}, _lighting, night_options).environment
 	else:
 		ShaderClock.register()
 		Atmosphere.state = {}
@@ -124,6 +126,7 @@ func _ready() -> void:
 	camera.make_current()
 	dashboard = Dashboard.new()
 	dashboard.airfield = not use_practice_fixture
+	dashboard.track_available = _course.has("track")
 	add_child(dashboard)
 	dashboard.action_requested.connect(handle_action)
 	dashboard.mode_selected.connect(_select_mode)
@@ -144,6 +147,21 @@ func _ready() -> void:
 	open_garage()
 	_capture_initial_controller_selection()
 	_process(0.0)
+
+func _build_airfield() -> void:
+	var exclusions: Array = []
+	if _course.has("track"):
+		var track: Dictionary = _course.track
+		var access: Dictionary = track.access
+		var half := float(access.width_m) * 0.5 + float(track.shoulder_m)
+		var points := PackedVector2Array([
+			Vector2(access.north_min_m, float(access.east_m) - half),
+			Vector2(access.north_max_m, float(access.east_m) - half),
+			Vector2(access.north_max_m, float(access.east_m) + half),
+			Vector2(access.north_min_m, float(access.east_m) + half)])
+		exclusions.append(GrassMask._record("rc-access", "dirt_track", points))
+		camera_rig.track_center = Vector3(track.center_east_m, 0.0, -float(track.center_north_m))
+	add_child(FieldBuilder.build(field, _lighting, exclusions))
 
 func _prepare_airfield() -> bool:
 	var loaded := FieldLoader.load_from(field_path)
@@ -442,8 +460,12 @@ func handle_action(action: String) -> void:
 				_after_reset()
 				dashboard.message("Recovered. This run is marked as assisted.", "Recuperado. Esta prueba queda marcada como asistida.")
 		"camera":
-			camera_rig.mode = (camera_rig.mode + 1) % 3
+			camera_rig.mode = (camera_rig.mode + 1) % (4 if _course.has("track") else 3)
 			camera_rig.reset()
+		"track_view":
+			if _course.has("track"):
+				camera_rig.mode = 0 if camera_rig.mode == 3 else 3
+				camera_rig.reset()
 		"body": visual.nodes.Body.visible = not visual.nodes.Body.visible
 		"contacts":
 			_show_diagnostics = not _show_diagnostics
@@ -517,6 +539,8 @@ func _after_reset() -> void:
 	_jump_time = -1.0
 	_landing_pending = false
 	dashboard.plot.clear_history()
+	dashboard.select_spawn(session.spawn_id)
+	if camera_rig.mode == 3: camera_rig.mode = 0
 	camera_rig.reset()
 	open_garage()
 

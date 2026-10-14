@@ -1,0 +1,42 @@
+{
+  "runs": 5,
+  "exact_native_pairs": 40,
+  "warm_samples_per_variant": 35,
+  "warm_median_usec": {
+    "reference": 68721,
+    "candidate": 55027
+  },
+  "first_pair_median_usec": {
+    "reference": 80768,
+    "candidate": 64113
+  },
+  "per_run_warm_median_usec": [
+    {
+      "reference": 61531,
+      "candidate": 52335
+    },
+    {
+      "reference": 60260,
+      "candidate": 47781
+    },
+    {
+      "reference": 78072,
+      "candidate": 59019
+    },
+    {
+      "reference": 70932,
+      "candidate": 61484
+    },
+    {
+      "reference": 79893,
+      "candidate": 55027
+    }
+  ],
+  "warm_reduction_pct": 19.926951004787476,
+  "exploration_median_usec": {
+    "reference": 58949,
+    "angles": 55749,
+    "indices": 51162,
+    "candidate": 46014
+  }
+}

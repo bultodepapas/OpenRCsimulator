@@ -211,6 +211,7 @@
         "max_throw",
         "servo_full_throw_time",
         "rates",
+        "keyboard",
         "surface_ids"
       ]
     },
@@ -227,6 +228,11 @@
         "elevator",
         "rudder"
       ]
+    },
+    {
+      "path": "/controls/keyboard",
+      "required": ["pitch_press_time", "pitch_release_time"],
+      "allowed": ["pitch_press_time", "pitch_release_time"]
     },
     {
       "path": "/controls/rates",
@@ -893,6 +899,7 @@
     "/controls/max_throw/*",
     "/controls/servo_full_throw_time",
     "/controls/rates/*/*",
+    "/controls/keyboard/*",
     "/aero/coefficients/*",
     "/aero/reference_coefficients/*",
     "/aero/envelope/*",

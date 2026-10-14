@@ -7,6 +7,7 @@ const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const RK = preload("res://physics/integrator.gd")
 const Stage = preload("res://physics/rotorcraft/aerodynamic_stage.gd")
+const MainRotor = preload("res://physics/rotorcraft/main_rotor.gd")
 const Drive = preload("res://physics/rotorcraft/drive.gd")
 const Coupling = preload("res://physics/rotorcraft/geared_coupling.gd")
 const Electronics = preload("res://physics/rotorcraft/electronics.gd")
@@ -121,11 +122,12 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 		flight_mode: String, trainer_enabled: bool, zero_drive_hold: bool,
 		wind_ned_m_s: PackedFloat64Array, diagnostics: bool = false,
 		extra_loads: PackedFloat64Array = PackedFloat64Array(), trim: Dictionary = {},
-		height_over_radius: float = NAN) -> Dictionary:
+		height_over_radius: float = NAN, drive_scale: float = 1.0) -> Dictionary:
 	if not _context_is_prepared(context) or state.size() != STATE_SIZE or sticks.size() != 4 \
 			or wind_ned_m_s.size() != 3 or (extra_loads.size() != 0 and extra_loads.size() != 6) or flight_mode.is_empty() \
 			or typeof(trainer_enabled) != TYPE_BOOL or typeof(zero_drive_hold) != TYPE_BOOL \
-			or (not is_nan(height_over_radius) and not is_finite(height_over_radius)):
+			or (not is_nan(height_over_radius) and not is_finite(height_over_radius)) \
+			or not is_finite(drive_scale) or drive_scale < 0.0 or drive_scale > 1.0:
 		return _failure("invalid helicopter evaluation arguments", "invalid_flight_input")
 	for value: float in state:
 		if not is_finite(value):
@@ -174,7 +176,7 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 	if not aero.get("ok", false):
 		return _failure("joint aerodynamic stage refused the flight state", "aerodynamic_stage_refused")
 	var drive: Dictionary = Drive.evaluate(context.drive_model, state[OMEGA], electronics.drive_fraction,
-		true, zero_drive_hold)
+			true, zero_drive_hold, drive_scale)
 	if not drive.ok:
 		return _failure(str(drive.get("message", "drive refused the flight state")), "drive_refused")
 	var main_torque: float = float(aero.main_rotor.get("torque_nm", NAN))
@@ -321,6 +323,8 @@ static func _main_rotor_domain(main_model: Dictionary, omega: float,
 		return false
 	var hub: PackedFloat64Array = PackedFloat64Array([main_model.hub_x_m, main_model.hub_y_m, main_model.hub_z_m])
 	var hub_air: PackedFloat64Array = M.add(air_velocity_cg, M.cross(body_rates, hub))
+	if MainRotor.low_rpm_estimate_active(main_model, omega, hub_air):
+		return true
 	var mu_x: float = hub_air[0] / tip
 	var mu_y: float = hub_air[1] / tip
 	var mu2: float = mu_x * mu_x + mu_y * mu_y

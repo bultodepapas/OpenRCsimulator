@@ -1,0 +1,86 @@
+[
+  {
+    "name": "test_horizon-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_horizon.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "e943b93f3f76b21efce16211ff8a6d0d96d13777c6ea76fac235dd4f644ac132"
+  },
+  {
+    "name": "test_field_surfaces-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "d0b3f78fa77c87d909876a01427fa40161280924103fd0ad394678780f9c292d"
+  },
+  {
+    "name": "test_field_integration-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_integration.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "5d71d3afd86c2127ff174e9fef5e4d52dceba274096c930ee273141fe15b0a0e"
+  },
+  {
+    "name": "test_world_presentation_context-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_world_presentation_context.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e"
+  },
+  {
+    "name": "test_horizon-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_horizon.gd"
+    ],
+    "exit_code": 0,
+    "errors": true,
+    "warnings": [],
+    "sha256": "499e0c2ed5e9a6621a66560d8e390eecbe8ca8b16385573ab00f89d88135fbd4"
+  }
+]

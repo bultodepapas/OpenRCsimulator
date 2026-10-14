@@ -22,7 +22,7 @@ const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
 const GROUND_SUBDIVISIONS := 63
 
 
-static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
+static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = []) -> Node3D:
 	var result: Node3D = Node3D.new()
 	result.name = "Field"
 	# L9c: one ground pass for contained flat rectangles; retain legacy geometry for other valid fields.
@@ -85,9 +85,12 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 		materials.append_array(lake_node.get_meta("lighting_materials"))
 	var scenery_node := result.get_node_or_null("Scenery")
 	var exclusions: Array = scenery_node.get_meta("grass_exclusions", []) if scenery_node != null else []
+	exclusions = exclusions.duplicate()
+	exclusions.append_array(extra_grass_exclusions)
 	var near_grass: Node3D
 	if scenery_node != null and field.id == "default":
 		var masks := ImportedNearGrass.exclusions_for(scenery_node.get_meta("source_definition", {}), lake)
+		masks.append_array(extra_grass_exclusions)
 		near_grass = ImportedNearGrass.build(field, str(scenery_options.quality), masks)
 	else:
 		near_grass = NearGrass.build(field, grass, exclusions)

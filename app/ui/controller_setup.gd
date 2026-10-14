@@ -635,7 +635,7 @@ func _action_category(definition: Dictionary) -> int:
 func _update_device_summary() -> void:
 	if _device_summary == null:
 		return
-	var flight := flight_device_picker.get_item_text(flight_device_picker.selected) if flight_device_picker.selected >= 0 else tr("No flight controller")
+	var flight := flight_device_picker.get_item_text(flight_device_picker.selected) if flight_device_picker.selected >= 0 else tr("Keyboard")
 	var menu := ui_device_picker.get_item_text(ui_device_picker.selected) if ui_device_picker.selected >= 0 else tr("Keyboard + mouse")
 	_device_summary.text = tr("Flight: %s   ·   Menus: %s") % [flight, menu]
 	_device_summary.tooltip_text = _device_summary.text
@@ -814,7 +814,7 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 	if picker == null:
 		return
 	picker.clear()
-	picker.add_item(tr("Keyboard + mouse") if menu_only else tr("No flight controller"), -1)
+	picker.add_item(tr("Keyboard + mouse") if menu_only else tr("Keyboard"), -1)
 	picker.set_item_id(0, -1)
 	var found_selection := target_id == -1
 	if found_selection:

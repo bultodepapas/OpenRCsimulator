@@ -58,7 +58,7 @@ func _run() -> void:
 	]
 	service.enumerate_devices = func() -> Array: return observed
 	service.refresh()
-	check("device enumeration does not select the flight controller", service.registry.selected_device_id("flight") == -1)
+	check("Home defaults prefer radio flight and gamepad menus", service.registry.selected_device_id("flight") == 42 and service.registry.selected_device_id("ui") == 41)
 	check("explicit gamepad flight selection succeeds", service.select_devices(41, -1))
 
 	var session = Session.new()

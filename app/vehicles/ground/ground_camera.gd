@@ -9,6 +9,7 @@ var orbit_yaw := PI + 0.65
 var orbit_pitch := 0.28
 var distance := 2.0
 var pilot_position := Vector3(4.0, 1.6, 2.0)
+var track_center := Vector3(0.0, 0.0, -45.0)
 var _snap := true
 
 func _init() -> void:
@@ -30,7 +31,12 @@ func zoom(factor: float) -> void:
 
 func update(camera: Camera3D, target: Vector3, body: Basis, dt: float, menu: bool, terrain: Callable) -> void:
 	var position: Vector3
-	if mode == 0 and not menu:
+	if mode == 3:
+		position = track_center + Vector3(-14.0, 27.0, 29.0)
+		camera.global_position = position
+		camera.global_basis = CameraMath.look_basis(position, track_center + Vector3(2.0 if menu else 0.0, 0.0, 0.0))
+		camera.fov = 62.0
+	elif mode == 0 and not menu:
 		var pose: Dictionary = chase.update(target, body, dt, false, terrain)
 		camera.global_position = pose.position
 		camera.global_basis = pose.basis

@@ -2,6 +2,7 @@
 extends Node3D
 var external_controller_selection: bool = false
 const Session = preload("res://sim/helicopter_flight_session.gd")
+const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const Builder = preload("res://aircraft/hx700_model.gd")
 const RotorVisual = preload("res://render/rotor/heli_rotor_visual.gd")
 const Electronics = preload("res://physics/rotorcraft/electronics.gd")
@@ -24,7 +25,7 @@ var field: Dictionary={}
 var weather_config: Dictionary={}
 var lighting_config: Dictionary={}
 var night_options: Dictionary=Preferences.NIGHT_DEFAULTS.duplicate(true)
-var start_choice: String="airborne"
+var start_choice: String="ground"
 var interactive_start: bool=false
 var latency_marker_enabled: bool=false
 var overlays_enabled: bool=false
@@ -83,11 +84,16 @@ func _ready() -> void:
  session=Session.new()
  session.external_controller_selection=external_controller_selection
  session.physics_enabled=not args.has("trace") and not args.has("capture")
- if not session.setup() or not session.set_field(field): _refuse(session.start_error+session.surface_error); return
+ var selected: Dictionary=Catalog.entry(aircraft_id)
+ if not Catalog.is_rotorcraft(aircraft_id) or not Catalog.can_fly(aircraft_id): _refuse("This helicopter has no qualified playable configuration."); return
+ if not session.setup(str(selected.data),aircraft_id) or not session.set_field(field): _refuse(session.start_error+session.surface_error); return
+ # Existing technical captures/traces keep their explicit hover fixture unless a start is supplied.
+ var requested_start: String=str(args.get("start","airborne" if args.has("trace") or args.has("capture") or args.has("alt") else start_choice))
+ if not session.set_start_choice(requested_start): _refuse(session.start_error); return
  if not weather_config.is_empty() and not session.setup_weather(weather_config): _refuse(session.weather_error); return
  if args.has("alt"): session.set_start_altitude(float(args.alt))
  add_child(session)
- recorder=Recorder.new(session.sim)
+ recorder=Recorder.new(session.sim,session.trace_controls)
  session.resetting.connect(_on_session_resetting)
  session.sim.stepped.connect(_on_sim_stepped)
  if not session.reset(): _refuse(session.start_error); return
@@ -157,12 +163,17 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  var wind: PackedFloat64Array=session.wind_at(session.sim.time())
  World.update(_environment,session.sim.time(),Frames.ned_to_render(wind),pos,_camera)
  var speed: float=sqrt(s[3]*s[3]+s[4]*s[4]+s[5]*s[5])
- _hud.text="RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER\nX-Cell reference physics · HX-700 visual\nAltitude %.2f m  Speed %.2f m/s  Rotor %.0f rpm\nCollective %.0f%%  %s  %s\nArrows: cyclic · A/D: yaw · W/S: collective\nR: restart hover · P: pause/resume · C: camera · Esc: menu\nI: normal/idle-up · G: trainer · H: zero-drive hold\n%s" % [
-  -s[2],speed,session.sim.aux[0],session.commands.throttle*100.0,
-  session.flight_mode,"TRAINER" if session.trainer_enabled else "DIRECT CYCLIC",
-  session.pause_reason if not session.pause_reason.is_empty() else ("ZERO DRIVE HOLD" if session.zero_drive_hold else _note)]
+ _hud.text=tr("RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER")+"\n"+tr("X-Cell reference physics · HX-700 visual")+"\n"
+ _hud.text+=tr("Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm")%[-s[2],speed,session.sim.aux[0],session.aircraft.context.drive_model.governor_target_main_rad_s*60.0/(2.0*PI)]+"\n"
+ _hud.text+=tr("Collective %.1f deg (stick %.0f%%) · %s · %s")%[session.collective_pitch()*180.0/PI,session.commands.throttle*100.0,session.flight_mode,tr(session.power_phase())]+"\n"
+ _hud.text+=tr("Arrows: cyclic · A/D: yaw · W/S: collective")+"\n"
+ _hud.text+=tr("B: arm/disarm · H: hold/start · I: flight mode · G: trainer")+"\n"
+ _hud.text+=tr("R: restart · P: pause/resume · C: camera · Esc: menu")+"\n"
+ _hud.text+=tr("TRAINER") if session.trainer_enabled else tr("DIRECT CYCLIC")
+ _hud.text+="\n"+(tr(session.pause_reason) if not session.pause_reason.is_empty() else _note)
+ if session.power_phase()=="DISARMED": _hud.text+="\n"+tr("Center cyclic/yaw and set zero pitch. B: arm, H: start; wait for governed RPM.")
  if not _rotor_envelope_flags.within_identified_advance_ratio or not _rotor_envelope_flags.within_small_flap_angle_range:
-  _hud.text+="\nOutside the identified main-rotor envelope."
+  _hud.text+="\n"+tr("Outside the identified main-rotor envelope.")
  if session.calibration!=null: _hud.text+="\n"+str(session.calibration.prompt())
  if recorder.recording: _hud.text+="\nRecording %.1f s · T: stop"%recorder.seconds()
  elif not recorder.note.is_empty(): _hud.text+="\n"+recorder.note
@@ -180,16 +191,15 @@ func _on_sim_stepped(tick: int,t: float,body: PackedFloat64Array,_loads: PackedF
  var rebase: bool=tick==0 or _rotor_phase_rebase_pending or tick!=_rotor_phase_tick+1
  var previous_telemetry: Dictionary=_rotor_state.duplicate()
  if rebase:
-  _rotor_phase_previous=PackedFloat64Array([0.0,0.0])
-  _rotor_phase_current=PackedFloat64Array([0.0,0.0])
+  _rotor_phase_previous=session.shaft_phase.duplicate()
+  _rotor_phase_current=session.shaft_phase.duplicate()
   _rotor_omega_previous=omega
   _rotor_phase_tick=tick
   _rotor_phase_rebase_pending=false
  else:
-  var dt: float=session.sim.dt()
   for index: int in 2:
    _rotor_phase_previous[index]=_rotor_phase_current[index]
-   _rotor_phase_current[index]+=.5*(_rotor_omega_previous[index]+omega[index])*dt
+   _rotor_phase_current[index]=session.shaft_phase[index]
   _rotor_omega_previous=omega
   _rotor_phase_tick=tick
  _cache_presentation_telemetry(body,session.sim.continuous,inputs,t)
@@ -198,8 +208,8 @@ func _on_sim_stepped(tick: int,t: float,body: PackedFloat64Array,_loads: PackedF
 func _ensure_rotor_phase_current() -> void:
  if session==null or session.sim.state.size()!=13 or session.sim.continuous.size()!=6: return
  if _rotor_phase_rebase_pending or _rotor_phase_tick!=session.sim.tick:
-  _rotor_phase_previous=PackedFloat64Array([0.0,0.0])
-  _rotor_phase_current=PackedFloat64Array([0.0,0.0])
+  _rotor_phase_previous=session.shaft_phase.duplicate()
+  _rotor_phase_current=session.shaft_phase.duplicate()
   _rotor_omega_previous=_rotor_shaft_speeds(session.sim.continuous)
   _rotor_phase_tick=session.sim.tick
   _rotor_phase_rebase_pending=false
@@ -279,6 +289,10 @@ func set_overlays_visible(on: bool) -> void:
 
 func controller_action(action: String) -> bool:
  match action:
+  "helicopter_arm": session.toggle_motor_arm()
+  "helicopter_hold": session.set_drive_hold(not session.zero_drive_hold)
+  "helicopter_mode": session.request_flight_mode()
+  "helicopter_trainer": session.trainer_enabled=not session.trainer_enabled
   "camera_cycle": _rig.cycle(1)
   "camera_previous": _rig.cycle(-1)
   "camera_pilot": _rig.set_view("pilot")
@@ -319,8 +333,9 @@ func _unhandled_input(event: InputEvent) -> void:
    KEY_MINUS: _rig.zoom(-1)
    KEY_Z: _rig.toggle_auto_zoom()
    KEY_G: session.trainer_enabled=not session.trainer_enabled
-   KEY_H: session.zero_drive_hold=not session.zero_drive_hold
-   KEY_I: session.flight_mode="idle_up" if session.flight_mode=="normal" else "normal"
+   KEY_H: session.set_drive_hold(not session.zero_drive_hold)
+   KEY_B: session.toggle_motor_arm()
+   KEY_I: session.request_flight_mode()
    KEY_K: session.start_calibration()
    KEY_ENTER,KEY_KP_ENTER: session.advance_calibration()
    KEY_T:

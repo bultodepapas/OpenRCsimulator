@@ -5,6 +5,7 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 	"smoke_toggle", "flaps_up", "flaps_down", "flaps_cycle", "gear_toggle",
 	"camera_previous", "camera_pilot", "camera_chase", "camera_orbit",
 	"camera_zoom_in", "camera_zoom_out", "camera_auto_zoom", "lights_cycle",
+	"helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer",
 ]
 const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear"]
 static var _definition_cache: Dictionary = {}
@@ -41,6 +42,10 @@ const ACTIONS: Array[Dictionary] = [
 	{"id": "camera_zoom_out", "label": "Camera zoom out", "context": "flight", "mode": "press"},
 	{"id": "camera_auto_zoom", "label": "Toggle auto camera zoom", "context": "flight", "mode": "press"},
 	{"id": "lights_cycle", "label": "Cycle lights", "context": "flight", "mode": "press"},
+	{"id": "helicopter_arm", "label": "Helicopter: arm / disarm", "context": "flight", "mode": "press"},
+	{"id": "helicopter_hold", "label": "Helicopter: toggle rotor hold", "context": "flight", "mode": "press"},
+	{"id": "helicopter_mode", "label": "Helicopter: normal / idle-up", "context": "flight", "mode": "press"},
+	{"id": "helicopter_trainer", "label": "Helicopter: toggle trainer", "context": "flight", "mode": "press"},
 ]
 
 

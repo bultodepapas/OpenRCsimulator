@@ -11,7 +11,7 @@ Use the existing [track registry](../README.md#tracks-plans-and-step-ids). Input
 | Steps | Implemented source contract | Acceptance still open |
 | --- | --- | --- |
 | D6-GP-01/02 | Radio-only calibration, V2 profiles, legacy preservation, validated transactional persistence | Physical calibration/restart recovery; damaged storage and failed activation regression checks remain mandatory |
-| F3-GP-01/02 | Explicit flight/UI ownership, connection generations, loss/focus/neutral gates, separate activity semantics | Physical hot-plug, sparse events, sleep and two-device fault cycles |
+| F3-GP-01/02/03 | Automatic startup/Home defaults, manual flight/UI overrides, connection generations, loss/focus/neutral gates, separate activity semantics | Physical startup/hot-plug, sparse events, sleep and two-device fault cycles |
 | D6-GP-03 | Scalar shaping, Mode 1/2 rate throttle and fixed-wing absolute-trigger preset | Physical endpoint, drift and independent-trigger checks; no automatic hardware suitability certification |
 | UI-10-GP-01 / UI-15-GP-01 | Draft setup, channel mapping, remap, conflict checks and explicit Save/Cancel | Native primary flow, remap release isolation, dirty-draft and error recovery |
 | D6-GP-06 / UI-15-GP-02 | Three typed AUX requests and optional camera/light/smoke/flap/gear actions; source conflicts and preview | Physical high-index controls; flap aerodynamics/retractable contacts are separate unimplemented aircraft capabilities |
@@ -19,7 +19,7 @@ Use the existing [track registry](../README.md#tracks-plans-and-step-ids). Input
 | F1-GP-01 | Bounded button/axis reports and metadata | Native reports with actual devices, model/firmware/transport recorded |
 | F6-GP-01 | Native baseline/current input-seam cost comparison | Full-session/display and filmed physical latency; rerun seam measurements if conditioning changes materially |
 
-Scope is one flight controller plus an optional separate menu gamepad. Connected devices never claim flight ownership automatically. Profiles match identity evidence, not persisted Godot connection IDs. Unknown/ambiguous devices require explicit configuration. A failed draft must leave the valid active profile intact; invalid active samples must still fail safe.
+Scope is one flight controller plus an optional separate menu gamepad. Startup/Home selects a connected device automatically, with keyboard as the no-device fallback; active flights retain explicit ownership and disconnection recovery. Manual selections override defaults for the current application run. Profiles match identity evidence, not persisted Godot connection IDs. Unknown/ambiguous devices still require explicit configuration before flight. A failed draft must leave the valid active profile intact; invalid active samples must still fail safe. The [player guide](../FIRST-LAUNCH.md#controller-settings-current-source) owns priority and override details.
 
 Four primary flight axes and smoke/flaps/gear AUX requests are available within Godot's 10 axis and 128 button slots. These are API limits, not a promise of physical channels. Camera/light/smoke operations use existing fixed-wing capabilities; helicopter camera actions work, but throttle cut, lights, smoke and flap/gear behavior are not shared flight capabilities. Ground driving retains its own steering/RT/LT/reverse scheme. The guide states which requests have no aircraft implementation.
 
@@ -76,7 +76,7 @@ Each row retains build hash, engine, OS build, controller model/firmware, transp
 
 ### Physical acceptance procedure
 
-1. With a fresh test profile, connect before launch and after Home appears. Inspect recognized identity and verify all expected buttons and axes. Confirm 0%, 50% and 100% trigger readings and both triggers together.
+1. With a fresh test profile, connect before launch and after Home appears. Verify automatic selection, no-device keyboard fallback, saved-profile priority and manual overrides. Inspect recognized identity and verify all expected buttons and axes. Confirm 0%, 50% and 100% trigger readings and both triggers together.
 2. Select/configure the controller and complete the primary menu flow without keyboard/mouse. Confirm prompts, focus, scrolling and cancel semantics in English and Spanish.
 3. At rest, observe 30 seconds without unintended command or menu movement. Sweep each flight axis, verify direction/endpoints, check virtual throttle hold and confirm the selected preset's displayed explanation.
 4. Fly the Stik ground start and an airborne start; inspect launch throttle explicitly. Perform a circuit and landing. Repeat representative pitch-sensitive aircraft behavior with its normal-rate profile; preserve full-rate CLI behavior. Pilot feel ratings remain separate from software checks.

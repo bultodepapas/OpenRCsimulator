@@ -6,6 +6,7 @@ var output := ""
 var language := "en"
 var mode := "garage"
 var ticks := 0
+var spawn := "start"
 
 func _initialize() -> void:
 	var seen := {}
@@ -20,6 +21,7 @@ func _initialize() -> void:
 			"--output": output = pieces[1]
 			"--language": language = pieces[1]
 			"--mode": mode = pieces[1]
+			"--spawn": spawn = pieces[1]
 			"--ticks":
 				if not pieces[1].is_valid_int():
 					quit(2)
@@ -29,8 +31,8 @@ func _initialize() -> void:
 				printerr("Unknown activity capture option: " + arg)
 				quit(2)
 				return
-	if output.is_empty() or language not in ["en", "es"] or mode not in ["garage", "drive", "lab"] or ticks < 0 or ticks > 2400 or FileAccess.file_exists(output):
-		printerr("Use --output=<fresh.png> [--language=en|es] [--mode=garage|drive|lab] [--ticks=0..2400]")
+	if output.is_empty() or language not in ["en", "es"] or mode not in ["garage", "drive", "lab", "overview"] or ticks < 0 or ticks > 2400 or FileAccess.file_exists(output):
+		printerr("Use --output=<fresh.png> [--language=en|es] [--mode=garage|drive|lab|overview] [--spawn=<course spawn>] [--ticks=0..2400]")
 		quit(2)
 		return
 	if DisplayServer.get_name() == "headless":
@@ -53,6 +55,12 @@ func _run() -> void:
 		scene.free()
 		quit(1)
 		return
+	if not scene.session.reset(spawn):
+		printerr("Unknown or unsupported capture spawn: " + spawn)
+		scene.free()
+		quit(2)
+		return
+	scene._after_reset()
 	scene.session.tick_once(NEUTRAL)
 	if ticks > 0 or mode == "drive": scene.handle_action("resume")
 	for i in ticks:
@@ -65,6 +73,9 @@ func _run() -> void:
 			return
 		if i % 4 == 0: scene._process(1.0 / 60.0)
 	if mode != "drive": scene.open_garage()
+	if mode == "overview":
+		scene.handle_action("track_view")
+		scene.dashboard.set_menu(false)
 	if mode == "lab":
 		scene._select_mode(2)
 		scene.dashboard.modes.select(scene.dashboard.modes.get_item_index(2))
@@ -77,6 +88,7 @@ func _run() -> void:
 	var evidence := {"ok": error == OK, "image": output, "mode": mode, "language": language,
 		"field_id": scene.field.get("id", ""), "shared_field_rendered": scene.get_node_or_null("Field") != null,
 		"spawn_id": scene.session.spawn_id,
+		"track_rendered": scene.get_node_or_null("RCObstacleTrack") != null,
 		"ticks": scene.session.tick, "identities": scene.session.identities_snapshot(),
 		"backend_identity": scene.session.checkpoint().solver_identity.backend_identity,
 		"state": Array(scene.session.state_snapshot()), "engine": Engine.get_version_info().string,

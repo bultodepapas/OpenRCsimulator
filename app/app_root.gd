@@ -154,6 +154,9 @@ func _ready() -> void:
 		return
 	has_home = true
 	controllers = ControllerService.new()
+	controllers.allow_automatic_selection = func() -> bool:
+		return flight == null and ground_vehicle == null and _workshop_screens.is_empty() \
+			and (screens.top() == null or screens.is_top("home"))
 	if preferences_path != Preferences.DEFAULT_PATH:
 		controllers.store = ControllerService.Store.new(preferences_path + ".controllers", preferences_path + ".legacy_rc")
 	controllers.ui_selection_changed.connect(_controller_ui_changed)
@@ -258,7 +261,9 @@ func show_home() -> void:
 	home.update_download_requested.connect(_on_update_download)
 	home.update_hidden.connect(_on_update_hidden)
 	screens.push("home", home)
+	if controllers != null: controllers.refresh()
 	_update_controller_home()
+	_update_controller_button_prompts()
 	home.set_note(_settings_note)
 	if not _update_info.is_empty():
 		home.show_update(_update_info) # the notice survives a flight: Home is rebuilt after End flight
@@ -346,7 +351,10 @@ func set_aircraft(id: String) -> void:
 	if Catalog.is_rotorcraft(id):
 		preferences.weather_config = weather_for_aircraft(id, preferences.get("weather_config", WeatherSettings.defaults()))
 		home.set_weather_config(preferences.weather_config)
-	if Catalog.is_rotorcraft(id) or not FlightSession.runway_aircraft_supported(id):
+	if Catalog.is_rotorcraft(id):
+		preferences.start_choice = "runway"
+		home.set_start_choice("runway")
+	elif not FlightSession.runway_aircraft_supported(id):
 		preferences.start_choice = "airborne"
 	if preferences.start_choice == FlightSession.START_HALF_POWER and not FlightSession.half_power_start_supported(id):
 		preferences.start_choice = "airborne"
@@ -437,7 +445,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		if checked_failures.get("ok", false):
 			failure_config_for_flight = checked_failures.config.duplicate(true)
 	if helicopter_route:
-		chosen_start = "airborne"
+		if not has_home: chosen_start = "runway"
 		# Rotorcraft has no sky editor/event consumer yet; never inherit the retired Home renderer.
 		Atmosphere.configure_appearance(SkyConfig.defaults())
 	if departing_home != null:
@@ -623,14 +631,6 @@ func _update_controller_button_prompts() -> void:
 
 func _input(event: InputEvent) -> void:
 	if controllers == null: return
-	# A deliberate first A/Cross press claims only menu navigation and opens selection.
-	if screens.is_top("home") and controllers.registry.selected_device_id("ui") < 0 \
-		and event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_A \
-		and controllers.is_ui_gamepad(event.device):
-		controllers.registry.select_device("ui", event.device)
-		get_viewport().set_input_as_handled()
-		open_controls()
-		return
 	if ground_vehicle != null: return # ground sampler and garage own their distinct control scheme
 	if event is not InputEventJoypadButton and event is not InputEventJoypadMotion and event is not InputEventKey: return
 	if event is InputEventKey and event.echo: return

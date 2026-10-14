@@ -1721,6 +1721,42 @@
             }
           }
         },
+        "keyboard": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pitch_press_time",
+            "pitch_release_time"
+          ],
+          "properties": {
+            "pitch_press_time": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "s"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 5.0
+                }
+              }
+            },
+            "pitch_release_time": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "s"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 5.0
+                }
+              }
+            }
+          }
+        },
         "surface_ids": {
           "type": "object",
           "required": [
@@ -1770,7 +1806,21 @@
           }
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "keyboard"
+            ]
+          },
+          "then": {
+            "required": [
+              "rates"
+            ]
+          }
+        }
+      ]
     },
     "crash_hull": {
       "$ref": "#/$defs/evidence",

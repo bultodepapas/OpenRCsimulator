@@ -100,7 +100,7 @@ const ENTRIES := [
 		name = "RC Helicopter Research Trainer",
 		summary = "X-Cell reference physics · HX-700 visual",
 		status = EXPERIMENTAL,
-		status_note = "Experimental: X-Cell .60 reference physics with an HX-700 visual surrogate; hover start only; not flight-validated.",
+		status_note = "Experimental: X-Cell .60 reference physics with an HX-700 visual surrogate; ground pad or practice hover; not flight-validated.",
 		data = "res://data/aircraft/xcell_60_research.json",
 	},
 ]

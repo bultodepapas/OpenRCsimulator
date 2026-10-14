@@ -1,12 +1,12 @@
 # Desktop delivery plan
 
-2026-10-14 · Revision 13 · Step prefix: **DT-**.
+2026-10-14 · Revision 14 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
 Research records remain in [DT-00](research/desktop-delivery-investigations/DT-00/README.md), [DT-00-R1](research/desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md). The latter reports inspect Godot/macOS artifacts and synthetic checker behavior; they do not establish native Mac launch or performance.
 
-Latest DT-11a evidence: [fallback shadow blur indexing](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md). Five native runs preserve complete image/carrier output; carrier construction median is 34.835→17.271 ms. First mask calls also improve, without adding a cache. This does not measure full Home/Fly loading or FPS. [Earlier shadow geometry transforms](research/visual-quality-implementation/VQ-01c/loading/shadow-geometry/README.md) and [grass-mask loading attempts](research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md) remain separate evidence. Current-package qualification, cold-load non-regression, loading budgets and production shutdown/soak remain open.
+Latest DT-11a evidence: [horizon construction](research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md). Five native runs preserve complete mesh output; construction median is 68.721→55.027 ms. This does not measure full Home/Fly loading or FPS. A combined native horizon/atmosphere regression test reports four texture shutdown errors on reference and candidate; isolation remains open. [Earlier shadow blur](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) and [grass-mask loading attempts](research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md) remain separate evidence. Current-package qualification, cold-load non-regression, loading budgets and production shutdown/soak remain open.
 
 ## Current delivery
 

@@ -33,9 +33,11 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 ## governor adjusts engine torque within its declared limit. At zero speed the
 ## requested torque is finite and no artificial angular-speed floor is used.
 static func evaluate(model: Dictionary, main_speed: float, drive_fraction: float,
-		governor_enabled: bool = true, zero_drive_hold: bool = false) -> Dictionary:
+		governor_enabled: bool = true, zero_drive_hold: bool = false,
+		drive_scale: float = 1.0) -> Dictionary:
 	if not _prepared(model) or not _finite([main_speed, drive_fraction]) \
-			or main_speed < 0.0 or drive_fraction < 0.0 or drive_fraction > 1.0:
+			or not is_finite(drive_scale) or main_speed < 0.0 or drive_fraction < 0.0 \
+			or drive_fraction > 1.0 or drive_scale < 0.0 or drive_scale > 1.0:
 		return {"ok": false, "message": "invalid drive state, command or prepared context"}
 	var ratio: float = model.engine_speed_ratio_to_main
 	var engine_speed: float = ratio * main_speed
@@ -65,6 +67,10 @@ static func evaluate(model: Dictionary, main_speed: float, drive_fraction: float
 		if torque_at_power < delivered_torque:
 			delivered_torque = torque_at_power
 			power_limited = true
+	# Lifecycle ramp is applied after the governor and power cap. A scale of one
+	# leaves the historical calculation byte-for-byte unchanged.
+	if drive_scale < 1.0:
+		delivered_torque *= drive_scale
 	var engine_power: float = delivered_torque * engine_speed
 	var main_torque: float = model.gear_efficiency * ratio * delivered_torque
 	var main_power: float = main_torque * main_speed
@@ -84,6 +90,7 @@ static func evaluate(model: Dictionary, main_speed: float, drive_fraction: float
 		"main_drive_torque_nm": main_torque, "main_drive_power_w": main_power,
 		"shaft_loss_torque_nm": shaft_loss, "net_main_torque_nm": net_main_torque,
 		"governor_error_rad_s": governor_error, "power_limited": power_limited,
+		"drive_scale": drive_scale,
 		"zero_drive_hold_proxy": false, "one_speed_lump_preserved": true}
 
 

@@ -1,8 +1,8 @@
 # Visual quality: implementation guide and open work
 
-2026-10-14 · Revision 16 · Step prefix: **VQ-**
+2026-10-14 · Revision 17 · Step prefix: **VQ-**
 
-Latest VQ-01c / DT-11a follow-up: [fallback shadow blur indexing](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) preserves complete pixels/mips and carrier output in 100 native pairs, with 143 headless and 87 native assertions. Carrier construction median improves about 50%; this does not change per-frame rendering or establish full loading gains. [Earlier shadow geometry transforms](research/visual-quality-implementation/VQ-01c/loading/shadow-geometry/README.md) retain their own campaign. Appearance, cold-load non-regression, loading budgets and native acceptance remain open.
+Latest VQ-01c / DT-11a follow-up: [horizon construction](research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md) preserves vertices, normals, indices and bounds in 40 native pairs while reducing construction median about 20%. All 94 focused headless assertions pass. The native combined horizon/atmosphere test has texture shutdown errors reproduced on the reference; no teardown fix is adopted. [Earlier shadow blur](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) retains separate evidence. Appearance, full-loading non-regression and native acceptance remain open.
 
 [Audio teardown diagnostics](research/visual-quality-implementation/VQ-01c/loading/audio/README.md) now separate mixer retirement from persistent retention. The loading probe checks bounded cleanup on success/failure; packaged 50-cycle diagnostics finish without exit warnings but include one paused first draw. This does not close the native lifecycle/soak gates.
 

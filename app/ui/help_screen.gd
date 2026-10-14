@@ -108,7 +108,7 @@ func _notification(what: int) -> void:
 func _update_field_conditions_text() -> void:
 	if field_conditions_label != null:
 		if _vehicle_type == Reference.ROTORCRAFT:
-			field_conditions_label.text = tr("The research helicopter starts in a hover. Steady wind and repeating gusts are available; turbulence is not integrated yet. Flight validation is pending.")
+			field_conditions_label.text = tr("Helicopter: ground pad or practice hover. On the pad, center controls at zero pitch, arm with B, release hold with H, wait for RPM, then raise collective. Steady wind and gusts are available; flight validation is pending.")
 		else:
 			field_conditions_label.text = tr("Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart.")
 
@@ -117,7 +117,7 @@ func _update_radio_help_text() -> void:
 	if radio_help_label == null:
 		return
 	if _vehicle_type == Reference.ROTORCRAFT:
-		radio_help_label.text = tr("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). The collective stick controls rotor thrust. For a physical radio, lower it to arm, return it to the displayed hover percentage, then press P; a gamepad resumes with P. K calibrates the radio.")
+		radio_help_label.text = tr("USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controller settings. Throttle cut latches hold; releasing it never starts the rotor. K calibrates.")
 	else:
 		radio_help_label.text = tr("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it. Assign gear AUX or the optional Toggle landing gear action in Controller settings.")
 

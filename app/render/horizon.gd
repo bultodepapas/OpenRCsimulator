@@ -60,11 +60,19 @@ static func mesh() -> ArrayMesh:
 	vertices.resize(1 + radii.size() * SAMPLES)
 	normals.resize(vertices.size())
 	vertices[0] = Vector3.ZERO
+	# Each ring uses the same azimuths. Keep scalar float64 precision until the vertex boundary.
+	var east := PackedFloat64Array()
+	var south := PackedFloat64Array()
+	east.resize(SAMPLES)
+	south.resize(SAMPLES)
+	for col: int in SAMPLES:
+		var angle: float = TAU * float(col) / SAMPLES
+		east[col] = sin(angle)
+		south[col] = -cos(angle)
 	for row: int in radii.size():
 		for col: int in SAMPLES:
-			var angle: float = TAU * float(col) / SAMPLES
-			var x: float = sin(angle)
-			var z: float = -cos(angle)
+			var x: float = east[col]
+			var z: float = south[col]
 			var radius: float = radii[row]
 			# Last row reaches the original square boundary; all other rows are circular.
 			if row == radii.size() - 1:
@@ -73,13 +81,25 @@ static func mesh() -> ArrayMesh:
 			if row >= INNER_RADII.size() and row < INNER_RADII.size() + ROWS:
 				h = float(data.heights_q[row - INNER_RADII.size()][col]) / 256.0
 			vertices[1 + row * SAMPLES + col] = Vector3(radius * x, h, radius * z)
+	# Allocate the fan and ring triangles once, preserving winding and accumulation order.
+	indices.resize(SAMPLES * (3 + (radii.size() - 1) * 6))
+	var cursor: int = 0
 	for col: int in SAMPLES:
-		indices.append_array(PackedInt32Array([0, 1 + col, 1 + (col + 1) % SAMPLES]))
+		indices[cursor] = 0
+		indices[cursor + 1] = 1 + col
+		indices[cursor + 2] = 1 + (col + 1) % SAMPLES
+		cursor += 3
 	for row: int in radii.size() - 1:
 		for col: int in SAMPLES:
 			var a: int = 1 + row * SAMPLES + col
 			var b: int = 1 + row * SAMPLES + (col + 1) % SAMPLES
-			indices.append_array(PackedInt32Array([a, a + SAMPLES, b, b, a + SAMPLES, b + SAMPLES]))
+			indices[cursor] = a
+			indices[cursor + 1] = a + SAMPLES
+			indices[cursor + 2] = b
+			indices[cursor + 3] = b
+			indices[cursor + 4] = a + SAMPLES
+			indices[cursor + 5] = b + SAMPLES
+			cursor += 6
 	for i: int in range(0, indices.size(), 3):
 		var a: int = indices[i]
 		var b: int = indices[i + 1]

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-horizon-build\\probe.gd",
+    "--",
+    "--directory=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-horizon-build\\mutation",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-horizon-build\\mutation\\parity.json"
+  ],
+  "exit_code": 1,
+  "expected_failure": true,
+  "detected": true
+}

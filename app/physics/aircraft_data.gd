@@ -1380,6 +1380,18 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 				profile[axis + "_expo"] = float(expo)
 		if profile.size() == 6:
 			out.rates = { normal = profile }
+	# Optional device response, never a servo or aerodynamic coefficient. Full/radio modes bypass it.
+	if node.has("keyboard"):
+		var keyboard := _dictionary(errors, "controls.keyboard", node.get("keyboard"))
+		var response := {}
+		for key in ["pitch_press_time", "pitch_release_time"]:
+			var seconds = _q(errors, "controls.keyboard." + key, keyboard.get(key), "s", 0.05, 5.0)
+			if seconds != null:
+				response[key] = float(seconds)
+		if not node.has("rates"):
+			errors.append("controls.keyboard: requires controls.rates.normal")
+		if response.size() == 2:
+			out.keyboard = response
 	return out
 
 

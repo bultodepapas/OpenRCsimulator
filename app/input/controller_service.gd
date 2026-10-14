@@ -1,5 +1,5 @@
 extends Node
-## Interactive-only bridge. Enumeration never transfers ownership; profile writes are explicit in Controls.
+## Interactive-only bridge. Home chooses defaults; active sessions retain explicit ownership.
 const Registry := preload("res://input/controller_registry.gd")
 const Store := preload("res://input/controller_profile_store.gd")
 const Profile := preload("res://input/controller_profile.gd")
@@ -13,6 +13,8 @@ signal continuity_lost
 var registry = Registry.new()
 var store = Store.new()
 var enumerate_devices: Callable = observed_devices
+## The shell allows defaults only at startup/Home, never over a draft or another activity.
+var allow_automatic_selection: Callable
 var clock_msec: Callable = func() -> int: return Time.get_ticks_msec()
 var session: Node
 var _refreshing := false
@@ -21,10 +23,13 @@ var _elapsed := 0.0
 var _last_process_ms := 0
 var _last_flight_selection_result := true
 var _settings_save_transaction := false
+var _defaults_pending := true
+var _manual_roles: Dictionary = {}
 
 
 func _init() -> void:
 	registry.selection_changed.connect(_selection_changed)
+	registry.devices_changed.connect(func() -> void: _defaults_pending = true)
 
 
 func _ready() -> void:
@@ -50,6 +55,43 @@ func refresh() -> void:
 	_refreshing = true
 	registry.update_devices(enumerate_devices.call())
 	_refreshing = false
+	_apply_automatic_defaults()
+
+
+## Selection is automatic only before flight. It never writes profiles or arms controls.
+func _apply_automatic_defaults() -> void:
+	if not _defaults_pending or is_instance_valid(session):
+		return
+	if allow_automatic_selection.is_valid() and not bool(allow_automatic_selection.call()):
+		return
+	_defaults_pending = false
+	var devices: Array[Dictionary] = registry.get_devices() # stable ascending connection ID
+	if not _manual_roles.has("flight"):
+		var best_id := -1
+		var best_priority := 100
+		for info: Dictionary in devices:
+			if not bool(info.get("connected", false)):
+				continue
+			var priority := 3
+			if not store.match_profile(info, devices).is_empty():
+				priority = 0
+			elif info.get("kind", "") == "radio":
+				priority = 1
+			elif bool(info.get("known", false)) and info.get("kind", "") == "gamepad":
+				priority = 2
+			if priority < best_priority:
+				best_priority = priority
+				best_id = int(info.id)
+		registry.select_device("flight", best_id)
+	if not _manual_roles.has("ui"):
+		var ui_id: int = registry.selected_device_id("flight")
+		if not is_ui_gamepad(ui_id):
+			ui_id = -1
+			for info: Dictionary in devices:
+				if is_ui_gamepad(int(info.id)):
+					ui_id = int(info.id)
+					break
+		registry.select_device("ui", ui_id)
 
 
 func _connection_changed(id: int, connected: bool) -> void:
@@ -103,6 +145,8 @@ func select_devices(flight_id: int, ui_id: int) -> bool:
 	# Explicit re-apply also acknowledges lost continuity and the deliberate keyboard fallback.
 	if previous == flight_id and is_instance_valid(session) and session._controller_lost:
 		_selection_changed("flight", flight_id)
+	if _last_flight_selection_result:
+		_manual_roles = {"flight": true, "ui": true}
 	return _last_flight_selection_result
 
 
@@ -191,6 +235,10 @@ func validate_profile_for_session(candidate: Variant) -> Dictionary:
 
 
 func _selection_changed(role: String, id: int) -> void:
+	# A removed/replaced handle releases its manual preference for the next Home.
+	# An explicitly chosen keyboard (-1) remains manual for this application run.
+	if _refreshing:
+		_manual_roles.erase(role)
 	if role == "ui":
 		if not _settings_save_transaction:
 			ui_selection_changed.emit(id)
@@ -322,6 +370,7 @@ func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_d
 		_last_flight_selection_result = bool(session.apply_controller_selection(flight_id, registry.device_for_id(flight_id), saved.profile, false))
 	var committed := ui_selected and flight_selected and _last_flight_selection_result
 	if committed:
+		_manual_roles = {"flight": true, "ui": true}
 		_settings_save_transaction = false
 		if ui_id != old_ui_id:
 			ui_selection_changed.emit(ui_id)

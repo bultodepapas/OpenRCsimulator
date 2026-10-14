@@ -32,27 +32,39 @@ func _run() -> void:
 	app.preferences_path = PREFS
 	root.add_child(app)
 	await ui.settle()
-	app.controllers.enumerate_devices = func() -> Array:
-		return [{"id": 15, "name": "Synthetic Xbox", "guid": "synthetic-xbox", "vendor_id": 1118, "product_id": 765, "known": true},
-			{"id": 14, "name": "Fake EdgeTX", "kind": "radio", "known": true}]
+	var observed: Array = [{"id": 15, "name": "Synthetic Xbox", "guid": "synthetic-xbox", "vendor_id": 1118, "product_id": 765, "known": true}]
+	app.controllers.enumerate_devices = func() -> Array: return observed
 	app.controllers.refresh()
-	await button(JOY_BUTTON_A, 14)
-	check("radio cannot claim menu navigation", app.screens.is_top("home") and app.controllers.registry.selected_device_id("ui") == -1)
+	check("one pad defaults to flight and menus without opening settings", app.controllers.registry.selected_device_id("flight") == 15 and app.controllers.registry.selected_device_id("ui") == 15 and app.screens.is_top("home"))
+	app.home.fly_button.grab_focus()
 	await button(JOY_BUTTON_A)
-	check("first A claims menus and opens Controls, without launching", app.screens.is_top("controls") and app.flight == null and app.controllers.registry.selected_device_id("flight") == -1)
+	await create_timer(0.25).timeout
+	check("first A on Fly launches using the automatic pad and neutral gate", app.flight != null and app.pause_menu != null and app.flight.session.radio.device_id == 15 and not app.flight.session.radio.armed and app.flight.session.sim.paused)
+	check("automatic launch creates no saved controller profile", app.controllers.store.load_all().profiles.is_empty())
+	app.pause_menu.end_button.grab_focus()
+	await button(JOY_BUTTON_A)
+	check("automatic-controller flight can return Home", app.flight == null and app.screens.is_top("home"))
+	observed.append({"id": 14, "name": "Fake EdgeTX", "kind": "radio", "known": true})
+	app.controllers.refresh()
+	check("Home automatically selects radio flight and gamepad menus", app.controllers.registry.selected_device_id("flight") == 14 and app.controllers.registry.selected_device_id("ui") == 15)
+	await button(JOY_BUTTON_A, 14)
+	check("radio cannot activate menus", app.screens.is_top("home") and app.flight == null and app.controllers.registry.selected_device_id("ui") == 15)
+	app.home.controls_button.grab_focus()
+	await button(JOY_BUTTON_A)
+	check("automatically selected gamepad opens focused Controls", app.screens.is_top("controls") and app.flight == null)
 	var setup: Node = app.screens.top()
 	setup.flight_device_picker.grab_focus()
 	await button(JOY_BUTTON_A)
-	await button(JOY_BUTTON_DPAD_DOWN)
-	await button(JOY_BUTTON_DPAD_DOWN) # None -> radio 14 -> gamepad 15
+	await button(JOY_BUTTON_DPAD_DOWN) # automatic radio 14 -> gamepad 15
 	await button(JOY_BUTTON_A)
 	check("native gamepad events choose flight controller", setup.selected_flight_device_id() == 15)
-	check("choosing a controller waits for Save", app.controllers.registry.selected_device_id("flight") == -1)
+	check("choosing a controller waits for Save", app.controllers.registry.selected_device_id("flight") == 14)
 	setup.save_button.grab_focus()
 	await button(JOY_BUTTON_A)
 	check("one Save stores and activates the selected controller", app.controllers.registry.selected_device_id("flight") == 15 and app.controllers.store.load_all().profiles.size() == 1)
-	check("Save returns to Home without launching and restores focus", app.screens.is_top("home") and app.flight == null and root.gui_get_focus_owner() == app.home.fly_button)
+	check("Save returns to Home without launching and restores focus", app.screens.is_top("home") and app.flight == null and root.gui_get_focus_owner() == app.home.controls_button)
 	check("Home launch displays selected controller glyph", app.home.fly_button.icon != null)
+	app.home.fly_button.grab_focus()
 	await button(JOY_BUTTON_A)
 	await create_timer(0.25).timeout
 	check("A launches into paused controller arming", app.flight != null and app.pause_menu != null and app.flight.session.sim.paused)

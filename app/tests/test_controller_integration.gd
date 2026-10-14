@@ -29,7 +29,7 @@ func _run() -> void:
 		{"id": 20, "guid": "sony", "name": "DualSense", "known": true, "vendor_id": 1356, "product_id": 2}]
 	service.enumerate_devices = func() -> Array: return observed
 	service.refresh()
-	check("enumeration never claims either role", service.registry.selected_device_id("flight") == -1 and service.registry.selected_device_id("ui") == -1)
+	check("Home defaults select the first recognized pad for both roles", service.registry.selected_device_id("flight") == 10 and service.registry.selected_device_id("ui") == 10)
 	check("explicitly select flight and separate UI pad", service.select_devices(10, 20))
 	var session := Session.new()
 	session.external_controller_selection = true

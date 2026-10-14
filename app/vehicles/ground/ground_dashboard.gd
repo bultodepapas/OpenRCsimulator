@@ -18,6 +18,8 @@ var record_button: Button
 var modes: OptionButton
 var locations: OptionButton
 var airfield := false
+var track_available := false
+var spawn_ids: Array = []
 var lab: VBoxContainer
 var gauges: Label
 var sliders := {}
@@ -86,6 +88,10 @@ func _ready() -> void:
 	column.add_child(_label(words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
 	if airfield:
 		column.add_child(_label(words("Airfield · Shared runway", "Aeródromo · Pista de aviones"), 14))
+	if track_available:
+		var directions := _label(words("Dirt circuit north of the runway. Follow the access lane or choose a circuit start below.", "Circuito de tierra al norte de la pista. Sigue el camino de acceso o elige una entrada abajo."), 14)
+		directions.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		column.add_child(directions)
 	modes = OptionButton.new()
 	modes.add_item(words("Free drive", "Conducción libre"), 0)
 	if not airfield:
@@ -94,8 +100,11 @@ func _ready() -> void:
 	modes.item_selected.connect(func(index: int): mode_selected.emit(modes.get_item_id(index)))
 	column.add_child(modes)
 	locations = OptionButton.new()
-	var spawn_ids := ["start", "runway_end"] if airfield else ["start", "jump_start", "bump_lane", "grass", "gravel", "slippery"]
+	spawn_ids = ["start", "runway_end"] if airfield else ["start", "jump_start", "bump_lane", "grass", "gravel", "slippery"]
 	var location_titles := [words("Runway center", "Centro de pista"), words("Runway end", "Extremo de pista")] if airfield else [words("Start line", "Salida"), words("Jump approach", "Entrada al salto"), words("Bump lane", "Carril de baches"), words("Grass", "Césped"), words("Gravel", "Grava"), words("Low-grip pad", "Pista deslizante")]
+	if track_available:
+		spawn_ids.append_array(["track_start", "track_technical", "track_rollers"])
+		location_titles.append_array([words("Circuit · Ramps", "Circuito · Rampas"), words("Circuit · Wall slalom", "Circuito · Eslalon de paredes"), words("Circuit · Rollers", "Circuito · Ondulaciones")])
 	for title in location_titles:
 		locations.add_item(title)
 	locations.item_selected.connect(func(index: int): spawn_selected.emit(spawn_ids[index]))
@@ -108,6 +117,8 @@ func _ready() -> void:
 	row.add_child(_button(words("Recover · R", "Recuperar · R"), "recover"))
 	column.add_child(row)
 	column.add_child(_button(words("Camera · C", "Cámara · C"), "camera"))
+	if track_available:
+		column.add_child(_button(words("Circuit overview", "Vista del circuito"), "track_view"))
 	var toggles := HBoxContainer.new()
 	toggles.add_child(_button(words("Body", "Carrocería"), "body"))
 	toggles.add_child(_button(words("Contacts", "Contactos"), "contacts"))
@@ -202,6 +213,10 @@ func set_menu(shown: bool) -> void:
 		if focus != null:
 			focus.release_focus()
 
+func select_spawn(id: String) -> void:
+	var index := spawn_ids.find(id)
+	if index >= 0: locations.select(index)
+
 func message(english: String, spanish: String) -> void:
 	toast.text = words(english, spanish)
 
@@ -210,6 +225,7 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 	status.text = "BISONTE MT8  /  " + (words("PAUSED", "PAUSA") if paused else words("DRIVING", "CONDUCIENDO"))
 	var surface := str(snapshot.get("surface_id", ""))
 	var surface_names := {"asphalt": words("Asphalt", "Asfalto"), "grass": words("Grass", "Césped"), "gravel": words("Gravel", "Grava"), "slippery": words("Low grip", "Poco agarre"), "runway": words("Runway", "Pista de aviones"), "mown": words("Mown grass", "Césped corto"), "rough": words("Rough grass", "Césped")}
+	surface_names["rc_dirt"] = words("Dirt circuit", "Circuito de tierra")
 	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, words("AIR", "AIRE") if snapshot.get("airborne", false) else surface_names.get(surface, surface), "  ● REC" if recording else ""]
 	gauges.visible = diagnostic
 	plot.visible = diagnostic

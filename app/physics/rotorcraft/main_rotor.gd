@@ -117,6 +117,26 @@ static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity
 			"reaction_torque_moment_body_frd_nm": M.v3(0.0, 0.0, 0.0), "effective_flap_time_constant_s": null,
 			"flap_rate_a1_rad_s": 0.0, "flap_rate_b1_rad_s": 0.0,
 			"loads": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), "flap_rate": PackedFloat64Array([0.0, 0.0])}
+	# The azimuth-averaged source law divides by tip speed and is not a stopped
+	# blade model. Below its low-advance-ratio transition, use an explicitly
+	# estimated, bounded rotor-plane drag and collective thrust that decay
+	# continuously with shaft speed. Parked-blade orientation and windmill energy
+	# capture remain outside this approximation.
+	var crossflow: float = M.sqrt_(hub_air_velocity[0] * hub_air_velocity[0]
+		+ hub_air_velocity[1] * hub_air_velocity[1])
+	var transition: PackedFloat64Array = low_rpm_transition(model, crossflow)
+	var low_result: Dictionary = {}
+	var low_weight: float = 0.0
+	if omega < transition[1]:
+		low_result = _evaluate_low_rpm(model, omega, induced_velocity, hub_air_velocity,
+			body_rates, collective_75, cyclic_forward, cyclic_right, a1, b1, transition[0], crossflow)
+		if not low_result.get("ok", false):
+			return low_result
+		if omega <= transition[0]:
+			return low_result
+		var blend: float = (omega - transition[0]) / (transition[1] - transition[0])
+		blend = clampf(blend, 0.0, 1.0)
+		low_weight = 1.0 - blend * blend * (3.0 - 2.0 * blend)
 	var radius: float = model.rotor_radius_m
 	var tip: float = omega * radius
 	if not is_finite(tip) or tip <= 0.0:
@@ -173,12 +193,13 @@ static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity
 	var loads: PackedFloat64Array = PackedFloat64Array([fx, fy, fz, mx, my, mz])
 	var flap_rate: PackedFloat64Array = PackedFloat64Array([a_rate, b_rate])
 	if not diagnostics:
-		return {"ok": true, "rotor_active": true, "thrust_n": thrust, "torque_nm": torque,
+		var compact: Dictionary = {"ok": true, "rotor_active": true, "thrust_n": thrust, "torque_nm": torque,
 			"within_identified_advance_ratio": mu < 0.15,
 			"within_small_flap_angle_range": absf(a1) < PI / 18.0 and absf(b1) < PI / 18.0,
 			"flap_rate_a1_rad_s": a_rate, "flap_rate_b1_rad_s": b_rate,
 			"loads": loads, "flap_rate": flap_rate}
-	return {"ok": true, "rotor_active": true, "theta0_rad": collective_75, "solidity": model.solidity,
+		return _blend_low_rpm(low_result, compact, low_weight)
+	var full: Dictionary = {"ok": true, "rotor_active": true, "theta0_rad": collective_75, "solidity": model.solidity,
 		"lambda0": lambda0, "induced_velocity_m_s": induced_velocity, "mu_x": mu_x, "mu_y": mu_y,
 		"mu_z": mu_z, "mu": mu, "within_identified_advance_ratio": mu < 0.15,
 		"within_small_flap_angle_range": absf(a1) < PI / 18.0 and absf(b1) < PI / 18.0,
@@ -189,6 +210,107 @@ static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity
 		"flap_spring_moment_body_frd_nm": M.v3(spring_x, spring_y, 0.0), "reaction_torque_moment_body_frd_nm": M.v3(0.0, 0.0, reaction_z),
 		"effective_flap_time_constant_s": tau, "flap_rate_a1_rad_s": a_rate, "flap_rate_b1_rad_s": b_rate,
 		"loads": loads, "flap_rate": flap_rate}
+	return _blend_low_rpm(low_result, full, low_weight)
+
+
+## End points use the estimated law through μ>=0.30 and the original law by
+## μ<=0.15. With no crossflow, retain a short startup band at 4–8% nominal RPM.
+static func low_rpm_transition(model: Dictionary, crossflow_m_s: float) -> PackedFloat64Array:
+	var upper: float = maxf(0.08 * model.omega_nominal_rad_s,
+		crossflow_m_s / (0.15 * model.rotor_radius_m))
+	return PackedFloat64Array([0.5 * upper, upper])
+
+
+static func low_rpm_estimate_active(model: Dictionary, omega: float,
+		hub_air_velocity: PackedFloat64Array) -> bool:
+	if omega <= 0.0 or hub_air_velocity.size() != 3:
+		return omega == 0.0
+	var crossflow: float = M.sqrt_(hub_air_velocity[0] * hub_air_velocity[0]
+		+ hub_air_velocity[1] * hub_air_velocity[1])
+	return omega <= low_rpm_transition(model, crossflow)[0]
+
+
+static func _evaluate_low_rpm(model: Dictionary, omega: float, induced_velocity: float,
+		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
+		collective_75: float, cyclic_forward: float, cyclic_right: float,
+		a1: float, b1: float, lower_transition: float, crossflow: float) -> Dictionary:
+	var radius: float = model.rotor_radius_m
+	var tip: float = omega * radius
+	var disk_area: float = PI * radius * radius
+	var activity: float = 1.0
+	if crossflow > 0.0:
+		activity = tip * tip / (tip * tip + crossflow * crossflow)
+	var angle_activity: float = omega * omega / (omega * omega + lower_transition * lower_transition)
+	var a_sigma: float = model.blade_lift_curve_slope_per_rad * model.solidity
+	var ct: float = clampf(a_sigma * collective_75 / 6.0,
+		-model.thrust_coefficient_max, model.thrust_coefficient_max)
+	var scale: float = model.rho_kg_m3 * disk_area * tip * tip
+	var thrust: float = ct * scale * activity
+	var profile_cq: float = model.blade_section_cd0 * model.solidity / 8.0
+	var profile_torque: float = profile_cq * scale * radius * activity
+	var induced_torque: float = absf(ct) * absf(induced_velocity) \
+		* model.rho_kg_m3 * disk_area * tip * radius * activity
+	var torque: float = profile_torque + induced_torque
+	var nx: float = -M.sin_(a1)
+	var ny: float = M.sin_(b1)
+	var nz: float = -M.cos_(a1) * M.cos_(b1)
+	var inverse_length: float = 1.0 / M.sqrt_(nx * nx + ny * ny + nz * nz)
+	nx *= inverse_length
+	ny *= inverse_length
+	nz *= inverse_length
+	var q: float = 0.5 * model.rho_kg_m3 * crossflow * crossflow
+	var drag: float = q * model.solidity * disk_area * model.blade_section_cd0 * activity
+	var fx: float = nx * thrust
+	var fy: float = ny * thrust
+	var fz: float = nz * thrust
+	if crossflow > 0.0:
+		fx -= drag * hub_air_velocity[0] / crossflow
+		fy -= drag * hub_air_velocity[1] / crossflow
+	var arm_x: float = model.hub_y_m * fz - model.hub_z_m * fy
+	var arm_y: float = model.hub_z_m * fx - model.hub_x_m * fz
+	var arm_z: float = model.hub_x_m * fy - model.hub_y_m * fx
+	var spring_x: float = model.hub_spring_stiffness_nm_per_rad * b1 * angle_activity
+	var spring_y: float = model.hub_spring_stiffness_nm_per_rad * a1 * angle_activity
+	var reaction_z: float = -model.rotation_sense * torque
+	var mx: float = arm_x + spring_x
+	var my: float = arm_y + spring_y
+	var mz: float = arm_z + reaction_z
+	var loads: PackedFloat64Array = PackedFloat64Array([fx, fy, fz, mx, my, mz])
+	var tau_rate: float = model.gamma_flybar * omega / 16.0
+	var speed_ratio: float = omega / model.omega_nominal_rad_s
+	var gain_scale: float = speed_ratio * speed_ratio
+	var a_rate: float = angle_activity * (-body_rates[1]
+		+ (-a1 + model.cyclic_longitudinal_gain_nominal_rad_per_rad * gain_scale * cyclic_forward) * tau_rate)
+	var b_rate: float = angle_activity * (-body_rates[0]
+		+ (-b1 + model.cyclic_lateral_gain_nominal_rad_per_rad * gain_scale * cyclic_right) * tau_rate)
+	var flap_rate: PackedFloat64Array = PackedFloat64Array([a_rate, b_rate])
+	if not _finite([activity, angle_activity, ct, scale, thrust, torque, drag, fx, fy, fz,
+		mx, my, mz, a_rate, b_rate, induced_velocity]):
+		return {"ok": false, "message": "estimated low-RPM rotor law produced a nonfinite value"}
+	return {"ok": true, "rotor_active": true, "thrust_n": thrust, "torque_nm": torque,
+		"within_identified_advance_ratio": false,
+		"within_small_flap_angle_range": absf(a1) < PI / 18.0 and absf(b1) < PI / 18.0,
+		"flap_rate_a1_rad_s": a_rate, "flap_rate_b1_rad_s": b_rate,
+		"loads": loads, "flap_rate": flap_rate,
+		"estimated_regime": "bounded_low_rpm_startup",
+		"low_rpm_activity": activity, "thrust_coefficient_estimate": ct,
+		"profile_torque_nm": profile_torque, "induced_torque_estimate_nm": induced_torque}
+
+
+static func _blend_low_rpm(low: Dictionary, standard: Dictionary, low_weight: float) -> Dictionary:
+	if low_weight <= 0.0:
+		return standard
+	var result: Dictionary = standard.duplicate()
+	for key: String in ["thrust_n", "torque_nm", "flap_rate_a1_rad_s", "flap_rate_b1_rad_s"]:
+		result[key] = lerpf(float(standard[key]), float(low[key]), low_weight)
+	for key: String in ["loads", "flap_rate"]:
+		var values: PackedFloat64Array = standard[key].duplicate()
+		for index: int in range(values.size()):
+			values[index] = lerpf(values[index], low[key][index], low_weight)
+		result[key] = values
+	result["estimated_regime"] = "blended_low_rpm_startup"
+	result["estimated_low_rpm_weight"] = low_weight
+	return result
 
 
 static func _vector(value: PackedFloat64Array) -> bool:

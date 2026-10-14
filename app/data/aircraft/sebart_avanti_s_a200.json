@@ -1461,6 +1461,20 @@
           "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: transmitter D/R and expo per flight mode; normal mode aileron 50 % / 20 %, elevator 50 % / 40 %, rudder 80 % / 60 % (START/landing and 3D modes use 100 % D/R); docs/research/avanti-s-controls-and-installation.md"
         }
       }
+    },
+    "keyboard": {
+      "pitch_press_time": {
+        "value": 1.0,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "AV-17-R1 keyboard device tuning: neutral-to-full virtual pitch stick in 1.0 s before manual normal rates/expo. Reproduced 0.25 s legacy ramp over-pulled a 45 m/s dive. Not servo timing or manufacturer data; docs/research/avanti-realism/AV-17-R1/README.md."
+      },
+      "pitch_release_time": {
+        "value": 0.25,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "AV-17-R1 keyboard device tuning: retain legacy full-stick-to-neutral 0.25 s to unload promptly; reversal centers first. Not physical servo timing; docs/research/avanti-realism/AV-17-R1/README.md."
+      }
     }
   },
   "aero": {

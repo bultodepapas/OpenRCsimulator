@@ -32,6 +32,8 @@ def consumer(path: str) -> str:
     if path in reference_only:
         return reference_only[path]
 
+    if path.startswith("controls.keyboard."):
+        return "AircraftData._controls → Commands.keyboard_pitch; keyboard normal-profile virtual stick only, before expo/rates; no aerodynamic or servo change"
     if path.startswith("landing_gear.retraction.") or path.endswith(".retraction_path"):
         return "AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state"
     families = [

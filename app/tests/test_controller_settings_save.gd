@@ -80,6 +80,8 @@ func _device(id: int, serial: String, known := true, name := "Save test gamepad"
 
 func _service(storage_path: String, devices: Array) -> Service:
 	var service := Service.new()
+	# This suite starts inside Controls; Home default selection has its own suite.
+	service.allow_automatic_selection = func() -> bool: return false
 	service.store = Store.new(storage_path, LEGACY_PATH)
 	service.enumerate_devices = func() -> Array: return devices
 	service.refresh()

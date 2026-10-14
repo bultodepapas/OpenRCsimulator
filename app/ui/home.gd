@@ -411,11 +411,11 @@ func set_aircraft(id: String) -> void:
 
 func set_start_choice(choice: String) -> void:
 	if Catalog.is_rotorcraft(aircraft_id):
-		start_choice = "airborne"
-		start_button.disabled = true
-		start_button.text = tr("Start: hover")
-		start_button.tooltip_text = tr("The experimental research helicopter starts in a trimmed hover.")
-		limits_label.text = tr("Experimental helicopter: hover start only; flight validation pending. Turbulence is not qualified; steady wind and gusts are available.")
+		start_choice = "airborne" if choice == "airborne" else "runway"
+		start_button.disabled = false
+		start_button.text = tr("Start: hover") if start_choice == "airborne" else tr("Start: helicopter pad")
+		start_button.tooltip_text = tr("Choose a stopped rotor on the pad or a trimmed practice hover.")
+		limits_label.text = tr("Experimental helicopter. On the pad: arm, release hold, wait for RPM, then raise collective.")
 		return
 	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
 	var half_power: bool = FlightSession.half_power_start_supported(aircraft_id)
@@ -432,6 +432,7 @@ func set_start_choice(choice: String) -> void:
 
 func _cycle_start_choice() -> void:
 	if Catalog.is_rotorcraft(aircraft_id):
+		start_requested.emit("runway" if start_choice == "airborne" else "airborne")
 		return
 	var choices: Array[String] = ["airborne"]
 	if FlightSession.runway_aircraft_supported(aircraft_id) and runway_available:

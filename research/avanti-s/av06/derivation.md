@@ -13,7 +13,7 @@ wheel-profile hashes and rejects stale generated output/report, stale registry v
 
 The v1 baseline is upgraded to `openrc-aircraft v2` by the ID-gated standardizer, then the AV-09 gear module is added while
 preserving the historical AS-02 migration policy. Migration numeric parity: 502 original leaves
-preserved, 1 relocated CLadot leaves, 36 explicit
+preserved, 1 relocated CLadot leaves, 38 explicit
 compatibility-default leaves added, 0 differences.
 
 Flight mass 11.705 kg (fuel 1.28 kg), CG 240 mm aft of the root LE = 33.6 % MAC, static margin 8.5 % MAC.

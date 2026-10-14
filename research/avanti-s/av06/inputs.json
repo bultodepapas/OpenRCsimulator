@@ -69,6 +69,18 @@
   }
  },
  "controls": {
+  "keyboard_pitch_press_time": {
+   "value": 1.0,
+   "unit": "s",
+   "kind": "estimated",
+   "source": "AV-17-R1 keyboard device tuning: neutral-to-full virtual pitch stick in 1.0 s before manual normal rates/expo. Reproduced 0.25 s legacy ramp over-pulled a 45 m/s dive. Not servo timing or manufacturer data; docs/research/avanti-realism/AV-17-R1/README.md."
+  },
+  "keyboard_pitch_release_time": {
+   "value": 0.25,
+   "unit": "s",
+   "kind": "estimated",
+   "source": "AV-17-R1 keyboard device tuning: retain legacy full-stick-to-neutral 0.25 s to unload promptly; reversal centers first. Not physical servo timing; docs/research/avanti-realism/AV-17-R1/README.md."
+  },
   "aileron_up": {
    "value": 30.0,
    "unit": "deg",

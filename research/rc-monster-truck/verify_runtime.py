@@ -29,7 +29,8 @@ def main():
         ('generator-mutations', [sys.executable, 'research/rc-monster-truck/test_vehicle_data_generator.py']),
         ('float64-guard', [sys.executable, 'app/tests/check_transcendentals.py']),
     ]
-    scripts = ['test_rcv_vehicle_data', 'test_rcv_course', 'test_rcv_airfield_course', 'test_rcv_input',
+    scripts = ['test_rcv_vehicle_data', 'test_rcv_course', 'test_rcv_airfield_course',
+               'test_rcv_airfield_track', 'test_rcv_obstacle_contacts', 'test_rcv_input',
                'test_rcv_vehicle_dynamics', 'test_rcv_session', 'test_rcv_activity',
                'test_rcv_presentation', 'test_rcv_menu']
     if args.include_menu:

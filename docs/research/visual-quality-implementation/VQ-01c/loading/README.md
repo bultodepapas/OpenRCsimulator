@@ -13,9 +13,13 @@ samples and does not qualify interactive-loading gains.
 Construction repair: [native shadow geometry transforms](shadow-geometry/README.md),
 with exact face/bounds parity in 1,206 native pairs and focused current-tree tests.
 This is a shadow-construction measurement, not a new Home/Fly or FPS campaign.
-Latest construction repair: [fallback shadow blur indexing](shadow-blur/README.md),
+Construction repair: [fallback shadow blur indexing](shadow-blur/README.md),
 with 100 exact native image/carrier pairs and about 50% less carrier construction
 time. The first generation also improves; no cache or complete-loading claim.
+Latest construction repair: [horizon azimuth reuse and index preallocation](horizon-build/README.md),
+with 40 exact native mesh pairs and about 20% less mesh construction time. A
+separate combined native test reproduces texture shutdown errors on the baseline;
+that diagnostic remains open and is not counted as a clean native pass.
 
 2026-10-14. Implemented a bounded CPU geometry cache in `app/render/lake/lake_terrain.gd`.
 Source baseline `22b3e482`; Godot 4.7.2-stable, Windows, RTX 3090 / Ryzen 9 5900X.

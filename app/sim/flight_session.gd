@@ -1491,7 +1491,8 @@ func _physics_process(_delta: float) -> void:
 			raw.throttle = radio.throttle_position() # the stick, even while the throttle is held at idle
 		else:
 			raw = read_raw.call()
-			commands = Commands.step_commands(commands, raw, sim.dt())
+			var keyboard: Dictionary = aircraft.model.controls.get("keyboard", {}) if rates_active() else {}
+			commands = Commands.step_commands(commands, raw, sim.dt(), keyboard)
 		sim.inputs = _inputs()
 	# D9d: any crash-hull point at or below the ground is a crash. E1: the wheels are spring-damper contacts instead
 	# (aircraft with a landing_gear section); a leg pushed past its travel is a crash too.

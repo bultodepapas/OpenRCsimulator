@@ -54,7 +54,7 @@ const ROTORCRAFT_FLIGHT := [
 ## Shortcuts implemented by helicopter_main.gd. Keep this table limited to its handled key set.
 const ROTORCRAFT_SHORTCUTS := [
 	[[KEY_ESCAPE], "Pause menu / cancel radio calibration"],
-	[[KEY_R], "Restart the hover"],
+	[[KEY_R], "Restart the selected helicopter start"],
 	[[KEY_P], "Pause / resume"],
 	[[KEY_C, KEY_1, KEY_2, KEY_5], "Views: next, pilot, chase, orbit"],
 	[[KEY_Z, KEY_EQUAL, KEY_MINUS], "Zoom: auto, in, out"],
@@ -64,11 +64,12 @@ const ROTORCRAFT_SHORTCUTS := [
 	[[KEY_I], "Flight mode: normal / idle-up curves"],
 	[[KEY_G], "Trainer mode"],
 	[[KEY_H], "Zero-drive hold"],
+	[[KEY_B], "Arm / disarm helicopter motor"],
 ]
 
 const ROTORCRAFT_FIRST_FLIGHT := [
+	[[KEY_B, KEY_H], "Arm, then release hold"],
 	[[KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN], "Cyclic"],
-	[[KEY_A, KEY_D], "Yaw"],
 	[[KEY_W, KEY_S], "Collective"],
 ]
 

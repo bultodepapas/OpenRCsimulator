@@ -1,0 +1,109 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"complete": false,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"exact_pairs": 8,
+	"failures": [
+		"candidate:0",
+		"candidate:1",
+		"candidate:2",
+		"candidate:3",
+		"candidate:4",
+		"candidate:5",
+		"candidate:6",
+		"candidate:7"
+	],
+	"samples": [
+		{
+			"pair": 0,
+			"usec": 89549,
+			"variant": "reference"
+		},
+		{
+			"pair": 0,
+			"usec": 67695,
+			"variant": "candidate"
+		},
+		{
+			"pair": 1,
+			"usec": 65889,
+			"variant": "candidate"
+		},
+		{
+			"pair": 1,
+			"usec": 90675,
+			"variant": "reference"
+		},
+		{
+			"pair": 2,
+			"usec": 86651,
+			"variant": "reference"
+		},
+		{
+			"pair": 2,
+			"usec": 70181,
+			"variant": "candidate"
+		},
+		{
+			"pair": 3,
+			"usec": 67549,
+			"variant": "candidate"
+		},
+		{
+			"pair": 3,
+			"usec": 91194,
+			"variant": "reference"
+		},
+		{
+			"pair": 4,
+			"usec": 88423,
+			"variant": "reference"
+		},
+		{
+			"pair": 4,
+			"usec": 65876,
+			"variant": "candidate"
+		},
+		{
+			"pair": 5,
+			"usec": 66565,
+			"variant": "candidate"
+		},
+		{
+			"pair": 5,
+			"usec": 88846,
+			"variant": "reference"
+		},
+		{
+			"pair": 6,
+			"usec": 79857,
+			"variant": "reference"
+		},
+		{
+			"pair": 6,
+			"usec": 68259,
+			"variant": "candidate"
+		},
+		{
+			"pair": 7,
+			"usec": 70600,
+			"variant": "candidate"
+		},
+		{
+			"pair": 7,
+			"usec": 92165,
+			"variant": "reference"
+		}
+	],
+	"scope": "native horizon mesh construction including profile validation; readback outside timing; shared host; not total field/startup or FPS"
+}

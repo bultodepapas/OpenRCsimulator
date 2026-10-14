@@ -25,14 +25,29 @@ static func rate_limit(value: float, target: float, rate: float, dt: float) -> f
 	return ControlActuators.rate_limit(value, target, rate, dt)
 
 
-static func step_commands(c: Dictionary, raw: Dictionary, dt: float) -> Dictionary:
+static func step_commands(c: Dictionary, raw: Dictionary, dt: float, keyboard := {}) -> Dictionary:
 	var rate: float = Spec.CONTROLS.rate
 	return {
 		roll = rate_limit(c.roll, raw.roll, rate, dt),
-		pitch = rate_limit(c.pitch, raw.pitch, rate, dt),
+		pitch = rate_limit(c.pitch, raw.pitch, rate, dt) if keyboard.is_empty() else
+			keyboard_pitch(c.pitch, raw.pitch, dt, keyboard.pitch_press_time, keyboard.pitch_release_time),
 		yaw = rate_limit(c.yaw, raw.yaw, rate, dt),
 		throttle = clampf(c.throttle + raw.throttle * Spec.CONTROLS.throttle_rate * dt, 0.0, 1.0),
 	}
+
+
+## Optional keyboard virtual-stick response, before aircraft expo/rates and physical servo limits.
+## Releasing/reversing unloads promptly; increasing deflection takes the declared press time.
+## A reversal spends the remaining tick moving away from zero at the press rate (timestep independent).
+## This does not read airspeed, angle of attack or loads and cannot prevent an accelerated stall.
+static func keyboard_pitch(value: float, target: float, dt: float, press_time: float, release_time: float) -> float:
+	if value * target < 0.0:
+		var to_zero := absf(value) * release_time
+		if dt <= to_zero:
+			return rate_limit(value, 0.0, 1.0 / release_time, dt)
+		return rate_limit(0.0, target, 1.0 / press_time, dt - to_zero)
+	var time := release_time if absf(target) < absf(value) else press_time
+	return rate_limit(value, target, 1.0 / time, dt)
 
 
 ## Transmitter expo on one stick position x (−1…1): y = (1 − e)·x + e·x³ keeps the ends and softens the centre

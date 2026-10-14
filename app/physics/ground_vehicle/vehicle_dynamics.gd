@@ -39,11 +39,14 @@ const CORNER_COUNT := 4
 const GENERALIZED_SIZE := 14
 const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v2"
 const SUBSTEPS_PER_TICK := 1
+const WALL_MAX_INTEGRATION_STEP_S := 1.0 / 120.0
 const FRICTION_SWEEPS := 6
 const FRICTION_CONVERGENCE_FORCE_TOLERANCE_N := 0.001
 const BRAKE_CONVERGENCE_TORQUE_TOLERANCE_N_M := 0.001
 const MIN_SLIP_SPEED_M_PER_S := 0.05
 const MATRIX_PIVOT_RELATIVE_TOLERANCE := 1.0e-12
+const MAX_WALL_CONTACT_BOXES := 8
+const WALL_FRICTION_REGULARIZATION_M_PER_S := 0.05
 const BACKEND_GDSCRIPT_REFERENCE := "gdscript_reference"
 const BACKEND_NATIVE := "native"
 const BACKEND_ABI_VERSION := 1
@@ -420,15 +423,32 @@ static func step(
 		return PackedFloat64Array()
 	if not _finite_array(state) or not _valid_attitude(state):
 		return PackedFloat64Array()
+	var initial_wall_sample: Variant = road.call(state[POS], state[POS + 1])
+	if typeof(initial_wall_sample) != TYPE_DICTIONARY:
+		return PackedFloat64Array()
+	var initial_wall_surface: Dictionary = initial_wall_sample
+	var initial_walls := _validated_walls(initial_wall_surface)
+	if not bool(initial_walls.get("ok", false)):
+		return PackedFloat64Array()
+	var wall_boxes: Array = initial_walls["walls"]
+	var step_substeps := SUBSTEPS_PER_TICK
+	if not wall_boxes.is_empty():
+		step_substeps = maxi(step_substeps, ceili(dt / WALL_MAX_INTEGRATION_STEP_S))
+	var cached_north := state[POS]
+	var cached_east := state[POS + 1]
+	var integration_road := func(north: float, east: float) -> Dictionary:
+		if north == cached_north and east == cached_east:
+			return initial_wall_surface
+		return road.call(north, east)
 	var next := state.duplicate()
-	var substep_dt := dt / float(SUBSTEPS_PER_TICK)
-	for substep in SUBSTEPS_PER_TICK:
-		var initial_derivative := _derivative_core(next, model, controls, road)
+	var substep_dt := dt / float(step_substeps)
+	for substep in step_substeps:
+		var initial_derivative := _derivative_core(next, model, controls, integration_road)
 		if initial_derivative.is_empty():
 			return PackedFloat64Array()
 		if _derivative_is_exactly_zero(initial_derivative):
 			return next
-		next = _rk4_step(next, model, controls, road, substep_dt, initial_derivative)
+		next = _rk4_step(next, model, controls, integration_road, substep_dt, initial_derivative)
 		if next.is_empty():
 			return PackedFloat64Array()
 	return next
@@ -526,7 +546,13 @@ static func telemetry(
 		"wheel_slip_angle_rad": evaluated["wheel_slip_angle_rad"],
 		"wheel_slip_speed_m_per_s": evaluated["wheel_slip_speed_m_per_s"],
 		"wheel_in_contact": evaluated["wheel_in_contact"],
+		"wheel_wall_load_n": evaluated.get("wheel_wall_load_n", PackedFloat64Array()),
+		"wheel_wall_in_contact": evaluated.get("wheel_wall_in_contact", PackedByteArray()),
 		"hull_in_contact": evaluated["hull_in_contact"],
+		"hull_wall_load_n": evaluated.get("hull_wall_load_n", PackedFloat64Array()),
+		"wall_contact_count": int(evaluated.get("wall_contact_count", 0)),
+		"wall_normal_load_n": float(evaluated.get("wall_normal_load_n", 0.0)),
+		"wall_friction_power_w": float(evaluated.get("wall_friction_power_w", 0.0)),
 		"friction_sweeps_used": evaluated["friction_sweeps_used"],
 		"airborne": bool(evaluated["airborne"]),
 		"suspension_travel_m": PackedFloat64Array([state[TRAVEL], state[TRAVEL + 1], state[TRAVEL + 2], state[TRAVEL + 3]]),
@@ -582,22 +608,296 @@ static func _evaluate_active(
 	calculate_energy: bool = true,
 	adaptive_friction: bool = true,
 ) -> Dictionary:
+	var result: Dictionary
 	if _backend_override_for_tests == BACKEND_GDSCRIPT_REFERENCE:
-		return _evaluate(state, model, controls, road, calculate_energy, adaptive_friction)
-	var native := _load_native_backend()
-	if native == null:
-		return _evaluate(state, model, controls, road, calculate_energy, adaptive_friction)
-	var road_batch := func(coordinates_xy: PackedFloat64Array) -> Dictionary:
-		return _sample_road_batch(road, coordinates_xy)
-	var result: Variant = native.call("evaluate", state, model, controls, road_batch,
-		calculate_energy, adaptive_friction)
-	if typeof(result) != TYPE_DICTIONARY:
-		return _failure("Native vehicle backend returned a non-dictionary result")
+		result = _evaluate(state, model, controls, road, calculate_energy, adaptive_friction)
+	else:
+		var native := _load_native_backend()
+		if native == null:
+			result = _evaluate(state, model, controls, road, calculate_energy, adaptive_friction)
+		else:
+			var road_batch := func(coordinates_xy: PackedFloat64Array) -> Dictionary:
+				return _sample_road_batch(road, coordinates_xy)
+			var native_result: Variant = native.call("evaluate", state, model, controls, road_batch,
+				calculate_energy, adaptive_friction)
+			if typeof(native_result) != TYPE_DICTIONARY:
+				return _failure("Native vehicle backend returned a non-dictionary result")
+			result = native_result
+			if not bool(result.get("ok", false)):
+				return result
+			if not _native_evaluation_is_valid(result, model):
+				return _failure("Native vehicle backend returned malformed evaluation channels")
 	if not bool(result.get("ok", false)):
 		return result
-	if not _native_evaluation_is_valid(result, model):
-		return _failure("Native vehicle backend returned malformed evaluation channels")
+	return _apply_wall_contacts(state, model, road, result, calculate_energy)
+
+
+## Optional static AABBs are sampled once at the sprung-body center, shared by
+## both solver backends, and applied as additive generalized forces. The road
+## callback remains the source of truth; an absent `walls` field means no boxes.
+static func _apply_wall_contacts(
+	state: PackedFloat64Array,
+	model: Dictionary,
+	road: Callable,
+	base_result: Dictionary,
+	calculate_energy: bool,
+) -> Dictionary:
+	var result := base_result.duplicate(true)
+	var hull_radii: PackedFloat64Array = model["hull_probe_radii_m"]
+	var wheel_wall_load := PackedFloat64Array()
+	wheel_wall_load.resize(CORNER_COUNT)
+	var wheel_wall_contact := PackedByteArray()
+	wheel_wall_contact.resize(CORNER_COUNT)
+	var hull_wall_load := PackedFloat64Array()
+	hull_wall_load.resize(hull_radii.size())
+	result["wheel_wall_load_n"] = wheel_wall_load
+	result["wheel_wall_in_contact"] = wheel_wall_contact
+	result["hull_wall_load_n"] = hull_wall_load
+	result["wall_contact_count"] = 0
+	result["wall_normal_load_n"] = 0.0
+	result["wall_friction_power_w"] = 0.0
+	var center_sample: Variant = road.call(state[POS], state[POS + 1])
+	if typeof(center_sample) != TYPE_DICTIONARY:
+		return _failure("Road callback must return a Dictionary for wall sampling")
+	var center_surface: Dictionary = center_sample
+	var walls_result := _validated_walls(center_surface)
+	if not bool(walls_result.get("ok", false)):
+		return _failure(str(walls_result.get("error", "Malformed wall data")))
+	var walls: Array = walls_result["walls"]
+	if walls.is_empty():
+		return result
+
+	var servo_acceleration := float(base_result.get("steering_acceleration_rad_per_s2", 0.0))
+	var geometry := _corner_geometry(state, model, state[STEER], state[STEER_RATE], servo_acceleration)
+	if not bool(geometry.get("ok", false)):
+		return geometry
+	var q := M.q_normalized(_state_quaternion(state))
+	var q_conjugate := M.q_conj(q)
+	var position_world := _slice3(state, POS)
+	var body_velocity := _slice3(state, VEL)
+	var body_rate := _slice3(state, RATE)
+	var rhs := PackedFloat64Array()
+	rhs.resize(GENERALIZED_SIZE)
+	var wall_count := 0
+	var wall_normal_load := 0.0
+	var wall_friction_power := 0.0
+	var wall_energy := 0.0
+	var wall_stiffness := float(model["hull_contact_stiffness_n_per_m"])
+	var wall_damping := float(model["hull_contact_damping_n_s_per_m"])
+	var tire_wall_stiffness := float(model["tire_stiffness_n_per_m"])
+	var tire_wall_damping := float(model["tire_damping_n_s_per_m"])
+	var tire_friction_scale := float(model["tire_friction_scale"])
+	var hull_friction_scale := float(model["hull_contact_friction_scale"])
+	var tire_radius := float(model["tire_radius_m"])
+	var hub_position_body: Array[PackedFloat64Array] = geometry["hub_position_body"]
+	var hub_position_derivative_body: Array[PackedFloat64Array] = geometry["hub_position_derivative_body"]
+	var spin_axis_body: Array[PackedFloat64Array] = geometry["spin_axis_body"]
+	for corner in CORNER_COUNT:
+		var r: PackedFloat64Array = hub_position_body[corner]
+		var r_prime: PackedFloat64Array = hub_position_derivative_body[corner]
+		var hub_world := M.add(position_world, M.q_rotate(q, r))
+		var hub_velocity_body := M.add(body_velocity, M.add(
+			M.cross(body_rate, r), M.scale(r_prime, state[TRAVEL_RATE + corner])))
+		var hub_velocity_world := M.q_rotate(q, hub_velocity_body)
+		var left_steer_rate := -state[STEER_RATE] if corner < 2 else 0.0
+		var wheel_omega := M.add(body_rate, M.add(
+			PackedFloat64Array([0.0, 0.0, -left_steer_rate]),
+			M.scale(spin_axis_body[corner], state[WHEEL_SPIN + corner])))
+		for wall in walls:
+			var contact := _sphere_aabb_contact(hub_world, tire_radius, wall)
+			if not bool(contact.get("overlap", false)):
+				continue
+			var normal: PackedFloat64Array = contact["normal_ned"]
+			var penetration := float(contact["penetration_m"])
+			var normal_speed := M.dot(hub_velocity_world, normal)
+			var normal_load := maxf(0.0, tire_wall_stiffness * penetration - tire_wall_damping * minf(normal_speed, 0.0))
+			if normal_load <= 0.0:
+				continue
+			wall_count += 1
+			wall_normal_load += normal_load
+			wheel_wall_load[corner] += normal_load
+			wheel_wall_contact[corner] = 1
+			if calculate_energy:
+				wall_energy += 0.5 * tire_wall_stiffness * penetration * penetration
+			var rho_world := M.scale(normal, -tire_radius)
+			var rho_body := M.q_rotate(q_conjugate, rho_world)
+			var contact_velocity_world := M.add(hub_velocity_world, M.q_rotate(q,
+				M.cross(wheel_omega, rho_body)))
+			var friction_force_world := _wall_friction_force(
+				normal, contact_velocity_world, float(wall["mu"]) * tire_friction_scale, normal_load,
+			)
+			wall_friction_power += M.dot(friction_force_world, contact_velocity_world)
+			var total_force_world := M.add(M.scale(normal, normal_load), friction_force_world)
+			var total_force_body := M.q_rotate(q_conjugate, total_force_world)
+			_add_contact_force(rhs, hub_position_body[corner], total_force_body,
+				hub_position_derivative_body[corner], corner, spin_axis_body[corner], rho_body)
+
+	var hull_centers: PackedFloat64Array = model["hull_probe_centers_frd_m"]
+	for probe in hull_radii.size():
+		var center := PackedFloat64Array([
+			hull_centers[probe * 3], hull_centers[probe * 3 + 1], hull_centers[probe * 3 + 2],
+		])
+		var center_world := M.add(position_world, M.q_rotate(q, center))
+		var center_velocity_body := M.add(body_velocity, M.cross(body_rate, center))
+		var center_velocity_world := M.q_rotate(q, center_velocity_body)
+		for wall in walls:
+			var contact := _sphere_aabb_contact(center_world, hull_radii[probe], wall)
+			if not bool(contact.get("overlap", false)):
+				continue
+			var normal: PackedFloat64Array = contact["normal_ned"]
+			var penetration := float(contact["penetration_m"])
+			var normal_speed := M.dot(center_velocity_world, normal)
+			var normal_load := maxf(0.0, wall_stiffness * penetration - wall_damping * minf(normal_speed, 0.0))
+			if normal_load <= 0.0:
+				continue
+			wall_count += 1
+			wall_normal_load += normal_load
+			hull_wall_load[probe] += normal_load
+			if calculate_energy:
+				wall_energy += 0.5 * wall_stiffness * penetration * penetration
+			var rho_world := M.scale(normal, -hull_radii[probe])
+			var rho_body := M.q_rotate(q_conjugate, rho_world)
+			var contact_velocity_world := M.add(center_velocity_world, M.q_rotate(q,
+				M.cross(body_rate, rho_body)))
+			var friction_force_world := _wall_friction_force(
+				normal, contact_velocity_world, float(wall["mu"]) * hull_friction_scale, normal_load,
+			)
+			wall_friction_power += M.dot(friction_force_world, contact_velocity_world)
+			var total_force_world := M.add(M.scale(normal, normal_load), friction_force_world)
+			_add_body_force(rhs, M.add(center, rho_body), M.q_rotate(q_conjugate, total_force_world))
+
+	result["wall_contact_count"] = wall_count
+	result["wall_normal_load_n"] = wall_normal_load
+	result["wall_friction_power_w"] = wall_friction_power
+	result["wheel_wall_load_n"] = wheel_wall_load
+	result["wheel_wall_in_contact"] = wheel_wall_contact
+	result["hull_wall_load_n"] = hull_wall_load
+	if wall_count == 0:
+		return result
+	var matrix := _generalized_mass_matrix(model, geometry)
+	var factor_result := _factor_generalized_mass_matrix(matrix)
+	if not bool(factor_result.get("ok", false)):
+		return _failure("Could not factor generalized mass matrix for wall contacts")
+	var wall_acceleration := _solve_generalized(factor_result, rhs)
+	var acceleration: PackedFloat64Array = result.get("generalized_acceleration", PackedFloat64Array())
+	if wall_acceleration.size() != GENERALIZED_SIZE or acceleration.size() != GENERALIZED_SIZE:
+		return _failure("Wall response returned malformed generalized acceleration")
+	acceleration = acceleration.duplicate()
+	for degree in GENERALIZED_SIZE:
+		acceleration[degree] += wall_acceleration[degree]
+	if not _finite_array(acceleration):
+		return _failure("Wall response generalized acceleration is non-finite")
+	result["generalized_acceleration"] = acceleration
+	var hull_contact: PackedByteArray = result["hull_in_contact"].duplicate()
+	for probe in hull_wall_load.size():
+		if hull_wall_load[probe] > 0.0:
+			hull_contact[probe] = 1
+	result["hull_in_contact"] = hull_contact
+	result["airborne"] = false
+	if calculate_energy:
+		result["energy_j"] = float(result.get("energy_j", 0.0)) + wall_energy
 	return result
+
+
+static func _validated_walls(sample: Dictionary) -> Dictionary:
+	if not sample.has("walls"):
+		return {"ok": true, "walls": []}
+	var walls_value: Variant = sample["walls"]
+	if typeof(walls_value) != TYPE_ARRAY:
+		return _failure("Road walls must be an Array")
+	var walls: Array = walls_value
+	if walls.size() > MAX_WALL_CONTACT_BOXES:
+		return _failure("Road returned more than %d wall boxes" % MAX_WALL_CONTACT_BOXES)
+	var valid_walls: Array = []
+	var scalar_keys := [
+		"north_min_m", "north_max_m", "east_min_m", "east_max_m",
+		"bottom_up_m", "top_up_m", "mu",
+	]
+	for index in walls.size():
+		var value: Variant = walls[index]
+		if typeof(value) != TYPE_DICTIONARY:
+			return _failure("Road wall %d must be a Dictionary" % index)
+		var wall: Dictionary = value
+		if typeof(wall.get("id")) != TYPE_STRING or str(wall["id"]).is_empty():
+			return _failure("Road wall %d must have a nonempty string id" % index)
+		var clean := {"id": str(wall["id"])}
+		for key in scalar_keys:
+			if not wall.has(key):
+				return _failure("Road wall %d omitted %s" % [index, key])
+			var scalar: Variant = wall[key]
+			if typeof(scalar) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(scalar)):
+				return _failure("Road wall %d has invalid %s" % [index, key])
+			clean[key] = float(scalar)
+		if clean["north_min_m"] >= clean["north_max_m"] \
+				or clean["east_min_m"] >= clean["east_max_m"] \
+				or clean["bottom_up_m"] >= clean["top_up_m"] or clean["mu"] < 0.0:
+			return _failure("Road wall %d has invalid bounds or friction" % index)
+		valid_walls.append(clean)
+	return {"ok": true, "walls": valid_walls}
+
+
+static func _sphere_aabb_contact(center_ned: PackedFloat64Array, radius: float, wall: Dictionary) -> Dictionary:
+	var lower := PackedFloat64Array([
+		float(wall["north_min_m"]), float(wall["east_min_m"]), -float(wall["top_up_m"]),
+	])
+	var upper := PackedFloat64Array([
+		float(wall["north_max_m"]), float(wall["east_max_m"]), -float(wall["bottom_up_m"]),
+	])
+	var closest := PackedFloat64Array()
+	closest.resize(3)
+	var outside := false
+	for axis in 3:
+		closest[axis] = clampf(center_ned[axis], lower[axis], upper[axis])
+		outside = outside or center_ned[axis] < lower[axis] or center_ned[axis] > upper[axis]
+	var normal := PackedFloat64Array()
+	normal.resize(3)
+	var signed_distance := 0.0
+	if outside:
+		var offset := M.sub(center_ned, closest)
+		var distance := M.norm(offset)
+		if distance <= 1.0e-12:
+			return {"overlap": false}
+		normal = M.scale(offset, 1.0 / distance)
+		signed_distance = distance
+	else:
+		var nearest_distance := INF
+		var nearest_axis := 0
+		var nearest_sign := -1.0
+		for axis in 3:
+			var to_lower := center_ned[axis] - lower[axis]
+			var to_upper := upper[axis] - center_ned[axis]
+			if to_lower < nearest_distance:
+				nearest_distance = to_lower
+				nearest_axis = axis
+				nearest_sign = -1.0
+			if to_upper < nearest_distance:
+				nearest_distance = to_upper
+				nearest_axis = axis
+				nearest_sign = 1.0
+		normal[nearest_axis] = nearest_sign
+		signed_distance = -nearest_distance
+	var penetration := radius - signed_distance
+	return {
+		"overlap": penetration > 0.0,
+		"normal_ned": normal,
+		"penetration_m": maxf(penetration, 0.0),
+	}
+
+
+static func _wall_friction_force(
+	normal_ned: PackedFloat64Array,
+	contact_velocity_ned: PackedFloat64Array,
+	friction_coefficient: float,
+	normal_load_n: float,
+) -> PackedFloat64Array:
+	var tangent_velocity := M.sub(contact_velocity_ned,
+		M.scale(normal_ned, M.dot(contact_velocity_ned, normal_ned)))
+	var tangent_speed := M.norm(tangent_velocity)
+	if tangent_speed <= 1.0e-12 or friction_coefficient <= 0.0 or normal_load_n <= 0.0:
+		return PackedFloat64Array([0.0, 0.0, 0.0])
+	var magnitude := friction_coefficient * normal_load_n \
+		* M.tanh_(tangent_speed / WALL_FRICTION_REGULARIZATION_M_PER_S)
+	return M.scale(tangent_velocity, -magnitude / tangent_speed)
 
 
 static func _sample_road_batch(road: Callable, coordinates_xy: PackedFloat64Array) -> Dictionary:

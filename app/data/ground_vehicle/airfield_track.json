@@ -1,0 +1,151 @@
+{
+  "format": "openrc-airfield-track v1",
+  "id": "bisonte-dirt-circuit",
+  "source": "Estimated gameplay geometry; pump-track and RC dirt-jump inspiration documented in docs/research/rc-monster-truck/RCV-track/README.md. Not measured vehicle validation.",
+  "center_north_m": 45.0,
+  "center_east_m": 0.0,
+  "half_straight_m": 12.0,
+  "radius_m": 6.0,
+  "lane_width_m": 3.2,
+  "shoulder_m": 1.2,
+  "pad_height_m": 0.035,
+  "bank_height_m": 0.85,
+  "mu": 0.82,
+  "rolling": 1.0,
+  "access": {
+    "north_min_m": 21.0,
+    "north_max_m": 39.0,
+    "east_m": -10.0,
+    "width_m": 2.6
+  },
+  "technical_width_m": 3.8,
+  "ramps": [
+    {
+      "id": "tabletop",
+      "north_m": 39.0,
+      "east_m": -4.0,
+      "height_m": 0.32,
+      "approach_m": 1.6,
+      "deck_m": 0.7,
+      "descent_m": 2.0,
+      "width_m": 3.2
+    },
+    {
+      "id": "step_up",
+      "north_m": 39.0,
+      "east_m": 6.0,
+      "height_m": 0.22,
+      "approach_m": 1.3,
+      "deck_m": 0.45,
+      "descent_m": 1.8,
+      "width_m": 3.2
+    }
+  ],
+  "rollers": [
+    {
+      "id": "roller_1",
+      "north_m": 51.0,
+      "east_m": -4.0,
+      "height_m": 0.12,
+      "approach_m": 1.0,
+      "deck_m": 0.0,
+      "descent_m": 1.0,
+      "width_m": 3.2
+    },
+    {
+      "id": "roller_2",
+      "north_m": 51.0,
+      "east_m": 0.0,
+      "height_m": 0.12,
+      "approach_m": 1.0,
+      "deck_m": 0.0,
+      "descent_m": 1.0,
+      "width_m": 3.2
+    },
+    {
+      "id": "roller_3",
+      "north_m": 51.0,
+      "east_m": 4.0,
+      "height_m": 0.12,
+      "approach_m": 1.0,
+      "deck_m": 0.0,
+      "descent_m": 1.0,
+      "width_m": 3.2
+    }
+  ],
+  "walls": [
+    {
+      "id": "slalom_1",
+      "north_min_m": 43.3,
+      "north_max_m": 44.7,
+      "east_min_m": -6.15,
+      "east_max_m": -5.85,
+      "bottom_up_m": -0.03,
+      "top_up_m": 0.55,
+      "mu": 0.65
+    },
+    {
+      "id": "slalom_2",
+      "north_min_m": 45.3,
+      "north_max_m": 46.7,
+      "east_min_m": -0.15,
+      "east_max_m": 0.15,
+      "bottom_up_m": -0.03,
+      "top_up_m": 0.55,
+      "mu": 0.65
+    },
+    {
+      "id": "slalom_3",
+      "north_min_m": 43.3,
+      "north_max_m": 44.7,
+      "east_min_m": 5.85,
+      "east_max_m": 6.15,
+      "bottom_up_m": -0.03,
+      "top_up_m": 0.55,
+      "mu": 0.65
+    },
+    {
+      "id": "start_south",
+      "north_min_m": 37.25,
+      "north_max_m": 37.6,
+      "east_min_m": -8.0,
+      "east_max_m": -6.5,
+      "bottom_up_m": -0.03,
+      "top_up_m": 0.55,
+      "mu": 0.65
+    },
+    {
+      "id": "start_north",
+      "north_min_m": 40.4,
+      "north_max_m": 40.75,
+      "east_min_m": -8.0,
+      "east_max_m": -6.5,
+      "bottom_up_m": -0.03,
+      "top_up_m": 0.55,
+      "mu": 0.65
+    }
+  ],
+  "spawns": [
+    {
+      "id": "track_start",
+      "north_m": 39.0,
+      "east_m": -9.0,
+      "heading_rad": 1.5707963267948966,
+      "vehicle_up_m": 0.5
+    },
+    {
+      "id": "track_technical",
+      "north_m": 45.0,
+      "east_m": -10.0,
+      "heading_rad": 1.5707963267948966,
+      "vehicle_up_m": 0.5
+    },
+    {
+      "id": "track_rollers",
+      "north_m": 51.0,
+      "east_m": 9.0,
+      "heading_rad": 4.71238898038469,
+      "vehicle_up_m": 0.5
+    }
+  ]
+}

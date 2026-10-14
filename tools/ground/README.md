@@ -1,5 +1,15 @@
 # Ground surface capture
 
+## DT-11a horizon construction
+
+`Horizon.mesh()` reuses per-build float64 azimuth tables and preallocates triangle
+indices. It still validates the profile on every call and creates a fresh mesh;
+no generated asset or authoring pipeline changes are needed. Run the pinned
+engine headless with `--script res://tests/test_horizon.gd` for topology, height,
+seam and checksum checks. [Native parity, timings and the separate atmosphere
+texture shutdown diagnostic](../../docs/research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md)
+own the evidence and outstanding native-test limitation.
+
 ## DT-11a imported grass exclusion filtering
 
 `ImportedNearGrass.layout()` discards masks strictly outside the validated 30 m

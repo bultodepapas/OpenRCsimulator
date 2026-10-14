@@ -9,6 +9,7 @@ const GroundContact := preload("res://physics/ground_contact.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const VehicleDynamics := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
+const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
 const M := preload("res://physics/math3d.gd")
 
 const FORMAT := "openrc-airfield-course"
@@ -110,6 +111,13 @@ static func build(field_result: Dictionary, surface_table_result: Dictionary = {
 			return _failure(PackedStringArray(["runway spawn does not resolve to the selected runway surface"]))
 		# A finite seed only; Session's terrain-aware kernel initializer computes the supported CG altitude.
 		spawn.vehicle_up_m = float(sample_result.height_m) + 0.5
+	var track_digest := ""
+	if Track.matches_field(field):
+		var track_result := Track.load_default()
+		if not track_result.ok: return _failure(track_result.errors)
+		course["track"] = track_result.track
+		track_digest = track_result.sha256
+		course.spawns.append_array(track_result.track.spawns.duplicate(true))
 
 	var field_digest := _sha256_text(JSON.stringify(field, "", true, true))
 	var surface_source_path := str(table_result.get("source_path", DEFAULT_SURFACE_TABLE_PATH))
@@ -128,6 +136,7 @@ static func build(field_result: Dictionary, surface_table_result: Dictionary = {
 		"surface_source_sha256": surface_source_digest,
 		"script_artifacts": script_artifacts,
 		"lake_identity": lake_digest,
+		"track_sha256": track_digest,
 		"dry_pavement_mu": DRY_PAVEMENT_MU,
 	}
 	var digest := _sha256_text(JSON.stringify(source_manifest, "", true, true))
@@ -154,6 +163,11 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 	var terrain: PackedFloat64Array = GroundTerrain.sample_validated(north_m, east_m, rects, lake)
 	if terrain.size() != 3 or not is_finite(terrain[0]) or not is_finite(terrain[1]) or not is_finite(terrain[2]):
 		return invalid
+	var track: Dictionary = course.get("track", {})
+	var overlay := Track.sample(track, north_m, east_m)
+	terrain[0] += float(overlay.height_m)
+	terrain[1] += float(overlay.dn)
+	terrain[2] += float(overlay.de)
 	var normal := PackedFloat64Array([-terrain[1], -terrain[2], -1.0])
 	var magnitude := M.sqrt_(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2])
 	if not is_finite(magnitude) or magnitude <= 0.0:
@@ -172,6 +186,10 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 	var mu := DRY_PAVEMENT_MU * rects[offset + 4]
 	# The kernel applies model.rolling_resistance_coefficient before this surface multiplier.
 	var rolling := rects[offset + 5]
+	var coverage := float(overlay.coverage)
+	if coverage > 0.0:
+		mu = lerpf(mu, float(track.mu), coverage)
+		rolling = lerpf(rolling, float(track.rolling), coverage)
 	if not is_finite(mu) or mu <= 0.0 or not is_finite(rolling) or rolling < 0.0:
 		return invalid
 	var bounds_value: Variant = course.get("bounds", {})
@@ -186,10 +204,12 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 		"normal_ned": normal,
 		"mu": mu,
 		"rolling": rolling,
-		"surface_id": str(row.get("id", "outside")),
+		"surface_id": "rc_dirt" if coverage >= 0.5 else str(row.get("id", "outside")),
 		"in_bounds": in_bounds,
-		"feature_id": "",
-		"feature_ids": [],
+		"feature_id": str(overlay.feature_id),
+		"feature_ids": [] if str(overlay.feature_id).is_empty() else [str(overlay.feature_id)],
+		"track_coverage": coverage,
+		"walls": Track.nearby_walls(track, north_m, east_m),
 	}
 
 
@@ -278,6 +298,7 @@ static func _script_artifacts() -> Dictionary:
 		"res://physics/lake_surface.gd",
 		"res://physics/ground_vehicle/vehicle_dynamics.gd",
 		"res://physics/ground_vehicle/airfield_course.gd",
+		"res://physics/ground_vehicle/airfield_track.gd",
 	]:
 		artifacts[path] = VehicleDynamics._reference_implementation_artifact(path)
 	return artifacts
@@ -291,6 +312,7 @@ static func _script_artifacts_are_valid(artifacts: Dictionary) -> bool:
 		"res://physics/lake_surface.gd",
 		"res://physics/ground_vehicle/vehicle_dynamics.gd",
 		"res://physics/ground_vehicle/airfield_course.gd",
+		"res://physics/ground_vehicle/airfield_track.gd",
 	]:
 		var artifact: Variant = artifacts.get(path)
 		if typeof(artifact) != TYPE_DICTIONARY \

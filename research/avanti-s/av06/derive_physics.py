@@ -1104,6 +1104,10 @@ check_consistency(data)
 
 legacy_data = data
 data = upgrade(legacy_data)
+data["controls"]["keyboard"] = {
+    "pitch_press_time": qi("controls.keyboard_pitch_press_time", "s"),
+    "pitch_release_time": qi("controls.keyboard_pitch_release_time", "s"),
+}
 parity = numeric_parity(legacy_data, data)
 # AS-02's ID-gated policy intentionally records the historical AV-06 gear-up state. AV-09 adds the new gear module after
 # that compatibility migration so the legacy record remains evidence of its original locked-up configuration.
