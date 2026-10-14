@@ -21,7 +21,7 @@ func _initialize() -> void:
 
 func _test_catalog_descriptors() -> void:
 	var ids: PackedStringArray = Catalog.airplane_flyable_ids()
-	_check("every airplane catalog entry is discovered", ids.size() == 7 and not ids.is_empty(), str(ids))
+	_check("every airplane catalog entry is discovered", ids.size() == 8 and not ids.is_empty(), str(ids))
 	_check("rotorcraft has no airplane Workshop descriptor", Catalog.is_rotorcraft("xcell-60-research") and not ids.has("xcell-60-research"))
 	for id: String in ids:
 		var entry: Dictionary = Catalog.entry(id)

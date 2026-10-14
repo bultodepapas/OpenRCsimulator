@@ -61,6 +61,10 @@ def catalog_entries() -> list[tuple[str, str]]:
         if not data_path.startswith("res://data/aircraft/"):
             raise ValueError(f"catalog entry {base_id} uses an unsupported data path: {data_path}")
         seen.add(base_id)
+        # The Workshop edits airplanes only, like Catalog.airplane_flyable_entries(): rotorcraft data has no inventory.
+        source_path = ROOT / "app" / data_path.removeprefix("res://")
+        if json.loads(source_path.read_text(encoding="utf-8")).get("vehicle") == "rotorcraft":
+            continue
         entries.append((base_id, data_path))
     if not entries:
         raise ValueError("no aircraft catalog data entries were found")
