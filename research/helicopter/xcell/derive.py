@@ -1,6 +1,7 @@
 """Generate the local experimental X-Cell/HX-700 rotorcraft preset. No mesh generation."""
 import json
 import argparse
+import importlib.util
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -99,13 +100,64 @@ def schema_for(node):
         return {"const": node}
     return {"const": node}
 
+def hx700_derive_module():
+    path = ROOT / "research/helicopter/hx700/derive.py"
+    spec = importlib.util.spec_from_file_location("openrc_hx700_derive", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load HX-700 rotorcraft generator: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+def schema_for_profiles(profiles):
+    """Build one closed v2 schema with exact identity and electronics variants."""
+    if not profiles:
+        raise ValueError("at least one rotorcraft profile is required")
+    schema = schema_for(profiles[0])
+    properties = schema["properties"]
+    properties["id"] = {"enum": [profile["id"] for profile in profiles]}
+    properties["name"] = {"enum": [profile["name"] for profile in profiles]}
+    properties["capabilities"] = {"enum": [profile["capabilities"] for profile in profiles]}
+    properties["qualification"] = {"type": "string", "minLength": 1}
+    properties["electronics"] = {
+        "oneOf": [schema_for(profile["electronics"]) for profile in profiles],
+    }
+    if any("release_state" in profile for profile in profiles):
+        properties["release_state"] = {"const": "laboratory_only"}
+    schema["oneOf"] = []
+    for profile in profiles:
+        branch = {
+            "properties": {
+                "id": {"const": profile["id"]},
+                "name": {"const": profile["name"]},
+                "capabilities": {"const": profile["capabilities"]},
+                "qualification": {"const": profile["qualification"]},
+            },
+        }
+        if "release_state" in profile:
+            branch["properties"]["release_state"] = {"const": profile["release_state"]}
+            branch["required"] = ["release_state"]
+        else:
+            branch["not"] = {"required": ["release_state"]}
+        schema["oneOf"].append(branch)
+    return schema
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="check generated preset and schema without changing files")
     args = parser.parse_args()
-    path = ROOT / "app/data/aircraft/xcell_60_research.json"
-    schema = {"$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "openrc-rotorcraft-v2", **schema_for(derive())}
-    outputs = {path: derive(), ROOT / "app/data/schema/openrc-rotorcraft-v2.schema.json": schema}
+    xcell = derive()
+    hx700 = hx700_derive_module().derive()
+    schema = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "openrc-rotorcraft-v2",
+        **schema_for_profiles([xcell, hx700]),
+    }
+    outputs = {
+        ROOT / "app/data/aircraft/xcell_60_research.json": xcell,
+        ROOT / "app/data/aircraft/hx700_electric_3d_experimental.json": hx700,
+        ROOT / "app/data/schema/openrc-rotorcraft-v2.schema.json": schema,
+    }
     for destination, payload in outputs.items():
         expected = json.dumps(payload, indent=2) + "\n"
         if args.check:

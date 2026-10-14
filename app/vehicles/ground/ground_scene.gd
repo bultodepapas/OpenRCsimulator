@@ -155,10 +155,10 @@ func _build_airfield() -> void:
 		var access: Dictionary = track.access
 		var half := float(access.width_m) * 0.5 + float(track.shoulder_m)
 		var points := PackedVector2Array([
-			Vector2(access.north_min_m, float(access.east_m) - half),
+			Vector2(float(access.north_min_m) - float(track.shoulder_m), float(access.east_m) - half),
 			Vector2(access.north_max_m, float(access.east_m) - half),
 			Vector2(access.north_max_m, float(access.east_m) + half),
-			Vector2(access.north_min_m, float(access.east_m) + half)])
+			Vector2(float(access.north_min_m) - float(track.shoulder_m), float(access.east_m) + half)])
 		exclusions.append(GrassMask._record("rc-access", "dirt_track", points))
 		camera_rig.track_center = Vector3(track.center_east_m, 0.0, -float(track.center_north_m))
 	add_child(FieldBuilder.build(field, _lighting, exclusions))

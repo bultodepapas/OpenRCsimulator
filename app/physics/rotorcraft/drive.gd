@@ -85,13 +85,15 @@ static func evaluate(model: Dictionary, main_speed: float, drive_fraction: float
 		net_main_torque = main_torque - shaft_loss
 	if not _finite([delivered_torque, engine_power, main_torque, main_power, shaft_loss, net_main_torque]):
 		return {"ok": false, "message": "drive output overflowed finite range"}
-	return {"ok": true, "engine_speed_rad_s": engine_speed,
+	var result: Dictionary = {"ok": true, "engine_speed_rad_s": engine_speed,
 		"engine_torque_nm": delivered_torque, "engine_power_w": engine_power,
 		"main_drive_torque_nm": main_torque, "main_drive_power_w": main_power,
 		"shaft_loss_torque_nm": shaft_loss, "net_main_torque_nm": net_main_torque,
 		"governor_error_rad_s": governor_error, "power_limited": power_limited,
-		"drive_scale": drive_scale,
 		"zero_drive_hold_proxy": false, "one_speed_lump_preserved": true}
+	if drive_scale < 1.0:
+		result["drive_scale"] = drive_scale
+	return result
 
 
 static func _prepared(model: Dictionary) -> bool:

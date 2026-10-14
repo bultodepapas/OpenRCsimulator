@@ -13,7 +13,7 @@
   "mu": 0.82,
   "rolling": 1.0,
   "access": {
-    "north_min_m": 21.0,
+    "north_min_m": 22.2,
     "north_max_m": 39.0,
     "east_m": -10.0,
     "width_m": 2.6
@@ -24,20 +24,20 @@
       "id": "tabletop",
       "north_m": 39.0,
       "east_m": -4.0,
-      "height_m": 0.32,
-      "approach_m": 1.6,
-      "deck_m": 0.7,
-      "descent_m": 2.0,
+      "height_m": 0.48,
+      "approach_m": 0.85,
+      "deck_m": 0.1,
+      "descent_m": 1.25,
       "width_m": 3.2
     },
     {
       "id": "step_up",
       "north_m": 39.0,
       "east_m": 6.0,
-      "height_m": 0.22,
-      "approach_m": 1.3,
-      "deck_m": 0.45,
-      "descent_m": 1.8,
+      "height_m": 0.28,
+      "approach_m": 1.0,
+      "deck_m": 0.35,
+      "descent_m": 1.5,
       "width_m": 3.2
     }
   ],

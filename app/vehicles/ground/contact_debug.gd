@@ -22,6 +22,7 @@ func update_snapshot(state: PackedFloat64Array, model: Dictionary, telemetry: Di
 	for axis in [Vector3.RIGHT, Vector3.UP, Vector3.BACK]:
 		_line(-axis * 0.025, axis * 0.025, Color.YELLOW)
 	var loads = telemetry.get("wheel_load_n", [0, 0, 0, 0])
+	var wall_contact = telemetry.get("wheel_wall_in_contact", PackedByteArray())
 	for i in 4:
 		var travel: float = state[13 + i]
 		var arm: float = model.arm_length_m
@@ -36,7 +37,7 @@ func update_snapshot(state: PackedFloat64Array, model: Dictionary, telemetry: Di
 			normal = body.inverse() * Vector3(ned[1], -ned[2], -ned[0])
 		var contact: Vector3 = hub - normal * model.tire_radius_m
 		_line(contact, contact + normal * minf(loads[i] * 0.006, 0.7), Color("74efcd"))
-		_circle(hub, model.tire_radius_m, Color("7d9296"))
+		_circle(hub, model.tire_radius_m, Color("ff654d") if i < wall_contact.size() and wall_contact[i] else Color("7d9296"))
 	var centers: PackedFloat64Array = model.hull_probe_centers_frd_m
 	var radii: PackedFloat64Array = model.hull_probe_radii_m
 	var active = telemetry.get("hull_in_contact", [])

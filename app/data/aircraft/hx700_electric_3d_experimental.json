@@ -1,0 +1,625 @@
+{
+  "format": "openrc-aircraft v2",
+  "vehicle": "rotorcraft",
+  "id": "hx700-electric-3d-experimental",
+  "name": "HX-700 Electric 3D Experimental",
+  "capabilities": [
+    "main_rotor",
+    "tail_rotor",
+    "governor",
+    "fbl_body_rate",
+    "signed_collective",
+    "skids"
+  ],
+  "qualification": "Laboratory-only independent HX-700 candidate data. The supplied model's 5.2 kg, 2100 rpm and gearing are unvalidated design declarations; other aircraft dynamics and FBL gains are estimates. Shared mean-rotor and one-speed drive proxies have no HX-700 flight validation.",
+  "release_state": "laboratory_only",
+  "main_rotor": {
+    "rho_kg_m3": {
+      "value": 1.225,
+      "unit": "kg/m3",
+      "kind": "manual",
+      "source": "ISA sea-level reference density"
+    },
+    "rotor_radius_m": {
+      "value": 0.7,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "blade_chord_m": {
+      "value": 0.056,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "rotor_blade_count": {
+      "value": 2,
+      "unit": "1",
+      "kind": "derived",
+      "source": "Two main blades in supplied HX-700 model"
+    },
+    "blade_lift_curve_slope_per_rad": {
+      "value": 5.7,
+      "unit": "1/rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "blade_section_cd0": {
+      "value": 0.014,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "thrust_coefficient_max": {
+      "value": 0.008,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "blade_flapping_inertia_kg_m2": {
+      "value": 0.042,
+      "unit": "kg*m2",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "gamma_flybar": {
+      "value": 2.8,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "flapback_k_mu": {
+      "value": 0.18,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "omega_nominal_rad_s": {
+      "value": 219.9114857512855,
+      "unit": "rad/s",
+      "kind": "derived",
+      "source": "2100 rpm \u00d7 2\u03c0/60 from docs/research/helicopter/HELI-25b/README.md: supplied HX-700 Blender generator design value; unvalidated and not a flight measurement"
+    },
+    "cyclic_longitudinal_gain_nominal_rad_per_rad": {
+      "value": 4.5,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "cyclic_lateral_gain_nominal_rad_per_rad": {
+      "value": 4.5,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "hub_spring_stiffness_nm_per_rad": {
+      "value": 85.0,
+      "unit": "N*m/rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "hub_position_body_frd_m": {
+      "value": [
+        0.0,
+        0.0,
+        -0.19
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "rotation_sense": {
+      "value": 1,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    }
+  },
+  "tail_rotor": {
+    "rho_kg_m3": {
+      "value": 1.225,
+      "unit": "kg/m3",
+      "kind": "manual",
+      "source": "ISA sea-level reference density"
+    },
+    "main_rotor_radius_m": {
+      "value": 0.7,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "tail_rotor_radius_m": {
+      "value": 0.105,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "blade_chord_m": {
+      "value": 0.025,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "rotor_blade_count": {
+      "value": 2,
+      "unit": "1",
+      "kind": "derived",
+      "source": "Two tail blades in supplied HX-700 model"
+    },
+    "blade_lift_curve_slope_per_rad": {
+      "value": 5.0,
+      "unit": "1/rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "blade_section_cd0": {
+      "value": 0.018,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "thrust_coefficient_max": {
+      "value": 0.06,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "tail_to_main_speed_ratio": {
+      "value": 4.92307710647583,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-25b/inventory.json: supplied source generator gear ratio 4.92307710647583; design value, not a measured under-load ratio"
+    },
+    "hub_distance_aft_m": {
+      "value": 0.92,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "hub_height_above_cg_m": {
+      "value": 0.08,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "vertical_fin_area_m2": {
+      "value": 0.015,
+      "unit": "m2",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "trim_collective_rad": {
+      "value": 0.09,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "wake_efficiency": {
+      "value": 0.9,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "rotation_sense": {
+      "value": 1,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    }
+  },
+  "airframe": {
+    "rho_kg_m3": {
+      "value": 1.225,
+      "unit": "kg/m3",
+      "kind": "manual",
+      "source": "ISA sea-level reference density"
+    },
+    "fuselage_drag_area_body_m2": {
+      "value": [
+        0.09,
+        0.18,
+        0.14
+      ],
+      "unit": "m2",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "fuselage_cp_body_frd_m": {
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "vertical_fin_area_m2": {
+      "value": 0.015,
+      "unit": "m2",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "vertical_fin_lift_curve_slope_per_rad": {
+      "value": 2.2,
+      "unit": "1/rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "vertical_fin_cp_body_frd_m": {
+      "value": [
+        -0.92,
+        0.0,
+        -0.08
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "horizontal_tail_area_m2": {
+      "value": 0.008,
+      "unit": "m2",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "horizontal_tail_lift_curve_slope_per_rad": {
+      "value": 2.5,
+      "unit": "1/rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "horizontal_tail_cp_body_frd_m": {
+      "value": [
+        -0.72,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    }
+  },
+  "body": {
+    "mass_kg": {
+      "value": 5.2,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-25b/README.md: supplied HX-700 Blender generator design value; unvalidated and not a flight measurement"
+    },
+    "inertia_kg_m2": {
+      "value": [
+        0.095,
+        0.24,
+        0.27,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "kg*m2",
+      "kind": "estimated",
+      "source": "HELI-36a estimate from the source-declared 5.2 kg class and visual proportions; no component mass/inertia inventory"
+    }
+  },
+  "gravity_m_s2": {
+    "value": 9.80665,
+    "unit": "m/s2",
+    "kind": "manual",
+    "source": "standard gravity"
+  },
+  "shaft_elements": [
+    {
+      "inertia_kg_m2": {
+        "value": 0.084,
+        "unit": "kg*m2",
+        "kind": "derived",
+        "source": "2 \u00d7 estimated HX-700 blade flapping inertia; rigid-blade spin approximation"
+      },
+      "speed_ratio": {
+        "value": 1.0,
+        "unit": "1",
+        "kind": "derived",
+        "source": "main shaft"
+      },
+      "spin_axis_body_frd": {
+        "value": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "FRD main rotor convention"
+      }
+    },
+    {
+      "inertia_kg_m2": {
+        "value": 0.00013863280217105115,
+        "unit": "kg*m2",
+        "kind": "estimated",
+        "source": "HELI-36a tail rotor inertia fraction and source-declared HX-700 tail ratio; not measured"
+      },
+      "speed_ratio": {
+        "value": 4.92307710647583,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-25b/inventory.json: supplied source generator gear ratio 4.92307710647583; design value, not a measured under-load ratio"
+      },
+      "spin_axis_body_frd": {
+        "value": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "FRD tail rotor convention"
+      }
+    }
+  ],
+  "drive": {
+    "engine_torque_max_nm": {
+      "value": 1.6516078376854109,
+      "unit": "N*m",
+      "kind": "derived",
+      "source": "3500 W / (9.63636 \u00d7 2100 rpm \u00d7 2\u03c0/60); source design data from docs/research/helicopter/HELI-25b/README.md: supplied HX-700 Blender generator design value; unvalidated and not a flight measurement"
+    },
+    "engine_power_max_w": {
+      "value": 3500.0,
+      "unit": "W",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-25b/README.md: supplied HX-700 Blender generator design value; unvalidated and not a flight measurement"
+    },
+    "engine_speed_ratio_to_main": {
+      "value": 9.636364,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-25b/README.md: supplied HX-700 Blender generator design value; unvalidated and not a flight measurement"
+    },
+    "gear_efficiency": {
+      "value": 0.92,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "governor_target_main_rad_s": {
+      "value": 219.9114857512855,
+      "unit": "rad/s",
+      "kind": "derived",
+      "source": "2100 rpm \u00d7 2\u03c0/60 from docs/research/helicopter/HELI-25b/README.md: supplied HX-700 Blender generator design value; unvalidated and not a flight measurement"
+    },
+    "governor_gain_nm_per_rad_s": {
+      "value": 0.12,
+      "unit": "N*m*s/rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "shaft_loss_torque_nm": {
+      "value": 0.1,
+      "unit": "N*m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "shaft_viscous_loss_nm_per_rad_s": {
+      "value": 0.001,
+      "unit": "N*m*s/rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    }
+  },
+  "electronics": {
+    "tail_collective_trim_rad": {
+      "value": 0.09,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "tail_collective_min_rad": {
+      "value": -0.3,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "tail_collective_max_rad": {
+      "value": 0.3,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "yaw_control_sign": {
+      "value": 1,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "yaw_deadzone": {
+      "value": 0.025,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "yaw_rate_kp_rad_per_rad_s": {
+      "value": 0.025,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "yaw_rate_ki_rad_per_rad": {
+      "value": 0.006,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "yaw_integrator_limit_rad": {
+      "value": 0.15,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "body_rate_max_rad_s": {
+      "value": [
+        6.0,
+        6.0,
+        4.0
+      ],
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory FBL command envelope; provisional software input range, not measured or flight-qualified"
+    },
+    "body_rate_roll_cyclic_gain_rad_per_rad_s": {
+      "value": 0.005,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "body_rate_pitch_cyclic_gain_rad_per_rad_s": {
+      "value": 0.005,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "controller_law": "openrc-fbl-body-rate-electronics-v1",
+    "linkage": {
+      "collective_rad_per_unit": {
+        "value": 0.24,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+      },
+      "longitudinal_rad_per_unit": {
+        "value": 0.05,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+      },
+      "lateral_rad_per_unit": {
+        "value": 0.05,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+      },
+      "collective_min_rad": {
+        "value": -0.24,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+      },
+      "collective_max_rad": {
+        "value": 0.24,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+      },
+      "cyclic_max_rad": {
+        "value": 0.05,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+      }
+    },
+    "curves_by_mode": {
+      "3d": {
+        "pitch": {
+          "value": [
+            -1.0,
+            -0.5,
+            0.0,
+            0.5,
+            1.0
+          ],
+          "unit": "1",
+          "kind": "estimated",
+          "source": "HELI-36a symmetric laboratory collective curve; not a radio setup measurement"
+        },
+        "throttle": {
+          "value": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "unit": "1",
+          "kind": "estimated",
+          "source": "HELI-36a laboratory governed-flight command; no spool or powertrain validation"
+        }
+      }
+    }
+  },
+  "integration": {
+    "flow_floor_m_s": {
+      "value": 0.1,
+      "unit": "m/s",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "fin_tail_wake_fraction": {
+      "value": 0.15,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "height_over_radius": {
+      "value": -1.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "inflow_loss": {
+      "value": 1.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "inflow_instability": {
+      "value": 0.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    }
+  },
+  "skids": {
+    "spring_n_m": {
+      "value": 7000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "damping_n_s_m": {
+      "value": 155.0,
+      "unit": "N*s/m",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "friction": {
+      "value": 0.5,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "slip_m_s": {
+      "value": 0.15,
+      "unit": "m/s",
+      "kind": "estimated",
+      "source": "HELI-36a laboratory estimate for the HX-700 candidate; no aircraft-specific measurement or identified flight response"
+    },
+    "points_body_frd_m": {
+      "value": [
+        0.0974,
+        -0.0858,
+        0.1098,
+        0.0974,
+        0.0858,
+        0.1098,
+        -0.0974,
+        -0.0858,
+        0.1098,
+        -0.0974,
+        0.0858,
+        0.1098
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "docs/research/helicopter/HELI-25/README.md: measured supplied HX-700 GLB skid rail corners relative to the visual CG datum"
+    }
+  }
+}

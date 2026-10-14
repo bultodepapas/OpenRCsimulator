@@ -29,22 +29,39 @@
       "const": "rotorcraft"
     },
     "id": {
-      "const": "xcell-60-research"
+      "enum": [
+        "xcell-60-research",
+        "hx700-electric-3d-experimental"
+      ]
     },
     "name": {
-      "const": "RC Helicopter Research Trainer"
+      "enum": [
+        "RC Helicopter Research Trainer",
+        "HX-700 Electric 3D Experimental"
+      ]
     },
     "capabilities": {
-      "const": [
-        "main_rotor",
-        "tail_rotor",
-        "governor",
-        "trainer",
-        "skids"
+      "enum": [
+        [
+          "main_rotor",
+          "tail_rotor",
+          "governor",
+          "trainer",
+          "skids"
+        ],
+        [
+          "main_rotor",
+          "tail_rotor",
+          "governor",
+          "fbl_body_rate",
+          "signed_collective",
+          "skids"
+        ]
       ]
     },
     "qualification": {
-      "const": "Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation."
+      "type": "string",
+      "minLength": 1
     },
     "main_rotor": {
       "type": "object",
@@ -1861,570 +1878,33 @@
       }
     },
     "electronics": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "tail_collective_trim_rad",
-        "tail_collective_min_rad",
-        "tail_collective_max_rad",
-        "yaw_control_sign",
-        "yaw_deadzone",
-        "yaw_max_rate_rad_s",
-        "yaw_heading_gain_per_s",
-        "yaw_rate_kp_rad_per_rad_s",
-        "yaw_rate_ki_rad_per_rad",
-        "yaw_integrator_limit_rad",
-        "trainer_max_tilt_rad",
-        "trainer_roll_attitude_gain_per_s",
-        "trainer_pitch_attitude_gain_per_s",
-        "trainer_roll_rate_limit_rad_s",
-        "trainer_pitch_rate_limit_rad_s",
-        "trainer_roll_cyclic_gain_rad_per_rad_s",
-        "trainer_pitch_cyclic_gain_rad_per_rad_s",
-        "linkage",
-        "curves_by_mode"
-      ],
-      "properties": {
-        "tail_collective_trim_rad": {
+      "oneOf": [
+        {
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
+            "tail_collective_trim_rad",
+            "tail_collective_min_rad",
+            "tail_collective_max_rad",
+            "yaw_control_sign",
+            "yaw_deadzone",
+            "yaw_max_rate_rad_s",
+            "yaw_heading_gain_per_s",
+            "yaw_rate_kp_rad_per_rad_s",
+            "yaw_rate_ki_rad_per_rad",
+            "yaw_integrator_limit_rad",
+            "trainer_max_tilt_rad",
+            "trainer_roll_attitude_gain_per_s",
+            "trainer_pitch_attitude_gain_per_s",
+            "trainer_roll_rate_limit_rad_s",
+            "trainer_pitch_rate_limit_rad_s",
+            "trainer_roll_cyclic_gain_rad_per_rad_s",
+            "trainer_pitch_cyclic_gain_rad_per_rad_s",
+            "linkage",
+            "curves_by_mode"
           ],
           "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "rad"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "tail_collective_min_rad": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "rad"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "tail_collective_max_rad": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "rad"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "yaw_control_sign": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "1"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "yaw_deadzone": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "1"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "yaw_max_rate_rad_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "rad/s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "yaw_heading_gain_per_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "1/s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "yaw_rate_kp_rad_per_rad_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "yaw_rate_ki_rad_per_rad": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "1"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "yaw_integrator_limit_rad": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "rad"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "trainer_max_tilt_rad": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "rad"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "trainer_roll_attitude_gain_per_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "1/s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "trainer_pitch_attitude_gain_per_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "1/s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "trainer_roll_rate_limit_rad_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "rad/s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "trainer_pitch_rate_limit_rad_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "rad/s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "trainer_roll_cyclic_gain_rad_per_rad_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "trainer_pitch_cyclic_gain_rad_per_rad_s": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "value",
-            "unit",
-            "kind",
-            "source"
-          ],
-          "properties": {
-            "value": {
-              "type": "number"
-            },
-            "unit": {
-              "const": "s"
-            },
-            "kind": {
-              "enum": [
-                "manual",
-                "measured",
-                "borrowed",
-                "estimated",
-                "derived"
-              ]
-            },
-            "source": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        },
-        "linkage": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "collective_rad_per_unit",
-            "longitudinal_rad_per_unit",
-            "lateral_rad_per_unit",
-            "collective_min_rad",
-            "collective_max_rad",
-            "cyclic_max_rad"
-          ],
-          "properties": {
-            "collective_rad_per_unit": {
+            "tail_collective_trim_rad": {
               "type": "object",
               "additionalProperties": false,
               "required": [
@@ -2455,7 +1935,7 @@
                 }
               }
             },
-            "longitudinal_rad_per_unit": {
+            "tail_collective_min_rad": {
               "type": "object",
               "additionalProperties": false,
               "required": [
@@ -2486,7 +1966,7 @@
                 }
               }
             },
-            "lateral_rad_per_unit": {
+            "tail_collective_max_rad": {
               "type": "object",
               "additionalProperties": false,
               "required": [
@@ -2517,7 +1997,193 @@
                 }
               }
             },
-            "collective_min_rad": {
+            "yaw_control_sign": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "1"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_deadzone": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "1"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_max_rate_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad/s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_heading_gain_per_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "1/s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_rate_kp_rad_per_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_rate_ki_rad_per_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "1"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_integrator_limit_rad": {
               "type": "object",
               "additionalProperties": false,
               "required": [
@@ -2548,7 +2214,7 @@
                 }
               }
             },
-            "collective_max_rad": {
+            "trainer_max_tilt_rad": {
               "type": "object",
               "additionalProperties": false,
               "required": [
@@ -2579,7 +2245,7 @@
                 }
               }
             },
-            "cyclic_max_rad": {
+            "trainer_roll_attitude_gain_per_s": {
               "type": "object",
               "additionalProperties": false,
               "required": [
@@ -2593,7 +2259,7 @@
                   "type": "number"
                 },
                 "unit": {
-                  "const": "rad"
+                  "const": "1/s"
                 },
                 "kind": {
                   "enum": [
@@ -2609,26 +2275,175 @@
                   "minLength": 1
                 }
               }
-            }
-          }
-        },
-        "curves_by_mode": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "normal",
-            "idle_up"
-          ],
-          "properties": {
-            "normal": {
+            },
+            "trainer_pitch_attitude_gain_per_s": {
               "type": "object",
               "additionalProperties": false,
               "required": [
-                "pitch",
-                "throttle"
+                "value",
+                "unit",
+                "kind",
+                "source"
               ],
               "properties": {
-                "pitch": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "1/s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "trainer_roll_rate_limit_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad/s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "trainer_pitch_rate_limit_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad/s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "trainer_roll_cyclic_gain_rad_per_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "trainer_pitch_cyclic_gain_rad_per_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "linkage": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "collective_rad_per_unit",
+                "longitudinal_rad_per_unit",
+                "lateral_rad_per_unit",
+                "collective_min_rad",
+                "collective_max_rad",
+                "cyclic_max_rad"
+              ],
+              "properties": {
+                "collective_rad_per_unit": {
                   "type": "object",
                   "additionalProperties": false,
                   "required": [
@@ -2639,15 +2454,10 @@
                   ],
                   "properties": {
                     "value": {
-                      "type": "array",
-                      "items": {
-                        "type": "number"
-                      },
-                      "minItems": 5,
-                      "maxItems": 5
+                      "type": "number"
                     },
                     "unit": {
-                      "const": "1"
+                      "const": "rad"
                     },
                     "kind": {
                       "enum": [
@@ -2664,7 +2474,7 @@
                     }
                   }
                 },
-                "throttle": {
+                "longitudinal_rad_per_unit": {
                   "type": "object",
                   "additionalProperties": false,
                   "required": [
@@ -2675,15 +2485,134 @@
                   ],
                   "properties": {
                     "value": {
-                      "type": "array",
-                      "items": {
-                        "type": "number"
-                      },
-                      "minItems": 5,
-                      "maxItems": 5
+                      "type": "number"
                     },
                     "unit": {
-                      "const": "1"
+                      "const": "rad"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "lateral_rad_per_unit": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "const": "rad"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "collective_min_rad": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "const": "rad"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "collective_max_rad": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "const": "rad"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "cyclic_max_rad": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "const": "rad"
                     },
                     "kind": {
                       "enum": [
@@ -2702,15 +2631,564 @@
                 }
               }
             },
-            "idle_up": {
+            "curves_by_mode": {
               "type": "object",
               "additionalProperties": false,
               "required": [
-                "pitch",
-                "throttle"
+                "normal",
+                "idle_up"
               ],
               "properties": {
-                "pitch": {
+                "normal": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "pitch",
+                    "throttle"
+                  ],
+                  "properties": {
+                    "pitch": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "kind",
+                        "source"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 5,
+                          "maxItems": 5
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "kind": {
+                          "enum": [
+                            "manual",
+                            "measured",
+                            "borrowed",
+                            "estimated",
+                            "derived"
+                          ]
+                        },
+                        "source": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "throttle": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "kind",
+                        "source"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 5,
+                          "maxItems": 5
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "kind": {
+                          "enum": [
+                            "manual",
+                            "measured",
+                            "borrowed",
+                            "estimated",
+                            "derived"
+                          ]
+                        },
+                        "source": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                "idle_up": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "pitch",
+                    "throttle"
+                  ],
+                  "properties": {
+                    "pitch": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "kind",
+                        "source"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 5,
+                          "maxItems": 5
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "kind": {
+                          "enum": [
+                            "manual",
+                            "measured",
+                            "borrowed",
+                            "estimated",
+                            "derived"
+                          ]
+                        },
+                        "source": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "throttle": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "kind",
+                        "source"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 5,
+                          "maxItems": 5
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "kind": {
+                          "enum": [
+                            "manual",
+                            "measured",
+                            "borrowed",
+                            "estimated",
+                            "derived"
+                          ]
+                        },
+                        "source": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tail_collective_trim_rad",
+            "tail_collective_min_rad",
+            "tail_collective_max_rad",
+            "yaw_control_sign",
+            "yaw_deadzone",
+            "yaw_rate_kp_rad_per_rad_s",
+            "yaw_rate_ki_rad_per_rad",
+            "yaw_integrator_limit_rad",
+            "body_rate_max_rad_s",
+            "body_rate_roll_cyclic_gain_rad_per_rad_s",
+            "body_rate_pitch_cyclic_gain_rad_per_rad_s",
+            "controller_law",
+            "linkage",
+            "curves_by_mode"
+          ],
+          "properties": {
+            "tail_collective_trim_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "tail_collective_min_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "tail_collective_max_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_control_sign": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "1"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_deadzone": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "1"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_rate_kp_rad_per_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_rate_ki_rad_per_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "1"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "yaw_integrator_limit_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "body_rate_max_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "unit": {
+                  "const": "rad/s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "body_rate_roll_cyclic_gain_rad_per_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "body_rate_pitch_cyclic_gain_rad_per_rad_s": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "s"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "controller_law": {
+              "const": "openrc-fbl-body-rate-electronics-v1"
+            },
+            "linkage": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "collective_rad_per_unit",
+                "longitudinal_rad_per_unit",
+                "lateral_rad_per_unit",
+                "collective_min_rad",
+                "collective_max_rad",
+                "cyclic_max_rad"
+              ],
+              "properties": {
+                "collective_rad_per_unit": {
                   "type": "object",
                   "additionalProperties": false,
                   "required": [
@@ -2721,15 +3199,10 @@
                   ],
                   "properties": {
                     "value": {
-                      "type": "array",
-                      "items": {
-                        "type": "number"
-                      },
-                      "minItems": 5,
-                      "maxItems": 5
+                      "type": "number"
                     },
                     "unit": {
-                      "const": "1"
+                      "const": "rad"
                     },
                     "kind": {
                       "enum": [
@@ -2746,7 +3219,7 @@
                     }
                   }
                 },
-                "throttle": {
+                "longitudinal_rad_per_unit": {
                   "type": "object",
                   "additionalProperties": false,
                   "required": [
@@ -2757,15 +3230,10 @@
                   ],
                   "properties": {
                     "value": {
-                      "type": "array",
-                      "items": {
-                        "type": "number"
-                      },
-                      "minItems": 5,
-                      "maxItems": 5
+                      "type": "number"
                     },
                     "unit": {
-                      "const": "1"
+                      "const": "rad"
                     },
                     "kind": {
                       "enum": [
@@ -2779,6 +3247,221 @@
                     "source": {
                       "type": "string",
                       "minLength": 1
+                    }
+                  }
+                },
+                "lateral_rad_per_unit": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "const": "rad"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "collective_min_rad": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "const": "rad"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "collective_max_rad": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "const": "rad"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "cyclic_max_rad": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "const": "rad"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            },
+            "curves_by_mode": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "3d"
+              ],
+              "properties": {
+                "3d": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "pitch",
+                    "throttle"
+                  ],
+                  "properties": {
+                    "pitch": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "kind",
+                        "source"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 5,
+                          "maxItems": 5
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "kind": {
+                          "enum": [
+                            "manual",
+                            "measured",
+                            "borrowed",
+                            "estimated",
+                            "derived"
+                          ]
+                        },
+                        "source": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "throttle": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "kind",
+                        "source"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 5,
+                          "maxItems": 5
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "kind": {
+                          "enum": [
+                            "manual",
+                            "measured",
+                            "borrowed",
+                            "estimated",
+                            "derived"
+                          ]
+                        },
+                        "source": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
                     }
                   }
                 }
@@ -2786,7 +3469,7 @@
             }
           }
         }
-      }
+      ]
     },
     "integration": {
       "type": "object",
@@ -3128,6 +3811,67 @@
           }
         }
       }
+    },
+    "release_state": {
+      "const": "laboratory_only"
     }
-  }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "id": {
+          "const": "xcell-60-research"
+        },
+        "name": {
+          "const": "RC Helicopter Research Trainer"
+        },
+        "capabilities": {
+          "const": [
+            "main_rotor",
+            "tail_rotor",
+            "governor",
+            "trainer",
+            "skids"
+          ]
+        },
+        "qualification": {
+          "const": "Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation."
+        }
+      },
+      "not": {
+        "required": [
+          "release_state"
+        ]
+      }
+    },
+    {
+      "properties": {
+        "id": {
+          "const": "hx700-electric-3d-experimental"
+        },
+        "name": {
+          "const": "HX-700 Electric 3D Experimental"
+        },
+        "capabilities": {
+          "const": [
+            "main_rotor",
+            "tail_rotor",
+            "governor",
+            "fbl_body_rate",
+            "signed_collective",
+            "skids"
+          ]
+        },
+        "qualification": {
+          "const": "Laboratory-only independent HX-700 candidate data. The supplied model's 5.2 kg, 2100 rpm and gearing are unvalidated design declarations; other aircraft dynamics and FBL gains are estimates. Shared mean-rotor and one-speed drive proxies have no HX-700 flight validation."
+        },
+        "release_state": {
+          "const": "laboratory_only"
+        }
+      },
+      "required": [
+        "release_state"
+      ]
+    }
+  ]
 }

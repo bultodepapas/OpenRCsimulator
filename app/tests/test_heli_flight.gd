@@ -169,8 +169,16 @@ func _initialize() -> void:
 	var low_speed: PackedFloat64Array = state.duplicate()
 	low_speed[Flight.OMEGA] = 0.4
 	var crosswind: Dictionary = Flight.evaluate(low_speed, context, sticks, "normal", false, false, M.v3(0.0, -1.0, 0.0))
-	check("low RPM under excessive crossflow returns a meaningful advance-ratio fault",
-		not crosswind.ok and crosswind.fault == "main_rotor_advance_ratio_out_of_domain")
+	check("low RPM under crossflow enters the explicit bounded estimate",
+		crosswind.ok and crosswind.aero.main_rotor.get("estimated_regime", "") == "bounded_low_rpm_startup"
+		and not crosswind.aero.main_rotor.within_identified_advance_ratio)
+	var pad_start: PackedFloat64Array = state.duplicate()
+	pad_start[Flight.OMEGA] = 0.001
+	var wind_start: Dictionary = Flight.evaluate(pad_start, context, sticks, "normal", false, true,
+		M.v3(0.0, -3.0, 0.0))
+	check("stopped-speed spool start remains finite in 3 m/s wind with the drive held",
+		wind_start.ok and wind_start.aero.main_rotor.get("estimated_regime", "") == "bounded_low_rpm_startup"
+		and is_finite(wind_start.derivative[0]))
 	var refined: Dictionary = Flight.rk4_step_at(state, 0.0, 1.0 / 960.0, context,
 		sticks, "normal", false, false, wind)
 	check("RK4 advances all 19 values at a finite small step", refined.ok

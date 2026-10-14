@@ -2284,3 +2284,139 @@ msgstr "Elige tus mandos y pulsa Guardar."
 
 msgid "Use a gamepad for menus. Keyboard and mouse are always available."
 msgstr "Usa un mando para los menús. El teclado y el ratón siempre están disponibles."
+
+#. HELI-20 ground lifecycle
+msgid "Start: helicopter pad"
+msgstr "Inicio: plataforma de helicóptero"
+
+#. HELI-20 ground lifecycle
+msgid "Choose a stopped rotor on the pad or a trimmed practice hover."
+msgstr "Elige rotor detenido en tierra o vuelo estacionario de práctica."
+
+#. HELI-20 ground lifecycle
+msgid "Experimental helicopter. On the pad: arm, release hold, wait for RPM, then raise collective."
+msgstr "Helicóptero experimental. En tierra: arma, libera hold, espera las RPM y sube el colectivo."
+
+#. HELI-20 ground lifecycle
+msgid "Experimental: X-Cell .60 reference physics with an HX-700 visual surrogate; ground pad or practice hover; not flight-validated."
+msgstr "Experimental: física de referencia X-Cell .60 con modelo visual HX-700; inicio en tierra o estacionario; sin validación de vuelo."
+
+#. HELI-20 ground lifecycle
+msgid "Restart the selected helicopter start"
+msgstr "Reiniciar el inicio seleccionado del helicóptero"
+
+#. HELI-20 ground lifecycle
+msgid "Arm / disarm helicopter motor"
+msgstr "Armar / desarmar motor del helicóptero"
+
+#. HELI-20 ground lifecycle
+msgid "Arm, then release hold"
+msgstr "Armar y liberar hold"
+
+#. HELI-20 ground lifecycle
+msgid "Helicopter: arm / disarm"
+msgstr "Helicóptero: armar / desarmar"
+
+#. HELI-20 ground lifecycle
+msgid "Helicopter: toggle rotor hold"
+msgstr "Helicóptero: activar / liberar hold"
+
+#. HELI-20 ground lifecycle
+msgid "Helicopter: normal / idle-up"
+msgstr "Helicóptero: normal / idle-up"
+
+#. HELI-20 ground lifecycle
+msgid "Helicopter: toggle trainer"
+msgstr "Helicóptero: activar / desactivar trainer"
+
+#. HELI-20 ground lifecycle
+msgid "RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER"
+msgstr "HELICÓPTERO RC · TRAINER EXPERIMENTAL"
+
+#. HELI-20 ground lifecycle
+msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
+msgstr "Altura %.2f m  Velocidad %.2f m/s  Rotor %.0f / %.0f rpm"
+
+#. HELI-20 ground lifecycle
+msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
+msgstr "Colectivo %.1f grados (mando %.0f%%) · %s · %s"
+
+#. HELI-20 ground lifecycle
+msgid "Arrows: cyclic · A/D: yaw · W/S: collective"
+msgstr "Flechas: cíclico · A/D: guiñada · W/S: colectivo"
+
+#. HELI-20 ground lifecycle
+msgid "B: arm/disarm · H: hold/start · I: flight mode · G: trainer"
+msgstr "B: armar/desarmar · H: hold/arranque · I: modo · G: trainer"
+
+#. HELI-20 ground lifecycle
+msgid "R: restart · P: pause/resume · C: camera · Esc: menu"
+msgstr "R: reiniciar · P: pausa/continuar · C: cámara · Esc: menú"
+
+#. HELI-20 ground lifecycle
+msgid "TRAINER"
+msgstr "TRAINER"
+
+#. HELI-20 ground lifecycle
+msgid "DIRECT CYCLIC"
+msgstr "CÍCLICO DIRECTO"
+
+#. HELI-20 ground lifecycle
+msgid "DISARMED"
+msgstr "DESARMADO"
+
+#. HELI-20 ground lifecycle
+msgid "HOLD"
+msgstr "HOLD"
+
+#. HELI-20 ground lifecycle
+msgid "SPOOLING"
+msgstr "ACELERANDO ROTOR"
+
+#. HELI-20 ground lifecycle
+msgid "GOVERNED"
+msgstr "RPM ESTABILIZADAS"
+
+#. HELI-20 ground lifecycle
+msgid "Center cyclic/yaw and set zero pitch. B: arm, H: start; wait for governed RPM."
+msgstr "Centra cíclico/guiñada y ajusta paso cero. B: armar, H: arrancar; espera las RPM."
+
+#. HELI-20 ground lifecycle
+msgid "Outside the identified main-rotor envelope."
+msgstr "Fuera del rango identificado del rotor principal."
+
+#. HELI-20 ground lifecycle
+msgid "Resume with controls released before arming."
+msgstr "Continúa con los controles centrados antes de armar."
+
+#. HELI-20 ground lifecycle
+msgid "Arm: hold ON, cyclic/yaw centered, collective within 1 degree of zero pitch."
+msgstr "Para armar: hold activo, cíclico/guiñada centrados y colectivo a menos de 1 grado de paso cero."
+
+#. HELI-20 ground lifecycle
+msgid "Armed in hold. Release hold to start the rotor."
+msgstr "Armado en hold. Libera hold para arrancar el rotor."
+
+#. HELI-20 ground lifecycle
+msgid "Motor is disarmed. Arm at zero collective pitch first."
+msgstr "Motor desarmado. Arma primero con paso colectivo cero."
+
+#. HELI-20 ground lifecycle
+msgid "Resume explicitly before releasing rotor hold."
+msgstr "Continúa explícitamente antes de liberar el hold del rotor."
+
+#. HELI-20 ground lifecycle
+msgid "Soft start: wait for governed RPM, then raise collective."
+msgstr "Arranque suave: espera las RPM estabilizadas y sube el colectivo."
+
+#. HELI-20 ground lifecycle
+msgid "Mode changes pitch %.1f to %.1f deg. Press mode again to apply."
+msgstr "El modo cambia el paso de %.1f a %.1f grados. Pulsa modo otra vez para aplicar."
+
+#. HELI-20 ground lifecycle
+msgid "Helicopter: ground pad or practice hover. On the pad, center controls at zero pitch, arm with B, release hold with H, wait for RPM, then raise collective. Steady wind and gusts are available; flight validation is pending."
+msgstr "Helicóptero: plataforma o estacionario de práctica. En tierra, centra controles con paso cero, arma con B, libera hold con H, espera las RPM y sube el colectivo. Hay viento constante y ráfagas; falta validar el vuelo."
+
+#. HELI-20 ground lifecycle
+msgid "USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controller settings. Throttle cut latches hold; releasing it never starts the rotor. K calibrates."
+msgstr "Radio USB: baja el colectivo para habilitar la entrada; luego iguala el paso de inicio antes de armar el motor. El gamepad conserva el colectivo inicial. Asigna armado, hold y modo en Controles. El corte activa hold y soltarlo no arranca el rotor. K calibra."

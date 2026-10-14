@@ -87,6 +87,31 @@ static func _evaluate_parts(model: Dictionary, state: PackedFloat64Array, omega:
 	var crossflow: float = M.sqrt_(hub_air_velocity[0] * hub_air_velocity[0] + hub_air_velocity[1] * hub_air_velocity[1])
 	var flow: Dictionary = Inflow.evaluate(state[2], rotor.thrust_n, model.rho_kg_m3, model.rotor_radius_m,
 		-hub_air_velocity[2], crossflow, flow_floor, inflow_height_over_radius, loss, instability)
-	if not flow.ok:
+	if not flow.ok and rotor.has("estimated_regime"):
+		# At very small estimated thrust, the momentum-law crossflow/hover ratio
+		# is undefined as a useful startup target. Retain the dimensional wake
+		# state and let it decay toward zero with the existing bounded lag.
+		var axial_flow: float = state[2] - hub_air_velocity[2]
+		var effective_flow: float = M.sqrt_(crossflow * crossflow + axial_flow * axial_flow)
+		var decay: Dictionary = Inflow.derivative(state[2], 0.0, model.rotor_radius_m,
+			effective_flow, flow_floor)
+		if not decay.ok:
+			return []
+		flow = {"ok": true, "rate": decay.rate, "tau": decay.tau, "target": 0.0,
+			"effective_flow": effective_flow, "hover": 0.0, "ground_factor": 1.0,
+			"estimated_regime": "decaying_low_rpm_wake"}
+	elif not flow.ok:
 		return []
+	elif rotor.has("estimated_low_rpm_weight"):
+		var low_weight: float = float(rotor.estimated_low_rpm_weight)
+		if low_weight > 0.0:
+			var faded_target: float = float(flow.target) * (1.0 - low_weight)
+			var response: Dictionary = Inflow.derivative(state[2], faded_target,
+				model.rotor_radius_m, float(flow.effective_flow), flow_floor)
+			if not response.ok:
+				return []
+			flow["rate"] = response.rate
+			flow["tau"] = response.tau
+			flow["target"] = faded_target
+			flow["estimated_regime"] = "decaying_low_rpm_wake"
 	return [rotor, flow, PackedFloat64Array([rotor.flap_rate_a1_rad_s, rotor.flap_rate_b1_rad_s, flow.rate])]

@@ -1165,6 +1165,16 @@ The clean-airframe coefficient is an estimate, not an Avanti flight measurement 
 
 {chr(10).join(coef_rows)}
 
+## Keyboard pitch response
+
+AV-17-R1 adds an optional input-layer response: keyboard normal-profile pitch takes
+{v('controls.keyboard_pitch_press_time'):.2f} s from neutral to full virtual stick; release takes
+{v('controls.keyboard_pitch_release_time'):.2f} s from full stick to neutral. Opposite input recenters first.
+The manual's normal rates/expo, physical surface travel and servo rate still apply afterward. These are estimated
+device settings, not manufacturer actuator measurements. Radios, gamepads, scripted accepted commands and the explicit
+full-rate profile bypass this keyboard filter. No aerodynamic, mass, CG, inertia or turbine quantity changes.
+Evidence: `docs/research/avanti-realism/AV-17-R1/README.md`.
+
 ## Turbine at sea level
 
 {chr(10).join(eng_rows)}

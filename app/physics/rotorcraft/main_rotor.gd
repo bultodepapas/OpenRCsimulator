@@ -218,6 +218,7 @@ static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity
 static func low_rpm_transition(model: Dictionary, crossflow_m_s: float) -> PackedFloat64Array:
 	var upper: float = maxf(0.08 * model.omega_nominal_rad_s,
 		crossflow_m_s / (0.15 * model.rotor_radius_m))
+	upper = minf(0.20 * model.omega_nominal_rad_s, upper)
 	return PackedFloat64Array([0.5 * upper, upper])
 
 
@@ -293,6 +294,7 @@ static func _evaluate_low_rpm(model: Dictionary, omega: float, induced_velocity:
 		"flap_rate_a1_rad_s": a_rate, "flap_rate_b1_rad_s": b_rate,
 		"loads": loads, "flap_rate": flap_rate,
 		"estimated_regime": "bounded_low_rpm_startup",
+		"estimated_low_rpm_weight": 1.0,
 		"low_rpm_activity": activity, "thrust_coefficient_estimate": ct,
 		"profile_torque_nm": profile_torque, "induced_torque_estimate_nm": induced_torque}
 

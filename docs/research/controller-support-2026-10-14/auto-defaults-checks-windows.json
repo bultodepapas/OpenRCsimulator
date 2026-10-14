@@ -106,12 +106,6 @@
       "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
     },
     {
-      "file": "tests/test_controller_auto_defaults.gd",
-      "passed": true,
-      "exit_code": 0,
-      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
-    },
-    {
       "file": "tests/test_controller_integration.gd",
       "passed": true,
       "exit_code": 0,
@@ -131,6 +125,12 @@
     },
     {
       "file": "tests/test_controller_settings_save.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "file": "tests/test_controller_auto_defaults.gd",
       "passed": true,
       "exit_code": 0,
       "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"

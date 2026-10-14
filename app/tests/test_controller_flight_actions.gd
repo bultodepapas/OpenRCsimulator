@@ -80,8 +80,8 @@ func _initialize() -> void:
 	check("calibration polling cannot re-enable AUX", not session.radio.auxiliary_action("smoke_toggle") and session.radio.smoke_amount() == 0.0)
 	session.cancel_calibration()
 	var gear_session := Session.new()
-	gear_session.physics_enabled = false
-	gear_session.input_enabled = false
+	# Gear/brake actions require a flyable input-enabled session. This detached fixture
+	# never receives automatic physics ticks, so leave those production admission gates enabled.
 	gear_session.setup("res://data/aircraft/sebart_avanti_s_a200.json", "sebart-avanti-s-a200-p100rx")
 	gear_session.sim.set_paused(false)
 	flight.session = gear_session

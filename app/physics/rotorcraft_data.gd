@@ -5,6 +5,14 @@ const Tail = preload("res://physics/rotorcraft/tail_rotor.gd")
 const Airframe = preload("res://physics/rotorcraft/airframe.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
 const M = preload("res://physics/math3d.gd")
+const HX700_ID: String = "hx700-electric-3d-experimental"
+const HX700_CAPABILITIES: Array = [
+ "main_rotor", "tail_rotor", "governor", "fbl_body_rate", "signed_collective", "skids",
+]
+const HX700_ACCEPTANCE_BLOCKERS: Array = [
+ "identified_fbl_rotor_dynamics", "achieved_servo_states", "freewheel_and_power_off_energy",
+ "signed_inversion_envelope", "ground_start_lifecycle", "HX700_flight_response_validation",
+]
 const UNITS: Dictionary = {
  "rho_kg_m3":"kg/m3", "rotor_radius_m":"m", "main_rotor_radius_m":"m", "tail_rotor_radius_m":"m", "blade_chord_m":"m",
  "rotor_blade_count":"1", "blade_lift_curve_slope_per_rad":"1/rad", "blade_section_cd0":"1", "thrust_coefficient_max":"1",
@@ -21,6 +29,7 @@ const UNITS: Dictionary = {
  "yaw_heading_gain_per_s":"1/s", "yaw_rate_kp_rad_per_rad_s":"s", "yaw_rate_ki_rad_per_rad":"1", "yaw_integrator_limit_rad":"rad",
  "trainer_max_tilt_rad":"rad", "trainer_roll_attitude_gain_per_s":"1/s", "trainer_pitch_attitude_gain_per_s":"1/s",
  "trainer_roll_rate_limit_rad_s":"rad/s", "trainer_pitch_rate_limit_rad_s":"rad/s", "trainer_roll_cyclic_gain_rad_per_rad_s":"s", "trainer_pitch_cyclic_gain_rad_per_rad_s":"s",
+ "body_rate_max_rad_s":"rad/s", "body_rate_roll_cyclic_gain_rad_per_rad_s":"s", "body_rate_pitch_cyclic_gain_rad_per_rad_s":"s",
  "collective_rad_per_unit":"rad", "longitudinal_rad_per_unit":"rad", "lateral_rad_per_unit":"rad", "collective_min_rad":"rad", "collective_max_rad":"rad", "cyclic_max_rad":"rad",
  "pitch":"1", "throttle":"1", "flow_floor_m_s":"m/s", "fin_tail_wake_fraction":"1", "height_over_radius":"1", "inflow_loss":"1", "inflow_instability":"1",
  "points_body_frd_m":"m", "spring_n_m":"N/m", "damping_n_s_m":"N*s/m", "friction":"1", "slip_m_s":"m/s",
@@ -41,9 +50,21 @@ static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
  var errors: PackedStringArray = PackedStringArray()
  if not raw is Dictionary or raw.get("format") != "openrc-aircraft v2" or raw.get("vehicle") != "rotorcraft":
   return {ok=false, errors=["expected openrc-aircraft v2 with vehicle rotorcraft"]}
- if raw.get("id") != "xcell-60-research" or raw.get("capabilities") != ["main_rotor", "tail_rotor", "governor", "trainer", "skids"]:
+ var profile_id: String = str(raw.get("id", ""))
+ var expected_capabilities: Array
+ if profile_id == "xcell-60-research":
+  expected_capabilities = ["main_rotor", "tail_rotor", "governor", "trainer", "skids"]
+ elif profile_id == HX700_ID:
+  expected_capabilities = HX700_CAPABILITIES
+  if raw.get("release_state") != "laboratory_only":
+   return {ok=false, errors=["HX-700 3D profile cannot claim an accepted release state"]}
+ else:
+  return {ok=false, errors=["unsupported rotorcraft identity"]}
+ if raw.get("capabilities") != expected_capabilities:
   return {ok=false, errors=["unsupported identity or capabilities"]}
  var expected: Array=["format","vehicle","id","name","capabilities","qualification","main_rotor","tail_rotor","airframe","body","gravity_m_s2","shaft_elements","drive","electronics","integration","skids"]
+ if profile_id == HX700_ID:
+  expected.append("release_state")
  if raw.size()!=expected.size() or not raw.has_all(expected) or not raw.name is String or not raw.qualification is String or raw.qualification.is_empty():
   return {ok=false,errors=["malformed rotorcraft header or unknown top-level field"]}
  var parts: Dictionary = {}
@@ -90,7 +111,16 @@ static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
   return {ok=false,errors=["skid geometry or fixed-step stiffness exceeds the supported envelope"]}
  skids.reach_m=reach
  skids.make_read_only()
- return {ok=true,errors=errors,id=raw.id,context=prepared.context,skids=skids,qualification=raw.qualification,raw=raw.duplicate(true)}
+ var loaded: Dictionary = {ok=true,errors=errors,id=raw.id,context=prepared.context,skids=skids,
+  qualification=raw.qualification,raw=raw.duplicate(true),
+  controller_law=prepared.context.electronics_model.law}
+ if profile_id == HX700_ID:
+  loaded["release_gate"] = {
+   "state": "laboratory_only",
+   "flight_qualified": false,
+   "missing_capabilities": HX700_ACCEPTANCE_BLOCKERS.duplicate(),
+  }
+ return loaded
 
 static func _unpack(raw: Variant, path: String, errors: PackedStringArray) -> Dictionary:
  var out: Dictionary = {}
@@ -99,7 +129,8 @@ static func _unpack(raw: Variant, path: String, errors: PackedStringArray) -> Di
   return out
  for key: String in raw:
   if UNITS.has(key): out[key] = _quantity(raw[key], key, errors)
-  elif key in ["linkage", "curves_by_mode", "normal", "idle_up"]: out[key] = _unpack(raw[key], path+"."+key, errors)
+  elif key == "controller_law": out[key] = raw[key]
+  elif key in ["linkage", "curves_by_mode", "normal", "idle_up", "3d"]: out[key] = _unpack(raw[key], path+"."+key, errors)
   else: errors.append(path+"."+key+": unknown field")
  return out
 

@@ -31,6 +31,8 @@ static func collective_for_pitch(model: Dictionary, mode: String, pitch_rad: flo
 	if not model.has_all(["curves_by_mode","linkage"]) or not model.curves_by_mode.has(mode) or not is_finite(pitch_rad):
 		return {ok=false,reason="No accepted collective curve for this start."}
 	var gain: float=model.linkage.collective_rad_per_unit
+	if not is_finite(gain) or gain<=0.0 or pitch_rad<model.linkage.collective_min_rad or pitch_rad>model.linkage.collective_max_rad:
+		return {ok=false,reason="Startup pitch is outside the accepted linkage travel."}
 	var target: float=pitch_rad/gain
 	var curve: Variant=model.curves_by_mode[mode].pitch
 	var roots: Array[float]=[]

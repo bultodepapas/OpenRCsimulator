@@ -236,4 +236,6 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 		var text := words("WHEEL     LOAD N      SLIP", "RUEDA     CARGA N     DESL.")
 		for i in 4:
 			text += "\n%s          %6.1f       %5.2f" % [["FL", "FR", "RL", "RR"][i], loads[i], slips[i]]
+		if int(snapshot.get("wall_contact_count", 0)) > 0:
+			text += "\n" + words("Wall contacts: %d · %.0f N", "Contactos con pared: %d · %.0f N") % [int(snapshot.wall_contact_count), float(snapshot.wall_normal_load_n)]
 		gauges.text = text

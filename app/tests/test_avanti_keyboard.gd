@@ -1,6 +1,7 @@
 extends "res://tests/avanti_pullup_base.gd"
 
 const AD := preload("res://physics/aircraft_data.gd")
+const KeyboardInput := preload("res://input/keyboard.gd")
 var checks := 0
 var failures := 0
 
@@ -70,6 +71,21 @@ func _initialize() -> void:
 		check("keyboard sampler respects %s profile" % profile, absf(session.commands.pitch - (1.0 if profile == "full" else 0.25)) < 1e-12)
 		session.reset()
 		check("reset centers virtual stick and retains solved trim", session.commands.pitch == 0.0 and session.trims.pitch == session.start.pitch_command)
+	session.read_raw = func() -> Dictionary: return KeyboardInput.read_raw()
+	var down := InputEventKey.new()
+	down.keycode = KEY_DOWN
+	down.physical_keycode = KEY_DOWN
+	down.pressed = true
+	Input.parse_input_event(down)
+	Input.flush_buffered_events()
+	session._physics_process(session.sim.dt())
+	check("physical Down key enters gradual pitch sampler", session.raw.pitch == 1.0 and absf(session.commands.pitch - session.sim.dt()) < 1e-12)
+	var released := down.duplicate()
+	released.pressed = false
+	Input.parse_input_event(released)
+	Input.flush_buffered_events()
+	session._physics_process(session.sim.dt())
+	check("physical key release unloads virtual stick", session.raw.pitch == 0.0 and session.commands.pitch == 0.0)
 	session.free()
 	print("AV-17-R1 keyboard and dive recovery: %d checks, %d failed" % [checks, failures])
 	quit(0 if failures == 0 else 1)

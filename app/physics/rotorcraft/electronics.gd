@@ -7,6 +7,8 @@ const Swash = preload("res://physics/rotorcraft/swash.gd")
 const STATE_SIZE: int = 19
 const HEADING_REF: int = 17
 const YAW_INTEGRATOR: int = 18
+const TRAINER_LAW: String = "openrc-four-stick-electronics-v1"
+const BODY_RATE_LAW: String = "openrc-fbl-body-rate-electronics-v1"
 const PARAMETER_KEYS: Array = [
 	"curves_by_mode", "linkage", "tail_collective_trim_rad", "tail_collective_min_rad",
 	"tail_collective_max_rad", "yaw_control_sign", "yaw_deadzone", "yaw_max_rate_rad_s",
@@ -16,12 +18,35 @@ const PARAMETER_KEYS: Array = [
 	"trainer_pitch_rate_limit_rad_s", "trainer_roll_cyclic_gain_rad_per_rad_s",
 	"trainer_pitch_cyclic_gain_rad_per_rad_s",
 ]
+const BODY_RATE_PARAMETER_KEYS: Array = [
+	"curves_by_mode", "linkage", "controller_law", "tail_collective_trim_rad",
+	"tail_collective_min_rad", "tail_collective_max_rad", "yaw_control_sign",
+	"yaw_deadzone", "yaw_rate_kp_rad_per_rad_s", "yaw_rate_ki_rad_per_rad",
+	"yaw_integrator_limit_rad", "body_rate_max_rad_s",
+	"body_rate_roll_cyclic_gain_rad_per_rad_s",
+	"body_rate_pitch_cyclic_gain_rad_per_rad_s",
+]
+const BODY_RATE_MODEL_KEYS: Array = [
+	"curves_by_mode", "linkage", "tail_collective_trim_rad", "tail_collective_min_rad",
+	"tail_collective_max_rad", "yaw_control_sign", "yaw_deadzone",
+	"yaw_rate_kp_rad_per_rad_s", "yaw_rate_ki_rad_per_rad", "yaw_integrator_limit_rad",
+	"body_rate_max_rad_s", "body_rate_roll_cyclic_gain_rad_per_rad_s",
+	"body_rate_pitch_cyclic_gain_rad_per_rad_s",
+]
 
 
 ## Validate all electronics values from the aircraft authoring source. No
 ## simulator-wide cyclic, pitch, yaw or trainer gains are embedded here.
 static func prepare(parameters: Dictionary) -> Dictionary:
-	if parameters.size() != PARAMETER_KEYS.size() or not parameters.has_all(PARAMETER_KEYS):
+	var law: String = str(parameters.get("controller_law", TRAINER_LAW))
+	var parameter_keys: Array
+	if law == TRAINER_LAW:
+		parameter_keys = PARAMETER_KEYS
+	elif law == BODY_RATE_LAW:
+		parameter_keys = BODY_RATE_PARAMETER_KEYS
+	else:
+		return {"ok": false, "message": "unsupported rotorcraft controller law"}
+	if parameters.size() != parameter_keys.size() or not parameters.has_all(parameter_keys):
 		return {"ok": false, "message": "electronics parameters are missing or contain unknown fields"}
 	if not parameters.curves_by_mode is Dictionary or not parameters.linkage is Dictionary:
 		return {"ok": false, "message": "electronics curves and linkage must be dictionaries"}
@@ -35,22 +60,31 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 	if not linkage_check.ok:
 		return {"ok": false, "message": "invalid swash linkage: " + str(linkage_check.get("error", "unknown"))}
 	var model: Dictionary = {}
-	for key: String in PARAMETER_KEYS:
-		if key == "curves_by_mode" or key == "linkage":
+	for key: String in parameter_keys:
+		if key in ["curves_by_mode", "linkage", "controller_law"]:
+			continue
+		if key == "body_rate_max_rad_s":
+			if not _positive_vector3(parameters[key]):
+				return {"ok": false, "message": "body-rate limits must be three positive finite values"}
+			model[key] = _as_f64(parameters[key])
 			continue
 		if not _number(parameters[key]):
 			return {"ok": false, "message": "electronics parameter " + key + " must be finite"}
 		model[key] = float(parameters[key])
 	if absf(model.yaw_control_sign) != 1.0 or model.yaw_deadzone < 0.0 or model.yaw_deadzone >= 1.0 \
-			or model.yaw_max_rate_rad_s <= 0.0 or model.yaw_heading_gain_per_s <= 0.0 \
 			or model.yaw_rate_kp_rad_per_rad_s <= 0.0 or model.yaw_rate_ki_rad_per_rad <= 0.0 \
-			or model.yaw_integrator_limit_rad <= 0.0 or model.trainer_max_tilt_rad <= 0.0 \
-			or model.trainer_max_tilt_rad >= PI / 2.0 or model.trainer_roll_attitude_gain_per_s <= 0.0 \
-			or model.trainer_pitch_attitude_gain_per_s <= 0.0 \
+			or model.yaw_integrator_limit_rad <= 0.0:
+		return {"ok": false, "message": "electronics gains, signs, rates or limits are invalid"}
+	if law == TRAINER_LAW and (model.yaw_max_rate_rad_s <= 0.0 or model.yaw_heading_gain_per_s <= 0.0 \
+			or model.trainer_max_tilt_rad <= 0.0 or model.trainer_max_tilt_rad >= PI / 2.0 \
+			or model.trainer_roll_attitude_gain_per_s <= 0.0 or model.trainer_pitch_attitude_gain_per_s <= 0.0 \
 			or model.trainer_roll_rate_limit_rad_s <= 0.0 or model.trainer_pitch_rate_limit_rad_s <= 0.0 \
 			or model.trainer_roll_cyclic_gain_rad_per_rad_s <= 0.0 \
-			or model.trainer_pitch_cyclic_gain_rad_per_rad_s <= 0.0:
-		return {"ok": false, "message": "electronics gains, signs, rates or limits are invalid"}
+			or model.trainer_pitch_cyclic_gain_rad_per_rad_s <= 0.0):
+		return {"ok": false, "message": "trainer gains, signs, rates or limits are invalid"}
+	if law == BODY_RATE_LAW and (model.body_rate_roll_cyclic_gain_rad_per_rad_s <= 0.0 \
+			or model.body_rate_pitch_cyclic_gain_rad_per_rad_s <= 0.0):
+		return {"ok": false, "message": "body-rate cyclic gains must be positive"}
 	if model.tail_collective_min_rad >= model.tail_collective_max_rad \
 			or model.tail_collective_trim_rad < model.tail_collective_min_rad \
 			or model.tail_collective_trim_rad > model.tail_collective_max_rad:
@@ -58,7 +92,7 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 	model["curves_by_mode"] = _freeze_curves(curves)
 	model["linkage"] = linkage.duplicate(true)
 	model.linkage.make_read_only()
-	model["law"] = "openrc-four-stick-electronics-v1"
+	model["law"] = law
 	model.make_read_only()
 	return {"ok": true, "model": model}
 
@@ -80,9 +114,12 @@ static func fast_evaluate(model: Dictionary, state: PackedFloat64Array, sticks: 
 
 static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: PackedFloat64Array,
 		flight_mode: String, trainer_enabled: bool, trim: Dictionary, prepared: bool) -> Dictionary:
+	var body_rate_law: bool = model.get("law") == BODY_RATE_LAW
 	if not _prepared(model) or state.size() != STATE_SIZE or sticks.size() != 4 \
 			or flight_mode.is_empty() or typeof(trainer_enabled) != TYPE_BOOL or not _trim_is_valid(trim, model):
 		return {"ok": false, "message": "invalid electronics context, state, mode or stick layout"}
+	if body_rate_law and trainer_enabled:
+		return {"ok": false, "message": "FBL body-rate mode cannot enable the trainer attitude controller"}
 	for value: float in state:
 		if not is_finite(value):
 			return {"ok": false, "message": "electronics state is nonfinite"}
@@ -118,8 +155,20 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Pack
 		throttle_value = float(throttle_curve.value)
 	var cyclic_longitudinal: float = sticks[0]
 	var cyclic_lateral: float = sticks[1]
-	var euler: PackedFloat64Array = M.q_to_euler(PackedFloat64Array([state[6], state[7], state[8], state[9]]))
-	if trainer_enabled:
+	var euler: PackedFloat64Array = PackedFloat64Array()
+	if not body_rate_law:
+		euler = M.q_to_euler(PackedFloat64Array([state[6], state[7], state[8], state[9]]))
+	if body_rate_law:
+		var rates: PackedFloat64Array = model.body_rate_max_rad_s
+		var desired_roll_rate: float = sticks[1] * rates[0]
+		var desired_pitch_rate: float = -sticks[0] * rates[1]
+		var lateral_command_rad: float = model.body_rate_roll_cyclic_gain_rad_per_rad_s \
+			* (desired_roll_rate - state[10])
+		var longitudinal_command_rad: float = -model.body_rate_pitch_cyclic_gain_rad_per_rad_s \
+			* (desired_pitch_rate - state[11])
+		cyclic_lateral = clampf(lateral_command_rad / model.linkage.lateral_rad_per_unit, -1.0, 1.0)
+		cyclic_longitudinal = clampf(longitudinal_command_rad / model.linkage.longitudinal_rad_per_unit, -1.0, 1.0)
+	elif trainer_enabled:
 		var desired_roll: float = clampf(float(trim.get("roll_reference_rad", 0.0))
 			+ cyclic_lateral * model.trainer_max_tilt_rad,
 			-model.trainer_max_tilt_rad, model.trainer_max_tilt_rad)
@@ -153,10 +202,19 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Pack
 		+ float(trim.get("cyclic_right_bias_rad", 0.0)),
 		-model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
 	var yaw_stick: float = sticks[2]
-	var manual_yaw_rate: float = yaw_stick * model.yaw_max_rate_rad_s if absf(yaw_stick) > model.yaw_deadzone else 0.0
-	var heading_error: float = _wrap(state[HEADING_REF] - euler[0])
-	var target_yaw_rate: float = clampf(manual_yaw_rate + model.yaw_heading_gain_per_s * heading_error,
-		-model.yaw_max_rate_rad_s, model.yaw_max_rate_rad_s)
+	var manual_yaw_rate: float
+	var heading_error: float = 0.0
+	var target_yaw_rate: float
+	if body_rate_law:
+		manual_yaw_rate = yaw_stick * model.body_rate_max_rad_s[2] \
+			if absf(yaw_stick) > model.yaw_deadzone else 0.0
+		target_yaw_rate = manual_yaw_rate
+	else:
+		manual_yaw_rate = yaw_stick * model.yaw_max_rate_rad_s \
+			if absf(yaw_stick) > model.yaw_deadzone else 0.0
+		heading_error = _wrap(state[HEADING_REF] - euler[0])
+		target_yaw_rate = clampf(manual_yaw_rate + model.yaw_heading_gain_per_s * heading_error,
+			-model.yaw_max_rate_rad_s, model.yaw_max_rate_rad_s)
 	var yaw_rate_error: float = target_yaw_rate - state[12]
 	var integrator: float = clampf(state[YAW_INTEGRATOR], -model.yaw_integrator_limit_rad, model.yaw_integrator_limit_rad)
 	var tail_unsaturated: float = model.tail_collective_trim_rad \
@@ -170,22 +228,48 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Pack
 			or (integrator >= model.yaw_integrator_limit_rad and integral_rate > 0.0) \
 			or (integrator <= -model.yaw_integrator_limit_rad and integral_rate < 0.0):
 		integral_rate = 0.0
-	var heading_rate: float = manual_yaw_rate if absf(yaw_stick) > model.yaw_deadzone else 0.0
-	return {"ok": true, "collective_75_rad": float(swash.theta0_rad),
+	var heading_rate: float = manual_yaw_rate if not body_rate_law and absf(yaw_stick) > model.yaw_deadzone else 0.0
+	var result: Dictionary = {"ok": true, "collective_75_rad": float(swash.theta0_rad),
 		"cyclic_forward_rad": cyclic_forward, "cyclic_right_rad": cyclic_right,
 		"tail_collective_rad": tail_collective, "drive_fraction": throttle_value,
 		"controller_derivative": PackedFloat64Array([heading_rate, integral_rate]),
-		"target_yaw_rate_rad_s": target_yaw_rate, "measured_yaw_rate_rad_s": state[12],
-		"heading_error_rad": heading_error, "yaw_rate_error_rad_s": yaw_rate_error,
-		"tail_saturated": tail_collective != tail_unsaturated,
-		"trainer_active": trainer_enabled, "trim": trim.duplicate(true),
-		"servo_travel_limited": servo_travel_limited,
-		"swash_servo_targets": servo_positions, "swash_servo_commands": mixed.servo_targets}
+		"target_yaw_rate_rad_s": target_yaw_rate, "measured_yaw_rate_rad_s": state[12]}
+	if not body_rate_law:
+		result["heading_error_rad"] = heading_error
+	result["yaw_rate_error_rad_s"] = yaw_rate_error
+	result["tail_saturated"] = tail_collective != tail_unsaturated
+	result["trainer_active"] = trainer_enabled
+	result["trim"] = trim.duplicate(true)
+	result["servo_travel_limited"] = servo_travel_limited
+	result["swash_servo_targets"] = servo_positions
+	result["swash_servo_commands"] = mixed.servo_targets
+	if body_rate_law:
+		result["controller_law"] = BODY_RATE_LAW
+		result["desired_body_rates_rad_s"] = PackedFloat64Array([
+			sticks[1] * model.body_rate_max_rad_s[0],
+			-sticks[0] * model.body_rate_max_rad_s[1],
+			manual_yaw_rate,
+		])
+		result["measured_body_rates_rad_s"] = PackedFloat64Array([state[10], state[11], state[12]])
+		result["body_rate_feedback"] = true
+		result["heading_hold_active"] = false
+	else:
+		result["heading_error_rad"] = heading_error
+	return result
 
 
 static func _prepared(model: Dictionary) -> bool:
-	if not model.is_read_only() or model.get("law") != "openrc-four-stick-electronics-v1" \
-			or model.size() != PARAMETER_KEYS.size() + 1 or not model.has_all(PARAMETER_KEYS):
+	if not model.is_read_only():
+		return false
+	var law: String = str(model.get("law", ""))
+	if law == TRAINER_LAW:
+		if model.size() != PARAMETER_KEYS.size() + 1 or not model.has_all(PARAMETER_KEYS):
+			return false
+	elif law == BODY_RATE_LAW:
+		if model.size() != BODY_RATE_MODEL_KEYS.size() + 1 or not model.has_all(BODY_RATE_MODEL_KEYS) \
+				or not _positive_vector3(model.get("body_rate_max_rad_s", PackedFloat64Array())):
+			return false
+	else:
 		return false
 	return model.curves_by_mode is Dictionary and model.linkage is Dictionary \
 		and model.curves_by_mode.is_read_only() and model.linkage.is_read_only()
@@ -222,6 +306,8 @@ static func _trim_is_valid(trim: Dictionary, model: Dictionary) -> bool:
 	for key: String in keys:
 		if trim.has(key) and not _number(trim[key]):
 			return false
+	if model.get("law") == BODY_RATE_LAW and (trim.has("roll_reference_rad") or trim.has("pitch_reference_rad")):
+		return false
 	if absf(float(trim.get("roll_reference_rad", 0.0))) >= PI / 2.0 \
 			or absf(float(trim.get("pitch_reference_rad", 0.0))) >= PI / 2.0:
 		return false
@@ -235,3 +321,19 @@ static func _trim_is_valid(trim: Dictionary, model: Dictionary) -> bool:
 static func _number(value: Variant) -> bool:
 	var kind: int = typeof(value)
 	return (kind == TYPE_FLOAT or kind == TYPE_INT) and is_finite(float(value))
+
+
+static func _positive_vector3(value: Variant) -> bool:
+	if (not value is Array and not value is PackedFloat64Array) or value.size() != 3:
+		return false
+	for item: Variant in value:
+		if not _number(item) or float(item) <= 0.0:
+			return false
+	return true
+
+
+static func _as_f64(value: Variant) -> PackedFloat64Array:
+	var output := PackedFloat64Array()
+	for item: Variant in value:
+		output.append(float(item))
+	return output
