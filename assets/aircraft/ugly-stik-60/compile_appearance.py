@@ -230,7 +230,7 @@ def main():
     outputs={target:source,ROOT/'app/aircraft/ugly_stik_appearance.gd':generated}
     for path,text in outputs.items():
         if args.check:
-            assert path.read_text()==text,f'Stale {path.name}; rerun compile_appearance.py'
-        else: path.write_text(text)
+            assert path.read_bytes()==text.encode('utf-8'),f'Stale {path.name}; rerun compile_appearance.py'
+        else: path.write_bytes(text.encode('utf-8'))
     if args.check: print('Appearance source, generated data and SVG match')
 if __name__=='__main__':main()

@@ -1,6 +1,8 @@
 # L5 export smoke. Run from an EMPTY project root so a missing pack resource cannot fall back to the source tree.
 extends SceneTree
 
+const EXPECTED_GRASS_ASSETS: Array[String] = ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]
+
 
 func _initialize() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
@@ -73,25 +75,44 @@ func _initialize() -> void:
 			quit(1)
 			return
 	var grass: Node3D = field.get_node_or_null("NearGrass") as Node3D
-	if grass == null or grass.get_child_count() != 4:
-		printerr("Pack missing L11a placement, grass shader or chunks")
+	if grass == null or not bool(grass.get_meta("imported", false)) or grass.get_child_count() != EXPECTED_GRASS_ASSETS.size():
+		printerr("Pack missing L11a downloaded grass or one of its three source batches")
 		field.free()
 		quit(1)
 		return
 	var clumps: int = 0
-	for chunk: MultiMeshInstance3D in grass.get_children():
-		clumps += chunk.multimesh.instance_count
-		if chunk.multimesh.mesh.surface_get_array_len(0) != 21 or chunk.multimesh.mesh.surface_get_material(0) == null:
-			printerr("Pack invalid L11a clump mesh/material")
-			field.free()
-			quit(1)
-			return
-	if clumps <= 0 or clumps > 6000:
-		printerr("Pack invalid L11a clipped clump count: ", clumps)
+	var grass_assets := {}
+	var grass_batches_valid := true
+	for batch_node: Node in grass.get_children():
+		if not batch_node is MultiMeshInstance3D:
+			grass_batches_valid = false
+			continue
+		var batch := batch_node as MultiMeshInstance3D
+		var asset_id := str(batch.name).get_slice("_Part_", 0)
+		if not EXPECTED_GRASS_ASSETS.has(asset_id):
+			grass_batches_valid = false
+		else:
+			grass_assets[asset_id] = true
+		var multimesh: MultiMesh = batch.multimesh
+		if multimesh == null or multimesh.mesh == null or multimesh.instance_count <= 0:
+			grass_batches_valid = false
+			continue
+		clumps += multimesh.instance_count
+		if multimesh.mesh.get_surface_count() != 1:
+			grass_batches_valid = false
+			continue
+		var material := multimesh.mesh.surface_get_material(0) as BaseMaterial3D
+		if material == null or material.albedo_texture == null \
+				or material.albedo_texture.get_width() <= 0 or material.albedo_texture.get_height() <= 0:
+			grass_batches_valid = false
+	if not grass_batches_valid or grass_assets.size() != EXPECTED_GRASS_ASSETS.size() \
+		or int(grass.get_meta("asset_batches", -1)) != EXPECTED_GRASS_ASSETS.size() \
+		or int(grass.get_meta("clumps", -1)) != clumps or clumps <= 0 or clumps > 150:
+		printerr("Pack invalid L11a downloaded grass batches, textures or clump count: ", grass_assets, " / ", clumps)
 		field.free()
 		quit(1)
 		return
-	print("Pack L11a placement checksum and %d opaque clumps validated" % clumps)
+	print("Pack L11a three downloaded grass sources, textures and %d clumps validated" % clumps)
 	var cue: Node3D = field.get_node_or_null("windsock") as Node3D
 	if cue == null or cue.get_child_count() != 2 or not cue.get_node_or_null("Fabric") is MeshInstance3D:
 		printerr("Pack missing L10a windsock data, mesh builder or material")

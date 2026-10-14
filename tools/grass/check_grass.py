@@ -38,6 +38,11 @@ STANDARD_SCENARIOS = tuple(
 ) + ("raised-low-pass", "near-runway", "band-25-35m", "fade-camera-35m")
 WIND_CASES = ("windless-t1", "wind-on-t0", "wind-on-t1", "wind-on-t1024")
 SCENERY_SCENARIO = "scenery-runway-edge"
+IMPORTED_GRASS_IDS = ("grass_common_short", "grass_common_tall", "grass_wispy_tall")
+IMPORTED_GRASS_COUNTS = {"grass_common_short": 67, "grass_common_tall": 42, "grass_wispy_tall": 41}
+IMPORTED_GRASS_TOTAL = sum(IMPORTED_GRASS_COUNTS.values())
+IMPORTED_GRASS_TRIANGLE_BUDGET = 50_000
+IMPORTED_FLOWER_IDS = ("clover_1", "flower_3_group", "flower_4_group")
 RUNTIME_SUFFIXES = {
     ".cfg", ".gd", ".gdshader", ".gdshaderinc", ".gdextension", ".godot", ".gltf", ".glb",
     ".import", ".json", ".mp3", ".ogg", ".po", ".png", ".res", ".svg", ".tscn", ".tres",
@@ -265,34 +270,73 @@ def load_run(folder: Path, mode: str) -> tuple[dict[str, Any], dict[str, dict[st
         grass = manifest.get("grass", {})
         if grass.get("present") is not True or grass.get("node_count") != 1:
             raise RuntimeError(f"{manifest_path}: missing or duplicated production NearGrass")
-        if not 1 <= int(grass.get("multimesh_chunks", 0)) <= 4:
-            raise RuntimeError(f"{manifest_path}: grass must fit in at most four MultiMesh chunks")
-        if not 1 <= int(grass.get("clumps", 0)) <= 6000:
-            raise RuntimeError(f"{manifest_path}: grass count must be in 1–6,000")
-        if grass.get("triangles_per_clump") != 7 or grass.get("runway_clumps") != 0:
-            raise RuntimeError(f"{manifest_path}: clump geometry or runway exclusion metadata mismatch")
-        if grass.get("casts_shadows") is not False or grass.get("fixed_root_geometry_and_shader_contract") is not True:
-            raise RuntimeError(f"{manifest_path}: grass shadow or fixed-root shader contract failed")
-        fade = grass.get("fade", {})
-        if (
-            grass.get("opaque") is not True
-            or float(fade.get("start_m", math.nan)) != 22.0
-            or float(fade.get("end_m", math.nan)) != 30.0
-            or fade.get("uses_camera_and_pilot") is not True
-            or fade.get("source") not in {
-                "material overrides",
-                "compiled ShaderMaterial parameter defaults",
-                "material overrides with compiled defaults",
-            }
-        ):
-            raise RuntimeError(f"{manifest_path}: opaque mode or 22–30 m camera/pilot fade contract failed")
         bounds = grass.get("observed_radius_m", {})
         if float(bounds.get("max", 1e9)) > 30.001:
             raise RuntimeError(f"{manifest_path}: grass exceeds its 30 m pilot radius")
+        if grass.get("runway_clumps") != 0 or grass.get("casts_shadows") is not False:
+            raise RuntimeError(f"{manifest_path}: grass runway exclusion or no-shadow contract failed")
+        if mode == "candidate":
+            if grass.get("implementation") != "legacy_shader_material":
+                raise RuntimeError(f"{manifest_path}: candidate mode must capture the legacy shader-grass path")
+            if not 1 <= int(grass.get("multimesh_chunks", 0)) <= 4:
+                raise RuntimeError(f"{manifest_path}: legacy grass must fit in at most four MultiMesh chunks")
+            if not 1 <= int(grass.get("clumps", 0)) <= 6000:
+                raise RuntimeError(f"{manifest_path}: legacy grass count must be in 1–6,000")
+            if grass.get("triangles_per_clump") != 7 or grass.get("fixed_root_geometry_and_shader_contract") is not True:
+                raise RuntimeError(f"{manifest_path}: legacy clump geometry or fixed-root shader contract failed")
+            fade = grass.get("fade", {})
+            if (
+                grass.get("opaque") is not True
+                or float(fade.get("start_m", math.nan)) != 22.0
+                or float(fade.get("end_m", math.nan)) != 30.0
+                or fade.get("uses_camera_and_pilot") is not True
+                or fade.get("source") not in {
+                    "material overrides",
+                    "compiled ShaderMaterial parameter defaults",
+                    "material overrides with compiled defaults",
+                }
+            ):
+                raise RuntimeError(f"{manifest_path}: legacy grass opaque mode or 22–30 m fade contract failed")
+        elif mode == "scenery":
+            if grass.get("implementation") != "imported_source_meshes":
+                raise RuntimeError(f"{manifest_path}: scenery mode must capture the imported source-grass path")
+            if grass.get("source_ids") != list(IMPORTED_GRASS_IDS):
+                raise RuntimeError(f"{manifest_path}: imported grass source IDs mismatch")
+            if grass.get("source_batches") != IMPORTED_GRASS_COUNTS:
+                raise RuntimeError(f"{manifest_path}: imported grass source batch counts mismatch")
+            if grass.get("multimesh_chunks") != len(IMPORTED_GRASS_IDS) or grass.get("clumps") != IMPORTED_GRASS_TOTAL:
+                raise RuntimeError(f"{manifest_path}: imported grass must contain exactly 150 clumps in three batches")
+            if (
+                type(grass.get("source_triangles")) is not int
+                or not 0 < grass["source_triangles"] <= IMPORTED_GRASS_TRIANGLE_BUDGET
+                or grass.get("source_meshes_preserved") is not True
+                or grass.get("textured_surfaces") != len(IMPORTED_GRASS_IDS)
+                or grass.get("per_pixel_lit_surfaces") != len(IMPORTED_GRASS_IDS)
+            ):
+                raise RuntimeError(f"{manifest_path}: imported grass lost its textured, lit source meshes or exceeded budget")
+            if grass.get("material_contract") != "unchanged textured per-pixel-lit StandardMaterial3D source surfaces":
+                raise RuntimeError(f"{manifest_path}: imported grass source material contract mismatch")
+            if grass.get("wind_animation") != "static imported source meshes; ShaderClock does not drive this path":
+                raise RuntimeError(f"{manifest_path}: imported grass wind scope metadata mismatch")
+        else:
+            raise RuntimeError(f"{manifest_path}: unsupported grass capture mode {mode!r}")
     if expected_scenery:
         flowers = manifest.get("flowers", {})
-        if int(flowers.get("count", 0)) <= 0 or flowers.get("unique_names") is not True:
-            raise RuntimeError(f"{manifest_path}: SC-16 flowers are missing or duplicated")
+        flower_counts = flowers.get("asset_counts", {})
+        flower_names = flowers.get("names", [])
+        observed_ids = sorted({name.split("_Part_", 1)[0] for name in flower_names if isinstance(name, str)})
+        if (
+            flowers.get("source_ids") != list(IMPORTED_FLOWER_IDS)
+            or observed_ids != list(IMPORTED_FLOWER_IDS)
+            or set(flower_counts) != set(IMPORTED_FLOWER_IDS)
+            or not all(type(flower_counts.get(asset_id)) is int and flower_counts[asset_id] > 0 for asset_id in IMPORTED_FLOWER_IDS)
+            or type(flowers.get("count")) is not int
+            or sum(flower_counts.values()) != flowers["count"]
+            or not flower_names
+            or len(flower_names) != len(set(flower_names))
+            or flowers.get("unique_names") is not True
+        ):
+            raise RuntimeError(f"{manifest_path}: imported botanical flower source inventory is missing or duplicated")
     elif manifest.get("flowers", {}).get("count", 0) != 0:
         raise RuntimeError(f"{manifest_path}: scenery-off run unexpectedly contains flower nodes")
 
@@ -484,6 +528,8 @@ def verify_scenery(folder: Path, cases: dict[str, dict[str, Any]], pilot_north: 
     validate_camera_metadata(off, SCENERY_SCENARIO, "off", expected_camera)
     validate_camera_metadata(on, SCENERY_SCENARIO, "on", expected_camera)
     metrics = paired_case_metrics(folder, off, on, pilot_north, pilot_east)
+    if metrics["changed_pixels"] <= 0:
+        raise RuntimeError("imported source grass produced no visible change in the scenery integration pair")
     if metrics["draw_calls"]["delta"] < 0 or metrics["draw_calls"]["delta"] > DRAW_BUDGET:
         raise RuntimeError("scenery-on grass draw increment exceeds the five-draw budget")
     if metrics["primitives"]["delta"] < 0 or metrics["primitives"]["delta"] > PRIMITIVE_BUDGET:
@@ -563,7 +609,7 @@ def main() -> int:
         folder.mkdir()
 
     env = dict(os.environ, LP_NUM_THREADS="1", OPENRC_SCENERY="off", OPENRC_SCENERY_AUDIO="off",
-               OPENRC_SCENERY_BIRDS="off", PYTHONDONTWRITEBYTECODE="1")
+               OPENRC_SCENERY_BIRDS="off", OPENRC_SCENERY_QUALITY="high", PYTHONDONTWRITEBYTECODE="1")
     projects = {"candidate": app}
     if baseline_app is not None:
         projects["baseline"] = baseline_app
@@ -655,7 +701,7 @@ def main() -> int:
             "environment": "Atmosphere.environment + Atmosphere.create_sun",
             "shader_clock_registered_before_field_build": True,
             "scenery_off": "candidate and optional baseline sets",
-            "scenery_on": "SC-16 flower integration pair",
+            "scenery_on": "imported botanical flowers and source-grass integration pair",
         },
         "source_provenance": source_provenance,
         "capture_set": {
@@ -673,6 +719,7 @@ def main() -> int:
         "candidate": candidate_review,
         "scenery_integration": {
             "flower_nodes": loaded["scenery"]["1"][0]["flowers"],
+            "imported_grass_contract": loaded["scenery"]["1"][0]["grass"],
             "grass_pair": scenery_review,
             "no_duplicate_flower_nodes": loaded["scenery"]["1"][0]["flowers"]["unique_names"],
         },
