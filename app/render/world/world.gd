@@ -16,6 +16,7 @@ const Stars := preload("res://render/world/stars.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const Exposure := preload("res://render/world/exposure.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 const LandscapeOptions := preload("res://render/landscape_upgrade/options.gd")
 const SunGlare := preload("res://render/landscape_upgrade/sun_glare.gd")
 const AirfieldLighting := preload("res://render/landscape_upgrade/airfield_lighting.gd")
@@ -41,6 +42,13 @@ const ADAPT_GROUND_WEIGHT := 0.5
 
 static var _lights := {}
 static var _ground_light := 0.0 # floods' light on the runway centre (scene units), computed once per build
+static var _configured_lights: Dictionary = {}
+static var _configured_ground_light: float = 0.0
+static var _night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
+static var _active_world: Node = null
+static var _active_lights_node: Node3D = null
+static var _active_airfield_lighting: Node3D = null
+static var _active_upgraded_lights: bool = false
 static var _adapt_clock := -1.0
 static var _adapt_log := 0.0
 ## The night kit is fitted from dusk (FW-35): sun below this elevation in time-of-day mode.
@@ -63,9 +71,22 @@ static var _flow := {}
 ## `build_field`, when valid, replaces the production field: it must add its own nodes to `parent` (main.gd's seam,
 ## overridden by the frozen L1–L4 atmosphere fixture). Otherwise the field is built from `field` (openrc-field data).
 ## `conditions` (FW-03): Conditions.resolve() output; empty = resolve from the command line and environment.
-## A nonempty `lighting` snapshot selects the TOD renderer and clears field-world flow.
-## Returns {environment, world_environment, field (null when replaced), field_build_ms, sun, conditions, sky (time-of-day state or {})}.
-static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}) -> Dictionary:
+## A nonempty `lighting` snapshot selects the TOD renderer and clears field-world flow. `night_options` selects the
+## field-lighting presentation; empty keeps the preference defaults for older callers.
+## Returns {environment, world_environment, field (null when replaced), field_build_ms, sun, conditions, sky, night_options}.
+static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {},
+		night_options: Dictionary = {}) -> Dictionary:
+	var raw_night_options: Dictionary = Preferences.NIGHT_DEFAULTS if night_options.is_empty() else night_options
+	var checked_night: Dictionary = Preferences.validate_night_options(raw_night_options)
+	var resolved_night_options: Dictionary = checked_night.options.duplicate(true) if checked_night.get("ok", false) \
+		else Preferences.NIGHT_DEFAULTS.duplicate(true)
+	if not checked_night.get("ok", false):
+		push_warning("invalid world night options; using defaults: " + "; ".join(checked_night.errors))
+	_night_options = resolved_night_options.duplicate(true)
+	_active_world = parent
+	_active_lights_node = null
+	_active_airfield_lighting = null
+	_active_upgraded_lights = false
 	ShaderClock.register() # before any material that reads sim_clock / wind_vec compiles
 	if not lighting.is_empty():
 		conditions = {time_of_day = false}
@@ -87,13 +108,16 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 			lights = loaded.lights
 		else:
 			push_warning("field lights refused, flying without them: " + "; ".join(loaded.errors))
-	_lights = lights
 	_ground_light = 0.0
 	if not lights.is_empty():
 		for surface: Dictionary in field.get("surfaces", []):
 			if surface.get("id", "") == field.get("runway", ""):
 				_ground_light = FieldLights.illuminance_point(lights,
 					Frames.ned_to_render([float(surface.center_north), float(surface.center_east), -0.5]))
+	_configured_lights = lights.duplicate(true)
+	_configured_ground_light = _ground_light
+	_active_upgraded_lights = upgraded_lights
+	_apply_night_options()
 	_adapt_clock = -1.0 # the first update() with a view target snaps the adaptation
 	if not Atmosphere.state.is_empty():
 		Exposure.set_value(Atmosphere.state.exposure)
@@ -142,8 +166,39 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 			materials = haze_materials(parent), tonemapper = Atmosphere.state.tonemapper,
 			start_lst = float(Atmosphere.state.lst_deg), latitude = float(conditions.when.latitude_deg), upgraded_lights = upgraded_lights,
 			airfield_lighting = airfield_lighting}
+	_active_lights_node = lights_node
+	_active_airfield_lighting = airfield_lighting
+	_apply_night_options()
+	parent.set_meta("night_options", _night_options.duplicate(true))
 	return {environment = environment, world_environment = world_environment, field = field_node, field_build_ms = field_build_ms, sun = sun,
-		conditions = conditions, sky = Atmosphere.state}
+		conditions = conditions, sky = Atmosphere.state, night_options = _night_options.duplicate(true)}
+
+
+## Changes the active field-lighting presentation without rebuilding the flight or touching simulation state.
+## `airfield` keeps the field fixtures and runway markers; `club` also shows the club lighting; `off` hides both.
+## Campfire remains part of the resolved presentation options so the field renderer can consume it when present.
+static func set_night_options(profile: String, campfire: bool) -> bool:
+	var checked: Dictionary = Preferences.validate_night_options({"field_lighting": profile, "campfire": campfire})
+	if not checked.get("ok", false):
+		return false
+	_night_options = checked.options.duplicate(true)
+	_apply_night_options()
+	if is_instance_valid(_active_world):
+		_active_world.set_meta("night_options", _night_options.duplicate(true))
+	return true
+
+
+static func _apply_night_options() -> void:
+	var profile: String = str(_night_options.get("field_lighting", "club"))
+	var enabled: bool = profile != "off"
+	_lights = _configured_lights if enabled else {}
+	_ground_light = _configured_ground_light if enabled else 0.0
+	if is_instance_valid(_active_lights_node):
+		var night_sky: bool = not Atmosphere.state.is_empty() and (float(_flow.get("time_scale", 0.0)) > 0.0 \
+			or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG)
+		_active_lights_node.visible = enabled and (_active_upgraded_lights or night_sky)
+	if is_instance_valid(_active_airfield_lighting):
+		_active_airfield_lighting.visible = profile == "club"
 
 
 ## Fits the night-flying kit to an airplane's model root when the chosen hour needs it (FW-35). Call after measuring
@@ -251,14 +306,13 @@ static func flow_to(clock_s: float) -> bool:
 	var state := SkyState.state(Ephemeris.sky(when))
 	state.tonemapper = _flow.tonemapper
 	Atmosphere.state = state
+	_apply_night_options()
 	var env: Environment = _flow.environment
 	Atmosphere.apply_state_to_sky(env.sky.sky_material)
 	Atmosphere.apply_state_to_environment(env)
 	Atmosphere.apply_light(_flow.sun)
 	for m: ShaderMaterial in _flow.materials:
 		Atmosphere._set_haze_uniforms(m)
-	if _flow.lights_node != null and not _flow.get("upgraded_lights", false):
-		(_flow.lights_node as Node3D).visible = float(state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
 	if _flow.stars != null:
 		var lat: float = _flow.latitude
 		(_flow.stars as Node3D).basis = Stars.equatorial_basis(state.lst_deg, lat) * Stars.equatorial_basis(_flow.start_lst, lat).inverse()

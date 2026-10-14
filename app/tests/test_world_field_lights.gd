@@ -172,6 +172,20 @@ func _initialize() -> void:
 		if has_lights:
 			_check("field emission follows time", ((holder.get_node("FieldLights/flood_west") as SpotLight3D).light_energy > 0.0) == bool(case[1]))
 		holder.free()
+	var night_holder := Node3D.new()
+	var selected_night: Dictionary = {"field_lighting": "off", "campfire": true}
+	var night_world: Dictionary = World.build(night_holder, field, Callable(),
+		Conditions.resolve(PackedStringArray(["--time_of_day=night"])), {}, selected_night)
+	var selected_lights: Node3D = night_holder.get_node_or_null("FieldLights") as Node3D
+	_check("world retains the selected night options", night_world.night_options == selected_night
+		and night_holder.get_meta("night_options") == selected_night)
+	_check("off profile hides the night field fixtures", selected_lights != null and not selected_lights.visible)
+	_check("club profile restores night field fixtures", World.set_night_options("club", true)
+		and selected_lights != null and selected_lights.visible)
+	_check("campfire selection survives a live profile change", night_holder.get_meta("night_options").campfire)
+	_check("off profile can be selected during flight", World.set_night_options("off", false)
+		and selected_lights != null and not selected_lights.visible)
+	night_holder.free()
 	Atmosphere.state = {}
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
