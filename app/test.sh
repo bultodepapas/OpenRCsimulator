@@ -166,7 +166,7 @@ for t in "$HERE"/tests/test_*.gd; do
   # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
   case "$(basename "$t")" in
     test_heli_session.gd) test_timeout=300 ;; # Actual preset hover, pilot-compensated landing and checkpoint replay.
-    test_failure_session.gd) test_timeout=180 ;; # EM: real 20-second onset at 240 Hz, seven-aircraft parity and replay
+    test_failure_session.gd|test_failure_shutdown.gd) test_timeout=180 ;; # EM: real 20-second onsets at 240 Hz, fleet parity and replay
     test_failure_routes.gd) test_timeout=180 ;; # EM: two complete flights and Home/Pause transitions
     test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd) test_timeout=300 ;;
     test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;

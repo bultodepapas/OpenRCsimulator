@@ -20,3 +20,14 @@
 - The runtime package carries the MIT text and adaptation reference in `app/assets/sky/weather/LICENSES.md`.
 
 No restricted ARCFLUX content is included. The full upstream lightning add-on and its demo assets are not vendored.
+
+## Cloud-alpha textures for FW-83
+
+- Creator: WickedInsignia, [Clouds with Transparency](https://opengameart.org/content/clouds-with-transparency).
+- The OpenGameArt listing labels the pack CC0; the creator states that the assets are released into the public domain under CC0. The listing describes ten 2K cloud textures, each as an alpha PNG and a black-background JPEG.
+- Download: `fx_cloudalphas.zip` from [the listing's file](https://opengameart.org/sites/default/files/fx_cloudalphas.zip); SHA-256 `83514A391C765819BC159B7F9AB61EC9F06C0CAA2B5865AF20A5BD3B2A14CCA4`.
+- Selected source members and unchanged runtime copies:
+  - `FX_CloudAlpha03.png`, 2048×2048 LA (luminance and alpha), 2,017,932 bytes; SHA-256 `602A55F5E25E606999BFA218572A9703F54469ED1FE7C857C77E5038CC4681EE`.
+  - `FX_CloudAlpha06.png`, 2048×2048 LA (luminance and alpha), 2,059,759 bytes; SHA-256 `A1F05810C43D7811CB72F460595CC6E446E20FD4601342BA93D30045CB6095F1`.
+- Both files are copied without modification to `app/assets/sky/weather/clouds/`. No source archive or other pack members are included in the application. The runtime folder carries this CC0 source and hash notice in `app/assets/sky/weather/LICENSES.md`.
+- These images are approved for an isolated FW-83 scene trial. They are not volumetric geometry; scene composition, camera-angle stability, Compatibility import behavior, and suitability at the target distance remain unqualified.

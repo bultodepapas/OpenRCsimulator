@@ -28,6 +28,7 @@ const RENDERER_KEYS := [
 	"haze", "cloud_shadow",
 ]
 const LAYER_KEYS := ["type", "altitude_m", "coverage", "density", "scale_m", "drift_multiplier"]
+const BANK_KEYS := ["layout_version", "east_m", "north_m", "width_m", "depth_m", "base_m", "top_m", "rain_opacity", "advection_layer"]
 
 const DEFAULTS: Dictionary = {
 	"format": FORMAT,
@@ -307,7 +308,10 @@ static func _validate_profile(profile: Dictionary) -> PackedStringArray:
 		errors.append("weather profile renderer must be an object")
 		return errors
 	var renderer: Dictionary = profile["renderer"]
-	if not _has_exact_keys(renderer, RENDERER_KEYS):
+	var renderer_keys := RENDERER_KEYS.duplicate()
+	if renderer.has("storm_bank"):
+		renderer_keys.append("storm_bank")
+	if not _has_exact_keys(renderer, renderer_keys):
 		errors.append("weather renderer must contain the complete versioned appearance schema")
 	for scalar_key: String in ["cloud_cover", "cloud_density", "haze", "cloud_shadow"]:
 		if not _in_range(renderer.get(scalar_key), 0.0, 1.0):
@@ -343,6 +347,34 @@ static func _validate_profile(profile: Dictionary) -> PackedStringArray:
 			var field_name: String = range_spec[0]
 			if not _in_range(layer.get(field_name), range_spec[1], range_spec[2]):
 				errors.append("weather cloud layer %d %s is out of range" % [index, field_name])
+	if renderer.has("storm_bank"):
+		errors.append_array(_validate_bank(renderer.storm_bank, layers))
+	return errors
+
+
+static func _validate_bank(raw: Variant, layers: Array) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if not raw is Dictionary or not _has_exact_keys(raw, BANK_KEYS):
+		return PackedStringArray(["storm bank must contain the complete formation schema"])
+	if not _in_range(raw.layout_version, 1.0, 1.0):
+		errors.append("unknown storm bank layout version")
+	for limits: Array in [["east_m", -15000.0, 15000.0], ["north_m", -15000.0, 15000.0],
+			["width_m", 2000.0, 9000.0], ["depth_m", 1000.0, 6000.0], ["base_m", 500.0, 3000.0],
+			["top_m", 3000.0, 9000.0], ["rain_opacity", 0.0, 0.75]]:
+		if not _in_range(raw[limits[0]], limits[1], limits[2]):
+			errors.append("storm bank %s is out of range" % limits[0])
+	if not errors.is_empty():
+		return errors
+	if float(raw.top_m) <= float(raw.base_m) + 1000.0:
+		errors.append("storm bank needs at least 1000 m of vertical development")
+	if not _in_range(raw.advection_layer, 0, layers.size() - 1) or float(raw.advection_layer) != floorf(float(raw.advection_layer)):
+		errors.append("storm bank needs an existing integer advection layer")
+	else:
+		var layer: Variant = layers[int(raw.advection_layer)]
+		# A periodic formation wraps only beyond the production 21 km view plus its complete bound.
+		if not layer is Dictionary or not _is_finite_number(layer.get("scale_m")) \
+				or float(layer.scale_m) * 32.0 <= 21000.0 + float(raw.width_m) * 0.6 + float(raw.depth_m) * 0.5:
+			errors.append("storm bank advection period would expose its wrap seam")
 	return errors
 
 

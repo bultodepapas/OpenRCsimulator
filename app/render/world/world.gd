@@ -21,6 +21,7 @@ const SunGlare := preload("res://render/landscape_upgrade/sun_glare.gd")
 const AirfieldLighting := preload("res://render/landscape_upgrade/airfield_lighting.gd")
 const SceneryLayer := preload("res://scenery/scenery.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
+const StormBank := preload("res://render/weather/storm_bank.gd")
 
 ## The club switches its field lights on at dusk (FW-31…34): sun below this elevation in time-of-day mode.
 const FIELD_LIGHTS_BELOW_SUN_DEG := 3.0
@@ -264,6 +265,11 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		parent.add_child(field_node)
 
 	var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws the sun disc from this light
+	var storm_bank := StormBank.new()
+	storm_bank.name = "StormBank"
+	parent.add_child(storm_bank)
+	environment.set_meta("fw_storm_bank", weakref(storm_bank))
+	refresh_weather_appearance(environment, 0.0)
 	var stars: Node3D = null
 	if not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < STARS_BELOW_SUN_DEG):
 		stars = Stars.build(Atmosphere.state, float(conditions.when.latitude_deg), Atmosphere.cloud_state_snapshot()) # FW-24
@@ -413,7 +419,37 @@ static func update(environment: Environment, clock_s: float, wind := Vector3.ZER
 	var cloud_changed := Atmosphere.update_clouds(environment, clock_s)
 	if cloud_changed:
 		refresh_star_cloud_appearance(environment)
+	_update_weather_presentation(environment, clock_s)
 	return cloud_changed
+
+
+## Scene-local cloud formations share the accepted sky selection, phase and lighting.
+static func refresh_weather_appearance(environment: Environment, clock_s: float) -> void:
+	var bank: Node3D = _weather_bank(environment)
+	if bank == null:
+		return
+	var checked: Dictionary = Atmosphere.SkyConfig.validate(Atmosphere.appearance_config())
+	if checked.ok:
+		bank.configure(checked.profile, int(checked.config.seed))
+	_update_weather_presentation(environment, clock_s)
+
+
+static func _update_weather_presentation(environment: Environment, clock_s: float) -> void:
+	var bank: Node3D = _weather_bank(environment)
+	if bank != null and bank.visible:
+		bank.update_visual(Atmosphere.cloud_state_snapshot(), environment, null, clock_s)
+
+
+static func _weather_bank(environment: Environment) -> Node3D:
+	if environment == null:
+		return null
+	var reference: Variant = environment.get_meta("fw_storm_bank", null)
+	return reference.get_ref() as Node3D if reference is WeakRef else null
+
+
+static func weather_snapshot(environment: Environment) -> Dictionary:
+	var bank: Node3D = _weather_bank(environment)
+	return bank.snapshot() if bank != null else {}
 
 
 ## Reapply the shared cloud mask after a paused visual preset edit or a cloud transport step.

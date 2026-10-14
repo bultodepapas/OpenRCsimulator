@@ -3,6 +3,7 @@ extends SceneTree
 const Preferences := preload("res://app_state/preferences.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const World := preload("res://render/world/world.gd")
 const PREFS := "user://test_sky_routes.cfg"
 var failures := 0
 var checks := 0
@@ -61,6 +62,19 @@ func _run() -> void:
 	app.time_of_day_dialog._on_cancel()
 	check("paused cancel keeps accepted sky", flight.sky_config.preset == "electrical_storm" \
 		and Atmosphere.appearance_config().preset == "electrical_storm" and var_to_bytes(flight.session.checkpoint()) == physical)
+	app.open_time_of_day()
+	app.time_of_day_dialog.sky_controls.select_preset("distant_storm")
+	app.time_of_day_dialog._on_apply()
+	var bank := World.weather_snapshot(flight._env)
+	check("paused distant storm builds its scene-owned bank", bank.enabled and bank.puff_count == 30 and bank.rain_count == 3)
+	var saved_bank: Dictionary = flight.checkpoint()
+	check("bank appearance is part of the checkpoint identity", saved_bank.profile.renderer.storm_bank.layout_version == 1)
+	app.open_time_of_day()
+	app.time_of_day_dialog.sky_controls.select_preset("clear")
+	app.time_of_day_dialog._on_apply()
+	check("clear removes formation and rain", not World.weather_snapshot(flight._env).enabled and World.weather_snapshot(flight._env).puff_count == 0)
+	check("checkpoint reconstructs formation", flight.restore_checkpoint(saved_bank).ok and World.weather_snapshot(flight._env).enabled)
+	check("formation edits and restore preserve physics", var_to_bytes(flight.session.checkpoint()) == physical)
 	# Avoid writing an unrelated flight recording on fixture teardown.
 	flight.recorder.detach()
 	flight.recorder.recording = false

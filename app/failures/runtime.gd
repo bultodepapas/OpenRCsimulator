@@ -3,7 +3,9 @@ extends RefCounted
 const Config := preload("res://failures/config.gd")
 const Catalog := preload("res://failures/catalog.gd")
 
-const PLAN_FORMAT := "openrc-failure-plan v1"
+const PLAN_FORMAT_V1 := "openrc-failure-plan v1"
+const PLAN_FORMAT_V2 := "openrc-failure-plan v2"
+const PLAN_FORMAT := PLAN_FORMAT_V1
 const SNAPSHOT_FORMAT := "openrc-failure-snapshot v1"
 const RNG_VERSION := 1
 const RNG_NAME := "xorshift32-v1"
@@ -14,11 +16,17 @@ const RNG_ZERO_REPLACEMENT := 0x6d2b79f5
 const MIN_DT := 0.000001
 const MAX_DT := 1.0
 
-const PLAN_KEYS: Array[String] = [
+const PLAN_KEYS_V1: Array[String] = [
 	"format", "rng_version", "rng_name", "catalog_version", "seed", "dt",
 	"config", "selected", "id", "onset_airborne_seconds", "onset_airborne_ticks",
 	"parameters", "identity",
 ]
+const PLAN_KEYS_V2: Array[String] = [
+	"format", "rng_version", "rng_name", "catalog_version", "seed", "dt",
+	"config", "eligibility_profile", "selected", "id", "onset_airborne_seconds",
+	"onset_airborne_ticks", "parameters", "identity",
+]
+const PLAN_KEYS: Array[String] = PLAN_KEYS_V1
 const SNAPSHOT_KEYS: Array[String] = [
 	"format", "plan", "plan_identity", "event_id", "tick", "airborne_ticks",
 	"active", "activation_tick", "last_inputs", "jam_mask", "jam_positions", "held_inputs",
@@ -41,8 +49,9 @@ var _pending: Dictionary = {}
 
 
 ## Resolve occurrence, event, parameters, and onset once. Invalid input leaves this runtime untouched.
-func begin(config: Dictionary, seed: int, dt: float) -> bool:
-	var resolved := _build_plan(config, seed, dt)
+func begin(config: Dictionary, seed: int, dt: float, eligibility_profile: String = "") -> bool:
+	var resolved := _build_plan_v1(config, seed, dt) if eligibility_profile.is_empty() \
+		else _build_plan_v2(config, seed, dt, eligibility_profile)
 	if not bool(resolved.get("ok", false)):
 		return false
 	_plan = resolved.plan.duplicate(true)
@@ -146,6 +155,24 @@ func effective_throttle(raw: float) -> float:
 	if failure_id == "radio_loss":
 		return _effect_held_inputs()[3]
 	return raw
+
+
+## Power-source loss is a separate adapter from receiver or logical-control faults.
+## A just-due event is visible during RK evaluation but remains private until commit().
+func propulsion_cut_active() -> bool:
+	if not _started or not _effect_is_active():
+		return false
+	return str(_plan.id) in ["glow_fuel_cut", "electric_drive_loss"]
+
+
+## Legacy v1 plans contain only model-independent control faults. A v2 plan is
+## bound to the exact physical eligibility profile that created it.
+func accepts_profile(profile: String) -> bool:
+	if not _started or profile not in Catalog.PROFILES:
+		return false
+	if str(_plan.format) == PLAN_FORMAT_V1:
+		return true
+	return str(_plan.get("eligibility_profile", "")) == profile
 
 
 ## Rate multiplier for roll, pitch, or yaw. A jam freezes actual position at its onset value.
@@ -318,6 +345,7 @@ func status() -> Dictionary:
 		"label": label_text,
 		"hint": hint_text,
 		"source_label": source_label,
+		"eligibility_profile": str(_plan.get("eligibility_profile", "")),
 		"activation_tick": _activation_tick,
 		"airborne_ticks": _airborne_ticks,
 		"onset_airborne_ticks": int(_plan.onset_airborne_ticks),
@@ -418,9 +446,12 @@ func _validated_plan(plan_value: Variant) -> Dictionary:
 	if typeof(plan_value) != TYPE_DICTIONARY:
 		return {"ok": false}
 	var source: Dictionary = plan_value
-	if not _has_exact_keys(source, PLAN_KEYS):
+	if typeof(source.get("format")) != TYPE_STRING:
 		return {"ok": false}
-	if typeof(source.format) != TYPE_STRING or source.format != PLAN_FORMAT:
+	var is_v2: bool = source.format == PLAN_FORMAT_V2
+	if not is_v2 and source.format != PLAN_FORMAT_V1:
+		return {"ok": false}
+	if not _has_exact_keys(source, PLAN_KEYS_V2 if is_v2 else PLAN_KEYS_V1):
 		return {"ok": false}
 	if typeof(source.rng_version) != TYPE_INT or typeof(source.catalog_version) != TYPE_INT:
 		return {"ok": false}
@@ -428,13 +459,16 @@ func _validated_plan(plan_value: Variant) -> Dictionary:
 		return {"ok": false}
 	if typeof(source.dt) != TYPE_FLOAT or typeof(source.config) != TYPE_DICTIONARY:
 		return {"ok": false}
+	if is_v2 and typeof(source.eligibility_profile) != TYPE_STRING:
+		return {"ok": false}
 	if typeof(source.selected) != TYPE_BOOL or typeof(source.id) != TYPE_STRING:
 		return {"ok": false}
 	if typeof(source.onset_airborne_seconds) != TYPE_INT \
 		or typeof(source.onset_airborne_ticks) != TYPE_INT \
 		or typeof(source.parameters) != TYPE_DICTIONARY or typeof(source.identity) != TYPE_STRING:
 		return {"ok": false}
-	var rebuilt := _build_plan(source.config, int(source.seed), float(source.dt))
+	var rebuilt := _build_plan_v2(source.config, int(source.seed), float(source.dt), source.eligibility_profile) \
+		if is_v2 else _build_plan_v1(source.config, int(source.seed), float(source.dt))
 	if not bool(rebuilt.get("ok", false)):
 		return {"ok": false}
 	var expected: Dictionary = rebuilt.plan
@@ -443,7 +477,19 @@ func _validated_plan(plan_value: Variant) -> Dictionary:
 	return {"ok": true, "plan": expected}
 
 
-static func _build_plan(config_value: Variant, seed_value: Variant, dt_value: Variant) -> Dictionary:
+static func _build_plan_v1(config_value: Variant, seed_value: Variant, dt_value: Variant) -> Dictionary:
+	return _build_plan_versioned(config_value, seed_value, dt_value, "", false)
+
+
+static func _build_plan_v2(config_value: Variant, seed_value: Variant, dt_value: Variant,
+		eligibility_profile: String) -> Dictionary:
+	if eligibility_profile not in Catalog.PROFILES:
+		return {"ok": false, "message": "unknown failure eligibility profile"}
+	return _build_plan_versioned(config_value, seed_value, dt_value, eligibility_profile, true)
+
+
+static func _build_plan_versioned(config_value: Variant, seed_value: Variant, dt_value: Variant,
+		eligibility_profile: String, version_two: bool) -> Dictionary:
 	if typeof(seed_value) != TYPE_INT or int(seed_value) < 0 or int(seed_value) > UINT32_MAX:
 		return {"ok": false, "message": "failure seed must be an unsigned 32-bit integer"}
 	if typeof(dt_value) != TYPE_FLOAT or not is_finite(float(dt_value)) \
@@ -466,7 +512,9 @@ static func _build_plan(config_value: Variant, seed_value: Variant, dt_value: Va
 	var occurrence_roll := int(occurrence_draw[1])
 	selected = occurrence_roll < int(normalized.probability_percent)
 	if selected:
-		var ids: Array[String] = Catalog.failure_ids(bool(normalized.include_catastrophic))
+		var ids: Array[String] = Catalog.failure_ids(bool(normalized.include_catastrophic), eligibility_profile)
+		if ids.is_empty():
+			return {"ok": false, "message": "failure profile has no eligible events"}
 		var event_draw := _draw_bounded(state, ids.size())
 		state = int(event_draw[0])
 		failure_id = ids[int(event_draw[1])]
@@ -482,10 +530,10 @@ static func _build_plan(config_value: Variant, seed_value: Variant, dt_value: Va
 		onset_ticks = maxi(onset_ticks, first_tick)
 
 	var plan_data: Dictionary = {
-		"format": PLAN_FORMAT,
+		"format": PLAN_FORMAT_V1,
 		"rng_version": RNG_VERSION,
 		"rng_name": RNG_NAME,
-		"catalog_version": Catalog.VERSION,
+		"catalog_version": Catalog.VERSION if version_two else Catalog.LEGACY_VERSION,
 		"seed": int(seed_value),
 		"dt": float(dt_value),
 		"config": normalized.duplicate(true),
@@ -496,6 +544,11 @@ static func _build_plan(config_value: Variant, seed_value: Variant, dt_value: Va
 		"parameters": parameters,
 		"identity": "",
 	}
+	if not version_two:
+		plan_data.format = PLAN_FORMAT_V1
+	else:
+		plan_data.format = PLAN_FORMAT_V2
+		plan_data["eligibility_profile"] = eligibility_profile
 	plan_data.identity = _identity_for(plan_data)
 	return {"ok": true, "plan": plan_data}
 
@@ -543,6 +596,10 @@ static func _resolve_parameters(failure_id: String, initial_state: int) -> Dicti
 			"surface_policy": "hold_last_valid_commands",
 			"throttle_preset": 0.0,
 		}
+	elif failure_id == "glow_fuel_cut":
+		parameters = {"mechanism": "finite_glow_combustion_cut"}
+	elif failure_id == "electric_drive_loss":
+		parameters = {"mechanism": "electric_motor_drive_disconnect"}
 	parameters["_rng_state"] = state
 	return parameters
 

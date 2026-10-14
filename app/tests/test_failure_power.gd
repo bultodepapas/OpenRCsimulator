@@ -21,6 +21,9 @@ class ThrottleCeilingFailure extends RefCounted:
 		effective_throttle_calls += 1
 		return minf(raw, 0.5)
 
+	func propulsion_cut_active() -> bool:
+		return false
+
 	func servo_rate_factor(_axis: int) -> float:
 		return 1.0
 
@@ -42,6 +45,9 @@ class StuckHighThrottleFailure extends RefCounted:
 
 	func effective_throttle(raw: float) -> float:
 		return maxf(raw, 0.8)
+
+	func propulsion_cut_active() -> bool:
+		return false
 
 	func servo_rate_factor(_axis: int) -> float:
 		return 1.0
@@ -80,7 +86,7 @@ func _new_flight(id: String) -> Node:
 
 func _test_all_aircraft_power_routes() -> void:
 	var ids: PackedStringArray = Catalog.airplane_flyable_ids()
-	_check("all seven conventional aircraft are covered", ids.size() == 7, ids)
+	_check("the original fleet and additional aircraft are covered", ids.size() >= 7, ids)
 	for id: String in ids:
 		var healthy: Node = _new_flight(id)
 		var limited: Node = _new_flight(id)

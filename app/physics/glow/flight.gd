@@ -26,6 +26,10 @@ const EVALUATOR_IDENTITY_META := &"_glow_prepared_identity"
 static func _throttle(owner: Node) -> float:
 	return owner.propulsion_throttle() if owner.has_method("propulsion_throttle") else owner.sim.inputs[3]
 
+## The failure runtime is a read-only candidate during RK; standalone fixtures have no injection.
+static func _injected_cut(owner: Node) -> bool:
+	return owner.has_method("failure_power_cut_active") and owner.failure_power_cut_active()
+
 static func valid(values: PackedFloat64Array, install: Dictionary) -> bool:
 	var state: Dictionary=unpack(values,install)
 	if state.is_empty() or Life.pack_state(state).size()!=6: return false
@@ -102,7 +106,9 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	if state.is_empty(): return {ok=false}
 	# Negative fuel is the left-limit continuation used only by the bounded exhaustion solver.
 	if state.fuel_kg<0.0: state.fuel_kg=1e-30
-	if not owner.engine_running: state.running=false
+	if _injected_cut(owner):
+		state=Life.cut(state).state
+	elif not owner.engine_running: state.running=false
 	var air: Dictionary=owner.air_data(body,time_s)
 	var ambient: Dictionary=owner.atmosphere_configuration()
 	# The state velocity is at the fixed initial wet-CG datum. Apply the same
@@ -255,6 +261,11 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 	if not owner.engine_running:
 		before=Life.cut(before).state
 	var candidate: Dictionary=unpack(values,install)
+	if _injected_cut(owner):
+		# Commit the same lifecycle discontinuity as the existing fuel cut, without
+		# changing live packed state before the whole simulation tick is accepted.
+		before=Life.cut(before).state
+		candidate=Life.cut(candidate).state
 	var endpoint: Dictionary=point(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
 	if not endpoint.ok: return PackedFloat64Array([NAN])
 	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)

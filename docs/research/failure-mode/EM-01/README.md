@@ -1,6 +1,6 @@
 # EM-01 — Initial failure-mode implementation
 
-Date: 2026-10-13. Scope: software verification of the first logical-actuator and throttle-demand slice. [Current scope and remaining phases](../../../plans/failure-mode.md#implementation-checkpoint--initial-slice); [source review](../EM-00/README.md).
+Date: 2026-10-13. Scope: software verification of the first logical-actuator and throttle-demand slice. [Current scope and remaining phases](../../../plans/failure-mode.md#implementation-checkpoint--current-scope); [source review](../EM-00/README.md).
 
 ## Contracts and numerical boundary
 

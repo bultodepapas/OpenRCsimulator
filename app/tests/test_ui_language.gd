@@ -135,8 +135,8 @@ func _direct_route() -> void:
 	app.free()
 	_write("[meta]\nschema=1\n[ui]\nlanguage=\"es\"\n")
 	var before := FileAccess.get_file_as_string(PREFS)
-	# Route only: main.gd reads the real command line (none here), so this flight runs live, not a trace.
-	app = _app(PackedStringArray(["--trace=/dev/null", "--t=0"]))
+	# A live quick flight verifies the direct route does not read or rewrite saved UI preferences.
+	app = _app(PackedStringArray(["--quick-flight"]))
 	root.add_child(app)
 	await ui.settle()
 	_check("direct flight ignores a saved Spanish preference and leaves the file alone",

@@ -1352,6 +1352,18 @@ msgstr "El acelerador quedó atascado arriba."
 msgid "Radio link lost."
 msgstr "Se perdió el enlace de radio."
 
+msgid "Engine combustion stopped."
+msgstr "Se detuvo la combustión del motor."
+
+msgid "The engine cannot restart during this failure. Keep a safe airspeed and plan a glide landing."
+msgstr "El motor no puede volver a arrancar mientras persista esta falla. Mantén una velocidad segura y prepara un aterrizaje planeando."
+
+msgid "Electric motor power lost."
+msgstr "Se perdió la potencia del motor eléctrico."
+
+msgid "The motor is disconnected, while the propeller can coast or windmill. Keep a safe airspeed and plan a landing."
+msgstr "El motor está desconectado, aunque la hélice puede seguir girando por inercia o por el viento. Mantén una velocidad segura y planifica el aterrizaje."
+
 msgid "Keep adequate airspeed. Use gentle rudder inputs if effective; plan a wide approach."
 msgstr "Mantén suficiente velocidad. Usa el timón con suavidad si responde y planifica una aproximación amplia."
 
@@ -1474,8 +1486,8 @@ msgstr "Un techo gris de nubes con luz difusa y poco sol directo."
 msgid "A dense gray sky with dark, low cloud layers."
 msgstr "Un cielo gris denso con capas bajas y oscuras."
 
-msgid "Broad, dark cloud layers against a lighter sky."
-msgstr "Capas amplias y oscuras de nubes sobre un cielo más claro."
+msgid "A distant towering cloud bank with a broad cap, dark base and rain shafts."
+msgstr "Un banco de nubes alto y lejano, con cima amplia, base oscura y cortinas de lluvia."
 
 msgid "Dark layered clouds with branching lightning, cloud flashes and delayed thunder."
 msgstr "Capas de nubes oscuras con rayos ramificados, relámpagos y truenos retardados."

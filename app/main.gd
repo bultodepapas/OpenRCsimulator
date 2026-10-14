@@ -1307,6 +1307,7 @@ func _refresh_sky(retained_exposure: float = -1.0) -> void:
 	Atmosphere.update_cloud_appearance(_field_node)
 	Atmosphere.update_clouds(_env, session.sim.time())
 	World.refresh_star_cloud_appearance(_env)
+	World.refresh_weather_appearance(_env, session.sim.time())
 	if _storm_fx != null:
 		_storm_fx.configure(sky_config)
 		_update_storm(session.sim.time(), session.sim.paused)
@@ -1810,6 +1811,7 @@ func capture_evidence() -> Dictionary:
 	return {
 		format = "openrc-visual-evidence v1", lighting = TimeOfDayLighting.context(lighting_config, _lighting),
 		world_lighting = {enabled = _field_world_lighting, state = Atmosphere.state.duplicate(true) if _field_world_lighting else {}},
+		storm_bank = World.weather_snapshot(_env),
 		sky = _sky_context(),
 		night_options = night_options.duplicate(true), provenance = VisualEvidence.provenance(),
 		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,

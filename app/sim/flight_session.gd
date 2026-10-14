@@ -8,6 +8,7 @@ extends Node
 
 const FailureConfig := preload("res://failures/config.gd")
 const FailureRuntime := preload("res://failures/runtime.gd")
+const FailureCatalog := preload("res://failures/catalog.gd")
 const FAILURE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v10"
 signal failure_changed
 var _failures: RefCounted = null
@@ -21,7 +22,7 @@ func setup_failures(config: Dictionary, seed_value: int) -> bool:
 		failure_error = "Failure settings require a valid physics flight at tick zero."
 		return false
 	var candidate: RefCounted = FailureRuntime.new()
-	if not candidate.begin(checked.config, seed_value, sim.dt()):
+	if not candidate.begin(checked.config, seed_value, sim.dt(), FailureCatalog.profile_for_model(aircraft.model)):
 		failure_error = "Failure seed or timestep is invalid."
 		return false
 	_failures = candidate if checked.config.probability_percent > 0 else null
@@ -36,6 +37,15 @@ func failure_status() -> Dictionary:
 ## Demand downstream of the failed receiver/actuator; pilot inputs stay intact for traces and replay.
 func propulsion_throttle() -> float:
 	return sim.inputs[3] if _failures == null else _failures.effective_throttle(sim.inputs[3])
+
+
+## Source inhibition is staged before RK; engine mode belongs to Simulation's tick transaction.
+func failure_power_cut_active() -> bool:
+	return _failures != null and _failures.propulsion_cut_active()
+
+
+func propulsion_power_enabled() -> bool:
+	return engine_running and not failure_power_cut_active()
 
 
 ## Training delay counts only accepted ticks at least five metres above local terrain and clear of the wheels.
@@ -136,7 +146,7 @@ func glow_set_mixture(value: float) -> bool:
 ## Simplified external starter action; crank impulse conserves aircraft/rotor momentum.
 ## A metered priming dose leaves the finite tank. Hot engines refuse restart.
 func glow_start() -> bool:
-	if not glow_is_active() or not _flight_ready(): return false
+	if not glow_is_active() or not _flight_ready() or failure_power_cut_active(): return false
 	var install: Dictionary=aircraft.model.propulsion.glow
 	var current: Dictionary=GlowFlight.unpack(sim.continuous,install)
 	if current.is_empty() or current.running or current.fuel_kg<=install.settings.starter_prime_kg: return false
@@ -428,8 +438,8 @@ var device_info: Callable = func(device: int) -> Dictionary:
 var profiles_path := "user://rc_calibration.cfg"
 ## The calibration wizard while it runs, else null.
 var calibration: RefCounted = null
-## false: the engine is stopped (dead stick: no thrust, no torque, rpm 0) until restarted. A power-off glide start
-## stops it; every other start runs it. (Starting and stopping in flight: ROADMAP G2.)
+## Source enable, stored with accepted simulation modes. Glow/electric shafts can coast or windmill
+## while disabled; their continuous dynamics own RPM and passive propeller loads.
 var engine_running: bool:
 	get:
 		return true if sim == null else sim.modes[0] == 1
@@ -1237,6 +1247,8 @@ func reload() -> String:
 	var prepared := _prepare_aircraft(_load_selected_aircraft())
 	if not prepared.ok:
 		return "reload failed; previous aircraft and flight retained: %s" % prepared.message
+	if _failures != null and not _failures.accepts_profile(FailureCatalog.profile_for_model(prepared.data.model)):
+		return "reload failed; the propulsion failure profile changed; start a new flight"
 	if start_choice == START_RUNWAY:
 		var runway_candidate: Dictionary = _validate_runway_candidate(prepared)
 		if not runway_candidate.ok:
@@ -2172,7 +2184,7 @@ func _battery_point(rpm: float, values: PackedFloat64Array, dynamics_only: bool 
 	var charge: float = values[_rotor_index() + 1]
 	var prop: Dictionary = aircraft.model.propulsion
 	var soc: float = maxf(0.0, charge / (3600.0 * float(prop.battery.capacity_ah)))
-	return Propulsion.electric_source_state(rpm, propulsion_throttle(), prop, engine_running, soc, charge < 0.0, dynamics_only)
+	return Propulsion.electric_source_state(rpm, propulsion_throttle(), prop, propulsion_power_enabled(), soc, charge < 0.0, dynamics_only)
 
 
 func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
@@ -2220,7 +2232,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		rate = (float(battery_point.shaft_torque_nm) - load_torque) / float(prop.rotor_inertia) * 60.0 / TAU
 	else:
 		rate = Propulsion.shaft_rate(rpm, propulsion_throttle(), M.dot(air.v_air, Propulsion.axis(prop)),
-			prop, air_density(), engine_charge_ratio(), engine_running)
+			prop, air_density(), engine_charge_ratio(), propulsion_power_enabled())
 	if not is_finite(rate):
 		return {ok = false}
 	var a: PackedFloat64Array = sim.aux
@@ -2235,7 +2247,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		external[i] += ground_loads[i]
 	var locked: bool = false
 	if electric and trial_rpm <= 0.0:
-		var point: Dictionary = battery_point if not battery_point.is_empty() else Propulsion.electric_source_state(rpm, propulsion_throttle(), prop, engine_running)
+		var point: Dictionary = battery_point if not battery_point.is_empty() else Propulsion.electric_source_state(rpm, propulsion_throttle(), prop, propulsion_power_enabled())
 		if not point.get("ok", false):
 			return {ok = false}
 		var kt: float = 60.0 / (TAU * float(prop.motor.kv_rpm_per_volt))
@@ -2359,13 +2371,13 @@ func electrical_state() -> Dictionary:
 	if battery_is_dynamic() and not _battery_values_valid(sim.continuous):
 		return {ok = false}
 	var point: Dictionary = _battery_point(sim.aux[AUX_RPM], sim.continuous) if battery_is_dynamic() else Propulsion.electric_source_state(sim.aux[AUX_RPM], propulsion_throttle(),
-		aircraft.model.propulsion, engine_running)
+		aircraft.model.propulsion, propulsion_power_enabled())
 	if point.get("ok", false):
 		point.tick = sim.tick
 		point.time_s = sim.time()
 		point.rpm = sim.aux[AUX_RPM]
-		point.enabled = engine_running
-		point.duty = propulsion_throttle() if engine_running else 0.0
+		point.enabled = propulsion_power_enabled()
+		point.duty = propulsion_throttle() if propulsion_power_enabled() else 0.0
 		if battery_is_dynamic():
 			var index: int = _rotor_index() + 1
 			point.remaining_charge_c = sim.continuous[index]
@@ -2405,6 +2417,10 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		if not prepared_failure.get("ok", false):
 			return PackedFloat64Array([NAN])
 		inputs = _failures.effective_inputs(inputs)
+		if failure_power_cut_active():
+			# Like the weather RNG below, modes are rolled back on rejection and
+			# remembered before stepped observers see the accepted boundary.
+			engine_running = false
 	var prop: Dictionary = aircraft.model.propulsion
 	var rpm := 0.0
 	if shaft_is_coupled() or turbine_is_continuous():
@@ -2798,11 +2814,24 @@ func checkpoint() -> Dictionary:
 		return {}
 	if _failures != null:
 		boundary.failure_state = _failures.snapshot()
-		if not _failures.can_restore(boundary.failure_state, sim.tick):
+		if not _failures.can_restore(boundary.failure_state, sim.tick) \
+				or (_failures.propulsion_cut_active() and not _failure_power_state_valid(snapshot)):
 			return {}
 		boundary.failure_physics_format = boundary.format
 		boundary.format = FAILURE_CHECKPOINT_FORMAT
 	return boundary
+
+
+## A saved active source failure cannot advertise a running source to presentation or replay.
+func _failure_power_state_valid(snapshot: Dictionary) -> bool:
+	if not snapshot.get("modes") is PackedInt64Array or snapshot.modes.is_empty() or snapshot.modes[0] != 0:
+		return false
+	if glow_is_active():
+		var continuous: Variant = snapshot.get("continuous")
+		if not continuous is PackedFloat64Array or continuous.size() < GlowFlight.SIZE:
+			return false
+		return continuous[7] == 0.0 and continuous[8] == float(GlowFlight.REASONS.find("cut")) and continuous[5] == 0.0
+	return true
 
 
 func _checkpoint_configuration() -> String:
@@ -2852,6 +2881,10 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 				or not candidate.failure_state.get("plan") is Dictionary \
 				or candidate.failure_state.plan.get("dt") != sim.dt() \
 				or not restored_failures.restore(candidate.failure_state, candidate.simulation.tick):
+			return false
+		if not restored_failures.accepts_profile(FailureCatalog.profile_for_model(aircraft.model)):
+			return false
+		if restored_failures.propulsion_cut_active() and not _failure_power_state_valid(candidate.simulation):
 			return false
 		candidate = candidate.duplicate(true)
 		candidate.format = candidate.failure_physics_format

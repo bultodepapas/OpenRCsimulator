@@ -22,7 +22,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Random failures and emergency practice
 
-[EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the original session/control limitations. [EM-01 implementation evidence](failure-mode/EM-01/README.md) records software verification of the initial logical-control/throttle mode. The [failure-mode plan](../plans/failure-mode.md) owns current scope, probability, menus, remaining mechanisms and acceptance. Software verification does not establish physical or pilot validation.
+[EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the original session/control limitations. [EM-01 implementation evidence](failure-mode/EM-01/README.md) records software verification of the initial logical-control/throttle mode. [EM-05 evidence](failure-mode/EM-05/README.md) adds capability-bound glow/electric source loss, historical-plan compatibility and transactional replay. The [failure-mode plan](../plans/failure-mode.md) owns current scope, probability, menus, remaining mechanisms and acceptance. Software verification does not establish physical or pilot validation.
 
 ### Natural Random flight
 

@@ -46,7 +46,7 @@ func _new_flight(id: String) -> Node:
 
 func _test_all_airplane_configs() -> void:
 	var ids: PackedStringArray = Catalog.airplane_flyable_ids()
-	_check("catalog exposes conventional airplane configs", ids.size() == 7, ids)
+	_check("catalog retains at least the original seven airplane configs", ids.size() >= 7, ids)
 	for id: String in ids:
 		var baseline: Node = _new_flight(id)
 		var configured: Node = _new_flight(id)

@@ -215,7 +215,13 @@ Use the downloaded CC0 Innerscene housing, Kenney hearth and Mikodrak flame fram
 
 Use one integer per-flight probability, independent catastrophic admission and presentation-only notices. Freeze the selected event, onset and severity before ticking; restart repeats the same episode. Qualified airborne time excludes ground operation and pause. Stage actuator and throttle effects before integration, publish only after the simulation accepts the tick, and discard the candidate on solver rejection. A v10 flight checkpoint carries the complete resolved episode and preserves the underlying physics format. Notification choices do not change the physical plan identity.
 
-The initial scope uses existing logical servos and propulsion demand paths. Independent surface hardware, engine flameout and structural separation require their owning physical models; they are not approximated by hiding geometry, injecting arbitrary forces or treating idle as shutdown. See the [current implementation and remaining phases](docs/plans/failure-mode.md#implementation-checkpoint--initial-slice) and [software evidence](docs/research/failure-mode/EM-01/README.md).
+The initial scope uses existing logical servos and propulsion demand paths. Independent surface hardware, engine flameout and structural separation require their owning physical models; they are not approximated by hiding geometry, injecting arbitrary forces or treating idle as shutdown. See the [current implementation and remaining phases](docs/plans/failure-mode.md#implementation-checkpoint--current-scope) and [software evidence](docs/research/failure-mode/EM-01/README.md).
+
+### 2026-10-14 — Bind source-loss training to supported propulsion profiles (EM-02/05)
+
+Derive a closed eligibility profile from validated normalized propulsion capabilities, independently of aircraft IDs. Finite-glow installations use the existing combustion/fuel cut; electric installations disconnect motor drive while retaining passive rotor dynamics and auxiliary demand. Unsupported legacy and turbine shutdown stays outside the random pool. These episodes persist until Repeat/new flight; no automatic relight or external starter bypasses the cause.
+
+Resolve new episodes as `openrc-failure-plan v2`, including the profile in identity. Keep the v1 reader and its original catalog/seed mapping for saved episodes; do not redraw historical flights when new events are added. A profile mismatch rejects restore/reload atomically. Stage the source mode within the simulation tick transaction so both onset rejection and failure on the following tick retain a coherent accepted boundary. [Mechanisms, verification and limits](docs/research/failure-mode/EM-05/README.md).
 
 ### 2026-10-13 — Independent sky appearance and scene-local storms (FW-77–84)
 
