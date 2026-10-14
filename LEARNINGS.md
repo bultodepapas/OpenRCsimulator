@@ -102,6 +102,8 @@ The wreck's fixed section mass shares looked reasonable section by section, yet 
 
 PT1-rc9 traced this drift to Python 3.12's changed floating-point `sum()`. Explicit left-to-right accumulation preserves the existing generated values on both Windows and Linux. Reproducible generators must also specify path ordering: `Path` comparison differs across platforms, even when every source byte matches. Fix deterministic generation before replacing valid reference artifacts. [Cause and verification](docs/research/release-readiness/PT1-rc9/README.md#release-repairs).
 
+D6e-S (2026-10-14) found the same trap in input bytes. Workshop descriptors hash the exact aircraft JSON bytes, and `.gitattributes` makes those JSONs CRLF. A working copy written before that rule still holds LF. A descriptor regenerated there binds LF hashes, passes `--check` locally, and fails in every fresh clone (`research/aircraft-editor/test_descriptor_checkout.py`). Before regenerating byte-bound outputs, normalize their inputs to the `eol` rule; git sees no change.
+
 ## 2026-10-13 · CR-08b — effective mass grades the first contact, not the whole impact
 
 Effective mass at the struck point fixes whole-mass overrating: a level wingtip engages about 7 %. It also underrates oblique hits on long-nosed airframes. In a 45° Ventage Jet dive the nose engages 20 % of the mass and grades C2, yet the CG keeps most of its normal energy and slams the belly down next. Grade the first contact and also bound what the CG still carries into the surface; do not count sliding speed as impact energy. [CR-08b](docs/research/crash-damage-investigations/CR-08b/README.md)

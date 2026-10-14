@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex and broken propeller (US-V09a–h, US-V10, US-V11)
+# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex, broken propeller and contact scuffs (US-V09a–h, US-V10–V12)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -136,6 +136,33 @@ Evidence ([hashes](ugly-stik-finish-v6-evidence/v10b-SHA256SUMS)): [before/after
   Four mutations on a disposable copy were each detected: the blur ignoring the break, the wreck forgetting it, the stubs never shown, and restart keeping the break. Also passing: `verify_model` 919/0, `verify_controls` 376/0, propeller blur 114/0, crash wreck 219/0, breakup 30/0, fracture 24/0, prop strike 24/0, soft contact 10/0, catalog 88/0.
 
 Evidence ([hashes](ugly-stik-finish-v6-evidence/v11-SHA256SUMS)), rendered identically from a disposable copy and from `app/`: [hub close-up](ugly-stik-finish-v6-evidence/v11-broken-prop-hub.png) and [propeller view](ugly-stik-finish-v6-evidence/v11-broken-prop.png). Bench: `capture.sh <dir> --view prop_hub --prop-broken`.
+
+## US-V12 · scuffs from soft contacts
+
+2026-10-14, from the same audit. A soft hull contact that continues the flight (E3d1: wingtip brush, belly touch) left a mark and dust on the field only. The airframe stayed spotless.
+
+- **Method:** `render/crash/airframe_scuffs.gd`. The Compatibility renderer has no `Decal` node, so each scuff is a small transparent mesh fitted onto the struck skin:
+  - A ray from 4 cm below the contact up to 16 cm above finds the lowest visible airframe surface. Propeller, gear, wheel, light-kit and transparent meshes are skipped. Geometry3D runs in millimetres because of its epsilon.
+  - A contact past a rounded tip retries up to 5 cm toward the centre.
+  - A 6 × 3 grid along the slide is projected onto every nearby airframe triangle, so it follows a curved leading edge and straddles wing panels. Points past the skin's edge move halfway toward the centre until they land, so the mark narrows at an edge instead of floating past it.
+  - The scuff is a child of the struck mesh, so it rides on a deflected aileron, and it is lifted 0.6 mm against depth fighting.
+  - Size grows with the contact's normal speed and slide (3.5–18 cm long, 2–5 cm wide).
+  - Colour follows the field surface: mown grass stain `#40541f`, rough-ground soil `#54452b`, runway abrasion `#b8b5ad`. These are estimates. A streaked procedural texture thins toward the trailing end.
+  - Scuffs are capped at 24, the oldest recycled first, and restart clears them.
+- **Director:** `_touch_feedback()` adds one scuff per new field contact. Lake contacts, which carry `normal_ned`, are skipped. One scuff cost 9–17 ms on llvmpipe, once per contact.
+- **Proof:** `test_airframe_scuffs.gd`, 14/0, on the real Stik covers:
+  - belly touch → fuselage underside within 1.5 mm, facing down, long axis along the slide;
+  - wingtip → left wing underside, across panels;
+  - near the leading edge, every vertex within 1 mm of the curved skin;
+  - trailing edge near the tip → the aileron carries the scuff when deflected;
+  - nothing away from the airframe; runway lighter than grass; fallback colour; the cap; clear.
+
+  `test_soft_contact_feedback.gd` gains "the brush scuffs the low wing" and "restart removes the airframe scuffs". It passed 12/0 on the pre-merge tree. It now renders the pose before the director reads it, as `main._process` does. On the current `HEAD` it cannot run: `main.gd` calls a `World.set_night_options()` and a 6-argument `World.build()` that origin commit 60a2be0d never shipped in `render/world/world.gd`.
+
+  Mutations on a disposable copy were each detected: no projection, off-skin points left floating (both by the curved-skin check), no inward retry, no cap, unoriented normal, director never scuffing, restart keeping scuffs.
+- **Limits:** the crash wreck's twin is prepared before the flight and shows no scuffs. Texture and colours are not measured. Scuffs do not fade or weather.
+
+Evidence ([hashes](ugly-stik-finish-v6-evidence/v12-SHA256SUMS)), with a fixed set of four touches (belly on grass and soil, left wing on grass and runway): [wing underside](ugly-stik-finish-v6-evidence/v12-scuffs-wing-under.png), [wing toward the leading edge](ugly-stik-finish-v6-evidence/v12-scuffs-wing-le.png) and [belly](ugly-stik-finish-v6-evidence/v12-scuffs-belly.png). Bench: `capture.sh <dir> --view wing_under --scuffs`.
 
 ## Limits and open findings
 
