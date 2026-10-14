@@ -89,8 +89,8 @@ func _init() -> void:
 	kind = Kind.SIDEBAR
 	theme = UiTheme.build() # on this screen's top Control: Window.theme would not reach CanvasLayers
 	var sidebar_style: StyleBoxFlat = theme.get_stylebox("panel", "Sidebar") as StyleBoxFlat
-	sidebar_style.content_margin_top = 24
-	sidebar_style.content_margin_bottom = 16
+	sidebar_style.content_margin_top = 16
+	sidebar_style.content_margin_bottom = 12
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -151,10 +151,14 @@ func _init() -> void:
 	next_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.step(aircraft_id, 1)))
 	heading.add_child(next_button)
 	column.add_child(heading)
-	column.add_child(_gap(8))
+	column.add_child(_gap(6))
 	var card := PanelContainer.new()
 	card.name = "AircraftCard"
 	card.theme_type_variation = "Card"
+	var card_style: StyleBoxFlat = theme.get_stylebox("panel", "Card").duplicate() as StyleBoxFlat
+	card_style.content_margin_top = 8.0
+	card_style.content_margin_bottom = 8.0
+	card.add_theme_stylebox_override("panel", card_style)
 	var card_lines := VBoxContainer.new()
 	card_lines.add_theme_constant_override("separation", 2)
 	aircraft_name_label = _label("", "CardTitle", false) # a proper name: not auto-translated; set_aircraft() passes it through tr() for the one fictional name with a catalog entry (TT-06)
@@ -179,7 +183,7 @@ func _init() -> void:
 	card_lines.add_child(start_button)
 	card.add_child(card_lines)
 	column.add_child(card)
-	column.add_child(_gap(12))
+	column.add_child(_gap(8))
 
 	fly_button = _button("FLY", "PrimaryButton")
 	fly_button.name = "Fly"
@@ -230,9 +234,11 @@ func _init() -> void:
 	ground_vehicle_button.name = "GroundVehicles"
 	ground_vehicle_button.add_theme_font_size_override("font_size", 16)
 	ground_vehicle_button.custom_minimum_size.y = 36
+	for state: String in ["normal", "hover", "pressed", "disabled"]:
+		ground_vehicle_button.add_theme_stylebox_override(state, workshop_button.get_theme_stylebox(state))
 	ground_vehicle_button.pressed.connect(func() -> void: ground_vehicle_requested.emit())
 	column.add_child(ground_vehicle_button)
-	column.add_child(_gap(10))
+	column.add_child(_gap(6))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
 	language_button = _button("", "")
@@ -255,7 +261,7 @@ func _init() -> void:
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	row.add_child(quit_button)
 	column.add_child(row)
-	column.add_child(_gap(10))
+	column.add_child(_gap(6))
 	time_button = _button("", "")
 	time_button.name = "TimeOfDay"
 	time_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
@@ -271,11 +277,11 @@ func _init() -> void:
 	column.add_child(_spacer())
 
 	column.add_child(_label("CONTROLS", "SectionLabel"))
-	column.add_child(_gap(6))
+	column.add_child(_gap(4))
 	control_label = _label("", "SecondaryLabel", false) # built with tr()
 	control_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(control_label)
-	column.add_child(_gap(6))
+	column.add_child(_gap(4))
 	keys_legend = GridContainer.new()
 	keys_legend.columns = 2
 	keys_legend.add_theme_constant_override("h_separation", 18)
