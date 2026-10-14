@@ -120,9 +120,23 @@ func _initialize() -> void:
 	payload.workshop_descriptor.presentation.model_manifest_sha256 = "0".repeat(64)
 	check("changed presentation dependency cannot freeze a trial", not Trial.freeze(payload).get("ok", false))
 	payload.workshop_descriptor = descriptor.duplicate(true)
-	payload.workshop_descriptor.format = Descriptor.LEGACY_FORMAT
-	payload.workshop_descriptor.presentation = {"visual_id": Catalog.DEFAULT_ID, "scale_root": "airplane"}
-	var old_saved := Trial.freeze(payload)
+	var incompatible_legacy: Dictionary = payload.duplicate(true)
+	incompatible_legacy.workshop_descriptor.format = Descriptor.LEGACY_FORMAT
+	incompatible_legacy.workshop_descriptor.presentation = {"visual_id": Catalog.DEFAULT_ID, "scale_root": "airplane"}
+	check("v1 adapter refuses a source with stable physical identities",
+		not Trial.freeze(incompatible_legacy).get("ok", false))
+	var historical_base: Dictionary = base.duplicate(true)
+	_strip_physical_identity(historical_base)
+	var historical_bytes: PackedByteArray = _source_bytes(historical_base)
+	var historical_descriptor: Dictionary = _historical_descriptor(Catalog.DEFAULT_ID, historical_base,
+		historical_bytes, descriptor)
+	historical_descriptor.format = Descriptor.LEGACY_FORMAT
+	historical_descriptor.presentation = {"visual_id": Catalog.DEFAULT_ID, "scale_root": "airplane"}
+	var historical_payload: Dictionary = payload.duplicate(true)
+	historical_payload.base_bytes = historical_bytes
+	historical_payload.workshop_descriptor = historical_descriptor
+	historical_payload.dependencies = Dependencies.capture(historical_base).manifest
+	var old_saved := Trial.freeze(historical_payload)
 	check("v1 saved descriptor can still launch through its explicit adapter", old_saved.get("ok", false))
 	check("legacy descriptor trial hash binds the resolved model manifest", old_saved.get("ok", false)
 		and old_saved.identity.trial_id == _expected_trial_id(old_saved.identity))
@@ -150,3 +164,42 @@ func _sha(bytes: PackedByteArray) -> String:
 	hashing.start(HashingContext.HASH_SHA256)
 	hashing.update(bytes)
 	return hashing.finish().hex_encode()
+
+
+func _strip_physical_identity(base: Dictionary) -> void:
+	base.erase("physical_identity_version")
+	for component: Variant in base.get("inventory", []):
+		if component is Dictionary:
+			component.erase("id")
+	var gear: Variant = base.get("landing_gear", {})
+	if gear is Dictionary:
+		for contact: Variant in gear.get("contacts", []):
+			if contact is Dictionary:
+				contact.erase("id")
+	var propulsion: Variant = base.get("propulsion", {})
+	if propulsion is Dictionary:
+		propulsion.erase("id")
+	base.erase("crash_hull_ids")
+	var controls: Variant = base.get("controls", {})
+	if controls is Dictionary:
+		controls.erase("surface_ids")
+
+
+func _source_bytes(base: Dictionary) -> PackedByteArray:
+	return (JSON.stringify(base, "\t", true, true) + "\n").to_utf8_buffer()
+
+
+func _historical_descriptor(base_id: String, base: Dictionary, base_bytes: PackedByteArray,
+		current: Dictionary) -> Dictionary:
+	var bindings: Array = []
+	for index: int in base.get("inventory", []).size():
+		var name: String = str(base["inventory"][index].get("name", ""))
+		var name_hash: String = _sha(name.to_utf8_buffer())
+		bindings.append({"key": "inventory-%03d-%s" % [index, name_hash.substr(0, 12)],
+			"index": index, "name_sha256": name_hash})
+	var descriptor: Dictionary = current.duplicate(true)
+	descriptor["format"] = Descriptor.V2_FORMAT
+	descriptor["base_id"] = base_id
+	descriptor["base_sha256"] = _sha(base_bytes)
+	descriptor["inventory_bindings"] = bindings
+	return descriptor
