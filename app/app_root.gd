@@ -35,6 +35,7 @@ const InputReport = preload("res://input/input_report.gd")
 const NaturalRandom = preload("res://scenarios/natural_random.gd")
 const ScenarioConfig = preload("res://scenarios/scenario_config.gd")
 const NaturalRandomScreen = preload("res://ui/natural_random_screen.gd")
+const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
@@ -138,6 +139,19 @@ func _ready() -> void:
 ## Any user argument selects the technical/direct route (`-- --quick-flight` is the documented shortcut).
 static func wants_direct_flight(args: PackedStringArray) -> bool:
 	return not args.is_empty()
+
+
+## Direct-flight route selector. Plane arguments remain parsed by main.gd; Home supplies its selected catalog ID.
+static func aircraft_argument(args: PackedStringArray) -> String:
+	for arg in args:
+		if arg.begins_with("--aircraft="):
+			return arg.trim_prefix("--aircraft=")
+	return ""
+
+
+## Keep the existing airplane scene route intact and select the rotorcraft script for explicit catalog IDs.
+static func flight_script_path_for_aircraft(id: String) -> String:
+	return HELICOPTER_MAIN_SCRIPT if Catalog.is_rotorcraft(id) else FLIGHT_SCENE
 
 
 func show_home() -> void:
@@ -251,7 +265,7 @@ func set_aircraft(id: String) -> void:
 		return
 	preferences.aircraft = id
 	home.set_aircraft(id)
-	if not FlightSession.runway_aircraft_supported(id):
+	if Catalog.is_rotorcraft(id) or not FlightSession.runway_aircraft_supported(id):
 		preferences.start_choice = "airborne"
 	if preferences.start_choice == FlightSession.START_HALF_POWER and not FlightSession.half_power_start_supported(id):
 		preferences.start_choice = "airborne"
@@ -296,6 +310,9 @@ func start_flight(request: Dictionary = {}) -> void:
 			natural_random_screen.show_error("; ".join(checked_sources.errors))
 			return
 		request = checked_request.scenario
+		if Catalog.is_rotorcraft(str(request.get("aircraft_id", ""))):
+			natural_random_screen.show_error(tr("Natural Random currently supports airplanes only."))
+			return
 	# Retain the exact briefing through failed startup, including its draft and focus.
 	var departing_random: CanvasLayer = null
 	if is_random:
@@ -319,18 +336,26 @@ func start_flight(request: Dictionary = {}) -> void:
 		chosen_start = request.start_choice
 		chosen_weather = request.weather_config.duplicate(true)
 		chosen_lighting = request.lighting_config.duplicate(true)
+	var route_aircraft_id := aircraft
+	if not has_home and not is_random:
+		route_aircraft_id = aircraft_argument(user_args)
+	var helicopter_route: bool = Catalog.is_rotorcraft(route_aircraft_id)
+	if helicopter_route:
+		chosen_start = "airborne"
 	if departing_home != null:
 		screens.pop(false, false)
 	if home_scene != null:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
-	flight = _create_flight()
+	flight = _create_flight(route_aircraft_id)
 	flight.field_path = field_path
-	flight.aircraft_id = aircraft # "" on the direct route: main.gd reads --aircraft=<id> or flies the Ugly Stik
+	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
+	flight.aircraft_id = route_aircraft_id if has_home or is_random or helicopter_route else ""
 	flight.start_choice = chosen_start
 	flight.weather_config = chosen_weather.duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	flight.interactive_start = has_home
-	flight.remember_lighting_selection = not is_random
+	if not helicopter_route:
+		flight.remember_lighting_selection = not is_random
 	flight.latency_marker_enabled = has_home and bool(preferences.get("latency_marker", Preferences.DEFAULTS.latency_marker))
 	# HUD: the Home route flies with the player's overlays; the direct route keeps the legacy labels (--hud=).
 	flight.overlays_enabled = has_home
@@ -376,7 +401,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		flight.pause_requested.connect(open_pause)
 		if has_home:
 			flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
-			flight.scenario_changed.connect(_on_scenario_changed)
+			if flight.has_signal("scenario_changed"):
+				flight.scenario_changed.connect(_on_scenario_changed)
 		_keyboard_reader = flight.session.read_raw
 		if is_random:
 			HeldKeys.mask(flight.session, _keyboard_reader)
@@ -386,12 +412,18 @@ func start_flight(request: Dictionary = {}) -> void:
 			flight.add_child(hint) # freed with the flight
 
 
-func _create_flight() -> Node:
-	return load(FLIGHT_SCENE).instantiate()
+func _create_flight(aircraft_id: String = "") -> Node:
+	var route_path := flight_script_path_for_aircraft(aircraft_id)
+	if Catalog.is_rotorcraft(aircraft_id):
+		var helicopter_script: Script = load(route_path) as Script
+		return helicopter_script.new() if helicopter_script != null and helicopter_script.can_instantiate() else null
+	return load(route_path).instantiate()
 
 
 func open_natural_random(from: Control = null) -> void:
 	if not screens.is_top("home") or flight != null:
+		return
+	if Catalog.is_rotorcraft(home.aircraft_id):
 		return
 	var briefing := NaturalRandomScreen.new()
 	briefing.fly_requested.connect(start_flight)
@@ -540,13 +572,16 @@ func open_pause() -> void:
 	var session: Node = flight.session
 	session.cancel_calibration()
 	var pause_menu := PauseMenu.new(has_home)
+	var helicopter_route: bool = Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
 	pause_menu.continue_requested.connect(continue_flight)
 	pause_menu.restart_requested.connect(restart_flight)
 	pause_menu.workshop_requested.connect(open_workshop)
+	pause_menu.workshop_button.visible = not helicopter_route
 	if not _workshop_screens.is_empty():
 		pause_menu.workshop_button.text = "Return to Workshop"
 		pause_menu.end_button.text = "Return to Workshop"
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
+	pause_menu.time_of_day_button.visible = not helicopter_route
 	pause_menu.overlays_requested.connect(open_overlays)
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
 	pause_menu.end_requested.connect(end_flight)
@@ -570,6 +605,9 @@ func open_help(from: Control = null) -> void:
 
 ## One editor route for the whole catalog. Trial flights never replace the original selection.
 func open_workshop(from: Control = null) -> void:
+	if (flight != null and Catalog.is_rotorcraft(str(flight.get("aircraft_id")))) \
+		or (home != null and Catalog.is_rotorcraft(home.aircraft_id)):
+		return
 	if not _workshop_screens.is_empty():
 		_return_to_workshop()
 		return
@@ -720,6 +758,8 @@ func close_help() -> void:
 ## Opens a lighting draft over the paused production flight. It has no weather or Home-world side effects.
 func open_time_of_day(from: Control = null) -> void:
 	if not screens.is_top("pause") or flight == null or flight.session == null:
+		return
+	if Catalog.is_rotorcraft(str(flight.get("aircraft_id"))):
 		return
 	if not flight.session.sim.paused:
 		return

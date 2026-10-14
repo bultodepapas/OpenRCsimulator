@@ -209,10 +209,10 @@ static func _validate_identity_bindings(value: Variant, base: Dictionary) -> Dic
 	return {"ok": true, "errors": errors}
 
 
-## Resolve a validated v3 binding against the exact source snapshot by authored ID.
+## Resolve a v3 binding by authored ID after validate() checks its exact source bytes.
 ## The returned index is source-local and may change when the source inventory is reordered.
 static func resolve_inventory_index(descriptor: Dictionary, key: String, base: Dictionary) -> int:
-	if str(descriptor.get("format", "")) != FORMAT:
+	if str(descriptor.get("format", "")) != FORMAT or descriptor.get("base_id") != base.get("id"):
 		return -1
 	var checked: Dictionary = _validate_identity_bindings(descriptor.get("inventory_bindings", null), base)
 	if not bool(checked.get("ok", false)):

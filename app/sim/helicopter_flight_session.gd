@@ -46,6 +46,7 @@ var _start: PackedFloat64Array = PackedFloat64Array([12,4,-3])
 var _hover: Dictionary = {}
 var _trim: Dictionary = {}
 var _ready_to_fly: bool = false
+var _stage_failure: String = ""
 
 func _init() -> void:
  sim.name="Simulation"
@@ -53,7 +54,7 @@ func _init() -> void:
  add_child(sim)
  sim.continuous_evaluate=_stage
  sim.continuous_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
- sim.faulted.connect(func(reason: String) -> void: pause_reason=reason)
+ sim.faulted.connect(func(reason: String) -> void: pause_reason=reason+(" · "+_stage_failure if not _stage_failure.is_empty() else ""))
  sim.stepped.connect(_on_stepped)
 
 func setup(path: String=aircraft_path,_id: String="") -> bool:
@@ -97,6 +98,7 @@ func set_start_altitude(altitude: float) -> void:
 func reset() -> bool:
  resetting.emit()
  _ready_to_fly=false
+ _stage_failure=""
  if not aircraft.ok: return false
  var solved: Dictionary=Hover.solve_hover(aircraft.context,0.0,_start,wind_at(0.0),{})
  if not solved.ok:
@@ -129,7 +131,9 @@ func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) ->
  if not contact.ok: return {}
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
  var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold,wind_at(t),false,contact.loads,_trim)
- if not result.ok: return {}
+ if not result.ok:
+  _stage_failure=str(result.get("message","flight equation refused state"))
+  return {}
  return {loads=result.loads,body_derivative=result.body_derivative,derivative=result.derivative,rotor_momentum=result.rotor_momentum}
 
 func _ready() -> void:
@@ -216,4 +220,30 @@ func telemetry() -> Dictionary:
 func trace_meta() -> Dictionary:
  return {aircraft_id=aircraft.id,aircraft_sha256=FileAccess.get_sha256(aircraft_path),vehicle="rotorcraft",law="experimental-xcell-hx700-v1",continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator",qualification=aircraft.qualification,weather=weather_configuration()}
 func checkpoint() -> Dictionary:
- return {format="openrc-helicopter-checkpoint v1",aircraft_sha256=FileAccess.get_sha256(aircraft_path),simulation=sim.checkpoint(),commands=commands.duplicate(),trim=_trim.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold}
+ return {format="openrc-helicopter-checkpoint v1",aircraft_sha256=FileAccess.get_sha256(aircraft_path),weather=weather_configuration(),simulation=sim.checkpoint(),commands=commands.duplicate(),trim=_trim.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold}
+
+func restore_checkpoint(candidate: Variant) -> Dictionary:
+ if not candidate is Dictionary or candidate.size()!=9 or not candidate.has_all(["format","aircraft_sha256","weather","simulation","commands","trim","flight_mode","trainer_enabled","zero_drive_hold"]):
+  return {ok=false,errors=["malformed helicopter checkpoint"]}
+ if candidate.format!="openrc-helicopter-checkpoint v1" or candidate.aircraft_sha256!=FileAccess.get_sha256(aircraft_path) or candidate.weather!=weather_configuration() or candidate.trim!=_trim:
+  return {ok=false,errors=["helicopter checkpoint configuration mismatch"]}
+ if candidate.flight_mode not in ["normal","idle_up"] or not candidate.trainer_enabled is bool or not candidate.zero_drive_hold is bool or not candidate.commands is Dictionary or candidate.commands.size()!=4:
+  return {ok=false,errors=["invalid helicopter control configuration"]}
+ for key: String in ["roll","pitch","yaw","throttle"]:
+  var value: Variant=candidate.commands.get(key)
+  if typeof(value) not in [TYPE_FLOAT,TYPE_INT] or not is_finite(float(value)) or value>1.0 or value<(-1.0 if key!="throttle" else 0.0):
+   return {ok=false,errors=["invalid saved pilot commands"]}
+ if not candidate.simulation is Dictionary or not sim.can_restore_checkpoint(candidate.simulation,1,0):
+  return {ok=false,errors=["invalid saved simulation"]}
+ # Every check finishes before recorder/state mutation.
+ resetting.emit()
+ if not sim.restore_checkpoint(candidate.simulation): return {ok=false,errors=["simulation restore refused"]}
+ commands=candidate.commands.duplicate()
+ flight_mode=candidate.flight_mode
+ trainer_enabled=candidate.trainer_enabled
+ zero_drive_hold=candidate.zero_drive_hold
+ crash={}
+ _ready_to_fly=true
+ pause_reason=""
+ sim.set_paused(true)
+ return {ok=true,errors=[]}

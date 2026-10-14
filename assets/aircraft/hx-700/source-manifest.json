@@ -37,7 +37,7 @@
     "tail_rotor": {
       "source_radius_m": 0.14743219,
       "xcell_reference_radius_m": 0.13,
-      "visual_scale_ratio_if_aligned": 0.8814604436141778,
+      "visual_scale_ratio_if_aligned": 0.8817613032811898,
       "default": "authored source radius; alignment must be requested from the runtime aircraft data"
     },
     "visual_spin_signs_about_mount_local_plus_z": {

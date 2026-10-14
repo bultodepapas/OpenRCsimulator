@@ -630,6 +630,11 @@ static func _file_stamp(path: String) -> String:
 
 
 static func _sorted_value(value: Variant) -> Variant:
+	# JSON.parse() materializes JSON numbers as float64, even when the source was an int.
+	# It can also round a decimal by one ULP, so use 12 significant digits for the digest form.
+	# Stored values and their JSON use full precision; this is only identity canonicalization.
+	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
+		return ("%.12g" % float(value)).to_float()
 	if typeof(value) == TYPE_DICTIONARY:
 		var sorted_keys: Array = value.keys()
 		sorted_keys.sort()

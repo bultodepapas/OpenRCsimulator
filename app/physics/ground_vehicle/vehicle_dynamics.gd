@@ -74,26 +74,10 @@ static func initialize(
 	var sprung_mass := float(model["sprung_mass_kg"])
 	var wheel_load := (sprung_mass / 4.0 + unsprung_mass) * gravity
 	var tire_compression := wheel_load / tire_stiffness if gravity > 0.0 else 0.0
-	var x: PackedFloat64Array = model["corner_x_m"]
-	var y: PackedFloat64Array = model["corner_y_m"]
-	var heights := PackedFloat64Array()
-	var normals: Array[PackedFloat64Array] = []
-	heights.resize(CORNER_COUNT)
-	var mean_height := 0.0
-	for corner in CORNER_COUNT:
-		var sample := _sample_surface(road, north_m, east_m)
-		if not bool(sample["ok"]):
-			return _failure("Could not sample the spawn road: " + str(sample["error"]))
-		var surface: Dictionary = sample["surface"]
-		heights[corner] = float(surface["height_m"])
-		mean_height += heights[corner] / float(CORNER_COUNT)
-		normals.append(surface["normal_ned"])
-	for corner in CORNER_COUNT:
-		if absf(heights[corner] - mean_height) > 1.0e-4:
-			return _failure("Static spawn requires a flat patch across all four tires")
-		var normal: PackedFloat64Array = normals[corner]
-		if M.norm(M.sub(normal, PackedFloat64Array([0.0, 0.0, -1.0]))) > 1.0e-5:
-			return _failure("Static spawn requires an upward level surface")
+	var patch := _check_static_spawn_patch(model, road, north_m, east_m, 0.0, static_travel)
+	if not bool(patch["ok"]):
+		return _failure(str(patch["error"]))
+	var mean_height := float(patch["mean_height_m"])
 	var cg_height := (
 		mean_height + tire_radius - tire_compression
 		+ float(model["cg_height_above_chassis_datum_m"])
@@ -123,14 +107,12 @@ static func make_state(model: Dictionary, pose: Dictionary, road: Callable) -> P
 	var east_m := float(pose["east_m"])
 	var vehicle_up_m := float(pose["vehicle_up_m"])
 	var heading_rad := float(pose["heading_rad"])
-	var ground_sample := _sample_surface(road, north_m, east_m)
-	if not bool(ground_sample["ok"]):
-		return PackedFloat64Array()
-	var surface: Dictionary = ground_sample["surface"]
-	var normal: PackedFloat64Array = surface["normal_ned"]
-	if M.norm(M.sub(normal, PackedFloat64Array([0.0, 0.0, -1.0]))) > 1.0e-5:
-		return PackedFloat64Array()
 	var travel := _static_travel(model)
+	var patch := _check_static_spawn_patch(
+		model, road, north_m, east_m, heading_rad, travel,
+	)
+	if not bool(patch["ok"]):
+		return PackedFloat64Array()
 	var state := PackedFloat64Array()
 	state.resize(STATE_SIZE)
 	state[POS] = north_m
@@ -152,8 +134,8 @@ static func step(
 	state: PackedFloat64Array,
 	model: Dictionary,
 	controls: Dictionary,
+	dt: float,
 	road: Callable,
-	dt: float = 1.0 / 240.0,
 ) -> PackedFloat64Array:
 	if state.size() != STATE_SIZE or not _valid_model(model) or not _valid_controls(controls):
 		return PackedFloat64Array()
@@ -365,7 +347,7 @@ static func _evaluate(state: PackedFloat64Array, model: Dictionary, controls: Di
 	var tire_surface_id: Array = []
 	var tire_road_sample: Array[Dictionary] = []
 	var controls_throttle := float(controls["throttle"])
-	var reverse_factor := float(model["reverse_torque_fraction"]) if bool(controls["reverse"]) else 1.0
+	var reverse_factor := -float(model["reverse_torque_fraction"]) if bool(controls["reverse"]) else 1.0
 	var drive_base := controls_throttle * float(model["drive_torque_per_wheel_nm"]) * reverse_factor
 	var brake_base := float(controls["brake"]) * float(model["brake_torque_per_wheel_nm"])
 	var drive_fade := float(model["drive_torque_fade_rad_s"])
@@ -632,7 +614,6 @@ static func _corner_geometry(state: PackedFloat64Array, model: Dictionary, steer
 	var corner_x: PackedFloat64Array = model["corner_x_m"]
 	var corner_y: PackedFloat64Array = model["corner_y_m"]
 	var arm_length := float(model["arm_length_m"])
-	var arm_inner_offset := float(model["arm_inner_offset_m"])
 	var cg_height := float(model["cg_height_above_chassis_datum_m"])
 	var rest_below := float(model["wheel_center_rest_below_chassis_datum_m"])
 	var body_rate := _slice3(state, RATE)
@@ -650,7 +631,9 @@ static func _corner_geometry(state: PackedFloat64Array, model: Dictionary, steer
 			return _failure("Suspension travel reaches the A-arm geometric singularity")
 		var lateral_offset := M.sqrt_(arm_length * arm_length - travel * travel)
 		var side := signf(corner_y[corner])
-		var y := side * (arm_inner_offset + lateral_offset)
+		# Preserve the authored wheel station about the shifted CG; travel moves
+		# the hub laterally along its arm from that zero-travel location.
+		var y := corner_y[corner] + side * (lateral_offset - arm_length)
 		var y_prime := -side * travel / lateral_offset
 		var y_second := -side * arm_length * arm_length / (lateral_offset * lateral_offset * lateral_offset)
 		var r := PackedFloat64Array([corner_x[corner], y, cg_height + rest_below - travel])
@@ -891,9 +874,10 @@ static func _solve_tangent_friction(
 	var columns: Array[PackedFloat64Array] = []
 	var contact_row_indexes: Array[PackedInt32Array] = []
 	for contact in contacts:
-		var contact_rows: Array[PackedFloat64Array] = contact["rows"]
+		var contact_rows: Array = contact["rows"]
 		var indexes := PackedInt32Array()
-		for row in contact_rows:
+		for row_value in contact_rows:
+			var row: PackedFloat64Array = row_value
 			indexes.append(rows.size())
 			rows.append(row)
 			columns.append(_matrix_vector(inverse, row, GENERALIZED_SIZE))
@@ -903,9 +887,11 @@ static func _solve_tangent_friction(
 	var slip_bias: Array[PackedFloat64Array] = []
 	for contact in contacts:
 		var bias_world: PackedFloat64Array = contact["bias"]
-		var directions: Array[PackedFloat64Array] = contact["directions"]
+		var directions: Array = contact["directions"]
+		var forward_direction: PackedFloat64Array = directions[0]
+		var lateral_direction: PackedFloat64Array = directions[1]
 		var bias := PackedFloat64Array([
-			M.dot(directions[0], bias_world), M.dot(directions[1], bias_world),
+			M.dot(forward_direction, bias_world), M.dot(lateral_direction, bias_world),
 		])
 		slip_bias.append(bias)
 	for sweep in FRICTION_SWEEPS:
@@ -1184,6 +1170,48 @@ static func _static_travel(model: Dictionary) -> float:
 		return 0.0
 	return float(model["sprung_mass_kg"]) * float(model["gravity_m_per_s2"]) \
 		/ (4.0 * float(model["suspension_stiffness_n_per_m"]))
+
+
+static func _check_static_spawn_patch(
+	model: Dictionary,
+	road: Callable,
+	north_m: float,
+	east_m: float,
+	heading_rad: float,
+	travel: float,
+) -> Dictionary:
+	var arm_length := float(model["arm_length_m"])
+	if absf(travel) >= arm_length:
+		return _failure("Static suspension travel reaches the A-arm singularity")
+	var q := M.q_from_euler(heading_rad, 0.0, 0.0)
+	var x: PackedFloat64Array = model["corner_x_m"]
+	var y: PackedFloat64Array = model["corner_y_m"]
+	var heights := PackedFloat64Array()
+	heights.resize(CORNER_COUNT)
+	var mean_height := 0.0
+	for corner in CORNER_COUNT:
+		var side := signf(y[corner])
+		var lateral_offset := M.sqrt_(arm_length * arm_length - travel * travel)
+		var r := PackedFloat64Array([
+			x[corner],
+			y[corner] + side * (lateral_offset - arm_length),
+			float(model["cg_height_above_chassis_datum_m"])
+				+ float(model["wheel_center_rest_below_chassis_datum_m"]) - travel,
+		])
+		var world_offset := M.q_rotate(q, r)
+		var sample_result := _sample_surface(road, north_m + world_offset[0], east_m + world_offset[1])
+		if not bool(sample_result["ok"]):
+			return _failure("Could not sample a spawn tire patch: " + str(sample_result["error"]))
+		var surface: Dictionary = sample_result["surface"]
+		var normal: PackedFloat64Array = surface["normal_ned"]
+		if M.norm(M.sub(normal, PackedFloat64Array([0.0, 0.0, -1.0]))) > 1.0e-5:
+			return _failure("Static spawn requires an upward level surface")
+		heights[corner] = float(surface["height_m"])
+		mean_height += heights[corner] / float(CORNER_COUNT)
+	for corner in CORNER_COUNT:
+		if absf(heights[corner] - mean_height) > 1.0e-4:
+			return _failure("Static spawn requires a flat patch across all four tires")
+	return {"ok": true, "mean_height_m": mean_height, "corner_heights_m": heights}
 
 
 static func _energy_from_terms(

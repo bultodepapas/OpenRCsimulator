@@ -978,6 +978,8 @@ func bind_scenario(raw: Variant) -> Dictionary:
 func _forget_scenario() -> void:
 	if not flight_scenario.is_empty():
 		flight_scenario = {}
+		if _note in [tr("Natural Random"), tr("Custom from Natural Random")]:
+			_note = ""
 		scenario_changed.emit({})
 
 

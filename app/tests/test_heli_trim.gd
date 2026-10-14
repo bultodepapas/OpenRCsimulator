@@ -21,6 +21,18 @@ func close(label: String, actual: float, expected: float, tolerance: float = 1.0
 	check(label, is_finite(actual) and absf(actual - expected) <= tolerance * maxf(1.0, absf(expected)))
 
 
+func _pulse(start: PackedFloat64Array, context: Dictionary, sticks: PackedFloat64Array,
+		wind: PackedFloat64Array, trim: Dictionary) -> Dictionary:
+	var state: PackedFloat64Array = start.duplicate()
+	for tick: int in range(120):
+		var step: Dictionary = Flight.rk4_step_at(state, float(tick) / 240.0, 1.0 / 240.0,
+			context, sticks, "normal", true, false, wind, false, PackedFloat64Array(), trim)
+		if not step.ok:
+			return {"ok": false, "message": step.get("message", "pulse step failed")}
+		state = step.state
+	return {"ok": true, "state": state}
+
+
 func _initialize() -> void:
 	var prepared: Dictionary = Fixture.make_context()
 	check("coupled flight fixture prepares", prepared.ok)
@@ -87,5 +99,30 @@ func _initialize() -> void:
 			differences[1] <= differences[0] + 1.0e-10)
 		check("5 s hover stays within the trimmed equilibrium envelope",
 			absf(endpoints[2][2] - trim.state[2]) < 0.02)
+	var pitch_sticks: PackedFloat64Array = PackedFloat64Array([-0.2, 0.0, 0.0, trim.sticks[3]])
+	var roll_sticks: PackedFloat64Array = PackedFloat64Array([0.0, 0.2, 0.0, trim.sticks[3]])
+	var yaw_sticks: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.2, trim.sticks[3]])
+	var collective_delta: float = -0.2 if trim.sticks[3] > 0.75 else 0.2
+	var collective_sticks: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0,
+		clampf(trim.sticks[3] + collective_delta, -1.0, 1.0)])
+	var pitch_response: Dictionary = _pulse(trim.state, context, pitch_sticks, wind, trim.trim)
+	var roll_response: Dictionary = _pulse(trim.state, context, roll_sticks, wind, trim.trim)
+	var yaw_response: Dictionary = _pulse(trim.state, context, yaw_sticks, wind, trim.trim)
+	var collective_response: Dictionary = _pulse(trim.state, context, collective_sticks, wind, trim.trim)
+	check("pitch, roll, yaw and collective pulses integrate through physical dynamics",
+		pitch_response.ok and roll_response.ok and yaw_response.ok and collective_response.ok)
+	if pitch_response.ok and roll_response.ok and yaw_response.ok and collective_response.ok:
+		var initial_euler: PackedFloat64Array = M.q_to_euler(PackedFloat64Array([trim.state[6], trim.state[7], trim.state[8], trim.state[9]]))
+		var pitch_final: PackedFloat64Array = pitch_response.state
+		var roll_final: PackedFloat64Array = roll_response.state
+		var yaw_final: PackedFloat64Array = yaw_response.state
+		var collective_final: PackedFloat64Array = collective_response.state
+		var pitch_euler: PackedFloat64Array = M.q_to_euler(PackedFloat64Array([pitch_final[6], pitch_final[7], pitch_final[8], pitch_final[9]]))
+		var roll_euler: PackedFloat64Array = M.q_to_euler(PackedFloat64Array([roll_final[6], roll_final[7], roll_final[8], roll_final[9]]))
+		var yaw_euler: PackedFloat64Array = M.q_to_euler(PackedFloat64Array([yaw_final[6], yaw_final[7], yaw_final[8], yaw_final[9]]))
+		check("positive nose-up pitch command produces nose-up attitude response", pitch_euler[1] > initial_euler[1])
+		check("positive right roll command produces right-bank response", roll_euler[2] > initial_euler[2])
+		check("positive yaw-rate command produces positive heading response", yaw_euler[0] > initial_euler[0])
+		check("higher collective unloads the NED down position", collective_final[2] < trim.state[2])
 	print("HELI-18 airborne hover trim: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

@@ -15,6 +15,7 @@ Owns `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/`, build-info expo
 - End/Quit saves an active trace. A save failure is visible; a second explicit request discards it. Returning to Home frees the old flight, camera, audio and session.
 - Help, Home and the first-flight hint share `controls_reference.gd`. Physical keyboard positions drive flight; displayed labels follow the keyboard layout where the platform supplies them.
 - English is the source/default language; `app/i18n/es.po` supplies Spanish. Dynamic strings rebuild on locale change.
+- Current source includes **Natural Random / Aleatorio natural** beside Workshop on Home. The briefing draws one of five unmodified stock airplanes, bounded wind/gust/turbulence, atmosphere and a fixed morning/day/afternoon snapshot. **Another flight** rerolls; **Fly** accepts the displayed choice; **Repeat last flight** recalls the last accepted choice in this application session. Restart retains its conditions. Normal aircraft/weather/lighting preferences stay unchanged, including pause-light edits; those edits mark the scenario customized. [Mode boundaries and remaining gates](plans/natural-random-flight.md), [software evidence](research/natural-random/README.md).
 
 Player instructions and controls: [FIRST-LAUNCH](FIRST-LAUNCH.md). Developer commands: [TOOLS](TOOLS.md).
 

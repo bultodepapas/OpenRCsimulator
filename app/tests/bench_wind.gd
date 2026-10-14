@@ -137,7 +137,7 @@ func _parse_args() -> void:
 		elif arg.begins_with("--gust-delay="):
 			_gust_delay_override_s = float(arg.trim_prefix("--gust-delay="))
 	if _aircraft_ids.is_empty():
-		_aircraft_ids = AircraftCatalog.flyable_ids()
+		_aircraft_ids = AircraftCatalog.airplane_flyable_ids()
 
 
 func _configure_weather(session: Node) -> Dictionary:

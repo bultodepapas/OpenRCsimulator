@@ -1214,8 +1214,11 @@ msgstr "No se pudo preparar el vuelo aleatorio: %s"
 msgid "Glow: cut, starter, lean/rich mixture"
 msgstr "Glow: corte, arranque, mezcla pobre/rica"
 
-msgid "Smoke: pump / AUX"
-msgstr "Humo: bomba / AUX"
+msgid "Restart / resume after radio failsafe"
+msgstr "Reiniciar / reanudar tras fallo de radio"
 
 msgid "RC cars · Bisonte MT8"
 msgstr "Carros RC · Bisonte MT8"
+
+msgid "Workshop"
+msgstr "Taller"

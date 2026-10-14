@@ -33,7 +33,7 @@ func fly(session: Node, ticks: int) -> void:
 		session.sim.step()
 
 func run() -> void:
-	for entry in Catalog.flyable_entries():
+	for entry in Catalog.airplane_flyable_entries():
 		var s = make_session(entry)
 		check(entry.id + " valid start", s.start.ok)
 		if not s.start.ok:

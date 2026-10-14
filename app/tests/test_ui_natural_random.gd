@@ -113,7 +113,7 @@ func _run() -> void:
 	check("fixed random lighting retired the Home clock", World._flow.is_empty() and not flight._field_world_lighting)
 	var meta: Dictionary = flight._trace_meta()
 	var decoded: Dictionary = ScenarioConfig.validate(JSON.parse_string(meta.flight_scenario))
-	check("trace contains the complete accepted scenario", decoded.ok and decoded.scenario == accepted)
+	check("trace contains the complete accepted scenario", decoded.ok and decoded.scenario.identity == accepted.identity)
 	if not decoded.ok:
 		printerr("Trace scenario errors: ", decoded.errors)
 	app.open_pause()
@@ -139,8 +139,8 @@ func _run() -> void:
 	var trace_edits: Array = JSON.parse_string(flight.recorder.trace.meta.flight_scenario_edits)
 	var trace_edited: Dictionary = ScenarioConfig.validate(trace_edits[0].scenario)
 	check("recording preserves initial scenario and records the lighting edit at its tick", trace_initial.ok
-		and trace_initial.scenario == accepted and trace_edits.size() == 1 and trace_edited.ok
-		and trace_edited.scenario == flight.flight_scenario and int(trace_edits[0].tick) == flight.session.sim.tick)
+		and trace_initial.scenario.identity == accepted.identity and trace_edits.size() == 1 and trace_edited.ok
+		and trace_edited.scenario.identity == flight.flight_scenario.identity and int(trace_edits[0].tick) == flight.session.sim.tick)
 	flight.recorder.recording = false # Keep this test's trace in memory; no player trace-file writes.
 	app.restart_flight()
 	check("edited lighting is the restart selection", flight.lighting_config == edited and flight.session.sim.tick == 0)
@@ -165,7 +165,7 @@ func _run() -> void:
 		var checkpoint: Dictionary = flight.checkpoint()
 		var restored: Dictionary = flight.restore_checkpoint(checkpoint)
 		check("legacy paired checkpoint clears unrecorded random provenance", restored.ok and flight.flight_scenario.is_empty()
-			and not flight._trace_meta().has("flight_scenario") and flight._note.is_empty())
+			and not flight._trace_meta().has("flight_scenario") and not flight._note.contains("Natural Random"))
 		app.open_pause()
 		await ui.settle()
 		app.open_time_of_day()
@@ -181,4 +181,4 @@ func _run() -> void:
 func _finish() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(_prefs_path))
 	print("NR UI: %d checks, %d failures" % [_checks, _failures])
-	quit(
+	quit(0 if _failures == 0 else 1)

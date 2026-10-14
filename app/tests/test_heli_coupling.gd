@@ -57,6 +57,20 @@ func _initialize() -> void:
 		var stored_momentum: PackedFloat64Array = M.add(RB.inertia_mul(inertia, w), M.scale(b, speed))
 		check("returned angular momentum is locked body plus every rotor", stored_momentum
 			== solved.total_angular_momentum_body_frd_nms)
+		var momentum_rate_body: PackedFloat64Array = M.add(body_momentum_rate, shaft_exchange)
+		var world_from_body: PackedFloat64Array = M.q_from_euler(0.4, -0.2, 0.3)
+		var inertial_momentum_rate: PackedFloat64Array = M.q_rotate(world_from_body,
+			M.add(momentum_rate_body, M.cross(w, solved.total_angular_momentum_body_frd_nms)))
+		var applied_world_moment: PackedFloat64Array = M.q_rotate(world_from_body, moment)
+		for axis: int in range(3):
+			close("world angular momentum rate equals external torque axis " + str(axis),
+				inertial_momentum_rate[axis], applied_world_moment[axis])
+		var kinetic_energy_rate: float = M.dot(w, body_momentum_rate) \
+			+ solved.spin_acceleration_rad_s2 * M.dot(b, w) \
+			+ speed * M.dot(b, solved.body_acceleration_rad_s2) \
+			+ spin_inertia * speed * solved.spin_acceleration_rad_s2
+		close("cross-coupled kinetic energy rate equals external mechanical power", kinetic_energy_rate,
+			M.dot(moment, w) + torque * speed, 1.0e-10)
 	var fixed: Dictionary = Coupling.response(M.v3(0.0, 0.0, 0.0), M.v3(0.0, 0.0, 0.0),
 		inertia, inverse, b, spin_inertia, 10.0, 0.5)
 	check("fixed-body shaft test has finite coupled reaction", fixed.ok)
@@ -65,6 +79,20 @@ func _initialize() -> void:
 		close("effective carrier inertia uses J inverse", fixed.effective_inertia_factor, expected_denominator)
 		var expected_alpha: float = 0.5 / (spin_inertia * expected_denominator)
 		close("fixed-body shaft acceleration solves the reduced inertia", fixed.spin_acceleration_rad_s2, expected_alpha)
+	var clamp_torque: float = 0.5
+	var clamp_moment: PackedFloat64Array = M.scale(b, clamp_torque / spin_inertia)
+	var clamped: Dictionary = Coupling.response(M.v3(0.0, 0.0, 0.0), clamp_moment,
+		inertia, inverse, b, spin_inertia, 10.0, clamp_torque)
+	check("fixed-body stand clamp reacts the cross-axis coupling", clamped.ok)
+	if clamped.ok:
+		close("fixture clamp holds body angular acceleration at zero",
+			M.dot(clamped.body_acceleration_rad_s2, clamped.body_acceleration_rad_s2), 0.0)
+		var dt: float = 0.01
+		var final_speed: float = 10.0 + clamp_torque / spin_inertia * dt
+		var rotor_energy_change: float = 0.5 * spin_inertia * (final_speed * final_speed - 100.0)
+		var drive_work: float = clamp_torque * (10.0 * dt + 0.5 * clamp_torque / spin_inertia * dt * dt)
+		close("fixed-body shaft stand energy matches integrated delivered work",
+			rotor_energy_change, drive_work, 1.0e-12)
 	var reversed_elements: Array = [
 		{"inertia_kg_m2": 0.1, "speed_ratio": 2.0, "spin_axis_body_frd": M.v3(0.0, 0.0, -1.0)},
 		{"inertia_kg_m2": 0.05, "speed_ratio": 1.0, "spin_axis_body_frd": M.v3(0.0, 1.0, 0.0)},

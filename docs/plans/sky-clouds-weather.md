@@ -2,7 +2,7 @@
 
 2026-10-13 · **Implementation plan** · Owner: Field world, coordinated with Landscape, UI, TOD, M5 wind, CAM, AUD and CR · Steps: **FW-76–90**.
 
-Preserve the current beautiful fair-weather sky and add equally polished alternatives: cloudless blue, high wisps, broken cumulus, overcast, dark pre-storm, a distant thunderstorm and, finally, an interactive tornado scenario. The sky is a principal landscape in an RC flight simulator: judge it while tracking a small moving airplane, not only in a sky screenshot.
+Preserve the current beautiful fair-weather sky and add equally polished alternatives: cloudless blue, high wisps, broken cumulus, overcast, dark pre-storm, a distant storm, an electrical thunderstorm with a spectacular night presentation and, finally, an interactive tornado scenario. The sky is a principal landscape in an RC flight simulator: judge it while tracking a small moving airplane, not only in a sky screenshot.
 
 This is a planning delivery. No new presets, downloaded runtime dependencies, weather physics or menu controls are implemented by this document. The dated [FW-76 investigation](../research/field-world/FW-76/README.md) owns source evaluations and research limitations. The [world guide](../FIELD-WORLD-PLAN.md) owns existing behavior. Documentation is in English according to the repository convention; proposed player labels include Spanish.
 
@@ -11,7 +11,7 @@ This is a planning delivery. No new presets, downloaded runtime dependencies, we
 1. **Ship a Compatibility-first collection.** Extend the existing shader and composition pipeline, keeping the current sky as the default and exact regression reference. Download and evaluate suitable free resources before authoring replacement textures, meshes or effects.
 2. **Make cloud movement an explicit choice.** New presets support Still, Follow wind and independent wind aloft. Preserve the old drift in the existing preset until the player chooses another motion mode.
 3. **Keep appearance and physical conditions independently editable.** Selecting dark clouds does not silently increase wind, change humidity/density or wet the runway. A separately selected scenario can deliberately configure both and disclose those changes.
-4. **Add a dramatic distant storm before interactive severe weather.** Large cloud structures, coherent lighting and rain curtains establish the landscape; a spatial wind field is a separate dependency.
+4. **Deliver a dramatic electrical storm, especially at night, before interactive severe weather.** Large cloud structures, internal cloud flashes, branched bolts, brief landscape illumination and delayed thunder form a dedicated preset. FW-84 is required for this preset; a spatial wind field is a separate dependency.
 5. **Finish with a bounded experimental tornado challenge.** The airplane responds through its existing aerodynamic equations. The funnel is a visual representation of a scenario, not the collision shape or force generator.
 6. **Evaluate volumetric rendering as a conditional quality route.** Neither a renderer migration nor a new plugin is a prerequisite for useful sky choices. Select a volumetric dependency only after an isolated comparison on the pinned engine.
 
@@ -30,6 +30,8 @@ The planning audit inspected the working tree based on commit `69437cc4276735b13
 | [World.update / flow_to](../../app/render/world/world.gd), [conditions resolver](../../app/render/world/conditions.gd) | Wind reaches the shader clock, but cloud drift still uses the fixed Spec values. FW flowing time and explicit TOD snapshots are different existing routes and both must receive sky appearance. |
 | `Atmosphere.update_sky_material`, `apply_state_to_sky`, `update_ground_material` | Multiple writers currently apply cloud/light uniforms. A preset can be overwritten by a later time update unless composition happens in one resolved snapshot. Ground copies and near grass must receive the same cloud configuration. |
 | [Sky state](../../app/render/world/sky_state.gd) and [TOD](../../app/environment/) | Existing sun/moon, haze, exposure and visual history must remain authoritative. Compatibility has calibrated color conversion and an exposure workaround; replacing the WorldEnvironment wholesale would discard them. |
+| `World.view_exposure()` / `adapt()`, [shared exposure](../../app/render/world/exposure.gd), [night-lighting plan](night-landscape-lighting.md) | Night adaptation and the `world_exposure` shader value already have an owner. Lightning must compose a temporary light contribution without replacing sun/moon state or erasing the mast/runway lighting. |
+| [FlightAudio](../../app/audio/flight_audio.gd), [audio guide](../AUDIO-PLAN.md) | Read-only adapter runs after pose/camera update, observes pause/reset, and already provides listener position and temperature-derived sound speed. Add a bounded thunder consumer through AUD; do not create a competing ambience bus or use its wall-clock variety seed for storm events. |
 | [Home](../../app/ui/home.gd), [weather dialog](../../app/ui/weather_dialog.gd), [application root](../../app/app_root.gd) | Home has a Weather button next to Fly. Its dialog has Wind & Gusts, Turbulence, Atmosphere and Time of day. Reuse the same shell/widgets and add Sky & clouds. |
 | [Pause menu](../../app/ui/pause_menu.gd) | Currently exposes Time of day, not a complete in-flight weather editor. A unified Flight conditions entry is planned in the [UI redesign](../MENU-REDESIGN-PLAN.md), not already implemented. |
 | [Preferences](../../app/app_state/preferences.gd), [visual checkpoint](../../app/app_state/visual_checkpoint.gd) | Persist a separately validated sky selection. Keep direct technical launches independent of player preferences and extend visual replay without corrupting physics identity. |
@@ -52,10 +54,13 @@ Time of day remains orthogonal: “Sunset” is not a second cloud type. Each su
 | `overcast`; Overcast / Cubierto | Continuous soft ceiling, visible large-scale texture and diffuse ground light | Dedicated overcast shape/opacity treatment; first release |
 | `prestorm`; Dark storm clouds / Nubes de tormenta | Dense dark bases, heavy rolling masses, brighter distant openings and reduced direct sun | Thick lower deck and coordinated light/haze; first release, visual only |
 | `distant_storm`; Distant thunderstorm / Tormenta lejana | Anvil/towering silhouette, layered base, optional distant rain curtain | Downloaded masks/atlases or bounded cloud geometry after comparison; second release |
+| `electrical_storm`; Electrical storm / Tormenta eléctrica | Tall dark banks revealed from inside, occasional branched bolts, rain silhouettes and delayed rolling thunder; night is the showcase | FW-83 storm formation plus FW-84a–e; explicit day, dusk, moonlit and dark-night qualification |
 | `tropical_bands`; Tropical storm bands / Bandas de tormenta tropical | Broad rain/cloud bands crossing a distant horizon | Later authored scene; ground-level view, not a satellite-shaped hurricane pasted overhead |
 | `tornado_challenge`; Tornado challenge / Desafío de tornado | Rotating storm base, connected funnel, near-ground dust and readable danger extent | Final experimental scenario, after spatial-wind and flight-response gates |
 
 Overcast and pre-storm must differ in structure, light direction and depth, not just tint. The current horizon fade removes low-angle cloud density; simply setting coverage to 1 would leave an implausibly open horizon. Add an overcast horizon closure that still matches terrain haze. The current cirrus branch is nested inside the low-cloud condition; decouple it for the high-wisps option.
+
+Provide a **Night electrical storm / Tormenta eléctrica nocturna** showcase recipe combining `electrical_storm` with an explicit astronomical night selection. It reuses the same cloud preset; selecting the ordinary card preserves time and wind. Its **View at night / Ver de noche** action opens the existing time draft and shows the change before Apply. Resolve night from the selected location/date and solar elevation, rather than assuming 22:00 is dark everywhere. No wind increase or tornado is implied.
 
 **Visual criteria:** broad readable masses first, intermediate billows second, fine detail last. Vary vertical shape and underside darkness; avoid repeated cotton balls, noisy wallpaper, sharp cutouts and uniformly black storm skies. Preserve contrast for small aircraft against both the bright rim and dark underside. Darkening the sky requires compatible sunlight, ambient fill, haze, reflections and ground shadows. No universal green tint or lightning is required to communicate a storm.
 
@@ -116,6 +121,7 @@ The page contains:
 - **Sky appearance:** the supported preset cards, each with a real capture.
 - **Cloud motion:** Follow wind, Still, or Wind aloft. Classic retains its legacy motion until explicitly changed. Follow wind is the recommended default for newly selected animated presets.
 - **Advanced appearance:** only useful controls such as coverage, density and seed; edits set “Custom”, with Reset to preset. Keep shader jargon and sample counts out of the player flow.
+- **Electrical storm controls:** visible with that card: Flashes / Relámpagos (Full, Reduced, Off) and Thunder volume / Volumen de truenos. Reduced keeps localized, softer cloud pulses and suppresses sharp bolt/landscape peaks; Off removes all lightning illumination while retaining the cloudscape. Global audio mute still wins. The preview starts as a still image and animates only on request.
 - **Scenario:** Free flight by default. Later, an explicit Storm/Tornado challenge entry opens a briefing showing the physical wind/start changes before launch. Do not conceal it inside a color preset.
 
 The current top-level weather preset picker edits wind. Relabel or scope it to **Wind preset** when adding sky presets; it must not ambiguously overwrite unrelated tabs. Selecting Clear changes neither current time nor wind. Changing wind updates the motion preview only when Follow wind is selected.
@@ -128,7 +134,7 @@ In Pause, coordinate one **Flight conditions** entry with the UI owner, initiall
 
 Applying a paused sky change commits the complete new appearance atomically; it does not run a transition on wall-clock time. A transition that continues after resume must be a recorded simulation-time visual event. Keep a quiet static snapshot while paused. Selecting an interactive tornado requires a fresh scenario/reset boundary and must never unexpectedly activate forces in an ongoing ordinary flight.
 
-The first delivery needs no new hotkey or HUD panel. The final challenge may use a small scenario status cue and optional wind-field debugging overlay, coordinated with HUD/CAM. Provide separate toggles for storm flashes and camera effects; their disabled state cannot change wind physics.
+The first delivery needs no new hotkey or HUD panel. The final challenge may use a small scenario status cue and optional wind-field debugging overlay, coordinated with HUD/CAM. Flash preferences apply to every storm/scenario and survive restart; camera effects remain separately controlled. Their disabled state cannot change wind physics. Still cloud motion stops cloud transport/evolution, not electrical activity; the flash control governs that independently.
 
 ## 6. Configuration and composition contracts
 
@@ -198,7 +204,7 @@ Keep float64 offsets/times on the CPU, wrap before GPU conversion, and sample ac
 
 Cloud shadows use the same shape seed, coverage and transport. A changed noise octave/period requires revisiting the 64-cell periodicity tests. Support cirrus and low-deck speeds independently only when both shadows and display semantics are defined; high cirrus need not cast a detailed ground mask.
 
-## 8. Distant storms and the later tornado
+## 8. Distant storms, night lightning and the later tornado
 
 ### Storm presentation before storm physics
 
@@ -206,7 +212,45 @@ Start with one dominant, world-anchored distant bank placed away from the normal
 
 Add a bounded anvil/tower silhouette, layered dark base, depth-colored rain curtain and coherent reduction of sun/ambient contrast. Allow a dry foreground with rain in the distance. A tropical-band scene can reuse this composition with broader moving bands. Art review determines composition, not a random distribution of many effects.
 
-Rain, thunder and lightning are a later optional presentation layer. Reuse the audio bus/listener architecture and spatial delay from event distance; author event timing in simulation time. Avoid white fullscreen flashes that erase the aircraft. Do not imply new tire friction, water accumulation, icing, engine ingestion, electrical damage or precipitation aerodynamics. Those require their owning physical models and evidence.
+Rain curtains remain a bounded presentation layer. The electrical-storm preset adds the required FW-84 lightning/thunder work below. Neither implies new tire friction, water accumulation, icing, engine ingestion, electrical damage or precipitation aerodynamics. Those require their owning physical models and evidence. Later spatial wind can accompany the same visual storm without rewriting its effects.
+
+### Electrical storm, especially at night
+
+**Art target:** a massive dark thunderhead with negative space between events; broad internal illumination reveals successive lobes and the underside, followed occasionally by a narrow branched cloud-to-ground bolt. The flash briefly reveals the aircraft, terrain and rain curtain. Warm airfield lights remain an orientation reference between events. Use a white core and restrained cool halo; avoid a permanent purple sky, repeated identical zigzags, continuous strobing or a white fullscreen overlay. Night is a required flown acceptance case, not an attractive thumbnail only.
+
+Use distinct intracloud and cloud-to-ground event types. Repeated strokes can reuse a channel with different envelopes instead of generating a new random tree every frame. This distinction follows the [NWS explanation of flashes](https://www.weather.gov/safety/lightning-science-types-flashes); cadence and apparent brightness here are authored presentation choices, not a discharge simulation. Start art trials with cloud-local events predominating, irregular quiet intervals and only one major bolt at a time. Freeze numeric cadence/intensity bounds after flight and Reduced-mode review.
+
+| Effect layer | Compatibility-first implementation | Acceptance condition |
+| --- | --- | --- |
+| Cloud interior | Localized emission masked by the **same storm density/opacity**, with a source position and bounded falloff; reveal multiple billows rather than a flat circular glow | Clear gaps and foreground silhouettes stay dark; the light belongs to a cloud, moves with its anchor and is occluded by nearer material |
+| Visible channel | Reusable licensed branching 3D mesh/ribbon, bright narrow core and softer halo, fixed seeded topology per event | Stable from pilot zoom/chase/onboard, correct depth against aircraft/terrain/clouds, no laser-like persistent beam |
+| Landscape response | One pooled transient, shadowless directional light for a sufficiently distant source; `SKY_MODE_LIGHT_ONLY` keeps it out of the sun/moon shader inputs | Direction agrees with the visible source; restored baseline is exact when its envelope is zero; no permanent extra sun |
+| Rain and haze | Existing storm curtain responds to the same event; localized backlight and silhouette, modest haze lift near the source | No whole-screen fog flash, unbounded overdraw or artificial wet runway |
+| Sound | Licensed thunder onset/tail driven by the event and listener distance | Appropriate delay, direction and variation; aircraft audio remains usable |
+
+The landscape light is an explicit distant-source approximation over the RC field. A nearer localized event would need a separately qualified `OmniLight3D` and range/culling checks, not a huge number of lights along its branches. Audit overlap with FW-66–75 lamps: Compatibility's default is eight omni lights per mesh, and affected AABBs must intersect. Emission/glow alone does not provide scene illumination in the production path. Keep shadow mode fixed per quality profile: Godot documents a different Compatibility color path for shadowed lights. [Directional sky mode](https://docs.godotengine.org/en/4.7/classes/class_directionallight3d.html), [omni limits](https://docs.godotengine.org/en/4.7/classes/class_omnilight3d.html), [lighting behavior](https://docs.godotengine.org/en/4.7/tutorials/3d/lights_and_shadows.html)
+
+Prototype the localized cloud flash in scene-local storm geometry/overlay first, sharing the cloud mask and depth ordering. Do not update the entire sky cubemap at each pulse by accident: branching out of `AT_CUBEMAP_PASS` does not itself prevent a uniform update from invalidating radiance. A sky-shader implementation is acceptable only after a refresh-cost probe. Omitting transient flashes from environment reflections is an explicit first-release approximation; document it and inspect the lake/reflective aircraft. Optional glow must improve the result without becoming necessary for bolt readability. Godot particle trails are unsupported in Compatibility; a regular `ArrayMesh` ribbon is a different technique and is the candidate route. [Sky update rules](https://docs.godotengine.org/en/4.7/tutorials/shaders/shader_reference/sky_shader.html), [particle trails](https://docs.godotengine.org/en/4.7/tutorials/3d/particles/trails.html)
+
+Compose `base lighting + transient storm contribution` after resolving TOD/FW state. Leave `World.view_exposure()` on its accepted baseline for the first implementation so a short pulse cannot cause prolonged exposure pumping; this is a deliberate perceptual approximation. Audit `world_exposure` exactly once through the existing material/display pipeline, especially at dark-night gain. Do not globally multiply every light by inverse exposure. Clamp authored output through the existing color contract and prove that an event ending, pause, preset switch and failed launch leave no residual light or changed solar state.
+
+#### Event and audio contract
+
+Add a versioned presentation event record: `event_id`, appearance generation, simulation `start_tick`, event kind, geometry seed, world source/channel anchor, pulse envelope, intensity profile and thunder asset ID. Geometry randomness derives from the visual seed plus event ID, never global/physics RNG or `Time.get_ticks_usec()`. A pure bounded event schedule is independent of render FPS, camera visibility, cloud-motion mode and quality. Store enough schedule/anchor state in visual checkpoints to reproduce future events; physical fingerprints remain unchanged.
+
+Render consumes accepted simulation time and detects envelope overlap with the displayed interval, so a short pulse is not silently lost at 30 FPS. Do not tie event creation to `_process()` probability, shader `TIME`, wall-clock timers or accelerated astronomical time. Prewarm a fixed mesh/light/audio pool; no per-strike resource import or unbounded node creation. Pause freezes schedule/audio and suppresses transient peaks in the menu backdrop; resume reconstructs the envelope at the held simulation time. Reset/preset switch invalidates the old generation and its pending sounds. Seeking reconstructs active state without replaying the entire missed event history. Reduced/Off changes presentation, never event identity or physical weather.
+
+Thunder delay starts from distance to a representative **channel** position, not necessarily its ground endpoint: `arrival_time = emission_time + distance / sound_speed`. Reuse `FlightAudio.snapshot()`'s temperature-derived sound speed read-only. At approximately 340 m/s, a 2 km source arrives about 5.9 s later. A point source plus recorded tail approximates an extended channel; it is not acoustic propagation through a storm. The [NWS thunder explanation](https://www.weather.gov/safety/lightning-science-thunder) supports delayed arrival and the rolling contribution of different channel portions.
+
+AUD owns a bounded pending-event queue and spatial voices on the existing environment mix. Schedule against the active listener, not aircraft position in pilot view. Specify camera-cut behavior: cancel obsolete pending arrivals, recompute still-unheard events for the new listener, discard arrivals already past and crossfade active tails without replaying a crack. Record listener/camera history for audiovisual replay. Start with no storm Doppler on camera cuts. Use mono derivatives for localized onset where needed and a controlled stereo/diffuse tail; retain a reproducible downmix/edit recipe. Reserve headroom, limit simultaneous tails and test speakers/headphones, mute, loss of focus, reset and Home return. No other ambience system is replaced.
+
+#### Free resource intake and proposed file boundaries
+
+First audit/download the MIT [Godot3DLightning](https://github.com/AurelienCaille/Godot3DLightning) source: its project targets 4.2 and its update is marked WIP, so 4.7.2 Compatibility remains unverified. Evaluate [ARCFLUX Lite](https://gennai.itch.io/arcflux-lite) separately as a free 3D bolt prototype: its author reports 4.7.2 Compatibility testing. Its custom terms restrict pack redistribution, so it is **not yet cleared for this public repository**; keep evaluation external until terms cover source and exports. [JarLowrey/GodotLightning](https://github.com/JarLowrey/GodotLightning) is an MIT 2D algorithm fallback, not a 3D drop-in. No redistributable, Compatibility-qualified 3D drop-in was confirmed by this research. Prefer adapting licensed 3D source; document failed candidates before authoring missing components. No paid pack is a dependency.
+
+For actual thunder, audition Emulius's CC0 [Thunder 08](https://freesound.org/people/Emulius/sounds/744723/) and the thunder in rubberduck's CC0 [100 SFX #2](https://opengameart.org/content/100-cc0-sfx-2). Verify each selected file, archive its license/hash and keep edits reproducible; a pack's name is not an audition. Freesound download requires login; the OpenGameArt pack is an alternate intake route. The detailed [electrical-storm research](../research/field-world/FW-76/README.md#electrical-storms-and-night-lightning) records tutorials, creator Reddit evidence and remaining license limits.
+
+Proposed FW-owned files are `app/environment/storm_events.gd`, `app/render/weather/lightning.gd` and scene-local cloud-flash materials under `app/render/weather/`; AUD owns `app/audio/storm_audio.gd` and thunder derivatives under its existing asset/provenance layout. These are proposed files, not existing APIs. Share event records through the resolved visual snapshot; keep shared `main.gd`, world, audio-adapter and UI edits narrow. No new renderer, autoload, physics force or independent weather clock is required.
 
 ### Spatial wind prerequisites
 
@@ -255,7 +299,7 @@ Each row is a small independently reviewable change. Runtime work remains pendin
 | 3 · FW-81 | Still / Follow wind / wind-aloft transport with M5-W07 | Cardinal sign/unit tests, zero-wind freeze, phase-continuous changes, shared shadow motion, no render RNG mutation, 30/60/144 FPS equality of accepted transport state. **Pending.** |
 | 3 · FW-82 | Visual history/checkpoint lifecycle and paused application; integrate NR-07 appearance input | Reset/restore/old records, aborted scene switch, Home preview isolation, passing Evening → fixed sky → Home. Physics bytes unchanged. **Pending.** |
 | 4 · FW-83 | Reused distant storm assets, thunderhead/rainband composition and camera qualification | License/provenance/import evidence, horizon/zoom/moving-camera checks, bounded resources and lighting coherence. **Pending.** |
-| 4 · FW-84 | Optional rain curtains, thunder and restrained lightning | Event replay/pause/audio-mute proof, bounded overdraw, flash-off mode and no unimplemented wet-ground effects. **Pending; optional after FW-83.** |
+| 4 · FW-84 | Electrical-storm preset and night showcase, delivered as FW-84a–e below | Required for `electrical_storm`; ordinary skies and distant cloud banks can ship first. **Pending after FW-82/83; independent of spatial wind.** |
 | 5 · FW-85 | Isolated POM/volumetric backend comparison, including a separate Forward+ experiment if justified | Same scenes/cameras/resolution; image, timing, memory and lifecycle comparison. Record accept/reject decision. Production renderer change is a separate project-level decision. **Conditional.** |
 | 6 · FW-86 | Integrate M5-W05 spatial weather and distributed aircraft samples into the sky/scenario boundary | Uniform zero-feature parity, independent field oracle, correct RK stage positions/times, wing/tail/propeller response, versioned trace and rollback tests. **Pending prerequisite for interactive storm.** |
 | 6 · FW-87 | Authored bounded storm/vortex field prototype and scenario contract, with M5 owners | Core/taper/join checks, finite forces, step refinement, seed replay, valid starts and measured whole-tick cost. No physical validation claim. **Pending.** |
@@ -263,21 +307,34 @@ Each row is a small independently reviewable change. Runtime work remains pendin
 | 7 · FW-89 | Experimental tornado challenge with briefing, aircraft restrictions and restart/recovery flow | Actual flown entry/exit, expected distributed disturbance, crash/reset and failure handling, enabled-aircraft matrix, owner play review. **Pending.** |
 | 8 · FW-90 | Release qualification for each delivered slice and documentation consolidation | Native Windows/Linux/macOS exports, licensed assets packaged, settings migration, regression/capture/performance records and owner sky/flight review. **Pending; repeat only for newly changed scope.** |
 
+FW-84 is split into independently reviewable changes; it is no longer an optional placeholder:
+
+| Substep | Work / owner | Required proof |
+| --- | --- | --- |
+| FW-84a | FW/TOD: deterministic event contract, schedule, seed, checkpoint and pool lifecycle | Same event IDs/envelopes at 30/60/144 FPS; short-pulse overlap; pause/seek/reset/preset switch; unchanged physical checkpoints. No dependency on downloaded bolt art. |
+| FW-84b | FW: internally lit storm cloud, dusk/night palette, rain-curtain response and exposure integration | Pre/peak/post frames from all views; density-bound glow, no sky-radiance spike or residual exposure, base night state restored. |
+| FW-84c | FW: licensed bolt intake/adaptation, branch mesh, depth/LOD and transient scene light | Pinned source/license/hash, exact 4.7.2 Compatibility import/export, occlusion and mast-overlap tests, prewarmed first strike and peak cost. |
+| FW-84d | AUD: CC0 thunder selection, event-distance queue, spatial onset/tail and mixing | Distance-delay oracle, current-listener/camera-cut behavior, pause/reset/mute, bounded voices/headroom and speaker/headphone review. |
+| FW-84e | UI/FW/TOD: electrical-storm card, explicit night recipe, Full/Reduced/Off controls and full flight qualification | EN/ES 720p flow, persisted controls, day/dusk/moonless/moonlit flights, aircraft tracking before/during/after flashes and final performance evidence. |
+
+All five substeps remain pending. FW-84a precedes event consumers; b/c/d can be developed independently against its accepted interface, with narrow shared-file ownership. FW-84e closes their combined gate.
+
 Dependencies:
 
 ```text
 FW-76 → FW-77 → FW-78/79 → FW-80 → FW-81 → FW-82 → ordinary-sky release gate
-                                           └────→ FW-83 → optional FW-84
+                                           └────→ FW-83 → FW-84a → FW-84b/c/d → FW-84e
+                                                                            → electrical-storm release gate
 FW-85 is an isolated decision branch; it does not block ordinary skies.
 M5-W05 + FW-82 → FW-86 → FW-87 → FW-88 → FW-89 → challenge release gate
 FW-90 qualifies each shippable slice; early sky delivery does not wait for a tornado.
 ```
 
-Suggested PR boundaries: contract; selector/persistence; ordinary presets; lighting integration; transport; lifecycle; distant storm intake/composition; optional FX; backend experiment; spatial integration; field model; tornado presentation; challenge; release evidence. Split any row further if it combines a numerical law change with broad UI/asset changes.
+Suggested PR boundaries: contract; selector/persistence; ordinary presets; lighting integration; transport; lifecycle; distant storm intake/composition; each FW-84 substep; backend experiment; spatial integration; field model; tornado presentation; challenge; release evidence. Split any row further if it combines a numerical law change with broad UI/asset changes.
 
 ### Indicative effort, not a schedule commitment
 
-For one experienced developer, after baseline access is available: ordinary presets/UI/lifecycle **12–20 engineering days**; distant storm and optional FX **6–12 days**; isolated backend evaluation **3–5 days**; spatial integration/vortex/tornado qualification **15–30 days or more**, depending on M5 readiness. Cross-platform and pilot reviews add calendar time. These are planning estimates, not measured velocity; re-estimate after FW-76 and FW-86. Deliver the ordinary sky collection before committing to the expensive branch.
+For one experienced developer, after baseline access is available: ordinary presets/UI/lifecycle **12–20 engineering days**; distant storm composition **4–7 days**; the complete electrical-storm/night slice **7–12 additional days**; isolated backend evaluation **3–5 days**; spatial integration/vortex/tornado qualification **15–30 days or more**, depending on M5 readiness. Lightning-source adaptation and art iteration are the main FW-84 uncertainties. Cross-platform and pilot reviews add calendar time. These are planning estimates, not measured velocity; re-estimate after source intake and FW-86. Deliver the ordinary sky collection before committing to the expensive branch.
 
 ## 10. Verification and performance gates
 
@@ -299,12 +356,15 @@ Capture native production scenes, not only shader thumbnails:
 | Light | Fixed legacy day, explicit TOD daylight, moving FW Evening, sunrise/low sun, moonlit and dark night |
 | View | Toward/across/away from light, zenith, horizon, runway approach; pilot normal/zoom plus chase/onboard where supported |
 | Motion | Still, complete calm, cardinal wind, strong qualified mean, independent aloft direction; t=0,10,120 s and long-run wrap/restore |
+| Electrical storm | Day/dusk/moonless/moonlit; intracloud and branched bolt; pre/peak/post flash; offscreen source; Full/Reduced/Off; mast/lake combinations; maximum allowed overlap |
 | Aircraft | Every enabled catalog aircraft, bright/dark liveries, near/mid/far distance, crossing a bright rim and dark base |
 | Output | 720p baseline, 1080p, high-DPI UI; EN/ES; each supported desktop export |
 
 Use pairwise coverage for the broad matrix and full combinations for critical cases: classic parity, clear sky, overcast low sun, dark storm aircraft tracking and tornado entry. Store original PNGs, clips, render logs, camera/config/seed, source hashes and timings in each step's evidence folder. Image checks should reject seams, unintended cloud remnants, shadow sign errors and hidden aircraft; they do not replace an owner flight review.
 
 **Gate sky:** the owner can find the selector without a new instruction, distinguish the presets without their labels, and fly takeoff/circuit/landing while continuously tracking the aircraft. Review the actual new skies as well as classic. Beauty and readability are both required; do not pass by removing all detail.
+
+**Gate electrical storm:** a native night clip shows cloud interiors, a branched channel, coherent brief scene light and correctly delayed thunder, with readable quiet intervals. Fly a complete circuit with bright and dark aircraft against each flash region; no fullscreen clipping, lingering darkness, disappearing mast lights or light leaking through foreground terrain. Test Full/Reduced/Off without changing event IDs or physics, including pause during a pulse and reset before thunder arrival. Sound-disabled and VFX-disabled paired flights preserve accepted physics. A day-only capture cannot close FW-84e.
 
 **Gate challenge:** scene and field are aligned; the aircraft's response changes with position; entry/recovery/crash/reset are coherent; no physics change occurs when VFX or audio is disabled. Intensity remains inside the published experimental envelope. Severe-weather physical realism stays unclaimed.
 
@@ -316,9 +376,10 @@ These are proposed acceptance targets, **not achieved measurements**. Name a min
 | --- | --- |
 | Ordinary sky, 720p | Additional GPU median ≤0.5 ms and p95 ≤1.0 ms versus current classic on the same machine; explain first-load compilation separately |
 | Distant storm / tornado presentation, 720p | Additional GPU p95 ≤2.0 / ≤3.0 ms respectively; if scene total fails, reduce effects or postpone the profile |
+| Electrical storm, 720p | On **flash-active frames**, additional GPU p95 ≤1.0 ms versus the same dark storm with lightning disabled; total electrical-storm delta p95 ≤3.0 ms versus classic. Report flash-active p99/max and first-strike stalls separately; quiet frames must not hide peaks. Initial cap: one major bolt/scene light, two localized cloud pulses and four thunder tails; confirm or reduce at intake. |
 | Whole flight | Target 60 fps at qualified resolution; report median/p95/p99 frame time and catch-up counts, with no sustained simulation slowdown |
 | Physical weather | Preserve the project's **500 µs per 240 Hz physics tick** acceptance gate; report full evolving flight cost per aircraft, not just isolated field-query timing |
-| Runtime resources | Initial extra resident texture/volume budget ≤64 MiB for Compatibility sky collection; assets in export ≤32 MiB compressed. Backend experiment has a separately declared budget. |
+| Runtime resources | Initial extra resident texture/volume budget ≤64 MiB for Compatibility sky collection; sky/VFX assets in export ≤32 MiB compressed. Thunder addition provisionally ≤8 MiB compressed/≤16 MiB decoded with bounded queues; AUD freezes its mixer budget. Backend experiment has a separately declared budget. |
 
 Measure GPU time, CPU render submission, individual whole physics ticks, loading stalls, resource memory and total frame time separately. Use three alternating baseline/candidate runs with 10 s warmup and 60 s sampling, VSync state/resolution/driver recorded, without another benchmark running. Include all-sky views, storm overdraw, zoom, resizing and radiance refresh spikes. Verify no growth after at least 20 Home/dialog/flight/restart cycles. If a budget fails, record the failure; do not silently relax it or confuse llvmpipe repeatability with hardware qualification.
 
@@ -341,6 +402,8 @@ This planning change requires document/link/diff checks only. Runtime, GPU and f
 | Generic docs/addon support differs from pinned GLES3 | Native compile/render probe; do not accept missing clouds as a “quality fallback”. |
 | Storm art is impressive only in a screenshot | Pilot flight, zoom and aircraft-contrast review; revise composition before adding more effects. |
 | Radiance refresh / transparency cost | Bound update rates and overdraw, profile full scenes, preserve cheap background route. |
+| Lightning breaks calibrated night exposure or exceeds shared light limits | Separate base/transient state; one pooled scene light, masked cloud emission, native mast/lake tests and zero-residual restore. Stop on clipped aircraft or missing airfield lights. |
+| Free VFX terms do not permit public source redistribution | Evaluate externally; prefer audited MIT 3D source, retain licenses and prove the port. Do not vendor ambiguous packs as if they were MIT. |
 | Downloaded sky duplicates baked sun/horizon | Select compatible sky-only inputs or use reference-only; do not patch by hiding the actual solar light. |
 | Shader globals leak from Home/preview | Single-active-world lifecycle or scene-local resources; failed-launch and multi-instance tests. |
 | Spatial wind or start is numerically invalid | M5 schema/oracle/step refinement, finite guards, fail-before-commit and tested start envelopes. |

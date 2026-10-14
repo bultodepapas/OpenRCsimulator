@@ -108,7 +108,7 @@ func _parse_args() -> void:
 		elif arg.begins_with("--fingerprint-ticks="):
 			_fingerprint_ticks = maxi(1, int(arg.trim_prefix("--fingerprint-ticks=")))
 	if _aircraft_ids.is_empty():
-		_aircraft_ids = AircraftCatalog.flyable_ids()
+		_aircraft_ids = AircraftCatalog.airplane_flyable_ids()
 
 
 ## Restore the normal trimmed session, then install one explicit workload fixture.

@@ -2,6 +2,7 @@ extends SceneTree
 const AD := preload("res://physics/aircraft_data.gd")
 const Identity := preload("res://physics/physical_identity.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Flight := preload("res://sim/flight_session.gd")
 var checks := 0
 var failures := 0
 
@@ -37,8 +38,30 @@ func rejects(label: String, raw: Dictionary) -> void:
 	var result := AD.validate_and_derive(raw)
 	check(label, not result.ok and result.model.is_empty() and not result.errors.is_empty(), result.errors)
 
+func checkpoint_identity(base: Dictionary) -> void:
+	var legacy_path := "user://as_identity_legacy.json"
+	var authored_path := "user://as_identity_authored.json"
+	for pair in [[legacy_path, legacy(base)], [authored_path, base]]:
+		var file := FileAccess.open(pair[0], FileAccess.WRITE)
+		file.store_string(JSON.stringify(pair[1], "", true, true))
+		file.close()
+	var flight := Flight.new()
+	flight.setup(legacy_path, base.id)
+	flight.input_enabled = false
+	check("legacy checkpoint flight", flight.is_flyable())
+	if flight.is_flyable():
+		var old: Dictionary = flight.checkpoint()
+		flight.setup(authored_path, base.id)
+		check("authored checkpoint flight", flight.is_flyable())
+		var before: Dictionary = flight.checkpoint()
+		check("old source checkpoint rejected", not flight.restore_checkpoint(old))
+		check("rejection preserves current checkpoint", flight.checkpoint() == before)
+	flight.free()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(legacy_path))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(authored_path))
+
 func _initialize() -> void:
-	for entry: Dictionary in Catalog.flyable_entries():
+	for entry: Dictionary in Catalog.airplane_flyable_entries():
 		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(entry.data))
 		var loaded := AD.validate_and_derive(raw)
 		check(entry.id + " authored identities", loaded.ok and loaded.model.has("physical_identity"), loaded.errors)
@@ -59,6 +82,7 @@ func _initialize() -> void:
 		loaded.model.controls.surface_ids.elevator = "changed_in_derived_copy"
 		check("metadata detached from source", raw.controls.surface_ids.elevator != "changed_in_derived_copy")
 	var base: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(Catalog.DEFAULT_ID).data))
+	checkpoint_identity(base)
 	for bad: Variant in [null, true, false, "1", 0, 2, 1.5, {}, []]:
 		var raw := base.duplicate(true)
 		raw.physical_identity_version = bad

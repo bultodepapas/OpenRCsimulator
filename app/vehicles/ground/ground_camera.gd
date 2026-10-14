@@ -5,7 +5,7 @@ const Chase = preload("res://render/camera/chase_view.gd")
 const CameraMath = preload("res://render/camera/camera_math.gd")
 var chase = Chase.new()
 var mode := 0
-var orbit_yaw := 0.65
+var orbit_yaw := PI + 0.65
 var orbit_pitch := 0.28
 var distance := 2.0
 var _snap := true
@@ -40,14 +40,14 @@ func update(camera: Camera3D, target: Vector3, body: Basis, dt: float, menu: boo
 		camera.global_basis = CameraMath.look_basis(position, target)
 		camera.fov = clampf(rad_to_deg(2.0 * atan(2.0 / maxf(position.distance_to(target), 0.1))), 18.0, 65.0)
 	else:
-		var radius := distance if not menu else 1.5
+		var radius := distance if not menu else 1.65
 		position = target + Vector3(sin(orbit_yaw) * cos(orbit_pitch), sin(orbit_pitch), cos(orbit_yaw) * cos(orbit_pitch)) * radius
 		position.y = maxf(position.y, float(terrain.call(position.x, position.z)) + 0.12)
 		camera.global_position = position
 		var look_target := target + Vector3(0, 0.01, 0)
 		# Shift the truck left while the garage panel occupies the right third.
 		if menu:
-			look_target += (position - target).cross(Vector3.UP).normalized() * 0.28
+			look_target += Vector3.UP.cross(position - target).normalized() * 0.28
 		camera.global_basis = CameraMath.look_basis(position, look_target)
 		camera.fov = 46.0
 	_snap = false

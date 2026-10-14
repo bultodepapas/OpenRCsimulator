@@ -288,6 +288,8 @@
  },
  "inventory": [
   {
+   "id": "canopy_pilot",
+   "id": "canopy_pilot",
    "name": "canopy, frame and cockpit",
    "mass": {
     "value": 0.3,
@@ -304,6 +306,8 @@
    "position_source": "canopy stations (geometry.json)"
   },
   {
+   "id": "wing_joiner",
+   "id": "wing_joiner",
    "name": "carbon wing tube 25 mm and bolts",
    "mass": {
     "value": 0.15,
@@ -326,6 +330,8 @@
    "attached": "wing"
   },
   {
+   "id": "control_hardware",
+   "id": "control_hardware",
    "name": "hardware, horns, linkages",
    "mass": {
     "value": 0.2,
@@ -342,6 +348,8 @@
    "position_source": "spread along the airframe"
   },
   {
+   "id": "engine_main",
+   "id": "engine_main",
    "name": "JetCat P100-RX with valves",
    "mass": {
     "value": 1.08,
@@ -363,6 +371,8 @@
    ]
   },
   {
+   "id": "turbine_accessories",
+   "id": "turbine_accessories",
    "name": "ECU, fuel pump, valves, UAT/hopper",
    "mass": {
     "value": 0.3,
@@ -379,6 +389,8 @@
    "position_source": "ahead of the turbine"
   },
   {
+   "id": "thrust_tube",
+   "id": "thrust_tube",
    "name": "thrust tube A200-13",
    "mass": {
     "value": 0.35,
@@ -400,6 +412,8 @@
    ]
   },
   {
+   "id": "fuel_tank",
+   "id": "fuel_tank",
    "name": "tank A200-16 (empty)",
    "mass": {
     "value": 0.3,
@@ -416,6 +430,8 @@
    "position_source": "under the turbine rails, ahead of the CG (docs/research/avanti-s-av06-airframe-data.md)"
   },
   {
+   "id": "gear_main_left",
+   "id": "gear_main_left",
    "name": "main retract left, leg, wheel, brake",
    "mass": {
     "value": 0.4,
@@ -433,6 +449,8 @@
    "attached": "wing"
   },
   {
+   "id": "gear_main_right",
+   "id": "gear_main_right",
    "name": "main retract right, leg, wheel, brake",
    "mass": {
     "value": 0.4,
@@ -450,6 +468,8 @@
    "attached": "wing"
   },
   {
+   "id": "gear_nose",
+   "id": "gear_nose",
    "name": "nose retract with steering",
    "mass": {
     "value": 0.3,
@@ -466,6 +486,8 @@
    "position_source": "nose bay"
   },
   {
+   "id": "pneumatic_system",
+   "id": "pneumatic_system",
    "name": "air tanks, valves, lines",
    "mass": {
     "value": 0.2,
@@ -482,6 +504,8 @@
    "position_source": "forward fuselage"
   },
   {
+   "id": "servo_aileron_left",
+   "id": "servo_aileron_left",
    "name": "aileron servo left",
    "mass": {
     "value": 0.065,
@@ -504,6 +528,8 @@
    "attached": "wing"
   },
   {
+   "id": "servo_aileron_right",
+   "id": "servo_aileron_right",
    "name": "aileron servo right",
    "mass": {
     "value": 0.065,
@@ -526,6 +552,8 @@
    "attached": "wing"
   },
   {
+   "id": "servo_flap_left",
+   "id": "servo_flap_left",
    "name": "flap servo left",
    "mass": {
     "value": 0.075,
@@ -548,6 +576,8 @@
    "attached": "wing"
   },
   {
+   "id": "servo_flap_right",
+   "id": "servo_flap_right",
    "name": "flap servo right",
    "mass": {
     "value": 0.075,
@@ -570,6 +600,8 @@
    "attached": "wing"
   },
   {
+   "id": "servo_elevator_left",
+   "id": "servo_elevator_left",
    "name": "elevator servo left",
    "mass": {
     "value": 0.065,
@@ -591,6 +623,8 @@
    ]
   },
   {
+   "id": "servo_elevator_right",
+   "id": "servo_elevator_right",
    "name": "elevator servo right",
    "mass": {
     "value": 0.065,
@@ -612,6 +646,8 @@
    ]
   },
   {
+   "id": "servo_rudder",
+   "id": "servo_rudder",
    "name": "rudder servo",
    "mass": {
     "value": 0.075,
@@ -628,6 +664,8 @@
    "position_source": "fin root"
   },
   {
+   "id": "servo_nose_steering",
+   "id": "servo_nose_steering",
    "name": "nose steering servo",
    "mass": {
     "value": 0.065,
@@ -644,6 +682,8 @@
    "position_source": "nose bay"
   },
   {
+   "id": "receiver_batteries",
+   "id": "receiver_batteries",
    "name": "receiver batteries 2 x 2S 2500 and ECU battery",
    "mass": {
     "value": 0.45,
@@ -661,6 +701,8 @@
    "balance_item": true
   },
   {
+   "id": "avionics",
+   "id": "avionics",
    "name": "PowerBox Cockpit, iGyro, smoke pump, receivers, wiring",
    "mass": {
     "value": 0.45,

@@ -63,7 +63,13 @@ static func build(parent: Node3D, course: Dictionary) -> Node3D:
 		_sign(root, course, str(course.surface_by_id[region.surface_id].name).to_upper(), region.north_min_m - 0.3, (region.east_min_m + region.east_max_m) * 0.5)
 	for feature in course.features:
 		_sign(root, course, str(feature.id).to_upper(), feature.center_north_m, feature.center_east_m + feature.width_m * 0.5 + feature.shoulder_width_m + 0.5)
-	_sign(root, course, "OPENRC / MT8", -1.0, 0.0)
+	var apron := MeshInstance3D.new()
+	var apron_mesh := PlaneMesh.new()
+	apron_mesh.size = Vector2(2000, 2000)
+	apron.mesh = apron_mesh
+	apron.material_override = material_by_id[course.fallback_surface_id]
+	apron.position.y = -0.002
+	root.add_child(apron)
 	# These paint strips are decoration, placed 2 mm above the same sampled surface.
 	for n in range(-1, 24):
 		for e in [-1.8, 1.8]:
@@ -95,8 +101,8 @@ static func _unique(values: Array[float]) -> Array[float]:
 static func _sign(parent: Node3D, course: Dictionary, text: String, north: float, east: float) -> void:
 	var label := Label3D.new()
 	label.text = text
-	label.font_size = 48
-	label.pixel_size = 0.002
+	label.font_size = 40
+	label.pixel_size = 0.0015
 	label.modulate = Color("f0d197")
 	label.outline_size = 8
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED

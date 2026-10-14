@@ -19,12 +19,17 @@ func _initialize() -> void:
 
 func _test_catalog_family_mapping() -> void:
 	var families: Dictionary = {}
-	var ids := Catalog.ids()
+	var ids := Catalog.airplane_flyable_ids()
 	for aircraft_id in ids:
 		var family_id: String = Catalog.visual_family(aircraft_id)
 		_check("catalog family is explicit: " + aircraft_id, not family_id.is_empty())
 		families[family_id] = true
-	_check("seven physical configurations map to five visual families", ids.size() == 7 and families.size() == 5, str(families.keys()))
+	_check("seven airplane configurations map to five visual families", ids.size() == 7 and families.size() == 5, str(families.keys()))
+	var rotor_family: String = Catalog.visual_family("xcell-60-research")
+	var rotor_manifest: Dictionary = Registry.describe(rotor_family)
+	_check("HX-700 rotorcraft family stays outside the airplane manifest registry",
+		Catalog.is_rotorcraft("xcell-60-research") and rotor_family == "hx-700"
+		and not rotor_manifest.ok and _has_code(rotor_manifest.diagnostics, "MODEL_MANIFEST_MISSING"), str(rotor_manifest.diagnostics))
 	for family_id in families:
 		var result: Dictionary = Registry.describe(str(family_id))
 		_check("manifest describes catalog visual family " + str(family_id), result.ok, str(result.errors))
@@ -154,7 +159,7 @@ func _test_construction_rejections() -> void:
 
 func _test_builders() -> void:
 	var exercised: Dictionary = {}
-	for aircraft_id in Catalog.ids():
+	for aircraft_id in Catalog.airplane_flyable_ids():
 		exercised[Catalog.visual_family(aircraft_id)] = true
 	for family_id_variant in exercised.keys():
 		var family_id := str(family_id_variant)

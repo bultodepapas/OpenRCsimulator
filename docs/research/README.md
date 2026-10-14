@@ -20,6 +20,10 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ## Entry points per track
 
+### Random failures and emergency practice
+
+[EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the current session/control limitations. The [failure-mode plan](../plans/failure-mode.md) owns probability, menus, standardized mechanisms, phases and acceptance. This is planning research, not implemented failures or physical validation.
+
 ### Natural Random flight
 
 [NR initial implementation](natural-random/README.md) records the stock-only scenario generator, menu/lifecycle checks, numerical flight matrix and native captures. [Active plan](../plans/natural-random-flight.md) retains pilot/readability acceptance and future sky, runway and catalog work.
@@ -134,7 +138,7 @@ The [scenery guide](../SCENERY-PLAN.md) records current default-on behavior and 
 
 The [field-world guide](../FIELD-WORLD-PLAN.md) owns composition and night acceptance. Key evidence: [FW-02 parity](field-world/FW-02/README.md), [FW-20 ephemeris](field-world/FW-20/README.md), [FW-23 night rendering](field-world/FW-23/README.md), [FW-24 stars](field-world/FW-24/README.md), [FW-35 aircraft/field lights](field-world/FW-35/README.md), and the [world tools](../../tools/world/README.md).
 
-[FW-76 sky/cloud planning research](field-world/FW-76/README.md) compares free Godot cloud resources, renderer constraints, tutorials, first-hand Reddit reports and primary storm/wind references. The [implementation plan](../plans/sky-clouds-weather.md) owns proposed FW-76–90; this source review is not an addon, performance or physical-validation result.
+[FW-76 sky/cloud planning research](field-world/FW-76/README.md) compares free Godot cloud resources, renderer constraints, tutorials, first-hand Reddit reports and primary storm/wind references, including night lightning, reusable bolt VFX and CC0 thunder recordings. The [implementation plan](../plans/sky-clouds-weather.md) owns proposed FW-76–90, with electrical-storm delivery in FW-84a–e; this source review is not an addon, performance or physical-validation result.
 
 ### Immersive audio
 
@@ -178,4 +182,5 @@ The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begi
 ## Adding research
 
 1. Put reports in `docs/research/` and scripts/raw data in root `research/<track>/<step>/`. Record date, sources and licenses, method, result, limits and reproduction command when available.
-2. Keep evidence beside the report or in its step folder. Link the report from the
+2. Keep evidence beside the report or in its step folder. Link the report from the owning guide and this index; merge reusable lessons into [LEARNINGS.md](../../LEARNINGS.md#keeping-this-useful).
+3. Do not link local-only `references/` or ignored `app/captures/` as repository artifacts. Third-party assets need redistribution-compatible licenses and a `sources.json` with author, URL, license and hash.

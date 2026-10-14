@@ -69,6 +69,8 @@ func _ready() -> void:
  session.resetting.connect(func() -> void:
   if recorder.recording: recorder.stop())
  if not session.reset(): _refuse(session.start_error); return
+ Builder.align_main_rotor_radius(_airplane,session.aircraft.context.main_model.rotor_radius_m)
+ Builder.align_tail_rotor_radius(_airplane,session.aircraft.context.tail_model.tail_rotor_radius_m)
  _build_hud()
  print("HELICOPTER READY: ",session.aircraft.qualification)
  if args.has("trace"):

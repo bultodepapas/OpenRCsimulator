@@ -42,7 +42,9 @@ func _ready() -> void:
 	status = _label("BISONTE MT8", 24)
 	status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(status)
-	top.add_child(_button(words("Garage · Esc", "Garaje · Esc"), "menu"))
+	var garage_button := _button(words("Garage · Esc", "Garaje · Esc"), "menu")
+	garage_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	top.add_child(garage_button)
 	var foot := VBoxContainer.new()
 	foot.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	foot.offset_left = 24
@@ -56,6 +58,12 @@ func _ready() -> void:
 	foot.add_child(_label(words("W/S  Forward / reverse   A/D  Steer   Space  Brake   C  Camera   R  Recover   Esc  Garage", "W/S  Avanzar / reversa   A/D  Girar   Espacio  Frenar   C  Cámara   R  Recuperar   Esc  Garaje"), 14))
 	panel = PanelContainer.new()
 	panel.theme_type_variation = "Sidebar"
+	var panel_style: StyleBoxFlat = root_control.theme.get_stylebox("panel", "Sidebar").duplicate()
+	panel_style.content_margin_left = 18
+	panel_style.content_margin_right = 18
+	panel_style.content_margin_top = 18
+	panel_style.content_margin_bottom = 18
+	panel.add_theme_stylebox_override("panel", panel_style)
 	panel.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
 	panel.offset_left = -358
 	panel.offset_top = 78
@@ -71,7 +79,7 @@ func _ready() -> void:
 	column.add_theme_constant_override("separation", 10)
 	scroll.add_child(column)
 	column.add_child(_label("Bisonte MT8", 28))
-	column.add_child(_label(words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 16))
+	column.add_child(_label(words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
 	modes = OptionButton.new()
 	for title in [words("Free drive", "Conducción libre"), words("Jump practice", "Práctica de saltos"), words("Physics lab", "Laboratorio de física")]:
 		modes.add_item(title)

@@ -79,21 +79,25 @@ func _test_stale_binding() -> void:
 func _test_stable_inventory_identity() -> void:
 	var base_id: String = Catalog.DEFAULT_ID
 	var source_bytes: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(base_id).data)
-	var source_descriptor_result: Dictionary = Descriptor.load_for(base_id, source_bytes)
-	if not bool(source_descriptor_result.get("ok", false)):
-		_check("identity fixture has a source descriptor", false, str(source_descriptor_result.get("errors", [])))
-		return
 	var base: Dictionary = JSON.parse_string(source_bytes.get_string_from_utf8())
 	_add_test_physical_identity(base)
 	var stable_bytes: PackedByteArray = _source_bytes(base)
+	var presentation: Dictionary = {
+		"visual_family": Catalog.visual_family(base_id),
+		"model_manifest_sha256": "0".repeat(64),
+		"scale_root": "airplane",
+	}
 	var stable_descriptor: Dictionary = _stable_descriptor(base_id, stable_bytes, base,
-		source_descriptor_result["descriptor"]["presentation"])
+		presentation)
 	var accepted: Dictionary = Descriptor.validate(stable_descriptor, base_id, stable_bytes)
 	_check("v3 descriptor accepts a complete physical identity module", bool(accepted.get("ok", false)), str(accepted.get("errors", [])))
 	if not bool(accepted.get("ok", false)):
 		return
 	var target_id: String = str(base["inventory"][0]["id"])
 	var original_index: int = Descriptor.resolve_inventory_index(accepted["descriptor"], target_id, base)
+	if original_index < 0:
+		_check("v3 binding resolves an inventory component by its authored ID", false)
+		return
 	var original_component: Dictionary = base["inventory"][original_index]
 	var original_mass: Variant = original_component.get("mass", null)
 	_check("v3 binding resolves an inventory component by its authored ID", original_index == 0 and original_component.get("id", "") == target_id)
@@ -103,15 +107,25 @@ func _test_stable_inventory_identity() -> void:
 	changed["inventory"].reverse()
 	var changed_bytes: PackedByteArray = _source_bytes(changed)
 	var changed_descriptor: Dictionary = _stable_descriptor(base_id, changed_bytes, changed,
-		source_descriptor_result["descriptor"]["presentation"])
+		presentation)
 	var regenerated: Dictionary = Descriptor.validate(changed_descriptor, base_id, changed_bytes)
 	_check("regenerated v3 descriptor accepts the renamed and reordered source", bool(regenerated.get("ok", false)), str(regenerated.get("errors", [])))
 	if bool(regenerated.get("ok", false)):
 		var resolved_index: int = Descriptor.resolve_inventory_index(regenerated["descriptor"], target_id, changed)
-		var resolved_component: Dictionary = changed["inventory"][resolved_index]
-		_check("regenerated binding still resolves the same physical component after reorder and rename",
-			resolved_index != original_index and resolved_component.get("id", "") == target_id
-			and resolved_component.get("mass", null) == original_mass)
+		if resolved_index >= 0:
+			var resolved_component: Dictionary = changed["inventory"][resolved_index]
+			_check("regenerated binding still resolves the same physical component after reorder and rename",
+				resolved_index != original_index and resolved_component.get("id", "") == target_id
+				and resolved_component.get("mass", null) == original_mass)
+		else:
+			_check("regenerated binding still resolves the same physical component after reorder and rename", false)
+		var original_keys: Dictionary = {}
+		var regenerated_keys: Dictionary = {}
+		for binding: Dictionary in stable_descriptor["inventory_bindings"]:
+			original_keys[binding["key"]] = true
+		for binding: Dictionary in changed_descriptor["inventory_bindings"]:
+			regenerated_keys[binding["key"]] = true
+		_check("renamed and reordered source retains every authored inventory key", original_keys == regenerated_keys)
 		var binding_order: Dictionary = changed_descriptor.duplicate(true)
 		binding_order["inventory_bindings"].reverse()
 		var order_check: Dictionary = Descriptor.validate(binding_order, base_id, changed_bytes)
@@ -124,10 +138,23 @@ func _test_stable_inventory_identity() -> void:
 	duplicate["landing_gear"]["contacts"][0]["id"] = duplicate["inventory"][0]["id"]
 	var duplicate_bytes: PackedByteArray = _source_bytes(duplicate)
 	var duplicate_descriptor: Dictionary = _stable_descriptor(base_id, duplicate_bytes, duplicate,
-		source_descriptor_result["descriptor"]["presentation"])
+		presentation)
 	var duplicate_result: Dictionary = Descriptor.validate(duplicate_descriptor, base_id, duplicate_bytes)
 	_check("duplicate IDs across physical identity kinds are rejected", not bool(duplicate_result.get("ok", false))
 		and _has_error(duplicate_result.get("errors", []), "duplicate"), str(duplicate_result.get("errors", [])))
+
+	var duplicate_binding: Dictionary = stable_descriptor.duplicate(true)
+	duplicate_binding["inventory_bindings"][1]["key"] = duplicate_binding["inventory_bindings"][0]["key"]
+	var duplicate_binding_result: Dictionary = Descriptor.validate(duplicate_binding, base_id, stable_bytes)
+	_check("duplicate v3 inventory bindings are rejected", not bool(duplicate_binding_result.get("ok", false))
+		and _has_error(duplicate_binding_result.get("errors", []), "unique"), str(duplicate_binding_result.get("errors", [])))
+
+	var extra_binding_field: Dictionary = stable_descriptor.duplicate(true)
+	extra_binding_field["inventory_bindings"][0]["index"] = 0
+	var extra_field_result: Dictionary = Descriptor.validate(extra_binding_field, base_id, stable_bytes)
+	_check("v3 inventory bindings reject index and name-hash fields", not bool(extra_field_result.get("ok", false))
+		and _has_error(extra_field_result.get("errors", []), "only its key"), str(extra_field_result.get("errors", [])))
+	_check("unknown stable inventory IDs do not resolve", Descriptor.resolve_inventory_index(accepted["descriptor"], "unknown_component", base) == -1)
 
 	var missing: Dictionary = base.duplicate(true)
 	missing["inventory"][0].erase("id")

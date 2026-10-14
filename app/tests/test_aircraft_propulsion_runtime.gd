@@ -81,7 +81,7 @@ func _run() -> void:
 
 
 func _test_catalog_routes() -> void:
-	for entry_value: Variant in Catalog.flyable_entries():
+	for entry_value: Variant in Catalog.airplane_flyable_entries():
 		if typeof(entry_value) != TYPE_DICTIONARY:
 			_check("catalog entry shape", false, str(entry_value))
 			continue

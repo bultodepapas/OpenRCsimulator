@@ -6,6 +6,8 @@
 
 This is a design for implementation, not a claim that these faults, recoveries or probabilities already exist. The document is in English following repository policy; proposed player-facing examples include Spanish.
 
+**Navigation:** [Product](#1-product-decisions) · [Research](#2-evidence-and-realism-boundaries) · [Menus](#4-player-flow-and-menus) · [Probability](#5-exact-probability-time-and-repeat-semantics) · [Fault catalog](#6-fault-catalog) · [Aircraft standard](#7-standardization-across-airplanes) · [Numerics](#8-numerical-and-code-design) · [Wing loss](#10-wing-separation-and-continued-damaged-flight) · [Practice](#11-useful-and-enjoyable-practice) · [Verification](#13-verification-and-acceptance) · [Phases](#14-phased-implementation).
+
 ## 1. Product decisions
 
 | Question | Proposed decision |
@@ -44,6 +46,8 @@ An aerodynamic wing drop during a stall/spin leaves the structure attached. It s
 
 Do not assert that wing loss is common from dramatic videos, or that only 3D airplanes can ever survive it. High thrust, remaining controls, fuselage side force and a suitable attitude may help some models. None is a guarantee. The separation event is intended for every airplane whose damage adapter is supported, with recoverability explicitly unknown or qualified for that configuration; it is not restricted by an `aircraft_is_3d` switch.
 
+Two relevant cases are Todd Bridges at Tucson in 2009, described by [the person who filmed it](https://electricdan.wordpress.com/2009/10/22/tucson-aerobatic-shootout-amazing-one-wing-landing/), and Manuel Santos at XFC 2013, reported by [AMA's Model Aviation](https://www.modelaviation.com/xfc2013). Both accounts describe one-wing landings by expert aerobatic pilots. The [source review](../research/failure-mode/EM-00/README.md#r15--original-account-of-an-rc-one-wing-landing) records provenance and access limits; neither account supplies a calibrated damaged-aircraft model.
+
 ## 3. Current repository and integration seams
 
 This snapshot was inspected on 2026-10-13 while other tracks had active edits. The graph was used for discovery, then current source was checked because indexed line ranges were stale. Recheck these seams at implementation time; do not treat the file list as permission to replace concurrent work.
@@ -76,7 +80,7 @@ Add **Failures / Fallas** to the existing Home setup area. Keep Fly as the prima
 FALLAS DEL PRÓXIMO VUELO
 
 Probabilidad de falla por vuelo       [────●────────] [ 30 ] %
-0: desactivadas · 100: una falla en cada vuelo
+0: desactivadas · 100: siempre se programa una falla
 
 [ ] Incluir fallas catastróficas
     Puede perderse todo el control o parte de la estructura.
@@ -84,6 +88,7 @@ Probabilidad de falla por vuelo       [────●────────] 
 
 Las fallas disponibles dependen de los sistemas de este avión.
 Se programa como máximo una emergencia por vuelo.
+Si terminas antes de su activación, la falla no llega a ocurrir.
 
 [Aplicar]  [Cancelar]
 ```
@@ -511,8 +516,8 @@ Every row is pending except EM-00's document/research work. Each step should lan
 
 | ID | Work | Dependencies and proof/status |
 | --- | --- | --- |
-| **EM-03** | Shared per-actuator state and mapping with an exact healthy compatibility path. Start with existing logical topology, then generated left/right bindings. | EM-02 + AS control extension; full no-op state/force/pose parity, checkpoint layout and source-generation checks. No random faults yet. |
-| **EM-04** | Hold/jam, offset and rate/limit mechanisms, including ordinary jam capture/fallback policy. | EM-03; analytic/sign/limits and independent-side fixtures; actual-state jam proof and declared discrete timing. |
+| **EM-03** | Shared per-actuator state and mapping with an exact healthy compatibility path. Start with existing logical topology, then generated left/right bindings in fixtures. | EM-02 + AS control extension; full no-op state/force/pose parity, checkpoint layout and source-generation checks. No random faults or player-facing independent-side qualification yet. |
+| **EM-04** | Hold/jam, offset and rate/limit mechanisms, including ordinary jam capture/fallback policy. | EM-03; analytic/sign/limits and independent-side fixtures; actual-state jam proof and declared discrete timing. EM-13 owns the fleet's player-facing independent-side qualification. |
 | **EM-05** | Family adapters for a minimal honest power failure/limitation. Deliver one family per substep. | EM-02 + AS-12 and owning lifecycle capability. Energy/rotor/wake/audio observables; unsupported stop behaviors remain excluded. |
 | **EM-06** | Episode runtime transaction and deterministic tick scheduling, with reset/rollback. | EM-04/05; forced rejected-tick tests, no stage RNG and event ordering proof. |
 | **EM-07** | Complete versioned checkpoint/identity and sparse event recording. | EM-06; compatible old healthy restore, corrupt restore atomicity, before/on/after-event replay and trace semantics. |

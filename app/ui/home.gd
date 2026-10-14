@@ -202,7 +202,7 @@ func _init() -> void:
 	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
 	fly_row.add_child(weather_button)
 	column.add_child(fly_row)
-	workshop_button = _button("Aircraft Workshop", "")
+	workshop_button = _button("Workshop", "")
 	workshop_button.name = "Workshop"
 	workshop_button.add_theme_font_size_override("font_size", 16)
 	for state: String in ["normal", "hover", "pressed", "disabled"]:
@@ -349,6 +349,8 @@ func set_aircraft(id: String) -> void:
 	fly_button.focus_mode = Control.FOCUS_ALL if flyable else Control.FOCUS_NONE
 	workshop_button.disabled = rotorcraft
 	workshop_button.tooltip_text = tr("Aircraft Workshop is not available for this rotorcraft yet.") if rotorcraft else ""
+	natural_random_button.disabled = rotorcraft
+	natural_random_button.tooltip_text = tr("Natural Random currently supports airplanes only.") if rotorcraft else ""
 	if had_focus and not flyable:
 		next_button.grab_focus()
 	if is_node_ready():

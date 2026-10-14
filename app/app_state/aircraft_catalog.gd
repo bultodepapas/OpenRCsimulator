@@ -118,10 +118,23 @@ static func flyable_entries() -> Array:
 	return ENTRIES.filter(func(e: Dictionary) -> bool: return e.status != PREVIEW and e.data != "")
 
 
+## Flyable airplane configurations for airplane-only solvers and evidence loops.
+static func airplane_flyable_entries() -> Array:
+	return flyable_entries().filter(func(e: Dictionary) -> bool: return not is_rotorcraft(str(e.get("id", ""))))
+
+
 ## IDs of flyable_entries(), in menu order. Previews are skipped explicitly, never silently substituted.
 static func flyable_ids() -> PackedStringArray:
 	var out := PackedStringArray()
 	for e in flyable_entries():
+		out.append(e.id)
+	return out
+
+
+## IDs of airplane_flyable_entries(), in catalog order.
+static func airplane_flyable_ids() -> PackedStringArray:
+	var out := PackedStringArray()
+	for e in airplane_flyable_entries():
 		out.append(e.id)
 	return out
 

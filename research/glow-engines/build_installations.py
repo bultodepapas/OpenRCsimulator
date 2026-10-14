@@ -7,8 +7,14 @@ import argparse
 import copy
 import json
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+IDENTITY_DIR = ROOT / 'research/aircraft-standardization'
+if str(IDENTITY_DIR) not in sys.path:
+    sys.path.insert(0, str(IDENTITY_DIR))
+from physical_identity import validate_physical_identity
+
 EST = 'NITRO-02 experimental installation estimate; no matched hardware measurement'
 
 def q(value, unit='1', kind='estimated', source=EST):
@@ -70,6 +76,12 @@ def aircraft(two, install, suffix=''):
     raw['start']['level_speed']=q(20.,'m/s')
     raw['balance']['configuration'] = 'virtual-glow-installation-v1'
     inv = raw['inventory']
+    # These IDs belong to the inherited source records. Keep the installation's engine,
+    # muffler, propeller, fuel and virtual ballast identities explicit as their values change.
+    for index, identity in ((0, 'item_engine_main'), (1, 'item_muffler_main'),
+                            (2, 'item_propeller_main'), (6, 'item_fuel_main'),
+                            (-1, 'item_balance_mass_virtual')):
+        inv[index]['id'] = identity
     inv[0]['name'] = 'O.S. MAX-55AX' if two else 'O.S. FS-64V'
     url = 'https://www.os-engines.co.jp/english/line_up/engine/air/'+('aircraft/catalog/15612.htm' if two else 'single/catalog/3AY00.html')
     inv[0]['mass'] = q(.404 if two else .442,'kg','manual',url)
@@ -119,6 +131,7 @@ def aircraft(two, install, suffix=''):
         for key in ['stiffness','damping']:
             if key in contact:
                 contact[key]=q(contact[key]['value']*.8,contact[key]['unit'])
+    validate_physical_identity(raw)
     return raw
 
 def outputs():

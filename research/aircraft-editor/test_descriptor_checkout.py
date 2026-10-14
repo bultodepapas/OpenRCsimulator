@@ -78,7 +78,8 @@ class InventoryBindings(unittest.TestCase):
             "openrc-aircraft-workshop v3", "openrc-aircraft-workshop v3"))
         self.assertEqual({item["key"] for item in original_bindings}, {"battery", "fuselage"})
         self.assertEqual({item["key"] for item in changed_bindings}, {"battery", "fuselage"})
-        self.assertEqual({tuple(item) for item in original_bindings}, {tuple(item) for item in changed_bindings})
+        self.assertEqual({item["key"] for item in original_bindings},
+                         {item["key"] for item in changed_bindings})
 
     def test_idless_historical_sources_keep_exact_v2_bindings(self):
         source = {"inventory": [{"name": "Wing"}, {"name": "Battery"}]}

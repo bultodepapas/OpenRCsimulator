@@ -6,6 +6,7 @@ const AppRoot := preload("res://app_root.gd")
 const Home := preload("res://ui/home.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
 const PREFS := "user://test_ui_home_settings.cfg"
@@ -32,6 +33,17 @@ func _run() -> void:
 	_check("route: no user arguments -> Home", not AppRoot.wants_direct_flight(PackedStringArray()))
 	_check("route: --trace -> direct flight", AppRoot.wants_direct_flight(PackedStringArray(["--trace=/tmp/t.csv", "--t=3"])))
 	_check("route: --quick-flight -> direct flight", AppRoot.wants_direct_flight(PackedStringArray(["--quick-flight"])))
+	_check("airplane selection preserves the current flight scene", AppRoot.flight_script_path_for_aircraft(Catalog.DEFAULT_ID) == "res://main.tscn")
+	_check("research helicopter selects the dedicated flight script", AppRoot.flight_script_path_for_aircraft("xcell-60-research") == "res://helicopter_main.gd")
+	_check("direct CLI selector finds a helicopter catalog ID", AppRoot.aircraft_argument(PackedStringArray(["--trace=/tmp/h.csv", "--aircraft=xcell-60-research"])) == "xcell-60-research")
+	var helicopter_home: Control = Home.new()
+	helicopter_home.set_aircraft("xcell-60-research")
+	_check("research helicopter Home offers Fly with hover-only start",
+		helicopter_home.fly_button.disabled == false and helicopter_home.start_choice == "airborne"
+		and helicopter_home.start_button.disabled and helicopter_home.start_button.text == "Start: hover")
+	_check("airplane Workshop and Natural Random are disabled for the rotorcraft",
+		helicopter_home.workshop_button.disabled and helicopter_home.natural_random_button.disabled)
+	helicopter_home.free()
 
 	TranslationServer.set_locale("en")
 	var app: Node = load("res://app_root.tscn").instantiate()

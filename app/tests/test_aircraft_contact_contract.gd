@@ -27,6 +27,27 @@ func _has_code(result: Dictionary, code: String) -> bool:
 	return false
 
 
+func _legacy_model(source: Dictionary) -> Dictionary:
+	var model := source.duplicate(true)
+	model.erase("physical_identity_version")
+	model.erase("physical_identity")
+	var gear: Dictionary = model.get("landing_gear", {})
+	var contacts: Array = gear.get("contacts", [])
+	for index in contacts.size():
+		var contact: Dictionary = contacts[index]
+		contact.erase("id")
+		contacts[index] = contact
+	gear["contacts"] = contacts
+	model["landing_gear"] = gear
+	var propulsion: Dictionary = model.get("propulsion", {})
+	propulsion.erase("id")
+	model["propulsion"] = propulsion
+	var controls: Dictionary = model.get("controls", {})
+	controls.erase("surface_ids")
+	model["controls"] = controls
+	return model
+
+
 func _check_aircraft(path: String) -> String:
 	var loaded: Dictionary = AircraftData.load_file(path)
 	var aircraft_name := path.get_file().get_basename()
@@ -46,7 +67,9 @@ func _check_aircraft(path: String) -> String:
 	for index in soft.hull_probes.size():
 		var probe: Dictionary = soft.hull_probes[index]
 		var expected_label := str(model.crash_hull_components[index]) if not model.crash_hull_components.is_empty() else ""
-		var expected_hull_id := str(authored_hull_ids[index]) if typeof(authored_hull_ids) == TYPE_PACKED_STRING_ARRAY else "hull_point_%03d" % index
+		var expected_hull_id := "hull_point_%03d" % index
+		if typeof(authored_hull_ids) == TYPE_PACKED_STRING_ARRAY and authored_hull_ids.size() == expected_count:
+			expected_hull_id = str(authored_hull_ids[index])
 		_check("%s hull point %d has its ordered model-local ID" % [aircraft_name, index],
 			probe.point_index == index and probe.id == expected_hull_id)
 		_check("%s hull point %d keeps label separate from visual section" % [aircraft_name, index],
@@ -131,7 +154,7 @@ func _malformed_models() -> void:
 	if not loaded.ok:
 		_check("malformed model fixtures load their starting model", false, str(loaded.errors))
 		return
-	var base: Dictionary = loaded.model
+	var base: Dictionary = _legacy_model(loaded.model)
 	var bad: Dictionary = base.duplicate(true)
 	bad.crash_hull = PackedFloat64Array([0.0, 1.0])
 	var result: Dictionary = ContactContract.describe(bad, true)

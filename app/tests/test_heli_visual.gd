@@ -119,6 +119,25 @@ func _initialize() -> void:
 		int(main_blur.measured.get("blades", 0)) == 2 and int(tail_blur.measured.get("blades", 0)) == 2
 		and main_blur.get_node_or_null("analytic_rotor_disc") is MeshInstance3D
 		and tail_blur.get_node_or_null("analytic_rotor_disc") is MeshInstance3D)
+	var main_sources: Array[MeshInstance3D] = []
+	for surface: Dictionary in main_blur.measured.surfaces:
+		var source: MeshInstance3D = surface.node
+		if not main_sources.has(source):
+			main_sources.append(source)
+	main_blur.update(0.0)
+	var stopped_blades_visible := main_sources.all(func(node: MeshInstance3D) -> bool: return node.visible)
+	var rotor_disc: MeshInstance3D = main_blur.get_node("analytic_rotor_disc") as MeshInstance3D
+	_check("stopped main rotor shows only authored blades",
+		stopped_blades_visible and not rotor_disc.visible)
+	main_blur.update(600.0)
+	var fade_blades: Array[Node] = main_blur.find_children("*_blade_fade_*", "MeshInstance3D", true, false)
+	_check("mid-RPM main rotor crossfades authored blades into the measured disc",
+		main_sources.all(func(node: MeshInstance3D) -> bool: return not node.visible)
+		and fade_blades.any(func(node: Node) -> bool: return node.visible) and rotor_disc.visible)
+	main_blur.update(1440.0)
+	_check("high-RPM main rotor keeps the analytic disc and suppresses strobing blades",
+		main_sources.all(func(node: MeshInstance3D) -> bool: return not node.visible)
+		and fade_blades.all(func(node: Node) -> bool: return not node.visible) and rotor_disc.visible)
 
 	visual.update({"omega_rad_s": NAN, "tail_omega_rad_s": -INF, "a1": INF, "b1": "bad", "collective": NAN}, 0.1)
 	_check("invalid visual telemetry is clamped to finite neutral values",
