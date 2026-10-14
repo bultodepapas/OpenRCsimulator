@@ -174,6 +174,19 @@ def check_metadata(metadata: dict, first: dict) -> None:
 
 def check_coupled_metadata(metadata: dict) -> None:
     """Optional model extension shared by calm, wind and atmosphere readers."""
+    wheel_keys = {
+        'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
+        'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes',
+        'launch_continuous',
+    }
+    has_wheel_metadata = any(key in metadata for key in wheel_keys)
+    if has_wheel_metadata:
+        wheel = _check_wheel_metadata(metadata)
+    else:
+        if metadata.get('metadata_schema') == 'openrc-flight-meta v6':
+            raise ValueError('metadata v6 is missing wheel-state metadata')
+        wheel = None
+
     turbine = metadata.get('propulsion_model') == 'turbine-rpm-governor-rk4-v1'
     if turbine or 'turbine_integrator' in metadata:
         if (not turbine or metadata.get('turbine_integrator') != 'rk4'
@@ -192,19 +205,6 @@ def check_coupled_metadata(metadata: dict) -> None:
                 or any(not _finite_number(value) for value in aux) or continuous[0] != aux[0]):
             raise ValueError('continuous turbine RPM does not match its endpoint mirror')
         return
-    wheel_keys = {
-        'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
-        'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes',
-        'launch_continuous',
-    }
-    has_wheel_metadata = any(key in metadata for key in wheel_keys)
-    if has_wheel_metadata:
-        wheel = _check_wheel_metadata(metadata)
-    else:
-        if metadata.get('metadata_schema') == 'openrc-flight-meta v6':
-            raise ValueError('metadata v6 is missing wheel-state metadata')
-        wheel = None
-
     propulsion_model = metadata.get('propulsion_model')
     shaft_models = {
         'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',

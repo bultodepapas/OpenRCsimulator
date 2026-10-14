@@ -213,6 +213,17 @@ class AtmosphereCLI(unittest.TestCase):
         _comments, avanti_metadata, _rows = _read_parts(
             self.aircraft_traces[('sebart-avanti-s-a200-p100rx', '.1')])
         self.assertEqual(avanti_metadata.get('metadata_schema'), 'openrc-flight-meta v5')
+        turbine_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 '
+                          '(tick-1 body/turbine, current sampled servos); reset uses t=0')
+        self.assertEqual(avanti_metadata.get('weather_timing'), turbine_timing)
+        wrong_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 '
+                        '(tick-1, current aux); reset uses t=0')
+        path = self.directory / 'mutated-turbine-weather-timing.csv'
+        _rewrite_trace(self.aircraft_traces[('sebart-avanti-s-a200-p100rx', '.1')], path,
+                       {'weather_timing': wrong_timing})
+        with self.assertRaises(ValueError):
+            check(path)
+
         path = self.directory / 'mutated-no-wheel-v6.csv'
         _rewrite_trace(self.aircraft_traces[('sebart-avanti-s-a200-p100rx', '.1')], path,
                        {'metadata_schema': 'openrc-flight-meta v6'})

@@ -152,6 +152,17 @@ class TurbulenceCLI(unittest.TestCase):
                 result = check(trace, .1)
                 self.assertEqual(result['rows'], 25)
                 self.assertGreaterEqual(result['turbulence_aux_index'], 4)
+                if aircraft == 'sebart-avanti-s-a200-p100rx':
+                    comments, metadata, rows = _header_and_rows(trace)
+                    turbine_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 '
+                                      '(tick-1 body/turbine, current sampled servos); reset uses t=0')
+                    self.assertEqual(metadata.get('weather_timing'), turbine_timing)
+                    wrong_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 '
+                                    '(tick-1, current aux); reset uses t=0')
+                    invalid = self.directory / 'avanti-wrong-weather-timing.csv'
+                    _write_trace(invalid, comments.copy(), rows, {'weather_timing': wrong_timing})
+                    with self.assertRaises(ValueError):
+                        check(invalid, .1)
 
     def test_midflight_recording_resumes_from_exact_window_and_rng_state(self):
         result = check(self.midflight_trace)

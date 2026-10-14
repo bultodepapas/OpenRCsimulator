@@ -276,9 +276,12 @@ def check(path, duration=None):
         raise ValueError('missing/invalid trace clock metadata') from error
     if not math.isfinite(dt) or not 0 < dt <= 1:
         raise ValueError('invalid trace clock')
-    expected_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0'
-                       if metadata.get('shaft_integrator') == 'coupled-rk4' else
-                       'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0')
+    if metadata.get('shaft_integrator') == 'coupled-rk4':
+        expected_timing = 'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0'
+    elif metadata.get('turbine_integrator') == 'rk4':
+        expected_timing = 'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/turbine, current sampled servos); reset uses t=0'
+    else:
+        expected_timing = 'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0'
     if metadata.get('weather_timing') != expected_timing:
         raise ValueError('unsupported weather timing contract')
     if metadata.get('weather_evidence') != 'user-selected/authored practice conditions; not measured meteorology':

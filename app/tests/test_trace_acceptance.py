@@ -115,6 +115,7 @@ class TraceAcceptance(unittest.TestCase):
                         if line.startswith('# '))
         check_coupled_metadata(metadata)
         for key, value in [
+            ('metadata_schema', 'openrc-flight-meta v6'),
             ('turbine_integrator', 'sampled'),
             ('continuous_layout', 'none'),
             ('recording_start_continuous', '[true]'),
