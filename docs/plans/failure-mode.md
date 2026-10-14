@@ -525,7 +525,7 @@ EM-00's research is delivered. The implementation checkpoint above records the p
 | ID | Work | Dependencies and proof/status |
 | --- | --- | --- |
 | **EM-00** | Research, current-tree audit, UX/probability decisions and track registration. | This plan and linked dated source review. **Documentation delivered.** Runtime scope is recorded in the implementation checkpoint above. |
-| **EM-01** | Freeze supported use cases, define ordinary/catastrophic eligibility and baseline corpus. Coordinate EM/AS/CR/UI/AV/NITRO/NR responsibilities. | Capture current healthy state identities and source limits; confirm all seven catalog configurations and actual energy/actuator topology. No physical edits. |
+| **EM-01** | Freeze supported use cases, define ordinary/catastrophic eligibility and baseline corpus. Coordinate EM/AS/CR/UI/AV/NITRO/NR responsibilities. | Capture healthy state identities and source limits for the complete catalog at the recorded baseline, including actual energy/actuator topology. No physical edits. |
 | **EM-02** | Strict failure request/definition/resolved-record contracts; capability resolver with exclusion reasons. | Implemented for logical controls and normalized glow/electric propulsion: v2 profile binding, v1 replay, unknown-profile refusal and catalog API exclusion reasons. G0/G4 and independent AS topology qualification remain open. [Evidence](../research/failure-mode/EM-05/README.md). |
 
 ### Phase 1 — Deterministic physical foundation
