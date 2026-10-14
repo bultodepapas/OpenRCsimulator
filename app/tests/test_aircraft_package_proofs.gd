@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Registry := preload("res://aircraft/model_registry.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const PACKAGE_PROOF_PATH := "res://data/aircraft_models/package_proofs.json"
 const PACKAGE_PROOF_FORMAT := "openrc-aircraft-model-package v1"
 const TEMP_ROOT := "user://aircraft-package-proof-tests"
@@ -23,6 +24,7 @@ func _initialize() -> void:
 
 
 func _run_parent() -> void:
+	_test_airplane_proof_scope()
 	var temp_dir := TEMP_ROOT + "-" + str(Time.get_ticks_usec())
 	_created_dir = ProjectSettings.globalize_path(temp_dir)
 	var cases: Array[Dictionary] = [
@@ -41,6 +43,15 @@ func _run_parent() -> void:
 	_cleanup()
 	print("Aircraft package proofs: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_airplane_proof_scope() -> void:
+	var families := Catalog.airplane_visual_families()
+	_check("all airplane catalog families enter model proof scope", families.size() == 5, str(families))
+	for id: String in Catalog.ids():
+		var family := Catalog.visual_family(id)
+		_check("catalog family follows explicit vehicle ownership: " + id,
+			families.has(family) != Catalog.is_rotorcraft(id), "families=" + str(families))
 
 
 func _run_child(case_name: String, pack_path: String) -> void:

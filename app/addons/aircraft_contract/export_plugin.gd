@@ -14,10 +14,7 @@ func _get_name() -> String:
 func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String, _flags: int) -> void:
 	var registry: Script = load("res://aircraft/model_registry.gd")
 	var sources: Dictionary = {}
-	var families: Dictionary = {}
-	for id: String in Catalog.ids():
-		families[Catalog.visual_family(id)] = true
-	for family: String in families:
+	for family: String in Catalog.airplane_visual_families():
 		var result: Dictionary = registry.describe(family)
 		if not result.get("ok", false):
 			push_error("Cannot export an invalid aircraft model: " + str(result.get("errors", [])))

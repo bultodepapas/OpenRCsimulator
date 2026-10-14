@@ -139,6 +139,18 @@ static func airplane_flyable_ids() -> PackedStringArray:
 	return out
 
 
+## Unique visual families owned by the airplane model contract, including airplane previews.
+static func airplane_visual_families() -> PackedStringArray:
+	var out := PackedStringArray()
+	for id in ids():
+		if is_rotorcraft(id):
+			continue
+		var family := visual_family(id)
+		if not out.has(family):
+			out.append(family)
+	return out
+
+
 ## The entry for `id`, or {} when unknown (callers must refuse it, never substitute another airplane).
 static func entry(id: String) -> Dictionary:
 	for e in ENTRIES:
