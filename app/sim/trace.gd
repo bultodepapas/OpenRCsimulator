@@ -408,6 +408,21 @@ func _valid_battery_sample(point: Dictionary) -> bool:
 	return true
 
 
+## JSON full-precision metadata can decode the initial positive RPM to an adjacent float64.
+static func _positive_float64_within_one_ulp(a: float, b: float) -> bool:
+	if a == b: # Also treats +0.0 and -0.0 as equal.
+		return true
+	if not is_finite(a) or not is_finite(b) or a < 0.0 or b < 0.0:
+		return false
+	var a_bytes := PackedByteArray()
+	var b_bytes := PackedByteArray()
+	a_bytes.resize(8)
+	b_bytes.resize(8)
+	a_bytes.encode_double(0, a)
+	b_bytes.encode_double(0, b)
+	return absi(a_bytes.decode_u64(0) - b_bytes.decode_u64(0)) <= 1
+
+
 ## Signature matches Simulation.stepped, so it can be connected directly.
 func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux := PackedFloat64Array([0.0]), continuous := PackedFloat64Array()) -> void:
 	if _invalid_weather:
@@ -417,7 +432,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	if _invalid_weather:
 		return
 	if _coupled_shaft and (aux.size() < 4 or not _finite(aux) or aux[0] < 0.0 \
-			or (_rows.is_empty() and aux[0] != _coupled_start_rpm)):
+			or (_rows.is_empty() and not _positive_float64_within_one_ulp(aux[0], _coupled_start_rpm))):
 		_invalid_weather = true
 		return
 	if _continuous_turbine and (tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \

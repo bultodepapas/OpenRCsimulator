@@ -29,6 +29,20 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 		failures += 1
 
 
+func _float64_bits(value: float) -> int:
+	var encoded := PackedByteArray()
+	encoded.resize(8)
+	encoded.encode_double(0, value)
+	return encoded.decode_u64(0)
+
+
+func _float64_from_bits(bits: int) -> float:
+	var encoded := PackedByteArray()
+	encoded.resize(8)
+	encoded.encode_u64(0, bits)
+	return encoded.decode_double(0)
+
+
 func _new_flight(mode: String = "split", path: String = P51_PATH, weather: Dictionary = {}) -> Node:
 	var flight: Node = Flight.new()
 	if not weather.is_empty():
@@ -493,6 +507,35 @@ func _trace_integrity() -> void:
 	signed_trace.record(wash.sim.tick, wash.sim.time(), wash.sim.state, wash.sim.last_loads, wash.sim.inputs, wash.sim.aux)
 	_check("coupled trace accepts finite negative wash increments with positive RPM", not signed_trace.to_csv().is_empty())
 	wash.free()
+	_check("RPM metadata guard treats signed zero as exact equality",
+		Trace._positive_float64_within_one_ulp(0.0, -0.0))
+
+	var hot_high: Node = _new_flight("coupled-rk4")
+	hot_high.setup_weather(Wind.preset("hot-high"))
+	hot_high.reset()
+	var start_rpm: float = hot_high.sim.aux[0]
+	var hot_meta: Dictionary = hot_high.trace_meta()
+	var continuous_start: Array = JSON.parse_string(hot_meta.recording_start_continuous)
+	var encoded_rpm: float = float(continuous_start[0])
+	_check("known hot-high P-51 RPM is approximately 3618.158384960468",
+		absf(start_rpm - 3618.158384960468) < 1e-12)
+	_check("full-precision JSON header is one ULP below the live RPM",
+		_float64_bits(start_rpm) - _float64_bits(encoded_rpm) == 1)
+	var one_ulp_trace: Trace = Trace.new()
+	one_ulp_trace.meta = hot_meta
+	one_ulp_trace.record(hot_high.sim.tick, hot_high.sim.time(), hot_high.sim.state, hot_high.sim.last_loads,
+		hot_high.sim.inputs, hot_high.sim.aux, hot_high.sim.continuous)
+	_check("trace accepts the one-ULP JSON RPM roundtrip", one_ulp_trace.row_count() == 1 and not one_ulp_trace.to_csv().is_empty())
+	var two_ulp_aux: PackedFloat64Array = hot_high.sim.aux.duplicate()
+	two_ulp_aux[0] = _float64_from_bits(_float64_bits(encoded_rpm) + 2)
+	var two_ulp_trace: Trace = Trace.new()
+	two_ulp_trace.meta = hot_meta.duplicate(true)
+	two_ulp_trace.record(hot_high.sim.tick, hot_high.sim.time(), hot_high.sim.state, hot_high.sim.last_loads,
+		hot_high.sim.inputs, two_ulp_aux, hot_high.sim.continuous)
+	_check("trace rejects an RPM mismatch two ULPs from its header",
+		_float64_bits(two_ulp_aux[0]) - _float64_bits(encoded_rpm) == 2
+		and two_ulp_trace.row_count() == 0 and two_ulp_trace.to_csv().is_empty())
+	hot_high.free()
 
 
 func _pending_restore() -> void:
