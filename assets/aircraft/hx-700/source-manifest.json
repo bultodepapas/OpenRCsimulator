@@ -23,7 +23,16 @@
     "sha256": "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764",
     "size_bytes": 3086608,
     "export": "Blender glTF 2.0 static frame-1 preview; animations and physics excluded",
-    "coordinate_conversion": "Blender Z-up source to glTF Y-up; app model basis maps glTF +X to body -Z, +Y to body +Y, and +Z to body +X"
+    "coordinate_conversion": "Blender Z-up source to glTF Y-up; app model basis maps glTF +X to body -Z, +Y to body +Y, and +Z to body +X",
+    "rotor_profiles": {
+      "path": "rotor_profiles.json",
+      "schema": "openrc-heli-rotor-profiles v1",
+      "algorithm": "vq05-polar-coverage-rings36-bins240-gap1-blade-share0.5-hub0.98-count0.7-v1",
+      "source_glb_sha256": "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764",
+      "sha256": "057981b98bb3b3e3efac0ba4c2a0f9f54b017ce802da5e40683ef04938abc9cf",
+      "size_bytes": 3070,
+      "generator": "research/helicopter/assets/export_heli_rotor_profiles.gd"
+    }
   },
   "runtime_adapter": {
     "airframe_scale": 1.0,

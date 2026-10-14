@@ -84,8 +84,11 @@ def main() -> int:
         raise SystemExit("Rotor profile hash does not match source-manifest.json.")
     profile_payload = json.loads(profiles.read_text(encoding="utf-8"))
     if profile_payload.get("schema") != profile_info.get("schema") \
+            or profile_payload.get("algorithm") != profile_info.get("algorithm") \
             or profile_payload.get("source_glb_sha256") != EXPECTED_PREVIEW_SHA256:
         raise SystemExit("Rotor profile metadata is not bound to the reviewed GLB.")
+    if profiles.stat().st_size != profile_info.get("size_bytes"):
+        raise SystemExit("Rotor profile size does not match source-manifest.json.")
 
     for destination in GLB_DESTINATIONS:
         copy_verified(preview, destination, args.replace, EXPECTED_PREVIEW_SHA256)
