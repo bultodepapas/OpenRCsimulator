@@ -31,7 +31,7 @@ Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js pro
 
 ## Local Linux preflight
 
-From Ubuntu 24.04 or WSL2 Ubuntu, run these entrypoints from the repository root. They require Linux and keep the pinned aircraft-schema environment under ignored `.tools/`:
+From Ubuntu 24.04 x86_64, including WSL2 Ubuntu, run these entrypoints from the repository root. They keep the pinned aircraft-schema environment under ignored `.tools/`:
 
 ```sh
 tools/ci/check-local.sh quick
@@ -39,7 +39,7 @@ tools/ci/check-local.sh full
 tools/ci/check-local.sh release
 ```
 
-`quick` runs CI's scope, schema, generator-freshness and offline-tool checks. `full` adds the native Linux ground-vehicle build/parity checks, `app/test.sh` and `app/capture.sh`; it verifies the production app. `release` adds `app/export.sh`, which recreates `dist/` and requires verified export templates. Run `quick` before pushing and `full` before release review; GitHub Actions remains the independent gate. Documentation-only changes can skip the production app job, while version tags and manual runs keep the full production checks. These commands do not run native Windows checks or the frozen three.js prototype.
+`quick` runs CI's scope, schema, generator-freshness and offline-tool checks. `full` adds the native Linux build/parity checks using the [pinned compiler toolchain](../research/rc-monster-truck/native/README.md#pinned-build-tools), `app/test.sh` and `app/capture.sh`; it verifies the production app. `release` adds `app/export.sh`, which recreates `dist/` and requires verified export templates. Run `quick` before pushing and `full` before release review; GitHub Actions remains the independent gate. Documentation-only changes can skip the production app job, while version tags and manual runs keep the full production checks. These commands do not run native Windows checks or the frozen three.js prototype.
 
 CI runs on pull requests, `main`, version tags and manual dispatch. New pushes cancel older runs for the same branch or pull request; tags and manual runs are preserved. New CI artifacts expire after 7 days; published release downloads keep their normal lifetime.
 
