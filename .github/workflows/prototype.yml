@@ -1,0 +1,48 @@
+name: Frozen prototype
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prototypes/stage0/three/**'
+      - '.nvmrc'
+      - '.github/workflows/prototype.yml'
+  pull_request:
+    paths:
+      - 'prototypes/stage0/three/**'
+      - '.nvmrc'
+      - '.github/workflows/prototype.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prototype-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  three:
+    name: three.js prototype (archived bake-off build)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: prototypes/stage0/three
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: prototypes/stage0/three/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npm run capture
+      - run: npm run e2e
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: captures-three
+          path: prototypes/stage0/capture-three*.png
+          retention-days: 7

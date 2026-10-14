@@ -4,7 +4,7 @@ Canonical setup and command index. Code, configuration and generated data define
 
 ## Developer setup
 
-The CI host is Ubuntu 24.04 x86_64. Install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3. `app/get-godot.sh` downloads the exact Godot version pinned in that script and verifies the archive's SHA-512.
+The CI host is Ubuntu 24.04 x86_64. Install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3 with `venv` support (`python3-venv` on Ubuntu). `app/get-godot.sh` downloads the exact Godot version pinned in that script and verifies the archive's SHA-512.
 
 ```sh
 git -c core.autocrlf=false clone https://github.com/bultodepapas/OpenRCsimulator.git
@@ -27,7 +27,21 @@ $GodotWindows = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe'
 
 Inspect exit status **and** engine errors in logs: Godot can report runtime script errors with exit code zero. WSL results establish Linux behavior, not native Windows GPU or device acceptance. On macOS, open `app/project.godot` with the matching Godot build.
 
-Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js prototype. To reproduce the Linux app CI job with Docker and `act`: `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app`.
+Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js prototype. To reproduce the Linux app CI job with Docker and `act`: `act workflow_dispatch -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app`.
+
+## Local Linux preflight
+
+From Ubuntu 24.04 or WSL2 Ubuntu, run these entrypoints from the repository root. They require Linux and keep the pinned aircraft-schema environment under ignored `.tools/`:
+
+```sh
+tools/ci/check-local.sh quick
+tools/ci/check-local.sh full
+tools/ci/check-local.sh release
+```
+
+`quick` runs CI's scope, schema, generator-freshness and offline-tool checks. `full` adds the native Linux ground-vehicle build/parity checks, `app/test.sh` and `app/capture.sh`; it verifies the production app. `release` adds `app/export.sh`, which recreates `dist/` and requires verified export templates. Run `quick` before pushing and `full` before release review; GitHub Actions remains the independent gate. Documentation-only changes can skip the production app job, while version tags and manual runs keep the full production checks. These commands do not run native Windows checks or the frozen three.js prototype.
+
+CI runs on pull requests, `main`, version tags and manual dispatch. New pushes cancel older runs for the same branch or pull request; tags and manual runs are preserved. New CI artifacts expire after 7 days; published release downloads keep their normal lifetime.
 
 ## App and release commands
 
@@ -44,9 +58,9 @@ Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js pro
 | Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Add `-- --aircraft=<catalog-id>`. Run alone on the target machine. |
 | Packages | `app/export.sh` | Windows/Linux/macOS ZIPs, pack smoke checks and `dist/SHA256SUMS`. Recreates `dist/`. |
 
-[CI](../.github/workflows/ci.yml) also checks schemas, generated geometry/physics and the Linux native ground-vehicle evaluator. `app/test.sh` alone does not run every CI check. Software checks do not establish physical aircraft accuracy, radio latency or target-GPU performance.
+[CI](../.github/workflows/ci.yml) uses `tools/ci/check-sources.sh` for the aircraft schema and generator checks; it also checks the Linux native ground-vehicle evaluator. `app/test.sh` alone does not run every CI check. Software checks do not establish physical aircraft accuracy, radio latency or target-GPU performance.
 
-The frozen prototype's separate CI job runs `npm ci`, `npm run typecheck`, `npm test`, `npx playwright install --with-deps chromium`, `npm run capture` and `npm run e2e` from `prototypes/stage0/three/`.
+The frozen prototype uses a separate workflow, `.github/workflows/prototype.yml`. It runs only when `prototypes/stage0/three/**`, `.nvmrc` or that workflow changes, or on manual dispatch; its commands are `npm ci`, `npm run typecheck`, `npm test`, `npx playwright install --with-deps chromium`, `npm run capture` and `npm run e2e` from `prototypes/stage0/three/`.
 
 ## Release sequence
 
