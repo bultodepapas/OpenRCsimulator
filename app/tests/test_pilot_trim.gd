@@ -40,10 +40,31 @@ func run() -> void:
 			s.free()
 			continue
 		var initial: PackedFloat64Array = s.sim.state.duplicate()
-		fly(s, 2400)
-		check(entry.id + " live neutral holds height/speed for 10 s", s.sim.tick == 2400 and s.sim.fault_reason.is_empty()
-			and absf(s.sim.state[2] - initial[2]) < 0.001
-			and absf(M.norm(RB._slice3(s.sim.state, RB.VEL)) - s.start.V) < 0.001)
+		var initial_continuous: PackedFloat64Array = s.sim.continuous.duplicate()
+		var finite_fuel: bool = str(s.aircraft.model.capabilities.get("energy", "")) == "finite_glow_fuel"
+		if finite_fuel:
+			s._physics_process(s.sim.dt())
+			s.sim.step()
+			var initially_balanced: bool = (s.sim.tick == 1 and s.sim.fault_reason.is_empty()
+				and absf(s.sim.state[2] - initial[2]) < 0.001
+				and absf(M.norm(RB._slice3(s.sim.state, RB.VEL)) - s.start.V) < 0.001)
+			fly(s, 2399)
+			# The steady trim is an initial condition. Finite-fuel glow flights evolve tank mass/CG and thermal state;
+			# no accepted 10 s altitude/speed drift bound exists for these experimental installations (NITRO-02).
+			var runtime_finite: bool = true
+			for value: float in s.sim.state:
+				runtime_finite = runtime_finite and is_finite(value)
+			for value: float in s.sim.continuous:
+				runtime_finite = runtime_finite and is_finite(value)
+			check(entry.id + " live neutral finite-fuel flight starts balanced, advances safely and consumes fuel",
+				s.sim.tick == 2400 and s.sim.fault_reason.is_empty() and runtime_finite
+				and s.sim.continuous.size() > 7 and s.sim.continuous[7] == 1.0
+				and s.sim.continuous[1] >= 0.0 and s.sim.continuous[1] < initial_continuous[1] and initially_balanced)
+		else:
+			fly(s, 2400)
+			check(entry.id + " live neutral holds height/speed for 10 s", s.sim.tick == 2400 and s.sim.fault_reason.is_empty()
+				and absf(s.sim.state[2] - initial[2]) < 0.001
+				and absf(M.norm(RB._slice3(s.sim.state, RB.VEL)) - s.start.V) < 0.001)
 		var original: Dictionary = s.trims.duplicate()
 		var state_bytes: PackedByteArray = s.sim.state.to_byte_array()
 		var aux_bytes: PackedByteArray = s.sim.aux.to_byte_array()
