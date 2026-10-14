@@ -10,6 +10,7 @@ const S = preload("res://physics/slipstream.gd")
 const Air = preload("res://physics/air_data.gd")
 const Prop = preload("res://physics/propulsion.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const GlowFlight = preload("res://physics/glow/flight.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 var checks: int = 0
 var failures: int = 0
@@ -64,8 +65,19 @@ func _initialize() -> void:
 				and legacy.wheel_count() == 3 and not W.enabled(legacy.aircraft.model.propulsion)
 				and legacy.sim.continuous == expected)
 		else:
-			check(id + " production has only zero wheel state, no wash transport",
-				legacy._rotor_index() == 0 and legacy.sim.continuous == wheel_state)
+			var engine_state_count: int = 0
+			var engine_state_valid: bool = true
+			if legacy.glow_is_active():
+				engine_state_count = GlowFlight.SIZE
+				engine_state_valid = GlowFlight.valid(legacy.sim.continuous, legacy.aircraft.model.propulsion.glow)
+			elif legacy.turbine_is_continuous():
+				engine_state_count = 1
+				engine_state_valid = legacy.sim.continuous.size() > 0 and legacy.sim.continuous[0] == legacy.sim.aux[0]
+			check(id + " production engine state has zero wheels and no wash transport",
+				not W.enabled(legacy.aircraft.model.propulsion) and legacy._rotor_index() == 0
+				and engine_state_valid and legacy.wheel_index() == engine_state_count
+				and legacy.sim.continuous.size() == engine_state_count + wheel_state.size()
+				and legacy.sim.continuous.slice(legacy.wheel_index()) == wheel_state)
 		legacy.free()
 	print("E0b5 transport: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
