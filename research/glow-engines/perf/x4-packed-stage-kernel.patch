@@ -1,0 +1,548 @@
+--- a/app/physics/glow/flight.gd
++++ b/app/physics/glow/flight.gd
+@@ -90,7 +90,9 @@
+ 	var install: Dictionary=model.propulsion.glow
+ 	return FuelMass.evaluate(model.mass_kg,model.inertia,install.initial_fuel_kg,maxf(0.0,fuel),install.tank_position,install.tank_size)
+ 
+-static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
++## `stage` requests the packed RK-stage lifecycle result (key `stage`) when the prepared
++## evaluator is current; otherwise the full Dictionary evaluation is returned.
++static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float, stage: bool = false) -> Dictionary:
+ 	var prop: Dictionary=owner.aircraft.model.propulsion
+ 	var install: Dictionary=prop.glow
+ 	var state: Dictionary=unpack(values,install)
+@@ -118,6 +120,11 @@
+ 	local_cooling += M.sqrt_(maxf(0.0,load.thrust_n)/(2.0*owner.air_density()*PI*prop.diameter*prop.diameter/4.0))
+ 	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
+ 	var evaluation: Dictionary
++	if stage and evaluator is Life.PreparedEvaluator and identity_matches:
++		var packed: PackedFloat64Array=Life.stage_prepared(evaluator,state,rpm,owner.sim.inputs[3],values[12],
++			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
++		if packed.is_empty(): return {ok=false}
++		return {ok=true,stage=packed,air=air,hub_air_velocity_body_m_s=hub_air,propeller=load,state=state}
+ 	if evaluator is Life.PreparedEvaluator and identity_matches:
+ 		evaluation=Life.evaluate_prepared(evaluator,state,rpm,owner.sim.inputs[3],values[12],
+ 			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
+@@ -135,8 +142,16 @@
+ 
+ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float, owner: Node) -> Dictionary:
+ 	if values.size()!=SIZE+owner.wheel_count(): return {}
+-	var result: Dictionary=point(owner,body,values,time_s)
++	var result: Dictionary=point(owner,body,values,time_s,true)
+ 	if not result.ok: return {}
++	# Packed layout of Life.stage_prepared(); the fallback maps the Dictionary result onto it.
++	var stage: PackedFloat64Array
++	if result.has("stage"):
++		stage=result.stage
++	else:
++		for i in 6: stage.append(result.rates[Life.CONTINUOUS_KEYS[i]])
++		stage.append_array(PackedFloat64Array([result.source.shaft_torque_nm,result.source.brake_power_w,
++			result.source.chemical_power_w,result.firing_fraction]))
+ 	var model: Dictionary=owner.aircraft.model
+ 	var prop: Dictionary=model.propulsion
+ 	var mass: Dictionary=properties(owner,values[1])
+@@ -153,7 +168,7 @@
+ 	var force: PackedFloat64Array=external.slice(0,3)
+ 	var torque: PackedFloat64Array=M.sub(external.slice(3,6),M.cross(mass.cg_body_m,force))
+ 	var w: PackedFloat64Array=body.slice(RB.RATE,RB.RATE+3)
+-	var drive: float=result.source.shaft_torque_nm
++	var drive: float=stage[6]
+ 	var load: float=result.propeller.torque_nm
+ 	var locked: bool=false
+ 	if values[0]<=0.0:
+@@ -183,11 +198,11 @@
+ 	var derivative:=PackedFloat64Array()
+ 	derivative.resize(SIZE)
+ 	derivative[0]=response.spin_acceleration*60.0/TAU
+-	for i in 6: derivative[i+1]=result.rates[Life.CONTINUOUS_KEYS[i]]
+-	derivative[13]=result.source.brake_power_w
++	for i in 6: derivative[i+1]=stage[i]
++	derivative[13]=stage[7]
+ 	derivative[14]=result.propeller.shaft_power_w
+ 	derivative[15]=result.propeller.thrust_power_w
+-	derivative[16]=result.source.chemical_power_w
++	derivative[16]=stage[8]
+ 	derivative.append_array(ground.derivative)
+ 	for i in 3: external[i+3]+=response.reaction[i]
+ 	return {loads=external,derivative=derivative,rotor_momentum=rotor,body_derivative=body_rate}
+--- a/app/physics/glow/lifecycle.gd
++++ b/app/physics/glow/lifecycle.gd
+@@ -219,6 +219,90 @@
+ 		evaluator._source)
+ 
+ 
++## RK-stage evaluation over a prepared evaluator: evaluate_prepared()'s predicates and
++## arithmetic without telemetry, source or thermal Dictionaries. Returns
++## [six CONTINUOUS_KEYS rates, shaft_torque_nm, brake_power_w, chemical_power_w,
++## firing_fraction], or an empty array wherever evaluate_prepared() fails.
++static func stage_prepared(
++		evaluator: PreparedEvaluator,
++		state: Dictionary,
++		rpm: float,
++		throttle: float,
++		mixture: float,
++		dry_density_kg_m3: float,
++		ambient_k: float,
++		cooling_airspeed_mps: float
++) -> PackedFloat64Array:
++	if not evaluator is PreparedEvaluator or not _state_error(state, true).is_empty():
++		return PackedFloat64Array()
++	var model: Dictionary = evaluator._model
++	var settings: Dictionary = evaluator._settings
++	if str(state.family) != str(model.family):
++		return PackedFloat64Array()
++	var operation: Dictionary = model.operation
++	if not _finite_number(rpm) or rpm < 0.0 or rpm > float(operation.max_rpm) \
++			or not _finite_number(throttle) or throttle < 0.0 or throttle > 1.0 \
++			or not _finite_number(mixture) or mixture < 0.0 \
++			or not _finite_number(dry_density_kg_m3) or dry_density_kg_m3 <= 0.0 \
++			or not _finite_number(ambient_k) or ambient_k <= 0.0 \
++			or not _finite_number(cooling_airspeed_mps) or cooling_airspeed_mps < 0.0:
++		return PackedFloat64Array()
++	var raw_servo: float = float(state.servo_fraction)
++	var raw_air: float = float(state.air_fraction)
++	var servo: float = clampf(raw_servo, 0.0, 1.0)
++	var admission: float = clampf(raw_air, 0.0, 1.0)
++	var air_target: float = float(settings.idle_admission) + servo * (1.0 - float(settings.idle_admission))
++	var servo_rate: float = (throttle - raw_servo) / float(settings.servo_time_constant_s)
++	var air_rate: float = (air_target - raw_air) / float(settings.air_time_constant_s)
++	var active: bool = bool(state.running) and float(state.fuel_kg) > 0.0
++	var target_fuel_flow: float = 0.0
++	var actual_mixture: float = mixture
++	var current_transport: float = maxf(0.0, float(state.fuel_transport_kg_s))
++	if active and admission > 0.0:
++		var baseline_mixture: float = mixture if mixture > 0.0 else float(operation.nominal_mixture)
++		var flow_result: Dictionary = Source.unit_fuel_flow_prepared(
++			evaluator._source, rpm, admission, baseline_mixture, dry_density_kg_m3
++		)
++		if not flow_result.get("ok", false):
++			return PackedFloat64Array()
++		var unit_flow: float = float(flow_result.unit_fuel_flow_kg_s_per_mixture)
++		target_fuel_flow = unit_flow * mixture
++		if unit_flow > LOW_FLOW:
++			actual_mixture = current_transport / unit_flow
++		else:
++			actual_mixture = mixture
++	var firing_fraction: float = 0.0
++	if active:
++		firing_fraction = _firing_fraction(
++			settings, float(operation.nominal_mixture), actual_mixture, float(state.temperature_k)
++		)
++	var source: PackedFloat64Array = Source.evaluate_prepared_packed(
++		evaluator._source, rpm, admission, actual_mixture, dry_density_kg_m3, active, firing_fraction
++	)
++	if source.is_empty():
++		return source
++	var temperature_rate: float = Thermal._rate_prepared(source[Source.PACKED_CHEMICAL_POWER],
++		source[Source.PACKED_INDICATED_POWER], source[Source.PACKED_MECHANICAL_LOSS],
++		source[Source.PACKED_PUMPING_LOSS], source[Source.PACKED_VALVE_LOSS],
++		source[Source.PACKED_DELIVERED_FUEL], float(state.temperature_k), ambient_k,
++		cooling_airspeed_mps, settings.thermal)
++	if is_nan(temperature_rate):
++		return PackedFloat64Array()
++	var fuel_transport_rate: float = 0.0
++	if active:
++		fuel_transport_rate = (target_fuel_flow - current_transport) / float(settings.fuel_transport_time_constant_s)
++	else:
++		fuel_transport_rate = -current_transport / float(settings.fuel_transport_time_constant_s)
++	var fuel_rate: float = -float(source[Source.PACKED_DELIVERED_FUEL])
++	var phase_rate: float = rpm / 60.0
++	if not is_finite(fuel_rate) or not is_finite(temperature_rate) or not is_finite(servo_rate) \
++			or not is_finite(air_rate) or not is_finite(fuel_transport_rate) or not is_finite(phase_rate):
++		return PackedFloat64Array()
++	return PackedFloat64Array([fuel_rate, temperature_rate, servo_rate, air_rate, fuel_transport_rate,
++		phase_rate, source[Source.PACKED_SHAFT_TORQUE], source[Source.PACKED_BRAKE_POWER],
++		source[Source.PACKED_CHEMICAL_POWER], firing_fraction])
++
++
+ ## Accepted-endpoint firing fraction over a prepared evaluator. It applies the same
+ ## state/query checks, fuel-flow scale and firing law as evaluate_prepared(), but
+ ## omits the source torque, thermal balance and rates that the endpoint discards.
+--- a/app/physics/glow/two_stroke.gd
++++ b/app/physics/glow/two_stroke.gd
+@@ -34,6 +34,62 @@
+ 		running, firing_fraction, true)
+ 
+ 
++## RK-stage entry for detached, profile-validated parameters: the same predicates as
++## _evaluate_prevalidated(), returning _calculate_packed() outputs or an empty array.
++static func _evaluate_prevalidated_packed(
++		rpm: float,
++		admission: float,
++		mixture: float,
++		dry_density_kg_m3: float,
++		parameters: Dictionary,
++		running: bool,
++		firing_fraction: float
++	) -> PackedFloat64Array:
++	if not is_finite(rpm) or rpm < 0.0:
++		return PackedFloat64Array()
++	if not is_finite(admission) or admission < 0.0 or admission > 1.0:
++		return PackedFloat64Array()
++	if not is_finite(mixture) or mixture < 0.0:
++		return PackedFloat64Array()
++	if not is_finite(dry_density_kg_m3) or dry_density_kg_m3 <= 0.0:
++		return PackedFloat64Array()
++	if not is_finite(firing_fraction) or firing_fraction < 0.0 or firing_fraction > 1.0:
++		return PackedFloat64Array()
++
++	var displacement_m3: float
++	var oil_fraction: float
++	var stoich_air_fuel_ratio: float
++	var fuel_lhv_j_kg: float
++	var delivery_table: PackedFloat64Array
++	var trapping_table: PackedFloat64Array
++	var scavenge_table: PackedFloat64Array
++	var mechanical_table: PackedFloat64Array
++	var combustion_table: PackedFloat64Array
++	var indicated_table: PackedFloat64Array
++	displacement_m3 = float(parameters.displacement_m3)
++	oil_fraction = float(parameters.oil_fraction)
++	stoich_air_fuel_ratio = float(parameters.stoich_air_fuel_ratio)
++	fuel_lhv_j_kg = float(parameters.fuel_lhv_j_kg)
++	delivery_table = parameters.delivery_ratio
++	trapping_table = parameters.trapping_efficiency
++	scavenge_table = parameters.scavenge_pressure_pa
++	mechanical_table = parameters.mechanical_torque_nm
++	combustion_table = parameters.combustion_efficiency
++	indicated_table = parameters.indicated_efficiency
++	if (rpm < delivery_table[0] or rpm > delivery_table[delivery_table.size() - 2]
++		or rpm < trapping_table[0] or rpm > trapping_table[trapping_table.size() - 2]
++		or rpm < scavenge_table[0] or rpm > scavenge_table[scavenge_table.size() - 2]
++		or rpm < mechanical_table[0] or rpm > mechanical_table[mechanical_table.size() - 2]
++		or rpm < indicated_table[0] or rpm > indicated_table[indicated_table.size() - 2]):
++		return PackedFloat64Array()
++	if mixture < combustion_table[0] or mixture > combustion_table[combustion_table.size() - 2]:
++		return PackedFloat64Array()
++	return _calculate_packed(rpm, admission, mixture, dry_density_kg_m3,
++		displacement_m3, oil_fraction, stoich_air_fuel_ratio, fuel_lhv_j_kg,
++		delivery_table, trapping_table, scavenge_table, mechanical_table,
++		combustion_table, indicated_table, running, firing_fraction)
++
++
+ static func _evaluate_impl(
+ 		rpm: float,
+ 		admission: float,
+@@ -159,6 +215,53 @@
+ 		running: bool,
+ 		firing_fraction: float
+ 	) -> Dictionary:
++	var v: PackedFloat64Array = _calculate_packed(rpm, admission, mixture, dry_density_kg_m3, displacement_m3, oil_fraction, stoich_air_fuel_ratio, fuel_lhv_j_kg, delivery_table, trapping_table, scavenge_table, mechanical_table, combustion_table, indicated_table, running, firing_fraction)
++	if v.is_empty():
++		return _empty_result("calculation produced a nonfinite output")
++	return {
++		"ok": true,
++		"message": "",
++		"indicated_torque_nm": v[0],
++		"mechanical_torque_nm": v[1],
++		"pumping_torque_nm": v[2],
++		"valve_torque_nm": v[3],
++		"shaft_torque_nm": v[4],
++		"delivered_fuel_kg_s": v[5],
++		"burned_fuel_kg_s": v[6],
++		"unburned_fuel_kg_s": v[7],
++		"fuel_input_power_w": v[8],
++		"chemical_power_w": v[9],
++		"indicated_power_w": v[10],
++		"mechanical_loss_w": v[11],
++		"pumping_loss_w": v[12],
++		"valve_loss_w": v[13],
++		"cycle_work_j": v[14],
++		"air_charge_kg_cycle": v[15],
++		"cycle_frequency_hz": v[16],
++		"opportunity_frequency_hz": v[17],
++		"firing_frequency_hz": v[18],
++	}
++
++
++## Dictionary-free arithmetic shared by every kernel path; empty when any output is nonfinite.
++static func _calculate_packed(
++		rpm: float,
++		admission: float,
++		mixture: float,
++		dry_density_kg_m3: float,
++		displacement_m3: float,
++		oil_fraction: float,
++		stoich_air_fuel_ratio: float,
++		fuel_lhv_j_kg: float,
++		delivery_table: PackedFloat64Array,
++		trapping_table: PackedFloat64Array,
++		scavenge_table: PackedFloat64Array,
++		mechanical_table: PackedFloat64Array,
++		combustion_table: PackedFloat64Array,
++		indicated_table: PackedFloat64Array,
++		running: bool,
++		firing_fraction: float
++	) -> PackedFloat64Array:
+ 	var cycle_frequency_hz: float = rpm / 60.0
+ 	var opportunity_frequency_hz: float = cycle_frequency_hz
+ 	var omega_rad_s: float = 2.0 * PI * rpm / 60.0
+@@ -238,30 +341,8 @@
+ 			or not is_finite(cycle_frequency_hz) \
+ 			or not is_finite(opportunity_frequency_hz) \
+ 			or not is_finite(firing_frequency_hz):
+-		return _empty_result("calculation produced a nonfinite output")
+-	return {
+-		"ok": true,
+-		"message": "",
+-		"indicated_torque_nm": indicated_torque_nm,
+-		"mechanical_torque_nm": mechanical_torque_nm,
+-		"pumping_torque_nm": pumping_torque_nm,
+-		"valve_torque_nm": 0.0,
+-		"shaft_torque_nm": shaft_torque_nm,
+-		"delivered_fuel_kg_s": delivered_fuel_kg_s,
+-		"burned_fuel_kg_s": burned_fuel_kg_s,
+-		"unburned_fuel_kg_s": unburned_fuel_kg_s,
+-		"fuel_input_power_w": fuel_input_power_w,
+-		"chemical_power_w": chemical_power_w,
+-		"indicated_power_w": indicated_power_w,
+-		"mechanical_loss_w": mechanical_loss_w,
+-		"pumping_loss_w": pumping_loss_w,
+-		"valve_loss_w": valve_loss_w,
+-		"cycle_work_j": cycle_work_j,
+-		"air_charge_kg_cycle": air_charge_kg_cycle,
+-		"cycle_frequency_hz": cycle_frequency_hz,
+-		"opportunity_frequency_hz": opportunity_frequency_hz,
+-		"firing_frequency_hz": firing_frequency_hz,
+-	}
++		return PackedFloat64Array()
++	return PackedFloat64Array([indicated_torque_nm, mechanical_torque_nm, pumping_torque_nm, 0.0, shaft_torque_nm, delivered_fuel_kg_s, burned_fuel_kg_s, unburned_fuel_kg_s, fuel_input_power_w, chemical_power_w, indicated_power_w, mechanical_loss_w, pumping_loss_w, valve_loss_w, cycle_work_j, air_charge_kg_cycle, cycle_frequency_hz, opportunity_frequency_hz, firing_frequency_hz])
+ 
+ 
+ static func _read_number(
+--- a/app/physics/glow/four_stroke.gd
++++ b/app/physics/glow/four_stroke.gd
+@@ -39,6 +39,64 @@
+ 		running, firing_fraction, true)
+ 
+ 
++## RK-stage entry for detached, profile-validated parameters: the same predicates as
++## _evaluate_prevalidated(), returning _calculate_packed() outputs or an empty array.
++static func _evaluate_prevalidated_packed(
++		rpm: float,
++		admission: float,
++		mixture: float,
++		dry_density_kg_m3: float,
++		parameters: Dictionary,
++		running: bool,
++		firing_fraction: float
++	) -> PackedFloat64Array:
++	if not is_finite(rpm) or rpm < 0.0:
++		return PackedFloat64Array()
++	if not is_finite(admission) or admission < 0.0 or admission > 1.0:
++		return PackedFloat64Array()
++	if not is_finite(mixture) or mixture < 0.0:
++		return PackedFloat64Array()
++	if not is_finite(dry_density_kg_m3) or dry_density_kg_m3 <= 0.0:
++		return PackedFloat64Array()
++	if not is_finite(firing_fraction) or firing_fraction < 0.0 or firing_fraction > 1.0:
++		return PackedFloat64Array()
++
++	var displacement_m3: float
++	var oil_fraction: float
++	var stoich_air_fuel_ratio: float
++	var fuel_lhv_j_kg: float
++	var intake_pressure_drop_pa: float
++	var mechanical_table: PackedFloat64Array
++	var combustion_table: PackedFloat64Array
++	var indicated_table: PackedFloat64Array
++	var volumetric_table: PackedFloat64Array
++	var pumping_table: PackedFloat64Array
++	var valve_table: PackedFloat64Array
++	displacement_m3 = float(parameters.displacement_m3)
++	oil_fraction = float(parameters.oil_fraction)
++	stoich_air_fuel_ratio = float(parameters.stoich_air_fuel_ratio)
++	fuel_lhv_j_kg = float(parameters.fuel_lhv_j_kg)
++	intake_pressure_drop_pa = float(parameters.intake_pressure_drop_pa)
++	mechanical_table = parameters.mechanical_torque_nm
++	combustion_table = parameters.combustion_efficiency
++	indicated_table = parameters.indicated_efficiency
++	volumetric_table = parameters.volumetric_efficiency
++	pumping_table = parameters.pumping_pressure_pa
++	valve_table = parameters.valve_torque_nm
++	if (rpm < mechanical_table[0] or rpm > mechanical_table[mechanical_table.size() - 2]
++		or rpm < indicated_table[0] or rpm > indicated_table[indicated_table.size() - 2]
++		or rpm < volumetric_table[0] or rpm > volumetric_table[volumetric_table.size() - 2]
++		or rpm < pumping_table[0] or rpm > pumping_table[pumping_table.size() - 2]
++		or rpm < valve_table[0] or rpm > valve_table[valve_table.size() - 2]):
++		return PackedFloat64Array()
++	if mixture < combustion_table[0] or mixture > combustion_table[combustion_table.size() - 2]:
++		return PackedFloat64Array()
++	return _calculate_packed(rpm, admission, mixture, dry_density_kg_m3,
++		displacement_m3, oil_fraction, stoich_air_fuel_ratio, fuel_lhv_j_kg,
++		intake_pressure_drop_pa, mechanical_table, combustion_table, indicated_table,
++		volumetric_table, pumping_table, valve_table, running, firing_fraction)
++
++
+ static func _evaluate_impl(
+ 		rpm: float,
+ 		admission: float,
+@@ -172,6 +230,54 @@
+ 		running: bool,
+ 		firing_fraction: float
+ 	) -> Dictionary:
++	var v: PackedFloat64Array = _calculate_packed(rpm, admission, mixture, dry_density_kg_m3, displacement_m3, oil_fraction, stoich_air_fuel_ratio, fuel_lhv_j_kg, intake_pressure_drop_pa, mechanical_table, combustion_table, indicated_table, volumetric_table, pumping_table, valve_table, running, firing_fraction)
++	if v.is_empty():
++		return _empty_result("calculation produced a nonfinite output")
++	return {
++		"ok": true,
++		"message": "",
++		"indicated_torque_nm": v[0],
++		"mechanical_torque_nm": v[1],
++		"pumping_torque_nm": v[2],
++		"valve_torque_nm": v[3],
++		"shaft_torque_nm": v[4],
++		"delivered_fuel_kg_s": v[5],
++		"burned_fuel_kg_s": v[6],
++		"unburned_fuel_kg_s": v[7],
++		"fuel_input_power_w": v[8],
++		"chemical_power_w": v[9],
++		"indicated_power_w": v[10],
++		"mechanical_loss_w": v[11],
++		"pumping_loss_w": v[12],
++		"valve_loss_w": v[13],
++		"cycle_work_j": v[14],
++		"air_charge_kg_cycle": v[15],
++		"cycle_frequency_hz": v[16],
++		"opportunity_frequency_hz": v[17],
++		"firing_frequency_hz": v[18],
++	}
++
++
++## Dictionary-free arithmetic shared by every kernel path; empty when any output is nonfinite.
++static func _calculate_packed(
++		rpm: float,
++		admission: float,
++		mixture: float,
++		dry_density_kg_m3: float,
++		displacement_m3: float,
++		oil_fraction: float,
++		stoich_air_fuel_ratio: float,
++		fuel_lhv_j_kg: float,
++		intake_pressure_drop_pa: float,
++		mechanical_table: PackedFloat64Array,
++		combustion_table: PackedFloat64Array,
++		indicated_table: PackedFloat64Array,
++		volumetric_table: PackedFloat64Array,
++		pumping_table: PackedFloat64Array,
++		valve_table: PackedFloat64Array,
++		running: bool,
++		firing_fraction: float
++	) -> PackedFloat64Array:
+ 	var cycle_frequency_hz: float = rpm / 120.0
+ 	var opportunity_frequency_hz: float = cycle_frequency_hz
+ 	var omega_rad_s: float = 2.0 * PI * rpm / 60.0
+@@ -258,30 +364,8 @@
+ 			or not is_finite(cycle_frequency_hz) \
+ 			or not is_finite(opportunity_frequency_hz) \
+ 			or not is_finite(firing_frequency_hz):
+-		return _empty_result("calculation produced a nonfinite output")
+-	return {
+-		"ok": true,
+-		"message": "",
+-		"indicated_torque_nm": indicated_torque_nm,
+-		"mechanical_torque_nm": mechanical_torque_nm,
+-		"pumping_torque_nm": pumping_torque_nm,
+-		"valve_torque_nm": valve_torque_nm,
+-		"shaft_torque_nm": shaft_torque_nm,
+-		"delivered_fuel_kg_s": delivered_fuel_kg_s,
+-		"burned_fuel_kg_s": burned_fuel_kg_s,
+-		"unburned_fuel_kg_s": unburned_fuel_kg_s,
+-		"fuel_input_power_w": fuel_input_power_w,
+-		"chemical_power_w": chemical_power_w,
+-		"indicated_power_w": indicated_power_w,
+-		"mechanical_loss_w": mechanical_loss_w,
+-		"pumping_loss_w": pumping_loss_w,
+-		"valve_loss_w": valve_loss_w,
+-		"cycle_work_j": cycle_work_j,
+-		"air_charge_kg_cycle": air_charge_kg_cycle,
+-		"cycle_frequency_hz": cycle_frequency_hz,
+-		"opportunity_frequency_hz": opportunity_frequency_hz,
+-		"firing_frequency_hz": firing_frequency_hz,
+-	}
++		return PackedFloat64Array()
++	return PackedFloat64Array([indicated_torque_nm, mechanical_torque_nm, pumping_torque_nm, valve_torque_nm, shaft_torque_nm, delivered_fuel_kg_s, burned_fuel_kg_s, unburned_fuel_kg_s, fuel_input_power_w, chemical_power_w, indicated_power_w, mechanical_loss_w, pumping_loss_w, valve_loss_w, cycle_work_j, air_charge_kg_cycle, cycle_frequency_hz, opportunity_frequency_hz, firing_frequency_hz])
+ 
+ 
+ static func _read_number(
+--- a/app/physics/glow/thermal.gd
++++ b/app/physics/glow/thermal.gd
+@@ -64,3 +64,28 @@
+ 	return {ok = true, temperature_rate_k_s = rate, stored_heat_w = stored_heat,
+ 		exhaust_heat_w = exhaust_heat, evaporation_heat_w = evaporation, cooling_heat_w = cooling,
+ 		combustion_head_heat_w = combustion_to_head, mechanical_heat_w = mechanical_heat}
++
++
++## RK-stage temperature rate with _evaluate_prepared()'s predicates and arithmetic on
++## scalar source outputs. Returns NAN wherever _evaluate_prepared() would fail.
++static func _rate_prepared(chemical_power_w: float, indicated_power_w: float,
++		mechanical_loss_w: float, pumping_loss_w: float, valve_loss_w: float,
++		delivered_fuel_kg_s: float, temperature_k: float, ambient_k: float,
++		cooling_airspeed_mps: float, parameters: Dictionary) -> float:
++	if not is_finite(temperature_k) or temperature_k <= 0.0 or not is_finite(ambient_k) or ambient_k <= 0.0 or not is_finite(cooling_airspeed_mps) or cooling_airspeed_mps < 0.0:
++		return NAN
++	var rejected_combustion: float = chemical_power_w - indicated_power_w
++	if rejected_combustion < 0.0:
++		return NAN
++	var mechanical_heat: float = mechanical_loss_w + pumping_loss_w + valve_loss_w
++	var combustion_to_head: float = rejected_combustion * parameters.head_heat_fraction
++	var exhaust_heat: float = rejected_combustion - combustion_to_head
++	var evaporation: float = delivered_fuel_kg_s * parameters.premix_evaporation_j_kg * parameters.evaporation_head_fraction
++	var conductance: float = parameters.cooling_base_w_k + parameters.cooling_airflow_w_s_m_k * cooling_airspeed_mps
++	var cooling: float = conductance * (temperature_k - ambient_k)
++	var stored_heat: float = combustion_to_head + mechanical_heat - evaporation - cooling
++	var rate: float = stored_heat / parameters.heat_capacity_j_k
++	if not is_finite(exhaust_heat) or not is_finite(evaporation) or not is_finite(cooling) \
++			or not is_finite(stored_heat) or not is_finite(rate):
++		return NAN
++	return rate
+--- a/app/physics/glow/source.gd
++++ b/app/physics/glow/source.gd
+@@ -4,6 +4,16 @@
+ const TwoStroke := preload("res://physics/glow/two_stroke.gd")
+ const FourStroke := preload("res://physics/glow/four_stroke.gd")
+ const Profile := preload("res://physics/glow/profile.gd")
++## Indices into evaluate_prepared_packed(); kernel order is fixed by each _calculate_packed().
++const PACKED_SHAFT_TORQUE := 4
++const PACKED_DELIVERED_FUEL := 5
++const PACKED_FUEL_INPUT_POWER := 8
++const PACKED_CHEMICAL_POWER := 9
++const PACKED_INDICATED_POWER := 10
++const PACKED_MECHANICAL_LOSS := 11
++const PACKED_PUMPING_LOSS := 12
++const PACKED_VALVE_LOSS := 13
++const PACKED_BRAKE_POWER := 19
+ 
+ 
+ ## Detached, validated engine data for repeated RK stages. The object contains no
+@@ -110,6 +120,30 @@
+ 	return result
+ 
+ 
++## RK-stage counterpart of evaluate_prepared(): the same predicates and arithmetic,
++## returning the family kernel's packed outputs followed by brake_power_w and
++## unburned_chemical_power_w, or an empty array wherever evaluate_prepared() fails.
++static func evaluate_prepared_packed(evaluator: PreparedEvaluator, rpm: float, admission: float,
++		mixture: float, dry_density_kg_m3: float, running: bool = true,
++		firing_fraction: float = 1.0) -> PackedFloat64Array:
++	if not evaluator is PreparedEvaluator:
++		return PackedFloat64Array()
++	if not is_finite(rpm) or rpm < 0.0 or rpm > float(evaluator._operation.max_rpm):
++		return PackedFloat64Array()
++	var v: PackedFloat64Array = TwoStroke._evaluate_prevalidated_packed(rpm, admission, mixture,
++		dry_density_kg_m3, evaluator._parameters, running, firing_fraction) if evaluator._family == "glow_2t" else FourStroke._evaluate_prevalidated_packed(rpm, admission, mixture,
++		dry_density_kg_m3, evaluator._parameters, running, firing_fraction)
++	if v.is_empty():
++		return v
++	var brake_power_w: float = v[PACKED_SHAFT_TORQUE] * rpm * TAU / 60.0
++	var unburned_chemical_power_w: float = v[PACKED_FUEL_INPUT_POWER] - v[PACKED_CHEMICAL_POWER]
++	if not is_finite(brake_power_w) or not is_finite(unburned_chemical_power_w) or unburned_chemical_power_w < -1e-10 * maxf(1.0, v[PACKED_FUEL_INPUT_POWER]):
++		return PackedFloat64Array()
++	v.append(brake_power_w)
++	v.append(unburned_chemical_power_w)
++	return v
++
++
+ ## Computes the same delivered-premix-flow scale as a full source evaluation,
+ ## without calculating torque, heat and power that are discarded by lifecycle.
+ static func unit_fuel_flow_prepared(evaluator: PreparedEvaluator, rpm: float,
