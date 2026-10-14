@@ -1,0 +1,10 @@
+{
+  "rows": 241,
+  "first_tick": 0,
+  "last_tick": 240,
+  "max_wind_error_mps": 4.995981406352712e-10,
+  "max_speed_error_mps": 4.4295092038737494e-08,
+  "max_turbulence_error_mps": 4.99598445946603e-10,
+  "turbulence_aux_index": 16,
+  "recording_start_rng_state": 4854362591652544791
+}

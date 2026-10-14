@@ -1,0 +1,33 @@
+--- a/app/render/shadow.gd
++++ b/app/render/shadow.gd
+@@ -128,14 +128,26 @@
+ 	return img
+ 
+ 
++## Keep the original row-major sum order; hoist repeated edge clamping out of the nine taps.
+ static func _blur(m: PackedFloat32Array) -> PackedFloat32Array:
+ 	var out := PackedFloat32Array()
+ 	out.resize(m.size())
+ 	for j in SIZE:
++		var previous_row := maxi(j - 1, 0) * SIZE
++		var current_row := j * SIZE
++		var next_row := mini(j + 1, SIZE - 1) * SIZE
+ 		for i in SIZE:
++			var left := maxi(i - 1, 0)
++			var right := mini(i + 1, SIZE - 1)
+ 			var acc := 0.0
+-			for dj in range(-1, 2):
+-				for di in range(-1, 2):
+-					acc += m[clampi(j + dj, 0, SIZE - 1) * SIZE + clampi(i + di, 0, SIZE - 1)]
+-			out[j * SIZE + i] = acc / 9.0
++			acc += m[previous_row + left]
++			acc += m[previous_row + i]
++			acc += m[previous_row + right]
++			acc += m[current_row + left]
++			acc += m[current_row + i]
++			acc += m[current_row + right]
++			acc += m[next_row + left]
++			acc += m[next_row + i]
++			acc += m[next_row + right]
++			out[current_row + i] = acc / 9.0
+ 	return out

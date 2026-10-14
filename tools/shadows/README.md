@@ -1,5 +1,19 @@
 # Projected-shadow validation (VQ-04a / VQ-04a-F1)
 
+DT-11a fallback mask generation hoists repeated pixel clamping while preserving
+the two-pass box filter's exact sum order. Run `res://tests/test_shadow_blur.gd`
+with the pinned engine, headless or native, for complete float32 parity, edge
+weights and independent image/texture/material checks. [Mask/carrier construction
+evidence](../../docs/research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md)
+records native timings; no regeneration or cache invalidation is needed.
+
+DT-11a collection uses native packed-vector transforms and directly appends faces
+when no height cutoff is configured. The original bounds scan and static-caster
+height test remain. `res://tests/test_shadow_collection.gd` checks exact face order,
+thresholds and source isolation; run it with the pinned engine, with or without
+`--headless`. [Construction measurements and rejected bounds shortcut](../../docs/research/visual-quality-implementation/VQ-01c/loading/shadow-geometry/README.md)
+are separate from visual acceptance below.
+
 Status: Native Godot 4.7.2 Compatibility validation tools.
 
 Install the pinned offline analysis dependency with `python -m pip install -r

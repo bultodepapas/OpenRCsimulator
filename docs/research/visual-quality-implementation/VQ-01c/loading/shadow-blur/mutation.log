@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL fixture 2 complete float32 output equals scalar sum
+FAIL fixture 2 second pass remains exact
+FAIL fixture 3 complete float32 output equals scalar sum
+FAIL fixture 3 second pass remains exact
+FAIL fixture 4 complete float32 output equals scalar sum
+FAIL fixture 4 second pass remains exact
+FAIL fixture 5 complete float32 output equals scalar sum
+FAIL fixture 5 second pass remains exact
+FAIL fixture 6 complete float32 output equals scalar sum
+FAIL fixture 6 second pass remains exact
+FAIL fixture 7 complete float32 output equals scalar sum
+FAIL fixture 7 second pass remains exact
+FAIL fixture 8 complete float32 output equals scalar sum
+FAIL fixture 8 second pass remains exact
+FAIL fixture 9 complete float32 output equals scalar sum
+FAIL fixture 9 second pass remains exact
+FAIL fixture 10 complete float32 output equals scalar sum
+FAIL fixture 10 second pass remains exact
+FAIL fixture 11 complete float32 output equals scalar sum
+FAIL fixture 11 second pass remains exact
+FAIL fixture 12 complete float32 output equals scalar sum
+FAIL fixture 12 second pass remains exact
+FAIL corner adjacent edge contributes two of nine taps
+FAIL corner interior contributes one of nine taps
+shadow blur: 50 checks, 24 failed

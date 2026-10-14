@@ -7,9 +7,15 @@ Latest follow-up: [night-kit geometry extraction and integrated package checks](
 Audio/lifecycle follow-up: [bounded probe teardown and 50-cycle diagnostics](audio/README.md).
 Repeated-build repair: [default ground-image byte reuse](ground-image/README.md),
 with exact mip/ownership checks and five additional frozen-source loading pairs.
-Latest construction repair: [conservative grass-mask filtering](grass-masks/README.md),
+Construction repair: [conservative grass-mask filtering](grass-masks/README.md),
 with exact native instance output; the new Home/Fly attempt contains paused
 samples and does not qualify interactive-loading gains.
+Construction repair: [native shadow geometry transforms](shadow-geometry/README.md),
+with exact face/bounds parity in 1,206 native pairs and focused current-tree tests.
+This is a shadow-construction measurement, not a new Home/Fly or FPS campaign.
+Latest construction repair: [fallback shadow blur indexing](shadow-blur/README.md),
+with 100 exact native image/carrier pairs and about 50% less carrier construction
+time. The first generation also improves; no cache or complete-loading claim.
 
 2026-10-14. Implemented a bounded CPU geometry cache in `app/render/lake/lake_terrain.gd`.
 Source baseline `22b3e482`; Godot 4.7.2-stable, Windows, RTX 3090 / Ryzen 9 5900X.

@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-14",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "../research/helicopter/audit/rotor_event_probe.gd"
+  ],
+  "script_sha256": "1b1e9e15b9f8616cfd9a45281195b75f3cfe6609c2d5502fb4703644076f28e3",
+  "exit_code": 0,
+  "engine_errors": [],
+  "result": [
+    {
+      "case": "spool_from_rest_3mps_wind",
+      "common_simulation": {
+        "continuous_step_installed": false,
+        "fault_reason": "step rejected: RK joint stage evaluation is nonfinite or malformed",
+        "last_flight_fault": "main_rotor_advance_ratio_out_of_domain: main-rotor advance ratio exceeds the kernel domain at this speed",
+        "reset_ok": true,
+        "tick": 0
+      },
+      "initial_evaluate": {
+        "fault": "",
+        "message": "",
+        "ok": true,
+        "spin_acceleration_rad_s2": 150.144991639698
+      },
+      "standalone_rk4": {
+        "elapsed_s": null,
+        "event": "",
+        "fault": "main_rotor_advance_ratio_out_of_domain",
+        "message": "main-rotor advance ratio exceeds the kernel domain at this speed",
+        "ok": false,
+        "omega_end_rad_s": null,
+        "remaining_s": null
+      },
+      "wind_ned_m_s": [
+        3.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case": "coast_down_0.001_rad_s_calm",
+      "common_simulation": {
+        "continuous_step_installed": false,
+        "fault_reason": "step rejected: RK joint stage evaluation is nonfinite or malformed",
+        "last_flight_fault": "rotor_zero_speed_event: main rotor crossed zero speed; locate the stop event",
+        "reset_ok": true,
+        "tick": 0
+      },
+      "initial_evaluate": {
+        "fault": "",
+        "message": "",
+        "ok": true,
+        "spin_acceleration_rad_s2": -1.3520654545832
+      },
+      "standalone_rk4": {
+        "elapsed_s": 8.36388579376112e-05,
+        "event": "rotor_stopped",
+        "fault": "",
+        "message": "",
+        "ok": true,
+        "omega_end_rad_s": 0.0,
+        "remaining_s": 0.00408302780872906
+      },
+      "wind_ned_m_s": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

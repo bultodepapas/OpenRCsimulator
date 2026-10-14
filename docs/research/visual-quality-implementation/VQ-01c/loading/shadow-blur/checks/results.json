@@ -1,0 +1,102 @@
+[
+  {
+    "name": "test_shadow_blur-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_shadow_blur.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "fb22de71ebc6007d48a7cb1129c1d1637ceb70692c9108e73c9fa8a597572403"
+  },
+  {
+    "name": "test_projected_shadow-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_projected_shadow.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "fc45f338a4676e2af7a58e35f9ecee9e339daf89adbd07c76c9f6cd465060b3d"
+  },
+  {
+    "name": "test_world_presentation_context-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_world_presentation_context.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e"
+  },
+  {
+    "name": "test_field_integration-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_integration.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "5d71d3afd86c2127ff174e9fef5e4d52dceba274096c930ee273141fe15b0a0e"
+  },
+  {
+    "name": "test_shadow_blur-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_shadow_blur.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "a02a268585245eb59421ca3506bf31bf8236cfc8105921cdc8b01b8149770167"
+  },
+  {
+    "name": "test_projected_shadow-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_projected_shadow.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "sha256": "1a5c3f0c21d14834fbd40636d80e4388085473fd44c9391f9dba6363d364324e"
+  }
+]

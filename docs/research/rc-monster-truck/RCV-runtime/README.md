@@ -2,7 +2,21 @@
 
 This dated record covers the experimental Bisonte MT8 integration. The [operating guide](../../../../research/rc-monster-truck/README.md#drive-and-experiment) owns controls, commands and current use; the [RCV plan](../../../plans/rc-monster-truck.md#11-execution-order-and-reviewable-steps) owns remaining acceptance gates. Software verification does not establish physical calibration.
 
-The [final evidence index](final-evidence-index.json) binds the retained follow-up logs to current runtime hashes. Only Home spacing changed after the bounded core run, and its layout, functional and RC transition checks were rerun successfully.
+The [October 13 evidence index](final-evidence-index.json) binds the original follow-up logs to that runtime revision. The later airfield integration has its own receipt below.
+
+## Shared airfield start — 2026-10-14
+
+The player now enters the Bisonte garage on the aircraft runway. Home passes the selected field, lighting, sky and night options into the activity; `World.build` constructs the shared airfield. `AirfieldCourse` adapts the accepted aircraft surface table and analytic terrain, including the resolved lake bed, to the truck's road callback. Its identity includes field/material content and source or exported-bytecode artifacts. The surface rolling factor multiplies the truck's existing rolling coefficient exactly once.
+
+The center start points along the runway; the end start faces inward with a 2 m margin. Four tire patches receive a terrain-supported, zero-speed placement with gravity preload and bounded suspension travel. Small physical settling is allowed; this is not an arbitrary-slope equilibrium solver. Zero gravity starts with relaxed suspension above the highest patch. The previous strict flat-course initializer and synthetic jump/bump fixtures remain intact. No separate car track was built; that future track belongs inside this airfield.
+
+The [bounded verifier](airfield-20261014/verification/verification.json) passed all 13 groups, with unchanged runtime source hashes during the run. These include 32 airfield checks (shared heights/normals/materials/lake bed, translated field, inward end start, experiments, checkpoint JSON round trips and foreign-field rejection, and driving onto existing rough grass), 55 dynamics checks, 85 session checks, 23 synthetic activity checks, 16 presentation checks and 19 Home/RC navigation checks. The [controller regression](airfield-20261014/controller-ground.log) passed 22/22. This is focused software verification, not the full application suite or physical calibration.
+
+Native Godot 4.7.2 Compatibility captures on RTX 3090 at 1280 × 720 verify the actual field scene. [Garage](airfield-20261014/garage-es.png), [driving after 600 ticks](airfield-20261014/drive-es-final.png), and [laboratory after 120 ticks](airfield-20261014/lab-es.png) have adjacent JSON receipts. The first drive capture reported four objects at immediate process shutdown; letting the capture tool flush one frame after freeing the scene removed that warning in the final drive/lab runs. Field scenery remains decorative for truck collision response; lake-bed contact adds neither buoyancy nor water drag.
+
+A fresh Windows RC-only release snapshot passed import, export, packaged airfield startup and the existing compiled cost entry: [package receipt](airfield-20261014/package/package-verification.json), [source hashes](airfield-20261014/package/source-sha256.json). This confirms that the airfield identity can resolve exported bytecode artifacts. The forced `--quit-after` startup log retains a four-object shutdown warning; it contains no script errors. This is not full application release qualification, and its cost entry still measures the synthetic practice fixture, not the new airfield road.
+
+![Bisonte on the aircraft runway](airfield-20261014/drive-es-final.png)
 
 ## Verified software
 

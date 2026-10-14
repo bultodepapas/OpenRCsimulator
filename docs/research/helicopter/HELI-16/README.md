@@ -98,4 +98,6 @@ The new articulated Blender revision still passes its unchanged neutral compiler
 
 ## Remaining acceptance
 
+The [2026-10-14 ground-start and aerobatic 3D audit](ground-3d-audit-2026-10-14.md) adds current focused verification, low-RPM/event and controller reproductions, field-placement analysis and per-tick cost evidence. [Plan §14](../../../plans/helicopter.md#14-ground-start-and-aerobatic-3d-execution-plan) owns its pending implementation sequence; the audit does not enable a ground start or a second flight model.
+
 Automatic localization across the published C/M inflow branch jumps is not qualified in the runtime. Separate engine/freewheel and servo states, forward trim/source response matching, slope/dynamic-rollover/scenery collision, environmental wake/audio, pilot review and the H15 500 µs whole-tick performance gate remain open. Development-host timing under concurrent tracks is not a target-machine performance result. Steady wind and deterministic gusts are supported; turbulence is refused until its state/replay integration is qualified.

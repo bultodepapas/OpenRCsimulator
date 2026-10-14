@@ -1,0 +1,145 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+	"backend_identity": {
+		"abi_version": 1,
+		"backend": "native",
+		"backend_version": "openrc-ground-vehicle-native-evaluate-v1",
+		"binary_sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+		"source_sha256": "451a76a00ac0e7d4513390d405e45eb55c6cb9b387ed21e55035d09ab7ef697f",
+		"toolchain_sha256": "2051a079931113cbf72767863a0159fb69319631343022d647e1031fd301453a"
+	},
+	"debug_build": false,
+	"engine": "4.7.2-stable (official)",
+	"format": "openrc-rcv-cost",
+	"logical_processors": 24,
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"results": [
+		{
+			"identities": {
+				"course": {
+					"format": "openrc-ground-course",
+					"id": "mt8-practice-course-estimate-v1",
+					"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+					"version": "1"
+				},
+				"model": {
+					"format": "openrc-ground-vehicle",
+					"id": "mt8-bisonte-electric-4wd-estimate-v1",
+					"sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+					"version": "1"
+				}
+			},
+			"maximum_us": 2351.0,
+			"mean_us": 1604.2999999999995,
+			"median_us": 1644.0,
+			"p95_us": 2158.0,
+			"plan_500us_mean_gate": false,
+			"realtime_mean_gate": true,
+			"realtime_p95_gate": true,
+			"recording": false,
+			"samples": 240
+		},
+		{
+			"identities": {
+				"course": {
+					"format": "openrc-ground-course",
+					"id": "mt8-practice-course-estimate-v1",
+					"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+					"version": "1"
+				},
+				"model": {
+					"format": "openrc-ground-vehicle",
+					"id": "mt8-bisonte-electric-4wd-estimate-v1",
+					"sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+					"version": "1"
+				}
+			},
+			"maximum_us": 3012.0,
+			"mean_us": 1903.9874999999995,
+			"median_us": 1919.0,
+			"p95_us": 2443.0,
+			"plan_500us_mean_gate": false,
+			"realtime_mean_gate": true,
+			"realtime_p95_gate": true,
+			"recording": true,
+			"samples": 240
+		}
+	],
+	"scope": "Session.tick_once, 60 warmup + 240 measured ticks; drive/steer then brake; no rendering",
+	"solver": "openrc-ground-vehicle-dynamics-rk4-v2"
+}
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+	"backend_identity": {
+		"abi_version": 1,
+		"backend": "native",
+		"backend_version": "openrc-ground-vehicle-native-evaluate-v1",
+		"binary_sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+		"source_sha256": "451a76a00ac0e7d4513390d405e45eb55c6cb9b387ed21e55035d09ab7ef697f",
+		"toolchain_sha256": "2051a079931113cbf72767863a0159fb69319631343022d647e1031fd301453a"
+	},
+	"debug_build": false,
+	"engine": "4.7.2-stable (official)",
+	"format": "openrc-rcv-cost",
+	"logical_processors": 24,
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"results": [
+		{
+			"identities": {
+				"course": {
+					"format": "openrc-ground-course",
+					"id": "mt8-practice-course-estimate-v1",
+					"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+					"version": "1"
+				},
+				"model": {
+					"format": "openrc-ground-vehicle",
+					"id": "mt8-bisonte-electric-4wd-estimate-v1",
+					"sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+					"version": "1"
+				}
+			},
+			"maximum_us": 2351.0,
+			"mean_us": 1604.2999999999995,
+			"median_us": 1644.0,
+			"p95_us": 2158.0,
+			"plan_500us_mean_gate": false,
+			"realtime_mean_gate": true,
+			"realtime_p95_gate": true,
+			"recording": false,
+			"samples": 240
+		},
+		{
+			"identities": {
+				"course": {
+					"format": "openrc-ground-course",
+					"id": "mt8-practice-course-estimate-v1",
+					"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+					"version": "1"
+				},
+				"model": {
+					"format": "openrc-ground-vehicle",
+					"id": "mt8-bisonte-electric-4wd-estimate-v1",
+					"sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+					"version": "1"
+				}
+			},
+			"maximum_us": 3012.0,
+			"mean_us": 1903.9874999999995,
+			"median_us": 1919.0,
+			"p95_us": 2443.0,
+			"plan_500us_mean_gate": false,
+			"realtime_mean_gate": true,
+			"realtime_p95_gate": true,
+			"recording": true,
+			"samples": 240
+		}
+	],
+	"scope": "Session.tick_once, 60 warmup + 240 measured ticks; drive/steer then brake; no rendering",
+	"solver": "openrc-ground-vehicle-dynamics-rk4-v2"
+}

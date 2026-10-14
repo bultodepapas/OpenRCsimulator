@@ -3,6 +3,8 @@
 **Date:** 2026-10-14. **Status:** the experimental helicopter is playable through Home → Fly and the direct route. A generated X-Cell reference preset, coupled body/main/tail mechanics, trainer and heading controller, terrain-aware hover trim, skids, ground-strike stop and native checkpoint/trace lifecycle are integrated. The supplied HX-700 Blender source supplies the visual. The new articulated source is reviewed under HELI-25b; its integration is planned in §8.1.1. [Current controls and limits](../HELICOPTER.md); [HELI-16 software evidence](../research/helicopter/HELI-16/README.md). Physical validation, automatic C/M event localization, separate engine/freewheel and servo states, full scenery contact, environmental VFX/audio and H15 performance remain open.
 **Prefix:** HELI-00…HELI-36, registered in the [track registry](../README.md#tracks-plans-and-step-ids). `H1…H15` (Phase H) is a different namespace.
 **Owner:** helicopter track, under the main line's acceptance; owns the shared inflow law consumed by the drone track.
+
+**Current execution priority (2026-10-14):** preserve the playable trainer; make a supported ground start beside the runway midpoint; develop a separate aerobatic 3D HX-700 candidate with fully driven mechanics. [§14](#14-ground-start-and-aerobatic-3d-execution-plan) owns the detailed sequence, dependencies and acceptance matrix. The [ground/3D audit](../research/helicopter/HELI-16/ground-3d-audit-2026-10-14.md) records new reproductions, current test results and evidence limits. These changes are planned, not installed by that audit.
 **Owns:**
 - `app/physics/rotorcraft/` and `app/physics/rotorcraft_data.gd`
 - `app/data/aircraft/xcell_60_research.json` (generated) and `app/data/schema/openrc-rotorcraft-v2.schema.json`
@@ -83,7 +85,7 @@ Line references are recorded in [HELI-01 §9](../research/helicopter/HELI-01/REA
 
 ## 3. Reference aircraft and data policy
 
-**Recommendation (D2): the MIT Miniature Aircraft X-Cell .60 SE, as flown and identified by Gavrilets, Mettler and Feron.** It is the only RC helicopter with a numerically complete published parameter set:
+**Reference (D2): the MIT Miniature Aircraft X-Cell .60 SE, as flown and identified by Gavrilets, Mettler and Feron.** It supplies the published baseline used here:
 
 - measured mass and inertias
 - identified hub stiffness, measured blade inertia and rotor and tail geometry
@@ -272,7 +274,7 @@ The implemented experimental state is body13 plus `[Omega,a1,b1,vi,heading_refer
 | `aux` (tick-held) | 4 servo positions (3 swash + tail); governor integral; gyro heading-hold integral and reference; telemetry mirrors (rpm, collective) | Sampled once per tick, like a real 240 Hz controller output |
 | `modes` (discrete) | `flight_mode` (normal / idle-up / hold); `electronics_mode` (rate / heading-hold / self-level where the hardware supports it) | Tick-transactional |
 
-Real onboard controllers run at 1–4 kHz [U] and sample sensors discretely. Modelling the gyro and governor as discrete 240 Hz controllers in `aux` is faithful to that structure. It also keeps RK stages free of controller discontinuities.
+This table is an earlier hardware proposal, not the accepted state layout. §14.4 requires an explicit choice between continuous actuator dynamics and sampled controller state, with timestep qualification. A physical controller's sampling frequency and delays need aircraft-specific evidence; neither a generic 1–4 kHz claim nor the simulator's 240 Hz setting establishes hardware fidelity. The existing heading reference/integral are continuous states and must not silently migrate to `aux`.
 
 ### 4.9 Control chain (what the pilot moves → what the blade sees)
 
@@ -300,11 +302,7 @@ The current trainer uses authored estimated curves and controller gains, continu
   This is a contract `gear` capability `skids` owned with the ground track. Dynamic rollover (pivoting on one skid under lateral drift and cyclic) is a required emergent test, not a special case.
 - **Pad start.** A static solve on the skids, generalizing `ground_start.gd`. Engine at idle or hold engaged, rotor stopped, then a spool-up lifecycle: the governor soft-start ramp (data field) brings the head to speed.
   - The airborne trimmed-hover start remains for tests and as a menu option.
-- **Blade strike.**
-  - The terminal hull keeps fuselage, boom and skid points.
-  - A **rotor-disc clearance ring** adds 16 points on the main TPP circle (moving with a1/b1 and coning) and 8 on the tail-rotor circle. They are checked against terrain and scenery proxies each tick while Ω > Ω_min.
-  - A crossing ends the flight with cause `main_rotor_strike` or `tail_rotor_strike`.
-  - Ground resonance is not representable (no lead-lag degree of freedom) and is a declared non-goal.
+- **Blade strike.** Keep the implemented analytic main/tail ground-disc envelope. Its current query is instantaneous and conservatively uses maximum terrain relief; it has no scenery sweep. HELI-21a in §14 adds bounded swept terrain/scenery queries and separate parked-blade versus rotating-disc semantics. Do not replace the analytic disc with a sparse ring that misses contacts. Fuselage/boom hull coverage and local terrain bounds need their own admission tests. Ground resonance remains unrepresented because the model has no lead-lag degrees of freedom.
 
 ### 4.11 Trim and linearization
 
@@ -651,7 +649,7 @@ Each step is one small working change with its proof. A step that touches a coor
 | HELI-17 | Six extra continuous states, reset, native checkpoint, separate rotorcraft recorder and metadata | Implemented with byte-identical replay and rejected checkpoint/CSV negative cases; cadence evidence in HELI-16. |
 | HELI-18 | Full coupled, ground-stationary hover trim including candidate-specific ground effect | Implemented and checked with the actual preset and steady wind. Forward trim, bucket curve and source-response comparison remain open. |
 | HELI-19 | Four float64 spring/damper skid points and regularized Coulomb friction | Flat-field pilot-compensated landing verified. Slope, static-anchor and dynamic-rollover qualification remain open. |
-| HELI-20 | Pad start, spool-up lifecycle, idle-up and hold transitions | Spool-up trace; lift-off in ground effect; hold → coast-down |
+| HELI-20 | Pad start, spool-up lifecycle, idle-up and hold transitions | Pending; §14.2–3 sequences HELI-20a…e, low-RPM/event prerequisites and the exact field candidate. |
 | HELI-21 | Analytic full-disc main/tail ground clearance and terminal causes | Tilted-ground strike and restart verified. This is an instantaneous ground envelope; swept scenery/tree collision remains open. |
 | HELI-22 | Linearization and rotorcraft mode classifier | Eigenvalues vs HELI-03 within 1e-6 relative |
 | HELI-23 | Integrated cost (Gate P rule) and long-run stability (10 min of hover, autorotation, pirouettes) | p50/p95 per regime; no nonfinite state; no sticky fault |
@@ -683,7 +681,7 @@ Steps HELI-25…27 can start in parallel with Phase 1 because their file boundar
 | HELI-34 | Owner flight session (Gate HELI-P, §10) | Ratings and traces in `docs/research/helicopter/HELI-34/` |
 | HELI-35 | Physical data, if the owner or a contributor has a helicopter: hover power and rpm (ESC or engine telemetry), autorotation descent rate (baro/GPS), weight/CG/swing inertia via the VAL-5/6 reducers | Measurements with uncertainty; held-out comparison |
 | HELI-36 | Second aircraft: independently authored flybarless electric 700 class; later richer inflow/blade aero behind capabilities | HX-700 is the current candidate under HELI-36a. 360CFX/R-50 sources inform architecture, not transferred calibration. |
-| HELI-36a | Electric HX-700 configuration matching the new visual | Planned under §8.1.1; component inventory, electric drive, BEC/servo evidence, FBL identification and qualification stay separate from X-Cell. |
+| HELI-36a | Electric HX-700 configuration matching the new visual | Planned under §8.1.1 and §14.4; HELI-36b…d add a distinct aerobatic profile, maneuver qualification and product admission. X-Cell remains available. |
 
 **Parallel lanes** (one agent per lane, each with disjoint files):
 
@@ -702,7 +700,7 @@ Integration steps (HELI-16/17) are serialized with the main line.
 | --- | --- |
 | Software verification | Kernel known answers (§9). The GDScript model equals the independent HELI-03 model within 1e-6 relative over 5 s of scripted inputs. Airplanes byte-identical. 30/60/144 fps determinism. `test.sh` green. |
 | Model-to-paper (held-out) | Hover torque within ±15 % of the paper's operating point. Digitized time responses: peak rates within ±20 %, timing within 0.05 s. Rotor–fuselage modes within ±15 % of the paper-derived 20.1/14.6 rad/s (bare-spring form) or the identified values where they apply. The governor step is calibration, not validation. |
-| Emergent behaviour (scripted fixtures) | Each must appear with its declared cause: translational lift (power drop with speed), flap-back (nose-up without cyclic as speed rises), ground-effect power reduction below z/R ≈ 1, VRS (sink increase and roughness at 1.5–6 m/s descent with low forward speed, recovered by forward cyclic), tail blowout at the tail thrust cap, autorotation (Ω sustained with hold, sink within 5–10 m/s pending data), dynamic rollover on the skids. |
+| Emergent behaviour (scripted fixtures) | Each must appear with its declared cause: translational-lift/power trend, flap-back, correctly oriented ground effect, low-crossflow VRS descent/recovery, finite tail authority, energy-consistent autorotation and skid-pivot dynamic rollover. Use model-specific, source-backed regimes and held-out tolerances. The former 1.5–6 m/s VRS and 5–10 m/s autorotation ranges were provisional probes, not universal acceptance limits; roughness requires a separately supported unsteady law, not added noise. |
 | Performance | ≤ 150 µs rotorcraft loads per tick and ≤ 500 µs whole tick (H15 host, median). VFX ≤ 1.5 ms p95 at 720p on the owner's host. 60 fps p95 maintained. |
 | Gate HELI-P (pilot) | The owner, and ideally an experienced RC helicopter pilot, flies with a radio: 60 s hover in a 2 m box; pirouettes; forward circuit; a stop; an autorotation landing. Per-axis ratings −2…+2 against a real model, readability at 5–50 m, and disc/wash/sound realism notes. |
 | Physical validation | Only HELI-35 measurements count. Software checks and paper comparisons do not establish physical realism for any built aircraft. |
@@ -712,21 +710,21 @@ Integration steps (HELI-16/17) are serialized with the main line.
 | ID | Question | Recommendation |
 | --- | --- | --- |
 | D1 | Admit helicopters as a second vehicle class? | **Yes**, as an isolated track whose integration must keep airplanes byte-identical |
-| D2 | Reference aircraft | **X-Cell .60 SE (MIT configuration)**: the only complete, validated data. Alternative: a modern 700-class flybarless electric with estimated data. |
+| D2 | Reference aircraft | **X-Cell .60 SE (MIT configuration)** remains the published research baseline. The modern HX-700 electric candidate has a separate physical identity and qualification. |
 | D3 | Mass configuration | **As identified (8.2 kg, instrumented)** first; a stock variant later, labelled estimated |
 | D4 | Head type first | **Flybar lumped** (matches the data); flybarless with the second aircraft |
 | D5 | Data format | **Implemented:** `openrc-aircraft v2`, `vehicle: "rotorcraft"`, dedicated closed schema/reader (§5). Versioned actuator/construction extensions precede HX-700 adoption. |
 | D6 | Input layout | **Keep four sticks**; flight/electronics modes in `modes`; simulator-owned curves |
-| D7 | Beginner aid | Offer the self-level only as labelled "trainer electronics", off by default. No invented autopilot. |
+| D7 | Beginner aid | Preserve the current labelled trainer with assistance enabled by default. The separate 3D entry uses qualified FBL rate control; rescue is optional and separately qualified. |
 | D8 | Prefix and ownership | `HELI-`; the owned/coordinated paths in the header |
 | D9 | Visual asset source | **Selected 2026-10-13; new delivery 2026-10-14:** reuse the supplied HX-700 sources and embedded generator. HELI-25a owns the installed visual; HELI-25b reviews the articulated revision, with adoption planned in §8.1.1. |
-| D10 | Pad placement and default start | Pad on the mown area north of the pilot at ≈ 10–15 m; start on the pad, rotor stopped, hold engaged |
+| D10 | Pad placement and default start | Ground start beside the runway's longitudinal midpoint, rotor stopped and hold engaged. The former 10–15 m north proposal overlaps the runway; §14.2 specifies the replacement candidate and clearance gate. |
 
 ## 12. Risks
 
 | # | Risk | Mitigation |
 | --- | --- | --- |
-| R1 | GDScript cost exceeds the budget | Closed-form model; scalarized kernels; HELI-09 stops integration if over budget. A native kernel is a separate decision under Gate P. |
+| R1 | GDScript cost exceeds the budget | The experimental route remains explicitly unqualified for Gate P. Profile/optimize under HELI-09e/23a; a native kernel is a measured follow-up decision. Do not lower physics sampling to hide overruns. |
 | R2 | Handling is dominated by electronics gains that are estimated | Separate airframe validation (HELI-24) from electronics tuning; label the gains; rely on pilot rating |
 | R3 | No public RC autorotation or hover-power measurements | Declare the gap; HELI-35 collects them; accept ranges, not values |
 | R4 | The instrumented X-Cell is not a stock model | Name the configuration; stock variant later |
@@ -741,5 +739,131 @@ Integration steps (HELI-16/17) are serialized with the main line.
 ## 13. Open questions
 
 1. Does the owner fly or own a helicopter (model, electronics, radio setup)? That decides HELI-35 and the second aircraft.
-2. Should the first build ship the X-Cell's real flybar handling (slower, more stable) even though most current pilots fly flybarless?
-3. Is a dirt or gravel pad surface wanted on the default field? It is the only way rotor-wash dust is physically justified there.
+2. Which actual motor, ESC, battery, blades, servos and FBL unit should identify the HX-700 candidate? Until supplied or independently sourced, label these as estimates and preserve the trainer.
+3. Initial pad presentation will reuse the field's grass/mown treatment. Dust is deferred unless a real loose-surface material is selected.
+
+## 14. Ground start and aerobatic 3D execution plan
+
+**Scope requested 2026-10-14.** Keep the current trainer as a useful beginner/research aircraft. Add a distinct realistic aerobatic helicopter, and start normal play on the ground near the middle of the runway. “3D” covers both unrestricted aircraft orientation and mechanically correct articulation. The current rigid body already has six degrees of freedom; the missing work is controller/envelope qualification, drivetrain/contact lifecycle and achieved mechanism motion.
+
+This section supersedes older proposals where they conflict on default assistance, pad placement, controller state ownership or implementation order. Existing source equations, provenance, HELI-25c admission requirements and track boundaries remain authoritative. Audit findings are in the [dated evidence report](../research/helicopter/HELI-16/ground-3d-audit-2026-10-14.md); all steps below are pending unless their parent step already records delivered work.
+
+### 14.1 Product contract and release order
+
+| Entry | Physical identity and controls | Starts and qualification |
+| --- | --- | --- |
+| Existing research trainer, `xcell-60-research` | Preserve source mass/inertia, flybar-lumped rotor and estimated trainer electronics. Keep its visual-surrogate label. New fixes are explained and verified against the baseline. | Ground pad becomes the play default only after HELI-20 acceptance. Solved airborne hover remains an explicit practice/debug option and reproducible legacy fixture. |
+| Proposed `hx700-electric-3d-experimental` | Independent electric/flybarless data, signed collective, FBL body-rate commands, governed RPM and physical hold/freewheel. No implicit self-level or hover feed-forward. Exact ID is finalized with catalog ownership. | Same ground lifecycle, but separate accepted configuration, controller settings and replay identity. Remains experimental until maneuver, cost and pilot gates pass; “experimental” never excuses nonfinite state or broken startup. |
+| Mechanical inspection | Reuse the supplied articulated HX-700 and existing export pipeline. Show achieved servo/swash/grip/tail motion. | Preview can ship independently; it does not grant the aircraft flight qualification. |
+
+Deliver in four slices: **ground-capable trainer → robust common rotorcraft numerics/controls → qualified experimental 3D profile → articulated/performance/pilot acceptance**. Mechanical preview and source collection can run independently. Do not make grass, dust, sound or a detailed inspection mesh prerequisites for correct liftoff. Do not hide future ground, 3D and visual work inside one unreviewable change.
+
+### 14.2 Pad location: actual field geometry, not a lowered hover
+
+The default field's pilot is N=0, E=0. Its east–west runway is centered at N=15, E=0, 100 m long and 12 m wide: **N∈[9,21], E∈[−50,50]**. Current helicopter N=12, E=4 is inside it. Do not reuse that position for ground spawn.
+
+**Candidate for layout qualification:** CG horizontal position **N=6 m, E=0 m**, nose east (NED yaw +π/2); derive CG height, roll and pitch from skid support. This is at the runway's longitudinal midpoint, 3 m south of its near edge and 6 m from the pilot. The field barrier is at N=4.5 with a central 6 m opening, so the candidate sits beyond that opening. These are simulator layout choices, not real-world RC separation standards or an approved final collision layout.
+
+“Near the other airplanes” has two meanings in this scene: fixed-wing runway launches use the same operating field, while the decorative parked fleet sits behind the pilot around N=−17.6, E=±24 and farther out. The nearest parked center is about 33.7 m from this candidate; the fixed-wing start at N=15,E=−47 is about 47.8 m away at the west threshold. Keep runway-midpoint proximity as the primary requirement; do not claim this is a parking-row spawn or move the fleet silently. If a pits start is wanted later, author it as a separate pad rather than shifting this one into the access route.
+
+HELI-20a must:
+
+1. Add an authored, versioned rotorcraft start/pad record to field data through its loader: stable ID, horizontal position, heading, material/footprint, supported aircraft envelope and provenance. On other fields, resolve relative to runway geometry or require an authored pad; reject missing/unsafe starts with a clear reason. Never silently spawn in the air.
+2. Validate the **entire** main disc, tail disc, boom and skids at rest and over the allowed takeoff tilt/heading envelope. Include collision-disabled decorative airplanes as placement keepouts, plus barrier bays, access paths, pilot stand, people, grass clumps and night-light fixtures. Design margin must be explicit in field data and reviewed in captures; CG-to-obstacle distance alone is insufficient.
+3. Use one terrain/surface source for physics and rendering. The current field surface table has rough and runway rectangles; a visually mown pad alone will still use rough-ground contact. Add the footprint/material only if intended, preserve runway surface precedence, and exclude grass blades from the skid footprint. Do not add an invisible elevated support plane.
+4. Capture top-down, pilot, chase and close-up views for both aircraft, day/night, with dimensions/keepout overlays in evidence. At 1280×720 and the small supported UI layout, the skids, rotor and takeoff path must remain readable. No camera clipping through a barrier and no relocated fixed-wing spawn.
+
+### 14.3 Ground support, spool-up and transitions
+
+**HELI-19a — static support.** Generalize the existing support-plane method with GP ownership instead of copying airplane rolling tyres. Solve height/roll/pitch from the actual four skid points, mass/CG, slope, terrain normals and spring law. A valid state needs force and moment residuals, nonnegative reactions and its intended support contacts; a small residual with the wrong contact set is insufficient. Add static tangential support or qualified anchor behavior for isotropic skids, breaking to sliding at the friction limit. Keep anchors/discrete contact state in rollback/checkpoint identity. Demonstrate passivity, takeoff release and no adhesive force after separation.
+
+For the present 8.2 kg/10,000 N/m-per-point model, a level, equal-load sanity estimate is `mg/(4k)=2.010 mm`. It is not the asymmetric full-support solution. Initial proposed numerical gates: force residual <10⁻⁴ mg, moment residual <10⁻⁴ mgR, zero commanded-drive rest for 60 s in calm air with zero initial residual wake, <1 mm CG drift and <0.1° attitude drift on the qualified flat pad. Declare slope/wind limits separately; static friction must balance a feasible slope load without perpetual creep. Recheck eigenvalues and timestep stability for changed contact/servo stiffness, including roll/pitch contact modes.
+
+**HELI-07a / HELI-04-R2 — low-RPM mechanics and aero.** Introduce a documented low-speed/startup regime before enabling pad departure. Current algebra accepts Ω=0 but rejects small positive Ω in wind; even 3 m/s prevents the first RK step. Resolve the inactive/starting/mean-rotor transition with finite, continuous bounded loads, torque and wake decay, justified by the model's domain. Do not bypass the problem by clamping Ω inside the physics, silently deleting wind, or disabling guards. A stopped rotor may still have blade drag; document what the chosen low-speed approximation omits. Test both rotor senses, tail gearing, negative pitch, zero thrust and transition hysteresis without adding energy.
+
+**HELI-17b — fixed-tick events.** Add rotor-stop and later freewheel/contact event handling to the actual `Simulation` callback route. The standalone rotorcraft RK helper is not currently wired into that route and returns unconsumed time. Its bisection finds a successful-RK boundary and snaps Ω to zero; it does not yet prove the physical zero-crossing time. Qualify the event root/state and energy error against an independent refined trajectory before reuse. Commit exactly one 1/240 s tick after all bounded substeps/events, consume the remaining interval, sample pilot input once, evaluate wind at each stage time and roll back every state on failure. Never count a partial step as a full tick. Keep the original shared path for airplanes. Prove local event timing/refinement, stop/start chatter bounds, checkpoint replay and deterministic event ordering. HELI-17a retains its existing actuator/phase/checkpoint ownership in §8.1.1.
+
+**HELI-07b — powertrain lifecycle.** Separate disarmed/hold from a zero throttle fraction: the existing enabled P governor requests maximum drive torque at zero RPM even with fraction=0. Add explicit power enable, ramped governor target/output, torque/power/current limits and anti-windup. The first trainer milestone may retain a clearly labelled one-speed proxy after startup/stop qualification. Full realistic autorotation and the 3D electric entry require motor/engine-side speed/inertia where relevant, an authored one-way/freewheel topology, engagement/disengagement losses and correct main/tail gearing. Audit rotor locked-body inertia versus relative spin inertia to avoid double counting. No fabricated engine shaft axis or electric efficiency curve.
+
+**HELI-20b/c — lifecycle and start selection.** Proposed states are `ground_disarmed → armed_hold → spooling → governed`; airborne/contact state is separate, and hold can be entered from either. Hold removes delivered drive torque; the rotor coasts physically. A cold start uses the normal soft-start ramp. Autorotation bailout is a separately authored transition with its own prerequisites and rate, never instantaneous restored RPM. Fault/crash pauses and retains diagnostics; reset reconstructs the selected start and its selected aircraft's defaults.
+
+- New ground start: solved supports, zero body rates/velocity, Ω=0, documented residual-wake initialization, authored low-load startup pitch, hold engaged, known controller/servo state. For the current untwisted trainer, propose **0° collective**, obtained by inverting its normal curve: signed stick −2/3, equivalent to session collective ≈16.67%. Compute this from accepted curve/linkage data, not a global magic percentage; reject unsupported/ambiguous inversions. Neutral normal stick currently gives +5.67°, so it is not a low-load start. Keyboard and rate-gamepad initialize and retain the derived startup value; a physical radio must pick up that displayed pitch range before drive enable. A future 3D symmetric curve may put 0° at center, without changing the trainer curve. No airborne trim offsets are silently injected into the ground rest pose.
+- Do not equate low collective with motor-off. Negative collective is required for inverted flight; center stick may mean zero pitch. Keep controller connection/neutral arming distinct from simulated motor arming. For ground play, neutral gamepad/keyboard must not inherit the old hover collective.
+- Seed heading/orientation memory from the actual pad pose, including its eastbound heading. Specify integrator reset/tracking and saturation feedback during hold and constrained skid contact; lift-off must not release accumulated controller windup. Do not hold the body upright with a hidden pose constraint.
+- Bind hold, spool enable and flight modes to keyboard and supported radio/gamepad actions. A visible first-flight sequence is “release controls → arm → release hold/start → wait for governed RPM → raise collective.” Do not hide critical mode actions on keyboard only.
+- Home, direct arguments, reset, pause/resume, capture scripts and future random scenarios must resolve the same validated start object. Current Home forces helicopters to airborne and the scene ignores its `start_choice`; both seams need coordinated changes. Preserve explicit airborne technical fixtures rather than silently changing their expectations.
+- Disconnect/focus loss/menu pause freezes simulation and requires explicit neutral/rearm on resume. Realistic RF failure behavior is a separate capability; distinguish simulator pause from onboard failsafe. Neither reconnect nor unpause may issue a new start command by itself.
+
+**HELI-20d / HELI-15c — mode changes.** At today's solved hover stick, normal→idle-up changes pitch from +5.502° to −0.244°. This comes from the authored curves, not a numeric rounding defect. Keep real-radio curve transitions available with visible expected pitch/RPM changes. For trainer usability, offer a specified transition policy (matched curves, a qualified blend, or pickup at the matching stick); do not silently move physical-radio input. Hold overrides motor torque while preserving pilot collective. Define reset/reconnect/mode precedence and test toggles at min/mid/max collective, saturation and during landing. HELI-15a retains actuator/linkage kernel ownership from §8.1.1.
+
+**HELI-20e — publish default only after proof.** Complete ten ground→spool→liftoff→hover→land→hold→stop cycles in calm and each supported wind case, plus aborted spool-up, repeated hold, zero-speed rest, crash recovery and checkpoint restore in every lifecycle state. Require no NaN, numerical fault, unexpected motor start, unintended automatic liftoff or drive-induced restart after hold. Aero/wind-driven rotor acceleration is allowed only when its modeled torque/energy source is demonstrated separately; hold is not a rotor brake. Land and restart without scene reload. Review the traces for physically earned lift and rotor energy, not just successful exit codes.
+
+### 14.4 Alternate full aerobatic 3D aircraft
+
+**HELI-36a/b — identity and capability contract.** Extend the dedicated closed schema/loader before adding data. It currently accepts only `xcell-60-research` and an exact capability list; merely adding a second catalog row cannot work. Select schema modules by declared supported rotor/drive/controller/contact laws; keep unknown capabilities and wrong units fatal. Resolve the selected data path and builder through the catalog: `helicopter_main.gd` currently calls the default `session.setup()` and hardcodes its builder. Bind aircraft bytes, physical model version, mechanical profile, drive topology, controller settings and start configuration into replay identity. A changed state layout needs a new checkpoint/trace version and explicit migration or rejection.
+
+Build the HX-700 physical inventory through its source pipeline: component masses/CG/inertia, blades and signed pitch travel, main/tail radii and hubs, head stiffness/flapping, motor/ESC/pack/BEC, gear tooth ratios/losses, skid geometry and servos. Source-declared 5.2 kg/2100 rpm are candidate assumptions, not measurements. Do not combine the new mechanism's 4.923077 tail ratio with the trainer's 4.66 physical ratio. Do not copy identified 360CFX controller gains, inertia or stiffness into a 700-class aircraft; the paper supports model structure, not transferable calibration.
+
+**HELI-15b — FBL and orientation.** Roll/pitch/yaw sticks request authored **body rates** in aerobatic mode, with rate feedback, feed-forward and saturation-aware integral handling through real actuator outputs. Neutral sticks stop rotation, not return the helicopter upright. Replace the present world-Euler heading error in the 3D controller: its ±90° pitch crossing produces a false yaw command even with trainer disabled. Use a qualified quaternion/body-frame orientation-memory formulation where attitude memory is needed; body `r` is not generally Euler heading rate. Verify quaternion sign equivalence, inverted orientations, vertical transitions and multi-turn pirouettes. Rescue/self-level is a separate optional mode with explicit output limits and recovery semantics, not a covert 3D assist.
+
+**HELI-13a / HELI-15a / HELI-17a — achieved actuators.** Integrate three swash servos and the tail servo, using the shared servo/catalog work and source-specific linkage. Continuous servo positions/rates use stage derivatives; sampled electronics use explicitly held targets, clock/phase and delays. Do not execute a full-tick servo update four times inside RK4. Include rate/position/travel saturation, actuator direction, loaded speed and BEC voltage evidence. Aero and visuals consume the same achieved pitch/harmonics; a commanded swash pose cannot stand in for a saturated servo. Qualify delay/filter response against the selected timestep, with refinement when necessary.
+
+**HELI-04-R3 / HELI-05b / HELI-06d — signed aero and envelope.** Keep body/wake/shaft dynamics coupled. Define the supported envelope in advance ratio, RPM, flap angles, pitch, body rates, descent/crossflow and density. Distinguish an evaluable state from a physically supported state: current `μ<√2` algebra is far wider than the source's `μ<0.15` identified range. Check signed thrust and induced flow through positive/zero/negative collective, inverted hover and rapid reversals; orient ground effect by world wake direction. Audit hub/CP velocities, power and tail authority in forward/backward/sideways flight. Review current hard C_T saturation and constant profile drag before claiming blade stall, reverse-flow or high-speed 3D realism.
+
+Localize the Johnson C/M transitions automatically in the session and prove error versus the independent dense reference; existing known-event tests are not an automatic detector. Bound worst-case event work, including repeated thrust reversals. A scalar wake law can be a declared first release approximation; multi-state inflow or azimuth quadrature needs measured benefit, separate law identity and cost qualification. Ground resonance, blade elasticity, structural damage and unlimited high-speed aerobatics remain outside the present model. Do not add synthetic vibration/noise and call it validated VRS.
+
+**HELI-36c / HELI-24 — maneuvers.** Use deterministic test-pilot fixtures plus independent source/measurement comparisons. Scripted fixtures exercise physics; they are not a player autopilot and their tracking performance is not evidence of human handling. Qualify in increasing difficulty:
+
+| Group | Exercises | Required observations |
+| --- | --- | --- |
+| Basic rotorcraft | Upright hover, vertical takeoff/landing, forward/backward/lateral circuits, translating stop, clockwise/counterclockwise pirouettes | Trim/drag/power trends, tail reserve, axis signs, no hidden upright restoration or altitude hold. |
+| Inversion | Inverted hover, roll and front/back flip, crossing both vertical attitudes, upright/inverted transitions | Continuous commands through vertical, correct signed lift/wake, no phantom yaw kick, no quaternion sign dependence. |
+| Sustained aerobatics | Loops, rolls both directions, inverted circuits, stationary and traveling pirouettes | Rate tracking, coupled axes, RPM droop/recovery, governor and actuator saturation, energy/power caps. |
+| Aggressive reversal | Collective punches, tic-tocs; later funnels/hurricanes and pirouetting flips | Wake transient/refinement and tail authority. Label unsupported regimes explicitly; do not close this row on a single successful animation. |
+| Power-off and ground | Hold entry, autorotation descent/flare, bailout, rotor stop, sloped/one-skid landings and dynamic rollover | Energy source/accounting, freewheel state, tail gearing, skid release/pivot and blade strike. No canned autorotation sink rate. |
+
+For numerical qualification, compare 240/480/960 Hz offline runs at common sample times. Initial engineering gates: position ≤1 cm, quaternion geodesic error ≤0.1°, rates ≤1% of the declared rate range and rotor speed ≤0.5% of nominal over a 5 s smooth maneuver; tighten or revise with a documented error budget, never hide event errors in RMS averages. Preserve the existing 10⁻³ m/s inflow seam tolerance. These are proposed software tolerances, not published flight accuracy. Physical/held-out metrics retain §10 and must be defined before tuning. Test exact native replay separately from cross-timestep convergence.
+
+### 14.5 Full mechanism motion, collisions and presentation
+
+HELI-25c/26a remains the authoritative articulation sequence (§8.1.1). Reuse the supplied Blender model, semantic bindings, rods and material pipeline. Bake its existing procedural materials; do not replace available source assets with invented geometry or new paid assets. Search existing/free properly licensed resources before creating ancillary sound/textures and retain source/license records.
+
+For the 3D variant, show fixed mast/gearbox, achieved servo arms, outer swash translation/tilt, inner swash rotation, grip/blade feathering, main/tail shaft phase, tail slider/yoke and rods. Keep flap/feather/coning distinct. A blade pitch harmonic, its mechanical azimuth and aerodynamic cyclic convention require a signed transfer proof; do not add an arbitrary second 90° phase shift. Qualify positive/negative collective and combined cyclic at mechanical stops over a full revolution. Exact visible phase replay requires authoritative accepted state rather than today's phase rebase to zero on restore.
+
+**HELI-21a / HELI-33a.** Query swept main/tail rotor envelopes and fuselage/boom/skid proxies against local terrain and relevant scenery. Prioritize nearby obstacles without missing thin fences/branches at speed; qualify rotational sweeps as well as translation. Explicitly distinguish rotating disc collision from parked blades and full-circle conservative keepouts. The current ground check applies even at zero RPM and uses global maximum relief; do not reuse it as precise stopped-blade geometry. Produce cause/contact identity and recoverable crash lifecycle through CR ownership. A visually noncolliding parked airplane still matters for spawn exclusion.
+
+**HELI-30a / HELI-31a.** Update Home, Help, HUD, first-flight hints and English/Spanish strings for each entry/start. Show collective in degrees or clearly labeled stick percentage, requested/actual RPM, hold/arming/governor state, controller mode, actuator/tail limits, contact and envelope warnings. The current hardcoded trainer HUD and “restart hover” text cannot serve the new start. Preserve readable pilot camera framing at rest, liftoff and inverted flight; start with an authored heading that exposes nose/tail. Reuse tick-cached telemetry and interpolate presentation only. Audio/wash follows accepted rotor load/speed and ground material; neither particles nor sound drives flight dynamics.
+
+### 14.6 Performance work with correctness gates
+
+Keep the 240 Hz float64 physics contract. Four ticks per 60 Hz render frame means a 1.25 ms physics tick consumes about 5 ms of that frame before rendering; it is above the 500 μs gate even if the game still displays 60 fps. The engine caps catch-up at 12 ticks, so dropped-time/slow-simulation behavior belongs in frame testing. Do not lower physics fidelity with camera distance, raise the catch-up cap as an optimization, or equate a headless mean with GPU/latency acceptance.
+
+**HELI-09e → HELI-23a sequence:**
+
+1. Capture per-regime profiles: stopped pad, spool-up, near-ground hover/contact, free hover, forward flight, inversion/reversal, VRS seams and coast-down. Report warmup, tick counts, p50/p95/p99/max, event-substep counts, host/engine/build/source hashes and concurrent load. Separate isolated kernels, complete session ticks, controller/recording observers and GPU/frame latency. Retain raw samples.
+2. Profile before changes. Candidates from current code are repeated immutable context/curve scans, stage dictionaries/array slices and repeated attitude/terrain work. Prepare immutable invariants once; retain dynamic finite/domain checks. Reuse pure work **within the same RK stage**, never stale loads across stages or states. Measure one change at a time with paired order and checksums/replay parity.
+3. Keep exact state/payload parity for algebra-preserving optimizations. A reordered floating-point operation, new event handler or changed model requires a separately explained numerical/physics acceptance, not an automatically overwritten golden. Keep independent known-answer and conservation tests in addition to reference-vs-fast comparisons.
+4. Optimize presentation separately: cached telemetry, flight/inspection LOD, compatible static mesh/material batching, bounded joint updates and measured rotor transparency overdraw. The new inspection asset's 345,236 triangles/208 material surfaces are neither draw-call measurements nor a flight budget. Preserve moving joints and collision identity; defer only presentation work when off-screen.
+5. If profiling still exceeds the target, evaluate a bounded native float64 kernel behind the current interface, using the ground-track experience for build/export discipline. Pin compiler/dependencies, check Windows/Linux/macOS packages, and document replay/backend identity and parity limits. No speculative engine rewrite or native port before profiling.
+
+Retain §10's H15-host median ≤500 μs whole-tick and ≤150 μs rotor-load-per-tick budgets. Add p95/p99 reporting without pretending an unapproved new percentile threshold is the existing gate. Full scene acceptance measures p95 frame time ≤16.67 ms at the declared 60 fps target, event spikes, input-to-present latency, and VFX ≤1.5 ms p95 on the specified owner hardware. Re-run after servo/contact/event work because each consumes part of the budget.
+
+### 14.7 Work packages, dependencies and completion evidence
+
+| Order / IDs | Owned change and coordinated boundary | Completion proof / dependency |
+| --- | --- | --- |
+| 1 · HELI-20a | Author pad candidate and placement validator; field/LU/CAM owners | Geometry/keepout report and day/night pilot captures; no runtime start change yet. |
+| 2 · HELI-04-R2, HELI-07a, HELI-17b | Low-RPM law and full-tick event adapter; main Simulation owner | Wind startup and coast-down reproductions become passing regressions; event accuracy qualified, remainder consumed and state replay exact. |
+| 3 · HELI-19a | Static skid equilibrium/friction; GP owner | Flat/slope rest, correct contact set, friction breakaway, passivity, refinement and support residual report. |
+| 4 · HELI-07b, HELI-20b/d, HELI-15c | Arm/hold/ramp/governor lifecycle and mode-transition policy | No torque when disarmed; bounded spool/abort/stop; no stick-low motor assumption. Full freewheel can follow the labelled trainer proxy, but precedes autorotation/3D acceptance. |
+| 5 · HELI-20c…e, HELI-30a/31a | Ground start through Home/CLI/reset/input/UI | Depends on 1–4; complete ten-cycle acceptance, all lifecycle checkpoints, bilingual help and unchanged airplane routes. Default ground start ships here. |
+| 6 · HELI-15a/b, HELI-13a, HELI-17a | FBL orientation/rate control and achieved actuator state | Vertical-crossing regression, rate/lag/limit oracles, new state/trace identity; coordinate input/servo/AS. |
+| 7 · HELI-36a/b | Independent HX-700 data and capability/catalog routing | Source/estimate table, generated schema/profile checks, inventory/gearing proof and refusal of incompatible data; depends on needed laws from 2/4/6. |
+| 8 · HELI-04-R3/05b/06d, HELI-22/24/36c | Envelope/transient/trim/linearization and maneuver evidence | Signed/inverted/refinement/conservation matrix, source-response holdouts; no inherited X-Cell qualification for HX-700. |
+| 9 · HELI-25c/26a, HELI-21a/33a | Qualified full articulation, flight LOD and swept collision; AS/CR/model owners | Signed dense pose sweeps, lengths/limits, collision fixtures, phase replay and fresh package; preview work may start earlier. |
+| 10 · HELI-09e/23a | Profile and optimize each accepted slice | Paired parity plus current p50/p95/p99 by regime, complete rendered scene target-host evidence; measurement starts at step 1. |
+| 11 · HELI-34/35/36d | Publish 3D entry and qualify pilot/physical behavior | All software gates, representative radio flight and model-specific data comparison; otherwise retain explicit experimental limitations. |
+
+**Regression checklist for each integrated slice:** parse touched drafts outside `app/` first; run affected kernel/session/input/menu suites, source freshness and numerical guards; preserve airplane golden/replay identity; run production route at 30/60/144 fps; test pause/focus/device loss/reset and malformed restore; inspect engine logs even if exit code is zero. Before release, run the full `app/test.sh`, fresh-import/export/package smoke checks and supported platform matrix. Report unrelated failures separately and fix/coordinate them before claiming a release-wide pass.
+
+No physical parameter, aircraft JSON, golden flight or current runtime was changed by this planning audit. Future changes regenerate authored outputs through their pipelines and retain the existing trainer as the rollback path. Acceptance artifacts belong under the owning HELI research step; this is the single active implementation plan.

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-shadow-blur\\test_shadow_blur.gd",
+    "--",
+    "--shadow=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-shadow-blur\\candidate.gd"
+  ],
+  "exit_code": 0
+}

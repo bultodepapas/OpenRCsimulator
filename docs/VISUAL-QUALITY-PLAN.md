@@ -1,8 +1,8 @@
 # Visual quality: implementation guide and open work
 
-2026-10-14 · Revision 14 · Step prefix: **VQ-**
+2026-10-14 · Revision 16 · Step prefix: **VQ-**
 
-Latest VQ-01c / DT-11a follow-up: [grass-mask filtering](research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md) preserves complete placement and native instance output while reducing default masks from 20 to 5. Grass construction median improves about 42%; full-field improvement is only 2.9%. The five-pair Home/Fly attempt has paused samples and does not establish interactive-loading gains. The change passes 23 boundary checks and 167 related regression checks. [Previous ground-image reuse](research/visual-quality-implementation/VQ-01c/loading/ground-image/README.md) remains separate evidence; cold-load non-regression, loading budgets and native acceptance remain open.
+Latest VQ-01c / DT-11a follow-up: [fallback shadow blur indexing](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) preserves complete pixels/mips and carrier output in 100 native pairs, with 143 headless and 87 native assertions. Carrier construction median improves about 50%; this does not change per-frame rendering or establish full loading gains. [Earlier shadow geometry transforms](research/visual-quality-implementation/VQ-01c/loading/shadow-geometry/README.md) retain their own campaign. Appearance, cold-load non-regression, loading budgets and native acceptance remain open.
 
 [Audio teardown diagnostics](research/visual-quality-implementation/VQ-01c/loading/audio/README.md) now separate mixer retirement from persistent retention. The loading probe checks bounded cleanup on success/failure; packaged 50-cycle diagnostics finish without exit warnings but include one paused first draw. This does not close the native lifecycle/soak gates.
 

@@ -1,0 +1,72 @@
+{
+	"backend_identity": {
+		"abi_version": 1.0,
+		"backend": "native",
+		"backend_version": "openrc-ground-vehicle-native-evaluate-v1",
+		"binary_sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+		"source_sha256": "451a76a00ac0e7d4513390d405e45eb55c6cb9b387ed21e55035d09ab7ef697f",
+		"toolchain_sha256": "2051a079931113cbf72767863a0159fb69319631343022d647e1031fd301453a"
+	},
+	"engine": "4.7.2-stable (official)",
+	"field_id": "default",
+	"identities": {
+		"course": {
+			"format": "openrc-airfield-course",
+			"id": "airfield-default",
+			"sha256": "775706038c327ee66e2d1f069a59f5654333dec83e88e192eb0edb34285b7e22",
+			"version": "1"
+		},
+		"model": {
+			"format": "openrc-ground-vehicle",
+			"id": "mt8-bisonte-electric-4wd-estimate-v1",
+			"sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+			"version": "1"
+		}
+	},
+	"image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-monster-truck\\RCV-runtime\\airfield-20261014\\drive-es-final.png",
+	"language": "es",
+	"mode": "drive",
+	"ok": true,
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"shared_field_rendered": true,
+	"size": [
+		1280,
+		720
+	],
+	"spawn_id": "start",
+	"state": [
+		14.997140579836246,
+		6.662503376217605,
+		-0.20504939983629475,
+		3.495934966166654,
+		-0.002838725143144802,
+		5.599797724553872e-05,
+		0.7066615189111817,
+		-0.00023420953014498675,
+		-0.00084528317594431,
+		0.707551219582293,
+		-0.011555305177806625,
+		0.00913593071420898,
+		0.0013777307389399303,
+		0.012695473223008206,
+		0.01323483648304139,
+		0.013583164385626801,
+		0.012532182669186915,
+		0.010805265666808934,
+		-0.0021014832295044583,
+		0.007969551720728208,
+		-0.008744393988171721,
+		34.97975472587063,
+		34.97524800995788,
+		34.98105772886612,
+		34.97604532926062,
+		70.0192176392059,
+		69.97310092328613,
+		66.63015293445517,
+		66.62768529445938,
+		0.0,
+		0.0
+	],
+	"ticks": 600
+}

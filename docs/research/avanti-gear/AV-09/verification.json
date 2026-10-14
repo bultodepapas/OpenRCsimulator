@@ -1,0 +1,386 @@
+{
+  "format": "openrc-av09-gear-verification v1",
+  "date": "2026-10-14",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "platform": "Windows",
+  "scope": "Focused AV-09 software qualification; not physical validation or a full app/test.sh acceptance run.",
+  "conformance": {
+    "ok": true,
+    "commands": 17,
+    "report": "conformance/verification.json"
+  },
+  "focused_runtime_tests": [
+    {
+      "script": "app/tests/test_retractable_gear.gd",
+      "sha256": "e0118321cf0913984d8d172fe58a6291f9be66e36b28ee082c68af680d804721",
+      "passed": true,
+      "checks": 68,
+      "log": "logs/gear-state.log",
+      "observation": "Retained runtime log"
+    },
+    {
+      "script": "app/tests/test_retractable_gear_ground.gd",
+      "sha256": "5beedcb977263f5ea89abd1dffee90d569f958344f93045577e29cd1211c06e5",
+      "passed": true,
+      "checks": 26,
+      "log": "logs/gear-ground.log",
+      "observation": "Retained runtime log"
+    },
+    {
+      "script": "app/tests/test_retractable_gear_trace.gd",
+      "sha256": "9f4b9490fdf4f312f480b9141ed75b587a23e1e64784df3e653d13d72f0f3615",
+      "passed": true,
+      "checks": 19,
+      "log": null,
+      "observation": "Successful runtime output observed in tool session; stdout was not retained"
+    },
+    {
+      "script": "app/tests/test_retractable_gear_input.gd",
+      "sha256": "14c8e452ea2b495cacdaa81fa66abc43b657d31fd5a1d66e555163bf524234d2",
+      "passed": true,
+      "checks": 8,
+      "log": null,
+      "observation": "Successful runtime output observed in tool session; stdout was not retained"
+    },
+    {
+      "script": "app/aircraft/verify_avanti.gd",
+      "sha256": "00e3ec3ca54d84478c8f9c8db149a0969b253984fbd5ca1cdce19a7815354d1f",
+      "passed": true,
+      "checks": 389,
+      "log": null,
+      "observation": "Successful runtime output observed in tool session; stdout was not retained"
+    },
+    {
+      "script": "app/tests/test_trace.gd",
+      "sha256": "ce94dd9b7b32bd704b770e9f5d15ac88d1e67e65021dceb91319ac13ddc26d86",
+      "passed": true,
+      "checks": 37,
+      "log": null,
+      "observation": "Successful runtime output observed in tool session; stdout was not retained"
+    },
+    {
+      "script": "app/tests/test_ui_runway.gd",
+      "sha256": "34657804803360d206f9ef3fdf775c980cb3f740a6f57516bebab854d483c85c",
+      "passed": true,
+      "checks": null,
+      "log": null,
+      "observation": "Successful runtime output observed in tool session; stdout was not retained"
+    }
+  ],
+  "source_identities_at_evidence_capture": [
+    {
+      "path": "assets/aircraft/avanti-s-a200/source/avanti_s.blend",
+      "sha256": "4649d5527da8cc584770279d2ff4bc1494a29445c71f52a2103c33c7b0f05512",
+      "bytes": 20327373
+    },
+    {
+      "path": "assets/aircraft/avanti-s-a200/export_blender.py",
+      "sha256": "0875f7e7be888f8896399f50230a50bcb8519af1a226cef34bf062eb290d0aac",
+      "bytes": 31057
+    },
+    {
+      "path": "assets/aircraft/avanti-s-a200/compile_blender.py",
+      "sha256": "a081dea3a2ab7147824cb0705b1844b5c481ffe509e7f1f042b5c358054a7f6b",
+      "bytes": 11032
+    },
+    {
+      "path": "assets/aircraft/avanti-s-a200/source-manifest.json",
+      "sha256": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f",
+      "bytes": 1883
+    },
+    {
+      "path": "assets/aircraft/avanti-s-a200/blender-geometry.json",
+      "sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d",
+      "bytes": 422506
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s.glb",
+      "sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
+      "bytes": 9928440
+    },
+    {
+      "path": "app/data/aircraft/sebart_avanti_s_a200.json",
+      "sha256": "e81fc726459086dbd821c1ffa44878ff11fd848cec800101a30f572d947eb498",
+      "bytes": 94779
+    },
+    {
+      "path": "app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json",
+      "sha256": "e3a620364459dc4ce88e30f471d7cf572caadee5842fa86c3c8e04e2fe180177",
+      "bytes": 6061
+    },
+    {
+      "path": "app/data/workshop/sebart-avanti-s-a200-p100rx.json",
+      "sha256": "36e2ae87e174756c62ea655230b93a712c12747297717639a50179455be2caf6",
+      "bytes": 2553
+    },
+    {
+      "path": "app/physics/retractable_gear.gd",
+      "sha256": "5de7a013900104aee80186ab0935e4340a752f85ef00fe6e8c04008789d84f83",
+      "bytes": 3517
+    },
+    {
+      "path": "app/aircraft/retractable_model.gd",
+      "sha256": "98821a8c571bd1204737c5b6e80a01dd3aa1dbcf4ab4e183779cd90bddc6a730",
+      "bytes": 6391
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "e99d422ef2f0d53ddac6c2e7f63318700847caa384b60b292cfae6059192ef08",
+      "bytes": 167641
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "sha256": "814ca70b4a05c7d23c8b405138c40e42b1b0711071e77eab4d34bba20d0e9da6",
+      "bytes": 25659
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "sha256": "deb76d6d9dfcd56cba759fafba971d468a884c7fad434e9be7b80019f8e42891",
+      "bytes": 44287
+    },
+    {
+      "path": "app/render/ground_gear.gd",
+      "sha256": "3c42ee970e3d002fb459dea1cd4ab1c1c6ca23478db3f6e60c2da70d9de75223",
+      "bytes": 3576
+    },
+    {
+      "path": "research/avanti-s/av09/capture_gear.gd",
+      "sha256": "2579c70097673471c2bca7a5f1a55676b3edda3cca5af0deda645342bd706b0c",
+      "bytes": 3308
+    }
+  ],
+  "package_artifacts": [
+    {
+      "path": ".tools/av09-export/OpenRC.exe",
+      "sha256": "90960a9ecfc3a8cf1aa2917d20c425fd3d36c548277f474e5c31b2ed0c8422a7",
+      "bytes": 193962264
+    },
+    {
+      "path": ".tools/av09-export/OpenRC.pck",
+      "sha256": "1125a241e55d14902d94aa5d669e33971374e25dbe124d2fb46a86354c24d365",
+      "bytes": 84834232
+    },
+    {
+      "path": ".tools/av09-export/openrc_ground_vehicle.dll",
+      "sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+      "bytes": 443904
+    }
+  ],
+  "package_flight": {
+    "passed": true,
+    "ticks": 720,
+    "duration_s": 3,
+    "reader_report": "logs/package-flight-check.txt"
+  },
+  "weather_traces": {
+    "turbulent": {
+      "rows": 241,
+      "first_tick": 0,
+      "last_tick": 240,
+      "max_wind_error_mps": 4.995981406352712e-10,
+      "max_speed_error_mps": 4.4295092038737494e-08,
+      "max_turbulence_error_mps": 4.99598445946603e-10,
+      "turbulence_aux_index": 16,
+      "recording_start_rng_state": 4854362591652544791
+    },
+    "hot_high": {
+      "density_altitude_m": 2634.5338157095093,
+      "density_ratio": 0.7705594364773417,
+      "engine_charge_ratio": 0.754410799788835,
+      "first_tick": 0,
+      "format": "openrc-trace v10",
+      "last_tick": 240,
+      "max_atmosphere_row_error": 4.906723916064948e-10,
+      "max_atmosphere_state_error": 0.0,
+      "max_eas_error_mps": 4.0955683289212175e-11,
+      "max_speed_error_mps": 3.7529076735154376e-08,
+      "max_wind_error_mps": 0.0,
+      "metadata_schema": "openrc-flight-meta v8",
+      "rho_kgm3": 0.9439353096847437,
+      "rows": 241
+    }
+  },
+  "captures": {
+    "source": "captures/captures.json",
+    "exported_pck": "package-captures/captures.json"
+  },
+  "limitations": [
+    "Cycle times, drag, brake torque, suspension and tire coefficients remain estimates.",
+    "Full Python CLI acceptance setup timed out during process startup; focused real Avanti weather and standalone package traces passed.",
+    "Source workspace contains concurrent unrelated edits; this manifest does not claim a clean commit or full application suite pass."
+  ],
+  "retained_evidence": [
+    {
+      "path": "logs/aircraft-contract.log",
+      "sha256": "1ec4046649c68147d69df287815f485762ffe8d868ec9a86acadab2c75783c77"
+    },
+    {
+      "path": "logs/gear-ground.log",
+      "sha256": "e281f24a7c88aab305af47f3c0fb9e68237f466493d7d409fb4d2549bf32c466"
+    },
+    {
+      "path": "logs/gear-state.log",
+      "sha256": "02976ab32366dbfe364913ce6d939bbd16308cdf28c9c1cd99ac6c23338b594e"
+    },
+    {
+      "path": "logs/ground-start-integrity.log",
+      "sha256": "af123eae115ffff78a9876a23b3e630c9b7cfeb82cce5ccf5135b140f94c0124"
+    },
+    {
+      "path": "logs/handling.log",
+      "sha256": "063462137d130ce09393524883e6235c24daf36c378424c4b435972bfdaa75d8"
+    },
+    {
+      "path": "logs/hot-high-check.json",
+      "sha256": "8342dca3cfb1c954121406c2c7b70271d5270d1cdad4e10f7fec42ca12bff5c9"
+    },
+    {
+      "path": "logs/package-flight-check.txt",
+      "sha256": "2bae323e29226db7600861cacf282f64dccef5afea296e0bf466565f48bc1c38"
+    },
+    {
+      "path": "logs/package-render.log",
+      "sha256": "5fcebeaab1eb57cb149a35474b32de8bad2328c998730d2cd5dbc7e24771a2bf"
+    },
+    {
+      "path": "logs/replay-integrity.log",
+      "sha256": "19cbae88f03d2ca087d841ed407cd0be0dba377d1f257c402be8a8a3eb1369f2"
+    },
+    {
+      "path": "logs/replay-policy.log",
+      "sha256": "98bfdb24ffd88584746db638026c12d8c583439cd7c5440bbe04fae5c188495d"
+    },
+    {
+      "path": "logs/simulation.log",
+      "sha256": "ca740d9d56fc9ab41311a7d73cbd53c3cc3f795dbcf193131f03592f8393a53d"
+    },
+    {
+      "path": "logs/source-render.log",
+      "sha256": "2fe1286a649ff3c13f8a8b2c5d84623ba817c45633304d4eb6fd8b2c93123715"
+    },
+    {
+      "path": "logs/turbine.log",
+      "sha256": "3d726875446ea6a706c34f42d27e8cafd3d7c0ca43de67ddf5c97ebf86b13d64"
+    },
+    {
+      "path": "logs/turbulent-check.json",
+      "sha256": "57d0ada8eedfe72913f25136fa3bcd6ada76c17ffd4ae1db8ba35a323876aa98"
+    },
+    {
+      "path": "conformance/aircraft_model_manifest.log",
+      "sha256": "0468721e2b85a35478f45d91b60e8fe9384b4ba082343cf0c5ffea8930ff369c"
+    },
+    {
+      "path": "conformance/aircraft_modules.log",
+      "sha256": "eb2760b4131fe2cc505fa458b77bae131e31e7c2769ede1562e6741e8af74af4"
+    },
+    {
+      "path": "conformance/aircraft_package_proofs.log",
+      "sha256": "dc0c15f33159329247341d4ad14a684d49ca95f0e5c144a27c81777f55f3b1e6"
+    },
+    {
+      "path": "conformance/aircraft_render_contract.log",
+      "sha256": "faaf0467d8329992725aa7ab6a95f3d33c12a91432cf3edd331c713b2e58413e"
+    },
+    {
+      "path": "conformance/descriptor-checkout.log",
+      "sha256": "547af0bfcdbcbd9fc1a8081001c808c22c8318df33218b63153aff09dd84e28a"
+    },
+    {
+      "path": "conformance/descriptors-current.log",
+      "sha256": "e228758c0b8f8735552db5b6975e55b2c42a34809b80202f58d30fa972f0f492"
+    },
+    {
+      "path": "conformance/import.log",
+      "sha256": "bc2ecde9ef526c6b02c472a5bc258197897d35bf004333d5a29c9521a5b5d6e8"
+    },
+    {
+      "path": "conformance/imported_aircraft_model.log",
+      "sha256": "569c28dc13d73f6f01cb7adaa7231fa552940064a2759cd9316a534a99202be1"
+    },
+    {
+      "path": "conformance/migration.log",
+      "sha256": "fc81fbed664edb653399f57d50145ce9c653316b0a486bda00af684e95ec8957"
+    },
+    {
+      "path": "conformance/models-current.log",
+      "sha256": "59e2026db8477aa4e7b35a531f9ba817af511d1fb2a8c0f81877e3bda8441295"
+    },
+    {
+      "path": "conformance/models-python.log",
+      "sha256": "0a8865eaaeadb050ca958cb88d62b7ce04c75e8a8d0bdd021aa7c17fdd04db2d"
+    },
+    {
+      "path": "conformance/modules-python.log",
+      "sha256": "b81db44158bd4f66c62d395175f0a431693e246eff68fd4bda63794b1f4b0a14"
+    },
+    {
+      "path": "conformance/parameters.log",
+      "sha256": "dce936fd7bfc13c7b99125164e95e49237cab3f313089cbe258bb5f0bc2aff25"
+    },
+    {
+      "path": "conformance/physical-identity-sources.log",
+      "sha256": "3cd02e884955c8b49b809ce57755ae46aacba4d9ef1382b84e081568bb3f04a5"
+    },
+    {
+      "path": "conformance/preflight.json",
+      "sha256": "a1fd34c2343918ad221ea1c6a0d15394a1312cc263837e04cbb2eef969123f55"
+    },
+    {
+      "path": "conformance/preflight.log",
+      "sha256": "e01d6b417171ce4c451a87ef22f740e11766280bcfec61584d4dac92172d4174"
+    },
+    {
+      "path": "conformance/schema.log",
+      "sha256": "3c700854bdc83285bb6edfb53e811dad3c7345d6bedd2e0975d92b5fd36a54fd"
+    },
+    {
+      "path": "conformance/verification.json",
+      "sha256": "dc16320de20ccaeb1b12d19cca6bee36501c6897a4db819eae77832658210e9f"
+    },
+    {
+      "path": "conformance/workshop_descriptor.log",
+      "sha256": "81c69c3f5bb6c6544db9029803b67412b9fb382ac77c356cd03c99f87bb58972"
+    },
+    {
+      "path": "captures/01-stowed.png",
+      "sha256": "8f157e1ce3824d348586746fd35a0cec8a9e433145e370c9e720205df3d4f0af"
+    },
+    {
+      "path": "captures/02-transit.png",
+      "sha256": "9a5bb9aa4a69abe389621d2ca8a1ea2d0ec4f14c6e77e1e9332496e3828734bf"
+    },
+    {
+      "path": "captures/03-downlocked.png",
+      "sha256": "75c0072cf73176d3ef70988238b685ccde8dc25d39fd276573a6ff44de8a459e"
+    },
+    {
+      "path": "captures/04-steering.png",
+      "sha256": "65e2e9689a6d7635f5ee4b5440cf903d3e1fb1e6d467406c8b30ef6f0db5637c"
+    },
+    {
+      "path": "captures/captures.json",
+      "sha256": "1afbf645a431c0a9b6a3aed4014c6accfde7f05a17db73b4695a2074e8ba4247"
+    },
+    {
+      "path": "package-captures/01-stowed.png",
+      "sha256": "5b4221534e81491a6fee5164145a7a3810159f789ec1fd1a1a579740c73b4a81"
+    },
+    {
+      "path": "package-captures/02-transit.png",
+      "sha256": "977d7d14e7fa5cf7b55cd15f610cf0a86ec5389c0d356d761d7410402cc0640c"
+    },
+    {
+      "path": "package-captures/03-downlocked.png",
+      "sha256": "1c973ab67175d35b18c5996a7590e6e6feed0d97b71a2b403e3656c237bc2ba1"
+    },
+    {
+      "path": "package-captures/04-steering.png",
+      "sha256": "8e39bb38f045bec3288936577d738891820f77980655a7b173a3296713ae3fc6"
+    },
+    {
+      "path": "package-captures/captures.json",
+      "sha256": "1afbf645a431c0a9b6a3aed4014c6accfde7f05a17db73b4695a2074e8ba4247"
+    }
+  ]
+}

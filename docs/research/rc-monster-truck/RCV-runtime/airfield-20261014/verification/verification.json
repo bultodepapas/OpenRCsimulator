@@ -110,6 +110,86 @@
         "--script",
         "res://tests/test_rcv_input.gd"
       ]
+    },
+    {
+      "name": "test_rcv_vehicle_dynamics",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 4.61,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_vehicle_dynamics.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_session",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 3.009,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_session.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_activity",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 5.289,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_activity.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_presentation",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 4.349,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_presentation.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_menu",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 11.093,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_menu.gd"
+      ]
     }
   ],
   "physical_validation": false,
@@ -143,5 +223,6 @@
     "app/vehicles/ground/mt8_rig.gd": "b120b5d202b78d537bb3c71a61339af95463209eb918966535e3c34f760e65a2",
     "app/vehicles/ground/telemetry_plot.gd": "f2aa9bf83803c1c3d8e2df97c89cfb7f7bf6e0fddddc7d59f05500dd277f4f03"
   },
-  "ok": true
+  "ok": true,
+  "sources_unchanged_during_verification": true
 }

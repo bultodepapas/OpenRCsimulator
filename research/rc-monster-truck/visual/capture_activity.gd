@@ -88,4 +88,5 @@ func _run() -> void:
 	else: error = ERR_CANT_CREATE
 	print(JSON.stringify(evidence))
 	scene.free()
+	await process_frame # Flush scene-owned deferred work before closing the renderer.
 	quit(0 if error == OK else 1)

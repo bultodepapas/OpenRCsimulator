@@ -1,0 +1,58 @@
+[
+  {
+    "file": "01-stowed.png",
+    "gear": {
+      "available": true,
+      "brake": 0.0,
+      "extension": 0.0,
+      "inhibited": false,
+      "status": "up",
+      "target_down": false
+    },
+    "model_sha256": "e3a620364459dc4ce88e30f471d7cf572caadee5842fa86c3c8e04e2fe180177",
+    "servo_yaw": 0.0,
+    "tick": 0
+  },
+  {
+    "file": "02-transit.png",
+    "gear": {
+      "available": true,
+      "brake": 0.0,
+      "extension": 0.499999999999998,
+      "inhibited": false,
+      "status": "extending",
+      "target_down": true
+    },
+    "model_sha256": "e3a620364459dc4ce88e30f471d7cf572caadee5842fa86c3c8e04e2fe180177",
+    "servo_yaw": 0.0,
+    "tick": 300
+  },
+  {
+    "file": "03-downlocked.png",
+    "gear": {
+      "available": true,
+      "brake": 0.0,
+      "extension": 1.0,
+      "inhibited": false,
+      "status": "down",
+      "target_down": true
+    },
+    "model_sha256": "e3a620364459dc4ce88e30f471d7cf572caadee5842fa86c3c8e04e2fe180177",
+    "servo_yaw": 0.0,
+    "tick": 600
+  },
+  {
+    "file": "04-steering.png",
+    "gear": {
+      "available": true,
+      "brake": 0.0,
+      "extension": 1.0,
+      "inhibited": false,
+      "status": "down",
+      "target_down": true
+    },
+    "model_sha256": "e3a620364459dc4ce88e30f471d7cf572caadee5842fa86c3c8e04e2fe180177",
+    "servo_yaw": 1.0,
+    "tick": 690
+  }
+]

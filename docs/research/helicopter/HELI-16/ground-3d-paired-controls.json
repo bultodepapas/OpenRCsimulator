@@ -1,0 +1,89 @@
+{
+  "aircraft_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+  "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+  "engine": "4.7.2-stable (official)",
+  "medians": {
+    "electronics_prepared_us": 38.302,
+    "electronics_us": 86.777,
+    "flight_evaluation_us": 211.544,
+    "whole_tick_us": 1163.55625
+  },
+  "ok": true,
+  "os": "Windows",
+  "paired_whole_tick_speedup": 1.177730986361854,
+  "reference_state_hashes": [
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba"
+  ],
+  "reference_whole_tick_median_us": 1370.35625,
+  "reference_whole_tick_samples_us": [
+    1370.35625,
+    1387.6833333333334,
+    1416.3083333333334,
+    1399.99375,
+    1317.3395833333334,
+    1327.5729166666667,
+    1286.5333333333333
+  ],
+  "rounds": 7,
+  "samples": {
+    "electronics_prepared_us": [
+      43.08,
+      42.53,
+      31.829,
+      32.023,
+      38.302,
+      37.692,
+      41.535
+    ],
+    "electronics_us": [
+      94.959,
+      86.777,
+      81.654,
+      85.256,
+      98.733,
+      94.061,
+      74.281
+    ],
+    "flight_evaluation_us": [
+      244.412,
+      240.462,
+      204.162,
+      211.544,
+      279.372,
+      208.888,
+      177.714
+    ],
+    "whole_tick_us": [
+      1242.7729166666666,
+      1111.6958333333334,
+      1163.55625,
+      1093.81875,
+      1110.2479166666667,
+      1177.575,
+      1631.3145833333333
+    ]
+  },
+  "state_hashes": [
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+    "9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba"
+  ],
+  "step": "HELI-09/16-R1",
+  "target_performance_qualified": false,
+  "ticks_per_round": 480,
+  "provenance": {
+    "comparison": "same session/kernel laws; only electronics revalidation entry differs",
+    "flight_source_sha256": "1f343841b79407217462ca3d068bfc0dd96633942cc4e05eb813c068178c04d6",
+    "session_source_sha256": "7ad3a51e498f28187b6b16acc3543ce7e719f3d353594db7d710201d6fb6a5e0"
+  }
+}

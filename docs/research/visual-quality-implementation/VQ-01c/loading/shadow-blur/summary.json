@@ -1,0 +1,75 @@
+{
+  "runs": 5,
+  "exact_pairs": 100,
+  "warm_samples_per_variant_workload": 45,
+  "workloads": [
+    {
+      "workload": "silhouette",
+      "warm_median_usec": {
+        "reference": 34373,
+        "candidate": 15175
+      },
+      "first_pair_median_usec": {
+        "reference": 34098,
+        "candidate": 17109
+      },
+      "per_run_warm_median_usec": [
+        {
+          "reference": 36584,
+          "candidate": 16079
+        },
+        {
+          "reference": 37999,
+          "candidate": 19402
+        },
+        {
+          "reference": 32857,
+          "candidate": 13214
+        },
+        {
+          "reference": 31683,
+          "candidate": 14175
+        },
+        {
+          "reference": 34373,
+          "candidate": 15175
+        }
+      ],
+      "warm_reduction_pct": 55.851976842289005
+    },
+    {
+      "workload": "create",
+      "warm_median_usec": {
+        "reference": 34835,
+        "candidate": 17271
+      },
+      "first_pair_median_usec": {
+        "reference": 34351,
+        "candidate": 15677
+      },
+      "per_run_warm_median_usec": [
+        {
+          "reference": 32330,
+          "candidate": 16383
+        },
+        {
+          "reference": 38004,
+          "candidate": 17846
+        },
+        {
+          "reference": 36351,
+          "candidate": 17709
+        },
+        {
+          "reference": 34978,
+          "candidate": 16857
+        },
+        {
+          "reference": 33717,
+          "candidate": 15424
+        }
+      ],
+      "warm_reduction_pct": 50.42055404047654
+    }
+  ]
+}
