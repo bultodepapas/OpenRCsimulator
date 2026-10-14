@@ -8,11 +8,18 @@ const Builder := preload("res://render/airplane.gd")
 const Commands := preload("res://input/commands.gd")
 const Imported := preload("res://aircraft/imported_model.gd")
 const Registry := preload("res://aircraft/model_registry.gd")
+const Retraction := preload("res://aircraft/retractable_model.gd")
 
 const EXPECTED_ARTICULATIONS := [
 	"aileron_left_hinge", "aileron_right_hinge",
 	"elevator_left_hinge", "elevator_right_hinge",
 	"rudder_hinge", "flap_left_hinge", "flap_right_hinge",
+]
+const EXPECTED_GEAR_CARRIERS := [
+	"MainGear_L_Act_Cyl", "MainGear_L_Act_Piston", "MainGear_L_Pivot",
+	"MainGear_R_Act_Cyl", "MainGear_R_Act_Piston", "MainGear_R_Pivot",
+	"NoseGear_Act_Cyl", "NoseGear_Act_Piston", "NoseGear_Door_Act_ArmPivot",
+	"NoseGear_Door_Act_Rod", "NoseGear_Door_Pivot", "NoseGear_Pivot",
 ]
 const ARTICULATION_TO_BINDING := {
 	"aileron_left_hinge": "aileron_left",
@@ -75,9 +82,10 @@ func _run() -> void:
 	_check("imported GLB asset", manifest.asset.kind == "imported_glb")
 	_check("local +X hinge construction", manifest.construction.hinge_axis == "+X")
 	_check("rotor is absent in construction", manifest.construction.get("rotor", {}).is_empty())
-	_check("gear is absent in construction", manifest.construction.get("gear", []).is_empty())
-	_check("no rotor or gear bindings", not manifest.bindings.rotor.present
-		and manifest.bindings.gear.keys.is_empty())
+	_check("retractable gear is bound to generated gear geometry", manifest.construction.get("gear", []).is_empty()
+		and manifest.construction.get("retraction", {}).get("geometry_ref", "") == "gear")
+	_check("rotor is absent and gear roles are explicit", not manifest.bindings.rotor.present
+		and _same_string_keys(manifest.bindings.gear.keys, ["left", "right", "nose", "steering"]))
 	_check("GLTF extras crash sections enabled", manifest.bindings.crash.provider == "gltf_extras")
 
 	var geometry_script := load(str(manifest.geometry.script)) as Script
@@ -94,9 +102,11 @@ func _run() -> void:
 	_check("geometry articulations are the canonical seven", _same_string_keys(data.get("articulations", {}), EXPECTED_ARTICULATIONS))
 	_check("geometry revision matches asset", data.get("revision", "") == manifest.asset.revision)
 	_check("geometry carries nominal bounds and turbine metadata",
-		data.has_all(["nominal", "bounds", "turbine", "gear_pose"]))
+		data.has_all(["nominal", "bounds", "turbine", "gear_pose", "gear"]))
 	_check("source model is in gear-stowed pose", data.get("gear_pose", {}).get("state", "") == "stowed"
 		and int(data.get("gear_pose", {}).get("source_frame", -1)) == 211)
+	var gear_validation := Retraction.validate(data.get("gear", {}))
+	_check("geometry has canonical sampled GearRetract rig", gear_validation.is_empty(), str(gear_validation))
 
 	var build: Dictionary = Builder.build(aircraft_id)
 	var root := build.get("root") as Node3D
@@ -115,12 +125,17 @@ func _run() -> void:
 	var propeller := build.get("propeller") as Node3D
 	_check("public propeller marker is empty", propeller != null and propeller.name == "propeller"
 		and propeller.get_child_count() == 0 and not build.get("has_propeller", true))
-	_check("gear wrappers are empty", build.get("gear", {}) is Dictionary and build.gear.is_empty())
+	_check("public gear exposes dynamic left/right/nose and steering nodes",
+		build.get("gear", {}) is Dictionary and _same_string_keys(build.gear, ["left", "right", "nose", "steering"]))
 	_check("no imported propeller mesh", _no_propeller_mesh(root))
-	_check("stowed gear geometry is present", root.find_child("gear_stowed", true, false) is MeshInstance3D)
+	_check("gear is split into sampled carriers rather than a static stowed mesh",
+		root.find_child("gear_stowed", true, false) == null
+		and root.find_child("MainGear_L_Pivot", true, false) is Node3D
+		and root.find_child("NoseGear_Door_Pivot", true, false) is Node3D)
 
 	_check_sections(root)
 	_check_articulations(build, data)
+	_check_gear_rig(build, data)
 	var bounds_result := _mesh_bounds(root, root)
 	_check("visible imported geometry has finite vertices", bounds_result.valid and bounds_result.mesh_count > 0)
 	if bounds_result.valid:
@@ -155,6 +170,13 @@ func _run() -> void:
 		var second_witnesses := _capture_witnesses(second, data)
 		var second_rest := _rest_transforms(second)
 		var original_snapshot: Dictionary = data.duplicate(true)
+		Retraction.apply(build.gear_retraction, 1.0)
+		_check("posing first gear instance leaves second retraction rig stowed",
+			_gear_pose_matches(second.gear_retraction, 0))
+		_check("first instance reaches down wheel centers without mutating source paths",
+			_gear_wheel_centers_match(build, build.gear_retraction, 82, 0.001)
+			and data == original_snapshot)
+		Retraction.apply(build.gear_retraction, 0.0)
 		if physical_result.get("ok", false):
 			var command := {roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = 0.0}
 			Builder.apply_surfaces(build, Commands.hinge_rotations(command, physical_result.model.controls.throw_deg))
@@ -293,6 +315,196 @@ func _check_articulations(model: Dictionary, data: Dictionary) -> void:
 		_check("%s runtime range and positive semantics match data" % hinge_name,
 			entry.get("range_deg", []) == range_value and entry.get("positive", "") == record.get("positive", "")
 			and absf(float(entry.get("app_sign", 0.0)) - app_sign) < 1.0e-8)
+
+
+func _check_gear_rig(model: Dictionary, data: Dictionary) -> void:
+	var gear_data: Dictionary = data.get("gear", {})
+	var rig: Dictionary = model.get("gear_retraction", {})
+	_check("runtime binds generated sampled gear data", not rig.is_empty()
+		and Retraction.validate(gear_data).is_empty() and rig.get("data", {}) == gear_data)
+	if rig.is_empty() or not rig.get("data", {}) is Dictionary:
+		return
+	var samples: Array = gear_data.retraction.samples
+	var bindings: Dictionary = gear_data.bindings
+	var nodes: Dictionary = rig.nodes
+	_check("twelve source action targets are sampled", _same_string_keys(samples[0].nodes, EXPECTED_GEAR_CARRIERS))
+	_check("all carrier and helper nodes bind once", _same_string_keys(nodes, bindings.keys()))
+	for name: String in bindings:
+		var node := nodes.get(name) as Node3D
+		var record: Dictionary = bindings[name]
+		_check("gear binding %s resolves parent and rest transform" % name,
+			node != null and node.get_parent() != null and node.get_parent().name == record.get("parent", "")
+			and node.position.distance_to(_vector3(record.get("rest_translation", []))) <= REST_TOLERANCE_M
+			and node.basis.is_equal_approx(_basis(record.get("rest_basis", {}))))
+	_check("stowed carrier nodes match sample zero", _gear_pose_matches(rig, 0))
+	_check("stowed tire centers match source action path", _gear_wheel_centers_match(model, rig, 0, 0.001))
+	_check("stowed pose is the first uniform sample", absf(float(samples[0].extension)) < 1.0e-10)
+	_check("down pose is the last uniform sample", absf(float(samples[-1].extension) - 1.0) < 1.0e-10)
+	var door := model.root.find_child("mesh_NoseGear_Door_Pivot", true, false) as MeshInstance3D
+	var door_pivot := nodes.get("NoseGear_Door_Pivot") as Node3D
+	var door_vertex := Vector3.ZERO
+	var door_vertex_found := false
+	if door != null and door.mesh != null and door_pivot != null:
+		var farthest := -1.0
+		var door_pose := Imported.relative(model.root, door)
+		var door_center := Imported.relative(model.root, door_pivot).origin
+		for vertex: Vector3 in door.mesh.get_faces():
+			var point := door_pose * vertex
+			var distance := point.distance_squared_to(door_center)
+			if distance > farthest:
+				farthest = distance
+				door_vertex = vertex
+				door_vertex_found = true
+	var door_stowed_point := Vector3.ZERO
+	if door_vertex_found:
+		door_stowed_point = Imported.relative(model.root, door) * door_vertex
+
+	Retraction.apply(rig, 0.5)
+	_check("mid-retraction carrier pose matches the source knot", _gear_pose_matches(rig, 41))
+	_check("mid-retraction wheel centers match source geometry", _gear_wheel_centers_match(model, rig, 41, 0.001))
+	Retraction.apply(rig, 1.0)
+	_check("down carrier nodes match sample endpoint", _gear_pose_matches(rig, 82))
+	_check("down tire centers match source action path", _gear_wheel_centers_match(model, rig, 82, 0.001))
+	_check("down contact points and tire radii match physical gear points", _gear_contacts_match(gear_data))
+	_check("actual nose door geometry moves through the gear cycle", door_vertex_found
+		and door != null and (Imported.relative(model.root, door) * door_vertex).distance_to(door_stowed_point) > 0.01)
+
+	for role: String in ["left", "right", "nose"]:
+		var wheel: Dictionary = gear_data.wheels[role]
+		var spin := rig.gear[role] as Node3D
+		var center_node := nodes[wheel.node] as Node3D
+		var axle := spin.global_basis.x.normalized() if spin != null else Vector3.ZERO
+		_check("%s spin wrapper uses the authored horizontal +X axle" % role,
+			spin != null and absf(absf(axle.dot(Vector3.RIGHT)) - 1.0) < 0.001
+			and absf(axle.dot(Vector3.UP)) < 0.001 and absf(axle.dot(Vector3.FORWARD)) < 0.001)
+		var spin_witness := _spin_witness(spin)
+		var spin_center := Imported.relative(model.root, spin).origin if spin != null else Vector3.ZERO
+		var spin_start := _witness_world_point(model.root, spin_witness)
+		if spin != null:
+			spin.rotation.x = 0.7
+		var spin_moved := _witness_world_point(model.root, spin_witness)
+		_check("%s actual tire vertices respond to wheel spin" % role, spin_witness.found
+			and spin_start.distance_to(spin_moved) > 0.001
+			and Imported.relative(model.root, center_node).origin.distance_to(spin_center) <= 1.0e-5)
+		if spin != null:
+			spin.rotation = Vector3.ZERO
+
+		var compression := rig.compression[role] as Node3D
+		var compression_mesh := _first_mesh_under(compression)
+		var lower_faces := compression_mesh.mesh.get_faces() if compression_mesh != null and compression_mesh.mesh != null else []
+		var lower_vertex := lower_faces[0] if not lower_faces.is_empty() else Vector3.ZERO
+		var lower_found := not lower_faces.is_empty()
+		var lower_before := Imported.relative(model.root, compression_mesh) * lower_vertex if lower_found else Vector3.ZERO
+		var wheel_before := Imported.relative(model.root, center_node).origin
+		var rest: Transform3D = rig.rest[role]
+		var parent := compression.get_parent() as Node3D
+		compression.position = rest.origin + parent.global_basis.inverse() * Vector3.UP * 0.02
+		var lower_after := Imported.relative(model.root, compression_mesh) * lower_vertex if lower_found else Vector3.ZERO
+		var wheel_after := Imported.relative(model.root, center_node).origin
+		_check("%s compressed lower leg and wheel move upward together" % role,
+			lower_found and absf((lower_after - lower_before).y - 0.02) < 1.0e-5
+			and absf((wheel_after - wheel_before).y - 0.02) < 1.0e-5)
+		compression.transform = rest
+
+	var steering := rig.gear.get("steering") as Node3D
+	var nose_record: Dictionary = gear_data.wheels.nose
+	var nose_node := nodes[nose_record.node] as Node3D
+	var steer_start := Imported.relative(model.root, nose_node).origin
+	var steer_rest := steering.rotation if steering != null else Vector3.ZERO
+	var steer_axis := steering.global_basis.y.normalized() if steering != null else Vector3.ZERO
+	if steering != null:
+		steering.rotation.y += 0.35
+	var steer_end := Imported.relative(model.root, nose_node).origin
+	_check("nose steering rotates wheel about vertical", steering != null
+		and absf(steer_axis.dot(Vector3.UP)) > 0.999
+		and Vector2(steer_end.x - steer_start.x, steer_end.z - steer_start.z).length() > 0.005
+		and absf(steer_end.y - steer_start.y) < 1.0e-5)
+	if steering != null:
+		steering.rotation = steer_rest
+	Retraction.apply(rig, 0.0)
+	_check("gear test restores all source carriers and wheel centers", _gear_pose_matches(rig, 0)
+		and _gear_wheel_centers_match(model, rig, 0, 0.001))
+
+
+func _gear_pose_matches(rig: Dictionary, sample_index: int) -> bool:
+	var samples: Array = rig.get("data", {}).get("retraction", {}).get("samples", [])
+	if samples.is_empty() or sample_index < 0 or sample_index >= samples.size():
+		return false
+	var poses: Dictionary = samples[sample_index].nodes
+	for name: String in poses:
+		var node := rig.get("nodes", {}).get(name) as Node3D
+		var pose: Dictionary = poses[name]
+		if node == null or node.position.distance_to(_vector3(pose.translation)) > REST_TOLERANCE_M:
+			return false
+		var rotation := Quaternion(pose.rotation_wxyz[1], pose.rotation_wxyz[2], pose.rotation_wxyz[3], pose.rotation_wxyz[0])
+		if node.quaternion.angle_to(rotation) > 0.0001:
+			return false
+	return true
+
+
+func _gear_wheel_centers_match(model: Dictionary, rig: Dictionary, sample_index: int, tolerance: float) -> bool:
+	var wheels: Dictionary = rig.get("data", {}).get("wheels", {})
+	for role: String in ["left", "right", "nose"]:
+		var record: Dictionary = wheels.get(role, {})
+		var centers: Array = record.get("center_model", [])
+		if sample_index < 0 or sample_index >= centers.size():
+			return false
+		var node := rig.get("nodes", {}).get(record.get("node", "")) as Node3D
+		if node == null or Imported.relative(model.root, node).origin.distance_to(_vector3(centers[sample_index])) > tolerance:
+			return false
+	return true
+
+
+func _gear_contacts_match(gear_data: Dictionary) -> bool:
+	var wheels: Dictionary = gear_data.get("wheels", {})
+	for role: String in ["left", "right", "nose"]:
+		var wheel: Dictionary = wheels.get(role, {})
+		var centers: Array = wheel.get("center_model", [])
+		var contacts: Array = wheel.get("contact_model", [])
+		var radius := float(wheel.get("radius_m", NAN))
+		if centers.size() != 83 or contacts.size() != centers.size() or not is_finite(radius):
+			return false
+		for index in centers.size():
+			var center := _vector3(centers[index])
+			var contact := _vector3(contacts[index])
+			if not center.is_finite() or not contact.is_finite() or center.distance_to(contact + Vector3.UP * radius) > 1.0e-7:
+				return false
+	return true
+
+
+func _spin_witness(spin: Node3D) -> Dictionary:
+	if spin == null:
+		return {"found": false}
+	for mesh in _meshes_under(spin):
+		if mesh.mesh == null:
+			continue
+		var faces := mesh.mesh.get_faces()
+		var transform := Imported.relative(spin, mesh)
+		var best := -1.0
+		var vertex := Vector3.ZERO
+		for candidate: Vector3 in faces:
+			var point := transform * candidate
+			var radial := Vector2(point.y, point.z).length()
+			if radial > best:
+				best = radial
+				vertex = candidate
+		return {"found": best > 0.001, "mesh": mesh, "vertex": vertex}
+	return {"found": false}
+
+
+func _witness_world_point(root: Node3D, witness: Dictionary) -> Vector3:
+	if not witness.get("found", false):
+		return Vector3.ZERO
+	return Imported.relative(root, witness.mesh) * witness.vertex
+
+
+func _first_mesh_under(node: Node) -> MeshInstance3D:
+	if node == null:
+		return null
+	for mesh in _meshes_under(node):
+		if mesh.mesh != null:
+			return mesh
+	return null
 
 
 func _capture_witnesses(model: Dictionary, data: Dictionary) -> Dictionary:
@@ -462,6 +674,13 @@ func _instances_have_distinct_nodes(first: Dictionary, second: Dictionary) -> bo
 		if not first.hinges.has(binding) or not second.hinges.has(binding):
 			return false
 		if first.hinges[binding].node == second.hinges[binding].node:
+			return false
+	var first_rig: Dictionary = first.get("gear_retraction", {})
+	var second_rig: Dictionary = second.get("gear_retraction", {})
+	if first_rig.is_empty() or second_rig.is_empty() or first_rig.nodes.size() != second_rig.nodes.size():
+		return false
+	for name: String in first_rig.nodes:
+		if not second_rig.nodes.has(name) or first_rig.nodes[name] == second_rig.nodes[name]:
 			return false
 	var first_mesh: Node = first.root.find_child("aileron_left", true, false)
 	var second_mesh: Node = second.root.find_child("aileron_left", true, false)

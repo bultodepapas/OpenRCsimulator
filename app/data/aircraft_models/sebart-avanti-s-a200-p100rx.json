@@ -20,14 +20,14 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "d5648e2d7a96d283e16e4d96b169234ce3f5fc0851fc09cc3f4b125113a24d8e",
+    "sha256": "a007b27c44b63165588bf5c0782742a0c19fdd4f2e7badf06e4e45696efe640f",
     "hash_mode": "lf_text"
   },
   "geometry": {
     "script": "res://aircraft/avanti_s_blender_geometry.gd",
     "source": {
       "path": "assets/aircraft/avanti-s-a200/blender-geometry.json",
-      "sha256": "be9dc7702e40aee763656601d1eff82960c2c146a18b32f6a8f0294161d61773",
+      "sha256": "53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8",
       "hash_mode": "lf_text"
     },
     "revision": "av31-blender-flight-1",
@@ -45,7 +45,7 @@
     "identity": "User-supplied Avanti S A200 Blender master",
     "revision": "av31-blender-flight-1",
     "path": "res://assets/aircraft/avanti-s-a200/avanti_s.glb",
-    "sha256": "ad9c0c4daf1dd1882b59c8a1344f3cc7a1f51507e998349653d399d52a880d6e"
+    "sha256": "02b26d2a4910faa12f96f67b2c79c3dd1847dc52684a35af201cf5b9981c49f0"
   },
   "bindings": {
     "controls": {
@@ -131,7 +131,12 @@
       "geometry_ref": ""
     },
     "gear": {
-      "keys": {}
+      "keys": {
+        "left": "left",
+        "right": "right",
+        "nose": "nose",
+        "steering": "steering"
+      }
     },
     "crash": {
       "provider": "gltf_extras",
@@ -142,13 +147,13 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/avanti-s-a200/blender-geometry.json",
-      "sha256": "be9dc7702e40aee763656601d1eff82960c2c146a18b32f6a8f0294161d61773",
+      "sha256": "53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
     {
       "path": "assets/aircraft/avanti-s-a200/source-manifest.json",
-      "sha256": "aff7f896ddb5a026a2b6e78f2c57d767b2df5b6193b2167ba0819141404d27f9",
+      "sha256": "e51a342b66c174cca55b0a0250a893e57c4148da203085c4e6d1082575436cf0",
       "hash_mode": "lf_text",
       "role": "asset_identity"
     }
@@ -156,19 +161,19 @@
   "dependencies": [
     {
       "path": "res://aircraft/avanti_s_blender_geometry.gd",
-      "sha256": "c846e27b93c22317683292360de39ce6c0e90d1614f2cdd9483f253fb567312f",
+      "sha256": "4c958a69ad6ed0ff9b41b7797b98254ca9835d243f1dd85bba7552cfe12057f3",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },
     {
       "path": "res://aircraft/imported_model.gd",
-      "sha256": "29339400039f59cb816428a7b1221c78bac54c90a0e545b4dd84821235f48c87",
+      "sha256": "eb3c482b8e7f63a81babde86ed218e871c817af2ca10b5fbdafd07663b4ccf50",
       "hash_mode": "lf_text",
       "role": "builder"
     },
     {
       "path": "res://aircraft/imported_model_contract.gd",
-      "sha256": "78d887c0c3bdde64fdbd9b5e0abb5d778abbeea14d8901cd298f39a8f5328d3b",
+      "sha256": "bdbd47fce8b70cd2f1f567b6c062730af239c4c7d36c46ef14ea40381fa3270e",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -179,8 +184,14 @@
       "role": "script_dependency"
     },
     {
+      "path": "res://aircraft/retractable_model.gd",
+      "sha256": "98821a8c571bd1204737c5b6e80a01dd3aa1dbcf4ab4e183779cd90bddc6a730",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
       "path": "res://assets/aircraft/avanti-s-a200/avanti_s.glb",
-      "sha256": "ad9c0c4daf1dd1882b59c8a1344f3cc7a1f51507e998349653d399d52a880d6e",
+      "sha256": "02b26d2a4910faa12f96f67b2c79c3dd1847dc52684a35af201cf5b9981c49f0",
       "hash_mode": "raw",
       "role": "imported_asset"
     },
@@ -196,6 +207,9 @@
     "hinge_axis": "+X",
     "rotor": {},
     "gear": [],
-    "material_grow": []
+    "material_grow": [],
+    "retraction": {
+      "geometry_ref": "gear"
+    }
   }
 }

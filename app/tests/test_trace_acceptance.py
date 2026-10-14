@@ -105,7 +105,19 @@ class TraceAcceptance(unittest.TestCase):
                 self.assertEqual(metadata['propulsion_model'], propulsion)
                 self.assertEqual(metadata['propwash_model'], propwash)
                 source = APP / metadata['aircraft'].split('(res://', 1)[1].removesuffix(')')
-                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v2' if aircraft == 'sebart-avanti-s-a200-p100rx' else 'openrc-flight-meta v6')
+                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v8' if aircraft == 'sebart-avanti-s-a200-p100rx' else 'openrc-flight-meta v6')
+                if aircraft == 'sebart-avanti-s-a200-p100rx':
+                    self.assertEqual(metadata['format'], 'openrc-trace v10')
+                    self.assertEqual(json.loads(metadata['input_layout']),
+                                     ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake'])
+                    self.assertEqual(metadata['gear_law'], 'retractable-point-gear-v1')
+                    self.assertEqual(metadata['gear_trace_schema'], 'openrc-gear-trace v1')
+                    self.assertEqual(len(json.loads(metadata['recording_start_gear'])), 2)
+                    self.assertEqual(len(json.loads(metadata['recording_start_continuous'])), 4)
+                    header = next(csv.reader(line for line in path.read_text().splitlines()
+                                             if line and not line.startswith('#')))
+                    self.assertEqual(header[-4:], ['gear_extension', 'gear_target_down',
+                                                   'cmd_gear_down', 'cmd_wheel_brake'])
                 self.assertEqual(metadata['aircraft_input_format'], json.loads(source.read_text())['format'])
                 self.assertEqual(metadata['aircraft_input_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())
                 features = json.loads(metadata['propulsion_features'])
@@ -115,6 +127,46 @@ class TraceAcceptance(unittest.TestCase):
                                           '--aircraft-input', str(source)],
                                          capture_output=True, text=True, timeout=10)
                 self.assertEqual(checked.returncode, 0, checked.stderr)
+
+    def test_active_avanti_gear_contract_rejects_incomplete_metadata_and_rows(self):
+        path = self.directory / 'avanti-gear.csv'
+        result = self.run_app('--aircraft=sebart-avanti-s-a200-p100rx', '--trace=' + str(path), '--t=.05')
+        self.assertEqual(result.returncode, 0, result.stdout)
+        lines = path.read_text().splitlines()
+        metadata = dict(line[2:].split(': ', 1) for line in lines if line.startswith('# '))
+        self.assertIn('gear_trace_schema', metadata)
+        self.assertIn('wheel_state_layout', metadata)
+        self.assertIn('gear_extension', next(line for line in lines if not line.startswith('#')))
+
+        from check_trimmed_flight import check
+        self.assertIn('12 ticks', check(path, .05, 240))
+
+        header = next(csv.reader(line for line in lines if line and not line.startswith('#')))
+        table = list(csv.reader(line for line in lines if line and not line.startswith('#')))
+        mutations = [
+            ('gear schema', [line for line in lines if not line.startswith('# gear_trace_schema:')]),
+            ('wheel provenance', [line for line in lines if not line.startswith('# wheel_profile_sha256:')]),
+        ]
+        for label, changed_lines in mutations:
+            with self.subTest(mutation=label):
+                candidate = self.directory / ('avanti-' + label.replace(' ', '-') + '.csv')
+                candidate.write_text('\n'.join(changed_lines) + '\n', encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    check(candidate, .05, 240)
+
+        for column, value in [('gear_extension', '1.01'), ('cmd_gear_down', '.5'),
+                              ('cmd_wheel_brake', '-.01')]:
+            with self.subTest(column=column):
+                changed = [row.copy() for row in table]
+                changed[1][header.index(column)] = value
+                candidate = self.directory / 'avanti-bad-gear-row.csv'
+                with candidate.open('w', newline='', encoding='utf-8') as stream:
+                    writer = csv.writer(stream, lineterminator='\n')
+                    writer.writerows(changed)
+                comments = [line for line in lines if line.startswith('#')]
+                candidate.write_text('\n'.join(comments) + '\n' + candidate.read_text(), encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    check(candidate, .05, 240)
 
     def test_continuous_turbine_metadata_rejects_mixed_sampling(self):
         path = self.directory / 'turbine-metadata.csv'

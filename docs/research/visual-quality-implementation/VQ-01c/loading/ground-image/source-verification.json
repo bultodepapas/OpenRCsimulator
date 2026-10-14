@@ -1,0 +1,10 @@
+{
+  "source_commit": "5f7f4ad529940743bdc16e3d9691243a8a1c6cd8",
+  "archive_sha256": "a049b991e7e5a71e134a31b6c4362213ea026eb50cffd32815aea403ffb7fa78",
+  "import_identity_report": "docs/research/visual-quality-implementation/VQ-02a/coverage/verification.json",
+  "input_count": 2266,
+  "excluded_treatment": "app/render/ground.gd",
+  "mismatches": [],
+  "generated_file_count": 45,
+  "generated_file_mismatches": []
+}

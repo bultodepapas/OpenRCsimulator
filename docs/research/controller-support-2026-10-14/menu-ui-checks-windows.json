@@ -1,0 +1,168 @@
+{
+  "engine": "4.7.2-stable ed1daf0bf",
+  "platform": "Windows",
+  "scope": "Controller settings layout, native selected-device navigation, capture safety and controller regressions. Synthetic observations; no physical hardware qualification.",
+  "runs": [
+    {
+      "test": "test_controller_binding_audit",
+      "exit_code": 0,
+      "seconds": 0.438,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\ncontroller binding audit: 14 checks, 0 failures\n"
+    },
+    {
+      "test": "test_controller_actions",
+      "exit_code": 0,
+      "seconds": 0.328,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   default semantic actions have recovery and no overlapping conflicts\nok   same button on another device is ignored\nok   selected-device A resolves to menu accept\nok   button release produces no semantic action\nok   menu navigation is not routed as flight trim\nok   menu navigation resolves only in menu context\nok   axis threshold resolves matching sign on selected device\nok   axis value below threshold does not resolve\nok   keyboard remap resolves without a gamepad id\nok   keyboard release produces no semantic action\nok   duplicate back/pause recovery binding is rejected\nok   the sentinel button index is rejected\nok   semantic action labels translate to Spanish\nok   controller binding labels translate to Spanish\nok   pause recovery notice translates to Spanish\nok   controller form and axis controls are translated\nok   rate and absolute throttle presets are distinguished in Spanish\nok   radio recovery, profile type and safety prompts translate\nok   controller setup and arming prompts translate\nall controller action checks passed\n"
+    },
+    {
+      "test": "test_controller_extended_actions",
+      "exit_code": 0,
+      "seconds": 0.297,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nPASS extended controller actions: 77 checks\n"
+    },
+    {
+      "test": "test_controller_prompts",
+      "exit_code": 0,
+      "seconds": 0.421,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nPASS controller prompts: 137 checks\n"
+    },
+    {
+      "test": "test_controller_profile",
+      "exit_code": 0,
+      "seconds": 0.407,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile: 49 checks, 0 failed\n"
+    },
+    {
+      "test": "test_controller_store",
+      "exit_code": 0,
+      "seconds": 0.5,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile store: 36 checks, 0 failed\n"
+    },
+    {
+      "test": "test_controller_registry",
+      "exit_code": 0,
+      "seconds": 0.218,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController registry: 27 checks, 0 failed\n"
+    },
+    {
+      "test": "test_ui_input",
+      "exit_code": 0,
+      "seconds": 8.172,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   precondition: the engine binds joypad events to ui_* (10 found)\nok   focus starts on Fly\nok   precondition: unisolated, the elevator stick moves the focus\nok   isolation removed 10 joypad events, none left\nok   axis 1 = +1 does not move the focus\nok   axis 1 = -1 does not move the focus\nok   axis 0 = +1 does not move the focus\nok   axis 0 = -1 does not move the focus\nok   button 11 does not move the focus\nok   button 12 does not move the focus\nok   button 13 does not move the focus\nok   button 14 does not move the focus\nok   button 3 does not move the focus\nok   no radio event activated Fly\nok   the flight still reads the raw axis (0.75)\nok   keyboard still reaches the same Down target\nok   app_root isolates joypads at startup\nall UI input checks passed\n"
+    },
+    {
+      "test": "test_controller_persistence",
+      "exit_code": 0,
+      "seconds": 2.829,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nController persistence: 25 checks, 0 failures\n"
+    },
+    {
+      "test": "test_controller_routing_audit",
+      "exit_code": 0,
+      "seconds": 5.171,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\ncontroller routing audit: 6 checks, 0 failures\n"
+    },
+    {
+      "test": "test_controller_menu",
+      "exit_code": -1,
+      "seconds": 65.031,
+      "passed": false,
+      "output": "TIMEOUT\nGodot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nERROR: Aircraft model contract: [\"SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/../assets/aircraft/model-bindings.json\"]\n   at: push_error (core/variant/variant_utility.cpp:1023)\n   GDScript backtrace (most recent call first):\n       [0] build (res://render/airplane.gd:52)\n       [1] show_aircraft (res://ui/home_scene.gd:115)\n       [2] _init (res://ui/home_scene.gd:81)\n       [3] show_home (res://app_root.gd:232)\n       [4] _ready (res://app_root.gd:173)\n       [5] _run (res://tests/test_controller_menu.gd:33)\nERROR: Aircraft model contract: [\"SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/../assets/aircraft/model-bindings.json\"]\n   at: push_error (core/variant/variant_utility.cpp:1023)\n   GDScript backtrace (most recent call first):\n       [0] build (res://render/airplane.gd:52)\n       [1] _build_world (res://main.gd:1661)\n       [2] _ready (res://main.gd:402)\n       [3] start_flight (res://app_root.gd:466)\n       [4] _on_fly (res://ui/home.gd:704)\nERROR: Aircraft model contract: [\"SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/../assets/aircraft/model-bindings.json\"]\n   at: push_error (core/variant/variant_utility.cpp:1023)\n   GDScript backtrace (most recent call first):\n       [0] build (res://render/airplane.gd:52)\n       [1] show_aircraft (res://ui/home_scene.gd:115)\n       [2] _init (res://ui/home_scene.gd:81)\n       [3] _rebuild_home_scene (res://app_root.gd:1285)\n       [4] start_flight (res://app_root.gd:483)\n       [5] _on_fly (res://ui/home.gd:704)\nFAIL A launches into paused controller arming\nSCRIPT ERROR: Invalid access to property or key 'continue_button' on a base object of type 'Nil'.\n   at: _run (res://tests/test_controller_menu.gd:59)\n   GDScript backtrace (most recent call first):\n       [0] _run (res://tests/test_controller_menu.gd:59)\n"
+    },
+    {
+      "test": "test_controller_flight_actions",
+      "exit_code": 1,
+      "seconds": 4.688,
+      "passed": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: calibrating radio\ncontroller flight actions: 27 checks, 2 failures\naircraft data invalid: wheel profile 'sebart-avanti-s-a200-p100rx' is defined for an aircraft with no landing gear\nFAIL Avanti gear controller action deploys the gear\nFAIL brake test fixture accepts a held demand\n"
+    },
+    {
+      "test": "test_controller_aux_setup",
+      "exit_code": 0,
+      "seconds": 0.704,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   Back and Pause cannot be cleared\nok   unbound optional actions disable redundant Clear\nok   assigned optional actions expose Clear\nok   Clear writes an explicit unbound action and passes profile binding validation\nok   auxiliary help distinguishes input assignment from aircraft capability\nok   Axis mode creates a valid unbound smoke input without colliding with AETR\nok   Axis mapping supports axis 9, edited endpoints, and automatic inversion\nok   Invert swaps axis endpoints and remains consistent with the runtime shape\nok   axis live preview identifies the selected auxiliary source axis\nok   Flaps axis picker allocates a source outside AETR and the smoke axis\nok   Gear button supports index 127 and toggle-on-press mode\nok   button live preview names the button, mode, and physical state\nok   button mode also supports maintained level behavior\nok   Disabled cleanly removes optional channels from the draft\nok   draft auxiliary mappings pass the profile binding validator\nok   Save explains when an AUX mapping overlaps a flight axis\nok   Remap explains when an action conflicts with an AUX input\nok   auxiliary controls are reachable in their section with follow-focus\nall controller auxiliary setup checks passed\n"
+    },
+    {
+      "test": "test_controller_setup_safety",
+      "exit_code": 0,
+      "seconds": 0.813,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   successful recovery still displays its warning\nok   initial focus lands on the flight controller choice\nok   captured joypad press does not escape to unhandled input\nok   matching joypad release is consumed after capture ends\nok   matching keyboard release is consumed after capture ends\nok   matching release stays consumed when the logical keycode changes\nok   captured axis stays consumed until it returns to neutral\nok   Escape cancels remapping without closing the screen\nok   Escape release stays inside remapping recovery\nok   changing flight controller cancels its pending capture\nok   new device cannot finish capture started for the old device\nok   switching profiles preserves unsaved channel edits\nok   switching profiles preserves unsaved name edits\nok   switching devices preserves unsaved channel edits\nok   switching devices preserves unsaved name edits\nok   AUX suppresses only a colliding inherited flight action\nok   explicit action remains visible and is rejected on AUX conflict\nok   disconnecting the captured controller cancels remapping\nok   runtime rejection leaves profile setup open\nok   runtime rejection does not fall through to storage\nok   runtime rejection preserves the editable draft\nok   gamepad preset popup is open while focused\nok   Escape dismisses the focused option popup without closing setup\nok   Save does not persist an in-progress remap\nok   Cancel exits and discards while capture is active\ncontroller setup audit passed\n"
+    },
+    {
+      "test": "test_controller_setup",
+      "exit_code": 0,
+      "seconds": 3.109,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   UI Input records the selected menu device\nok   custom Accept reaches native ui_accept\nok   custom Back reaches native ui_cancel\nok   custom navigation reaches native ui_up\nok   all native joypad GUI events belong to the one selected device\nok   keyboard ui_accept events survive device selection\nok   custom keyboard Accept reaches native ui_accept\nok   clearing UI ownership removes every joypad GUI event\nok   clearing UI ownership removes the injected remap key\nok   keyboard ui_accept remains after isolation\nok   setup opens with the controller section at the top of the page\nok   new setup opens with a valid Mode 2 draft\nok   preset choices retain full tooltip labels\nok   radio calibration is an explicit public action\nok   calibration button emits only the explicit calibration request\nok   empty device/profile choices carry the real -1 ID\nok   current_profile returns an isolated draft copy\nok   axis, deadzone, expo and inversion edit a valid draft\nok   Mode 1 preset updates channel mapping\nok   trigger help names separate roll and pitch axes and release-to-arm\nok   unknown joystick exposes an explicit kind choice and starts unconfigured\nok   choosing Gamepad creates a Mode 2 draft without applying it\nok   choosing Radio creates a custom absolute-throttle draft\nok   changing profile kind never starts radio calibration\nok   unknown joystick is disabled for menu navigation\nok   ambiguous controller identity stays disabled for menu navigation\nok   radio devices are excluded from menu navigation choices\nok   unknown joystick cannot be applied for menu navigation\nok   device picker edits stay drafts until Apply devices\nok   a rejected device-apply callback reports the race and does not emit success\nok   successful apply callback emits both explicit role choices\nok   setup does not mutate the registry by itself\nok   Cancel requests closure\nok   Cancel never writes a profile\nok   Auto renders the actual button binding as text and a packaged glyph\nok   manual Xbox family changes the icon and readable label for the current remapped button\nok   manual glyph selection leaves semantic actions and the remapped physical button unchanged\nok   Cancel does not persist a draft glyph-family choice\nok   Save persists the chosen PlayStation prompt family\nok   saving presentation preference leaves semantic bindings intact\nok   unknown device has no menu ownership before a saved profile matches\nok   explicit Gamepad choice remains a draft and does not enable the menu device\nok   a saved, validated and identity-matched Gamepad profile enables the unknown menu pad\nok   radio-kind profiles and radio-purpose devices never gain menu navigation\nok   Home exposes Controller settings with a source control\nok   Home displays explicit controller state\nok   Pause exposes Controller settings with a source control\nall controller setup checks passed\n"
+    },
+    {
+      "test": "test_controller_sections",
+      "exit_code": 0,
+      "seconds": 1.891,
+      "passed": true,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController sections: 105/105 checks passed\n"
+    }
+  ],
+  "parse_checks": [
+    {
+      "file": "ui/controller_setup.gd",
+      "sha256": "9bf3eb98726e8abc87cd0465dc1e69e7082ee6380f6086c31559901d23b38777",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "file": "main.gd",
+      "sha256": "e32a0ed92b807f41999cb9c5077ef1b6ee67f2fcb2039c5fc5ff9131ba512e37",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "file": "tests/test_controller_sections.gd",
+      "sha256": "2ec43404bbbd94cdbba9c281869936e73738981fbe06f4bbaf8f887410a7c22e",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "file": "tests/test_controller_aux_setup.gd",
+      "sha256": "582873c994d9c9fad1850e098d620cbc4ee9915159d620f3661d0de2f998b1b6",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "file": "tests/test_controller_setup_safety.gd",
+      "sha256": "bb9b9c663e84306f9fb9041d5fd2e57b55162d102332cc2d15e74e27757b3dc2",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "file": "tests/capture_controller_settings.gd",
+      "sha256": "90ba00fc865d9fc2bb40c8f37e9dd13922ac330a66d2fac520659ffe64896261",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    }
+  ],
+  "integration_limits": [
+    "test_controller_menu: shared aircraft construction failed model-bindings SHA-256 validation before the Home/flight/Pause round trip could finish.",
+    "test_controller_flight_actions: the shared Avanti wheel-profile/aircraft capability validation failed, followed by two gear/brake assertions.",
+    "These failures remain recorded; this is not a full application or physical controller qualification."
+  ]
+}

@@ -1,0 +1,151 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+DT_PHASE ui/home_scene.gd before var env: Environment = World.build(self, field, Callable(), {}, snapshot, n 11165
+DT_PHASE render/world/world.gd before var world_environment := WorldEnvironment.new() 10789
+DT_PHASE render/world/world.gd before var field_node: Node3D = null 4416
+DT_PHASE render/field.gd before var grass: ShaderMaterial = Ground.grass_material(lighting) 6
+DT_PHASE render/field.gd before for surface: Dictionary in field.surfaces: 142139
+DT_PHASE render/field.gd before for object_data: Dictionary in field.objects: 59855
+DT_PHASE render/field.gd before for cue: Dictionary in field.get("flight_cues", []): 25051
+DT_PHASE render/field.gd before if not field.get("flight_cues", []).is_empty(): 7520
+DT_PHASE render/field.gd before var scenery_options := Scenery.options() 2567
+DT_PHASE render/field.gd before Scenery.attach(result, field, lighting, lake) 14887
+DT_PHASE render/field.gd before var lake_node := LakeWorld.attach(result, field, grass, lake, lighting, boo 656354
+DT_PHASE render/field.gd before var scenery_node := result.get_node_or_null("Scenery") 36566
+DT_PHASE render/field.gd before if LandscapeOptions.enabled() and field.get("id", "") == "default": 197378
+DT_PHASE render/field.gd before FieldProjectedShadows.attach(result, field, lighting) 36197
+DT_PHASE render/field.gd before return result 86713
+DT_PHASE render/world/world.gd before var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws t 1298080
+DT_PHASE render/world/world.gd before var lights_node: Node3D = null 19157
+DT_PHASE render/world/world.gd before var airfield_lighting: Node3D = null 1305
+DT_PHASE render/world/world.gd before if field.get("id", "") == "default": 26064
+DT_PHASE render/world/world.gd before parent.set_meta("night_options", _night_options.duplicate()) 28775
+DT_PHASE render/world/world.gd before return {environment = environment, world_environment = world_environment, f 1426
+DT_PHASE ui/home_scene.gd before _shadow = Shadow.create(self) 1409416
+DT_PHASE ui/home_scene.gd before show_aircraft(aircraft) 27096
+DT_PHASE ui/home_scene.gd before var pos := _composition_position(AIRPLANE_NED) 614636
+DT_PHASE ui/home_scene.gd before World.update(env, CLOCK, Vector3.ZERO, _composition_position(AIRPLANE_NED), 74
+DT_PHASE main.gd before _airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("pre 0
+DT_PHASE main.gd before var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy 121867
+DT_PHASE main.gd before var built: Dictionary = World.build(self, field, _build_field, {}, snapshot 384
+DT_PHASE render/world/world.gd before var world_environment := WorldEnvironment.new() 9772
+DT_PHASE render/world/world.gd before var field_node: Node3D = null 389
+DT_PHASE render/field.gd before var grass: ShaderMaterial = Ground.grass_material(lighting) 3
+DT_PHASE render/field.gd before for surface: Dictionary in field.surfaces: 138923
+DT_PHASE render/field.gd before for object_data: Dictionary in field.objects: 58207
+DT_PHASE render/field.gd before for cue: Dictionary in field.get("flight_cues", []): 6136
+DT_PHASE render/field.gd before if not field.get("flight_cues", []).is_empty(): 6347
+DT_PHASE render/field.gd before var scenery_options := Scenery.options() 1752
+DT_PHASE render/field.gd before Scenery.attach(result, field, lighting, lake) 2125
+DT_PHASE render/field.gd before var lake_node := LakeWorld.attach(result, field, grass, lake, lighting, boo 178013
+DT_PHASE render/field.gd before var scenery_node := result.get_node_or_null("Scenery") 17462
+DT_PHASE render/field.gd before if LandscapeOptions.enabled() and field.get("id", "") == "default": 105152
+DT_PHASE render/field.gd before FieldProjectedShadows.attach(result, field, lighting) 36770
+DT_PHASE render/field.gd before return result 61751
+DT_PHASE render/world/world.gd before var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws t 637534
+DT_PHASE render/world/world.gd before var lights_node: Node3D = null 17267
+DT_PHASE render/world/world.gd before var airfield_lighting: Node3D = null 523
+DT_PHASE render/world/world.gd before if field.get("id", "") == "default": 19497
+DT_PHASE render/world/world.gd before parent.set_meta("night_options", _night_options.duplicate()) 412
+DT_PHASE render/world/world.gd before return {environment = environment, world_environment = world_environment, f 1362
+DT_PHASE main.gd before _field_world_lighting = bool(built.conditions.time_of_day) 701947
+DT_PHASE main.gd before _extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("s 205
+DT_PHASE main.gd before _shadow = Shadow.create(self) 234
+DT_PHASE main.gd before Shadow.bind_model(_shadow, _airplane.root) 25203
+DT_PHASE main.gd before _night_kit = World.dress_aircraft(_airplane.root) # FW-35: night kit from d 35927
+DT_PHASE main.gd before _camera = PilotCamera.create(self, field.pilot) 191637
+DT_PHASE main.gd before return true 7519
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid call. Nonexistent function 'gear_state' in base 'Node (flight_session.gd)'.
+   at: _update_hud (res://main.gd:833)
+   GDScript backtrace (most recent call first):
+       [0] _update_hud (res://main.gd:833)
+       [1] _process (res://main.gd:724)
+DT_PHASE ui/home_scene.gd before var env: Environment = World.build(self, field, Callable(), {}, snapshot, n 10725
+DT_PHASE render/world/world.gd before var world_environment := WorldEnvironment.new() 9236
+DT_PHASE render/world/world.gd before var field_node: Node3D = null 644
+DT_PHASE render/field.gd before var grass: ShaderMaterial = Ground.grass_material(lighting) 10
+DT_PHASE render/field.gd before for surface: Dictionary in field.surfaces: 131594
+DT_PHASE render/field.gd before for object_data: Dictionary in field.objects: 56464
+DT_PHASE render/field.gd before for cue: Dictionary in field.get("flight_cues", []): 5905
+DT_PHASE render/field.gd before if not field.get("flight_cues", []).is_empty(): 5857
+DT_PHASE render/field.gd before var scenery_options := Scenery.options() 1914
+DT_PHASE render/field.gd before Scenery.attach(result, field, lighting, lake) 2163
+DT_PHASE render/field.gd before var lake_node := LakeWorld.attach(result, field, grass, lake, lighting, boo 160885
+DT_PHASE render/field.gd before var scenery_node := result.get_node_or_null("Scenery") 19912
+DT_PHASE render/field.gd before if LandscapeOptions.enabled() and field.get("id", "") == "default": 110916
+DT_PHASE render/field.gd before FieldProjectedShadows.attach(result, field, lighting) 36835
+DT_PHASE render/field.gd before return result 54233
+DT_PHASE render/world/world.gd before var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws t 938552
+DT_PHASE render/world/world.gd before var lights_node: Node3D = null 15699
+DT_PHASE render/world/world.gd before var airfield_lighting: Node3D = null 446
+DT_PHASE render/world/world.gd before if field.get("id", "") == "default": 16102
+DT_PHASE render/world/world.gd before parent.set_meta("night_options", _night_options.duplicate()) 274
+DT_PHASE render/world/world.gd before return {environment = environment, world_environment = world_environment, f 1228
+DT_PHASE ui/home_scene.gd before _shadow = Shadow.create(self) 997092
+DT_PHASE ui/home_scene.gd before show_aircraft(aircraft) 24490
+DT_PHASE ui/home_scene.gd before var pos := _composition_position(AIRPLANE_NED) 334420
+DT_PHASE ui/home_scene.gd before World.update(env, CLOCK, Vector3.ZERO, _composition_position(AIRPLANE_NED), 30
+DT_PHASE main.gd before _airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("pre 1
+DT_PHASE main.gd before var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy 117617
+DT_PHASE main.gd before var built: Dictionary = World.build(self, field, _build_field, {}, snapshot 296
+DT_PHASE render/world/world.gd before var world_environment := WorldEnvironment.new() 9117
+DT_PHASE render/world/world.gd before var field_node: Node3D = null 330
+DT_PHASE render/field.gd before var grass: ShaderMaterial = Ground.grass_material(lighting) 4
+DT_PHASE render/field.gd before for surface: Dictionary in field.surfaces: 134924
+DT_PHASE render/field.gd before for object_data: Dictionary in field.objects: 56659
+DT_PHASE render/field.gd before for cue: Dictionary in field.get("flight_cues", []): 5702
+DT_PHASE render/field.gd before if not field.get("flight_cues", []).is_empty(): 5889
+DT_PHASE render/field.gd before var scenery_options := Scenery.options() 1611
+DT_PHASE render/field.gd before Scenery.attach(result, field, lighting, lake) 1967
+DT_PHASE render/field.gd before var lake_node := LakeWorld.attach(result, field, grass, lake, lighting, boo 164453
+DT_PHASE render/field.gd before var scenery_node := result.get_node_or_null("Scenery") 17342
+DT_PHASE render/field.gd before if LandscapeOptions.enabled() and field.get("id", "") == "default": 109158
+DT_PHASE render/field.gd before FieldProjectedShadows.attach(result, field, lighting) 38475
+DT_PHASE render/field.gd before return result 53488
+DT_PHASE render/world/world.gd before var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws t 613592
+DT_PHASE render/world/world.gd before var lights_node: Node3D = null 14368
+DT_PHASE render/world/world.gd before var airfield_lighting: Node3D = null 513
+DT_PHASE render/world/world.gd before if field.get("id", "") == "default": 19534
+DT_PHASE render/world/world.gd before parent.set_meta("night_options", _night_options.duplicate()) 363
+DT_PHASE render/world/world.gd before return {environment = environment, world_environment = world_environment, f 1298
+DT_PHASE main.gd before _field_world_lighting = bool(built.conditions.time_of_day) 674137
+DT_PHASE main.gd before _extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("s 166
+DT_PHASE main.gd before _shadow = Shadow.create(self) 195
+DT_PHASE main.gd before Shadow.bind_model(_shadow, _airplane.root) 26551
+DT_PHASE main.gd before _night_kit = World.dress_aircraft(_airplane.root) # FW-35: night kit from d 34909
+DT_PHASE main.gd before _camera = PilotCamera.create(self, field.pilot) 192203
+DT_PHASE main.gd before return true 6240
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid call. Nonexistent function 'gear_state' in base 'Node (flight_session.gd)'.
+   at: _update_hud (res://main.gd:833)
+   GDScript backtrace (most recent call first):
+       [0] _update_hud (res://main.gd:833)
+       [1] _process (res://main.gd:724)
+DT_PHASE ui/home_scene.gd before var env: Environment = World.build(self, field, Callable(), {}, snapshot, n 10788
+DT_PHASE render/world/world.gd before var world_environment := WorldEnvironment.new() 9245
+DT_PHASE render/world/world.gd before var field_node: Node3D = null 349
+DT_PHASE render/field.gd before var grass: ShaderMaterial = Ground.grass_material(lighting) 5
+DT_PHASE render/field.gd before for surface: Dictionary in field.surfaces: 134529
+DT_PHASE render/field.gd before for object_data: Dictionary in field.objects: 61111
+DT_PHASE render/field.gd before for cue: Dictionary in field.get("flight_cues", []): 5661
+DT_PHASE render/field.gd before if not field.get("flight_cues", []).is_empty(): 5862
+DT_PHASE render/field.gd before var scenery_options := Scenery.options() 1600
+DT_PHASE render/field.gd before Scenery.attach(result, field, lighting, lake) 1985
+DT_PHASE render/field.gd before var lake_node := LakeWorld.attach(result, field, grass, lake, lighting, boo 165271
+DT_PHASE render/field.gd before var scenery_node := result.get_node_or_null("Scenery") 16949
+DT_PHASE render/field.gd before if LandscapeOptions.enabled() and field.get("id", "") == "default": 106637
+DT_PHASE render/field.gd before FieldProjectedShadows.attach(result, field, lighting) 35910
+DT_PHASE render/field.gd before return result 56969
+DT_PHASE render/world/world.gd before var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws t 617456
+DT_PHASE render/world/world.gd before var lights_node: Node3D = null 16189
+DT_PHASE render/world/world.gd before var airfield_lighting: Node3D = null 471
+DT_PHASE render/world/world.gd before if field.get("id", "") == "default": 17934
+DT_PHASE render/world/world.gd before parent.set_meta("night_options", _night_options.duplicate()) 321
+DT_PHASE render/world/world.gd before return {environment = environment, world_environment = world_environment, f 1367
+DT_PHASE ui/home_scene.gd before _shadow = Shadow.create(self) 678472
+DT_PHASE ui/home_scene.gd before show_aircraft(aircraft) 25338
+DT_PHASE ui/home_scene.gd before var pos := _composition_position(AIRPLANE_NED) 340850
+DT_PHASE ui/home_scene.gd before World.update(env, CLOCK, Vector3.ZERO, _composition_position(AIRPLANE_NED), 38
+loading probe: 2 Home/Fly cycles -> C:\DEVELOPMENT\OpenRCsimulator\tmp\dt11a-followup\phases.json

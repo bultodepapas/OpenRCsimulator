@@ -1,5 +1,17 @@
 # Ground surface capture
 
+## DT-11a default grass image reuse
+
+`Ground.grass_material()` caches one default procedural image's bytes, including
+mips, while creating a fresh image, texture and material for every scene. Explicit
+`grass_image(seed)` calls still run the original recipe. No generated asset or
+regeneration command is needed; source changes take effect in a fresh process.
+
+Run `res://tests/test_ground_image_cache.gd` with the pinned engine to check complete
+byte equality, seeds and mutation isolation. It is also part of `app/test.sh`.
+[Measurements, commands and limitations](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-image/README.md)
+own the evidence; the first build still computes the tile.
+
 ## DT-11a default lake geometry
 
 The default basin and water CPU arrays are generated from the production lake/ground

@@ -3,6 +3,8 @@
 # restarts on reset/checkpoint seek; compression and steering read current physics.
 extends Node
 
+const Retraction := preload("res://aircraft/retractable_model.gd")
+
 var _session: Node
 var _airplane: Dictionary
 var _rest: Dictionary = {}
@@ -53,7 +55,9 @@ func _stepped(tick: int, _time: float, _state: PackedFloat64Array, _loads: Packe
 func _process(_dt: float) -> void:
 	if not is_instance_valid(_session) or _session.sim == null or not _session.aircraft.get("ok", false) or _session.wheel_count() == 0:
 		return
-	var contacts: Array = _session.aircraft.model.landing_gear.contacts
+	var contacts: Array = _session.current_landing_gear().contacts
+	var rig: Dictionary = _airplane.get("gear_retraction", {})
+	if not rig.is_empty(): Retraction.apply(rig, _session.gear_state().extension)
 	var compression: PackedFloat64Array = _session.gear_compressions(_session.sim.interpolated(Engine.get_physics_interpolation_fraction()))
 	var steer: float = _session.sim.aux[_session.AUX_SERVO + 2]
 	var gear: Dictionary = _airplane.get("gear", {})
@@ -65,6 +69,10 @@ func _process(_dt: float) -> void:
 		if gear.has(key):
 			var wheel: Node3D = gear[key]
 			wheel.rotation.x = float(_angles.get(key, 0.0))
+			if not rig.is_empty():
+				var lower_leg: Node3D = rig.compression[key]
+				lower_leg.position = rig.rest[key].origin + lower_leg.get_parent().global_basis.inverse() * Vector3.UP * maxf(0.0, compression[i])
+				continue
 			# Equivalent compliant contact: move the axle up in world space. The leg
 			# mesh is not a multibody strut; do not scale or rewrite model geometry.
 			var up_local: Vector3 = wheel.get_parent().global_basis.inverse() * Vector3.UP

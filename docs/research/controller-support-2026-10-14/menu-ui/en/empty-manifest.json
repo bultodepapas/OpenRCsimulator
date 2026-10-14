@@ -1,0 +1,25 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "captures": [
+    {
+      "action_filter_index": -1,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/empty-devices.png",
+      "section": "devices",
+      "size": [
+        1280,
+        720
+      ]
+    }
+  ],
+  "devices": [],
+  "fixture_note": "Fixture devices are synthetic registry observations for interface review only; no host input device is emulated.",
+  "language": "en",
+  "mode": "empty",
+  "only_section": "",
+  "renderer": "gl_compatibility",
+  "route": "standalone production ControllerSetup with a real ControllerRegistry and ControllerProfileStore",
+  "viewport": [
+    1280,
+    720
+  ]
+}

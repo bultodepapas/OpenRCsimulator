@@ -19,8 +19,8 @@ var _main_spin_sign := -1.0
 var _tail_spin_sign := -1.0
 var _main_blur: Node3D
 var _tail_blur: Node3D
-var _main_phase := 0.0
-var _tail_phase := 0.0
+var _legacy_main_phase := 0.0
+var _legacy_tail_phase := 0.0
 
 
 ## Attach after the aircraft root has been added to its flight scene.
@@ -49,22 +49,29 @@ static func attach(model: Dictionary, parent: Node) -> HeliRotorVisual:
 	return visual
 
 
-## Consume positive main and tail shaft-speed magnitudes in rad/s. Axis direction
+## Consume shaft-speed telemetry and absolute shaft phases in radians. Axis direction
 ## signs are applied from the builder adapter; a1, b1 and collective are radians.
 ## The source model has no blade-feather hinge, so collective remains telemetry only.
-func update(heli_state: Dictionary, dt: float) -> void:
-	telemetry = {
-		"omega_rad_s": _finite(heli_state.get("omega_rad_s", 0.0)),
-		"tail_omega_rad_s": _finite(heli_state.get("tail_omega_rad_s", 0.0)),
-		"a1": _finite(heli_state.get("a1", 0.0)),
-		"b1": _finite(heli_state.get("b1", 0.0)),
-		"collective": _finite(heli_state.get("collective", 0.0)),
-	}
-	var step := maxf(_finite(dt), 0.0)
-	_main_phase = fposmod(_main_phase + float(telemetry.omega_rad_s) * _main_spin_sign * step, TAU)
-	_tail_phase = fposmod(_tail_phase + float(telemetry.tail_omega_rad_s) * _tail_spin_sign * step, TAU)
-	_main_pivot.basis = Basis(Vector3(0.0, 0.0, 1.0), _main_phase) * _main_rest
-	_tail_pivot.basis = Basis(Vector3(0.0, 0.0, 1.0), _tail_phase) * _tail_rest
+## The legacy two-argument call still consumes a delta time; production
+## presentation supplies both accepted-tick absolute phases.
+func update(heli_state: Dictionary, main_phase_rad: float, tail_phase_rad: Variant = null) -> void:
+	telemetry["omega_rad_s"] = _finite(heli_state.get("omega_rad_s", 0.0))
+	telemetry["tail_omega_rad_s"] = _finite(heli_state.get("tail_omega_rad_s", 0.0))
+	telemetry["a1"] = _finite(heli_state.get("a1", 0.0))
+	telemetry["b1"] = _finite(heli_state.get("b1", 0.0))
+	telemetry["collective"] = _finite(heli_state.get("collective", 0.0))
+	var main_shaft_phase := _finite(main_phase_rad)
+	var tail_shaft_phase := _finite(tail_phase_rad) if tail_phase_rad != null else 0.0
+	if tail_phase_rad == null:
+		var dt := maxf(main_shaft_phase, 0.0)
+		_legacy_main_phase = fposmod(_legacy_main_phase + float(telemetry.omega_rad_s) * dt, TAU)
+		_legacy_tail_phase = fposmod(_legacy_tail_phase + float(telemetry.tail_omega_rad_s) * dt, TAU)
+		main_shaft_phase = _legacy_main_phase
+		tail_shaft_phase = _legacy_tail_phase
+	var main_phase := main_shaft_phase * _main_spin_sign
+	var tail_phase := tail_shaft_phase * _tail_spin_sign
+	_main_pivot.basis = Basis(Vector3(0.0, 0.0, 1.0), fposmod(main_phase, TAU)) * _main_rest
+	_tail_pivot.basis = Basis(Vector3(0.0, 0.0, 1.0), fposmod(tail_phase, TAU)) * _tail_rest
 	_main_tilt.basis = _cyclic_tilt(float(telemetry.a1), float(telemetry.b1))
 	if _main_blur != null:
 		(_main_blur as HeliRotorBlur).update(_rpm(float(telemetry.omega_rad_s)))

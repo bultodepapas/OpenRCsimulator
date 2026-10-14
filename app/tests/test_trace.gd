@@ -46,6 +46,52 @@ func _coupled_trace_meta() -> Dictionary:
 	}
 
 
+func _gear_trace_meta(dt: float) -> Dictionary:
+	return {
+		"metadata_schema": "openrc-flight-meta v8",
+		"gear_law": "retractable-point-gear-v1",
+		"gear_aux_index": 4,
+		"gear_trace_schema": "openrc-gear-trace v1",
+		"input_layout": JSON.stringify(["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake"]),
+		"recording_start_tick": 0,
+		"recording_start_gear": "[0.0,1.0]",
+		"dt_s": dt,
+	}
+
+
+func _turbine_gear_trace_meta(dt: float) -> Dictionary:
+	var contacts := ["nose", "left_main", "right_main"]
+	var layout: Array = []
+	var brakes: Array = []
+	for i: int in contacts.size():
+		layout.append({"index": i + 1, "contact": contacts[i], "unit": "m/s rim speed"})
+		brakes.append({"contact": contacts[i], "availability": "available" if i > 0 else "none",
+			"max_torque_nm": 12.0 if i > 0 else 0.0})
+	return {
+		"metadata_schema": "openrc-flight-meta v8",
+		"propulsion_model": "turbine-rpm-governor-rk4-v1",
+		"turbine_integrator": "rk4",
+		"continuous_layout": "turbine shaft rpm; RK4 coupled; prescribed fuel mass; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail",
+		"recording_start_continuous": "[44000.0,0.0,0.0,0.0]",
+		"recording_start_aux": "[44000.0,0.0,0.0,0.0]",
+		"wheel_state_model": "relative-wheel-rim-speed-rk4-v1",
+		"wheel_state_layout": JSON.stringify(layout),
+		"wheel_profile_status": "applied",
+		"wheel_profile_sha256": "a".repeat(64),
+		"wheel_profile_input_sha256": "b".repeat(64),
+		"wheel_profile_hash_convention": "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes",
+		"wheel_brakes": JSON.stringify(brakes),
+		"launch_continuous": "[44000.0,0.0,0.0,0.0]",
+		"gear_law": "retractable-point-gear-v1",
+		"gear_aux_index": 4,
+		"gear_trace_schema": "openrc-gear-trace v1",
+		"input_layout": JSON.stringify(["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake"]),
+		"recording_start_tick": 0,
+		"recording_start_gear": "[0.0,1.0]",
+		"dt_s": dt,
+	}
+
+
 func _initialize() -> void:
 	var sim: Node = Sim.new()
 	var aircraft := AircraftData.load_file(Scenarios.AIRCRAFT)
@@ -95,6 +141,94 @@ func _initialize() -> void:
 	_check("coupled trace rejects a 1e-6 RPM start mismatch", mismatched_trace.row_count() == 0
 		and mismatched_trace._invalid_weather)
 
+	# Retractable gear adds four explicit tail columns, while keeping the legacy four commands aligned.
+	var gear_state := PackedFloat64Array([0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var gear_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var gear_inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.25])
+	var gear_aux := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 1.0])
+	var gear_trace := Trace.new()
+	gear_trace.meta = _gear_trace_meta(sim.dt())
+	gear_trace.record(0, 0.0, gear_state, gear_loads, gear_inputs, gear_aux)
+	gear_aux[4] = 0.2
+	gear_trace.record(1, sim.dt(), gear_state, gear_loads, gear_inputs, gear_aux)
+	_check("gear trace records six inputs in stable tail columns", gear_trace.row_count() == 2
+		and not gear_trace._invalid_weather and gear_trace.columns().slice(-4) == Trace.GEAR_COLUMNS)
+	_check("gear trace keeps the four legacy cmd columns aligned", gear_trace.value(1, "cmd_throttle") == 0.0
+		and gear_trace.value(1, "gear_extension") == 0.2 and gear_trace.value(1, "gear_target_down") == 1.0
+		and gear_trace.value(1, "cmd_gear_down") == 1.0 and gear_trace.value(1, "cmd_wheel_brake") == 0.25)
+	var turbine_gear_trace := Trace.new()
+	turbine_gear_trace.meta = _turbine_gear_trace_meta(sim.dt())
+	var turbine_gear_aux := PackedFloat64Array([44000.0, 0.0, 0.0, 0.0, 0.0, 1.0])
+	turbine_gear_trace.record(0, 0.0, gear_state, gear_loads, gear_inputs, turbine_gear_aux,
+		PackedFloat64Array([44000.0, 0.0, 0.0, 0.0]))
+	_check("v8 turbine trace accepts complete gear and wheel tails",
+		turbine_gear_trace.row_count() == 1 and not turbine_gear_trace._invalid_weather
+		and turbine_gear_trace.columns().slice(-4) == Trace.GEAR_COLUMNS)
+	var incomplete_turbine_gear := Trace.new()
+	var incomplete_turbine_meta := _turbine_gear_trace_meta(sim.dt())
+	incomplete_turbine_meta.erase("wheel_state_layout")
+	incomplete_turbine_gear.meta = incomplete_turbine_meta
+	incomplete_turbine_gear.record(0, 0.0, gear_state, gear_loads, gear_inputs, turbine_gear_aux,
+		PackedFloat64Array([44000.0, 0.0, 0.0, 0.0]))
+	_check("v8 turbine gear trace rejects incomplete wheel metadata",
+		incomplete_turbine_gear.row_count() == 0 and incomplete_turbine_gear._invalid_weather)
+	var wheel_without_gear := Trace.new()
+	var wheel_only_meta := _turbine_gear_trace_meta(sim.dt())
+	wheel_only_meta.erase("gear_law")
+	wheel_only_meta.erase("gear_aux_index")
+	wheel_only_meta.erase("gear_trace_schema")
+	wheel_only_meta.erase("recording_start_gear")
+	wheel_only_meta.erase("input_layout")
+	wheel_without_gear.meta = wheel_only_meta
+	wheel_without_gear.record(0, 0.0, gear_state, gear_loads,
+		PackedFloat64Array([0.0, 0.0, 0.0, 0.0]), PackedFloat64Array([44000.0, 0.0, 0.0, 0.0]),
+		PackedFloat64Array([44000.0, 0.0, 0.0, 0.0]))
+	_check("v8 turbine wheel metadata requires complete retractable gear metadata",
+		wheel_without_gear.row_count() == 0 and wheel_without_gear._invalid_weather)
+	var gear_csv := gear_trace.to_csv()
+	_check("gear trace declares its schema and bumped overall format", gear_csv.contains("# format: openrc-trace v10\n")
+		and gear_csv.contains("# gear_trace_schema: openrc-gear-trace v1\n")
+		and gear_csv.contains("gear_extension,gear_target_down,cmd_gear_down,cmd_wheel_brake\n"))
+
+	var missing_gear_schema := Trace.new()
+	var missing_schema_meta := _gear_trace_meta(sim.dt())
+	missing_schema_meta.erase("gear_trace_schema")
+	missing_gear_schema.meta = missing_schema_meta
+	missing_gear_schema.record(0, 0.0, gear_state, gear_loads, gear_inputs, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 1.0]))
+	_check("six-input gear trace rejects a missing schema", missing_gear_schema.row_count() == 0 and missing_gear_schema._invalid_weather)
+	var missing_gear_index := Trace.new()
+	var missing_index_meta := _gear_trace_meta(sim.dt())
+	missing_index_meta.erase("gear_aux_index")
+	missing_gear_index.meta = missing_index_meta
+	missing_gear_index.record(0, 0.0, gear_state, gear_loads, gear_inputs, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 1.0]))
+	_check("six-input gear trace rejects a missing AUX index", missing_gear_index.row_count() == 0 and missing_gear_index._invalid_weather)
+	var undeclared_six_inputs := Trace.new()
+	undeclared_six_inputs.meta = {"scenario": "legacy without gear metadata"}
+	undeclared_six_inputs.record(0, 0.0, gear_state, gear_loads, gear_inputs, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 1.0]))
+	_check("gear-shaped input is rejected without opt-in metadata", undeclared_six_inputs.row_count() == 0 and undeclared_six_inputs._invalid_weather)
+
+	var malformed_gear_input := Trace.new()
+	malformed_gear_input.meta = _gear_trace_meta(sim.dt())
+	var invalid_gear_inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.5, 0.25])
+	malformed_gear_input.record(0, 0.0, gear_state, gear_loads, invalid_gear_inputs, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 1.0]))
+	_check("gear trace rejects nonbinary down command", malformed_gear_input.row_count() == 0 and malformed_gear_input._invalid_weather)
+	var malformed_gear_aux := Trace.new()
+	malformed_gear_aux.meta = _gear_trace_meta(sim.dt())
+	malformed_gear_aux.record(0, 0.0, gear_state, gear_loads, gear_inputs, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0]))
+	_check("gear trace rejects a truncated AUX row", malformed_gear_aux.row_count() == 0 and malformed_gear_aux._invalid_weather)
+	var mismatched_gear_start := Trace.new()
+	mismatched_gear_start.meta = _gear_trace_meta(sim.dt())
+	mismatched_gear_start.record(0, 0.0, gear_state, gear_loads, gear_inputs, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.25, 1.0]))
+	_check("gear trace rejects a first-row extension that differs from its start snapshot",
+		mismatched_gear_start.row_count() == 0 and mismatched_gear_start._invalid_weather)
+	var discontinuous_gear_trace := Trace.new()
+	discontinuous_gear_trace.meta = _gear_trace_meta(sim.dt())
+	discontinuous_gear_trace.record(0, 0.0, gear_state, gear_loads, gear_inputs, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 1.0]))
+	discontinuous_gear_trace.record(2, 2.0 * sim.dt(), gear_state, gear_loads, gear_inputs, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.2, 1.0]))
+	_check("gear trace rejects a dropped tick instead of saving incomplete data",
+		discontinuous_gear_trace.row_count() == 1 and discontinuous_gear_trace._invalid_weather
+		and discontinuous_gear_trace.to_csv().is_empty())
+
 	# Exactness on EVERY row against its own timestamp: altitude 30 - ½gt², east -40 + 15t.
 	# (Checking only the final row missed a one-tick time-labeling bug.)
 	var worst_alt := 0.0
@@ -134,6 +268,16 @@ func _initialize() -> void:
 		if not dimensionless and not (c.ends_with("_m") or c.ends_with("_s") or c.ends_with("_mps") or c.ends_with("_deg") or c.ends_with("_radps") or c.ends_with("_N") or c.ends_with("_Nm")):
 			unitless.append(c)
 	_check("physical columns carry units", unitless.is_empty(), str(unitless))
+
+	# Preserve the exact bytes of the original unversioned trace path.
+	var legacy_trace := Trace.new()
+	legacy_trace.meta = {"scenario": "legacy"}
+	legacy_trace.record(0, 0.0, gear_state, gear_loads, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]),
+		PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+	var expected_legacy := "# format: openrc-trace v3\n# scenario: legacy\n" \
+		+ "tick,t_s,north_m,east_m,down_m,alt_m,u_mps,v_mps,w_mps,speed_mps,qw,qx,qy,qz,yaw_deg,pitch_deg,roll_deg,p_radps,q_radps,r_radps,Fx_N,Fy_N,Fz_N,Mx_Nm,My_Nm,Mz_Nm,cmd_roll,cmd_pitch,cmd_yaw,cmd_throttle,engine_rpm,srv_roll,srv_pitch,srv_yaw\n" \
+		+ "0,0.000000000,0.000000000,0.000000000,5.000000000,-5.000000000,0.000000000,0.000000000,0.000000000,0.000000000,1.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000,0.000000000\n"
+	_check("gear trace work preserves legacy CSV bytes", legacy_trace.to_csv() == expected_legacy, legacy_trace.to_csv())
 
 	# Round trip: the CSV text parses back to the recorded value at 1e-9 precision.
 	var last_cells := lines[lines.size() - 1].split(",")

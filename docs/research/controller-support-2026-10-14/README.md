@@ -84,6 +84,28 @@ The engine's 10 axis slots and 128 button slots are API bounds, not a guarantee 
 
 Rendered [English AUX](aux-controls-en.png), [Spanish AUX](aux-controls-es.png), [English action controls](aux-actions-en.png) and [Spanish action controls](aux-actions-es.png) were inspected at 1280×720. The vertical AUX layout wraps the longer Spanish text and keeps mappings, previews and focused action controls within the scroll viewport.
 
+## UI-15-GP-02 controller menu review
+
+The [before device view](menu-ui/before/es/devices.png) and [before AUX view](menu-ui/before/es/channels.png) exposed a long form with device context and Save/Cancel outside the scroll viewport. The production screen now uses five sections with fixed navigation, device summary, feedback and footer. Action categories preserve the same draft; changing sections or categories cancels an active capture. Unbound actions disable redundant Clear buttons. Device names retain full tooltips. Radio profiles hide irrelevant gamepad preset controls. Axis source labels and live values are translated correctly.
+
+The four flight-axis previews sit beside their tuning controls at 1280 pixels; below 1100 logical pixels they stack in the scroll body. All three configured AUX inputs fit at 1280×720. AUX help describes aircraft-dependent availability instead of a global unsupported-gear claim, because aircraft capability work is concurrent.
+
+| Reviewed state | Spanish | English |
+| --- | --- | --- |
+| Devices | [Capture](menu-ui/es/fixture-devices.png) | [Capture](menu-ui/en/fixture-devices.png) |
+| Profile | [Capture](menu-ui/es/fixture-profile.png) | [Capture](menu-ui/en/fixture-profile.png) |
+| Flight axes | [Capture](menu-ui/es/fixture-axes.png) | [Capture](menu-ui/en/fixture-axes.png) |
+| Configured AUX | [Capture](menu-ui/es/fixture-aux-mapped.png) | [Capture](menu-ui/en/fixture-aux-mapped.png) |
+| Xbox camera bindings | [Capture](menu-ui/es/fixture-xbox-camera.png) | [Capture](menu-ui/en/fixture-xbox-camera.png) |
+| DualSense bindings | [Capture](menu-ui/es/fixture-dualsense-buttons.png) | [Capture](menu-ui/en/fixture-dualsense-buttons.png) |
+| Active remap | [Capture](menu-ui/es/fixture-xbox-capture-active.png) | [Capture](menu-ui/en/fixture-xbox-capture-active.png) |
+| Validation feedback | [Capture](menu-ui/es/fixture-xbox-validation-error.png) | [Capture](menu-ui/en/fixture-xbox-validation-error.png) |
+| No connected controller | [Capture](menu-ui/es/empty-devices.png) | [Capture](menu-ui/en/empty-devices.png) |
+
+[Spanish](menu-ui/es/fixture-manifest.json) and [English](menu-ui/en/fixture-manifest.json) manifests record the real Godot Compatibility renderer on an NVIDIA RTX 3090. Final captures instantiate the production ControllerSetup with the real registry and profile store plus explicitly synthetic device observations. They are interface evidence, not physical Xbox/DualSense qualification. The compact [960×640 controls](menu-ui/es/fixture-axes-960x640.png) and [lower live previews](menu-ui/es/fixture-axes-960x640-bottom.png) exercise the stacked layout; add `--scroll=bottom` to reproduce the lower frame. The reusable runner is [capture_controller_settings.gd](../../../app/tests/capture_controller_settings.gd). With isolated APPDATA/LOCALAPPDATA, run the pinned native engine with `--path app --script res://tests/capture_controller_settings.gd -- --lang=es --mode=fixture --size=1280x720 --out-dir=<absolute-output-directory>`; use `--mode=empty` or `--size=960x640 --section=axes` for the additional states.
+
+[Native checks](menu-ui-checks-windows.json) record 14 passing suites, including 105 section/layout/navigation checks in English and Spanish at 960×640, 1280×720 and 1920×1080. They cover selected-gamepad isolation, D-pad section activation and Save reachability, hidden content, draft preservation, category counts, capture cancellation, long validation messages, empty devices, and all four axis/three AUX editors. Setup, capture safety, profiles, registry, persistence, action binding and routing regressions also pass. Two flight-dependent suites did not pass in the shared tree: `test_controller_menu` encountered a model-bindings SHA-256 mismatch during aircraft construction; `test_controller_flight_actions` rejected an Avanti wheel profile and failed two gear/brake checks. These are retained as failures, not a full application pass. An earlier `main.gd` scope error was repaired by keeping the accepted-command result and gear note inside the existing retractable-gear branch. No aircraft data, physics or golden files were changed for this menu review.
+
 ## Current upstream findings
 
 1. **Use the existing desktop backend.** Godot uses SDL 3 for Windows, Linux and macOS controller input from 4.5. Specialized HOTAS/pedals/wheels have less coverage. The pinned engine vendors SDL 3.2.28. Keep SDL device mapping separate from OpenRC command assignment. [Godot controller guide](https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html), [pinned third-party manifest](https://github.com/godotengine/godot/blob/4.7.2-stable/thirdparty/README.md#sdl).

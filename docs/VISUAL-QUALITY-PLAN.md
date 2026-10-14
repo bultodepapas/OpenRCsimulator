@@ -1,8 +1,8 @@
 # Visual quality: implementation guide and open work
 
-2026-10-14 · Revision 12 · Step prefix: **VQ-**
+2026-10-14 · Revision 13 · Step prefix: **VQ-**
 
-Latest VQ-01c / DT-11a follow-up: [night-kit geometry extraction](research/visual-quality-implementation/VQ-01c/loading/night-kit/README.md) retains exact kit output across five visual families and passes 123 native GPU checks. This is a bounded loading repair; full-flight visibility and performance acceptance remain open.
+Latest VQ-01c / DT-11a follow-up: [default ground-image reuse](research/visual-quality-implementation/VQ-01c/loading/ground-image/README.md) preserves complete pixel/mip bytes and independent materials/textures. Five process pairs improve first Fly and return Home; initial Home has mixed results and a slower median. The cache removes repeated work, with 16 ownership/parity checks on Windows and Linux; cold-load non-regression, loading budgets and native acceptance remain open.
 
 [Audio teardown diagnostics](research/visual-quality-implementation/VQ-01c/loading/audio/README.md) now separate mixer retirement from persistent retention. The loading probe checks bounded cleanup on success/failure; packaged 50-cycle diagnostics finish without exit warnings but include one paused first draw. This does not close the native lifecycle/soak gates.
 

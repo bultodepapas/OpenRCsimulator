@@ -60,18 +60,19 @@ func _test_clear_buttons(setup) -> void:
 	var pause_clear := setup.find_child("Clear_pause", true, false) as Button
 	var optional_clear := setup.find_child("Clear_camera_previous", true, false) as Button
 	_check("Back and Pause cannot be cleared", back_clear != null and back_clear.disabled and pause_clear != null and pause_clear.disabled)
-	_check("optional semantic actions expose Clear", optional_clear != null and not optional_clear.disabled)
+	_check("unbound optional actions disable redundant Clear", optional_clear != null and optional_clear.disabled)
 	setup._base_actions["camera_previous"] = {"type": "button", "button": JOY_BUTTON_MAX - 1}
 	setup._draft_profile["actions"] = setup._base_actions.duplicate(true)
 	setup._action_bindings = ControllerActions.effective_bindings(setup.current_profile())
 	setup._update_action_controls()
+	_check("assigned optional actions expose Clear", not optional_clear.disabled)
 	optional_clear.pressed.emit()
 	var cleared: Dictionary = setup.current_profile()
 	_check("Clear writes an explicit unbound action and passes profile binding validation", cleared.actions.camera_previous.type == "unbound" and ControllerActions.validate_profile_bindings(cleared).ok)
 
 
 func _test_aux_mapping_editors(setup) -> void:
-	_check("auxiliary help identifies flap and gear bindings as unsimulated requests", setup.aux_help_label.text.contains("requests only") and setup.aux_help_label.text.contains("does not simulate"))
+	_check("auxiliary help distinguishes input assignment from aircraft capability", setup.aux_help_label.text.contains("Availability depends on the selected aircraft") and setup.aux_help_label.text.contains("at least 0.5 travel"))
 	var smoke_type := setup.find_child("AuxType_smoke", true, false) as OptionButton
 	var smoke_axis := setup.find_child("AuxAxis_smoke", true, false) as SpinBox
 	var smoke_off := setup.find_child("AuxOff_smoke", true, false) as SpinBox
@@ -127,11 +128,14 @@ func _test_follow_focus(setup) -> void:
 	var scroll := setup.find_child("ControllerSetupScroll", true, false) as ScrollContainer
 	for _frame in 5:
 		await process_frame
+	setup.select_section("aux")
+	await process_frame
+	await process_frame
 	target.grab_focus()
 	await process_frame
 	await process_frame
 	var owner := get_root().gui_get_focus_owner()
-	_check("lower auxiliary controls are reachable by follow-focus scrolling", get_root().gui_get_focus_owner() == target and scroll.scroll_vertical > 0.0)
+	_check("auxiliary controls are reachable in their section with follow-focus", owner == target and target.is_visible_in_tree() and scroll.get_global_rect().intersects(target.get_global_rect()))
 
 
 func _test_validation_feedback(setup) -> void:

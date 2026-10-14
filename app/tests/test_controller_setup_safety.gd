@@ -209,6 +209,7 @@ func _run() -> void:
 	_check("runtime rejection does not fall through to storage", store.saved.is_empty(), str(store.saved.size()))
 	_check("runtime rejection preserves the editable draft", setup.profile_name_edit.text == "Unsaved A", setup.profile_name_edit.text)
 
+	setup.select_section("profile")
 	setup.preset_picker.grab_focus()
 	setup.preset_picker.show_popup()
 	await process_frame

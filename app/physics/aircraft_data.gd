@@ -454,7 +454,46 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 			contacts[i].anchor_stiffness = k_i
 			contacts[i].anchor_damping = 2.0 * Ground.ANCHOR_ZETA * M.sqrt_(k_i * mass * shares[i])
 		derived.breakaway_factor = float(breakaway)
-	return derived
+	if gear.has("retraction"):
+		_derive_retraction(errors, gear, derived, cg)
+	return derived if errors.is_empty() else {}
+
+
+## Explicit opt-in actuator and measured presentation contact paths. Positions
+## are converted once from LE coordinates to CG-relative body FRD.
+static func _derive_retraction(errors: PackedStringArray, raw: Dictionary, gear: Dictionary, cg: PackedFloat64Array) -> void:
+	var spec := _dictionary(errors, "landing_gear.retraction", raw.retraction)
+	var extend = _q(errors, "landing_gear.retraction.extension_time", spec.get("extension_time"), "s", 0.25, 30.0)
+	var retract = _q(errors, "landing_gear.retraction.retraction_time", spec.get("retraction_time"), "s", 0.25, 30.0)
+	var area = _q(errors, "landing_gear.retraction.drag_area", spec.get("drag_area"), "m²", 0.0, 1.0)
+	var center = _q(errors, "landing_gear.retraction.drag_center", spec.get("drag_center"), "m", -3.0, 3.0, 3)
+	if not errors.is_empty():
+		return
+	var samples := -1
+	for i in raw.contacts.size():
+		var label := "landing_gear.contacts[%d].retraction_path" % i
+		var path_spec: Variant = raw.contacts[i].get("retraction_path")
+		var values: Variant = path_spec.get("value") if path_spec is Dictionary else null
+		if not values is Array or values.size() < 6 or values.size() > 1539 or values.size() % 3 != 0:
+			errors.append(label + ": expected 2..513 uniformly spaced LE points in a flat XYZ array")
+			continue
+		var path = _q(errors, label, path_spec, "m", -3.0, 3.0, values.size())
+		if path == null:
+			continue
+		if samples != -1 and samples != path.size():
+			errors.append(label + ": all contacts must use the same sample count")
+		samples = path.size()
+		var body := PackedFloat64Array()
+		for offset in range(0, path.size(), 3):
+			var point := PackedFloat64Array([-(path[offset] - cg[0]), path[offset + 1] - cg[1], -(path[offset + 2] - cg[2])])
+			body.append_array(point)
+			gear.reach = maxf(gear.reach, M.norm(point))
+		for axis in 3:
+			if absf(body[body.size() - 3 + axis] - gear.contacts[i].position[axis]) > 1.0e-6:
+				errors.append(label + ": last point must equal the declared down contact")
+		gear.contacts[i].retraction_path = body
+	gear.retraction = {extension_time = float(extend), retraction_time = float(retract), drag_area = float(area),
+		drag_center = PackedFloat64Array([-(center[0] - cg[0]), center[1] - cg[1], -(center[2] - cg[2])])}
 
 
 ## D1-R3: static support of rigid gear contacts. `points` are contact positions [x_aft, y_right, z_up] (m, LE frame) and

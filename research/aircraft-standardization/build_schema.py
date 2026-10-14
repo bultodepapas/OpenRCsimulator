@@ -280,6 +280,19 @@ def add_v2_overlay(schema: dict, spec: dict):
     add_text_field(gear_object.get("properties", {}), "description", nonempty=True)
     contact_items = gear_object["properties"]["contacts"]["items"]
     merge_required(contact_items, ["max_steering"])
+    # AV-09 is opt-in; historical fixed gear cannot silently carry an actuator.
+    def gear_quantity(unit, value):
+        return {"$ref": "#/$defs/evidence", "properties": {"value": value, "unit": {"const": unit}}}
+    gear_fields = {
+        "extension_time": gear_quantity("s", {"type": "number", "minimum": 0.25, "maximum": 30}),
+        "retraction_time": gear_quantity("s", {"type": "number", "minimum": 0.25, "maximum": 30}),
+        "drag_area": gear_quantity("m²", {"type": "number", "minimum": 0, "maximum": 1}),
+        "drag_center": copy.deepcopy(contact_items["properties"]["position"]),
+    }
+    gear_object["properties"]["retraction"] = {"type": "object", "required": list(gear_fields), "properties": gear_fields}
+    contact_items["properties"]["retraction_path"] = gear_quantity("m", {
+        "type": "array", "minItems": 6, "maxItems": 1539,
+        "items": {"type": "number", "minimum": -3, "maximum": 3}})
 
     # A zero inertia reference causes the legacy warning normalization to divide
     # by zero. Make every declared axis strictly positive in v2.
@@ -322,9 +335,14 @@ def add_v2_overlay(schema: dict, spec: dict):
     for battery_kind, energy in [("fixed_voltage", "fixed_voltage"), ("ocv_resistance", "ocv_resistance")]:
         condition = {"properties": {"propulsion": {"properties": {"kind": {"const": "electric_prop"}, "battery": {"properties": {"kind": {"const": battery_kind}}}}}}}
         rules.append({"if": condition, "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}, "energy": {"const": energy}}}}}})
-    for gear_kind in ["fixed_tricycle", "fixed_taildragger", "locked_down_taildragger"]:
+    for gear_kind in ["fixed_tricycle", "fixed_taildragger", "locked_down_taildragger", "retractable_tricycle"]:
         rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": gear_kind}}}}}, "then": {"required": ["landing_gear"]}})
     rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": "locked_up"}}}}}, "then": {"not": {"required": ["landing_gear"]}}})
+    rules.append({"if": branch_condition(["capabilities", "gear"], "retractable_tricycle"),
+                  "then": {"properties": {"landing_gear": {"required": ["retraction"], "properties": {
+                      "contacts": {"items": {"required": ["retraction_path"]}}}}}},
+                  "else": {"properties": {"landing_gear": {"not": {"required": ["retraction"]}, "properties": {
+                      "contacts": {"items": {"not": {"required": ["retraction_path"]}}}}}}}})
     schema["allOf"] = list(schema.get("allOf", [])) + rules
     add_physical_identity(schema)
     return schema

@@ -1,12 +1,12 @@
 # Desktop delivery plan
 
-2026-10-14 · Revision 9 · Step prefix: **DT-**.
+2026-10-14 · Revision 10 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
 Research records remain in [DT-00](research/desktop-delivery-investigations/DT-00/README.md), [DT-00-R1](research/desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md). The latter reports inspect Godot/macOS artifacts and synthetic checker behavior; they do not establish native Mac launch or performance.
 
-Latest DT-11a evidence: [night-kit geometry extraction and integrated Windows package checks](research/visual-quality-implementation/VQ-01c/loading/night-kit/README.md). Duplicate work is removed with exact fleet parity; native loading budgets and audio-shutdown/soak qualification remain open.
+Latest DT-11a evidence: [default ground-image reuse](research/visual-quality-implementation/VQ-01c/loading/ground-image/README.md). A bounded byte cache preserves all mip bytes and independent scene resources. Five frozen-source process pairs improve first Fly/return Home; initial Home's median regresses. Current-package qualification, cold-load non-regression, loading budgets and production shutdown/soak remain open.
 
 ## Current delivery
 

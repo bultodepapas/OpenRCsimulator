@@ -1,0 +1,12 @@
+{
+  "step": "HELI-25c",
+  "native_tests": "pass",
+  "fresh_import": "pass",
+  "isolated_pack": "pass",
+  "missing_profile_rejected": true,
+  "missing_raw_glb_rejected": true,
+  "missing_texture_rejected": true,
+  "flight_admitted": false,
+  "production_export_qualified": false,
+  "captured": true
+}

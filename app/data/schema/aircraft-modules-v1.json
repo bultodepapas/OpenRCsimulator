@@ -23,6 +23,10 @@
           {
             "path": "landing_gear",
             "present": true
+          },
+          {
+            "path": "landing_gear.retraction",
+            "present": false
           }
         ]
       },
@@ -33,6 +37,10 @@
           {
             "path": "landing_gear",
             "present": true
+          },
+          {
+            "path": "landing_gear.retraction",
+            "present": false
           }
         ]
       },
@@ -43,6 +51,10 @@
           {
             "path": "landing_gear",
             "present": true
+          },
+          {
+            "path": "landing_gear.retraction",
+            "present": false
           }
         ]
       },
@@ -53,6 +65,20 @@
           {
             "path": "landing_gear",
             "present": false
+          }
+        ]
+      },
+      "retractable_tricycle": {
+        "module": "gear.retractable_tricycle.v1",
+        "law": "gear.retractable_point_contacts.v1",
+        "presence_relations": [
+          {
+            "path": "landing_gear",
+            "present": true
+          },
+          {
+            "path": "landing_gear.retraction",
+            "present": true
           }
         ]
       }

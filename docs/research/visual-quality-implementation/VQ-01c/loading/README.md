@@ -5,6 +5,8 @@ measurements and manifest below remain the original in-memory-cache campaign.
 Next follow-up: [exact grain precomputation and package repairs](grain/README.md).
 Latest follow-up: [night-kit geometry extraction and integrated package checks](night-kit/README.md).
 Audio/lifecycle follow-up: [bounded probe teardown and 50-cycle diagnostics](audio/README.md).
+Latest repeated-build repair: [default ground-image byte reuse](ground-image/README.md),
+with exact mip/ownership checks and five additional frozen-source loading pairs.
 
 2026-10-14. Implemented a bounded CPU geometry cache in `app/render/lake/lake_terrain.gd`.
 Source baseline `22b3e482`; Godot 4.7.2-stable, Windows, RTX 3090 / Ryzen 9 5900X.

@@ -1,0 +1,37 @@
+{
+  "source_commit": "5f7f4ad529940743bdc16e3d9691243a8a1c6cd8",
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "probe_sha256": "9a559fae1a71a92472a80dbf5bf8cbba8a6d855ae23bce1454289fa6fbdc40e0",
+  "source_archive_sha256": "a049b991e7e5a71e134a31b6c4362213ea026eb50cffd32815aea403ffb7fa78",
+  "reference_sha256": "33efa1fd40e9d800e76340ba4ceeef73990dae2c48a12166525ce5f3082255cb",
+  "candidate_sha256": "3081b92b18b6f20b07039a0fe92ba21753e15d43cd496e1c6f912e259be8159c",
+  "scope": "Alternating serial process pairs; two Home/Fly cycles each; OS/import/driver caches and host load uncontrolled.",
+  "runs": [
+    {
+      "pair": 1,
+      "variant": "reference",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\comparison\\app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1280x720",
+        "--max-fps",
+        "60",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\loading_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\pairs\\01-reference.json",
+        "--cycles=2"
+      ],
+      "exit_code": 1,
+      "elapsed_s": 11.625,
+      "complete_clean": false,
+      "active_draws": false,
+      "report_sha256": null,
+      "log_sha256": "7392e9a360d46dd3f09f9df036d55b998272c023a091588d88d0d03da0d1c879"
+    }
+  ]
+}

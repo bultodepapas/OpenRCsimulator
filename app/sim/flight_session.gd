@@ -281,7 +281,7 @@ static func turbulence_at(aux: PackedFloat64Array, index: int, time_s: float, dt
 
 
 func turbulence_index() -> int:
-	return AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+	return AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0) + (GEAR_AUX_SIZE if gear_is_retractable() else 0)
 
 
 ## Stationary restart sample. This is a value, never mutable RNG state outside the simulation snapshot.
@@ -337,6 +337,7 @@ const Turbine := preload("res://physics/turbine.gd")
 const WashTransport := preload("res://physics/wash_transport.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
+const RetractableGear := preload("res://physics/retractable_gear.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
@@ -356,7 +357,7 @@ const START_RUNWAY := "runway"
 const START_HALF_POWER := "airborne_half_power"
 const PowerTrim := preload("res://physics/cruise_trim.gd")
 ## Aircraft whose runway starts have passed the ground qualification gate (TT-11).
-const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t"]
+const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "sebart-avanti-s-a200-p100rx"]
 const RUNWAY_FIELD_ID := "default"
 
 
@@ -397,6 +398,12 @@ const AUX_LAYOUT := ["engine_rpm", "srv_roll", "srv_pitch", "srv_yaw"]
 ## E3b1: with stiction data the per-wheel anchors follow AUX_LAYOUT ([north, east, stuck] per contact, gear order).
 ## AUX_LAYOUT stays the trace's four auxiliary columns.
 const AUX_ANCHORS := 4
+const GEAR_AUX_SIZE := 2 # extension, accepted down target; before optional turbulence
+var _gear_requested_down := false
+var _wheel_brake_demand := 0.0
+var _gear_request_inhibited := false
+var _gear_cache_fraction := -1.0
+var _gear_cache: Dictionary = {}
 ## E0a2b: with a tail downwash lag the lagged wing CL follows the anchors (downwash_index()).
 
 ## The fixed-step simulation: a child node, stepped after this node on every tick.
@@ -951,9 +958,7 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 	if Turbine.is_continuous(model.propulsion) and not Turbine.step_supported(model.propulsion, sim.dt()):
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "turbine governor/schedule is too stiff for the selected timestep (step ratio > 0.25)"}
-	if Turbine.is_continuous(model.propulsion) and _model_wheel_count(model) > 0:
-		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
-			message = "continuous turbine with dynamic wheel profiles is not qualified yet"}
+	# AV-09 qualifies the existing joint turbine RPM + wheel-speed layout.
 	# Each aircraft declares its own start speed (the Stik's 15 m/s is the loader's default).
 	var candidate_start := _selected_airborne_trim(model)
 	if not candidate_start.get("ok", false):
@@ -988,6 +993,9 @@ func _apply(data: Dictionary) -> bool:
 
 func _commit_aircraft(prepared: Dictionary) -> void:
 	aircraft = prepared.data
+	sim.input_size = 6 if gear_is_retractable() else 4
+	_gear_cache.clear()
+	_gear_cache_fraction = -1.0
 	_contact_bindings = ContactContract.describe(aircraft.model, soft_hull_contacts)
 	if not _shaft_explicit:
 		_shaft_integrator = "coupled-rk4" if Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active() else "split"
@@ -1349,6 +1357,7 @@ func reload() -> String:
 	var old_snapshot: Dictionary = sim.checkpoint()
 	var old_failures: Dictionary = _failures.snapshot() if _failures != null else {}
 	var old_commands := commands.duplicate(true)
+	var old_gear_controls := [_gear_requested_down, _wheel_brake_demand, _gear_request_inhibited]
 	var old_raw := raw.duplicate(true)
 	var old_crash := crash.duplicate(true)
 	var old_reason := pause_reason
@@ -1378,6 +1387,9 @@ func reload() -> String:
 			if not old_damage.is_empty():
 				scenery_damage_changed.emit()
 			commands = old_commands
+			_gear_requested_down = old_gear_controls[0]
+			_wheel_brake_demand = old_gear_controls[1]
+			_gear_request_inhibited = old_gear_controls[2]
 			raw = old_raw
 			crash = old_crash
 			pause_reason = old_reason
@@ -1469,6 +1481,9 @@ func _physics_process(_delta: float) -> void:
 		elif radio.connected:
 			if not _poll_controller(): return
 			commands = radio.sticks()
+			# An unbound AUX defaults to zero: it must not override keyboard/controller toggles.
+			if gear_is_retractable() and not sim.paused and not radio.profile.get("aux", {}).get("gear", {}).is_empty():
+				_gear_requested_down = radio.auxiliary_amount("gear") < 0.5
 			if controller_cut_held:
 				controller_throttle_cut()
 				commands.throttle = 0.0
@@ -1525,7 +1540,7 @@ func _check_prop_strike() -> void:
 func gear_collapsed(s: PackedFloat64Array) -> bool:
 	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
 		return false
-	return Ground.collapsed(s, aircraft.model.landing_gear,
+	return Ground.collapsed(s, current_landing_gear(),
 		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake)
 
 
@@ -1533,21 +1548,22 @@ func gear_collapsed(s: PackedFloat64Array) -> bool:
 func gear_compressions(s: PackedFloat64Array) -> PackedFloat64Array:
 	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
 		return PackedFloat64Array()
-	return Ground.compressions(s, aircraft.model.landing_gear,
+	return Ground.compressions(s, current_landing_gear(),
 		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake)
 
 
 func _gear_limit_impact(s: PackedFloat64Array) -> ImpactSnapshot.Snapshot:
 	var surfaces: PackedFloat64Array = ground_surfaces if wheel_count() > 0 else PackedFloat64Array()
+	var gear: Dictionary = current_landing_gear()
 	if _lake.is_empty():
-		return ImpactSnapshot.gear_limit(s, sim.tick, aircraft.model.landing_gear, surfaces)
+		return ImpactSnapshot.gear_limit(s, sim.tick, gear, surfaces)
 	var out: ImpactSnapshot.Snapshot = ImpactSnapshot.Snapshot.new()
 	out.trigger = "gear_limit"
 	out.tick = sim.tick
 	out.detected_state = s.duplicate()
-	var compressions: PackedFloat64Array = Ground.compressions(s, aircraft.model.landing_gear, surfaces, _lake)
+	var compressions: PackedFloat64Array = Ground.compressions(s, gear, surfaces, _lake)
 	for index in compressions.size():
-		var contact: Dictionary = aircraft.model.landing_gear.contacts[index]
+		var contact: Dictionary = gear.contacts[index]
 		if compressions[index] <= float(contact.max_compression):
 			continue
 		out.point_index = index
@@ -1662,7 +1678,7 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 		scenery_hit = SceneryCollision.first_hit(previous, candidate, aircraft.model.crash_hull,
 			_collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)
 	var lake_hit: LakeCollision.WaterEvent = LakeCollision.first_hit(_lake, previous, candidate,
-		aircraft.model.crash_hull, aircraft.model.get("landing_gear", {}), next_tick, sim.dt(), sim.mass,
+		aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), sim.mass,
 		sim.inertia, soft_hull_contacts, _prop_disc)
 	var ground_hit: ImpactSnapshot.Snapshot = null
 	var ground_fraction: float = INF
@@ -1830,6 +1846,7 @@ func reset() -> void:
 
 ## Rebuilds the ordinary trimmed flight without emitting a second reset signal.
 func _reset_airborne_start() -> bool:
+	var gear_aux := _initial_gear_aux(false)
 	if _failures != null:
 		_failures.restart()
 	var weather_aux: PackedFloat64Array = _restart_weather_aux()
@@ -1852,6 +1869,7 @@ func _reset_airborne_start() -> bool:
 	aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE) # E3b1: every wheel starts sliding
 	if downwash_index() >= 0 and _has_valid_start():
 		aux.append(0.0)
+	aux.append_array(gear_aux)
 	aux.append_array(weather_aux)
 	sim.aux = aux
 	if downwash_index() >= 0 and _has_valid_start():
@@ -1913,6 +1931,7 @@ func _reset_selected_runway_start() -> Dictionary:
 func _apply_runway_start(north: float, east: float, heading: float) -> Dictionary:
 	if not _has_valid_start() or anchor_count() == 0:
 		return { ok = false, message = "runway start needs valid aircraft data, trim, and stiction gear" }
+	var gear_aux := _initial_gear_aux(true)
 	commands = Commands.neutral_commands()
 	commands.throttle = 0.0
 	engine_running = not glow_is_active()
@@ -1928,6 +1947,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	aux.append_array(solved.anchors)
 	if downwash_index() >= 0:
 		aux.append(0.0)
+	aux.append_array(gear_aux)
 	aux.append_array(_restart_weather_aux())
 	sim.aux = aux
 	if downwash_index() >= 0:
@@ -1942,6 +1962,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 
 
 func _fail_selected_start(reason: String) -> void:
+	var gear_aux := _initial_gear_aux(false)
 	start_error = reason if not reason.is_empty() else "requested start could not be prepared"
 	pause_reason = start_error
 	crash = {}
@@ -1957,6 +1978,7 @@ func _fail_selected_start(reason: String) -> void:
 			aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
 			if downwash_index() >= 0:
 				aux.append(0.0)
+			aux.append_array(gear_aux)
 			aux.append_array(_restart_weather_aux())
 			sim.aux = aux
 			if downwash_index() >= 0:
@@ -2067,7 +2089,101 @@ func throws_deg() -> Dictionary:
 
 func _inputs() -> PackedFloat64Array:
 	var f := flown_commands()
-	return PackedFloat64Array([f.roll, f.pitch, f.yaw, f.throttle])
+	var values := PackedFloat64Array([f.roll, f.pitch, f.yaw, f.throttle])
+	if gear_is_retractable():
+		values.append(1.0 if _gear_requested_down else 0.0)
+		values.append(_wheel_brake_demand)
+	return values
+
+
+func gear_is_retractable() -> bool:
+	return aircraft.get("ok", false) and RetractableGear.enabled(aircraft.model.get("landing_gear", {}))
+
+
+func gear_aux_index() -> int:
+	return AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0) if gear_is_retractable() else -1
+
+
+func _gear_aux_valid(values: PackedFloat64Array) -> bool:
+	var index := gear_aux_index()
+	return index >= 0 and values.size() >= index + GEAR_AUX_SIZE \
+		and RetractableGear.valid_fraction(values[index]) and values[index + 1] in [0.0, 1.0]
+
+
+## Detached presentation/status of accepted actuator state. Commands are sampled at the next tick.
+func gear_state() -> Dictionary:
+	if not gear_is_retractable() or sim == null or not _gear_aux_valid(sim.aux):
+		return {available = false, extension = 0.0, target_down = false, status = "unavailable", brake = 0.0, inhibited = false}
+	var index := gear_aux_index()
+	var extension: float = sim.aux[index]
+	var target_down: bool = sim.aux[index + 1] == 1.0
+	var status := "down" if extension == 1.0 else "up" if extension == 0.0 else "extending" if target_down else "retracting"
+	return {available = true, extension = extension, target_down = target_down, status = status,
+		brake = float(sim.inputs[5]) if sim.inputs.size() == 6 else 0.0,
+		inhibited = _gear_request_inhibited or (sim.inputs.size() == 6 and sim.inputs[4] == 0.0 and target_down)}
+
+
+func set_gear_down(down: bool) -> bool:
+	if not gear_is_retractable() or not physics_enabled or not input_enabled or not _flight_ready() \
+			or sim.paused or not holds.is_empty() or not crash.is_empty():
+		return false
+	if not down and _gear_weight_on_wheels(sim.aux):
+		_gear_request_inhibited = true
+		return false # simulator operator interlock, not a claimed pneumatic hardware feature
+	_gear_requested_down = down
+	_gear_request_inhibited = false
+	return true
+
+
+func toggle_gear() -> bool:
+	return set_gear_down(not _gear_requested_down)
+
+
+func set_wheel_brake(amount: float) -> bool:
+	if not RetractableGear.valid_fraction(amount):
+		return false
+	if amount == 0.0:
+		_wheel_brake_demand = 0.0 # releases clear even while a menu/focus hold is active
+		return true
+	if not gear_is_retractable() or not physics_enabled or not input_enabled or not _flight_ready() \
+			or sim.paused or not holds.is_empty() or not crash.is_empty():
+		return false
+	_wheel_brake_demand = amount
+	return true
+
+
+func _gear_weight_on_wheels(values: PackedFloat64Array) -> bool:
+	if not _gear_aux_valid(values) or values[gear_aux_index()] != 1.0 or not Sim.state_is_valid(sim.state):
+		return false
+	for compression: float in Ground.compressions(sim.state, aircraft.model.landing_gear, ground_surfaces, _lake):
+		if compression > 1.0e-5:
+			return true
+	return false
+
+
+## Same admitted contact geometry for loads, crash limits and presentation.
+func current_landing_gear(values := PackedFloat64Array()) -> Dictionary:
+	if not aircraft.get("ok", false):
+		return {}
+	var original: Dictionary = aircraft.model.get("landing_gear", {})
+	if not gear_is_retractable():
+		return original
+	var sampled: PackedFloat64Array = sim.aux if values.is_empty() else values
+	if not _gear_aux_valid(sampled):
+		return {}
+	var extension: float = sampled[gear_aux_index()]
+	if extension != _gear_cache_fraction:
+		_gear_cache = RetractableGear.pose(original, extension)
+		_gear_cache_fraction = extension
+	return _gear_cache
+
+
+func _initial_gear_aux(down: bool) -> PackedFloat64Array:
+	_gear_requested_down = down
+	_wheel_brake_demand = 0.0
+	_gear_request_inhibited = false
+	_gear_cache_fraction = -1.0
+	return PackedFloat64Array([1.0 if down else 0.0, 1.0 if down else 0.0]) if gear_is_retractable() else PackedFloat64Array()
 
 
 ## Simulation loads: aerodynamics (D3) + propulsion (D5) from the servos' actual positions, in calm air, plus the
@@ -2114,7 +2230,7 @@ func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_
 		air_density(), air, a[lag] if lag >= 0 and lag < a.size() else NAN, PackedFloat64Array(), _ground_up(s))
 	if out.size() != 6:
 		return {}
-	var ground: Dictionary = _ground_evaluation(s, a, values)
+	var ground: Dictionary = _ground_evaluation(s, a, values, air if gear_is_retractable() else {})
 	if not ground.get("ok", false):
 		return {}
 	var ground_loads: PackedFloat64Array = ground.loads
@@ -2156,7 +2272,7 @@ func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stag
 	var wash_state: PackedFloat64Array = transported_dv if wheel_count() == 0 else transported_dv.slice(0, expected)
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
 		air_density(), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, wash_state, _ground_up(s))
-	var ground: Dictionary = _ground_evaluation(s, a, transported_dv)
+	var ground: Dictionary = _ground_evaluation(s, a, transported_dv, air_data(s, stage_time) if gear_is_retractable() else {})
 	if not ground.get("ok", false):
 		return PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN])
 	var ground_loads: PackedFloat64Array = ground.loads
@@ -2176,7 +2292,7 @@ func _wash_derivative(s: PackedFloat64Array, lagged: PackedFloat64Array, stage_t
 	var air: Dictionary = air_data(s, stage_time)
 	var out: PackedFloat64Array = WashTransport.derivative(air.v_air, sim.aux[AUX_RPM], aircraft.model.propulsion,
 		air_density(), lagged.slice(0, expected)) if expected > 0 else PackedFloat64Array()
-	var ground: Dictionary = _ground_evaluation(s, sim.aux, lagged)
+	var ground: Dictionary = _ground_evaluation(s, sim.aux, lagged, air_data(s, stage_time) if gear_is_retractable() else {})
 	if not ground.get("ok", false):
 		return PackedFloat64Array([NAN])
 	out.append_array(ground.derivative)
@@ -2193,7 +2309,7 @@ func _wheel_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_ti
 	var out: PackedFloat64Array = Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
 		air_density(), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, expected),
 		_ground_up(s))
-	var ground: Dictionary = _ground_evaluation(s, a, values)
+	var ground: Dictionary = _ground_evaluation(s, a, values, air_data(s, stage_time) if gear_is_retractable() else {})
 	if not ground.get("ok", false):
 		return {}
 	var ground_loads: PackedFloat64Array = ground.loads
@@ -2209,21 +2325,26 @@ func _wheel_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_ti
 
 
 ## Legacy gear keeps its original contact law; a file-backed wheel profile opts into terrain and wheel-spin state.
-func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: PackedFloat64Array) -> Dictionary:
-	var gear: Dictionary = aircraft.model.get("landing_gear", {})
+func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: PackedFloat64Array, stage_air: Dictionary = {}) -> Dictionary:
+	if gear_is_retractable() and (not _gear_aux_valid(aux) or sim.inputs.size() != 6 or stage_air.is_empty()):
+		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
+	var gear: Dictionary = current_landing_gear(aux)
 	var steer: float = aux[AUX_SERVO + 2]
+	var brake: float = sim.inputs[5] if gear_is_retractable() else 0.0
 	var anchors: PackedFloat64Array = aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
 	var hull: PackedFloat64Array = HullContact.loads(s, _hull_contact) if soft_hull_contacts else PackedFloat64Array()
+	if gear_is_retractable():
+		hull = _add_loads(hull, RetractableGear.drag_loads(s, stage_air.v_air, aircraft.model.landing_gear, aux[gear_aux_index()], air_density()))
 	if wheel_count() == 0:
 		return {ok = true, loads = _add_loads(Ground.loads(s, gear, steer, ground_surfaces, anchors,
-			PackedFloat64Array(), 0.0, _lake), hull), derivative = PackedFloat64Array()}
+			PackedFloat64Array(), brake, _lake), hull), derivative = PackedFloat64Array()}
 	if values.size() != wheel_index() + wheel_count():
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	var speeds: PackedFloat64Array = values.slice(wheel_index(), wheel_index() + wheel_count())
 	for speed in speeds:
 		if not is_finite(speed):
 			return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
-	var evaluation: Dictionary = Ground.evaluate(s, gear, steer, ground_surfaces, anchors, speeds, 0.0, false, _lake)
+	var evaluation: Dictionary = Ground.evaluate(s, gear, steer, ground_surfaces, anchors, speeds, brake, false, _lake)
 	var loads: PackedFloat64Array = evaluation.get("loads", PackedFloat64Array())
 	var rates: PackedFloat64Array = evaluation.get("derivative", PackedFloat64Array())
 	if (not loads.is_empty() and loads.size() != 6) or rates.size() != wheel_count():
@@ -2367,7 +2488,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	var lag: int = downwash_index()
 	var external: PackedFloat64Array = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
 		air_density(), air, a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, _rotor_index()), _ground_up(s))
-	var ground: Dictionary = _ground_evaluation(s, a, values)
+	var ground: Dictionary = _ground_evaluation(s, a, values, air if gear_is_retractable() else {})
 	if not ground.get("ok", false):
 		return {ok = false}
 	var ground_loads: PackedFloat64Array = ground.loads
@@ -2540,8 +2661,13 @@ func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
 	if _weather_pending_reset or _shaft_pending_reset:
 		return PackedFloat64Array([NAN]) # configure→reset boundary cannot advance an old layout/RNG
+	if gear_is_retractable() and (not _gear_aux_valid(aux) or inputs.size() != 6 \
+			or inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(inputs[5])):
+		return PackedFloat64Array([NAN])
 	if _failures != null:
-		var prepared_failure: Dictionary = _failures.prepare(inputs, aux, _failure_airborne())
+		# The incident module owns four primary channels; the gear actuator keeps
+		# its separately recorded demand and never extends the failure snapshot ABI.
+		var prepared_failure: Dictionary = _failures.prepare(inputs.slice(0, 4), aux, _failure_airborne())
 		if not prepared_failure.get("ok", false):
 			return PackedFloat64Array([NAN])
 		inputs = _failures.effective_inputs(inputs)
@@ -2575,7 +2701,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	if anchors_end > AUX_ANCHORS:
 		# E3b1: stick/slip transitions from the committed state, with the steer the last tick used.
 		var wheel_speeds: PackedFloat64Array = sim.continuous.slice(wheel_index()) if wheel_count() > 0 else PackedFloat64Array()
-		out.append_array(Ground.anchor_step(sim.state, aircraft.model.landing_gear, aux[AUX_SERVO + 2], ground_surfaces,
+		out.append_array(Ground.anchor_step(sim.state, current_landing_gear(aux), aux[AUX_SERVO + 2], ground_surfaces,
 			aux.slice(AUX_ANCHORS, anchors_end), wheel_count() > 0, wheel_speeds, _lake))
 	if lag >= 0 and lag < aux.size():
 		# E0a2b: the tail's downwash follows the wing's lift l/V late. Exact first-order lag over the tick, from the
@@ -2585,6 +2711,13 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		var speed: float = air_data(s, sim.time()).V
 		var length: float = aircraft.model.surfaces.horizontal.downwash_lag_length
 		out.append(cl_now + (aux[lag] - cl_now) * M.exp_(-dt * speed / length))
+	if gear_is_retractable():
+		var index: int = gear_aux_index()
+		var target: float = inputs[4]
+		if target == 0.0 and _gear_weight_on_wheels(aux):
+			target = 1.0
+		out.append(RetractableGear.advance(aux[index], target, dt, aircraft.model.landing_gear))
+		out.append(target)
 	if _weather.has_turbulence():
 		var index: int = turbulence_index()
 		var next: Dictionary = Turbulence.step(aux.slice(index + 3, index + 6), _weather.turbulence_rms(),
@@ -2613,6 +2746,8 @@ func aux_component(i: int) -> String:
 		return "rpm"
 	if i < AUX_ANCHORS:
 		return "servo"
+	if gear_is_retractable() and i >= gear_aux_index() and i < gear_aux_index() + GEAR_AUX_SIZE:
+		return "servo" # normalized actuator fraction and binary target; same replay tolerance
 	if _weather.has_turbulence() and i >= turbulence_index():
 		return "weather"
 	return "downwash" if i == downwash_index() else "anchor"
@@ -2887,6 +3022,14 @@ func trace_meta() -> Dictionary:
 		metadata.failure_plan = JSON.stringify(_failures.plan(), "", true, true)
 		metadata.failure_recording_start = JSON.stringify(_failures.snapshot(), "", true, true)
 		metadata.failure_inputs = "pilot demand before failures; actual servo positions in aux; throttle follows resolved incident"
+	if gear_is_retractable():
+		metadata.metadata_schema = "openrc-flight-meta v8"
+		metadata.gear_law = RetractableGear.LAW
+		metadata.gear_trace_schema = "openrc-gear-trace v1"
+		metadata.gear_aux_index = gear_aux_index()
+		metadata.recording_start_gear = JSON.stringify(Array(sim.aux.slice(gear_aux_index(), gear_aux_index() + GEAR_AUX_SIZE)), "", true, true)
+		metadata.input_layout = JSON.stringify(["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake"])
+		metadata.ground = "retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock"
 	return metadata
 
 
@@ -2895,6 +3038,9 @@ func trace_meta() -> Dictionary:
 func checkpoint() -> Dictionary:
 	if not _flight_ready():
 		return {}
+	if gear_is_retractable() and (not _gear_aux_valid(sim.aux) or sim.inputs.size() != 6 \
+			or sim.inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(sim.inputs[5])):
+		return {}
 	var snapshot: Dictionary = sim.checkpoint()
 	if snapshot.is_empty() or snapshot.modes.size() != (2 if _weather.has_turbulence() else 1) or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
 		return {}
@@ -2902,6 +3048,9 @@ func checkpoint() -> Dictionary:
 			or (not engine_running and sim.continuous[0] != 0.0)):
 		return {}
 	var boundary: Dictionary = {format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot}
+	if gear_is_retractable():
+		boundary.gear_law = RetractableGear.LAW
+		boundary.gear_aux_index = gear_aux_index()
 	if not weather_is_calm():
 		boundary.format = "openrc-flight-checkpoint v2"
 		boundary.weather_config = weather_configuration()
@@ -2970,6 +3119,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 	var config_hash := HashingContext.new()
 	config_hash.start(HashingContext.HASH_SHA256)
 	var parts: Array = [aircraft.model, ground_surfaces]
+	if gear_is_retractable():
+		parts.append(RetractableGear.LAW + "; inputs=6; aux=extension,accepted_down_target; airborne_up,runway_down")
 	if wheel_count() > 0:
 		parts.append("wheel-state-layout:" + wheel_state_layout())
 	if not field.is_calm() or field.has_atmosphere():
@@ -3025,6 +3176,14 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			or not candidate.get("simulation") is Dictionary:
 		return false
 	var snapshot: Dictionary = candidate.simulation
+	if gear_is_retractable():
+		if candidate.get("gear_law") != RetractableGear.LAW or candidate.get("gear_aux_index") != gear_aux_index() \
+				or not snapshot.get("aux") is PackedFloat64Array or not _gear_aux_valid(snapshot.aux) \
+				or not snapshot.get("inputs") is PackedFloat64Array or snapshot.inputs.size() != 6 \
+				or snapshot.inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(snapshot.inputs[5]):
+			return false
+	elif candidate.has("gear_law") or candidate.has("gear_aux_index"):
+		return false
 	var physics_format: String = str(candidate.get("physics_format", candidate.get("format", "")))
 	if glow_is_active() != (physics_format=="openrc-flight-checkpoint v9") or (glow_is_active() and candidate.get("glow_law")!=GlowFlight.LAW):
 		return false
@@ -3121,6 +3280,11 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 		sim.aux = old_aux
 		sim.modes = old_modes
 		return false
+	if gear_is_retractable():
+		_gear_requested_down = snapshot.inputs[4] == 1.0
+		_wheel_brake_demand = snapshot.inputs[5]
+		_gear_cache_fraction = -1.0
+		_gear_request_inhibited = false
 	_failures = restored_failures
 	_scenery_damage = restored_damage
 	_restore_contact_history(restored_contacts)

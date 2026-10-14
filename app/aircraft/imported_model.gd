@@ -3,6 +3,7 @@ extends RefCounted
 
 const Manifest := preload("res://aircraft/model_manifest.gd")
 const Construction := preload("res://aircraft/imported_model_contract.gd")
+const Retraction := preload("res://aircraft/retractable_model.gd")
 const REST_TOLERANCE := 0.00002 # Source measurements rounded to six decimal places.
 
 
@@ -90,6 +91,10 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 	for name in ["propeller", "propeller_mount"]:
 		if nodes.has(name): errors.append("Generated rotor wrapper already exists: " + name)
 	_validate_materials(config.material_grow, nodes, errors)
+	var retract := {}
+	if config.has("retraction"):
+		retract = Retraction.bind(_record(data, config.retraction.geometry_ref, errors), nodes)
+		errors.append_array(retract.errors)
 	if not errors.is_empty():
 		root.free()
 		return _failure(errors)
@@ -121,8 +126,12 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 		return _depth(gear_pivots[a.role]) < _depth(gear_pivots[b.role]))
 	for binding: Dictionary in ordered:
 		gear[bindings.gear.keys[binding.role]] = _wrap(root, gear_pivots[binding.role], binding.wrapper)
+	if not retract.is_empty():
+		for role: String in retract.gear:
+			gear[bindings.gear.keys[role]] = retract.gear[role]
 	return {ok = true, errors = PackedStringArray(), model = {
 		root = root, propeller = propeller, hinges = hinges, gear = gear,
+		gear_retraction = retract.get("rig", {}),
 		has_propeller = bindings.rotor.present, data = data, aircraft_id = manifest.family_id,
 		model_manifest = manifest.duplicate(true)}}
 

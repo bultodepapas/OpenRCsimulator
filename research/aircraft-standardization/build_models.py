@@ -140,6 +140,7 @@ def _validate_construction(construction: Any, bindings: dict[str, Any], label: s
         construction,
         {"version", "hinge_axis", "rotor", "gear", "material_grow"},
         f"{label}.construction",
+        {"retraction"},
     )
     if type(construction["version"]) is not int or construction["version"] != 1:
         raise ModelManifestError(f"{label}.construction.version must be integer 1")
@@ -158,6 +159,13 @@ def _validate_construction(construction: Any, bindings: dict[str, Any], label: s
         rotor = {}
 
     expected_roles = set(bindings["gear"]["keys"])
+    if "retraction" in construction:
+        retract = _check_keys(construction["retraction"], {"geometry_ref"}, f"{label}.construction.retraction")
+        if not isinstance(retract["geometry_ref"], str) or re.fullmatch(r"[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*", retract["geometry_ref"]) is None:
+            raise ModelManifestError(f"{label}.construction.retraction needs a dotted source reference")
+        if expected_roles != {"left", "right", "nose", "steering"} or construction["gear"] != []:
+            raise ModelManifestError(f"{label}.construction.retraction needs three wheels/steering and no static wrappers")
+        expected_roles = set()
     if not isinstance(construction["gear"], list):
         raise ModelManifestError(f"{label}.construction.gear must be an array")
     seen_roles: set[str] = set()
@@ -480,6 +488,32 @@ def build_manifest(root: Path, registry_path: Path, family: dict[str, Any]) -> d
 
     construction = family.get("construction")
     if construction is not None:
+        if "retraction" in construction:
+            rig = _resolve(geometry, construction["retraction"]["geometry_ref"], f"{family['family_id']}.retraction")
+            if not isinstance(rig, dict) or rig.get("version") != 1 or set(rig.get("wheels", {})) != {"left", "right", "nose"}:
+                raise ModelManifestError("Retractable model needs version 1 and three declared wheels")
+            samples = rig.get("retraction", {}).get("samples", [])
+            if not 2 <= len(samples) <= 513:
+                raise ModelManifestError("Retractable model requires 2..513 sampled poses")
+            names = set(samples[0]["nodes"])
+            helpers = set()
+            for index, sample in enumerate(samples):
+                if abs(sample["extension"] - index / (len(samples) - 1)) > 1e-8 or set(sample["nodes"]) != names:
+                    raise ModelManifestError("Retractable model samples must share a uniform grid and node set")
+                for name, pose in sample["nodes"].items():
+                    values = pose.get("translation", []) + pose.get("rotation_wxyz", [])
+                    if len(pose.get("translation", [])) != 3 or len(pose.get("rotation_wxyz", [])) != 4 or any(type(v) not in (int, float) or not math.isfinite(v) for v in values) or abs(sum(v*v for v in pose["rotation_wxyz"]) - 1) > 1e-5 or name not in rig.get("bindings", {}):
+                        raise ModelManifestError("Retractable model has an invalid pose or missing rest binding")
+            for role, wheel in rig["wheels"].items():
+                for key in ("spin_node", "compression_node") + (("steer_node",) if role == "nose" else ()):
+                    name = wheel.get(key)
+                    if name not in rig["bindings"] or name in names or name in helpers:
+                        raise ModelManifestError("Retractable model has an invalid or reused wheel helper")
+                    helpers.add(name)
+                for key in ("center_model", "contact_model"):
+                    path = wheel.get(key, [])
+                    if len(path) != len(samples) or any(len(p) != 3 or any(type(v) not in (int, float) or not math.isfinite(v) for v in p) for p in path):
+                        raise ModelManifestError("Retractable wheel paths must match the sample grid")
         if rotor_cfg["present"]:
             thrust_frame = _construction_ref(
                 geometry,

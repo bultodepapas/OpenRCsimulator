@@ -66,7 +66,7 @@ func _schema() -> void:
 	_check("turbine selection rejected on a combustion propeller", not AD.validate_and_derive(wrong_branch).ok)
 	var f: Node = _flight()
 	_check("continuous aircraft prepares and has one evolving RPM", f.is_flyable() and f.turbine_is_continuous()
-		and f.sim.continuous.size() == 1 and f.sim.continuous[0] == f.sim.aux[0])
+		and f.sim.continuous.size() == 1 + f.wheel_count() and f.sim.continuous[0] == f.sim.aux[0])
 	var bad: Dictionary = f.aircraft.duplicate(true)
 	bad.model.propulsion.accel_limit = PackedFloat64Array([44000.0, 1.0, 44000.0001, 1000000.0])
 	var before: PackedByteArray = _bits(f.sim)
@@ -87,16 +87,21 @@ func _stage() -> void:
 	prop.ram_flow = 0.0
 	prop.ram_jet = PackedFloat64Array([0.0, 0.0, prop.max_rpm, 0.0])
 	var before: PackedByteArray = _bits(f.sim)
-	var low: Dictionary = f._turbine_evaluate(f.sim.state, PackedFloat64Array([70000.0]), f.sim.time())
-	var high: Dictionary = f._turbine_evaluate(f.sim.state, PackedFloat64Array([140000.0]), f.sim.time())
+	var stage: PackedFloat64Array = f.sim.continuous.duplicate()
+	stage[0] = 70000.0
+	var low: Dictionary = f._turbine_evaluate(f.sim.state, stage, f.sim.time())
+	stage[0] = 140000.0
+	var high: Dictionary = f._turbine_evaluate(f.sim.state, stage, f.sim.time())
 	_check("stage force uses stage RPM rather than sampled mirror", not low.is_empty() and not high.is_empty()
 		and absf(high.loads[0] - low.loads[0] - 100.0 * 70000.0 / float(prop.max_rpm)) < 1e-10)
 	var expected_h: float = float(prop.rotor_inertia) * float(prop.rotor_sense) * 140000.0 * TAU / 60.0
 	_check("stage gyro uses stage RPM", absf(high.rotor_momentum[0] - expected_h) < 1e-12)
 	_check("stage observation cannot advance committed state", _bits(f.sim) == before)
+	stage[0] = -1.0
+	var below: bool = f._turbine_evaluate(f.sim.state, stage, 0.0).is_empty()
+	stage[0] = prop.max_rpm + 1.0
 	_check("malformed or out-of-domain state rejected", f._turbine_evaluate(f.sim.state, PackedFloat64Array(), 0.0).is_empty()
-		and f._turbine_evaluate(f.sim.state, PackedFloat64Array([-1.0]), 0.0).is_empty()
-		and f._turbine_evaluate(f.sim.state, PackedFloat64Array([prop.max_rpm + 1.0]), 0.0).is_empty())
+		and below and f._turbine_evaluate(f.sim.state, stage, 0.0).is_empty())
 	var observed: Dictionary = f.turbine_state()
 	_check("endpoint telemetry exposes flow without changing prescribed mass", observed.ok
 		and observed.rpm == f.sim.continuous[0] and observed.fuel_flow_kg_s > 0.0

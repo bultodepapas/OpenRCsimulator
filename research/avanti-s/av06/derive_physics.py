@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """AV-06: physics data of the SebArt Avanti S Jet 2.2m (A200, 2.00 m span) with a JetCat P100-RX, derived and reproducible.
 
-Reads the physical surrogate geometry (assets/aircraft/avanti-s-a200/geometry.json, AV-02 blockout), collision-only
-gear-up witnesses from assets/aircraft/avanti-s-a200/blender-geometry.json, the sourced inputs in
+Reads the physical surrogate geometry (assets/aircraft/avanti-s-a200/geometry.json, AV-02 blockout), gear-up collision
+witnesses and retractable wheel trajectories from assets/aircraft/avanti-s-a200/blender-geometry.json, the sourced inputs in
 research/avanti-s/av06/inputs.json (manual, catalog, research reports) and the Ugly Stik data file (shared conventions and
-the provisional local-surface limits). The Blender geometry supplies collision probes only; it does not define or calibrate
-the physical aircraft, aerodynamic surfaces, mass properties, or turbine installation. Writes
+the provisional local-surface limits). The Blender geometry supplies visual collision probes and wheel-center/contact
+trajectories only; it does not calibrate the physical aircraft, aerodynamic surfaces, mass properties, spring behavior,
+or turbine installation. Writes
 app/data/aircraft/sebart_avanti_s_a200.json (openrc-aircraft v2 with propulsion kind "turbine", AV-05) and
 research/avanti-s/av06/derivation.md.
 
@@ -21,6 +22,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -35,6 +37,8 @@ GEOMETRY = ROOT / "assets/aircraft/avanti-s-a200/geometry.json"
 COLLISION_GEOMETRY = ROOT / "assets/aircraft/avanti-s-a200/blender-geometry.json"
 INPUTS = ROOT / "research/avanti-s/av06/inputs.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
+WHEEL_PROFILES = ROOT / "app/data/ground/wheel_profiles.json"
+PROJECT_SETTINGS = ROOT / "app/project.godot"
 OUT_DIR = Path(os.environ.get("OPENRC_AIRCRAFT_OUTPUT_DIR", ROOT / "app/data/aircraft")).resolve()
 REPORT_DIR = Path(os.environ.get("OPENRC_AIRCRAFT_REPORT_DIR", ROOT / "research/avanti-s/av06")).resolve()
 OUT = OUT_DIR / "sebart_avanti_s_a200.json"
@@ -50,6 +54,14 @@ g = json.loads(GEOMETRY.read_text(encoding="utf-8"))
 collision_geometry_bytes = COLLISION_GEOMETRY.read_bytes()
 collision_geometry_hash = hashlib.sha256(collision_geometry_bytes).hexdigest()
 collision_geometry = json.loads(collision_geometry_bytes.decode("utf-8"))
+wheel_profile_bytes = WHEEL_PROFILES.read_bytes()
+wheel_profile_hash = hashlib.sha256(wheel_profile_bytes).hexdigest()
+wheel_profile_registry = json.loads(wheel_profile_bytes.decode("utf-8"))
+project_settings = PROJECT_SETTINGS.read_text(encoding="utf-8")
+physics_tick_match = re.search(r"(?m)^common/physics_ticks_per_second=(\d+)\s*$", project_settings)
+if physics_tick_match is None:
+    raise ValueError(f"{PROJECT_SETTINGS.relative_to(ROOT)} must declare common/physics_ticks_per_second")
+PHYSICS_TICK_HZ = int(physics_tick_match.group(1))
 IN = globals().get("IN_OVERRIDE") or json.loads(INPUTS.read_text(encoding="utf-8"))  # sensitivity.py injects modified inputs
 log = []
 # Wing station along the fuselage (inputs airframe.wing_forward_shift): every fuselage-attached part (fuselage, canopy,
@@ -707,6 +719,228 @@ for record in collision_probe_records:
     if record["id"] in FUSELAGE_ATTACHED_CRASH_HULL_IDS:
         le_position[0] += DZ
     crash_hull_probes.append((record["id"], le_position))
+
+GEAR_CONTACTS = (
+    ("main_left", "left", "contact_main_left"),
+    ("main_right", "right", "contact_main_right"),
+    ("nose", "nose", "contact_nose"),
+)
+GEAR_PROFILE_ID = "sebart-avanti-s-a200-p100rx"
+
+
+def model_vector3(value, label):
+    if (not isinstance(value, list) or len(value) != 3
+            or any(isinstance(part, bool) or not isinstance(part, (int, float)) or not math.isfinite(part)
+                   for part in value)):
+        raise ValueError(f"{COLLISION_GEOMETRY_SRC} {label} must be three finite model-space numbers")
+    return [float(part) for part in value]
+
+
+def derive_landing_gear():
+    """Add source-mesh wheel paths as LE contact points, keeping contact mechanics estimated."""
+    gear_source = collision_geometry.get("gear")
+    if not isinstance(gear_source, dict):
+        raise ValueError(f"{COLLISION_GEOMETRY_SRC} must contain a gear object; no fixed-gear fallback is allowed")
+    if type(gear_source.get("version")) is not int or gear_source["version"] != 1:
+        raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.version must be 1")
+    retract_source = gear_source.get("retraction")
+    if not isinstance(retract_source, dict):
+        raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear must contain retraction samples")
+    sample_records = retract_source.get("samples")
+    if not isinstance(sample_records, list) or len(sample_records) < 2 or len(sample_records) > 513:
+        raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.retraction.samples must contain 2..513 samples")
+    expected_node_names = {
+        "MainGear_L_Act_Cyl", "MainGear_L_Act_Piston", "MainGear_L_Pivot",
+        "MainGear_R_Act_Cyl", "MainGear_R_Act_Piston", "MainGear_R_Pivot",
+        "NoseGear_Act_Cyl", "NoseGear_Act_Piston", "NoseGear_Door_Act_ArmPivot",
+        "NoseGear_Door_Act_Rod", "NoseGear_Door_Pivot", "NoseGear_Pivot",
+    }
+    extensions = []
+    for index, sample in enumerate(sample_records):
+        if not isinstance(sample, dict):
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.retraction.samples[{index}] must be an object")
+        extension = sample.get("extension")
+        if (isinstance(extension, bool) or not isinstance(extension, (int, float))
+                or not math.isfinite(extension)):
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.retraction.samples[{index}].extension must be finite")
+        expected = index / (len(sample_records) - 1)
+        if abs(float(extension) - expected) > 1.0e-6:
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} retraction extension samples must be uniform 0-up to 1-down")
+        sample_nodes = sample.get("nodes")
+        if not isinstance(sample_nodes, dict) or set(sample_nodes) != expected_node_names:
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.retraction.samples[{index}].nodes must contain the 12 exported GearRetract targets")
+        for node_name, transform in sample_nodes.items():
+            if not isinstance(transform, dict):
+                raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.retraction.samples[{index}].nodes.{node_name} must be an object")
+            model_vector3(transform.get("translation"), f"gear.retraction.samples[{index}].nodes.{node_name}.translation")
+            rotation = transform.get("rotation_wxyz")
+            if (not isinstance(rotation, list) or len(rotation) != 4
+                    or any(isinstance(part, bool) or not isinstance(part, (int, float)) or not math.isfinite(part)
+                           for part in rotation)):
+                raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.retraction.samples[{index}].nodes.{node_name}.rotation_wxyz must be four finite numbers")
+            rotation_norm = math.sqrt(sum(float(part) ** 2 for part in rotation))
+            if abs(rotation_norm - 1.0) > 1.0e-4:
+                raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.retraction.samples[{index}].nodes.{node_name}.rotation_wxyz must be normalized")
+        extensions.append(float(extension))
+    if abs(extensions[0]) > 1.0e-6 or abs(extensions[-1] - 1.0) > 1.0e-6:
+        raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear retraction trajectory must run from extension 0 to 1")
+
+    wheel_sources = gear_source.get("wheels")
+    if not isinstance(wheel_sources, dict) or set(wheel_sources) != {"left", "right", "nose"}:
+        raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.wheels must have exactly left, right and nose records")
+    expected_ids = [item[2] for item in GEAR_CONTACTS]
+    found_ids = [wheel_sources[item[1]].get("contact_id") for item in GEAR_CONTACTS
+                 if isinstance(wheel_sources[item[1]], dict)]
+    if found_ids != expected_ids:
+        raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear wheel contact IDs/order must be {expected_ids!r}; found {found_ids!r}")
+
+    contact_paths = {}
+    radii = {}
+    radius_source = f"{COLLISION_GEOMETRY_SRC} (SHA-256 {collision_geometry_hash}); source gear.wheels radius_m, a visual mesh bound, not a certified tyre dimension"
+    path_source = (
+        f"{COLLISION_GEOMETRY_SRC} (SHA-256 {collision_geometry_hash}); source gear.wheels contact_model trajectory "
+        "[x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; "
+        "visual mesh contact envelope, not a calibrated strut path"
+    )
+    for name, side, expected_id in GEAR_CONTACTS:
+        wheel = wheel_sources[side]
+        if not isinstance(wheel, dict):
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.wheels.{side} must be an object")
+        required_wheel_refs = ("node", "spin_node", "compression_node") + (("steer_node",) if side == "nose" else ())
+        for ref_name in required_wheel_refs:
+            if not isinstance(wheel.get(ref_name), str) or not wheel[ref_name].strip():
+                raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.wheels.{side}.{ref_name} must be a nonempty scene node reference")
+        if not isinstance(wheel.get("contact_id"), str) or wheel["contact_id"] != expected_id:
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.wheels.{side}.contact_id must be {expected_id!r}")
+        radius = wheel.get("radius_m")
+        if (isinstance(radius, bool) or not isinstance(radius, (int, float)) or not math.isfinite(radius)
+                or not 0.01 <= float(radius) <= 0.2):
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.wheels.{side}.radius_m must be a finite wheel radius in metres")
+        centers = wheel.get("center_model")
+        bottoms = wheel.get("contact_model")
+        if not isinstance(centers, list) or not isinstance(bottoms, list):
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.wheels.{side} requires center_model and contact_model arrays")
+        if len(centers) != len(sample_records) or len(bottoms) != len(sample_records):
+            raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.wheels.{side} paths must align with retraction samples")
+        path = []
+        for index, (center_raw, bottom_raw) in enumerate(zip(centers, bottoms)):
+            center = model_vector3(center_raw, f"gear.wheels.{side}.center_model[{index}]")
+            bottom = model_vector3(bottom_raw, f"gear.wheels.{side}.contact_model[{index}]")
+            expected_bottom = [center[0], center[1] - float(radius), center[2]]
+            if max(abs(bottom[axis] - expected_bottom[axis]) for axis in range(3)) > 2.0e-5:
+                raise ValueError(f"{COLLISION_GEOMETRY_SRC} gear.wheels.{side}.contact_model[{index}] is not center_model minus the wheel radius on model up")
+            model_x_right, model_y_up, model_z_aft = bottom
+            path.append([model_z_aft + DZ, model_x_right, model_y_up])
+        contact_paths[name] = path
+        radii[name] = float(radius)
+
+    nose = contact_paths["nose"][-1]
+    left = contact_paths["main_left"][-1]
+    right = contact_paths["main_right"][-1]
+    main_aft = (left[0] + right[0]) * 0.5
+    wheelbase = main_aft - nose[0]
+    if wheelbase <= 0.2 or not (nose[0] < cg[0] < main_aft):
+        raise ValueError("source Blender gear-down endpoints do not bracket the AV-06 inventory CG in the LE frame")
+    if not (left[1] < 0.0 < right[1]) or abs(left[1] + right[1]) > 0.01 or abs(nose[1]) > 0.02:
+        raise ValueError("source Blender gear-down endpoints must form a centred left/right tricycle footprint")
+    if max(abs(left[2] - right[2]), abs((left[2] + right[2]) * 0.5 - nose[2])) > 0.03:
+        raise ValueError("source Blender gear-down wheel bottoms are not level within 30 mm")
+
+    omega_dt = v("landing_gear.heave_omega_dt")
+    zeta = v("landing_gear.damping_ratio")
+    omega = omega_dt * PHYSICS_TICK_HZ
+    total_k = mass * omega * omega
+    nose_share = (main_aft - cg[0]) / wheelbase
+    main_share = (cg[0] - nose[0]) / (2.0 * wheelbase)
+    shares = {"nose": nose_share, "main_left": main_share, "main_right": main_share}
+    if min(shares.values()) <= 0.0 or abs(sum(shares.values()) - 1.0) > 1.0e-9:
+        raise ValueError(f"derived wheel reactions are not a positive tricycle load split: {shares}")
+
+    gear_source_note = (
+        f"AV09: Σk = inventory mass {mass:.6f} kg × ({omega_dt:.3f} × {PHYSICS_TICK_HZ} Hz)²; "
+        f"split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio {zeta:.2f} "
+        "uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
+    )
+    contacts = []
+    for name, _, contact_id in GEAR_CONTACTS:
+        path = contact_paths[name]
+        k_i = total_k * shares[name]
+        c_i = 2.0 * zeta * math.sqrt(k_i * mass / 3.0)
+        max_compression = qi(
+            "landing_gear.nose_max_compression" if name == "nose" else "landing_gear.main_max_compression", "m"
+        )
+        max_steering = qi("landing_gear.nose_max_steering", "deg") if name == "nose" else q(
+            0.0, "deg", "estimated", "main wheels are unsteered; nose steering uses the existing rudder-to-nosewheel mix"
+        )
+        contacts.append({
+            "id": contact_id,
+            "name": name,
+            "position": q(path[-1], "m", "derived", path_source + "; down endpoint"),
+            "stiffness": q(k_i, "N/m", "derived", gear_source_note),
+            "damping": q(c_i, "N·s/m", "derived", gear_source_note),
+            "max_compression": max_compression,
+            "max_steering": max_steering,
+            "retraction_path": q([coordinate for point in path for coordinate in point], "m", "derived", path_source),
+        })
+
+    # The compact drag line is the equal geometric centroid of the three exposed wheel-bottom locations.
+    drag_center = [sum(contact_paths[name][-1][axis] for name, _, _ in GEAR_CONTACTS) / 3.0 for axis in range(3)]
+    contact_area = q(v("landing_gear.drag_area"), "m²", *src("landing_gear.drag_area"))
+    contact_center = q(
+        drag_center, "m", "derived",
+        path_source + "; centroid of the three full-down wheel-bottom points, an estimated drag moment arm rather than a measured drag centre",
+    )
+    result = {
+        "description": (
+            "Retractable tricycle contact geometry follows the user-supplied Blender GearRetract visual animation. "
+            "Wheel-bottom trajectories and radii are mesh-derived presentation witnesses; contact stiffness, damping, "
+            "travel limits, rolling/friction parameters, actuator times and incremental drag are estimates, not measured "
+            "physical strut or aircraft performance data. Optional main-wheel brakes are assumed installed. Nose steering "
+            "uses the existing rudder-to-nosewheel mix; the SebArt manual specifies a separate steering servo."
+        ),
+        "contacts": contacts,
+        "rolling_resistance": qi("landing_gear.rolling_resistance", "1"),
+        "side_friction": qi("landing_gear.side_friction", "1"),
+        "peak_slip_angle": qi("landing_gear.peak_slip_angle", "deg"),
+        "breakaway_factor": qi("landing_gear.breakaway_factor", "1"),
+        "retraction": {
+            "extension_time": qi("landing_gear.extension_time", "s"),
+            "retraction_time": qi("landing_gear.retraction_time", "s"),
+            "drag_area": contact_area,
+            "drag_center": contact_center,
+        },
+    }
+
+    # This is a source registry, not generated data. Fail closed if the profile no longer follows the source mesh and inputs.
+    profiles = wheel_profile_registry.get("profiles", {})
+    profile = profiles.get(GEAR_PROFILE_ID) if isinstance(profiles, dict) else None
+    if not isinstance(profile, dict) or set(profile.get("contacts", {})) != {name for name, _, _ in GEAR_CONTACTS}:
+        raise ValueError(f"{WHEEL_PROFILES.relative_to(ROOT)} must contain the three-contact profile {GEAR_PROFILE_ID!r}")
+    for name, side, _ in GEAR_CONTACTS:
+        wheel = profile["contacts"][name]
+        expected_inertia = round(0.5 * v(
+            "landing_gear.nose_wheel_mass" if name == "nose" else "landing_gear.main_wheel_mass"
+        ) * radii[name] ** 2, 9)
+        radius_node = wheel.get("wheel_radius", {})
+        inertia_node = wheel.get("wheel_inertia", {})
+        spin_node = wheel.get("spin_relaxation", {})
+        brake_node = wheel.get("brake_torque", {})
+        expected_brake = 0.0 if name == "nose" else v("landing_gear.main_brake_torque")
+        expected_availability = "none" if name == "nose" else "available"
+        if (abs(float(radius_node.get("value", -1.0)) - round(radii[name], 6)) > 1.0e-9
+                or abs(float(inertia_node.get("value", -1.0)) - expected_inertia) > 5.0e-10
+                or abs(float(spin_node.get("value", -1.0)) - v("landing_gear.wheel_spin_relaxation")) > 1.0e-9
+                or abs(float(brake_node.get("value", -1.0)) - expected_brake) > 1.0e-9
+                or wheel.get("brake_availability") != expected_availability):
+            raise ValueError(f"{WHEEL_PROFILES.relative_to(ROOT)} profile {GEAR_PROFILE_ID}.{name} is stale against source geometry/inputs")
+
+    geometry = {"wheelbase_m": wheelbase, "load_shares": shares, "total_stiffness_N_m": total_k,
+                "heave_omega_rad_s": omega, "static_sag_m": mass * G0 / total_k,
+                "drag_center_le_m": drag_center, "sample_count": len(sample_records), "radii_m": radii}
+    return result, geometry
+
+
+landing_gear, landing_gear_report = derive_landing_gear()
 data = {
     "format": "openrc-aircraft v1",
     "physical_identity_version": 1,
@@ -714,9 +948,11 @@ data = {
     "description": (
         f"Ventage Jet, based on the SebArt Avanti S Jet 2.2m ARF (A200, {b:.2f} m span) with a JetCat P100-RX turbine. "
         f"EXPERIMENTAL first physics estimate (AV-06), generated by {SCRIPT}; not flight-identified. Physical mass, "
-        "aerodynamic and turbine estimates retain the AV-02 geometry.json surrogate. Visual model and gear-up collision "
-        "witnesses use the imported Blender geometry; its installation is not calibrated. Flaps up, gear up "
-        "(in-air start; no landing gear contacts)."
+        "aerodynamic, inertia and thrust-line estimates retain the AV-02 geometry.json physical surrogate. The visual "
+        "aircraft and gear-up collision witnesses use the imported Blender geometry; wheel positions and radii are "
+        "source-mesh-derived, while gear contact mechanics and actuator/drag values are provisional estimates. Optional "
+        "main-wheel brakes are assumed installed; this is not a calibrated physical gear or turbine installation. "
+        "Flaps remain visual-only; gear is retractable_tricycle."
     ),
     "frames": {
         "le_frame": "positions in metres from the root wing leading edge beside the fuselage (model z 0) on the root wing mid-plane (model y 0): [x_aft, y_right, z_up]",
@@ -750,7 +986,8 @@ data = {
         f"(SHA-256 {collision_geometry_hash}); source model_position [x_right, y_up, z_aft] mapped to the "
         "physical LE frame [x_aft, y_right, z_up]. Wing witnesses remain fixed and fuselage-attached witnesses "
         "include wing_forward_shift. This visual witness source does not replace the AV-02 physical geometry "
-        "surrogate or calibrate installation. No landing gear contacts: any ground contact is a crash (gear up)."
+        "surrogate or calibrate installation. These probes represent the source Blender gear-up/stowed terminal hull; "
+        "separate retractable landing-gear contacts follow the visual wheel-bottom paths while deployed."
     ),
     "crash_hull_ids": [identity for identity, _ in crash_hull_probes],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
@@ -867,8 +1104,12 @@ check_consistency(data)
 
 legacy_data = data
 data = upgrade(legacy_data)
-validate_physical_identity(data)
 parity = numeric_parity(legacy_data, data)
+# AS-02's ID-gated policy intentionally records the historical AV-06 gear-up state. AV-09 adds the new gear module after
+# that compatibility migration so the legacy record remains evidence of its original locked-up configuration.
+data["capabilities"]["gear"] = "retractable_tricycle"
+data["landing_gear"] = landing_gear
+validate_physical_identity(data)
 text = (json.dumps(data, indent=2, ensure_ascii=False) + "\n").replace("\n", "\r\n")
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]
 for sec, name, val, how in log:
@@ -877,19 +1118,31 @@ for sec, name, val, how in log:
 coef_rows = ["| Coefficient | Value | Kind |", "| --- | --- | --- |"] + [f"| {k} | {x['value']:.5g} | {x['kind']} |" for k, x in data["aero"]["coefficients"].items()]
 eng_rows = ["| rpm | bench thrust (N) | installed static (N) | net at start speed (N) | air flow (kg/s) |", "| --- | --- | --- | --- | --- |"] + [
     f"| {r[0]:.0f} | {r[1]:.1f} | {k_inst * r[1]:.1f} | {thrust_at(V_start, r[0]):.1f} | {tab(mflow_rows, r[0]):.3f} |" for r in thrust_rows if r[0] >= n_idle]
+gear_contact_rows = [
+    f"| {contact['name']} | {', '.join(f'{x:.6f}' for x in contact['position']['value'])} | "
+    f"{contact['stiffness']['value']:.2f} | {contact['damping']['value']:.2f} | "
+    f"{contact['max_compression']['value']:.3f} | {landing_gear_report['radii_m'][contact['name']]:.6f} |"
+    for contact in landing_gear["contacts"]
+]
+gear_radii_text = ", ".join(f"{name} {radius:.6f} m" for name, radius in landing_gear_report["radii_m"].items())
+gear_shares_text = ", ".join(f"{name} {share:.1%}" for name, share in landing_gear_report["load_shares"].items())
 report = f"""# AV-06: Ventage Jet with JetCat P100-RX, physics derivation
 
 Source aircraft: SebArt Avanti S (A200).
 
-Generated by `{SCRIPT}` from physical surrogate `{GEOMETRY.relative_to(ROOT).as_posix()}`, collision-only visual witnesses
-`{COLLISION_GEOMETRY_SRC}` (SHA-256 `{collision_geometry_hash}`), `inputs.json`, and shared conventions; do not edit (regenerate).
-Output: `{OUT.relative_to(ROOT).as_posix()}`. **Experimental**: textbook estimates from the AV-02 estimated physical surrogate
-and sourced kit/engine data, not flight identification. The imported Blender geometry supplies gear-up collision witnesses only;
-its visual turbine installation is not calibrated and it does not define the physical mass, aerodynamics, inertia or thrust line.
-Flaps up and gear up; in-air start only. `--check` recomputes the sidecar hash and rejects stale generated output/report or an
-invalid/missing collision source.
+Generated by `{SCRIPT}` from physical surrogate `{GEOMETRY.relative_to(ROOT).as_posix()}`, source-model visual and landing-gear
+geometry `{COLLISION_GEOMETRY_SRC}` (SHA-256 `{collision_geometry_hash}`), wheel profile registry
+`{WHEEL_PROFILES.relative_to(ROOT).as_posix()}` (SHA-256 `{wheel_profile_hash}`), `inputs.json`, and shared conventions; do not
+edit (regenerate). Output: `{OUT.relative_to(ROOT).as_posix()}`. **Experimental**: textbook mass/aero/inertia/thrust estimates
+continue to use the AV-02 physical surrogate and sourced kit/engine data, not flight identification. The imported Blender
+model supplies visual geometry, 13 gear-up collision witnesses and gear-contact trajectories; its turbine installation is
+not calibrated, and the visual mesh does not calibrate physical spring/damper behavior. `--check` recomputes the sidecar and
+wheel-profile hashes and rejects stale generated output/report, stale registry values or a missing/invalid geometry source.
 
-The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit compatibility-default leaves added, {parity['numeric_differences']} differences.
+The v1 baseline is upgraded to `openrc-aircraft v2` by the ID-gated standardizer, then the AV-09 gear module is added while
+preserving the historical AS-02 migration policy. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves
+preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit
+compatibility-default leaves added, {parity['numeric_differences']} differences.
 
 Flight mass {mass:.3f} kg (fuel {fuel_kg:.2f} kg), CG {cg_z * 1000:.0f} mm aft of the root LE = {100 * (cg_z - mac_le) / mac:.1f} % MAC, static margin {sm:.1f} % MAC.
 Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = {", ".join(f"{x:.6g}" for x in J)} kg·m²; principal moments = {", ".join(f"{x:.6g}" for x in I_principal)} kg·m².
@@ -912,13 +1165,43 @@ The clean-airframe coefficient is an estimate, not an Avanti flight measurement 
 
 {chr(10).join(eng_rows)}
 
+## Landing gear and ground model
+
+The imported Blender `GearRetract` source supplies {landing_gear_report['sample_count']} uniformly spaced wheel-bottom
+samples from 0 (stowed/up) to 1 (deployed/down), plus mesh-derived tyre radii ({gear_radii_text}). These are visual geometry
+measurements, not a physical strut survey. Contact paths are converted from model `[right, up, aft]` to the physics LE frame
+`[aft, right, up]`; the existing `wing_forward_shift` is applied to the fuselage-mounted gear. Full-down wheelbase is
+{landing_gear_report['wheelbase_m']:.3f} m and the static wheel reactions derived from the AV-06 inventory CG are
+{gear_shares_text}. The displayed contact endpoints use wheel-bottom positions; the wheel-center trajectories remain a
+separate source sidecar measurement.
+
+| Contact | Full-down LE position [aft, right, up] (m) | Stiffness (N/m) | Damping (N·s/m) | Terminal compression (m) | Mesh radius (m) |
+| --- | --- | ---: | ---: | ---: | ---: |
+{chr(10).join(gear_contact_rows)}
+
+Total stiffness {landing_gear_report['total_stiffness_N_m']:.1f} N/m gives heave frequency {landing_gear_report['heave_omega_rad_s']:.2f}
+rad/s ({landing_gear_report['heave_omega_rad_s'] / (2 * math.pi):.2f} Hz) and {landing_gear_report['static_sag_m'] * 1000:.1f} mm static sag.
+The generator distributes that stiffness by the derived static load shares; damping uses ζ={v('landing_gear.damping_ratio'):.2f}
+and the existing equal m/3 contact-mass convention. The 80 mm main and 60 mm nose terminal limits are equivalent-compliance
+thresholds selected for AV-09 sink testing, not measured strut travel. Smooth-runway rolling resistance, side friction and
+slip-angle regularization remain provisional. Extension and retraction are each {v('landing_gear.extension_time'):.1f} s estimates;
+the gear-down incremental drag area is {v('landing_gear.drag_area'):.3f} m² and its estimated moment center is
+`[{', '.join(f'{x:.4f}' for x in landing_gear_report['drag_center_le_m'])}]` m in the LE frame.
+
+SebArt's Avanti S assembly manual lists pneumatic gear and a steering-wheel servo; optional pneumatic wheel brakes are listed
+as separate equipment. The simulation assumes optional brakes on both main wheels at the provisional 1.0 N·m per-wheel value;
+the manual gives no brake torque or actuator cycle time. It routes the existing rudder-to-nosewheel mix to steering rather
+than modeling a separate steering-servo channel.
+
 ## Known simplifications
 
-- Physical mass, aerodynamic, inertia, and thrust-line estimates continue to use the AV-02 visual blockout as a physical
-  surrogate (estimated sections); see the inputs' scale factors and their sources. The imported Blender model is the visual
-  model and its `collision_probes` provide gear-up crash witnesses only; no physical or turbine-installation calibration is
-  claimed.
-- Flaps fixed up; retracts up. No landing gear contacts (crash hull only): takeoff and landing need AV-09.
+- Physical mass, aerodynamic, inertia and thrust-line estimates continue to use the AV-02 geometry.json physical surrogate
+  (estimated sections); see the inputs' scale factors and sources. The imported Blender model provides the new visual shape,
+  gear-up collision probes and source-mesh wheel geometry, but does not calibrate aircraft mass, aero, turbine installation,
+  strut compliance, wheel inertia or braking torque.
+- Flaps remain visual-only. Gear paths and wheel radii follow the imported visual model; ground spring/damper behavior,
+  rolling friction, steering limit, brake torque, actuator time and incremental drag are model assumptions that require
+  AV-09 software regression and aircraft-specific physical data before they can be called calibrated.
 - Fuel mass fixed at the declared state (no burn, AV-10). The session has a discrete on/off state; it does not model ECU
   ignition/autostart, a physical spool-down transient, restart behavior or flameout dynamics.
 - Fuselage directional destabilization omitted (v1 contract: Cnb equals the fin term), as for every aircraft.

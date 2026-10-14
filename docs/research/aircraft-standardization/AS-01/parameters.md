@@ -100,8 +100,13 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `landing_gear.contacts[].max_compression` | m | ≥0.005, ≤0.5 | AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash |
 | `landing_gear.contacts[].max_steering` | deg | ≥-45, ≤45 | AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash |
 | `landing_gear.contacts[].position` | m | length 3…3, each(≥-3, ≤3) | AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash |
+| `landing_gear.contacts[].retraction_path` | m | length 6…1539, each(≥-3, ≤3) | AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state |
 | `landing_gear.contacts[].stiffness` | N/m | ≥1, ≤1e+06 | AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash |
 | `landing_gear.peak_slip_angle` | deg | ≥1, ≤30 | AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash |
+| `landing_gear.retraction.drag_area` | m² | ≥0, ≤1 | AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state |
+| `landing_gear.retraction.drag_center` | m | length 3…3, each(≥-3, ≤3) | AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state |
+| `landing_gear.retraction.extension_time` | s | ≥0.25, ≤30 | AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state |
+| `landing_gear.retraction.retraction_time` | s | ≥0.25, ≤30 | AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state |
 | `landing_gear.rolling_resistance` | 1 | ≥0, ≤0.3 | AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash |
 | `landing_gear.side_friction` | 1 | ≥0.1, ≤1.5 | AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash |
 | `plausibility.inertia_reference` | kg·m2 | length 3…3, each(≥0, >0, ≤100) | AircraftData.validate_and_derive: scaled-inertia warning only |
@@ -173,4 +178,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 159 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 164 distinct quantity paths. Shared paths retain branch-dependent ranges.

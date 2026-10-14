@@ -19,11 +19,17 @@ def run(command, log, expected_missing_texture=False):
                             stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", timeout=180)
     log.write_text(result.stdout, encoding="utf-8")
     errors = re.findall(r"^(?:SCRIPT |SHADER )?ERROR:.*$", result.stdout, re.MULTILINE)
-    allowed = expected_missing_texture and all(re.match(r"ERROR: Unable to open file: res://\.godot/imported/[^/]+\.ctex\.", line) for line in errors)
+    resource_path = r"res://(?:\.godot/imported/[^/]+\.(?:ctex|scn)|assets/aircraft/hx-700/articulated/[^/]+\.(?:png|glb))"
+    expected_error = r"ERROR: (?:(?:Unable to open file|Failed loading resource): " + resource_path + r"\.|(?:Can't load dependency|Error loading resource): '" + resource_path + r"'\.)"
+    allowed = expected_missing_texture and all(re.fullmatch(expected_error, line.strip()) for line in errors)
     if result.returncode or (errors and not allowed):
         raise RuntimeError(f"Check failed ({result.returncode}): {log}\n{result.stdout[-4000:]}")
+    if "WARNING: Broken external resource!" in result.stdout and not expected_missing_texture:
+        raise RuntimeError("Broken imported resource dependency: " + str(log))
     if expected_missing_texture and "HELI-25c package rejected:" not in result.stdout:
         raise RuntimeError("Missing-texture fixture did not fail closed: " + str(log))
+    if expected_missing_texture and not any("Unable to open file:" in line and ".ctex" in line for line in errors):
+        raise RuntimeError("Texture omission did not exercise the expected missing payload: " + str(log))
     return result.stdout
 
 

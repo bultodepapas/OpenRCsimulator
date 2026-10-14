@@ -81,6 +81,8 @@ func _run() -> void:
 	_check("Help shows every key of the shared table (%d)" % keys, _caps_text(help).size() == keys, str(_caps_text(help)))
 	_check("about: development build, Godot, licence", "development build" in help.about_label.text and "Godot 4.7" in help.about_label.text
 		and "MIT" in help.about_label.text, help.about_label.text)
+	_check("Help documents gear AUX and the optional gear action",
+		help.radio_help_label.text.contains("gear AUX") and help.radio_help_label.text.contains("Toggle landing gear"), help.radio_help_label.text)
 	var scroll: ScrollContainer = help.find_children("*", "ScrollContainer", true, false)[0]
 	_check("Help scrolls to keyboard focus", scroll.follow_focus)
 	var page: Control = scroll.get_child(0)
@@ -100,6 +102,8 @@ func _run() -> void:
 			untranslated.append(c.text)
 	_check("Help: every text translated to Spanish", untranslated.is_empty(), str(untranslated))
 	_check("about in Spanish", "versión de desarrollo" in app.help.about_label.text, app.help.about_label.text)
+	_check("Spanish Help documents gear AUX and the optional gear action",
+		app.help.radio_help_label.text.contains("AUX") and app.help.radio_help_label.text.contains("Alternar tren de aterrizaje"), app.help.radio_help_label.text)
 	var es_scroll: ScrollContainer = app.help.find_children("*", "ScrollContainer", true, false)[0]
 	var es_page: Control = es_scroll.get_child(0)
 	_check("Spanish Help fits without scrolling (%d <= %d px)" % [es_page.get_combined_minimum_size().y, es_scroll.custom_minimum_size.y],

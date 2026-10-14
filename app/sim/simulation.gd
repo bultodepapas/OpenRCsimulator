@@ -414,7 +414,8 @@ func _restore_last_valid() -> void:
 		previous = _last_valid_previous.duplicate() if state_is_valid(_last_valid_previous) else state.duplicate()
 		if _array_is_finite(_last_valid_aux):
 			aux = _last_valid_aux.duplicate()
-		if _array_is_finite(_last_valid_inputs, input_size):
+		if _last_valid_inputs.size() in [4, 6] and _array_is_finite(_last_valid_inputs):
+			input_size = _last_valid_inputs.size()
 			inputs = _last_valid_inputs.duplicate()
 		if _loads_are_valid(_last_valid_loads):
 			last_loads = _last_valid_loads.duplicate()
@@ -444,6 +445,8 @@ func checkpoint() -> Dictionary:
 
 ## Validate before changing anything. Restoring across a layout, timestep or mass configuration is refused.
 func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, expected_modes_size: int = -1) -> bool:
+	if input_size not in [4, 6]:
+		return false
 	for key in ["format", "tick", "dt", "state", "previous", "aux", "inputs", "modes", "last_loads", "mass", "inertia", "gravity", "stop_at_tick"]:
 		if not candidate.has(key):
 			return false

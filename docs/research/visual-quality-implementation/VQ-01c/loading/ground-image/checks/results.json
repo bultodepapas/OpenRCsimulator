@@ -1,0 +1,129 @@
+[
+  {
+    "name": "cache-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\comparison\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\test_ground_image_cache.gd"
+    ],
+    "exit_code": 0,
+    "log_sha256": "1925b35045f36bdbc919788154502205834abaf7f870f7aa6f22734703c39370",
+    "engine_errors": false,
+    "warnings": [],
+    "passing_check_lines": 16
+  },
+  {
+    "name": "cache-shared-tree",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_ground_image_cache.gd"
+    ],
+    "exit_code": 0,
+    "log_sha256": "ec0af91f5f5e47f7ddb4e325d144d42d5e58919e7373f3e3e81952feb295483c",
+    "engine_errors": false,
+    "warnings": [],
+    "passing_check_lines": 16
+  },
+  {
+    "name": "test_field_surfaces",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\comparison\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "exit_code": 0,
+    "log_sha256": "d0b3f78fa77c87d909876a01427fa40161280924103fd0ad394678780f9c292d",
+    "engine_errors": false,
+    "warnings": [],
+    "passing_check_lines": 19
+  },
+  {
+    "name": "test_near_grass",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\comparison\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_near_grass.gd"
+    ],
+    "exit_code": 0,
+    "log_sha256": "309e494d8f0ec913336927dae711c873d85abf34beacdda577b207e44679bc3a",
+    "engine_errors": false,
+    "warnings": [],
+    "passing_check_lines": 38
+  },
+  {
+    "name": "test_field_integration",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\comparison\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_integration.gd"
+    ],
+    "exit_code": 0,
+    "log_sha256": "5d71d3afd86c2127ff174e9fef5e4d52dceba274096c930ee273141fe15b0a0e",
+    "engine_errors": false,
+    "warnings": [],
+    "passing_check_lines": 39
+  },
+  {
+    "name": "test_world_presentation_context",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\comparison\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_world_presentation_context.gd"
+    ],
+    "exit_code": 0,
+    "log_sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e",
+    "engine_errors": false,
+    "warnings": [],
+    "passing_check_lines": 0
+  },
+  {
+    "name": "test_workshop_trial",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\comparison\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_workshop_trial.gd"
+    ],
+    "exit_code": 0,
+    "log_sha256": "74858f3a6372a8419cc8ba4fe1e4144fd77e67bc4584264add464d3e7383558f",
+    "engine_errors": false,
+    "warnings": [
+      "WARNING: Aircraft presentation changed after the Workshop trial was frozen."
+    ],
+    "passing_check_lines": 0
+  }
+]

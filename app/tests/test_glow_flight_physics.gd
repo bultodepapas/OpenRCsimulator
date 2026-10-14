@@ -44,7 +44,7 @@ class FlightOwner extends Node:
 		return NAN
 
 	func _ground_evaluation(_body: PackedFloat64Array, _aux: PackedFloat64Array,
-			_values: PackedFloat64Array) -> Dictionary:
+			_values: PackedFloat64Array, _stage_air: Dictionary = {}) -> Dictionary:
 		return {ok = true, loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), derivative = PackedFloat64Array()}
 
 

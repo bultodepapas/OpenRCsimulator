@@ -19,6 +19,7 @@ func _initialize() -> void:
 		"res://project.godot": "res://project.godot",
 		"res://aircraft/hx700_articulated_model.gd": "res://aircraft/hx700_articulated_model.gd",
 		"res://smoke.gd": "res://smoke.gd",
+		"res://.godot/uid_cache.bin": "res://.godot/uid_cache.bin",
 		asset_path: asset_path,
 		"res://assets/aircraft/hx-700/articulated/construction.json": "res://assets/aircraft/hx-700/articulated/construction.json",
 	}
@@ -33,7 +34,7 @@ func _initialize() -> void:
 			printerr("Unable to add package dependency: ", target)
 			quit(1)
 			return
-	# Preserve the engine's original scene/texture graph and its import remaps.
+	# Preserve the engine's original scene/texture graph and import metadata.
 	# Re-saving a PackedScene with BUNDLE_RESOURCES can lose texture references.
 	var asset_directory := asset_path.get_base_dir()
 	var import_files := DirAccess.get_files_at(asset_directory)
@@ -49,10 +50,8 @@ func _initialize() -> void:
 		if imported_path.is_empty():
 			quit(1)
 			return
-		var temp_path := "res://pack-remap-%d.cfg" % remap_count
-		var remap := ConfigFile.new()
-		remap.set_value("remap", "path", imported_path)
-		if remap.save(temp_path) != OK or packer.add_file(asset_directory.path_join(filename.trim_suffix(".import")) + ".remap", ProjectSettings.globalize_path(temp_path)) != OK:
+		var metadata_path := asset_directory.path_join(filename)
+		if packer.add_file(metadata_path, ProjectSettings.globalize_path(metadata_path)) != OK:
 			quit(1)
 			return
 		remap_count += 1

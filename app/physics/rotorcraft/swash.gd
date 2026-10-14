@@ -43,14 +43,20 @@ static func sample_mode_curve(curves_by_mode: Variant, mode_name: Variant, chann
 		return _failure("curve input must be finite and in [-1, 1]")
 
 	var points: Variant = curves_by_mode[mode_name][channel]
+	return {"ok": true, "value": _sample_validated_curve(points, float(normalized_input))}
+
+
+## Internal prepared-electronics entry. The caller owns validated five-point
+## curves and checks the dynamic stick and output domains.
+static func _sample_validated_curve(points: Variant, normalized_input: float) -> float:
 	var position: float = (float(normalized_input) + 1.0) * 2.0
 	if position >= 4.0:
-		return {"ok": true, "value": float(points[4])}
+		return float(points[4])
 	var lower_index: int = int(position)
 	var fraction: float = position - float(lower_index)
 	var lower_value: float = float(points[lower_index])
 	var upper_value: float = float(points[lower_index + 1])
-	return {"ok": true, "value": lower_value + fraction * (upper_value - lower_value)}
+	return lower_value + fraction * (upper_value - lower_value)
 
 
 ## Top view uses x-forward, y-right. Servo order is front (0 deg), rear-right (+120 deg),
@@ -196,6 +202,19 @@ static func linkage_output(servo_positions: Variant, linkage: Variant) -> Dictio
 	if not _is_finite_number(linkage["cyclic_max_rad"]) or float(linkage["cyclic_max_rad"]) < 0.0:
 		return _failure("cyclic limit must be finite and non-negative")
 
+	return _linkage_from_axes(axes, linkage)
+
+
+## Internal entry for a validated immutable linkage. Dynamic servo positions
+## and every calculated physical output still fail closed.
+static func _linkage_output_prepared(servo_positions: PackedFloat64Array, linkage: Dictionary) -> Dictionary:
+	var axes := unmix_120(servo_positions)
+	if not axes.ok:
+		return axes
+	return _linkage_from_axes(axes, linkage)
+
+
+static func _linkage_from_axes(axes: Dictionary, linkage: Dictionary) -> Dictionary:
 	var collective_raw: float = float(axes["collective"]) * float(linkage["collective_rad_per_unit"])
 	var longitudinal_raw: float = float(axes["longitudinal"]) * float(linkage["longitudinal_rad_per_unit"])
 	var lateral_raw: float = float(axes["lateral"]) * float(linkage["lateral_rad_per_unit"])

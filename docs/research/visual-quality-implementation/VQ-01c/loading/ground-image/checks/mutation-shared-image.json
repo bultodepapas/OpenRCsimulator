@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\comparison\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-followup\\test_ground_image_cache.gd"
+  ],
+  "exit_code": 1,
+  "detected": true,
+  "expected_failure": true
+}

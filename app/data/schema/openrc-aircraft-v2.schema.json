@@ -1892,6 +1892,24 @@
                   }
                 }
               },
+              "retraction_path": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 6,
+                    "maxItems": 1539,
+                    "items": {
+                      "type": "number",
+                      "minimum": -3,
+                      "maximum": 3
+                    }
+                  },
+                  "unit": {
+                    "const": "m"
+                  }
+                }
+              },
               "id": {
                 "type": "string",
                 "minLength": 1,
@@ -1961,6 +1979,75 @@
           "type": "string",
           "minLength": 1,
           "pattern": "[^\\u0001-\\u0020]"
+        },
+        "retraction": {
+          "type": "object",
+          "required": [
+            "extension_time",
+            "retraction_time",
+            "drag_area",
+            "drag_center"
+          ],
+          "properties": {
+            "extension_time": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.25,
+                  "maximum": 30
+                },
+                "unit": {
+                  "const": "s"
+                }
+              }
+            },
+            "retraction_time": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.25,
+                  "maximum": 30
+                },
+                "unit": {
+                  "const": "s"
+                }
+              }
+            },
+            "drag_area": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "unit": {
+                  "const": "m²"
+                }
+              }
+            },
+            "drag_center": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -3.0,
+                    "maximum": 3.0
+                  }
+                },
+                "unit": {
+                  "const": "m"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "allOf": [
@@ -2036,7 +2123,8 @@
             "fixed_tricycle",
             "fixed_taildragger",
             "locked_down_taildragger",
-            "locked_up"
+            "locked_up",
+            "retractable_tricycle"
           ]
         },
         "propulsion_layout": {
@@ -4790,6 +4878,24 @@
           "capabilities": {
             "properties": {
               "gear": {
+                "const": "retractable_tricycle"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "landing_gear"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "properties": {
+              "gear": {
                 "const": "locked_up"
               }
             }
@@ -4801,6 +4907,59 @@
           "required": [
             "landing_gear"
           ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "properties": {
+              "gear": {
+                "const": "retractable_tricycle"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "landing_gear": {
+            "required": [
+              "retraction"
+            ],
+            "properties": {
+              "contacts": {
+                "items": {
+                  "required": [
+                    "retraction_path"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "landing_gear": {
+            "not": {
+              "required": [
+                "retraction"
+              ]
+            },
+            "properties": {
+              "contacts": {
+                "items": {
+                  "not": {
+                    "required": [
+                      "retraction_path"
+                    ]
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },

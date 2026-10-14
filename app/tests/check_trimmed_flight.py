@@ -20,6 +20,7 @@ COLUMNS = (
 ).split()
 ELECTRIC_COLUMNS = ('drive_enabled drive_duty bus_voltage_v motor_current_a drive_bus_current_a '
                     'source_torque_nm shaft_power_w copper_loss_w rotational_loss_w').split()
+GEAR_COLUMNS = 'gear_extension gear_target_down cmd_gear_down cmd_wheel_brake'.split()
 # Trace v3 prints time to nine decimal places. Allow rounding, not a missing tick.
 TIME_TOLERANCE = 1e-9
 STATE_LAYOUT = 'north_m east_m down_m u_mps v_mps w_mps qw qx qy qz p_radps q_radps r_radps'.split()
@@ -36,6 +37,10 @@ SHAFT_LAYOUT = 'axial wash increment m/s, slipstream.pieces order, then propelle
 BATTERY_LAYOUT = ('axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, '
                   'remaining charge C, terminal energy J, pack heat J; RK4 coupled')
 WASH_ONLY_LAYOUT = 'axial wash increment m/s, slipstream.pieces order; RK4 coupled; checkpoint only'
+TURBINE_LAYOUT = 'turbine shaft rpm; RK4 coupled; prescribed fuel mass'
+GEAR_LAW = 'retractable-point-gear-v1'
+GEAR_TRACE_SCHEMA = 'openrc-gear-trace v1'
+GEAR_INPUT_LAYOUT = ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake']
 
 
 def _finite_number(value: object) -> bool:
@@ -97,7 +102,7 @@ def check_input_identity(metadata: dict, allow_legacy: bool, aircraft_input: Pat
             raise ValueError('legacy metadata cannot verify --aircraft-input')
         digest_key, convention_key = 'aircraft_data_sha256', 'aircraft_data_hash_convention'
         identity = 'legacy semantic-only metadata; exact input identity unavailable'
-    elif schema in {f'openrc-flight-meta v{version}' for version in range(2, 7)}:
+    elif schema in {f'openrc-flight-meta v{version}' for version in range(2, 9)}:
         if any(key in metadata for key in ('aircraft_data_sha256', 'aircraft_data_hash_convention')):
             raise ValueError('metadata v2 must use explicit input/semantic hash names')
         if metadata.get('aircraft_input_format') not in ('openrc-aircraft v1', 'openrc-aircraft v2'):
@@ -172,27 +177,98 @@ def check_metadata(metadata: dict, first: dict) -> None:
     check_coupled_metadata(metadata)
 
 
+def _has_gear_metadata(metadata: dict) -> bool:
+    keys = ('gear_law', 'gear_aux_index', 'gear_trace_schema', 'recording_start_gear')
+    if any(key in metadata for key in keys):
+        return True
+    if 'input_layout' in metadata:
+        try:
+            layout = json.loads(metadata['input_layout'])
+        except (TypeError, ValueError):
+            return 'gear_down' in str(metadata['input_layout']) or 'wheel_brake' in str(metadata['input_layout'])
+        return (isinstance(layout, list)
+                and (len(layout) == 6 or 'gear_down' in layout or 'wheel_brake' in layout))
+    return False
+
+
+def check_gear_metadata(metadata: dict, first: dict | None = None) -> dict:
+    """Validate the opt-in six-input gear contract and, when supplied, its first CSV row."""
+    if (metadata.get('metadata_schema') != 'openrc-flight-meta v8'
+            or metadata.get('gear_law') != GEAR_LAW
+            or metadata.get('gear_trace_schema') != GEAR_TRACE_SCHEMA):
+        raise ValueError('missing or unsupported retractable gear trace contract')
+    try:
+        index_text = metadata['gear_aux_index']
+        layout = json.loads(metadata['input_layout'])
+        start = json.loads(metadata['recording_start_gear'])
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError('missing or invalid retractable gear metadata') from error
+    if (not isinstance(index_text, str) or not re.fullmatch(r'(?:0|[1-9][0-9]*)', index_text)
+            or int(index_text) < 4):
+        raise ValueError('invalid gear_aux_index')
+    if layout != GEAR_INPUT_LAYOUT:
+        raise ValueError('input_layout disagrees with the six-input gear contract')
+    if (not isinstance(start, list) or len(start) != 2
+            or any(not _finite_number(value) for value in start)
+            or not 0.0 <= float(start[0]) <= 1.0 or float(start[1]) not in (0.0, 1.0)):
+        raise ValueError('invalid recording_start_gear')
+    if 'turbulence_aux_index' in metadata:
+        turbulence_text = metadata['turbulence_aux_index']
+        if (not isinstance(turbulence_text, str) or not re.fullmatch(r'(?:0|[1-9][0-9]*)', turbulence_text)
+                or int(turbulence_text) != int(index_text) + 2):
+            raise ValueError('gear AUX pair is not immediately before turbulence state')
+    if first is not None:
+        if any(key not in first for key in GEAR_COLUMNS):
+            raise ValueError('gear trace is missing its four gear columns')
+        check_gear_sample(first)
+        if (abs(first['gear_extension'] - float(start[0])) > 1e-9
+                or first['gear_target_down'] != float(start[1])):
+            raise ValueError('recording_start_gear disagrees with first sample')
+    return {'aux_index': int(index_text), 'recording_start': [float(start[0]), float(start[1])]}
+
+
+def check_gear_sample(sample: dict) -> None:
+    """Enforce bounded state and command values without assuming a gear motion rate."""
+    extension, target, command, brake = (sample[key] for key in GEAR_COLUMNS)
+    if (not all(_finite_number(value) for value in (extension, target, command, brake))
+            or not 0.0 <= extension <= 1.0 or target not in (0.0, 1.0)
+            or command not in (0.0, 1.0) or not 0.0 <= brake <= 1.0):
+        raise ValueError('invalid retractable gear state or command')
+
+
 def check_coupled_metadata(metadata: dict) -> None:
     """Optional model extension shared by calm, wind and atmosphere readers."""
+    gear = check_gear_metadata(metadata) if _has_gear_metadata(metadata) else None
     turbine = metadata.get('propulsion_model') == 'turbine-rpm-governor-rk4-v1'
     if turbine or 'turbine_integrator' in metadata:
+        wheel_keys = {
+            'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
+            'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes',
+            'launch_continuous',
+        }
+        has_wheel_metadata = any(key in metadata for key in wheel_keys)
         if (not turbine or metadata.get('turbine_integrator') != 'rk4'
-                or metadata.get('metadata_schema') == 'openrc-flight-meta v6'
-                or any(key.startswith('wheel_') for key in metadata)
-                or metadata.get('continuous_layout') != 'turbine shaft rpm; RK4 coupled; prescribed fuel mass'
+                or (metadata.get('metadata_schema') == 'openrc-flight-meta v6' and not has_wheel_metadata)
+                or (has_wheel_metadata and gear is None)
+                or (gear is not None and not has_wheel_metadata)
+                or metadata.get('continuous_layout') != TURBINE_LAYOUT + (
+                    '; ' + WHEEL_LAYOUT_SUFFIX if has_wheel_metadata else '')
                 or any(key in metadata for key in ('shaft_integrator', 'rotor_coupling',
-                                                  'electric_configuration', 'wheel_state_model'))):
+                                                  'electric_configuration'))):
             raise ValueError('missing or unsupported continuous turbine semantics')
         try:
             continuous = json.loads(metadata['recording_start_continuous'])
             aux = json.loads(metadata['recording_start_aux'])
         except (KeyError, ValueError) as error:
             raise ValueError('missing continuous turbine recording state') from error
-        if (not isinstance(continuous, list) or len(continuous) != 1
+        wheel = _check_wheel_metadata(metadata, gear=gear is not None) if has_wheel_metadata else None
+        if (not isinstance(continuous, list) or len(continuous) != (1 + (len(wheel['entries']) if has_wheel_metadata else 0))
                 or not _finite_number(continuous[0]) or continuous[0] < 0
                 or not isinstance(aux, list) or len(aux) != 4
                 or any(not _finite_number(value) for value in aux) or continuous[0] != aux[0]):
             raise ValueError('continuous turbine RPM does not match its endpoint mirror')
+        if has_wheel_metadata:
+            _check_wheel_continuous(metadata, wheel, shaft=False, turbine=True)
         return
     wheel_keys = {
         'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
@@ -201,7 +277,7 @@ def check_coupled_metadata(metadata: dict) -> None:
     }
     has_wheel_metadata = any(key in metadata for key in wheel_keys)
     if has_wheel_metadata:
-        wheel = _check_wheel_metadata(metadata)
+        wheel = _check_wheel_metadata(metadata, gear=gear is not None)
     else:
         if metadata.get('metadata_schema') == 'openrc-flight-meta v6':
             raise ValueError('metadata v6 is missing wheel-state metadata')
@@ -259,14 +335,16 @@ def check_coupled_metadata(metadata: dict) -> None:
         _check_wheel_continuous(metadata, wheel, shaft=True, battery=battery, wash_count=wash_count)
 
 
-def _check_wheel_metadata(metadata: dict) -> dict:
+def _check_wheel_metadata(metadata: dict, *, gear: bool = False) -> dict:
     """Validate v6 wheel provenance, contact ordering, and the declared continuous tail."""
     required = {
         'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
         'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes',
         'recording_start_continuous', 'launch_continuous',
     }
-    if metadata.get('metadata_schema') != 'openrc-flight-meta v6' or not required.issubset(metadata):
+    supported_schema = metadata.get('metadata_schema') == 'openrc-flight-meta v6' or (
+        gear and metadata.get('metadata_schema') == 'openrc-flight-meta v8')
+    if not supported_schema or not required.issubset(metadata):
         raise ValueError('incomplete or unsupported wheel-state metadata')
     if metadata.get('wheel_state_model') != WHEEL_STATE_MODEL:
         raise ValueError('unsupported wheel-state model')
@@ -301,8 +379,9 @@ def _check_wheel_metadata(metadata: dict) -> dict:
     for contact, brake in zip(contacts, brakes):
         if (type(brake) is not dict or set(brake) != {'contact', 'availability', 'max_torque_nm'}
                 or brake['contact'] != contact or type(brake['availability']) is not str
-                or not brake['availability'] or not _finite_number(brake['max_torque_nm'])
-                or brake['max_torque_nm'] < 0):
+                or brake['availability'] not in ('available', 'none', 'unspecified')
+                or not _finite_number(brake['max_torque_nm']) or brake['max_torque_nm'] < 0
+                or (brake['max_torque_nm'] > 0 and brake['availability'] != 'available')):
             raise ValueError('invalid wheel brake metadata')
     layout = metadata.get('continuous_layout')
     if (not isinstance(layout, str)
@@ -312,7 +391,8 @@ def _check_wheel_metadata(metadata: dict) -> dict:
 
 
 def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
-                            battery: bool = False, wash_count: int | None = None) -> None:
+                            battery: bool = False, wash_count: int | None = None,
+                            turbine: bool = False) -> None:
     """Check wheel state arrays and ensure all declared wheel slots are the final slots."""
     try:
         continuous = json.loads(metadata['recording_start_continuous'])
@@ -331,7 +411,18 @@ def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
     first_index = wheel['first_index']
     if first_index + len(entries) != len(continuous):
         raise ValueError('wheel states are not a contiguous continuous-state tail')
-    if shaft:
+    if turbine:
+        try:
+            aux = json.loads(metadata['recording_start_aux'])
+        except (KeyError, ValueError) as error:
+            raise ValueError('missing continuous turbine AUX state') from error
+        if (metadata.get('continuous_layout') != TURBINE_LAYOUT + '; ' + WHEEL_LAYOUT_SUFFIX
+                or first_index != 1 or continuous[0] < 0
+                or type(aux) is not list or len(aux) != 4
+                or any(not _finite_number(value) for value in aux)
+                or abs(continuous[0] - aux[0]) > 1e-9):
+            raise ValueError('turbine RPM/wheel state tail disagrees with its declared layout')
+    elif shaft:
         prefix = BATTERY_LAYOUT if battery else SHAFT_LAYOUT
         if metadata.get('continuous_layout') != prefix + '; ' + WHEEL_LAYOUT_SUFFIX:
             raise ValueError('unsupported wheel continuous-state prefix')
@@ -372,12 +463,23 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
             if key in metadata:
                 raise ValueError(f"duplicate metadata: {key}")
             metadata[key] = value
-    electric = metadata.get('format') == 'openrc-trace v7'
-    if metadata.get("format") not in ('openrc-trace v3', 'openrc-trace v7'):
-        raise ValueError("expected openrc-trace v3 or calm fixed-bus v7")
-    if electric != (metadata.get('propulsion_model') == 'electric-fixed-bus-coupled-stop-v1'):
+    trace_format = metadata.get('format')
+    gear = trace_format == 'openrc-trace v10'
+    claims_gear = _has_gear_metadata(metadata)
+    if trace_format not in ('openrc-trace v3', 'openrc-trace v7', 'openrc-trace v10'):
+        raise ValueError("expected openrc-trace v3, calm fixed-bus v7 or retractable-gear v10")
+    if gear != claims_gear:
+        raise ValueError('trace format disagrees with retractable gear metadata')
+    if gear:
+        check_gear_metadata(metadata)
+    electric = (trace_format in ('openrc-trace v7', 'openrc-trace v10')
+                and metadata.get('propulsion_model') == 'electric-fixed-bus-coupled-stop-v1')
+    if ((trace_format == 'openrc-trace v7'
+         and metadata.get('propulsion_model') != 'electric-fixed-bus-coupled-stop-v1')
+            or (trace_format == 'openrc-trace v3'
+                and metadata.get('propulsion_model') == 'electric-fixed-bus-coupled-stop-v1')):
         raise ValueError('trace format disagrees with the fixed-bus electric law')
-    columns = COLUMNS + ELECTRIC_COLUMNS if electric else COLUMNS
+    columns = COLUMNS + (ELECTRIC_COLUMNS if electric else []) + (GEAR_COLUMNS if gear else [])
     try:
         dt = float(metadata["dt_s"])
     except (KeyError, ValueError) as error:
@@ -406,10 +508,14 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
             raise ValueError(f"sample {index}: wrong elapsed time")
         if electric:
             check_fixed_bus_sample(metadata, sample)
+        if gear:
+            check_gear_sample(sample)
         data.append(sample)
     first, last = data[0], data[-1]
     identity = check_input_identity(metadata, allow_legacy, aircraft_input)
     check_metadata(metadata, first)
+    if gear:
+        check_gear_metadata(metadata, first)
     for key, tolerance in (("speed_mps", .01), ("pitch_deg", .05), ("alt_m", .05), ("engine_rpm", 1.0)):
         if abs(last[key] - first[key]) > tolerance:
             raise ValueError(f"{key} drifts {first[key]:.6f} -> {last[key]:.6f}")

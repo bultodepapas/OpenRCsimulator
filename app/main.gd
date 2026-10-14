@@ -247,7 +247,7 @@ var _wheel_brake_key_held := false
 var _visual_pose: Dictionary = {}
 var _smoke: EngineSmoke
 var _smoke_key_on := false
-var _last_auxiliary_requests := {"flaps": 0, "gear": 0}
+var _last_auxiliary_requests := {"flaps": 0}
 var _smoke_assignment: SmokeAssignment
 var _smoke_assignment_was_paused := false
 var _last_render_pose: Dictionary = {}
@@ -687,7 +687,8 @@ func _process(delta: float) -> void:
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
 	var sim: Node = session.sim
-	if _wheel_brake_key_held and (sim.paused or not session.gear_is_retractable()):
+	if _wheel_brake_key_held and (sim.paused or not session.crash.is_empty() or not session.gear_is_retractable()
+		or not Input.is_physical_key_pressed(KEY_B)):
 		_clear_wheel_brake()
 	if _smoke_assignment != null and (not session.radio.connected or session.radio.device_id != _smoke_assignment.device_id):
 		_end_smoke_assignment(true)
@@ -1008,8 +1009,9 @@ func controller_action(action: String) -> bool:
 			elif not session.gear_is_retractable():
 				_note = tr("Landing gear is fixed on this aircraft.")
 			else:
-				session.toggle_gear()
-				_note = _gear_command_note()
+				var accepted: bool = session.toggle_gear()
+				var gear: Dictionary = session.gear_state()
+				_note = _gear_command_note() if accepted or bool(gear.get("inhibited", false)) else tr("Landing gear command was refused.")
 		"trim_left": session.adjust_aileron_trim(-0.005)
 		"trim_right": session.adjust_aileron_trim(0.005)
 		"trim_up": session.adjust_elevator_trim(-0.1)
@@ -1057,11 +1059,17 @@ func _gear_command_note() -> String:
 
 
 func _has_gear_aux_binding() -> bool:
-	if session == null or not session.radio.profile.get("aux", {}) is Dictionary:
+	if session == null:
 		return false
-	var aux: Dictionary = session.radio.profile.get("aux", {})
-	var binding: Variant = aux.get("gear", {})
-	return binding is Dictionary and str(binding.get("type", "")) in ["axis", "button"]
+	var aux_value: Variant = session.radio.profile.get("aux", {})
+	if typeof(aux_value) != TYPE_DICTIONARY:
+		return false
+	var aux: Dictionary = aux_value
+	var binding_value: Variant = aux.get("gear", {})
+	if typeof(binding_value) != TYPE_DICTIONARY:
+		return false
+	var binding: Dictionary = binding_value
+	return str(binding.get("type", "")) in ["axis", "button"]
 
 
 func _clear_wheel_brake() -> void:

@@ -179,6 +179,9 @@ static func _validate_gear_relations(root: Dictionary, gear_kind: String, issues
 	var gear: Variant = root.get("landing_gear")
 	if not gear is Dictionary:
 		return
+	var retractable := gear_kind == "retractable_tricycle"
+	if retractable != gear.has("retraction"):
+		_issue(issues, "/landing_gear/retraction", "must be present exactly for retractable_tricycle")
 	var contacts: Variant = gear.get("contacts", [])
 	if not contacts is Array:
 		return
@@ -199,6 +202,8 @@ static func _validate_gear_relations(root: Dictionary, gear_kind: String, issues
 		var contact: Variant = contacts[index]
 		if not contact is Dictionary:
 			continue
+		if retractable != contact.has("retraction_path"):
+			_issue(issues, "/landing_gear/contacts/%d/retraction_path" % index, "must be present exactly for retractable gear")
 		var name_value: Variant = contact.get("name", null)
 		if name_value is String:
 			var contact_name := String(name_value).strip_edges()
@@ -221,13 +226,13 @@ static func _validate_gear_relations(root: Dictionary, gear_kind: String, issues
 			aft_count += 1
 		if absf(steering_angle) <= 0.000001:
 			continue
-		if gear_kind == "fixed_tricycle":
+		if gear_kind in ["fixed_tricycle", "retractable_tricycle"]:
 			if contact_x >= cg_x or steering_angle <= 0.0:
 				_issue(issues, "/landing_gear/contacts/%d" % index, "fixed_tricycle steering contact must be ahead of plan CG with positive steering")
 		else:
 			if contact_x <= cg_x or steering_angle >= 0.0:
 				_issue(issues, "/landing_gear/contacts/%d" % index, "taildragger steering contact must be aft of plan CG with negative steering")
-	if gear_kind == "fixed_tricycle":
+	if gear_kind in ["fixed_tricycle", "retractable_tricycle"]:
 		if ahead_count < 1 or aft_count < 2:
 			_issue(issues, "/landing_gear/contacts", "fixed_tricycle requires at least one contact ahead and two aft of plan CG")
 	else:

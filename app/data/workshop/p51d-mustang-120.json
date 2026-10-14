@@ -115,7 +115,7 @@
   ],
   "presentation": {
     "visual_family": "p51d-mustang-120",
-    "model_manifest_sha256": "8eba8a1b32ecbec36e09aadbc86a22b624949567b13d796d34bfdadbc5446955",
+    "model_manifest_sha256": "b77b7bf1d8371a5d126ae3d32694b8b5ba27f3895b48ec96359bbfb1eeebdfe9",
     "scale_root": "airplane"
   }
 }

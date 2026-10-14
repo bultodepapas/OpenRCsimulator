@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independently validate atmospheric fields in custom-atmosphere trace v6."""
+"""Independently validate atmospheric fields in custom-atmosphere traces v6/v10."""
 import argparse
 import csv
 import io
@@ -8,9 +8,11 @@ import math
 from pathlib import Path
 import tempfile
 
-from check_trimmed_flight import COLUMNS
+from check_trimmed_flight import (
+    COLUMNS, GEAR_COLUMNS, check_coupled_metadata, check_gear_metadata,
+    check_gear_sample, _has_gear_metadata,
+)
 from check_wind_trace import TURBULENCE_COLUMNS, TURBULENCE_MODEL, WEATHER_COLUMNS, check as check_wind
-from check_trimmed_flight import check_coupled_metadata
 
 FORMAT = 'openrc-trace v6'
 METADATA_SCHEMA = 'openrc-flight-meta v5'
@@ -207,9 +209,17 @@ def check(path, duration=None):
             raise ValueError('malformed trace comment')
         elif line:
             data_lines.append(line)
-    if metadata.get('format') != FORMAT:
-        raise ValueError('expected custom-atmosphere trace v6')
-    if metadata.get('metadata_schema') not in (METADATA_SCHEMA, WHEEL_METADATA_SCHEMA):
+    trace_format = metadata.get('format')
+    gear = trace_format == 'openrc-trace v10'
+    if trace_format not in (FORMAT, 'openrc-trace v10'):
+        raise ValueError('expected custom-atmosphere trace v6 or retractable-gear trace v10')
+    if gear != _has_gear_metadata(metadata):
+        raise ValueError('trace format disagrees with retractable gear metadata')
+    if gear:
+        if metadata.get('metadata_schema') != 'openrc-flight-meta v8':
+            raise ValueError('gear atmosphere trace requires flight metadata v8')
+        check_gear_metadata(metadata)
+    elif metadata.get('metadata_schema') not in (METADATA_SCHEMA, WHEEL_METADATA_SCHEMA):
         raise ValueError('trace v6 requires flight metadata v5 or wheel metadata v6')
     if metadata.get('atmosphere_model') != ATMOSPHERE_MODEL:
         raise ValueError('unsupported atmosphere_model')
@@ -257,7 +267,9 @@ def check(path, duration=None):
     reader = csv.DictReader(data_lines)
     fieldnames = reader.fieldnames
     has_turbulence = expected_weather_model == TURBULENCE_MODEL
-    expected_columns = COLUMNS + WEATHER_COLUMNS + (TURBULENCE_COLUMNS if has_turbulence else []) + ATMOSPHERIC_COLUMNS
+    expected_columns = (COLUMNS + WEATHER_COLUMNS
+                        + (TURBULENCE_COLUMNS if has_turbulence else [])
+                        + ATMOSPHERIC_COLUMNS + (GEAR_COLUMNS if gear else []))
     if fieldnames != expected_columns or len(set(fieldnames or [])) != len(expected_columns):
         raise ValueError('trace v6 columns/order mismatch')
     rows = list(reader)
@@ -277,6 +289,8 @@ def check(path, duration=None):
             raise ValueError('nonnumeric trace sample') from error
         if not all(math.isfinite(value) for value in row.values()):
             raise ValueError('nonfinite trace sample')
+        if gear:
+            check_gear_sample(row)
         tick = row['tick']
         if tick < 0 or tick > (1 << 53) - 1 or tick != int(tick):
             raise ValueError('invalid trace tick')
@@ -305,6 +319,8 @@ def check(path, duration=None):
 
     if int(float(rows[0]['tick'])) != first_tick:
         raise ValueError('recording origin mismatch')
+    if gear:
+        check_gear_metadata(metadata, {key: float(value) for key, value in rows[0].items()})
     if 'recording_start_previous_state' not in metadata:
         raise ValueError('missing previous body state needed for wind validation')
     projection = _project_weather_trace(metadata, config, expected_columns, rows, has_turbulence)
@@ -314,7 +330,7 @@ def check(path, duration=None):
         wind_result = check_wind(projected_path, duration)
 
     result = {
-        'format': FORMAT,
+        'format': 'openrc-trace v10' if gear else FORMAT,
         'metadata_schema': metadata['metadata_schema'],
         'rows': len(rows),
         'first_tick': int(float(rows[0]['tick'])),
@@ -341,14 +357,17 @@ def check(path, duration=None):
 
 
 def _project_weather_trace(metadata, config, expected_columns, rows, has_turbulence):
-    """Project only already-validated v6 data into the existing v4/v5 wind verifier."""
+    """Project validated weather fields to the wind verifier, retaining gear-v10 identity."""
     projected_metadata = dict(metadata)
+    gear = metadata.get('format') == 'openrc-trace v10'
     trace_version = 5 if has_turbulence else 4
-    projected_metadata['format'] = f'openrc-trace v{trace_version}'
-    projected_metadata['metadata_schema'] = (
-        WHEEL_METADATA_SCHEMA if metadata.get('metadata_schema') == WHEEL_METADATA_SCHEMA else
-        'openrc-flight-meta v4' if has_turbulence else 'openrc-flight-meta v3'
-    )
+    projected_format = 10 if gear else trace_version
+    projected_metadata['format'] = f'openrc-trace v{projected_format}'
+    if not gear:
+        projected_metadata['metadata_schema'] = (
+            WHEEL_METADATA_SCHEMA if metadata.get('metadata_schema') == WHEEL_METADATA_SCHEMA else
+            'openrc-flight-meta v4' if has_turbulence else 'openrc-flight-meta v3'
+        )
     projected_metadata['weather_model'] = TURBULENCE_MODEL if has_turbulence else COSINE_MODEL
     projected_config = {key: value for key, value in config.items() if key not in ATMOSPHERE_KEYS}
     projected_config['format'] = 'openrc-weather v2'
@@ -359,7 +378,7 @@ def _project_weather_trace(metadata, config, expected_columns, rows, has_turbule
     projected_metadata.pop('engine_atmosphere', None)
     columns = [key for key in expected_columns if key not in ATMOSPHERIC_COLUMNS]
     output = io.StringIO()
-    output.write(f'# format: openrc-trace v{trace_version}\n')
+    output.write(f'# format: openrc-trace v{projected_format}\n')
     for key, value in projected_metadata.items():
         if key == 'format':
             continue

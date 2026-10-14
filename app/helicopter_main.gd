@@ -4,6 +4,8 @@ var external_controller_selection: bool = false
 const Session = preload("res://sim/helicopter_flight_session.gd")
 const Builder = preload("res://aircraft/hx700_model.gd")
 const RotorVisual = preload("res://render/rotor/heli_rotor_visual.gd")
+const Electronics = preload("res://physics/rotorcraft/electronics.gd")
+const Math3D = preload("res://physics/math3d.gd")
 const World = preload("res://render/world/world.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Frames = preload("res://render/frames.gd")
@@ -42,6 +44,16 @@ var _hud_layer: CanvasLayer
 var _hud: Label
 var _capture: bool=false
 var _rotor_state: Dictionary={}
+var _rotor_state_previous: Dictionary={}
+var _rotor_phase_previous := PackedFloat64Array([0.0, 0.0])
+var _rotor_phase_current := PackedFloat64Array([0.0, 0.0])
+var _rotor_omega_previous := PackedFloat64Array([0.0, 0.0])
+var _rotor_phase_tick := -1
+var _rotor_phase_rebase_pending := true
+var _rotor_envelope_flags: Dictionary={
+ "within_identified_advance_ratio": false,
+ "within_small_flap_angle_range": false,
+}
 var _injected_user_args: Variant=null
 
 func _ready() -> void:
@@ -76,8 +88,8 @@ func _ready() -> void:
  if args.has("alt"): session.set_start_altitude(float(args.alt))
  add_child(session)
  recorder=Recorder.new(session.sim)
- session.resetting.connect(func() -> void:
-  if recorder.recording: recorder.stop())
+ session.resetting.connect(_on_session_resetting)
+ session.sim.stepped.connect(_on_sim_stepped)
  if not session.reset(): _refuse(session.start_error); return
  Builder.align_main_rotor_radius(_airplane,session.aircraft.context.main_model.rotor_radius_m)
  Builder.align_tail_rotor_radius(_airplane,session.aircraft.context.tail_model.tail_rotor_radius_m)
@@ -99,8 +111,7 @@ func _ready() -> void:
    printerr("helicopter capture stopped: ",session.pause_reason)
    get_tree().quit(1)
    return
-  _present(0.0)
-  if _rotors!=null: _rotors.update(_rotor_state,session.sim.time())
+  _present(0.0, 1.0)
   await RenderingServer.frame_post_draw
   await RenderingServer.frame_post_draw
   var path: String=str(args.get("out","user://helicopter.png"))
@@ -131,17 +142,17 @@ func _build_hud() -> void:
 func _process(dt: float) -> void:
  if not _capture: _present(minf(dt,.1))
 
-func _present(dt: float) -> void:
+func _present(dt: float, requested_fraction: float=-1.0) -> void:
  if session==null or session.sim.state.is_empty(): return
- var s: PackedFloat64Array=session.sim.interpolated(Engine.get_physics_interpolation_fraction())
+ _ensure_rotor_phase_current()
+ var fraction: float=clampf(requested_fraction if requested_fraction>=0.0 else Engine.get_physics_interpolation_fraction(),0.0,1.0)
+ if session.sim.paused: fraction=1.0
+ var s: PackedFloat64Array=session.sim.interpolated(fraction)
  var pos: Vector3=Frames.ned_to_render(s.slice(0,3))
  var body: Basis=Frames.quat_to_render(s.slice(6,10))
  _airplane.root.transform=Frames.root_transform(body,pos,_airplane.cg_model_m)
- var out: Dictionary=session.telemetry()
- var collective: float=float(out.get("controls",{}).get("collective_75_rad",0.0))
- _rotor_state={omega_rad_s=session.sim.continuous[0]*session.aircraft.context.main_model.rotation_sense,a1=session.sim.continuous[1],b1=session.sim.continuous[2],collective=collective,
-  tail_omega_rad_s=session.sim.continuous[0]*session.aircraft.context.tail_model.tail_to_main_speed_ratio*session.aircraft.context.tail_model.rotation_sense}
- if _rotors!=null: _rotors.update(_rotor_state,0.0 if session.sim.paused else dt)
+ var phase: PackedFloat64Array=_rotor_phase_at_fraction(fraction)
+ if _rotors!=null: _rotors.update(_rotor_state_at_fraction(fraction),phase[0],phase[1])
  _rig.update(pos,_airplane.root.global_transform,body,dt,session.sim.paused,_ground_height)
  var wind: PackedFloat64Array=session.wind_at(session.sim.time())
  World.update(_environment,session.sim.time(),Frames.ned_to_render(wind),pos,_camera)
@@ -150,8 +161,7 @@ func _present(dt: float) -> void:
   -s[2],speed,session.sim.aux[0],session.commands.throttle*100.0,
   session.flight_mode,"TRAINER" if session.trainer_enabled else "DIRECT CYCLIC",
   session.pause_reason if not session.pause_reason.is_empty() else ("ZERO DRIVE HOLD" if session.zero_drive_hold else _note)]
- var main: Dictionary=out.get("aero",{}).get("main_rotor",{})
- if not main.is_empty() and (not main.get("within_identified_advance_ratio",false) or not main.get("within_small_flap_angle_range",false)):
+ if not _rotor_envelope_flags.within_identified_advance_ratio or not _rotor_envelope_flags.within_small_flap_angle_range:
   _hud.text+="\nOutside the identified main-rotor envelope."
  if session.calibration!=null: _hud.text+="\n"+str(session.calibration.prompt())
  if recorder.recording: _hud.text+="\nRecording %.1f s · T: stop"%recorder.seconds()
@@ -159,6 +169,110 @@ func _present(dt: float) -> void:
 
 func _ground_height(x: float,z: float) -> float:
  return Terrain.sample(-z,x,session.ground_surfaces)[0]
+
+func _on_session_resetting() -> void:
+ if recorder!=null and recorder.recording: recorder.stop()
+ _rotor_phase_rebase_pending=true
+
+func _on_sim_stepped(tick: int,t: float,body: PackedFloat64Array,_loads: PackedFloat64Array,inputs: PackedFloat64Array,_aux: PackedFloat64Array) -> void:
+ if session==null or session.sim.continuous.size()!=6 or body.size()!=13: return
+ var omega: PackedFloat64Array=_rotor_shaft_speeds(session.sim.continuous)
+ var rebase: bool=tick==0 or _rotor_phase_rebase_pending or tick!=_rotor_phase_tick+1
+ var previous_telemetry: Dictionary=_rotor_state.duplicate()
+ if rebase:
+  _rotor_phase_previous=PackedFloat64Array([0.0,0.0])
+  _rotor_phase_current=PackedFloat64Array([0.0,0.0])
+  _rotor_omega_previous=omega
+  _rotor_phase_tick=tick
+  _rotor_phase_rebase_pending=false
+ else:
+  var dt: float=session.sim.dt()
+  for index: int in 2:
+   _rotor_phase_previous[index]=_rotor_phase_current[index]
+   _rotor_phase_current[index]+=.5*(_rotor_omega_previous[index]+omega[index])*dt
+  _rotor_omega_previous=omega
+  _rotor_phase_tick=tick
+ _cache_presentation_telemetry(body,session.sim.continuous,inputs,t)
+ _rotor_state_previous=_rotor_state.duplicate() if rebase else previous_telemetry
+
+func _ensure_rotor_phase_current() -> void:
+ if session==null or session.sim.state.size()!=13 or session.sim.continuous.size()!=6: return
+ if _rotor_phase_rebase_pending or _rotor_phase_tick!=session.sim.tick:
+  _rotor_phase_previous=PackedFloat64Array([0.0,0.0])
+  _rotor_phase_current=PackedFloat64Array([0.0,0.0])
+  _rotor_omega_previous=_rotor_shaft_speeds(session.sim.continuous)
+  _rotor_phase_tick=session.sim.tick
+  _rotor_phase_rebase_pending=false
+  _cache_presentation_telemetry(session.sim.state,session.sim.continuous,session.sim.inputs,session.sim.time())
+  _rotor_state_previous=_rotor_state.duplicate()
+
+func _rotor_state_at_fraction(fraction: float) -> Dictionary:
+ var pose: Dictionary=_rotor_state.duplicate()
+ var f: float=clampf(fraction,0.0,1.0)
+ for key: String in pose:
+  var current: float=float(pose[key])
+  pose[key]=float(_rotor_state_previous.get(key,current))+(current-float(_rotor_state_previous.get(key,current)))*f
+ return pose
+
+func _rotor_phase_at_fraction(fraction: float) -> PackedFloat64Array:
+ var f: float=clampf(fraction,0.0,1.0)
+ return PackedFloat64Array([
+  _rotor_phase_previous[0]+(_rotor_phase_current[0]-_rotor_phase_previous[0])*f,
+  _rotor_phase_previous[1]+(_rotor_phase_current[1]-_rotor_phase_previous[1])*f,
+ ])
+
+func _rotor_shaft_speeds(continuous: PackedFloat64Array) -> PackedFloat64Array:
+ var context: Dictionary=session.aircraft.context
+ return PackedFloat64Array([
+  continuous[0]*float(context.main_model.rotation_sense),
+  continuous[0]*float(context.tail_model.tail_to_main_speed_ratio)*float(context.tail_model.rotation_sense),
+ ])
+
+func _cache_presentation_telemetry(body: PackedFloat64Array,continuous: PackedFloat64Array,inputs: PackedFloat64Array,t: float) -> void:
+ var context: Dictionary=session.aircraft.context
+ var state: PackedFloat64Array=body.duplicate()
+ state.append_array(continuous)
+ var sticks: PackedFloat64Array=PackedFloat64Array([-inputs[1],inputs[0],inputs[2],2.0*inputs[3]-1.0])
+ var controls: Dictionary=Electronics.fast_evaluate(context.electronics_model,state,sticks,session.flight_mode,session.trainer_enabled,session._trim)
+ var collective: float=float(controls.get("collective_75_rad",0.0)) if controls.get("ok",false) else 0.0
+ _rotor_state={
+  "omega_rad_s":continuous[0]*float(context.main_model.rotation_sense),
+  "tail_omega_rad_s":continuous[0]*float(context.tail_model.tail_to_main_speed_ratio)*float(context.tail_model.rotation_sense),
+  "a1":continuous[1],"b1":continuous[2],"collective":collective,
+ }
+ _rotor_envelope_flags=main_rotor_envelope_flags(body,continuous,context,session.wind_at(t))
+
+static func main_rotor_envelope_flags(body: PackedFloat64Array,continuous: PackedFloat64Array,context: Dictionary,wind_ned: PackedFloat64Array) -> Dictionary:
+ var flags: Dictionary={
+  "within_identified_advance_ratio":false,
+  "within_small_flap_angle_range":false,
+ }
+ if body.size()!=13 or continuous.size()!=6 or wind_ned.size()!=3 or not context.has("main_model"):
+  return flags
+ var q: PackedFloat64Array=PackedFloat64Array([body[6],body[7],body[8],body[9]])
+ var norm_sq: float=q[0]*q[0]+q[1]*q[1]+q[2]*q[2]+q[3]*q[3]
+ if not is_finite(norm_sq) or norm_sq<=1.0e-24:
+  return flags
+ var attitude: PackedFloat64Array=Math3D.q_normalized(q)
+ var body_velocity: PackedFloat64Array=PackedFloat64Array([body[3],body[4],body[5]])
+ var velocity_ned: PackedFloat64Array=Math3D.q_rotate(attitude,body_velocity)
+ var air_velocity_body: PackedFloat64Array=Math3D.q_rotate(Math3D.q_conj(attitude),Math3D.sub(velocity_ned,wind_ned))
+ var p: float=body[10]
+ var q_rate: float=body[11]
+ var r: float=body[12]
+ var rotor: Dictionary=context.main_model
+ var hub_air_x: float=air_velocity_body[0]+q_rate*float(rotor.hub_z_m)-r*float(rotor.hub_y_m)
+ var hub_air_y: float=air_velocity_body[1]+r*float(rotor.hub_x_m)-p*float(rotor.hub_z_m)
+ var omega: float=continuous[0]
+ var radius: float=float(rotor.rotor_radius_m)
+ if omega>0.0 and radius>0.0:
+  var tip_speed: float=omega*radius
+  if is_finite(tip_speed) and tip_speed>0.0:
+   var mu_x: float=hub_air_x/tip_speed
+   var mu_y: float=hub_air_y/tip_speed
+   flags.within_identified_advance_ratio=Math3D.sqrt_(mu_x*mu_x+mu_y*mu_y)<0.15
+ flags.within_small_flap_angle_range=absf(continuous[1])<PI/18.0 and absf(continuous[2])<PI/18.0
+ return flags
 
 func set_overlays_visible(on: bool) -> void:
  if _hud_layer!=null: _hud_layer.visible=on

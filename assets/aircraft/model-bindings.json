@@ -415,7 +415,12 @@
           "geometry_ref": ""
         },
         "gear": {
-          "keys": {}
+          "keys": {
+            "left": "left",
+            "right": "right",
+            "nose": "nose",
+            "steering": "steering"
+          }
         },
         "crash": {
           "provider": "gltf_extras",
@@ -434,7 +439,10 @@
         "hinge_axis": "+X",
         "rotor": {},
         "gear": [],
-        "material_grow": []
+        "material_grow": [],
+        "retraction": {
+          "geometry_ref": "gear"
+        }
       }
     },
     {

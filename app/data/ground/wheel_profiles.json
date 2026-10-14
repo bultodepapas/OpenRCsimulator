@@ -83,6 +83,32 @@
         "main_right": {"wheel_radius": {"value": 0.0857, "unit": "m", "kind": "derived", "source": "assets/aircraft/p51d-mustang-120/geometry.json main wheel diameter 0.1714 m / 2; underlying 27 in full-size callout is explicitly unverified"}, "wheel_inertia": {"value": 0.000367249, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate, 0.100 kg rotating wheel mass and sourced 0.0857 m radius; generated retract/strut mass is not a wheel-only measurement"}, "spin_relaxation": {"value": 0.03, "unit": "s", "kind": "estimated", "source": "GP-02 shared tire spin-slip relaxation parameter; not measured"}, "brake_torque": {"value": 0.0, "unit": "N·m", "kind": "estimated", "source": "P51-12 landing_gear declares steering/friction but no brake control; brake hardware and torque are unspecified and not modeled"}, "brake_availability": "unspecified"},
         "tail": {"wheel_radius": {"value": 0.03975, "unit": "m", "kind": "derived", "source": "assets/aircraft/p51d-mustang-120/geometry.json tail wheel diameter 0.0795 m / 2; underlying 12.5 in full-size callout is explicitly unverified"}, "wheel_inertia": {"value": 0.0000158006, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate, 0.020 kg rotating wheel mass and sourced 0.03975 m radius; retract unit mass includes doors/structure and is not wheel-only"}, "spin_relaxation": {"value": 0.03, "unit": "s", "kind": "estimated", "source": "GP-02 shared tire spin-slip relaxation parameter; not measured"}, "brake_torque": {"value": 0.0, "unit": "N·m", "kind": "estimated", "source": "P51-12 landing_gear declares steering/friction but no brake control; brake hardware and torque are unspecified and not modeled"}, "brake_availability": "unspecified"}
       }
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "description": "Ventage Jet Avanti S source-model wheel profile. Wheel radii come from the imported Blender wheel meshes; wheel-only masses, inertias, spin relaxation, and brake torque are explicit estimates. Optional main-wheel brakes are assumed installed; the manufacturer lists the brake option but gives no torque rating.",
+      "contacts": {
+        "main_left": {
+          "wheel_radius": {"value": 0.04338, "unit": "m", "kind": "derived", "source": "assets/aircraft/avanti-s-a200/blender-geometry.json: source wheel-mesh radial bound from the axle; visual mesh measurement, not a certified physical tyre dimension"},
+          "wheel_inertia": {"value": 0.000055552, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate using a volume-scaled 0.059041 kg rotating wheel mass and the 0.04338 m source-mesh radius; mass is scaled from the Stik wheel-only estimate by mesh-radius ratio and is not measured"},
+          "spin_relaxation": {"value": 0.03, "unit": "s", "kind": "estimated", "source": "GP-02 shared tyre spin-slip relaxation parameter; not measured for Avanti wheels"},
+          "brake_torque": {"value": 1.0, "unit": "N·m", "kind": "estimated", "source": "Optional pneumatic wheel brakes are listed by the SebArt Avanti S Jet 2.2m assembly manual; this simulation assumes them installed and assigns provisional per-wheel torque because no torque is specified"},
+          "brake_availability": "available"
+        },
+        "main_right": {
+          "wheel_radius": {"value": 0.04338, "unit": "m", "kind": "derived", "source": "assets/aircraft/avanti-s-a200/blender-geometry.json: source wheel-mesh radial bound from the axle; visual mesh measurement, not a certified physical tyre dimension"},
+          "wheel_inertia": {"value": 0.000055552, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate using a volume-scaled 0.059041 kg rotating wheel mass and the 0.04338 m source-mesh radius; mass is scaled from the Stik wheel-only estimate by mesh-radius ratio and is not measured"},
+          "spin_relaxation": {"value": 0.03, "unit": "s", "kind": "estimated", "source": "GP-02 shared tyre spin-slip relaxation parameter; not measured for Avanti wheels"},
+          "brake_torque": {"value": 1.0, "unit": "N·m", "kind": "estimated", "source": "Optional pneumatic wheel brakes are listed by the SebArt Avanti S Jet 2.2m assembly manual; this simulation assumes them installed and assigns provisional per-wheel torque because no torque is specified"},
+          "brake_availability": "available"
+        },
+        "nose": {
+          "wheel_radius": {"value": 0.03532, "unit": "m", "kind": "derived", "source": "assets/aircraft/avanti-s-a200/blender-geometry.json: source wheel-mesh radial bound from the axle; visual mesh measurement, not a certified physical tyre dimension"},
+          "wheel_inertia": {"value": 0.000019355, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate using a volume-scaled 0.0310295 kg rotating wheel mass and the 0.03532 m source-mesh radius; mass is scaled from the Stik wheel-only estimate by mesh-radius ratio and is not measured"},
+          "spin_relaxation": {"value": 0.03, "unit": "s", "kind": "estimated", "source": "GP-02 shared tyre spin-slip relaxation parameter; not measured for Avanti wheels"},
+          "brake_torque": {"value": 0.0, "unit": "N·m", "kind": "estimated", "source": "No nose-wheel brake modeled; only the optional main-wheel brakes are assumed installed"},
+          "brake_availability": "none"
+        }
+      }
     }
   }
 }

@@ -1,0 +1,45 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Unable to open file: res://.godot/imported/hx-700_hx700_botalon_mascaras.png-575960d4e7693e32016dff5699c59f5d.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] _load_preview_with_asset_bytes (res://aircraft/hx700_articulated_model.gd:128)
+       [1] load_preview (res://aircraft/hx700_articulated_model.gd:87)
+       [2] _run (res://smoke.gd:19)
+ERROR: Failed loading resource: res://.godot/imported/hx-700_hx700_botalon_mascaras.png-575960d4e7693e32016dff5699c59f5d.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_preview_with_asset_bytes (res://aircraft/hx700_articulated_model.gd:128)
+       [1] load_preview (res://aircraft/hx700_articulated_model.gd:87)
+       [2] _run (res://smoke.gd:19)
+ERROR: Failed loading resource: res://assets/aircraft/hx-700/articulated/hx-700_hx700_botalon_mascaras.png.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_preview_with_asset_bytes (res://aircraft/hx700_articulated_model.gd:128)
+       [1] load_preview (res://aircraft/hx700_articulated_model.gd:87)
+       [2] _run (res://smoke.gd:19)
+ERROR: Can't load dependency: 'res://assets/aircraft/hx-700/articulated/hx-700_hx700_botalon_mascaras.png'.
+   at: parse_variant (core/io/resource_format_binary.cpp:444)
+   GDScript backtrace (most recent call first):
+       [0] _load_preview_with_asset_bytes (res://aircraft/hx700_articulated_model.gd:128)
+       [1] load_preview (res://aircraft/hx700_articulated_model.gd:87)
+       [2] _run (res://smoke.gd:19)
+ERROR: Failed loading resource: res://.godot/imported/hx-700.glb-bea79a3baf396e7f8b8cef49eb665c6e.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_preview_with_asset_bytes (res://aircraft/hx700_articulated_model.gd:128)
+       [1] load_preview (res://aircraft/hx700_articulated_model.gd:87)
+       [2] _run (res://smoke.gd:19)
+ERROR: Failed loading resource: res://assets/aircraft/hx-700/articulated/hx-700.glb.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_preview_with_asset_bytes (res://aircraft/hx700_articulated_model.gd:128)
+       [1] load_preview (res://aircraft/hx700_articulated_model.gd:87)
+       [2] _run (res://smoke.gd:19)
+ERROR: Error loading resource: 'res://assets/aircraft/hx-700/articulated/hx-700.glb'.
+   at: load (core/core_bind.cpp:82)
+   GDScript backtrace (most recent call first):
+       [0] _load_preview_with_asset_bytes (res://aircraft/hx700_articulated_model.gd:128)
+       [1] load_preview (res://aircraft/hx700_articulated_model.gd:87)
+       [2] _run (res://smoke.gd:19)
+HELI-25c package rejected: ["HX-700 GLB did not import as a PackedScene: res://assets/aircraft/hx-700/articulated/hx-700.glb"]

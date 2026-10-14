@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify weather traces v4/v5 using independent scalar wind, OU, and quaternion equations."""
+"""Verify weather traces v4/v5/v10 using independent scalar wind, OU, and quaternion equations."""
 import argparse
 import csv
 import json
@@ -7,7 +7,10 @@ import math
 from pathlib import Path
 import re
 
-from check_trimmed_flight import COLUMNS
+from check_trimmed_flight import (
+    COLUMNS, GEAR_COLUMNS, check_coupled_metadata, check_gear_metadata,
+    check_gear_sample, _has_gear_metadata,
+)
 
 WEATHER_COLUMNS = ['wind_north_mps', 'wind_east_mps', 'wind_down_mps', 'tas_mps',
                    'ground_horizontal_mps', 'loads_t_s', 'loads_wind_north_mps',
@@ -247,9 +250,9 @@ def check(path, duration=None):
             if not separator or key in metadata:
                 raise ValueError('malformed or duplicate metadata')
             metadata[key] = value
-    from check_trimmed_flight import check_coupled_metadata
     check_coupled_metadata(metadata)
     trace_format = metadata.get('format')
+    gear = trace_format == 'openrc-trace v10'
     if trace_format == 'openrc-trace v4':
         trace_version = 4
         expected_schema = 'openrc-flight-meta v3'
@@ -258,12 +261,27 @@ def check(path, duration=None):
         trace_version = 5
         expected_schema = 'openrc-flight-meta v4'
         expected_model = TURBULENCE_MODEL
+    elif gear:
+        if metadata.get('weather_model') == TURBULENCE_MODEL:
+            trace_version = 5
+            expected_model = TURBULENCE_MODEL
+        elif metadata.get('weather_model') == 'uniform-ned-repeating-cosine-v1':
+            trace_version = 4
+            expected_model = 'uniform-ned-repeating-cosine-v1'
+        else:
+            raise ValueError('gear weather trace has an unsupported weather model')
+        expected_schema = 'openrc-flight-meta v8'
     else:
-        raise ValueError('expected weather trace v4 or v5')
+        raise ValueError('expected weather trace v4/v5 or retractable-gear trace v10')
+    if gear != _has_gear_metadata(metadata):
+        raise ValueError('trace format disagrees with retractable gear metadata')
+    if gear:
+        check_gear_metadata(metadata)
     # Flight metadata v6 is emitted only when validated wheel-state metadata is
     # present. check_coupled_metadata above rejects v6 without that payload and
     # rejects wheel metadata attached to a legacy schema.
-    if (metadata.get('metadata_schema') not in (expected_schema, 'openrc-flight-meta v6')
+    if ((metadata.get('metadata_schema') != expected_schema if gear else
+            metadata.get('metadata_schema') not in (expected_schema, 'openrc-flight-meta v6'))
             or metadata.get('weather_model') != expected_model):
         raise ValueError('weather trace metadata schema/model mismatch')
     if 'weather_config' not in metadata:
@@ -286,7 +304,9 @@ def check(path, duration=None):
     if metadata.get('weather_evidence') != 'user-selected/authored practice conditions; not measured meteorology':
         raise ValueError('unsupported weather evidence contract')
 
-    expected_columns = COLUMNS + WEATHER_COLUMNS + (TURBULENCE_COLUMNS if trace_version == 5 else [])
+    expected_columns = (COLUMNS + WEATHER_COLUMNS
+                        + (TURBULENCE_COLUMNS if trace_version == 5 else [])
+                        + (GEAR_COLUMNS if gear else []))
     reader = csv.DictReader(line for line in lines if line and not line.startswith('#'))
     if reader.fieldnames != expected_columns:
         raise ValueError('weather trace columns mismatch')
@@ -321,6 +341,8 @@ def check(path, duration=None):
             raise ValueError('non-numeric trace sample') from error
         if not all(math.isfinite(v) for v in row.values()):
             raise ValueError('nonfinite trace sample')
+        if gear:
+            check_gear_sample(row)
         tick = row['tick']
         if tick < 0 or tick > (1 << 53) - 1 or tick != int(tick) or (previous_tick is not None and tick != previous_tick+1):
             raise ValueError('noncontinuous ticks')
@@ -393,6 +415,8 @@ def check(path, duration=None):
                 raise ValueError('velocity definition mismatch: '+key)
         previous = [row[key] for key in ('north_m', 'east_m', 'down_m', 'u_mps', 'v_mps', 'w_mps', 'qw', 'qx', 'qy', 'qz', 'p_radps', 'q_radps', 'r_radps')]
         previous_tick = int(tick)
+    if gear:
+        check_gear_metadata(metadata, {key: float(value) for key, value in raw_rows[0].items()})
     if duration is not None:
         if not math.isfinite(duration) or duration <= 0:
             raise ValueError('invalid requested duration')

@@ -260,6 +260,104 @@
    0.3
   ]
  },
+ "landing_gear": {
+  "heave_omega_dt": {
+   "value": 0.09,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "AV09 provisional contact tuning target: 90% of the documented ω·dt < 0.1 stability limit at the 240 Hz project tick; not a measured gear frequency"
+  },
+  "damping_ratio": {
+   "value": 0.3,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "AV09 provisional damping target for a small pneumatic retract; no spring/damper test data"
+  },
+  "main_max_compression": {
+   "value": 0.08,
+   "unit": "m",
+   "kind": "estimated",
+   "source": "AV09 initial terminal-contact limit for a 1.5 m/s sink qualification case; equivalent compliance threshold, not measured strut travel"
+  },
+  "nose_max_compression": {
+   "value": 0.06,
+   "unit": "m",
+   "kind": "estimated",
+   "source": "AV09 initial terminal-contact limit for a 1.5 m/s sink qualification case; equivalent compliance threshold, not measured strut travel"
+  },
+  "extension_time": {
+   "value": 2.5,
+   "unit": "s",
+   "kind": "estimated",
+   "source": "SebArt Avanti S Jet 2.2m assembly manual identifies pneumatic gear and an air valve but gives no cycle time; provisional actuator duration"
+  },
+  "retraction_time": {
+   "value": 2.5,
+   "unit": "s",
+   "kind": "estimated",
+   "source": "SebArt Avanti S Jet 2.2m assembly manual identifies pneumatic gear and an air valve but gives no cycle time; provisional actuator duration"
+  },
+  "drag_area": {
+   "value": 0.02,
+   "unit": "m2",
+   "kind": "estimated",
+   "source": "AV09 incremental exposed-gear drag estimate with gear down; no measured drag data, and clean-airframe CD0 remains unchanged"
+  },
+  "rolling_resistance": {
+   "value": 0.03,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "Provisional smooth-runway rolling coefficient between JSBSim c172x full-size tyre 0.022 and the small-model Stik E2 value 0.04; no Avanti tyre test"
+  },
+  "side_friction": {
+   "value": 0.8,
+   "unit": "1",
+   "kind": "borrowed",
+   "source": "JSBSim c172x static friction coefficient reused by the Stik and P-51 E2 fixtures; no Avanti tyre measurement"
+  },
+  "peak_slip_angle": {
+   "value": 6.0,
+   "unit": "deg",
+   "kind": "borrowed",
+   "source": "Provisional 6 degree peak-slip regularization reused by the Stik/P-51 E2 fixtures; no Avanti tyre measurement"
+  },
+  "breakaway_factor": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "AV09 provisional static-to-rolling resistance ratio; minimum supported factor pending runway-start testing"
+  },
+  "nose_max_steering": {
+   "value": 20.0,
+   "unit": "deg",
+   "kind": "estimated",
+   "source": "SebArt manual specifies a steering-wheel servo but no steering angle; provisional mechanical limit, controlled by the existing rudder-to-nosewheel mix"
+  },
+  "main_wheel_mass": {
+   "value": 0.059041,
+   "unit": "kg",
+   "kind": "estimated",
+   "source": "Uniform-density volume scaling from the wheel-only 0.040 kg main-wheel estimate underlying the Stik profile, using the Blender mesh radius ratio (0.04338 / 0.0381)^3; not separately weighed and excluded from aircraft inventory mass"
+  },
+  "nose_wheel_mass": {
+   "value": 0.0310295,
+   "unit": "kg",
+   "kind": "estimated",
+   "source": "Uniform-density volume scaling from the wheel-only 0.030 kg nose-wheel estimate underlying the Stik profile, using the Blender mesh radius ratio (0.03532 / 0.034925)^3; not separately weighed and excluded from aircraft inventory mass"
+  },
+  "wheel_spin_relaxation": {
+   "value": 0.03,
+   "unit": "s",
+   "kind": "estimated",
+   "source": "GP-02 shared tire spin-slip relaxation parameter; not measured for Avanti wheels"
+  },
+  "main_brake_torque": {
+   "value": 1.0,
+   "unit": "N·m",
+   "kind": "estimated",
+   "source": "Optional pneumatic wheel brakes are listed in the SebArt Avanti S Jet 2.2m assembly manual; assume installed on both mains for this simulation, with provisional 1 N·m per-wheel torque because the manual specifies no torque"
+  }
+ },
  "structure": {
   "wing_panel": {
    "value": 0.626,

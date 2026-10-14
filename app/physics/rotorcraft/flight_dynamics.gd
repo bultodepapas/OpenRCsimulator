@@ -10,6 +10,7 @@ const Stage = preload("res://physics/rotorcraft/aerodynamic_stage.gd")
 const Drive = preload("res://physics/rotorcraft/drive.gd")
 const Coupling = preload("res://physics/rotorcraft/geared_coupling.gd")
 const Electronics = preload("res://physics/rotorcraft/electronics.gd")
+const PerformanceContext = preload("res://physics/rotorcraft/performance_context.gd")
 
 const STATE_SIZE: int = 19
 const OMEGA: int = 13
@@ -38,6 +39,11 @@ static func prepare(configuration: Dictionary) -> Dictionary:
 	for key: Variant in configuration.keys():
 		if typeof(key) != TYPE_STRING or (not CONFIG_KEYS.has(key) and key != "fast_aero_context"):
 			return {"ok": false, "message": "rotorcraft flight configuration contains an unknown field"}
+	for key: String in ["main_model", "tail_model", "airframe_model", "drive", "electronics"]:
+		if not configuration[key] is Dictionary:
+			return {"ok": false, "message": "rotorcraft configuration " + key + " must be a dictionary"}
+	if not configuration.shaft_elements is Array:
+		return {"ok": false, "message": "rotorcraft shaft inventory must be an array"}
 	if not _number(configuration.mass_kg) or float(configuration.mass_kg) <= 0.0 \
 			or not _number(configuration.gravity_m_s2) or float(configuration.gravity_m_s2) < 0.0 \
 			or not _number(configuration.flow_floor_m_s) or float(configuration.flow_floor_m_s) <= 0.0 \
@@ -60,19 +66,24 @@ static func prepare(configuration: Dictionary) -> Dictionary:
 	var coupling_result: Dictionary = Coupling.prepare(configuration.shaft_elements)
 	if not coupling_result.ok:
 		return {"ok": false, "message": "geared coupling preparation failed: " + str(coupling_result.get("message", "invalid coupling"))}
-	var aero_context: Dictionary
+	# Validate the canonical models/constants even when the caller supplies an
+	# already prepared aero context. Otherwise outer gearing/domain checks could
+	# describe one aircraft while the actual force kernel evaluates another.
+	var aero_result: Dictionary = Stage.prepare(configuration.main_model, configuration.tail_model,
+		configuration.airframe_model, float(configuration.flow_floor_m_s),
+		float(configuration.fin_tail_wake_fraction), float(configuration.height_over_radius),
+		float(configuration.inflow_loss), float(configuration.inflow_instability))
+	if not aero_result.get("ok", false):
+		return {"ok": false, "message": "aerodynamic context preparation failed"}
+	var aero_context: Dictionary = aero_result.context
 	if configuration.has("fast_aero_context"):
 		if typeof(configuration.fast_aero_context) != TYPE_DICTIONARY:
 			return {"ok": false, "message": "prepared fast aerodynamic context must be a dictionary"}
-		aero_context = configuration.fast_aero_context
-	else:
-		var aero_result: Dictionary = Stage.prepare(configuration.main_model, configuration.tail_model,
-			configuration.airframe_model, float(configuration.flow_floor_m_s),
-			float(configuration.fin_tail_wake_fraction), float(configuration.height_over_radius),
-			float(configuration.inflow_loss), float(configuration.inflow_instability))
-		if not aero_result.get("ok", false):
-			return {"ok": false, "message": "aerodynamic context preparation failed"}
-		aero_context = aero_result.context
+		var supplied: Dictionary = configuration.fast_aero_context
+		if not PerformanceContext.has_valid_header(supplied) or supplied != aero_context:
+			return {"ok": false, "message": "prepared aerodynamic context disagrees with the flight configuration"}
+		# Keep the freshly validated canonical context. Dictionary equality alone
+		# does not prove that a supplied context's nested dictionaries are frozen.
 	if not _number(configuration.main_model.get("rotor_radius_m", NAN)) \
 			or float(configuration.main_model.rotor_radius_m) <= 0.0 \
 			or not _number(configuration.tail_model.get("tail_to_main_speed_ratio", NAN)) \
@@ -136,7 +147,7 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 	var attitude: PackedFloat64Array = quaternion.duplicate()
 	for index: int in range(4):
 		attitude[index] /= qnorm
-	var electronics: Dictionary = Electronics.evaluate(context.electronics_model, state, sticks,
+	var electronics: Dictionary = Electronics.fast_evaluate(context.electronics_model, state, sticks,
 		flight_mode, trainer_enabled, trim)
 	if not electronics.ok:
 		return _failure(str(electronics.get("message", "electronics refused input")), "electronics_refused")
@@ -338,6 +349,9 @@ static func _as_f64(value: Variant) -> PackedFloat64Array:
 	if typeof(value) == TYPE_PACKED_FLOAT64_ARRAY:
 		return value.duplicate()
 	if typeof(value) == TYPE_ARRAY:
+		for entry: Variant in value:
+			if not _number(entry):
+				return PackedFloat64Array()
 		return PackedFloat64Array(value)
 	return PackedFloat64Array()
 

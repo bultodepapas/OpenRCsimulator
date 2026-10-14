@@ -1,5 +1,7 @@
 extends RefCounted
 
+const Retraction := preload("res://aircraft/retractable_model.gd")
+
 const GEAR_ROLES := ["left", "right", "tail", "steering", "nose"]
 const AXES := ["+X", "-X", "+Y", "-Y", "+Z", "-Z"]
 
@@ -10,7 +12,7 @@ static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
 	if typeof(construction) != TYPE_DICTIONARY:
 		_fail(errors, diagnostics, "MODEL_CONSTRUCTION_INVALID", "$.construction", "construction must be an object")
 		return _result(errors, diagnostics)
-	if not _check_fields(construction, ["version", "hinge_axis", "rotor", "gear", "material_grow"], "$.construction", errors, diagnostics):
+	if not _check_fields(construction, ["version", "hinge_axis", "rotor", "gear", "material_grow"], "$.construction", errors, diagnostics, ["retraction"]):
 		return _result(errors, diagnostics)
 
 	var version: Variant = construction.get("version")
@@ -53,6 +55,13 @@ static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
 			expected_roles[str(role_variant)] = true
 
 	var used_names: Dictionary = {}
+	if construction.has("retraction"):
+		var retract: Variant = construction.retraction
+		if _check_fields(retract, ["geometry_ref"], "$.construction.retraction", errors, diagnostics) and not _dotted_ref(retract.get("geometry_ref")):
+			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_REF_INVALID", "$.construction.retraction", "retraction needs a dotted geometry reference")
+		if expected_roles.size() != 4 or not expected_roles.has_all(["left", "right", "nose", "steering"]) or construction.get("gear") != []:
+			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_GEAR_INVALID", "$.construction.retraction", "retraction needs left/right/nose/steering bindings and no static gear wrappers")
+		expected_roles = {}
 	_claim_name("propeller", "$.construction.generated.propeller", used_names, errors, diagnostics)
 	_claim_name("propeller_mount", "$.construction.generated.propeller_mount", used_names, errors, diagnostics)
 	_claim_control_names(controls, used_names, errors, diagnostics)
@@ -151,6 +160,10 @@ static func validate_geometry(geometry: Variant, construction: Dictionary, bindi
 	if typeof(geometry) != TYPE_DICTIONARY:
 		_fail(errors, diagnostics, "MODEL_GEOMETRY_SOURCE_INVALID", "$.geometry", "geometry data must be an object")
 		return _result(errors, diagnostics)
+	if construction.has("retraction"):
+		var rig: Variant = _resolve_ref(geometry, construction.retraction.geometry_ref, "$.construction.retraction.geometry_ref", errors, diagnostics)
+		for message in Retraction.validate(rig):
+			_fail(errors, diagnostics, "MODEL_RETRACTION_INVALID", "$.construction.retraction.geometry_ref", message)
 
 	var controls: Variant = bindings.get("controls", {})
 	if typeof(controls) == TYPE_DICTIONARY:
@@ -267,7 +280,7 @@ static func _claim_name(value: Variant, path: String, used_names: Dictionary, er
 		used_names[node_name] = path
 
 
-static func _check_fields(value: Variant, fields: Array, path: String, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> bool:
+static func _check_fields(value: Variant, fields: Array, path: String, errors: PackedStringArray, diagnostics: Array[Dictionary], optional: Array = []) -> bool:
 	if typeof(value) != TYPE_DICTIONARY:
 		_fail(errors, diagnostics, "MODEL_CONSTRUCTION_OBJECT_INVALID", path, "expected object")
 		return false
@@ -277,7 +290,7 @@ static func _check_fields(value: Variant, fields: Array, path: String, errors: P
 			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_FIELD_MISSING", path + "." + field, "required field is missing")
 	for field_variant in object.keys():
 		var field := str(field_variant)
-		if not fields.has(field):
+		if not fields.has(field) and not optional.has(field):
 			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_FIELD_UNKNOWN", path + "." + field, "unknown field is not supported")
 	return true
 

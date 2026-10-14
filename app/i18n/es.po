@@ -318,8 +318,8 @@ msgstr "ACERCA DE"
 msgid "Keys are shown as your keyboard layout prints them."
 msgstr "Las teclas se muestran como las rotula tu distribución de teclado."
 
-msgid "Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it."
-msgstr "Conecta una radio EdgeTX por USB (Model setup → USB Joystick: Advanced, Joystick). Vuela mientras está conectada; el motor arranca cuando el acelerador ha estado abajo. Desconectarla pausa el vuelo con el motor al ralentí. K la calibra."
+msgid "Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it. Assign gear AUX or the optional Toggle landing gear action in Controller settings."
+msgstr "Conecta una radio EdgeTX por USB (Model setup → USB Joystick: Advanced, Joystick). Vuela mientras está conectada; el motor arranca cuando el acelerador ha estado abajo. Desconectarla pausa el vuelo con el motor al ralentí. K la calibra. Asigna el tren a AUX o a la acción opcional Alternar tren de aterrizaje en Ajustes del controlador."
 
 msgid "Pause menu (in the radio calibration: cancel it)"
 msgstr "Menú de pausa (en la calibración: cancelarla)"
@@ -1811,6 +1811,9 @@ msgstr "El tren de aterrizaje se controla con su entrada AUX."
 msgid "Gear retraction is blocked while the aircraft is on its wheels."
 msgstr "No se puede retraer el tren mientras el avión está apoyado en las ruedas."
 
+msgid "Landing gear command was refused."
+msgstr "Se rechazó la orden del tren de aterrizaje."
+
 msgid "retraction blocked while on wheels"
 msgstr "retracción bloqueada mientras el avión está apoyado en las ruedas"
 
@@ -2203,3 +2206,72 @@ msgstr "Palanca de mando"
 
 msgid "Yaw"
 msgstr "Guiñada"
+
+msgid "Devices"
+msgstr "Mandos"
+
+msgid "Profile"
+msgstr "Perfil"
+
+msgid "Flight axes"
+msgstr "Ejes de vuelo"
+
+msgid "Extra channels"
+msgstr "Canales extra"
+
+msgid "Buttons"
+msgstr "Botones"
+
+msgid "Show actions"
+msgstr "Mostrar acciones"
+
+msgid "All"
+msgstr "Todas"
+
+msgid "Flight"
+msgstr "Vuelo"
+
+msgid "Camera"
+msgstr "Cámara"
+
+msgid "Auxiliary"
+msgstr "Auxiliares"
+
+msgid "Listening…"
+msgstr "Escuchando…"
+
+msgid "Axis %d"
+msgstr "Eje %d"
+
+msgid "%s · raw %+.2f · conditioned %+.2f"
+msgstr "%s · entrada %+.2f · salida %+.2f"
+
+msgid "Flight: %s   ·   Menus: %s"
+msgstr "Vuelo: %s   ·   Menús: %s"
+
+msgid "No controllers connected. Connect a gamepad or radio by USB or Bluetooth, then select it here. Keyboard and mouse remain available."
+msgstr "No hay mandos conectados. Conecta un mando o emisora por USB o Bluetooth y selecciónalo aquí. El teclado y el ratón siguen disponibles."
+
+msgid "Profile edits stay in draft until you save."
+msgstr "Los cambios del perfil se conservan al guardar."
+
+msgid "Apply device selection activates these choices. Save profile keeps mappings and response settings."
+msgstr "Aplicar selección activa estos mandos. Guardar perfil conserva las asignaciones y los ajustes de respuesta."
+
+msgid "New profile"
+msgstr "Nuevo perfil"
+
+msgid "Controller profile"
+msgstr "Perfil de mando"
+
+msgid "Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Availability depends on the selected aircraft. Axis endpoints need at least 0.5 travel."
+msgstr "Humo, flaps y tren de aterrizaje pueden usar ejes o botones. Su disponibilidad depende del avión seleccionado. Los extremos del eje necesitan al menos 0,5 de recorrido."
+
+msgid "Action"
+msgstr "Acción"
+
+msgid "Binding"
+msgstr "Asignación"
+
+msgid "Change"
+msgstr "Cambiar"

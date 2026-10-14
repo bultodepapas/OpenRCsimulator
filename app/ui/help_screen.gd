@@ -119,7 +119,7 @@ func _update_radio_help_text() -> void:
 	if _vehicle_type == Reference.ROTORCRAFT:
 		radio_help_label.text = tr("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). The collective stick controls rotor thrust. For a physical radio, lower it to arm, return it to the displayed hover percentage, then press P; a gamepad resumes with P. K calibrates the radio.")
 	else:
-		radio_help_label.text = tr("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it.")
+		radio_help_label.text = tr("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it. Assign gear AUX or the optional Toggle landing gear action in Controller settings.")
 
 
 ## Product, build identity (as exported, or "development"), engine and licence: what a bug report needs.

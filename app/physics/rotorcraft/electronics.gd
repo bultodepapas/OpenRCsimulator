@@ -23,6 +23,8 @@ const PARAMETER_KEYS: Array = [
 static func prepare(parameters: Dictionary) -> Dictionary:
 	if parameters.size() != PARAMETER_KEYS.size() or not parameters.has_all(PARAMETER_KEYS):
 		return {"ok": false, "message": "electronics parameters are missing or contain unknown fields"}
+	if not parameters.curves_by_mode is Dictionary or not parameters.linkage is Dictionary:
+		return {"ok": false, "message": "electronics curves and linkage must be dictionaries"}
 	var curves: Dictionary = parameters.curves_by_mode
 	var curve_check: Dictionary = Swash.validate_curves(curves)
 	if not curve_check.ok:
@@ -66,6 +68,18 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 ## returned as derivatives so it can be integrated at every RK stage.
 static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: PackedFloat64Array,
 		flight_mode: String, trainer_enabled: bool, trim: Dictionary = {}) -> Dictionary:
+	return _evaluate(model, state, sticks, flight_mode, trainer_enabled, trim, false)
+
+
+## Internal flight/render path for the immutable model returned by prepare().
+## Public evaluate() remains the configuration-revalidating reference path.
+static func fast_evaluate(model: Dictionary, state: PackedFloat64Array, sticks: PackedFloat64Array,
+		flight_mode: String, trainer_enabled: bool, trim: Dictionary = {}) -> Dictionary:
+	return _evaluate(model, state, sticks, flight_mode, trainer_enabled, trim, true)
+
+
+static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: PackedFloat64Array,
+		flight_mode: String, trainer_enabled: bool, trim: Dictionary, prepared: bool) -> Dictionary:
 	if not _prepared(model) or state.size() != STATE_SIZE or sticks.size() != 4 \
 			or flight_mode.is_empty() or typeof(trainer_enabled) != TYPE_BOOL or not _trim_is_valid(trim, model):
 		return {"ok": false, "message": "invalid electronics context, state, mode or stick layout"}
@@ -78,10 +92,30 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Packe
 	if absf(state[HEADING_REF]) > 1.0e12 or absf(state[YAW_INTEGRATOR]) > 1.0e12:
 		return {"ok": false, "message": "controller state is outside its finite operating range"}
 	var collective_input: float = sticks[3]
-	var pitch_curve: Dictionary = Swash.sample_mode_curve(model.curves_by_mode, flight_mode, "pitch", collective_input)
-	var throttle_curve: Dictionary = Swash.sample_mode_curve(model.curves_by_mode, flight_mode, "throttle", collective_input)
-	if not pitch_curve.ok or not throttle_curve.ok:
-		return {"ok": false, "message": "requested flight mode has no usable collective/throttle curve"}
+	var pitch_value: float
+	var throttle_value: float
+	if prepared:
+		var curves: Dictionary = model.curves_by_mode
+		if not curves.is_read_only() or not curves.has(flight_mode):
+			return {"ok": false, "message": "requested flight mode has no usable collective/throttle curve"}
+		if not curves[flight_mode] is Dictionary:
+			return {"ok": false, "message": "prepared mode curves must be dictionaries"}
+		var mode: Dictionary = curves[flight_mode]
+		if not mode.is_read_only() or mode.size() != 2 or not mode.has_all(["pitch", "throttle"]) \
+				or not _immutable_curve_shape(mode.pitch) or not _immutable_curve_shape(mode.throttle):
+			return {"ok": false, "message": "prepared mode curves must be immutable"}
+		pitch_value = Swash._sample_validated_curve(mode.pitch, collective_input)
+		throttle_value = Swash._sample_validated_curve(mode.throttle, collective_input)
+		if not is_finite(pitch_value) or pitch_value < -1.0 or pitch_value > 1.0 \
+				or not is_finite(throttle_value) or throttle_value < 0.0 or throttle_value > 1.0:
+			return {"ok": false, "message": "prepared curve output is outside its finite domain"}
+	else:
+		var pitch_curve: Dictionary = Swash.sample_mode_curve(model.curves_by_mode, flight_mode, "pitch", collective_input)
+		var throttle_curve: Dictionary = Swash.sample_mode_curve(model.curves_by_mode, flight_mode, "throttle", collective_input)
+		if not pitch_curve.ok or not throttle_curve.ok:
+			return {"ok": false, "message": "requested flight mode has no usable collective/throttle curve"}
+		pitch_value = float(pitch_curve.value)
+		throttle_value = float(throttle_curve.value)
 	var cyclic_longitudinal: float = sticks[0]
 	var cyclic_lateral: float = sticks[1]
 	var euler: PackedFloat64Array = M.q_to_euler(PackedFloat64Array([state[6], state[7], state[8], state[9]]))
@@ -100,7 +134,7 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Packe
 		var longitudinal_command_rad: float = -model.trainer_pitch_cyclic_gain_rad_per_rad_s * (desired_pitch_rate - state[11])
 		cyclic_lateral = clampf(lateral_command_rad / model.linkage.lateral_rad_per_unit, -1.0, 1.0)
 		cyclic_longitudinal = clampf(longitudinal_command_rad / model.linkage.longitudinal_rad_per_unit, -1.0, 1.0)
-	var mixed: Dictionary = Swash.mix_120(float(pitch_curve.value), cyclic_longitudinal, cyclic_lateral)
+	var mixed: Dictionary = Swash.mix_120(pitch_value, cyclic_longitudinal, cyclic_lateral)
 	if not mixed.ok:
 		return {"ok": false, "message": "swash mix refused the physical stick commands"}
 	var servo_positions: PackedFloat64Array = mixed.servo_targets.duplicate()
@@ -109,7 +143,7 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Packe
 		var clamped: float = clampf(servo_positions[index], -1.0, 1.0)
 		servo_travel_limited = servo_travel_limited or clamped != servo_positions[index]
 		servo_positions[index] = clamped
-	var swash: Dictionary = Swash.linkage_output(servo_positions, model.linkage)
+	var swash: Dictionary = Swash._linkage_output_prepared(servo_positions, model.linkage) if prepared else Swash.linkage_output(servo_positions, model.linkage)
 	if not swash.ok:
 		return {"ok": false, "message": "swash linkage refused the mixed commands"}
 	var cyclic_forward: float = clampf(float(swash.longitudinal_rad)
@@ -139,7 +173,7 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Packe
 	var heading_rate: float = manual_yaw_rate if absf(yaw_stick) > model.yaw_deadzone else 0.0
 	return {"ok": true, "collective_75_rad": float(swash.theta0_rad),
 		"cyclic_forward_rad": cyclic_forward, "cyclic_right_rad": cyclic_right,
-		"tail_collective_rad": tail_collective, "drive_fraction": float(throttle_curve.value),
+		"tail_collective_rad": tail_collective, "drive_fraction": throttle_value,
 		"controller_derivative": PackedFloat64Array([heading_rate, integral_rate]),
 		"target_yaw_rate_rad_s": target_yaw_rate, "measured_yaw_rate_rad_s": state[12],
 		"heading_error_rad": heading_error, "yaw_rate_error_rad_s": yaw_rate_error,
@@ -151,14 +185,25 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Packe
 
 static func _prepared(model: Dictionary) -> bool:
 	if not model.is_read_only() or model.get("law") != "openrc-four-stick-electronics-v1" \
-			or model.size() != PARAMETER_KEYS.size() + 1:
+			or model.size() != PARAMETER_KEYS.size() + 1 or not model.has_all(PARAMETER_KEYS):
 		return false
-	return model.has("curves_by_mode") and model.has("linkage")
+	return model.curves_by_mode is Dictionary and model.linkage is Dictionary \
+		and model.curves_by_mode.is_read_only() and model.linkage.is_read_only()
+
+
+static func _immutable_curve_shape(points: Variant) -> bool:
+	# Packed arrays use copy-on-write value semantics. Ordinary arrays must be
+	# frozen too, otherwise their elements can mutate through a read-only mode.
+	return (points is PackedFloat64Array and points.size() == 5) \
+		or (points is Array and points.size() == 5 and points.is_read_only())
 
 
 static func _freeze_curves(source: Dictionary) -> Dictionary:
 	var curves: Dictionary = source.duplicate(true)
 	for mode_name: String in curves.keys():
+		for channel: String in ["pitch", "throttle"]:
+			if curves[mode_name][channel] is Array:
+				curves[mode_name][channel].make_read_only()
 		curves[mode_name].make_read_only()
 	curves.make_read_only()
 	return curves

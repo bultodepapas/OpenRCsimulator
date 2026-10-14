@@ -1,0 +1,104 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"cache_bytes": 262143,
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"format": "openrc-grass-material-probe v1",
+	"samples": [
+		{
+			"cold_default": true,
+			"construction_usec": 155113,
+			"pair": 0,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "reference"
+		},
+		{
+			"cold_default": true,
+			"construction_usec": 140541,
+			"pair": 0,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "candidate"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 421,
+			"pair": 1,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "candidate"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 138702,
+			"pair": 1,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "reference"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 139394,
+			"pair": 2,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "reference"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 610,
+			"pair": 2,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "candidate"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 1144,
+			"pair": 3,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "candidate"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 138760,
+			"pair": 3,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "reference"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 143192,
+			"pair": 4,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "reference"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 739,
+			"pair": 4,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "candidate"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 570,
+			"pair": 5,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "candidate"
+		},
+		{
+			"cold_default": false,
+			"construction_usec": 155353,
+			"pair": 5,
+			"signature_sha256": "cb7beac24c378ecf53a2e944b84741b16403819da469e7abb119ed85427dccac",
+			"variant": "reference"
+		}
+	],
+	"scope": "CPU material construction including texture submission; readback/signatures outside timed interval; no draw or GPU-time claim"
+}

@@ -63,6 +63,18 @@ var apply_devices: Callable
 var save_and_apply: Callable
 var glyph_family_help_label: Label
 
+var action_filter: OptionButton
+var _settings_panel: PanelContainer
+var _section_pages: Dictionary = {}
+var _section_buttons: Dictionary = {}
+var _section_navigation: HBoxContainer
+var _section_body: VBoxContainer
+var _selected_section := "devices"
+var _device_summary: Label
+var _empty_device_label: Label
+var _preview_axis_labels: Dictionary = {}
+var _axis_columns: BoxContainer
+
 var _screen: Control
 var _profiles: Array[Dictionary] = []
 var _legacy_profiles: Array[Dictionary] = []
@@ -89,6 +101,9 @@ var _preview_clock := 0.0
 var _initial_focus_wait_frames := 0
 var _profile_kind_label: Label
 var _profile_kind_help_label: Label
+var _joystick_label: Label
+var _preset_label: Label
+var _preset_reset_button: Button
 var _prompt_texture_cache: Dictionary = {}
 
 
@@ -157,33 +172,53 @@ func _build() -> void:
 	_screen.dismiss_option_popup_first = true
 	_screen.close_requested.connect(request_close)
 	_screen.dim(0.56)
-	var center: CenterContainer = _screen.center(24.0)
-	var settings_panel := PanelContainer.new()
-	settings_panel.theme_type_variation = "Sidebar"
-	settings_panel.custom_minimum_size = Vector2(1120.0, 620.0)
-	center.add_child(settings_panel)
-	var scroll := ScrollContainer.new()
-	scroll.name = "ControllerSetupScroll"
-	scroll.follow_focus = true
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	settings_panel.add_child(scroll)
-	var page := VBoxContainer.new()
-	page.name = "ControllerSetupPage"
-	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	page.add_theme_constant_override("separation", 8)
-	scroll.add_child(page)
-
+	var center: CenterContainer = _screen.center(20.0)
+	_settings_panel = PanelContainer.new()
+	_settings_panel.name = "ControllerSettingsPanel"
+	var panel_style := _screen.get_theme_stylebox("panel", "Sidebar").duplicate() as StyleBoxFlat
+	panel_style.content_margin_left = 24.0
+	panel_style.content_margin_right = 24.0
+	panel_style.content_margin_top = 20.0
+	panel_style.content_margin_bottom = 20.0
+	_settings_panel.add_theme_stylebox_override("panel", panel_style)
+	center.add_child(_settings_panel)
+	var shell := VBoxContainer.new()
+	shell.add_theme_constant_override("separation", 12)
+	_settings_panel.add_child(shell)
 	var header := HBoxContainer.new()
+	header.name = "ControllerSetupHeader"
 	var title := _label("Controller settings", "TitleLabel")
+	title.add_theme_font_size_override("font_size", 28)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	var close_button := _button("Close", "", "Close")
 	close_button.pressed.connect(request_close)
 	header.add_child(close_button)
-	page.add_child(header)
+	shell.add_child(header)
+	_device_summary = _label("", "SecondaryLabel")
+	_device_summary.name = "ControllerDeviceSummary"
+	_device_summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	shell.add_child(_device_summary)
+	_section_navigation = HBoxContainer.new()
+	_section_navigation.name = "ControllerSections"
+	_section_navigation.add_theme_constant_override("separation", 6)
+	shell.add_child(_section_navigation)
+	shell.add_child(HSeparator.new())
+	var scroll := ScrollContainer.new()
+	scroll.name = "ControllerSetupScroll"
+	scroll.follow_focus = true
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	shell.add_child(scroll)
+	_section_body = VBoxContainer.new()
+	_section_body.name = "ControllerSetupPage"
+	_section_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_section_body)
+	var page := _make_section("devices", "Devices")
 	page.add_child(_label("Choose separate flight and menu controllers. Profile changes never send input to the aircraft while this screen is open.", "SecondaryLabel", true))
-	page.add_child(_label("Apply devices changes the active selection. Save writes the profile. Cancel discards profile edits.", "SecondaryLabel", true))
-
+	_empty_device_label = _label("No controllers connected. Connect a gamepad or radio by USB or Bluetooth, then select it here. Keyboard and mouse remain available.", "SecondaryLabel", true)
+	_empty_device_label.name = "NoControllersConnected"
+	page.add_child(_empty_device_label)
 	page.add_child(_section_label("DEVICES"))
 	var roles := GridContainer.new()
 	roles.columns = 2
@@ -197,10 +232,11 @@ func _build() -> void:
 	_add_field(roles, "Flight controller", flight_device_picker)
 	_add_field(roles, "Menu controller", ui_device_picker)
 	page.add_child(_label("A radio can fly but cannot navigate menus. Menu navigation stays on the selected gamepad; keyboard and mouse remain available.", "SecondaryLabel", true))
+	page.add_child(_label("Apply device selection activates these choices. Save profile keeps mappings and response settings.", "SecondaryLabel", true))
 
 	var role_actions := HBoxContainer.new()
 	role_actions.add_theme_constant_override("separation", 8)
-	apply_devices_button = _button("Apply device selection", "PrimaryButton", "ApplyDevices")
+	apply_devices_button = _button("Apply device selection", "", "ApplyDevices")
 	apply_devices_button.pressed.connect(_apply_device_selection)
 	role_actions.add_child(apply_devices_button)
 	legacy_import_button = _button("Recover legacy profile…")
@@ -231,6 +267,7 @@ func _build() -> void:
 	recovery_row.add_child(restore_gamepad_button)
 	page.add_child(recovery_row)
 
+	page = _make_section("profile", "Profile")
 	page.add_child(_section_label("PROFILE"))
 	var profile_row := GridContainer.new()
 	profile_row.columns = 2
@@ -255,7 +292,9 @@ func _build() -> void:
 	profile_row.add_child(profile_kind_picker)
 	preset_picker = _option("Gamepad preset")
 	preset_picker.item_selected.connect(_on_preset_selected)
-	_add_field(profile_row, "Gamepad preset", preset_picker)
+	_preset_label = _label("Gamepad preset", "SecondaryLabel")
+	profile_row.add_child(_preset_label)
+	profile_row.add_child(preset_picker)
 	preset_help_label = _label("Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch.", "SecondaryLabel", true)
 	page.add_child(preset_help_label)
 	_profile_kind_help_label = _label("Choose an unknown controller type explicitly. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically.", "SecondaryLabel", true)
@@ -266,11 +305,14 @@ func _build() -> void:
 	joystick_enabled = CheckBox.new()
 	joystick_enabled.text = "Use this custom mapping for flight"
 	joystick_enabled.toggled.connect(_on_joystick_enabled)
-	_add_field(profile_row, "Unknown joystick", joystick_enabled)
+	_joystick_label = _label("Unknown joystick", "SecondaryLabel")
+	profile_row.add_child(_joystick_label)
+	profile_row.add_child(joystick_enabled)
 
 	var profile_actions := HBoxContainer.new()
 	profile_actions.add_theme_constant_override("separation", 8)
 	var reset_button := _button("Restore selected preset")
+	_preset_reset_button = reset_button
 	reset_button.pressed.connect(_restore_selected_preset)
 	profile_actions.add_child(reset_button)
 	var duplicate_button := _button("Duplicate profile")
@@ -278,27 +320,32 @@ func _build() -> void:
 	profile_actions.add_child(duplicate_button)
 	page.add_child(profile_actions)
 
+	page = _make_section("axes", "Flight axes")
 	page.add_child(_section_label("AXIS MAPPING AND RESPONSE"))
 	page.add_child(_label("Each channel uses its own scalar axis. Tune its deadzone, expo and inversion, then move the selected flight controller to preview the conditioned value.", "SecondaryLabel", true))
+	_axis_columns = BoxContainer.new()
+	var axis_columns := _axis_columns
+	axis_columns.add_theme_constant_override("separation", 28)
+	page.add_child(axis_columns)
 	axis_grid = GridContainer.new()
 	axis_grid.name = "AxisMapping"
 	axis_grid.columns = 5
 	axis_grid.add_theme_constant_override("h_separation", 14)
 	axis_grid.add_theme_constant_override("v_separation", 5)
-	page.add_child(axis_grid)
+	axis_columns.add_child(axis_grid)
 	for heading in ["Channel", "Source axis", "Deadzone", "Expo", "Invert"]:
 		axis_grid.add_child(_label(heading, "SectionLabel"))
 	for channel in CHANNELS:
 		var channel_label := _label(str(CHANNEL_LABELS[channel]), "SecondaryLabel")
 		axis_grid.add_child(channel_label)
 		var axis_spin := _spin_box(0.0, float(ControllerProfile.AXIS_COUNT - 1), 1.0)
-		axis_spin.custom_minimum_size.x = 120.0
+		axis_spin.custom_minimum_size.x = 100.0
 		axis_grid.add_child(axis_spin)
 		var deadzone_spin := _spin_box(0.0, 0.95, 0.01)
-		deadzone_spin.custom_minimum_size.x = 145.0
+		deadzone_spin.custom_minimum_size.x = 110.0
 		axis_grid.add_child(deadzone_spin)
 		var expo_spin := _spin_box(0.0, 1.0, 0.01)
-		expo_spin.custom_minimum_size.x = 145.0
+		expo_spin.custom_minimum_size.x = 110.0
 		axis_grid.add_child(expo_spin)
 		var invert := CheckBox.new()
 		invert.text = "Invert"
@@ -309,8 +356,9 @@ func _build() -> void:
 		expo_spin.value_changed.connect(_on_axis_changed.bind(channel, "expo"))
 		invert.toggled.connect(_on_axis_invert.bind(channel))
 
+	page = _make_section("aux", "Extra channels")
 	page.add_child(_section_label("AUXILIARY CHANNELS"))
-	aux_help_label = _label("Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Flaps and landing gear are requests only; aircraft physics does not simulate them. Axis endpoints need at least 0.5 travel.", "SecondaryLabel", true)
+	aux_help_label = _label("Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Availability depends on the selected aircraft. Axis endpoints need at least 0.5 travel.", "SecondaryLabel", true)
 	aux_help_label.name = "AuxiliaryHelp"
 	aux_help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.add_child(aux_help_label)
@@ -331,11 +379,11 @@ func _build() -> void:
 		channel_row.add_theme_constant_override("separation", 8)
 		channel_block.add_child(channel_row)
 		var aux_label := _label(tr(str(AUX_CHANNEL_LABELS[aux_name])), "SecondaryLabel")
-		aux_label.custom_minimum_size.x = 128.0
+		aux_label.custom_minimum_size.x = 160.0
 		channel_row.add_child(aux_label)
 		var type_picker := OptionButton.new()
 		type_picker.name = "AuxType_%s" % aux_name
-		type_picker.custom_minimum_size.x = 124.0
+		type_picker.custom_minimum_size.x = 224.0
 		for mode_data in [["Disabled", 0], ["Axis", 1], ["Button", 2]]:
 			var type_index := type_picker.item_count
 			type_picker.add_item(tr(str(mode_data[0])), int(mode_data[1]))
@@ -390,11 +438,13 @@ func _build() -> void:
 			button_mode.set_item_id(mode_index, mode_index)
 		button_editor.add_child(button_mode)
 		mapping.add_child(button_editor)
-		channel_row.add_child(mapping)
+		channel_block.add_child(mapping)
 		var aux_preview := _label(tr("Unbound"), "SecondaryLabel", true)
 		aux_preview.name = "AuxPreview_%s" % aux_name
 		aux_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		channel_block.add_child(aux_preview)
+		channel_row.add_child(aux_preview)
+		channel_row.move_child(aux_preview, 1)
+		channel_block.add_child(HSeparator.new())
 		_aux_controls[aux_name] = {
 			"type": type_picker,
 			"mapping": mapping,
@@ -416,31 +466,51 @@ func _build() -> void:
 		button_spin.value_changed.connect(_on_aux_button_changed.bind(aux_name))
 		button_mode.item_selected.connect(_on_aux_button_mode_selected.bind(aux_name))
 
-	page.add_child(_section_label("LIVE PREVIEW"))
-	page.add_child(_label("This read-only preview does not change flight commands.", "SecondaryLabel"))
-	var preview_grid := GridContainer.new()
-	preview_grid.columns = 3
-	preview_grid.add_theme_constant_override("h_separation", 18)
-	preview_grid.add_theme_constant_override("v_separation", 4)
-	page.add_child(preview_grid)
+	page = _section_pages["axes"]
+	var preview_column := VBoxContainer.new()
+	preview_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	preview_column.add_theme_constant_override("separation", 5)
+	axis_columns.add_child(preview_column)
+	preview_column.add_child(_section_label("LIVE PREVIEW"))
 	for channel in CHANNELS:
+		var live_row := VBoxContainer.new()
+		live_row.custom_minimum_size.y = 44.0
+		live_row.add_theme_constant_override("separation", 3)
+		preview_column.add_child(live_row)
 		var current := _label(tr("%s · raw — · conditioned —") % tr(str(CHANNEL_LABELS[channel])), "SecondaryLabel", false)
-		current.custom_minimum_size.x = 280.0
+		current.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		live_row.add_child(current)
+		var meter_row := HBoxContainer.new()
+		live_row.add_child(meter_row)
 		var meter := ProgressBar.new()
-		meter.custom_minimum_size.x = 180.0
+		meter.custom_minimum_size = Vector2(180.0, 10.0)
+		meter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		meter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		meter.min_value = -1.0
 		meter.max_value = 1.0
 		meter.show_percentage = false
 		var axis_name := _label("Axis —", "SecondaryLabel")
+		_preview_axis_labels[channel] = axis_name
 		_preview_labels[channel] = current
 		_preview_bars[channel] = meter
-		preview_grid.add_child(current)
-		preview_grid.add_child(meter)
-		preview_grid.add_child(axis_name)
+		meter_row.add_child(meter)
+		meter_row.add_child(axis_name)
 	preview_label = _label("Select a flight controller to preview mapped channels.", "SecondaryLabel", true)
 	page.add_child(preview_label)
 
-	page.add_child(_section_label("ACTIONS"))
+	page = _make_section("buttons", "Buttons")
+	var filter_row := HBoxContainer.new()
+	var filter_label := _label("ACTIONS", "SectionLabel")
+	filter_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	filter_row.add_child(filter_label)
+	filter_row.add_child(_label("Show actions", "SecondaryLabel"))
+	action_filter = _option("Show actions")
+	action_filter.name = "ActionFilter"
+	for category in ["All", "Flight", "Camera", "Auxiliary", "Menu"]:
+		action_filter.add_item(category)
+	action_filter.item_selected.connect(_on_action_filter_selected)
+	filter_row.add_child(action_filter)
+	page.add_child(filter_row)
 	page.add_child(_label("Bindings are saved by physical control. A different device cannot trigger them.", "SecondaryLabel", true))
 	action_grid = GridContainer.new()
 	action_grid.name = "SemanticActions"
@@ -480,20 +550,109 @@ func _build() -> void:
 		change_button.pressed.connect(_start_capture.bind(action_id, change_button))
 		action_grid.add_child(change_button)
 
+	shell.add_child(HSeparator.new())
 	status_label = _label("", "SecondaryLabel", true)
 	status_label.name = "Status"
 	status_label.visible = false
-	page.add_child(status_label)
+	status_label.max_lines_visible = 3
+	status_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	shell.add_child(status_label)
 	var footer := HBoxContainer.new()
+	footer.name = "ControllerSetupFooter"
 	footer.add_theme_constant_override("separation", 8)
 	footer.alignment = BoxContainer.ALIGNMENT_END
+	var draft_hint := _label("Profile edits stay in draft until you save.", "SecondaryLabel", true)
+	draft_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(draft_hint)
 	var cancel_button := _button("Cancel", "", "Cancel")
 	cancel_button.pressed.connect(_cancel_edits)
 	footer.add_child(cancel_button)
 	save_button = _button("Save profile", "PrimaryButton", "SaveProfile")
 	save_button.pressed.connect(_save_profile)
 	footer.add_child(save_button)
-	page.add_child(footer)
+	shell.add_child(footer)
+	select_section("devices")
+	_screen.resized.connect(_resize_panel)
+	_resize_panel()
+
+
+func _resize_panel() -> void:
+	_settings_panel.custom_minimum_size = Vector2(minf(1160.0, maxf(0.0, _screen.size.x - 40.0)), minf(780.0, maxf(0.0, _screen.size.y - 40.0)))
+	_axis_columns.vertical = _screen.size.x < 1100.0
+
+
+func _make_section(section_id: String, caption: String) -> VBoxContainer:
+	var button := _button(caption, "", "Section_%s" % section_id)
+	button.toggle_mode = true
+	var active_style := _screen.get_theme_stylebox("normal", "Button").duplicate() as StyleBoxFlat
+	active_style.border_width_bottom = 3
+	active_style.border_color = Color("f5c65d")
+	button.add_theme_stylebox_override("pressed", active_style)
+	button.add_theme_stylebox_override("hover_pressed", active_style)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.pressed.connect(select_section.bind(section_id))
+	_section_navigation.add_child(button)
+	_section_buttons[section_id] = button
+	var page := VBoxContainer.new()
+	page.name = "SectionPage_%s" % section_id
+	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	page.add_theme_constant_override("separation", 10)
+	_section_body.add_child(page)
+	_section_pages[section_id] = page
+	return page
+
+
+## Switching sections changes presentation only; all fields share the same draft.
+func select_section(section_id: String, focus_content := false) -> void:
+	if not _section_pages.has(section_id):
+		return
+	if section_id != _selected_section and not _capturing_action.is_empty():
+		_cancel_capture()
+	_selected_section = section_id
+	for key in _section_pages:
+		_section_pages[key].visible = key == section_id
+		_section_buttons[key].set_pressed_no_signal(key == section_id)
+	var scroll := _section_body.get_parent() as ScrollContainer
+	scroll.scroll_vertical = 0
+	if not is_inside_tree():
+		return
+	var target: Control = _section_buttons[section_id]
+	if focus_content:
+		match section_id:
+			"devices": target = flight_device_picker
+			"profile": target = profile_picker
+			"axes": target = _axis_controls.roll.axis.get_line_edit()
+			"aux": target = _aux_controls.smoke.type
+			"buttons": target = action_filter
+	target.grab_focus()
+
+
+func _on_action_filter_selected(_index: int) -> void:
+	if not _capturing_action.is_empty():
+		_cancel_capture()
+	_update_action_controls()
+	(_section_body.get_parent() as ScrollContainer).scroll_vertical = 0
+
+
+func _action_category(definition: Dictionary) -> int:
+	var action_id := str(definition.id)
+	if action_id.begins_with("camera_") or action_id == "view_reset":
+		return 2
+	if action_id in ["smoke_toggle", "flaps_up", "flaps_down", "flaps_cycle", "gear_toggle"]:
+		return 3
+	if str(definition.context) in ["menu", "both"]:
+		return 4
+	return 1
+
+
+func _update_device_summary() -> void:
+	if _device_summary == null:
+		return
+	var flight := flight_device_picker.get_item_text(flight_device_picker.selected) if flight_device_picker.selected >= 0 else tr("No flight controller")
+	var menu := ui_device_picker.get_item_text(ui_device_picker.selected) if ui_device_picker.selected >= 0 else tr("Keyboard + mouse")
+	_device_summary.text = tr("Flight: %s   ·   Menus: %s") % [flight, menu]
+	_device_summary.tooltip_text = _device_summary.text
+	_empty_device_label.visible = not _devices.any(func(device: Dictionary) -> bool: return bool(device.get("connected", true)))
 
 
 func _ready() -> void:
@@ -526,10 +685,8 @@ func _notification(what: int) -> void:
 
 
 func close_button_focus() -> void:
-	# Start at the first meaningful choice. Focusing Save on open makes the scroll
-	# container jump to the end and hides the screen title and device context.
-	# _process calls this after two frames so the page has a measured size; the
-	# initial layout has zero-sized controls and can make follow_focus jump to the end.
+	select_section("devices")
+	# Wait for measured controls before follow_focus scrolls the selected field.
 	var scroll := _screen.find_child("ControllerSetupScroll", true, false) as ScrollContainer
 	if scroll != null:
 		scroll.scroll_vertical = 0
@@ -662,6 +819,7 @@ func _refresh_devices() -> void:
 					_devices.append(device.duplicate(true))
 	_fill_device_picker(flight_device_picker, false, _draft_flight_device_id)
 	_fill_device_picker(ui_device_picker, true, _draft_ui_device_id)
+	_update_device_summary()
 
 
 func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) -> void:
@@ -684,6 +842,7 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 		var label := "%s · %s" % [name, tr(kind.capitalize())]
 		picker.add_item(label, id)
 		var item_index := picker.item_count - 1
+		picker.get_popup().set_item_tooltip(item_index, label)
 		if menu_only and not _is_menu_device_eligible(device):
 			picker.set_item_disabled(item_index, true)
 		if id == target_id:
@@ -693,6 +852,8 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 		picker.add_item(tr("Disconnected controller %d") % target_id, target_id)
 		picker.set_item_disabled(picker.item_count - 1, true)
 		picker.select(picker.item_count - 1)
+	if picker.selected >= 0:
+		picker.tooltip_text = picker.get_item_text(picker.selected)
 
 
 func _on_flight_device_selected(index: int) -> void:
@@ -701,6 +862,7 @@ func _on_flight_device_selected(index: int) -> void:
 	if capture_cancelled:
 		_capture_done()
 	_draft_flight_device_id = selected_id
+	_update_device_summary()
 	_load_profile_for_device(_draft_flight_device_id)
 	_set_status(tr("The flight controller changed; remapping was cancelled.") if capture_cancelled else "", false)
 	_update_profile_options()
@@ -712,6 +874,7 @@ func _on_flight_device_selected(index: int) -> void:
 
 func _on_ui_device_selected(index: int) -> void:
 	_draft_ui_device_id = ui_device_picker.get_item_id(index)
+	_update_device_summary()
 	_set_status("", false)
 
 
@@ -787,6 +950,7 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	profile_name_edit.text = str(_draft_profile.get("name", "Controller profile"))
 	var profile_kind := str(_draft_profile.get("kind", "gamepad"))
 	joystick_enabled.visible = profile_kind == "joystick"
+	_joystick_label.visible = joystick_enabled.visible
 	joystick_enabled.set_pressed_no_signal(bool(_draft_profile.get("configured", true)))
 	var existing_actions: Dictionary = _draft_profile.get("actions", {}).duplicate(true)
 	_base_actions = existing_actions
@@ -900,6 +1064,9 @@ func _update_preset_options() -> void:
 	else:
 		preset_picker.select(1)
 	preset_picker.disabled = str(_draft_profile.get("kind", "")) != "gamepad"
+	preset_picker.visible = not preset_picker.disabled
+	_preset_label.visible = preset_picker.visible
+	_preset_reset_button.visible = preset_picker.visible
 	preset_picker.tooltip_text = preset_picker.get_item_text(preset_picker.selected)
 	if preset_help_label != null:
 		match str(_draft_profile.get("preset", "mode2")):
@@ -1188,7 +1355,9 @@ func _update_preview() -> void:
 		var raw := Input.get_joy_axis(_draft_flight_device_id, axis) if connected else 0.0
 		var conditioned := ControllerProfile.conditioned_axis(raw, channel, kind) if connected else 0.0
 		var current: Label = _preview_labels[channel_name]
-		current.text = "%s · raw %+.2f · conditioned %+.2f" % [tr(str(CHANNEL_LABELS[channel_name])), raw, conditioned] if connected else "%s · —" % tr(str(CHANNEL_LABELS[channel_name]))
+		current.text = tr("%s · raw %+.2f · conditioned %+.2f") % [tr(str(CHANNEL_LABELS[channel_name])), raw, conditioned] if connected else "%s · —" % tr(str(CHANNEL_LABELS[channel_name]))
+		current.tooltip_text = current.text
+		_preview_axis_labels[channel_name].text = tr("Axis %d") % axis
 		var meter: ProgressBar = _preview_bars[channel_name]
 		var absolute := str(channel.get("range_kind", "centered")) == "absolute"
 		meter.min_value = 0.0 if absolute else -1.0
@@ -1227,11 +1396,15 @@ func _update_action_controls() -> void:
 		glyph_control.texture = _get_prompt_texture(texture_path)
 		glyph_control.visible = glyph_control.texture != null
 		if _capturing_action == action_id:
-			capture_button.text = tr("Press a key or selected controller input…")
+			capture_button.text = tr("Listening…")
 		else:
 			capture_button.text = tr("Remap")
 		clear_button.text = tr("Clear")
-		clear_button.disabled = action_id in ["back", "pause"]
+		clear_button.disabled = action_id in ["back", "pause"] or binding.get("type", "unbound") == "unbound"
+		var row_visible := action_filter.selected <= 0 or _action_category(definition) == action_filter.selected
+		label_control.visible = row_visible
+		binding_cell.visible = row_visible
+		capture_button.visible = row_visible
 		child_index += 3
 
 
@@ -1277,6 +1450,11 @@ func _get_prompt_texture(texture_path: String) -> Texture2D:
 
 
 func _start_capture(action_id: String, button: Button) -> void:
+	select_section("buttons")
+	# Public callers may request an action currently hidden by the category filter.
+	if not button.visible:
+		action_filter.select(0)
+		_update_action_controls()
 	_capturing_action = action_id
 	_capturing_device_id = _draft_flight_device_id
 	_capture_button = button
@@ -1513,6 +1691,7 @@ func _registry_selected(role: String) -> int:
 func _set_status(text: String, is_error: bool) -> void:
 	if status_label == null:
 		return
+	status_label.tooltip_text = text
 	status_label.text = text
 	status_label.visible = not text.is_empty()
 	status_label.add_theme_color_override("font_color", Color(1.0, 0.62, 0.42) if is_error else Color(0.86, 0.9, 0.94))
@@ -1535,6 +1714,9 @@ static func _button(text: String, variation := "", node_name := "") -> Button:
 static func _option(placeholder: String) -> OptionButton:
 	var picker := OptionButton.new()
 	picker.custom_minimum_size.x = 250.0
+	picker.fit_to_longest_item = false
+	picker.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	picker.tooltip_text = TranslationServer.translate(placeholder)
 	return picker
 
@@ -1553,4 +1735,5 @@ static func _spin_box(minimum: float, maximum: float, step_value: float) -> Spin
 
 static func _add_field(grid: GridContainer, label_text: String, control: Control) -> void:
 	grid.add_child(_label(label_text, "SecondaryLabel"))
+	control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(control)

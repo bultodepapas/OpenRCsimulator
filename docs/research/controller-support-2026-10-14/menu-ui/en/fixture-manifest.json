@@ -1,0 +1,161 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "captures": [
+    {
+      "action_filter_index": -1,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-devices.png",
+      "section": "devices",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": -1,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-profile.png",
+      "section": "profile",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": -1,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-axes.png",
+      "section": "axes",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": -1,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-aux.png",
+      "section": "aux",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": -1,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-buttons-footer.png",
+      "section": "buttons",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": -1,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-aux-mapped.png",
+      "section": "aux",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": 0,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-xbox-buttons.png",
+      "section": "buttons",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": 2,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-xbox-camera.png",
+      "section": "buttons",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": 3,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-xbox-aux-actions.png",
+      "section": "buttons",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": -1,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-xbox-capture-active.png",
+      "section": "buttons",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": 0,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-xbox-validation-error.png",
+      "section": "buttons",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "action_filter_index": 0,
+      "image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/controller-support-2026-10-14/menu-ui/en/fixture-dualsense-buttons.png",
+      "section": "buttons",
+      "size": [
+        1280,
+        720
+      ]
+    }
+  ],
+  "devices": [
+    {
+      "backend": "capture-fixture",
+      "guid": "fixture-xbox-360",
+      "id": 201,
+      "kind": "gamepad",
+      "known": true,
+      "name": "Fixture · Xbox 360 Controller",
+      "platform": "fixture",
+      "product_id": 654,
+      "raw_name": "Fixture · Xbox 360 Controller",
+      "vendor_id": 1118
+    },
+    {
+      "backend": "capture-fixture",
+      "guid": "fixture-dualsense-wireless",
+      "id": 202,
+      "kind": "gamepad",
+      "known": true,
+      "name": "Fixture · DualSense Wireless Controller",
+      "platform": "fixture",
+      "product_id": 3302,
+      "raw_name": "Fixture · DualSense Wireless Controller",
+      "vendor_id": 1356
+    },
+    {
+      "backend": "capture-fixture",
+      "guid": "fixture-spektrum-nx8",
+      "id": 203,
+      "kind": "radio",
+      "known": false,
+      "name": "Fixture · Spektrum NX8 Radio",
+      "platform": "fixture",
+      "product_id": 0,
+      "raw_name": "Fixture · Spektrum NX8 Radio",
+      "vendor_id": 0
+    }
+  ],
+  "fixture_note": "Fixture devices are synthetic registry observations for interface review only; no host input device is emulated.",
+  "language": "en",
+  "mode": "fixture",
+  "only_section": "",
+  "renderer": "gl_compatibility",
+  "route": "standalone production ControllerSetup with a real ControllerRegistry and ControllerProfileStore",
+  "viewport": [
+    1280,
+    720
+  ]
+}

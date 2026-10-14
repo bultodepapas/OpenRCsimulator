@@ -1,0 +1,168 @@
+# AV-09: real retractable gear state in deterministic v10 flight traces.
+extends SceneTree
+
+const Flight := preload("res://sim/flight_session.gd")
+const Recorder := preload("res://sim/recorder.gd")
+const Trace := preload("res://sim/trace.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const GEAR_COLUMNS := ["gear_extension", "gear_target_down", "cmd_gear_down", "cmd_wheel_brake"]
+const TURBULENCE_COLUMNS := ["turbulence_north_mps", "turbulence_east_mps", "turbulence_down_mps",
+	"loads_turbulence_north_mps", "loads_turbulence_east_mps", "loads_turbulence_down_mps"]
+const TURBULENCE_MODEL := "uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1"
+
+var _checks: int = 0
+var _failures: int = 0
+
+
+func _check(label: String, condition: bool, detail := "") -> void:
+	_checks += 1
+	if not condition:
+		_failures += 1
+		printerr("FAIL ", label, " ", detail)
+
+
+func _snapshot_matches(sim: Node, expected: Dictionary) -> bool:
+	var actual: Dictionary = sim.checkpoint()
+	for key: String in ["state", "previous", "aux", "inputs", "modes", "last_loads", "continuous",
+		"tick", "stop_at_tick", "mass", "gravity", "inertia", "dt"]:
+		if not actual.has(key) or not expected.has(key) or var_to_bytes(actual[key]) != var_to_bytes(expected[key]):
+			return false
+	return true
+
+
+func _record_one(metadata: Dictionary, session: Node, inputs: PackedFloat64Array,
+		aux: PackedFloat64Array) -> Trace:
+	var malformed := Trace.new()
+	malformed.meta = metadata.duplicate(true)
+	malformed.record(0, 0.0, session.sim.state, session.sim.last_loads, inputs, aux,
+		session.sim.continuous.duplicate())
+	return malformed
+
+
+func _initialize() -> void:
+	var flight := Flight.new()
+	flight.setup(Catalog.entry("sebart-avanti-s-a200-p100rx").data)
+	_check("Avanti exposes retractable gear and six accepted inputs", flight.gear_is_retractable()
+		and flight.sim.inputs.size() == 6)
+	var turbulence := {
+		"format": "openrc-weather v2",
+		"speed_mps": 0.0,
+		"from_deg": 0.0,
+		"gust_mps": 0.0,
+		"gust_up_mps": 0.0,
+		"gust_duration_s": 1.0,
+		"gust_period_s": 2.0,
+		"gust_delay_s": 0.0,
+		"turbulence_rms_mps": [0.15, 0.2, 0.1],
+		"turbulence_tau_s": 0.8,
+		"turbulence_seed": 20261014,
+	}
+	_check("configure deterministic turbulence", flight.setup_weather(turbulence))
+	flight.reset()
+	var start_state: Dictionary = flight.gear_state()
+	var meta: Dictionary = flight.trace_meta()
+	var gear_index: int = flight.gear_aux_index()
+	var turbulence_index: int = flight.turbulence_index()
+	var continuous: Array = JSON.parse_string(meta.recording_start_continuous)
+	var wheel_layout: Array = JSON.parse_string(meta.wheel_state_layout)
+	_check("recording metadata uses v8 gear and complete turbine/wheel state",
+		meta.metadata_schema == "openrc-flight-meta v8" and meta.gear_law == "retractable-point-gear-v1"
+		and meta.gear_trace_schema == "openrc-gear-trace v1" and wheel_layout.size() == flight.wheel_count()
+		and continuous.size() == 1 + wheel_layout.size())
+	_check("gear AUX pair precedes the seven-field turbulence state",
+		gear_index >= 4 and turbulence_index == gear_index + 2 and flight.sim.aux.size() == turbulence_index + 7)
+	_check("start snapshot records stowed gear target", start_state.available and start_state.extension == 0.0
+		and not start_state.target_down)
+
+	var recorder := Recorder.new(flight.sim, flight.electrical_state)
+	recorder.start(meta)
+	_check("recorder starts the actual v10 trace", recorder.trace.row_count() == 1
+		and recorder.trace.columns().slice(-4) == GEAR_COLUMNS and recorder.trace.to_csv().contains("# format: openrc-trace v10\n"))
+	_check("gear request and wheel brake are accepted in flight",
+		flight.set_gear_down(true) and flight.set_wheel_brake(0.5))
+	flight.sim.inputs = flight._inputs()
+	flight.sim.step()
+	var mid_state: Dictionary = flight.gear_state()
+	var extension: float = mid_state.extension
+	_check("recorded actuator advances between locks", extension > 0.0 and extension < 1.0
+		and mid_state.target_down and mid_state.status == "extending")
+	_check("trace row keeps gear state separate from the four legacy commands",
+		recorder.trace.row_count() == 2 and recorder.trace.value(1, "gear_extension") == extension
+		and recorder.trace.value(1, "gear_target_down") == 1.0
+		and recorder.trace.value(1, "cmd_gear_down") == 1.0
+		and recorder.trace.value(1, "cmd_wheel_brake") == 0.5)
+	var csv_text: String = recorder.trace.to_csv()
+	var data_rows := PackedStringArray()
+	for line: String in csv_text.split("\n"):
+		if not line.is_empty() and not line.begins_with("#"):
+			data_rows.append(line)
+	var header := data_rows[0].split(",") if not data_rows.is_empty() else PackedStringArray()
+	var row := data_rows[2].split(",") if data_rows.size() > 2 else PackedStringArray()
+	_check("CSV round-trip places turbulence before the gear tail",
+		data_rows.size() == 3 and Array(header.slice(-4)) == GEAR_COLUMNS
+		and header.find(TURBULENCE_COLUMNS[0]) >= 0
+		and header.find(TURBULENCE_COLUMNS[-1]) < header.find(GEAR_COLUMNS[0])
+		and is_equal_approx(float(row[header.find("gear_extension")]), extension)
+		and float(row[header.find("gear_target_down")]) == 1.0)
+	_check("trace metadata retains turbulence and full gear start snapshots",
+		csv_text.contains("# gear_aux_index: %d\n" % gear_index)
+		and csv_text.contains("# turbulence_aux_index: %d\n" % turbulence_index)
+		and csv_text.contains("# gear_trace_schema: openrc-gear-trace v1\n")
+		and csv_text.contains("# recording_start_gear: [0.0,0.0]\n"))
+
+	# The gear extension and target, wheel spin, turbulence interval, and accepted command
+	# all belong to the checkpoint boundary and replay without live input sampling.
+	var checkpoint: Dictionary = flight.checkpoint()
+	var checkpoint_copy: Dictionary = bytes_to_var(var_to_bytes(checkpoint))
+	_check("mid-extension checkpoint carries explicit gear law and AUX position",
+		not checkpoint.is_empty() and checkpoint.get("gear_law") == "retractable-point-gear-v1"
+		and checkpoint.get("gear_aux_index") == gear_index
+		and checkpoint.simulation.aux[gear_index] > 0.0 and checkpoint.simulation.aux[gear_index] < 1.0
+		and checkpoint.simulation.aux[gear_index + 1] == 1.0
+		and checkpoint.simulation.inputs[4] == 1.0 and checkpoint.simulation.inputs[5] == 0.5)
+	recorder.recording = false
+	recorder.detach()
+	for _tick in 12:
+		flight.sim.step()
+	var expected_replay: Dictionary = flight.sim.checkpoint()
+	flight.reset()
+	var restored: bool = flight.restore_checkpoint(checkpoint_copy)
+	_check("mid-extension checkpoint restores the accepted actuator state", restored
+		and flight.gear_state().extension == checkpoint.simulation.aux[gear_index]
+		and flight.gear_state().target_down and flight.sim.inputs[5] == 0.5)
+	for _tick in 12:
+		flight.sim.step()
+	_check("gear and turbulence replay reproduce every simulation boundary bit", _snapshot_matches(flight.sim, expected_replay))
+
+	# Reject a command/state mismatch, malformed target, shortened AUX, and a misplaced
+	# turbulence tail at the recorder boundary. Invalid traces never emit partial CSV.
+	var baseline_meta: Dictionary = meta.duplicate(true)
+	var start_mismatch: Dictionary = baseline_meta.duplicate(true)
+	start_mismatch.recording_start_gear = "[0.0,1.0]"
+	var mismatch_trace := _record_one(start_mismatch, flight, flight.sim.inputs,
+		PackedFloat64Array(flight.sim.aux.slice(0, flight.sim.aux.size())))
+	_check("recorder rejects a start target that disagrees with the first AUX pair",
+		mismatch_trace.row_count() == 0 and mismatch_trace._invalid_weather)
+	var bad_target_aux: PackedFloat64Array = flight.sim.aux.duplicate()
+	bad_target_aux[gear_index + 1] = 0.5
+	var bad_target_trace := _record_one(baseline_meta, flight, flight.sim.inputs, bad_target_aux)
+	_check("recorder rejects a nonbinary actuator target in AUX",
+		bad_target_trace.row_count() == 0 and bad_target_trace._invalid_weather)
+	var short_aux: PackedFloat64Array = flight.sim.aux.slice(0, gear_index + 1)
+	var short_aux_trace := _record_one(baseline_meta, flight, flight.sim.inputs, short_aux)
+	_check("recorder rejects a truncated gear AUX pair",
+		short_aux_trace.row_count() == 0 and short_aux_trace._invalid_weather)
+	var misplaced_turbulence_meta: Dictionary = baseline_meta.duplicate(true)
+	misplaced_turbulence_meta.turbulence_aux_index = turbulence_index + 1
+	var misplaced_trace := _record_one(misplaced_turbulence_meta, flight, flight.sim.inputs, flight.sim.aux)
+	_check("recorder rejects gear/turbulence AUX index overlap",
+		misplaced_trace.row_count() == 0 and misplaced_trace._invalid_weather)
+	var nonbinary_command: PackedFloat64Array = flight.sim.inputs.duplicate()
+	nonbinary_command[4] = 0.5
+	var bad_command_trace := _record_one(baseline_meta, flight, nonbinary_command, flight.sim.aux)
+	_check("recorder rejects nonbinary gear command input",
+		bad_command_trace.row_count() == 0 and bad_command_trace._invalid_weather)
+
+	flight.free()
+	print("AV-09 retractable gear trace: %d checks, %d failed" % [_checks, _failures])
+	quit(1 if _failures else 0)

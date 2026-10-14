@@ -186,7 +186,7 @@ static func _airframe(owner: Node, body: PackedFloat64Array, values: PackedFloat
 		owner.air_density(),load.thrust_n,load.torque_nm)
 	var external: PackedFloat64Array=Dynamics.loads_from_air(body,model,owner._deflections(owner.sim.aux),rpm,
 		owner.air_density(),air,owner.sim.aux[lag] if lag>=0 else NAN,PackedFloat64Array(),owner._ground_up(body),propeller_loads)
-	var ground: Dictionary=owner._ground_evaluation(body,owner.sim.aux,values)
+	var ground: Dictionary=owner._ground_evaluation(body,owner.sim.aux,values,air)
 	if not ground.get("ok",false): return {}
 	for i in ground.loads.size(): external[i]+=ground.loads[i]
 	return {external=external,ground=ground}

@@ -1,0 +1,237 @@
+{
+  "pairs": [
+    {
+      "pair": 1,
+      "home": {
+        "reference_usec": 8180728,
+        "candidate_usec": 6661844,
+        "gain_pct": 18.566611675635713
+      },
+      "home_sync": {
+        "reference_usec": 2798119,
+        "candidate_usec": 2063187,
+        "gain_pct": 26.265216025479972
+      },
+      "first_fly": {
+        "reference_usec": 3786265,
+        "candidate_usec": 2869340,
+        "gain_pct": 24.217137469247398
+      },
+      "first_fly_sync": {
+        "reference_usec": 3593365,
+        "candidate_usec": 2716903,
+        "gain_pct": 24.391120857469254
+      },
+      "warm_fly": {
+        "reference_usec": 2334059,
+        "candidate_usec": 1928256,
+        "gain_pct": 17.38615005019153
+      },
+      "return_home": {
+        "reference_usec": 1609202,
+        "candidate_usec": 1306092,
+        "gain_pct": 18.836044200790205
+      }
+    },
+    {
+      "pair": 2,
+      "home": {
+        "reference_usec": 7843052,
+        "candidate_usec": 8307117,
+        "gain_pct": -5.916893066627634
+      },
+      "home_sync": {
+        "reference_usec": 2400462,
+        "candidate_usec": 2716015,
+        "gain_pct": -13.145511155769181
+      },
+      "first_fly": {
+        "reference_usec": 3376379,
+        "candidate_usec": 3040103,
+        "gain_pct": 9.959663888443803
+      },
+      "first_fly_sync": {
+        "reference_usec": 3180596,
+        "candidate_usec": 2857200,
+        "gain_pct": 10.167779875218356
+      },
+      "warm_fly": {
+        "reference_usec": 2702151,
+        "candidate_usec": 1997871,
+        "gain_pct": 26.06368037907578
+      },
+      "return_home": {
+        "reference_usec": 1904491,
+        "candidate_usec": 1270569,
+        "gain_pct": 33.28563905001389
+      }
+    },
+    {
+      "pair": 3,
+      "home": {
+        "reference_usec": 8447846,
+        "candidate_usec": 8321534,
+        "gain_pct": 1.4951977107537235
+      },
+      "home_sync": {
+        "reference_usec": 2532469,
+        "candidate_usec": 2754368,
+        "gain_pct": -8.76216056346593
+      },
+      "first_fly": {
+        "reference_usec": 3719444,
+        "candidate_usec": 3172079,
+        "gain_pct": 14.716312438095587
+      },
+      "first_fly_sync": {
+        "reference_usec": 3456562,
+        "candidate_usec": 2987662,
+        "gain_pct": 13.565502369117059
+      },
+      "warm_fly": {
+        "reference_usec": 2625835,
+        "candidate_usec": 2629700,
+        "gain_pct": -0.14719127439462115
+      },
+      "return_home": {
+        "reference_usec": 2082033,
+        "candidate_usec": 1812083,
+        "gain_pct": 12.965692666734869
+      }
+    },
+    {
+      "pair": 4,
+      "home": {
+        "reference_usec": 6906885,
+        "candidate_usec": 8488311,
+        "gain_pct": -22.89637079522824
+      },
+      "home_sync": {
+        "reference_usec": 2616967,
+        "candidate_usec": 2738306,
+        "gain_pct": -4.636627057200187
+      },
+      "first_fly": {
+        "reference_usec": 2598504,
+        "candidate_usec": 2277401,
+        "gain_pct": 12.357225542081135
+      },
+      "first_fly_sync": {
+        "reference_usec": 2461878,
+        "candidate_usec": 2151185,
+        "gain_pct": 12.620162331358419
+      },
+      "warm_fly": {
+        "reference_usec": 2469028,
+        "candidate_usec": 2074555,
+        "gain_pct": 15.976854049447798
+      },
+      "return_home": {
+        "reference_usec": 1355216,
+        "candidate_usec": 1083335,
+        "gain_pct": 20.061820403537148
+      }
+    },
+    {
+      "pair": 5,
+      "home": {
+        "reference_usec": 7168799,
+        "candidate_usec": 7665064,
+        "gain_pct": -6.922568201451875
+      },
+      "home_sync": {
+        "reference_usec": 2134545,
+        "candidate_usec": 2573682,
+        "gain_pct": -20.572862132210847
+      },
+      "first_fly": {
+        "reference_usec": 2632363,
+        "candidate_usec": 2516245,
+        "gain_pct": 4.41116973608883
+      },
+      "first_fly_sync": {
+        "reference_usec": 2498866,
+        "candidate_usec": 2385805,
+        "gain_pct": 4.524492309711685
+      },
+      "warm_fly": {
+        "reference_usec": 1822931,
+        "candidate_usec": 1687828,
+        "gain_pct": 7.411306297385913
+      },
+      "return_home": {
+        "reference_usec": 1213504,
+        "candidate_usec": 1092513,
+        "gain_pct": 9.970383286746479
+      }
+    }
+  ],
+  "summary": {
+    "home": {
+      "reference_median_usec": 7843052,
+      "candidate_median_usec": 8307117,
+      "paired_gains_pct": [
+        18.566611675635713,
+        -5.916893066627634,
+        1.4951977107537235,
+        -22.89637079522824,
+        -6.922568201451875
+      ]
+    },
+    "home_sync": {
+      "reference_median_usec": 2532469,
+      "candidate_median_usec": 2716015,
+      "paired_gains_pct": [
+        26.265216025479972,
+        -13.145511155769181,
+        -8.76216056346593,
+        -4.636627057200187,
+        -20.572862132210847
+      ]
+    },
+    "first_fly": {
+      "reference_median_usec": 3376379,
+      "candidate_median_usec": 2869340,
+      "paired_gains_pct": [
+        24.217137469247398,
+        9.959663888443803,
+        14.716312438095587,
+        12.357225542081135,
+        4.41116973608883
+      ]
+    },
+    "first_fly_sync": {
+      "reference_median_usec": 3180596,
+      "candidate_median_usec": 2716903,
+      "paired_gains_pct": [
+        24.391120857469254,
+        10.167779875218356,
+        13.565502369117059,
+        12.620162331358419,
+        4.524492309711685
+      ]
+    },
+    "warm_fly": {
+      "reference_median_usec": 2469028,
+      "candidate_median_usec": 1997871,
+      "paired_gains_pct": [
+        17.38615005019153,
+        26.06368037907578,
+        -0.14719127439462115,
+        15.976854049447798,
+        7.411306297385913
+      ]
+    },
+    "return_home": {
+      "reference_median_usec": 1609202,
+      "candidate_median_usec": 1270569,
+      "paired_gains_pct": [
+        18.836044200790205,
+        33.28563905001389,
+        12.965692666734869,
+        20.061820403537148,
+        9.970383286746479
+      ]
+    }
+  }
+}

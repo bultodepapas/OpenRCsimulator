@@ -31,6 +31,9 @@ def consumer(path: str) -> str:
     }
     if path in reference_only:
         return reference_only[path]
+
+    if path.startswith("landing_gear.retraction.") or path.endswith(".retraction_path"):
+        return "AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state"
     families = [
         ("inventory[].", "AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier"),
         ("reference.", "AircraftData reference/strip derivation → Aero.loads, trim, render datum checks"),

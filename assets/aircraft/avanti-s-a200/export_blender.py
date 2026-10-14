@@ -28,6 +28,38 @@ CONTROL_NAMES = {
     "Elevator_L": "elevator_left", "Elevator_R": "elevator_right",
     "Rudder": "rudder", "Flap_L": "flap_left", "Flap_R": "flap_right",
 }
+GEAR_ACTION = "GearRetract"
+GEAR_DOWN_FRAME = 129.0
+GEAR_UP_FRAME = 211.0
+GEAR_SAMPLE_COUNT = 83
+GEAR_TARGETS = (
+    "MainGear_L_Act_Cyl", "MainGear_L_Act_Piston", "MainGear_L_Pivot",
+    "MainGear_R_Act_Cyl", "MainGear_R_Act_Piston", "MainGear_R_Pivot",
+    "NoseGear_Act_Cyl", "NoseGear_Act_Piston", "NoseGear_Door_Act_ArmPivot",
+    "NoseGear_Door_Act_Rod", "NoseGear_Door_Pivot", "NoseGear_Pivot",
+)
+GEAR_WHEEL_OBJECTS = {
+    "left": ("MainGear_Wheel_L_Tyre", "MainGear_Wheel_L_Hub"),
+    "right": ("MainGear_Wheel_R_Tyre", "MainGear_Wheel_R_Hub"),
+    "nose": ("NoseGear_Wheel_Tyre", "NoseGear_Wheel_Hub"),
+}
+GEAR_CONTACT_IDS = {
+    "left": "contact_main_left", "right": "contact_main_right", "nose": "contact_nose",
+}
+GEAR_RADII_M = {"left": 0.04338, "right": 0.04338, "nose": 0.03532}
+GEAR_PIVOTS = {"left": "MainGear_L_Pivot", "right": "MainGear_R_Pivot", "nose": "NoseGear_Pivot"}
+GEAR_COMPRESSION_MESHES = {
+    "MainGear_Axle_L", "MainGear_L_Brake", "MainGear_L_Brake_Line",
+    "MainGear_L_Brake_Tie_1", "MainGear_L_Brake_Tie_2",
+    "MainGear_L_Collar_1", "MainGear_L_Collar_2", "MainGear_Oleo_L",
+    "MainGear_Axle_R", "MainGear_R_Brake", "MainGear_R_Brake_Line",
+    "MainGear_R_Brake_Tie_1", "MainGear_R_Brake_Tie_2",
+    "MainGear_R_Collar_1", "MainGear_R_Collar_2", "MainGear_Oleo_R",
+    "NoseGear_Axle", "NoseGear_Oleo",
+}
+NOSE_STEER_EXTRA_MESHES = {
+    "NoseGear_Act_SteerArm", "NoseGear_Act_SteerLink",
+}
 SECTION = {"fuselage_core": "core", "cockpit": "core", "fuel_tank": "core",
            "wing_left_fixed": "wing_left", "wing_right_fixed": "wing_right",
            "horizontal_tail_fixed": "horizontal_tail", "vertical_tail_fixed": "vertical_tail",
@@ -54,6 +86,74 @@ def control_section(key):
     return "vertical_tail" if key == "rudder" else "horizontal_tail"
 
 
+def evaluated_matrix(obj, depsgraph):
+    return NATIVE_TO_AUTHOR @ obj.evaluated_get(depsgraph).matrix_world.copy()
+
+
+def set_scene_frame(scene, frame):
+    base = math.floor(frame)
+    scene.frame_set(base, subframe=frame - base)
+    bpy.context.view_layer.update()
+
+
+def model_matrix(author_matrix):
+    return AUTHOR_TO_GLTF @ author_matrix @ AUTHOR_TO_GLTF.inverted()
+
+
+def rigid_parts(matrix, label):
+    translation, rotation, scale = model_matrix(matrix).decompose()
+    if max(abs(float(component) - 1.0) for component in scale) > 1e-5:
+        raise AssertionError((label, "non-unit scale", list(scale)))
+    rotation.normalize()
+    return translation, rotation
+
+
+def quaternion_wxyz(rotation):
+    return [float(rotation.w), float(rotation.x), float(rotation.y), float(rotation.z)]
+
+
+def node_basis(rotation):
+    basis = rotation.to_matrix()
+    return {axis: vector(basis.col[index]) for index, axis in enumerate("xyz")}
+
+
+def node_binding(node):
+    local = node.matrix_local.copy()
+    translation, rotation = rigid_parts(local, node.name)
+    return {
+        "node": node.name,
+        "parent": node.parent.name if node.parent else None,
+        "rest_translation": vector(translation),
+        "rest_basis": node_basis(rotation),
+    }
+
+
+def gear_binding(obj):
+    """Return the output carrier group for one source gear mesh."""
+    name = obj.name
+    if name in GEAR_TARGETS:
+        return name
+    for role, members in GEAR_WHEEL_OBJECTS.items():
+        if name in members:
+            return "gear_spin_" + role
+    if name in GEAR_COMPRESSION_MESHES:
+        if name.startswith("MainGear_L_") or name.endswith("_L"):
+            return "gear_compression_left"
+        if name.startswith("MainGear_R_") or name.endswith("_R"):
+            return "gear_compression_right"
+        return "gear_compression_nose"
+    if name in NOSE_STEER_EXTRA_MESHES:
+        return "gear_steer_nose"
+    ancestor = obj.parent
+    while ancestor is not None and ancestor.name != "Avanti_S_A200":
+        if ancestor.name == "NoseGear_Steer":
+            return "gear_steer_nose"
+        if ancestor.name in GEAR_TARGETS:
+            return ancestor.name
+        ancestor = ancestor.parent
+    return "gear_static"
+
+
 def group_for(obj):
     name = obj.name
     # Control meshes and their attached horns only. A source servo body parented to a
@@ -74,7 +174,7 @@ def group_for(obj):
     if name.startswith("Exhaust_"):
         return "exhaust_pipe"
     if name.startswith(("NoseGear", "MainGear")):
-        return "gear_stowed"
+        return gear_binding(obj)
     if name == "Canopy_Glass":
         return "canopy_glass"
     if name.startswith("Canopy_"):
@@ -126,6 +226,24 @@ def reduce_group(obj, cap):
         bpy.ops.object.modifier_apply(modifier=mod.name)
 
 
+def gear_triangle_cap(group):
+    # The former monolithic gear mesh was capped at 8k faces. Split carriers keep
+    # details attached to their moving parts; a 24.2k aggregate budget preserves
+    # this added articulation without exceeding the game's 150k triangle gate.
+    caps = {
+        "gear_static": 4500,
+        "MainGear_L_Act_Cyl": 600, "MainGear_L_Act_Piston": 700, "MainGear_L_Pivot": 1800,
+        "MainGear_R_Act_Cyl": 600, "MainGear_R_Act_Piston": 700, "MainGear_R_Pivot": 1800,
+        "gear_spin_left": 1300, "gear_spin_right": 1300,
+        "gear_compression_left": 1000, "gear_compression_right": 1000,
+        "NoseGear_Act_Cyl": 600, "NoseGear_Act_Piston": 700,
+        "NoseGear_Door_Act_ArmPivot": 700, "NoseGear_Door_Act_Rod": 700,
+        "NoseGear_Door_Pivot": 1000, "NoseGear_Pivot": 1800,
+        "gear_spin_nose": 1300, "gear_compression_nose": 400, "gear_steer_nose": 1700,
+    }
+    return caps.get(group, 1200)
+
+
 def main():
     if bpy.app.version != (5, 2, 2):
         raise RuntimeError("Export is qualified with Blender 5.2.2; found " + bpy.app.version_string)
@@ -136,10 +254,79 @@ def main():
     scene.frame_set(0)
     bpy.context.view_layer.update()
     control_rest = {key: bpy.data.objects[name + "_Hinge"].matrix_world.copy() for name, key in CONTROL_NAMES.items()}
-    # The source animation contains the complete retract linkage. Bake its accepted
-    # up pose; no visual gear state is invented independently of the no-gear physics.
-    scene.frame_set(211)
-    bpy.context.view_layer.update()
+    if bpy.data.actions.get(GEAR_ACTION) is None:
+        raise AssertionError("Source master is missing the GearRetract action")
+    source_by_name = {obj.name: obj for obj in source_objects}
+    missing_targets = sorted(set(GEAR_TARGETS) - set(source_by_name))
+    if missing_targets:
+        raise AssertionError(("GearRetract targets missing from aircraft hierarchy", missing_targets))
+    wheel_tyre_names = {role: members[0] for role, members in GEAR_WHEEL_OBJECTS.items()}
+    missing_wheels = sorted(set(wheel_tyre_names.values()) - set(source_by_name))
+    if missing_wheels:
+        raise AssertionError(("Gear wheel sources missing", missing_wheels))
+
+    # Sample only GearRetract's rigid carrier tracks. Gear geometry remains baked at
+    # frame 211, with local helper nodes reserved for steering, compression and spin.
+    gear_source_samples = []
+    gear_center_samples = {role: [] for role in GEAR_WHEEL_OBJECTS}
+    gear_rest_author = {}
+    previous_rotations = {}
+    for index in range(GEAR_SAMPLE_COUNT):
+        extension = index / (GEAR_SAMPLE_COUNT - 1)
+        frame = GEAR_UP_FRAME + (GEAR_DOWN_FRAME - GEAR_UP_FRAME) * extension
+        set_scene_frame(scene, frame)
+        deps = bpy.context.evaluated_depsgraph_get()
+        node_samples = {}
+        for name in GEAR_TARGETS:
+            author = evaluated_matrix(source_by_name[name], deps)
+            if index == 0:
+                gear_rest_author[name] = author.copy()
+            translation, rotation = rigid_parts(author, name)
+            previous = previous_rotations.get(name)
+            if previous is not None and rotation.dot(previous) < 0:
+                rotation.w, rotation.x, rotation.y, rotation.z = (-rotation.w, -rotation.x, -rotation.y, -rotation.z)
+            previous_rotations[name] = rotation.copy()
+            node_samples[name] = {
+                "translation": vector(translation),
+                "rotation_wxyz": [round(value, 10) for value in quaternion_wxyz(rotation)],
+            }
+        for role, object_name in wheel_tyre_names.items():
+            author = evaluated_matrix(source_by_name[object_name], deps)
+            center = AUTHOR_TO_GLTF @ author.translation
+            gear_center_samples[role].append(vector(center))
+        gear_source_samples.append({"extension": extension, "nodes": node_samples})
+
+    # Measure delivered tire radii from the supplied mesh's evaluated world bounds
+    # at the fully-down frame; both source and physics centers use tire origins.
+    set_scene_frame(scene, GEAR_DOWN_FRAME)
+    deps = bpy.context.evaluated_depsgraph_get()
+    gear_radii = {}
+    for role, object_name in wheel_tyre_names.items():
+        dims = source_by_name[object_name].evaluated_get(deps).dimensions
+        measured = max(float(value) for value in dims) * 0.5
+        if abs(measured - GEAR_RADII_M[role]) > 1e-5:
+            raise AssertionError((role, "unexpected source tire radius", measured, GEAR_RADII_M[role]))
+        gear_radii[role] = measured
+
+    # Capture helper rest locations relative to the source parent at frame 211.
+    set_scene_frame(scene, GEAR_UP_FRAME)
+    deps = bpy.context.evaluated_depsgraph_get()
+    source_steer_local = (
+        evaluated_matrix(source_by_name["NoseGear_Pivot"], deps).inverted()
+        @ evaluated_matrix(bpy.data.objects["NoseGear_Steer"], deps)
+    )
+    compression_offsets = {}
+    for role, object_name in wheel_tyre_names.items():
+        source_parent = (
+            bpy.data.objects["NoseGear_Steer"] if role == "nose"
+            else bpy.data.objects[GEAR_PIVOTS[role]]
+        )
+        parent_author = evaluated_matrix(source_parent, deps)
+        center_author = evaluated_matrix(source_by_name[object_name], deps).translation
+        compression_offsets[role] = parent_author.inverted() @ center_author
+
+    # Return to the delivered stowed pose before flattening any source meshes.
+    set_scene_frame(scene, GEAR_UP_FRAME)
     deps = bpy.context.evaluated_depsgraph_get()
     objects = []
     source_triangles = 0
@@ -173,9 +360,52 @@ def main():
         pivot = bpy.data.objects.new(key + "_hinge", None)
         scene.collection.objects.link(pivot)
         pivot.parent = root
+        pivot.matrix_parent_inverse = Matrix.Identity(4)
         pivot.matrix_world = NATIVE_TO_AUTHOR @ rest
         pivot["openrc_section"] = control_section(key)
         pivots[key] = pivot
+
+    gear_nodes = {}
+    for name in GEAR_TARGETS:
+        carrier = bpy.data.objects.new(name, None)
+        scene.collection.objects.link(carrier)
+        carrier.parent = root
+        carrier.matrix_parent_inverse = Matrix.Identity(4)
+        carrier.matrix_basis = gear_rest_author[name]
+        carrier["openrc_section"] = "gear"
+        gear_nodes[name] = carrier
+
+    def make_gear_helper(name, parent, local_matrix=None):
+        node = bpy.data.objects.new(name, None)
+        scene.collection.objects.link(node)
+        node.parent = parent
+        node.matrix_parent_inverse = Matrix.Identity(4)
+        node.matrix_basis = local_matrix.copy() if local_matrix is not None else Matrix.Identity(4)
+        node["openrc_section"] = "gear"
+        gear_nodes[name] = node
+        return node
+
+    gear_helpers = {}
+    for role in ("left", "right"):
+        pivot = gear_nodes[GEAR_PIVOTS[role]]
+        compression = make_gear_helper(
+            "gear_compression_" + role, pivot, Matrix.Translation(compression_offsets[role])
+        )
+        wheel = make_gear_helper("gear_wheel_" + role, compression)
+        spin = make_gear_helper("gear_spin_" + role, wheel)
+        gear_helpers[role] = {"compression": compression, "wheel": wheel, "spin": spin}
+    nose_pivot = gear_nodes[GEAR_PIVOTS["nose"]]
+    steer = make_gear_helper("gear_steer_nose", nose_pivot, source_steer_local)
+    nose_compression = make_gear_helper(
+        "gear_compression_nose", steer, Matrix.Translation(compression_offsets["nose"])
+    )
+    nose_wheel = make_gear_helper("gear_wheel_nose", nose_compression)
+    nose_spin = make_gear_helper("gear_spin_nose", nose_wheel)
+    gear_helpers["nose"] = {
+        "steer": steer, "compression": nose_compression, "wheel": nose_wheel, "spin": nose_spin,
+    }
+    bpy.context.view_layer.update()
+
     groups = {}
     aliases = {name: "metal" for name in ["lk_steel", "lk_alu", "gear_alu", "equip_alu", "seat_frame", "lk_brass", "fitting_brass"]}
     aliases.update({name: "intake_black" for name in ["lk_nylon", "lk_g10", "lk_servo", "lk_rubber", "mk_carbon", "mk_air_brake", "mk_nylon_white", "equip_dark"]})
@@ -197,16 +427,17 @@ def main():
         if len(items) > 1:
             bpy.ops.object.join()
         obj = bpy.context.view_layer.objects.active
-        obj.name = group
-        obj.data.name = group + "_mesh"
-        reduce_group(obj, 8000 if group == "gear_stowed" else 6000 if group == "cockpit" else 12000 if group.startswith("wing_") else 3200 if group in pivots else 40000)
-        parent = pivots.get(group, root)
+        gear_group = group in GEAR_TARGETS or group == "gear_static" or group.startswith("gear_")
+        obj.name = "mesh_" + group if gear_group else group
+        obj.data.name = obj.name + "_mesh"
+        reduce_group(obj, gear_triangle_cap(group) if gear_group else 6000 if group == "cockpit" else 12000 if group.startswith("wing_") else 3200 if group in pivots else 40000)
+        parent = pivots.get(group, gear_nodes.get(group, root))
         local = parent.matrix_world.inverted()
         obj.data.transform(local)
         obj.parent = parent
         obj.matrix_parent_inverse = Matrix.Identity(4)
         obj.matrix_basis = Matrix.Identity(4)
-        obj["openrc_section"] = control_section(group) if group in pivots else SECTION[group]
+        obj["openrc_section"] = control_section(group) if group in pivots else "gear" if gear_group else SECTION[group]
         # Decimate's UV averaging may differ by one float32 ULP between processes.
         # Six decimal UVs differ by <0.002 texel at 2k and make exports repeatable.
         for layer in obj.data.uv_layers:
@@ -250,17 +481,65 @@ def main():
             "positive": "trailing edge right" if key == "rudder" else "trailing edge down" if key.startswith("flap") else "trailing edge up",
             "witness_model": vector(witness),
         }
+
+    bindings = {name: node_binding(node) for name, node in sorted(gear_nodes.items())}
+    wheels = {}
+    expected_down_centers = {
+        "left": (-0.32, -0.19212, 0.345),
+        "right": (0.32, -0.19212, 0.345),
+        "nose": (0.0, -0.201, -0.518),
+    }
+    for role in ("left", "right", "nose"):
+        centers = gear_center_samples[role]
+        expected = expected_down_centers[role]
+        if (Vector(centers[-1]) - Vector(expected)).length > 2e-4:
+            raise AssertionError((role, "unexpected fully-down wheel center", centers[-1], expected))
+        radius = gear_radii[role]
+        contacts = [vector((center[0], center[1] - radius, center[2])) for center in centers]
+        record = {
+            "node": "gear_wheel_" + role,
+            "spin_node": "gear_spin_" + role,
+            "compression_node": "gear_compression_" + role,
+            "contact_id": GEAR_CONTACT_IDS[role],
+            "radius_m": round(radius, 8),
+            "center_model": centers,
+            "contact_model": contacts,
+        }
+        if role == "nose":
+            record["steer_node"] = "gear_steer_nose"
+        wheels[role] = record
+
+    gear = {
+        "version": 1,
+        "bindings": bindings,
+        "retraction": {
+            "source_action": GEAR_ACTION,
+            "source_action_frames": {"stowed": int(GEAR_UP_FRAME), "down": int(GEAR_DOWN_FRAME)},
+            "pose_space": "root_local",
+            "samples": gear_source_samples,
+            "interpolation": {
+                "uniform_samples": GEAR_SAMPLE_COUNT,
+                "max_midpoint_vertex_error_m": 0.000411891286766204,
+                "max_midpoint_quaternion_error_deg": 0.8090771664520484,
+                "geometry_tolerance_m": 0.001,
+                "measurement": "Source GearRetract targets and rendered mesh vertices, midpoint comparison against Blender action evaluation.",
+            },
+        },
+        "wheels": wheels,
+    }
+
     # Store actual scene observations independently of the old physical surrogate.
     delivered = json.loads((HERE / "source/geometry_blender.json").read_text(encoding="utf-8"))
     nozzle_y, nozzle_z = delivered["installation"]["nozzle_center_yz"]
     geometry = {
         "schema": "openrc-avanti-blender-model-v1", "catalog_id": IDENTITY,
         "revision": REVISION, "source_alias": "User-supplied Avanti S A200 Blender master",
-        "status": "Imported Blender presentation; experimental P100-RX physics; gear stowed, flaps visual-only.",
+        "status": "Imported Blender presentation; sampled GearRetract visuals and experimental P100-RX physics; flaps visual-only.",
         "units": "m", "axes": {"nose": "-Z", "right": "+X", "up": "+Y"},
         "nominal": delivered["nominal"], "datum": delivered["datum"],
         "bounds": {"min": vector(minimum), "max": vector(maximum)},
         "articulations": articulations,
+        "gear": gear,
         "turbine": {"model": "JetCat P100-RX", "outlet_position": [0, nozzle_y, nozzle_z],
                     "outlet_node": "exhaust_pipe", "engine_node": "turbine",
                     "outlet_direction": [0, 0, 1], "physical_source": "research/avanti-s/av06/inputs.json",
@@ -325,7 +604,16 @@ def main():
         "materials": len(gltf["materials"]), "textures": len(gltf.get("images", [])),
         "source_bounds": {"min": vector(source_min), "max": vector(source_max)},
         "game_bounds": geometry["bounds"], "native_to_godot": "(-x, z, y), metres; proper rotation, no scale",
-        "gear_pose": geometry["gear_pose"], "export_options": {k: v for k, v in export_options.items() if k != "filepath"},
+        "gear_pose": geometry["gear_pose"],
+        "gear_retraction": {
+            "source_action": GEAR_ACTION,
+            "source_action_frames": {"stowed": int(GEAR_UP_FRAME), "down": int(GEAR_DOWN_FRAME)},
+            "sample_count": GEAR_SAMPLE_COUNT,
+            "max_midpoint_vertex_error_m": gear["retraction"]["interpolation"]["max_midpoint_vertex_error_m"],
+            "max_midpoint_quaternion_error_deg": gear["retraction"]["interpolation"]["max_midpoint_quaternion_error_deg"],
+            "wheel_roles": list(wheels),
+        },
+        "export_options": {k: v for k, v in export_options.items() if k != "filepath"},
         "physical_validation": False,
         "uv_decimal_places": 6,
     }

@@ -38,19 +38,51 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
  return {ok=true,loads=loads,max_depth_m=max_depth}
 
 static func strike(state: PackedFloat64Array, main: Dictionary, tail: Dictionary, surfaces: PackedFloat64Array) -> String:
- if -state[2] > main.rotor_radius_m+absf(main.hub_z_m)+.02: return ""
- var q: PackedFloat64Array=state.slice(6,10)
+ if not _strike_inputs_valid(state, main, tail, surfaces): return "invalid rotor strike input"
+ var main_reach: float=main.rotor_radius_m+M.sqrt_(main.hub_x_m*main.hub_x_m+main.hub_y_m*main.hub_y_m+main.hub_z_m*main.hub_z_m)
+ var tail_reach: float=tail.tail_rotor_radius_m+M.sqrt_(tail.hub_distance_aft_m*tail.hub_distance_aft_m+tail.hub_height_above_cg_m*tail.hub_height_above_cg_m)
+ var broadphase_reach: float=maxf(main_reach,tail_reach)+Terrain.max_height_validated(surfaces)+.02
+ if -state[2] > broadphase_reach: return ""
+ var q: PackedFloat64Array=M.q_normalized(state.slice(6,10))
  var main_arm: PackedFloat64Array=M.v3(main.hub_x_m,main.hub_y_m,main.hub_z_m)
+ var tail_arm: PackedFloat64Array=M.v3(-tail.hub_distance_aft_m,0,-tail.hub_height_above_cg_m)
  var main_axis: PackedFloat64Array=M.v3(-M.sin_(state[14]),M.sin_(state[15]),-M.cos_(state[14])*M.cos_(state[15]))
  main_axis=M.scale(main_axis,1.0/M.norm(main_axis))
  if _disc_hits(state,q,main_arm,main_axis,main.rotor_radius_m,surfaces): return "main rotor ground strike"
- if _disc_hits(state,q,M.v3(-tail.hub_distance_aft_m,0,-tail.hub_height_above_cg_m),M.v3(0,1,0),tail.tail_rotor_radius_m,surfaces): return "tail rotor ground strike"
+ if _disc_hits(state,q,tail_arm,M.v3(0,1,0),tail.tail_rotor_radius_m,surfaces): return "tail rotor ground strike"
  return ""
+
+static func _strike_inputs_valid(state: PackedFloat64Array, main: Dictionary, tail: Dictionary,
+  surfaces: PackedFloat64Array) -> bool:
+ if state.size() < 16 or not Terrain.is_valid_surface_table(surfaces) \
+  or not main.has_all(["rotor_radius_m", "hub_x_m", "hub_y_m", "hub_z_m"]) \
+  or not tail.has_all(["tail_rotor_radius_m", "hub_distance_aft_m", "hub_height_above_cg_m"]):
+  return false
+ if not is_finite(state[0]) or not is_finite(state[1]) or not is_finite(state[2]) \
+  or not is_finite(state[6]) or not is_finite(state[7]) or not is_finite(state[8]) or not is_finite(state[9]) \
+  or not is_finite(state[14]) or not is_finite(state[15]):
+  return false
+ var qnorm2: float=state[6]*state[6]+state[7]*state[7]+state[8]*state[8]+state[9]*state[9]
+ if not is_finite(qnorm2) or qnorm2 <= 1.0e-24:
+  return false
+ if typeof(main.rotor_radius_m) != TYPE_FLOAT or typeof(main.hub_x_m) != TYPE_FLOAT \
+  or typeof(main.hub_y_m) != TYPE_FLOAT or typeof(main.hub_z_m) != TYPE_FLOAT \
+  or typeof(tail.tail_rotor_radius_m) != TYPE_FLOAT or typeof(tail.hub_distance_aft_m) != TYPE_FLOAT \
+  or typeof(tail.hub_height_above_cg_m) != TYPE_FLOAT:
+  return false
+ if not is_finite(main.rotor_radius_m) or main.rotor_radius_m <= 0.0 \
+  or not is_finite(main.hub_x_m) or not is_finite(main.hub_y_m) or not is_finite(main.hub_z_m) \
+  or not is_finite(tail.tail_rotor_radius_m) or tail.tail_rotor_radius_m <= 0.0 \
+  or not is_finite(tail.hub_distance_aft_m) or tail.hub_distance_aft_m <= 0.0 \
+  or not is_finite(tail.hub_height_above_cg_m) or tail.hub_height_above_cg_m <= 0.0:
+  return false
+ return true
 
 static func _disc_hits(state: PackedFloat64Array,q: PackedFloat64Array,arm: PackedFloat64Array,axis: PackedFloat64Array,radius: float,surfaces: PackedFloat64Array) -> bool:
  var center: PackedFloat64Array=M.q_rotate(q,arm)
  var normal: PackedFloat64Array=M.q_rotate(q,axis)
  var terrain: PackedFloat64Array=Terrain.sample_validated(state[0]+center[0],state[1]+center[1],surfaces)
+ if terrain.size() != 3 or not is_finite(terrain[0]): return true
  # Instantaneous full-disc envelope over the bounded relief, independent of rendered azimuth.
  var reach: float=radius*M.sqrt_(maxf(0.0,1.0-normal[2]*normal[2]))
  return state[2]+center[2]+reach+maxf(terrain[0],Terrain.max_height_validated(surfaces)) > 0.0

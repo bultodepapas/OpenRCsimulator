@@ -14,6 +14,8 @@ const Dynamics := preload("res://physics/dynamics.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const Ground := preload("res://physics/ground_contact.gd")
+const RetractableGear := preload("res://physics/retractable_gear.gd")
+const Air := preload("res://physics/air_data.gd")
 
 ## Residual accelerations (m/s², rad/s²) below which the pose counts as solved.
 const TOLERANCE := 1e-11
@@ -169,6 +171,9 @@ static func _accelerations(s: PackedFloat64Array, model: Dictionary, inv: Packed
 		var ground_up: float = GroundTerrain.sample_validated(s[RB.POS], s[RB.POS + 1], surfaces)[0] \
 			if GroundEffect.enabled(model) else NAN
 		loads = Dynamics.loads(s, model, d, rpm if engine else 0.0, rho, wind_ned, NAN, PackedFloat64Array(), ground_up)
+		if RetractableGear.enabled(gear):
+			var drag := RetractableGear.drag_loads(s, Air.compute(s, wind_ned, rho).v_air, gear, 1.0, rho)
+			for i in drag.size(): loads[i] += drag[i]
 	var wheels := PackedFloat64Array()
 	if enhanced:
 		wheels.resize(gear.contacts.size())

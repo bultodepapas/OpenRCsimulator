@@ -13,7 +13,8 @@
       "fixed_tricycle",
       "fixed_taildragger",
       "locked_down_taildragger",
-      "locked_up"
+      "locked_up",
+      "retractable_tricycle"
     ],
     "propulsion_layout": [
       "single_tractor",
@@ -499,7 +500,8 @@
         "rolling_resistance",
         "side_friction",
         "peak_slip_angle",
-        "breakaway_factor"
+        "breakaway_factor",
+        "retraction"
       ]
     },
     {
@@ -519,7 +521,8 @@
         "damping",
         "max_compression",
         "max_steering",
-        "id"
+        "id",
+        "retraction_path"
       ]
     },
     {
@@ -861,6 +864,21 @@
         "elevator",
         "rudder"
       ]
+    },
+    {
+      "path": "/landing_gear/retraction",
+      "required": [
+        "extension_time",
+        "retraction_time",
+        "drag_area",
+        "drag_center"
+      ],
+      "allowed": [
+        "extension_time",
+        "retraction_time",
+        "drag_area",
+        "drag_center"
+      ]
     }
   ],
   "quantity_paths": [
@@ -903,7 +921,12 @@
     "/propulsion/motor/*",
     "/propulsion/motor/no_load_context/*",
     "/propulsion/battery/*",
-    "/propulsion/battery/ocv_points/*/*"
+    "/propulsion/battery/ocv_points/*/*",
+    "/landing_gear/retraction/extension_time",
+    "/landing_gear/retraction/retraction_time",
+    "/landing_gear/retraction/drag_area",
+    "/landing_gear/retraction/drag_center",
+    "/landing_gear/contacts/*/retraction_path"
   ],
   "array_rules": [
     {
@@ -1067,7 +1090,8 @@
         "fixed_tricycle",
         "fixed_taildragger",
         "locked_down_taildragger",
-        "locked_up"
+        "locked_up",
+        "retractable_tricycle"
       ]
     },
     {

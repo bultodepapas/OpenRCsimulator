@@ -1,0 +1,33 @@
+--- a/app/render/ground.gd
++++ b/app/render/ground.gd
+@@ -8,6 +8,8 @@
+ const TURF_DETAIL := preload("res://assets/landscape/turf/detail.png")
+ 
+ const SIZE := 256
++## DT-11a: one default RGB8 tile including mips (262,143 bytes); never retain scene resources.
++static var _default_grass_bytes := PackedByteArray()
+ ## Field surface types as the ground shader's surface_kind (Phase 4).
+ const SURFACE_KIND: Dictionary = {"rough": 0, "mown": 1, "runway": 2}
+ # L9c: a bounded shader batch, not a field-format limit. Unsupported layouts keep the legacy planes.
+@@ -78,10 +80,20 @@
+ 
+ ## The grass: texture in world space, matte, with the haze and the rim fade as custom fog (render/ground.gdshader).
+ static func grass_material(lighting: Dictionary = {}) -> ShaderMaterial:
+-	var material := Atmosphere.ground_material(ImageTexture.create_from_image(grass_image()), lighting)
++	var material := Atmosphere.ground_material(ImageTexture.create_from_image(_default_grass_image()), lighting)
+ 	material.set_shader_parameter("turf_detail", TURF_DETAIL)
+ 	material.set_shader_parameter("turf_detail_strength", 1.0)
+ 	return material
++
++
++## Only the fixed default recipe is cached. Each caller owns its Image/texture/material;
++## updating one world's texture cannot alter another world or poison future builds.
++static func _default_grass_image() -> Image:
++	if _default_grass_bytes.is_empty():
++		var image := grass_image()
++		_default_grass_bytes = image.get_data()
++		return image
++	return Image.create_from_data(SIZE, SIZE, true, Image.FORMAT_RGB8, _default_grass_bytes)
+ 
+ 
+ ## Pack contained, flat surface rectangles into the ground pass. Return false before changing the material

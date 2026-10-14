@@ -5,13 +5,13 @@
   "blender_build_hash": "d13f752e3b9c",
   "source_blend_sha256": "4649d5527da8cc584770279d2ff4bc1494a29445c71f52a2103c33c7b0f05512",
   "source_geometry_sha256": "77880ace41f6c2ebd0bf30f832ec0414505570850ca0ee21bd1ac7378c14805a",
-  "exporter_lf_sha256": "f1cf0b72479ecb3540afe27454884551aa68f5f42e9282ab94b5b50d9c162d1d",
-  "asset_sha256": "ad9c0c4daf1dd1882b59c8a1344f3cc7a1f51507e998349653d399d52a880d6e",
-  "asset_bytes": 9390660,
+  "exporter_lf_sha256": "6cff9b46d831a8ed32361bdb20076ba1d5b60725075a6411903ebe82c87b4603",
+  "asset_sha256": "02b26d2a4910faa12f96f67b2c79c3dd1847dc52684a35af201cf5b9981c49f0",
+  "asset_bytes": 9928436,
   "selected_source_triangles": 635679,
-  "game_triangles": 130710,
-  "mesh_nodes": 19,
-  "material_surfaces": 75,
+  "game_triangles": 146652,
+  "mesh_nodes": 38,
+  "material_surfaces": 105,
   "materials": 26,
   "textures": 22,
   "source_bounds": {
@@ -43,6 +43,21 @@
     "state": "stowed",
     "source_action": "GearRetract",
     "source_frame": 211
+  },
+  "gear_retraction": {
+    "source_action": "GearRetract",
+    "source_action_frames": {
+      "stowed": 211,
+      "down": 129
+    },
+    "sample_count": 83,
+    "max_midpoint_vertex_error_m": 0.000411891286766204,
+    "max_midpoint_quaternion_error_deg": 0.8090771664520484,
+    "wheel_roles": [
+      "left",
+      "right",
+      "nose"
+    ]
   },
   "export_options": {
     "export_format": "GLB",

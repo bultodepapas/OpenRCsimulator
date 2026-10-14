@@ -8,6 +8,8 @@ The immutable source is `NEW HELI/HX-700_Helicoptero_RC_1.blend`, SHA-256 `1919d
 
 The export retains 108 nodes, including four servo outputs, fixed/rotating swash roles, blade/grip pairs, tail slider/yoke/bellcrank and nine linkage endpoint pairs. Controller/telemetry empties, force arrows, cameras, lights, the deformation guide and demonstration animation are excluded. Original local hierarchies remain intact. The generator freezes evaluated neutral transforms and functional mesh deformation/thickness, omitting decorative bevel/weighted-normal modifiers. Its 345,236 triangles and 208 material surfaces are an inspection tier, not a qualified flight budget.
 
+**Appearance gate:** the source's procedural carbon/blade colours and livery-mask mixing are not faithfully converted by this direct glTF export. Native captures show white carbon surfaces and mask colours. Source baking and a matched source/native material comparison are required before visual promotion. Successful texture dependency checks establish resource availability, not shader equivalence.
+
 ## Construction profile v1
 
 `construction.json` uses `schema: "openrc-rotorcraft-construction"`, `version: 1`, and `purpose: "neutral-mechanical-preview"`. This visual-only sidecar is separate from `openrc-aircraft v2` flight data and the conventional-airplane model manifest.
@@ -20,7 +22,7 @@ The export retains 108 nodes, including four servo outputs, fixed/rotating swash
 | `rest_transform` | Twelve finite numbers: Basis X column, Y column, Z column, then origin. Basis is dimensionless; translation is metres in the parent's rest frame. Rod-mesh scale is retained. |
 | `linkages` | Nine unique IDs, matching `.a`/`.b` endpoint IDs and positive `length_m`, measured between terminal node origins. These are construction lengths, not identified physical coefficients. |
 
-Native admission checks exact keys, topology, identity, transforms, endpoint closure, meshes, materials/textures and imported semantic metadata. It rejects scripts, animation nodes, cameras/lights and unbound nodes. [The loader](../../../../app/aircraft/hx700_articulated_model.gd) exposes a detached preview and semantic-node map through `load_preview()`; it exposes no flight-builder ABI. Raw GLB bytes must be available for SHA admission; missing bytes fail closed. Standard production exports do not yet activate this asset.
+Native admission checks exact keys, topology, identity, transforms, endpoint closure, meshes, materials/textures and imported semantic metadata. It rejects scripts, animation nodes, cameras/lights and unbound nodes. [The loader](../../../../app/aircraft/hx700_articulated_model.gd) exposes a detached preview and semantic-node map through `load_preview()`; it exposes no flight-builder ABI. Raw GLB bytes must be available for SHA admission; missing bytes fail closed. Standard production presets explicitly exclude the inspection asset directory until flight/distribution admission is complete.
 
 ## Reproduce
 
