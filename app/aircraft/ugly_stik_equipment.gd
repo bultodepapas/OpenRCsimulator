@@ -641,12 +641,21 @@ static func _add_hollow_outlet(outer: SurfaceTool, inner: SurfaceTool, a: Vector
 	_turned(inner, a, axis, [Vector2(length, inner_radius * 0.82), Vector2(length - 0.009, inner_radius * 0.80), Vector2(length - 0.009, 0)], 48)
 
 
+## Blade planform and section of the propeller: stations as shares of the tip radius, chord as a share of the radius,
+## blade angle, and the section's chordwise samples and thickness (share of the chord).
+const BLADE_FRACTIONS: Array[float] = [0.10, 0.18, 0.29, 0.41, 0.54, 0.67, 0.79, 0.89, 0.96, 1.0]
+const BLADE_CHORDS: Array[float] = [0.205, 0.255, 0.285, 0.282, 0.258, 0.222, 0.178, 0.126, 0.075, 0.025]
+const BLADE_PITCH_DEG: Array[float] = [39.0, 36.0, 32.0, 28.0, 23.0, 19.0, 16.0, 14.0, 12.0, 10.0]
+const BLADE_CHORD_SAMPLES: Array[float] = [0.0, 0.18, 0.42, 0.70, 0.88, 1.0]
+const BLADE_THICKNESS: Array[float] = [0.0, 0.060, 0.090, 0.075, 0.035, 0.0]
+
+
 static func _prop_blades(st: SurfaceTool, radius: float) -> void:
-	var radial_fractions: Array[float] = [0.10, 0.18, 0.29, 0.41, 0.54, 0.67, 0.79, 0.89, 0.96, 1.0]
-	var chord_scales: Array[float] = [0.205, 0.255, 0.285, 0.282, 0.258, 0.222, 0.178, 0.126, 0.075, 0.025]
-	var pitch_degrees: Array[float] = [39.0, 36.0, 32.0, 28.0, 23.0, 19.0, 16.0, 14.0, 12.0, 10.0]
-	var chord_samples: Array[float] = [0.0, 0.18, 0.42, 0.70, 0.88, 1.0]
-	var thickness: Array[float] = [0.0, 0.060, 0.090, 0.075, 0.035, 0.0]
+	var radial_fractions := BLADE_FRACTIONS
+	var chord_scales := BLADE_CHORDS
+	var pitch_degrees := BLADE_PITCH_DEG
+	var chord_samples := BLADE_CHORD_SAMPLES
+	var thickness := BLADE_THICKNESS
 	for sign in [-1.0, 1.0]:
 		var upper: Array = []
 		var lower: Array = []
@@ -695,6 +704,95 @@ static func _prop_blades(st: SurfaceTool, radius: float) -> void:
 		# The hidden root closure sits within the metal hub envelope.
 		for j in range(chord_samples.size() - 1):
 			_uv_quad(st, [upper[0][j + 1], upper[0][j], lower[0][j], lower[0][j + 1]], [uv.call(0, j + 1), uv.call(0, j), uv.call(0, j), uv.call(0, j + 1)], Vector3(0, -sign, 0))
+
+
+## US-V11: a wooden propeller that strikes the ground snaps near the hub. Each blade keeps a stub to its own break
+## station (share of the tip radius); the break runs obliquely across the chord (the grain tears at a slant) with a
+## little roughness, and short slivers stand out along the grain; the fresh fracture shows pale, unvarnished wood.
+## Seeded presentation estimates, not a fracture model.
+const PROP_BREAK_FRACTIONS := {-1.0: 0.27, 1.0: 0.21}
+const PROP_BREAK_SLANT := 0.09
+const PROP_BREAK_ROUGH := 0.008
+const PROP_BREAK_RAGGED := PROP_BREAK_SLANT * 0.5 + PROP_BREAK_ROUGH
+const PROP_SLIVERS := 5
+const PROP_BREAK_SEED := 61
+const FRESH_WOOD_COLOR := Color("d8bd8f")
+
+
+## One section point pair [upper, lower] of blade `sign` at a radius share and chord sample j (the blades' own law).
+static func _blade_section(radius: float, sign: float, fraction: float, j: int) -> Array:
+	var k := 0
+	while k < BLADE_FRACTIONS.size() - 2 and fraction >= BLADE_FRACTIONS[k + 1]:
+		k += 1
+	var t := clampf((fraction - BLADE_FRACTIONS[k]) / (BLADE_FRACTIONS[k + 1] - BLADE_FRACTIONS[k]), 0.0, 1.0)
+	var chord: float = radius * lerpf(BLADE_CHORDS[k], BLADE_CHORDS[k + 1], t)
+	var theta: float = deg_to_rad(lerpf(BLADE_PITCH_DEG[k], BLADE_PITCH_DEG[k + 1], t))
+	var chord_axis := Vector3(cos(theta), 0, -sign * sin(theta))
+	var normal_axis := Vector3(sin(theta), 0, sign * cos(theta))
+	var center := Vector3(radius * (0.018 * fraction * fraction - 0.004), sign * radius * fraction, 0)
+	var u: float = BLADE_CHORD_SAMPLES[j]
+	var offset: float = (u - 0.5) * chord
+	var camber: float = chord * 0.018 * sin(PI * u)
+	var half: float = chord * BLADE_THICKNESS[j] * 0.5
+	return [center + chord_axis * offset + normal_axis * (camber + half), center + chord_axis * offset + normal_axis * (camber - half)]
+
+
+## The broken blades: varnished stubs on `wood` (blade UVs), the fracture and slivers on `fresh` (flat normals).
+static func _prop_stubs(wood: SurfaceTool, fresh: SurfaceTool, radius: float) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = PROP_BREAK_SEED
+	var widest: float = BLADE_CHORDS.max()
+	var samples := BLADE_CHORD_SAMPLES.size()
+	for sign: float in [-1.0, 1.0]:
+		var cut: float = PROP_BREAK_FRACTIONS[sign]
+		var slant := rng.randf_range(-PROP_BREAK_SLANT, PROP_BREAK_SLANT)
+		var ends: Array[float] = []
+		for j in samples:
+			ends.append(cut + slant * (BLADE_CHORD_SAMPLES[j] - 0.5) + rng.randf_range(-PROP_BREAK_ROUGH, PROP_BREAK_ROUGH))
+		var stations: Array[float] = []
+		for f in BLADE_FRACTIONS:
+			if f < cut - PROP_BREAK_RAGGED - 0.01:
+				stations.append(f)
+		stations.append(-1.0) # the ragged end
+		var upper: Array = []
+		var lower: Array = []
+		for f in stations:
+			var u_row: Array = []
+			var l_row: Array = []
+			for j in samples:
+				var pair := _blade_section(radius, sign, ends[j] if f < 0.0 else f, j)
+				u_row.append(pair[0])
+				l_row.append(pair[1])
+			upper.append(u_row)
+			lower.append(l_row)
+		var uv := func(i: int, j: int) -> Vector2:
+			var f: float = ends[j] if stations[i] < 0.0 else stations[i]
+			var chord := lerpf(BLADE_CHORDS[0], BLADE_CHORDS[1], clampf((f - BLADE_FRACTIONS[0]) / (BLADE_FRACTIONS[1] - BLADE_FRACTIONS[0]), 0.0, 1.0))
+			return Vector2(0.5 + sign * 0.5 * f, 0.5 + (BLADE_CHORD_SAMPLES[j] - 0.5) * chord / widest)
+		for i in range(stations.size() - 1):
+			for j in range(samples - 1):
+				var n: Vector3 = (upper[i][j + 1] - upper[i][j]).normalized().cross(Vector3(0, sign, 0)).normalized()
+				_uv_quad(wood, [upper[i][j], upper[i + 1][j], upper[i + 1][j + 1], upper[i][j + 1]], [uv.call(i, j), uv.call(i + 1, j), uv.call(i + 1, j + 1), uv.call(i, j + 1)], n)
+				_uv_quad(wood, [lower[i][j + 1], lower[i + 1][j + 1], lower[i + 1][j], lower[i][j]], [uv.call(i, j + 1), uv.call(i + 1, j + 1), uv.call(i + 1, j), uv.call(i, j)], -n)
+		# Fracture face across the ragged end.
+		var last := stations.size() - 1
+		for j in range(samples - 1):
+			_triangle(fresh, upper[last][j], upper[last][j + 1], lower[last][j + 1], Vector3(0, sign, 0))
+			_triangle(fresh, upper[last][j], lower[last][j + 1], lower[last][j], Vector3(0, sign, 0))
+		# Slivers: thin wedges peeling off the faces along the grain (spanwise), each from a point of the break.
+		for k in PROP_SLIVERS:
+			var j := rng.randi_range(1, samples - 3)
+			var top := rng.randf() < 0.5
+			var row: Array = upper[last] if top else lower[last]
+			var root_a: Vector3 = row[j]
+			var root_b: Vector3 = row[j].lerp(row[j + 1], rng.randf_range(0.2, 0.45))
+			var out := Vector3(0, sign, 0)
+			var lift: Vector3 = (upper[last][j] - lower[last][j]).normalized() * (1.0 if top else -1.0)
+			var tip: Vector3 = root_a.lerp(root_b, rng.randf_range(0.3, 0.7)) + out * rng.randf_range(0.004, 0.014) + lift * rng.randf_range(0.0003, 0.0015)
+			var under: Vector3 = root_a.lerp(root_b, 0.5) - lift * 0.0008
+			_triangle(fresh, root_a, root_b, tip, lift)
+			_triangle(fresh, root_a, tip, under, (root_a - root_b).normalized())
+			_triangle(fresh, root_b, under, tip, (root_b - root_a).normalized())
 
 
 # Quad with per-vertex UVs; winding follows `outward` like _triangle (normals are regenerated afterwards).
@@ -912,7 +1010,18 @@ static func build(root: Node3D, gear: Dictionary) -> Node3D:
 	_prop_blades(blades, float(e.prop_diameter) * 0.5)
 	# US-V09a: one smooth group per blade surface; the zero-thickness leading and trailing edges round off.
 	blades.generate_normals()
-	_flush(propeller, "propeller_blades", {"wood": blades})
+	var blade_node := _flush(propeller, "propeller_blades", {"wood": blades})
+	# US-V11: a prop strike hides the blades and shows the broken stubs (render/crash/director.gd).
+	blade_node.set_meta("prop_strike_breaks", true)
+	var stub_wood := SurfaceTool.new()
+	stub_wood.begin(Mesh.PRIMITIVE_TRIANGLES)
+	stub_wood.set_material(Finish.propeller_wood(WOOD_COLOR))
+	var stub_fresh := _surface(FRESH_WOOD_COLOR, "wood")
+	_prop_stubs(stub_wood, stub_fresh, float(e.prop_diameter) * 0.5)
+	stub_wood.generate_normals()
+	var stubs := _flush(propeller, "propeller_stubs", {"wood": stub_wood, "fresh": stub_fresh})
+	stubs.visible = false
+	stubs.set_meta("prop_strike_reveal", true)
 	var hub_buckets: Dictionary = _buckets([
 		["aluminum", CASE_COLOR, "aluminum"],
 		["steel", STEEL_COLOR, "steel"],

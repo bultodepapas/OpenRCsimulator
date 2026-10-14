@@ -6,7 +6,11 @@
 # - a forward landing light (one SpotLight3D, no shadows) that lights the runway on approach.
 # - FW-62: cyan LED strips under both wings, traced on slices of the model's own triangles along the span (35–95 % of
 #   the semispan, clear of the gear and tail; the longest-chord group is the wing), so colour seen means the belly is
-#   seen: upright vs inverted at a glance (RC night practice). A fuselage belly strip still needs anchors (D-8).
+#   seen: upright vs inverted at a glance (RC night practice).
+# - FW-35b: warm-white strips on the wing tops (seen only from above) and a cyan belly strip along the fuselage
+#   (traced on the model's own triangles in its symmetry plane), so white means the top is seen and cyan the belly;
+#   the landing light sits in the left wing's leading edge, clear of the propeller disc it used to light up;
+#   modes ALL / NAV (navigation and strobes only) / OFF via set_mode().
 # Brightness is physical in scene units (sun irradiance = 1), so the time-of-day exposure decides what shows.
 extends RefCounted
 
@@ -23,6 +27,16 @@ const NAV_MIN_PX := 4.0
 const NAV_DISPLAY_CAP := 2.5
 const STROBE := Vector4(1.0, 0.06, 0.16, 1.0) # 1 s period, 60 ms pulses, second pulse at 160 ms
 const STRIP_COLOR := Color("#20b8ff")
+const TOP_STRIP_COLOR := Color("#fff1d6")
+## Belly strip stations along the fuselage, between these fractions of the model's length (clear of the propeller,
+## engine and tail wheel), and the largest step from one station's belly to the next (a gear leg is a bigger jump).
+const BELLY_FROM := 0.14
+const BELLY_TO := 0.80
+const BELLY_STATIONS := 14
+const BELLY_STEP_M := 0.03
+## Landing light: in the left wing's leading edge at this share of the semispan (the RC kit position).
+const LANDING_SPAN := 0.36 # its 16° beam then clears a propeller disc of up to ~40 % of the span
+const MODES := ["all", "nav", "off"]
 ## A diffuse LED strip's radiance in scene units (estimate: ~1,000–3,000 cd/m², a tenth of a bare LED).
 const STRIP_RADIANCE := 0.25
 const STRIP_WIDTH_M := 0.015
@@ -112,7 +126,7 @@ static func triangles(root: Node3D) -> PackedVector3Array:
 ## high-poly wings behave alike. At the tip the piece with the longest chord is the wing (only the wing reaches it);
 ## walking inward, the substantial piece (> 3 cm) nearest the previous station's mid chord continues it, so split
 ## flaps, struts, gear and tail surfaces never take the strip. It runs STRIP_GAP_M below the piece's lowest point.
-static func underwing_lines(tris: PackedVector3Array, half: float) -> Dictionary:
+static func underwing_lines(tris: PackedVector3Array, half: float, top := false) -> Dictionary:
 	var xs := PackedFloat64Array() # tip to root on each side
 	for side: float in [-1.0, 1.0]:
 		for k in range(STRIP_STATIONS - 1, -1, -1):
@@ -134,7 +148,7 @@ static func underwing_lines(tris: PackedVector3Array, half: float) -> Dictionary
 				continue
 			var z0 := INF
 			var z1 := -INF
-			var y0 := INF
+			var y0 := -INF if top else INF # the outermost skin point: lowest for the belly, highest for the top
 			for e: Array in [[a, b], [b, c], [c, a]]:
 				var p: Vector3 = e[0]
 				var q: Vector3 = e[1]
@@ -142,7 +156,7 @@ static func underwing_lines(tris: PackedVector3Array, half: float) -> Dictionary
 					var hit := p.lerp(q, (x - p.x) / (q.x - p.x))
 					z0 = minf(z0, hit.z)
 					z1 = maxf(z1, hit.z)
-					y0 = minf(y0, hit.y)
+					y0 = maxf(y0, hit.y) if top else minf(y0, hit.y)
 			if z0 < INF:
 				segments[j].append([z0, z1, y0])
 	var lines := {left = PackedVector3Array(), right = PackedVector3Array()}
@@ -157,7 +171,7 @@ static func underwing_lines(tris: PackedVector3Array, half: float) -> Dictionary
 		for seg: Array in segs:
 			if not pieces.is_empty() and seg[0] <= pieces[-1][1] + 0.01:
 				pieces[-1][1] = maxf(pieces[-1][1], seg[1])
-				pieces[-1][2] = minf(pieces[-1][2], seg[2])
+				pieces[-1][2] = maxf(pieces[-1][2], seg[2]) if top else minf(pieces[-1][2], seg[2])
 			else:
 				pieces.append(seg.duplicate())
 		var best: Array = []
@@ -173,7 +187,7 @@ static func underwing_lines(tris: PackedVector3Array, half: float) -> Dictionary
 			continue
 		previous_mid[key] = (best[0] + best[1]) / 2.0
 		var line: PackedVector3Array = lines[key] # packed arrays are values: append, then store back
-		line.append(Vector3(xs[j], best[2] - STRIP_GAP_M, previous_mid[key]))
+		line.append(Vector3(xs[j], best[2] + (STRIP_GAP_M if top else -STRIP_GAP_M), previous_mid[key]))
 		lines[key] = line
 	for key: String in ["left", "right"]: # back to root-to-tip order
 		var reordered := PackedVector3Array()
@@ -185,7 +199,7 @@ static func underwing_lines(tris: PackedVector3Array, half: float) -> Dictionary
 
 
 ## A ribbon mesh through `line` for render/world/led_strip.gdshader (vertices on the line, NORMAL across, UV.x side).
-static func strip(name: String, line: PackedVector3Array) -> MeshInstance3D:
+static func strip(name: String, line: PackedVector3Array, color := STRIP_COLOR, face := Vector3.DOWN) -> MeshInstance3D:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for i in line.size() - 1:
@@ -198,7 +212,8 @@ static func strip(name: String, line: PackedVector3Array) -> MeshInstance3D:
 			st.add_vertex(corner[0])
 	var material := ShaderMaterial.new()
 	material.shader = STRIP_SHADER
-	material.set_shader_parameter("light_color", STRIP_COLOR)
+	material.set_shader_parameter("light_color", color)
+	material.set_shader_parameter("face_dir", face)
 	material.set_shader_parameter("radiance", STRIP_RADIANCE)
 	material.set_shader_parameter("width_m", STRIP_WIDTH_M)
 	var mesh := st.commit()
@@ -209,6 +224,118 @@ static func strip(name: String, line: PackedVector3Array) -> MeshInstance3D:
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.extra_cull_margin = 4.0 # the ribbon widens with distance
 	return mi
+
+
+## FW-35b: the belly line in the symmetry plane (x = 0). Each station's plane z = const cuts the triangles into
+## segments; where a segment crosses x = 0 the skin is there. Starting at the station nearest the wing (the model
+## origin), the lowest crossing is the belly; walking fore and aft, the crossing nearest the previous belly height
+## (within BELLY_STEP_M) continues it, so a gear leg or tail skid below the fuselage never takes the strip.
+static func belly_line(tris: PackedVector3Array, all: AABB) -> PackedVector3Array:
+	var zs := PackedFloat64Array()
+	for k in BELLY_STATIONS:
+		zs.append(all.position.z + all.size.z * lerpf(BELLY_FROM, BELLY_TO, float(k) / float(BELLY_STATIONS - 1)))
+	var crossings: Array = []
+	for z in zs:
+		crossings.append(PackedFloat64Array())
+	for i in range(0, tris.size() - 2, 3):
+		var a := tris[i]
+		var b := tris[i + 1]
+		var c := tris[i + 2]
+		var lo := minf(a.z, minf(b.z, c.z))
+		var hi := maxf(a.z, maxf(b.z, c.z))
+		for j in zs.size():
+			var z := zs[j]
+			if z < lo or z > hi or hi - lo < 1e-9:
+				continue
+			var hits: Array[Vector3] = []
+			for e: Array in [[a, b], [b, c], [c, a]]:
+				var p: Vector3 = e[0]
+				var q: Vector3 = e[1]
+				if (p.z - z) * (q.z - z) <= 0.0 and absf(q.z - p.z) > 1e-9:
+					hits.append(p.lerp(q, (z - p.z) / (q.z - p.z)))
+			if hits.size() >= 2 and hits[0].x * hits[1].x <= 0.0 and absf(hits[1].x - hits[0].x) > 1e-9:
+				var y := lerpf(hits[0].y, hits[1].y, -hits[0].x / (hits[1].x - hits[0].x))
+				var list: PackedFloat64Array = crossings[j]
+				list.append(y)
+				crossings[j] = list
+	var start := 0
+	for j in zs.size():
+		if absf(zs[j]) < absf(zs[start]):
+			start = j
+	var ys := PackedFloat64Array()
+	ys.resize(zs.size())
+	ys.fill(NAN)
+	var seed_list: PackedFloat64Array = crossings[start]
+	if seed_list.is_empty():
+		return PackedVector3Array()
+	ys[start] = Array(seed_list).min()
+	for direction in [-1, 1]:
+		var j: int = start + direction
+		var previous: float = ys[start]
+		while j >= 0 and j < zs.size():
+			var best := NAN
+			for y: float in crossings[j]:
+				if absf(y - previous) <= BELLY_STEP_M and (is_nan(best) or absf(y - previous) < absf(best - previous)):
+					best = y
+			if is_nan(best):
+				break
+			ys[j] = best
+			previous = best
+			j += direction
+	var line := PackedVector3Array()
+	for j in zs.size():
+		if not is_nan(ys[j]):
+			line.append(Vector3(0.0, ys[j] - STRIP_GAP_M, zs[j]))
+	return line
+
+
+## The wing's chord piece at span station x: [leading z, trailing z, lowest y] (longest chord through x), or [].
+static func wing_piece(tris: PackedVector3Array, x: float) -> Array:
+	var segs: Array = []
+	for i in range(0, tris.size() - 2, 3):
+		var a := tris[i]
+		var b := tris[i + 1]
+		var c := tris[i + 2]
+		if x < minf(a.x, minf(b.x, c.x)) or x > maxf(a.x, maxf(b.x, c.x)):
+			continue
+		var z0 := INF
+		var z1 := -INF
+		var y0 := INF
+		for e: Array in [[a, b], [b, c], [c, a]]:
+			var p: Vector3 = e[0]
+			var q: Vector3 = e[1]
+			if (p.x - x) * (q.x - x) <= 0.0 and absf(q.x - p.x) > 1e-9:
+				var hit := p.lerp(q, (x - p.x) / (q.x - p.x))
+				z0 = minf(z0, hit.z)
+				z1 = maxf(z1, hit.z)
+				y0 = minf(y0, hit.y)
+		if z0 < INF:
+			segs.append([z0, z1, y0])
+	segs.sort_custom(func(u: Array, v: Array) -> bool: return u[0] < v[0])
+	var pieces: Array = []
+	for seg: Array in segs:
+		if not pieces.is_empty() and seg[0] <= pieces[-1][1] + 0.01:
+			pieces[-1][1] = maxf(pieces[-1][1], seg[1])
+			pieces[-1][2] = minf(pieces[-1][2], seg[2])
+		else:
+			pieces.append(seg.duplicate())
+	var best: Array = []
+	for piece: Array in pieces:
+		if best.is_empty() or piece[1] - piece[0] > best[1] - best[0]:
+			best = piece
+	return best
+
+
+## FW-35b: ALL shows every light, NAV only the navigation lights and strobes, OFF none.
+static func set_mode(kit: Node3D, mode: String) -> void:
+	if kit == null:
+		return
+	kit.visible = mode != "off"
+	for child in kit.get_children():
+		var name := String(child.name)
+		var nav := name.begins_with("nav_") or name.begins_with("strobe_")
+		(child as Node3D).visible = mode == "all" or nav
+	kit.set_meta("mode", mode)
 
 
 ## Half the wingspan from the model's vertices (the widest single mesh is not the wing on every model: the Extra's
@@ -280,13 +407,27 @@ static func attach(root: Node3D) -> Node3D:
 	kit.add_child(sprite("strobe_left", Color(1.0, 1.0, 1.0), left.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
 	kit.add_child(sprite("strobe_right", Color(1.0, 1.0, 1.0), right.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
 	Exposure.register()
+	var tris := triangles(root)
+	var top_lines := underwing_lines(tris, half, true)
 	for key: String in ["left", "right"]:
 		var line: PackedVector3Array = lines[key]
 		if line.size() >= 2:
 			kit.add_child(strip("strip_" + key, line))
+		var top_line: PackedVector3Array = top_lines[key]
+		if top_line.size() >= 2:
+			kit.add_child(strip("strip_top_" + key, top_line, TOP_STRIP_COLOR, Vector3.UP))
+	var belly := belly_line(tris, all)
+	if belly.size() >= 2:
+		kit.add_child(strip("strip_belly", belly))
 	var landing := SpotLight3D.new()
 	landing.name = "landing_light"
-	landing.position = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z))
+	# In the left wing's leading edge, below the skin: the beam clears the propeller disc it used to light up.
+	var piece := wing_piece(tris, -LANDING_SPAN * half)
+	if piece.is_empty():
+		landing.position = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z))
+	else:
+		landing.position = Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
+	kit.add_child(sprite("landing_lamp", Color("#fff4e0"), landing.position + Vector3(0, 0, -0.012), NAV_SIZE_M))
 	landing.rotation = Vector3(deg_to_rad(-6.0), 0.0, 0.0) # aimed a little down from the nose (−z)
 	landing.light_energy = LANDING_ENERGY
 	landing.spot_range = LANDING_RANGE_M
@@ -294,5 +435,34 @@ static func attach(root: Node3D) -> Node3D:
 	landing.light_color = Color("#fff4e0")
 	landing.shadow_enabled = false
 	kit.add_child(landing)
+	_mark_hosts(root, kit)
 	root.add_child(kit)
+	set_mode(kit, "all")
 	return kit
+
+
+## FW-35b: each light names the model part it is mounted on (the smallest mesh whose box, grown 2 cm, holds it), so a
+## crash wreck can carry it on that part (render/crash/wreck.gd follows meta "crash_follow"); light quads never count
+## in the wreck's collision boxes ("crash_no_bounds"). The flying kit keeps its own structure.
+static func _mark_hosts(root: Node3D, kit: Node3D) -> void:
+	var hosts: Array = []
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		var t := Transform3D.IDENTITY
+		var n: Node = mi
+		while n != null and n != root:
+			if n is Node3D:
+				t = (n as Node3D).transform * t
+			n = n.get_parent()
+		hosts.append({node = mi, box = (t * mi.get_aabb()).grow(0.02)})
+	for item in kit.get_children():
+		var anchor: Vector3 = (item as Node3D).position
+		if item is MeshInstance3D and not ((item as MeshInstance3D).mesh is QuadMesh):
+			anchor = (item as MeshInstance3D).get_aabb().get_center() # a strip: the middle of its line
+		var best: Dictionary = {}
+		for host: Dictionary in hosts:
+			if (host.box as AABB).has_point(anchor) and (best.is_empty() or (host.box as AABB).get_volume() < (best.box as AABB).get_volume()):
+				best = host
+		item.set_meta("crash_no_bounds", true)
+		if not best.is_empty():
+			item.set_meta("crash_follow", root.get_path_to(best.node))

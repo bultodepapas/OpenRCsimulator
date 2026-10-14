@@ -6,7 +6,7 @@
 
 A turning propeller (≥ 300 rpm) whose disc reaches the field breaks. The engine stops (dead stick) and the flight goes on: a landing nose-over rolls or tips over physically instead of ending the flight with the propeller spinning inside the ground.
 
-- **Presentation:** the blades disappear, 12 blade fragments fly along the slide with a surface puff, a crack sounds and the engine cuts. If the flight later crashes, the wreck keeps the propeller broken (hidden, never thrown again), and the cause line adds "after a prop strike".
+- **Presentation:** the blades disappear, 12 blade fragments fly along the slide with a surface puff, a crack sounds and the engine cuts. If the flight later crashes, the wreck keeps the propeller broken (hidden, never thrown again), and the cause line adds "after a prop strike". Since [US-V11](../../ugly-stik-finish-v6.md#us-v11--broken-propeller-after-a-prop-strike) (2026-10-14), a model that declares stub meshes (the Stik) keeps its hub and shows splintered stubs instead, on the flying model and the wreck.
 - **Scope:** scripted, capture and trace routes are unchanged (soft contacts off).
 
 ## How

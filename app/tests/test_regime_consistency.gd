@@ -25,7 +25,12 @@ const CM_ABS := 0.012 # about half a degree of elevator on these aircraft
 ## Documented exceptions (aircraft id → { derivative: band }). The Stik's oracle Cmδe is the borrowed UltraStick 25e value
 ## (−0.8488) while its local tail, calibrated as Cmδe/Cmα of the whole airplane, gives −0.99 about the CG: a 16 %
 ## elevator-power step between regimes that only a Stik data revision (its JSON is authored, not generated) can close.
-const EXCEPTIONS := { "jensen-das-ugly-stik-60": { Cmde = 0.20 } }
+## The glow variants fly the same Stik airframe and inherit the same oracle.
+const EXCEPTIONS := {
+	"jensen-das-ugly-stik-60": { Cmde = 0.20 },
+	"stik-glow-55ax-2t": { Cmde = 0.20 },
+	"stik-glow-fs64v-4t": { Cmde = 0.20 },
+}
 
 var _failures := 0
 var _count := 0

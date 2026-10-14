@@ -137,7 +137,7 @@
     },
     {
       "path": "res://aircraft/ugly_stik_equipment.gd",
-      "sha256": "4584d787e51fc656ec58b5380cc0558d24e54cb1c82c83fbce48b562bf8ca90b",
+      "sha256": "a28b9f561ca12e98e075cab3a4c9e7d9c2cb61045aa46cfb5aa628b71522e765",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },

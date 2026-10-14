@@ -1,5 +1,6 @@
 # E3d1: in the production flight scene a wingtip brush continues the flight and leaves presentation feedback (a mark
 # along the slide and a small puff), while the source airplane stays visible and the crash aftermath stays idle.
+# US-V12: the brush also scuffs the low wing, and restart removes the scuff.
 # Run: godot --headless --path . --script res://tests/test_soft_contact_feedback.gd
 extends SceneTree
 
@@ -53,6 +54,8 @@ func _run() -> void:
 		session._physics_process(session.sim.dt())
 		if not session.soft_contacts.is_empty():
 			touched = true
+		# As main._process does: draw the pose, then let the director read it.
+		main._render_pose(main._current_pose(), session.surfaces(), 0.0)
 		director.update(session.sim.dt())
 		marks_seen = maxi(marks_seen, _visible_marks(director.effects))
 		puff_seen = puff_seen or director.effects.touch_dust.emitting
@@ -62,6 +65,16 @@ func _run() -> void:
 	_check("the wingtip touches in production", touched)
 	_check("the brush does not end the flight", session.crash.is_empty())
 	_check("the touch leaves a ground mark", marks_seen >= 1, "%d marks" % marks_seen)
+	var scuffs: Array = director.scuffs.marks
+	var on_wing := not scuffs.is_empty()
+	for scuff: Node in scuffs:
+		var cursor: Node = scuff
+		var wing := false
+		while cursor != null:
+			wing = wing or String(cursor.name).begins_with("wing_frame_")
+			cursor = cursor.get_parent()
+		on_wing = on_wing and wing
+	_check("the brush scuffs the low wing", on_wing, "%d scuffs" % scuffs.size())
 	var surface: String = director.surface_at(main.get("field"), 0.0, 0.0)
 	var soft_ground: bool = not director.effects.dust_profile(surface).is_empty()
 	_check("the touch throws a puff only on soft ground (%s)" % surface, puff_seen == soft_ground)
@@ -71,6 +84,7 @@ func _run() -> void:
 	session.reset()
 	director.update(session.sim.dt())
 	_check("restart clears the touch marks", _visible_marks(director.effects) == 0 and session.soft_contacts.is_empty())
+	_check("restart removes the airframe scuffs", director.scuffs.marks.is_empty())
 	_finish(main)
 
 

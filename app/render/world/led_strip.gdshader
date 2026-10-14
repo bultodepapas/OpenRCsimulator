@@ -15,6 +15,8 @@ uniform float radiance = 1.0;
 uniform float width_m = 0.015;
 uniform float min_px = 2.0;
 uniform float display_cap = 2.0;
+// FW-35b: the root-frame side the strip faces (belly strips −Y, top strips +Y); it is seen only from that side.
+uniform vec3 face_dir = vec3(0.0, -1.0, 0.0);
 
 varying float gain;
 varying float underside;
@@ -30,9 +32,9 @@ void vertex() {
 	VERTEX = centre + side * UV.x * width * 0.5;
 	NORMAL = vec3(0.0, 0.0, 1.0);
 	gain = width_m / width;
-	// The root-frame belly faces -Y. Suppress the strip from above even if sub-pixel wing depth rounds to a tie.
-	vec3 belly = normalize(mat3(MODELVIEW_MATRIX) * vec3(0.0, -1.0, 0.0));
-	underside = dot(belly, normalize(-centre));
+	// Seen only from the side it faces (the belly for underside strips), even if sub-pixel wing depth rounds to a tie.
+	vec3 facing = normalize(mat3(MODELVIEW_MATRIX) * face_dir);
+	underside = dot(facing, normalize(-centre));
 }
 
 void fragment() {

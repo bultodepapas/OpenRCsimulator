@@ -5,6 +5,8 @@ const Wreck = preload("res://render/crash/wreck.gd")
 const Effects = preload("res://render/crash/effects.gd")
 const CrashAudio = preload("res://render/crash/crash_audio.gd")
 const Frames = preload("res://render/frames.gd")
+const PropBreak = preload("res://render/crash/prop_break.gd")
+const AirframeScuffs = preload("res://render/crash/airframe_scuffs.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const EffectiveMass = preload("res://physics/effective_mass.gd")
 const M = preload("res://physics/math3d.gd")
@@ -39,9 +41,11 @@ var _audio_enabled := true
 var _scenery_contacts: Node3D
 ## E3d1: per-point time of the last skid mark, so a slide leaves a trail without a mark every frame.
 var _touch_marks: Dictionary = {}
-## E3d2: the prop strike already shown (its tick), and the propeller node hidden because its blades broke.
+## E3d2: the prop strike already shown (its tick); US-V11: what the strike changed on the propeller (PropBreak records).
 var _prop_strike_tick := -1
-var _hidden_propeller: Node3D
+var _broken_propeller: Array = []
+## US-V12: scuffs left on the airframe by soft contacts; cleared on restart.
+var scuffs := AirframeScuffs.new()
 var _water_configured := false
 var _water_lake_identity := ""
 var _water_event_count := 0
@@ -437,7 +441,8 @@ static func _finite_vector3(value: Vector3) -> bool:
 	return is_finite(value.x) and is_finite(value.y) and is_finite(value.z) \
 			and absf(value.x) <= 1_100_000.0 and absf(value.y) <= 1_100_000.0 and absf(value.z) <= 1_100_000.0
 
-## E3d2: blade fragments, a crack and the engine dying once per strike; the source blades disappear.
+## E3d2: blade fragments, a crack and the engine dying once per strike; the blades break off (US-V11: stubs remain
+## where the model declares them, otherwise the whole propeller disappears).
 func _prop_strike_feedback() -> void:
 	var strike: Dictionary = flight.session.prop_strike
 	if strike.is_empty() or int(strike.tick) == _prop_strike_tick:
@@ -450,8 +455,7 @@ func _prop_strike_feedback() -> void:
 		audio.prop_strike(point)
 	var propeller: Variant = flight._airplane.get("propeller")
 	if propeller is Node3D and is_instance_valid(propeller):
-		_hidden_propeller = propeller
-		_hidden_propeller.visible = false
+		_broken_propeller = PropBreak.break_blades(propeller)
 
 
 ## CR-01e: one history sample per SAMPLE_INTERVAL_S of sim time, from the HUD's 64-bit telemetry. A restart or a
@@ -513,7 +517,8 @@ static func airframe_colors(root: Node) -> Array:
 
 
 ## E3d1: marks, puffs and sounds for soft hull contacts while the flight continues. New touches are sized by the
-## struck point's normal speed; slides leave a trail paced by TOUCH_TRAIL_S. Reads the session feed only.
+## struck point's normal speed; slides leave a trail paced by TOUCH_TRAIL_S. US-V12: each new touch on the field
+## (not the lake: its records carry normal_ned) also scuffs the airframe. Reads the session feed only.
 func _touch_feedback() -> void:
 	var contacts: Array = flight.session.soft_contacts
 	if contacts.is_empty():
@@ -528,6 +533,8 @@ func _touch_feedback() -> void:
 		if bool(contact.new):
 			var strength := clampf(float(contact.normal_speed_mps) / 3.0, 0.1, 1.0)
 			effects.touch(point, velocity, strength, surface)
+			if not contact.has("normal_ned"):
+				scuffs.add(flight._airplane.root, point, velocity, strength, surface)
 			if _audio_enabled:
 				audio.touch(point, strength, slide > TOUCH_SLIDE_MPS, surface)
 			_touch_marks[contact.index] = now
@@ -575,9 +582,9 @@ func description() -> String:
 func reset() -> void:
 	history.clear()
 	_prop_strike_tick = -1
-	if is_instance_valid(_hidden_propeller):
-		_hidden_propeller.visible = true
-	_hidden_propeller = null
+	PropBreak.restore(_broken_propeller)
+	_broken_propeller = []
+	scuffs.clear()
 	if is_instance_valid(_scenery_contacts):
 		_scenery_contacts.free()
 	_scenery_contacts = null

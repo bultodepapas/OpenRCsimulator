@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
-# Usage: research/ugly-stik/finish-v6/capture.sh <new output dir> [--app <app dir>] [--view <name>] [--throttle 0..1] [--gear-compression m]
+# Usage: research/ugly-stik/finish-v6/capture.sh <new output dir> [--app <app dir>] [--view <name>] [--throttle 0..1] [--gear-compression m] [--prop-broken] [--scuffs]
 # Renders the US-V09a bench views with the pinned Godot under Xvfb. --app selects another checkout's app/ (A/B).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 OUT="${1:?output directory}"; shift
-APP="$ROOT/app"; VIEW=""; THROTTLE=""; COMPRESSION=""
+APP="$ROOT/app"; VIEW=""; THROTTLE=""; COMPRESSION=""; BROKEN=""; SCUFFS=""
 while (($#)); do
 	case "$1" in
 		--app) APP="$2"; shift ;;
 		--view) VIEW="$2"; shift ;;
 		--throttle) THROTTLE="$2"; shift ;;
 		--gear-compression) COMPRESSION="$2"; shift ;;
+		--prop-broken) BROKEN=1 ;;
+		--scuffs) SCUFFS=1 ;;
 		*) echo "unknown argument $1" >&2; exit 2 ;;
 	esac
 	shift
@@ -19,5 +21,5 @@ done
 mkdir -p "$OUT"
 LP_NUM_THREADS="${LP_NUM_THREADS:-1}" xvfb-run -a -s "-screen 0 1280x720x24" "$("$ROOT/app/get-godot.sh")" \
 	--path "$APP" --rendering-driver opengl3 --audio-driver Dummy \
-	--script "$ROOT/research/ugly-stik/finish-v6/finish_bench.gd" -- --out="$(cd "$OUT" && pwd)" ${VIEW:+--view=$VIEW} ${THROTTLE:+--throttle=$THROTTLE} ${COMPRESSION:+--gear_compression=$COMPRESSION}
+	--script "$ROOT/research/ugly-stik/finish-v6/finish_bench.gd" -- --out="$(cd "$OUT" && pwd)" ${VIEW:+--view=$VIEW} ${THROTTLE:+--throttle=$THROTTLE} ${COMPRESSION:+--gear_compression=$COMPRESSION} ${BROKEN:+--prop_broken} ${SCUFFS:+--scuffs}
 (cd "$OUT" && sha256sum ./*.png > SHA256SUMS)

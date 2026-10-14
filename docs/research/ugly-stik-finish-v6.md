@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading, linkage, propeller, weathering and gear flex (US-V09a–h, US-V10)
+# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex and broken propeller (US-V09a–h, US-V10, US-V11)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -120,6 +120,22 @@ Evidence ([hashes](ugly-stik-finish-v6-evidence/v10-SHA256SUMS)): [bench, front 
 - **Proof:** `test_gear_flex.gd`, 27/0, covers spring travel below free length; slide = compression up to travel; spring length = free − slide; axle = slide + bend = compression; bow = 2√(LΔ)/π against an independent leg length; the bow cap and mount excess at 0.12 m; the steering frame; and release. Mutations on a disposable copy (no bow, spring never slides, bow forward) were each detected. `verify_model` 827/0, with the spin/steering check split because the steered axle now swings about the wire axis (17 mm radius, checked). `verify_controls` 376/0, its throttle-rod probe now also covering the bearing and spring. The render contract, propeller blur, shadows, crash and ground-contact tests pass.
 
 Evidence ([hashes](ugly-stik-finish-v6-evidence/v10b-SHA256SUMS)): [before/after at 0 and 23 mm](ugly-stik-finish-v6-evidence/v10b-nose-before-after-0-23mm.png) (left pair: `HEAD` fork design; right pair: sprung gear), [spring sequence at 23 / 50 / 80 mm](ugly-stik-finish-v6-evidence/v10b-nose-spring-23-50-80mm.png). Bench: `capture.sh <dir> --view nose_gear --gear-compression 0.023`.
+
+## US-V11 · broken propeller after a prop strike
+
+2026-10-14, from the owner-approved Stik audit. Since E3d2, a prop strike hid the whole `propeller` node: blades, hub, washers and nut vanished from a running engine. A wooden propeller that strikes the ground snaps near the hub, leaving two short stubs with a pale, splintered fracture on the shaft.
+
+- **Geometry:** `ugly_stik_equipment.gd` builds a hidden `propeller_stubs` mesh with the blades' own planform and section, so the stubs share the blades' chord, twist, camber and grain UVs. The break stations are 27 % and 21 % of the tip radius. Each break runs obliquely across the chord (slant up to ±0.09 of the radius, roughness ±0.008), and five short slivers per blade (4–14 mm) stand out along the grain. The fracture faces and slivers use unvarnished wood (`d8bd8f`); the stubs keep the varnished blade finish. All of these are seeded presentation estimates, not a fracture model.
+- **Logic:** `render/crash/prop_break.gd` is the shared rule. Nodes with meta `prop_strike_breaks` hide, nodes with meta `prop_strike_reveal` show, and the propeller carries `blades_broken`; `restore()` undoes it on restart. A propeller that declares neither meta still disappears whole, so other aircraft are unchanged. The director applies the rule on the flying model. The wreck applies it to its twin, which shows the same stubs after a later crash. The blur (`propeller_blur.gd`) keeps the blades hidden while broken, adds no disc, and never measures the stubs as blades.
+- **Proof:** `test_prop_strike_feedback.gd` 16/0 in the production scene covers:
+  - blades shown and stubs hidden before the strike;
+  - after the strike, the hub and stubs visible and the blades hidden, including through the blur at 9000 and 0 rpm;
+  - the wreck twin showing the stubs after a later crash, with conserved mass;
+  - restart restoring the model and the twin.
+
+  Four mutations on a disposable copy were each detected: the blur ignoring the break, the wreck forgetting it, the stubs never shown, and restart keeping the break. Also passing: `verify_model` 919/0, `verify_controls` 376/0, propeller blur 114/0, crash wreck 219/0, breakup 30/0, fracture 24/0, prop strike 24/0, soft contact 10/0, catalog 88/0.
+
+Evidence ([hashes](ugly-stik-finish-v6-evidence/v11-SHA256SUMS)), rendered identically from a disposable copy and from `app/`: [hub close-up](ugly-stik-finish-v6-evidence/v11-broken-prop-hub.png) and [propeller view](ugly-stik-finish-v6-evidence/v11-broken-prop.png). Bench: `capture.sh <dir> --view prop_hub --prop-broken`.
 
 ## Limits and open findings
 
