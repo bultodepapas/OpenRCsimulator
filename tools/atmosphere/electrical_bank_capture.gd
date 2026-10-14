@@ -215,7 +215,8 @@ func _capture_phase(phase: Dictionary, output_dir: String, shared_event_id: Stri
 			scene_root.queue_free()
 			return shared_event_id
 	if str(phase.id) in ["fullmoon", "newmoon"]:
-		for flash_mode: String in ["full", "reduced", "off"]:
+		# The Full peak is already one of the pre/peak/post samples above.
+		for flash_mode: String in ["reduced", "off"]:
 			if not await _capture_sample(scene_root, environment, bank, camera, transport, event, phase,
 					target_world, {"id": "peak", "time_s": start_s + PEAK_OFFSET_S}, flash_mode, exposure, output_dir):
 				scene_root.queue_free()
@@ -300,9 +301,15 @@ func _capture_sample(scene_root: Node3D, environment: Environment, bank: StormBa
 		lightning.queue_free()
 		await process_frame
 		return false
+	var image_sha256 := FileAccess.get_sha256(path)
+	if image_sha256.length() != 64:
+		_fail("could not calculate SHA-256 for " + path)
+		lightning.queue_free()
+		await process_frame
+		return false
 	_images.append(_image_manifest(case_id, file_name, phase, sample, flash_mode, time_s, exposure,
 			camera.global_position, camera.global_position.distance_to(_as_vector3(event.get("source_world", []))),
-		target_world, bank.cell_spec(), event, lightning_state, flash_state, _world_sky(phase)))
+		target_world, bank.cell_spec(), event, lightning_state, flash_state, _world_sky(phase), image_sha256))
 	print("captured %s" % file_name)
 	lightning.reset()
 	lightning.queue_free()
@@ -335,13 +342,14 @@ func _draw_frames(case_id: String) -> bool:
 func _image_manifest(case_id: String, file_name: String, phase: Dictionary, sample: Dictionary,
 		flash_mode: String, time_s: float, exposure: float, camera_world: Vector3, source_range_m: float,
 		target_world: Vector3, cell_spec: Dictionary, event: Dictionary, lightning: Dictionary,
-		bank_flash: Dictionary, world_sky: Dictionary) -> Dictionary:
+		bank_flash: Dictionary, world_sky: Dictionary, image_sha256: String) -> Dictionary:
 	var source := _as_vector3(event.get("source_world", []))
 	var ground := _as_vector3(event.get("ground_world", []))
 	var channel := _as_vector3(event.get("channel_world", []))
 	return {
 		"id": case_id,
 		"file": file_name,
+		"sha256": image_sha256,
 		"preset": SKY_PRESET,
 		"phase": str(phase.id),
 		"date": str(phase.date),

@@ -1,0 +1,13 @@
+{
+  "format": "openrc-fw84b-trace-parity v1",
+  "date": "2026-10-14",
+  "duration_s": 2,
+  "samples": 481,
+  "headers_and_data_identical": true,
+  "comment_metadata_excluded": true,
+  "trace_sha256": {
+    ".tools\\fw84b-runtime\\trace-classic.csv": "44905bbc19cd1d307fb5a073aa3983958aedb2b46adade5afe0bb4f90562af61",
+    ".tools\\fw84b-runtime\\trace-electrical.csv": "3c7b13f0d7df760be70dd17b2f66fa9b470edf8a08399d6203aea55e10b8c7c1"
+  },
+  "scope": "Same fixed initial condition and soundscape disabled; exact 240 Hz numerical rows, not a physical validation or a flight through a storm."
+}

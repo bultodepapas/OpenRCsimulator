@@ -1,0 +1,1490 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_capture": "production Main capture is recorded separately",
+	"aircraft_in_frame": false,
+	"cloud_transport_motion": "still",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"event_kind": "cloud_to_ground",
+	"field": "res://data/fields/default.json",
+	"format": "openrc-fw84b-electrical-bank-capture v1",
+	"frames_after_scene_change": 8,
+	"images": [
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-21",
+			"environment_exposure": 0.600000023841858,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-day-pre-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-day-pre-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "13:00",
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "pre",
+			"sha256": "d806a23e6133216539fcf10fdbe4456c3730bfd26a0c1d43bb5fc40e1a8d9be7",
+			"simulation_time_s": 88.8166666666667,
+			"world_sky": {
+				"light_source": "sun",
+				"moon_elevation_deg": 17.1748875026276,
+				"moon_illuminated": 0.482813672392135,
+				"sky_exposure": 0.6,
+				"sun_elevation_deg": 66.0790106640608
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "3102985321:7",
+				"level": 1.0,
+				"radiance": 1.41666661037339,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-21",
+			"environment_exposure": 0.600000023841858,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-day-peak-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-day-peak-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "3102985321:7",
+				"level": 1.0,
+				"light_energy": 1.14999997615814,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "13:00",
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "peak",
+			"sha256": "e9897558640b21ef10b8f8c381814f6fee998e218cf10256cbb6aa190563eea1",
+			"simulation_time_s": 88.9041666666667,
+			"world_sky": {
+				"light_source": "sun",
+				"moon_elevation_deg": 17.1748875026276,
+				"moon_illuminated": 0.482813672392135,
+				"sky_exposure": 0.6,
+				"sun_elevation_deg": 66.0790106640608
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-21",
+			"environment_exposure": 0.600000023841858,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-day-post-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-day-post-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "13:00",
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "post",
+			"sha256": "76bc66023ee77a122f85bd10e7ac9cb647f5a51dc8e0266def826aa3bf61f0b4",
+			"simulation_time_s": 89.8666666666667,
+			"world_sky": {
+				"light_source": "sun",
+				"moon_elevation_deg": 17.1748875026276,
+				"moon_illuminated": 0.482813672392135,
+				"sky_exposure": 0.6,
+				"sun_elevation_deg": 66.0790106640608
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-21",
+			"environment_exposure": 41.3284568786621,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-dusk-pre-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-dusk-pre-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "18:25",
+			"msaa": "4x",
+			"phase": "dusk",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "pre",
+			"sha256": "a0d3fc1a476ca47014a2cecc9972bb28513c46c13c3263f6d9ae221d1c0f7d88",
+			"simulation_time_s": 88.8166666666667,
+			"world_sky": {
+				"light_source": "moon",
+				"moon_elevation_deg": 79.4714655636597,
+				"moon_illuminated": 0.506156279863602,
+				"sky_exposure": 41.3284567645805,
+				"sun_elevation_deg": -4.2174205806756
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "3102985321:7",
+				"level": 1.0,
+				"radiance": 0.0205669425910469,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-21",
+			"environment_exposure": 41.3284568786621,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-dusk-peak-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-dusk-peak-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "3102985321:7",
+				"level": 1.0,
+				"light_energy": 0.0483928062021732,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "18:25",
+			"msaa": "4x",
+			"phase": "dusk",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "peak",
+			"sha256": "845a8dda84ece3f691d1b2016a7c651473408a5788e2d41f1b0edddbc57835cb",
+			"simulation_time_s": 88.9041666666667,
+			"world_sky": {
+				"light_source": "moon",
+				"moon_elevation_deg": 79.4714655636597,
+				"moon_illuminated": 0.506156279863602,
+				"sky_exposure": 41.3284567645805,
+				"sun_elevation_deg": -4.2174205806756
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-21",
+			"environment_exposure": 41.3284568786621,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-dusk-post-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-dusk-post-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "18:25",
+			"msaa": "4x",
+			"phase": "dusk",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "post",
+			"sha256": "a0d3fc1a476ca47014a2cecc9972bb28513c46c13c3263f6d9ae221d1c0f7d88",
+			"simulation_time_s": 89.8666666666667,
+			"world_sky": {
+				"light_source": "moon",
+				"moon_elevation_deg": 79.4714655636597,
+				"moon_illuminated": 0.506156279863602,
+				"sky_exposure": 41.3284567645805,
+				"sun_elevation_deg": -4.2174205806756
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-29",
+			"environment_exposure": 39607.58203125,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-fullmoon-pre-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-fullmoon-pre-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "pre",
+			"sha256": "b18a983264ba3109a6da0ea71aa22408b201216124399fdac096884905a94d52",
+			"simulation_time_s": 88.8166666666667,
+			"world_sky": {
+				"light_source": "moon",
+				"moon_elevation_deg": 55.5952930472382,
+				"moon_illuminated": 0.99277404578995,
+				"sky_exposure": 39607.5826842627,
+				"sun_elevation_deg": -62.074094565744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "3102985321:7",
+				"level": 1.0,
+				"radiance": 0.0000214605375134831,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-29",
+			"environment_exposure": 39607.58203125,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-fullmoon-peak-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-fullmoon-peak-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "3102985321:7",
+				"level": 1.0,
+				"light_energy": 0.0000504953823110554,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "peak",
+			"sha256": "2b08d74d470d4a6de1a8f1e9b4926092c077399e25a1ad97560143f89e8f9dea",
+			"simulation_time_s": 88.9041666666667,
+			"world_sky": {
+				"light_source": "moon",
+				"moon_elevation_deg": 55.5952930472382,
+				"moon_illuminated": 0.99277404578995,
+				"sky_exposure": 39607.5826842627,
+				"sun_elevation_deg": -62.074094565744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-29",
+			"environment_exposure": 39607.58203125,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-fullmoon-post-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-fullmoon-post-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "post",
+			"sha256": "b18a983264ba3109a6da0ea71aa22408b201216124399fdac096884905a94d52",
+			"simulation_time_s": 89.8666666666667,
+			"world_sky": {
+				"light_source": "moon",
+				"moon_elevation_deg": 55.5952930472382,
+				"moon_illuminated": 0.99277404578995,
+				"sky_exposure": 39607.5826842627,
+				"sun_elevation_deg": -62.074094565744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "3102985321:7",
+				"level": 0.18,
+				"radiance": 0.00000386289675242696,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-29",
+			"environment_exposure": 39607.58203125,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-fullmoon-peak-reduced.png",
+			"flashes": "reduced",
+			"id": "electrical_storm-fullmoon-peak-reduced",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "3102985321:7",
+				"level": 0.18,
+				"light_energy": 0.0,
+				"mode": "1",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "peak",
+			"sha256": "efc89af67b8587c66460eb823b2c63235df8d60e8abbd3384cce9569585f4a5e",
+			"simulation_time_s": 88.9041666666667,
+			"world_sky": {
+				"light_source": "moon",
+				"moon_elevation_deg": 55.5952930472382,
+				"moon_illuminated": 0.99277404578995,
+				"sky_exposure": 39607.5826842627,
+				"sun_elevation_deg": -62.074094565744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-29",
+			"environment_exposure": 39607.58203125,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-fullmoon-peak-off.png",
+			"flashes": "off",
+			"id": "electrical_storm-fullmoon-peak-off",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "2",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "peak",
+			"sha256": "b18a983264ba3109a6da0ea71aa22408b201216124399fdac096884905a94d52",
+			"simulation_time_s": 88.9041666666667,
+			"world_sky": {
+				"light_source": "moon",
+				"moon_elevation_deg": 55.5952930472382,
+				"moon_illuminated": 0.99277404578995,
+				"sky_exposure": 39607.5826842627,
+				"sun_elevation_deg": -62.074094565744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-15",
+			"environment_exposure": 90000.0,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-newmoon-pre-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-newmoon-pre-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "newmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "pre",
+			"sha256": "4b3995570ebe1864afaa9b275dda731a6bb861f4bfbf64284a49d7c64e8bcf21",
+			"simulation_time_s": 88.8166666666667,
+			"world_sky": {
+				"light_source": "sun",
+				"moon_elevation_deg": -57.839673565361,
+				"moon_illuminated": 0.00176611919996233,
+				"sky_exposure": 90000.0,
+				"sun_elevation_deg": -61.9812507329744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "3102985321:7",
+				"level": 1.0,
+				"radiance": 0.00000944444444444444,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-15",
+			"environment_exposure": 90000.0,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-newmoon-peak-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-newmoon-peak-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "3102985321:7",
+				"level": 1.0,
+				"light_energy": 0.0000222222224692814,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "newmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "peak",
+			"sha256": "e286cf97b3a9212cb802cbdc9bef8565e13aa92b5a7ab224aee363b9b8373936",
+			"simulation_time_s": 88.9041666666667,
+			"world_sky": {
+				"light_source": "sun",
+				"moon_elevation_deg": -57.839673565361,
+				"moon_illuminated": 0.00176611919996233,
+				"sky_exposure": 90000.0,
+				"sun_elevation_deg": -61.9812507329744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-15",
+			"environment_exposure": 90000.0,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-newmoon-post-full.png",
+			"flashes": "full",
+			"id": "electrical_storm-newmoon-post-full",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "0",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "newmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "post",
+			"sha256": "4b3995570ebe1864afaa9b275dda731a6bb861f4bfbf64284a49d7c64e8bcf21",
+			"simulation_time_s": 89.8666666666667,
+			"world_sky": {
+				"light_source": "sun",
+				"moon_elevation_deg": -57.839673565361,
+				"moon_illuminated": 0.00176611919996233,
+				"sky_exposure": 90000.0,
+				"sun_elevation_deg": -61.9812507329744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "3102985321:7",
+				"level": 0.18,
+				"radiance": 0.0000017,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-15",
+			"environment_exposure": 90000.0,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-newmoon-peak-reduced.png",
+			"flashes": "reduced",
+			"id": "electrical_storm-newmoon-peak-reduced",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "3102985321:7",
+				"level": 0.18,
+				"light_energy": 0.0,
+				"mode": "1",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "newmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "peak",
+			"sha256": "9f7f49b1131acb2564a84a1c6b8d7c4b6e479e904d9187f5a8a32c40c4c4f0fc",
+			"simulation_time_s": 88.9041666666667,
+			"world_sky": {
+				"light_source": "sun",
+				"moon_elevation_deg": -57.839673565361,
+				"moon_illuminated": 0.00176611919996233,
+				"sky_exposure": 90000.0,
+				"sun_elevation_deg": -61.9812507329744
+			}
+		},
+		{
+			"bank_cell": {
+				"advection_layer": 0.0,
+				"base_m": 1250.0,
+				"depth_m": 4500.0,
+				"east_m": -6800.0,
+				"layout_version": 1.0,
+				"north_m": 8500.0,
+				"rain_opacity": 0.68,
+				"top_m": 7000.0,
+				"width_m": 8200.0
+			},
+			"bank_flash": {
+				"event_id": "",
+				"level": 0.0,
+				"radiance": 0.0,
+				"source_world": [
+					0.0,
+					0.0,
+					0.0
+				]
+			},
+			"camera": {
+				"fov_deg": 50.0,
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"source_range_m": 12641.5185546875,
+				"target_world": [
+					-6800.0,
+					4125.0,
+					-8500.0
+				]
+			},
+			"cloud_transport_motion": "still",
+			"date": "2026-06-15",
+			"environment_exposure": 90000.0,
+			"event": {
+				"channel_world": [
+					-7727.3544921875,
+					2593.5,
+					-8865.6103515625
+				],
+				"event_id": "3102985321:7",
+				"ground_world": [
+					-7755.52099609375,
+					0.0,
+					-9048.201171875
+				],
+				"kind": "cloud_to_ground",
+				"slot_index": 7,
+				"source_world": [
+					-7701.3544921875,
+					4987.5,
+					-8697.0654296875
+				],
+				"start_time_s": 88.8666666666667
+			},
+			"file": "electrical_storm-newmoon-peak-off.png",
+			"flashes": "off",
+			"id": "electrical_storm-newmoon-peak-off",
+			"lightning": {
+				"bank_bound": true,
+				"event_id": "",
+				"level": 0.0,
+				"light_energy": 0.0,
+				"mode": "2",
+				"node_count": 5,
+				"pending_thunder": 0
+			},
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "newmoon",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			],
+			"sample": "peak",
+			"sha256": "4b3995570ebe1864afaa9b275dda731a6bb861f4bfbf64284a49d7c64e8bcf21",
+			"simulation_time_s": 88.9041666666667,
+			"world_sky": {
+				"light_source": "sun",
+				"moon_elevation_deg": -57.839673565361,
+				"moon_illuminated": 0.00176611919996233,
+				"sky_exposure": 90000.0,
+				"sun_elevation_deg": -61.9812507329744
+			}
+		}
+	],
+	"lightning": "app/render/weather/lightning.gd",
+	"msaa": "4x",
+	"native_renderer": true,
+	"renderer": "gl_compatibility",
+	"seed": 1253,
+	"storm_bank": "app/render/weather/storm_bank.gd",
+	"viewport": [
+		1280,
+		720
+	],
+	"world_builder": "app/render/world/world.gd"
+}

@@ -78,3 +78,33 @@ packaged notices and storm scripts/shaders. It also checks the two imported clou
 images' size, LA8 format and mip chains. Running it with `--main-pack=<pack>` proves
 those resources load from that PCK; inspect export and engine logs separately,
 because an erroring export can still write a PCK and return exit code 0.
+
+## Electrical bank pulses (FW-84b)
+
+`electrical_bank_capture.gd` builds the production World and Lightning consumer,
+looks at the actual bank target, and captures one deterministic cloud-to-ground
+event before, during and after its pulse. Day, dusk, full moon and moonless night
+produce 12 frames; Reduced and Off peaks in both night cases add four more.
+The manifest records event anchors, bank/light state, actual exposure, astronomical
+state, camera, engine/adapter and each PNG's SHA-256. It is a static scene harness
+with no aircraft; actual Main captures and flight qualification are separate.
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --path app --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy --log-file C:/tmp/fw84b.log --script (Resolve-Path tools/atmosphere/electrical_bank_capture.gd).Path -- --out=C:/tmp/fw84b --only=all
+```
+
+Use a fresh absolute output directory. `--only=day|dusk|fullmoon|newmoon|all` selects
+lighting cases; `--overwrite=on` permits replacement explicitly. Syntax checking
+uses Godot's `--headless --check-only --script <absolute script path>`.
+[Accepted FW-84 evidence](../../docs/research/field-world/FW-84/README.md) owns the
+captures, quantitative comparisons, preview provenance and remaining gates.
+
+Regenerate the Electrical Storm card from the accepted full-moon peak with the
+retained Lanczos resizer. The utility validates both absolute PNG paths and the
+384×216 output; it replaces the output file.
+
+```powershell
+$source = (Resolve-Path docs/research/field-world/FW-84/captures/fw84b/electrical_storm-fullmoon-peak-full.png).Path
+$out = (Resolve-Path app/assets/sky/weather/previews/electrical_storm.png).Path
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script (Resolve-Path tools/atmosphere/resize_preview.gd).Path -- "--source=$source" "--out=$out"
+```

@@ -22,6 +22,9 @@ func _initialize() -> void:
 	check("pack storm-bank shader", load("res://render/weather/storm_bank.gdshader") is Shader)
 	check("pack rain-curtain shader", load("res://render/weather/rain_curtain.gdshader") is Shader)
 	check("pack storm-bank script", load("res://render/weather/storm_bank.gd") is Script)
+	check("pack storm-cell placement", load("res://render/weather/storm_cell.gd") is Script)
+	check("pack electrical consumer", load("res://render/weather/lightning.gd") is Script)
+	check("pack lightning-bolt shader", load("res://render/weather/lightning_bolt.gdshader") is Shader)
 	var sky_notice: String = FileAccess.get_file_as_string("res://assets/sky/weather/LICENSES.md")
 	check("pack WickedInsignia CC0 notice", sky_notice.contains("WickedInsignia") and sky_notice.contains("CC0 1.0"))
 	for result: Dictionary in results:

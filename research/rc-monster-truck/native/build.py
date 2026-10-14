@@ -9,6 +9,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -65,6 +66,15 @@ def _run_godot(godot: Path, args: list[str], root: Path, timeout_seconds: int = 
         timeout=timeout_seconds,
         check=False,
     )
+
+
+_GODOT_ERROR_LINE = re.compile(
+    r"^\s*(?:SCRIPT ERROR:|SHADER ERROR:|ERROR:|FATAL:|Parse Error:|Compile Error:|Failed to load script\b)"
+)
+
+
+def _godot_error_lines(output: str) -> list[str]:
+    return [line for line in output.splitlines() if _GODOT_ERROR_LINE.search(line)]
 
 
 def sha256_file(path: Path) -> str:
@@ -300,6 +310,7 @@ def run_parity_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
     )
     _copy_tree_files(ROOT / "app", project, [
         "physics/math3d.gd",
+        "physics/rigid_body.gd",
         "physics/integrator.gd",
         "physics/ground_vehicle/vehicle_dynamics.gd",
         "physics/ground_vehicle/vehicle_data.gd",
@@ -314,8 +325,6 @@ def run_parity_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
         receipt_destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(receipt_source, receipt_destination)
     result = _run_godot(godot, ["--headless", "--path", str(project), "--script", "res://parity_harness.gd"], ROOT)
-    if result.returncode or "OPENRC_NATIVE_PARITY_OK" not in result.stdout:
-        raise SystemExit(f"Native/GDScript parity harness failed:\n{result.stdout}")
     platform = locked.host_platform_name()
     receipt_path = locked.TOOL_ROOT / f"build-receipt.{platform}.json"
     receipt = json.loads(receipt_path.read_text(encoding="utf-8")) if receipt_path.is_file() else {}
@@ -334,6 +343,19 @@ def run_parity_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
         json.dumps(log_header, indent=2, sort_keys=True) + "\n\n" + result.stdout,
         encoding="utf-8",
     )
+    error_lines = _godot_error_lines(result.stdout)
+    if result.returncode or error_lines or "OPENRC_NATIVE_PARITY_OK" not in result.stdout:
+        reasons = []
+        if result.returncode:
+            reasons.append(f"Godot exited with status {result.returncode}")
+        if error_lines:
+            reasons.append("Godot reported errors: " + " | ".join(error_lines))
+        if "OPENRC_NATIVE_PARITY_OK" not in result.stdout:
+            reasons.append("parity success marker is missing")
+        raise SystemExit(
+            f"Native/GDScript parity harness failed ({'; '.join(reasons)}). Full output: {log_path}\n"
+            f"{result.stdout}"
+        )
     for line in result.stdout.strip().splitlines():
         if line.startswith("OPENRC_NATIVE_EVAL_PROFILE") or line.startswith("OPENRC_NATIVE_PARITY_OK"):
             print(line)

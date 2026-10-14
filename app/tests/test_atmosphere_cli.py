@@ -89,6 +89,12 @@ class AtmosphereCLI(unittest.TestCase):
         cls.work = tempfile.TemporaryDirectory(prefix='openrc-atmosphere-cli-')
         cls.directory = Path(cls.work.name)
         cls.environment = dict(os.environ, XDG_DATA_HOME=str(cls.directory / 'data'))
+        cls.engine_log_index = 0
+        if os.name == 'nt':
+            for variable, name in (('APPDATA', 'appdata'), ('LOCALAPPDATA', 'localappdata')):
+                user_directory = cls.directory / name
+                user_directory.mkdir()
+                cls.environment[variable] = str(user_directory)
         cls.aircraft_traces = {}
         for aircraft in AIRCRAFT:
             for duration in ('.1', '1'):
@@ -119,8 +125,11 @@ class AtmosphereCLI(unittest.TestCase):
 
     @classmethod
     def _run_engine(cls, arguments, success=True):
+        cls.engine_log_index += 1
+        log_file = cls.directory / ('godot-%03d.log' % cls.engine_log_index)
         result = subprocess.run(
-            [cls.engine, '--headless', '--path', str(ROOT / 'app'), '--audio-driver', 'Dummy', *arguments],
+            [cls.engine, '--headless', '--path', str(ROOT / 'app'), '--audio-driver', 'Dummy',
+             '--log-file', str(log_file), *arguments],
             capture_output=True, text=True, timeout=180, env=cls.environment,
         )
         log = result.stdout + result.stderr
@@ -160,6 +169,15 @@ class AtmosphereCLI(unittest.TestCase):
         self.assertLess(hot['rho_kgm3'], 1.225)
         self.assertGreater(cool['rho_kgm3'], 1.225)
         self.assertNotEqual(hot['density_altitude_m'], cool['density_altitude_m'])
+
+    def test_turbine_trace_rejects_sampled_aux_weather_timing(self):
+        trace = self.aircraft_traces[('sebart-avanti-s-a200-p100rx', '.1')]
+        target = self.directory / 'turbine-wrong-weather-timing.csv'
+        _rewrite_trace(trace, target, metadata_changes={
+            'weather_timing': 'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0',
+        })
+        with self.assertRaisesRegex(ValueError, 'weather timing'):
+            check(target, .1)
 
     def test_custom_v3_weather_file_combines_ou_and_atmosphere(self):
         result = check(self.mixed_trace, .1)

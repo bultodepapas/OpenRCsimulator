@@ -13,6 +13,8 @@ const M = preload("res://physics/math3d.gd")
 const PATHS = ["res://data/aircraft/jensen_ugly_stik_60.json", "res://data/aircraft/gp_extra_300s_60.json", "res://data/aircraft/p51d_mustang_120.json", "res://data/aircraft/sebart_avanti_s_a200.json"]
 var checks := 0
 var failures := 0
+var _trace_output_directory := ""
+var _preserve_trace_outputs := false
 
 func check(label: String, passed: bool) -> void:
 	checks += 1
@@ -30,6 +32,8 @@ func flight(path: String, config: Dictionary) -> Session:
 
 
 func _trace_test_directory() -> String:
+	if not _trace_output_directory.is_empty():
+		return _trace_output_directory
 	return OS.get_cache_dir().path_join("openrcsimulator-tests").path_join("turbulence-flight-%d" % OS.get_process_id())
 
 
@@ -37,7 +41,28 @@ func _trace_test_path(file_name: String) -> String:
 	return _trace_test_directory().path_join(file_name)
 
 
+func _configure_trace_output() -> bool:
+	const PREFIX := "--trace-output-dir="
+	for argument: String in OS.get_cmdline_user_args():
+		if not argument.begins_with(PREFIX):
+			continue
+		if not _trace_output_directory.is_empty():
+			printerr("trace output directory was supplied more than once")
+			return false
+		_trace_output_directory = argument.substr(PREFIX.length())
+		if _trace_output_directory.is_empty() or not _trace_output_directory.is_absolute_path():
+			printerr("trace output directory must be a nonempty absolute path")
+			return false
+		_preserve_trace_outputs = true
+	if _trace_output_directory.is_empty():
+		_trace_output_directory = OS.get_cache_dir().path_join("openrcsimulator-tests").path_join("turbulence-flight-%d" % OS.get_process_id())
+	return true
+
+
 func _initialize() -> void:
+	if not _configure_trace_output():
+		quit(1)
+		return
 	Engine.physics_ticks_per_second = 240
 	var config: Dictionary = Config.preset("turbulent")
 	check("v2 config validates JSON round-trip", Config.validate(JSON.parse_string(JSON.stringify(config, "", true, true))).config == config)
@@ -161,8 +186,11 @@ func _trace_checks(config: Dictionary) -> void:
 		s.sim.step()
 	var midflight_path: String = _trace_test_path("midflight.csv")
 	var midflight_saved: bool = r.trace.save(midflight_path) == OK
-	check("midflight trace continuation saves and removes portable temp file",
-		midflight_saved and DirAccess.remove_absolute(midflight_path) == OK)
+	var midflight_cleaned := true
+	if midflight_saved and not _preserve_trace_outputs:
+		midflight_cleaned = DirAccess.remove_absolute(midflight_path) == OK
+	check("midflight trace continuation saves to portable temporary output",
+		midflight_saved and midflight_cleaned)
 	for defect: String in ["index", "interval", "size", "nonfinite", "missing_rng", "rng_overflow", "origin"]:
 		var trace: Trace = Trace.new()
 		trace.meta = s.trace_meta()
@@ -187,11 +215,15 @@ func _trace_checks(config: Dictionary) -> void:
 	r.start(s.trace_meta())
 	for tick: int in 8:
 		s.sim.step()
-	var late_path: String = _trace_test_path("late-clock.csv")
+	var late_path: String = _trace_test_path("long-clock.csv")
 	var late_saved: bool = r.trace.save(late_path) == OK
-	check("late-clock trace preserves weather timestep and removes portable temp file",
-		late_saved and DirAccess.remove_absolute(late_path) == OK)
-	check("turbulence trace test cache directory removed", DirAccess.remove_absolute(_trace_test_directory()) == OK)
+	var late_cleaned := true
+	if late_saved and not _preserve_trace_outputs:
+		late_cleaned = DirAccess.remove_absolute(late_path) == OK
+	check("late-clock trace preserves weather timestep and uses portable output",
+		late_saved and late_cleaned)
+	if not _preserve_trace_outputs:
+		check("turbulence trace test cache directory removed", DirAccess.remove_absolute(_trace_test_directory()) == OK)
 	r.detach()
 	s.free()
 

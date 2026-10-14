@@ -98,7 +98,7 @@ F1 controller reporting, F3b1 event-cost characterization, F6a marker and F6b vi
 
 ### M4 — Propulsion response, operating range and sound
 
-G1a1 importer and G1b1 range auditor, G2-R1 equilibrium guards, experimental G2a/G2b coupling and G3b/AUD audio have implementation evidence in [propulsion research](docs/research/propulsion/) and [audio](docs/AUDIO-PLAN.md). Matched G1a/VAL-7 powerplant data, online G1b range coverage, G1d stopped/windmilling drag, G2 promotion and acoustic calibration remain open. Full fuel/engine-operation simulation is not delivered.
+G1a1 importer and G1b1 range auditor, G2-R1 equilibrium guards, experimental G2a/G2b coupling and G3b/AUD audio have implementation evidence in [propulsion research](docs/research/propulsion/) and [audio](docs/AUDIO-PLAN.md). The experimental Stik glow installations now run finite-fuel two-stroke and four-stroke models; their estimates and qualification limits are documented in the [glow guide](docs/GLOW-ENGINES.md). Matched G1a/VAL-7 powerplant data, online G1b range coverage, G1d stopped/windmilling drag, G2 promotion, and physical and pilot qualification of the glow installations remain open.
 
 The [RC glow engine realism plan](docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md) owns mandatory, separate two-stroke and true four-stroke research, implementation, calibration and validation milestones; both family gates must close before that feature is complete.
 

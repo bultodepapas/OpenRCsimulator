@@ -20,6 +20,19 @@ func _check(label: String, ok: bool, detail := "") -> void:
 		printerr("FAIL %s %s" % [label, detail])
 
 
+func _coupled_trace_meta() -> Dictionary:
+	return {
+		"propulsion_model": "propeller-shaft-coupled-rk4-v1",
+		"shaft_integrator": "coupled-rk4",
+		"rotor_coupling": "relative-spin-locked-inertia-reaction-v1",
+		"continuous_layout": "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled",
+		# This is the JSON-decoded trim value from the hot-high P51 trace that exposed
+		# a sub-picorpm round-trip difference at the first recorded sample.
+		"recording_start_continuous": "[3618.1583849604676]",
+		"recording_start_aux": "[3618.1583849604676,0.0,0.0,0.0]",
+	}
+
+
 func _initialize() -> void:
 	var sim: Node = Sim.new()
 	var aircraft := AircraftData.load_file(Scenarios.AIRCRAFT)
@@ -41,6 +54,24 @@ func _initialize() -> void:
 	for r in trace.row_count():
 		time_ok = time_ok and absf(trace.value(r, "t_s") - trace.value(r, "tick") * sim.dt()) < 1e-12
 	_check("t_s = tick · dt", time_ok)
+
+	# JSON metadata preserves a nearby but not bit-identical decimal for the initial
+	# shaft speed. Accept that serialization noise while retaining a strict mismatch gate.
+	var fractional_rpm := 3618.15838496047
+	var coupled_trace := Trace.new()
+	coupled_trace.meta = _coupled_trace_meta()
+	coupled_trace.record(0, 0.0, sim.state, sim.last_loads, sim.inputs,
+		PackedFloat64Array([fractional_rpm, 0.0, 0.0, 0.0]))
+	_check("coupled trace accepts fractional RPM JSON round-trip", coupled_trace.row_count() == 1
+		and not coupled_trace._invalid_weather
+		and absf(fractional_rpm - 3618.1583849604676) <= 1e-9,
+		str("rows=", coupled_trace.row_count(), " delta=", absf(fractional_rpm - 3618.1583849604676)))
+	var mismatched_trace := Trace.new()
+	mismatched_trace.meta = _coupled_trace_meta()
+	mismatched_trace.record(0, 0.0, sim.state, sim.last_loads, sim.inputs,
+		PackedFloat64Array([3618.15838596047, 0.0, 0.0, 0.0]))
+	_check("coupled trace rejects a 1e-6 RPM start mismatch", mismatched_trace.row_count() == 0
+		and mismatched_trace._invalid_weather)
 
 	# Exactness on EVERY row against its own timestamp: altitude 30 - ½gt², east -40 + 15t.
 	# (Checking only the final row missed a one-tick time-labeling bug.)

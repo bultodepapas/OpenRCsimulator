@@ -278,6 +278,8 @@ def check(path, duration=None):
         raise ValueError('invalid trace clock')
     expected_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0'
                        if metadata.get('shaft_integrator') == 'coupled-rk4' else
+                       'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/turbine, current sampled servos); reset uses t=0'
+                       if metadata.get('turbine_integrator') == 'rk4' else
                        'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0')
     if metadata.get('weather_timing') != expected_timing:
         raise ValueError('unsupported weather timing contract')

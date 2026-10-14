@@ -1,0 +1,60 @@
+{
+  "format": "openrc-fw84b-final-evidence v1",
+  "date": "2026-10-14",
+  "working_tree_base_commit": "548fb01edc25a6ca4923b89fcded29350e49d970",
+  "scope": "Final weather source snapshot in a shared working tree; unrelated tracks are not part of weather acceptance. Main sidecars retain per-capture full source identities.",
+  "source_sha256": {
+    "app/render/weather/cloud_transport.gd": "0d2052cea0e0640f09c5502b57aa78bc0ceed985bade0dc8f538bf6823b8f921",
+    "app/render/weather/lightning.gd": "0f1990160263c2405524bd2187e8e8162231e60dc57991925d66b1c810c3cda1",
+    "app/render/weather/sky_appearance.gd": "fb9888cee67bc5a9d482ff5140e56f0fbeb31c2f07eb9759752085ee773cb2ea",
+    "app/render/weather/storm_bank.gd": "d1ea0723218517afadd5a83fe62d017dd018b6c84e7b9fd92b350af539f55d50",
+    "app/render/weather/storm_cell.gd": "4f33a55dd7e6d179096727ae41293e8eb54b9cbf82068f0de6b38ebb2ab9d323",
+    "app/render/weather/cloud_flash.gdshader": "33d57070382bbe115387f11d027d4f7e5b8196ab266dd3c2b82b68f4437d049c",
+    "app/render/weather/lightning_bolt.gdshader": "15c1d14d0652f836fefbb16615bfe3915380ee755af06a8ae21a152fec436d80",
+    "app/render/weather/rain_curtain.gdshader": "d33e6d1e3f45c61a453918611c25d6539a3393fe9d8240be1aa994f8213b6ee6",
+    "app/render/weather/storm_bank.gdshader": "f9bf4cf5f555608975480e016f89aef7304dd89cfeff2abc7685d10adc626e7e",
+    "app/environment/storm_events.gd": "fe2d57ad43203f99ef3018b0b260b66042350bc18e3472a4253e16e2183e791d",
+    "app/render/world/world.gd": "2935afc48da84d91b189e669bdac592b17b1792305ba742ad574d55db6eb6f1e",
+    "app/main.gd": "c8afae468c72753bbdc583f727855fadcff248d3f5aa125539bae9a9d37b309f",
+    "app/data/sky/weather_presets.json": "236bacc5315e801be514c3d08b29164e00395346647f524ec19dd2be76f2c754",
+    "app/assets/sky/weather/previews/electrical_storm.png": "3201e70d0063cc615f7f7a296e9f7ad6e61c0c759ffe8fb0b38345485d322982",
+    "app/tests/test_storm_cell.gd": "ec03d305f525e5e0292415dfc921956f377969b5209d31a06bd0d045a07a2320",
+    "app/tests/test_electrical_bank.gd": "ccb69dcafdf8f2e93fba69b8c4feefcc6f5f5dfc8e9642b88df49b49e06e1933",
+    "tools/atmosphere/electrical_bank_capture.gd": "668c0095234e7881b31c3819f963f49bc66354dc54ed2fee2b7abd6036bf1d3e",
+    "tools/atmosphere/resize_preview.gd": "ae3fdaf52abba51554f4729ff96fe30efff2414e143f3f3830ff84ef5f8105db",
+    "tools/atmosphere/sky_pack_probe.gd": "3a1b388b7ad9a92e5e0324d06fcdb93aa6d8a17132eb128977e54c557a520b38"
+  },
+  "main_images": [
+    {
+      "sidecar": "captures/fw84b-main-day.json",
+      "png_sha256": "92937afe01eb27595871ab688555c382ce3f78df925a830b1379378721a85016",
+      "image_hash_matches_sidecar": true,
+      "weather_source_mismatches": [],
+      "bank_bound": true,
+      "event_id": "3102985321:7",
+      "level": 1.0
+    },
+    {
+      "sidecar": "captures/fw84b-main-fullmoon.json",
+      "png_sha256": "c60e05fab48875ac90a50d6d88b2d15a7203f602444073ce04ff7dfb6b7676cd",
+      "image_hash_matches_sidecar": true,
+      "weather_source_mismatches": [],
+      "bank_bound": true,
+      "event_id": "3102985321:7",
+      "level": 1.0
+    },
+    {
+      "sidecar": "captures/fw84b-main-newmoon.json",
+      "png_sha256": "2436fdfff3de43897dcde5b16c6299ef6cd3b9ae62e951fa8076cb81f18e3d39",
+      "image_hash_matches_sidecar": true,
+      "weather_source_mismatches": [],
+      "bank_bound": true,
+      "event_id": "3102985321:7",
+      "level": 1.0
+    }
+  ],
+  "focused_suites": 8,
+  "focused_assertions": 278,
+  "resource_assertions": 38,
+  "full_application_suite_run": false
+}

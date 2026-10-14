@@ -1,6 +1,62 @@
 # FW-84 electrical storm components
 
-Evidence for the first electrical-storm runtime slice, recorded 2026-10-13. The FW-84 plan remains open: this work does not establish the full flown night gate, final sound selection, or performance budget.
+Evidence for the first electrical-storm slice (2026-10-13) and its integrated cloud-bank follow-up (2026-10-14). FW-84 remains open: neither record establishes the full flown night gate, final sound selection, or performance budget.
+
+## FW-84b — integrated electrical bank (2026-10-14)
+
+Electrical Storm now uses the FW-83 world-anchored formation and its two unchanged downloaded CC0 masks: 30 cloud lobes and three rain sheets. The electrical profile spans 8.2 × 4.5 km, from 1.25 to 7 km altitude, northwest of the field. It is an authored distant impostor, not a meteorological volume. The profile's transport scale is 1,000 m to keep its periodic copies outside the accepted view range. This catalog retune intentionally invalidates older native checkpoints containing the former Electrical Storm profile; the stable preference ID and Classic defaults are unchanged.
+
+`storm_cell.gd` shares bank placement and periodic-copy math between rendering and the deterministic scheduler. Contextual events evaluate the accepted float64 cloud transport at emission time. Existing event IDs, pulse schedules and random draw order remain unchanged; missing context keeps the legacy event contract. `main.gd` binds the scene's bank through a weak reference and supplies accepted transport. The bank copy is synchronized after the camera update. Lightning retains only the active emitted event's placement through subsequent pulses and camera cuts; queued thunder keeps its original channel, with inaudible arrivals pruned by the existing bounded audio consumer.
+
+The bank shader adds a blue-white, Gaussian-weighted contribution inside the downloaded cloud mask, with a smaller contribution in rain. Alpha is unchanged, so a pulse cannot fill cloud gaps. Full uses the branched channel and existing capped, shadowless directional light; Reduced keeps 18% of the cloud/rain pulse without the channel or landscape light; Off clears transient illumination. Pause, backward seek, reconfiguration, reset, rebinding and scene exit clear the old bank pulse. Two simultaneous Worlds retain separate material state. The projected cloud-flash deck remains a fallback for the component without valid bank context.
+
+**Exposure correction:** the first-slice inference that additive unshaded VFX bypassed the accepted exposure was wrong. In pinned Godot 4.7.2 GLES3, the [scene shader](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/shaders/scene.glsl#L2548) uses ALBEDO in the unshaded branch, ignores EMISSION, and then applies Environment exposure. The [renderer](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/rasterizer_scene_gles3.cpp#L2273) supplies that exposure to transparent rendering too; additive blending does not bypass it. Bounded transient material contributions now use `encode_for_engine(linear_cap / exposure)`, with the existing exact engine inverse. The earlier direct division of encoded color caused the disappearing bolt. World exposure, shared Sky uniforms and atmospheric time remain untouched. Ribbon widths are apparent-bloom art controls, not physical channel diameters.
+
+### Native matrix
+
+The [manifest](captures/fw84b/manifest.json) records 16 native Compatibility frames on Godot 4.7.2 / RTX 3090, 1280×720, 4× MSAA, Dummy audio. Each lighting case uses the production default field, actual `World.build`, Still transport, pilot camera at 50° FOV, field lamps/fire off, seed 1253, and cloud-to-ground event `3102985321:7` (start 88.8666667 s). Samples are −0.05 s, +0.0375 s and +1 s from onset. Both night cases also capture Reduced and Off at the same peak. No aircraft or physics advances in this harness.
+
+| Lighting at 4.7° N, 74.1° W, UTC−5 | Actual exposure | Peak frame |
+| --- | ---: | --- |
+| 2026-06-21 13:00 | 0.6000 | [Day](captures/fw84b/electrical_storm-day-peak-full.png) |
+| 2026-06-21 18:25 | 41.3285 | [Dusk](captures/fw84b/electrical_storm-dusk-peak-full.png) |
+| 2026-06-29 00:00; moon +55.60°, 99.3% illuminated | 39607.5820 | [Full moon](captures/fw84b/electrical_storm-fullmoon-peak-full.png) |
+| 2026-06-15 00:00 | 90000.0 | [Moonless night](captures/fw84b/electrical_storm-newmoon-peak-full.png) |
+
+The [pixel comparisons](captures/fw84b/metrics.json) verify all 16 image hashes, constant exposure within each lighting case, zero pre/post/Off bank and scene-light contribution, and unchanged upper sky pixels outside the bank. Mean displayed luminance in the fixed cloud ROI is Full/Reduced/Off **32.277 / 15.001 / 8.027** with the full moon and **27.424 / 7.788 / 0.022** without it (8-bit sRGB-weighted values, not physical luminance). Pre/post images are pixel-identical at dusk and in both night cases; day differs by at most one channel code. These measurements establish this camera's pulse localization and return to baseline, not all-view occlusion or pilot readability. [Capture log](checks/fw84b-capture-matrix.log); [reproduction tool](../../../../tools/atmosphere/README.md#electrical-bank-pulses-fw-84b).
+
+Three additional captures use the actual `app/main.gd` route with the aircraft at a fixed 80 m inspection distance, 321° azimuth, 19° elevation and simulation time 88.9 s: [day](captures/fw84b-main-day.png), [full moon](captures/fw84b-main-fullmoon.png) and [moonless night](captures/fw84b-main-newmoon.png). Their adjacent JSON sidecars preserve exact CLI arguments, PNG hashes, World lighting, bank and Lightning state. The airplane remains a small central silhouette/light against the lit formation; these are synthetic inspection frames, not a flown circuit. Logs retain the existing aircraft inertia warning; day and moonless captures also report two referenced objects at shutdown, so no whole-application shutdown qualification is inferred. The selector's Electrical Storm preview is a 384×216 Godot Lanczos downsample of the accepted full-moon peak, with provenance in the matrix metrics.
+
+### Focused software checks
+
+**278 assertions pass across eight suites**, including event transport/placement, mode-independent scheduling, lifecycle, independent Worlds, the 100 m camera cut retaining queued thunder and a 100 km cut pruning inaudible arrivals without retargeting the active channel.
+
+| Suite | Passed | Log |
+| --- | ---: | --- |
+| Sky appearance validation | 77 | [result](checks/fw84b-test_sky_appearance_config.log) |
+| Sky render/transport | 30 | [result](checks/fw84b-test_sky_render.log) |
+| Sky checkpoints | 45 | [result](checks/fw84b-test_sky_checkpoint.log) |
+| Home/paused-flight sky routes | 15 | [result](checks/fw84b-test_sky_routes.log) |
+| Storm-bank lifecycle | 38 | [result](checks/fw84b-test_storm_bank.log) |
+| Storm events | 22 | [result](checks/fw84b-test_storm_events.log) |
+| Storm-cell contract | 19 | [result](checks/fw84b-test_storm_cell.log) |
+| Integrated electrical bank | 32 | [result](checks/fw84b-test_electrical_bank.log) |
+
+Run each with the pinned engine, `--headless --path app --audio-driver Dummy --script res://tests/<suite>.gd` and an absolute log path. The native capture compiles the actual material shaders; headless assertions alone do not verify pixels.
+
+A fresh 2 s Classic/Electrical pair produces identical headers and all **481 numerical flight rows** at 240 Hz, excluding comment metadata. Both use the same default flight state and disabled soundscape. [Parity result](checks/fw84b-trace-parity.json), [Classic log](checks/fw84b-trace-classic.log), [Electrical log](checks/fw84b-trace-electrical.log). Use the pinned headless engine with `-- --trace=<absolute CSV> --t=2 --soundscape=off --sky=classic`, then repeat with `--sky=electrical_storm` and separate output/log paths. This is exact software parity for that case, not physical storm validation.
+
+The freshly written Windows PCK passes **38 weather resource checks**, including the storm-cell script, integrated consumer, bolt shader, cloud images, preview and notices. [Package result](checks/fw84b-package-result.json), [resource log](checks/fw84b-package-probe.log). This is not a qualified release export: the [export log](checks/fw84b-package-export.log) reports a SHA-256 mismatch for `assets/aircraft/turbo-lumber-evolution/mesh-measurements.json` in the concurrently modified aircraft track, despite writing a PCK and exiting 0. The isolated PCK-only invocation also reports the absent ground-vehicle native extension before the weather assertions; that diagnostic is recorded in the package result. Neither unrelated issue was bypassed or repaired by weather work.
+
+[Source snapshot and image verification](checks/fw84b-source-and-evidence.json) record the final weather source hashes and the three Main-sidecar image checks. The whole application test suite and cross-platform release builds were not rerun for this increment.
+
+### Remaining qualification
+
+The formation is a distant transparent impostor; close/overhead traversal, large camera rotations and sorting artifacts remain unqualified. Cloud/rain illumination is local, but Full's directional scene light is global and shadowless: terrain can receive light without physical occlusion. Reflections do not receive transient flashes. First-strike mesh construction, peak GPU cost and minimum-hardware budgets are unmeasured because this GPU is shared with other work. Mast/lake overlap, complete bright/dark-aircraft night circuits, audio audition/mixing and native OS release gates remain open. Spatial wind, tropical bands and tornado mechanics are separate, still-unimplemented phases.
+
+## First-slice record (2026-10-13)
+
+The remaining sections retain the original evidence and hashes. The fixed-cap unshaded-shader interpretation in this historical record is superseded by FW-84b's correction above, and Electrical Storm now uses the integrated bank when valid context is available.
 
 ## Runtime pieces
 

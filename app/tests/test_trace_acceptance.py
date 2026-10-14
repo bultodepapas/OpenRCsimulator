@@ -23,6 +23,13 @@ class TraceAcceptance(unittest.TestCase):
         cls.temp = tempfile.TemporaryDirectory(prefix='openrc-trace-acceptance-')
         cls.addClassCleanup(cls.temp.cleanup)
         cls.directory = Path(cls.temp.name)
+        cls.engine_log_index = 0
+        cls.environment = dict(os.environ, XDG_DATA_HOME=str(cls.directory / 'data'))
+        if os.name == 'nt':
+            for variable, name in (('APPDATA', 'appdata'), ('LOCALAPPDATA', 'localappdata')):
+                user_directory = cls.directory / name
+                user_directory.mkdir()
+                cls.environment[variable] = str(user_directory)
         cls.source = cls.directory / 'valid.csv'
         result = cls.run_app('--trace=' + str(cls.source), '--t=3')
         if result.returncode or 'ERROR:' in result.stdout:
@@ -33,12 +40,15 @@ class TraceAcceptance(unittest.TestCase):
 
     @classmethod
     def run_app(cls, *args, probe=False, mode=''):
-        command = [cls.godot, '--headless', '--path', str(APP), '--audio-driver', 'Dummy']
+        cls.engine_log_index += 1
+        log_file = cls.directory / ('godot-%03d.log' % cls.engine_log_index)
+        command = [cls.godot, '--headless', '--path', str(APP), '--audio-driver', 'Dummy',
+                   '--log-file', str(log_file)]
         if probe:
             command += ['--script', 'res://tests/probe_trace_failure.gd']
         return subprocess.run(command + ['--', *args], stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT, text=True, timeout=30,
-                              env={**os.environ, 'OPENRC_TRACE_FAILURE': mode})
+                              env={**cls.environment, 'OPENRC_TRACE_FAILURE': mode})
 
     def checker(self, table=None, meta=None, *options):
         if table is None:
@@ -115,6 +125,9 @@ class TraceAcceptance(unittest.TestCase):
                         if line.startswith('# '))
         check_coupled_metadata(metadata)
         for key, value in [
+            ('metadata_schema', 'openrc-flight-meta v6'),
+            ('wheel_state_layout', '[]'),
+            ('wheel_profile_status', 'applied'),
             ('turbine_integrator', 'sampled'),
             ('continuous_layout', 'none'),
             ('recording_start_continuous', '[true]'),

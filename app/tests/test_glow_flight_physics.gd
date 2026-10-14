@@ -175,8 +175,8 @@ func _test_fuel_properties_and_co_moving_flux() -> void:
 
 func _test_flight_stage_balance(family: String, model: Dictionary) -> void:
 	var owner: FlightOwner = _owner(model, 6000.0, true, 0.75)
-	var values: PackedFloat64Array = Flight.initial(owner, PackedFloat64Array([6000.0]))
 	var body: PackedFloat64Array = _body(PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]))
+	var values: PackedFloat64Array = Flight.initial(owner, PackedFloat64Array([6000.0]), body)
 	var driven: Dictionary = Flight.evaluate(body, values, 0.0, owner)
 	_check(family + " running flight stage evaluates", not driven.is_empty())
 	if not driven.is_empty():
@@ -185,9 +185,9 @@ func _test_flight_stage_balance(family: String, model: Dictionary) -> void:
 
 	# Exercise the gyroscopic term with a stopped engine and nonzero carrier rates; fuel mass is constant here.
 	var coast_owner: FlightOwner = _owner(model, 5000.0, false, 0.0)
-	var coast_values: PackedFloat64Array = Flight.initial(coast_owner, PackedFloat64Array([5000.0]))
 	var moving_body: PackedFloat64Array = _body(
 		PackedFloat64Array([12.0, -3.0, 1.0]), PackedFloat64Array([0.2, -0.15, 0.1]))
+	var coast_values: PackedFloat64Array = Flight.initial(coast_owner, PackedFloat64Array([5000.0]), moving_body)
 	var coasting: Dictionary = Flight.evaluate(moving_body, coast_values, 0.1, coast_owner)
 	_check(family + " rotating coast stage evaluates", not coasting.is_empty())
 	if not coasting.is_empty():
@@ -224,9 +224,9 @@ func _check_angular_balance(label: String, owner: FlightOwner, model: Dictionary
 
 func _test_one_way_rotor_stop(family: String, model: Dictionary) -> void:
 	var owner: FlightOwner = _owner(model, 6000.0, true, 0.5)
-	var values: PackedFloat64Array = Flight.initial(owner, PackedFloat64Array([6000.0]))
-	values[0] = 0.0
 	var still_body: PackedFloat64Array = _body(PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]))
+	var values: PackedFloat64Array = Flight.initial(owner, PackedFloat64Array([6000.0]), still_body)
+	values[0] = 0.0
 	var held: Dictionary = Flight.evaluate(still_body, values, 0.0, owner)
 	_check(family + " static stop holds the rotor at rest", not held.is_empty() and absf(float(held.derivative[0])) < 1.0e-12,
 		str(held.get("derivative", PackedFloat64Array())))

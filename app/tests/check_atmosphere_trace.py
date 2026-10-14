@@ -247,7 +247,9 @@ def check(path, duration=None):
         raise ValueError('invalid trace clock or recording origin')
     check_coupled_metadata(metadata)
     expected_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0'
-                       if metadata.get('shaft_integrator') == 'coupled-rk4' else WEATHER_TIMING)
+                       if metadata.get('shaft_integrator') == 'coupled-rk4' else
+                       'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/turbine, current sampled servos); reset uses t=0'
+                       if metadata.get('turbine_integrator') == 'rk4' else WEATHER_TIMING)
     if metadata.get('weather_timing') != expected_timing or metadata.get('weather_evidence') != WEATHER_EVIDENCE:
         raise ValueError('unsupported weather timing/evidence metadata')
     if not data_lines:

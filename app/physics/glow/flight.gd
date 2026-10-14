@@ -58,7 +58,7 @@ static func put_state(values: PackedFloat64Array, state: Dictionary) -> PackedFl
 	out[11]=state.firing_accumulator
 	return out
 
-static func initial(owner: Node, aux: PackedFloat64Array) -> PackedFloat64Array:
+static func initial(owner: Node, aux: PackedFloat64Array, body: PackedFloat64Array) -> PackedFloat64Array:
 	var install: Dictionary=owner.aircraft.model.propulsion.glow
 	# A fresh immutable installation evaluator on every reset/reload. This owns no
 	# physical state and is excluded from model serialization and checkpoints.
@@ -92,6 +92,17 @@ static func initial(owner: Node, aux: PackedFloat64Array) -> PackedFloat64Array:
 	out.resize(SIZE)
 	out[0]=aux[0]
 	out[12]=install.profile.operation.nominal_mixture
+	if install.has("fuel_feed"):
+		# Seed transport from the actual start loads and apparent gravity. The feed
+		# factor can differ from the level-flight value used by Source.evaluate above.
+		var stage_values: PackedFloat64Array=put_state(out,state)
+		for _i in owner.wheel_count(): stage_values.append(0.0)
+		var initial_point: Dictionary=point(owner,body,stage_values,0.0)
+		if not initial_point.get("ok",false): return PackedFloat64Array([NAN])
+		var telemetry: Dictionary=initial_point.get("telemetry",{})
+		var target: float=float(telemetry.get("fuel_target_kg_s",NAN))
+		if not is_finite(target) or target<0.0: return PackedFloat64Array([NAN])
+		state.fuel_transport_kg_s=target
 	return put_state(out,state)
 
 static func properties(owner: Node, fuel: float) -> Dictionary:

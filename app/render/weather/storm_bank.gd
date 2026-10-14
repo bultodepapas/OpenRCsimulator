@@ -2,6 +2,7 @@
 ## Coordinates and advection are presentation-only; this node never samples/changes flight physics.
 extends Node3D
 
+const StormCell := preload("res://render/weather/storm_cell.gd")
 const TEXTURES := ["res://assets/sky/weather/clouds/FX_CloudAlpha03.png", "res://assets/sky/weather/clouds/FX_CloudAlpha06.png"]
 const SHADER_PATH := "res://render/weather/storm_bank.gdshader"
 const RAIN_SHADER_PATH := "res://render/weather/rain_curtain.gdshader"
@@ -14,6 +15,8 @@ var _puffs: Array[MeshInstance3D] = []
 var _rain: Array[MeshInstance3D] = []
 var _period_m := 57600.0
 var _clock_s := 0.0
+var _cell_m := 900.0
+var _offset_cells := [0.0, 0.0]
 var _flash := {event_id = "", level = 0.0, source_world = [0.0, 0.0, 0.0], radiance = 0.0}
 
 
@@ -110,15 +113,16 @@ func update_visual(snapshot: Dictionary, environment: Environment, _sun: Directi
 		return
 	var layer: Dictionary = layers[index]
 	var cell_m := float(layer.scale_m)
+	_cell_m = cell_m
 	_period_m = 64.0 * cell_m
 	var offset: Vector2 = layer.offset
+	_offset_cells = [float(offset.x), float(offset.y)]
 	# The background samples p + offset, so geometry translates by -offset. Select the nearest
 	# periodic copy, keeping its world centre fixed as the camera moves within a tile. A copy
 	# switch is beyond this camera's far plane plus the formation radius, even far from the field.
 	var camera := get_viewport().get_camera_3d()
 	var eye := camera.global_position if camera != null else Vector3.ZERO
-	position = Vector3(_nearest_copy(float(_spec.east_m) - float(offset.x) * cell_m, eye.x), 0.0,
-		_nearest_copy(-float(_spec.north_m) - float(offset.y) * cell_m, eye.z))
+	select_view_copy(eye)
 	visible = true
 	var sky := environment.sky.sky_material as ShaderMaterial
 	var cloud_linear: Vector3 = sky.get_shader_parameter("cloud_lin")
@@ -135,8 +139,10 @@ func update_visual(snapshot: Dictionary, environment: Environment, _sun: Directi
 	_rain_material.set_shader_parameter("haze_density", environment.fog_density * 0.35)
 
 
-func _nearest_copy(coordinate: float, eye_coordinate: float) -> float:
-	return coordinate + floor((eye_coordinate - coordinate) / _period_m + 0.5) * _period_m
+## Camera rigs may move after World.update; synchronize the copy before the lightning query.
+func select_view_copy(eye: Vector3) -> void:
+	if not _spec.is_empty():
+		position = StormCell.center_from_offset(_spec, _cell_m, _offset_cells, eye)
 
 
 ## Detached descriptor for emission-time lightning placement; no node is owned by the scheduler.

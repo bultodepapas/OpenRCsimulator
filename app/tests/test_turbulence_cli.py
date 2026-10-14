@@ -5,7 +5,6 @@ import json
 import os
 from pathlib import Path
 import re
-import shutil
 import subprocess
 import tempfile
 import unittest
@@ -83,6 +82,12 @@ class TurbulenceCLI(unittest.TestCase):
         cls.work = tempfile.TemporaryDirectory(prefix='openrc-turbulence-cli-')
         cls.directory = Path(cls.work.name)
         cls.environment = dict(os.environ, XDG_DATA_HOME=str(cls.directory / 'data'))
+        cls.engine_log_index = 0
+        if os.name == 'nt':
+            for variable, name in (('APPDATA', 'appdata'), ('LOCALAPPDATA', 'localappdata')):
+                user_directory = cls.directory / name
+                user_directory.mkdir()
+                cls.environment[variable] = str(user_directory)
         cls.default_trace = cls.directory / 'default.csv'
         cls.custom_trace = cls.directory / 'custom.csv'
         cls.zero_trace = cls.directory / 'zero-rms-v4.csv'
@@ -95,11 +100,15 @@ class TurbulenceCLI(unittest.TestCase):
 
         # The GDScript flight contract writes a short trace from tick 40, carrying
         # the exact OU window and raw RNG state captured when recording starts.
-        cls._run_engine(['--script', 'res://tests/test_turbulence_flight.gd'])
         cls.midflight_trace = cls.directory / 'midflight.csv'
-        shutil.copyfile('/tmp/openrc-turbulence-midflight.csv', cls.midflight_trace)
         cls.long_clock_trace = cls.directory / 'long-clock.csv'
-        shutil.copyfile('/tmp/openrc-turbulence-long-clock.csv', cls.long_clock_trace)
+        cls._run_engine([
+            '--script', 'res://tests/test_turbulence_flight.gd', '--',
+            '--trace-output-dir=' + str(cls.directory),
+        ])
+        for trace in (cls.midflight_trace, cls.long_clock_trace):
+            if not trace.is_file():
+                raise AssertionError('flight contract did not write requested trace: ' + str(trace))
 
     @classmethod
     def tearDownClass(cls):
@@ -107,8 +116,11 @@ class TurbulenceCLI(unittest.TestCase):
 
     @classmethod
     def _run_engine(cls, arguments, success=True):
+        cls.engine_log_index += 1
+        log_file = cls.directory / ('godot-%03d.log' % cls.engine_log_index)
         result = subprocess.run(
-            [cls.engine, '--headless', '--path', str(ROOT / 'app'), '--audio-driver', 'Dummy', *arguments],
+            [cls.engine, '--headless', '--path', str(ROOT / 'app'), '--audio-driver', 'Dummy',
+             '--log-file', str(log_file), *arguments],
             capture_output=True, text=True, timeout=180, env=cls.environment,
         )
         log = result.stdout + result.stderr

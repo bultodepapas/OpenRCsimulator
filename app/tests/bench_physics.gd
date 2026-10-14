@@ -28,7 +28,12 @@ func _initialize() -> void:
 	root.add_child(session)
 	session.input_enabled = false
 	session.reset()
-	print("physics: %.1f µs per tick (best of 3 × %d ticks; budget 500 µs on the owner's slowest machine)" % [_ticks(session, PackedFloat64Array()), TICKS])
+	var trimmed_cost := _ticks(session, PackedFloat64Array())
+	if trimmed_cost < 0.0:
+		session.free()
+		quit(1)
+		return
+	print("physics: %.1f µs per tick (best of 3 × %d ticks; budget 500 µs on the owner's slowest machine)" % [trimmed_cost, TICKS])
 	var trimmed: PackedFloat64Array = session.sim.state.duplicate()
 	var regimes := {
 		trimmed = trimmed,
@@ -36,14 +41,22 @@ func _initialize() -> void:
 		ground = _on_ground(trimmed, session.aircraft.model.landing_gear),
 	}
 	var rows := PackedStringArray()
-	for regime in regimes:
-		var s: PackedFloat64Array = regimes[regime]
-		rows.append("| %s | %s |" % [regime, " | ".join(_components(session, s))])
-	print("\n| regime (µs per call) | Air.compute | Aero.loads | Propulsion.loads | Ground.loads | Dynamics.loads | session loads | RB.derivative | RK4 overhead |")
-	print("| --- | --- | --- | --- | --- | --- | --- | --- | --- |")
-	for row in rows:
-		print(row)
-	print("\nstalled flight: %.1f µs per tick (best of 3 × %d ticks from α 15°)" % [_ticks(session, regimes.stalled), TICKS])
+	# Glow uses its own coupled evaluator; the legacy component calls below do
+	# not represent its installed engine, moving fuel mass, or shaft dynamics.
+	if not session.glow_is_active():
+		for regime in regimes:
+			var s: PackedFloat64Array = regimes[regime]
+			rows.append("| %s | %s |" % [regime, " | ".join(_components(session, s))])
+		print("\n| regime (µs per call) | Air.compute | Aero.loads | Propulsion.loads | Ground.loads | Dynamics.loads | session loads | RB.derivative | RK4 overhead |")
+		print("| --- | --- | --- | --- | --- | --- | --- | --- | --- |")
+		for row in rows:
+			print(row)
+	var stalled_cost := _ticks(session, regimes.stalled)
+	session.free()
+	if stalled_cost < 0.0:
+		quit(1)
+		return
+	print("\nstalled flight: %.1f µs per tick (best of 3 × %d ticks from α 15°)" % [stalled_cost, TICKS])
 	quit()
 
 
@@ -65,6 +78,9 @@ func _ticks(session: Node, start: PackedFloat64Array) -> float:
 		var t0 := Time.get_ticks_usec()
 		for i in TICKS:
 			session.sim.step()
+		if session.sim.tick != TICKS or not session.sim.fault_reason.is_empty() or session.sim.paused:
+			push_error("benchmark did not complete %d ticks: tick=%d fault=%s" % [TICKS, session.sim.tick, session.sim.fault_reason])
+			return -1.0
 		best = minf(best, float(Time.get_ticks_usec() - t0) / TICKS)
 	return best
 

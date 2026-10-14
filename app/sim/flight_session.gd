@@ -2146,7 +2146,7 @@ func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloa
 
 func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
 	if glow_is_active():
-		var glow_values: PackedFloat64Array=GlowFlight.initial(self,aux)
+		var glow_values: PackedFloat64Array=GlowFlight.initial(self,aux,s)
 		for _i in wheel_count(): glow_values.append(0.0)
 		return glow_values
 	var out: PackedFloat64Array = _settled_wash(s, aux)

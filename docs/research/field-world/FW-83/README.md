@@ -63,6 +63,8 @@ The [capture tool guide](../../../../tools/atmosphere/README.md#distant-storm-ba
 
 ## Checks and limits
 
+This section records the FW-83 snapshot. [FW-84b](../FW-84/README.md#fw-84b--integrated-electrical-bank-2026-10-14) subsequently added Electrical Storm bank/rain illumination and moonless-night captures; the original hashes and measurements below are retained.
+
 The final focused run passes **244 checks across seven suites**, with no failed assertions or script errors:
 
 | Suite | Checks | Evidence |

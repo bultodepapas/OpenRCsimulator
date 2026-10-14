@@ -17,6 +17,7 @@ import json
 from pathlib import Path
 import platform
 from pathlib import PurePosixPath
+import re
 import shutil
 import subprocess
 import sys
@@ -31,6 +32,7 @@ NATIVE_REL = Path("research/rc-monster-truck/native")
 SHARED_BUILDER_REL = Path("research/native-slipstream/build.py")
 PARITY_APP_FILES = (
     "physics/math3d.gd",
+    "physics/rigid_body.gd",
     "physics/integrator.gd",
     "physics/ground_vehicle/vehicle_dynamics.gd",
     "physics/ground_vehicle/vehicle_data.gd",
@@ -40,8 +42,17 @@ PARITY_APP_FILES = (
 )
 
 
+GODOT_ERROR_LINE = re.compile(
+    r"^\s*(?:SCRIPT ERROR:|SHADER ERROR:|ERROR:|FATAL:|Parse Error:|Compile Error:|Failed to load script\b)"
+)
+
+
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def godot_error_lines(output: str) -> list[str]:
+    return [line for line in output.splitlines() if GODOT_ERROR_LINE.search(line)]
 
 
 def sha256_file(path: Path) -> str:
@@ -298,7 +309,12 @@ def main() -> int:
             receipt = None
     library_sha256 = sha256_file(output_library) if output_library.is_file() else None
     smoke_passed = "Verified GDExtension load and PackedFloat64Array round-trip." in build_output
-    parity_passed = "OPENRC_NATIVE_PARITY_OK" in build_output
+    engine_errors = godot_error_lines(build_output)
+    parity_passed = (
+        return_code == 0
+        and not engine_errors
+        and "OPENRC_NATIVE_PARITY_OK" in build_output
+    )
     report: dict[str, Any] = {
         "format": "openrc-rcv-linux-native-verification-v1",
         "started_utc": started,
@@ -332,6 +348,7 @@ def main() -> int:
         "exit_code": return_code,
         "smoke_passed": smoke_passed,
         "parity_passed": parity_passed,
+        "engine_errors": engine_errors,
         "library_path": str(output_library),
         "library_sha256": library_sha256,
         "isolated_build_receipt": receipt,

@@ -416,8 +416,9 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_prepare_weather()
 	if _invalid_weather:
 		return
+	# Start RPM crosses a JSON metadata boundary; allow only the 9-decimal trace rounding.
 	if _coupled_shaft and (aux.size() < 4 or not _finite(aux) or aux[0] < 0.0 \
-			or (_rows.is_empty() and aux[0] != _coupled_start_rpm)):
+			or (_rows.is_empty() and absf(aux[0] - _coupled_start_rpm) > 1e-9)):
 		_invalid_weather = true
 		return
 	if _continuous_turbine and (tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \

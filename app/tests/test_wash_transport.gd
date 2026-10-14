@@ -64,9 +64,11 @@ func _initialize() -> void:
 				and legacy.wheel_count() == 3 and not W.enabled(legacy.aircraft.model.propulsion)
 				and legacy.sim.continuous == expected)
 		elif legacy.glow_is_active() or legacy.turbine_is_continuous():
+			var expected_prefix: int = preload("res://physics/glow/flight.gd").SIZE if legacy.glow_is_active() else 1
 			check(id + " combustion state excludes wash transport and starts with stationary wheels",
 				not W.enabled(legacy.aircraft.model.propulsion) and legacy._rotor_index() == 0
-				and legacy.wheel_index() > 0
+				and legacy.wheel_index() == expected_prefix
+				and legacy.sim.continuous.size() == expected_prefix + legacy.wheel_count()
 				and legacy.sim.continuous.slice(legacy.wheel_index(), legacy.wheel_index() + legacy.wheel_count()) == wheel_state)
 		else:
 			check(id + " production has only zero wheel state, no wash transport",

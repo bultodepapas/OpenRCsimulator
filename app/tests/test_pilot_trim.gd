@@ -4,6 +4,7 @@ const Session = preload("res://sim/flight_session.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const GlowFlight = preload("res://physics/glow/flight.gd")
 var failures := 0
 var count := 0
 
@@ -32,6 +33,12 @@ func fly(session: Node, ticks: int) -> void:
 		if session.sim.paused: break
 		session.sim.step()
 
+func finite_values(values: PackedFloat64Array) -> bool:
+	if values.is_empty(): return false
+	for value in values:
+		if not is_finite(value): return false
+	return true
+
 func run() -> void:
 	for entry in Catalog.airplane_flyable_entries():
 		var s = make_session(entry)
@@ -40,10 +47,53 @@ func run() -> void:
 			s.free()
 			continue
 		var initial: PackedFloat64Array = s.sim.state.duplicate()
+		var glow_install: Dictionary=s.aircraft.model.propulsion.get("glow",{})
+		var finite_fuel_glow: bool=not glow_install.is_empty() and float(glow_install.initial_fuel_kg)>0.0
+		var initial_fuel_kg: float=float(s.sim.continuous[1]) if finite_fuel_glow else 0.0
+		if finite_fuel_glow and glow_install.has("fuel_feed"):
+			var initial_point: Dictionary=GlowFlight.point(s,s.sim.state,s.sim.continuous,0.0)
+			var rates: Dictionary=initial_point.get("rates",{})
+			var feed: Dictionary=initial_point.get("fuel_feed",{})
+			var gravity: PackedFloat64Array=feed.get("g_eff",PackedFloat64Array())
+			var telemetry: Dictionary=initial_point.get("telemetry",{})
+			check(entry.id + " initial fuel transport balances feed-aware apparent gravity",
+				initial_point.get("ok",false) and gravity.size()==3 and finite_values(gravity)
+				and M.norm(gravity)>0.0 and absf(float(s.sim.continuous[5])-float(telemetry.get("fuel_target_kg_s",NAN)))<1e-12
+				and absf(float(rates.get("fuel_transport_kg_s",NAN)))<1e-12)
+			# Trim.solve does not yet include NITRO feed metering. Bound the actual
+			# post-initialization force, moment, and shaft residuals instead of assuming
+			# the nominal-mixture trim remains exact after the metered flow is applied.
+			var initial_dynamics: Dictionary=GlowFlight.evaluate(s.sim.state,s.sim.continuous,0.0,s)
+			var dynamics_rates: PackedFloat64Array=initial_dynamics.get("derivative",PackedFloat64Array())
+			var body_rates: PackedFloat64Array=initial_dynamics.get("body_derivative",PackedFloat64Array())
+			var loads: PackedFloat64Array=initial_dynamics.get("loads",PackedFloat64Array())
+			var linear_residual: float=INF
+			var angular_residual: float=INF
+			if body_rates.size()>=RB.SIZE and finite_values(body_rates):
+				linear_residual=M.norm(body_rates.slice(RB.VEL,RB.VEL+3))
+				angular_residual=M.norm(body_rates.slice(RB.RATE,RB.RATE+3))
+			var shaft_torque_fraction: float=INF
+			var source_torque: float=float(initial_point.get("source",{}).get("shaft_torque_nm",NAN))
+			var propeller_torque: float=float(initial_point.get("propeller",{}).get("torque_nm",NAN))
+			if is_finite(source_torque) and is_finite(propeller_torque) and absf(propeller_torque)>1e-12:
+				shaft_torque_fraction=absf(source_torque-propeller_torque)/absf(propeller_torque)
+			check(entry.id + " feed-aware start remains near force, moment, and shaft trim",
+				loads.size()==6 and finite_values(loads) and dynamics_rates.size()>0 and finite_values(dynamics_rates)
+				and linear_residual<0.01 and angular_residual<0.003 and shaft_torque_fraction<0.0015
+				and absf(dynamics_rates[0])<10.0)
 		fly(s, 2400)
-		check(entry.id + " live neutral holds height/speed for 10 s", s.sim.tick == 2400 and s.sim.fault_reason.is_empty()
-			and absf(s.sim.state[2] - initial[2]) < 0.001
-			and absf(M.norm(RB._slice3(s.sim.state, RB.VEL)) - s.start.V) < 0.001)
+		if finite_fuel_glow:
+			var final_speed: float=M.norm(RB._slice3(s.sim.state,RB.VEL))
+			check(entry.id + " finite-fuel neutral flight consumes fuel with finite motion", s.sim.tick==2400
+				and s.sim.fault_reason.is_empty() and finite_values(s.sim.state) and finite_values(s.sim.continuous)
+				and is_finite(final_speed) and final_speed>0.0 and s.sim.continuous[1]>=0.0
+				and s.sim.continuous[1]<initial_fuel_kg
+				and absf(initial[2]-s.sim.state[2])<0.15
+				and absf(final_speed-s.start.V)<0.07)
+		else:
+			check(entry.id + " live neutral holds height/speed for 10 s", s.sim.tick == 2400 and s.sim.fault_reason.is_empty()
+				and absf(s.sim.state[2] - initial[2]) < 0.001
+				and absf(M.norm(RB._slice3(s.sim.state, RB.VEL)) - s.start.V) < 0.001)
 		var original: Dictionary = s.trims.duplicate()
 		var state_bytes: PackedByteArray = s.sim.state.to_byte_array()
 		var aux_bytes: PackedByteArray = s.sim.aux.to_byte_array()

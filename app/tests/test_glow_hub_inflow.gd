@@ -22,7 +22,8 @@ func _initialize() -> void:
 		var owner=Fixture.FlightOwner.new()
 		owner.aircraft={model=model}
 		owner.sim={inputs=PackedFloat64Array([0.,0.,0.,.6]),aux=PackedFloat64Array([6000.]),gravity=0.}
-		var values:=Flight.initial(owner,PackedFloat64Array([6000.]))
+		var initial_body:=RB.make_state(PackedFloat64Array([0.,0.,0.]),PackedFloat64Array([0.,0.,0.]),PackedFloat64Array([1.,0.,0.,0.]),PackedFloat64Array([0.,0.,0.]))
+		var values:=Flight.initial(owner,PackedFloat64Array([6000.]),initial_body)
 		for case: Dictionary in [
 			{label="static",v=PackedFloat64Array([0.,0.,0.]),w=PackedFloat64Array([0.,0.,0.])},
 			{label="translation",v=PackedFloat64Array([16.,-2.,3.]),w=PackedFloat64Array([0.,0.,0.])},

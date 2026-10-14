@@ -1,0 +1,30 @@
+{
+  "format": "openrc-fw84b-package-probe v1",
+  "date": "2026-10-14",
+  "engine": "Godot 4.7.2-stable official",
+  "pack": {
+    "path": ".tools/fw84b-export/windows.pck",
+    "bytes": 58093632,
+    "sha256": "fe77aa310f11bc26f9ef296af43eed4a0c0ac364777702a6e0122a760c4fd4f0"
+  },
+  "export": {
+    "exit_code": 0,
+    "command": "--headless --editor --path app --audio-driver Dummy --log-file <absolute log> --export-pack Windows <absolute PCK>",
+    "log": "fw84b-package-export.log",
+    "qualified": false,
+    "error": "Cannot export an invalid aircraft model: SHA-256 mismatch for assets/aircraft/turbo-lumber-evolution/mesh-measurements.json"
+  },
+  "probe": {
+    "exit_code": 0,
+    "checks": 38,
+    "failures": 0,
+    "command": "--headless --path <empty directory> --main-pack <absolute PCK> --audio-driver Dummy --log-file <absolute log> --script <absolute tools/atmosphere/sky_pack_probe.gd>",
+    "log": "fw84b-package-probe.log",
+    "startup_console_diagnostics": [
+      "Condition !FileAccess::exists(path) is true: ERR_FILE_NOT_FOUND",
+      "GDExtension dynamic library not found: res://native/ground_vehicle/openrc_ground_vehicle.gdextension",
+      "Error loading extension: res://native/ground_vehicle/openrc_ground_vehicle.gdextension"
+    ],
+    "scope": "Weather resources load from the PCK. This does not qualify the application export or native-extension packaging."
+  }
+}

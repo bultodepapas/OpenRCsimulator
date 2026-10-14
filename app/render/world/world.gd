@@ -446,9 +446,9 @@ static func _update_weather_presentation(environment: Environment, clock_s: floa
 
 
 static func _weather_bank(environment: Environment) -> Node3D:
-	if environment == null:
+	if environment == null or not environment.has_meta("fw_storm_bank"):
 		return null
-	var reference: Variant = environment.get_meta("fw_storm_bank", null)
+	var reference: Variant = environment.get_meta("fw_storm_bank")
 	return reference.get_ref() as Node3D if reference is WeakRef else null
 
 

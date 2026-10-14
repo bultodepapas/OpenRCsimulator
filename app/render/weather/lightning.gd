@@ -13,8 +13,8 @@ const DEFAULT_CLOUD_ALTITUDE_M: float = 3900.0
 const DEFAULT_CLOUD_SCALE_M: float = 6000.0
 const CLOUD_FLASH_RADIUS_M: float = 4200.0
 const MAX_PATH_SEGMENTS: int = 28
-const BOLT_HALO_HALF_WIDTH_M: float = 120.0
-const BOLT_CORE_HALF_WIDTH_M: float = 28.0
+const BOLT_HALO_HALF_WIDTH_M: float = 140.0
+const BOLT_CORE_HALF_WIDTH_M: float = 50.0
 
 enum FlashMode { FULL, REDUCED, OFF }
 
@@ -83,6 +83,8 @@ func update_at(sim_time_s: float, listener_position: Vector3, paused: bool,
 	if not _active:
 		return
 	var bank := _bank()
+	if bank != null and bank.visible:
+		bank.select_view_copy(listener_position)
 	_events.set_cell_context(bank.cell_spec() if bank != null and bank.visible else {},
 		_cell_transport, listener_position)
 	var now_s: float = maxf(sim_time_s, 0.0)
@@ -157,7 +159,7 @@ func _bank() -> Node3D:
 
 func _exit_tree() -> void:
 	# A retained World may outlive the presentation consumer (Workshop/scene replacement).
-	_clear_visuals()
+	reset()
 
 
 func snapshot() -> Dictionary:
@@ -354,9 +356,11 @@ func _apply_event(event: Dictionary, level: float, listener_position: Vector3, e
 	_presented_level = bounded_level * (0.18 if _flash_mode == FlashMode.REDUCED else 1.0)
 	var source: Vector3 = _as_vector3(event.get("source_world", PackedFloat64Array()))
 	var bank := _bank()
-	var has_bank := bank != null and bank.visible and not _cell_transport.is_empty()
+	var has_bank := bank != null and bank.visible and str(event.get("placement_mode", "")) == "storm_cell"
 	if has_bank:
 		bank.apply_flash(event, _presented_level, exposure)
+	elif bank != null:
+		bank.apply_flash({}, 0.0, exposure)
 	if _cloud_material != null:
 		_cloud_material.set_shader_parameter("scene_exposure", exposure)
 		if event_changed:

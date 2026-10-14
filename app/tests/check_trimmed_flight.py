@@ -177,6 +177,8 @@ def check_coupled_metadata(metadata: dict) -> None:
     turbine = metadata.get('propulsion_model') == 'turbine-rpm-governor-rk4-v1'
     if turbine or 'turbine_integrator' in metadata:
         if (not turbine or metadata.get('turbine_integrator') != 'rk4'
+                or metadata.get('metadata_schema') == 'openrc-flight-meta v6'
+                or any(key.startswith('wheel_') for key in metadata)
                 or metadata.get('continuous_layout') != 'turbine shaft rpm; RK4 coupled; prescribed fuel mass'
                 or any(key in metadata for key in ('shaft_integrator', 'rotor_coupling',
                                                   'electric_configuration', 'wheel_state_model'))):

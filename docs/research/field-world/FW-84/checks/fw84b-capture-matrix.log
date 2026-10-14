@@ -1,0 +1,44 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+building production World for day
+event 3102985321:7 starts at 88.867 s; exposure 0.6000; sun 66.08° moon 17.17° (48.3%)
+drawing 8 native frames for electrical_storm-day-pre-full
+captured electrical_storm-day-pre-full.png
+drawing 8 native frames for electrical_storm-day-peak-full
+captured electrical_storm-day-peak-full.png
+drawing 8 native frames for electrical_storm-day-post-full
+captured electrical_storm-day-post-full.png
+building production World for dusk
+event 3102985321:7 starts at 88.867 s; exposure 41.3285; sun -4.22° moon 79.47° (50.6%)
+drawing 8 native frames for electrical_storm-dusk-pre-full
+captured electrical_storm-dusk-pre-full.png
+drawing 8 native frames for electrical_storm-dusk-peak-full
+captured electrical_storm-dusk-peak-full.png
+drawing 8 native frames for electrical_storm-dusk-post-full
+captured electrical_storm-dusk-post-full.png
+building production World for fullmoon
+event 3102985321:7 starts at 88.867 s; exposure 39607.5820; sun -62.07° moon 55.60° (99.3%)
+drawing 8 native frames for electrical_storm-fullmoon-pre-full
+captured electrical_storm-fullmoon-pre-full.png
+drawing 8 native frames for electrical_storm-fullmoon-peak-full
+captured electrical_storm-fullmoon-peak-full.png
+drawing 8 native frames for electrical_storm-fullmoon-post-full
+captured electrical_storm-fullmoon-post-full.png
+drawing 8 native frames for electrical_storm-fullmoon-peak-reduced
+captured electrical_storm-fullmoon-peak-reduced.png
+drawing 8 native frames for electrical_storm-fullmoon-peak-off
+captured electrical_storm-fullmoon-peak-off.png
+building production World for newmoon
+event 3102985321:7 starts at 88.867 s; exposure 90000.0000; sun -61.98° moon -57.84° (0.2%)
+drawing 8 native frames for electrical_storm-newmoon-pre-full
+captured electrical_storm-newmoon-pre-full.png
+drawing 8 native frames for electrical_storm-newmoon-peak-full
+captured electrical_storm-newmoon-peak-full.png
+drawing 8 native frames for electrical_storm-newmoon-post-full
+captured electrical_storm-newmoon-post-full.png
+drawing 8 native frames for electrical_storm-newmoon-peak-reduced
+captured electrical_storm-newmoon-peak-reduced.png
+drawing 8 native frames for electrical_storm-newmoon-peak-off
+captured electrical_storm-newmoon-peak-off.png
+FW-84b electrical bank capture wrote 16 images to C:\DEVELOPMENT\OpenRCsimulator\.tools\fw84b-captures\final-matrix

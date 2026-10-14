@@ -6,6 +6,8 @@ The catalog includes experimental Stik installations with **O.S. MAX-55AX two-st
 
 Select a glow Stik in the aircraft catalog, or launch with `--quick-flight --aircraft=stik-glow-61fx-2t` / `stik-glow-55ax-2t` / `stik-glow-fs64v-4t`. Airborne starts initialize a warm, trimmed engine. Runway starts initialize the warm engine **stopped**; press **F7** to start. **F6** cuts fuel/combustion; **F8/F9** lean/richen the mixture command. Ordinary zero throttle requests idle. The HUD reports family, RPM, fuel, head-temperature proxy and engine status. Opening the throttle does not restart an extinguished engine.
 
+Airborne trim is approximate: the trim solver uses nominal mixture, while initialization settles fuel transport against the actual feed pressure. Fuel consumption then changes mass and balance, so neutral controls do not hold an exact steady trajectory.
+
 | Family | Catalog propeller | Generated alternative | Reference constraints |
 | --- | --- | --- | --- |
 | 2T MAX-55AX, 8.93 cc | APC Sport LP12070 12×7 | APC Sport LP13060 13×6 | 1.7 PS at 16,000 RPM; conditional 10,330 RPM static-prop fit |
