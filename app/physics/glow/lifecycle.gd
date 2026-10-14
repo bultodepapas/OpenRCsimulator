@@ -160,7 +160,9 @@ static func create(
 
 ## Evaluates one RK stage. `mixture` is the requested equivalence ratio phi;
 ## fuel transport creates the actual equivalence ratio from
-## delivered premix mass flow divided by the admitted-air flow.
+## delivered premix mass flow divided by the admitted-air flow. NITRO-05:
+## `feed_factor` scales the needled flow by the stage's feed pressure
+## (physics/glow/fuel_feed.gd); 1 is the needled condition and the default.
 static func evaluate(
 		profile: Dictionary,
 		settings: Dictionary,
@@ -170,7 +172,8 @@ static func evaluate(
 		mixture: float,
 		dry_density_kg_m3: float,
 		ambient_k: float,
-		cooling_airspeed_mps: float
+		cooling_airspeed_mps: float,
+		feed_factor: float = 1.0
 ) -> Dictionary:
 	var configuration_error: String = _configuration_error(profile, settings)
 	if not configuration_error.is_empty():
@@ -180,7 +183,7 @@ static func evaluate(
 		return _fail(state_error)
 	var model: Dictionary = _model(profile)
 	return _evaluate_validated(model, settings, state, rpm, throttle, mixture,
-		dry_density_kg_m3, ambient_k, cooling_airspeed_mps)
+		dry_density_kg_m3, ambient_k, cooling_airspeed_mps, null, feed_factor)
 
 
 ## Performs one-time validation and detaches immutable profile/settings data for a
@@ -207,7 +210,8 @@ static func evaluate_prepared(
 		mixture: float,
 		dry_density_kg_m3: float,
 		ambient_k: float,
-		cooling_airspeed_mps: float
+		cooling_airspeed_mps: float,
+		feed_factor: float = 1.0
 ) -> Dictionary:
 	if not evaluator is PreparedEvaluator:
 		return _fail("A prepared lifecycle evaluator is required")
@@ -216,7 +220,7 @@ static func evaluate_prepared(
 		return _fail(state_error)
 	return _evaluate_validated(evaluator._model, evaluator._settings, state, rpm,
 		throttle, mixture, dry_density_kg_m3, ambient_k, cooling_airspeed_mps,
-		evaluator._source)
+		evaluator._source, feed_factor)
 
 
 static func _evaluate_validated(
@@ -229,7 +233,8 @@ static func _evaluate_validated(
 		dry_density_kg_m3: float,
 		ambient_k: float,
 		cooling_airspeed_mps: float,
-		prepared_source: Variant = null
+		prepared_source: Variant = null,
+		feed_factor: float = 1.0
 ) -> Dictionary:
 	if str(state.family) != str(model.family):
 		return _fail("Profile family does not match lifecycle state")
@@ -246,6 +251,8 @@ static func _evaluate_validated(
 		return _fail("Ambient temperature must be finite and positive")
 	if not _finite_number(cooling_airspeed_mps) or cooling_airspeed_mps < 0.0:
 		return _fail("Cooling airspeed must be finite and nonnegative")
+	if not _finite_number(feed_factor) or feed_factor < 0.0:
+		return _fail("Fuel feed factor must be finite and nonnegative")
 
 	var raw_servo: float = float(state.servo_fraction)
 	var raw_air: float = float(state.air_fraction)
@@ -276,7 +283,7 @@ static func _evaluate_validated(
 			if not baseline.get("ok", false):
 				return _fail("Fuel-flow target failed: " + str(baseline.get("message", "unknown source error")))
 			unit_flow = float(baseline.delivered_fuel_kg_s) / baseline_mixture
-		target_fuel_flow = unit_flow * mixture
+		target_fuel_flow = unit_flow * mixture * feed_factor
 		if unit_flow > LOW_FLOW:
 			actual_mixture = current_transport / unit_flow
 		else:
@@ -342,6 +349,7 @@ static func _evaluate_validated(
 			"mixture_command": mixture,
 			"actual_mixture": actual_mixture,
 			"fuel_target_kg_s": target_fuel_flow,
+			"fuel_feed_factor": feed_factor,
 			"fuel_transport_kg_s": float(source.delivered_fuel_kg_s),
 			"firing_fraction": firing_fraction,
 			"phase_revolutions": float(state.phase_revolutions),

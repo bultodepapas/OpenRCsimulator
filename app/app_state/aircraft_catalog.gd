@@ -28,6 +28,16 @@ const ENTRIES := [
 		data = "res://data/aircraft/jensen_ugly_stik_60.json",
 	},
 	{
+		# NITRO-61FX: the default Stik's own O.S. MAX-61FX on its APC 12x6, flown by the glow engine model.
+		id = "stik-glow-61fx-2t",
+		visual_family = "jensen-das-ugly-stik-60",
+		name = "Jensen Das Ugly Stik 60 · MAX-61FX",
+		summary = "High-wing sport trainer · 1.52 m · .61 2-stroke glow",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: the Stik's own O.S. MAX-61FX on the glow engine model; profile scaled from the MAX-55AX, not flight-validated.",
+		data = "res://data/aircraft/stik_glow_61fx_2t.json",
+	},
+	{
 		id = "stik-glow-55ax-2t",
 		visual_family = "jensen-das-ugly-stik-60",
 		name = "Jensen Das Ugly Stik 60 · MAX-55AX",

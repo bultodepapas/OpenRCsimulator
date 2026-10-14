@@ -40,6 +40,12 @@ def quantity(unit: str, *, minimum: float | None = None, exclusive_minimum: floa
     }
 
 
+def vector_quantity(unit: str, length: int = 3) -> dict[str, Any]:
+    schema = quantity(unit)
+    schema["properties"]["value"] = {"type": "array", "minItems": length, "maxItems": length, "items": {"type": "number"}}
+    return schema
+
+
 def object_schema(properties: dict[str, Any]) -> dict[str, Any]:
     return {
         "type": "object",
@@ -85,6 +91,12 @@ def schema_document() -> dict[str, Any]:
         "cd0": quantity("1", exclusive_minimum=0.0, maximum=2.0),
         "induced_drag": quantity("1", exclusive_minimum=0.0, maximum=10.0),
     }
+    # NITRO-05: optional fuel feed (spray-bar position in the inventory frame, driving pressures).
+    fuel_feed = {
+        "carburetor_position": vector_quantity("m"),
+        "idle_drive_pressure_pa": quantity("Pa", exclusive_minimum=0.0, maximum=100000.0),
+        "wot_drive_pressure_pa": quantity("Pa", exclusive_minimum=0.0, maximum=100000.0),
+    }
     return {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "$id": "urn:openrc:glow-installation:v1",
@@ -108,6 +120,7 @@ def schema_document() -> dict[str, Any]:
             "settings": object_schema(settings),
             "initial_temperature_k": quantity("K", minimum=200.0, maximum=600.0),
             "propeller": object_schema(propeller),
+            "fuel_feed": object_schema(fuel_feed),
         },
     }
 
@@ -143,6 +156,14 @@ def validate_instance(value: Any, schema: dict[str, Any], location: str = "$", e
         for key, child in props.items():
             if key in value:
                 validate_instance(value[key], child, f"{location}.{key}", errors)
+    if isinstance(value, list):
+        if len(value) < schema.get("minItems", 0):
+            errors.append(f"{location}: array is too short")
+        if "maxItems" in schema and len(value) > schema["maxItems"]:
+            errors.append(f"{location}: array is too long")
+        if "items" in schema:
+            for index, item in enumerate(value):
+                validate_instance(item, schema["items"], f"{location}[{index}]", errors)
     if isinstance(value, str):
         if len(value) < schema.get("minLength", 0):
             errors.append(f"{location}: string is too short")
@@ -176,8 +197,8 @@ def main() -> None:
         raise SystemExit(f"Stale schema: {SCHEMA_PATH.relative_to(ROOT)}")
     schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     files = sorted(INSTALLATION_FILES)
-    if len(files) != 4:
-        raise SystemExit(f"Expected four generated installation inputs, found {len(files)}")
+    if len(files) != 5:
+        raise SystemExit(f"Expected five generated installation inputs (55AX, FS-64V, each with an APC 13x6, and the 61FX), found {len(files)}")
     for path in files:
         instance = json.loads(path.read_text(encoding="utf-8"))
         errors = validate_instance(instance, schema)

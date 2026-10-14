@@ -93,20 +93,38 @@ def blend(f):
                 stoich_air_fuel_ratio=afr, fuel_lhv_j_kg=lhv)
 
 
-def candidate(family):
-    two = family == 'glow_2t'
-    name = 'MAX-55AX' if two else 'FS-64V'
-    url = ('https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm'
+# NITRO-61FX: the MAX-61FX (default Stik engine) reuses the 55AX knot grid and loss laws scaled by displacement;
+# justified only by equal rated BMEP (526.7 vs 525.1 kPa). Dossier: docs/research/glow-engines/NITRO-61FX/README.md.
+FX61_URL = 'https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm'
+FX61_SCALE = 9.95/8.93
+ENGINES = ['os_max_55ax_candidate', 'os_fs_64v_candidate', 'os_max_61fx_candidate']
+
+
+def candidate(engine):
+    if engine in SPEC['families']:  # historical key: one engine per family
+        engine = 'os_max_55ax_candidate' if engine == 'glow_2t' else 'os_fs_64v_candidate'
+    fx61 = engine == 'os_max_61fx_candidate'
+    two = engine != 'os_fs_64v_candidate'
+    family = 'glow_2t' if two else 'glow_4t'
+    name = 'MAX-61FX' if fx61 else ('MAX-55AX' if two else 'FS-64V')
+    url = FX61_URL if fx61 else ('https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm'
            if two else 'https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html')
-    geometry_url = ('https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15610.htm'
+    geometry_url = FX61_URL if fx61 else ('https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15610.htm'
                     if two else 'https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html')
-    bore_m, stroke_m, dry_engine_mass_kg = ((.023, .0215, .404) if two else (.025, .0213, .442))
+    bore_m, stroke_m, dry_engine_mass_kg = ((.024, .022, .550) if fx61 else (.023, .0215, .404) if two else (.025, .0213, .442))
     rated = 16000. if two else 11000.
-    rated_w = (1.7 if two else 1.14)*735.49875  # PS, explicitly not mechanical hp
+    rated_w = (1.9 if fx61 else 1.7 if two else 1.14)*735.49875  # PS, explicitly not mechanical hp
     rpm = [0., 2000., 4000., 7000., 10000., 13000., rated, 17000.] if two else [0., 2400., 4000., 6000., 8000., 10000., rated, 13000., 15000.]
     # Net WOT torque hypotheses. Only the rated-power knot is manufacturer anchored.
     q = [0., .18, .30, .52, .70, .78, rated_w/(rated*math.tau/60), .70] if two else [0., .35, .50, .65, .80, .77, rated_w/(rated*math.tau/60), .40, .05]
-    volume = (8.93 if two else 10.46)*1e-6
+    k = FX61_SCALE if fx61 else 1.
+    if fx61:
+        # An APC 12x6 unloads past the 17000 rpm practical limit in a full-throttle dive. As for the FS-64V, an
+        # explicitly inferred tail knot (20000 rpm, torque falling past the tuned range) keeps that state inside the
+        # numerical support; 17000 rpm stays the manufacturer recommendation that telemetry flags.
+        rpm = rpm + [20000.]
+        q = [v*k for v in q[:6]] + [q[6], q[7]*k, .45*k]
+    volume = (9.95 if fx61 else 8.93 if two else 10.46)*1e-6
     p = {
         'displacement_m3': quantity(volume, SPEC['common']['displacement_m3'], 'derived', url+'; cc × 1e-6 -> m3'),
         'bore_m': quantity(bore_m, SPEC['common']['bore_m'], 'manual', geometry_url+'; manufacturer bore specification converted from mm to m'),
@@ -116,13 +134,16 @@ def candidate(family):
         'reciprocating_mass_kg': quantity(.025*dry_engine_mass_kg, SPEC['common']['reciprocating_mass_kg'], 'estimated',
             f'NITRO-03 explicit unmeasured equivalent-mass estimate: 2.5% of manufacturer dry engine mass ({dry_engine_mass_kg*1000:.0f} g); 1–5% sensitivity retained in vibration evidence; no matched component measurement; {geometry_url}'),
     }
-    mech = [.008+.000002*r for r in rpm]
-    p['mechanical_torque_nm'] = quantity(list(map(list, zip(rpm, mech))), SPEC['common']['mechanical_torque_nm'])
+    mech = [(.008+.000002*r)*k for r in rpm] if fx61 else [.008+.000002*r for r in rpm]
+    FX61_NOTE = ('; MAX-61FX: 55AX law scaled by displacement 9.95/8.93 (equal rated BMEP 526.7 vs 525.1 kPa); '
+                 'docs/research/glow-engines/NITRO-61FX/README.md')
+    p['mechanical_torque_nm'] = quantity(list(map(list, zip(rpm, mech))), SPEC['common']['mechanical_torque_nm'],
+        'estimated', EST+FX61_NOTE) if fx61 else quantity(list(map(list, zip(rpm, mech))), SPEC['common']['mechanical_torque_nm'])
     p['combustion_efficiency'] = quantity([[0., 0.], [.5, .5], [.8, .90], [1., .98], [1.15, 1.], [1.6, .85], [2.5, .2], [3.,0.], [20.,0.]], SPEC['common']['combustion_efficiency'])
     angle = math.tau if two else 2*math.tau
     if two:
-        delivery = [.45, .55, .66, .8, .95, 1.02, 1.0, .96]
-        trap = [.6, .65, .70, .74, .76, .76, .74, .72]
+        delivery = [.45, .55, .66, .8, .95, 1.02, 1.0, .96] + ([.85] if fx61 else [])
+        trap = [.6, .65, .70, .74, .76, .76, .74, .72] + ([.66] if fx61 else [])
         scav = [2000.+.4*r for r in rpm]
         family_values = {'delivery_ratio': list(map(list, zip(rpm, delivery))),
                          'trapping_efficiency': list(map(list, zip(rpm, trap))),
@@ -148,12 +169,13 @@ def candidate(family):
            for torque,loss,qp,qv,af in zip(q,mech,pump,valve,air_factor)]
     assert all(0 <= e <= 1 for e in eta)
     p['indicated_efficiency'] = quantity(list(map(list, zip(rpm,eta))), SPEC['common']['indicated_efficiency'],
-        'derived', 'build_profiles.py: independently inferred WOT torque knots + estimated gas-exchange/loss curves; ONLY rated-power knot constrained by '+url)
+        'derived', 'build_profiles.py: independently inferred WOT torque knots + estimated gas-exchange/loss curves; ONLY rated-power knot constrained by '+url
+        +(FX61_NOTE.replace('law', 'torque knots and losses') if fx61 else ''))
     op_values = [rpm[-1], rated, rated_w, 1.225, 1.15, 17000. if two else 11000.]
     op = {k: quantity(v, r, 'manual' if k in ['recommended_max_rpm','rated_rpm'] else 'estimated', url if k in ['recommended_max_rpm','rated_rpm'] else EST)
           for (k,r),v in zip(SPEC['operation'].items(),op_values)}
     op['rated_power_w'] = quantity(rated_w, SPEC['operation']['rated_power_w'], 'derived', url+'; metric PS × 735.49875 W/PS')
-    return dict(format='openrc-glow-engine v1', id='os_max_55ax_candidate' if two else 'os_fs_64v_candidate',
+    return dict(format='openrc-glow-engine v1', id=engine,
                 manufacturer='O.S. Engines', model=name, family=family, status='candidate',
                 feed='naturally_aspirated', oil_model='inert', parameters=p, fuel=f, operation=op)
 
@@ -195,7 +217,7 @@ def schema():
 
 def outputs():
     return {'profile_contract.json': SPEC, 'openrc-glow-engine-v1.schema.json': schema(),
-            **{candidate(f)['id']+'.json':candidate(f) for f in SPEC['families']}}
+            **{engine+'.json':candidate(engine) for engine in ENGINES}}
 
 
 def main():
@@ -208,7 +230,7 @@ def main():
         else:
             DEST.mkdir(parents=True,exist_ok=True); path.write_text(text,encoding='utf-8',newline='\n')
     if stale: raise SystemExit('Stale generated profiles: '+', '.join(stale))
-    print('Glow profile generator: '+('current' if args.check else 'generated')+' (4 files)')
+    print('Glow profile generator: '+('current' if args.check else 'generated')+' (%d files)' % len(outputs()))
 
 
 if __name__=='__main__': main()

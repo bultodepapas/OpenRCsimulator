@@ -2,7 +2,7 @@
 import math
 import unittest
 
-from build_profiles import SPEC, blend, candidate, outputs, schema
+from build_profiles import ENGINES, SPEC, blend, candidate, outputs, schema
 
 
 class ProfileGenerationTests(unittest.TestCase):
@@ -71,12 +71,22 @@ class ProfileGenerationTests(unittest.TestCase):
         self.assertNotEqual(expected['glow_2t'][2], expected['glow_4t'][2])
 
     def test_profile_status_and_unmeasured_values_remain_explicit(self):
-        for family in SPEC['families']:
-            p=candidate(family)
+        for engine in ENGINES:
+            p=candidate(engine)
             self.assertEqual(p['status'],'candidate')
             self.assertEqual(p['parameters']['mechanical_torque_nm']['kind'],'estimated')
             self.assertIn('ONLY rated-power knot',p['parameters']['indicated_efficiency']['source'])
-        self.assertEqual(len(outputs()),4)
+        self.assertEqual(len(outputs()),2+len(ENGINES))
+
+    def test_61fx_scales_the_55ax_by_displacement(self):
+        fx,ax=candidate('os_max_61fx_candidate'),candidate('os_max_55ax_candidate')
+        self.assertEqual(fx['family'],'glow_2t')
+        self.assertEqual((fx['parameters']['bore_m']['value'],fx['parameters']['stroke_m']['value']),(.024,.022))
+        self.assertAlmostEqual(fx['operation']['rated_power_w']['value'],1.9*735.49875,9)
+        k=9.95/8.93
+        for (r,a),(_,b) in zip(fx['parameters']['mechanical_torque_nm']['value'],ax['parameters']['mechanical_torque_nm']['value']):
+            self.assertAlmostEqual(a,b*k,12)
+        self.assertIn('NITRO-61FX',fx['parameters']['indicated_efficiency']['source'])
 
     def test_schema_is_closed_and_family_specific(self):
         s=schema()

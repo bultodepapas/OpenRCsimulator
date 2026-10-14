@@ -1102,6 +1102,122 @@
           }
         }
       }
+    },
+    "fuel_feed": {
+      "type": "object",
+      "required": [
+        "carburetor_position",
+        "idle_drive_pressure_pa",
+        "wot_drive_pressure_pa"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "carburetor_position": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number"
+              }
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "idle_drive_pressure_pa": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 100000.0
+            },
+            "unit": {
+              "const": "Pa"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "wot_drive_pressure_pa": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 100000.0
+            },
+            "unit": {
+              "const": "Pa"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -30,6 +30,7 @@ const EXCEPTIONS := {
 	"jensen-das-ugly-stik-60": { Cmde = 0.20 },
 	"stik-glow-55ax-2t": { Cmde = 0.20 },
 	"stik-glow-fs64v-4t": { Cmde = 0.20 },
+	"stik-glow-61fx-2t": { Cmde = 0.20 },
 }
 
 var _failures := 0

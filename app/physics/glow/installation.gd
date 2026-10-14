@@ -3,6 +3,7 @@ extends RefCounted
 
 const Profile := preload("res://physics/glow/profile.gd")
 const FuelMass := preload("res://physics/glow/fuel_mass.gd")
+const FuelFeed := preload("res://physics/glow/fuel_feed.gd")
 
 const INSTALLATION_DIRECTORY := "res://data/glow/"
 const FORMAT := "openrc-glow-installation v1"
@@ -41,6 +42,15 @@ const PROPELLER := {
 	cd0 = "1",
 	induced_drag = "1",
 }
+## NITRO-05: optional fuel-feed block (physics/glow/fuel_feed.gd). The carburetor spray bar is an inventory-frame
+## position [aft, right, up] from the wing leading-edge datum, like the tank.
+const ROOT_KEYS := ["format", "family", "profile", "fuel_inventory", "settings", "initial_temperature_k", "propeller"]
+const FUEL_FEED := {
+	idle_drive_pressure_pa = "Pa",
+	wot_drive_pressure_pa = "Pa",
+}
+const MAX_DRIVE_PRESSURE_PA := 100000.0
+const STANDARD_GRAVITY := 9.80665
 const NONNEGATIVE_SETTINGS := ["lean_misfire_zero_ratio", "starter_prime_kg"]
 const NONNEGATIVE_THERMAL := [
 	"head_heat_fraction", "cooling_base_w_k", "cooling_airflow_w_s_m_k",
@@ -78,7 +88,7 @@ static func attach(raw: Variant, model: Variant) -> Dictionary:
 ## Pure value validator used by attach() and contract tests. `source_bytes` is the exact
 ## file payload in production; tests may pass a serialized candidate value.
 static func prepare_value(value: Variant, raw: Variant, model: Variant, source_bytes: PackedByteArray) -> Dictionary:
-	if not value is Dictionary or not _keys(value, ["format", "family", "profile", "fuel_inventory", "settings", "initial_temperature_k", "propeller"]):
+	if not value is Dictionary or not (_keys(value, ROOT_KEYS) or _keys(value, ROOT_KEYS + ["fuel_feed"])):
 		return _fail("Malformed glow installation root")
 	if value.get("format") != FORMAT or value.get("family") not in ["glow_2t", "glow_4t"]:
 		return _fail("Unsupported glow installation format or family")
@@ -134,6 +144,12 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		return _fail(str(tank_result.get("message", "Invalid glow fuel inventory")))
 	if settings.starter_prime_kg >= tank_result.mass_kg and settings.starter_prime_kg > 0.0:
 		return _fail("starter_prime_kg must remain below the installed fuel inventory")
+	var feed: Dictionary = {}
+	if value.has("fuel_feed"):
+		feed = _fuel_feed(value.fuel_feed, model, profile, tank_result)
+		if not feed.get("ok", false):
+			return _fail(str(feed.get("message", "Invalid glow fuel feed")))
+		feed.erase("ok")
 	var axis_result: Dictionary = _propeller_axis(model_propulsion)
 	if not axis_result.get("ok", false):
 		return _fail(str(axis_result.get("message", "Invalid glow propeller axis")))
@@ -163,6 +179,8 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		},
 		provenance = value.duplicate(true),
 	}
+	if not feed.is_empty():
+		install.fuel_feed = feed
 	var out: Dictionary = model.duplicate(true)
 	var out_propulsion: Dictionary = out.propulsion
 	# A missing thrust-angle quantity means the historical axial (+x) installation convention.
@@ -262,6 +280,41 @@ static func _fuel_tank(raw: Dictionary, fuel_name: Variant, model: Dictionary) -
 	if not dry.get("ok", false):
 		return {ok = false, message = "Glow dry fuel carrier mass properties are invalid"}
 	return {ok = true, mass_kg = mass, position = position, size = size, dry_properties = dry}
+
+
+## NITRO-05: the fuel-feed block in body FRD about the wet-CG datum, with the premix density of the profile's fuel,
+## its rated rpm and the needled head per unit gravity (level flight, full tank).
+static func _fuel_feed(value: Variant, model: Dictionary, profile: Dictionary, tank: Dictionary) -> Dictionary:
+	if not value is Dictionary or not _keys(value, FUEL_FEED.keys() + ["carburetor_position"]):
+		return {ok = false, message = "Glow fuel_feed must hold exactly carburetor_position and the drive pressures"}
+	var pressures: Dictionary = {}
+	for key: String in FUEL_FEED:
+		pressures[key] = _quantity(value.get(key), FUEL_FEED[key])
+	var idle: float = pressures.get("idle_drive_pressure_pa", NAN)
+	var wot: float = pressures.get("wot_drive_pressure_pa", NAN)
+	if not is_finite(idle) or not is_finite(wot) or idle <= 0.0 or wot < idle or wot > MAX_DRIVE_PRESSURE_PA:
+		return {ok = false, message = "Glow fuel_feed drive pressures must satisfy 0 < idle ≤ full throttle ≤ 100 kPa"}
+	var position: PackedFloat64Array = _quantity_vector(value.get("carburetor_position"), "m")
+	var cg: Variant = model.get("cg_inventory_le", null)
+	if position.size() != 3 or not cg is PackedFloat64Array or cg.size() != 3:
+		return {ok = false, message = "Glow fuel_feed carburetor_position must be a sourced [aft, right, up] metre vector"}
+	var carburetor := PackedFloat64Array([cg[0] - position[0], position[1] - cg[1], cg[2] - position[2]])
+	for coordinate: float in carburetor:
+		if absf(coordinate) > 2.0:
+			return {ok = false, message = "Glow carburetor must lie within 2 m of the centre of gravity"}
+	var density: float = float(profile.fuel.density_kg_m3)
+	var feed := {
+		ok = true,
+		carburetor_body_m = carburetor,
+		idle_drive_pressure_pa = idle,
+		wot_drive_pressure_pa = wot,
+		density_kg_m3 = density,
+		rated_rpm = float(profile.operation.rated_rpm),
+	}
+	var needled := FuelFeed.needled_head_pa(feed, tank.position, tank.size, STANDARD_GRAVITY)
+	if idle + needled <= 0.0:
+		return {ok = false, message = "Glow fuel_feed idle pressure cannot lift fuel to the carburetor in level flight"}
+	return feed
 
 
 static func _propeller_axis(model_propulsion: Dictionary) -> Dictionary:
