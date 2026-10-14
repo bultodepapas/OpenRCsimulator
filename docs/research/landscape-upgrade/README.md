@@ -1,8 +1,8 @@
 # Landscape upgrade evidence
 
-Status: implementation and native evidence delivered through **LU-27**, updated 2026-10-13. Latest: downloaded plant variety and a finite 5 m lake with actual water contacts, splash/audio and native/export evidence. Known Linux extreme-density trim discrepancy and nearby collision cost remain open. Owner: environment integration lead.
+Status: implementation delivered through **LU-27**, checked 2026-10-14. Dated reports retain the native captures, asset provenance, software checks and exports; they do not establish physical validity or independent pilot acceptance. The nearby scenery-query target and lower-end hardware/pilot review remain open. Owner: environment integration lead. Current cross-track gates are in the [landscape guide](../../LANDSCAPE-PLAN.md#landscape-integration).
 
-The requested [implementation plan](../../plans/landscape-upgrade.md) was written before application edits. The installed target is Godot **4.7.2**, Compatibility/OpenGL.
+The installed target is Godot **4.7.2**, Compatibility/OpenGL. This index points to the dated records; consult those reports for each implementation snapshot and its exact limits.
 
 | Step | Evidence |
 | --- | --- |

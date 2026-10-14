@@ -3,12 +3,22 @@
 extends SceneTree
 
 const AircraftData = preload("res://physics/aircraft_data.gd")
+const Catalog = preload("res://app_state/aircraft_catalog.gd")
+const RotorcraftData = preload("res://physics/rotorcraft_data.gd")
 const Contract = preload("res://physics/aircraft_contract.gd")
 const Director = preload("res://render/crash/director.gd")
 const Severity = preload("res://render/crash/severity.gd")
 const Wreck = preload("res://render/crash/wreck.gd")
 
 const DATA_DIR := "res://data/aircraft/"
+const DATA_ONLY_AIRPLANE_CONFIGS := [
+	{"file": "stik_glow_55ax_2t_apc_13x6.json", "id": "stik-glow-55ax-2t"},
+	{"file": "stik_glow_fs64v_4t_apc_13x6.json", "id": "stik-glow-fs64v-4t"},
+	{"file": "synthetic_stik_electric_4s.json", "id": "synthetic_stik_electric_4s"},
+	{"file": "synthetic_stik_electric_4s_battery.json", "id": "synthetic_stik_electric_4s_battery"},
+	{"file": "synthetic_stik_electric_6s.json", "id": "synthetic_stik_electric_6s"},
+	{"file": "synthetic_stik_electric_6s_battery.json", "id": "synthetic_stik_electric_6s_battery"},
+]
 const TAIL := ["tail_end", "left_stab_tip", "right_stab_tip", "fin_top"]
 const FORWARD := ["spinner", "propeller", "nose"]
 const CENTRELINE := ["spinner", "nose", "tail_end", "fin_top", "canopy", "belly"]
@@ -20,9 +30,15 @@ var _failures := 0
 func _initialize() -> void:
 	_vocabulary_matches_contract()
 	var files := _aircraft_files()
-	_check("all aircraft data files are found", files.size() >= 9)
+	var classified := _classify_aircraft_files(files)
 	for path in files:
-		_fleet_labels(path)
+		var classification: Dictionary = classified.get(path, {})
+		if classification.is_empty():
+			continue
+		if classification.vehicle == "airplane":
+			_fleet_labels(path, str(classification.id))
+		else:
+			_rotorcraft_data(path, str(classification.id))
 	_loader_rejects()
 	_component_choice()
 	_presentation_mapping()
@@ -45,6 +61,49 @@ func _aircraft_files() -> PackedStringArray:
 	return out
 
 
+func _classify_aircraft_files(files: PackedStringArray) -> Dictionary:
+	var classified: Dictionary = {}
+	for entry: Dictionary in Catalog.flyable_entries():
+		var id := str(entry.get("id", ""))
+		var path := str(entry.get("data", ""))
+		var vehicle := str(entry.get("vehicle", "airplane"))
+		var supported := vehicle in ["airplane", "rotorcraft"]
+		_check("catalog vehicle class is supported: " + id, supported)
+		_check("catalog vehicle query agrees with the explicit class: " + id,
+			Catalog.is_rotorcraft(id) == (vehicle == "rotorcraft"))
+		_check("catalog aircraft data path is unique: " + id, not path.is_empty() and not classified.has(path))
+		if supported and not path.is_empty() and not classified.has(path):
+			classified[path] = {id = id, vehicle = vehicle}
+	for configuration: Dictionary in DATA_ONLY_AIRPLANE_CONFIGS:
+		var filename := str(configuration.file)
+		var path := DATA_DIR + filename
+		_check("noncatalog airplane data is explicitly classified: " + filename,
+			not classified.has(path))
+		if not classified.has(path):
+			classified[path] = {id = str(configuration.id), vehicle = "airplane"}
+
+	var discovered: Dictionary = {}
+	for path in files:
+		var classification: Dictionary = classified.get(path, {})
+		_check("aircraft JSON has an explicit vehicle/schema classification: " + path.get_file(),
+			not classification.is_empty())
+		if not classification.is_empty():
+			discovered[path] = true
+	for path: String in classified:
+		_check("classified aircraft JSON exists: " + path.get_file(), discovered.has(path))
+	return classified
+
+
+func _rotorcraft_data(path: String, id: String) -> void:
+	var loaded: Dictionary = RotorcraftData.load_file(path)
+	_check("%s loads through the rotorcraft data schema" % id, loaded.get("ok", false))
+	if not loaded.get("ok", false):
+		print(loaded.get("errors", []))
+		return
+	_check("%s keeps its catalog and data identities aligned" % id,
+		loaded.get("id", "") == id and loaded.get("raw", {}).get("vehicle", "") == "rotorcraft")
+
+
 func _vocabulary_matches_contract() -> void:
 	var spec: Variant = JSON.parse_string(FileAccess.get_file_as_string(Contract.SPEC_PATH))
 	var values: Array = []
@@ -54,7 +113,7 @@ func _vocabulary_matches_contract() -> void:
 	_check("loader vocabulary equals the contract enum path", values == AircraftData.HULL_COMPONENTS)
 
 
-func _fleet_labels(path: String) -> void:
+func _fleet_labels(path: String, expected_id: String) -> void:
 	var loaded: Dictionary = AircraftData.load_file(path)
 	var id := path.get_file().get_basename()
 	_check("%s loads" % id, loaded.ok)
@@ -62,6 +121,7 @@ func _fleet_labels(path: String) -> void:
 		print(loaded.errors)
 		return
 	var model: Dictionary = loaded.model
+	_check("%s matches its classified airplane ID" % id, model.id == expected_id)
 	var hull: PackedFloat64Array = model.crash_hull # body FRD about the CG: x fwd, y right, z down
 	var names: PackedStringArray = model.crash_hull_components
 	_check("%s names every hull point" % id, names.size() == hull.size() / 3 and names.size() >= 4)

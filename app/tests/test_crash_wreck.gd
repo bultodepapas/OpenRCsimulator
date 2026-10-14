@@ -44,6 +44,9 @@ func _check_aircraft(entry: Dictionary) -> void:
 	_check(String(entry.id) + " pool remains capped at 24 rigid bodies", int(prepared_stats.pool_size) == 24)
 	_check(String(entry.id) + " has a shadow per pooled body", int(prepared_stats.contact_shadow_count) == 24)
 	_check(String(entry.id) + " exposes actual mesh-backed fragment groups", fragment_groups.size() >= 2)
+	if AircraftCatalog.is_rotorcraft(String(entry.id)):
+		_check(String(entry.id) + " exposes its supported rotorcraft wreck sections",
+			fragment_groups == ["core", "propeller"])
 	if String(entry.id) == "jensen-das-ugly-stik-60":
 		for required_group in ["wing_left", "wing_right", "horizontal_tail", "vertical_tail", "engine", "propeller"]:
 			_check("Ugly Stik preserves recognizable " + String(required_group), fragment_groups.has(required_group))
@@ -75,7 +78,13 @@ func _check_aircraft(entry: Dictionary) -> void:
 	severity.erase("component")
 	wreck.start(pose, incoming, angular, severity)
 	var started: Dictionary = wreck.stats()
-	if String(entry.id) == "turbo-lumber-evolution":
+	if AircraftCatalog.is_rotorcraft(String(entry.id)):
+		# The HX-700 visual exposes its main rotor as the legacy propeller mount and has no authored fuselage or tail
+		# fracture sections. C4 schedules that rotor after its modeled delay while the core remains intact initially.
+		_check(String(entry.id) + " C4 schedules its supported main-rotor release",
+			int(started.detached_group_count) == 1 and int(started.active_body_count) == 1
+			and fragment_groups == ["core", "propeller"])
+	elif String(entry.id) == "turbo-lumber-evolution":
 		# TT-06: the Timber preview is one imported airframe mesh (wing, fuselage and tail together) with tail, gear
 		# and propeller pivots, so C4 has no wing/engine group to release at once; its tail/gear/propeller groups
 		# detach on their delays. Catalog promotion does not change that geometry contract.
@@ -124,6 +133,9 @@ func _check_aircraft(entry: Dictionary) -> void:
 	_check(String(entry.id) + " debris state stays finite", not invalid_state)
 	_check(String(entry.id) + " box colliders do not tunnel below local ground", not tunnelled)
 	_check(String(entry.id) + " delayed groups all release within 8 seconds", int(final_stats.active_body_count) == int(final_stats.detached_group_count) + 1)
+	if AircraftCatalog.is_rotorcraft(String(entry.id)):
+		_check(String(entry.id) + " delayed main rotor becomes a real debris body",
+			int(final_stats.detached_group_count) == 1 and int(final_stats.active_body_count) == 2)
 	_check(String(entry.id) + " delayed scatter stays inside its total energy budget", float(final_stats.scatter_energy_j) <= float(final_stats.normal_impact_energy_estimate_j) * 0.12 + 0.001)
 	var secondary_events_valid := int(final_stats.secondary_impacts) == secondary_strengths.size() and not secondary_strengths.is_empty()
 	for strength in secondary_strengths:

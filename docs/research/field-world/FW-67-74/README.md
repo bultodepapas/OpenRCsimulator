@@ -1,6 +1,6 @@
 # Night landscape implementation evidence
 
-2026-10-13. Runtime implementation delivered; this report records observed results, not pilot acceptance or a hardware performance qualification. [Research: 26 investigations](../FW-66/investigations.md), [remaining acceptance plan](../../../plans/night-landscape-lighting.md).
+2026-10-13. Runtime implementation delivered; this report records observed results, not pilot acceptance or a hardware performance qualification. [Research: 26 investigations](../FW-66/investigations.md), [current behavior and remaining FW-75 acceptance](../../../FIELD-WORLD-PLAN.md#night-field-and-campfire).
 
 ## Scope
 

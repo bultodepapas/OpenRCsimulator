@@ -1,0 +1,96 @@
+{
+  "format": "openrc-fw83-asset-import-evidence v1",
+  "recorded_utc_date": "2026-10-14",
+  "scope": "Pinned Godot headless texture import and resource-size probe; no GPU or visual qualification.",
+  "engine": {
+    "version": "4.7.2.stable.official",
+    "build": "ed1daf0bf",
+    "executable": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "probe_script": "app/.godot/fw83_texture_probe.gd",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path", "app",
+      "--audio-driver", "Dummy",
+      "--log-file", "app/.godot/fw83_texture_probe_current.log",
+      "--script", "res://.godot/fw83_texture_probe.gd"
+    ],
+    "exit_code": 0,
+    "engine_output": [
+      "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "res://assets/sky/weather/clouds/FX_CloudAlpha03.png size=2048x2048 format=1 has_mipmaps=true mipmap_count=11 data_size_bytes=11184810",
+      "res://assets/sky/weather/clouds/FX_CloudAlpha06.png size=2048x2048 format=1 has_mipmaps=true mipmap_count=11 data_size_bytes=11184810"
+    ]
+  },
+  "source": {
+    "url": "https://opengameart.org/content/clouds-with-transparency",
+    "archive_name": "fx_cloudalphas.zip",
+    "archive_size_bytes": 28480966,
+    "archive_sha256": "83514A391C765819BC159B7F9AB61EC9F06C0CAA2B5865AF20A5BD3B2A14CCA4",
+    "license": "CC0",
+    "note": "Runtime PNGs are unchanged source archive members; provenance is documented in docs/research/field-world/FW-83/README.md."
+  },
+  "import_settings": {
+    "compress/mode": 0,
+    "mipmaps/generate": true,
+    "mipmaps/limit": -1,
+    "detect_3d/compress_to": 0,
+    "vram_texture": false
+  },
+  "textures": [
+    {
+      "runtime_path": "app/assets/sky/weather/clouds/FX_CloudAlpha03.png",
+      "source_member": "FX_CloudAlpha03.png",
+      "source_bytes": 2017932,
+      "source_sha256": "602A55F5E25E606999BFA218572A9703F54469ED1FE7C857C77E5038CC4681EE",
+      "image": {
+        "width": 2048,
+        "height": 2048,
+        "godot_format_value": 1,
+        "godot_format_name": "Image.FORMAT_LA8",
+        "channels": "8-bit luminance and 8-bit alpha",
+        "has_mipmaps": true,
+        "get_mipmap_count": 11,
+        "total_levels_including_base": 12,
+        "get_data_size_bytes": 11184810
+      },
+      "imported_resource": {
+        "path": "app/.godot/imported/FX_CloudAlpha03.png-e06504eecc0dd910830ca9b51e3e9be4.ctex",
+        "size_bytes": 2211040,
+        "sha256": "623410527816FF6E03D00A725F9B368776EE69539D28A4D49E58B3FAE635E0E4"
+      }
+    },
+    {
+      "runtime_path": "app/assets/sky/weather/clouds/FX_CloudAlpha06.png",
+      "source_member": "FX_CloudAlpha06.png",
+      "source_bytes": 2059759,
+      "source_sha256": "A1F05810C43D7811CB72F460595CC6E446E20FD4601342BA93D30045CB6095F1",
+      "image": {
+        "width": 2048,
+        "height": 2048,
+        "godot_format_value": 1,
+        "godot_format_name": "Image.FORMAT_LA8",
+        "channels": "8-bit luminance and 8-bit alpha",
+        "has_mipmaps": true,
+        "get_mipmap_count": 11,
+        "total_levels_including_base": 12,
+        "get_data_size_bytes": 11184810
+      },
+      "imported_resource": {
+        "path": "app/.godot/imported/FX_CloudAlpha06.png-f56d58e08de2068a50f28063c6626645.ctex",
+        "size_bytes": 2464232,
+        "sha256": "D732BEE347B84804E2E832BAB36A3B16CDCDBC36F514E0200613AE426D66D0C0"
+      }
+    }
+  ],
+  "totals": {
+    "loaded_image_data_bytes": 22369620,
+    "loaded_image_data_mib": 21.333332,
+    "estimated_incremental_budget_bytes": 67108864,
+    "estimated_incremental_budget_mib": 64,
+    "remaining_image_data_budget_bytes": 44739244,
+    "imported_ctex_bytes": 4675272,
+    "imported_ctex_mib": 4.458687,
+    "interpretation": "The decoded LA8 image data including mip levels is about 21.33 MiB, within the 64 MiB target. The .ctex sizes are on-disk import-cache sizes, not resident-memory sizes. GPU/driver allocation bookkeeping is not measured."
+  }
+}

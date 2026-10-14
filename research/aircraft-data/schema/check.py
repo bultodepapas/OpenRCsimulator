@@ -35,9 +35,27 @@ def finite_int(value: str) -> int:
 def read_json(path: Path):
     # NaN and infinities are not JSON numbers. Exponents can also overflow the
     # runtime's float64 domain even when their JSON syntax is valid.
-    return json.loads(path.read_text(encoding='utf-8'),
+    data = json.loads(path.read_text(encoding='utf-8'),
                       parse_constant=reject_constant, parse_float=finite_float,
                       parse_int=finite_int)
+    if not isinstance(data, dict):
+        raise ValueError(f'{path}: expected top-level JSON object')
+    return data
+
+
+def default_files() -> list[Path]:
+    """Select fixed-wing v1/v2 data; rotorcraft has a separate contract."""
+    files = []
+    for path in sorted(FLEET.glob('*.json')):
+        try:
+            data = read_json(path)
+        except (OSError, ValueError):
+            # Keep malformed/unreadable files in the preflight so they fail visibly.
+            files.append(path)
+            continue
+        if data.get('vehicle') != 'rotorcraft':
+            files.append(path)
+    return files
 
 
 def validator(schema_path: Path = SCHEMA) -> Draft202012Validator:
@@ -57,12 +75,12 @@ def problems(data, contract: Draft202012Validator) -> list[str]:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('files', type=Path, nargs='*', help='default: every fleet aircraft JSON')
+    parser.add_argument('files', type=Path, nargs='*', help='default: every fixed-wing v1/v2 aircraft JSON')
     args = parser.parse_args(argv)
     contracts = {}
-    files = args.files or sorted(FLEET.glob('*.json'))
+    files = args.files or default_files()
     if not files:
-        parser.error('no aircraft files found')
+        parser.error('no fixed-wing aircraft files found')
     failed = 0
     for path in files:
         try:

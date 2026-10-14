@@ -2,7 +2,7 @@
 
 2026-10-13 · Research round 2 requested by the owner · **26 distinct Internet investigations completed; implementation probes remain pending.**
 
-This record strengthens the [night landscape plan](../../../plans/night-landscape-lighting.md). Each investigation answers a separate question, consults a primary Internet source, distinguishes source evidence from an implementation inference, and leads to a concrete decision and a test. Linked sources were opened or retrieved, not merely counted as search results. Completed desk research does not mean completed engine validation. This delivery updates research, source samples and the plan; runtime behavior is unchanged.
+This record retains the FW-66 night-field research; current behavior and open acceptance are in the [field-world guide](../../../FIELD-WORLD-PLAN.md#night-field-and-campfire). Each investigation answers a separate question, consults a primary Internet source, distinguishes source evidence from an implementation inference, and leads to a concrete decision and a test. Linked sources were opened or retrieved, not merely counted as search results. Completed desk research does not mean completed engine validation. This dated delivery updates research and source samples; runtime behavior was unchanged at that point.
 
 ## Investigation design
 

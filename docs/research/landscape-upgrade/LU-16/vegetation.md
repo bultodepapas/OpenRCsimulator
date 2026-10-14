@@ -1,6 +1,6 @@
 # LU-17 — near vegetation
 
-Status: isolated implementation staged for lead review; native visual acceptance pending. Evidence date: 2026-10-12. [Owning plan](../../../plans/landscape-upgrade.md).
+Status at this snapshot: isolated implementation staged for lead review; native visual acceptance pending. Evidence date: 2026-10-12. Current status: [landscape integration guide](../../../LANDSCAPE-PLAN.md#landscape-integration).
 
 ## Image review
 

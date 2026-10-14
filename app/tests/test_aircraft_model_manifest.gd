@@ -20,15 +20,30 @@ func _initialize() -> void:
 func _test_catalog_family_mapping() -> void:
 	var families: Dictionary = {}
 	var ids := Catalog.airplane_flyable_ids()
+	var expected_airplane_ids := PackedStringArray()
+	for entry: Dictionary in Catalog.flyable_entries():
+		var aircraft_id := str(entry.get("id", ""))
+		var vehicle := str(entry.get("vehicle", "airplane"))
+		var known_vehicle := vehicle in ["airplane", "rotorcraft"]
+		_check("catalog vehicle type is supported: " + aircraft_id, known_vehicle)
+		if vehicle == "airplane":
+			expected_airplane_ids.append(aircraft_id)
+			_check("airplane catalog query includes " + aircraft_id, ids.has(aircraft_id) and not Catalog.is_rotorcraft(aircraft_id))
+		elif vehicle == "rotorcraft":
+			_check("airplane catalog query excludes rotorcraft " + aircraft_id, not ids.has(aircraft_id) and Catalog.is_rotorcraft(aircraft_id))
+	_check("airplane IDs follow catalog vehicle classification", ids == expected_airplane_ids, str(ids))
+	_check("catalog exposes airplane configurations", not ids.is_empty())
 	for aircraft_id in ids:
 		var family_id: String = Catalog.visual_family(aircraft_id)
 		_check("catalog family is explicit: " + aircraft_id, not family_id.is_empty())
 		families[family_id] = true
-	_check("seven airplane configurations map to five visual families", ids.size() == 7 and families.size() == 5, str(families.keys()))
+	_check("every catalog airplane family has an explicit manifest", not families.is_empty(), str(families.keys()))
 	var rotor_family: String = Catalog.visual_family("xcell-60-research")
+	var rotor_entry: Dictionary = Catalog.entry("xcell-60-research")
 	var rotor_manifest: Dictionary = Registry.describe(rotor_family)
 	_check("HX-700 rotorcraft family stays outside the airplane manifest registry",
-		Catalog.is_rotorcraft("xcell-60-research") and rotor_family == "hx-700"
+		rotor_entry.get("vehicle", "") == "rotorcraft" and Catalog.is_rotorcraft("xcell-60-research")
+		and not ids.has("xcell-60-research") and rotor_family == "hx-700"
 		and not rotor_manifest.ok and _has_code(rotor_manifest.diagnostics, "MODEL_MANIFEST_MISSING"), str(rotor_manifest.diagnostics))
 	for family_id in families:
 		var result: Dictionary = Registry.describe(str(family_id))

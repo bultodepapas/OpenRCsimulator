@@ -275,6 +275,7 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		stars = Stars.build(Atmosphere.state, float(conditions.when.latitude_deg), Atmosphere.cloud_state_snapshot()) # FW-24
 		parent.add_child(stars)
 		environment.set_meta("fw_star_field", weakref(stars))
+		Stars.set_distant_cloud_order(stars, storm_bank.visible)
 	var lights_node: Node3D = null
 	if not lights.is_empty():
 		lights_node = FieldLights.build(lights) # FW-31…34: visual only
@@ -438,6 +439,10 @@ static func _update_weather_presentation(environment: Environment, clock_s: floa
 	var bank: Node3D = _weather_bank(environment)
 	if bank != null and bank.visible:
 		bank.update_visual(Atmosphere.cloud_state_snapshot(), environment, null, clock_s)
+	var star_ref: Variant = environment.get_meta("fw_star_field") if environment.has_meta("fw_star_field") else null
+	var stars: Variant = star_ref.get_ref() if star_ref is WeakRef else null
+	if is_instance_valid(stars):
+		Stars.set_distant_cloud_order(stars, bank != null and bank.visible)
 
 
 static func _weather_bank(environment: Environment) -> Node3D:

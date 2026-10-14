@@ -14,11 +14,16 @@ func check(label: String, ok: bool) -> void:
 
 
 func run_report(args: PackedStringArray) -> Dictionary:
-	var command: PackedStringArray = ["--headless", "--path", ProjectSettings.globalize_path("res://"), "--"]
+	var log_path := ProjectSettings.globalize_path("user://input-report-child-%d.log" % Time.get_ticks_usec())
+	var command: PackedStringArray = ["--headless", "--path", ProjectSettings.globalize_path("res://"), "--log-file", log_path, "--"]
 	command.append_array(args)
 	var output: Array = []
 	var code: int = OS.execute(OS.get_executable_path(), command, output, true)
 	var message: String = "".join(output)
+	if FileAccess.file_exists(log_path):
+		var child_log := FileAccess.get_file_as_string(log_path)
+		check("no child log errors: %s" % [args], not "ERROR:" in child_log)
+		DirAccess.remove_absolute(log_path)
 	check("no engine errors: %s" % [args], not "ERROR:" in message)
 	return {code = code, output = message}
 

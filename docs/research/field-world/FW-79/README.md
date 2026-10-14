@@ -2,6 +2,8 @@
 
 This folder contains native renderer captures of the sky/weather appearance presets and electrical-storm night cases. They document rendered appearance only; they do not establish meteorological accuracy, flight physics, performance, or night-flight acceptance.
 
+**2026-10-14 follow-up:** the Distant Storm appearance and its selector preview now use a world-anchored cloud bank and rain curtain. [FW-83](../FW-83/README.md) retains its current captures and reproduction. The original gallery below remains dated evidence for the earlier projected-deck implementation.
+
 ## Capture setup
 
 - Pinned Godot 4.7.2, Compatibility renderer, NVIDIA GeForce RTX 3090.

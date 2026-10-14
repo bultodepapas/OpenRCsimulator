@@ -51,3 +51,30 @@ Use `--shadow-strength 0.6` only for a diagnostic enhanced-mode capture; the def
 "$(app/tests/visual-env.sh)" tools/atmosphere/check_cloud_probe.py \
   --app app --godot "$(app/get-godot.sh)" --out /tmp/l15d-cloud-probe
 ```
+
+## Distant storm-bank views (FW-83)
+
+`storm_bank_capture.gd` builds the production default field and World with the
+Distant Storm profile. It captures day, dusk and full moon at the pilot position
+and 500 m cross-track, each at 50° and 25° FOV: 12 PNGs and a JSON manifest. The
+formation's actual diagnostic target drives the camera. This is static render
+evidence, not a flight or GPU-performance benchmark.
+
+Run the pinned native Godot without `--headless`, using an absolute log path and
+a fresh output directory:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --path app --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy --log-file C:/tmp/fw83.log --script (Resolve-Path tools/atmosphere/storm_bank_capture.gd).Path -- --out=C:/tmp/fw83 --only=all --view=all
+```
+
+`--only=day|dusk|fullmoon|all` and `--view=pilot|cross500|all` select subsets.
+`--overwrite=on` explicitly allows reuse of an output directory. Keep rejected
+probes outside tracked evidence; inspect the results before replacing the selector
+preview. [FW-83 evidence](../../docs/research/field-world/FW-83/README.md) owns the
+accepted images, resource/license comparison, test results and remaining limits.
+
+`sky_pack_probe.gd` checks all nine catalog profiles/previews, storm audio,
+packaged notices and storm scripts/shaders. It also checks the two imported cloud
+images' size, LA8 format and mip chains. Running it with `--main-pack=<pack>` proves
+those resources load from that PCK; inspect export and engine logs separately,
+because an erroring export can still write a PCK and return exit code 0.

@@ -10,10 +10,6 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const GlowFlight := preload("res://physics/glow/flight.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const TIMBER := "turbo-lumber-evolution"
-const GLOW_2T := "stik-glow-55ax-2t"
-const GLOW_4T := "stik-glow-fs64v-4t"
-const GLOW_AIRCRAFT := [GLOW_2T, GLOW_4T]
-const PROFILED_AIRCRAFT := ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", TIMBER]
 const WHEEL_LAYOUT_SUFFIX := "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 
 var _failures: int = 0
@@ -68,18 +64,23 @@ func _initialize() -> void:
 		_check("reload " + entry.id, session.reload().begins_with("aircraft reloaded:"))
 		var meta: Dictionary = session.trace_meta()
 		_check("active aircraft " + entry.id, meta.aircraft.begins_with(entry.id))
-		var glow_profiled: bool = entry.id in GLOW_AIRCRAFT
-		var wheel_profiled: bool = entry.id in PROFILED_AIRCRAFT
+		# The catalog can add installations or profiled wheels independently of the test.
+		# Metadata expectations follow the resolved aircraft model, not a fixed ID list.
+		var glow_profiled: bool = session.glow_is_active()
+		var wheel_profiled: bool = session.wheel_count() > 0
 		var expected_schema: String = "openrc-flight-meta v7" if glow_profiled else ("openrc-flight-meta v6" if wheel_profiled else "openrc-flight-meta v2")
-		_check("metadata schema", meta.metadata_schema == expected_schema)
+		_check("metadata schema " + entry.id, meta.metadata_schema == expected_schema)
 		if wheel_profiled:
 			_check("wheel trace layout names appended rim-speed tail", str(meta.continuous_layout).ends_with(WHEEL_LAYOUT_SUFFIX))
 			_check("wheel trace records selected-profile and source-file identity", str(meta.wheel_profile_sha256).length() == 64
 				and str(meta.wheel_profile_input_sha256).length() == 64)
 			_check("wheel trace has one state entry per gear contact", JSON.parse_string(meta.wheel_state_layout).size()
 				== session.wheel_count())
-		elif glow_profiled:
-			var expected_family: String = "glow_2t" if entry.id == GLOW_2T else "glow_4t"
+		else:
+			_check("unprofiled aircraft has no wheel-state metadata " + entry.id,
+				not meta.has("wheel_state_model") and not meta.has("wheel_state_layout"))
+		if glow_profiled:
+			var expected_family: String = str(session.aircraft.model.propulsion.glow.profile.family)
 			var identity: Dictionary = JSON.parse_string(meta.glow_identity)
 			var start: Dictionary = JSON.parse_string(meta.glow_recording_start)
 			_check("glow trace records the accepted installation law", meta.propulsion_model == GlowFlight.LAW)
@@ -91,8 +92,6 @@ func _initialize() -> void:
 			_check("glow continuous layout names crank phase and successful-fire counters",
 				str(meta.continuous_layout).contains("crank revolutions")
 				and str(meta.continuous_layout).contains("opportunities, fires, firing accumulator"))
-		else:
-			_check("gearless Avanti has no wheel-state metadata", not meta.has("wheel_state_model") and not meta.has("wheel_state_layout"))
 		_check("input schema", meta.aircraft_input_format == AircraftData.FORMAT)
 		_check("raw input identity " + entry.id, meta.aircraft_input_sha256 == FileAccess.get_sha256(entry.data))
 		_check("semantic hash is separately named", meta.aircraft_semantic_sha256 == session.aircraft.model.data_sha256)
@@ -114,7 +113,7 @@ func _initialize() -> void:
 		elif glow_profiled:
 			_check("glow no unmodeled propwash", meta.propwash_model == "none")
 		else:
-			_check("Stik/Extra lag", meta.propulsion_model == "propeller-rpm-lag-v1")
+			_check("Stik/Extra lag " + entry.id, meta.propulsion_model == "propeller-rpm-lag-v1")
 			_check("Stik/Extra no propwash", meta.propwash_model == "none")
 
 		# T may start recording after takeoff. The snapshot must describe that instant,

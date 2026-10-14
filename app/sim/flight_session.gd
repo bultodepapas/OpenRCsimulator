@@ -318,6 +318,7 @@ func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:
 	return Air.compute(s, wind_at(sim.time() if is_nan(time_s) else time_s), air_density())
 
 const Commands := preload("res://input/commands.gd")
+const ControlActuators := preload("res://physics/control_actuators.gd")
 const Keyboard := preload("res://input/keyboard.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const RcCalibration := preload("res://input/rc_calibration.gd")
@@ -1932,6 +1933,19 @@ func surfaces() -> Dictionary:
 	return { roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2], throttle = propulsion_throttle() }
 
 
+## Detached accepted trailing-edge angles in degrees. Renderers consume actual
+## surface positions without reconstructing them from pilot commands or topology.
+func surface_angles_deg() -> Dictionary:
+	if not physics_enabled or not aircraft.get("ok", false):
+		return Commands.surface_deflections_deg(flown_commands(), throws_deg())
+	return _surface_angles_from_aux(sim.aux)
+
+
+func _surface_angles_from_aux(a: PackedFloat64Array) -> Dictionary:
+	return Commands.surface_deflections_deg({roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1],
+		yaw = a[AUX_SERVO + 2]}, throws_deg())
+
+
 ## Maximum surface throws in degrees from the loaded aircraft ({} without valid data: Commands' default).
 func throws_deg() -> Dictionary:
 	return aircraft.model.controls.throw_deg if aircraft.get("ok", false) else {}
@@ -2395,7 +2409,7 @@ func _deflections(a: PackedFloat64Array) -> Dictionary:
 	if _deflection_key.size() == 3 and _deflection_key[0] == a[AUX_SERVO] and _deflection_key[1] == a[AUX_SERVO + 1] \
 			and _deflection_key[2] == a[AUX_SERVO + 2]:
 		return _deflection_cache
-	var surfaces := Commands.surface_deflections_deg({ roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2] }, throws_deg())
+	var surfaces := _surface_angles_from_aux(a)
 	_deflection_cache = Aero.deflections_from_surfaces(surfaces)
 	_deflection_key = PackedFloat64Array([a[AUX_SERVO], a[AUX_SERVO + 1], a[AUX_SERVO + 2]])
 	return _deflection_cache
@@ -2441,7 +2455,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	var rate: float = aircraft.model.controls.servo_rate
 	for k in 3:
 		var effective_rate: float = rate if _failures == null else rate * _failures.servo_rate_factor(k)
-		out[AUX_SERVO + k] = Commands.rate_limit(aux[AUX_SERVO + k], inputs[k], effective_rate, dt)
+		out[AUX_SERVO + k] = ControlActuators.rate_limit(aux[AUX_SERVO + k], inputs[k], effective_rate, dt)
 	var lag := downwash_index()
 	var anchors_end := AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
 	if anchors_end > AUX_ANCHORS:

@@ -1,6 +1,6 @@
 # UI-05 / EX-11 / AV-03 / TT-10: choosing the aircraft on Home with real key events (tests/ui_driver.gd). The card and
 # backdrop follow the choice, the choice is remembered, Fly starts exactly that airplane (model and physics), and a
-# stale or broken preference falls back to the default. Includes the two inferred glow Stik installations.
+# stale or broken preference falls back to the default. Includes the three inferred glow Stik installations.
 # Run: godot --headless --path . --script res://tests/test_ui_aircraft.gd
 extends SceneTree
 
@@ -14,6 +14,7 @@ const EXTRA := "gp-extra-300s-60"
 const AVANTI := "sebart-avanti-s-a200-p100rx"
 const TIMBER := "turbo-lumber-evolution"
 const P51 := "p51d-mustang-120"
+const GLOW_61FX := "stik-glow-61fx-2t"
 const GLOW_55AX := "stik-glow-55ax-2t"
 const GLOW_FS64V := "stik-glow-fs64v-4t"
 const HELI := "xcell-60-research"
@@ -50,19 +51,36 @@ func _close(app: Node) -> void:
 	await ui.settle()
 
 
+func _aircraft_counter(id: String) -> String:
+	var ids: PackedStringArray = Catalog.ids()
+	return tr("Aircraft %d of %d") % [ids.find(id) + 1, ids.size()]
+
+
 func _run() -> void:
 	TranslationServer.set_locale("en")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	var app: Node = await _app()
 	var home: Control = app.home
+	_check("catalog order keeps the Stik glow variants before the Extra",
+		Catalog.step(STIK, 1) == GLOW_61FX and Catalog.step(GLOW_61FX, 1) == GLOW_55AX
+		and Catalog.step(GLOW_55AX, 1) == GLOW_FS64V and Catalog.step(GLOW_FS64V, 1) == EXTRA)
 	_check("default: the Ugly Stik on the card and in the backdrop", home.aircraft_id == STIK and home.aircraft_name_label.text == Catalog.entry(STIK).name
 		and app.home_scene.airplane.aircraft_id == STIK)
-	_check("default: Fly enabled and focused, counter 1 of 8", not home.fly_button.disabled and ui.focus_name() == "Fly" and home.aircraft_count_label.text == "Aircraft 1 of 8",
+	_check("default: Fly enabled and focused, catalog counter", not home.fly_button.disabled and ui.focus_name() == "Fly"
+		and home.aircraft_count_label.text == _aircraft_counter(STIK),
 		home.aircraft_count_label.text)
 
-	# Right from Fly reaches the next arrow; Enter traverses both inferred glow variants before the Extra.
+	# Right from Fly reaches the next arrow; Enter visits each inferred glow variant before the Extra.
 	await ui.tap(KEY_RIGHT)
 	_check("Right from Fly -> next aircraft arrow", ui.focus_name() == "NextAircraft", ui.focus_name())
+	await ui.tap(KEY_ENTER)
+	_check("MAX-61FX Stik: experimental 2-stroke on card and backdrop", home.aircraft_id == GLOW_61FX
+		and home.aircraft_count_label.text == _aircraft_counter(GLOW_61FX)
+		and home.aircraft_name_label.text == Catalog.entry(GLOW_61FX).name
+		and app.home_scene.airplane.aircraft_id == GLOW_61FX and not home.fly_button.disabled
+		and home.aircraft_status_label.text.contains("MAX-61FX") and home.aircraft_status_label.text.contains("not flight-validated"),
+		home.aircraft_status_label.text)
+	_check("MAX-61FX selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
 	_check("55AX glow Stik: experimental 2-stroke on card and backdrop", home.aircraft_id == GLOW_55AX
 		and home.aircraft_name_label.text == Catalog.entry(GLOW_55AX).name
@@ -102,12 +120,12 @@ func _run() -> void:
 		timber_note.contains("electric") and timber_note.contains("estimated") and timber_note.contains("flaps up")
 		and timber_note.contains("fixed wheels") and timber_note.contains("assists off"), timber_note)
 	_check("Timber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
-	_check("Timber: counter 7 of 8", home.aircraft_count_label.text == "Aircraft 7 of 8", home.aircraft_count_label.text)
+	_check("Timber: catalog counter", home.aircraft_count_label.text == _aircraft_counter(TIMBER), home.aircraft_count_label.text)
 	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
-	# The experimental helicopter is the eighth entry; next wraps to the Stik. Previous crosses the helicopter before Timber.
+	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before Timber.
 	await ui.tap(KEY_ENTER)
-	_check("helicopter is the eighth catalog selection with the HX-700 preview and hover-only start",
-		home.aircraft_id == HELI and home.aircraft_count_label.text == "Aircraft 8 of 8"
+	_check("helicopter is last in the catalog with the HX-700 preview and hover-only start",
+		home.aircraft_id == HELI and home.aircraft_count_label.text == _aircraft_counter(HELI)
 		and app.home_scene.airplane.visual_family == "hx-700" and home.start_choice == "airborne"
 		and home.start_button.text == "Start: hover" and home.workshop_button.disabled
 		and home.natural_random_button.disabled, "%s / %s" % [home.aircraft_id, home.aircraft_count_label.text])
@@ -117,7 +135,7 @@ func _run() -> void:
 	_check("next wraps around to the Ugly Stik", home.aircraft_id == STIK)
 	await ui.tap(KEY_LEFT)
 	await ui.tap(KEY_ENTER)
-	_check("previous arrow from the Stik reaches the eighth helicopter", home.aircraft_id == HELI, home.aircraft_id)
+	_check("previous arrow from the Stik reaches the last helicopter", home.aircraft_id == HELI, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	_check("previous from the helicopter returns to the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
@@ -126,7 +144,7 @@ func _run() -> void:
 	await ui.settle()
 	# Labels keep the English source and translate when drawn (auto-translate), so read them the way they are drawn.
 	var status: Label = home.aircraft_status_label
-	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 6 de 8" and status.can_auto_translate()
+	_check("Spanish: catalog counter and status translated", home.aircraft_count_label.text == _aircraft_counter(AVANTI) and status.can_auto_translate()
 		and status.atr(status.text).begins_with("Experimental: primera estimación física (turbina") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
 		"%s / %s" % [home.aircraft_count_label.text, status.atr(status.text)])
 	# The Timber's fictional name is the one translated aircraft name (TT-06); the other names pass through tr() unchanged.

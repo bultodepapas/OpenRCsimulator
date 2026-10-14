@@ -1,6 +1,6 @@
 # LU-00: landscape audit
 
-Status: inspected before implementation, 2026-10-11. Owning plan: [Landscape upgrade plan](../../../plans/landscape-upgrade.md).
+Status: inspected before implementation, 2026-10-11. Current status and remaining gates: [landscape integration guide](../../../LANDSCAPE-PLAN.md#landscape-integration).
 
 Inspected the existing L/VQ/SC/FW/TOD/CR and GP plans, source provenance, world/field/atmosphere/sky/treeline builders, scenery batching/prefabs/placement, aircraft catalog, capture workflows and actual native engine. Baseline native captures use `scenery/capture_views.gd` at 1280×720 on NVIDIA RTX 3090 / OpenGL 3.3 driver 610.88. Four catalog aircraft already have fleet snapshots. Scenery currently refuses collision flags and is not connected to float64 flight contact detection.
 

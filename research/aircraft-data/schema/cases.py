@@ -2,6 +2,7 @@
 from copy import deepcopy
 from dataclasses import dataclass
 import importlib.util
+from pathlib import Path
 
 from check import FLEET, ROOT, read_json
 
@@ -41,7 +42,12 @@ def build_cases():
         'aircraft_standardization_migration', ROOT / 'research/aircraft-standardization/migrate.py')
     migration = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(migration)
-    fleet = {path.stem: migration.legacy_input(read_json(path)) for path in sorted(FLEET.glob('*.json'))}
+    # DATA-4 covers the eight configurations reviewed by the v1->v2 migration.
+    # New v2-native aircraft (including rotorcraft) have separate contract suites.
+    fleet = {
+        Path(name).stem: migration.legacy_input(read_json(FLEET / name))
+        for name in migration.KNOWN_FILES
+    }
     # Existing E0b3b geometry, with the same uncalibrated test settings as
     # test_wash_profile.gd. Exercise the opt-in branch without enabling flight data.
     smooth = deepcopy(fleet['jensen_ugly_stik_60'])

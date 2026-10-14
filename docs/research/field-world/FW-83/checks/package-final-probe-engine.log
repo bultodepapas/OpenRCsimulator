@@ -1,0 +1,38 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS pack profile classic
+PASS pack thumbnail classic
+PASS pack profile clear
+PASS pack thumbnail clear
+PASS pack profile cirrus
+PASS pack thumbnail cirrus
+PASS pack profile fair_cumulus
+PASS pack thumbnail fair_cumulus
+PASS pack profile broken
+PASS pack thumbnail broken
+PASS pack profile overcast
+PASS pack thumbnail overcast
+PASS pack profile prestorm
+PASS pack thumbnail prestorm
+PASS pack profile distant_storm
+PASS pack thumbnail distant_storm
+PASS pack profile electrical_storm
+PASS pack thumbnail electrical_storm
+PASS pack thunder
+PASS pack MIT notice
+PASS pack CC0 notice
+PASS pack storm shader
+PASS pack sky checkpoint
+PASS pack cloud texture resource FX_CloudAlpha03
+PASS pack cloud texture 2048x2048 FX_CloudAlpha03
+PASS pack cloud texture LA8 FX_CloudAlpha03
+PASS pack cloud texture mipmaps FX_CloudAlpha03
+PASS pack cloud texture resource FX_CloudAlpha06
+PASS pack cloud texture 2048x2048 FX_CloudAlpha06
+PASS pack cloud texture LA8 FX_CloudAlpha06
+PASS pack cloud texture mipmaps FX_CloudAlpha06
+PASS pack storm-bank shader
+PASS pack rain-curtain shader
+PASS pack storm-bank script
+PASS pack WickedInsignia CC0 notice
+sky package checks=35 failures=0

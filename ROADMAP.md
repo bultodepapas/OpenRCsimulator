@@ -1,6 +1,6 @@
 # Roadmap
 
-2026-10-12 · Revision 9 · **Status: working early alpha. Gate 2, PT2, readability, physical calibration and target-machine performance acceptance remain open.** This document owns main-line step/gate status. Track guides own their detailed work; [documentation and ownership map](docs/README.md), [current architecture](STACK.md), [commands](docs/TOOLS.md).
+2026-10-14 · Revision 10 · **Status: working early alpha. Gate 2, PT2, readability, physical calibration and target-machine performance acceptance remain open.** This document owns main-line step/gate status. Track guides own their detailed work; [documentation and ownership map](docs/README.md), [current architecture](STACK.md), [commands](docs/TOOLS.md).
 
 ## Rules for every step
 
@@ -19,14 +19,16 @@ Follow [AGENTS](AGENTS.md) and [CONTRIBUTING](CONTRIBUTING.md): one small workin
 - **Timber:** [integration plan](docs/TIMBER-INTEGRATION-PLAN.md); playable experimental electric aircraft with its own generated v2 data, airborne/runway starts and electric audio. [TT-07–12 baseline evidence](docs/research/timber-integration/TT-10/README.md) records software checks; flaps-up, prescribed-bus and physical-validation limits remain explicit.
 - **Product shell:** [implemented menus](docs/MENU-PLAN.md); UI-20/21 refactor delivered, UI-22…29 [redesign](docs/MENU-REDESIGN-PLAN.md) remains proposed.
 - **Field/readability:** [landscape step registry](docs/LANDSCAPE-PLAN.md) and [visual guide](docs/VISUAL-QUALITY-PLAN.md); Gate L needs pilot/target-display evidence.
-- **Landscape integration:** [active LU plan](docs/plans/landscape-upgrade.md) preserves the continuing LU-07…10 work and its separate cost/acceptance gates.
+- **Landscape integration:** LU-00…27 implementation is delivered. The [landscape guide](docs/LANDSCAPE-PLAN.md#landscape-integration) and [evidence index](docs/research/landscape-upgrade/README.md) retain scenery-query cost and independent pilot/hardware acceptance gates.
 - **World/time:** [world guide](docs/FIELD-WORLD-PLAN.md) and [lighting/history guide](docs/TIME-OF-DAY-PLAN.md); selectable night and passing evening exist, with further lifecycle and owner acceptance open.
 - **Scenery:** [default-on field life](docs/SCENERY-PLAN.md), with static collision proxies; Gate SC readability/performance acceptance remains open.
 - **Audio:** [AUD-01…05 soundscape guide](docs/AUDIO-PLAN.md); acoustic calibration and target-platform timing remain separate limits.
 - **Crash:** [experimental presentation](docs/CRASH-DAMAGE-PLAN.md) is implemented; physical thresholds, structural/flyable damage and Gate CR remain open.
 - **Weather:** [wind/gust/turbulence](docs/WIND-PLAN.md) and [field atmosphere](docs/ATMOSPHERE-PLAN.md) are implemented; practice presets are estimates, and physical/performance acceptance remains open.
 - **Propulsion:** [coupled shaft](docs/PROPULSION-CORE-PLAN.md) and [synthetic electric routes](docs/ELECTRIC-PROPULSION-PLAN.md) exist; default promotion, matched powerplant data and the 500 µs gate remain open.
-- **Helicopter and drone foundations:** [helicopter implementation](docs/plans/helicopter.md) starts with isolated, verified kernels; [drone review](docs/plans/drone-racing.md) reuses the shared inflow law. Neither vehicle is flyable yet; session, aircraft data and pilot acceptance remain planned.
+- **Helicopter and drone:** the experimental helicopter trainer is integrated and playable through Home and direct launch; physical and performance gates remain open ([controls and limits](docs/HELICOPTER.md)). Drone racing remains design/research; no flyable drone route is implemented ([plan](docs/plans/drone-racing.md)).
+- **Workshop and practice modes:** the aircraft variant editor, Natural Random scenario and optional fixed-wing failure practice have initial runtime implementations. Their track-specific acceptance remains in the [ownership map](docs/README.md#tracks-plans-and-step-ids).
+- **RC ground vehicle:** the experimental Bisonte MT8 garage/course and separate recorded vehicle session are integrated; physical and performance qualification remain open ([evidence](research/rc-monster-truck/README.md)).
 - **Radio/validation tools:** controller reports, latency marker/reducer, field-measurement reducers and the [VAL-3 dashboard](research/validation/dashboard.md) exist; synthetic fixtures do not count as physical measurements.
 - **Desktop/release:** [rc7](docs/releases/v0.1.0-rc7.md) is published; current source is newer. Packages are ZIP exports; [desktop qualification/installers/fullscreen](docs/DESKTOP-DELIVERY-PLAN.md) remain pending.
 - **Smoke:** [integrated Stik glow exhaust and optional AUX pump](docs/SMOKE-PLAN.md), with shared M5 wind and native visual/software evidence; other-aircraft anchors, physical radios and all-platform acceptance remain open.

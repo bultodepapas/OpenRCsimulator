@@ -1,6 +1,6 @@
 # LU-18 — scenery-aware near-grass exclusions
 
-Status: staged in `.tools/lu16-stage/app`; headless integration verified. [Owning plan](../../../plans/landscape-upgrade.md).
+Status at this snapshot: staged in `.tools/lu16-stage/app`; headless integration verified. Current status: [landscape integration guide](../../../LANDSCAPE-PLAN.md#landscape-integration).
 
 The field builder attaches eligible normalized scenery before building near grass. Scenery supplies rotated building, pit-slab, and gravel footprints; `NearGrass` omits clump centers inside them and within a 0.4 m edge clearance. Scenery-off and spatially ineligible fields receive no exclusions. This only filters visual grass placement; it does not change terrain or collision geometry.
 

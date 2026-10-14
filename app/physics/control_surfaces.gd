@@ -2,6 +2,24 @@ extends RefCounted
 class_name ControlSurfaces
 
 
+## Candidate independent surface positions: right aileron, left aileron, elevator,
+## rudder. Each normalized position is positive trailing-edge up/right; a healthy
+## conventional roll maps to [roll, -roll]. This conversion does not declare
+## independent hardware on an aircraft. Throws must be validated aircraft data.
+static func independent_deflections_deg(positions: PackedFloat64Array, throws_deg: Dictionary) -> Dictionary:
+	if positions.size() != 4:
+		return {}
+	for position: float in positions:
+		if not is_finite(position) or absf(position) > 1.0:
+			return {}
+	return {
+		aileron_right = _aileron(positions[0], throws_deg),
+		aileron_left = _aileron(positions[1], throws_deg),
+		elevator = positions[2] * throws_deg.elevator,
+		rudder = positions[3] * throws_deg.rudder,
+	}
+
+
 ## Pure pilot-command to surface mapping. Throws are explicit so this module does not load aircraft data.
 ## Input axes and the returned trailing-edge angles are unitless and degrees respectively.
 ## Positive roll raises the right aileron; aileron_down optionally sets the down-going throw.

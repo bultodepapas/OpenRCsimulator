@@ -1,6 +1,6 @@
 # Architecture and stack
 
-Status: current implementation, checked 2026-10-12. Runtime settings live in [project.godot](app/project.godot); the exact engine version and SHA-512 are pinned by [get-godot.sh](app/get-godot.sh). Setup and commands: [TOOLS](docs/TOOLS.md).
+Status: current implementation, checked 2026-10-14. Runtime settings live in [project.godot](app/project.godot); the exact engine version and SHA-512 are pinned by [get-godot.sh](app/get-godot.sh). Setup and commands: [TOOLS](docs/TOOLS.md).
 
 ## Runtime
 
@@ -20,17 +20,19 @@ Flight physics has no third-party native solver dependency. The experimental Bis
 
 ## Boundaries and data flow
 
-`app_root.tscn` loads `app_root.gd`. No user arguments opens Home and reads validated preferences. Arguments after `--` select direct flight, except `--input-report`, which starts standalone diagnostics. Direct flights ignore player settings.
+`app_root.tscn` loads `app_root.gd`. With no user arguments, the app opens Home and reads validated preferences. `--input-report` starts standalone diagnostics; `--vehicle=mt8-bisonte` selects the separate truck activity; other user arguments select a technical flight. Technical routes ignore Home preferences. The selected catalog ID chooses the fixed-wing or helicopter route.
 
 Home's RC cars entry, or `--vehicle=mt8-bisonte`, starts a separate paused ground-vehicle garage. Its Session owns the 31-value float64 state, fixed 240 Hz RK4 ticks, experiments, recovery, recording and checkpoint identity. Rendering articulates the authorized Blender model from detached state. Native and reference backends share equations and road samples; checkpoints pin the selected implementation and cannot switch it during replay. [Controls and research tools](research/rc-monster-truck/README.md#rcv-05-full-vehicle-runtime-experiments).
 
 The aircraft catalog resolves one ID to matching physics data and its visual builder. The loader validates the configuration and derives the normalized model before `FlightSession` accepts it. A failed initial preparation refuses flight; a failed reload retains the accepted session.
 
-The explicit experimental rotorcraft ID selects a dedicated quantity reader/schema, `HelicopterFlightSession` and `RotorcraftRecorder`, reusing `Simulation` for joint float64 body/shaft/wake/controller integration. The supplied HX-700 Blender visual and X-Cell reference physics are a declared surrogate. [Current helicopter controls and qualification](docs/HELICOPTER.md).
+The explicit experimental rotorcraft ID selects a dedicated quantity reader/schema, `HelicopterFlightSession` and `RotorcraftRecorder`, reusing `Simulation` for joint float64 body/shaft/wake/controller integration. The supplied HX-700 Blender visual and X-Cell reference physics are a declared surrogate; physical and performance qualification remain open. [Current helicopter controls and limits](docs/HELICOPTER.md).
 
 Input is sampled before each simulation tick. `FlightSession` owns trim/start, controls, environment, pause/reset/crash, accepted aircraft and state identity. `Simulation` commits fixed ticks; physics modules evaluate rigid-body, actuator, propulsion and contact state. RK stages use their stage time and state. Checkpoints retain complete replay state; CSV traces are versioned diagnostics with declared sampling times.
 
 Simulation positions use NED (north/east/down), body vectors use FRD (forward/right/down), and attitudes map body to NED. Scalar doubles and packed float64 arrays remain inside physics. `render/frames.gd` converts detached state into Godot's render vectors and attitude. Aircraft geometry, forces and controls share the declared datum and hinge contract.
+
+The Workshop compiler builds a detached candidate from validated aircraft data, exposes only operations supported by that aircraft's modules, and freezes the accepted candidate for a test flight. Natural Random resolves an airplane, start, physical weather and visual conditions into a repeatable scenario. Optional failure practice is currently a fixed-wing session feature; its saved settings default to off.
 
 The renderer composes the field, sky, lighting and scenery. Physical weather controls air velocity/density; visual lighting has its own configuration and history. Visual time changes do not change flight weather. Collision proxies are scalar geometry consumed by the simulation, with scenery rendering and response kept separate.
 
@@ -39,18 +41,19 @@ The renderer composes the field, sky, lighting and scenery. Physical weather con
 | Path | Responsibility |
 | --- | --- |
 | `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/` | Product shell, catalog, preferences, localization and build information |
-| `app/sim/`, `app/physics/`, `app/input/` | Session/state/replay, flight equations and control devices |
+| `app/sim/`, `app/physics/`, `app/input/` | Fixed-wing, rotorcraft and ground-vehicle sessions; float64 state/replay; flight equations and control devices |
+| `app/workshop/`, `app/scenarios/`, `app/failures/` | Validated aircraft variants, resolved random-flight scenarios and optional fixed-wing failure practice |
 | `app/data/` | Aircraft, contracts/schemas, ground profiles, field, scenery and sky configuration |
 | `app/aircraft/`, `app/render/`, `app/environment/`, `app/scenery/`, `app/audio/` | Aircraft models, presentation, lighting context, field life and sound |
 | `app/assets/` | Runtime assets and bundled third-party licenses |
 | `app/tests/` | Headless tests, trace/capture verification and benchmarks |
 | `assets/` | Authored source geometry, generators and provenance |
 | `tools/` | Reusable asset, visual, capture and qualification workflows |
-| `research/` | Reproducible experiments, derivations and measurement reducers |
-| `docs/` | Current guides, active plans, evidence and sources; [map](docs/README.md) |
+| `research/` | Reproducible experiments, derivations, data generators and measurement reducers |
+| `docs/` | Current guides, active plans, dated evidence and sources; [map](docs/README.md) |
 | `tmp/`, `.playwright-mcp/` | Ignored local scratch outputs and browser sessions; retain accepted sources and evidence under `docs/research/` |
 | `prototypes/stage0/` | Frozen bake-off specification, comparison and three.js prototype |
-| `Timber turbo evolution/` | External Timber authoring delivery (read-only source); its r1 GLB is copied to `app/assets/aircraft/turbo-lumber-evolution/` and built by `app/aircraft/timber_model.gd`; experimental electric flight data is generated by `research/timber/tt07/derive_physics.py` |
+| `Timber turbo evolution/` (historical source); `Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/` (current delivery) | The immutable r2 package is hash-pinned in the [source manifest](assets/aircraft/turbo-lumber-evolution/source-manifest.json); its runtime GLB copy is loaded through `app/aircraft/timber_model.gd`. Experimental electric flight data is generated by `research/timber/tt07/derive_physics.py` |
 
 ## Limits and upgrades
 

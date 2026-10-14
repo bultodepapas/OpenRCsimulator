@@ -171,9 +171,21 @@ def instrument_branches(project: Path) -> None:
     )
     ground = replace_once(
         ground,
+        "\t\tvar compression := s[RB.POS + 2] + down[0] * r[0] + down[1] * r[1] + down[2] * r[2]\n"
         "\t\tif compression <= 0.0:\n\t\t\tcontinue\n",
-        "\t\tif compression <= 0.0:\n\t\t\th7_branch_tape.append(32)\n\t\t\tcontinue\n\t\th7_branch_tape.append(33)\n",
-        "wheel compression branch",
+        "\t\tvar compression := s[RB.POS + 2] + down[0] * r[0] + down[1] * r[1] + down[2] * r[2]\n"
+        "\t\tif compression <= 0.0:\n\t\t\th7_branch_tape.append(32)\n\t\t\tcontinue\n"
+        "\t\th7_branch_tape.append(33)\n",
+        "flat-terrain wheel compression branch",
+    )
+    ground = replace_once(
+        ground,
+        "\t\tvar compression: float = (p_d + terrain[0]) / norm\n"
+        "\t\tif compression <= 0.0:\n\t\t\tcontinue\n",
+        "\t\tvar compression: float = (p_d + terrain[0]) / norm\n"
+        "\t\tif compression <= 0.0:\n\t\t\th7_branch_tape.append(36)\n\t\t\tcontinue\n"
+        "\t\th7_branch_tape.append(37)\n",
+        "terrain-aware wheel compression branch",
     )
     ground = replace_once(
         ground,
@@ -210,9 +222,9 @@ def instrument_branches(project: Path) -> None:
     )
     prop = replace_once(
         prop,
-        "\tif Turbine.is_turbine(prop): # AV-05\n\t\treturn Turbine.loads(v_air, rpm, prop, rho)\n\tif rpm < STOPPED_RPM:\n\t\treturn PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\n",
-        "\tif Turbine.is_turbine(prop): # AV-05\n\t\th7_branch_tape.append(40)\n\t\treturn Turbine.loads(v_air, rpm, prop, rho)\n\th7_branch_tape.append(41)\n\tif rpm < STOPPED_RPM:\n\t\th7_branch_tape.append(42)\n\t\treturn PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\n\th7_branch_tape.append(43)\n",
-        "propulsion type/stopped branches",
+        "\tif Turbine.is_turbine(prop): # AV-05\n\t\treturn Turbine.loads(v_air, rpm, prop, rho)\n\tif rpm < STOPPED_RPM and not is_glow(prop):\n\t\treturn PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\n",
+        "\tif Turbine.is_turbine(prop): # AV-05\n\t\th7_branch_tape.append(40)\n\t\treturn Turbine.loads(v_air, rpm, prop, rho)\n\th7_branch_tape.append(41)\n\tif rpm < STOPPED_RPM and not is_glow(prop):\n\t\th7_branch_tape.append(42)\n\t\treturn PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\n\th7_branch_tape.append(43)\n",
+        "turbine and non-glow stopped-load branches",
     )
     prop_path.write_text(prop, encoding="utf-8")
 
@@ -307,9 +319,13 @@ def run_probe(project: Path, godot: str, result_path: Path, baseline_alpha: floa
     if baseline_alpha is not None and branch_threshold is not None:
         environment["OPENRC_H7_BASELINE_ATAN2"] = repr(baseline_alpha)
         environment["OPENRC_H7_BRANCH_THRESHOLD"] = repr(branch_threshold)
-    command = [godot, "--headless", "--path", str(project), "--audio-driver", "Dummy", "--script", "res://tests/h7_probe.gd"]
+    engine_log = result_path.with_suffix(".godot.log")
+    command = [godot, "--headless", "--log-file", str(engine_log), "--path", str(project),
+               "--audio-driver", "Dummy", "--script", "res://tests/h7_probe.gd"]
     run = subprocess.run(command, text=True, capture_output=True, env=environment, check=False, timeout=120)
     output = run.stdout + run.stderr
+    if engine_log.exists():
+        output += engine_log.read_text(encoding="utf-8", errors="replace")
     if run.returncode != 0 or "SCRIPT ERROR:" in output or "Parse Error:" in output or not result_path.is_file():
         raise RuntimeError(f"H7 Godot probe failed ({run.returncode}):\n{output[-6000:]}")
     return json.loads(result_path.read_text(encoding="utf-8"))

@@ -1,6 +1,6 @@
 # LU-07–10 — Continued landscape refinement
 
-Status: implemented, reviewed and validated, 2026-10-12. Starting source: clean `df36b44`. The root [plan](../../../plans/landscape-upgrade.md#continued-refinement--2026-10-12) was extended before application edits. LU-06 remains the historical integration evidence. Cost and human/hardware limits remain explicit below.
+Status: implemented, reviewed and validated, 2026-10-12. Starting source: clean `df36b44`. The LU-07 continuation and its open limits are recorded here; current track status is in the [landscape integration guide](../../../LANDSCAPE-PLAN.md#landscape-integration). LU-06 remains the historical integration evidence.
 
 ## Audit and choices
 

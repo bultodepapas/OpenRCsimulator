@@ -6,6 +6,7 @@ extends RefCounted
 const Spec := preload("res://spec.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
+const ControlActuators := preload("res://physics/control_actuators.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 
 static var _data_throws_deg := {}
@@ -21,8 +22,7 @@ static func neutral_commands() -> Dictionary:
 
 ## Move `value` toward `target` by at most `rate * dt`, never overshooting.
 static func rate_limit(value: float, target: float, rate: float, dt: float) -> float:
-	var max_step := rate * dt
-	return value + clampf(target - value, -max_step, max_step)
+	return ControlActuators.rate_limit(value, target, rate, dt)
 
 
 static func step_commands(c: Dictionary, raw: Dictionary, dt: float) -> Dictionary:

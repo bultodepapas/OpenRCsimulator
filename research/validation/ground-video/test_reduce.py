@@ -23,7 +23,8 @@ SPEC.loader.exec_module(REDUCER)
 
 
 def fixture():
-    return json.loads((HERE / "example.synthetic.json").read_bytes()), (HERE / "example.synthetic.csv").read_bytes()
+    events = (HERE / "example.synthetic.csv").read_bytes().replace(b"\r\n", b"\n")
+    return json.loads((HERE / "example.synthetic.json").read_bytes()), events
 
 
 def covariance(a, b):
@@ -45,6 +46,10 @@ class ReductionTests(unittest.TestCase):
         self.assertEqual(result["distance"]["value"], 30)
         self.assertEqual(result["average_ground_speed"]["value"], 6)
         self.assertEqual(result["warnings"], [])
+
+    def test_crlf_csv_is_accepted(self):
+        crlf = self.csv.replace(b"\n", b"\r\n")
+        self.assertEqual(self.whole(csv=crlf)["average_ground_speed"]["value"], 6)
 
     def test_rational_capture_rate(self):
         self.campaign["video"].update(capture_fps_num=30000, capture_fps_den=1001)

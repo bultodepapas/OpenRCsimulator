@@ -22,7 +22,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Random failures and emergency practice
 
-[EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the original session/control limitations. [EM-01 implementation evidence](failure-mode/EM-01/README.md) records software verification of the initial logical-control/throttle mode. [EM-05 evidence](failure-mode/EM-05/README.md) adds capability-bound glow/electric source loss, historical-plan compatibility and transactional replay. The [failure-mode plan](../plans/failure-mode.md) owns current scope, probability, menus, remaining mechanisms and acceptance. Software verification does not establish physical or pilot validation.
+[EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the original session/control limitations. [EM-01 implementation evidence](failure-mode/EM-01/README.md) records software verification of the initial logical-control/throttle mode. [EM-05 evidence](failure-mode/EM-05/README.md) adds capability-bound glow/electric source loss, historical-plan compatibility and transactional replay. [EM-03a evidence](failure-mode/EM-03a/README.md) records the shared actuator kernel, accepted-surface observation, healthy parity and aircraft-specific availability screen. The [failure-mode plan](../plans/failure-mode.md) owns current scope, probability, menus, remaining mechanisms and acceptance. Software verification does not establish physical or pilot validation.
 
 ### Natural Random flight
 
@@ -119,7 +119,7 @@ Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p
 
 ### Visual quality and landscape
 
-Current implementation guidance is in the [visual quality guide](../VISUAL-QUALITY-PLAN.md), [landscape guide](../LANDSCAPE-PLAN.md), and [landscape-upgrade plan](../plans/landscape-upgrade.md). Evidence entry points:
+Current implementation guidance is in the [visual quality guide](../VISUAL-QUALITY-PLAN.md) and [landscape guide](../LANDSCAPE-PLAN.md). The [landscape-upgrade evidence index](landscape-upgrade/README.md) preserves LU-00…27 verification and remaining limits. Evidence entry points:
 
 - Direction, sources and baseline: [landscape research](landscape-research.md), [visual tools](visual-quality-tools-2026-10-05.md), [tree resources](tree-resource-review-2026-10-06/README.md), and [asset-source catalog](asset-sources-catalog-2026-10-06.md).
 - Readability and rendering: [VQ-01a/b capture protocol](visual-quality-implementation/VQ-01a/README.md), [L6c blinded owner kit](visual-quality-implementation/L6c/README.md), [VQ-04a projected silhouette](visual-quality-implementation/VQ-04a/README.md), [VQ-05 propeller blur](visual-quality-implementation/VQ-05/README.md), [L9e filtered turf](visual-quality-implementation/L9e/README.md), and [L15b tree motion](visual-quality-implementation/L15b/README.md), [L15d cloud shadows](visual-quality-implementation/L15d/README.md).
@@ -140,7 +140,7 @@ The [field-world guide](../FIELD-WORLD-PLAN.md) owns composition and night accep
 
 [FW-76 sky/cloud planning research](field-world/FW-76/README.md) compares free Godot cloud resources, renderer constraints, tutorials, first-hand Reddit reports and primary storm/wind references, including night lightning, reusable bolt VFX and CC0 thunder recordings. The [implementation plan](../plans/sky-clouds-weather.md) owns proposed FW-76–90, with electrical-storm delivery in FW-84a–e; this source review is not an addon, performance or physical-validation result.
 
-[FW-78/82 implementation evidence](field-world/FW-78/README.md) records the sky editor, preferences, deterministic transport and checkpoint contracts. [FW-79](field-world/FW-79/README.md) retains the native nine-profile and night-storm gallery; [FW-84](field-world/FW-84/README.md) records the electrical event/mesh/audio slice and free-resource provenance. Spatial storms/tornadoes and final flight/performance/export qualification remain open.
+[FW-78/82 implementation evidence](field-world/FW-78/README.md) records the sky editor, preferences, deterministic transport and checkpoint contracts. [FW-79](field-world/FW-79/README.md) retains the initial native nine-profile and night-storm gallery; [FW-83](field-world/FW-83/README.md) records the subsequent world-anchored distant cloud bank, rain curtain, CC0 texture intake and day/dusk/moonlit views. [FW-84](field-world/FW-84/README.md) records the electrical event/mesh/audio slice and free-resource provenance. Spatial storms/tornadoes and final flight/performance/export qualification remain open.
 
 ### Immersive audio
 

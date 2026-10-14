@@ -34,6 +34,8 @@ const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const World := preload("res://render/world/world.gd")
 const FailureConfig := preload("res://failures/config.gd")
+const FailureCatalog := preload("res://failures/catalog.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
 const FailureMenu := preload("res://ui/failures_menu.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 const InputReport = preload("res://input/input_report.gd")
@@ -975,11 +977,31 @@ func open_failures_settings(from: Control = null) -> void:
 		preferences.get("failure_config", FailureConfig.defaults())
 	)
 	var current: Dictionary = checked.config if checked.get("ok", false) else FailureConfig.defaults()
-	var menu := FailureMenu.new(current)
+	var menu := FailureMenu.new(current, _failure_availability())
 	menu.current_flight_settings = opened_from_pause
 	menu.applied.connect(_on_failures_applied)
 	menu.cancelled.connect(close_failures_settings)
 	screens.push("failures", menu, from)
+
+
+## Inspect the accepted model in Pause (including Workshop variants), or validate
+## the Home selection without creating a session, drawing an event or changing it.
+func _failure_availability() -> Dictionary:
+	if flight != null:
+		var active_session: Variant = flight.get("session")
+		if active_session == null:
+			return {}
+		var accepted: Dictionary = active_session.aircraft
+		return FailureCatalog.availability(accepted.model) if accepted.get("ok", false) else {}
+	if home == null or Catalog.is_rotorcraft(home.aircraft_id):
+		return {}
+	var entry: Dictionary = Catalog.entry(home.aircraft_id)
+	if entry.is_empty() or not entry.has("data"):
+		return {}
+	var loaded: Dictionary = AircraftData.load_file(entry.data)
+	if not loaded.get("ok", false) or str(loaded.model.get("id", "")) != home.aircraft_id:
+		return {}
+	return FailureCatalog.availability(loaded.model)
 
 
 func close_failures_settings() -> void:

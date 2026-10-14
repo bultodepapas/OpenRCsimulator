@@ -1,6 +1,6 @@
 # LU-00 — Scenery implementation audit
 
-Date: **2026-10-11**. **Status: research complete; implementation has not started.** The owning [landscape plan](../../../plans/landscape-upgrade.md) is pending.
+Date: **2026-10-11**. **Status at this snapshot: research complete; implementation had not started.** The current implementation status is in the [landscape integration guide](../../../LANDSCAPE-PLAN.md#landscape-integration).
 
 ## Existing renderer and data path
 

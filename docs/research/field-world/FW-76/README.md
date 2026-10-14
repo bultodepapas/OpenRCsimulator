@@ -30,7 +30,7 @@ Evidence levels:
 | [L4c day](../../visual-quality-implementation/L4c/app-after-day.png), [cross-sun view](../../visual-quality-implementation/L4c/after-cross.png) | Images inspected: soft directional cloud relief with ample blue gaps, a small aircraft and a low-contrast distant horizon. They establish an existing visual reference, not new plan captures. |
 | [Weather dialog](../../../../app/ui/weather_dialog.gd), [Home](../../../../app/ui/home.gd), [pause](../../../../app/ui/pause_menu.gd), [preferences](../../../../app/app_state/preferences.gd) | Add a Sky & clouds tab to the actual conditions dialog. Pause currently exposes time of day; the broader editor is proposed in the UI plan. Keep draft/cancel, persistence and focus behavior. |
 | [Wind](../../../WIND-PLAN.md), [field](../../../../app/physics/wind_field.gd), [session](../../../../app/sim/flight_session.gd) | Wind is currently time-only and uniform. M5-W05 owns shear/spatial/distributed work; a tornado requires that foundation, not merely stronger gusts. |
-| [Natural Random plan](../../../plans/natural-random-flight.md), [night-lighting plan](../../../plans/night-landscape-lighting.md) | NR-07 needs the same scene-local cloud contract. FW-66–75 is already allocated; this plan uses FW-76–90 and preserves night work. |
+| [Natural Random plan](../../../plans/natural-random-flight.md), [night-field guide](../../../FIELD-WORLD-PLAN.md#night-field-and-campfire) | NR-07 needs the same scene-local cloud contract. FW-66–75 is already allocated; this research covers FW-76–90 and preserves the night-field work. |
 
 ## Godot and downloadable candidates
 

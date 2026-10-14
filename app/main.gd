@@ -16,6 +16,7 @@ const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Commands := preload("res://input/commands.gd")
+const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const FailureConfig := preload("res://failures/config.gd")
@@ -807,10 +808,9 @@ func _update_hud() -> void:
 		if not session.weather_is_calm():
 			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 			lines.append(_weather_hud_line(s, wind))
-	if not _scripted and session.aircraft.ok and not session.atmosphere_is_reference():
-		var field_air: Dictionary = session.atmosphere_configuration()
-		var true_speed: float = session.air_data(session.sim.state).V
-		lines.append(tr("EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m") % [true_speed * M.sqrt_(field_air.sigma), field_air.rho_kgm3, field_air.density_altitude_m])
+		if not session.atmosphere_is_reference():
+			var field_air: Dictionary = session.atmosphere_configuration()
+			lines.append(tr("EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m") % [air.V * M.sqrt_(field_air.sigma), field_air.rho_kgm3, field_air.density_altitude_m])
 	if _overlays != null:
 		_overlays.performance_label.text = Hud.perf_line(_frame_times, session.sim.step_usec).trim_suffix("  [F3]")
 	elif _show_perf:
@@ -1578,13 +1578,19 @@ func _capture_scene_id() -> String:
 	return "field"
 
 
+func _surface_rotations_for_render(c: Dictionary) -> Dictionary:
+	if _scripted:
+		return Commands.hinge_rotations(c, session.throws_deg())
+	return ControlSurfaces.hinge_rotations_from_surfaces(session.surface_angles_deg())
+
+
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_last_render_pose = pose
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	# root_transform replaces the basis each frame; restore the presentation-only uniform scale.
 	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
-	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
+	AirplaneBuilder.apply_surfaces(_airplane, _surface_rotations_for_render(c))
 	AirplaneBuilder.apply_throttle(_airplane, float(c.get("throttle", 0.0))) # US-V09c carburettor lever, visual only
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting and _shadow_mode == "sun" else 1.0

@@ -1,6 +1,6 @@
 # FW-66: night-lighting planning research
 
-2026-10-13, America/Bogota · **Research and starting composition only.** This record supports the [night landscape plan](../../../plans/night-landscape-lighting.md), which owns FW-66–75 status. No new runtime lighting, fire, preference or physics behavior was installed.
+2026-10-13, America/Bogota · **Research and starting composition only.** This dated record retains FW-66 source research and initial views. The [field-world guide](../../../FIELD-WORLD-PLAN.md#night-field-and-campfire) describes the current runtime and open FW-75 acceptance. At this research snapshot, no new runtime lighting, fire, preference or physics behavior was installed.
 
 ## Follow-up: 26 targeted Internet investigations
 

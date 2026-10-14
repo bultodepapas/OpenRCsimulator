@@ -134,7 +134,7 @@ func _run() -> void:
 	sun.rotation_degrees = Vector3(-50, -35, 0)
 	sun.light_energy = 1.1
 	get_root().add_child(sun)
-	_airplane = Extra.build()
+	_airplane = AirplaneBuilder.build(AirplaneBuilder.EXTRA_ID)
 	get_root().add_child(_airplane.root)
 	_camera = Camera3D.new()
 	_camera.near = 0.02

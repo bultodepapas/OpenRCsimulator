@@ -2,6 +2,7 @@ extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
+const FailureCatalog := preload("res://failures/catalog.gd")
 
 signal applied(config: Dictionary)
 signal cancelled
@@ -17,26 +18,38 @@ var cancel_button: Button
 var error_label: Label
 var notice_hint_label: Label
 var current_flight_settings := false
+var failure_availability: Dictionary = {}
+var settings_card: PanelContainer
+var availability_card: PanelContainer
+var availability_button: Button
+var availability_back_button: Button
+var availability_scroll: ScrollContainer
+var availability_events_column: VBoxContainer
+var availability_unavailable_label: Label
+var source_loss_heading_label: Label
+var source_loss_reason_label: Label
 
 
-func _init(initial_config: Dictionary) -> void:
+func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -> void:
 	name = "FailuresMenu"
 	layer = LAYER
+	failure_availability = resolved_availability.duplicate(true)
 	var probability := clampi(int(initial_config.get("probability_percent", 0)), 0, 100)
 	var include_catastrophic := bool(initial_config.get("include_catastrophic", false))
 	var notify := bool(initial_config.get("notify", true))
 	var screen := Screen.mount(self, "Screen")
 	screen.kind = Screen.Kind.MODAL
-	screen.close_requested.connect(_on_cancel)
+	screen.close_requested.connect(_on_screen_close_requested)
 	screen.dim(0.56)
 	var center: CenterContainer = screen.center(28.0)
-	var card := PanelContainer.new()
-	card.theme_type_variation = "Card"
-	card.custom_minimum_size.x = 620.0
-	center.add_child(card)
+	settings_card = PanelContainer.new()
+	settings_card.name = "FailureSettingsCard"
+	settings_card.theme_type_variation = "Card"
+	settings_card.custom_minimum_size.x = 620.0
+	center.add_child(settings_card)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 12)
-	card.add_child(column)
+	settings_card.add_child(column)
 	var title := Widgets.label("FAILURES · NEXT FLIGHT", "TitleLabel")
 	column.add_child(title)
 	var probability_title := Widgets.label("Probability of failure per flight", "SectionLabel")
@@ -84,7 +97,16 @@ func _init(initial_config: Dictionary) -> void:
 	catastrophic_check.name = "IncludeCatastrophic"
 	catastrophic_check.text = "Include catastrophic failures"
 	catastrophic_check.button_pressed = include_catastrophic
-	column.add_child(catastrophic_check)
+	var catastrophic_row := HBoxContainer.new()
+	catastrophic_row.add_theme_constant_override("separation", 8)
+	catastrophic_check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	catastrophic_row.add_child(catastrophic_check)
+	availability_button = Widgets.button("Available failures for this aircraft", "")
+	availability_button.name = "AvailableFailures"
+	availability_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	availability_button.pressed.connect(_show_availability)
+	catastrophic_row.add_child(availability_button)
+	column.add_child(catastrophic_row)
 	var catastrophic_hint := Widgets.label(
 		"Includes sustained radio-link loss with receiver failsafe. Recovery is not guaranteed.", "SecondaryLabel", true,
 	)
@@ -113,12 +135,157 @@ func _init(initial_config: Dictionary) -> void:
 	apply_button.pressed.connect(_on_apply)
 	buttons.add_child(apply_button)
 	column.add_child(buttons)
+	_build_availability_card(center)
 
 
 func _ready() -> void:
 	if current_flight_settings:
 		notice_hint_label.text = tr("Applying changes updates notices in this flight. Probability and catastrophic settings apply to the next flight.")
 	apply_button.grab_focus.call_deferred()
+
+
+func _build_availability_card(parent: Control) -> void:
+	availability_card = PanelContainer.new()
+	availability_card.name = "FailureAvailabilityCard"
+	availability_card.theme_type_variation = "Card"
+	availability_card.custom_minimum_size.x = 620.0
+	availability_card.visible = false
+	parent.add_child(availability_card)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 12)
+	availability_card.add_child(column)
+	column.add_child(Widgets.label("Available failures for this aircraft", "TitleLabel", true))
+	column.add_child(Widgets.label(
+		"These are the failure events supported by this aircraft.", "SecondaryLabel", true,
+	))
+	column.add_child(Widgets.label(
+		"Focus the list, then use arrow keys or Page Up/Down to scroll.", "SecondaryLabel", true,
+	))
+	availability_scroll = ScrollContainer.new()
+	availability_scroll.name = "AvailabilityScroll"
+	availability_scroll.custom_minimum_size.y = 300.0
+	availability_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	availability_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	availability_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	availability_scroll.focus_mode = Control.FOCUS_ALL
+	column.add_child(availability_scroll)
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
+	availability_scroll.add_child(content)
+	availability_unavailable_label = Widgets.label(
+		"Availability details are unavailable.", "SecondaryLabel", true,
+	)
+	availability_unavailable_label.name = "AvailabilityUnavailable"
+	availability_unavailable_label.visible = false
+	content.add_child(availability_unavailable_label)
+	source_loss_heading_label = Widgets.label("Power-loss failure unavailable", "SectionLabel", true)
+	source_loss_heading_label.name = "SourceLossUnavailableHeading"
+	source_loss_heading_label.visible = false
+	content.add_child(source_loss_heading_label)
+	source_loss_reason_label = Widgets.label("", "SecondaryLabel", true, false)
+	source_loss_reason_label.name = "SourceLossUnavailableReason"
+	source_loss_reason_label.visible = false
+	content.add_child(source_loss_reason_label)
+	var eligible_heading := Widgets.label("Available failure types", "SectionLabel")
+	content.add_child(eligible_heading)
+	availability_events_column = VBoxContainer.new()
+	availability_events_column.name = "AvailableFailureEvents"
+	availability_events_column.add_theme_constant_override("separation", 8)
+	content.add_child(availability_events_column)
+	availability_back_button = Widgets.button("Back", "")
+	availability_back_button.name = "AvailabilityBack"
+	availability_back_button.pressed.connect(_show_settings)
+	var buttons := Widgets.button_row()
+	buttons.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	buttons.add_child(availability_back_button)
+	column.add_child(buttons)
+
+
+func _show_availability() -> void:
+	_refresh_availability_details()
+	settings_card.visible = false
+	availability_card.visible = true
+	availability_back_button.grab_focus.call_deferred()
+
+
+func _show_settings() -> void:
+	availability_card.visible = false
+	settings_card.visible = true
+	availability_button.grab_focus.call_deferred()
+
+
+func _on_screen_close_requested() -> void:
+	if availability_card.visible:
+		_show_settings()
+	else:
+		_on_cancel()
+
+
+func _refresh_availability_details() -> void:
+	for child: Node in availability_events_column.get_children():
+		availability_events_column.remove_child(child)
+		child.queue_free()
+	availability_unavailable_label.visible = false
+	source_loss_heading_label.visible = false
+	source_loss_reason_label.visible = false
+	var eligible_value: Variant = failure_availability.get("eligible_ids", null)
+	if typeof(eligible_value) != TYPE_ARRAY and typeof(eligible_value) != TYPE_PACKED_STRING_ARRAY:
+		availability_unavailable_label.visible = true
+		return
+	if failure_availability.is_empty():
+		availability_unavailable_label.visible = true
+		return
+	if not bool(failure_availability.get("power_loss_supported", false)):
+		source_loss_heading_label.visible = true
+		var reason := str(failure_availability.get("exclusion_reason", ""))
+		if reason.is_empty():
+			reason = "This propulsion family has no qualified engine shutdown law."
+		source_loss_reason_label.text = TranslationServer.translate(reason)
+		source_loss_reason_label.visible = true
+	var event_count := 0
+	for failure_id: Variant in eligible_value:
+		if str(failure_id) == "radio_loss" and not catastrophic_check.button_pressed:
+			continue
+		var definition: Dictionary = FailureCatalog.definition(str(failure_id))
+		if definition.is_empty():
+			continue
+		var label_text := TranslationServer.translate(str(definition.get("label", "")))
+		var event_label := Widgets.label(label_text, "SecondaryLabel", true, false)
+		availability_events_column.add_child(event_label)
+		event_count += 1
+	if event_count == 0:
+		var empty_label := Widgets.label(
+			"No failure events are available for this aircraft.", "SecondaryLabel", true,
+		)
+		availability_events_column.add_child(empty_label)
+
+
+func _input(event: InputEvent) -> void:
+	if not availability_card.visible or get_viewport().gui_get_focus_owner() != availability_scroll \
+		or not event is InputEventKey:
+		return
+	var key_event := event as InputEventKey
+	if not key_event.pressed:
+		return
+	var scroll_bar: VScrollBar = availability_scroll.get_v_scroll_bar()
+	var page_step := maxf(availability_scroll.size.y * 0.8, 48.0)
+	match key_event.keycode:
+		KEY_DOWN:
+			scroll_bar.value += 40.0
+		KEY_UP:
+			scroll_bar.value -= 40.0
+		KEY_PAGEDOWN:
+			scroll_bar.value += page_step
+		KEY_PAGEUP:
+			scroll_bar.value -= page_step
+		KEY_HOME:
+			scroll_bar.value = scroll_bar.min_value
+		KEY_END:
+			scroll_bar.value = scroll_bar.max_value
+		_:
+			return
+	get_viewport().set_input_as_handled()
 
 
 func get_draft_config() -> Dictionary:

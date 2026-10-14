@@ -50,9 +50,12 @@ func _test_scene_isolation_and_reconfiguration() -> void:
 	root.add_child(first_owner)
 	var first_world: Dictionary = _build_empty_world(first_owner)
 	var first_environment: Environment = first_world.environment
+	var first_star_material: ShaderMaterial = _attach_test_star_scene(first_owner, first_environment)
+	WorldBuilder.refresh_weather_appearance(first_environment, 0.0)
 	var first_snapshot: Dictionary = WorldBuilder.weather_snapshot(first_environment)
 	_check("production World exposes a visible storm bank", first_snapshot.get("enabled", false)
 		and first_snapshot.get("puff_count", 0) == 30 and first_snapshot.get("rain_count", 0) == 3)
+	_check("visible storm draws its own star field behind the cloud alpha", first_star_material.render_priority == -1)
 
 	var second_config: Dictionary = storm_config.duplicate(true)
 	second_config.seed = 2871
@@ -60,31 +63,45 @@ func _test_scene_isolation_and_reconfiguration() -> void:
 	var second_owner := Node3D.new()
 	root.add_child(second_owner)
 	var second_world: Dictionary = _build_empty_world(second_owner)
+	var second_star_material: ShaderMaterial = _attach_test_star_scene(second_owner, second_world.environment)
+	WorldBuilder.refresh_weather_appearance(second_world.environment, 0.0)
 	var second_snapshot: Dictionary = WorldBuilder.weather_snapshot(second_world.environment)
 	_check("a second World owns independent seeded formation geometry",
 		second_snapshot.get("enabled", false) and first_snapshot.puff_centers != second_snapshot.puff_centers)
 	_check("the first World remains unchanged when a second is built",
 		WorldBuilder.weather_snapshot(first_environment).puff_centers == first_snapshot.puff_centers)
+	_check("both scene-local storm star materials receive the storm priority",
+		first_star_material.render_priority == -1 and second_star_material.render_priority == -1)
 
 	var clear_config: Dictionary = SkyConfig.for_preset("clear")
 	_check("clear appearance installs", Atmosphere.configure_appearance(clear_config, [0.0, 0.0, 0.0], 0.0))
 	var clear_owner := Node3D.new()
 	root.add_child(clear_owner)
 	var clear_world: Dictionary = _build_empty_world(clear_owner)
+	var clear_star_material: ShaderMaterial = _attach_test_star_scene(clear_owner, clear_world.environment)
+	WorldBuilder.refresh_weather_appearance(clear_world.environment, 0.0)
 	var clear_snapshot: Dictionary = WorldBuilder.weather_snapshot(clear_world.environment)
 	_check("clear World creates no storm geometry", not clear_snapshot.get("enabled", true)
 		and clear_snapshot.get("puff_count", -1) == 0 and clear_snapshot.get("rain_count", -1) == 0)
 	_check("clear World does not mutate the retained storm World",
 		WorldBuilder.weather_snapshot(first_environment).puff_centers == first_snapshot.puff_centers)
+	_check("clear restores normal star priority without changing either storm scene",
+		clear_star_material.render_priority == 0 and first_star_material.render_priority == -1
+		and second_star_material.render_priority == -1)
 
 	WorldBuilder.refresh_weather_appearance(first_environment, 2.0)
 	_check("refreshing a retained World clears old storm geometry", not WorldBuilder.weather_snapshot(first_environment).get("enabled", true))
+	_check("clearing one retained scene changes only its own star material",
+		first_star_material.render_priority == 0 and second_star_material.render_priority == -1)
 	_check("storm appearance can be restored to a retained World",
 		Atmosphere.configure_appearance(storm_config, [0.0, 0.0, 0.0], 0.0))
 	WorldBuilder.refresh_weather_appearance(first_environment, 2.0)
 	var restored_snapshot: Dictionary = WorldBuilder.weather_snapshot(first_environment)
 	_check("restored World rebuilds a bounded storm formation", restored_snapshot.get("enabled", false)
 		and restored_snapshot.get("puff_count", 0) == 30 and restored_snapshot.get("rain_count", 0) == 3)
+	_check("restoring the storm restores only that scene's star priority",
+		first_star_material.render_priority == -1 and second_star_material.render_priority == -1
+		and clear_star_material.render_priority == 0)
 
 	second_owner.queue_free()
 	clear_owner.queue_free()
@@ -142,20 +159,31 @@ func _test_advection_and_rebase() -> void:
 	var calm_state: Dictionary = _transport(selection, resolved.cloud_layers, [0.0, 0.0, 0.0])
 	var calm_offset: Vector2 = CloudTransport.layer_offset(calm_state, 0, 1.0)
 	_check("calm wind keeps the initial cloud phase", calm_offset == Vector2.ZERO)
+	_test_exposure_independent_materials(bank, resolved.cloud_layers, calm_offset)
 	bank.update_visual(_snapshot(resolved.cloud_layers, calm_offset), environment, null, 1.0)
 	var calm_center := Vector2(bank.position.x, bank.position.z)
 	var camera := Camera3D.new()
+	camera.current = true
 	root.add_child(camera)
 	camera.position = Vector3(500.0, 200.0, -700.0)
 	bank.update_visual(_snapshot(resolved.cloud_layers, calm_offset), environment, null, 10.0)
 	_check("camera movement does not move the world-anchored bank",
 		Vector2(bank.position.x, bank.position.z).is_equal_approx(calm_center))
+	camera.position = Vector3(10000.0, 300.0, -10000.0)
+	var prewrap := Vector2(63.999, 63.999)
+	bank.update_visual(_snapshot(resolved.cloud_layers, prewrap), environment, null, 11.0)
+	var remote_pre_wrap := Vector2(bank.position.x, bank.position.z)
+	var camera_is_displaced: bool = camera.global_position.distance_to(bank.global_position) >= 10000.0
+	bank.update_visual(_snapshot(resolved.cloud_layers, Vector2.ZERO), environment, null, 12.0)
+	var remote_post_wrap := Vector2(bank.position.x, bank.position.z)
+	_check("a remote camera sees no storm jump when cloud phase wraps",
+		camera_is_displaced and remote_pre_wrap.distance_to(remote_post_wrap) < 2.0)
 
 	var north_state: Dictionary = _transport(selection, resolved.cloud_layers, [10.0, 0.0, 0.0])
 	var north_offset: Vector2 = CloudTransport.layer_offset(north_state, 0, 1.0)
 	_check("northward wind advances the noise offset northward", north_offset.y > 0.0 and is_zero_approx(north_offset.x))
 	bank.update_visual(_snapshot(resolved.cloud_layers, north_offset), environment, null, 1.0)
-	_check("northward wind advects the geometry southward", bank.position.z < calm_center.y)
+	_check("northward wind advects the geometry northward", bank.position.z < calm_center.y)
 
 	var east_state: Dictionary = _transport(selection, resolved.cloud_layers, [0.0, 10.0, 0.0])
 	var east_offset: Vector2 = CloudTransport.layer_offset(east_state, 0, 1.0)
@@ -180,6 +208,41 @@ func _test_advection_and_rebase() -> void:
 	await process_frame
 
 
+func _test_exposure_independent_materials(bank: StormBank, layers: Array, offset: Vector2) -> void:
+	var scene := _snapshot(layers, offset)
+	var day_environment: Environment = Atmosphere.environment()
+	day_environment.tonemap_exposure = 1.0
+	var day_sky := day_environment.sky.sky_material as ShaderMaterial
+	day_sky.set_shader_parameter("cloud_lin", Vector3(0.72, 0.80, 0.92))
+	day_sky.set_shader_parameter("haze_lin", Vector3(0.48, 0.61, 0.73))
+	bank.update_visual(scene, day_environment, null, 1.0)
+	_check("day bank material copies scene-linear sky colors without exposure scaling",
+		_material_colors_match(bank, day_environment))
+
+	var night_environment: Environment = Atmosphere.environment()
+	night_environment.tonemap_exposure = 0.12
+	var night_sky := night_environment.sky.sky_material as ShaderMaterial
+	night_sky.set_shader_parameter("cloud_lin", Vector3(0.09, 0.12, 0.19))
+	night_sky.set_shader_parameter("haze_lin", Vector3(0.05, 0.08, 0.14))
+	bank.update_visual(scene, night_environment, null, 1.0)
+	_check("night bank material copies scene-linear sky colors without exposure scaling",
+		_material_colors_match(bank, night_environment))
+
+
+func _material_colors_match(bank: StormBank, environment: Environment) -> bool:
+	var sky := environment.sky.sky_material as ShaderMaterial
+	var cloud_expected: Vector3 = sky.get_shader_parameter("cloud_lin")
+	var haze_expected: Vector3 = sky.get_shader_parameter("haze_lin")
+	for material: ShaderMaterial in bank._materials:
+		var cloud_actual: Vector3 = material.get_shader_parameter("cloud_lin")
+		var haze_actual: Vector3 = material.get_shader_parameter("haze_lin")
+		if not cloud_actual.is_equal_approx(cloud_expected) or not haze_actual.is_equal_approx(haze_expected):
+			return false
+	var rain_cloud: Vector3 = bank._rain_material.get_shader_parameter("rain_lin")
+	var rain_haze: Vector3 = bank._rain_material.get_shader_parameter("haze_lin")
+	return rain_cloud.is_equal_approx(cloud_expected * 0.28) and rain_haze.is_equal_approx(haze_expected)
+
+
 func _transport(selection: Dictionary, layers: Array, wind: Array) -> Dictionary:
 	return CloudTransport.build(selection, layers, wind, 0.0, 1.0, Vector2.ZERO, [Vector2.ZERO])
 
@@ -196,6 +259,25 @@ func _snapshot(layers: Array, offset: Vector2) -> Dictionary:
 func _build_empty_world(owner: Node3D) -> Dictionary:
 	return WorldBuilder.build(owner, {}, Callable(self, "_empty_field"), {"time_of_day": false}, {},
 		{"field_lighting": "off", "campfire": false})
+
+
+func _attach_test_star_scene(owner: Node3D, environment: Environment) -> ShaderMaterial:
+	var stars_root := Node3D.new()
+	stars_root.name = "Stars"
+	var field := MultiMeshInstance3D.new()
+	field.name = "StarField"
+	var material := ShaderMaterial.new()
+	material.shader = load("res://render/world/stars.gdshader")
+	var quad := QuadMesh.new()
+	quad.material = material
+	var multimesh := MultiMesh.new()
+	multimesh.mesh = quad
+	multimesh.instance_count = 1
+	field.multimesh = multimesh
+	stars_root.add_child(field)
+	owner.add_child(stars_root)
+	environment.set_meta("fw_star_field", weakref(stars_root))
+	return material
 
 
 func _empty_field() -> void:

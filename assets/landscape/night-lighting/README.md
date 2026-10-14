@@ -2,7 +2,7 @@
 
 2026-10-13 · Immutable downloaded source originals for FW-67; selected derivatives are built for runtime.
 
-These unmodified CC0 downloads support the [night-landscape plan](../../../docs/plans/night-landscape-lighting.md). Selection rationale and static inspection are in [FW-66](../../../docs/research/field-world/FW-66/README.md#resource-comparison). [PROVENANCE.json](PROVENANCE.json) records exact download URLs, source authors, archive members and SHA-256 hashes; [LICENSES.md](LICENSES.md) records license evidence. Conversion and runtime selection are documented in [tools/night-lighting](../../../tools/night-lighting/README.md).
+These unmodified CC0 downloads support the [current field-world guide](../../../docs/FIELD-WORLD-PLAN.md#night-field-and-campfire). Selection rationale and static inspection are in [FW-66](../../../docs/research/field-world/FW-66/README.md#resource-comparison). [PROVENANCE.json](PROVENANCE.json) records exact download URLs, source authors, archive members and SHA-256 hashes; [LICENSES.md](LICENSES.md) records license evidence. Conversion and runtime selection are documented in [tools/night-lighting](../../../tools/night-lighting/README.md).
 
 The [26-investigation follow-up](../../../docs/research/field-world/FW-66/investigations.md) added five source files. The collection now contains **10 art source files, 3,961,937 bytes**, excluding license notes. Source size is not imported GPU memory or shipped package size.
 

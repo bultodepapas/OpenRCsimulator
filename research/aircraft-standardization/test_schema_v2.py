@@ -36,6 +36,7 @@ EXPECTED_FLEET = {
     "synthetic_stik_electric_6s_battery",
     "stik_glow_55ax_2t",
     "stik_glow_55ax_2t_apc_13x6",
+    "stik_glow_61fx_2t",
     "stik_glow_fs64v_4t",
     "stik_glow_fs64v_4t_apc_13x6",
     "turbo_lumber_evolution",
@@ -109,13 +110,13 @@ def build_cases(app: Path) -> list[Case]:
                    if read_json(path).get("vehicle") != "rotorcraft"}
     if set(fleet_paths) != EXPECTED_FLEET:
         raise AssertionError(
-            "expected the four catalog, four electric, four glow, and Turbo Lumber v2 files; "
+            "expected the four catalog, four electric, five glow, and Turbo Lumber v2 files; "
             f"missing={sorted(EXPECTED_FLEET - set(fleet_paths))}, "
             f"extra={sorted(set(fleet_paths) - EXPECTED_FLEET)}"
         )
     fleet = {name: read_json(path) for name, path in fleet_paths.items()}
     if any(data.get("format") != "openrc-aircraft v2" for data in fleet.values()):
-        raise AssertionError("all thirteen current aircraft data files must be explicitly migrated to v2")
+        raise AssertionError("all fourteen current fixed-wing aircraft data files must be explicitly migrated to v2")
     stik = fleet["jensen_ugly_stik_60"]
     p51 = fleet["p51d_mustang_120"]
     avanti = fleet["sebart_avanti_s_a200"]
@@ -382,11 +383,14 @@ def run_loader(cases: list[Case], godot: Path, timeout: int, app: Path) -> list[
             input_paths.append(str(path))
         manifest = temp / "manifest.json"
         manifest.write_text(json.dumps(input_paths, ensure_ascii=False), encoding="utf-8")
+        engine_log = temp / "godot.log"
         command = [str(godot), "--headless", "--path", str(app), "--script",
-                   str(LOADER_PROBE), "--", str(manifest)]
+                   str(LOADER_PROBE), "--log-file", str(engine_log), "--", str(manifest)]
         run = subprocess.run(command, cwd=ROOT, text=True, capture_output=True,
                              encoding="utf-8", errors="replace", timeout=timeout, check=False)
         combined = run.stdout + run.stderr
+        if engine_log.exists():
+            combined += engine_log.read_text(encoding="utf-8", errors="replace")
         if run.returncode != 0:
             raise AssertionError(f"public loader probe exited {run.returncode}:\n{combined}")
         errors = ENGINE_ERROR.findall(combined)

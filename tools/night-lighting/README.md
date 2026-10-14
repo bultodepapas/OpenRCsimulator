@@ -1,6 +1,6 @@
 # Night-lighting asset intake
 
-FW-67 builds selected, redistributable runtime derivatives from immutable downloads under `assets/landscape/night-lighting/source/`. Read the source [ledger](../../assets/landscape/night-lighting/README.md) and the [night-landscape plan](../../docs/plans/night-landscape-lighting.md) before changing selection or conversion settings.
+FW-67 builds selected, redistributable runtime derivatives from immutable downloads under `assets/landscape/night-lighting/source/`. Read the source [ledger](../../assets/landscape/night-lighting/README.md) and the [current field-world guide](../../docs/FIELD-WORLD-PLAN.md#night-field-and-campfire) and [FW-66 research](../../docs/research/field-world/FW-66/README.md) before changing selection or conversion settings.
 
 Run from the repository root:
 

@@ -1280,6 +1280,39 @@ msgstr "Se asigna como máximo una falla de práctica por vuelo. Si terminas ant
 msgid "Include catastrophic failures"
 msgstr "Incluir fallas catastróficas"
 
+msgid "Available failures for this aircraft"
+msgstr "Fallas disponibles para este avión"
+
+msgid "These are the failure events supported by this aircraft."
+msgstr "Estos son los sucesos de falla compatibles con este avión."
+
+msgid "Focus the list, then use arrow keys or Page Up/Down to scroll."
+msgstr "Enfoca la lista y usa las flechas o RePág/AvPág para desplazarte."
+
+msgid "Available failure types"
+msgstr "Tipos de falla disponibles"
+
+msgid "Availability details are unavailable."
+msgstr "Los detalles de disponibilidad no están disponibles."
+
+msgid "No failure events are available for this aircraft."
+msgstr "No hay sucesos de falla disponibles para este avión."
+
+msgid "Power-loss failure unavailable"
+msgstr "Falla por pérdida de potencia no disponible"
+
+msgid "Turbine flameout and rotor rundown are not modeled."
+msgstr "No se modelan la pérdida de llama de la turbina ni la desaceleración del rotor."
+
+msgid "This electric installation has no supported continuous motor and rotor state."
+msgstr "Esta instalación eléctrica no tiene un modelo compatible de funcionamiento continuo del motor y el rotor."
+
+msgid "Finite-glow lifecycle data is unavailable; the legacy RPM model has no qualified shutdown law."
+msgstr "No hay datos del ciclo de vida del motor glow; el modelo antiguo de RPM no tiene una ley de apagado validada."
+
+msgid "This propulsion family has no qualified engine shutdown law."
+msgstr "Esta familia de propulsión no tiene una ley de apagado del motor validada."
+
 msgid "Includes sustained radio-link loss with receiver failsafe. Recovery is not guaranteed."
 msgstr "Incluye la pérdida sostenida del enlace de radio y la protección del receptor. No se garantiza la recuperación."
 

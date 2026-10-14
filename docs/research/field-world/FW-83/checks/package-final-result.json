@@ -1,0 +1,174 @@
+{
+  "format": "openrc-fw83-package-probe v1",
+  "date": "2026-10-14",
+  "engine": "Godot v4.7.2.stable.official.ed1daf0bf",
+  "export": {
+    "preset": "Windows",
+    "command": "--headless --editor --path app --audio-driver Dummy --export-pack Windows <absolute .tools/fw83-export/final-windows.pck>",
+    "exit_code": 0,
+    "pack_path": ".tools/fw83-export/final-windows.pck",
+    "pack_bytes": 58103272,
+    "pack_sha256": "AEA656044FE769F2A8F8D1918C1FD07F5B98DF8276F305D55CC1662439313CAE",
+    "log": "package-final-export.log",
+    "error_detected": true,
+    "error_message": "Cannot export an invalid aircraft model: no checked-in model manifest exists for this visual family.",
+    "failing_visual_family": "hx-700",
+    "error_context": "The aircraft export plugin enumerates all catalog IDs, including the rotorcraft hx-700 family, which has no airplane model manifest."
+  },
+  "resource_probe": {
+    "command": "--headless --path <empty .tools/fw83-export/probe-empty> --main-pack <absolute final-windows.pck> --audio-driver Dummy --script <absolute tools/atmosphere/sky_pack_probe.gd>",
+    "main_pack": true,
+    "exit_code": 0,
+    "checks": 35,
+    "failures": 0,
+    "log": "package-final-probe.log",
+    "engine_log": "package-final-probe-engine.log",
+    "checks_detail": [
+      {
+        "name": "pack profile classic",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail classic",
+        "passed": true
+      },
+      {
+        "name": "pack profile clear",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail clear",
+        "passed": true
+      },
+      {
+        "name": "pack profile cirrus",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail cirrus",
+        "passed": true
+      },
+      {
+        "name": "pack profile fair_cumulus",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail fair_cumulus",
+        "passed": true
+      },
+      {
+        "name": "pack profile broken",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail broken",
+        "passed": true
+      },
+      {
+        "name": "pack profile overcast",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail overcast",
+        "passed": true
+      },
+      {
+        "name": "pack profile prestorm",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail prestorm",
+        "passed": true
+      },
+      {
+        "name": "pack profile distant_storm",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail distant_storm",
+        "passed": true
+      },
+      {
+        "name": "pack profile electrical_storm",
+        "passed": true
+      },
+      {
+        "name": "pack thumbnail electrical_storm",
+        "passed": true
+      },
+      {
+        "name": "pack thunder",
+        "passed": true
+      },
+      {
+        "name": "pack MIT notice",
+        "passed": true
+      },
+      {
+        "name": "pack CC0 notice",
+        "passed": true
+      },
+      {
+        "name": "pack storm shader",
+        "passed": true
+      },
+      {
+        "name": "pack sky checkpoint",
+        "passed": true
+      },
+      {
+        "name": "pack cloud texture resource FX_CloudAlpha03",
+        "passed": true
+      },
+      {
+        "name": "pack cloud texture 2048x2048 FX_CloudAlpha03",
+        "passed": true
+      },
+      {
+        "name": "pack cloud texture LA8 FX_CloudAlpha03",
+        "passed": true
+      },
+      {
+        "name": "pack cloud texture mipmaps FX_CloudAlpha03",
+        "passed": true
+      },
+      {
+        "name": "pack cloud texture resource FX_CloudAlpha06",
+        "passed": true
+      },
+      {
+        "name": "pack cloud texture 2048x2048 FX_CloudAlpha06",
+        "passed": true
+      },
+      {
+        "name": "pack cloud texture LA8 FX_CloudAlpha06",
+        "passed": true
+      },
+      {
+        "name": "pack cloud texture mipmaps FX_CloudAlpha06",
+        "passed": true
+      },
+      {
+        "name": "pack storm-bank shader",
+        "passed": true
+      },
+      {
+        "name": "pack rain-curtain shader",
+        "passed": true
+      },
+      {
+        "name": "pack storm-bank script",
+        "passed": true
+      },
+      {
+        "name": "pack WickedInsignia CC0 notice",
+        "passed": true
+      }
+    ],
+    "startup_errors": [
+      "The PCK-only main-pack run logged a missing GDExtension dynamic library at res://native/ground_vehicle/openrc_ground_vehicle.gdextension; all 35 resource assertions still ran and passed."
+    ]
+  },
+  "release_qualified": false,
+  "qualification_reason": "Not qualified: the Windows export log contains the aircraft-contract plugin ERROR. The PCK was written and all resource assertions passed, but this does not qualify a release export."
+}

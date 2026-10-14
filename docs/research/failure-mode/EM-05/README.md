@@ -40,6 +40,7 @@ Godot 4.7.2 stable, Linux binary through WSL, production 240 Hz for session/onse
 | Check | Result | Scope |
 | --- | --- | --- |
 | `test_failure_profiles.gd` | 119 checks, 0 failed | All eight catalog entries, identity-independent capability derivation, eligible pools, 0/100 settings, notices excluded from physical identity, strict v2 records and v1 restore. |
+| `test_failure_shutdown.gd` | 206 checks, 0 failed; 35.9 s | Actual 240 Hz onset on all three glow installations and Timber; onset and first-post-onset rejection rollback; exact manual source-off parity, active checkpoint/replay, corrupt-state and cross-profile restore/reload refusal, blocked glow starter, usable controls and Repeat. An additional dynamic-pack manual-off fixture verifies auxiliary charge/heat/energy budgets independently. |
 | `test_failures.gd` | 5,150 checks, 0 failed | Existing logical mechanisms, deterministic scheduling, rollback and historical records. |
 | `test_failure_session.gd` | 99 checks, 0 failed | All eight healthy baselines, real onset/rejection, complete observed checkpoints and exact continuation. |
 | `test_failure_power.gd` | 88 checks, 0 failed | All eight real demand paths, raw-input retention and finite-glow cutoff precedence. |
@@ -51,6 +52,8 @@ Godot 4.7.2 stable, Linux binary through WSL, production 240 Hz for session/onse
 | `test_ui_language.gd` | Pass; 491 Spanish catalog texts, none untranslated | Both new labels/hints and existing Home/direct-route language isolation. The stale route-only fixture now uses a live `--quick-flight` instead of invalid zero-duration trace arguments. |
 | `test_golden.gd` | Four flights, 0 failed | Existing healthy flight references. |
 | Transcendental guard and self-test | Pass | Shared float64 math boundary. |
+
+The shutdown cases use seed `474`, which schedules source loss at 20 qualified seconds (tick 4,800 from the high-altitude test start). The suite advances real accepted physics ticks rather than shortening production onset. Electric source-off assertions retain nonpositive passive shaft drag: zero motor current does not mean zero total shaft torque. The faulted simulation intentionally refuses a new checkpoint until recovery; rollback compares accepted arrays/runtime, then restores the saved pre-fault checkpoint exactly. These were focused checks, not a full `app/test.sh` run or exported-build qualification.
 
 Commands follow [TOOLS](../../../TOOLS.md). A focused invocation is:
 

@@ -1,4 +1,4 @@
-## FW-83 production-world storm-bank capture harness draft.
+## FW-83 production-world storm-bank capture harness.
 ## Run with the pinned native Compatibility renderer, not --headless. It builds the real default field and World.
 extends SceneTree
 

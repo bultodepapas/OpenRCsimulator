@@ -13,6 +13,8 @@ class ProvenanceTests(unittest.TestCase):
         self.read_text = Path.read_text
         # These are deliberate synthetic manifests for testing the report reader,
         # never saved as observations or substituted into retained bench outputs.
+        # Refresh only their in-memory input identities: retained trajectories
+        # intentionally describe an older aircraft/configuration snapshot.
         self.runs = {path: json.loads(path.read_text(encoding="utf-8"))
                      for path in report.RUNS.values()}
         for value in self.runs.values():
@@ -20,6 +22,18 @@ class ProvenanceTests(unittest.TestCase):
             value["source_sha256"] = {p: "f" * 64 for p in report.SOURCE_PATHS}
             for run in value["runs"]:
                 run.setdefault("mode_events", [])
+                engine = run["engine"]
+                aircraft_path, installation_path = report.ENGINE_INPUTS[engine]
+                configuration = run["configuration"]
+                configuration["aircraft_input_sha256"] = report.sha256(report.ROOT / aircraft_path)
+                installation_path = report.ROOT / installation_path
+                installation = json.loads(installation_path.read_text(encoding="utf-8"))
+                identity = json.loads(configuration["glow_identity"])
+                identity["sha256"] = report.sha256(installation_path)
+                profile_path = report.ROOT / "app" / str(installation["profile"]).removeprefix("res://")
+                identity["profile"]["sha256"] = report.sha256(profile_path)
+                configuration["glow_identity"] = json.dumps(identity, sort_keys=True, separators=(",", ":"))
+                configuration["glow_family"] = report.FAMILIES[engine]
 
     def fixture(self):
         def read(path, *args, **kwargs):

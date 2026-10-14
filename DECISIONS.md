@@ -209,7 +209,7 @@ Add a complete optional identity module to physical v2: authored IDs for invento
 
 Use field-light v2 to describe one physical mast with four independently aimed emitters. The v1 reader remains explicit for historical fixtures. Render and collision consume the same installation identity so multiple heads cannot create duplicate poles. For v2, renderer distance attenuation and analytic exposure use the same inverse-square law with the pinned Godot range window and angular falloff; scene display caps remain artistic estimates, not photometric certification. Do not migrate the renderer or add four shadow maps for this composition.
 
-Use the downloaded CC0 Innerscene housing, Kenney hearth and Mikodrak flame frames through the reproducible [asset pipeline](tools/night-lighting/README.md). Animate bounded fire sprites and embers analytically from the presentation clock and current wind, without independent elapsed-time state. The hearth collider remains when the flame is off. Club/Airfield/Off and the independent fire switch are presentation preferences; they do not alter aircraft state or checkpoint physics. [Research](docs/research/field-world/FW-66/investigations.md), [acceptance plan](docs/plans/night-landscape-lighting.md).
+Use the downloaded CC0 Innerscene housing, Kenney hearth and Mikodrak flame frames through the reproducible [asset pipeline](tools/night-lighting/README.md). Animate bounded fire sprites and embers analytically from the presentation clock and current wind, without independent elapsed-time state. The hearth collider remains when the flame is off. Club/Airfield/Off and the independent fire switch are presentation preferences; they do not alter aircraft state or checkpoint physics. [Research](docs/research/field-world/FW-66/investigations.md), [current field-world guide](docs/FIELD-WORLD-PLAN.md#night-field-and-campfire).
 
 ### 2026-10-13 — Resolve training failures once per flight and commit with physics (EM)
 
@@ -223,11 +223,21 @@ Derive a closed eligibility profile from validated normalized propulsion capabil
 
 Resolve new episodes as `openrc-failure-plan v2`, including the profile in identity. Keep the v1 reader and its original catalog/seed mapping for saved episodes; do not redraw historical flights when new events are added. A profile mismatch rejects restore/reload atomically. Stage the source mode within the simulation tick transaction so both onset rejection and failure on the following tick retain a coherent accepted boundary. [Mechanisms, verification and limits](docs/research/failure-mode/EM-05/README.md).
 
+### 2026-10-14 — Separate actuator mechanics from installed hardware (EM-03a/AS-11)
+
+Put the existing sampled servo law in a shared physical kernel, keeping the scalar arithmetic and three-state conventional path unchanged. A detached batch interface may exercise independent positions in fixtures, but neither its indices nor render hinges declare aircraft hardware. Require authored actuator/surface relationships and complete accepted state before enabling one-sided jams; the aggregate horizontal tail still cannot represent independent elevator halves.
+
+Expose actual accepted surface angles from the session to both physics and rendering. Keep explicit command poses for scripted captures. Display the capability-filtered failure pool as read-only Home/Pause information, without consuming a draw or revealing the current hidden event. [Exact preservation, asymmetric fixtures and remaining gates](docs/research/failure-mode/EM-03a/README.md).
+
 ### 2026-10-13 — Independent sky appearance and scene-local storms (FW-77–84)
 
 Keep the calibrated Compatibility sky as the default branch, and resolve the added cloud catalog independently from physical weather and astronomical time. Mean wind drives analytic float64 cloud transport as an authored wind-aloft proxy; it does not sample or consume turbulence RNG. Retain the current one-second uniform cadence until profiling qualifies a smoother path. Home and paused flight share a detached sky editor. A native visual envelope validates resolved catalog values, transport and ordered edits before physics restore; absent historical sky data explicitly selects classic. A catalog retune is an incompatibility, not permission to reinterpret an old checkpoint.
 
 Render electrical effects in bounded scene-local meshes and one shadowless directional light. Do not change shared Sky uniforms or the night exposure baseline per pulse. Use a deterministic presentation schedule and bounded distance-delay audio on the existing environment bus; reuse MIT lightning-source ideas and unchanged CC0 thunder with packaged notices. This avoids a renderer migration and leaves physics identity unchanged. Projected cloud decks and point-source thunder are presentation approximations; reflections receive no transient flash. World-anchored thunderheads, spatial wind, volumetric evaluation and tornado mechanics retain their separate gates. [Current controls](docs/FIELD-WORLD-PLAN.md#sky-and-cloud-controls), [software evidence](docs/research/field-world/FW-78/README.md), [storm evidence and provenance](docs/research/field-world/FW-84/README.md).
+
+### 2026-10-14 — Bounded distant cloud formation in Compatibility (FW-83)
+
+Use two unchanged CC0 cloud images in a scene-owned cluster of 30 lobes and three rain sheets for Distant Storm. The reviewed POM addon builds a camera-following overhead canopy, so it is not adopted for a localized thunderhead. Reuse accepted sky radiance, exposure and deterministic transport; choose a periodic world copy only outside the camera's visible range. This adds parallax and a distant rain silhouette without a renderer migration or physical-weather change. It is an impostor treatment for distant views, not a traversable volume; large viewpoint changes, tropical bands, electrical-bank integration and minimum-hardware performance retain their gates. [Intake, implementation and evidence](docs/research/field-world/FW-83/README.md).
 
 ### 2026-10-13 — Deliver a separate experimental rotorcraft flight route (HELI-16)
 

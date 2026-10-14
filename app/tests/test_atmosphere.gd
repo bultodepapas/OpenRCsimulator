@@ -89,10 +89,17 @@ func _initialize() -> void:
 	# Rendering clock wrapping must not reset a cloud field whose period is much longer than 1024 s.
 	_check("clouds: continuous across render clock wrap", Atmosphere.cloud_offset(1024.0).distance_to(Atmosphere.cloud_offset(1023.0)) < 0.01)
 	Atmosphere.update_clouds(env3, 5.0)
-	var fresh_env := Atmosphere.environment() # a flight restart also resets the ground, including duplicate materials
-	_check("clouds: fresh environment resets displacement", Atmosphere.last_cloud_offset == Vector2.ZERO)
-	_check("clouds: existing sky restores ground even without sky update", not Atmosphere.update_clouds(env3, 5.0)
-		and Atmosphere.last_cloud_offset == Atmosphere.cloud_offset(5.0))
+	var fresh_env := Atmosphere.environment()
+	var fresh_sky: ShaderMaterial = fresh_env.sky.sky_material
+	_check("clouds: fresh environment preserves displacement", Atmosphere.last_cloud_offset == Atmosphere.cloud_offset(5.0)
+		and fresh_sky.get_shader_parameter("cloud_offset") == Atmosphere.cloud_offset(5.0))
+	var existing_sky: ShaderMaterial = env3.sky.sky_material
+	var existing_offset: Variant = existing_sky.get_shader_parameter("cloud_offset")
+	_check("clouds: flight reset reanchors displacement at zero",
+		Atmosphere.configure_appearance(Atmosphere.appearance_config()) and Atmosphere.last_cloud_offset == Vector2.ZERO)
+	_check("clouds: existing sky restores ground without changing its uniform", Atmosphere.update_clouds(env3, 5.0)
+		and Atmosphere.last_cloud_offset == Atmosphere.cloud_offset(5.0)
+		and existing_sky.get_shader_parameter("cloud_offset") == existing_offset)
 	Atmosphere.update_clouds(fresh_env, 0.0)
 	_check("clouds: replay reset restores exact zero", Atmosphere.last_cloud_offset == Vector2.ZERO)
 

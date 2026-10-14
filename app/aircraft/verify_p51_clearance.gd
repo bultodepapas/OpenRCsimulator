@@ -27,7 +27,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	var airplane := P51.build()
+	var airplane := AirplaneBuilder.build(AirplaneBuilder.P51_ID)
 	get_root().add_child(airplane.root)
 	var flown := P51.manual_throws_deg()
 	var big := {aileron = flown.aileron, elevator = 45.0, rudder = 45.0}

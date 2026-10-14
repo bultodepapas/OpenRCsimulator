@@ -148,6 +148,18 @@ static func update_cloud_appearance(root: Node, cloud_snapshot: Dictionary) -> v
 	_apply_cloud_snapshot(material, cloud_snapshot)
 
 
+## A MultiMesh sorts as one object at its origin, not at each star's 19 km position.
+## Draw it before a world cloud's blended alpha, while retaining opaque depth occlusion.
+static func set_distant_cloud_order(root: Node, enabled: bool) -> void:
+	var field := root.get_node_or_null("StarField") as MultiMeshInstance3D
+	if field == null or field.multimesh == null:
+		return
+	var material := field.multimesh.mesh.material as ShaderMaterial
+	var priority := -1 if enabled else 0
+	if material != null and material.render_priority != priority:
+		material.render_priority = priority
+
+
 static func _apply_cloud_snapshot(material: ShaderMaterial, snapshot: Dictionary) -> void:
 	var spec_atmosphere: Dictionary = Spec.ATMOSPHERE
 	material.set_shader_parameter("cloud_coverage", float(spec_atmosphere.cloud_coverage))

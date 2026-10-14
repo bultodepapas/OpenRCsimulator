@@ -12,7 +12,7 @@ import tempfile
 import unittest
 
 from cases import build_cases
-from check import FLEET, ROOT, SCHEMA, problems, read_json, validator
+from check import FLEET, ROOT, SCHEMA, default_files, problems, read_json, validator
 
 HERE = Path(__file__).resolve().parent
 
@@ -32,11 +32,15 @@ class ContractTests(unittest.TestCase):
                 paths.append(str(path))
             manifest = Path(folder) / 'manifest.json'
             manifest.write_text(json.dumps(paths), encoding='utf-8')
-            run = subprocess.run([godot, '--headless', '--path', str(ROOT / 'app'),
+            engine_log = Path(folder) / 'godot.log'
+            run = subprocess.run([godot, '--headless', '--log-file', str(engine_log), '--path', str(ROOT / 'app'),
                                   '--script', str(HERE / 'loader_probe.gd'), '--', str(manifest)],
                                  text=True, capture_output=True, timeout=300)
-        self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
-        self.assertNotRegex(run.stdout + run.stderr, r'(?m)^(?:SCRIPT )?ERROR:')
+            engine_output = run.stdout + run.stderr
+            if engine_log.exists():
+                engine_output += engine_log.read_text(encoding='utf-8', errors='replace')
+        self.assertEqual(run.returncode, 0, engine_output)
+        self.assertNotRegex(engine_output, r'(?m)^(?:SCRIPT )?ERROR:')
         rows = [json.loads(line.removeprefix('DATA4A '))
                 for line in run.stdout.splitlines() if line.startswith('DATA4A ')]
         self.assertEqual([r['index'] for r in rows], list(range(len(cases))))
@@ -85,7 +89,13 @@ class ContractTests(unittest.TestCase):
     def test_cli_exit_status_and_diagnostic(self):
         run = subprocess.run([sys.executable, str(HERE / 'check.py')], capture_output=True, text=True)
         self.assertEqual(run.returncode, 0, run.stderr)
-        self.assertIn(f'{len(list(FLEET.glob("*.json")))} aircraft, 0 failed', run.stdout)
+        fixed_wing_files = default_files()
+        all_data_files = sorted(FLEET.glob('*.json'))
+        rotorcraft_files = [path for path in all_data_files
+                            if read_json(path).get('vehicle') == 'rotorcraft']
+        self.assertTrue(rotorcraft_files, 'fixture must include a separate-contract rotorcraft')
+        self.assertTrue(set(rotorcraft_files).isdisjoint(fixed_wing_files))
+        self.assertIn(f'{len(fixed_wing_files)} aircraft, 0 failed', run.stdout)
         with tempfile.TemporaryDirectory() as folder:
             bad = Path(folder) / 'bad.json'
             data = read_json(FLEET / 'jensen_ugly_stik_60.json')
@@ -99,6 +109,12 @@ class ContractTests(unittest.TestCase):
             run = subprocess.run([sys.executable, str(HERE / 'check.py'), str(bad)],
                                  capture_output=True, text=True)
             self.assertEqual(run.returncode, 1)
+            self.assertNotIn('Traceback', run.stderr)
+            bad.write_text('[]', encoding='utf-8')
+            run = subprocess.run([sys.executable, str(HERE / 'check.py'), str(bad)],
+                                 capture_output=True, text=True)
+            self.assertEqual(run.returncode, 1)
+            self.assertIn('expected top-level JSON object', run.stderr)
             self.assertNotIn('Traceback', run.stderr)
 
 

@@ -32,8 +32,8 @@ func _row(prefix: String) -> String:
 
 
 func _alt() -> float:
-	var r := _row("sim")
-	return float(r.get_slice("alt", 1).strip_edges().get_slice(" ", 0))
+	# Read the simulation state directly: the panel's altitude is rounded to 0.1 m.
+	return -_main.session.sim.state[2]
 
 
 func _pct() -> int:
@@ -52,7 +52,14 @@ func _run() -> void:
 	_key(KEY_RIGHT, true)
 	await create_timer(0.5).timeout # limiter needs 0.25 s
 	var r := _row("roll")
-	_check("hold -> roll +1, aileron +20°", "+1.00" in r and "+20.0°" in r, r)
+	var normal_rates: Dictionary = _main.session.aircraft.model.controls.rates.normal
+	var expected_aileron_deg: float = clampf(float(normal_rates.aileron) + _main.session.trims.roll, -1.0, 1.0) \
+		* _main.session.throws_deg().aileron
+	var indicated_aileron_deg := float(r.get_slice("R ail ", 1).get_slice("°", 0).strip_edges())
+	_check("hold -> roll +1 uses aircraft normal rate and trim", "+1.00" in r and _main.session.rates_active()
+		and absf(indicated_aileron_deg - expected_aileron_deg) < 0.1,
+		"%s (expected %+.2f° from rate %.4f + trim %.4f)" % [r, expected_aileron_deg,
+		float(normal_rates.aileron), _main.session.trims.roll])
 	_key(KEY_RIGHT, false)
 	await create_timer(0.5).timeout
 	r = _row("roll")
@@ -103,12 +110,19 @@ func _run() -> void:
 	var a0 := _alt()
 	await create_timer(1.0).timeout
 	var a1 := _alt()
-	_check("physics: trimmed level flight holds altitude hands-off", a0 > 29.5 and absf(a1 - a0) < 0.2, "%.2f → %.2f m" % [a0, a1])
+	_check("physics: trimmed level flight holds altitude hands-off", a0 > 29.5 and absf(a1 - a0) < 0.2, "%.3f → %.3f m" % [a0, a1])
+	var throttle_before: float = _main.session.sim.inputs[3]
+	var rpm_before: float = _main.session.sim.aux[0]
 	_key(KEY_S, true)
 	await create_timer(2.0).timeout
 	_key(KEY_S, false)
 	var a2 := _alt()
-	_check("physics: throttle back → descends", a2 < a1 - 0.5, "%.2f → %.2f m" % [a1, a2])
+	var throttle_after: float = _main.session.sim.inputs[3]
+	var rpm_after: float = _main.session.sim.aux[0]
+	_check("physics: throttle back → descends", throttle_before > 0.05 and throttle_after < 0.05
+		and rpm_after < rpm_before and a2 < a1 - 0.5,
+		"%.3f → %.3f m; throttle %.3f → %.3f; rpm %.0f → %.0f" % [a1, a2,
+		throttle_before, throttle_after, rpm_before, rpm_after])
 	_key(KEY_R, true)
 	_key(KEY_R, false)
 	await process_frame

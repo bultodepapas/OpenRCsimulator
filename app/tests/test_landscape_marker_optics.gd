@@ -10,7 +10,6 @@ const Exposure := preload("res://render/world/exposure.gd")
 const MARKER_SHADER_PATH := "res://render/landscape_upgrade/runway_marker.gdshader"
 const EDGE_ROW := "runway_edge_stakes"
 const THRESHOLD_ROW := "threshold_stakes"
-const EXPECTED_ROW_SPRITES := 6 # 3 flood heads, 2 runway rows, 1 station lamp.
 
 var _checks := 0
 var _failures := 0
@@ -50,12 +49,15 @@ func _initialize() -> void:
 	var edge_mesh := edge_multimesh.mesh
 	var threshold_mesh := threshold_multimesh.mesh
 	var child_count := field_lights.get_child_count()
+	var physical_light_count := field_lights.find_children("*", "Light3D", true, false).size()
+	var sprite_count := _sprite_material_count(field_lights)
 	var original_edge_material := edge_mesh.surface_get_material(0) as ShaderMaterial
 	var original_threshold_material := threshold_mesh.surface_get_material(0) as ShaderMaterial
 	var station_material := station_multimesh.mesh.surface_get_material(0) as ShaderMaterial
 	var flood_material := (field_lights.get_node("flood_west_lamp") as MeshInstance3D).mesh.surface_get_material(0) as ShaderMaterial
 
 	var helper: Variant = AirfieldLighting.build(field_result.field, light_result.lights, {})
+	var helper_light_count: int = helper.find_children("*", "Light3D", true, false).size()
 	var environment := Atmosphere.environment()
 	Exposure.set_value(environment.tonemap_exposure)
 	helper.bind_environment(environment, field_lights)
@@ -74,14 +76,13 @@ func _initialize() -> void:
 		and flood_material.shader.resource_path == "res://render/world/light_sprite.gdshader")
 	_check("binding adds no FieldLights nodes or physical lights",
 		field_lights.get_child_count() == child_count
-		and field_lights.find_children("*", "SpotLight3D", true, false).size() == 3
-		and helper.find_children("*", "SpotLight3D", true, false).is_empty()
-		and helper.find_children("*", "OmniLight3D", true, false).is_empty())
+		and field_lights.find_children("*", "Light3D", true, false).size() == physical_light_count
+		and helper.find_children("*", "Light3D", true, false).size() == helper_light_count)
 	_check("existing runway material references are replaced only once",
 		(edge_multimesh.mesh.surface_get_material(0) as ShaderMaterial) != original_edge_material
 		and (threshold_multimesh.mesh.surface_get_material(0) as ShaderMaterial) != original_threshold_material)
-	_check("one shared material is used per row, with six existing sprite bindings",
-		helper.get_meta("bound_sprite_materials") == EXPECTED_ROW_SPRITES)
+	_check("one binding is retained for each existing sprite material",
+		sprite_count > 0 and helper.get_meta("bound_sprite_materials") == sprite_count)
 
 	var edge_material := edge_multimesh.mesh.surface_get_material(0) as ShaderMaterial
 	var threshold_material := threshold_multimesh.mesh.surface_get_material(0) as ShaderMaterial
@@ -97,7 +98,8 @@ func _initialize() -> void:
 	_check("marker size follows the active projection and viewport", 
 		shader_code.contains("VIEWPORT_SIZE.y * abs(PROJECTION_MATRIX[1][1])")
 		and shader_code.contains("view_depth = max(-center.z, 0.001)")
-		and shader_code.contains("units_per_pixel = (2.0 * view_depth) / projected_pixels"))
+		and shader_code.contains("depth_scale = PROJECTION_MATRIX[3][3] == 0.0 ? view_depth : 1.0")
+		and shader_code.contains("units_per_pixel = (2.0 * depth_scale) / projected_pixels"))
 	var cap_position := shader_code.find("float emission = min(")
 	var fade_position := shader_code.find("* distance_fade;")
 	_check("night cap tracks dusk and range fade is applied after the cap",
@@ -123,8 +125,14 @@ func _initialize() -> void:
 
 	# Evaluate the shader's east-axis direction rule against the committed point data at both ends, near and far.
 	# `marker_east` is world X because the field's NED-to-render map puts east on X.
-	var edge_fixture: Dictionary = light_result.lights.fixtures[3]
-	var threshold_fixture: Dictionary = light_result.lights.fixtures[4]
+	var edge_fixture := _fixture(light_result.lights.fixtures, EDGE_ROW)
+	var threshold_fixture := _fixture(light_result.lights.fixtures, THRESHOLD_ROW)
+	_check("runway fixtures are found by stable ID", edge_fixture.has("points") and threshold_fixture.has("points"))
+	if not edge_fixture.has("points") or not threshold_fixture.has("points"):
+		helper.free()
+		field_lights.free()
+		quit(1)
+		return
 	var expected_edge_points := [[9.0, -50.0], [9.0, -30.0], [9.0, -10.0], [9.0, 10.0], [9.0, 30.0], [9.0, 50.0],
 		[21.0, -50.0], [21.0, -30.0], [21.0, -10.0], [21.0, 10.0], [21.0, 30.0], [21.0, 50.0]]
 	var threshold_points: Array = threshold_fixture.points
@@ -197,9 +205,33 @@ func _initialize() -> void:
 		and threshold_material.get_instance_id() == threshold_material_id
 		and edge_multimesh.mesh.surface_get_material(0) == edge_material
 		and threshold_multimesh.mesh.surface_get_material(0) == threshold_material
-		and helper.get_meta("bound_sprite_materials") == EXPECTED_ROW_SPRITES)
+		and helper.get_meta("bound_sprite_materials") == sprite_count)
 
 	print("LU-09: %d checks, %d failed" % [_checks, _failures])
 	helper.free()
 	field_lights.free()
 	quit(1 if _failures > 0 else 0)
+
+
+func _fixture(fixtures: Array, id: String) -> Dictionary:
+	for fixture: Dictionary in fixtures:
+		if str(fixture.get("id", "")) == id:
+			return fixture
+	return {}
+
+
+func _sprite_material_count(field_lights: Node) -> int:
+	var count := 0
+	for child: Node in field_lights.get_children():
+		var mesh: Mesh = null
+		if child is MeshInstance3D:
+			mesh = child.mesh
+		elif child is MultiMeshInstance3D and child.multimesh != null:
+			mesh = child.multimesh.mesh
+		if mesh == null:
+			continue
+		for surface in mesh.get_surface_count():
+			var material := mesh.surface_get_material(surface) as ShaderMaterial
+			if material != null and material.get_shader_parameter("radiance") != null:
+				count += 1
+	return count

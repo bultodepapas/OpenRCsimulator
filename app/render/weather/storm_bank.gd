@@ -110,10 +110,13 @@ func update_visual(snapshot: Dictionary, environment: Environment, _sun: Directi
 	var cell_m := float(layer.scale_m)
 	_period_m = 64.0 * cell_m
 	var offset: Vector2 = layer.offset
-	# The background samples p + offset, so geometry translates by -offset. The tile seam lies
-	# beyond the 21 km camera far plane plus the formation radius (catalog validation enforces this).
-	position = Vector3(wrapf(float(_spec.east_m) - float(offset.x) * cell_m, -_period_m * 0.5, _period_m * 0.5), 0.0,
-		wrapf(-float(_spec.north_m) - float(offset.y) * cell_m, -_period_m * 0.5, _period_m * 0.5))
+	# The background samples p + offset, so geometry translates by -offset. Select the nearest
+	# periodic copy, keeping its world centre fixed as the camera moves within a tile. A copy
+	# switch is beyond this camera's far plane plus the formation radius, even far from the field.
+	var camera := get_viewport().get_camera_3d()
+	var eye := camera.global_position if camera != null else Vector3.ZERO
+	position = Vector3(_nearest_copy(float(_spec.east_m) - float(offset.x) * cell_m, eye.x), 0.0,
+		_nearest_copy(-float(_spec.north_m) - float(offset.y) * cell_m, eye.z))
 	visible = true
 	var sky := environment.sky.sky_material as ShaderMaterial
 	var cloud_linear: Vector3 = sky.get_shader_parameter("cloud_lin")
@@ -128,6 +131,10 @@ func update_visual(snapshot: Dictionary, environment: Environment, _sun: Directi
 	_rain_material.set_shader_parameter("rain_lin", cloud_linear * 0.28)
 	_rain_material.set_shader_parameter("haze_lin", haze_linear)
 	_rain_material.set_shader_parameter("haze_density", environment.fog_density * 0.35)
+
+
+func _nearest_copy(coordinate: float, eye_coordinate: float) -> float:
+	return coordinate + floor((eye_coordinate - coordinate) / _period_m + 0.5) * _period_m
 
 
 ## Detached diagnostic data for captures/tests. No rendering state is stored in the simulation.

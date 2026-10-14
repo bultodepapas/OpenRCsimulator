@@ -1,0 +1,591 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"field": "res://data/fields/default.json",
+	"format": "openrc-fw83-storm-bank-capture v1",
+	"frames_after_scene_change": 8,
+	"images": [
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 321.34019174591,
+				"fov_deg": 50.0,
+				"id": "pilot",
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"range_m": 10885.3115234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-21",
+			"file": "distant_storm-day-pilot-fov50.png",
+			"id": "distant_storm-day-pilot-fov50",
+			"local_time": "13:00",
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 321.34019174591,
+				"fov_deg": 25.0,
+				"id": "pilot",
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"range_m": 10885.3115234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-21",
+			"file": "distant_storm-day-pilot-fov25.png",
+			"id": "distant_storm-day-pilot-fov25",
+			"local_time": "13:00",
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 318.71300202481,
+				"fov_deg": 50.0,
+				"id": "cross500",
+				"position_world": [
+					353.553405761719,
+					1.70000004768372,
+					-353.553405761719
+				],
+				"range_m": 10841.490234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-21",
+			"file": "distant_storm-day-cross500-fov50.png",
+			"id": "distant_storm-day-cross500-fov50",
+			"local_time": "13:00",
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 318.71300202481,
+				"fov_deg": 25.0,
+				"id": "cross500",
+				"position_world": [
+					353.553405761719,
+					1.70000004768372,
+					-353.553405761719
+				],
+				"range_m": 10841.490234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-21",
+			"file": "distant_storm-day-cross500-fov25.png",
+			"id": "distant_storm-day-cross500-fov25",
+			"local_time": "13:00",
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 321.34019174591,
+				"fov_deg": 50.0,
+				"id": "pilot",
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"range_m": 10885.3115234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-21",
+			"file": "distant_storm-dusk-pilot-fov50.png",
+			"id": "distant_storm-dusk-pilot-fov50",
+			"local_time": "18:25",
+			"msaa": "4x",
+			"phase": "dusk",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 321.34019174591,
+				"fov_deg": 25.0,
+				"id": "pilot",
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"range_m": 10885.3115234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-21",
+			"file": "distant_storm-dusk-pilot-fov25.png",
+			"id": "distant_storm-dusk-pilot-fov25",
+			"local_time": "18:25",
+			"msaa": "4x",
+			"phase": "dusk",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 318.71300202481,
+				"fov_deg": 50.0,
+				"id": "cross500",
+				"position_world": [
+					353.553405761719,
+					1.70000004768372,
+					-353.553405761719
+				],
+				"range_m": 10841.490234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-21",
+			"file": "distant_storm-dusk-cross500-fov50.png",
+			"id": "distant_storm-dusk-cross500-fov50",
+			"local_time": "18:25",
+			"msaa": "4x",
+			"phase": "dusk",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 318.71300202481,
+				"fov_deg": 25.0,
+				"id": "cross500",
+				"position_world": [
+					353.553405761719,
+					1.70000004768372,
+					-353.553405761719
+				],
+				"range_m": 10841.490234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-21",
+			"file": "distant_storm-dusk-cross500-fov25.png",
+			"id": "distant_storm-dusk-cross500-fov25",
+			"local_time": "18:25",
+			"msaa": "4x",
+			"phase": "dusk",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 321.34019174591,
+				"fov_deg": 50.0,
+				"id": "pilot",
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"range_m": 10885.3115234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-29",
+			"file": "distant_storm-fullmoon-pilot-fov50.png",
+			"id": "distant_storm-fullmoon-pilot-fov50",
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 321.34019174591,
+				"fov_deg": 25.0,
+				"id": "pilot",
+				"position_world": [
+					0.0,
+					1.70000004768372,
+					0.0
+				],
+				"range_m": 10885.3115234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-29",
+			"file": "distant_storm-fullmoon-pilot-fov25.png",
+			"id": "distant_storm-fullmoon-pilot-fov25",
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 318.71300202481,
+				"fov_deg": 50.0,
+				"id": "cross500",
+				"position_world": [
+					353.553405761719,
+					1.70000004768372,
+					-353.553405761719
+				],
+				"range_m": 10841.490234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-29",
+			"file": "distant_storm-fullmoon-cross500-fov50.png",
+			"id": "distant_storm-fullmoon-cross500-fov50",
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"bank": {
+				"enabled": true,
+				"layout_version": 1,
+				"period_m": 57600.0,
+				"puff_count": 30,
+				"rain_count": 3,
+				"seed": 1253,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				],
+				"world_center": [
+					-6800.0,
+					0.0,
+					-8500.0
+				]
+			},
+			"camera": {
+				"bearing_deg": 318.71300202481,
+				"fov_deg": 25.0,
+				"id": "cross500",
+				"position_world": [
+					353.553405761719,
+					1.70000004768372,
+					-353.553405761719
+				],
+				"range_m": 10841.490234375,
+				"target_world": [
+					-6800.0,
+					3825.0,
+					-8500.0
+				]
+			},
+			"date": "2026-06-29",
+			"file": "distant_storm-fullmoon-cross500-fov25.png",
+			"id": "distant_storm-fullmoon-cross500-fov25",
+			"local_time": "00:00",
+			"msaa": "4x",
+			"phase": "fullmoon",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		}
+	],
+	"msaa": "4x",
+	"native_renderer": true,
+	"renderer": "gl_compatibility",
+	"viewport": [
+		1280,
+		720
+	],
+	"world_builder": "app/render/world/world.gd"
+}

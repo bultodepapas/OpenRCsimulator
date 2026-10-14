@@ -13,11 +13,16 @@ func check(label: String, ok: bool) -> void:
 
 
 func run_app(args: PackedStringArray) -> Dictionary:
-	var command: PackedStringArray = ["--headless", "--audio-driver", "Dummy", "--path", ProjectSettings.globalize_path("res://"), "--quit-after", "3", "--"]
+	var log_path := ProjectSettings.globalize_path("user://latency-patch-child-%d.log" % Time.get_ticks_usec())
+	var command: PackedStringArray = ["--headless", "--audio-driver", "Dummy", "--path", ProjectSettings.globalize_path("res://"), "--log-file", log_path, "--quit-after", "3", "--"]
 	command.append_array(args)
 	var output: Array = []
 	var code: int = OS.execute(OS.get_executable_path(), command, output, true)
 	var message: String = "".join(output)
+	if FileAccess.file_exists(log_path):
+		var child_log := FileAccess.get_file_as_string(log_path)
+		check("no child log errors: %s" % [args], not "ERROR:" in child_log)
+		DirAccess.remove_absolute(log_path)
 	check("no engine errors: %s" % [args], not "ERROR:" in message)
 	return {code = code, output = message}
 

@@ -28,6 +28,15 @@ func flight(path: String, config: Dictionary) -> Session:
 	check("start flyable " + path, s.is_flyable())
 	return s
 
+
+func _trace_test_directory() -> String:
+	return OS.get_cache_dir().path_join("openrcsimulator-tests").path_join("turbulence-flight-%d" % OS.get_process_id())
+
+
+func _trace_test_path(file_name: String) -> String:
+	return _trace_test_directory().path_join(file_name)
+
+
 func _initialize() -> void:
 	Engine.physics_ticks_per_second = 240
 	var config: Dictionary = Config.preset("turbulent")
@@ -150,7 +159,10 @@ func _trace_checks(config: Dictionary) -> void:
 	check("midflight first row has preceding OU and body", r.trace.value(0,"loads_tas_mps") == s.air_data(s.sim.previous, 39*s.sim.dt()).V)
 	for tick: int in 8:
 		s.sim.step()
-	check("midflight trace continuation saves", r.trace.save("/tmp/openrc-turbulence-midflight.csv") == OK)
+	var midflight_path: String = _trace_test_path("midflight.csv")
+	var midflight_saved: bool = r.trace.save(midflight_path) == OK
+	check("midflight trace continuation saves and removes portable temp file",
+		midflight_saved and DirAccess.remove_absolute(midflight_path) == OK)
 	for defect: String in ["index", "interval", "size", "nonfinite", "missing_rng", "rng_overflow", "origin"]:
 		var trace: Trace = Trace.new()
 		trace.meta = s.trace_meta()
@@ -164,16 +176,22 @@ func _trace_checks(config: Dictionary) -> void:
 			"rng_overflow": trace.meta.recording_start_rng_state = "9223372036854775808"
 			"origin": trace.meta.recording_start_turbulence = "[0,0,0,0,0,0,0]"
 		trace.record(s.sim.tick,s.sim.time(),s.sim.state,s.sim.last_loads,s.sim.inputs,aux)
-		check("malformed OU trace refuses saving "+defect, trace.to_csv().is_empty() and trace.save("/tmp/invalid-ou.csv") == ERR_INVALID_DATA)
+		check("malformed OU trace refuses saving "+defect, trace.to_csv().is_empty() and trace.save(_trace_test_path("invalid-ou.csv")) == ERR_INVALID_DATA)
 	r.recording = false
 	var late: Dictionary = s.checkpoint()
 	late.simulation.tick = 100000000 # exercise late recording without simulating days of flight
 	late.simulation.aux[-1] = (late.simulation.tick - 1) * late.simulation.dt
+	# Keep the owner-level contact boundary aligned with the deliberately advanced simulation clock.
+	late.contact_state.tick = late.simulation.tick
 	check("late-clock checkpoint restores", s.restore_checkpoint(late))
 	r.start(s.trace_meta())
 	for tick: int in 8:
 		s.sim.step()
-	check("late-clock trace preserves weather timestep", r.trace.save("/tmp/openrc-turbulence-long-clock.csv") == OK)
+	var late_path: String = _trace_test_path("late-clock.csv")
+	var late_saved: bool = r.trace.save(late_path) == OK
+	check("late-clock trace preserves weather timestep and removes portable temp file",
+		late_saved and DirAccess.remove_absolute(late_path) == OK)
+	check("turbulence trace test cache directory removed", DirAccess.remove_absolute(_trace_test_directory()) == OK)
 	r.detach()
 	s.free()
 

@@ -75,9 +75,17 @@ func run() -> void:
 	Shadow.update(shadow, Basis.IDENTITY, Vector3(0, 25, 0), 1.5, 1.3, Atmosphere.sun_direction(night), Atmosphere.shadow_strength(night))
 	check("night shadow has zero opacity", shadow.material_override.albedo_color.a == 0.0)
 	check("horizon projection remains bounded", shadow.transform.is_finite() and shadow.position.length() < 1000.0)
-	# Field construction exercises the actual duplicated near-grass material, not a mocked consumer.
+	# The legacy field owns a duplicated, manually lit grass material. The default
+	# scenery uses imported vegetation lit by Godot's scene lights instead.
 	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH).field
+	var had_scenery_env := OS.has_environment("OPENRC_SCENERY")
+	var scenery_env := OS.get_environment("OPENRC_SCENERY")
+	OS.set_environment("OPENRC_SCENERY", "off")
 	var built: Node3D = FieldBuilder.build(field, night)
+	if had_scenery_env:
+		OS.set_environment("OPENRC_SCENERY", scenery_env)
+	else:
+		OS.unset_environment("OPENRC_SCENERY")
 	var contacts: MeshInstance3D = built.get_node("FlightCueShadows") as MeshInstance3D
 	var contact_material: StandardMaterial3D = contacts.mesh.surface_get_material(0) as StandardMaterial3D
 	check("night contact cues can only darken", contact_material.albedo_color == Color.BLACK)
@@ -91,7 +99,7 @@ func run() -> void:
 			grass_count += 1
 			check("near grass has night solar energy", (mat.get_shader_parameter("sun_lin") as Vector3).is_zero_approx())
 			check("near grass has matching night haze", (mat.get_shader_parameter("haze_lin") as Vector3).is_equal_approx(Atmosphere.haze_linear(night)))
-	check("actual near grass checked", grass_count > 0)
+	check("actual legacy near grass checked", grass_count > 0)
 	built.free()
 	holder.free()
 	check("global defaults never mutated", var_to_bytes(Spec.ATMOSPHERE) == original)

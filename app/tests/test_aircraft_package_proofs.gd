@@ -45,10 +45,14 @@ func _run_parent() -> void:
 
 func _run_child(case_name: String, pack_path: String) -> void:
 	var output: Array = []
+	var child_log_path := _created_dir.path_join("child-%s.log" % case_name)
+	_created_files.append(child_log_path)
 	var command := PackedStringArray([
 		"--headless",
 		"--path",
 		ProjectSettings.globalize_path("res://"),
+		"--log-file",
+		child_log_path,
 		"--script",
 		"res://tests/test_aircraft_package_proofs.gd",
 		"--",
@@ -56,7 +60,12 @@ func _run_child(case_name: String, pack_path: String) -> void:
 		"--pack=" + pack_path,
 	])
 	var exit_code := OS.execute(OS.get_executable_path(), command, output, true)
-	_check("isolated marker case runs: " + case_name, exit_code == 0, "\n".join(output))
+	var detail := "\n".join(output)
+	if exit_code != 0 and FileAccess.file_exists(child_log_path):
+		var log_file := FileAccess.open(child_log_path, FileAccess.READ)
+		if log_file != null:
+			detail += "\n" + log_file.get_as_text()
+	_check("isolated marker case runs: " + case_name, exit_code == 0, detail)
 
 
 func _run_case(case_name: String, pack_path: String) -> void:

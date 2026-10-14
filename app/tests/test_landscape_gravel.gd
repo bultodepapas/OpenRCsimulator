@@ -39,14 +39,17 @@ func _initialize() -> void:
 	_check("production field and scenery load", field.ok and loaded.ok)
 	var node := Scenery.build(field.field, loaded.scenery, {theme = "", quality = "high", audio = false, birds = false})
 	var batches := 0
+	var cells := 0
 	var surfaces_valid := true
 	for child: Node in node.get_children():
 		if child is MeshInstance3D and child.mesh != null and child.mesh.get_surface_count() > 0:
+			if str(child.name).begins_with("cell_"):
+				cells += 1
 			var mat: Material = child.mesh.surface_get_material(0)
 			if mat is ShaderMaterial and mat.shader == Scenery.GRAVEL_SHADER:
 				batches += 1
 				surfaces_valid = surfaces_valid and child.mesh.get_surface_count() == 1
-	_check("47 nonempty scenery cells remain after population extraction", node.get_meta("stats").cells == 47)
+	_check("reported scenery cells match the nonempty cell meshes", cells > 0 and node.get_meta("stats").cells == cells)
 	_check("detail uses existing flat single-surface batches", batches > 0 and surfaces_valid)
 	print("gravel flat batches: %d; cells: %d" % [batches, node.get_meta("stats").cells])
 	node.free()

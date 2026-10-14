@@ -3,6 +3,29 @@
 extends SceneTree
 
 const Effects = preload("res://render/crash/effects.gd")
+const Catalog = preload("res://app_state/aircraft_catalog.gd")
+const AircraftData = preload("res://physics/aircraft_data.gd")
+const RotorcraftData = preload("res://physics/rotorcraft_data.gd")
+
+const AIRCRAFT_DATA_DIR := "res://data/aircraft/"
+const CATALOG_AIRPLANE_TAGS := {
+	"jensen-das-ugly-stik-60": "glow_fuel",
+	"stik-glow-61fx-2t": "glow_fuel",
+	"stik-glow-55ax-2t": "glow_fuel",
+	"stik-glow-fs64v-4t": "glow_fuel",
+	"gp-extra-300s-60": "glow_fuel",
+	"p51d-mustang-120": "gasoline",
+	"sebart-avanti-s-a200-p100rx": "kerosene",
+	"turbo-lumber-evolution": "lipo",
+}
+const DATA_ONLY_AIRPLANE_TAGS := {
+	"stik_glow_55ax_2t_apc_13x6.json": {"id": "stik-glow-55ax-2t", "tag": "glow_fuel"},
+	"stik_glow_fs64v_4t_apc_13x6.json": {"id": "stik-glow-fs64v-4t", "tag": "glow_fuel"},
+	"synthetic_stik_electric_4s.json": {"id": "synthetic_stik_electric_4s", "tag": ""},
+	"synthetic_stik_electric_4s_battery.json": {"id": "synthetic_stik_electric_4s_battery", "tag": ""},
+	"synthetic_stik_electric_6s.json": {"id": "synthetic_stik_electric_6s", "tag": ""},
+	"synthetic_stik_electric_6s_battery.json": {"id": "synthetic_stik_electric_6s_battery", "tag": ""},
+}
 
 var _checks := 0
 var _failures := 0
@@ -115,23 +138,98 @@ func _step(fx: Variant, seconds: float) -> void:
 
 
 func _fleet_tags() -> void:
-	var expected := {
-		"jensen_ugly_stik_60": "glow_fuel", "gp_extra_300s_60": "glow_fuel", "p51d_mustang_120": "gasoline",
-		"sebart_avanti_s_a200": "kerosene", "turbo_lumber_evolution": "lipo",
-		# Stik airframe with the glow engines (55AX two-stroke, FS-64V four-stroke, stock and APC 13x6 props; MAX-61FX).
-		"stik_glow_55ax_2t": "glow_fuel", "stik_glow_55ax_2t_apc_13x6": "glow_fuel",
-		"stik_glow_fs64v_4t": "glow_fuel", "stik_glow_fs64v_4t_apc_13x6": "glow_fuel", "stik_glow_61fx_2t": "glow_fuel",
-	}
-	for file: String in DirAccess.get_files_at("res://data/aircraft/"):
+	var classified: Dictionary = {}
+	var catalog_airplane_ids: Dictionary = {}
+	for entry: Dictionary in Catalog.flyable_entries():
+		var id := str(entry.get("id", ""))
+		var path := str(entry.get("data", ""))
+		var vehicle := str(entry.get("vehicle", "airplane"))
+		_check("catalog vehicle type is supported: " + id, vehicle in ["airplane", "rotorcraft"])
+		_check("catalog vehicle flag agrees with its data class: " + id,
+			Catalog.is_rotorcraft(id) == (vehicle == "rotorcraft"))
+		_check("catalog data path is unique: " + id, not path.is_empty() and not classified.has(path), path)
+		if not path.is_empty() and not classified.has(path):
+			classified[path] = {id = id, vehicle = vehicle, source = "catalog"}
+		if vehicle == "airplane":
+			catalog_airplane_ids[id] = true
+	for file: String in DATA_ONLY_AIRPLANE_TAGS:
+		var path := AIRCRAFT_DATA_DIR + file
+		_check("data-only airplane configuration stays outside the catalog: " + file, not classified.has(path))
+		if not classified.has(path):
+			var expected: Dictionary = DATA_ONLY_AIRPLANE_TAGS[file]
+			classified[path] = {id = str(expected.id), vehicle = "airplane", source = "data-only"}
+
+	var discovered: Dictionary = {}
+	for file: String in DirAccess.get_files_at(AIRCRAFT_DATA_DIR):
 		if not file.ends_with(".json"):
 			continue
-		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/" + file))
-		var kinds: Array = []
-		for item: Dictionary in raw.inventory:
-			if item.has("energy_source"):
-				kinds.append(item.energy_source)
-		var id := file.get_basename()
-		if expected.has(id):
-			_check("%s carries %s" % [id, expected[id]], kinds == [expected[id]], str(kinds))
+		var path := AIRCRAFT_DATA_DIR + file
+		var kind: Dictionary = classified.get(path, {})
+		_check("aircraft data file has an explicit energy-test classification: " + file, not kind.is_empty())
+		if kind.is_empty():
+			continue
+		discovered[path] = true
+		var id := str(kind.id)
+		if kind.vehicle == "rotorcraft":
+			_check("rotorcraft remains outside airplane inventory energy tags: " + id,
+				id == "xcell-60-research" and not CATALOG_AIRPLANE_TAGS.has(id))
+			var rotor_loaded: Dictionary = RotorcraftData.load_file(path)
+			_check("%s loads through the rotorcraft schema" % id, rotor_loaded.get("ok", false), str(rotor_loaded.get("errors", [])))
+			if rotor_loaded.get("ok", false):
+				_check("%s retains its rotorcraft identity without airplane inventory" % id,
+					rotor_loaded.get("id", "") == id and rotor_loaded.get("raw", {}).get("vehicle", "") == "rotorcraft"
+					and not rotor_loaded.get("raw", {}).has("inventory"))
+			continue
+
+		var expected_tags := PackedStringArray()
+		if kind.source == "catalog":
+			var catalog_has_expected := CATALOG_AIRPLANE_TAGS.has(id)
+			_check("catalog airplane has an explicit expected energy classification: " + id, catalog_has_expected)
+			if catalog_has_expected and not str(CATALOG_AIRPLANE_TAGS[id]).is_empty():
+				expected_tags.append(str(CATALOG_AIRPLANE_TAGS[id]))
 		else:
-			_check("%s (synthetic electric donor) tags no energy" % id, kinds.is_empty(), str(kinds))
+			var data_only_has_expected := DATA_ONLY_AIRPLANE_TAGS.has(file)
+			_check("data-only airplane has an explicit expected energy classification: " + file, data_only_has_expected)
+			if data_only_has_expected and not str(DATA_ONLY_AIRPLANE_TAGS[file].tag).is_empty():
+				expected_tags.append(str(DATA_ONLY_AIRPLANE_TAGS[file].tag))
+		var airplane_loaded: Dictionary = AircraftData.load_file(path)
+		_check("%s loads through the airplane schema" % id, airplane_loaded.get("ok", false), str(airplane_loaded.get("errors", [])))
+		if airplane_loaded.get("ok", false):
+			_check("%s has the expected airplane data identity" % id, airplane_loaded.model.get("id", "") == id)
+		var tags := _inventory_energy_tags(path)
+		_check("%s inventory energy tags match its classification" % id,
+			tags == expected_tags, "expected %s, found %s" % [str(expected_tags), str(tags)])
+
+	for path: String in classified:
+		_check("classified aircraft data path exists: " + path, discovered.has(path))
+	for id: String in CATALOG_AIRPLANE_TAGS:
+		_check("energy expectations still identify a catalog airplane: " + id, catalog_airplane_ids.has(id))
+
+
+func _inventory_energy_tags(path: String) -> PackedStringArray:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	_check("airplane inventory JSON parses: " + path.get_file(), parsed is Dictionary)
+	if not parsed is Dictionary:
+		return PackedStringArray()
+	var inventory: Variant = parsed.get("inventory", null)
+	_check("airplane inventory is an array: " + path.get_file(), inventory is Array)
+	if not inventory is Array:
+		return PackedStringArray()
+	var tags := PackedStringArray()
+	var valid := true
+	var issue := ""
+	for item: Variant in inventory:
+		if not item is Dictionary:
+			valid = false
+			issue = "inventory item is not an object"
+			continue
+		if not item.has("energy_source"):
+			continue
+		var tag: Variant = item.get("energy_source")
+		if not tag is String or not tag in ["glow_fuel", "gasoline", "kerosene", "lipo"]:
+			valid = false
+			issue = "unrecognized energy tag %s" % str(tag)
+		elif tag is String:
+			tags.append(tag)
+	_check("airplane inventory entries and energy tags are valid: " + path.get_file(), valid, issue)
+	return tags
