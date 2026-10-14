@@ -94,10 +94,12 @@ func _initialize() -> void:
 		and is_equal_approx(float(edge_material.get_shader_parameter("readability_gain_floor")), 0.0025)
 		and is_equal_approx(float(edge_material.get_shader_parameter("distance_fade_start_m")), 300.0)
 		and is_equal_approx(float(edge_material.get_shader_parameter("distance_fade_end_m")), 600.0))
-	_check("marker size follows the active projection and viewport", 
+	# Perspective projection scales pixel size with view depth; orthographic projection does not.
+	_check("marker size follows perspective or orthographic projection and viewport",
 		shader_code.contains("VIEWPORT_SIZE.y * abs(PROJECTION_MATRIX[1][1])")
 		and shader_code.contains("view_depth = max(-center.z, 0.001)")
-		and shader_code.contains("units_per_pixel = (2.0 * view_depth) / projected_pixels"))
+		and shader_code.contains("depth_scale = PROJECTION_MATRIX[3][3] == 0.0 ? view_depth : 1.0")
+		and shader_code.contains("units_per_pixel = (2.0 * depth_scale) / projected_pixels"))
 	var cap_position := shader_code.find("float emission = min(")
 	var fade_position := shader_code.find("* distance_fade;")
 	_check("night cap tracks dusk and range fade is applied after the cap",
