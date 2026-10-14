@@ -171,9 +171,11 @@ def instrument_branches(project: Path) -> None:
     )
     ground = replace_once(
         ground,
+        "\t\tvar compression := s[RB.POS + 2] + down[0] * r[0] + down[1] * r[1] + down[2] * r[2]\n"
         "\t\tif compression <= 0.0:\n\t\t\tcontinue\n",
+        "\t\tvar compression := s[RB.POS + 2] + down[0] * r[0] + down[1] * r[1] + down[2] * r[2]\n"
         "\t\tif compression <= 0.0:\n\t\t\th7_branch_tape.append(32)\n\t\t\tcontinue\n\t\th7_branch_tape.append(33)\n",
-        "wheel compression branch",
+        "legacy flat-ground wheel compression branch",
     )
     ground = replace_once(
         ground,
@@ -210,9 +212,11 @@ def instrument_branches(project: Path) -> None:
     )
     prop = replace_once(
         prop,
-        "\tif Turbine.is_turbine(prop): # AV-05\n\t\treturn Turbine.loads(v_air, rpm, prop, rho)\n\tif rpm < STOPPED_RPM:\n\t\treturn PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\n",
-        "\tif Turbine.is_turbine(prop): # AV-05\n\t\th7_branch_tape.append(40)\n\t\treturn Turbine.loads(v_air, rpm, prop, rho)\n\th7_branch_tape.append(41)\n\tif rpm < STOPPED_RPM:\n\t\th7_branch_tape.append(42)\n\t\treturn PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\n\th7_branch_tape.append(43)\n",
-        "propulsion type/stopped branches",
+        "\tif Turbine.is_turbine(prop): # AV-05\n\t\treturn Turbine.loads(v_air, rpm, prop, rho)\n"
+        "\tif rpm < STOPPED_RPM and not is_glow(prop):\n\t\treturn PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\n",
+        "\tif Turbine.is_turbine(prop): # AV-05\n\t\th7_branch_tape.append(40)\n\t\treturn Turbine.loads(v_air, rpm, prop, rho)\n\th7_branch_tape.append(41)\n"
+        "\tif rpm < STOPPED_RPM and not is_glow(prop):\n\t\th7_branch_tape.append(42)\n\t\treturn PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\n\th7_branch_tape.append(43)\n",
+        "propulsion type/stopped branches (including glow idle torque)",
     )
     prop_path.write_text(prop, encoding="utf-8")
 
