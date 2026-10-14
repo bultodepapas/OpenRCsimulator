@@ -31,6 +31,7 @@ def main() -> int:
     parser.add_argument("--godot", required=True, type=Path, help="Pinned Godot executable")
     parser.add_argument("--out", required=True, type=Path, help="Evidence directory (existing files are overwritten)")
     parser.add_argument("--baseline", type=Path, help="Previously captured fleet.json, same platform/tool build")
+    parser.add_argument("--contact-baseline", type=Path, help="Previously captured contacts.json, same physical sources/platform")
     parser.add_argument("--parse-all", action="store_true", help="Also parse every current app GDScript")
     parser.add_argument("--package", action="store_true", help="Export the current Windows preset PCK and inspect its aircraft")
     parser.add_argument("--models-only", action="store_true", help="Model/package conformance without the focused physics suites")
@@ -91,7 +92,9 @@ def main() -> int:
             ok = parsed and ok
         print(f"{'PASS' if parsed else 'FAIL'} parsed {len(scripts)} scripts", flush=True)
     model_tests = ["aircraft_package_proofs", "aircraft_modules", "aircraft_model_manifest", "aircraft_render_contract", "workshop_descriptor"]
-    physics_tests = ["control_surfaces", "aircraft_contact_contract", "aircraft_propulsion_runtime", "aircraft_contract",
+    physics_tests = ["control_surfaces", "aircraft_contact_contract", "aircraft_contact_events", "aircraft_contact_session",
+                     "landscape_collision_session", "scenery_damage_session", "lake_session", "crash_snapshot",
+                     "aircraft_propulsion_runtime", "aircraft_contract",
                      "aircraft_data", "controls", "servo", "checkpoint", "checkpoint_integrity", "session_guards",
                      "contact_policy", "soft_contacts", "soft_contact_feedback", "prop_strike", "prop_strike_feedback",
                      "electric_session", "electric_battery_session", "electric_event_localization",
@@ -102,6 +105,7 @@ def main() -> int:
     preflight = ROOT / "research/aircraft-standardization/preflight.gd"
     ok = run("preflight", engine("--script", str(preflight), "--", str(out / "preflight.json")), 600) and ok
     comparison = None
+    contact_comparison = None
     if not args.models_only:
         before = fingerprint()
         probe = ROOT / "research/aircraft-standardization/fleet_probe.gd"
@@ -116,6 +120,19 @@ def main() -> int:
             comparison["baseline_sha256"] = hashlib.sha256(args.baseline.read_bytes()).hexdigest()
             ok = baseline == candidate and ok
             print("PASS exact flight baseline" if baseline == candidate else "FAIL exact flight baseline", flush=True)
+        before_contacts = fingerprint()
+        contacts_ok = run("contacts", engine("--script", str(ROOT / "research/aircraft-standardization/contact_probe.gd"),
+                                             "--", str(out / "contacts.json")))
+        contact_drift = before_contacts != fingerprint()
+        contact_comparison = {"source_drift_during_probe": contact_drift, "source_sha256": before_contacts}
+        ok = contacts_ok and not contact_drift and ok
+        if args.contact_baseline and contacts_ok:
+            baseline = json.loads(args.contact_baseline.read_text(encoding="utf-8"))
+            candidate = json.loads((out / "contacts.json").read_text(encoding="utf-8"))
+            contact_comparison["exact_baseline_match"] = baseline == candidate
+            contact_comparison["baseline_sha256"] = hashlib.sha256(args.contact_baseline.read_bytes()).hexdigest()
+            ok = baseline == candidate and ok
+            print("PASS exact contact baseline" if baseline == candidate else "FAIL exact contact baseline", flush=True)
     if args.package:
         pack = out / "aircraft-contract.pck"
         package_ok = run("export-pack", engine("--export-pack", "Windows", str(pack)), 600)
@@ -125,7 +142,8 @@ def main() -> int:
             ok = run("package-preflight", [str(godot), "--headless", "--audio-driver", "Dummy",
                       "--main-pack", str(pack), "--script", str(preflight), "--", str(out / "package-preflight.json")], 600) and ok
     report = {"format": "openrc-aircraft-verification v1", "ok": bool(ok),
-              "commands": sorted(commands, key=lambda row: row["name"]), "flight_comparison": comparison}
+              "commands": sorted(commands, key=lambda row: row["name"]), "flight_comparison": comparison,
+              "contact_comparison": contact_comparison}
     (out / "verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8", newline="\n")
     return 0 if ok else 1
 

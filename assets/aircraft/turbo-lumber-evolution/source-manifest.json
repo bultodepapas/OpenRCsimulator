@@ -2,252 +2,782 @@
   "format": "openrc-timber-source-manifest v1",
   "step": "TT-01",
   "generator": "research/timber/tt01/manifest.py",
-  "delivery_root": "Timber turbo evolution/turbo_timber_evolution/r1",
+  "delivery_root": "Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2",
   "source_alias": "eflite_turbo_timber_evolution",
   "catalog_id": "turbo-lumber-evolution",
-  "delivery_revision": "r1",
-  "visual_revision": "r1-fb7586f19029",
-  "terms": "NOT SET (r1 LICENSE.txt: internal evaluation only); owner decision D1 pending, blocks TT-17 packaging",
-  "git_commit_informational": "28cd5c6aa63118f869588ffb160ae0362b4bd999",
+  "delivery_revision": "r2",
+  "visual_revision": "r2-d75ae605aa3a",
+  "terms": "NOT SET (r2 LICENSE.txt: internal evaluation only); owner decision D1 pending, blocks TT-17 packaging",
+  "git_commit_informational": "untracked",
   "key_files": {
     "glb": {
       "path": "export/aircraft.glb",
-      "sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5",
-      "bytes": 1692540
+      "sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+      "bytes": 1258464
     },
     "demo_glb": {
       "path": "export/aircraft_demo.glb",
-      "sha256": "aefc81f6d8e669f7db3be2ca2a374ed74313fec85ccdc5d6bd8f45b0ea570cc2",
-      "bytes": 1708076
+      "sha256": "75c835dd0ded0c1d49ceb01fc080eb349f5269eb6e71b8bfa591ee5cab39fff7",
+      "bytes": 1352524
     },
     "metadata": {
       "path": "metadata.json",
-      "sha256": "7e0afb84661c1dfb9eb050ce6d8fc088707ddcd0dbd97928f6420ef0886ca047",
-      "bytes": 43076
+      "sha256": "e596b4044ae18547a9bbf7c2f594e1f2d6108ca90d25a1aa4295db6746c7c724",
+      "bytes": 76280
     },
     "export_map": {
       "path": "export-map.json",
-      "sha256": "1f4eecbc9950ab2f1bb8dcc76554f80394855fa55ea309a0839e152bc5229e45",
-      "bytes": 11940
+      "sha256": "f8f9adcac74e0de536f21308fbaf8fc78dbd016993fdd7ed83e34cf02ce322a8",
+      "bytes": 49595
     },
     "verification": {
       "path": "verification.json",
-      "sha256": "4bc73f00d912c125066cc921c9845ef5de920584a16470d51becb07ce60ee511",
-      "bytes": 18448
+      "sha256": "7d8fc0677513e08fbe388f99567664aada1f8686e1ff7470626ae621ab4978b7",
+      "bytes": 52073
     },
     "blend": {
-      "path": "source/aircraft.blend",
-      "sha256": "2c2787984b4cfce7ad5bb8eecd8eef64f2b2eb5bc4ba39210cd78a3c8e02f3f6",
-      "bytes": 1264314
+      "path": "source/aircraft_game.blend",
+      "sha256": "5f0a98c5f97956e6bf3d6c763ae6512eccfcd9ed75fabac6f8133e270d92a704",
+      "bytes": 928148
     },
     "license": {
       "path": "LICENSE.txt",
-      "sha256": "76879725d59b894c59a3300eb999e76347b0b61b7e6ce171dcd2a2ef82dcda57",
-      "bytes": 1327
+      "sha256": "a88f2bd46a31a34e25c8bd7fb03739b336588cb5099ca1f9bf401fedd37f00b7",
+      "bytes": 1218
     },
     "readme": {
       "path": "README.md",
-      "sha256": "939ffdb09206196a1708af9599efbfb68808d00266bbb72fdd7442735ef20a4e",
-      "bytes": 8102
+      "sha256": "cac305dbe955858b40a0b9073c69016d3a3fca57faf26576e9ad7137f45df693",
+      "bytes": 10293
     },
     "changelog": {
       "path": "CHANGELOG.md",
-      "sha256": "cc89fe4e613ea1aae34c5a1334929b1588a23ef078c332dad7fd34a39848540e",
-      "bytes": 1971
+      "sha256": "61879417d69ffaf417a70d05057bb7babda5a26de17af78fb694cf98bfdf92bd",
+      "bytes": 3634
     }
   },
-  "file_count": 38,
-  "total_bytes": 12301268,
+  "file_count": 144,
+  "total_bytes": 19438463,
   "files": [
     {
       "path": "CHANGELOG.md",
-      "bytes": 1971,
-      "sha256": "cc89fe4e613ea1aae34c5a1334929b1588a23ef078c332dad7fd34a39848540e"
-    },
-    {
-      "path": "LICENSE.txt",
-      "bytes": 1327,
-      "sha256": "76879725d59b894c59a3300eb999e76347b0b61b7e6ce171dcd2a2ef82dcda57"
-    },
-    {
-      "path": "README.md",
-      "bytes": 8102,
-      "sha256": "939ffdb09206196a1708af9599efbfb68808d00266bbb72fdd7442735ef20a4e"
+      "bytes": 3634,
+      "sha256": "61879417d69ffaf417a70d05057bb7babda5a26de17af78fb694cf98bfdf92bd"
     },
     {
       "path": "export/aircraft.glb",
+      "bytes": 1258464,
+      "sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722"
+    },
+    {
+      "path": "export/aircraft_demo.glb",
+      "bytes": 1352524,
+      "sha256": "75c835dd0ded0c1d49ceb01fc080eb349f5269eb6e71b8bfa591ee5cab39fff7"
+    },
+    {
+      "path": "export-map.json",
+      "bytes": 49595,
+      "sha256": "f8f9adcac74e0de536f21308fbaf8fc78dbd016993fdd7ed83e34cf02ce322a8"
+    },
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1218,
+      "sha256": "a88f2bd46a31a34e25c8bd7fb03739b336588cb5099ca1f9bf401fedd37f00b7"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 76280,
+      "sha256": "e596b4044ae18547a9bbf7c2f594e1f2d6108ca90d25a1aa4295db6746c7c724"
+    },
+    {
+      "path": "previews/control_extremes.png",
+      "bytes": 1157726,
+      "sha256": "5d540e2acde685cf56b9c0924da62adc51bfdfa2944749809865443c4bf10404"
+    },
+    {
+      "path": "previews/exploded_sections.png",
+      "bytes": 1291258,
+      "sha256": "8ddd45b3d2ec65dbe61eb88b04e7199fa736931c1e14eea926e6b20438487e13"
+    },
+    {
+      "path": "previews/exploded_sections_rear.png",
+      "bytes": 1267416,
+      "sha256": "27450a309d99383c8bf8561d50266d0b8dcc77d87010de71f9309efde4dd27f2"
+    },
+    {
+      "path": "previews/front.png",
+      "bytes": 919120,
+      "sha256": "1fa6897691b0258ec123a95bbfec3d6651569a07f4bf3ff0f8de894efb375858"
+    },
+    {
+      "path": "previews/side_right.png",
+      "bytes": 982585,
+      "sha256": "93f5c1cf6e22652e4fe616686df2dab7844024bf4894dfa130fcafbc1c960b0e"
+    },
+    {
+      "path": "previews/silhouette_master_vs_game.png",
+      "bytes": 35622,
+      "sha256": "1a4e96efc7679f2fc788c44a0ba39e1bd481d3dfa76d3e1c37453fd15b7289c3"
+    },
+    {
+      "path": "previews/three_quarter.png",
+      "bytes": 1050884,
+      "sha256": "307386d368494f9a952d81ca0b8d5186e1eaae9aae9dbee6fbc875d781a85f0b"
+    },
+    {
+      "path": "previews/three_quarter_rear.png",
+      "bytes": 1019917,
+      "sha256": "e645d5e3f6747350ecbe923a76da5d26b368b40450575058989862173b2b2c34"
+    },
+    {
+      "path": "previews/top.png",
+      "bytes": 1028826,
+      "sha256": "ef23266772603a60fe704c58d652841ec00c228a175f32b0311dd9197a9923f4"
+    },
+    {
+      "path": "previews/underside.png",
+      "bytes": 997548,
+      "sha256": "34652099ca59a1a97a3e0b6d789b676034c497dd43faa0bb1315d347aa59121d"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10293,
+      "sha256": "cac305dbe955858b40a0b9073c69016d3a3fca57faf26576e9ad7137f45df693"
+    },
+    {
+      "path": "source/_export_data.json",
+      "bytes": 23383,
+      "sha256": "0f7ae9a32acd98023d54d07fd88562e67a1fd9e098887eaa009c661f1fb85f94"
+    },
+    {
+      "path": "source/aircraft_game.blend",
+      "bytes": 928148,
+      "sha256": "5f0a98c5f97956e6bf3d6c763ae6512eccfcd9ed75fabac6f8133e270d92a704"
+    },
+    {
+      "path": "source/inputs/escena.json",
+      "bytes": 13487,
+      "sha256": "66d9f633daf7d77153c1bbb8a42185ca1f4ba331d9dfe87e0453c5277d533110"
+    },
+    {
+      "path": "source/inputs/ok.json",
+      "bytes": 9276,
+      "sha256": "983cadff5296947a5ffdbec0f2fbbeb1d2fb3511c0cd88953beebcaad38fe9c7"
+    },
+    {
+      "path": "source/inputs/r1_aircraft.glb",
       "bytes": 1692540,
       "sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5"
     },
     {
-      "path": "export/aircraft_demo.glb",
-      "bytes": 1708076,
-      "sha256": "aefc81f6d8e669f7db3be2ca2a374ed74313fec85ccdc5d6bd8f45b0ea570cc2"
-    },
-    {
-      "path": "export-map.json",
-      "bytes": 11940,
-      "sha256": "1f4eecbc9950ab2f1bb8dcc76554f80394855fa55ea309a0839e152bc5229e45"
-    },
-    {
-      "path": "metadata.json",
+      "path": "source/inputs/r1_metadata.json",
       "bytes": 43076,
       "sha256": "7e0afb84661c1dfb9eb050ce6d8fc088707ddcd0dbd97928f6420ef0886ca047"
     },
     {
-      "path": "previews/control_extremes.png",
-      "bytes": 1385669,
-      "sha256": "d1a88e3890ab2254d6128156bcdd42bf93864c6343f0dfe57e2a3d9fb8c3c6dc"
+      "path": "source/scripts/documenta_r2.py",
+      "bytes": 19902,
+      "sha256": "2d3d8cedff7b699aaf34ae183b54bb8a98f28336577eb27c17e7af93342ff893"
     },
     {
-      "path": "previews/front.png",
-      "bytes": 919877,
-      "sha256": "cfd39b0b6c0a0079f11ce56afeb7bbfb6b1df68e52d6dc1a867e9da3eb9fa12a"
+      "path": "source/scripts/exporta_desde_blend.py",
+      "bytes": 1536,
+      "sha256": "c57066ffaa61a490388ea450860447818d21265cbb00421594580f7e24975727"
     },
     {
-      "path": "previews/side_right.png",
-      "bytes": 979631,
-      "sha256": "0d0c91ead62b26f129ee61f293c907525307a8993cfcc09b8be754679a08f5d4"
+      "path": "source/scripts/exporta_r2.py",
+      "bytes": 31593,
+      "sha256": "2b0feb4fd9d84154d679ab8ba3d6c4c2cd89676aea82e480e3c0832d2f5ede08"
     },
     {
-      "path": "previews/three_quarter.png",
-      "bytes": 1046610,
-      "sha256": "237c13d0fa1156745c3d2fba9ebc1585f44a72b24128067abc18afe100a7b54c"
+      "path": "source/scripts/mapa_r2.py",
+      "bytes": 13727,
+      "sha256": "d997c3e8ab8a3b860ced8628f56782054a613c3a723187c63e2fd9248be331cb"
     },
     {
-      "path": "previews/three_quarter_rear.png",
-      "bytes": 1016783,
-      "sha256": "6c70ce47d9aa1e323ea5e1dc05ecc227c9f18356679636fc257986d900f4f114"
+      "path": "source/scripts/pruebas_negativas.py",
+      "bytes": 5246,
+      "sha256": "70769e8d14a3d5bfb6771999fbd2a7cb9f382f07cf4a9cab81909c3aad5464d7"
     },
     {
-      "path": "previews/top.png",
-      "bytes": 1012149,
-      "sha256": "1a5c696d3a51047de984d64565fcafa8f82dc0648f53c48ff44f1e47489ffbea"
+      "path": "source/scripts/retesela_r2.py",
+      "bytes": 8917,
+      "sha256": "1fff49e80f432a7bd9c1c3cb8a38cb9428ac38cf1891b6e78947179c1a785e48"
     },
     {
-      "path": "previews/underside.png",
-      "bytes": 1000054,
-      "sha256": "463fb6265d2459948016637dd047827baa98b4a296378ce61ebe9ed1933193af"
+      "path": "source/scripts/valida_glb.py",
+      "bytes": 10728,
+      "sha256": "cd51402492e367168b19e8c681a4420c1fe1e278fb0547787c7e478db633ca41"
     },
     {
-      "path": "source/aircraft.blend",
-      "bytes": 1264314,
-      "sha256": "2c2787984b4cfce7ad5bb8eecd8eef64f2b2eb5bc4ba39210cd78a3c8e02f3f6"
+      "path": "source/scripts/verifica_r2.py",
+      "bytes": 33759,
+      "sha256": "2b2c3ed6bb964973f96e420a794a65f29741dec3d3e254e302f9234badc3ab48"
     },
     {
-      "path": "source/reference/PRESENTATION_MODEL.txt",
-      "bytes": 153,
-      "sha256": "07a2ed4535530dc5ef1cb32137580cdb798074eb5a6f2fc2079f2687fa110382"
+      "path": "source/stl_juego_r2/_report.json",
+      "bytes": 22212,
+      "sha256": "c4b3852425536687434dc53c54fbedd578ba82d904989d5f6514da293d3cac39"
     },
     {
-      "path": "source/reference/analisis_v12.json",
-      "bytes": 2077,
-      "sha256": "c63c7f2fb582f48885eee4a47ddfe87fd736dc7d864a1feb2e4fa4c73e380867"
+      "path": "source/stl_juego_r2/ala_der#barras_ala_der.stl",
+      "bytes": 20084,
+      "sha256": "3bcb00e911d53d243117001b474aa1573b683b4606b32db475db283b6c94dc8e"
     },
     {
-      "path": "source/reference/auditoria2_v12.json",
-      "bytes": 1881,
-      "sha256": "21faa7d961853ac636453875eb5d8afc89156f11d700cc138b9885ae9d346943"
+      "path": "source/stl_juego_r2/ala_der#extrados_negro_der.stl",
+      "bytes": 3684,
+      "sha256": "6969cd6e7507327c720fd97c23473650d9286ce674ececb369ceef8095c5c562"
     },
     {
-      "path": "source/reference/auditoria_tren_v12.json",
-      "bytes": 1320,
-      "sha256": "41af7ea63ce89c59a971811ea896510f681605870a2bd1fe3d7d6d84d9545e5f"
+      "path": "source/stl_juego_r2/ala_der#extrados_rojo_der.stl",
+      "bytes": 25784,
+      "sha256": "0a85444b167a6d0ab4f31d784f862f285e17a9a90f1cc825933edc505bb1c93b"
     },
     {
-      "path": "source/reference/retessellation_report.json",
-      "bytes": 4591,
-      "sha256": "832fea8f1dc268fd36ca3405fea916eb7f3b924fcebbb12ef67673dc570598fb"
+      "path": "source/stl_juego_r2/ala_der#intrados_gris_der.stl",
+      "bytes": 42984,
+      "sha256": "2f593f142c1a29c577af578518ffd562fc7aa7c30955706a88eb1750cd8da071"
     },
     {
-      "path": "source/scripts/analisis_mecanico.py",
-      "bytes": 10780,
-      "sha256": "7bdebd43661ee1d430e364ccb6c84ee8f2edc1f9191ccdd077928b3e288fe3e0"
+      "path": "source/stl_juego_r2/ala_der.stl",
+      "bytes": 363984,
+      "sha256": "e12e6a2d779c6546e174dc1af96bc61bdb62a6083bf410b48809f2cf7fb12035"
     },
     {
-      "path": "source/scripts/auditoria2.py",
-      "bytes": 6603,
-      "sha256": "aad44dafd484b1b3ca31d7c4b96bfa2d062f743de8a5c7548d3438ed1e8e7ff4"
+      "path": "source/stl_juego_r2/ala_izq#barras_ala_izq.stl",
+      "bytes": 20084,
+      "sha256": "7c46bff0897f4b85c5ddfd3b92d8cd3f9570b8cc65e419e321427549299123aa"
     },
     {
-      "path": "source/scripts/auditoria_tren.py",
-      "bytes": 4251,
-      "sha256": "c0ef90a389a51788b7f801d7378d39708212b49b8bfc7e3d22e7f968b212e923"
+      "path": "source/stl_juego_r2/ala_izq#extrados_negro_izq.stl",
+      "bytes": 3684,
+      "sha256": "dae97a25b9c4b4d1b107975ae62439815c7f7ab535779ea2911dcddbd81551fe"
     },
     {
-      "path": "source/scripts/documenta.py",
-      "bytes": 20011,
-      "sha256": "10ea9e8fc9bddb838a302b9eb8f61a58c5085b6f0855c8ee64123106d917011e"
+      "path": "source/stl_juego_r2/ala_izq#extrados_rojo_izq.stl",
+      "bytes": 25784,
+      "sha256": "792e8bf592c828ad91148374452fac3796c0c48d2b2a0affd05a08ff103c4a3d"
     },
     {
-      "path": "source/scripts/escena_blender_v12.py",
-      "bytes": 9981,
-      "sha256": "f8a6a41334faac2539fc77697e9318686b1dbd1695fa7efca732e8d5f5b69897"
+      "path": "source/stl_juego_r2/ala_izq#intrados_gris_izq.stl",
+      "bytes": 42984,
+      "sha256": "867bbcb66405013e2b2d55d0f7f02a883fa80e20eb43db4c8937ccad7ebf798e"
     },
     {
-      "path": "source/scripts/exporta_juego.py",
-      "bytes": 19844,
-      "sha256": "514ec3ac62e6ef347406ec1cd201cf1dad421b4e5601f3ef4dc35b9fd4f00b5d"
+      "path": "source/stl_juego_r2/ala_izq.stl",
+      "bytes": 362984,
+      "sha256": "034ad8cede05119354ebd754a60c1a88fef35124647cbd4fb9993289c678f158"
     },
     {
-      "path": "source/scripts/helice_spinner.py",
-      "bytes": 7387,
-      "sha256": "64b2dc6d803a5ff476b794cd60e84681e752bd1ce7d07eaf0948e27cfb6dbc55"
+      "path": "source/stl_juego_r2/alambre_rueda_cola.stl",
+      "bytes": 11984,
+      "sha256": "efef7e893eaff824de1000e9947b2913cf9ab30e1cb7b09303ae2f3402c9bb9e"
     },
     {
-      "path": "source/scripts/hoja_mandos.py",
-      "bytes": 1018,
-      "sha256": "5060522dd56a053833fd3c3f2683f24270e4b72b5feed2d5756ea9c00de4bdc1"
+      "path": "source/stl_juego_r2/aleron_der.stl",
+      "bytes": 75084,
+      "sha256": "be687427b8a9a040ec2a0bbfd777edeac311ec108108b31cd33178ab39e837aa"
     },
     {
-      "path": "source/scripts/mapa.py",
-      "bytes": 5746,
-      "sha256": "347e37b861d29b7fa75c25e4d0373c40baef4ac0418a5a8956877e70e0d135c9"
+      "path": "source/stl_juego_r2/aleron_izq.stl",
+      "bytes": 75084,
+      "sha256": "39e7e978fdb51d935ab34e68c075ad193c5d28ec35a367d383c02fd92a12ade6"
     },
     {
-      "path": "source/scripts/modelo_v12.py",
-      "bytes": 46528,
-      "sha256": "c08714c29a69c713a3b38ffe675f35badd72b78f2166288b0f2224c299557573"
+      "path": "source/stl_juego_r2/aleta_dorsal#deriva_franja_roja.stl",
+      "bytes": 11384,
+      "sha256": "fab6ba2d7f7cfa04c733a028bcf9faf99f1e544f603357f349abecbfb36c3ca1"
     },
     {
-      "path": "source/scripts/retesela.py",
-      "bytes": 2869,
-      "sha256": "373a4c9efddf6e1f01a4cbad6fa15fbf10c39bf6cda06768705bec7ca5062845"
+      "path": "source/stl_juego_r2/aleta_dorsal#deriva_franjas_negras.stl",
+      "bytes": 9584,
+      "sha256": "37c8d673acd215077c2dd780c368c3ea81513481d16357e70187733928c2ba20"
     },
     {
-      "path": "source/scripts/rig_mandos.py",
-      "bytes": 6709,
-      "sha256": "66124d20794dca85002ff98f77f990b469525374b8f0e871e5b559e71e590836"
+      "path": "source/stl_juego_r2/aleta_dorsal.stl",
+      "bytes": 28284,
+      "sha256": "f7c7c6e5c73748228fa34c85599ee921a11630ec04e129895483ba2f1e562488"
     },
     {
-      "path": "source/scripts/rig_tren.py",
-      "bytes": 6217,
-      "sha256": "3f910066ada91d8babec44a6a112acfb62413fe881705f59043f0537469888f7"
+      "path": "source/stl_juego_r2/arandela_der.stl",
+      "bytes": 5684,
+      "sha256": "a325cb189cc458eb9dd45da5b6bbd2b50a367bb42bdca145106403a3baa19bc5"
     },
     {
-      "path": "source/scripts/rig_v7.py",
-      "bytes": 2687,
-      "sha256": "85a63b8177906d19b30ce1327f1ef3dba8466c7a591f30511c14cf7d479e659a"
+      "path": "source/stl_juego_r2/arandela_izq.stl",
+      "bytes": 5684,
+      "sha256": "c65f3edd4b2daa558525b8cc67d5c9a65dde69cba1adf7cd777860315301741f"
     },
     {
-      "path": "source/scripts/tren_aterrizaje_v12.py",
-      "bytes": 12483,
-      "sha256": "1202f2852c95ffbeaae6bcdfa9c5df23d3dbf76326f0cb24ab7ff00fe8aae1ab"
+      "path": "source/stl_juego_r2/base_baliza.stl",
+      "bytes": 6084,
+      "sha256": "fd924c296e8ec56d70cfe907857260f5610b4523ff078fce1cd26b00dfb05116"
     },
     {
-      "path": "source/scripts/verifica_glb.py",
-      "bytes": 17565,
-      "sha256": "eeb735d4680aba82f882c2fd2fa930766a0cb3386097eabb5f9ca9210d9e6cef"
+      "path": "source/stl_juego_r2/buje_cola.stl",
+      "bytes": 3084,
+      "sha256": "17be03b9a0a6d16b3d5a1528a311b56f2bbe9faa810d1534c070197e2d85b52f"
     },
     {
-      "path": "textures/.keep",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "path": "source/stl_juego_r2/buje_der.stl",
+      "bytes": 52884,
+      "sha256": "404a4f030d08b8a9eaac0ef1c4cef904d854315144205b4ea09d8ab81888579d"
+    },
+    {
+      "path": "source/stl_juego_r2/buje_izq.stl",
+      "bytes": 52884,
+      "sha256": "ff62fdaa9c32cb2a4e986f7932739e86aa0476ca1c813e344f59950b30fb026d"
+    },
+    {
+      "path": "source/stl_juego_r2/campana_motor.stl",
+      "bytes": 38284,
+      "sha256": "8fe814293d836424608a9aec99752c11f06998fe00febe05fa0296ee23ce66df"
+    },
+    {
+      "path": "source/stl_juego_r2/capota@fwd.stl",
+      "bytes": 71684,
+      "sha256": "dbfba91f70ba92109497081f427f4c37bdc581e39ae37b5637ea82f01a54d15a"
+    },
+    {
+      "path": "source/stl_juego_r2/collarin_der.stl",
+      "bytes": 9284,
+      "sha256": "b3aeee186661f7f3f2745eb888fe42aec4a8663c3b1a6bf907481f5e7d141558"
+    },
+    {
+      "path": "source/stl_juego_r2/collarin_izq.stl",
+      "bytes": 9284,
+      "sha256": "60f34b5e6f6e7d0eabce0b76b9aa6a2c09bc9cbfbe78fafec54fae171b380e1b"
+    },
+    {
+      "path": "source/stl_juego_r2/contraplaca.stl",
+      "bytes": 26784,
+      "sha256": "e297afa8d228f78117005af452d984d63e247f87c6f7c94f41d7cc6a5dfae6f6"
+    },
+    {
+      "path": "source/stl_juego_r2/cuerno_aleron_der.stl",
+      "bytes": 9084,
+      "sha256": "48b4e93bfef0a6cf749dd9c2bfdd0b42e076261b116a3ccc657397c5d842cbe4"
+    },
+    {
+      "path": "source/stl_juego_r2/cuerno_aleron_izq.stl",
+      "bytes": 9084,
+      "sha256": "a22fcefa771c2c084b74cbc657f1652c0bbe20d9dd1001b431dd12374cd5d819"
+    },
+    {
+      "path": "source/stl_juego_r2/cuerno_elevador.stl",
+      "bytes": 9884,
+      "sha256": "163e93cf08ef8bdd62887adb8eebb0c2793cc6392662191d7d346d1d8de40b3f"
+    },
+    {
+      "path": "source/stl_juego_r2/cuerno_flap_der.stl",
+      "bytes": 9084,
+      "sha256": "4d7fb57fe49ea4c8b9be31166cfb86cc47d89aee0db0c26f29eb547fc5001226"
+    },
+    {
+      "path": "source/stl_juego_r2/cuerno_flap_izq.stl",
+      "bytes": 9084,
+      "sha256": "c43f3ac9eee51dd7fccb4d488258ab14f14b8141e1eb56021b799133e25f5388"
+    },
+    {
+      "path": "source/stl_juego_r2/cuerno_timon.stl",
+      "bytes": 10484,
+      "sha256": "5606c5980b9275f01b81abdbd2493e10d17a12d237020b34ef0beacc7ac0970c"
+    },
+    {
+      "path": "source/stl_juego_r2/deriva#deriva_franja_roja.stl",
+      "bytes": 21084,
+      "sha256": "0309f727f47ceb70a092abb397dcb166b643272f5e35a7c49e51c96bbc7c8471"
+    },
+    {
+      "path": "source/stl_juego_r2/deriva#deriva_franjas_negras%00%10.stl",
+      "bytes": 4584,
+      "sha256": "103e5e5b01a15e17107c778abe56ecbd277327242e5e904f725b29aafe410ef3"
+    },
+    {
+      "path": "source/stl_juego_r2/deriva#deriva_franjas_negras%00%11.stl",
+      "bytes": 1284,
+      "sha256": "72d60cf65d5003f65736b644425a7b93ff769e5c856250d24e641f504f22f568"
+    },
+    {
+      "path": "source/stl_juego_r2/deriva#deriva_franjas_negras%01.stl",
+      "bytes": 6084,
+      "sha256": "8036f8970d57ee492010c081de2629f19b38eaefcaaf9a10dfb47f7116e41d91"
+    },
+    {
+      "path": "source/stl_juego_r2/deriva%00.stl",
+      "bytes": 95884,
+      "sha256": "3c409d7f23089d83619cc18fe9ec100fee50c41788c27d72937435834f73ba80"
+    },
+    {
+      "path": "source/stl_juego_r2/deriva%01%10.stl",
+      "bytes": 14184,
+      "sha256": "23e773534c4594543db7c4d292870dd76d57777571383a52cac5649d948a976a"
+    },
+    {
+      "path": "source/stl_juego_r2/deriva%01%11.stl",
+      "bytes": 68284,
+      "sha256": "3fe0402d9a8174a23456f64857c56a9216f12b0f40e821b8dc68c80d0c963e95"
+    },
+    {
+      "path": "source/stl_juego_r2/escapes.stl",
+      "bytes": 62184,
+      "sha256": "e7df032272eacab8c4c0d287e62ebb105135e6d3a6e01849ec22aeaa7368182c"
+    },
+    {
+      "path": "source/stl_juego_r2/escotilla_panel_nariz.stl",
+      "bytes": 11184,
+      "sha256": "a29ed2548c9c62b9396f63b16cc493c6c3ed3453136421102cbf6f8462d33b11"
+    },
+    {
+      "path": "source/stl_juego_r2/escotilla_parabrisas.stl",
+      "bytes": 12884,
+      "sha256": "2f2588fe4fd556172d87dc8ade5b6423a3538e528f6b523854d8e3f490d70a89"
+    },
+    {
+      "path": "source/stl_juego_r2/eslabon_der.stl",
+      "bytes": 9884,
+      "sha256": "15126eb44de0dd0a0d9a316cf89eb5a5bde740ccb85960851c51923f1a5462eb"
+    },
+    {
+      "path": "source/stl_juego_r2/eslabon_izq.stl",
+      "bytes": 9884,
+      "sha256": "46d7c09f2fda2d5522a9295c3142936ce6eaea34b83a30aebcfddfc509db307a"
+    },
+    {
+      "path": "source/stl_juego_r2/estabilizador#estab_superior_negro.stl",
+      "bytes": 9684,
+      "sha256": "eba12db654f0a6923c939f8b567bfa914523e269e95e0479026451a62fa12687"
+    },
+    {
+      "path": "source/stl_juego_r2/estabilizador#estab_superior_rojo.stl",
+      "bytes": 17084,
+      "sha256": "e37e6759a079d17bfc53fb26c09caea44e2df4803a1462f3adc1fcf0fa6118f4"
+    },
+    {
+      "path": "source/stl_juego_r2/estabilizador.stl",
+      "bytes": 501984,
+      "sha256": "5cddad8fc0db15269e09ff29f49f938e24ab82c55ecaa7cd2677b257d33ba488"
+    },
+    {
+      "path": "source/stl_juego_r2/filete_nariz@aft.stl",
+      "bytes": 4784,
+      "sha256": "ad70c633ebe6840913d9d76ead1e18abd1bea01d36b88de65ff2e3e3066cf5e7"
+    },
+    {
+      "path": "source/stl_juego_r2/filete_nariz@fwd.stl",
+      "bytes": 8084,
+      "sha256": "3fbb2ae301c8df141539984e2464b040a13c80f35ca39b99b6f98c01621138e3"
+    },
+    {
+      "path": "source/stl_juego_r2/flap_der.stl",
+      "bytes": 121484,
+      "sha256": "8bec53aef824f357cd54af9e784feda144777c98a642e2914aa0e6556122e9af"
+    },
+    {
+      "path": "source/stl_juego_r2/flap_izq.stl",
+      "bytes": 121484,
+      "sha256": "ff5f2fb2e51edefa4f6ce0eda3fb8883ba6e1e26b6b146827eb1ecb205d76cbc"
+    },
+    {
+      "path": "source/stl_juego_r2/franja_blanca_cola.stl",
+      "bytes": 2534,
+      "sha256": "4af3b1a4219525ba70cb67d04801f81ac6e14b201db873d30cc1b3c10d6df58c"
+    },
+    {
+      "path": "source/stl_juego_r2/franja_negra_cola.stl",
+      "bytes": 884,
+      "sha256": "b90365933bb1e9d89164b56915466dce7d4bfac9b83aa0e9840e15b86b48b5b1"
+    },
+    {
+      "path": "source/stl_juego_r2/franjas_negras@aft.stl",
+      "bytes": 28334,
+      "sha256": "12b706ad9bdbc10c3f1cd53d1676cdb628a244bdc222a6365482c889e9221e50"
+    },
+    {
+      "path": "source/stl_juego_r2/franjas_negras@fwd.stl",
+      "bytes": 8184,
+      "sha256": "a2698c093b05baf8ed6161a457c4be5dc2c881729a66a01572bbc6991e2643c8"
+    },
+    {
+      "path": "source/stl_juego_r2/fuselaje_blanco@aft.stl",
+      "bytes": 58184,
+      "sha256": "b704a0359954d20bbe55209cee2c5ba2527d98ad509b266d3999bde2391386a8"
+    },
+    {
+      "path": "source/stl_juego_r2/fuselaje_panza_roja@aft.stl",
+      "bytes": 46184,
+      "sha256": "0ee9cbe5c5b5d7c0c94ddd6187bfe75f25282cd86c4833f811027b6c31d39840"
+    },
+    {
+      "path": "source/stl_juego_r2/helice.stl",
+      "bytes": 197184,
+      "sha256": "1f93869e4585f5e40d23a8e62818f0797daf1862cc7f9f48768fff0a95b7edfb"
+    },
+    {
+      "path": "source/stl_juego_r2/lente_baliza.stl",
+      "bytes": 15184,
+      "sha256": "36c22834e545bd1f2bd9800ae672188f99fe2001df2f42404937900df8cb2636"
+    },
+    {
+      "path": "source/stl_juego_r2/luz_nav_der.stl",
+      "bytes": 6684,
+      "sha256": "688e360728a2f9931c35f1592fe8a082ad2b718a5c52934bdb12db221708c932"
+    },
+    {
+      "path": "source/stl_juego_r2/luz_nav_izq.stl",
+      "bytes": 6684,
+      "sha256": "f48cf2c2cbb72ecabefff800c1374fcee9ec2f1a45fecf1bcde6ebd3ccc7cec6"
+    },
+    {
+      "path": "source/stl_juego_r2/neumatico_der.stl",
+      "bytes": 52284,
+      "sha256": "91e2d852398d075f0fbbb2138a31cc10483397cf741516e9880ececbd2d3f193"
+    },
+    {
+      "path": "source/stl_juego_r2/neumatico_izq.stl",
+      "bytes": 52284,
+      "sha256": "82dd4c52925a3115037cc6ba908c2e75ba9c969960279917d5dc181cc44d4791"
+    },
+    {
+      "path": "source/stl_juego_r2/panel_nariz@aft.stl",
+      "bytes": 10884,
+      "sha256": "351aec9d377d8144e8921282b7a2c41b4bb6799fc9960ad7cd134d45142df5e5"
+    },
+    {
+      "path": "source/stl_juego_r2/panel_nariz@fwd.stl",
+      "bytes": 16284,
+      "sha256": "4b733ce7210cddc4bdaf1e552849036ed3c7a8aa9b9b9e615f34b4b5ca7aeb88"
+    },
+    {
+      "path": "source/stl_juego_r2/parabrisas.stl",
+      "bytes": 14184,
+      "sha256": "706e5c6ac291c16a5180c2d07e6e4de7c4edb4a03f54cc0e9f52852b48ce861b"
+    },
+    {
+      "path": "source/stl_juego_r2/pata_der.stl",
+      "bytes": 17284,
+      "sha256": "bc8ee26d00ed6a43d9f69e9f1ee0d375052b3ea112702f1b5cc10a8a7f736d4f"
+    },
+    {
+      "path": "source/stl_juego_r2/pata_izq.stl",
+      "bytes": 17284,
+      "sha256": "3788c6bf1f59cfa2cd97c3581f01904a68ca852eaec3837388d69e6322fcd27f"
+    },
+    {
+      "path": "source/stl_juego_r2/perno_eje_der.stl",
+      "bytes": 3684,
+      "sha256": "606ef4985791152db698a95d519ce5894935748b1eb1b59126fdc55deb6030fb"
+    },
+    {
+      "path": "source/stl_juego_r2/perno_eje_izq.stl",
+      "bytes": 3684,
+      "sha256": "ef0f281ea000e931c04f21495e50f99fa9c91a19cf34f2c94293fc7fc889dcd1"
+    },
+    {
+      "path": "source/stl_juego_r2/placas_escape@aft.stl",
+      "bytes": 9484,
+      "sha256": "6b2a9c7d5c8f601591ba36685b30c18ba865e8df9fdf617264a58a64783d43de"
+    },
+    {
+      "path": "source/stl_juego_r2/placas_escape@fwd.stl",
+      "bytes": 18884,
+      "sha256": "c802d98d8e63d764ebe3ca7d4e319379a2c1e15567f30bd53cbd4e7a5c73771a"
+    },
+    {
+      "path": "source/stl_juego_r2/puntera_der.stl",
+      "bytes": 65134,
+      "sha256": "7ba8d5a149c77f6dd70dcb27ba4bbd1cc99efd56a8777a74e0fa28903b43e080"
+    },
+    {
+      "path": "source/stl_juego_r2/puntera_izq.stl",
+      "bytes": 73234,
+      "sha256": "8d8eaba326ffe13999d8b9ec709fe0460cf7b54013566cffa3f6f5d85a22d956"
+    },
+    {
+      "path": "source/stl_juego_r2/rueda_cola.stl",
+      "bytes": 75684,
+      "sha256": "a8e6fc42114918d61dedbce6128578766267e950f06cdc5d464f884e6f88a5a4"
+    },
+    {
+      "path": "source/stl_juego_r2/soporte_rueda_cola.stl",
+      "bytes": 6084,
+      "sha256": "8de3889147051bca37c3aaf278f30de14c45a2deb38da969377df95f7e36a3a5"
+    },
+    {
+      "path": "source/stl_juego_r2/soporte_tren_der.stl",
+      "bytes": 23684,
+      "sha256": "63693159e91f59c6dc8017775451e2fbcc1bca38e3366fc78b896219f44f5aa5"
+    },
+    {
+      "path": "source/stl_juego_r2/soporte_tren_izq.stl",
+      "bytes": 23884,
+      "sha256": "9ca57bc8edf47cf1cb7c04f7bc3c286f8812bb1a5831c18f77da1e2bfe4d33f7"
+    },
+    {
+      "path": "source/stl_juego_r2/soportes_slat_der.stl",
+      "bytes": 38484,
+      "sha256": "e6f139cc733f6419d6aa11b71fa490e8088babc43a87f540c554b9ce68020cef"
+    },
+    {
+      "path": "source/stl_juego_r2/soportes_slat_izq.stl",
+      "bytes": 38484,
+      "sha256": "c6c305d5be829f36078b252146a4c9243339b0e8fb9a931428448f8c424991db"
+    },
+    {
+      "path": "source/stl_juego_r2/spinner.stl",
+      "bytes": 60184,
+      "sha256": "f0c589341a9d9728533d8c86719d1882d547a20326e1bcde696be89061568484"
+    },
+    {
+      "path": "source/stl_juego_r2/tapa_servo_aleron_der.stl",
+      "bytes": 684,
+      "sha256": "f7e35adc9af94d5b382b2ff09ac879d58bcb480922ef8047db0edf0e222bcc1d"
+    },
+    {
+      "path": "source/stl_juego_r2/tapa_servo_aleron_izq.stl",
+      "bytes": 684,
+      "sha256": "216ecb5dcd53fce95b9ba4abda42fe5b2910e5dbb9d4fb67a962aa45d7b81223"
+    },
+    {
+      "path": "source/stl_juego_r2/tapa_servo_flap_der.stl",
+      "bytes": 684,
+      "sha256": "e708d0fb189acc8cd7d576c990d602cabb60b3020eebf832050dd3be682b640b"
+    },
+    {
+      "path": "source/stl_juego_r2/tapa_servo_flap_izq.stl",
+      "bytes": 684,
+      "sha256": "c5a50a0fd551f8a0bf9efe1c2f379c9c8098d2445973fd8574b8e5781ba664db"
+    },
+    {
+      "path": "source/stl_juego_r2/timon_direccion#timon_franja_roja.stl",
+      "bytes": 2484,
+      "sha256": "5fa015006340271fc5e3ef4c0d5f0c8f1da4e1387b655e1e901430dcb71dd132"
+    },
+    {
+      "path": "source/stl_juego_r2/timon_direccion#timon_franjas_negras.stl",
+      "bytes": 2484,
+      "sha256": "1bb04918b4f427c65e5a6f1b124a3bc725577a736c5244eb0361834da3bd0088"
+    },
+    {
+      "path": "source/stl_juego_r2/timon_direccion.stl",
+      "bytes": 108984,
+      "sha256": "2cfb4cec8aff0c2685ddf283f8d2aa192563b1feac25b99c6eec3af119196eca"
+    },
+    {
+      "path": "source/stl_juego_r2/timon_profundidad#elevador_superior_negro.stl",
+      "bytes": 2084,
+      "sha256": "eeb7dd724ad060ae91e10070987c96b42e286f928c5ea2b0d0d1d3e591e14932"
+    },
+    {
+      "path": "source/stl_juego_r2/timon_profundidad#elevador_superior_rojo.stl",
+      "bytes": 3284,
+      "sha256": "456602ccb1228a7ca2362a5b81355967726947412f2a1b7c5eabd6e36d37a6ff"
+    },
+    {
+      "path": "source/stl_juego_r2/timon_profundidad.stl",
+      "bytes": 120684,
+      "sha256": "937c23d8096959e252ab2f5c79dac3e322344d3957e44ba968d0dd7a060c11a5"
+    },
+    {
+      "path": "source/stl_juego_r2/tuerca_der.stl",
+      "bytes": 4084,
+      "sha256": "1113c71a6ab4b40a250b3569213942094dcd7cc231c4feb418b60dc404e36ecd"
+    },
+    {
+      "path": "source/stl_juego_r2/tuerca_izq.stl",
+      "bytes": 4084,
+      "sha256": "8de1457a39e6c7c6df2bce683901dafdacb9a8501caef5bf79f2f9803733f7f7"
+    },
+    {
+      "path": "source/stl_juego_r2/union_elevador.stl",
+      "bytes": 3084,
+      "sha256": "6ba0d8b245bc298a2f58a15fe1d1e4b229fe0263ba8ab8ade45e14795c1bb8e2"
+    },
+    {
+      "path": "source/stl_juego_r2/ventanas.stl",
+      "bytes": 35384,
+      "sha256": "0b6a8fae8e76a39a91ca50572ff823958bf08ace6e682d2019fabfc7452b5b4c"
+    },
+    {
+      "path": "source/verification_negative/broken_blender_suffix_flap_right.json",
+      "bytes": 6654,
+      "sha256": "0a05d25715216046083f8f1e6a75708c02e9a91f143d2c78e033bd10e349552d"
+    },
+    {
+      "path": "source/verification_negative/broken_blender_suffix_flap_right_blender.json",
+      "bytes": 19383,
+      "sha256": "939b54f1ad3d40e0cae29eb7dd52edc2baafc4be3b3171019ba25ca14ba0383a"
+    },
+    {
+      "path": "source/verification_negative/broken_invalid_section_rudder_hinge.json",
+      "bytes": 6524,
+      "sha256": "c5627f1d24ff0e163bdf5a94d4d24f852ff7e2800ac7954be219a91a9fbe5376"
+    },
+    {
+      "path": "source/verification_negative/broken_invalid_section_rudder_hinge_blender.json",
+      "bytes": 19120,
+      "sha256": "bfcaf9d3ad155763503b00625c6107175e74735b60a72de2df28ab551dc7a1ae"
+    },
+    {
+      "path": "source/verification_negative/broken_mirrored_scale_aileron_left_hinge.json",
+      "bytes": 6574,
+      "sha256": "f52806426243cc66427898cc2e5754c119a9f092e8574768d9095999cf3fc7c1"
+    },
+    {
+      "path": "source/verification_negative/broken_mirrored_scale_aileron_left_hinge_blender.json",
+      "bytes": 19323,
+      "sha256": "7fd13e8296e31c0909c64e73ba3e60176ea5da0de4e176770f69823e85965766"
+    },
+    {
+      "path": "source/verification_negative/broken_missing_hinge_elevator.json",
+      "bytes": 6532,
+      "sha256": "78882bf6af64fcabfdfbd5e20a0541167324325b964144cd849559958866633c"
+    },
+    {
+      "path": "source/verification_negative/broken_missing_hinge_elevator_blender.json",
+      "bytes": 18439,
+      "sha256": "5d71d87a9ad5f7bd927b439e738ac6fc6289d4ae907e46cd0884e855f60396e9"
+    },
+    {
+      "path": "source/verification_negative/broken_missing_section_wing_left_fixed.json",
+      "bytes": 6518,
+      "sha256": "44d8a05f3046276358161cfb06bd5a1ca9b14deb5052cdb2fd7b77c087be4144"
+    },
+    {
+      "path": "source/verification_negative/broken_missing_section_wing_left_fixed_blender.json",
+      "bytes": 19154,
+      "sha256": "f718f5e10d0109588a4922718bd5214445abf50ee4374facfbf479abe395f1f6"
+    },
+    {
+      "path": "source/verification_negative/broken_non_string_section_cowl.json",
+      "bytes": 6500,
+      "sha256": "17da92f7be866f67b5226eb5768c62a9f46585f76adc114fc8089c79c1d05289"
+    },
+    {
+      "path": "source/verification_negative/broken_non_string_section_cowl_blender.json",
+      "bytes": 19126,
+      "sha256": "91a53f8727dc06a6837ab2227910c062d4eb9c585686fa2280e4e2dfec9291b7"
+    },
+    {
+      "path": "source/verification_negative/broken_rotor_under_engine_tag.json",
+      "bytes": 6591,
+      "sha256": "0d491d486353c2936e5446b0d7c003b3b78279c538f3de821122a05c1faab200"
+    },
+    {
+      "path": "source/verification_negative/broken_rotor_under_engine_tag_blender.json",
+      "bytes": 19270,
+      "sha256": "11b645f7e26c86fb8c92cd65e5e8d5c9a3c9f727c45024419d85cbeaf684bd05"
+    },
+    {
+      "path": "source/verification_negative/negative_tests.json",
+      "bytes": 1978,
+      "sha256": "fe9f48a8fea2c98dd896ab1b945cae97c8b73439cae71ddbf952c8c80583266f"
     },
     {
       "path": "verification.json",
-      "bytes": 18448,
-      "sha256": "4bc73f00d912c125066cc921c9845ef5de920584a16470d51becb07ce60ee511"
+      "bytes": 52073,
+      "sha256": "7d8fc0677513e08fbe388f99567664aada1f8686e1ff7470626ae621ab4978b7"
     }
   ]
 }

@@ -234,6 +234,10 @@ static func save_variant(
 		return _result(false, errors)
 	var now: int = maxi(created_at, int(Time.get_unix_time_from_system()))
 	var stored_recipe: Dictionary = recipe.duplicate(true)
+	# JSON parses every number as float. Hash the representation that will be
+	# read back, while retaining optional metadata and historical recipe ranges.
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+		stored_recipe[key] = float(stored_recipe[key])
 	var recipe_json: String = JSON.stringify(stored_recipe, "", true, true)
 	var recipe_hash: String = _sha256(recipe_json.to_utf8_buffer())
 	var record: Dictionary = {

@@ -31,8 +31,23 @@ uniform float effect_clock_s = 0.0;
 uniform vec2 wind_xz = vec2(0.8, 0.6);
 uniform float wind_rate = 1.0;
 uniform float wave_height_m : hint_range(0.0, 0.012) = 0.006;
+uniform bool spray_mask = false;
+varying vec3 spray_position;
+
+float spray_noise(vec3 p) {
+	vec3 cell = floor(p);
+	vec3 f = fract(p);
+	f = f * f * (3.0 - 2.0 * f);
+	vec3 stride = vec3(1.0, 57.0, 113.0);
+	float n = dot(cell, stride);
+	vec4 a = fract(sin(n + vec4(0.0, 1.0, 57.0, 58.0)) * 43758.5453);
+	vec4 b = fract(sin(n + vec4(113.0, 114.0, 170.0, 171.0)) * 43758.5453);
+	return mix(mix(mix(a.x, a.y, f.x), mix(a.z, a.w, f.x), f.y),
+		mix(mix(b.x, b.y, f.x), mix(b.z, b.w, f.x), f.y), f.z);
+}
 
 void vertex() {
+	spray_position = VERTEX;
 	float phase = 7.0 * length(VERTEX.xz)
 		+ 2.0 * dot(VERTEX.xz, wind_xz)
 		- effect_clock_s * wind_rate;
@@ -43,6 +58,15 @@ void vertex() {
 void fragment() {
 	ALBEDO = tint.rgb * COLOR.rgb;
 	ALPHA = tint.a * clamp(effect_alpha, 0.0, 1.0) * COLOR.a;
+	if (spray_mask) {
+		float height = clamp((spray_position.y + 0.18) / 0.36, 0.0, 1.0);
+		vec3 p = spray_position * vec3(55.0, 28.0, 55.0);
+		p.y -= effect_clock_s * 2.0;
+		float mist = spray_noise(p) * 0.7 + spray_noise(p * 2.1) * 0.3;
+		float edges = smoothstep(0.0, 0.22, height) * (1.0 - smoothstep(0.55, 1.0, height));
+		float facing = smoothstep(0.0, 0.55, abs(dot(normalize(NORMAL), normalize(VIEW))));
+		ALPHA *= edges * facing * smoothstep(0.32, 0.72, mist);
+	}
 }
 """
 
@@ -304,13 +328,15 @@ func _ensure_nodes() -> void:
 	plume_mesh.top_radius = 0.0
 	plume_mesh.bottom_radius = 0.16
 	plume_mesh.height = 0.36
-	plume_mesh.radial_segments = 12
+	plume_mesh.radial_segments = 32
+	plume_mesh.cap_bottom = false
 	plume_mesh.rings = 1
 	_plume = MeshInstance3D.new()
 	_plume.name = "WaterPlume"
 	_plume.mesh = plume_mesh
 	_plume.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_plume_material = _new_effect_material(Color(0.72, 0.84, 0.81, 0.42), 0.004)
+	_plume_material.set_shader_parameter("spray_mask", true)
 	_plume.material_override = _plume_material
 	add_child(_plume)
 

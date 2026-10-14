@@ -1,6 +1,6 @@
 # Helicopter plan: a realistic RC helicopter
 
-**Date:** 2026-10-13. **Status:** implementation started by the owner. HELI-03a/04 supply the steady inflow reference; HELI-04-R1 adds dimensional transient flow and known-event numerical qualification; HELI-05/05a supply main-rotor loads, flapping and a joint main-rotor/inflow stage; HELI-13 supplies the pure swash kernel. No flyable helicopter, aircraft preset or session integration exists. Automatic state-dependent C/M detection, full loads/cost and other steps remain open.
+**Date:** 2026-10-13. **Status:** implementation started by the owner. HELI-03a/04 supply the steady inflow reference; HELI-04-R1 adds dimensional transient flow and known-event numerical qualification; HELI-05/05a supply main-rotor loads, flapping and a joint main-rotor/inflow stage; HELI-06a adds the standalone source-linearized tail; HELI-13 supplies the pure swash kernel. HELI-25a audits the owner's existing HX-700 Blender source for reuse. No flyable helicopter, aircraft preset or session integration exists. Automatic state-dependent C/M detection, full loads/cost and other steps remain open.
 **Prefix:** HELI-00…HELI-36, registered in the [track registry](../README.md#tracks-plans-and-step-ids). `H1…H15` (Phase H) is a different namespace.
 **Owner:** helicopter track, under the main line's acceptance; owns the shared inflow law consumed by the drone track.
 **Owns:**
@@ -228,7 +228,9 @@ The primary paper says the main blades have no twist, so θ75 = θ0. It omits cy
 ### 4.6 Tail rotor, fin and stabilizer
 
 - **Tail rotor.** Momentum theory without flapping at Ω_tr = n_tr·Ω.
-  - Quasi-static inflow with a **fixed** five-pass iteration, which keeps it deterministic and smooth. Its own inflow time constant is ≈ 5 ms, too close to dt to carry as a state.
+  - HELI-06a follows Gavrilets §4.6's **locally linearized** thrust model. The paper explicitly avoids direct thrust/inflow iteration because it can fail in the tail's own wake. At each in-plane advance ratio, solve only the positive zero-normal-flow trim with a monotone residual and bounded safeguarded solver, then derive the local collective/normal-flow slopes. Apply Eq. 47 to actual collective (including its trim offset), cap CT, and reconstruct vi with Eq. 50. There is no arbitrary five-pass convergence claim.
+  - The explicit wake-efficiency parameter transfers Eq. 4's main-rotor η to this tail trim calculation; the source gives no tail-specific η. η=1 recovers the printed hover derivatives in Eqs. 9/10. This inference and Eq. 47's lack of an affine trim intercept are recorded in [HELI-06](../research/helicopter/HELI-06/README.md).
+  - Quasi-static tail response is a source-model approximation, not a result established by its lag being near dt. Sideways VRS, transient authority and tail-flow timestep sensitivity remain qualification gates; no Johnson tail extension is silently applied.
   - Inflow uses µz,tr = (v_a − l_tr·r + h_tr·p)/(Ω_tr·R_tr), including the main-rotor wake intensity K_λ (Gavrilets geometric ramp 0 → 1.5).
   - Thrust is capped at C_Tmax,tr·f_t·ρ(Ω_tr·R_tr)²·πR_tr², with fin blockage f_t = 1 − ¾·S_vf/(πR_tr²). **Tail blowout and authority loss at drooping rpm emerge from this cap.**
 - **Fin and horizontal stabilizer.** Quadratic lift with clipping, including main-rotor downwash on the stabilizer: w_ht = w_a + l_ht·q − K_λ·v_i.
@@ -407,11 +409,14 @@ Sketch of the rotorcraft-specific blocks; the exact paths are fixed in HELI-10:
 
 ### 8.1 Visual model
 
-- **Source (D9).** Either a procedural generator from measured drawings and photos (the Stik pattern) or an authored GLB with a manifest, measurement and checks (the Timber pattern). The recommendation is the Timber pattern: rotorcraft shapes are complex, and the hinge-wrapping helpers already exist.
+- **Source (D9), selected by the owner.** Reuse [`HX-700_Helicoptero_RC.blend`](../../Helicopter%203d%20acrobatic/HX-700_Helicoptero_RC.blend) and its embedded `generar_hx700.py`/`LEEME`; do not create a replacement helicopter asset. The adjacent supplied PDF is an IlGoblin Piuma Competizione SG779 assembly manual used as a class-700 dimension/spec reference. The [HELI-25 audit](../research/helicopter/HELI-25/README.md) owns source hashes, measurements, hierarchy, export bindings and remaining gates.
+- **Identity and scale.** HX-700 is a procedural flybarless 700-class visual design; the identified flight reference is the instrumented flybar X-Cell .60 SE. These are different configurations. Preserve the authored HX-700 scale and identity. A research preview may show the supplied model, but attaching X-Cell flight behavior requires an explicit research-surrogate label and measured alignment; a qualified HX-700 needs its own physical inventory and electronics. Do not derive inertia, CG, aerodynamic coefficients or gearing from appearance or render drivers.
+- **Coordinates and regeneration.** Source metres use +X nose, +Y left and +Z up. Its structural adapter is `[-x,-y,z]`; body FRD is `[x,-y,-z]` after subtracting an established CG. Both are proper rotations. Preserve the source file, root and authored pivots; export through the source pipeline with an aircraft-only selection. Native Godot binding, package provenance, draw/triangle budgets and source/export freshness must pass before runtime integration.
 - **Node contract** (registered with the model owners):
   - The root stays `airplane`, so existing consumers keep working.
   - `propeller` maps to the **main-rotor mast mount**, with local +Z on the shaft.
-  - New keys: `tail_rotor`, `swashplate`, `flybar`, `skid_left`, `skid_right`, plus servo-arm `*_hinge` nodes.
+  - New keys: `tail_rotor`, `skid_left`, `skid_right`, plus capability-dependent `swashplate`, `flybar` and servo-arm `*_hinge` nodes. The HX-700 has no flybar; do not add one to make its hierarchy resemble the X-Cell.
+  - Bind the existing `Pivote_Rotor_Principal` and `Pivote_Rotor_Cola` via an adapter. Source `velocidad_rotor`/4.6× scripted drivers are presentation animation; simulator telemetry must own animation in a future runtime binding. Blade-pitch articulation and missing swash/servo links require source-pipeline work and verification.
 - **Spin.** `main.gd` spins the tail rotor at n_tr·Ω through a new, read-only rotor telemetry accessor, not `aux[0]` guesses.
 - **Swashplate and blade pitch** are animated from servo state, following the rule that one servo state drives physics and visuals.
 
@@ -572,12 +577,14 @@ Each step is one small working change with its proof. A step that touches a coor
 | HELI-04-R1 | `rotorcraft/dynamic_inflow.gd`: dimensional vi derivative, residual decay and stage effective flow; known-event RK4 qualification | Python dense/convolution reference, native tests and explicit raw-240 failure; bounded local known-event procedure passes 1e-3 m/s. [Evidence](../research/helicopter/HELI-04-R1/README.md). Automatic session detector and physical transient validation open. |
 | HELI-05 | `rotorcraft/main_rotor.gd`: untwisted two-blade C_T hard clamp, first-order flap rates, exact-normal force, hub spring/arm and constant-C_D0 torque | Standalone kernel implemented; source/math anchors, separate bare/flybar lags, p/q units, signed loads and independent oracle. [Evidence](../research/helicopter/HELI-05/README.md). Full-flight qualification and aircraft authoring open. |
 | HELI-05a | `rotorcraft/main_rotor_stage.gd`: joint main-rotor loads and [a1,b1,vi] derivatives | Fixed-body, fixed-speed stand settles to an independent hover quadratic and cyclic targets under RK4. [Evidence](../research/helicopter/HELI-05/README.md#joint-main-rotor-stage). Not complete trim, tail/airframe/drive or a flight session. |
-| HELI-06 | `rotorcraft/tail_rotor.gd` and `airframe.gd`: fixed-pass tail inflow, wake ramp, thrust cap with blockage, fuselage/fin/stabilizer quadratic forms | Oracle match; blowout cap known answer; no α/β singularity at V → 0 and in rearward flight |
+| HELI-06 | Tail and airframe component suite: source-linearized tail, wake ramp, blocked thrust cap and source fuselage/fin/stabilizer forms | Tail delivered under HELI-06a; airframe forms, sign/passivity review and full-component qualification remain open. No fixed-pass tail iteration. |
+| HELI-06a | `rotorcraft/tail_rotor.gd`: bounded coefficient-trim solve, actual-pitch/normal-flow thrust, cap/blockage, Eq. 50 inflow and profile/induced torque | Standalone source/math anchors and independent oracle; [HELI-06 evidence](../research/helicopter/HELI-06/README.md). No tail-controller, drive, sideways-VRS or flight qualification. |
 | HELI-07 | `rotorcraft/drive.gd`: rotor speed ODE, freewheel, hold, power-source engine, discrete governor | Energy closure ∫(P_in − P_out)dt = ΔE_rot within 1e-6 relative over 10 s; governor step vs HELI-03 (calibration, labelled) |
 | HELI-08 | Geared gyroscopic coupling in `rotor_coupling.gd` (b-vector form) | Momentum and work closure (extends `test_rotor_coupling`); airplane path byte-identical |
 | HELI-09 | `bench_rotorcraft.gd`: per-call kernel cost | ≤ 37 µs per full evaluation (150 µs per tick) on the H15 host, or stop and redesign before integration |
 | HELI-09a | Isolated equilibrium-inflow cost diagnostic `research/helicopter/bench_inflow.gd` | Measured on the Windows Ryzen 5900X host; [HELI-04 evidence](../research/helicopter/HELI-04/README.md). This does not close HELI-09 or the whole-tick budget. |
 | HELI-09b | Isolated joint main-disc/wake stage cost `research/helicopter/bench_main_stage.gd` | [HELI-05 measurements](../research/helicopter/HELI-05/README.md#heli-09b-isolated-stage-cost): compact payload verified, VRS cost still leaves insufficient full-load margin. Complete profiling/redesign before session integration; HELI-09 open. |
+| HELI-09c | Isolated source-linearized tail cost `research/helicopter/bench_tail_rotor.gd` | [HELI-06 measurements](../research/helicopter/HELI-06/README.md#heli-09c-isolated-tail-cost): ~21–24 µs median batch means on the development host; no complete-load or H15 acceptance. |
 
 ### Phase 2: data
 
@@ -616,6 +623,7 @@ Steps HELI-25…27 can start in parallel with Phase 1 because their file boundar
 | --- | --- | --- |
 | HELI-24 | Model-to-paper comparison: digitized Gavrilets heave, axial roll and pitch-pulse responses (held-out), and the governor step (calibration) | Report in `docs/research/helicopter/HELI-24/`; tolerances §10 |
 | HELI-25 | Visual asset, generator or GLB pipeline, node contract, verify script, **catalog PREVIEW** | `verify_<heli>.gd`; catalog test updated (counts, span rule replaced for rotorcraft) |
+| HELI-25a | Audit and reuse the supplied HX-700 `.blend`, embedded generator and adjacent reference PDF | [Source audit and binding candidate](../research/helicopter/HELI-25/README.md); source preserved, standalone inventory and visual inspection. HX-700/X-Cell identity, articulation, runtime bindings, packaging and presentation budgets remain HELI-25 gates; no catalog entry yet. |
 | HELI-26 | Rotor disc: analytic coverage shader, cone with coning/TPP, cross-fade by Δθ per frame, tail disc, rotor shadow | Phase-independence test; rpm and view sweep captures; frame-sequence aliasing capture |
 | HELI-27 | Rotor-wash field (pure) and global uniforms; near-grass and turf response | Headless known answers (peak 1.75R; zero thrust → zero wash); captures at z/D = 0.3, 1, 2; cost |
 | HELI-28 | Particles: Compatibility probe (with SM-00), clippings and dust emitters, level-of-detail tiers, determinism settings | Probe report; captures; VFX p95 on the owner's host |
@@ -667,7 +675,7 @@ Integration steps (HELI-16/17) are serialized with the main line.
 | D6 | Input layout | **Keep four sticks**; flight/electronics modes in `modes`; simulator-owned curves |
 | D7 | Beginner aid | Offer the self-level only as labelled "trainer electronics", off by default. No invented autopilot. |
 | D8 | Prefix and ownership | `HELI-`; the owned/coordinated paths in the header |
-| D9 | Visual asset source | **Authored GLB with manifest and measurements** (Timber pattern), or the owner supplies photos and drawings for a generator |
+| D9 | Visual asset source | **Selected 2026-10-13:** reuse the supplied HX-700 Blender file and embedded generator. HELI-25a records provenance/measurements; qualify the export adapter before HELI-25 catalog PREVIEW. |
 | D10 | Pad placement and default start | Pad on the mown area north of the pilot at ≈ 10–15 m; start on the pad, rotor stopped, hold engaged |
 
 ## 12. Risks

@@ -43,7 +43,8 @@ def validate(d):
         if a["app_key"]:
             assert a["app_sign"] in (-1.0, 1.0), name
     assert d["thrust"]["node"] == "thrust_frame" and d["thrust"]["spin_node"] == "propeller_spin"
-    assert d["scene"]["counts"]["mesh_instances"] == 15 and d["scene"]["counts"]["surfaces"] == 36
+    assert d["scene"]["counts"]["mesh_instances"] == 21 and d["scene"]["counts"]["surfaces"] == 49
+    assert d["scene"]["counts"]["triangles"] == 42519
     assert d["scene"]["counts"]["animation_players"] == 0 and d["scene"]["counts"]["cameras"] == 0 and d["scene"]["counts"]["lights"] == 0
     assert 1.5 < d["dimensions"]["span"]["value"] < 1.6 and 0.2 < d["wing"]["chord"]["value"] < 0.23
     for key in ("aileron", "elevator", "rudder"):
@@ -60,14 +61,14 @@ def main():
     validate(data)
     output = "# Generated, do not edit. Source: assets/aircraft/turbo-lumber-evolution/geometry.json (revision %s).\n" % data["revision"]
     output += "# Regenerate with: python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py\n"
-    output += "# Visual preview geometry of the author's r1 export (see DATA.evidence); not flyable.\n"
+    output += "# Visual preview geometry of the author's r2 export (see DATA.evidence); not flyable.\n"
     output += "extends RefCounted\n\nconst DATA := "
     output += json.dumps(as_godot_json(data), ensure_ascii=False, indent="\t") + "\n"
     if args.check:
         assert TARGET.exists() and TARGET.read_text(encoding="utf-8") == output, "Stale Timber geometry constant: run compile_geometry.py"
         print("Timber geometry source/runtime: identical")
     else:
-        TARGET.write_text(output, encoding="utf-8")
+        TARGET.write_bytes(output.encode("utf-8"))
         print(TARGET.relative_to(ROOT))
 
 

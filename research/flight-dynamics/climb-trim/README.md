@@ -72,6 +72,33 @@ The default comparison includes calm air, alternative starting trims and constan
 & .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/energy_probe.gd" -- --calm --480
 ```
 
+## Controlled intervention probes
+
+`model_consistency_intervention_probe.gd` runs nine standard-Stik cases: baseline, an elevator lift derivative inferred from the modeled tail arm, and paired global elevator derivatives taken from the existing local force model. It re-solves startup trim at 15 m/s, preserves identical **absolute** throttle history for comparisons, and adds independent 30-second trim-hold controls. These are diagnostic counterfactuals, not aircraft calibrations. No production data are written; output defaults to the corresponding evidence JSON.
+
+```powershell
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/model_consistency_intervention_probe.gd"
+```
+
+The probe checks historical baseline parity, complete runs, fixed elevator, absence of faults/contact, and source hash stability. Its first-inversion metric detects body-down reversal and must not be called a complete pitch loop. `--output=<path>` selects another evidence destination.
+
+`coefficient_contract_probe.gd` independently computes the scalar attached force/moment equations and local-tail elevator derivative for all seven catalog aircraft. Its 126 runtime comparisons cover signed elevator, alpha and nonzero pitch rate, including ARP-to-CG transport. It exits nonzero on a 1e-9 force/moment comparison failure or a source hash change. Results go to `coefficient-contract-experiments.json` in the evidence directory.
+
+```powershell
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/coefficient_contract_probe.gd"
+```
+
+`longitudinal_intervention_probe.gd` compares the standard flight with an explicit longitudinal constraint at all RK4 stages, at 240/480 Hz and with a neutral trim-hold control. It evaluates production loads but imposes `pdot=rdot=0`, `qdot=My/Jyy` and zero lateral motion. It measures unwrapped pitch/path turns; these metrics are valid for the projected plane only. The input history ends at 15 s, followed by absolute full throttle. Its assertions reproduce the current diagnostic behavior, not a requirement that future corrected physics must loop.
+
+`powertrain_intervention_probe.gd` substitutes the existing 55AX and FS64V propulsion branches into the standard airframe in memory, preserving the baseline body state, surfaces and absolute throttle history. After 15 s it holds the last command (50.2083%) for 30 s. It reports the FS64V hybrid's failed native trim and explicit baseline-seeded exploratory initialization; this fallback is never a qualified launch or production repair. Dry engine/propeller mass differences are excluded, while fuel mass changes remain in the coupled solver.
+
+```powershell
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/longitudinal_intervention_probe.gd"
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/powertrain_intervention_probe.gd"
+```
+
+Both write their correspondingly named evidence JSON files. They are research-only interventions with different post-15-second power protocols; do not compare their later trajectories as if all inputs were equal. Run pinned Godot headlessly from the repository root. The evidence report records decisions and validation limits for the entire campaign.
+
 ## Explicit half-throttle start
 
 Home's standard Stik start selector cycles through the legacy airborne, runway and optional airborne-at-50%-throttle choices. The latter solves its speed and all trims; it is not an automatic in-flight assist or a measured cruise prescription. It does **not** eliminate inversion under all power histories.

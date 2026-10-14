@@ -43,6 +43,15 @@ func _initialize() -> void:
 	var integer_trial := Trial.freeze(integer_payload)
 	check("integer and float recipes have identical resolved identity", integer_trial.get("ok", false)
 		and integer_trial.identity == first.identity and integer_trial.raw_bytes == first.raw_bytes)
+	var numeric_roundtrip: Dictionary = integer_payload.duplicate(true)
+	numeric_roundtrip.recipe = JSON.parse_string(JSON.stringify(integer_payload.recipe, "", true, true))
+	var reloaded_numeric := Trial.freeze(numeric_roundtrip)
+	check("JSON round-trip preserves the full trial identity", reloaded_numeric.get("ok", false)
+		and reloaded_numeric.identity == integer_trial.identity)
+	numeric_roundtrip.recipe.scale = 1.000000000001
+	var nearby_numeric := Trial.freeze(numeric_roundtrip)
+	check("canonicalization preserves tiny physical edits", nearby_numeric.get("ok", false)
+		and nearby_numeric.identity.trial_id != first.identity.trial_id)
 	var invalid_cosmetic: Dictionary = payload.duplicate(true)
 	invalid_cosmetic.recipe.name = {"invalid": true}
 	check("invalid recipe metadata is refused before hashing", not Trial.freeze(invalid_cosmetic).get("ok", false))

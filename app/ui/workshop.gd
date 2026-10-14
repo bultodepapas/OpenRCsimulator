@@ -698,7 +698,11 @@ func _load_selected_variant() -> void:
 	_saved_compiler_version = str(variant.get("compiler_version", ""))
 	var saved_dependencies: Variant = variant.get("dependencies", {})
 	_variant_dependencies = saved_dependencies.duplicate(true) if saved_dependencies is Dictionary else {}
-	_recipe = next_recipe.duplicate(true)
+	# Record identity/name have dedicated fields; legacy recipe copies must not
+	# override rename, Save a copy, or the ancestry of a retained deleted draft.
+	_recipe = checked.values.duplicate(true)
+	_recipe.erase("id")
+	_recipe.erase("name")
 	_clear_history()
 	_capabilities = Compiler.capabilities(_base)
 	_variant_name.text = str(variant.get("name", ""))
@@ -898,12 +902,14 @@ func _set_recipe(next_recipe: Dictionary, remember_current: bool) -> void:
 	if not checked.ok:
 		set_note(_messages(checked.errors, "The recipe could not be applied."))
 		return
-	if next_recipe == _recipe:
+	var next: Dictionary = checked.values
+	next.erase("id")
+	next.erase("name")
+	if next == _recipe:
 		return
 	if remember_current:
 		_capture_undo()
-	_recipe = Compiler.defaults()
-	_recipe.merge(next_recipe, true)
+	_recipe = next
 	_sync_controls()
 	if is_instance_valid(_preview):
 		_preview.set_aircraft(_base_id, _preview_scale())

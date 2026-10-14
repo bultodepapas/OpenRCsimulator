@@ -20,7 +20,7 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "9748ccc8c193da6c39247678e271e56c83d4948dbf0a9c9accd89e9850f31f16",
+    "sha256": "8a77f6cc57c6debe951cbf69a8c20f846e267b1af48903f0cb4c6a3249f29374",
     "hash_mode": "lf_text"
   },
   "geometry": {
@@ -125,7 +125,7 @@
   "dependencies": [
     {
       "path": "res://aircraft/ugly_stik_appearance.gd",
-      "sha256": "88a19672c7039ef3f72cefb4e97a87b1e7e59d63269811592922283e23e21b36",
+      "sha256": "77c04c7bd288e91451a9390177b56cd1563660663a78ae0abeeb8592ef944ba7",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -137,13 +137,25 @@
     },
     {
       "path": "res://aircraft/ugly_stik_equipment.gd",
-      "sha256": "d4dcc15a447c2c02d9796927cea9feac8b9e512cf0f48b4db398e86094bc1196",
+      "sha256": "4584d787e51fc656ec58b5380cc0558d24e54cb1c82c83fbce48b562bf8ca90b",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
     {
       "path": "res://aircraft/ugly_stik_finish.gd",
-      "sha256": "e0e2bf588e60f308098f34d38a164a7fef16c9eb982f81431ac24e4156567997",
+      "sha256": "9792efcd70bfd719156c08833ddd5db43c5a543f865bc8a8d7984a52839c69fb",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_fracture.gd",
+      "sha256": "254536b598b3d64b6b3c394151f4b1cc0bf983f1eef960685e2e26fd53818f35",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_gear_flex.gd",
+      "sha256": "b1e7b21a92f8b18762d0bda854f867adfc414dff04bab39e6df23e8e1b4cd5b0",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -155,7 +167,7 @@
     },
     {
       "path": "res://aircraft/ugly_stik_model.gd",
-      "sha256": "568ef9ddde6dfebac8dabdc59f29d9a2e8e5eee477a9d103bb4d6b3f2b5419db",
+      "sha256": "5894cb0cc1d4547d45f33d76cf2727f3f0aa948a268e3f8e5d661916d904cf4c",
       "hash_mode": "lf_text",
       "role": "builder"
     }

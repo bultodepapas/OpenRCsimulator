@@ -1,4 +1,4 @@
-# TT-03/TT-05: Turbo Lumber Evolution visual model built from the author's r1 glTF export (assets/aircraft/
+# TT-03/TT-05: Turbo Lumber Evolution visual model built from the author's r2 glTF export (assets/aircraft/
 # turbo-lumber-evolution/timber.glb, imported by Godot's scene importer) and the generated timber_geometry.gd
 # (source assets/aircraft/turbo-lumber-evolution/geometry.json). Visual preview only; not flyable until TT-07/08.
 # Axes: metres, +X right, +Y up, -Z nose; the imported root sits at the datum D0 (symmetry plane x root LE x thrust axis).
@@ -9,29 +9,45 @@
 # and gear.steering.rotation.y) get a two-level wrapper: a mount that carries the rest basis, and an identity child that
 # receives the Euler rotation about a root-aligned axis. No mesh is reparented; only the propeller_spin, wheel axle and
 # tailwheel_steer pivots move under their wrappers with their world transforms unchanged.
+# R2 exports fixed parts as separate meshes; their glTF `openrc_section` extras remain on each mesh and moving pivot.
+# The wreck reads those tags on its duplicate, so the builder does not attach a generated triangle-to-section map.
 extends RefCounted
 
 const TimberGeometry := preload("res://aircraft/timber_geometry.gd")
-const CrashSections := preload("res://aircraft/timber_crash_sections.gd")
-const SectionSplitter := preload("res://render/crash/section_splitter.gd")
-## TT-13c: pivots whose subtree breaks away with a section in a crash (aileron/flap with their wing, legs as gear).
-const CRASH_PIVOT_SECTIONS := [["aileron_left_hinge", "wing_left"], ["flap_left_hinge", "wing_left"],
-	["aileron_right_hinge", "wing_right"], ["flap_right_hinge", "wing_right"],
-	["gear_left_suspension", "gear"], ["gear_right_suspension", "gear"], ["tailwheel_steer", "gear"]]
 const SCENE := preload("res://assets/aircraft/turbo-lumber-evolution/timber.glb")
-const VISUAL_REVISION := "r1-fb7586f19029" # must equal TimberGeometry.DATA.revision (verify_timber.gd, check_asset.py)
+const VISUAL_REVISION := "r2-d75ae605aa3a" # must equal TimberGeometry.DATA.revision (verify_timber.gd, check_asset.py)
 ## Hinges driven by apply_surfaces(): command key -> hinge keys.
 const SURFACE_HINGES := {aileron_right = ["aileron_right"], aileron_left = ["aileron_left"], elevator = ["elevator"], rudder = ["rudder"]}
 ## Hinge key -> imported pivot node (DATA.articulations key).
 const HINGE_NODES := {aileron_left = "aileron_left_hinge", aileron_right = "aileron_right_hinge", elevator = "elevator_hinge",
 	rudder = "rudder_hinge", flap_left = "flap_left_hinge", flap_right = "flap_right_hinge"}
 const FLAP_KEYS := ["flap_left", "flap_right"]
+const COWL_SEATING_MATERIALS := ["black", "red"]
+const COWL_SEATING_GROW_M := 0.0008
 
 
 static func _node(root: Node3D, name: String) -> Node3D:
 	var node := root.find_child(name, true, false) as Node3D
 	assert(node != null, "Timber scene has no node named " + name)
 	return node
+
+
+## The supplier's white cowl shell slightly breaks through its black/red decal shells. Clone only those two cowl
+## materials per model instance and grow their rendered surfaces by 0.8 mm; imported meshes and shared materials stay
+## unchanged. This is a rendering shim until the supplier seats those shells correctly.
+static func _apply_cowl_seating(root: Node3D) -> void:
+	var cowl := _node(root, "cowl") as MeshInstance3D
+	var applied := {}
+	for surface in cowl.mesh.get_surface_count():
+		var source := cowl.mesh.surface_get_material(surface) as StandardMaterial3D
+		if source == null or not COWL_SEATING_MATERIALS.has(String(source.resource_name)): continue
+		var override := source.duplicate() as StandardMaterial3D
+		override.resource_name = String(source.resource_name)
+		override.grow = true
+		override.grow_amount = COWL_SEATING_GROW_M
+		cowl.set_surface_override_material(surface, override)
+		applied[String(source.resource_name)] = true
+	assert(applied.size() == COWL_SEATING_MATERIALS.size(), "Timber cowl needs black and red seating surfaces")
 
 
 ## Transform of `node` relative to `root` through the node tree (works before the tree is in a scene).
@@ -107,6 +123,7 @@ static func build() -> Dictionary:
 	root.set_meta("visual_revision", VISUAL_REVISION)
 	root.set_meta("asset_sha256", data.inputs.glb_sha256)
 	root.set_meta("aircraft_id", data.catalog_id)
+	_apply_cowl_seating(root)
 	var hinges := {}
 	for key in HINGE_NODES:
 		var a: Dictionary = data.articulations[HINGE_NODES[key]]
@@ -114,7 +131,6 @@ static func build() -> Dictionary:
 		hinges[key] = {node = node, axis = node.basis.x.normalized(), rest = node.basis, pivot = node.position,
 			range_deg = a.range_deg, positive = a.positive, app_sign = float(a.app_sign)}
 	var propeller := _wrap_propeller(root, data)
-	_tag_crash_sections(root, data)
 	var gear := {}
 	gear.steering = _wrap(root, _node(root, "tailwheel_steer"), "tail_steering")
 	gear.left = _wrap(root, _node(root, "wheel_left_axle"), "wheel_left_spin")
@@ -124,26 +140,13 @@ static func build() -> Dictionary:
 		aircraft_id = data.catalog_id}
 
 
-## TT-13c: crash presentation only. The merged `airframe` carries the generated section map (applied by the wreck to
-## its hidden twin, never to this model), valid only for the asset it was generated from; control and gear pivots name
-## the section they break away with. Meta only: no node of the flying model moves.
-static func _tag_crash_sections(root: Node3D, data: Dictionary) -> void:
-	var airframe := root.find_child("airframe", true, false)
-	if airframe != null and String(CrashSections.DATA.glb_sha256) == String(data.inputs.glb_sha256):
-		airframe.set_meta(SectionSplitter.META, CrashSections.DATA)
-	for pair: Array in CRASH_PIVOT_SECTIONS:
-		var pivot := root.find_child(String(pair[0]), true, false)
-		if pivot != null:
-			pivot.set_meta(SectionSplitter.SECTION_META, String(pair[1]))
-
-
 # Rotates one hinge about its stored axis, relative to its rest basis. Zero restores the rest basis exactly.
 static func _set_hinge(h: Dictionary, deg: float) -> void:
 	h.node.basis = h.rest if deg == 0.0 else Basis(h.axis, deg_to_rad(deg)) * h.rest
 
 
 ## surfaces_deg is input/commands.gd surface_deflections_deg(): degrees, positive = trailing edge UP for ailerons and
-## elevator, trailing edge RIGHT (+X) for the rudder. The r1 pivots are positive trailing edge DOWN (ailerons, elevator)
+## elevator, trailing edge RIGHT (+X) for the rudder. The r2 pivots are positive trailing edge DOWN (ailerons, elevator)
 ## and RIGHT (rudder); DATA.articulations.*.app_sign carries that conversion (-1, -1, +1). Flaps keep set_flaps().
 static func apply_surfaces(airplane: Dictionary, surfaces_deg: Dictionary) -> void:
 	for key in SURFACE_HINGES:
@@ -153,7 +156,7 @@ static func apply_surfaces(airplane: Dictionary, surfaces_deg: Dictionary) -> vo
 			_set_hinge(h, deg * h.app_sign)
 
 
-## Flap deflection in degrees, trailing edge down (the r1 positive sense), clamped to the authored 0..40 deg range.
+## Flap deflection in degrees, trailing edge down, clamped to the authored 0..40 deg range.
 ## Not called by the live pose path until flight flaps exist (TT-14).
 static func set_flaps(airplane: Dictionary, deg: float) -> void:
 	for key in FLAP_KEYS:

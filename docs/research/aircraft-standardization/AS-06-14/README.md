@@ -44,3 +44,5 @@ Add `--baseline docs/research/aircraft-standardization/AS-06-14/baseline/fleet.j
 ## Remaining boundaries
 
 The accepted physical v2 topology is unchanged: conventional controls, one supported propulsion installation, neutral visual-only flaps. A new imported family still supplies a model-side builder; universal data-only Blender import has not been demonstrated. Durable inventory/contact/section IDs, complete landmark/clearance coverage, asset budgets, accepted-tick unified contact events, probe-to-detachable-section binding and a second distinct Blender delivery remain open. Flaps, multiple propulsion installations and selectable new contact laws retain their separate AS-15–18 and owning-track gates.
+
+**Later continuation, 2026-10-13:** [AS-13](../AS-13/README.md) delivers the accepted-tick contact observation, rollback and checkpoint slice listed above. The other boundaries remain in the active plan.

@@ -1,0 +1,41 @@
+{
+  "method": "159 scoped files via temporary index and checkout-index; main index not staged",
+  "checks": [
+    {
+      "command": [
+        "python",
+        "research/timber/tt01/manifest.py",
+        "--check"
+      ],
+      "passed": true,
+      "output": "Timber r2 delivery: 144 files, 19438463 bytes, visual revision r2-d75ae605aa3a: identical to the manifest\n"
+    },
+    {
+      "command": [
+        "python",
+        "assets/aircraft/turbo-lumber-evolution/build_geometry.py",
+        "--check"
+      ],
+      "passed": true,
+      "output": "Timber geometry.json is up to date (revision r2-d75ae605aa3a)\n"
+    },
+    {
+      "command": [
+        "python",
+        "assets/aircraft/turbo-lumber-evolution/compile_geometry.py",
+        "--check"
+      ],
+      "passed": true,
+      "output": "Timber geometry source/runtime: identical\n"
+    },
+    {
+      "command": [
+        "python",
+        "research/timber/tt03/check_asset.py",
+        "--check"
+      ],
+      "passed": true,
+      "output": "Timber asset: timber.glb = r2 export d75ae605aa3a, licence copied, sidecar present, generated artifacts at revision r2-d75ae605aa3a\n"
+    }
+  ]
+}

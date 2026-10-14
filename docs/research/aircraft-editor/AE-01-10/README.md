@@ -68,6 +68,39 @@ The reservation tests hold a competing reservation and verify that no update/del
 # Add --1080p and --language=en for the second capture.
 ```
 
+## AE-02/03/09 audit follow-up — 2026-10-13
+
+This follow-up challenged the earlier green suites with different representations of the same recipe and historical optional metadata. Work began on the shared working tree; `0a07a3a8` was HEAD during final verification. Other tracks committed and edited aircraft assets/session code concurrently. No physics equations or golden flights were changed by this follow-up.
+
+### Reproduced defects and corrections
+
+- [Store reproduction](audit-store-before.log): a valid recipe with integer values was committed, then rejected by its own readback because JSON parsed those numbers as floats and the recomputed recipe hash differed. Saves now hash a detached recipe whose numeric values have the same representation as the JSON readback. Historical ranges and metadata remain supported; caller dictionaries and prior revisions are untouched. This prevents new malformed saves, but does not automatically recover directories created by a previous failed first save.
+- [Trial reproduction](audit-trial-before.log): four failures covered integer/float identity drift, invalid cosmetic metadata, conflicting recipe/payload ancestry, and explicit empty ancestry masking a recipe ID. Trial preparation validates first and hashes the normalized compiler inputs. Equivalent numeric recipes and their JSON round trips now share the full identity and resolved bytes; a 1e-12 scale change still changes identity. Conflicting ancestry is rejected before compilation.
+- [UI reproduction](audit-ui-before.log): historical recipes containing optional record ID/name fields could load, but blocked renaming and Save a copy. The editor now keeps these record fields separate from its physical recipe. Tests verify rename, a distinct copy UUID, and untouched source history.
+
+### Final verification
+
+| Check | Result |
+| --- | --- |
+| [Store](audit-store.log) | 105 checks, 0 failures; integer and mixed-numeric saves/updates/readback, caller isolation and existing persistence regressions |
+| [Trial](audit-trial.log) | 33 checks, 0 failures; normalized identity and strict provenance; intentional stale-renderer warning only |
+| [UI](audit-ui.log) | 78 passing assertions, 0 failures, no runtime errors |
+| [Compiler](audit-compiler.log) | 379 checks, 0 failures; existing numerical/trajectory regressions |
+| [Descriptor](audit-descriptor.log) | 54 checks, 0 failures |
+| [Integration](audit-integration.log) | 0 failures; real Home/Pause, Stik/Extra scaled flights, frozen restart, rollback and retained original flight |
+
+The first integration attempt overlapped an unfinished `flight_session.gd` edit and failed to compile because `_restore_contact_history` was not yet defined. That process was stopped; the final log above is a fresh completed execution after the helper appeared. UI verification initially exposed stale generated model dependencies; the normal model/Workshop generators were run, never hand-edited. A subsequent `build_models.py --check` found a changing Timber imported-asset hash during that track's delivery. Consequently this audit does not claim a stable whole-repository generator/release gate. The focused Workshop checks above passed; no fresh visual capture or full repository suite is claimed.
+
+### Remaining source-audit findings
+
+AE-03 remains partial. These paths were identified by code review, not by a completed power-loss campaign:
+
+- A first save interrupted before the manifest commit can leave an unreadable live directory, with no earlier backup to recover. Same-ID save/delete cannot repair it. Recovery must distinguish an uncommitted transaction from a damaged committed record without promoting an uncommitted revision silently.
+- The low-level API permits explicit UUID reuse after deletion. Multiple generations in trash are sorted by wall-clock seconds and a random suffix; restoring the intended generation is ambiguous for same-second deletions or clock rollback. The UI normally generates a new UUID, but the storage contract needs an explicit generation/restore token or a UUID-reuse prohibition.
+- Delete reserves the ID but does not check an expected revision. A stale caller can move a newer revision to trash; its data remains recoverable. Add expected-revision semantics together with a captured confirmation target.
+
+These findings do not invalidate the reproduced fixes or close the remaining persistence gate. Orphan locks after process termination remain subject to the existing documented manual recovery policy.
+
 ## Limits of this evidence
 
 The six-size real-tick matrix uses constant wing loading and default weight/power. Geometric policy and other factors have algebra/validator tests, not an exhaustive combined flight envelope. A 240-tick run proves startup and bounded immediate numerical behavior, not sustained flight performance. No goldens were re-recorded.

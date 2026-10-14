@@ -1,0 +1,177 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60: effects-on production path disables legacy auto-restart
+ok   jensen-das-ugly-stik-60: effects-off production path keeps legacy auto-restart
+ok   jensen-das-ugly-stik-60: both healthy flights reach the same 100-tick checkpoint
+ok   jensen-das-ugly-stik-60: healthy flight checkpoint is valid
+ok   jensen-das-ugly-stik-60: healthy physics is identical with crash effects on or off through 100 ticks
+ok   jensen-das-ugly-stik-60: generated state intersects this aircraft's own crash hull
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+ok   jensen-das-ugly-stik-60: production detects a typed hull-contact crash
+ok   jensen-das-ugly-stik-60: crash detection preserves the complete simulation checkpoint
+CRASH CAUSE: Flew into the ground at 15.0 m/s, pitch 4°, bank -0°
+ok   jensen-das-ugly-stik-60: crash director and disposable wreck presentation become active
+ok   jensen-das-ugly-stik-60: source aircraft is hidden while its disposable wreck is active
+skip jensen-das-ugly-stik-60: Dummy has no playback; native integration covers audio
+ok   jensen-das-ugly-stik-60: source-airplane shadow stays hidden during the wreck
+ok   jensen-das-ugly-stik-60: user hold freezes every visible wreck body
+ok   jensen-das-ugly-stik-60: user hold pauses all particle emitters
+ok   jensen-das-ugly-stik-60: presentation crash never auto-restarts after 361 physics callbacks
+ok   jensen-das-ugly-stik-60: explicit reset clears report, wreck bodies, marks, particles and fire
+ok   jensen-das-ugly-stik-60: explicit reset stops and clears crash audio
+ok   jensen-das-ugly-stik-60: original airplane, propeller and every hinge remain intact after reset
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 15.0 m/s, pitch 4°, bank 0°
+ok   jensen-das-ugly-stik-60: a second hull crash reuses the prepared wreck body and mesh pools
+ok   jensen-das-ugly-stik-60: cleanup leaves no production scene orphan or audio bus
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-55ax-2t: effects-on production path disables legacy auto-restart
+ok   stik-glow-55ax-2t: effects-off production path keeps legacy auto-restart
+ok   stik-glow-55ax-2t: both healthy flights reach the same 100-tick checkpoint
+ok   stik-glow-55ax-2t: healthy flight checkpoint is valid
+ok   stik-glow-55ax-2t: healthy physics is identical with crash effects on or off through 100 ticks
+ok   stik-glow-55ax-2t: generated state intersects this aircraft's own crash hull
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+ok   stik-glow-55ax-2t: production detects a typed hull-contact crash
+ok   stik-glow-55ax-2t: crash detection preserves the complete simulation checkpoint
+CRASH CAUSE: Flew into the ground at 20.0 m/s, pitch 2°, bank 0°
+ok   stik-glow-55ax-2t: crash director and disposable wreck presentation become active
+ok   stik-glow-55ax-2t: source aircraft is hidden while its disposable wreck is active
+skip stik-glow-55ax-2t: Dummy has no playback; native integration covers audio
+ok   stik-glow-55ax-2t: source-airplane shadow stays hidden during the wreck
+ok   stik-glow-55ax-2t: user hold freezes every visible wreck body
+ok   stik-glow-55ax-2t: user hold pauses all particle emitters
+ok   stik-glow-55ax-2t: presentation crash never auto-restarts after 361 physics callbacks
+ok   stik-glow-55ax-2t: explicit reset clears report, wreck bodies, marks, particles and fire
+ok   stik-glow-55ax-2t: explicit reset stops and clears crash audio
+ok   stik-glow-55ax-2t: original airplane, propeller and every hinge remain intact after reset
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 20.0 m/s, pitch 2°, bank 0°
+ok   stik-glow-55ax-2t: a second hull crash reuses the prepared wreck body and mesh pools
+ok   stik-glow-55ax-2t: cleanup leaves no production scene orphan or audio bus
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-fs64v-4t: effects-on production path disables legacy auto-restart
+ok   stik-glow-fs64v-4t: effects-off production path keeps legacy auto-restart
+ok   stik-glow-fs64v-4t: both healthy flights reach the same 100-tick checkpoint
+ok   stik-glow-fs64v-4t: healthy flight checkpoint is valid
+ok   stik-glow-fs64v-4t: healthy physics is identical with crash effects on or off through 100 ticks
+ok   stik-glow-fs64v-4t: generated state intersects this aircraft's own crash hull
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+ok   stik-glow-fs64v-4t: production detects a typed hull-contact crash
+ok   stik-glow-fs64v-4t: crash detection preserves the complete simulation checkpoint
+CRASH CAUSE: Flew into the ground at 20.0 m/s, pitch 1°, bank 0°
+ok   stik-glow-fs64v-4t: crash director and disposable wreck presentation become active
+ok   stik-glow-fs64v-4t: source aircraft is hidden while its disposable wreck is active
+skip stik-glow-fs64v-4t: Dummy has no playback; native integration covers audio
+ok   stik-glow-fs64v-4t: source-airplane shadow stays hidden during the wreck
+ok   stik-glow-fs64v-4t: user hold freezes every visible wreck body
+ok   stik-glow-fs64v-4t: user hold pauses all particle emitters
+ok   stik-glow-fs64v-4t: presentation crash never auto-restarts after 361 physics callbacks
+ok   stik-glow-fs64v-4t: explicit reset clears report, wreck bodies, marks, particles and fire
+ok   stik-glow-fs64v-4t: explicit reset stops and clears crash audio
+ok   stik-glow-fs64v-4t: original airplane, propeller and every hinge remain intact after reset
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 20.0 m/s, pitch 1°, bank -0°
+ok   stik-glow-fs64v-4t: a second hull crash reuses the prepared wreck body and mesh pools
+ok   stik-glow-fs64v-4t: cleanup leaves no production scene orphan or audio bus
+ok   gp-extra-300s-60: effects-on production path disables legacy auto-restart
+ok   gp-extra-300s-60: effects-off production path keeps legacy auto-restart
+ok   gp-extra-300s-60: both healthy flights reach the same 100-tick checkpoint
+ok   gp-extra-300s-60: healthy flight checkpoint is valid
+ok   gp-extra-300s-60: healthy physics is identical with crash effects on or off through 100 ticks
+ok   gp-extra-300s-60: generated state intersects this aircraft's own crash hull
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 6), point speed 20.0 m/s at detected tick) - [R] restart
+ok   gp-extra-300s-60: production detects a typed hull-contact crash
+ok   gp-extra-300s-60: crash detection preserves the complete simulation checkpoint
+CRASH CAUSE: Flew into the ground at 17.0 m/s, pitch 5°, bank -0°
+ok   gp-extra-300s-60: crash director and disposable wreck presentation become active
+ok   gp-extra-300s-60: source aircraft is hidden while its disposable wreck is active
+skip gp-extra-300s-60: Dummy has no playback; native integration covers audio
+ok   gp-extra-300s-60: source-airplane shadow stays hidden during the wreck
+ok   gp-extra-300s-60: user hold freezes every visible wreck body
+ok   gp-extra-300s-60: user hold pauses all particle emitters
+ok   gp-extra-300s-60: presentation crash never auto-restarts after 361 physics callbacks
+ok   gp-extra-300s-60: explicit reset clears report, wreck bodies, marks, particles and fire
+ok   gp-extra-300s-60: explicit reset stops and clears crash audio
+ok   gp-extra-300s-60: original airplane, propeller and every hinge remain intact after reset
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 6), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 17.0 m/s, pitch 5°, bank 0°
+ok   gp-extra-300s-60: a second hull crash reuses the prepared wreck body and mesh pools
+ok   gp-extra-300s-60: cleanup leaves no production scene orphan or audio bus
+ok   p51d-mustang-120: effects-on production path disables legacy auto-restart
+ok   p51d-mustang-120: effects-off production path keeps legacy auto-restart
+ok   p51d-mustang-120: both healthy flights reach the same 100-tick checkpoint
+ok   p51d-mustang-120: healthy flight checkpoint is valid
+ok   p51d-mustang-120: healthy physics is identical with crash effects on or off through 100 ticks
+ok   p51d-mustang-120: generated state intersects this aircraft's own crash hull
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 14), point speed 20.0 m/s at detected tick) - [R] restart
+ok   p51d-mustang-120: production detects a typed hull-contact crash
+ok   p51d-mustang-120: crash detection preserves the complete simulation checkpoint
+CRASH CAUSE: Flew into the ground at 25.0 m/s, pitch 4°, bank -0°
+ok   p51d-mustang-120: crash director and disposable wreck presentation become active
+ok   p51d-mustang-120: source aircraft is hidden while its disposable wreck is active
+skip p51d-mustang-120: Dummy has no playback; native integration covers audio
+ok   p51d-mustang-120: source-airplane shadow stays hidden during the wreck
+ok   p51d-mustang-120: user hold freezes every visible wreck body
+ok   p51d-mustang-120: user hold pauses all particle emitters
+ok   p51d-mustang-120: presentation crash never auto-restarts after 361 physics callbacks
+ok   p51d-mustang-120: explicit reset clears report, wreck bodies, marks, particles and fire
+ok   p51d-mustang-120: explicit reset stops and clears crash audio
+ok   p51d-mustang-120: original airplane, propeller and every hinge remain intact after reset
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 14), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 25.0 m/s, pitch 4°, bank 0°
+ok   p51d-mustang-120: a second hull crash reuses the prepared wreck body and mesh pools
+ok   p51d-mustang-120: cleanup leaves no production scene orphan or audio bus
+ok   sebart-avanti-s-a200-p100rx: effects-on production path disables legacy auto-restart
+ok   sebart-avanti-s-a200-p100rx: effects-off production path keeps legacy auto-restart
+ok   sebart-avanti-s-a200-p100rx: both healthy flights reach the same 100-tick checkpoint
+ok   sebart-avanti-s-a200-p100rx: healthy flight checkpoint is valid
+ok   sebart-avanti-s-a200-p100rx: healthy physics is identical with crash effects on or off through 100 ticks
+ok   sebart-avanti-s-a200-p100rx: generated state intersects this aircraft's own crash hull
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 9), point speed 20.0 m/s at detected tick) - [R] restart
+ok   sebart-avanti-s-a200-p100rx: production detects a typed hull-contact crash
+ok   sebart-avanti-s-a200-p100rx: crash detection preserves the complete simulation checkpoint
+CRASH CAUSE: Flew into the ground at 29.0 m/s, pitch 4°, bank 0°
+ok   sebart-avanti-s-a200-p100rx: crash director and disposable wreck presentation become active
+ok   sebart-avanti-s-a200-p100rx: source aircraft is hidden while its disposable wreck is active
+skip sebart-avanti-s-a200-p100rx: Dummy has no playback; native integration covers audio
+ok   sebart-avanti-s-a200-p100rx: source-airplane shadow stays hidden during the wreck
+ok   sebart-avanti-s-a200-p100rx: user hold freezes every visible wreck body
+ok   sebart-avanti-s-a200-p100rx: user hold pauses all particle emitters
+ok   sebart-avanti-s-a200-p100rx: presentation crash never auto-restarts after 361 physics callbacks
+ok   sebart-avanti-s-a200-p100rx: explicit reset clears report, wreck bodies, marks, particles and fire
+ok   sebart-avanti-s-a200-p100rx: explicit reset stops and clears crash audio
+ok   sebart-avanti-s-a200-p100rx: original airplane, propeller and every hinge remain intact after reset
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 9), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 29.0 m/s, pitch 4°, bank -0°
+ok   sebart-avanti-s-a200-p100rx: a second hull crash reuses the prepared wreck body and mesh pools
+ok   sebart-avanti-s-a200-p100rx: cleanup leaves no production scene orphan or audio bus
+ok   turbo-lumber-evolution: effects-on production path disables legacy auto-restart
+ok   turbo-lumber-evolution: effects-off production path keeps legacy auto-restart
+ok   turbo-lumber-evolution: both healthy flights reach the same 100-tick checkpoint
+ok   turbo-lumber-evolution: healthy flight checkpoint is valid
+ok   turbo-lumber-evolution: healthy physics is identical with crash effects on or off through 100 ticks
+ok   turbo-lumber-evolution: generated state intersects this aircraft's own crash hull
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 17), point speed 20.0 m/s at detected tick) - [R] restart
+ok   turbo-lumber-evolution: production detects a typed hull-contact crash
+ok   turbo-lumber-evolution: crash detection preserves the complete simulation checkpoint
+CRASH CAUSE: Flew into the ground at 13.1 m/s, pitch 4°, bank -0°
+ok   turbo-lumber-evolution: crash director and disposable wreck presentation become active
+ok   turbo-lumber-evolution: source aircraft is hidden while its disposable wreck is active
+skip turbo-lumber-evolution: Dummy has no playback; native integration covers audio
+ok   turbo-lumber-evolution: source-airplane shadow stays hidden during the wreck
+ok   turbo-lumber-evolution: user hold freezes every visible wreck body
+ok   turbo-lumber-evolution: user hold pauses all particle emitters
+ok   turbo-lumber-evolution: presentation crash never auto-restarts after 361 physics callbacks
+ok   turbo-lumber-evolution: explicit reset clears report, wreck bodies, marks, particles and fire
+ok   turbo-lumber-evolution: explicit reset stops and clears crash audio
+ok   turbo-lumber-evolution: original airplane, propeller and every hinge remain intact after reset
+CRASH at 20.0 m/s (sink 2.4 m/s, airframe contact (hull point 17), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 13.1 m/s, pitch 4°, bank 0°
+ok   turbo-lumber-evolution: a second hull crash reuses the prepared wreck body and mesh pools
+ok   turbo-lumber-evolution: cleanup leaves no production scene orphan or audio bus
+133 checks, 0 failed

@@ -35,5 +35,14 @@ class TimberAuthoring(unittest.TestCase):
         self.assertGreater(loaded['static_current'],base['static_current'])
         self.assertEqual(loaded['mass'],base['mass'])
 
+    def test_wingtip_contacts_stay_on_forward_outer_skin(self):
+        model,_=derive()
+        left,right=model['crash_hull']['value'][:2]
+        self.assertEqual(model['crash_hull_components'][:2],['left_wing_tip','right_wing_tip'])
+        # R2 max-span landmarks are aft near 0.186 m; those must not silently replace leading contact probes.
+        self.assertTrue(0 <= left[0] < .04 and 0 <= right[0] < .04)
+        self.assertTrue(left[1] < -.75 and right[1] > .75)
+        self.assertAlmostEqual(left[0],right[0],places=12)
+
 
 if __name__=='__main__':unittest.main()

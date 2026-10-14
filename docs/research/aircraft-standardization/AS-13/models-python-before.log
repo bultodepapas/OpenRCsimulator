@@ -1,0 +1,13 @@
+.F.......
+======================================================================
+FAIL: test_fleet_values_and_existing_visual_adapters_are_preserved (__main__.AircraftModelManifestTests.test_fleet_values_and_existing_visual_adapters_are_preserved) (family='turbo-lumber-evolution')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\research\aircraft-standardization\test_models.py", line 73, in test_fleet_values_and_existing_visual_adapters_are_preserved
+    self.assertEqual(manifest["bindings"]["rotor"]["authored_diameter_m"], diameter)
+AssertionError: 0.28064 != 0.280642
+
+----------------------------------------------------------------------
+Ran 9 tests in 8.641s
+
+FAILED (failures=1)

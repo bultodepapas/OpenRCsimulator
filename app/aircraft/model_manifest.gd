@@ -167,9 +167,9 @@ static func _check_crash(value: Variant, errors: PackedStringArray, diagnostics:
 		_fail(errors, diagnostics, "MODEL_CRASH_INVALID", path, "crash binding must be an object")
 		return
 	var provider := str(value.get("provider", ""))
-	if provider == "none":
+	if provider in ["none", "gltf_extras"]:
 		_check_fields(value, ["provider", "metadata_script", "asset_node"], path, errors, diagnostics)
-		if value.get("metadata_script") != "" or value.get("asset_node") != "": _fail(errors, diagnostics, "MODEL_CRASH_INVALID", path, "provider none must not declare crash references")
+		if value.get("metadata_script") != "" or value.get("asset_node") != "": _fail(errors, diagnostics, "MODEL_CRASH_INVALID", path, "provider %s must not declare separate crash references" % provider)
 	elif provider == "generated_triangle_map":
 		_check_fields(value, ["provider", "metadata_script", "asset_node"], path, errors, diagnostics)
 		if not _resource_path(str(value.get("metadata_script", "")), ["aircraft"]): _fail(errors, diagnostics, "MODEL_CRASH_PATH_INVALID", path + ".metadata_script", "crash metadata must be a safe bundled aircraft script")
@@ -236,6 +236,8 @@ static func _check_dependencies(value: Variant, manifest: Dictionary, errors: Pa
 	if typeof(manifest_bindings) == TYPE_DICTIONARY and typeof(manifest_bindings.get("crash", {})) == TYPE_DICTIONARY:
 		crash = manifest_bindings.get("crash", {})
 	if crash.get("provider") == "generated_triangle_map": _expect_dependency(roles, str(crash.get("metadata_script", "")), "crash_metadata", errors, diagnostics)
+	if crash.get("provider") == "gltf_extras" and asset.get("kind") != "imported_glb":
+		_fail(errors, diagnostics, "MODEL_CRASH_ASSET_INVALID", "$.bindings.crash.provider", "gltf_extras requires an imported_glb asset")
 
 
 static func _expect_dependency(roles: Dictionary, path: String, role: String, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:

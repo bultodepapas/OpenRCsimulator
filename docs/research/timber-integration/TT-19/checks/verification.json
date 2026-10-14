@@ -1,0 +1,274 @@
+{
+  "format": "openrc-aircraft-verification v1",
+  "ok": true,
+  "commands": [
+    {
+      "name": "aircraft_model_manifest",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_model_manifest.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 12.75,
+      "log": "aircraft_model_manifest.log",
+      "log_sha256": "d1fb4fc9155858a0b8ed692494734852e419c27249e3682a9ce10e3aac917f5e"
+    },
+    {
+      "name": "aircraft_modules",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_modules.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.5,
+      "log": "aircraft_modules.log",
+      "log_sha256": "73aa3341c5cb94f2c6416e0091a36422904aa75e2514515e117da4ea1808e19a"
+    },
+    {
+      "name": "aircraft_package_proofs",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_package_proofs.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 40.20299999999406,
+      "log": "aircraft_package_proofs.log",
+      "log_sha256": "dc0c15f33159329247341d4ad14a684d49ca95f0e5c144a27c81777f55f3b1e6"
+    },
+    {
+      "name": "aircraft_render_contract",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_render_contract.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 9.046000000002095,
+      "log": "aircraft_render_contract.log",
+      "log_sha256": "621df8bc3d50917a6dbeba10c9d18ffbdb9ec7960ea40bbacef0f700e298c792"
+    },
+    {
+      "name": "descriptor-checkout",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\test_descriptor_checkout.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.625,
+      "log": "descriptor-checkout.log",
+      "log_sha256": "e5c25950ccf65f2b2275be891eaf706cf97552f73f8384b5075b00ebca2c6305"
+    },
+    {
+      "name": "descriptors-current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\build_descriptors.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.15600000000267755,
+      "log": "descriptors-current.log",
+      "log_sha256": "27446d8a3dffa3acb6a429a0f308b9a9d9b6b85750dd25914805c05dd3ddfb93"
+    },
+    {
+      "name": "export-pack",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--export-pack",
+        "Windows",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\timber-r2\\final-conformance\\aircraft-contract.pck"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "log": "export-pack.log",
+      "log_sha256": "8b99bcb970530f3007fdea030d70ac9fc09eada95bbfd2638053adb303414109",
+      "repeat_reason": "Repeated after final leading-skin collision-probe derivation; final logs and package/preflight outputs replace earlier snapshot."
+    },
+    {
+      "name": "import",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 8.485000000000582,
+      "log": "import.log",
+      "log_sha256": "eb25404de21ad55906dcfe3101eee66d42766766118a2510358fb618b9ba94fe"
+    },
+    {
+      "name": "migration",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\migrate.py",
+        "--check-known"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.15600000000267755,
+      "log": "migration.log",
+      "log_sha256": "fc81fbed664edb653399f57d50145ce9c653316b0a486bda00af684e95ec8957"
+    },
+    {
+      "name": "models-current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\build_models.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.1879999999946449,
+      "log": "models-current.log",
+      "log_sha256": "59e2026db8477aa4e7b35a531f9ba817af511d1fb2a8c0f81877e3bda8441295"
+    },
+    {
+      "name": "models-python",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\test_models.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.85899999999674,
+      "log": "models-python.log",
+      "log_sha256": "a23d79b0c125c81703f92fbe5f07f5544c043c7c026db80dfec6d51625f2b63f"
+    },
+    {
+      "name": "modules-python",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\test_modules.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.937000000005355,
+      "log": "modules-python.log",
+      "log_sha256": "1a8644ba9fa1b12daa8010fde0afb87a929359c6fa82b80e5cba4cae3b67ba45"
+    },
+    {
+      "name": "package-preflight",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--main-pack",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\timber-r2\\final-conformance\\aircraft-contract.pck",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\preflight.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\timber-r2\\final-conformance\\package-preflight.json"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "log": "package-preflight.log",
+      "log_sha256": "c75a77ab626ee76ea526d36d1e461e855ffd38812afa71f9213afe8d890fff01",
+      "repeat_reason": "Repeated after final leading-skin collision-probe derivation; final logs and package/preflight outputs replace earlier snapshot."
+    },
+    {
+      "name": "parameters",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\parameter_register.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.125,
+      "log": "parameters.log",
+      "log_sha256": "dce936fd7bfc13c7b99125164e95e49237cab3f313089cbe258bb5f0bc2aff25"
+    },
+    {
+      "name": "preflight",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\preflight.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\timber-r2\\final-conformance\\preflight.json"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "log": "preflight.log",
+      "log_sha256": "c75a77ab626ee76ea526d36d1e461e855ffd38812afa71f9213afe8d890fff01",
+      "repeat_reason": "Repeated after final leading-skin collision-probe derivation; final logs and package/preflight outputs replace earlier snapshot."
+    },
+    {
+      "name": "schema",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\build_schema.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.1559999999954016,
+      "log": "schema.log",
+      "log_sha256": "3c700854bdc83285bb6edfb53e811dad3c7345d6bedd2e0975d92b5fd36a54fd"
+    },
+    {
+      "name": "workshop_descriptor",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_descriptor.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 11.218999999997322,
+      "log": "workshop_descriptor.log",
+      "log_sha256": "db3dd9264c5d3c22bab8ddc2d3ba37de7097bbf14ac734c83f6939f558122cae"
+    }
+  ],
+  "flight_comparison": null
+}

@@ -147,7 +147,7 @@ def derive(inputs=None):
     gc=[]
     for name,p in points.items():
         stiffness=ktot*shares[name]
-        gc.append(dict(name=name,position=q(p,"m","measured","TT-02 imported r1 wheel centre minus radius; D0 frame"),
+        gc.append(dict(name=name,position=q(p,"m","measured","TT-19 imported r2 wheel centre minus radius; D0 frame"),
             stiffness=q(stiffness,"N/m",source=SOURCE+": E1 heave omega*dt rule, split by three-point static load share; assumed compliance"),
             damping=q(2*v("gear_damping_ratio")*math.sqrt(stiffness*mass/3),"N·s/m"),
             max_compression=eq("gear_travel","m"),max_steering=q(-v("tail_steering") if name=="tail" else 0.0,"deg","estimated","TT-07 tailwheel opposite rudder angle for positive right taxi yaw; mains unsteered")))
@@ -166,8 +166,12 @@ def derive(inputs=None):
         prop[field]["value"]=[[x,y*v(estimate)] for x,y in prop[field]["value"]]
         prop[field]["source"]+=f"; explicit estimated mismatch multiplier {v(estimate)}; saturation outside J endpoints, unmeasured static-to-tunnel bridge"
     landmarks=g["landmarks"]
-    hull=[]
-    for key in ["left_wingtip","right_wingtip","nose_spinner_tip","tail_rudder_trailing_edge"]:
+    # R1's tip landmark selected a navigation lens, while r2's max-span cap selects an aft vertex.
+    # Use a stable leading-skin sample for collision: outermost measured right-wing station, mirrored left.
+    # This is 2.752 mm inboard of the r2 cap; it avoids a spurious 155 mm aft probe shift from landmark semantics.
+    tip=g["wing"]["stations"][-1]  # [x_right, le_z, te_z, le_y, te_y]
+    hull=[[tip[1],-tip[0],tip[3]],[tip[1],tip[0],tip[3]]]
+    for key in ["nose_spinner_tip","tail_rudder_trailing_edge"]:
         p=landmarks[key]["measured"];hull.append([p[2],p[0],p[1]])
     hull += [[gv("tail","te_z_centreline"),-bh/2,zh],[gv("tail","te_z_centreline"),bh/2,zh],
              [gv("fin","rudder_te_z"),0,gv("fin","top_y")],[-0.2515,0,-gv("thrust","propeller_radius")]]
@@ -177,17 +181,17 @@ def derive(inputs=None):
     hull_names=["left_wing_tip","right_wing_tip","spinner","tail_end","left_stab_tip","right_stab_tip","fin_top","propeller"]
     hull_names+=["belly"]*(len(hull)-len(hull_names))
     model=dict(format="openrc-aircraft v2",id="turbo-lumber-evolution",
-      description="EXPERIMENTAL TT-07: photograph-inspired r1 mesh (revision unconfirmed), B-reference 800 Kv/70 A/4S 3200 mAh/11x7.3 three-blade loadout. Estimated inventory, motor losses and borrowed two-blade propeller map. Wheels fixed, flaps up, slats absent, assists off; prescribed bus, no battery depletion. Not physical validation.",
+      description="EXPERIMENTAL TT-07: photograph-inspired r2 mesh (r2-d75ae605aa3a), B-reference 800 Kv/70 A/4S 3200 mAh/11x7.3 three-blade loadout. Estimated inventory, motor losses and borrowed two-blade propeller map. Wheels fixed, flaps up, slats absent, assists off; prescribed bus, no battery depletion. Not physical validation.",
       convention_id="openrc-le-frd-v1",capabilities=dict(controls="conventional",gear="fixed_taildragger",propulsion_layout="single_tractor",energy="fixed_voltage",damage="terminal_hull",flaps="not_simulated"),
       frames=dict(le_frame="D0: [x_aft,y_right,z_up] = [model Z,model X,model Y], metres",body="FRD about inventory CG"),
       reference=dict(wing_area=g["wing"]["area"],wing_span=g["manual"]["span_m"],mean_chord=q(c,"m"),aero_reference_point=q([xarp,0,arp_up],"m",source=SOURCE+": quarter chord at measured wing height, dihedral extrapolated to centreline D0"),planform="rectangular"),
-      balance=dict(plan_cg=q(cg,"m",source=SOURCE+": manual longitudinal CG, inventory-derived vertical CG"),firewall=q([-0.19,0,0],"m","estimated","TT-07 assumed motor mount station inside r1 cowl"),configuration="virtual-balanced-reference-v1",cg_tolerance=q(0.001,"m","estimated","TT-07 reference build tolerance")),
+      balance=dict(plan_cg=q(cg,"m",source=SOURCE+": manual longitudinal CG, inventory-derived vertical CG"),firewall=q([-0.19,0,0],"m","estimated","TT-07 assumed motor mount station retained inside r2 cowl"),configuration="virtual-balanced-reference-v1",cg_tolerance=q(0.001,"m","estimated","TT-07 reference build tolerance")),
       inventory=items,start=dict(level_speed=q(speed,"m/s",source=SOURCE+": 1.6 times clean 1-g stall from manual mass, measured model area and estimated CL_max")),
       controls=dict(max_throw={key:q(throw_degrees(g["controls"]["manual_mm"][key]["high"],g["controls"][key]["r"]["value"]),"deg",source=SOURCE+": 2 asin(manual displacement/(2 measured hinge radius)); TT-02 assumed measurement station") for key in ["aileron","elevator","rudder"]},servo_full_throw_time=eq("servo_full_throw_time","s")),
       aero=dict(source=SOURCE+": geometry/textbook estimate, no identified Timber aerodynamics",conventions=i["conventions"],coefficients=coefficients,surfaces=surfaces,reference_coefficients=dict(CLadot=q(2*ah_free*sh/s*(xh-cg_x)/c*deps,"1/rad")),
           envelope=dict(CL_max=eq("CL_max","1"),CL_min=eq("CL_min","1"),stall_blend_width=eq("stall_blend_width","deg"),CD90=q(1.11+0.018*ar,"1"),sideslip_blend=q([15,25],"deg","estimated","TT-07 linear-to-sine sideslip blend"))),
       propulsion=propulsion,landing_gear=dict(contacts=gc,rolling_resistance=eq("rolling_resistance","1"),side_friction=eq("side_friction","1"),peak_slip_angle=eq("peak_slip_angle","deg"),breakaway_factor=eq("breakaway_factor","1")),
-      crash_hull=q(hull,"m",source=SOURCE+": TT-02 imported extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"),
+      crash_hull=q(hull,"m",source=SOURCE+": TT-19 outermost measured wing leading-skin station mirrored left/right (not max-span cap or nav lens), imported nose/tail extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"),
       crash_hull_components=hull_names,
       plausibility=dict(mass_range=q([1.86,2.4],"kg","estimated","Manual 1.860 kg empty/2.190 kg with pack; widened upper reference-build limit"),inertia_reference=q(j[:3],"kg·m2",source=SOURCE+": same inventory box estimate; self-reference is no independent plausibility evidence")))
     return model,dict(mass=mass,cg=cg,inertia=j,stall_speed=vs,start_speed=speed,static_margin=(xarp-values["Cma"]/cla*c-cg_x)/c,CD0=cd0,tail_load_share=tail_share,virtual_mass=residue,virtual_station=xb)

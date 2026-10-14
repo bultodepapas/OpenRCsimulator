@@ -7,6 +7,8 @@ const PACKAGE_PROOF_FORMAT := "openrc-aircraft-model-package v1"
 const PACKAGE_PROOF_ROOT := "res://data/aircraft_models/proofs/"
 const TEXT_HASH := "lf_text"
 const BINARY_HASH := "raw"
+const CRASH_SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "engine", "propeller",
+	"horizontal_tail", "vertical_tail", "gear", "canopy"]
 
 
 static func describe(family_id: String) -> Dictionary:
@@ -191,6 +193,10 @@ static func _check_derived_gear(manifest: Dictionary, built: Dictionary, root: N
 
 static func _check_derived_crash(manifest: Dictionary, root: Node3D, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:
 	var crash: Dictionary = manifest.bindings.crash
+	if crash.provider == "gltf_extras":
+		# Match the wreck collector: the public root is a wrapper, sections start at its children.
+		for child in root.get_children():
+			_check_gltf_section(child, "", errors, diagnostics)
 	if crash.provider == "generated_triangle_map":
 		var node := root.find_child(str(crash.asset_node), true, false)
 		if node == null:
@@ -201,6 +207,27 @@ static func _check_derived_crash(manifest: Dictionary, root: Node3D, errors: Pac
 			var section_map: Variant = node.get_meta("crash_section_map")
 			if typeof(section_map) != TYPE_DICTIONARY or section_map.get("format") != "openrc-crash-sections v1" or not (section_map.get("sections", []) is Array) or section_map.get("sections", []).is_empty():
 				_fail(errors, diagnostics, "MODEL_BUILD_CRASH_MAP_INVALID", "$.bindings.crash.asset_node", "generated crash section map has an unsupported format or no sections")
+
+
+static func _check_gltf_section(node: Node, inherited: String, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:
+	var extras: Variant = node.get_meta("extras", {})
+	var section := ""
+	var path := "$.scene." + str(node.name) + ".extras.openrc_section"
+	if typeof(extras) == TYPE_DICTIONARY and extras.has("openrc_section"):
+		var value: Variant = extras.openrc_section
+		if typeof(value) != TYPE_STRING or not CRASH_SECTIONS.has(value):
+			_fail(errors, diagnostics, "MODEL_BUILD_SECTION_INVALID", path, "section must be a supported string ID")
+		else:
+			section = value
+	elif node is MeshInstance3D or (typeof(extras) == TYPE_DICTIONARY and extras.has("articulation")):
+		_fail(errors, diagnostics, "MODEL_BUILD_SECTION_MISSING", path, "each imported mesh and articulated pivot must declare its crash section")
+	if not inherited.is_empty() and not section.is_empty() and section != inherited:
+		_fail(errors, diagnostics, "MODEL_BUILD_SECTION_CAPTURED", path, "detachable ancestor captures a different child section")
+	var next_section := inherited
+	if next_section.is_empty() and section != "core":
+		next_section = section
+	for child in node.get_children():
+		_check_gltf_section(child, next_section, errors, diagnostics)
 
 
 static func _check_derived_asset(manifest: Dictionary, root: Node3D, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:

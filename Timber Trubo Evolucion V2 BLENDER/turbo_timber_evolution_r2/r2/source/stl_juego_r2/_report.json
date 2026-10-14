@@ -1,0 +1,859 @@
+{
+ "cuts": [
+  {
+   "part": "fuselaje_blanco",
+   "side": "aft",
+   "volume_before_mm3": 7453169.8,
+   "volume_after_mm3": 7453169.8
+  },
+  {
+   "part": "fuselaje_panza_roja",
+   "side": "aft",
+   "volume_before_mm3": 1863497.1,
+   "volume_after_mm3": 1863497.1
+  },
+  {
+   "part": "franjas_negras",
+   "side": "aft",
+   "volume_before_mm3": 29053.2,
+   "volume_after_mm3": 25648.9
+  },
+  {
+   "part": "panel_nariz",
+   "side": "aft",
+   "volume_before_mm3": 3308.7,
+   "volume_after_mm3": 484.5
+  },
+  {
+   "part": "filete_nariz",
+   "side": "aft",
+   "volume_before_mm3": 622.6,
+   "volume_after_mm3": 358.7
+  },
+  {
+   "part": "placas_escape",
+   "side": "aft",
+   "volume_before_mm3": 2334.9,
+   "volume_after_mm3": 150.8
+  },
+  {
+   "part": "capota",
+   "side": "fwd",
+   "volume_before_mm3": 280019.2,
+   "volume_after_mm3": 280019.2
+  },
+  {
+   "part": "panel_nariz",
+   "side": "fwd",
+   "volume_before_mm3": 3308.7,
+   "volume_after_mm3": 2825.9
+  },
+  {
+   "part": "filete_nariz",
+   "side": "fwd",
+   "volume_before_mm3": 622.6,
+   "volume_after_mm3": 264.0
+  },
+  {
+   "part": "franjas_negras",
+   "side": "fwd",
+   "volume_before_mm3": 29053.2,
+   "volume_after_mm3": 120.4
+  },
+  {
+   "part": "placas_escape",
+   "side": "fwd",
+   "volume_before_mm3": 2334.9,
+   "volume_after_mm3": 2165.8
+  }
+ ],
+ "overlaps": [
+  {
+   "lower": "extrados_rojo_izq",
+   "upper": "barras_ala_izq",
+   "overlap_mm3": 861.5,
+   "volume_before": 29391.4,
+   "volume_after": 28512.1
+  },
+  {
+   "lower": "intrados_gris_izq",
+   "upper": "barras_ala_izq",
+   "overlap_mm3": 51.3,
+   "volume_before": 7755.5,
+   "volume_after": 7708.9
+  },
+  {
+   "lower": "extrados_rojo_izq",
+   "upper": "extrados_negro_izq",
+   "overlap_mm3": 3321.7,
+   "volume_before": 28512.1,
+   "volume_after": 25204.2
+  },
+  {
+   "lower": "extrados_rojo_der",
+   "upper": "barras_ala_der",
+   "overlap_mm3": 861.5,
+   "volume_before": 29391.4,
+   "volume_after": 28512.1
+  },
+  {
+   "lower": "intrados_gris_der",
+   "upper": "barras_ala_der",
+   "overlap_mm3": 51.3,
+   "volume_before": 7755.5,
+   "volume_after": 7708.9
+  },
+  {
+   "lower": "extrados_rojo_der",
+   "upper": "extrados_negro_der",
+   "overlap_mm3": 3321.7,
+   "volume_before": 28512.1,
+   "volume_after": 25204.2
+  },
+  {
+   "lower": "estab_superior_rojo",
+   "upper": "estab_superior_negro",
+   "overlap_mm3": 1002.6,
+   "volume_before": 10640.7,
+   "volume_after": 9637.9
+  },
+  {
+   "lower": "elevador_superior_rojo",
+   "upper": "elevador_superior_negro",
+   "overlap_mm3": 875.9,
+   "volume_before": 8022.0,
+   "volume_after": 7146.6
+  },
+  {
+   "lower": "deriva_franja_roja",
+   "upper": "deriva_franjas_negras",
+   "overlap_mm3": 154.3,
+   "volume_before": 299.7,
+   "volume_after": 281.6
+  },
+  {
+   "lower": "timon_franja_roja",
+   "upper": "timon_franjas_negras",
+   "overlap_mm3": 302.8,
+   "volume_before": 4172.6,
+   "volume_after": 3869.9
+  }
+ ],
+ "empty": [],
+ "skinned": [
+  {
+   "decal": "franja_negra_cola",
+   "volume_before_mm3": 1068.5,
+   "volume_after_mm3": 717.8
+  },
+  {
+   "decal": "barras_ala_izq",
+   "volume_before_mm3": 34456.3,
+   "volume_after_mm3": 2514.8
+  },
+  {
+   "decal": "extrados_rojo_izq",
+   "volume_before_mm3": 990729.5,
+   "volume_after_mm3": 29391.4
+  },
+  {
+   "decal": "extrados_negro_izq",
+   "volume_before_mm3": 163777.5,
+   "volume_after_mm3": 5695.4
+  },
+  {
+   "decal": "intrados_gris_izq",
+   "volume_before_mm3": 153150.7,
+   "volume_after_mm3": 7755.5
+  },
+  {
+   "decal": "barras_ala_der",
+   "volume_before_mm3": 34456.3,
+   "volume_after_mm3": 2514.8
+  },
+  {
+   "decal": "extrados_rojo_der",
+   "volume_before_mm3": 990729.5,
+   "volume_after_mm3": 29391.4
+  },
+  {
+   "decal": "extrados_negro_der",
+   "volume_before_mm3": 163777.5,
+   "volume_after_mm3": 5695.4
+  },
+  {
+   "decal": "intrados_gris_der",
+   "volume_before_mm3": 153150.7,
+   "volume_after_mm3": 7755.5
+  },
+  {
+   "decal": "estab_superior_rojo",
+   "volume_before_mm3": 104715.9,
+   "volume_after_mm3": 10640.7
+  },
+  {
+   "decal": "estab_superior_negro",
+   "volume_before_mm3": 11907.0,
+   "volume_after_mm3": 1920.6
+  },
+  {
+   "decal": "elevador_superior_rojo",
+   "volume_before_mm3": 43888.2,
+   "volume_after_mm3": 8022.0
+  },
+  {
+   "decal": "elevador_superior_negro",
+   "volume_before_mm3": 5657.9,
+   "volume_after_mm3": 1772.0
+  },
+  {
+   "decal": "deriva_franja_roja",
+   "volume_before_mm3": 30045.0,
+   "volume_after_mm3": 3006.6
+  },
+  {
+   "decal": "deriva_franja_roja",
+   "volume_before_mm3": 3006.6,
+   "volume_after_mm3": 299.7
+  },
+  {
+   "decal": "deriva_franjas_negras",
+   "volume_before_mm3": 12295.1,
+   "volume_after_mm3": 1786.8
+  },
+  {
+   "decal": "deriva_franjas_negras",
+   "volume_before_mm3": 1786.8,
+   "volume_after_mm3": 1126.7
+  },
+  {
+   "decal": "timon_franja_roja",
+   "volume_before_mm3": 44473.6,
+   "volume_after_mm3": 4172.6
+  },
+  {
+   "decal": "timon_franjas_negras",
+   "volume_before_mm3": 10868.3,
+   "volume_after_mm3": 1891.8
+  }
+ ],
+ "triangles": {
+  "fuselaje_blanco@aft": 1162,
+  "fuselaje_panza_roja@aft": 922,
+  "franjas_negras@aft": 565,
+  "franja_blanca_cola": 49,
+  "franja_negra_cola": 16,
+  "panel_nariz@aft": 216,
+  "escotilla_panel_nariz": 222,
+  "filete_nariz@aft": 94,
+  "placas_escape@aft": 188,
+  "soporte_tren_der": 472,
+  "soporte_tren_izq": 476,
+  "soporte_rueda_cola": 120,
+  "base_baliza": 120,
+  "lente_baliza": 302,
+  "puntera_izq": 1463,
+  "soportes_slat_izq": 768,
+  "tapa_servo_aleron_izq": 12,
+  "tapa_servo_flap_izq": 12,
+  "luz_nav_izq": 132,
+  "puntera_der": 1301,
+  "soportes_slat_der": 768,
+  "tapa_servo_aleron_der": 12,
+  "tapa_servo_flap_der": 12,
+  "luz_nav_der": 132,
+  "aleron_izq": 1500,
+  "cuerno_aleron_izq": 180,
+  "aleron_der": 1500,
+  "cuerno_aleron_der": 180,
+  "flap_izq": 2428,
+  "cuerno_flap_izq": 180,
+  "flap_der": 2428,
+  "cuerno_flap_der": 180,
+  "union_elevador": 60,
+  "cuerno_elevador": 196,
+  "cuerno_timon": 208,
+  "capota@fwd": 1432,
+  "panel_nariz@fwd": 324,
+  "filete_nariz@fwd": 160,
+  "franjas_negras@fwd": 162,
+  "placas_escape@fwd": 376,
+  "escapes": 1242,
+  "parabrisas": 282,
+  "escotilla_parabrisas": 256,
+  "ventanas": 706,
+  "helice": 3942,
+  "spinner": 1202,
+  "contraplaca": 534,
+  "campana_motor": 764,
+  "pata_izq": 344,
+  "collarin_izq": 184,
+  "perno_eje_izq": 72,
+  "eslabon_izq": 196,
+  "pata_der": 344,
+  "collarin_der": 184,
+  "perno_eje_der": 72,
+  "eslabon_der": 196,
+  "neumatico_izq": 1044,
+  "buje_izq": 1056,
+  "arandela_izq": 112,
+  "tuerca_izq": 80,
+  "neumatico_der": 1044,
+  "buje_der": 1056,
+  "arandela_der": 112,
+  "tuerca_der": 80,
+  "alambre_rueda_cola": 238,
+  "rueda_cola": 1512,
+  "buje_cola": 60,
+  "ala_izq": 7258,
+  "ala_der": 7278,
+  "estabilizador": 10038,
+  "timon_profundidad": 2412,
+  "deriva%00": 1916,
+  "deriva%01%10": 282,
+  "deriva%01%11": 1364,
+  "aleta_dorsal": 564,
+  "timon_direccion": 2178,
+  "ala_izq#barras_ala_izq": 400,
+  "ala_izq#extrados_negro_izq": 72,
+  "ala_izq#extrados_rojo_izq": 514,
+  "ala_izq#intrados_gris_izq": 858,
+  "ala_der#barras_ala_der": 400,
+  "ala_der#extrados_negro_der": 72,
+  "ala_der#extrados_rojo_der": 514,
+  "ala_der#intrados_gris_der": 858,
+  "estabilizador#estab_superior_negro": 192,
+  "estabilizador#estab_superior_rojo": 340,
+  "timon_profundidad#elevador_superior_negro": 40,
+  "timon_profundidad#elevador_superior_rojo": 64,
+  "deriva#deriva_franjas_negras%00%10": 90,
+  "deriva#deriva_franjas_negras%00%11": 24,
+  "deriva#deriva_franjas_negras%01": 120,
+  "deriva#deriva_franja_roja": 420,
+  "aleta_dorsal#deriva_franjas_negras": 190,
+  "aleta_dorsal#deriva_franja_roja": 226,
+  "timon_direccion#timon_franjas_negras": 48,
+  "timon_direccion#timon_franja_roja": 48
+ },
+ "total": 76724,
+ "tol_mm": 0.3,
+ "tol_ang_rad": 0.35,
+ "materials_cad": {
+  "fuselaje_blanco@aft": "blanco",
+  "fuselaje_panza_roja@aft": "rojo",
+  "franjas_negras@aft": "negro",
+  "franja_blanca_cola": "blanco",
+  "franja_negra_cola": "negro",
+  "panel_nariz@aft": "negro",
+  "escotilla_panel_nariz": "negro",
+  "filete_nariz@aft": "rojo",
+  "placas_escape@aft": "plastico",
+  "soporte_tren_der": "gris_claro",
+  "soporte_tren_izq": "gris_claro",
+  "soporte_rueda_cola": "gris_claro",
+  "base_baliza": "negro",
+  "lente_baliza": "lente_roja",
+  "ala_izq": "blanco",
+  "puntera_izq": "rojo",
+  "barras_ala_izq": "blanco",
+  "extrados_rojo_izq": "rojo",
+  "extrados_negro_izq": "negro",
+  "intrados_gris_izq": "gris_oscuro",
+  "soportes_slat_izq": "gris_claro",
+  "tapa_servo_aleron_izq": "gris_claro",
+  "tapa_servo_flap_izq": "gris_claro",
+  "luz_nav_izq": "lente",
+  "ala_der": "blanco",
+  "puntera_der": "rojo",
+  "barras_ala_der": "blanco",
+  "extrados_rojo_der": "rojo",
+  "extrados_negro_der": "negro",
+  "intrados_gris_der": "gris_oscuro",
+  "soportes_slat_der": "gris_claro",
+  "tapa_servo_aleron_der": "gris_claro",
+  "tapa_servo_flap_der": "gris_claro",
+  "luz_nav_der": "lente",
+  "aleron_izq": "blanco",
+  "cuerno_aleron_izq": "gris_claro",
+  "aleron_der": "blanco",
+  "cuerno_aleron_der": "gris_claro",
+  "flap_izq": "blanco",
+  "cuerno_flap_izq": "gris_claro",
+  "flap_der": "blanco",
+  "cuerno_flap_der": "gris_claro",
+  "estabilizador": "blanco",
+  "estab_superior_rojo": "rojo",
+  "estab_superior_negro": "negro",
+  "timon_profundidad": "blanco",
+  "union_elevador": "metal",
+  "elevador_superior_rojo": "rojo",
+  "elevador_superior_negro": "negro",
+  "cuerno_elevador": "gris_claro",
+  "deriva": "blanco",
+  "deriva_franja_roja": "rojo",
+  "deriva_franjas_negras": "negro",
+  "aleta_dorsal": "blanco",
+  "timon_direccion": "blanco",
+  "timon_franja_roja": "rojo",
+  "timon_franjas_negras": "negro",
+  "cuerno_timon": "gris_claro",
+  "capota@fwd": "plastico",
+  "panel_nariz@fwd": "negro",
+  "filete_nariz@fwd": "rojo",
+  "franjas_negras@fwd": "negro",
+  "placas_escape@fwd": "plastico",
+  "escapes": "cromo",
+  "parabrisas": "vidrio",
+  "escotilla_parabrisas": "vidrio",
+  "ventanas": "vidrio",
+  "helice": "nylon_negro",
+  "spinner": "spinner_negro",
+  "contraplaca": "aluminio",
+  "campana_motor": "cromo",
+  "pata_izq": "blanco",
+  "collarin_izq": "laton",
+  "perno_eje_izq": "cromo",
+  "eslabon_izq": "cromo",
+  "pata_der": "blanco",
+  "collarin_der": "laton",
+  "perno_eje_der": "cromo",
+  "eslabon_der": "cromo",
+  "neumatico_izq": "espuma",
+  "buje_izq": "blanco",
+  "arandela_izq": "cromo",
+  "tuerca_izq": "cromo",
+  "neumatico_der": "espuma",
+  "buje_der": "blanco",
+  "arandela_der": "cromo",
+  "tuerca_der": "cromo",
+  "alambre_rueda_cola": "metal",
+  "rueda_cola": "espuma",
+  "buje_cola": "gris_claro",
+  "ala_izq#barras_ala_izq": "blanco",
+  "ala_izq#extrados_negro_izq": "negro",
+  "ala_izq#extrados_rojo_izq": "rojo",
+  "ala_izq#intrados_gris_izq": "gris_oscuro",
+  "ala_der#barras_ala_der": "blanco",
+  "ala_der#extrados_negro_der": "negro",
+  "ala_der#extrados_rojo_der": "rojo",
+  "ala_der#intrados_gris_der": "gris_oscuro",
+  "estabilizador#estab_superior_negro": "negro",
+  "estabilizador#estab_superior_rojo": "rojo",
+  "timon_profundidad#elevador_superior_negro": "negro",
+  "timon_profundidad#elevador_superior_rojo": "rojo",
+  "deriva#deriva_franjas_negras": "negro",
+  "deriva#deriva_franja_roja": "rojo",
+  "aleta_dorsal#deriva_franjas_negras": "negro",
+  "aleta_dorsal#deriva_franja_roja": "rojo",
+  "timon_direccion#timon_franjas_negras": "negro",
+  "timon_direccion#timon_franja_roja": "rojo",
+  "deriva%00": "blanco",
+  "deriva%01%10": "blanco",
+  "deriva%01%11": "blanco",
+  "deriva#deriva_franjas_negras%00%10": "negro",
+  "deriva#deriva_franjas_negras%00%11": "negro",
+  "deriva#deriva_franjas_negras%01": "negro"
+ },
+ "owner": {
+  "fuselaje_blanco@aft": "fuselage_core",
+  "fuselaje_panza_roja@aft": "fuselage_core",
+  "franjas_negras@aft": "fuselage_core",
+  "franja_blanca_cola": "fuselage_core",
+  "franja_negra_cola": "fuselage_core",
+  "panel_nariz@aft": "fuselage_core",
+  "escotilla_panel_nariz": "fuselage_core",
+  "filete_nariz@aft": "fuselage_core",
+  "placas_escape@aft": "fuselage_core",
+  "soporte_tren_der": "fuselage_core",
+  "soporte_tren_izq": "fuselage_core",
+  "soporte_rueda_cola": "fuselage_core",
+  "base_baliza": "fuselage_core",
+  "lente_baliza": "fuselage_core",
+  "ala_izq": "wing_left_fixed",
+  "puntera_izq": "wing_left_fixed",
+  "barras_ala_izq": "wing_left_fixed",
+  "extrados_rojo_izq": "wing_left_fixed",
+  "extrados_negro_izq": "wing_left_fixed",
+  "intrados_gris_izq": "wing_left_fixed",
+  "soportes_slat_izq": "wing_left_fixed",
+  "tapa_servo_aleron_izq": "wing_left_fixed",
+  "tapa_servo_flap_izq": "wing_left_fixed",
+  "luz_nav_izq": "wing_left_fixed",
+  "ala_der": "wing_right_fixed",
+  "puntera_der": "wing_right_fixed",
+  "barras_ala_der": "wing_right_fixed",
+  "extrados_rojo_der": "wing_right_fixed",
+  "extrados_negro_der": "wing_right_fixed",
+  "intrados_gris_der": "wing_right_fixed",
+  "soportes_slat_der": "wing_right_fixed",
+  "tapa_servo_aleron_der": "wing_right_fixed",
+  "tapa_servo_flap_der": "wing_right_fixed",
+  "luz_nav_der": "wing_right_fixed",
+  "aleron_izq": "aileron_left",
+  "cuerno_aleron_izq": "aileron_left",
+  "aleron_der": "aileron_right",
+  "cuerno_aleron_der": "aileron_right",
+  "flap_izq": "flap_left",
+  "cuerno_flap_izq": "flap_left",
+  "flap_der": "flap_right",
+  "cuerno_flap_der": "flap_right",
+  "estabilizador": "stabilizer_fixed",
+  "estab_superior_rojo": "stabilizer_fixed",
+  "estab_superior_negro": "stabilizer_fixed",
+  "timon_profundidad": "elevator",
+  "union_elevador": "elevator",
+  "elevador_superior_rojo": "elevator",
+  "elevador_superior_negro": "elevator",
+  "cuerno_elevador": "elevator",
+  "deriva": "fin_fixed",
+  "deriva_franja_roja": "fin_fixed",
+  "deriva_franjas_negras": "fin_fixed",
+  "aleta_dorsal": "fin_fixed",
+  "timon_direccion": "rudder",
+  "timon_franja_roja": "rudder",
+  "timon_franjas_negras": "rudder",
+  "cuerno_timon": "rudder",
+  "capota@fwd": "cowl",
+  "panel_nariz@fwd": "cowl",
+  "filete_nariz@fwd": "cowl",
+  "franjas_negras@fwd": "cowl",
+  "placas_escape@fwd": "cowl",
+  "escapes": "cowl",
+  "parabrisas": "canopy_glass",
+  "escotilla_parabrisas": "canopy_glass",
+  "ventanas": "canopy_glass",
+  "helice": "propeller_rotor",
+  "spinner": "propeller_rotor",
+  "contraplaca": "propeller_rotor",
+  "campana_motor": "propeller_rotor",
+  "pata_izq": "gear_left_leg",
+  "collarin_izq": "gear_left_leg",
+  "perno_eje_izq": "gear_left_leg",
+  "eslabon_izq": "gear_left_leg",
+  "pata_der": "gear_right_leg",
+  "collarin_der": "gear_right_leg",
+  "perno_eje_der": "gear_right_leg",
+  "eslabon_der": "gear_right_leg",
+  "neumatico_izq": "wheel_left",
+  "buje_izq": "wheel_left",
+  "arandela_izq": "wheel_left",
+  "tuerca_izq": "wheel_left",
+  "neumatico_der": "wheel_right",
+  "buje_der": "wheel_right",
+  "arandela_der": "wheel_right",
+  "tuerca_der": "wheel_right",
+  "alambre_rueda_cola": "tailwheel_fork",
+  "rueda_cola": "tailwheel",
+  "buje_cola": "tailwheel",
+  "ala_izq#barras_ala_izq": "wing_left_fixed",
+  "ala_izq#extrados_negro_izq": "wing_left_fixed",
+  "ala_izq#extrados_rojo_izq": "wing_left_fixed",
+  "ala_izq#intrados_gris_izq": "wing_left_fixed",
+  "ala_der#barras_ala_der": "wing_right_fixed",
+  "ala_der#extrados_negro_der": "wing_right_fixed",
+  "ala_der#extrados_rojo_der": "wing_right_fixed",
+  "ala_der#intrados_gris_der": "wing_right_fixed",
+  "estabilizador#estab_superior_negro": "stabilizer_fixed",
+  "estabilizador#estab_superior_rojo": "stabilizer_fixed",
+  "timon_profundidad#elevador_superior_negro": "elevator",
+  "timon_profundidad#elevador_superior_rojo": "elevator",
+  "deriva#deriva_franjas_negras": "fin_fixed",
+  "deriva#deriva_franja_roja": "fin_fixed",
+  "aleta_dorsal#deriva_franjas_negras": "fin_fixed",
+  "aleta_dorsal#deriva_franja_roja": "fin_fixed",
+  "timon_direccion#timon_franjas_negras": "rudder",
+  "timon_direccion#timon_franja_roja": "rudder",
+  "deriva%00": "fin_fixed",
+  "deriva%01%10": "fin_fixed",
+  "deriva%01%11": "fin_fixed",
+  "deriva#deriva_franjas_negras%00%10": "fin_fixed",
+  "deriva#deriva_franjas_negras%00%11": "fin_fixed",
+  "deriva#deriva_franjas_negras%01": "fin_fixed"
+ },
+ "caches": {
+  "v15": "modelo_v15.py.brep",
+  "v17": "modelo_v17.py.brep"
+ },
+ "painted": {
+  "ala_izq": [
+   {
+    "piece": "ala_izq#barras_ala_izq",
+    "marking": "barras_ala_izq",
+    "material": "blanco",
+    "volume_mm3": 31930.1
+   },
+   {
+    "piece": "ala_izq#extrados_negro_izq",
+    "marking": "extrados_negro_izq",
+    "material": "negro",
+    "volume_mm3": 158081.6
+   },
+   {
+    "piece": "ala_izq#extrados_rojo_izq",
+    "marking": "extrados_rojo_izq",
+    "material": "rojo",
+    "volume_mm3": 783256.5
+   },
+   {
+    "piece": "ala_izq#intrados_gris_izq",
+    "marking": "intrados_gris_izq",
+    "material": "gris_oscuro",
+    "volume_mm3": 144101.5
+   }
+  ],
+  "ala_der": [
+   {
+    "piece": "ala_der#barras_ala_der",
+    "marking": "barras_ala_der",
+    "material": "blanco",
+    "volume_mm3": 31930.1
+   },
+   {
+    "piece": "ala_der#extrados_negro_der",
+    "marking": "extrados_negro_der",
+    "material": "negro",
+    "volume_mm3": 158081.6
+   },
+   {
+    "piece": "ala_der#extrados_rojo_der",
+    "marking": "extrados_rojo_der",
+    "material": "rojo",
+    "volume_mm3": 783256.5
+   },
+   {
+    "piece": "ala_der#intrados_gris_der",
+    "marking": "intrados_gris_der",
+    "material": "gris_oscuro",
+    "volume_mm3": 144101.5
+   }
+  ],
+  "estabilizador": [
+   {
+    "piece": "estabilizador#estab_superior_negro",
+    "marking": "estab_superior_negro",
+    "material": "negro",
+    "volume_mm3": 9985.4
+   },
+   {
+    "piece": "estabilizador#estab_superior_rojo",
+    "marking": "estab_superior_rojo",
+    "material": "rojo",
+    "volume_mm3": 84089.4
+   }
+  ],
+  "timon_profundidad": [
+   {
+    "piece": "timon_profundidad#elevador_superior_negro",
+    "marking": "elevador_superior_negro",
+    "material": "negro",
+    "volume_mm3": 3885.9
+   },
+   {
+    "piece": "timon_profundidad#elevador_superior_rojo",
+    "marking": "elevador_superior_rojo",
+    "material": "rojo",
+    "volume_mm3": 31979.8
+   }
+  ],
+  "deriva": [
+   {
+    "piece": "deriva#deriva_franjas_negras",
+    "marking": "deriva_franjas_negras",
+    "material": "negro",
+    "volume_mm3": 10506.5
+   },
+   {
+    "piece": "deriva#deriva_franja_roja",
+    "marking": "deriva_franja_roja",
+    "material": "rojo",
+    "volume_mm3": 25996.8
+   }
+  ],
+  "aleta_dorsal": [
+   {
+    "piece": "aleta_dorsal#deriva_franjas_negras",
+    "marking": "deriva_franjas_negras",
+    "material": "negro",
+    "volume_mm3": 1003.4
+   },
+   {
+    "piece": "aleta_dorsal#deriva_franja_roja",
+    "marking": "deriva_franja_roja",
+    "material": "rojo",
+    "volume_mm3": 3181.7
+   }
+  ],
+  "timon_direccion": [
+   {
+    "piece": "timon_direccion#timon_franjas_negras",
+    "marking": "timon_franjas_negras",
+    "material": "negro",
+    "volume_mm3": 8976.4
+   },
+   {
+    "piece": "timon_direccion#timon_franja_roja",
+    "marking": "timon_franja_roja",
+    "material": "rojo",
+    "volume_mm3": 37111.3
+   }
+  ]
+ },
+ "tessellation_area_check": {
+  "ala_izq": {
+   "chunks": 1,
+   "stl_area_mm2": 244513.1,
+   "cad_area_mm2": 246981.6,
+   "ratio": 0.99
+  },
+  "ala_der": {
+   "chunks": 1,
+   "stl_area_mm2": 244513.1,
+   "cad_area_mm2": 246981.7,
+   "ratio": 0.99
+  },
+  "estabilizador": {
+   "chunks": 1,
+   "stl_area_mm2": 83045.4,
+   "cad_area_mm2": 83347.9,
+   "ratio": 0.9964
+  },
+  "timon_profundidad": {
+   "chunks": 1,
+   "stl_area_mm2": 71252.3,
+   "cad_area_mm2": 71281.4,
+   "ratio": 0.9996
+  },
+  "deriva": {
+   "chunks": [
+    "deriva%00",
+    "deriva%01%10",
+    "deriva%01%11"
+   ],
+   "stl_area_mm2": 42626.3,
+   "cad_area_mm2": 40322.3
+  },
+  "aleta_dorsal": {
+   "chunks": 1,
+   "stl_area_mm2": 19540.0,
+   "cad_area_mm2": 19743.7,
+   "ratio": 0.9897
+  },
+  "timon_direccion": {
+   "chunks": 1,
+   "stl_area_mm2": 47085.5,
+   "cad_area_mm2": 48437.2,
+   "ratio": 0.9721
+  },
+  "ala_izq#barras_ala_izq": {
+   "chunks": 1,
+   "stl_area_mm2": 10840.6,
+   "cad_area_mm2": 10876.2,
+   "ratio": 0.9967
+  },
+  "ala_izq#extrados_negro_izq": {
+   "chunks": 1,
+   "stl_area_mm2": 45123.4,
+   "cad_area_mm2": 47249.4,
+   "ratio": 0.955
+  },
+  "ala_izq#extrados_rojo_izq": {
+   "chunks": 1,
+   "stl_area_mm2": 158594.2,
+   "cad_area_mm2": 161944.8,
+   "ratio": 0.9793
+  },
+  "ala_izq#intrados_gris_izq": {
+   "chunks": 1,
+   "stl_area_mm2": 54240.3,
+   "cad_area_mm2": 55371.1,
+   "ratio": 0.9796
+  },
+  "ala_der#barras_ala_der": {
+   "chunks": 1,
+   "stl_area_mm2": 10840.6,
+   "cad_area_mm2": 10876.2,
+   "ratio": 0.9967
+  },
+  "ala_der#extrados_negro_der": {
+   "chunks": 1,
+   "stl_area_mm2": 45123.4,
+   "cad_area_mm2": 47249.4,
+   "ratio": 0.955
+  },
+  "ala_der#extrados_rojo_der": {
+   "chunks": 1,
+   "stl_area_mm2": 158594.2,
+   "cad_area_mm2": 161944.8,
+   "ratio": 0.9793
+  },
+  "ala_der#intrados_gris_der": {
+   "chunks": 1,
+   "stl_area_mm2": 54240.3,
+   "cad_area_mm2": 55371.1,
+   "ratio": 0.9796
+  },
+  "estabilizador#estab_superior_negro": {
+   "chunks": 1,
+   "stl_area_mm2": 7980.8,
+   "cad_area_mm2": 8179.7,
+   "ratio": 0.9757
+  },
+  "estabilizador#estab_superior_rojo": {
+   "chunks": 1,
+   "stl_area_mm2": 63618.4,
+   "cad_area_mm2": 64001.3,
+   "ratio": 0.994
+  },
+  "timon_profundidad#elevador_superior_negro": {
+   "chunks": 1,
+   "stl_area_mm2": 6519.2,
+   "cad_area_mm2": 6566.7,
+   "ratio": 0.9928
+  },
+  "timon_profundidad#elevador_superior_rojo": {
+   "chunks": 1,
+   "stl_area_mm2": 47612.5,
+   "cad_area_mm2": 47676.1,
+   "ratio": 0.9987
+  },
+  "deriva#deriva_franjas_negras": {
+   "chunks": [
+    "deriva#deriva_franjas_negras%00%10",
+    "deriva#deriva_franjas_negras%00%11",
+    "deriva#deriva_franjas_negras%01"
+   ],
+   "stl_area_mm2": 6382.7,
+   "cad_area_mm2": 6440.8
+  },
+  "deriva#deriva_franja_roja": {
+   "chunks": 1,
+   "stl_area_mm2": 8516.4,
+   "cad_area_mm2": 8732.8,
+   "ratio": 0.9752
+  },
+  "aleta_dorsal#deriva_franjas_negras": {
+   "chunks": 1,
+   "stl_area_mm2": 2607.5,
+   "cad_area_mm2": 2567.5,
+   "ratio": 1.0156
+  },
+  "aleta_dorsal#deriva_franja_roja": {
+   "chunks": 1,
+   "stl_area_mm2": 9359.5,
+   "cad_area_mm2": 9283.8,
+   "ratio": 1.0082
+  },
+  "timon_direccion#timon_franjas_negras": {
+   "chunks": 1,
+   "stl_area_mm2": 7885.3,
+   "cad_area_mm2": 8125.1,
+   "ratio": 0.9705
+  },
+  "timon_direccion#timon_franja_roja": {
+   "chunks": 1,
+   "stl_area_mm2": 25312.8,
+   "cad_area_mm2": 25514.2,
+   "ratio": 0.9921
+  }
+ }
+}

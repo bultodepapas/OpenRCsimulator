@@ -1,6 +1,6 @@
 # D6e-R1 — reported climb and pilot elevator trim
 
-2026-10-13. **Status: the owner's Ugly Stik loops are captured, reproduced and internally explained; real-aircraft fidelity remains unvalidated. Manual trim is implemented and verified. The earlier hands-off Timber climb at 25% throttle remains unreproduced and unresolved.** Main physics/input track; this report does not close a flight-validation gate.
+2026-10-13. **Status: the owner's Ugly Stik loops are captured and reproduced. The controlled campaign below completes 16 diagnostic flights and 126 independent runtime-load comparisons; no tested intervention qualifies as the repair. Real-aircraft fidelity remains unvalidated. Manual trim is implemented and verified. The earlier hands-off Timber climb at 25% throttle remains unreproduced and unresolved.** Main physics/input track; this report does not close a flight-validation gate.
 
 The owner reports a common tendency to climb, especially Timber at low power with keyboard controls and no elevator input; the Stik feels incorrectly trimmed. The initial power-step hypothesis alone does **not** explain that report. The owner confirmed running this repository on Windows. A later actual Stik flight establishes its airborne launch and control history below; it does not establish the history of the original Timber report.
 
@@ -141,6 +141,63 @@ At 8 s the accepted endpoint's attached pitch-moment terms are, in N·m: zero-an
 Separately, using the whole-aircraft coefficient reference as the local wing force location conflates two different concepts. Here it puts wing lift through the CG. The estimated local horizontal tail also predicts `CLde≈0.423/rad` versus the global donor's `0.0983/rad`, while `Cmde` differs much less. These are model-construction consistency issues requiring explicit reference geometry and joint force/moment qualification. The recorded first inversion remains in the global model, so neither local mismatch is its trigger.
 
 The diagnosis established for the capture is a powered, fixed-trim transient with excess lift and coupled attitude motion. There is no evidence here that Godot or the integrator invents the climb, and no demonstrated shared defect explaining all reported low-power climbs. Realistic severity remains unqualified because the target's aerodynamic and installed powertrain data are surrogates. Source reference transport and cross-regime force/moment consistency should be corrected in their generators as explicit model work, then checked against independent trim and response evidence. No production coefficient, automatic trim or power limiter was introduced in this follow-up. The [NASA throttles-only flight-control study](https://ntrs.nasa.gov/citations/19950026600) supports the general coupling of thrust, speed and pitch dynamics; it supplies no coefficients or handling validation for this RC airplane.
+
+## Controlled intervention campaign (2026-10-13, D6e-R1)
+
+The owner requested experiments after the literature review. The experimental plan separates numerical/coefficient contracts, elevator force/moment consistency, longitudinal versus lateral departure, and installed propulsion. Each comparison keeps controls explicit; a changed trim or mass is a reported confound. A candidate must complete the requested interval without a fault/contact, preserve the neutral equilibrium, and have a defensible physical cause. Merely delaying inversion or suppressing a physical degree of freedom is not a successful repair. The probes live outside `app/`; no production coefficient or golden reference is changed by this campaign.
+
+### Elevator force/moment interventions
+
+Nine runs compare three models under the owner's first 15 seconds, 30 seconds of calm flight starting at 500 m with the same absolute throttle history followed by full power, and a 30-second hold at each model's own solved equilibrium. All starts are retrimmed normally at 15 m/s. Retrimming changes initial alpha/elevator/RPM; the intervention preserves the **absolute throttle commands**, not just the raw keyboard increments. Elevator remains fixed throughout every run.
+
+| Global elevator derivative candidate | CLde (/rad) | Cmde (/rad) | Initial elevator up | First inversion, captured weather | First inversion, calm 30 s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Current baseline | 0.098300 | -0.848800 | 5.257° | 9.542 s | 9.521 s |
+| CLde from the 0.72 m tail arm, preserve Cmde | 0.359325 | -0.848800 | 5.567° | 9.521 s | 9.500 s |
+| Both derivatives from the existing local force model | 0.422829 | -1.003028 | 4.712° | 9.521 s | 9.496 s |
+
+The first candidate uses `CLde=-Cmde*c/(tail_x-ARP_x)`, a lift-only small-angle relation. The second takes central finite differences of the existing local model at alpha=0, V=15 m/s, zero rates and elevator ±1e-5 rad, then transports the moment derivative from CG to ARP including the drag-arm term. These are uncalibrated consistency counterfactuals. Whole-aircraft control derivatives can contain wing/tail interactions and intrinsic moments, so an implausible effective arm is a warning to investigate provenance, not proof of an impossible rigid-body force law.
+
+All nine runs complete without crash/fault. Each model's neutral equilibrium holds altitude for 30 s with no reported height drift; the baseline reproduces the recorded checkpoints to 1.42e-14. Source hashes are unchanged during the run, and the elevator change is exactly zero. Both derivative interventions retain the departure and are **rejected as solutions to the captured behavior**. Other static derivatives, local incidence/geometry, rates and propulsion are unchanged. The retained JSON samples commands/flight state every 0.5 s; the executable probe derives and reuses the full 240 Hz throttle history from the retained input fixture. Inversion here remains a body-down reversal, not a 360° pitch-loop detector. [Full measurements, provenance and limitations](model-consistency-interventions.json).
+
+### Independent coefficient and runtime-load oracle
+
+A separate scalar implementation checks seven catalog aircraft at alpha ±3°, elevator -5/0/+5°, and nondimensional pitch rate -0.01/0/+0.01, with `q=qhat*2*V/c`. Its 126 comparisons against the actual `Aero._global_loads` path include FRD force resolution and moment transport from ARP to CG. Maximum absolute discrepancies are 1.78e-15 N in Fx, 1.42e-14 N in Fz and 3.56e-15 N·m in My; all are below 1e-9. Signed elevator drag and finite-difference alpha/elevator/rate responses are recorded. Probe and aerodynamic-source hashes remain unchanged. This rejects the tested sign, rate normalization and reference-transport implementation hypotheses at these attached-flow points; it is not a full-envelope validation.
+
+The global/local elevator mismatch is shared by the three Stik installations, which reuse the same aero data. Extra, P-51, Avanti and Timber have nearly identical global/local elevator lift derivatives and much closer moment derivatives. Thus the observed inconsistency is specific to the Stik data lineage, not a demonstrated fleet-wide bug. [Oracle, comparison cases and exact derivative values](coefficient-contract-experiments.json).
+
+### Longitudinal motion with lateral constraints
+
+Four 30-second calm-air runs at 500 m compare full flight with a research-only planar constraint at every RK stage and accepted endpoint. Production loads and continuous derivatives are evaluated normally; the constrained equations impose zero lateral velocity, roll/yaw and their rates, and `qdot=My/Jyy`. This includes lateral reaction moments: simply discarding lateral rates after an unconstrained rigid-body step would not be the same model. Removing initial lateral velocity and heading is explicit. Neither artificial reaction loads nor the projected integrator are installed in production.
+
+The input events cover the first 15 s, followed by an explicit absolute throttle command of 1.0. The 480 Hz run holds each recorded raw-input event for the corresponding two substeps; the keyboard/propulsion dynamics are refined with the integration, so this is convergence of the sampled system, not a fixed-command RK-order measurement.
+
+| Case | First body inversion | First unwrapped pitch revolution | First unwrapped flight-path revolution |
+| --- | ---: | ---: | ---: |
+| Full 6-DOF, 240 Hz | 9.521 s | Not defined by this detector | Not defined by this detector |
+| Constrained longitudinal, 240 Hz | 9.667 s | 15.0458 s | 15.0125 s |
+| Constrained longitudinal, 480 Hz | 9.667 s | 15.0479 s | 15.0125 s |
+| Constrained longitudinal, hold solved launch power | None | None | None |
+
+The two powered planar cases reach approximately 3.09 pitch revolutions by 30 s. The neutral control stays below 7.7e-7 revolutions; all cases complete without faults, the elevator stays fixed at 5.25673° up, and the projected constraint residual is zero. Every sampled RK stage remains in the global attached branch. Refining the timestep changes the pitch-revolution crossing by 0.0021 s. The session source hash is unchanged during the run.
+
+Thus lateral departure and the separated-flow model are **not necessary** for this simulated powered rotation. The free airplane's original inversion is still coupled roll/pitch; the ideal planar constraint does not prove it flies a clean vertical loop or that the real aircraft would loop. [Stage audits, validation and trajectories](longitudinal-interventions.json).
+
+### Propulsion substitutions with fixed body state and surfaces
+
+Three calm-air runs start from the same standard-Stik state at 15 m/s and 500 m, retain the same actual elevator and absolute throttle commands, and exchange only the runtime propulsion branch. The first 15 s use the capture; the following 30 s hold its final **50.2083% throttle**, unlike the full-power continuation above. Dry airframe mass/inertia are retained; donor engine/propeller mass changes are excluded. Fuel consumption changes effective mass/CG/inertia in the glow cases, and those changes are measured rather than assumed absent.
+
+| Propulsion experiment | First inversion in 45 s | Outcome |
+| --- | ---: | --- |
+| Legacy 61FX / APC 12×6 | 9.521 s | Completes; inversion remains |
+| 55AX / APC 12×7 transplant | 35.579 s | Completes; delaying inversion is not a solution |
+| FS64V / Master Airscrew 14×6 transplant | None | Completes, but the hybrid's native startup trim is rejected |
+
+The FS64V hybrid's trim attempt reports `nonfinite iterated trim residual`. Its exploratory run deliberately seeds the baseline initial condition after preparation checks; it is **not a successfully trimmed or qualified installation**. It gains about 29.45 m over 45 s, stays between 14.64 and 27.93 m/s, consumes fuel and retains positive sampled thrust (about 8.84 N at 45 s). Its engine-running flag is true initially and at every one-second sample, with an empty stop reason. Its non-inversion therefore is not merely an early crash or a powerless glide. All three runs complete with no fault/contact, zero elevator drift and zero absolute throttle-command error; the body initial states match exactly and dependency hashes stay unchanged during the run. The 55AX and FS64V maximum sampled fuel-mass changes are about 17.8 g and 7.84 g. This experiment changes the engine, propeller, torque/RPM law and transient response together; it does not isolate one faulty parameter or validate the standard 61FX installation. [Exact inputs, engine state, mass effects and limitations](powertrain-interventions.json).
+
+**Selection:** none of the tested changes qualifies for promotion as the repair. The FS64V response is the most promising behavioral counterexample, but changing to a different engine/propeller and bypassing a failed startup equilibrium cannot establish the correct behavior of the reported airplane. The strongest remaining calibration target is the standard Stik's coupled installed propulsion, trim and speed response. The coefficient edits do not remedy the capture; the planar test rejects lateral motion as a necessary trigger; the independent runtime oracle finds no tested shared sign/normalization/reference bug. The separate Timber low-power report remains unresolved. These research results preserve a reproducible way to evaluate a future physically sourced correction without installing a throttle limiter, extra damping or automatic trim.
+
+The four probes execute with pinned native Windows Godot 4.7.2. Their scope is this diagnostic campaign in a concurrently edited checkout, not a clean release or physical flight qualification. The campaign changes only research scripts, their evidence and these two documentation homes. It does not modify production physics/data or re-record golden flights; the full application/WSL suite was not rerun for these research-only additions.
 
 ## Options and chosen improvement
 

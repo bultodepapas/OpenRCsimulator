@@ -1,0 +1,70 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   PCK path was supplied
+ok   Windows PCK mounts into empty project
+ok   PCK contains res://data/fields/lake.json
+ok   PCK contains res://assets/landscape/vegetation/catalog.json
+ok   PCK contains res://assets/landscape/vegetation/LICENSE.txt
+ok   PCK contains res://assets/landscape/vegetation/impostors/bush_common_4view.json
+ok   PCK contains res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.json
+ok   PCK contains res://assets/landscape/trees/catalog.json
+ok   PCK contains res://assets/landscape/trees/LICENSE.txt
+ok   PCK contains res://assets/landscape/UPGRADE_CREDITS.md
+ok   PCK contains res://assets/audio/water/LICENSES.md
+ok   PCK contains res://assets/audio/water/peludo-splash1.wav.import
+ok   PCK contains res://assets/audio/water/peludo-splash2.wav.import
+ok   PCK contains res://assets/audio/water/randommind-vistula-short.mp3.import
+ok   PCK contains res://render/lake/water.gdshader
+ok   PCK contains res://render/lake/bank.gdshader
+ok   PCK contains res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader
+ok   water shader loads from the PCK
+ok   bank shader loads from the PCK
+ok   packed hedge impostor shader loads
+ok   packed hedge shader uses diffuse lighting with no specular
+ok   compiled water material adapter loads from the PCK
+ok   packed lake loader reads the included source definition
+ok   packed material adapter builds the Compatibility water shader
+ok   compiled water-effects script loads from the PCK
+ok   PCK water FX has the pale 0.85 m plume and 0.82 s phase
+ok   water audio resource loads: res://assets/audio/water/peludo-splash1.wav
+ok   water audio resource loads: res://assets/audio/water/peludo-splash2.wav
+ok   water audio resource loads: res://assets/audio/water/randommind-vistula-short.mp3
+ok   PCK stores import metadata for plant scene: common_tree_1
+ok   catalog plant source loads from PCK: common_tree_1
+ok   PCK stores import metadata for plant scene: common_tree_3
+ok   catalog plant source loads from PCK: common_tree_3
+ok   PCK stores import metadata for plant scene: pine_1
+ok   catalog plant source loads from PCK: pine_1
+ok   PCK stores import metadata for plant scene: bush_common
+ok   catalog plant source loads from PCK: bush_common
+ok   PCK stores import metadata for plant scene: bush_common_flowers
+ok   catalog plant source loads from PCK: bush_common_flowers
+ok   PCK stores import metadata for plant scene: grass_common_short
+ok   catalog plant source loads from PCK: grass_common_short
+ok   PCK stores import metadata for plant scene: grass_common_tall
+ok   catalog plant source loads from PCK: grass_common_tall
+ok   PCK stores import metadata for plant scene: grass_wispy_tall
+ok   catalog plant source loads from PCK: grass_wispy_tall
+ok   PCK stores import metadata for plant scene: fern_1
+ok   catalog plant source loads from PCK: fern_1
+ok   PCK stores import metadata for plant scene: flower_3_group
+ok   catalog plant source loads from PCK: flower_3_group
+ok   PCK stores import metadata for plant scene: flower_4_group
+ok   catalog plant source loads from PCK: flower_4_group
+ok   PCK stores import metadata for plant scene: clover_1
+ok   catalog plant source loads from PCK: clover_1
+ok   PCK stores import metadata for plant scene: corn_4
+ok   catalog plant source loads from PCK: corn_4
+ok   PCK stores import metadata for plant scene: wheat_4
+ok   catalog plant source loads from PCK: wheat_4
+ok   PCK stores import metadata for plant scene: reed_aredon
+ok   catalog plant source loads from PCK: reed_aredon
+ok   all 15 source plant scenes load
+ok   unit test sources remain excluded
+ok   actual Main scene loads from the PCK
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+MAIN-FLYABILITY ticks=240 aircraft_id=jensen-das-ugly-stik-60 is_flyable=true aircraft.ok=true start_error= pause_reason= errors=[]
+ok   default interactive Main has a valid flight session
+ok   actual Main scene builds the normalized lake field context
+ok   actual FlightSession loads and matches the lake context
+EMPTY-PCK: 65 checks, 0 failed

@@ -1,12 +1,14 @@
 # Turbo Lumber Evolution ("Timber") — fifth catalog aircraft: integration plan
 
-2026-10-12 · Revision 5 · Step prefix: **TT-** · Owned paths: `assets/aircraft/turbo-lumber-evolution/`, `research/timber/`, `app/assets/aircraft/turbo-lumber-evolution/`, `app/aircraft/timber_*.gd`, `app/aircraft/verify_timber.gd`, `app/aircraft/inspect_timber.gd`, generated `app/data/aircraft/turbo_lumber_evolution.json`, `app/tests/test_timber_*.gd`, `docs/research/timber-integration/`. Shared changes stay with their owners (§6).
+2026-10-13 · Revision 6 · Step prefix: **TT-** · Owned paths: `assets/aircraft/turbo-lumber-evolution/`, `research/timber/`, `app/assets/aircraft/turbo-lumber-evolution/`, `app/aircraft/timber_*.gd`, `app/aircraft/verify_timber.gd`, `app/aircraft/inspect_timber.gd`, generated `app/data/aircraft/turbo_lumber_evolution.json`, `app/tests/test_timber_*.gd`, `docs/research/timber-integration/`. Shared changes stay with their owners (§6).
 
 **Status: playable EXPERIMENTAL aircraft (2026-10-12). TT-07/08/10/11/12 deliver its generated electric v2 configuration, catalog flight, product controls, qualified three-point runway start and electric sound. TT-09 baseline handling and replay checks pass; the broader stall/aerobatic/landing envelope remains open. TT-01/02/03/05/06 asset and articulation evidence is retained. Flaps stay up, assists off and the nominal 4S bus is prescribed. [Playable baseline evidence](research/timber-integration/TT-10/README.md). Physical Gate TT-C, owner visual/pilot review, performance acceptance and public packaging remain open.**
 
+**Current visual delivery: r2-d75ae605aa3a (TT-19).** The r2 source replaces the r1 runtime GLB, preserves articulated controls and supplies explicit crash sections. Current source/pipeline instructions live in the [asset guide](../assets/aircraft/turbo-lumber-evolution/README.md); [TT-19](research/timber-integration/TT-19/README.md) records the upgrade checks and remaining delivery advisories. The Revision 4 findings below remain dated r1 evidence.
+
 Aircraft track; the playable baseline follows the owner's request to prioritize Timber completion. Evidence: [TT-00](research/timber-integration/TT-00/README.md), [primary sources](research/timber-integration/TT-00/sources.md), [code seams](research/timber-integration/TT-00/code-audit.md), [r1 review](research/timber-integration/TT-00-R1/README.md), [r1 contract review](research/timber-integration/TT-00-R1/contract-review.md). Shared dependencies: [electric propulsion](ELECTRIC-PROPULSION-PLAN.md) and its [EL1f handoff](research/propulsion/EL1f/README.md), [aircraft contract](../AIRCRAFT_CONTRACT.md), [integrated ground model](research/ground-physics/GP-05/README.md). The v12 Blender/CAD analysis, the millimetre CAD mapping and the presentation-pose warnings of Revision 3 are retained in TT-00; r1 supersedes them with explicit frames.
 
-External model-author delivery requirements: [self-contained Blender handoff](BLENDER-AIRCRAFT-HANDOFF.md), revision 2, covering the existing r1 asset, editable game source, simplification, articulated controls and explicit crash sections. This plan retains step status and simulator integration ownership.
+External model-author delivery requirements: [self-contained Blender handoff](BLENDER-AIRCRAFT-HANDOFF.md), revision 2, covering the source-to-runtime contract, editable game source, simplification, articulated controls and explicit crash sections. This plan retains step status and simulator integration ownership.
 
 ## 0. Facts verified for Revision 4
 
@@ -33,7 +35,7 @@ External model-author delivery requirements: [self-contained Blender handoff](BL
 | r1 geometry used | Span 1.5479 m, length 1.1166 m (+76.6 mm), wing area 0.329 m², MAC 0.213 m, wheel radii 0.058/0.014 m, track 0.264 m, thrust origin (0, 0, −0.2515) m with 2° down/2° right, datum D0 = symmetry plane × root LE × thrust-axis height | `r1/metadata.json` |
 | Configuration | Wheels installed, flaps up (`flaps: not_simulated`), no slats, no floats, receiver assist off, airborne or qualified runway start; airborne speed is 1.6× the estimated 1-g stall, 13.0739 m/s, fixed-voltage pack law first | §4 |
 | Labels | PREVIEW at TT-06; EXPERIMENTAL from TT-08/10; FLYABLE only after Gate TT-C | Catalog semantics |
-| Out of scope | Floats/water, thrust reverse, SAFE/AS3X emulation, battery thermal, flexible wings, multibody suspension, detachable damage, a generic aircraft plugin | Revision 3 deferrals unchanged |
+| Out of scope | Floats/water, thrust reverse, SAFE/AS3X emulation, battery thermal, flexible wings, multibody suspension, structural damage physics, a generic aircraft plugin | Visual section detachment is implemented by TT-19; remaining deferrals retained |
 
 ## 2. How the fifth aircraft plugs into the app
 
@@ -54,7 +56,7 @@ External model-author delivery requirements: [self-contained Blender handoff](BL
 
 ## 3. Asset and adapter design
 
-**Runtime asset.** `app/assets/aircraft/turbo-lumber-evolution/timber.glb` is a byte-identical copy of the accepted r1 `export/aircraft.glb`, with its committed `timber.glb.import` sidecar and a `LICENSE.txt`. Godot's scene importer (already run by `app/test.sh` and `app/export.sh` through `--import`) produces the PackedScene; `research/timber/tt03/check_asset.py --check` fails `test.sh` when the copy's SHA-256 differs from `assets/aircraft/turbo-lumber-evolution/source-manifest.json`. The demo GLB, previews, Blender scene and scripts stay in the delivery folder; nothing under `app/` depends on them. If the importer ever proves nondeterministic or too costly, the fallback is the scenery pattern (`tools/scenery/bake_models.gd`: bake to a project-owned JSON mesh format); do not pursue it without a measured reason.
+**Runtime asset.** `app/assets/aircraft/turbo-lumber-evolution/timber.glb` is a byte-identical copy of the accepted r2 `export/aircraft.glb`, with its committed `timber.glb.import` sidecar and a `LICENSE.txt`. Godot's scene importer (already run by `app/test.sh` and `app/export.sh` through `--import`) produces the PackedScene; `research/timber/tt03/check_asset.py --check` fails `test.sh` when the copy's SHA-256 differs from `assets/aircraft/turbo-lumber-evolution/source-manifest.json`. The demo GLB, previews, Blender scene and scripts stay in the delivery folder; nothing under `app/` depends on them. If the importer ever proves nondeterministic or too costly, the fallback is the scenery pattern (`tools/scenery/bake_models.gd`: bake to a project-owned JSON mesh format); do not pursue it without a measured reason.
 
 **Builder (`timber_model.gd`).** `build()` instantiates the scene, renames the imported root to `airplane`, sets `visual_revision` and `asset_sha256` metadata, and resolves every node by name from `TimberGeometry.DATA.articulations`. Hinge records follow the Ventage Jet shape: `{node, axis, rest, range_deg, positive}` with `axis` = the pivot's local +X expressed in the parent frame and `rest` = the imported basis; `_set_hinge(h, deg)` sets `node.basis = h.rest if deg == 0 else Basis(h.axis, deg_to_rad(deg)) * h.rest`, so zero restores the rest basis exactly. `apply_surfaces(airplane, surfaces_deg)` consumes `AirplaneBuilder.surface_degrees()` (degrees, trailing edge up/right) and negates ailerons and elevator; `set_flaps(airplane, deg)` poses both flap hinges, clamped to the authored 0…40°, and is not called by the live path until TT-14. Horns and markings stay with their surfaces because r1 parents them that way; the builder never reparents meshes except the propeller.
 
@@ -110,6 +112,7 @@ Each row is one bounded, independently reviewable change with an evidence folder
 | TT-16 | **Independent physical validation.** Weighed mass/CG/inertia, bench motor/prop data (EL5), matched flight observations, owner radio playtest. | Error/uncertainty table; unresolved discrepancies listed | TT-09; TT-15 for ground claims | L | Needs hardware |
 | TT-17 | **Packaged experimental release.** Asset LICENSE in `export_presets.cfg` include filter; pack probe proves the imported Timber scene and JSON are in all three packs; exported Linux binary flies `--aircraft=turbo-lumber-evolution --trace`; clean-clone import. | `export.sh` additions pass; release note lists the experimental label and limits | TT-10, TT-12, TT-13; D1 set; export maintainer | S | Planned |
 | TT-18 | Slats, floats, reverse, assists | Separate agreed scope | TT-15, TT-16 | — | Deferred |
+| TT-19 | **Accept Blender r2.** Update exact source identity, measurements, geometry, adapter, authored sections and generated model/Workshop bindings. | Godot import, model/clearance checks, crash regression, visual captures and focused flight/Workshop checks; [evidence](research/timber-integration/TT-19/README.md) | Supplied r2 delivery | M | Integrated 2026-10-13; physical and performance acceptance remain open |
 
 TT-07 runs in parallel with TT-03…TT-05 once TT-02 is accepted. TT-12 and TT-13 run in parallel after TT-10. TT-17 may ship the flaps-up, in-air experimental baseline before TT-11/14/15/16 and must not advertise the missing capabilities. Order of shared integration: **preview → own data → electric session → experimental flight → ground → sound/visual → release**.
 
@@ -202,7 +205,7 @@ Keep parser/runtime errors fatal and use timeouts for probes. Record new Timber 
 - **Dimensional ambiguity.** The +76.6 mm length and the 7.9 mm forward-extent discrepancy are unresolved; physics stations ahead of the wing inherit them. Sensitivity rows keep this visible.
 - **Propulsion evidence.** A borrowed two-blade map cannot validate a three-blade 11×7.3; motor losses and pack voltage are estimates. The experimental label stays until EL5/VAL-7 data exist.
 - **Shared-test churn.** TT-06 touches eleven tests mechanically; coordinate the sweep with their owners in one reviewable change.
-- **Performance.** A 64 k-triangle, 36-surface imported model is heavier than the procedural aircraft; TT-04/TT-13 must measure on the target machine, not assume.
+- **Performance.** The r2 42,519-triangle, 49-surface imported model is heavier than the procedural aircraft; TT-04/TT-13 must measure on the target machine, not assume.
 - **Assist-off reference.** A BNF keeps AS3X active; no stabilized flight video is evidence for the unassisted model.
 
 ## 11. Open facts

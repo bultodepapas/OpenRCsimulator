@@ -27,3 +27,10 @@
 /research/rc-monster-truck/suspension_bench.json text eol=lf
 /research/rc-monster-truck/support_bench.json text eol=lf
 /research/rc-monster-truck/fixtures/*.json text eol=lf
+
+# Timber r2 is an immutable author delivery; manifests hash its original bytes.
+"Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/**" -text
+/app/assets/aircraft/turbo-lumber-evolution/LICENSE.txt -text
+/assets/aircraft/turbo-lumber-evolution/source-manifest.json text eol=lf
+/assets/aircraft/turbo-lumber-evolution/mesh-measurements.json text eol=lf
+/assets/aircraft/turbo-lumber-evolution/geometry.json text eol=lf

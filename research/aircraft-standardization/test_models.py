@@ -62,7 +62,8 @@ class AircraftModelManifestTests(unittest.TestCase):
             "gp-extra-300s-60": (-0.1088, 0.0, 0.3048, "euler_hinges"),
             "p51d-mustang-120": (0.0, 0.0, 0.6604, "euler_hinges"),
             "sebart-avanti-s-a200-p100rx": (0.0, 0.0, 0.0, "axis_hinges"),
-            "turbo-lumber-evolution": (0.0, 0.0, 0.280642, "imported_glb"),
+            # R2's measured mesh radius is 0.14032 m (geometry.json), independent of physical propeller sizing.
+            "turbo-lumber-evolution": (0.0, 0.0, 0.28064, "imported_glb"),
         }
         for family_id, (datum_z, datum_y, diameter, adapter) in expected.items():
             with self.subTest(family=family_id):
@@ -95,7 +96,19 @@ class AircraftModelManifestTests(unittest.TestCase):
                 self.assertNotIn("positive", hinge)
                 self.assertNotIn("range_deg", hinge)
         self.assertEqual(timber["bindings"]["rotor"]["geometry_ref"], "articulations.propeller_spin")
-        self.assertEqual(timber["bindings"]["crash"]["provider"], "generated_triangle_map")
+        self.assertEqual(timber["bindings"]["crash"]["provider"], "gltf_extras")
+        self.assertFalse(any(dep["role"] == "crash_metadata" for dep in timber["dependencies"]))
+
+    def test_gltf_sections_require_an_imported_asset_without_a_triangle_map(self):
+        procedural = copy.deepcopy(self.registry)
+        procedural["families"][0]["bindings"]["crash"] = {
+            "provider": "gltf_extras", "metadata_script": "", "asset_node": ""
+        }
+        self.assertTrue(validate_registry(procedural))
+        ambiguous = copy.deepcopy(self.registry)
+        timber = next(f for f in ambiguous["families"] if f["family_id"] == "turbo-lumber-evolution")
+        timber["bindings"]["crash"]["metadata_script"] = "res://aircraft/timber_crash_sections.gd"
+        self.assertTrue(validate_registry(ambiguous))
 
     def test_unknown_roles_missing_roles_and_duplicate_hinges_reject(self):
         unknown_role = copy.deepcopy(self.registry)

@@ -218,7 +218,7 @@ def validate_registry(registry: Any) -> list[dict[str, str]]:
             crash = _check_keys(bindings["crash"], {"provider", "metadata_script", "asset_node"}, f"{label}.bindings.crash")
             if not all(isinstance(crash[k], str) for k in crash):
                 raise ModelManifestError(f"{label}.bindings.crash fields must be strings")
-            if crash["provider"] not in {"none", "generated_triangle_map"}:
+            if crash["provider"] not in {"none", "generated_triangle_map", "gltf_extras"}:
                 raise ModelManifestError(f"{label}.bindings.crash.provider is unsupported")
             if crash["provider"] == "generated_triangle_map":
                 if not _safe_resource_path(crash["metadata_script"], f"{label}.bindings.crash.metadata_script").startswith("res://aircraft/"):
@@ -226,7 +226,9 @@ def validate_registry(registry: Any) -> list[dict[str, str]]:
                 if not crash["asset_node"]:
                     raise ModelManifestError(f"{label}.bindings.crash.asset_node is required for a section map")
             elif crash["metadata_script"] or crash["asset_node"]:
-                raise ModelManifestError(f"{label}.bindings.crash none provider cannot name metadata")
+                raise ModelManifestError(f"{label}.bindings.crash {crash['provider']} provider cannot name separate metadata")
+            if crash["provider"] == "gltf_extras" and asset["kind"] != "imported_glb":
+                raise ModelManifestError(f"{label}.bindings.crash gltf_extras requires an imported_glb asset")
 
             sources = family["authoring_sources"]
             if not isinstance(sources, list):

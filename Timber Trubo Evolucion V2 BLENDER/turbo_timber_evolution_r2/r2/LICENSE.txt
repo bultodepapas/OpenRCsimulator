@@ -1,0 +1,21 @@
+Turbo Timber Evolution — game model, revision r2
+
+Authorship
+  3D model, generator scripts and documentation produced for Estudiante 4 (Innovaitors SAS) with
+  Claude (Anthropic) as a modeling assistant, from user-supplied photographs and public general
+  knowledge of the aircraft type.
+
+Redistribution terms
+  NOT YET SET. The owner's terms have not been provided and are not inferred here. The owner of this
+  package must write the licence in this file before the model or scripts are redistributed or shipped
+  in a public build. Until then, treat the package as "all rights reserved, internal evaluation only".
+
+Trademark / likeness note
+  The geometry and colour scheme approximate a commercial product (E-flite Turbo Timber Evolution,
+  Horizon Hobby). This package contains no logos, no wordmarks, no decals with text and no manufacturer
+  artwork. "E-flite", "Turbo Timber" and "Horizon Hobby" are trademarks of their owners and are used here
+  only to identify the real aircraft being approximated.
+
+No warranty
+  Dimensions, ranges and clearances are measured on the model; masses in metadata.json are a non-flight
+  placeholder. Not suitable as build, repair or flight-setup data for the real aircraft.

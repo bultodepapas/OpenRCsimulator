@@ -110,6 +110,8 @@ Effective mass at the struck point fixes whole-mass overrating: a level wingtip 
 
 ## 2026-10-12 · TT-02/03/05 — imported meshes: measure arrays, never trust transformed boxes, wrap Euler-driven pivots
 
+An imported object can contain multiple open or overlapping shells. Ray-parity containment assumes a closed boundary; using an AABB-filtered triangle subset opens it further and produced false control-interference reports on Timber r2. Test surface crossings with the millimetre scaling described in US-V09c, and qualify containment separately. Keep collision-probe semantics distinct from authoring extrema: a max-span cap marker and a navigation lens can differ by 155 mm fore/aft even when the wing skin is unchanged. [TT-19 diagnosis and contact convention](docs/research/timber-integration/TT-19/README.md).
+
 Three surprises from the first glTF aircraft. A probe reported a vertex 7.9 mm ahead of the spinner because it transformed each mesh's axis-aligned bounding box; the tilted propeller's box corners stuck out and no vertex was there. Measure extents from transformed vertices, and read them with `surface_get_arrays()`: `Mesh.get_faces()` returned positions up to 28 µm off on this import with or without vertex compression. Godot's `rotation.x/z` setters replace a node's whole basis, so an imported pivot with a rest rotation cannot be driven by them; give it a mount that carries the rest basis and an identity child that takes the Euler angle, and prove the sense with a witness vertex. [TT-02](docs/research/timber-integration/TT-02/README.md), [TT-03](docs/research/timber-integration/TT-03/README.md), [TT-05](docs/research/timber-integration/TT-05/README.md).
 
 ## 2026-10-07 · VAL-6a — reduce swing tests about a common axis

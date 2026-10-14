@@ -1,0 +1,84 @@
+{
+ "original": "export/aircraft.glb",
+ "original_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+ "cases": [
+  {
+   "case": "missing_hinge_elevator",
+   "validator_exit": 1,
+   "expected_check": "hierarchy_matches_spec_tree",
+   "failed_checks": [
+    "hierarchy_matches_spec_tree",
+    "pivots_match_r1_rest"
+   ],
+   "rejected": true,
+   "blender_verifier_exit": 1
+  },
+  {
+   "case": "missing_section_wing_left_fixed",
+   "validator_exit": 1,
+   "expected_check": "openrc_section_present",
+   "failed_checks": [
+    "openrc_section_present"
+   ],
+   "rejected": true,
+   "blender_verifier_exit": 1
+  },
+  {
+   "case": "invalid_section_rudder_hinge",
+   "validator_exit": 1,
+   "expected_check": "openrc_section_valid",
+   "failed_checks": [
+    "openrc_section_valid"
+   ],
+   "rejected": true,
+   "blender_verifier_exit": 1
+  },
+  {
+   "case": "non_string_section_cowl",
+   "validator_exit": 1,
+   "expected_check": "openrc_section_valid",
+   "failed_checks": [
+    "openrc_section_valid"
+   ],
+   "rejected": true,
+   "blender_verifier_exit": 1
+  },
+  {
+   "case": "rotor_under_engine_tag",
+   "validator_exit": 1,
+   "expected_check": "rotor_not_under_engine_tag",
+   "failed_checks": [
+    "root_and_thrust_frame_untagged",
+    "rotor_not_under_engine_tag"
+   ],
+   "rejected": true,
+   "blender_verifier_exit": 1
+  },
+  {
+   "case": "mirrored_scale_aileron_left_hinge",
+   "validator_exit": 1,
+   "expected_check": "node_scales_unit",
+   "failed_checks": [
+    "node_scales_unit",
+    "no_reflections"
+   ],
+   "rejected": true,
+   "blender_verifier_exit": 1
+  },
+  {
+   "case": "blender_suffix_flap_right",
+   "validator_exit": 1,
+   "expected_check": "names_unique_ascii_no_suffix",
+   "failed_checks": [
+    "names_unique_ascii_no_suffix",
+    "hierarchy_matches_spec_tree",
+    "mesh_nodes_match_spec"
+   ],
+   "rejected": true,
+   "blender_verifier_exit": 1
+  }
+ ],
+ "original_passes": true,
+ "original_untouched": true,
+ "pass": true
+}

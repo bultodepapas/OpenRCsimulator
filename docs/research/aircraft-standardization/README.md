@@ -4,6 +4,8 @@
 
 **2026-10-13 continuation:** [AS-06–14 foundation](AS-06-14/README.md) adds shared modules, generated visual manifests, Workshop v2 presentation pinning, conventional controls and single-installation/contact adapters. Full step acceptance and AS-15–18 remain tracked in the [active plan](../../plans/aircraft-standardization.md).
 
+The [AS-13 continuation](AS-13/README.md) implements accepted contact observations, transactional collision publication and versioned checkpoint history without changing the physical laws.
+
 The [contract](../../../AIRCRAFT_CONTRACT.md) defines configuration, derived-model and runtime-state boundaries. [AS-05](AS-05/README.md) records delivered scope, verification and remaining acceptance.
 
 | Evidence | Content |
@@ -22,5 +24,6 @@ The [contract](../../../AIRCRAFT_CONTRACT.md) defines configuration, derived-mod
 | [Complete regression coverage](AS-04/full-suite/README.md) | 195 GDScript tests and 27 integration sections resolved; failures, fixes, reruns and exact snapshot boundaries |
 | [AS-05 delivery](AS-05/README.md) | Final results, reusable authoring commands, remaining measurement/coordination gates and ownership |
 | [AS-06–14 foundation](AS-06-14/README.md) | Seven configurations/five visual families; common source/package preflight, generated descriptors, exact fourteen-case flight/replay comparison and remaining acceptance |
+| [AS-13 contact observations](AS-13/README.md) | Contact lifecycle, accepted-impact commit/rollback, checkpoint/reload compatibility and exact isolated fleet comparison |
 
 No aircraft force equation or numeric calibration changed. Source/version identity changes deliberately; measured aircraft mass properties, low-Reynolds-number data and physical ground/flight validation remain open. Unsupported features are rejected, not inferred from hardware names.

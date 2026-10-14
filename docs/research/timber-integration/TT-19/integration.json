@@ -1,0 +1,385 @@
+{
+  "date": "2026-10-13",
+  "revision": "r2-d75ae605aa3a",
+  "glb_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+  "runtime_meshes": 21,
+  "runtime_surfaces": 49,
+  "triangles": 42519,
+  "source_materials": 10,
+  "per_instance_cowl_material_overrides": 2,
+  "cowl_material_growth_m": 0.0008,
+  "pipeline": [
+    {
+      "name": "delivery",
+      "passed": true
+    },
+    {
+      "name": "geometry",
+      "passed": true
+    },
+    {
+      "name": "geometry-runtime",
+      "passed": true
+    },
+    {
+      "name": "asset",
+      "passed": true
+    },
+    {
+      "name": "physics",
+      "passed": true
+    },
+    {
+      "name": "sensitivity",
+      "passed": true
+    },
+    {
+      "name": "physics-derivation-tests",
+      "passed": true
+    }
+  ],
+  "runtime_tests": [
+    {
+      "script": "res://tests/test_aircraft_model_manifest.gd",
+      "passed": true,
+      "seconds": 9.84
+    },
+    {
+      "script": "res://tests/test_aircraft_catalog.gd",
+      "passed": true,
+      "seconds": 34.8
+    },
+    {
+      "script": "res://tests/test_aircraft_render_contract.gd",
+      "passed": true,
+      "seconds": 17.42
+    },
+    {
+      "script": "res://tests/test_crash_sections.gd",
+      "passed": true,
+      "seconds": 6.17
+    },
+    {
+      "script": "res://tests/test_crash_wreck.gd",
+      "passed": true,
+      "seconds": 71.84
+    },
+    {
+      "script": "res://tests/test_crash_wreck_surface.gd",
+      "passed": true,
+      "seconds": 13.55
+    },
+    {
+      "script": "res://tests/test_crash_breakup.gd",
+      "passed": true,
+      "seconds": 17.67
+    },
+    {
+      "script": "res://tests/test_crash_integration.gd",
+      "passed": true,
+      "seconds": 98.24
+    },
+    {
+      "script": "res://tests/test_crash_pose.gd",
+      "passed": true,
+      "seconds": 51.26
+    },
+    {
+      "script": "res://tests/test_crash_proportional.gd",
+      "passed": true,
+      "seconds": 2.69
+    },
+    {
+      "script": "res://tests/test_timber_data.gd",
+      "passed": true,
+      "seconds": 5.47
+    },
+    {
+      "script": "res://tests/test_timber_handling.gd",
+      "passed": true,
+      "seconds": 21.89
+    },
+    {
+      "script": "res://tests/test_timber_ground.gd",
+      "passed": true,
+      "seconds": 11.55,
+      "note": "Rerun after correcting the test fixture to use the common manifest-bound builder; initial raw builder lacked model_manifest."
+    },
+    {
+      "script": "res://tests/test_projected_shadow.gd",
+      "passed": true,
+      "seconds": 8.19
+    },
+    {
+      "script": "res://tests/test_world_field_lights.gd",
+      "passed": true,
+      "seconds": 30.34
+    },
+    {
+      "script": "res://tests/test_workshop_trial.gd",
+      "passed": true,
+      "seconds": 6.12
+    },
+    {
+      "script": "res://tests/test_workshop_integration.gd",
+      "passed": true,
+      "seconds": 44.61
+    }
+  ],
+  "parse_all": {
+    "scripts": 629,
+    "passed": true
+  },
+  "conformance_passed": true,
+  "trace_passed": true,
+  "trace_sha256": "d7f48bdf07e5a3f0181725eaf2229ce0e3d8970d85dd58c4a95851b8751f950b",
+  "physical_derivation_changes": [
+    {
+      "path": "reference.wing_area",
+      "r1": 0.328223,
+      "r2": 0.327007
+    },
+    {
+      "path": "reference.wing_span",
+      "r1": 1.555,
+      "r2": 1.555
+    },
+    {
+      "path": "reference.mean_chord",
+      "r1": 0.21107588424437299,
+      "r2": 0.21029389067524115
+    },
+    {
+      "path": "start.level_speed",
+      "r1": 13.073890242907106,
+      "r2": 13.09817580654029
+    },
+    {
+      "path": "controls.max_throw.aileron",
+      "r1": 34.47472044218067,
+      "r2": 34.47472044218067
+    },
+    {
+      "path": "controls.max_throw.elevator",
+      "r1": 17.806082401415896,
+      "r2": 17.893465899524767
+    },
+    {
+      "path": "controls.max_throw.rudder",
+      "r1": 18.150365949381552,
+      "r2": 18.364395397705255
+    },
+    {
+      "path": "crash_hull",
+      "r1": [
+        [
+          0.028922,
+          -0.773956,
+          0.096984
+        ],
+        [
+          0.031077,
+          0.773956,
+          0.096985
+        ],
+        [
+          -0.283461,
+          0.001116,
+          -0.00112
+        ],
+        [
+          0.833099,
+          0.0,
+          0.027266
+        ],
+        [
+          0.77072,
+          -0.298,
+          -0.032
+        ],
+        [
+          0.77072,
+          0.298,
+          -0.032
+        ],
+        [
+          0.833099,
+          0,
+          0.178
+        ],
+        [
+          -0.2515,
+          0,
+          -0.140321
+        ],
+        [
+          -0.22,
+          0,
+          -0.035964
+        ],
+        [
+          -0.1,
+          0,
+          -0.051412
+        ],
+        [
+          0.02,
+          0,
+          -0.08151
+        ],
+        [
+          0.14,
+          0,
+          -0.094456
+        ],
+        [
+          0.26,
+          0,
+          -0.09783
+        ],
+        [
+          0.38,
+          0,
+          -0.094001
+        ],
+        [
+          0.5,
+          0,
+          -0.085653
+        ],
+        [
+          0.62,
+          0,
+          -0.078494
+        ]
+      ],
+      "r2": [
+        [
+          0.010157,
+          -0.77,
+          0.086904
+        ],
+        [
+          0.010157,
+          0.77,
+          0.086904
+        ],
+        [
+          -0.283461,
+          0.001116,
+          -0.001117
+        ],
+        [
+          0.832,
+          0.0,
+          0.002
+        ],
+        [
+          0.770449,
+          -0.298,
+          -0.032
+        ],
+        [
+          0.770449,
+          0.298,
+          -0.032
+        ],
+        [
+          0.832,
+          0,
+          0.178
+        ],
+        [
+          -0.2515,
+          0,
+          -0.14032
+        ],
+        [
+          -0.22,
+          0,
+          -0.035958
+        ],
+        [
+          -0.1,
+          0,
+          -0.051408
+        ],
+        [
+          0.02,
+          0,
+          -0.094526
+        ],
+        [
+          0.14,
+          0,
+          -0.094247
+        ],
+        [
+          0.26,
+          0,
+          -0.09776
+        ],
+        [
+          0.38,
+          0,
+          -0.093166
+        ],
+        [
+          0.5,
+          0,
+          -0.085901
+        ],
+        [
+          0.62,
+          0,
+          -0.078078
+        ],
+        [
+          0.74,
+          0,
+          -0.078
+        ]
+      ]
+    }
+  ],
+  "final_physics_recheck": [
+    {
+      "script": "res://tests/test_timber_data.gd",
+      "passed": true,
+      "seconds": 7.75
+    },
+    {
+      "script": "res://tests/test_timber_handling.gd",
+      "passed": true,
+      "seconds": 23.5
+    },
+    {
+      "script": "res://tests/test_timber_ground.gd",
+      "passed": true,
+      "seconds": 12.88
+    },
+    {
+      "script": "res://tests/test_workshop_trial.gd",
+      "passed": true,
+      "seconds": 7.31
+    }
+  ],
+  "preserved": {
+    "manual_mass_kg": 2.19,
+    "inventory": true,
+    "empirical_inputs_modified": false
+  },
+  "clearance": {
+    "crossings_scaled_to_mm": true,
+    "controls_checks": 19,
+    "controls_failures": 0,
+    "gap_estimates_m": [
+      0.0002,
+      0.0003
+    ],
+    "gap_recomputed_in_final_crossing_run": false,
+    "gear_pose_and_fixture_checks": 5,
+    "gear_motion_qualified": false,
+    "gear_observations": "Both merged leg/fuselage pairs cross at0,6,7 degrees; includes attachment; no isolated wire/bracket qualification"
+  }
+}

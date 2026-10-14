@@ -10,6 +10,7 @@ var _failures := 0
 func _initialize() -> void:
 	_test_catalog_family_mapping()
 	_test_manifest_rejections()
+	_test_gltf_section_contract()
 	_test_builders()
 	print("Aircraft model manifest: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -64,6 +65,50 @@ func _test_manifest_rejections() -> void:
 	_check("missing stable control role rejects", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONTROL_MISSING"))
 	var wrong_family := Registry.validate_manifest(valid, "gp-extra-300s-60")
 	_check("requested family mismatch rejects", not wrong_family.ok and _has_code(wrong_family.diagnostics, "MODEL_FAMILY_MISMATCH"))
+
+
+func _test_gltf_section_contract() -> void:
+	var description: Dictionary = Registry.describe("turbo-lumber-evolution")
+	_check("r2 section fixture has a current manifest", description.ok, str(description.errors))
+	if not description.ok: return
+	var builder: Script = load(str(description.manifest.builder.script))
+	var built: Dictionary = builder.call("build")
+	var wing: Node = built.root.find_child("wing_left_fixed", true, false)
+	var original: Dictionary = wing.get_meta("extras").duplicate(true)
+	var missing := original.duplicate(true)
+	missing.erase("openrc_section")
+	wing.set_meta("extras", missing)
+	var result: Dictionary = Registry.validate_derived(description.manifest, built)
+	_check("missing imported section rejects before flight", not result.ok and _has_code(result.diagnostics, "MODEL_BUILD_SECTION_MISSING"))
+	for value: Variant in [17, "Wing_Left"]:
+		var invalid := original.duplicate(true)
+		invalid.openrc_section = value
+		wing.set_meta("extras", invalid)
+		result = Registry.validate_derived(description.manifest, built)
+		_check("invalid section type or vocabulary rejects", not result.ok and _has_code(result.diagnostics, "MODEL_BUILD_SECTION_INVALID"))
+	wing.set_meta("extras", original)
+	var hinge: Node = built.root.find_child("aileron_left_hinge", true, false)
+	var hinge_extras: Dictionary = hinge.get_meta("extras").duplicate(true)
+	var missing_pivot := hinge_extras.duplicate(true)
+	missing_pivot.erase("openrc_section")
+	hinge.set_meta("extras", missing_pivot)
+	result = Registry.validate_derived(description.manifest, built)
+	_check("untagged articulated pivot rejects", not result.ok and _has_code(result.diagnostics, "MODEL_BUILD_SECTION_MISSING"))
+	hinge.set_meta("extras", hinge_extras)
+	var thrust: Node = built.root.find_child("thrust_frame", true, false)
+	var thrust_extras: Dictionary = thrust.get_meta("extras", {}).duplicate(true)
+	var capturing := thrust_extras.duplicate(true)
+	capturing.openrc_section = "engine"
+	thrust.set_meta("extras", capturing)
+	result = Registry.validate_derived(description.manifest, built)
+	_check("engine ancestor cannot capture propeller section", not result.ok and _has_code(result.diagnostics, "MODEL_BUILD_SECTION_CAPTURED"))
+	thrust.set_meta("extras", thrust_extras)
+	_check("restored sectioned scene accepts", Registry.validate_derived(description.manifest, built).ok)
+	built.root.free()
+	var procedural: Dictionary = Registry.describe("jensen-das-ugly-stik-60").manifest.duplicate(true)
+	procedural.bindings.crash = {provider = "gltf_extras", metadata_script = "", asset_node = ""}
+	result = Registry.validate_manifest(procedural)
+	_check("gltf section provider rejects procedural asset", not result.ok and _has_code(result.diagnostics, "MODEL_CRASH_ASSET_INVALID"))
 
 
 func _test_builders() -> void:

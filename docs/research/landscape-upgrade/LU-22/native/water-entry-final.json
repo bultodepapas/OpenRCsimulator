@@ -1,0 +1,354 @@
+{
+	"aftermath": {
+		"elapsed_after_resume_s": 2.881924,
+		"elapsed_before_pause_s": 2.620878,
+		"elapsed_while_paused_s": 2.620878,
+		"event_started": true,
+		"pause_freezes_visuals_and_ambience": true,
+		"reset_clears_event": true,
+		"resume_advances_visuals": true,
+		"sink_depth_m": 0.55,
+		"sink_duration_s": 2.8
+	},
+	"audio": {
+		"ambience_configured": true,
+		"ambience_paused_before_reset": false,
+		"captured_frames": 309760,
+		"discarded_frames": 0,
+		"driver": "WASAPI",
+		"dry_crash_voices_before_reset": 0,
+		"enabled": true,
+		"impact_emitted": true,
+		"impact_requests": 1,
+		"impact_source_index": 1,
+		"impact_stream_path": "res://assets/audio/water/peludo-splash2.wav",
+		"impact_voice_playing_before_reset": false,
+		"lead_seconds_requested": 1.0,
+		"master_bus": "Master",
+		"mix_rate_hz": 48000,
+		"post_event_seconds": 5.009628
+	},
+	"audio_capture": {
+		"bus": "Master",
+		"captured_seconds": 6.45333333333333,
+		"discarded_frames": 0,
+		"frames": 309760,
+		"mix_rate_hz": 48000,
+		"native_driver": "WASAPI",
+		"peak_dbfs": -7.86334647214096,
+		"peak_linear": 0.404420047998428,
+		"rms_dbfs": -29.0861625585287,
+		"rms_linear": 0.035131110010342,
+		"wav_saved": true
+	},
+	"audio_wav_path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/lu22-work/water-entry-soft/lake-entry.wav",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"event": {
+		"depth_m": 5.0,
+		"fixed_duration_to_event_s": 0.191666666666667,
+		"fixed_step_hz": 240,
+		"material": "water",
+		"normal_speed_mps": 11.0464152029322,
+		"obstacle_kind": "water",
+		"point_index": 2,
+		"point_ned_m": [
+			110.258730561217,
+			125.005400104609,
+			0.441785315299511
+		],
+		"probe_kind": "gear",
+		"probe_order": 10,
+		"response_status": "terminal",
+		"sim_tick_after_event": 46,
+		"step_timings_usec": [
+			{
+				"sim_step_usec": 768.237974930002,
+				"tick": 1,
+				"wall_usec": 1144
+			},
+			{
+				"sim_step_usec": 790.076076183502,
+				"tick": 2,
+				"wall_usec": 1236
+			},
+			{
+				"sim_step_usec": 796.772272374327,
+				"tick": 3,
+				"wall_usec": 942
+			},
+			{
+				"sim_step_usec": 792.53365875561,
+				"tick": 4,
+				"wall_usec": 729
+			},
+			{
+				"sim_step_usec": 788.20697581783,
+				"tick": 5,
+				"wall_usec": 722
+			},
+			{
+				"sim_step_usec": 798.896627026938,
+				"tick": 6,
+				"wall_usec": 1022
+			},
+			{
+				"sim_step_usec": 795.201795675591,
+				"tick": 7,
+				"wall_usec": 742
+			},
+			{
+				"sim_step_usec": 792.191705891812,
+				"tick": 8,
+				"wall_usec": 751
+			},
+			{
+				"sim_step_usec": 788.832120597221,
+				"tick": 9,
+				"wall_usec": 742
+			},
+			{
+				"sim_step_usec": 784.14051456736,
+				"tick": 10,
+				"wall_usec": 710
+			},
+			{
+				"sim_step_usec": 780.033488838992,
+				"tick": 11,
+				"wall_usec": 718
+			},
+			{
+				"sim_step_usec": 775.781814397043,
+				"tick": 12,
+				"wall_usec": 710
+			},
+			{
+				"sim_step_usec": 771.54272367719,
+				"tick": 13,
+				"wall_usec": 707
+			},
+			{
+				"sim_step_usec": 768.015587493331,
+				"tick": 14,
+				"wall_usec": 717
+			},
+			{
+				"sim_step_usec": 764.614808118664,
+				"tick": 15,
+				"wall_usec": 716
+			},
+			{
+				"sim_step_usec": 764.034067712731,
+				"tick": 16,
+				"wall_usec": 773
+			},
+			{
+				"sim_step_usec": 762.932364327095,
+				"tick": 17,
+				"wall_usec": 759
+			},
+			{
+				"sim_step_usec": 760.48574611074,
+				"tick": 18,
+				"wall_usec": 730
+			},
+			{
+				"sim_step_usec": 758.311458805203,
+				"tick": 19,
+				"wall_usec": 739
+			},
+			{
+				"sim_step_usec": 755.845885864943,
+				"tick": 20,
+				"wall_usec": 726
+			},
+			{
+				"sim_step_usec": 758.603591571696,
+				"tick": 21,
+				"wall_usec": 832
+			},
+			{
+				"sim_step_usec": 758.123411993111,
+				"tick": 22,
+				"wall_usec": 766
+			},
+			{
+				"sim_step_usec": 755.467241393455,
+				"tick": 23,
+				"wall_usec": 721
+			},
+			{
+				"sim_step_usec": 1022.89387932378,
+				"tick": 24,
+				"wall_usec": 6123
+			},
+			{
+				"sim_step_usec": 1328.64918535759,
+				"tick": 25,
+				"wall_usec": 7172
+			},
+			{
+				"sim_step_usec": 1623.46672608971,
+				"tick": 26,
+				"wall_usec": 7245
+			},
+			{
+				"sim_step_usec": 1903.19338978523,
+				"tick": 27,
+				"wall_usec": 7236
+			},
+			{
+				"sim_step_usec": 2178.93372029597,
+				"tick": 28,
+				"wall_usec": 7439
+			},
+			{
+				"sim_step_usec": 2430.03703428117,
+				"tick": 29,
+				"wall_usec": 7218
+			},
+			{
+				"sim_step_usec": 2676.48518256711,
+				"tick": 30,
+				"wall_usec": 7380
+			},
+			{
+				"sim_step_usec": 2903.41092343875,
+				"tick": 31,
+				"wall_usec": 7234
+			},
+			{
+				"sim_step_usec": 3132.39037726682,
+				"tick": 32,
+				"wall_usec": 7508
+			},
+			{
+				"sim_step_usec": 3329.37085840348,
+				"tick": 33,
+				"wall_usec": 7094
+			},
+			{
+				"sim_step_usec": 3550.9523154833,
+				"tick": 34,
+				"wall_usec": 7807
+			},
+			{
+				"sim_step_usec": 3816.30469970914,
+				"tick": 35,
+				"wall_usec": 8890
+			},
+			{
+				"sim_step_usec": 4166.78946472368,
+				"tick": 36,
+				"wall_usec": 10855
+			},
+			{
+				"sim_step_usec": 4510.5499914875,
+				"tick": 37,
+				"wall_usec": 11071
+			},
+			{
+				"sim_step_usec": 4843.82249191312,
+				"tick": 38,
+				"wall_usec": 11202
+			},
+			{
+				"sim_step_usec": 5188.33136731747,
+				"tick": 39,
+				"wall_usec": 11762
+			},
+			{
+				"sim_step_usec": 5529.76479895159,
+				"tick": 40,
+				"wall_usec": 12089
+			},
+			{
+				"sim_step_usec": 6115.67655900401,
+				"tick": 41,
+				"wall_usec": 17308
+			},
+			{
+				"sim_step_usec": 6481.49273105381,
+				"tick": 42,
+				"wall_usec": 13467
+			},
+			{
+				"sim_step_usec": 6800.66809450112,
+				"tick": 43,
+				"wall_usec": 12920
+			},
+			{
+				"sim_step_usec": 7127.48468977607,
+				"tick": 44,
+				"wall_usec": 13376
+			},
+			{
+				"sim_step_usec": 7769.81045528726,
+				"tick": 45,
+				"wall_usec": 20025
+			},
+			{
+				"sim_step_usec": 8181.3199325229,
+				"tick": 46,
+				"wall_usec": 16042
+			}
+		],
+		"surface_down_m": 0.441785536007314,
+		"tick": 46,
+		"time_fraction": 0.694173812866211,
+		"trigger": "water"
+	},
+	"field_lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+	"format": "openrc-lake-entry-capture v1",
+	"lake_id": "near_runway",
+	"lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+	"render_adapter": "NVIDIA GeForce RTX 3090",
+	"render_api": "3.3.0 NVIDIA 610.88",
+	"render_lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+	"shots": {
+		"before": {
+			"height": 1080,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/lu22-work/water-entry-soft/before.png",
+			"width": 1920
+		},
+		"plume": {
+			"height": 1080,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/lu22-work/water-entry-soft/plume.png",
+			"width": 1920
+		},
+		"reset": {
+			"height": 1080,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/lu22-work/water-entry-soft/reset.png",
+			"width": 1920
+		},
+		"ripples": {
+			"height": 1080,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/lu22-work/water-entry-soft/ripples.png",
+			"width": 1920
+		},
+		"sink": {
+			"height": 1080,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/lu22-work/water-entry-soft/sink.png",
+			"width": 1920
+		}
+	},
+	"starting_position_ned_m": [
+		110.0,
+		125.0,
+		-2.0
+	],
+	"starting_velocity_body_frd_mps": [
+		0.0,
+		0.0,
+		12.0
+	]
+}

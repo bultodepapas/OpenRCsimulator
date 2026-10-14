@@ -32,6 +32,11 @@ python3 "$HERE/../research/helicopter/reference/make_main_rotor_oracle.py" --che
 run --script res://tests/test_heli_dynamic_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/dynamic_oracle.json"
 run --script res://tests/test_heli_main_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/main_rotor_oracle.json"
 
+echo "== HELI-06a: linearized tail-rotor reference stays current"
+python3 "$HERE/../research/helicopter/reference/test_tail_rotor.py"
+python3 "$HERE/../research/helicopter/reference/make_tail_rotor_oracle.py" --check
+run --script res://tests/test_heli_tail_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/tail_rotor_oracle.json"
+
 echo "== AS-01/02: versioned aircraft contract and migration stay current"
 python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
 python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check

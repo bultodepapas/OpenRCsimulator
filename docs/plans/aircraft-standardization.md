@@ -1,6 +1,6 @@
 # Aircraft standardization and Blender onboarding plan
 
-**Date:** 2026-10-13. **Revision:** 2. **Status:** AS-06–14 foundation delivered; remaining acceptance and AS-15–18 are tracked below. **Owner:** aircraft-standardization track. **Prefix:** AS-06…AS-18. **Review baseline:** `969c9fee` plus the working tree inspected on this date. Implementation retained concurrent Workshop, scenery and physics changes; exact source snapshots and results are in the [foundation evidence](../research/aircraft-standardization/AS-06-14/README.md).
+**Date:** 2026-10-13. **Revision:** 3. **Status:** AS-06–14 foundation and AS-13 accepted contact observations delivered; remaining acceptance and AS-15–18 are tracked below. **Owner:** aircraft-standardization track. **Prefix:** AS-06…AS-18. **Review baseline:** `969c9fee` plus the working tree inspected on this date. Implementation retained concurrent Workshop, scenery and physics changes; exact source snapshots and results are in the [foundation evidence](../research/aircraft-standardization/AS-06-14/README.md) and [AS-13 continuation](../research/aircraft-standardization/AS-13/README.md).
 
 Make adding an airplane a repeatable authoring operation: supply its Blender delivery, physical data and declared bindings; run common checks; register it. An airplane using supported capabilities must not require changes to the flight solver, shared presentation, Workshop operations, audio or crash logic. A genuinely new capability adds a tested shared module that subsequent aircraft can reuse.
 
@@ -73,6 +73,8 @@ Keep physical configuration ID, visual-family key, asset revision and saved-vari
 
 Stable IDs identify components, surfaces, actuators, propulsion instances, energy stores, contacts and visual sections. Display names and array indices are not durable identities. Current index/name-hash Workshop bindings remain an explicit compatibility adapter until source generators emit stable IDs. Reordering or renaming source entries must regenerate valid bindings or fail; it must never redirect an edit to another part.
 
+An ID migration must preserve numeric values, array order and reduction order in the physical generators, including glow installation inventory/ballast calculations. Adding metadata still changes physical-source hashes. Existing saved Workshop records keep their embedded bytes and descriptor; a changed model-manifest pin currently prevents trial launch. Coordinate an explicit historical-manifest resolver or copy/migration with AE before claiming transparent saved-variant launch compatibility.
+
 A visual section can contain several components and moving nodes. A physical component can have no visible mesh. A contact references its physical role and optional visual section separately. Do not derive mass from mesh volume/material names or fracture strength from `openrc_section`.
 
 ### Share semantics without replacing the numerical validators
@@ -99,6 +101,8 @@ AS-07 records this direction in [DECISIONS](../../DECISIONS.md) after the curren
 Use Blender's existing glTF exporter and the pinned Godot importer. glTF provides application metadata through `extras`; OpenRC must validate its own meaning. Keep any downloaded or supplied reusable assets with their provenance and terms. The proposed work is OpenRC binding/verification tooling, not a custom exporter. [glTF specification](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#reference-extras)
 
 The common delivery profile requires an editable `.blend`, a neutral GLB, declared source/export versions and settings, generated metadata, an asset/dependency hash inventory, and inspection evidence. Pin the actual tested tool builds; do not upgrade Blender/Godot as part of this refactor. Preserve Timber r1 and its external delivery. Extend the existing source/measurement/generation pipeline for r2 as its handoff requires: update manifests, measurements, generated bindings, section-map selection and asset-specific checks. It is not a drop-in replacement for the hashed r1.
+
+The current manifest supplies control/rotor node references but only gear role aliases. A common imported builder must first receive explicit gear-pivot and geometry references through a versioned projection; it must not infer Timber's axle names for another GLB. Reuse authored `openrc_section` tags or the declared legacy triangle-map provider without adding a second section table. Freeze this shared adapter before the second-delivery onboarding proof.
 
 Common checks must establish:
 
@@ -173,7 +177,7 @@ The table retains the full acceptance targets. The foundation below implements t
 | AS-08/09 | Five generated visual manifests, strict source/scene validation, Workshop v2 hash pinning with v1 reader, source/package preflight, malformed-package mutations and LF/CRLF generator checkout tests. Durable physical inventory/contact/section IDs, full landmark coverage, asset budgets and a second Blender delivery remain open |
 | AS-10/11 | Shared manifest-driven renderer and conventional control conversions; actual fleet rest/full-travel poses and independent instances checked. Existing model builders retained; no new control topology enabled |
 | AS-12 | Existing single-installation callback preparation and read-only family/state observation share an adapter; existing laws/checkpoints remain intact. New propulsion topology and target-machine performance qualification remain open |
-| AS-13 | Preparation validates support/probe/rotor bindings and exposes the selected wheel/hull/strike policy. Pure event normalization is tested; it does not yet replace the session's accepted-tick event/rollback state or bind probes to detachable sections |
+| AS-13 | Preparation validates support/probe/rotor bindings and exposes the selected wheel/hull/strike policy. Shared events now commit at accepted ticks, survive checkpoints/replay and failed reloads, and roll back with rejected impacts. Legacy readers remain explicit. Durable probe-to-detachable-section bindings are still open; [continuation evidence](../research/aircraft-standardization/AS-13/README.md) |
 | AS-14 | Seven catalog configurations use generated descriptors and shared model bindings; fourteen policy-specific flight/replay cases match exactly. Full onboarding and the independent AE-19 gate remain open |
 | AS-15–18 | Pending capability extensions and second-delivery onboarding experiment |
 

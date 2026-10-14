@@ -1,11 +1,10 @@
-## CR-09c: imported models break into their real parts. Sections come from glTF extras / meta / names, a generated
-## section map splits a merged mesh into real section meshes in the wreck twin only, and a requested section the model
-## lacks never leaves a crash with nothing to release (docs/plans/crash-realism.md, Timber review).
+## CR-09c: imported models break into their real parts. Direct glTF extras / meta tags and the generic merged-mesh
+## splitter both stay covered; a requested section the model lacks never leaves a crash with nothing to release.
 extends SceneTree
 
 const WreckController = preload("res://render/crash/wreck.gd")
 const SectionSplitter = preload("res://render/crash/section_splitter.gd")
-const AirplaneBuilder = preload("res://render/airplane.gd")
+const Timber = preload("res://aircraft/timber_model.gd")
 
 var _checks := 0
 var _failures := 0
@@ -19,7 +18,7 @@ func _run() -> void:
 	await _splitter()
 	await _resolution()
 	await _no_wing_fallback()
-	await _timber_fallback()
+	await _timber_tagged_parts()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
@@ -90,10 +89,19 @@ func _triangles(node: Node) -> int:
 	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
 		var mesh: Mesh = (node as MeshInstance3D).mesh
 		for s in mesh.get_surface_count():
-			n += (mesh.surface_get_arrays(s)[Mesh.ARRAY_INDEX] as PackedInt32Array).size() / 3
+			var arrays: Array = mesh.surface_get_arrays(s)
+			var indices: Variant = arrays[Mesh.ARRAY_INDEX]
+			n += (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size() / 3 if indices == null else (indices as PackedInt32Array).size() / 3
 	for child in node.get_children():
 		n += _triangles(child)
 	return n
+
+
+func _transform_snapshot(airplane: Node3D) -> Dictionary:
+	var out := {".": airplane.transform}
+	for node in airplane.find_children("*", "Node3D", true, false):
+		out[String(airplane.get_path_to(node))] = (node as Node3D).transform
+	return out
 
 
 func _splitter() -> void:
@@ -185,17 +193,8 @@ func _resolution() -> void:
 	airplane.free()
 
 
-func _section_triangles(node: Node) -> int:
-	var n := 0
-	for child in node.find_children("airframe_section_*", "MeshInstance3D", true, false):
-		var mesh: Mesh = (child as MeshInstance3D).mesh
-		for s in mesh.get_surface_count():
-			n += (mesh.surface_get_arrays(s)[Mesh.ARRAY_INDEX] as PackedInt32Array).size() / 3
-	return n
-
-
-## CR-09c1 regression: a model without wing sections (like the merged r1 Timber before TT-13c) hit on a wing tip at
-## C3 must still release its legacy sections instead of nothing.
+## CR-09c1 regression: a model without explicit wing sections hit on a wing tip at C3 still releases its legacy
+## sections instead of leaving the crash with nothing to release.
 func _no_wing_fallback() -> void:
 	var airplane := Node3D.new()
 	airplane.name = "airplane"
@@ -228,37 +227,48 @@ func _no_wing_fallback() -> void:
 	airplane.free()
 
 
-func _timber_fallback() -> void:
-	var timber: Node3D = AirplaneBuilder.build("turbo-lumber-evolution").root
+func _timber_tagged_parts() -> void:
+	var timber_model: Dictionary = Timber.build()
+	var timber: Node3D = timber_model.root
 	root.add_child(timber)
 	await process_frame
+	Timber.apply_controls(timber_model, 0.4, 0.2, -0.15, 20.0)
+	var flight_before := _transform_snapshot(timber)
+	var source_triangles := _triangles(timber)
 	var wreck: Variant = WreckController.new()
 	root.add_child(wreck)
 	await process_frame
 	wreck.set_process(false)
 	wreck.prepare(timber)
 	var groups := _groups(wreck)
-	# TT-13c: the generated map gives the merged Blender airframe its real sections.
 	for kind in ["wing_left", "wing_right", "horizontal_tail", "vertical_tail", "engine", "canopy", "propeller", "gear"]:
-		_check("Timber wreck has a real %s section" % kind, groups.has(kind), str(groups.keys()))
+		_check("Timber r2 tags produce a real %s section" % kind, groups.has(kind), str(groups.keys()))
 	var left_members: Array = groups.get("wing_left", {}).get("members", []).map(func(n: Node) -> String: return String(n.name))
-	_check("the left wing carries its aileron and flap", left_members.has("aileron_left_hinge") and left_members.has("flap_left_hinge")
-		and left_members.has("airframe_section_wing_left"), str(left_members))
-	_check("the flying Timber keeps its merged airframe", timber.find_child("airframe", true, false) != null)
-	_check("the twin conserves every airframe triangle", _section_triangles(wreck._twin) == 36691, str(_section_triangles(wreck._twin)))
+	_check("left wing group contains fixed wing, aileron and flap controls", left_members.has("wing_left_fixed")
+		and left_members.has("aileron_left_hinge") and left_members.has("flap_left_hinge")
+		and left_members.has("aileron_left") and left_members.has("flap_left"), str(left_members))
+	var engine_members: Array = groups.get("engine", {}).get("members", []).map(func(n: Node) -> String: return String(n.name))
+	_check("the cowl is the tagged engine section", engine_members.has("cowl"), str(engine_members))
+	_check("the imported model has no merged airframe or generated split sections", timber.find_child("airframe", true, false) == null
+		and wreck._twin.find_child("airframe", true, false) == null
+		and wreck._twin.find_children("airframe_section_*", "MeshInstance3D", true, false).is_empty())
+	_check("wreck duplicate keeps every direct r2 mesh triangle", _triangles(wreck._twin) == source_triangles, "%d vs %d" % [_triangles(wreck._twin), source_triangles])
+	_check("wreck preparation leaves the posed flying model unchanged", _transform_snapshot(timber) == flight_before and _triangles(timber) == source_triangles)
+	wreck.start(Transform3D(Basis.IDENTITY, Vector3(0, 3, 0)), Vector3(0, -10, -5), Vector3.ZERO, {"class": 3, "component": "engine", "mass_kg": 2.19, "seed": 5})
+	var engine_detached := false
+	for group: Dictionary in wreck._groups.slice(1):
+		if String(group.kind) == "engine": engine_detached = bool(group.detached)
+	_check("a direct cowl hit releases its tagged engine section", engine_detached)
+	_check("cowl breakup leaves the posed flying model unchanged", _transform_snapshot(timber) == flight_before and _triangles(timber) == source_triangles)
+	wreck.reset()
 	wreck.start(Transform3D(Basis.IDENTITY, Vector3(0, 3, 0)), Vector3(0, -10, -5), Vector3.ZERO, {"class": 3, "component": "left_wing_tip", "mass_kg": 2.19, "seed": 5})
 	var released: Array = []
 	for group: Dictionary in wreck._groups.slice(1):
 		if bool(group.detached):
 			released.append(String(group.kind))
-	_check("Timber C3 left-tip hit releases its real left wing only", released == ["wing_left"], str(released))
+	_check("a left-wing C3 hit releases the fixed wing and its controls together", released == ["wing_left"], str(released))
+	_check("left-wing breakup leaves the posed flying model unchanged", _transform_snapshot(timber) == flight_before and _triangles(timber) == source_triangles)
 	wreck.reset()
-	for label in ["left_wing_tip", "belly"]:
-		wreck.start(Transform3D(Basis.IDENTITY, Vector3(0, 3, 0)), Vector3(0, -10, -5), Vector3.ZERO, {"class": 3, "component": label, "mass_kg": 2.19, "seed": 5})
-		var detached := 0
-		for group: Dictionary in wreck._groups.slice(1):
-			detached += 1 if bool(group.detached) else 0
-		_check("Timber C3 %s hit releases at least one real section" % label, detached > 0, "%d sections, groups %s" % [detached, str(wreck.stats().fragment_groups)])
-		wreck.reset()
+	_check("reset also leaves the flying model unchanged", _transform_snapshot(timber) == flight_before and _triangles(timber) == source_triangles)
 	wreck.free()
 	timber.free()

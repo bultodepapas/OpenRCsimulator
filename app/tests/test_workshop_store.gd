@@ -17,6 +17,21 @@ func _initialize() -> void:
 	var recipe: Dictionary = _recipe()
 	_check("base fixture read", not base_bytes.is_empty())
 	_test_dependency_manifests()
+	var integer_recipe: Dictionary = _recipe()
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+		integer_recipe[key] = 1
+	var integer_saved: Dictionary = Store.save_variant("Integer recipe", "jensen-das-ugly-stik-60", base_bytes, integer_recipe, "", _root)
+	_check("integer-valued recipes survive their own disk round-trip", bool(integer_saved["ok"]), str(integer_saved["errors"]))
+	if integer_saved["ok"]:
+		_check("integer recipe remains loadable", Store.load_variant(integer_saved.variant.id, _root).ok)
+		_check("saving does not normalize the caller's recipe in place", typeof(integer_recipe["scale"]) == TYPE_INT)
+		integer_recipe["power_multiplier"] = 1.25
+		var mixed_saved: Dictionary = Store.save_variant("Mixed numeric recipe", "jensen-das-ugly-stik-60",
+			base_bytes, integer_recipe, integer_saved.variant.id, _root, {}, {}, 1)
+		_check("mixed numeric recipe update remains readable", mixed_saved.ok
+			and Store.load_variant(integer_saved.variant.id, _root).variant.revision == 2,
+			str(mixed_saved.errors))
+		Store.delete_variant(integer_saved.variant.id, _root)
 	var saved: Dictionary = Store.save_variant("Store test Stik", "jensen-das-ugly-stik-60", base_bytes, recipe, "", _root)
 	_check("first variant save succeeds", bool(saved["ok"]), str(saved["errors"]))
 	if not bool(saved["ok"]):

@@ -571,6 +571,8 @@ Keep pure calculations usable headlessly. Scalar doubles and packed float64 arra
 
 The menu/preferences owner adds only selection/reference data to saved preferences; the full recipe belongs in its own store. Direct automation still ignores player preferences. Add an explicit proposed `--aircraft-variant=<bundle-or-local-path>` route for reproducible checks, mutually exclusive with `--aircraft`; the direct path must neither migrate nor overwrite user files.
 
+The [2026-10-13 robustness audit](../research/aircraft-editor/AE-01-10/README.md#ae-020309-audit-follow-up--2026-10-13) fixes JSON numeric round-trip identity and historical recipe metadata. AE-03 still requires first-save interruption recovery, unambiguous trash generations and revision-aware delete confirmation; existing passing suites do not close those cases.
+
 ## 14. Incremental implementation and acceptance
 
 The table defines full acceptance scope. The partial implementation status is recorded in §0; no full fleet gate is closed by that slice. Evidence columns below describe remaining/full required proof, rather than claiming every check has run. Keep each step independently reviewable; split a row further if it spans too many owners.

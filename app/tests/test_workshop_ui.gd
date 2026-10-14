@@ -288,6 +288,31 @@ func _run() -> void:
 		and not Store.load_variant(recovering_id, store_root).variant.recovered_from_manifest_backup,
 		"revision=%s note=%s" % [workshop.get("_saved_variant_revision"), workshop.get("_status_label").text])
 
+	# The store accepts historical recipes with duplicate cosmetic metadata.
+	var metadata_recipe: Dictionary = Compiler.defaults()
+	metadata_recipe["id"] = "12345678-1234-4234-8234-123456789abc"
+	metadata_recipe["name"] = "Historical recipe metadata"
+	var metadata_saved: Dictionary = Store.save_variant(metadata_recipe.name, Catalog.DEFAULT_ID,
+		source_bytes, metadata_recipe, metadata_recipe.id, store_root)
+	_check("historical metadata fixture saves", metadata_saved.get("ok", false), str(metadata_saved.get("errors", [])))
+	if metadata_saved.get("ok", false):
+		workshop.set("_selected_variant_id", metadata_recipe.id)
+		workshop.call("_load_selected_variant")
+		_check("loaded draft separates recipe physics from record metadata",
+			not workshop.get_recipe().has("id") and not workshop.get_recipe().has("name"))
+		workshop.set_variant_name("Renamed historical build")
+		workshop.save_named_variant()
+		var renamed_metadata: Dictionary = Store.load_variant(metadata_recipe.id, store_root)
+		_check("historical recipe can be renamed", renamed_metadata.get("ok", false)
+			and renamed_metadata.variant.name == "Renamed historical build"
+			and renamed_metadata.variant.revision == 2)
+		workshop.save_variant_copy()
+		_check("historical recipe copy receives a separate identity",
+			workshop.get("_saved_variant_id") != metadata_recipe.id
+			and workshop.get("_saved_variant_revision") == 1)
+		_check("copy leaves the source history untouched",
+			Store.load_variant(metadata_recipe.id, store_root).variant.revision == 2)
+
 	workshop.queue_free()
 	await _ui.settle()
 	var absolute_root := ProjectSettings.globalize_path(store_root)
