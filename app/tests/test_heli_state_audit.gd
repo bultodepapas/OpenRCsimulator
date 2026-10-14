@@ -3,6 +3,7 @@ const Session = preload("res://sim/helicopter_flight_session.gd")
 const Wind = preload("res://physics/wind_config.gd")
 const Recorder = preload("res://sim/rotorcraft_recorder.gd")
 const ControllerProfile = preload("res://input/controller_profile.gd")
+const Math3D = preload("res://physics/math3d.gd")
 var checks: int = 0
 var failures: int = 0
 func _initialize() -> void:
@@ -133,6 +134,23 @@ func _run() -> void:
 	check("tick-zero weather change requires re-trim", session.setup_weather(Wind.preset("steady")) and session.sim.paused and not session.is_flyable() and session.reset())
 	session.set_start_altitude(4.0)
 	check("tick-zero start altitude edit invalidates hover", not session.is_flyable() and session.sim.paused and session.reset() and session.checkpoint().start_position[2] == -4.0)
+	var valid_rotor_state: PackedFloat64Array = session.sim.continuous.duplicate()
+	var valid_rotor_aux: PackedFloat64Array = session.sim.aux.duplicate()
+	session.sim.continuous[0] = -1.0
+	session.sim.aux[0] = -60.0 / (2.0 * PI)
+	check("checkpoint producer refuses finite but invalid rotor state", session.checkpoint().is_empty())
+	session.sim.continuous = valid_rotor_state
+	session.sim.aux = valid_rotor_aux
+	var valid_commands: Dictionary = session.commands.duplicate(true)
+	session.commands.throttle = 1.1
+	check("checkpoint producer refuses out-of-range saved commands", session.checkpoint().is_empty())
+	session.commands = valid_commands
+	session.sim.state[2] = -0.15
+	var tilted: PackedFloat64Array = Math3D.q_from_euler(0.0, 0.0, 0.6)
+	for index: int in 4: session.sim.state[6 + index] = tilted[index]
+	session.sim.step()
+	check("ground-strike checkpoint cannot erase the crash hold", not session.crash.is_empty() and session.sim.paused and session.checkpoint().is_empty())
+	check("reset restores checkpointable hover after crash", session.reset() and session.crash.is_empty() and not session.checkpoint().is_empty())
 
 	var recorder: RefCounted = Recorder.new(session.sim)
 	recorder.start(session.trace_meta())

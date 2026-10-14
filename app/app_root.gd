@@ -536,23 +536,20 @@ func open_controls(from: Control = null) -> void:
 		return
 	_clear_controller_actions()
 	var setup := ControllerSetup.new()
-	setup.save_and_apply = controllers.save_profile_from_setup
+	setup.save_and_apply = controllers.save_settings_from_setup
 	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"))
 	setup.close_requested.connect(func() -> void:
 		if screens.is_top("controls"): screens.pop())
 	_update_controller_calibration_button(setup)
+	setup.draft_changed.connect(func() -> void: _update_controller_calibration_button(setup))
 	setup.calibration_requested.connect(func() -> void:
 		if not screens.is_top("controls") or flight == null: return
+		if not setup._save_profile(false): return
 		screens.pop()
 		if screens.is_top("pause"): _close_pause()
 		if not flight.session.start_calibration(): open_pause())
-	setup.apply_devices = func(flight_id: int, ui_id: int) -> bool:
-		if not controllers.select_devices(flight_id, ui_id): return false
-		if ground_vehicle != null: ground_vehicle.apply_controller_selection(flight_id)
-		_controller_ui_changed(controllers.registry.selected_device_id("ui"))
-		_update_controller_calibration_button(setup)
-		return true
 	setup.profile_saved.connect(func(profile: Dictionary) -> void:
+		if ground_vehicle != null: ground_vehicle.apply_controller_selection(controllers.registry.selected_device_id("flight"))
 		_update_controller_calibration_button(setup)
 		_controller_ui_changed(controllers.registry.selected_device_id("ui")))
 	screens.push("controls", setup, from)
@@ -561,7 +558,8 @@ func open_controls(from: Control = null) -> void:
 
 
 func _update_controller_calibration_button(setup: Node) -> void:
-	var available: bool = flight != null and flight.session.radio.connected and flight.session.radio.profile.get("kind", "") == "radio"
+	var device: Dictionary = controllers.registry.device_for_id(setup.selected_flight_device_id())
+	var available: bool = flight != null and bool(device.get("connected", false)) and setup.current_profile().get("kind", "") == "radio"
 	setup.calibrate_button.visible = available
 	setup.calibrate_button.disabled = not available
 

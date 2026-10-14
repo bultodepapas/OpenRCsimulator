@@ -115,7 +115,7 @@ func _item_index(picker: OptionButton, item_id: int) -> int:
 			return index
 	return -1
 
-func _reject_save(_candidate: Dictionary, _flight_device_id: int) -> Dictionary:
+func _reject_save(_candidate: Dictionary, _flight_device_id: int, _ui_device_id: int) -> Dictionary:
 	rejection_calls += 1
 	return {"ok": false, "error": "unsupported aircraft"}
 

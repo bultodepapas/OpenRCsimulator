@@ -1330,7 +1330,7 @@
     ],
     "unit": "m",
     "kind": "derived",
-    "source": "13 gear-up collision witnesses from the imported Blender visual model in assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8); source model_position [x_right, y_up, z_aft] mapped to the physical LE frame [x_aft, y_right, z_up]. Wing witnesses remain fixed and fuselage-attached witnesses include wing_forward_shift. This visual witness source does not replace the AV-02 physical geometry surrogate or calibrate installation. These probes represent the source Blender gear-up/stowed terminal hull; separate retractable landing-gear contacts follow the visual wheel-bottom paths while deployed."
+    "source": "13 gear-up collision witnesses from the imported Blender visual model in assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source model_position [x_right, y_up, z_aft] mapped to the physical LE frame [x_aft, y_right, z_up]. Wing witnesses remain fixed and fuselage-attached witnesses include wing_forward_shift. This visual witness source does not replace the AV-02 physical geometry surrogate or calibrate installation. These probes represent the source Blender gear-up/stowed terminal hull; separate retractable landing-gear contacts follow the visual wheel-bottom paths while deployed."
   },
   "crash_hull_ids": [
     "probe_wing_left_le",
@@ -2219,7 +2219,7 @@
           ],
           "unit": "m",
           "kind": "derived",
-          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
+          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
         },
         "stiffness": {
           "value": 2398.339397,
@@ -2499,7 +2499,7 @@
           ],
           "unit": "m",
           "kind": "derived",
-          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path"
+          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path"
         }
       },
       {
@@ -2513,7 +2513,7 @@
           ],
           "unit": "m",
           "kind": "derived",
-          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
+          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
         },
         "stiffness": {
           "value": 2398.339397,
@@ -2793,7 +2793,7 @@
           ],
           "unit": "m",
           "kind": "derived",
-          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path"
+          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path"
         }
       },
       {
@@ -2807,7 +2807,7 @@
           ],
           "unit": "m",
           "kind": "derived",
-          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
+          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
         },
         "stiffness": {
           "value": 664.447582,
@@ -3087,7 +3087,7 @@
           ],
           "unit": "m",
           "kind": "derived",
-          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path"
+          "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path"
         }
       }
     ],
@@ -3142,7 +3142,7 @@
         ],
         "unit": "m",
         "kind": "derived",
-        "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 53f5b3044b66acc9dd584565cece8764e6826bbbc70afaf6fe459843e38d04e8); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; centroid of the three full-down wheel-bottom points, an estimated drag moment arm rather than a measured drag centre"
+        "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; centroid of the three full-down wheel-bottom points, an estimated drag moment arm rather than a measured drag centre"
       }
     }
   }

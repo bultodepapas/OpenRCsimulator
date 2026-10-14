@@ -10,7 +10,7 @@ const SmokeAux := preload("res://input/smoke_aux.gd")
 
 signal close_requested
 signal profile_saved(profile: Dictionary)
-signal device_selection_requested(flight_device_id: int, ui_device_id: int)
+signal draft_changed
 signal calibration_requested
 
 const LAYER := 12
@@ -51,7 +51,6 @@ var action_grid: GridContainer
 var preview_label: Label
 var status_label: Label
 var save_button: Button
-var apply_devices_button: Button
 var calibrate_button: Button
 var legacy_import_button: Button
 var legacy_picker: OptionButton
@@ -59,7 +58,6 @@ var legacy_help_label: Label
 var keep_radio_button: Button
 var restore_gamepad_button: Button
 var joystick_enabled: CheckBox
-var apply_devices: Callable
 var save_and_apply: Callable
 var glyph_family_help_label: Label
 
@@ -91,8 +89,6 @@ var _preview_labels: Dictionary = {}
 var _preview_bars: Dictionary = {}
 var _draft_flight_device_id := -1
 var _draft_ui_device_id := -1
-var _original_flight_device_id := -1
-var _original_ui_device_id := -1
 var _capturing_action := ""
 var _capturing_device_id := -1
 var _capture_button: Button
@@ -114,14 +110,12 @@ func _init() -> void:
 
 
 ## The owner injects shared objects before adding this CanvasLayer to the tree.
-## Role choices stay draft until Apply devices; profile edits stay draft until Save.
+## Controller choices and profile edits stay draft until one Save operation succeeds.
 func configure(controller_registry: Object, store: Object, flight_device_id := -1, ui_device_id := -1) -> void:
 	registry = controller_registry
 	profile_store = store
-	_original_flight_device_id = flight_device_id if flight_device_id >= 0 else _registry_selected("flight")
-	_original_ui_device_id = ui_device_id if ui_device_id >= 0 else _registry_selected("ui")
-	_draft_flight_device_id = _original_flight_device_id
-	_draft_ui_device_id = _original_ui_device_id
+	_draft_flight_device_id = flight_device_id if flight_device_id >= 0 else _registry_selected("flight")
+	_draft_ui_device_id = ui_device_id if ui_device_id >= 0 else _registry_selected("ui")
 	_load_profiles()
 	_refresh_devices()
 	_load_profile_for_device(_draft_flight_device_id)
@@ -215,7 +209,7 @@ func _build() -> void:
 	_section_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_section_body)
 	var page := _make_section("devices", "Devices")
-	page.add_child(_label("Choose separate flight and menu controllers. Profile changes never send input to the aircraft while this screen is open.", "SecondaryLabel", true))
+	page.add_child(_label("Choose your controllers, then Save.", "SecondaryLabel", true))
 	_empty_device_label = _label("No controllers connected. Connect a gamepad or radio by USB or Bluetooth, then select it here. Keyboard and mouse remain available.", "SecondaryLabel", true)
 	_empty_device_label.name = "NoControllersConnected"
 	page.add_child(_empty_device_label)
@@ -231,14 +225,10 @@ func _build() -> void:
 	ui_device_picker.item_selected.connect(_on_ui_device_selected)
 	_add_field(roles, "Flight controller", flight_device_picker)
 	_add_field(roles, "Menu controller", ui_device_picker)
-	page.add_child(_label("A radio can fly but cannot navigate menus. Menu navigation stays on the selected gamepad; keyboard and mouse remain available.", "SecondaryLabel", true))
-	page.add_child(_label("Apply device selection activates these choices. Save profile keeps mappings and response settings.", "SecondaryLabel", true))
+	page.add_child(_label("Use a gamepad for menus. Keyboard and mouse are always available.", "SecondaryLabel", true))
 
 	var role_actions := HBoxContainer.new()
 	role_actions.add_theme_constant_override("separation", 8)
-	apply_devices_button = _button("Apply device selection", "", "ApplyDevices")
-	apply_devices_button.pressed.connect(_apply_device_selection)
-	role_actions.add_child(apply_devices_button)
 	legacy_import_button = _button("Recover legacy profile…")
 	legacy_import_button.pressed.connect(_import_legacy_profiles)
 	role_actions.add_child(legacy_import_button)
@@ -561,13 +551,10 @@ func _build() -> void:
 	footer.name = "ControllerSetupFooter"
 	footer.add_theme_constant_override("separation", 8)
 	footer.alignment = BoxContainer.ALIGNMENT_END
-	var draft_hint := _label("Profile edits stay in draft until you save.", "SecondaryLabel", true)
-	draft_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	footer.add_child(draft_hint)
 	var cancel_button := _button("Cancel", "", "Cancel")
 	cancel_button.pressed.connect(_cancel_edits)
 	footer.add_child(cancel_button)
-	save_button = _button("Save profile", "PrimaryButton", "SaveProfile")
+	save_button = _button("Save", "PrimaryButton", "SaveProfile")
 	save_button.pressed.connect(_save_profile)
 	footer.add_child(save_button)
 	shell.add_child(footer)
@@ -963,6 +950,7 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	_update_aux_controls()
 	_update_action_controls()
 	_update_preview()
+	draft_changed.emit()
 
 
 func _update_profile_options() -> void:
@@ -1515,45 +1503,18 @@ func _capture_done() -> void:
 	_update_action_controls()
 
 
-func _apply_device_selection() -> void:
-	if _draft_ui_device_id >= 0:
-		var menu_device := _device_for_id(_draft_ui_device_id)
-		if menu_device.is_empty() or not bool(menu_device.get("connected", true)):
-			_set_status(tr("The selected menu controller is disconnected."), true)
-			return
-		if not _is_menu_device_eligible(menu_device):
-			_set_status(tr("Select a connected, configured gamepad to navigate menus."), true)
-			return
-	if _draft_flight_device_id >= 0:
-		var flight_device := _device_for_id(_draft_flight_device_id)
-		if flight_device.is_empty() or not bool(flight_device.get("connected", true)):
-			_set_status(tr("The selected flight controller is disconnected."), true)
-			return
-	if apply_devices.is_valid() and not bool(apply_devices.call(_draft_flight_device_id, _draft_ui_device_id)):
-		_refresh_devices()
-		_set_status(tr("Device selection changed; refresh and choose connected controllers."), true)
-		return
-	device_selection_requested.emit(_draft_flight_device_id, _draft_ui_device_id)
-	_original_flight_device_id = _draft_flight_device_id
-	_original_ui_device_id = _draft_ui_device_id
-	_set_status(tr("Device selection applied. Profile changes still need Save."), false)
-
-
-func _save_profile() -> void:
+func _save_profile(close_on_success := true) -> bool:
 	if not _capturing_action.is_empty():
 		_set_status(tr("Finish or cancel remapping before saving."), true)
-		return
+		return false
 	if _draft_profile.is_empty() or profile_store == null:
 		_set_status(tr("There is no controller profile to save."), true)
-		return
-	if _draft_flight_device_id != _registry_selected("flight"):
-		_set_status(tr("Apply the flight device selection before saving its profile."), true)
-		return
+		return false
 	var candidate := _draft_profile.duplicate(true)
 	var profile_name := profile_name_edit.text.strip_edges()
 	if profile_name.is_empty():
 		_set_status(tr("Enter a profile name before saving."), true)
-		return
+		return false
 	candidate["name"] = profile_name
 	var selected_device := _device_for_id(_draft_flight_device_id)
 	if not selected_device.is_empty():
@@ -1581,27 +1542,29 @@ func _save_profile() -> void:
 	if not bool(actions_validation.get("ok", false)):
 		var errors: Array = actions_validation.get("errors", [])
 		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
-		return
+		return false
 	var validation: Dictionary = ControllerProfile.validate(candidate)
 	if not bool(validation.get("ok", false)):
 		var errors: Array = validation.get("errors", [])
 		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
-		return
+		return false
 	var result: Dictionary
 	if save_and_apply.is_valid():
-		result = save_and_apply.call(candidate, _draft_flight_device_id)
+		result = save_and_apply.call(candidate, _draft_flight_device_id, _draft_ui_device_id)
 	else:
 		result = profile_store.call("save_profile", candidate)
 	if not bool(result.get("ok", false)):
 		_set_status(tr("Profile was not saved: %s") % str(result.get("error", tr("storage error"))), true)
-		return
+		return false
 	var saved: Dictionary = result.get("profile", candidate).duplicate(true)
 	_replace_saved_profile(saved)
 	_draft_profile = saved.duplicate(true)
 	_drafts_by_context[_draft_context_key] = saved.duplicate(true)
 	_refresh_devices()
 	profile_saved.emit(saved.duplicate(true))
-	close_requested.emit()
+	if close_on_success:
+		close_requested.emit()
+	return true
 
 
 func _replace_saved_profile(profile: Dictionary) -> void:

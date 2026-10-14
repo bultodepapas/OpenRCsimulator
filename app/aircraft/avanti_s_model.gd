@@ -3,7 +3,7 @@ extends RefCounted
 
 const Geometry := preload("res://aircraft/avanti_s_blender_geometry.gd")
 const Imported := preload("res://aircraft/imported_model.gd")
-const VISUAL_REVISION := "av31-blender-flight-1"
+const VISUAL_REVISION: String = Geometry.DATA.revision
 
 static func build() -> Dictionary:
 	var registry: Script = load("res://aircraft/model_registry.gd")

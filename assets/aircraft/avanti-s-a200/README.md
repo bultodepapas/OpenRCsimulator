@@ -10,13 +10,13 @@ The catalog aircraft `sebart-avanti-s-a200-p100rx` uses the supplied Avanti S A2
 | [source/geometry_blender.json](source/geometry_blender.json) | Supplied visual study and authoring estimates; original delivery bytes. |
 | [export_blender.py](export_blender.py) | Reproducible preparation/export with Blender 5.2.2 LTS, build `d13f752e3b9c`. |
 | [game/avanti_s_game.blend](game/avanti_s_game.blend) | Prepared editable game model: neutral controls, stowed gear, sections and packed textures. Regenerated from the master. |
-| [runtime GLB](../../../app/assets/aircraft/avanti-s-a200/avanti_s.glb) | Self-contained game asset, 130,710 triangles in 19 mesh nodes; no demo animation. |
+| [runtime GLB](../../../app/assets/aircraft/avanti-s-a200/avanti_s.glb) | Self-contained game asset, 146,652 triangles in 38 mesh nodes; no demo animation. |
 | [blender-geometry.json](blender-geometry.json) | Generated articulation rest transforms, physical-control sign mapping, model bounds, outlet observation and collision witnesses. |
 | [source-manifest.json](source-manifest.json) | Master, sidecar, exporter and GLB identities; export settings and mesh counts. |
 | [compile_blender.py](compile_blender.py) | Checks source/asset identity and compiles `app/aircraft/avanti_s_blender_geometry.gd`. |
 | [geometry.json](geometry.json) | Existing AV-02 physical-surrogate geometry, still consumed by AV-06. Its separate compiler remains available for historical research. |
 
-The original delivery directory `JET VENTAGE BLENDER/` is preserved. The lighter supplied GLB omitted the turbine; the prepared model therefore derives from the complete master. Internal cables and small concealed equipment are omitted from the game mesh, with the turbine, pipe, fuel tank, cockpit, skin, paint and moving surfaces retained. Simplification preserves the measured outer bounds within 2 mm; actual checks are much tighter. UVs round to six decimal places to remove one-ULP averaging differences between Blender processes. Maximum image dimension is 2048 pixels. There are 75 material surfaces and 26 materials; this is a recorded budget, not a universal fleet target.
+The original delivery directory `JET VENTAGE BLENDER/` is preserved. The lighter supplied GLB omitted the turbine; the prepared model therefore derives from the complete master. Internal cables and small concealed equipment are omitted from the game mesh, with the turbine, pipe, fuel tank, cockpit, skin, paint and moving surfaces retained. Simplification preserves the measured outer bounds within 2 mm; actual checks are much tighter. UVs round to six decimal places to remove one-ULP averaging differences between Blender processes. Maximum image dimension is 2048 pixels. There are 105 material surfaces and 26 materials; this is a recorded budget, not a universal fleet target.
 
 ## Coordinates, controls and configuration
 
@@ -24,7 +24,7 @@ Native source coordinates map to Godot metres as `(-x, z, y)`: nose −Z, right 
 
 The common importer supplies root `airplane` and an empty `propeller` compatibility marker. Seven stable `*_hinge` nodes use local +X and a rigid rest basis. `range_deg` uses app-command degrees; `app_sign` converts those degrees into the authored axis rotation. Positive conventional commands raise both aileron/elevator trailing edges or move the rudder right. The two elevator meshes share the existing single logical elevator command. Inspector-only flaps move down at positive angles and clamp to 0–50°.
 
-`GearRetract` frame 211 supplies the stowed geometry. The runtime does not play the source demonstration actions. Physical gear remains `locked_up`, flaps remain `not_simulated`, and the existing airborne start remains selected. These settings keep rendered geometry consistent with the admitted flight configuration. Ground contact is a terminal crash; this model integration does not enable taxiing, landing, retract controls or flap aerodynamics.
+AV-09 enables the three retracts, nose steering, wheel spin, lower-strut compression and optional main brakes. The exporter samples all twelve carriers in `GearRetract` from frame 211 (stowed) to 129 (deployed); 83 normalized poses drive the common rendering rig from the accepted physical extension. `G` toggles deployment, `B` holds the brakes, and configured radio AUX gear owns the deployment request. The runway start is downlocked; airborne starts are stowed. Flaps remain inspector-only and `not_simulated`. [Gear behavior, assumptions and verification](../../../docs/research/avanti-gear/AV-09/README.md) are authoritative for this extension.
 
 All mesh nodes and control pivots carry `openrc_section` glTF extras. Wings, horizontal/vertical tail, canopy, engine/pipe and gear can be collected by the existing crash presentation. Parts from different sections are siblings, and each control belongs to its corresponding section. These labels do not introduce structural failure physics.
 
@@ -53,6 +53,9 @@ Import precedes manifest generation so the `.glb.import` dependency is included.
 python assets/aircraft/avanti-s-a200/compile_blender.py --check
 python research/avanti-s/av06/derive_physics.py --check
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://aircraft/verify_avanti.gd
+& '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://tests/test_retractable_gear.gd
+& '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://tests/test_retractable_gear_ground.gd
+& '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://tests/test_retractable_gear_trace.gd
 python research/aircraft-standardization/conformance.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out .tools/av31-conformance --models-only
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --path app --script ../research/avanti-s/av31/capture.gd -- --out=C:/DEVELOPMENT/OpenRCsimulator/.tools/av31-new-captures
 ```

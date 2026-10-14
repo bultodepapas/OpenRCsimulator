@@ -52,11 +52,12 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 	var pilot: Dictionary = field.get("pilot", {})
 	var pilot_north := float(pilot.get("north", 0.0))
 	var pilot_east := float(pilot.get("east", 0.0))
+	var local_exclusions := _nearby_exclusions(pilot_north, pilot_east, exclusions)
 	for row_index: int in range(rows.size()):
 		var row: Array = rows[row_index]
 		var north := pilot_north + float(row[0]) * 0.001
 		var east := pilot_east + float(row[1]) * 0.001
-		if not NearGrass.accepts(north, east, field, exclusions):
+		if not NearGrass.accepts(north, east, field, local_exclusions):
 			continue
 		var asset_index := int(Palette.hash01(SEED, row_index, 101) * float(ASSET_IDS.size()))
 		var asset_id := ASSET_IDS[mini(asset_index, ASSET_IDS.size() - 1)]
@@ -98,6 +99,26 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 	if triangles > MAX_SOURCE_TRIANGLES:
 		push_error("Downloaded near grass exceeds its %d source-triangle budget (%d)" % [MAX_SOURCE_TRIANGLES, triangles])
 		return []
+	return result
+
+
+## Validated placement rows stay inside the pilot's 30 m square. Remove only
+## masks whose expanded bounds cannot contain any candidate, keeping edge equality.
+## The per-point polygon/clearance predicate and original selection order stay intact.
+static func _nearby_exclusions(pilot_north: float, pilot_east: float, exclusions: Array) -> Array:
+	var result: Array = []
+	for value: Variant in exclusions:
+		if not value is Dictionary:
+			continue
+		var footprint: Dictionary = value
+		var min_n := float(footprint.get("north_min", INF)) - GrassMask.CLEARANCE_M
+		var max_n := float(footprint.get("north_max", -INF)) + GrassMask.CLEARANCE_M
+		var min_e := float(footprint.get("east_min", INF)) - GrassMask.CLEARANCE_M
+		var max_e := float(footprint.get("east_max", -INF)) + GrassMask.CLEARANCE_M
+		if pilot_north + NearGrass.RADIUS_M < min_n or pilot_north - NearGrass.RADIUS_M > max_n \
+			or pilot_east + NearGrass.RADIUS_M < min_e or pilot_east - NearGrass.RADIUS_M > max_e:
+			continue
+		result.append(footprint)
 	return result
 
 

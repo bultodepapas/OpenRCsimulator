@@ -18,7 +18,7 @@ ROOT = HERE.parents[2]
 SOURCE = HERE / "source/avanti_s.blend"
 TARGET = ROOT / "app/assets/aircraft/avanti-s-a200/avanti_s.glb"
 GAME = HERE / "game/avanti_s_game.blend"
-REVISION = "av31-blender-flight-1"
+REVISION = "av09-retractable-gear-1"
 IDENTITY = "sebart-avanti-s-a200-p100rx"
 NATIVE_TO_AUTHOR = Matrix.Rotation(math.pi, 4, "Z")
 # Blender Z-up to glTF Y-up. The combined mapping is (-x, z, y), a proper rotation.

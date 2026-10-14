@@ -233,7 +233,9 @@ func _ground_under_hub(state: PackedFloat64Array) -> float:
  return Terrain.sample_validated(state[0]+offset[0],state[1]+offset[1],ground_surfaces)[0]
 
 func _height_over_radius(state: PackedFloat64Array) -> float:
- return (-state[2]-_hub_offset(state)[2]-_ground_under_hub(state))/aircraft.context.main_model.rotor_radius_m
+ var offset: PackedFloat64Array=_hub_offset(state)
+ var ground: float=Terrain.sample_validated(state[0]+offset[0],state[1]+offset[1],ground_surfaces)[0]
+ return (-state[2]-offset[2]-ground)/aircraft.context.main_model.rotor_radius_m
 
 func _ready() -> void:
  if external_controller_selection: return
@@ -400,16 +402,37 @@ func checkpoint() -> Dictionary:
  for value: float in _start:
   if not is_finite(value): return {}
  var saved_simulation: Dictionary=sim.checkpoint()
- if saved_simulation.is_empty() or not _simulation_configuration_matches(saved_simulation): return {}
+ if saved_simulation.is_empty() or not _simulation_configuration_matches(saved_simulation) \
+ or not _checkpoint_flight_state_is_valid(saved_simulation,commands,flight_mode,trainer_enabled,zero_drive_hold): return {}
  return {format=CHECKPOINT_FORMAT,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold}
 
 func _simulation_configuration_matches(saved: Dictionary) -> bool:
- if not aircraft.get("ok",false) or not saved.has_all(["mass","gravity","inertia"]): return false
+ if not aircraft.get("ok",false) or not saved.has_all(["mass","gravity","inertia","aux","continuous"]): return false
+ if not saved.aux is PackedFloat64Array or saved.aux.size()!=1 \
+ or not saved.continuous is PackedFloat64Array or saved.continuous.size()!=6: return false
+ var projected_rpm: PackedFloat64Array=PackedFloat64Array([saved.continuous[0]*60.0/(2.0*PI)])
+ if projected_rpm.to_byte_array()!=saved.aux.to_byte_array(): return false
  var context: Dictionary=aircraft.context
  var expected_inertia: PackedFloat64Array=context.inertia_body_kg_m2
  return typeof(saved.mass) in [TYPE_FLOAT,TYPE_INT] and float(saved.mass)==float(context.mass_kg) \
  and typeof(saved.gravity) in [TYPE_FLOAT,TYPE_INT] and float(saved.gravity)==float(context.gravity_m_s2) \
  and saved.inertia is PackedFloat64Array and saved.inertia.to_byte_array()==expected_inertia.to_byte_array()
+
+func _checkpoint_flight_state_is_valid(saved: Dictionary,saved_commands: Dictionary,saved_mode: String,saved_trainer: bool,saved_zero_drive: bool) -> bool:
+ if saved_commands.size()!=4 or saved_mode not in ["normal","idle_up"]: return false
+ var expected: PackedFloat64Array=PackedFloat64Array()
+ for key: String in ["roll","pitch","yaw","throttle"]:
+  var value: Variant=saved_commands.get(key)
+  if typeof(value) not in [TYPE_FLOAT,TYPE_INT] or not is_finite(float(value)) \
+  or value>1.0 or value<(-1.0 if key!="throttle" else 0.0):
+   return false
+  expected.append(float(value))
+ if saved.inputs.to_byte_array()!=expected.to_byte_array(): return false
+ var state: PackedFloat64Array=saved.state.duplicate()
+ state.append_array(saved.continuous)
+ var sticks: PackedFloat64Array=PackedFloat64Array([-expected[1],expected[0],expected[2],2.0*expected[3]-1.0])
+ var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,saved_mode,saved_trainer,saved_zero_drive,wind_at(saved.tick*saved.dt),false,PackedFloat64Array(),_trim,_height_over_radius(state))
+ return evaluated.ok
 
 func restore_checkpoint(candidate: Variant) -> Dictionary:
  if not candidate is Dictionary:
@@ -437,13 +460,8 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
  if not candidate.simulation is Dictionary or not sim.can_restore_checkpoint(candidate.simulation,1,0) or not _simulation_configuration_matches(candidate.simulation):
   return {ok=false,errors=["invalid saved simulation"]}
  var saved: Dictionary=candidate.simulation
- var expected: PackedFloat64Array=PackedFloat64Array([candidate.commands.roll,candidate.commands.pitch,candidate.commands.yaw,candidate.commands.throttle])
- if saved.inputs.to_byte_array()!=expected.to_byte_array(): return {ok=false,errors=["saved commands disagree with sampled inputs"]}
- var state: PackedFloat64Array=saved.state.duplicate()
- state.append_array(saved.continuous)
- var sticks: PackedFloat64Array=PackedFloat64Array([-expected[1],expected[0],expected[2],2.0*expected[3]-1.0])
- var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,candidate.flight_mode,candidate.trainer_enabled,candidate.zero_drive_hold,wind_at(saved.tick*saved.dt),false,PackedFloat64Array(),_trim,_height_over_radius(state))
- if not evaluated.ok: return {ok=false,errors=["saved flight state is outside the rotorcraft domain"]}
+ if not _checkpoint_flight_state_is_valid(saved,candidate.commands,candidate.flight_mode,candidate.trainer_enabled,candidate.zero_drive_hold):
+  return {ok=false,errors=["saved commands or flight state are outside the rotorcraft domain"]}
  # Simulation restoration revalidates its candidate; emit only after the state commit succeeds.
  if not sim.restore_checkpoint(candidate.simulation): return {ok=false,errors=["simulation restore refused"]}
  commands=candidate.commands.duplicate()

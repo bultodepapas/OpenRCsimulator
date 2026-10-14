@@ -362,12 +362,13 @@ func _check_gear_rig(model: Dictionary, data: Dictionary) -> void:
 	Retraction.apply(rig, 0.5)
 	_check("mid-retraction carrier pose matches the source knot", _gear_pose_matches(rig, 41))
 	_check("mid-retraction wheel centers match source geometry", _gear_wheel_centers_match(model, rig, 41, 0.001))
+	var door_midpoint := Imported.relative(model.root, door) * door_vertex if door_vertex_found and door != null else Vector3.ZERO
+	_check("actual nose door geometry opens during the gear cycle", door_vertex_found
+		and door != null and door_midpoint.distance_to(door_stowed_point) > 0.01)
 	Retraction.apply(rig, 1.0)
 	_check("down carrier nodes match sample endpoint", _gear_pose_matches(rig, 82))
 	_check("down tire centers match source action path", _gear_wheel_centers_match(model, rig, 82, 0.001))
 	_check("down contact points and tire radii match physical gear points", _gear_contacts_match(gear_data))
-	_check("actual nose door geometry moves through the gear cycle", door_vertex_found
-		and door != null and (Imported.relative(model.root, door) * door_vertex).distance_to(door_stowed_point) > 0.01)
 
 	for role: String in ["left", "right", "nose"]:
 		var wheel: Dictionary = gear_data.wheels[role]
@@ -391,15 +392,15 @@ func _check_gear_rig(model: Dictionary, data: Dictionary) -> void:
 
 		var compression := rig.compression[role] as Node3D
 		var compression_mesh := _first_mesh_under(compression)
-		var lower_faces := compression_mesh.mesh.get_faces() if compression_mesh != null and compression_mesh.mesh != null else []
-		var lower_vertex := lower_faces[0] if not lower_faces.is_empty() else Vector3.ZERO
-		var lower_found := not lower_faces.is_empty()
-		var lower_before := Imported.relative(model.root, compression_mesh) * lower_vertex if lower_found else Vector3.ZERO
+		var lower_faces: PackedVector3Array = compression_mesh.mesh.get_faces() if compression_mesh != null and compression_mesh.mesh != null else PackedVector3Array()
+		var lower_vertex: Vector3 = lower_faces[0] if not lower_faces.is_empty() else Vector3.ZERO
+		var lower_found: bool = not lower_faces.is_empty()
+		var lower_before: Vector3 = Imported.relative(model.root, compression_mesh) * lower_vertex if lower_found else Vector3.ZERO
 		var wheel_before := Imported.relative(model.root, center_node).origin
 		var rest: Transform3D = rig.rest[role]
 		var parent := compression.get_parent() as Node3D
 		compression.position = rest.origin + parent.global_basis.inverse() * Vector3.UP * 0.02
-		var lower_after := Imported.relative(model.root, compression_mesh) * lower_vertex if lower_found else Vector3.ZERO
+		var lower_after: Vector3 = Imported.relative(model.root, compression_mesh) * lower_vertex if lower_found else Vector3.ZERO
 		var wheel_after := Imported.relative(model.root, center_node).origin
 		_check("%s compressed lower leg and wheel move upward together" % role,
 			lower_found and absf((lower_after - lower_before).y - 0.02) < 1.0e-5

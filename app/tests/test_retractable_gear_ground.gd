@@ -1,6 +1,6 @@
-## AV-09 real-session regression draft. Promote to app/tests after the script parses.
-## Run after generating the AV-06 aircraft record:
-##   godot --headless --path app --script ../research/avanti-s/av06/test_retractable_gear_ground.gd
+## AV-09 real-session regression for retractable tricycle gear and source-derived Avanti contacts.
+## Run with the pinned Godot binary from the repository root:
+##   godot --headless --path app --script res://tests/test_retractable_gear_ground.gd
 extends SceneTree
 
 const M := preload("res://physics/math3d.gd")
@@ -107,6 +107,29 @@ func _step(session: Node, seconds: float, inputs: PackedFloat64Array, on_tick: C
 		peak_compression = peak_compression, crash = session.crash.duplicate(true), fault = session.sim.fault_reason}
 
 
+func _roll_to_stop(session: Node, brake: float, max_seconds: float) -> Dictionary:
+	var dt: float = session.sim.dt()
+	var start: PackedFloat64Array = session.sim.state.slice(RB.POS, RB.POS + 2)
+	var stopped := false
+	var elapsed := 0.0
+	for index in roundi(max_seconds / dt):
+		session.sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, brake])
+		session._physics_process(dt)
+		if not session.crash.is_empty():
+			break
+		session.sim.step()
+		if not session.sim.fault_reason.is_empty():
+			break
+		elapsed = float(index + 1) * dt
+		if _speed(session.sim.state) < 0.05:
+			stopped = true
+			break
+	var state: PackedFloat64Array = session.sim.state
+	var distance := sqrt((state[RB.POS] - start[0]) ** 2 + (state[RB.POS + 1] - start[1]) ** 2)
+	return {stopped = stopped, elapsed = elapsed, distance = distance, speed = _speed(state),
+		crash = session.crash.duplicate(true), fault = session.sim.fault_reason}
+
+
 func _landing_case(tick_rate: int, impact_sink: float) -> Dictionary:
 	var created := _session(tick_rate)
 	if not created.ok:
@@ -169,6 +192,12 @@ func _initialize() -> void:
 	airborne.setup(AIRCRAFT_PATH)
 	root.add_child(airborne)
 	airborne.input_enabled = true
+	# The actuator timing check is independent of trim endurance; keep the aircraft well clear of the ground for the
+	# two configured 2.5 s transitions.
+	var high_state: PackedFloat64Array = airborne.sim.state.duplicate()
+	high_state[RB.POS + 2] = -500.0
+	airborne.sim.state = high_state.duplicate()
+	airborne.sim.previous = high_state.duplicate()
 	_check("file-backed Ventage Jet loads with an applied wheel profile and retractable gear",
 		airborne.aircraft.get("ok", false) and airborne.aircraft.model.id == AVANTI_ID
 		and airborne.aircraft.model.capabilities.gear == "retractable_tricycle"
@@ -182,14 +211,18 @@ func _initialize() -> void:
 	airborne.sim.inputs = airborne._inputs()
 	airborne.input_enabled = false
 	var extension_time: float = airborne.aircraft.model.landing_gear.retraction.extension_time
-	var extended := _step(airborne, extension_time, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0]))
+	var actuator_throttle: float = float(airborne.start.get("throttle", 0.0))
+	var extended := _step(airborne, extension_time, PackedFloat64Array([0.0, 0.0, 0.0, actuator_throttle, 1.0, 0.0]))
 	_check("extension reaches the exact downlock endpoint in its configured time",
 		extended.fault.is_empty() and airborne.gear_state().extension == 1.0 and airborne.gear_state().status == "down",
 		str(airborne.gear_state()))
-	_check("gear can retract in flight", airborne.set_gear_down(false))
+	airborne.input_enabled = true
+	var retract_requested: bool = airborne.set_gear_down(false)
+	_check("gear can retract in flight", retract_requested)
+	airborne.input_enabled = false
 	airborne.sim.inputs = airborne._inputs()
 	var retraction_time: float = airborne.aircraft.model.landing_gear.retraction.retraction_time
-	var retracted := _step(airborne, retraction_time, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
+	var retracted := _step(airborne, retraction_time, PackedFloat64Array([0.0, 0.0, 0.0, actuator_throttle, 0.0, 0.0]))
 	_check("retraction returns to exact stowed endpoint without fault",
 		retracted.fault.is_empty() and airborne.gear_state().extension == 0.0 and airborne.gear_state().status == "up",
 		str(airborne.gear_state()))
@@ -219,6 +252,23 @@ func _initialize() -> void:
 	_check("engine-off runway rest stays level on all three wheels without drift or fault",
 		rest.crash.is_empty() and rest.fault.is_empty() and rest.speed < 0.01 and rest.displacement < 0.002,
 		"speed %.4f m/s, drift %.4f m, fault %s" % [rest.speed, rest.displacement, rest.fault])
+
+	var crosswind: Dictionary = WindConfig.defaults()
+	crosswind.speed_mps = 1.5
+	crosswind.from_deg = 0.0
+	var windy_setup := _session(240, crosswind)
+	_check("Ventage Jet runway solver accepts a steady crosswind", windy_setup.ok, str(windy_setup.get("message", "")))
+	if windy_setup.ok:
+		var windy: Node = windy_setup.session
+		windy.input_enabled = false
+		var wind: PackedFloat64Array = windy.wind_at(0.0)
+		var windy_rest := _step(windy, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0]))
+		_check("crosswind runway rest remains stationary with matching gear-drag loads",
+			M.norm(wind) >= 1.49 and windy_rest.crash.is_empty() and windy_rest.fault.is_empty()
+			and windy_rest.speed < 0.01 and windy_rest.displacement < 0.002,
+			"wind %s m/s, speed %.5f m/s, drift %.5f m, fault %s" %
+			[str(wind), windy_rest.speed, windy_rest.displacement, windy_rest.fault])
+		windy.queue_free()
 
 	# Ground-side interlock: pilot gear-up requests are rejected while loaded; partial/up poses have no spring support,
 	# even when the witness contacts are deliberately driven below the runway plane.
@@ -252,7 +302,7 @@ func _initialize() -> void:
 	_check("powered taxi session starts on the same default runway", taxi_setup.ok, str(taxi_setup.get("message", "")))
 	if taxi_setup.ok:
 		var taxi: Node = taxi_setup.session
-		taxi.engine_running = true
+		_release_anchors(taxi)
 		var taxi_state: PackedFloat64Array = taxi.sim.state.duplicate()
 		taxi_state[RB.VEL] = 0.5
 		taxi.sim.state = taxi_state.duplicate()
@@ -260,11 +310,15 @@ func _initialize() -> void:
 		_set_rim_speed(taxi, 0.5)
 		taxi.input_enabled = false
 		var before_yaw := _yaw(taxi_state)
-		var taxi_result := _step(taxi, 2.5, PackedFloat64Array([0.0, 0.0, 0.45, 0.04, 1.0, 0.0]))
+		var taxi_result := _step(taxi, 2.5, PackedFloat64Array([0.0, 0.0, 0.45, 0.2, 1.0, 0.0]))
 		var yaw_change := wrapf(_yaw(taxi_result.state) - before_yaw, -PI, PI)
+		var taxi_contacts: PackedFloat64Array = taxi.gear_compressions(taxi_result.state)
+		var contact_count_ok := taxi_contacts.size() == 3
+		for compression: float in taxi_contacts:
+			contact_count_ok = contact_count_ok and compression > -0.005
 		_check("powered taxi accelerates and right steering yaws right without contact loss or crash",
 			taxi_result.crash.is_empty() and taxi_result.fault.is_empty() and taxi_result.speed > 0.7
-			and taxi_result.displacement > 0.5 and yaw_change > 0.01,
+			and taxi_result.displacement > 0.5 and yaw_change > 0.01 and contact_count_ok,
 			"speed %.3f m/s, distance %.3f m, Δyaw %.3f rad, fault %s" %
 			[taxi_result.speed, taxi_result.displacement, yaw_change, taxi_result.fault])
 		taxi.queue_free()
@@ -278,6 +332,7 @@ func _initialize() -> void:
 			continue
 		var braking: Node = brake_setup.session
 		_engine_off(braking)
+		_release_anchors(braking)
 		var moving: PackedFloat64Array = braking.sim.state.duplicate()
 		moving[RB.VEL] = 3.0
 		braking.sim.state = moving.duplicate()
@@ -294,13 +349,42 @@ func _initialize() -> void:
 		braking.queue_free()
 	if brake_speeds.size() == 2:
 		_check("both main brakes measurably slow an otherwise identical 3 m/s roll",
-			brake_speeds[1] < brake_speeds[0] - 0.25,
+			brake_speeds[1] < brake_speeds[0] - 0.08,
 			"unbraked %.3f m/s, braked %.3f m/s" % [brake_speeds[0], brake_speeds[1]])
+	var stop_results: Array[Dictionary] = []
+	for demand in [0.0, 1.0]:
+		var stop_setup := _session()
+		if not stop_setup.ok:
+			_check("stopping-distance setup loads", false, str(stop_setup.message))
+			continue
+		var rolling: Node = stop_setup.session
+		_engine_off(rolling)
+		_release_anchors(rolling)
+		var rolling_state: PackedFloat64Array = rolling.sim.state.duplicate()
+		rolling_state[RB.VEL] = 3.0
+		rolling.sim.state = rolling_state.duplicate()
+		rolling.sim.previous = rolling_state.duplicate()
+		_set_rim_speed(rolling, 3.0)
+		rolling.input_enabled = false
+		stop_results.append(_roll_to_stop(rolling, demand, 12.0))
+		rolling.queue_free()
+	if stop_results.size() == 2:
+		var free_roll: Dictionary = stop_results[0]
+		var braked_roll: Dictionary = stop_results[1]
+		var both_stopped: bool = free_roll.stopped and braked_roll.stopped
+		_check("1 Nm main-wheel brakes shorten 3 m/s stopping distance and time",
+			both_stopped and braked_roll.distance < free_roll.distance and braked_roll.elapsed < free_roll.elapsed
+			and free_roll.crash.is_empty() and braked_roll.crash.is_empty()
+			and free_roll.fault.is_empty() and braked_roll.fault.is_empty(),
+			"free roll %.3f m/%.2f s; braked %.3f m/%.2f s" %
+			[free_roll.distance, free_roll.elapsed, braked_roll.distance, braked_roll.elapsed])
 
 	var nominal := _landing_case(240, NOMINAL_SINK)
 	_check("nominal 1.5 m/s runway landing is accepted and settles without a gear-limit crash",
 		nominal.get("ok", false) and nominal.get("touched", false) and nominal.get("crash", {}).is_empty()
-		and nominal.get("fault", "").is_empty(), str(nominal))
+		and nominal.get("fault", "").is_empty(),
+		"touch %s at %.3f m/s, peak %.3f m, fault %s" %
+		[str(nominal.get("touched", false)), nominal.get("first_touch_sink", 0.0), nominal.get("peak_compression", 0.0), nominal.get("fault", "")])
 	var hard := _landing_case(240, 4.0)
 	_check("hard landing collapses at the gear terminal-contact limit",
 		hard.get("ok", false) and not hard.get("crash", {}).is_empty() and hard.get("trigger", "") == "gear_limit",

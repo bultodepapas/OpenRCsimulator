@@ -163,6 +163,9 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 	# component and same-stage thrust decide whether terrain affects inflow.
 	var thrust_axis_body_frd: PackedFloat64Array = PackedFloat64Array([
 		-M.sin_(state[A1]), M.sin_(state[B1]), -M.cos_(state[A1]) * M.cos_(state[B1])])
+	# Match MainRotor's unit normal. With both flap harmonics nonzero the raw
+	# components have length > 1 and can spuriously fail the world-axis domain.
+	thrust_axis_body_frd = M.scale(thrust_axis_body_frd, 1.0 / M.norm(thrust_axis_body_frd))
 	var thrust_axis_downworld_scalar: float = M.q_rotate(attitude, thrust_axis_body_frd)[2]
 	var aero: Dictionary = Stage.fast_evaluate(context.aero_context, rotor_state, state[OMEGA],
 		air_velocity_body, body_rates, electronics.collective_75_rad, electronics.cyclic_forward_rad,

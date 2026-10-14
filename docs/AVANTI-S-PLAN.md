@@ -1,6 +1,6 @@
 # Ventage Jet turbine jet: plan
 
-2026-10-14 · Revision 9 · **Status: AV-31 replaces the visual blockout with the supplied Blender model, including turbine/pipe, seven control hinges and measured gear-up contact witnesses. Native Windows export and focused software qualification pass. AV-20 continuous turbine response is integrated. The catalog aircraft remains experimental: calibrated planform/installation, flap/gear simulation, finite fuel and independent physical validation remain open. AV-17's historical full-suite result is retained below; AV-31 does not claim a new full-suite or release acceptance.**
+2026-10-14 · Revision 10 · **Status: AV-31 integrates the supplied Blender model and AV-09 now enables retracts, wheel contact, nose steering, main brakes and runway starts. AV-20 continuous turbine response remains integrated. The catalog aircraft remains experimental: calibrated planform/installation, flap aerodynamics, finite fuel and independent physical validation remain open.**
 
 Step-ID prefix `AV-`. Owned paths: `assets/aircraft/avanti-s-a200/`, `app/aircraft/avanti_s_*`, `app/aircraft/verify_avanti.gd`, `app/physics/turbine.gd`, `app/data/aircraft/sebart_avanti_s_a200.json` (generated), `app/tests/test_turbine.gd`, `app/tests/test_avanti_handling.gd`, `research/avanti-s/`, `docs/research/avanti-s-*`.
 
@@ -12,7 +12,7 @@ The simulator displays this aircraft as **Ventage Jet**. Its catalog ID and sour
 
 **SebArt Avanti S Jet 2.2m ARF (A200 original): 2.00 m span, 2.22 m length, 10.5 kg RTF dry with a JetCat P100-RX** (2017 catalog, non-BL, fixed thrust tube). Catalog ID `sebart-avanti-s-a200-p100rx`. Chosen for its documentation and turbine identity, not for sales rank. Other variants (XS, Mini, FC/Krill 2.1 m, current "2.3 m", Freewing EDF) are never mixed into its numbers. The P100-RX-BL is a different documented revision; do not mix its RPM or response data into the 2017 configuration. The 10.5 kg value is dry, not the in-flight mass with fuel. Sources: [manual](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf), [JetCat 2017 catalog](https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf).
 
-Flight configuration (AV-07): in-air start at 29 m/s, turbine running, flaps up, gear up, half of the 3.2 l stock tank, CG 240 mm (the manual's beginner setting for a P100). Ground contact is a crash until AV-09. The [asset README](../assets/aircraft/avanti-s-a200/README.md) documents the generated geometry, seven hinge names, visual-only flap hook and build contract. The pilot camera, radio arming, pause, reset and recording rules are those of every aircraft.
+Flight configuration (AV-07): in-air start at 29 m/s, turbine running, flaps up, gear up, half of the 3.2 l stock tank, CG 240 mm (the manual's beginner setting for a P100). AV-09 also offers a downlocked runway start, retract controls and main-wheel brakes. The [asset README](../assets/aircraft/avanti-s-a200/README.md) documents the generated geometry, seven hinge names, visual-only flap hook and build contract. The pilot camera, radio arming, pause, reset and recording rules are those of every aircraft.
 
 ## 2. Method
 
@@ -32,11 +32,11 @@ Same flow as the other aircraft: declarative geometry → generated data with `{
 | AV-06 | Mass, aero references, trim | `derive_physics.py --check` in `test.sh`; sensitivity table; trim from 20 to 73 m/s | ✅ 2026-10-06 (experimental) |
 | AV-07 | First experimental flight | `test_avanti_handling.gd` (30): hands-off 30 s, spool times, roll vs prediction, Vmax, glide, idle energy, loop, stall, stall-rotation recovery; app `--trace` checked | ✅ 2026-10-06 (headless; pilot evaluation at Gate 2 pending) |
 | AV-08 | Finish and turbine sound | AV-31 native/imported/exported captures; existing turbine whine/roar telemetry route | Blender finish and turbine presentation integrated; acoustic identification against this P100 installation remains open |
-| AV-09 | Flaps and retracts | input channel and state, actuator limits, flap aero (ΔCLmax +0.18/+0.33, ΔCD +0.016/+0.070, elevator mix), gear drag and contacts per state | pending: shared input and aero change |
+| AV-09 | Flaps and retracts | [Gear evidence](research/avanti-gear/AV-09/README.md): sampled Blender rig, actuator/contact/drag state, steering/brakes, runway and lifecycle tests | Gear implemented; flap aerodynamics and mixing remain open |
 | AV-10 | Fuel burn | mass, CG and inertia move together for one fixed build; reproducible reset | Detailed AV-10a/b/c work/status in [turbine realism plan](plans/turbine-realism.md#13-incremental-implementation-sequence) (G4); historical CG endpoints are not a measured travel range |
 | AV-11 | Independent contrast | comparable flight observations, sensitivity, envelope limits | pending: no Avanti telemetry exists publicly |
 | AV-12 | Delivery | clean clone, export smoke per ID, full suite, renderer captures | pending |
-| AV-13 | Contact, brakes, vectoring, extended ECU | own tests | future |
+| AV-13 | Extended ground/propulsion behavior | AV-09 covers point-contact gear and main brakes; vectoring and extended ECU remain separate | future extensions |
 | AV-31 | Supplied Blender jet integration | reproducible source exporter, common model contract, 340 model checks, focused flight/crash/audio/Workshop tests, native Windows package and capture | Complete for the admitted gear-up/clean configuration; [evidence](research/avanti-blender/AV-31/README.md), [authoring guide](../assets/aircraft/avanti-s-a200/README.md) |
 
 ## 4. Known limits of the experimental model

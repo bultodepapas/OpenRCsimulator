@@ -7,6 +7,7 @@ const AppRoot := preload("res://app_root.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const ControllerService := preload("res://input/controller_service.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
@@ -74,6 +75,8 @@ func _preferences_cases() -> void:
 		and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	_check("runway preference is valid for qualified Timber", _write_preferences(PREFS, 1, "en", TIMBER, RUNWAY) == OK
 		and Preferences.load_from(PREFS).aircraft == TIMBER and Preferences.load_from(PREFS).start_choice == RUNWAY)
+	_check("runway preference is valid for qualified Avanti", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK
+		and Preferences.load_from(PREFS).aircraft == AVANTI and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	_check("runway preference for the Extra is sanitized", _write_preferences(PREFS, 1, "en", EXTRA, RUNWAY) == OK
 		and Preferences.load_from(PREFS).start_choice == AIRBORNE)
 
@@ -238,17 +241,31 @@ func _half_power_roundtrip() -> void:
 
 func _fly_with_fake_radio(flight: Node) -> void:
 	var session: Node = flight.get("session") as Node
-	var device_info: Callable = func(_device: int) -> Dictionary:
-		return { "guid": "ui-runway-fake", "name": "Fake EdgeTX", "vendor_id": 0x1209, "product_id": 0x4f54 }
-	session.set("device_info", device_info)
-	session.set("profiles_path", RADIO_PROFILES)
-	Input.joy_connection_changed.emit(UiDriver.FAKE_DEVICE, true)
+	var app: Node = flight.get_parent()
+	var controllers: Node = app.get("controllers") as Node
+	controllers.set("store", ControllerService.Store.new(RADIO_PROFILES + ".controllers", RADIO_PROFILES + ".legacy"))
+	var info: Dictionary = {"id": UiDriver.FAKE_DEVICE, "guid": "ui-runway-fake", "name": "Fake EdgeTX",
+		"vendor_id": 0x1209, "product_id": 0x4f54, "known": false, "kind": "radio",
+		"platform": "test", "backend": "ui-driver"}
+	controllers.set("enumerate_devices", func() -> Array: return [info.duplicate(true)])
+	controllers.call("refresh")
+	_check("fake radio is registered without implicit flight selection",
+		controllers.get("registry").call("selected_device_id", "flight") == -1)
+	_check("fake radio can be explicitly selected for flight", controllers.call("select_devices", UiDriver.FAKE_DEVICE, -1))
+	# The fake device has no OS-backed axis state. Keep the real parsed event samples
+	# as the reader source so each poll does not overwrite them with zeros.
+	session.set("read_axis", func(_device: int, axis: int) -> float:
+		return float(session.get("radio").get("axes")[axis]))
 	await _physics_frames(4)
-	_check("fake radio connects while preserving runway launch", session.get("radio").get("connected")
+	_check("selected fake radio connects while preserving runway launch", session.get("radio").get("connected")
 		and session.get("start_choice") == RUNWAY)
 	await ui.joy_axis(JOY_AXIS_RIGHT_X, -1.0) # EdgeTX AETR throttle is axis 2.
 	await _physics_frames(4)
 	_check("fake radio throttle low arms the transmitter", session.get("radio").get("armed"))
+	await ui.tap(KEY_P)
+	await _physics_frames(4)
+	_check("P resumes after the selected radio is armed", not session.get("sim").get("paused")
+		and session.get("sim").get("tick") > 0)
 	await ui.joy_axis(JOY_AXIS_LEFT_X, 0.65) # EdgeTX AETR roll is axis 0.
 	await _physics_frames(4)
 	var trims: Dictionary = session.get("trims")
@@ -261,11 +278,7 @@ func _fly_with_fake_radio(flight: Node) -> void:
 	await ui.joy_axis(JOY_AXIS_RIGHT_X, 1.0)
 	await _physics_frames(4)
 	_check("radio throttle reaches full power after arming", is_equal_approx(float(session.get("commands").throttle), 1.0))
-	await ui.tap(KEY_P)
-	await _physics_frames(4)
-	_check("P resumes a manually controlled runway flight", not session.get("sim").get("paused")
-		and session.get("sim").get("tick") > 0)
-	Input.joy_connection_changed.emit(UiDriver.FAKE_DEVICE, false)
+	_check("keyboard can be explicitly selected after the fake radio flight", controllers.call("select_devices", -1, -1))
 	await _physics_frames(2)
 
 
@@ -361,7 +374,7 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	_check("write runway preference before aircraft sanitization", _write_preferences(PREFS, 1, "en", STIK, RUNWAY) == OK)
 	app = await _new_app(PREFS)
 	home = app.get("home") as Control
-	for unsupported_aircraft: String in [EXTRA, P51, AVANTI]:
+	for unsupported_aircraft: String in [EXTRA, P51]:
 		app.call("set_aircraft", unsupported_aircraft)
 		await ui.settle()
 		_check("changing to %s sanitizes runway" % unsupported_aircraft, home.get("aircraft_id") == unsupported_aircraft
@@ -378,6 +391,14 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	home.get("start_button").grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("Home can select runway for qualified Timber", home.get("start_choice") == RUNWAY)
+	await _close_app(app)
+
+	_cleanup()
+	_check("write qualified Avanti runway preference", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK)
+	app = await _new_app(PREFS)
+	home = app.get("home") as Control
+	_check("qualified Avanti enables and restores the runway selector", home.get("aircraft_id") == AVANTI
+		and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled)
 	await _close_app(app)
 
 
@@ -435,5 +456,6 @@ func _sessions(node: Node) -> int:
 
 
 func _cleanup() -> void:
-	for path in [PREFS, PREFS + ".bad", FUTURE_PREFS, ES_PREFS, BAD_FIELD, ALT_FIELD, RADIO_PROFILES]:
+	for path in [PREFS, PREFS + ".bad", FUTURE_PREFS, ES_PREFS, BAD_FIELD, ALT_FIELD,
+		RADIO_PROFILES, RADIO_PROFILES + ".controllers", RADIO_PROFILES + ".legacy"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))

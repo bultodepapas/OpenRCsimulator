@@ -6,6 +6,9 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Sim := preload("res://sim/simulation.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
+const AD := preload("res://physics/aircraft_data.gd")
+const Rig := preload("res://aircraft/retractable_model.gd")
+const Geometry := preload("res://aircraft/avanti_s_blender_geometry.gd")
 var checks := 0
 var failures := 0
 
@@ -57,6 +60,31 @@ func input_kernel() -> void:
 	sim.free()
 
 
+func contracts() -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/sebart_avanti_s_a200.json"))
+	for mutation in ["missing_path", "bad_endpoint", "unequal_knots", "nonfinite", "short_cycle", "negative_drag", "wrong_capability"]:
+		var bad: Dictionary = raw.duplicate(true)
+		match mutation:
+			"missing_path": bad.landing_gear.contacts[0].erase("retraction_path")
+			"bad_endpoint": bad.landing_gear.contacts[0].retraction_path.value[-1] += 0.01
+			"unequal_knots": bad.landing_gear.contacts[0].retraction_path.value.resize(6)
+			"nonfinite": bad.landing_gear.contacts[0].retraction_path.value[4] = NAN
+			"short_cycle": bad.landing_gear.retraction.extension_time.value = 0.0
+			"negative_drag": bad.landing_gear.retraction.drag_area.value = -1.0
+			"wrong_capability": bad.capabilities.gear = "fixed_tricycle"
+		check("physical contract rejects " + mutation, not AD.validate_and_derive(bad).ok)
+	check("sampled rig is valid", Rig.validate(Geometry.DATA.gear).is_empty())
+	for mutation in ["nonuniform", "rotation", "missing_carrier", "reused_helper", "missing_wheel_path"]:
+		var bad: Dictionary = Geometry.DATA.gear.duplicate(true)
+		match mutation:
+			"nonuniform": bad.retraction.samples[1].extension = 0.9
+			"rotation": bad.retraction.samples[1].nodes.MainGear_L_Pivot.rotation_wxyz = [0, 0, 0, 0]
+			"missing_carrier": bad.retraction.samples[1].nodes.erase("MainGear_L_Pivot")
+			"reused_helper": bad.wheels.right.spin_node = bad.wheels.left.spin_node
+			"missing_wheel_path": bad.wheels.left.contact_model.pop_back()
+		check("model contract rejects " + mutation, not Rig.validate(bad).is_empty())
+
+
 func session() -> void:
 	var flight := Flight.new()
 	flight.setup(Catalog.entry("sebart-avanti-s-a200-p100rx").data)
@@ -75,6 +103,17 @@ func session() -> void:
 	if cp.is_empty():
 		flight.free()
 		return
+	flight.hold("gear test")
+	flight._physics_process(1.0)
+	check("pause holds actuator and accepted clock", flight.sim.tick == cp.simulation.tick and flight.sim.aux == cp.simulation.aux)
+	flight.release("gear test")
+	var evaluate: Callable = flight.sim.continuous_evaluate
+	flight.sim.continuous_evaluate = func(_s: PackedFloat64Array, _c: PackedFloat64Array, _t: float) -> Dictionary:
+		return {}
+	flight.sim.step()
+	check("rejected RK transaction rolls gear back", flight.sim.aux == cp.simulation.aux and flight.sim.tick == cp.simulation.tick and not flight.sim.fault_reason.is_empty())
+	flight.sim.continuous_evaluate = evaluate
+	check("recover rejected gear step", flight.restore_checkpoint(cp))
 	for i in 120: flight.sim.step()
 	var expected: Dictionary = flight.sim.checkpoint()
 	check("mid-transit restore", flight.restore_checkpoint(cp))
@@ -111,6 +150,7 @@ func session() -> void:
 func _initialize() -> void:
 	actuator()
 	input_kernel()
+	contracts()
 	session()
 	print("AV-09 retractable gear: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

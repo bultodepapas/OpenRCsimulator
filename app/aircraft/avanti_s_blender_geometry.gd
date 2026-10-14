@@ -5,7 +5,7 @@ extends RefCounted
 const DATA := {
 	"schema": "openrc-avanti-blender-model-v1",
 	"catalog_id": "sebart-avanti-s-a200-p100rx",
-	"revision": "av31-blender-flight-1",
+	"revision": "av09-retractable-gear-1",
 	"source_alias": "User-supplied Avanti S A200 Blender master",
 	"status": "Imported Blender presentation; sampled GearRetract visuals and experimental P100-RX physics; flaps visual-only.",
 	"units": "m",
@@ -16921,7 +16921,7 @@ const DATA := {
 		}
 	],
 	"inputs": {
-		"glb_sha256": "02b26d2a4910faa12f96f67b2c79c3dd1847dc52684a35af201cf5b9981c49f0",
+		"glb_sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
 		"source_blend_sha256": "4649d5527da8cc584770279d2ff4bc1494a29445c71f52a2103c33c7b0f05512"
 	}
 }
