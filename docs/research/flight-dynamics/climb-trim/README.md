@@ -1,6 +1,6 @@
 # D6e-R1 — reported climb and pilot elevator trim
 
-2026-10-13. **Status: the owner's Ugly Stik loops are captured and reproduced. The controlled campaign below completes 16 diagnostic flights and 126 independent runtime-load comparisons; no tested intervention qualifies as the repair. Real-aircraft fidelity remains unvalidated. Manual trim is implemented and verified. The earlier hands-off Timber climb at 25% throttle remains unreproduced and unresolved.** Main physics/input track; this report does not close a flight-validation gate.
+2026-10-13. **Status: the owner's Ugly Stik loops are captured and reproduced. The controlled campaign below completes 16 diagnostic flights and 126 independent runtime-load comparisons; no tested intervention qualifies as the repair. Real-aircraft fidelity remains unvalidated. Manual trim is implemented and verified. The earlier hands-off Timber climb at 25% throttle remains unreproduced and unresolved.** Main physics/input track; this report does not close a flight-validation gate. The [root-cause review](#root-cause-review-2026-10-13-d6e-r1) separates the correct fixed-elevator mechanism from two input errors that inflate it.
 
 The owner reports a common tendency to climb, especially Timber at low power with keyboard controls and no elevator input; the Stik feels incorrectly trimmed. The initial power-step hypothesis alone does **not** explain that report. The owner confirmed running this repository on Windows. A later actual Stik flight establishes its airborne launch and control history below; it does not establish the history of the original Timber report.
 
@@ -198,6 +198,32 @@ The FS64V hybrid's trim attempt reports `nonfinite iterated trim residual`. Its 
 **Selection:** none of the tested changes qualifies for promotion as the repair. The FS64V response is the most promising behavioral counterexample, but changing to a different engine/propeller and bypassing a failed startup equilibrium cannot establish the correct behavior of the reported airplane. The strongest remaining calibration target is the standard Stik's coupled installed propulsion, trim and speed response. The coefficient edits do not remedy the capture; the planar test rejects lateral motion as a necessary trigger; the independent runtime oracle finds no tested shared sign/normalization/reference bug. The separate Timber low-power report remains unresolved. These research results preserve a reproducible way to evaluate a future physically sourced correction without installing a throttle limiter, extra damping or automatic trim.
 
 The four probes execute with pinned native Windows Godot 4.7.2. Their scope is this diagnostic campaign in a concurrently edited checkout, not a clean release or physical flight qualification. The campaign changes only research scripts, their evidence and these two documentation homes. It does not modify production physics/data or re-record golden flights; the full application/WSL suite was not rerun for these research-only additions.
+
+## Root-cause review (2026-10-13, D6e-R1)
+
+**Mechanism.** With the launch elevator fixed, the pitch-moment balance holds α at 4.261° at every throttle, so lift equals weight only near the trimmed 15 m/s. Throttle changes the climb angle, not the level speed: 0 % gives −9.0°, 28.3 % level, 50 % +15.4°, 75 % +43.0°, and from about 85 % there is no straight steady flight. An independent 3-DOF reimplementation reproduces [fixed-trim-power-equilibrium.json](fixed-trim-power-equilibrium.json) to within 0.1°. This is ordinary rigid-airplane behavior ([AOPA: trimmed at 100 kt, more power climbs at 100 kt](https://www.aopa.org/news-and-media/all-news/2010/october/flight-training-magazine/technique)), not a solver defect. For a drag-free constant-CL path, a bottom speed above √3 times trim speed (26.0 m/s here) loops; the capture passes 31–39 m/s.
+
+**Two input errors inflate it.**
+
+1. **Propeller table.** The UIUC APC 11×6 coefficients stand in for the named 12×6. Against [APC's 12×6 data](apc12x6-comparison.json) at 11149 rpm, Ct is 1.40× at J = 0.40 and 1.84× at J = 0.571, the 15 m/s trim point. With the APC table, level throttle rises from 28.3 % to 34.9 % and the 50 % climb falls from 15.4° to 8.5°.
+2. **Borrowed static margin.** Placing the borrowed `Cma` at the plan CG ([DECISIONS 2026-10-05](../../../../DECISIONS.md)) gives 18.9 % margin at the CG in the runtime loads, including the 7 cm ARP height. The Stik's own wing and stabilizer put the neutral point at 43–47 % chord in a vortex lattice before fuselage and propeller corrections, so 4–8 % at the 39.4 % plan CG. The donor margin implies a neutral point at 55 % chord, which this tail (volume 0.486) cannot produce. Trim at 15 m/s then needs 5.26° up elevator instead of about 1.4°.
+
+| Simulator variant, normal 15 m/s start | Level throttle | Calm step to 75 %: first inversion / max q | Calm step to 100 % | Owner inputs replayed |
+| --- | ---: | ---: | ---: | ---: |
+| Current data | 28.4 % | 7.25 s / 0.81 rad/s | 5.70 s / 1.03 rad/s | 9.54 s / 1.18 rad/s |
+| APC 12×6 table | 35.0 % | none / 0.65 | 6.38 s / 0.94 | 10.39 s / 0.91 |
+| Geometric 6 % margin | 28.2 % | none / 0.40 | 7.93 s / 0.52 | 11.67 s / 0.53 |
+| Both | 34.8 % | none / 0.34 | 19.75 s / 0.46 | 12.85 s / 0.43 |
+
+With the geometric margin the replayed owner inputs end at ground contact (43.9 s, and 44.6 s with both changes): 48 % throttle is then barely above level power while the aircraft is banked. The run used a disposable checkout of `c64e0d9f` with the unrelated indentation error at `app/physics/aircraft_contact_contract.gd:81` fixed only in that copy. The margin variant moves only `aero_reference_point`, so global and local regimes move together; directional derivatives follow the loader's fin-arm rule. Full throttle still inverts eventually because static-slice thrust exceeds weight below about 14 m/s even with the APC table; that is expected for a fixed up-elevator. [Variant data](root-cause-variants.json), [tools](../../../../research/flight-dynamics/climb-trim/README.md#root-cause-review-tools).
+
+**Roll couples into the loops.** Propeller reaction torque rises from 0.13 N·m at 28 % to 0.80 N·m at 100 % against the aileron trim solved at 28 %, and this aircraft has no slipstream-swirl model. In the current-data 100 % step the bank reaches −53° at 5 s and −127° at 7 s, so most "inversions" are rolled pull-ups, not clean loops. This needs its own torque/slipstream review.
+
+**Also found.** The 0.284 kg virtual balancing mass sits at the tail; without it the inventory CG is at 13.5 % chord. It supplies 39 % of `Jyy` and a lateral product of inertia. With the borrowed `Cm0`, a centered elevator trims at CL −0.069, so no upright level flight exists at any speed. The plan shows F1 square to the keel and the wing about +0.5° to it; zero modeled downthrust matches the plan.
+
+**Rejected.** The geometric margin alone does not remove full-power loops in the longitudinal model, so it is not the climb's sole cause. Wind, gyroscopic coupling, integration, energy, sign conventions and the separated-flow model were already excluded above.
+
+**Repair path.** Through the source generator: APC 12×6 data with rpm dependence and a shaft torque balance; pitch coefficients derived from the Stik's planform at the plan CG; a mass inventory that balances without the virtual tail mass. Then re-verify trim and handling, and re-record golden flights only for that intentional change. Do not add automatic trim, power limits or an artificial nose-down moment: no fixed-elevator airplane holds level flight at every throttle.
 
 ## Options and chosen improvement
 
