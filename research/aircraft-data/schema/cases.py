@@ -61,6 +61,9 @@ def build_cases():
     smooth['propulsion']['propeller']['slipstream'] = wash
     fleet['synthetic_smooth_wash'] = smooth
     cases = [Case(name, data, True, True) for name, data in fleet.items()]
+    legacy_electric_id = deepcopy(fleet['synthetic_stik_electric_4s'])
+    legacy_electric_id['propulsion']['id'] = 'propulsion_main'
+    cases.append(Case('v1:unsupported-electric-propulsion-id', legacy_electric_id))
     # Canonical synthetic demo aircraft are already part of the fleet files above.
     electric_fixtures = {
         name: fleet[name]

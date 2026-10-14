@@ -166,6 +166,7 @@ def build_cases(app: Path) -> list[Case]:
                      classification="coupled-runtime-only")
     misaligned["crash_hull_ids"].pop()
     gear_up = add("identity:gear-up", stik, schema_ok=True, loader_ok=True)
+    gear_up["id"] = "identity_gear_up_fixture"
     gear_up["capabilities"]["gear"] = "locked_up"
     gear_up.pop("landing_gear")
     for name in ("synthetic_stik_electric_4s", "synthetic_stik_electric_4s_battery"):

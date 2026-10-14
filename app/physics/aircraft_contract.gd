@@ -60,7 +60,7 @@ static func _visit(value: Variant, parts: PackedStringArray, spec: Dictionary, r
 		return
 	if classification["literal_path"]:
 		var literal: Variant = classification["literal_value"]
-		if value != literal:
+		if not _matches_literal(value, literal):
 			_issue(issues, path, "must equal %s" % str(literal))
 		return
 
@@ -283,6 +283,13 @@ static func _validate_slipstream_relations(propulsion: Dictionary, issues: Packe
 static func _is_number(value: Variant) -> bool:
 	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
 
+static func _matches_literal(value: Variant, expected: Variant) -> bool:
+	if _is_number(value) and _is_number(expected):
+		return float(value) == float(expected)
+	if typeof(value) != typeof(expected):
+		return false
+	return value == expected
+
 static func _classify_path(path: String, spec: Dictionary) -> Dictionary:
 	if _path_class_cache.has(path):
 		return _path_class_cache[path]
@@ -327,7 +334,7 @@ static func _select_object_rule(rules: Array, root: Dictionary) -> Dictionary:
 		var selector: Variant = rule.get("when", null)
 		if selector is Dictionary:
 			var found := _lookup_pointer(root, String(selector.get("path", "")))
-			if not found[0] or found[1] != selector.get("equals", null):
+			if not found[0] or not _matches_literal(found[1], selector.get("equals", null)):
 				continue
 		return rule
 	return {}

@@ -177,6 +177,33 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	out.format = LEGACY_FORMAT
 	out.erase("capabilities")
 	out.erase("convention_id")
+	# Contract.validate has already checked this v2-only module against the original
+	# object. Strip it from the compatibility copy so historical v1 validation stays strict.
+	out.erase("physical_identity_version")
+	out.erase("crash_hull_ids")
+	var inventory_value: Variant = out.get("inventory", [])
+	if typeof(inventory_value) == TYPE_ARRAY:
+		for item_value: Variant in inventory_value:
+			if typeof(item_value) == TYPE_DICTIONARY:
+				var item: Dictionary = item_value
+				item.erase("id")
+	var gear_value: Variant = out.get("landing_gear")
+	if typeof(gear_value) == TYPE_DICTIONARY:
+		var gear: Dictionary = gear_value
+		var contacts_value: Variant = gear.get("contacts", [])
+		if typeof(contacts_value) == TYPE_ARRAY:
+			for contact_value: Variant in contacts_value:
+				if typeof(contact_value) == TYPE_DICTIONARY:
+					var contact: Dictionary = contact_value
+					contact.erase("id")
+	var propulsion_value: Variant = out.get("propulsion")
+	if typeof(propulsion_value) == TYPE_DICTIONARY:
+		var propulsion: Dictionary = propulsion_value
+		propulsion.erase("id")
+	var controls_value: Variant = out.get("controls")
+	if typeof(controls_value) == TYPE_DICTIONARY:
+		var controls: Dictionary = controls_value
+		controls.erase("surface_ids")
 	if typeof(out.get("aero")) == TYPE_DICTIONARY:
 		var reference: Variant = out.aero.get("reference_coefficients")
 		if typeof(reference) == TYPE_DICTIONARY and reference.has("CLadot") and typeof(out.aero.get("coefficients")) == TYPE_DICTIONARY:
