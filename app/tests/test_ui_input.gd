@@ -35,9 +35,9 @@ func _run() -> void:
 	root.add_child(home)
 	await ui.settle()
 	_check("focus starts on Fly", ui.focus_name() == "Fly", ui.focus_name())
-	# Without isolation, a radio's elevator stick (axis 1) moves the focus: this is the bug UI-01b prevents.
+	# Without isolation, a radio's elevator stick (axis 1) moves focus one step, just like one keyboard Down.
 	await ui.joy_axis(JOY_AXIS_LEFT_Y, 1.0)
-	_check("precondition: unisolated, the elevator stick moves the focus", ui.focus_name() == "Language", ui.focus_name())
+	_check("precondition: unisolated, the elevator stick moves focus to Workshop", ui.focus_name() == "Workshop", ui.focus_name())
 	await ui.joy_axis(JOY_AXIS_LEFT_Y, 0.0)
 	home.fly_button.grab_focus()
 
@@ -58,7 +58,7 @@ func _run() -> void:
 	var axis := Input.get_joy_axis(UiDriver.FAKE_DEVICE, JOY_AXIS_LEFT_Y)
 	_check("the flight still reads the raw axis (%.2f)" % axis, is_equal_approx(axis, 0.75))
 	await ui.tap(KEY_DOWN)
-	_check("keyboard still navigates: Down -> Language", ui.focus_name() == "Language", ui.focus_name())
+	_check("keyboard still navigates: Down -> Workshop", ui.focus_name() == "Workshop", ui.focus_name())
 	home.free()
 
 	# The entry applies the isolation itself, before showing any menu.

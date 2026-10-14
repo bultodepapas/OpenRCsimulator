@@ -94,6 +94,8 @@ func _run() -> void:
 	await ui.tap(KEY_DOWN)
 	_check("Down -> Workshop", ui.focus_name() == "Workshop", ui.focus_name())
 	await ui.tap(KEY_DOWN)
+	_check("Down -> GroundVehicles", ui.focus_name() == "GroundVehicles", ui.focus_name())
+	await ui.tap(KEY_DOWN)
 	_check("Down -> Language", ui.focus_name() == "Language", ui.focus_name())
 	await ui.tap(KEY_RIGHT)
 	_check("Right -> Help", ui.focus_name() == "Help", ui.focus_name())

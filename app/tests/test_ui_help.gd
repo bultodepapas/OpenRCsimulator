@@ -59,9 +59,10 @@ func _run() -> void:
 	app.preferences_path = PREFS
 	root.add_child(app)
 	await ui.settle()
-	await ui.tap(KEY_DOWN) # Workshop
-	await ui.tap(KEY_DOWN)
-	await ui.tap(KEY_RIGHT)
+	await ui.tap(KEY_DOWN) # Fly -> Workshop
+	await ui.tap(KEY_DOWN) # Workshop -> GroundVehicles
+	await ui.tap(KEY_DOWN) # GroundVehicles -> Language
+	await ui.tap(KEY_RIGHT) # Language -> Help
 	_check("Home: Help reachable by keyboard", ui.focus_name() == "Help", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	var help: CanvasLayer = app.help
