@@ -17,7 +17,7 @@ const SOURCE_PATHS := [
 	"app/physics/glow/vibration.gd",
 	"app/physics/dynamics.gd", "app/physics/propulsion.gd", "app/physics/glow/operating_point.gd",
 	"app/physics/electric_battery_step.gd", "app/physics/math3d.gd", "app/physics/rigid_body.gd",
-	"app/physics/rotor_coupling.gd",
+	"app/physics/rotor_coupling.gd", "app/physics/glow/fuel_feed.gd",
 ]
 
 func source_hashes() -> Dictionary:

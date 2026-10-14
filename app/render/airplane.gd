@@ -16,6 +16,7 @@ const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
+const STIK_GLOW_61FX_ID := "stik-glow-61fx-2t"
 const X_CELL_ID := "xcell-60-research"
 
 # Accepted builds populate this small render-only cache. Every new build revalidates dependencies.

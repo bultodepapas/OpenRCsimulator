@@ -159,7 +159,6 @@ static func _calculate_validated(
 		running: bool,
 		firing_fraction: float
 	) -> Dictionary:
-	var result := _empty_result("")
 	var cycle_frequency_hz: float = rpm / 60.0
 	var opportunity_frequency_hz: float = cycle_frequency_hz
 	var omega_rad_s: float = 2.0 * PI * rpm / 60.0
@@ -220,31 +219,49 @@ static func _calculate_validated(
 	var unburned_fuel_kg_s: float = delivered_fuel_kg_s - burned_fuel_kg_s
 	var shaft_torque_nm: float = indicated_torque_nm - mechanical_torque_nm - pumping_torque_nm
 
-	result["ok"] = true
-	result["message"] = ""
-	result["indicated_torque_nm"] = indicated_torque_nm
-	result["mechanical_torque_nm"] = mechanical_torque_nm
-	result["pumping_torque_nm"] = pumping_torque_nm
-	result["valve_torque_nm"] = 0.0
-	result["shaft_torque_nm"] = shaft_torque_nm
-	result["delivered_fuel_kg_s"] = delivered_fuel_kg_s
-	result["burned_fuel_kg_s"] = burned_fuel_kg_s
-	result["unburned_fuel_kg_s"] = unburned_fuel_kg_s
-	result["fuel_input_power_w"] = fuel_input_power_w
-	result["chemical_power_w"] = chemical_power_w
-	result["indicated_power_w"] = indicated_power_w
-	result["mechanical_loss_w"] = mechanical_loss_w
-	result["pumping_loss_w"] = pumping_loss_w
-	result["valve_loss_w"] = valve_loss_w
-	result["cycle_work_j"] = cycle_work_j
-	result["air_charge_kg_cycle"] = air_charge_kg_cycle
-	result["cycle_frequency_hz"] = cycle_frequency_hz
-	result["opportunity_frequency_hz"] = opportunity_frequency_hz
-	result["firing_frequency_hz"] = firing_frequency_hz
-
-	if not _finite_outputs(result):
+	# Same predicate as _finite_outputs() on the same values, checked before one Dictionary is built.
+	if not is_finite(indicated_torque_nm) \
+			or not is_finite(mechanical_torque_nm) \
+			or not is_finite(pumping_torque_nm) \
+			or not is_finite(shaft_torque_nm) \
+			or not is_finite(delivered_fuel_kg_s) \
+			or not is_finite(burned_fuel_kg_s) \
+			or not is_finite(unburned_fuel_kg_s) \
+			or not is_finite(fuel_input_power_w) \
+			or not is_finite(chemical_power_w) \
+			or not is_finite(indicated_power_w) \
+			or not is_finite(mechanical_loss_w) \
+			or not is_finite(pumping_loss_w) \
+			or not is_finite(valve_loss_w) \
+			or not is_finite(cycle_work_j) \
+			or not is_finite(air_charge_kg_cycle) \
+			or not is_finite(cycle_frequency_hz) \
+			or not is_finite(opportunity_frequency_hz) \
+			or not is_finite(firing_frequency_hz):
 		return _empty_result("calculation produced a nonfinite output")
-	return result
+	return {
+		"ok": true,
+		"message": "",
+		"indicated_torque_nm": indicated_torque_nm,
+		"mechanical_torque_nm": mechanical_torque_nm,
+		"pumping_torque_nm": pumping_torque_nm,
+		"valve_torque_nm": 0.0,
+		"shaft_torque_nm": shaft_torque_nm,
+		"delivered_fuel_kg_s": delivered_fuel_kg_s,
+		"burned_fuel_kg_s": burned_fuel_kg_s,
+		"unburned_fuel_kg_s": unburned_fuel_kg_s,
+		"fuel_input_power_w": fuel_input_power_w,
+		"chemical_power_w": chemical_power_w,
+		"indicated_power_w": indicated_power_w,
+		"mechanical_loss_w": mechanical_loss_w,
+		"pumping_loss_w": pumping_loss_w,
+		"valve_loss_w": valve_loss_w,
+		"cycle_work_j": cycle_work_j,
+		"air_charge_kg_cycle": air_charge_kg_cycle,
+		"cycle_frequency_hz": cycle_frequency_hz,
+		"opportunity_frequency_hz": opportunity_frequency_hz,
+		"firing_frequency_hz": firing_frequency_hz,
+	}
 
 
 static func _read_number(

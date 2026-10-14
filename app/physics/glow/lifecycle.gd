@@ -321,17 +321,30 @@ static func _evaluate_validated(
 		fuel_transport_rate = (target_fuel_flow - current_transport) / float(settings.fuel_transport_time_constant_s)
 	else:
 		fuel_transport_rate = -current_transport / float(settings.fuel_transport_time_constant_s)
+	var fuel_rate: float = -float(source.delivered_fuel_kg_s)
+	var temperature_rate: float = float(thermal.temperature_rate_k_s)
+	var phase_rate: float = rpm / 60.0
+	# Same CONTINUOUS_KEYS order and messages as the former per-key loop.
+	if not is_finite(fuel_rate):
+		return _fail("Lifecycle rate is nonfinite: fuel_kg")
+	if not is_finite(temperature_rate):
+		return _fail("Lifecycle rate is nonfinite: temperature_k")
+	if not is_finite(servo_rate):
+		return _fail("Lifecycle rate is nonfinite: servo_fraction")
+	if not is_finite(air_rate):
+		return _fail("Lifecycle rate is nonfinite: air_fraction")
+	if not is_finite(fuel_transport_rate):
+		return _fail("Lifecycle rate is nonfinite: fuel_transport_kg_s")
+	if not is_finite(phase_rate):
+		return _fail("Lifecycle rate is nonfinite: phase_revolutions")
 	var rates := {
-		"fuel_kg": -float(source.delivered_fuel_kg_s),
-		"temperature_k": float(thermal.temperature_rate_k_s),
+		"fuel_kg": fuel_rate,
+		"temperature_k": temperature_rate,
 		"servo_fraction": servo_rate,
 		"air_fraction": air_rate,
 		"fuel_transport_kg_s": fuel_transport_rate,
-		"phase_revolutions": rpm / 60.0,
+		"phase_revolutions": phase_rate,
 	}
-	for key: String in CONTINUOUS_KEYS:
-		if not _finite_number(rates[key]):
-			return _fail("Lifecycle rate is nonfinite: " + key)
 	return {
 		"ok": true,
 		"message": "",
@@ -372,11 +385,42 @@ static func accepted(
 	var configuration_error: String = _configuration_error(profile, settings)
 	if not configuration_error.is_empty():
 		return _fail(configuration_error)
+	return _accepted_validated(_model(profile), settings, before, candidate, dt,
+		rpm_before, rpm_after, firing_fraction)
+
+
+## Accepted-step API over a prepared evaluator. Its installation snapshot was
+## validated once by prepare_evaluator() and is read-only; states and dynamic
+## arguments are still checked exactly as in accepted().
+static func accepted_prepared(
+		evaluator: PreparedEvaluator,
+		before: Dictionary,
+		candidate: Dictionary,
+		dt: float,
+		rpm_before: float,
+		rpm_after: float,
+		firing_fraction: float
+) -> Dictionary:
+	if not evaluator is PreparedEvaluator:
+		return _fail("A prepared lifecycle evaluator is required")
+	return _accepted_validated(evaluator._model, evaluator._settings, before, candidate, dt,
+		rpm_before, rpm_after, firing_fraction)
+
+
+static func _accepted_validated(
+		model: Dictionary,
+		settings: Dictionary,
+		before: Dictionary,
+		candidate: Dictionary,
+		dt: float,
+		rpm_before: float,
+		rpm_after: float,
+		firing_fraction: float
+) -> Dictionary:
 	var before_error: String = _state_error(before, false)
 	var candidate_error: String = _state_error(candidate, true)
 	if not before_error.is_empty() or not candidate_error.is_empty():
 		return _fail(before_error if not before_error.is_empty() else candidate_error)
-	var model: Dictionary = _model(profile)
 	if str(before.family) != str(model.family) or str(candidate.family) != str(model.family):
 		return _fail("Profile family does not match accepted lifecycle state")
 	if not _finite_number(dt) or dt < 0.0:

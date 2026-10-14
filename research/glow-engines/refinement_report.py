@@ -44,6 +44,7 @@ SOURCE_PATHS = [
     "app/physics/math3d.gd",
     "app/physics/rigid_body.gd",
     "app/physics/rotor_coupling.gd",
+    "app/physics/glow/fuel_feed.gd",
 ]
 INPUT_PATHS = [
     "app/data/aircraft/stik_glow_55ax_2t.json",

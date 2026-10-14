@@ -250,7 +250,12 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 	var candidate: Dictionary=unpack(values,install)
 	var endpoint: Dictionary=point(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
 	if not endpoint.ok: return PackedFloat64Array([NAN])
-	var accepted: Dictionary=Life.accepted(install.profile,install.settings,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
+	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
+	var accepted: Dictionary
+	if evaluator is Life.PreparedEvaluator and owner.get_meta(EVALUATOR_IDENTITY_META,{})==install.identity:
+		accepted=Life.accepted_prepared(evaluator,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
+	else:
+		accepted=Life.accepted(install.profile,install.settings,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
 	if not accepted.ok: return PackedFloat64Array([NAN])
 	values=put_state(values,accepted.state)
 	var out: PackedFloat64Array=bounded.state.slice(0,RB.SIZE)
