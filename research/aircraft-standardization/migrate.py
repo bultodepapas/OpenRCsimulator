@@ -202,6 +202,17 @@ def _check_v2(data: dict[str, Any], policy: dict[str, Any]) -> None:
     if data.get("convention_id") != CONVENTION_ID:
         raise ValueError(f"{data.get('id')}: v2 convention_id must be {CONVENTION_ID!r}")
     expected_capabilities = _capabilities(policy["gear"], policy["layout"], policy["energy"])
+    # AV-09 is an explicit v2 extension. It must survive an idempotent v2 check;
+    # the v1 migration policy above remains the historical zero-contact jet.
+    if data.get("id") == "sebart-avanti-s-a200-p100rx" and data.get("capabilities", {}).get("gear") == "retractable_tricycle":
+        gear = _require_dict(data, "landing_gear", "landing_gear")
+        retraction = _require_dict(gear, "retraction", "landing_gear.retraction")
+        if set(retraction) != {"extension_time", "retraction_time", "drag_area", "drag_center"}:
+            raise ValueError("AV-09 requires its complete retraction module")
+        contacts = gear.get("contacts", [])
+        if not isinstance(contacts, list) or len(contacts) != 3 or any(not isinstance(c, dict) or not isinstance(c.get("retraction_path"), dict) for c in contacts):
+            raise ValueError("AV-09 requires three declared retraction contact paths")
+        expected_capabilities["gear"] = "retractable_tricycle"
     if data.get("capabilities") != expected_capabilities:
         raise ValueError(f"{data.get('id')}: v2 capabilities do not match its explicit existing-model policy")
     if data.get("format") != FORMAT_V2:

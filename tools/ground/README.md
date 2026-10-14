@@ -1,5 +1,16 @@
 # Ground surface capture
 
+## DT-11a imported grass exclusion filtering
+
+`ImportedNearGrass.layout()` discards masks strictly outside the validated 30 m
+placement square, expanded by the existing clearance. It rebuilds this local list
+for each call and preserves the original point/polygon predicate and selection
+order. No generated asset changes are needed. Run
+`res://tests/test_grass_mask_bounds.gd` with the pinned headless engine to check
+inclusive boundaries, changed pilots and predicate parity; `app/test.sh` discovers
+it automatically. [Measurements and rejected alternatives](../../docs/research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md)
+own the evidence and loading limitations.
+
 ## DT-11a default grass image reuse
 
 `Ground.grass_material()` caches one default procedural image's bytes, including

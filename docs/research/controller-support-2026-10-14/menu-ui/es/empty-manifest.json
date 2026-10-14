@@ -18,6 +18,7 @@
   "only_section": "",
   "renderer": "gl_compatibility",
   "route": "standalone production ControllerSetup with a real ControllerRegistry and ControllerProfileStore",
+  "scroll_position": "top",
   "viewport": [
     1280,
     720

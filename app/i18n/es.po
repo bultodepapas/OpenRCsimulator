@@ -2275,3 +2275,12 @@ msgstr "Asignación"
 
 msgid "Change"
 msgstr "Cambiar"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Choose your controllers, then Save."
+msgstr "Elige tus mandos y pulsa Guardar."
+
+msgid "Use a gamepad for menus. Keyboard and mouse are always available."
+msgstr "Usa un mando para los menús. El teclado y el ratón siempre están disponibles."

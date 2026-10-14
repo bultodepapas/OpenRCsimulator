@@ -67,7 +67,7 @@ func _run() -> void:
 	if mode != "drive": scene.open_garage()
 	if mode == "lab":
 		scene._select_mode(2)
-		scene.dashboard.modes.select(2)
+		scene.dashboard.modes.select(scene.dashboard.modes.get_item_index(2))
 		scene.handle_action("body")
 		scene.handle_action("contacts")
 	for i in 12: await process_frame
@@ -75,6 +75,8 @@ func _run() -> void:
 	var image := root.get_texture().get_image()
 	var error := image.save_png(output)
 	var evidence := {"ok": error == OK, "image": output, "mode": mode, "language": language,
+		"field_id": scene.field.get("id", ""), "shared_field_rendered": scene.get_node_or_null("Field") != null,
+		"spawn_id": scene.session.spawn_id,
 		"ticks": scene.session.tick, "identities": scene.session.identities_snapshot(),
 		"backend_identity": scene.session.checkpoint().solver_identity.backend_identity,
 		"state": Array(scene.session.state_snapshot()), "engine": Engine.get_version_info().string,

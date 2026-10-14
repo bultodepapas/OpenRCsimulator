@@ -16,6 +16,8 @@ var toast: Label
 var resume_button: Button
 var record_button: Button
 var modes: OptionButton
+var locations: OptionButton
+var airfield := false
 var lab: VBoxContainer
 var gauges: Label
 var sliders := {}
@@ -82,14 +84,19 @@ func _ready() -> void:
 	scroll.add_child(column)
 	column.add_child(_label("Bisonte MT8", 28))
 	column.add_child(_label(words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
+	if airfield:
+		column.add_child(_label(words("Airfield · Shared runway", "Aeródromo · Pista de aviones"), 14))
 	modes = OptionButton.new()
-	for title in [words("Free drive", "Conducción libre"), words("Jump practice", "Práctica de saltos"), words("Physics lab", "Laboratorio de física")]:
-		modes.add_item(title)
-	modes.item_selected.connect(func(index: int): mode_selected.emit(index))
+	modes.add_item(words("Free drive", "Conducción libre"), 0)
+	if not airfield:
+		modes.add_item(words("Jump practice", "Práctica de saltos"), 1)
+	modes.add_item(words("Physics lab", "Laboratorio de física"), 2)
+	modes.item_selected.connect(func(index: int): mode_selected.emit(modes.get_item_id(index)))
 	column.add_child(modes)
-	var locations := OptionButton.new()
-	var spawn_ids := ["start", "jump_start", "bump_lane", "grass", "gravel", "slippery"]
-	for title in [words("Start line", "Salida"), words("Jump approach", "Entrada al salto"), words("Bump lane", "Carril de baches"), words("Grass", "Césped"), words("Gravel", "Grava"), words("Low-grip pad", "Pista deslizante")]:
+	locations = OptionButton.new()
+	var spawn_ids := ["start", "runway_end"] if airfield else ["start", "jump_start", "bump_lane", "grass", "gravel", "slippery"]
+	var location_titles := [words("Runway center", "Centro de pista"), words("Runway end", "Extremo de pista")] if airfield else [words("Start line", "Salida"), words("Jump approach", "Entrada al salto"), words("Bump lane", "Carril de baches"), words("Grass", "Césped"), words("Gravel", "Grava"), words("Low-grip pad", "Pista deslizante")]
+	for title in location_titles:
 		locations.add_item(title)
 	locations.item_selected.connect(func(index: int): spawn_selected.emit(spawn_ids[index]))
 	column.add_child(locations)
@@ -202,7 +209,7 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 	var speed := float(snapshot.get("speed_m_per_s", 0.0)) * 3.6
 	status.text = "BISONTE MT8  /  " + (words("PAUSED", "PAUSA") if paused else words("DRIVING", "CONDUCIENDO"))
 	var surface := str(snapshot.get("surface_id", ""))
-	var surface_names := {"asphalt": words("Asphalt", "Asfalto"), "grass": words("Grass", "Césped"), "gravel": words("Gravel", "Grava"), "slippery": words("Low grip", "Poco agarre")}
+	var surface_names := {"asphalt": words("Asphalt", "Asfalto"), "grass": words("Grass", "Césped"), "gravel": words("Gravel", "Grava"), "slippery": words("Low grip", "Poco agarre"), "runway": words("Runway", "Pista de aviones"), "mown": words("Mown grass", "Césped corto"), "rough": words("Rough grass", "Césped")}
 	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, words("AIR", "AIRE") if snapshot.get("airborne", false) else surface_names.get(surface, surface), "  ● REC" if recording else ""]
 	gauges.visible = diagnostic
 	plot.visible = diagnostic

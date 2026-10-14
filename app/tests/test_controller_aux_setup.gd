@@ -66,7 +66,10 @@ func _test_clear_buttons(setup) -> void:
 	setup._action_bindings = ControllerActions.effective_bindings(setup.current_profile())
 	setup._update_action_controls()
 	_check("assigned optional actions expose Clear", not optional_clear.disabled)
+	setup.select_section("buttons")
+	optional_clear.grab_focus()
 	optional_clear.pressed.emit()
+	_check("clearing a binding keeps gamepad focus on Remap and skips disabled Clear", optional_clear.focus_mode == Control.FOCUS_NONE and root.gui_get_focus_owner() == setup.find_child("Remap_camera_previous", true, false))
 	var cleared: Dictionary = setup.current_profile()
 	_check("Clear writes an explicit unbound action and passes profile binding validation", cleared.actions.camera_previous.type == "unbound" and ControllerActions.validate_profile_bindings(cleared).ok)
 

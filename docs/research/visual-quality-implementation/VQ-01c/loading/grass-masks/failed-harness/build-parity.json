@@ -1,0 +1,345 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"complete": false,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"full_masks": 20,
+	"local_masks": 5,
+	"native_buffer_pairs": 18,
+	"samples": [
+		{
+			"pair": 0,
+			"quality": "low",
+			"usec": 345846,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 0,
+			"quality": "low",
+			"usec": 217974,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 1,
+			"quality": "low",
+			"usec": 85218,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 1,
+			"quality": "low",
+			"usec": 165664,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 2,
+			"quality": "low",
+			"usec": 172381,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 2,
+			"quality": "low",
+			"usec": 97867,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 3,
+			"quality": "low",
+			"usec": 90237,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 3,
+			"quality": "low",
+			"usec": 153212,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 4,
+			"quality": "low",
+			"usec": 156222,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 4,
+			"quality": "low",
+			"usec": 82714,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 5,
+			"quality": "low",
+			"usec": 96329,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 5,
+			"quality": "low",
+			"usec": 176264,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 0,
+			"quality": "balanced",
+			"usec": 178859,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 0,
+			"quality": "balanced",
+			"usec": 98631,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 1,
+			"quality": "balanced",
+			"usec": 99094,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 1,
+			"quality": "balanced",
+			"usec": 171874,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 2,
+			"quality": "balanced",
+			"usec": 169140,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 2,
+			"quality": "balanced",
+			"usec": 105575,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 3,
+			"quality": "balanced",
+			"usec": 112380,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 3,
+			"quality": "balanced",
+			"usec": 184824,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 4,
+			"quality": "balanced",
+			"usec": 172634,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 4,
+			"quality": "balanced",
+			"usec": 95964,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 5,
+			"quality": "balanced",
+			"usec": 94111,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 5,
+			"quality": "balanced",
+			"usec": 176515,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 0,
+			"quality": "high",
+			"usec": 176983,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 0,
+			"quality": "high",
+			"usec": 112102,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 1,
+			"quality": "high",
+			"usec": 107889,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 1,
+			"quality": "high",
+			"usec": 156346,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 2,
+			"quality": "high",
+			"usec": 179665,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 2,
+			"quality": "high",
+			"usec": 110288,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 3,
+			"quality": "high",
+			"usec": 113936,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 3,
+			"quality": "high",
+			"usec": 166089,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 4,
+			"quality": "high",
+			"usec": 170970,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 4,
+			"quality": "high",
+			"usec": 106459,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 5,
+			"quality": "high",
+			"usec": 88869,
+			"variant": "candidate",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 5,
+			"quality": "high",
+			"usec": 157765,
+			"variant": "reference",
+			"workload": "grass_build"
+		},
+		{
+			"pair": 0,
+			"usec": 1940852,
+			"variant": "reference",
+			"workload": "field_build"
+		},
+		{
+			"pair": 0,
+			"usec": 670390,
+			"variant": "candidate",
+			"workload": "field_build"
+		},
+		{
+			"pair": 1,
+			"usec": 635754,
+			"variant": "candidate",
+			"workload": "field_build"
+		},
+		{
+			"pair": 1,
+			"usec": 752178,
+			"variant": "reference",
+			"workload": "field_build"
+		},
+		{
+			"pair": 2,
+			"usec": 744225,
+			"variant": "reference",
+			"workload": "field_build"
+		},
+		{
+			"pair": 2,
+			"usec": 702606,
+			"variant": "candidate",
+			"workload": "field_build"
+		},
+		{
+			"pair": 3,
+			"usec": 683860,
+			"variant": "candidate",
+			"workload": "field_build"
+		},
+		{
+			"pair": 3,
+			"usec": 753430,
+			"variant": "reference",
+			"workload": "field_build"
+		},
+		{
+			"pair": 4,
+			"usec": 754872,
+			"variant": "reference",
+			"workload": "field_build"
+		},
+		{
+			"pair": 4,
+			"usec": 611031,
+			"variant": "candidate",
+			"workload": "field_build"
+		},
+		{
+			"pair": 5,
+			"usec": 616623,
+			"variant": "candidate",
+			"workload": "field_build"
+		},
+		{
+			"pair": 5,
+			"usec": 709914,
+			"variant": "reference",
+			"workload": "field_build"
+		}
+	],
+	"scope": "CPU construction; readback/parity outside timings; exclude pair 0; not GPU frame time or process-cold loading"
+}

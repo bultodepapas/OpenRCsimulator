@@ -772,6 +772,7 @@ func _connect_registry() -> void:
 
 func _on_registry_devices_changed() -> void:
 	_refresh_devices()
+	draft_changed.emit()
 	if not _capturing_action.is_empty():
 		var captured_device := _device_for_id(_capturing_device_id)
 		if captured_device.is_empty() or not bool(captured_device.get("connected", true)):
@@ -1366,6 +1367,7 @@ func _update_action_controls() -> void:
 	var family := str(presentation.get("glyph_family", "auto"))
 	var device := _device_for_id(_draft_flight_device_id)
 	var child_index := 3
+	var last_change_button: Button
 	for definition in ControllerActions.ACTIONS:
 		var action_id := str(definition.id)
 		var label_control: Label = action_grid.get_child(child_index)
@@ -1388,12 +1390,23 @@ func _update_action_controls() -> void:
 		else:
 			capture_button.text = tr("Remap")
 		clear_button.text = tr("Clear")
+		var clear_had_focus := clear_button.has_focus()
 		clear_button.disabled = action_id in ["back", "pause"] or binding.get("type", "unbound") == "unbound"
+		clear_button.focus_mode = Control.FOCUS_NONE if clear_button.disabled else Control.FOCUS_ALL
+		if clear_had_focus and clear_button.disabled and capture_button.is_visible_in_tree():
+			capture_button.grab_focus()
 		var row_visible := action_filter.selected <= 0 or _action_category(definition) == action_filter.selected
 		label_control.visible = row_visible
 		binding_cell.visible = row_visible
 		capture_button.visible = row_visible
+		capture_button.focus_neighbor_bottom = NodePath()
+		if row_visible:
+			last_change_button = capture_button
 		child_index += 3
+	# The shorter Save caption must remain the next D-pad target below the list,
+	# regardless of the Cancel button's relative width in the current language.
+	if is_inside_tree() and last_change_button != null:
+		last_change_button.focus_neighbor_bottom = last_change_button.get_path_to(save_button)
 
 
 func _update_glyph_family_picker() -> void:

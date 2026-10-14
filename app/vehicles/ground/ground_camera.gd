@@ -8,6 +8,7 @@ var mode := 0
 var orbit_yaw := PI + 0.65
 var orbit_pitch := 0.28
 var distance := 2.0
+var pilot_position := Vector3(4.0, 1.6, 2.0)
 var _snap := true
 
 func _init() -> void:
@@ -35,7 +36,7 @@ func update(camera: Camera3D, target: Vector3, body: Basis, dt: float, menu: boo
 		camera.global_basis = pose.basis
 		camera.fov = 54.0
 	elif mode == 1 and not menu:
-		position = Vector3(4.0, 1.6, 2.0)
+		position = pilot_position
 		camera.global_position = position
 		camera.global_basis = CameraMath.look_basis(position, target)
 		camera.fov = clampf(rad_to_deg(2.0 * atan(2.0 / maxf(position.distance_to(target), 0.1))), 18.0, 65.0)

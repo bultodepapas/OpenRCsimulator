@@ -75,7 +75,7 @@ var failures := 0
 func _initialize() -> void:
 	InputMap.load_from_project_settings()
 	await _test_input_map()
-	await _test_setup_draft_and_role_apply()
+	await _test_setup_draft_and_single_save()
 	await _test_glyph_family_save_and_cancel()
 	await _test_unknown_saved_gamepad_menu_gate()
 	await _test_entry_signals()
@@ -107,7 +107,7 @@ func _test_input_map() -> void:
 	_check("keyboard ui_accept remains after isolation", _has_key_event("ui_accept"))
 
 
-func _test_setup_draft_and_role_apply() -> void:
+func _test_setup_draft_and_single_save() -> void:
 	var registry := FakeRegistry.new()
 	var store := FakeStore.new()
 	store.profiles.append(ControllerProfile.defaults("gamepad", "mode1"))
@@ -117,7 +117,6 @@ func _test_setup_draft_and_role_apply() -> void:
 	var requested_roles: Array = []
 	var calibration_count := [0]
 	setup.close_requested.connect(func() -> void: close_count[0] += 1)
-	setup.device_selection_requested.connect(func(flight_id: int, menu_id: int) -> void: requested_roles.append([flight_id, menu_id]))
 	setup.calibration_requested.connect(func() -> void: calibration_count[0] += 1)
 	root.add_child(setup)
 	await process_frame
@@ -160,21 +159,22 @@ func _test_setup_draft_and_role_apply() -> void:
 	_check("unknown joystick is disabled for menu navigation", unknown_menu_index >= 0 and setup.ui_device_picker.is_item_disabled(unknown_menu_index))
 	_check("ambiguous controller identity stays disabled for menu navigation", setup.ui_device_picker.get_item_index(11) >= 0 and setup.ui_device_picker.is_item_disabled(setup.ui_device_picker.get_item_index(11)))
 	_check("radio devices are excluded from menu navigation choices", setup.ui_device_picker.get_item_index(9) == -1)
-	setup._on_ui_device_selected(unknown_menu_index)
-	setup._apply_device_selection()
-	_check("unknown joystick cannot be applied for menu navigation", requested_roles.is_empty() and setup.status_label.visible)
 	setup._on_ui_device_selected(setup.ui_device_picker.get_item_index(5))
-	_check("device picker edits stay drafts until Apply devices", registry.selected_device_id("flight") == -1 and registry.selected_device_id("ui") == -1)
-	setup.apply_devices = func(_flight_id: int, _menu_id: int) -> bool: return false
-	setup._apply_device_selection()
-	_check("a rejected device-apply callback reports the race and does not emit success", requested_roles.is_empty() and setup.status_label.visible and setup.status_label.text == "Device selection changed; refresh and choose connected controllers." and setup._original_flight_device_id == -1 and setup._original_ui_device_id == -1)
-	setup.apply_devices = func(_flight_id: int, _menu_id: int) -> bool: return true
-	setup._apply_device_selection()
-	_check("successful apply callback emits both explicit role choices", requested_roles.size() == 1 and requested_roles[0] == [5, 5] and setup._original_flight_device_id == 5 and setup._original_ui_device_id == 5)
-	_check("setup does not mutate the registry by itself", registry.selected_device_id("flight") == -1 and registry.selected_device_id("ui") == -1)
-	setup.request_close()
-	_check("Cancel requests closure", close_count[0] == 1)
-	_check("Cancel never writes a profile", store.saved_count == 0)
+	_check("device picker edits stay drafts until Save", registry.selected_device_id("flight") == -1 and registry.selected_device_id("ui") == -1)
+	_check("the only confirmation action is Save", setup.save_button.text == "Save" and setup.find_child("ApplyDevices", true, false) == null)
+	setup._cancel_edits()
+	_check("Cancel closes without writing or applying either controller", close_count[0] == 1 and store.saved_count == 0 and registry.selections == {"flight": -1, "ui": -1})
+	close_count[0] = 0
+	setup.save_and_apply = func(_candidate: Dictionary, _flight_id: int, _menu_id: int) -> Dictionary:
+		return {"ok": false, "error": "The selected controller disconnected."}
+	_check("failed combined Save leaves the draft open", not setup._save_profile() and close_count[0] == 0 and store.saved_count == 0 and setup.status_label.text.contains("disconnected"))
+	store.save_succeeds = true
+	setup.save_and_apply = func(candidate: Dictionary, flight_id: int, menu_id: int) -> Dictionary:
+		requested_roles.append([flight_id, menu_id])
+		registry.selections = {"flight": flight_id, "ui": menu_id}
+		return store.save_profile(candidate)
+	_check("one Save submits the edited profile and both previously unapplied controllers", setup._save_profile() and requested_roles == [[5, 5]] and store.saved_count == 1 and registry.selections == {"flight": 5, "ui": 5})
+	_check("successful Save closes settings once", close_count[0] == 1)
 	setup.free()
 	await process_frame
 

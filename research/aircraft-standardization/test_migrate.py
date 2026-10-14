@@ -30,10 +30,25 @@ from migrate import (  # noqa: E402
 
 
 def fixture(name: str) -> dict:
-    return legacy_input(json.loads((ROOT / "app/data/aircraft" / name).read_text(encoding="utf-8")))
+    source = json.loads((ROOT / "app/data/aircraft" / name).read_text(encoding="utf-8"))
+    # AS-02's historic jet had no wheel contacts. AV-09 is separately tested as
+    # an explicit v2 extension, not retrospectively invented by v1 migration.
+    if source.get("capabilities", {}).get("gear") == "retractable_tricycle":
+        source.pop("landing_gear")
+    return legacy_input(source)
 
 
 class AircraftMigration(unittest.TestCase):
+    def test_current_retractable_jet_v2_is_idempotent_without_changing_v1_policy(self):
+        source = json.loads((ROOT / "app/data/aircraft/sebart_avanti_s_a200.json").read_text(encoding="utf-8"))
+        self.assertEqual(upgrade(source), source)
+        self.assertEqual(POLICIES[source["id"]]["gear"], "locked_up")
+        self.assertEqual(POLICIES[source["id"]]["gear_contacts"], 0)
+        bad = deepcopy(source)
+        del bad["landing_gear"]["contacts"][0]["retraction_path"]
+        with self.assertRaisesRegex(ValueError, "contact paths"):
+            upgrade(bad)
+
     def test_legacy_projection_removes_v2_physical_identity_metadata(self) -> None:
         source = json.loads(
             (ROOT / "app/data/aircraft/turbo_lumber_evolution.json").read_text(encoding="utf-8")

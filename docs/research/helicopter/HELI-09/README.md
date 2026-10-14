@@ -2,6 +2,8 @@
 
 **Date:** 2026-10-13. **Status:** prepared stage API and parity evidence; full-flight cost and target-hardware timing remain open.
 
+The [2026-10-14 integrated audit](../HELI-16/README.md#2026-10-14-deep-audit-heli-0916-r1) extends preparation to electronics, removes per-frame flight queries and records paired whole-session timing with exact state parity. Its development-host result still exceeds the proposed whole-tick budget; target acceptance remains open.
+
 `AerodynamicStage.prepare(...)` validates the three immutable rotor/airframe models and stage constants once, then returns a read-only context. `fast_evaluate(context, ...)` consumes a new `[a1,b1,vi]` and caller-supplied flight inputs on every query. It retains finite, domain and output guards. It stores no state or previous-stage loads. Existing safe `evaluate(...)` and standalone component APIs remain available as reference paths.
 
 The compact no-diagnostics path avoids repeated configuration-domain scans, intermediate stage dictionaries and three airframe piece results. It preserves the existing equations and the complete compact payload. Diagnostics use the same detailed paths as the reference. No rotor law, inflow pass count, wake equation or physical parameter was changed for timing.

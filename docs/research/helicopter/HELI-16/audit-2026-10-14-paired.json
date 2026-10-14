@@ -1,0 +1,84 @@
+{
+	"aircraft_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+	"cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+	"engine": "4.7.2-stable (official)",
+	"medians": {
+		"electronics_prepared_us": 42.237,
+		"electronics_us": 89.331,
+		"flight_evaluation_us": 240.122,
+		"whole_tick_us": 1233.8645833333333
+	},
+	"ok": true,
+	"os": "Windows",
+	"paired_whole_tick_speedup": 1.1183713096554695,
+	"reference_state_hashes": [
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba"
+	],
+	"reference_whole_tick_median_us": 1379.91875,
+	"reference_whole_tick_samples_us": [
+		1641.2,
+		1517.5354166666666,
+		1449.6583333333333,
+		1361.0666666666666,
+		1379.91875,
+		1320.83125,
+		1339.8354166666666
+	],
+	"rounds": 7,
+	"samples": {
+		"electronics_prepared_us": [
+			48.293,
+			38.1,
+			45.784,
+			42.947,
+			42.237,
+			31.907,
+			38.022
+		],
+		"electronics_us": [
+			104.748,
+			116.023,
+			110.792,
+			85.25,
+			89.331,
+			88.586,
+			88.943
+		],
+		"flight_evaluation_us": [
+			265.448,
+			259.57,
+			270.106,
+			218.794,
+			209.914,
+			197.506,
+			240.122
+		],
+		"whole_tick_us": [
+			1511.0416666666667,
+			1455.98125,
+			1282.48125,
+			1223.0479166666667,
+			1233.8645833333333,
+			1144.7520833333333,
+			1111.3604166666667
+		]
+	},
+	"state_hashes": [
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba",
+		"9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba"
+	],
+	"step": "HELI-09/16-R1",
+	"target_performance_qualified": false,
+	"ticks_per_round": 480
+}

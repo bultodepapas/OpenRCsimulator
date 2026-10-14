@@ -20,6 +20,7 @@ var _profiles: Dictionary = {} # connection generation -> explicit selection, ne
 var _elapsed := 0.0
 var _last_process_ms := 0
 var _last_flight_selection_result := true
+var _settings_save_transaction := false
 
 
 func _init() -> void:
@@ -191,7 +192,8 @@ func validate_profile_for_session(candidate: Variant) -> Dictionary:
 
 func _selection_changed(role: String, id: int) -> void:
 	if role == "ui":
-		ui_selection_changed.emit(id)
+		if not _settings_save_transaction:
+			ui_selection_changed.emit(id)
 		return
 	var applied := true
 	if is_instance_valid(session):
@@ -201,7 +203,8 @@ func _selection_changed(role: String, id: int) -> void:
 		else:
 			applied = bool(session.apply_controller_selection(id, registry.device_for_id(id), profile_for_device(id), false))
 	_last_flight_selection_result = applied
-	flight_selection_changed.emit()
+	if not _settings_save_transaction:
+		flight_selection_changed.emit()
 
 
 func save_calibration(legacy_profile: Dictionary) -> Dictionary:
@@ -264,6 +267,143 @@ func save_profile_from_setup(candidate: Dictionary, flight_device_id := -1) -> D
 	var profile: Dictionary = prepared.profile
 	_associate_profile_with_device(profile, id, registry.device_for_id(id))
 	return _save_and_apply(profile, id)
+
+
+## Saves the setup profile and commits both explicit device roles as one operation.
+## The caller passes -1 for a deliberate keyboard choice in either role.
+func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_device_id: int) -> Dictionary:
+	var old_flight_id: int = registry.selected_device_id("flight")
+	var old_ui_id: int = registry.selected_device_id("ui")
+	var flight_id := int(flight_device_id)
+	var ui_id := int(ui_device_id)
+	if flight_id < -1 or ui_id < -1:
+		return {"ok": false, "profile": {}, "error": "Choose a connected device or keyboard for each role."}
+	for id: int in [flight_id, ui_id]:
+		if id >= 0 and not bool(registry.device_for_id(id).get("connected", false)):
+			return {"ok": false, "profile": {}, "error": "A selected controller disconnected before settings were saved."}
+
+	var prepared := validate_profile_for_session(candidate)
+	if not bool(prepared.get("ok", false)):
+		return prepared
+	var profile: Dictionary = prepared.profile
+	if flight_id >= 0:
+		_associate_profile_with_device(profile, flight_id, registry.device_for_id(flight_id))
+
+	# Read and validate storage before any role or runtime state can change. This
+	# preserves corrupt-store errors and also supplies the rollback snapshot.
+	var previous_store: Dictionary = store.load_all()
+	if not bool(previous_store.get("ok", false)):
+		return {"ok": false, "profile": {}, "error": "Existing controller profile storage is unreadable: " + "; ".join(previous_store.get("errors", []))}
+	if not _ui_selection_eligible_for_setup(ui_id, flight_id, profile, previous_store):
+		return {"ok": false, "profile": {}, "error": "Choose a connected gamepad for menus. Radios and unconfigured devices cannot control the interface."}
+
+	var previous_runtime_profile: Dictionary = profile_for_device(old_flight_id) if old_flight_id >= 0 else {}
+	var previous_cache: Dictionary = _profiles.duplicate(true)
+	var previous_selection_result := _last_flight_selection_result
+	var flight_was_lost := is_instance_valid(session) and bool(session.get("_controller_lost"))
+	var needs_flight_apply := flight_id != old_flight_id or (flight_id >= 0 and profile != previous_runtime_profile) or flight_was_lost
+	var notify_flight := flight_id != old_flight_id or (flight_id >= 0 and profile != previous_runtime_profile) or flight_was_lost
+
+	var saved: Dictionary = store.save_profile(profile)
+	if not bool(saved.get("ok", false)):
+		return saved
+
+	_settings_save_transaction = true
+	_last_flight_selection_result = true
+	if flight_id >= 0:
+		var cache_key := "%d:%d" % [flight_id, registry.connection_generation(flight_id)]
+		_profiles[cache_key] = saved.profile.duplicate(true)
+	var ui_selected: bool = registry.select_device("ui", ui_id)
+	var had_session := is_instance_valid(session)
+	var flight_selected: bool = registry.select_device("flight", flight_id)
+	var attempted_flight_apply := flight_selected and flight_id != old_flight_id and had_session
+	if flight_selected and flight_id == old_flight_id and needs_flight_apply and had_session:
+		attempted_flight_apply = true
+		_last_flight_selection_result = bool(session.apply_controller_selection(flight_id, registry.device_for_id(flight_id), saved.profile, false))
+	var committed := ui_selected and flight_selected and _last_flight_selection_result
+	if committed:
+		_settings_save_transaction = false
+		if ui_id != old_ui_id:
+			ui_selection_changed.emit(ui_id)
+		if notify_flight:
+			flight_selection_changed.emit()
+		return saved
+
+	# Restore durable data and runtime lookup state before reapplying the previous
+	# route. Selection callbacks remain muted until the whole rollback is complete.
+	var restored_store: Dictionary = store.restore_snapshot(previous_store)
+	_profiles = previous_cache.duplicate(true)
+	var current_flight_id: int = registry.selected_device_id("flight")
+	var ui_role_restored: bool = registry.select_device("ui", old_ui_id)
+	var flight_role_restored: bool = registry.select_device("flight", old_flight_id)
+	var roles_restored := ui_role_restored and flight_role_restored \
+		and registry.selected_device_id("ui") == old_ui_id \
+		and registry.selected_device_id("flight") == old_flight_id
+	var restored_runtime := true
+	if attempted_flight_apply:
+		if not flight_role_restored or not is_instance_valid(session):
+			restored_runtime = false
+		elif current_flight_id == old_flight_id:
+			restored_runtime = bool(session.apply_controller_selection(old_flight_id, registry.device_for_id(old_flight_id), previous_runtime_profile, false))
+		else:
+			restored_runtime = _last_flight_selection_result
+	_settings_save_transaction = false
+	_last_flight_selection_result = previous_selection_result
+	var error := "The active session rejected this controller profile."
+	if bool(restored_store.get("ok", false)):
+		error += " Previous stored profiles were restored."
+	else:
+		error += " Previous stored profiles could not be restored: " + str(restored_store.get("error", "unknown storage error"))
+	if roles_restored:
+		error += " Previous device selections were restored."
+	else:
+		error += " Previous device selections could not be fully restored."
+	if not attempted_flight_apply:
+		error += " The runtime route was unchanged."
+	elif restored_runtime:
+		error += " The previous runtime route was restored."
+	else:
+		error += " The previous runtime route could not be restored."
+	return {"ok": false, "profile": {}, "error": error}
+
+
+func _ui_selection_eligible_for_setup(ui_id: int, flight_id: int, candidate: Dictionary, previous_store: Dictionary) -> bool:
+	if ui_id < 0:
+		return true
+	var info: Dictionary = registry.device_for_id(ui_id)
+	if not bool(info.get("connected", false)) or info.get("kind", "") == "radio" or RcInput.looks_like_radio(str(info.get("name", ""))):
+		return false
+	if bool(info.get("known", false)) and info.get("kind", "") == "gamepad":
+		return true
+	var matching_profiles: Array[Dictionary] = []
+	var candidate_was_saved_for_ui := false
+	for saved_profile in previous_store.get("profiles", []):
+		if str(saved_profile.get("profile_id", "")) == str(candidate.get("profile_id", "")):
+			candidate_was_saved_for_ui = store._association_matches(info, saved_profile.get("association", {}))
+			continue
+		if store._association_matches(info, saved_profile.get("association", {})):
+			matching_profiles.append(saved_profile)
+	var candidate_can_declare_ui := ui_id == flight_id or candidate_was_saved_for_ui
+	if candidate_can_declare_ui and store._association_matches(info, candidate.get("association", {})):
+		matching_profiles.append(candidate)
+	if matching_profiles.size() != 1:
+		return false
+	var saved_profile: Dictionary = matching_profiles[0]
+	if saved_profile.get("kind", "") != "gamepad" or not bool(saved_profile.get("configured", false)) or not Profile.validate(saved_profile).ok:
+		return false
+	# A new unknown gamepad is trusted only when this save declares the flight
+	# target itself. Existing separately saved menu pads remain eligible as usual.
+	if ui_id == flight_id and saved_profile.get("profile_id", "") != candidate.get("profile_id", ""):
+		return false
+	return _association_is_unambiguous(saved_profile.get("association", {}))
+
+
+func _association_is_unambiguous(association: Dictionary) -> bool:
+	var matches := 0
+	for device in registry.get_devices():
+		if bool(device.get("connected", false)) and store._association_matches(device, association):
+			matches += 1
+	return matches == 1
 
 
 func _save_and_apply(profile: Dictionary, id: int) -> Dictionary:

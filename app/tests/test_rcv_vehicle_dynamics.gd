@@ -9,6 +9,9 @@ const Course := preload("res://physics/ground_vehicle/course.gd")
 const Vehicle := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const Integrator := preload("res://physics/integrator.gd")
 const Session := preload("res://sim/ground_vehicle/session.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
 
 const DT := 1.0 / 240.0
 const FORWARD := 3
@@ -209,6 +212,42 @@ func _bump_road(north_m: float, _east_m: float) -> Dictionary:
 	}
 
 
+func _test_terrain_spawn(model: Dictionary) -> void:
+	var field := FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+	var materials := GroundSurfaces.load_table()
+	var surfaces := GroundSurfaces.build(materials.table, field.field)
+	var road := func(north: float, east: float) -> Dictionary:
+		var sample := GroundTerrain.sample(north, east, surfaces.rects)
+		var normal := PackedFloat64Array([-sample[1], -sample[2], -1.0])
+		return {"height_m": sample[0], "normal_ned": M.scale(normal, 1.0 / M.norm(normal)), "mu": 0.68, "rolling": 0.05}
+	var pose := {"id": "runway", "north_m": 15.0, "east_m": 0.0, "heading_rad": PI / 2.0, "vehicle_up_m": 0.5}
+	var snapshot := model.duplicate(true)
+	var state := Vehicle.make_terrain_state(model, pose, road)
+	_check("real uneven runway supports a complete zero-speed spawn", state.size() == Vehicle.STATE_SIZE)
+	if state.size() != Vehicle.STATE_SIZE: return
+	_check("terrain placement preserves model and requested horizontal pose", model == snapshot and state[0] == 15.0 and state[1] == 0.0 and _max_abs(state.slice(3, 6)) == 0.0)
+	var observed := Vehicle.telemetry(state, model, road)
+	var load_sum := _sum(observed.wheel_load_n)
+	var weight := (float(model.sprung_mass_kg) + 4.0 * float(model.unsprung_mass_kg)) * float(model.gravity_m_per_s2)
+	_check("all four terrain tires are preloaded without hull support", observed.wheel_in_contact.count(1) == 4 and observed.hull_in_contact.count(1) == 0 and absf(load_sum - weight) < 1.0e-5)
+	var rested := _run_steps(state, model, _controls(), road, 240)
+	_check("runway start settles without a launch or significant drift", rested.size() == Vehicle.STATE_SIZE and _max_abs_difference(rested, state, 3) < 0.02 and M.norm(rested.slice(3, 6)) < 0.05)
+	var flat := Callable(self, "_flat_road")
+	var on_flat := Vehicle.make_terrain_state(model, pose, flat)
+	var flat_support := Vehicle.initialize(model, flat, 15.0, 0.0)
+	_check("terrain initializer retains flat support altitude", on_flat.size() == Vehicle.STATE_SIZE and absf(on_flat[2] - flat_support.state[2]) < 1.0e-12)
+	var bad := func(_n: float, _e: float) -> Dictionary:
+		return {"height_m": NAN, "normal_ned": PackedFloat64Array([0.0, 0.0, -1.0]), "mu": 0.7, "rolling": 0.05}
+	_check("terrain spawn refuses nonfinite road data", Vehicle.make_terrain_state(model, pose, bad).is_empty())
+	var steep := func(n: float, _e: float) -> Dictionary:
+		return {"height_m": 0.5 * n, "normal_ned": M.scale(PackedFloat64Array([-0.5, 0.0, -1.0]), 1.0 / M.sqrt_(1.25)), "mu": 0.7, "rolling": 0.05}
+	_check("runway initializer refuses unsupported steep starts", Vehicle.make_terrain_state(model, pose, steep).is_empty())
+	var zero_g := model.duplicate(true)
+	zero_g.gravity_m_per_s2 = 0.0
+	var zero_state := Vehicle.make_terrain_state(zero_g, pose, road)
+	_check("zero-gravity laboratory starts remain finite", zero_state.size() == Vehicle.STATE_SIZE and _max_abs(Vehicle.derivative(zero_state, zero_g, _controls(), road)) < 1.0e-5)
+
+
 func _initialize() -> void:
 	var loaded := Data.load_default()
 	_check("strict vehicle source loads", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
@@ -216,6 +255,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var model: Dictionary = loaded["model"]
+	_test_terrain_spawn(model)
 	var flat := Callable(self, "_flat_road")
 	var reset := Vehicle.initialize(model, flat, 0.0, 0.0)
 	_check("flat reset produces a 31-value state", bool(reset.get("ok", false)) and reset.get("state", PackedFloat64Array()).size() == Vehicle.STATE_SIZE, str(reset.get("error", "")))

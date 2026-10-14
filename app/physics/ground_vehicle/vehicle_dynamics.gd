@@ -343,6 +343,66 @@ static func make_state(model: Dictionary, pose: Dictionary, road: Callable) -> P
 	return state
 
 
+## Zero-speed placement on a mildly uneven runway. Fit each tire to the actual
+## surface with gravity preload; a small physical settling transient is allowed.
+## This is not a static-equilibrium solver for arbitrary slopes/obstacles.
+## The supplied altitude is replaced by terrain support and the model's CG offset.
+## No terrain is flattened and the existing flat-course initializer is unchanged.
+static func make_terrain_state(model: Dictionary, pose: Dictionary, road: Callable) -> PackedFloat64Array:
+	if not _valid_model(model) or not _valid_pose(pose) or not road.is_valid():
+		return PackedFloat64Array()
+	var state := PackedFloat64Array()
+	state.resize(STATE_SIZE)
+	state[POS] = float(pose.north_m)
+	state[POS + 1] = float(pose.east_m)
+	var attitude := M.q_from_euler(float(pose.heading_rad), 0.0, 0.0)
+	for i in 4: state[ATT + i] = attitude[i]
+	var travel := _static_travel(model)
+	for i in CORNER_COUNT: state[TRAVEL + i] = travel
+	var gravity := float(model.gravity_m_per_s2)
+	var normal_distance := float(model.tire_radius_m) - (float(model.sprung_mass_kg) / 4.0 + float(model.unsprung_mass_kg)) * gravity / float(model.tire_stiffness_n_per_m)
+	if normal_distance <= 0.0:
+		return PackedFloat64Array()
+	var datum := float(model.cg_height_above_chassis_datum_m) + float(model.wheel_center_rest_below_chassis_datum_m)
+	# Suspension motion changes the hub's lateral coordinate. Iterate its exact
+	# finite-arm geometry rather than sampling at an unrelated fixed wheel station.
+	for iteration in 12:
+		var geometry := _corner_geometry(state, model, 0.0, 0.0, 0.0)
+		if not geometry.ok: return PackedFloat64Array()
+		var hub_heights := PackedFloat64Array()
+		var mean_height := 0.0
+		for corner in CORNER_COUNT:
+			var offset := M.q_rotate(attitude, geometry.hub_position_body[corner])
+			var checked := _sample_surface(road, state[POS] + offset[0], state[POS + 1] + offset[1])
+			if not checked.ok: return PackedFloat64Array()
+			var surface: Dictionary = checked.surface
+			var normal: PackedFloat64Array = surface.normal_ned
+			if normal[2] > -0.98: return PackedFloat64Array()
+			var height := float(surface.height_m) + normal_distance / -normal[2]
+			hub_heights.append(height)
+			mean_height += height / float(CORNER_COUNT)
+		var cg_up := mean_height + datum - travel
+		if gravity == 0.0:
+			# Without weight there is no spring/tire preload. Place the relaxed
+			# suspension just clear of the highest tire patch, with no stored energy.
+			var highest := hub_heights[0]
+			for height in hub_heights: highest = maxf(highest, height)
+			state[POS + 2] = -(highest + datum + 1.0e-9)
+			return state if _finite_array(state) else PackedFloat64Array()
+		var change := absf(state[POS + 2] + cg_up)
+		state[POS + 2] = -cg_up
+		for corner in CORNER_COUNT:
+			if absf(hub_heights[corner] - mean_height) > 0.02: return PackedFloat64Array()
+			var fitted_travel := travel + hub_heights[corner] - mean_height
+			if fitted_travel < -float(model.travel_droop_m) or fitted_travel > float(model.travel_bump_m):
+				return PackedFloat64Array()
+			change = maxf(change, absf(state[TRAVEL + corner] - fitted_travel))
+			state[TRAVEL + corner] = fitted_travel
+		if change < 1.0e-9:
+			return state if _finite_array(state) else PackedFloat64Array()
+	return PackedFloat64Array() # A nonconvergent or unsupported patch is refused.
+
+
 ## One deterministic fixed public tick. The caller owns tick/time policy;
 ## controls stay constant through all RK stages. Input arrays are never edited.
 ## Returns an empty array on malformed inputs, road samples, or a singular

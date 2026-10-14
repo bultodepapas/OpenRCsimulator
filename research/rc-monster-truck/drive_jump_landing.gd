@@ -92,6 +92,7 @@ func _run() -> void:
 		return
 	TranslationServer.set_locale("en")
 	activity = Activity.new()
+	activity.use_practice_fixture = true # Retain the reproducible synthetic jump campaign.
 	activity.enable_audio = false
 	activity.enable_course_visual = false
 	activity.set_physics_process(false)

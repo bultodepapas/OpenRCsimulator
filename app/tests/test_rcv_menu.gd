@@ -1,6 +1,8 @@
 extends SceneTree
 const AppRoot = preload("res://app_root.gd")
 const Activity = preload("res://vehicles/ground/ground_scene.gd")
+const FieldLoader = preload("res://data/field_loader.gd")
+const Frames = preload("res://render/frames.gd")
 var failures := 0
 var checks := 0
 
@@ -39,6 +41,9 @@ func _run() -> void:
 	var initial_aircraft: String = app.home.aircraft_id
 	var original_home: Control = app.home
 	var original_background: Node3D = app.home_scene
+	var home_field: Dictionary = original_background.field.duplicate(true)
+	var home_lighting: Dictionary = original_background.lighting_config.duplicate(true)
+	var home_sky: Dictionary = original_background.sky_config.duplicate(true)
 	check(app.home.ground_vehicle_button.is_visible_in_tree(), "RC vehicle choice is visible")
 	app.ground_vehicle_factory = func(): return RejectedActivity.new()
 	app.home.ground_vehicle_requested.emit()
@@ -57,6 +62,16 @@ func _run() -> void:
 		return
 	app.ground_vehicle.set_physics_process(false)
 	check(app.ground_vehicle.session.paused and app.ground_vehicle.dashboard.menu_visible, "Home transition starts safely in garage")
+	check(app.ground_vehicle.field == home_field, "truck uses the exact field accepted by Home")
+	check(app.ground_vehicle.lighting_config == home_lighting and app.ground_vehicle.sky_config == home_sky, "Home lighting and sky carry into the truck")
+	var dashboard: CanvasLayer = app.ground_vehicle.dashboard
+	check(dashboard.airfield and dashboard.modes.item_count == 2 and dashboard.modes.get_item_id(1) == 2, "shared airfield exposes free drive and laboratory, without a nonexistent jump track")
+	check(dashboard.locations.item_count == 2, "garage offers two actual runway starts")
+	dashboard.modes.item_selected.emit(1)
+	check(app.ground_vehicle.mode == 2 and dashboard.lab.visible, "laboratory selection keeps its mode ID after removing the practice entry")
+	dashboard.locations.item_selected.emit(1)
+	check(app.ground_vehicle.session.spawn_id == "runway_end" and app.ground_vehicle.session.paused, "runway-end selector resets safely on the same field")
+	await process_frame
 	app.ground_vehicle.handle_action("home")
 	await process_frame
 	await process_frame
@@ -65,6 +80,21 @@ func _run() -> void:
 	app.free()
 	await process_frame
 	var direct := AppRoot.new()
+	# A shifted field makes hard-coded default terrain/spawn/pilot coordinates observable.
+	var custom: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(FieldLoader.DEFAULT_PATH))
+	custom.id = "rcv-menu-shifted-field"
+	custom.objects = []
+	custom.erase("flight_cues")
+	custom.pilot.north.value = 120.0
+	custom.pilot.east.value = -90.0
+	for surface: Dictionary in custom.surfaces:
+		surface.center_north.value += 120.0
+		surface.center_east.value -= 90.0
+	var custom_path := "user://test_rcv_menu_field.json"
+	var custom_file := FileAccess.open(custom_path, FileAccess.WRITE)
+	custom_file.store_string(JSON.stringify(custom))
+	custom_file.close()
+	direct.field_path = custom_path
 	direct.user_args = PackedStringArray(["--vehicle=mt8-bisonte"])
 	direct.preferences_path = "user://rcv_direct_must_not_exist.cfg"
 	direct.ground_vehicle_factory = _factory
@@ -72,8 +102,15 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	check(direct.ground_vehicle != null and direct.home == null and direct.flight == null, "explicit vehicle CLI selects ground activity")
+	if direct.ground_vehicle != null:
+		var truck: Node3D = direct.ground_vehicle
+		check(truck.field.id == custom.id, "direct route honors the selected aircraft field path")
+		var pose: PackedFloat64Array = truck.session.state_snapshot()
+		check(absf(pose[0] - 135.0) < 0.01 and absf(pose[1] + 90.0) < 0.01, "truck spawns at the shifted runway center")
+		check(truck.camera_rig.pilot_position.is_equal_approx(Frames.ned_to_render([120.0, -90.0, -1.7])), "driver camera uses the shared pilot station")
 	check(direct.preferences.is_empty() and not FileAccess.file_exists(direct.preferences_path), "direct route bypasses aircraft preferences")
 	direct.free()
 	await process_frame
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(custom_path))
 	print("RCV menu: %d checks, %d failures" % [checks, failures])
 	quit(0 if failures == 0 else 1)

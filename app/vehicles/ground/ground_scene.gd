@@ -8,6 +8,15 @@ const Dashboard = preload("res://vehicles/ground/ground_dashboard.gd")
 const CameraRig = preload("res://vehicles/ground/ground_camera.gd")
 const CourseView = preload("res://vehicles/ground/course_view.gd")
 const Course = preload("res://physics/ground_vehicle/course.gd")
+const AirfieldCourse = preload("res://physics/ground_vehicle/airfield_course.gd")
+const FieldLoader = preload("res://data/field_loader.gd")
+const World = preload("res://render/world/world.gd")
+const LakeWorld = preload("res://render/lake/lake_world.gd")
+const Scenery = preload("res://scenery/scenery.gd")
+const LightingConfig = preload("res://environment/time_of_day_config.gd")
+const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
+const SkyConfig = preload("res://environment/sky_appearance_config.gd")
+const Spec = preload("res://spec.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
@@ -29,6 +38,16 @@ var joy_axis_reader: Callable = func(id: int, axis: JoyAxis) -> float: return In
 var joy_button_reader: Callable = func(id: int, button: JoyButton) -> bool: return Input.is_joy_button_pressed(id, button)
 var enable_audio := true
 var enable_course_visual := true
+## Production shares the aircraft field. Synthetic ramps remain an explicit research/test fixture.
+var use_practice_fixture := false
+var field_path: String = FieldLoader.DEFAULT_PATH
+var field := {}
+var lighting_config: Dictionary = LightingConfig.defaults()
+var night_options := {}
+var sky_config: Dictionary = SkyConfig.defaults()
+var _lighting := {}
+var _environment: Environment
+var _presentation_context := {}
 var mode := 0
 var _course := {}
 var _model := {}
@@ -58,20 +77,23 @@ var _keyboard_neutral_gate := false
 
 func _ready() -> void:
 	name = "GroundVehicleActivity"
+	_presentation_context = World.presentation_context()
 	_connect_controller_registry()
 	_previous_auto_quit = get_tree().auto_accept_quit
 	get_tree().auto_accept_quit = false
 	session = Session.new()
 	session.name = "GroundVehicleSession"
 	add_child(session)
-	if not session.prepare_default():
-		startup_error = session.load_error
+	var prepared: bool = session.prepare_default() if use_practice_fixture else _prepare_airfield()
+	if not prepared:
+		if startup_error.is_empty(): startup_error = session.load_error
 		set_physics_process(false)
 		set_process(false)
 		return
 	_model = session.model_snapshot()
 	_course = session.course_snapshot()
-	_render_road = func(north: float, east: float) -> Dictionary: return Course.sample(_course, north, east)
+	_render_road = func(north: float, east: float) -> Dictionary:
+		return Course.sample(_course, north, east) if use_practice_fixture else AirfieldCourse.sample(_course, north, east)
 	visual = Model.build()
 	if not visual.ok:
 		startup_error = visual.error
@@ -82,22 +104,26 @@ func _ready() -> void:
 	_contact_debug = ContactDebug.new()
 	_contact_debug.visible = false
 	add_child(_contact_debug)
-	# Reuse the shared sky/light calibration; this analytic course has no airfield scenery.
-	ShaderClock.register()
-	Atmosphere.state = {}
-	var environment := WorldEnvironment.new()
-	environment.environment = Atmosphere.environment()
-	add_child(environment)
-	var sun := Atmosphere.create_sun(self)
-	sun.directional_shadow_max_distance = 35.0
-	if enable_course_visual:
-		CourseView.build(self, _course)
+	if not use_practice_fixture and enable_course_visual:
+		Atmosphere.configure_appearance(sky_config)
+		_environment = World.build(self, field, Callable(), {}, _lighting, night_options).environment
+	else:
+		ShaderClock.register()
+		Atmosphere.state = {}
+		var environment := WorldEnvironment.new()
+		_environment = Atmosphere.environment(_lighting)
+		environment.environment = _environment
+		add_child(environment)
+		var sun := Atmosphere.create_sun(self, _lighting)
+		sun.directional_shadow_max_distance = 35.0
+		if enable_course_visual: CourseView.build(self, _course)
 	camera = Camera3D.new()
 	camera.near = 0.01
-	camera.far = 1500.0
+	camera.far = Spec.CAMERA.far
 	add_child(camera)
 	camera.make_current()
 	dashboard = Dashboard.new()
+	dashboard.airfield = not use_practice_fixture
 	add_child(dashboard)
 	dashboard.action_requested.connect(handle_action)
 	dashboard.mode_selected.connect(_select_mode)
@@ -118,6 +144,27 @@ func _ready() -> void:
 	open_garage()
 	_capture_initial_controller_selection()
 	_process(0.0)
+
+func _prepare_airfield() -> bool:
+	var loaded := FieldLoader.load_from(field_path)
+	if not loaded.ok:
+		startup_error = "; ".join(loaded.errors)
+		return false
+	var checked_light := LightingConfig.validate(lighting_config)
+	var checked_sky := SkyConfig.validate(sky_config)
+	if not checked_light.ok or not checked_sky.ok:
+		startup_error = "; ".join(checked_light.errors) + "; ".join(checked_sky.errors)
+		return false
+	lighting_config = checked_light.config
+	sky_config = checked_sky.config
+	_lighting = TimeOfDayLighting.snapshot(lighting_config) if lighting_config.mode != "legacy" else {}
+	field = loaded.field
+	var lake := LakeWorld.resolve(field, Scenery.options())
+	if not lake.ok:
+		startup_error = "; ".join(lake.errors)
+		return false
+	camera_rig.pilot_position = Frames.ned_to_render([field.pilot.north, field.pilot.east, field.pilot.down - field.pilot.eye_height])
+	return session.prepare_airfield(loaded, {}, lake.lake)
 
 func _build_audio() -> void:
 	_sound = EngineAudio.new()
@@ -333,9 +380,10 @@ func _process(delta: float) -> void:
 	var basis := Basis(qa.slerp(qb, alpha))
 	var target := Frames.ned_to_render([drawn[0], drawn[1], drawn[2]])
 	visual.root.transform = Frames.root_transform(basis, target, Vector3(0, _model.cg_height_above_chassis_datum_m, 0))
-	camera_rig.update(camera, target, basis, delta, dashboard.menu_visible, func(x: float, z: float) -> float: return Course.sample(_course, -z, x).height_m)
+	camera_rig.update(camera, target, basis, delta, dashboard.menu_visible, func(x: float, z: float) -> float: return _render_road.call(-z, x).height_m)
+	World.update(_environment, 37.0 + session.time_s(), Vector3.ZERO, target, camera)
 	var telemetry: Dictionary = session.telemetry_snapshot()
-	telemetry.surface_id = Course.sample(_course, drawn[0], drawn[1]).surface_id
+	telemetry.surface_id = _render_road.call(drawn[0], drawn[1]).surface_id
 	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)
 	dashboard.update_snapshot(telemetry, session.paused, session.time_s(), session.recording, _show_diagnostics or mode == 2)
 	if visual.travel_outside_art:
@@ -512,6 +560,8 @@ func _notification(what: int) -> void:
 		_focused = true
 
 func _exit_tree() -> void:
+	if not _presentation_context.is_empty():
+		World.restore_presentation_context(_presentation_context)
 	if controller_registry != null and controller_registry.has_signal("selection_changed"):
 		var callback := Callable(self, "_on_controller_selection_changed")
 		if controller_registry.is_connected("selection_changed", callback):

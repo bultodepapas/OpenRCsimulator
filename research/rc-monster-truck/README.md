@@ -177,7 +177,7 @@ The first ground-vehicle activity is now connected to the app. This research REA
 
 ### Drive and experiment
 
-Select **RC cars · Bisonte MT8** at the lower right of Home. The separate garage opens with the truck paused; release all controls, then press **Enter / Drive**. Alternatively, launch the project with `-- --vehicle=mt8-bisonte`. This entry does not change the saved aircraft selection. The supplied Blender model and scripts are authorized by their owner for inclusion and modification.
+Select **RC cars · Bisonte MT8** at the lower right of Home. The truck starts paused on the aircraft runway, in the same airfield used by Home and flight. Release all controls, then press **Enter / Drive**. Alternatively, launch the project with `-- --vehicle=mt8-bisonte`. This entry preserves the saved aircraft selection and carries Home's lighting and sky into the drive. The supplied Blender model and scripts are authorized by their owner for inclusion and modification.
 
 | Action | Keyboard / mouse | Gamepad |
 | --- | --- | --- |
@@ -191,7 +191,11 @@ Select **RC cars · Bisonte MT8** at the lower right of Home. The separate garag
 
 A connected gamepad takes control priority. Focus loss or controller disconnection pauses the activity; returning focus never resumes automatically. Release the controls before continuing. Recovery marks the run as assisted. Reset starts a new valid run. Neither operation silently qualifies a landing or experiment.
 
-Choose **Free drive**, **Jump practice**, or **Physics lab**. The location selector provides the start line, jump approach, bump lane, grass, gravel and slippery pad. Lab changes apply by an explicit reset: gravity 0–2×, grip 0.15–2×, spring rate 0.5–2×, damping 0.25–2×, and 0–1.5 kg ballast at 0.03–0.35 m height. Ballast updates mass, CG and inertia together. The body toggle exposes the suspension; contact markers and travel plots are read-only views of the accepted simulation state.
+Choose **Free drive** or **Physics lab**. The location selector provides the runway center and runway end; the operator camera uses the field's pilot station. Lab changes apply by an explicit reset: gravity 0–2×, grip 0.15–2×, spring rate 0.5–2×, damping 0.25–2×, and 0–1.5 kg ballast at 0.03–0.35 m height. Ballast updates mass, CG and inertia together. The body toggle exposes the suspension; contact markers and travel plots are read-only views of the accepted simulation state.
+
+The production activity reuses `FieldLoader`, `World`, `GroundSurfaces` and `GroundTerrain`, including the resolved lake bed. The default runway is short grass, not asphalt. Terrain heights/normals and surface factors come from the aircraft field; truck tire coefficients remain estimates. No separate floor or practice ramps are overlaid on the airfield. A dedicated car track is deferred and must be built inside this same field. Decorative scenery does not become a truck collision solid, and lake-bed contact does not add buoyancy or water drag.
+
+The synthetic `practice.json` course remains a research fixture through `Session.prepare_default()` and the explicit `use_practice_fixture` test seam. Existing jump, bump and friction campaigns keep their original terrain and identities; it is no longer the player's default environment or a menu destination.
 
 The initial estimated motor curve fades drive torque to zero at 40 rad/s wheel spin, equivalent to about 14.4 km/h in pure rolling with the 0.1 m tire radius. This is a torque curve, not a hard vehicle-speed clamp: the truck can coast faster downhill. The initial jump feedback has verified short airborne/contact events; the longer-flight landing reward and full teaching curriculum remain separate qualification work.
 

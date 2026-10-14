@@ -49,7 +49,7 @@ The [fuel-turbine realism plan](plans/turbine-realism.md) now owns detailed AV-0
 
 AV-20 now explicitly selects continuous turbine RPM in the generated experimental aircraft: stage-local governor/thrust/gyro, accepted RPM mirror, prescribed fuel mass and checkpoint v8. [Implementation evidence](research/turbine-realism/AV-20/README.md) records the numerical delta and remaining ECU, fuel and physical-validation gates. Historical sampled integration remains available when the optional selector is absent or `sampled`.
 
-Keep AV-01 geometry provisional until calibrated A200 planform, tail and equipment locations are available. Coordinate AV-09's flap/gear input and aerodynamics with the physics and input owners; the current `set_flaps()` method only poses the visual hinges. AV-10 fuel burn, AV-05b ECU states, AV-08 acoustic identification, independent physical validation (AV-11), and fleet-wide release acceptance (AV-12) remain separate steps. AV-31 closes this model replacement and records its isolated Windows export proof.
+Keep AV-01 geometry provisional until calibrated A200 planform, tail and equipment locations are available. AV-09 landing gear is implemented and software-qualified in the [gear evidence](research/avanti-gear/AV-09/README.md). Coordinate the remaining flap input and aerodynamics with the physics and input owners; the current `set_flaps()` method only poses the visual hinges. AV-10 fuel burn, AV-05b ECU states, AV-08 acoustic identification, independent physical validation (AV-11), and fleet-wide release acceptance (AV-12) remain separate steps. AV-31 closes this model replacement and records its isolated Windows export proof.
 
 ## 6. AV-14…17 realism investigation and correction
 

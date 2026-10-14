@@ -58,6 +58,44 @@ The Linux [725-script parse sweep](parse-sweep.json) passed 724 entries and caug
 
 The full app runner was attempted through an LF-normalized local wrapper because this Windows checkout's Bash shebangs contain CRLF. It stopped in the unrelated glow-engine `test_refinement_report.py`: dated benchmark aircraft hashes no longer match the concurrently changed aircraft sources. Those reports/goldens were not rewritten to hide the mismatch. Focused helicopter, route, parse and airplane regressions are reported separately; this is not a claim that the full repository suite passed.
 
+## 2026-10-14 deep audit (HELI-09/16-R1)
+
+The audit covered authoring/preparation, coupled flight and ground clearance, controls, configuration transactions, native replay, recording and the production presentation route. The existing X-Cell/HX-700 surrogate remains the flight configuration. No generated aircraft quantities, solver timestep, 19-value state layout or golden flights were changed.
+
+| Finding | Repair and regression |
+| --- | --- |
+| High: rotor-strike broadphase used only main radius/vertical hub offset, missing a pitched tail intersecting terrain. | Bound both complete hub arms and rotor radii, including maximum terrain relief; validate input before indexing and normalize attitude. Eight contact checks include a 90° pitch, CG altitude 1.035 m and 0.91 m tail arm, plus elevated terrain. Instantaneous narrowphase remains conservative. |
+| Medium: simultaneous flap harmonics produced a non-unit disc axis, allowing a valid world projection to exceed the accepted unit interval. | Normalize consistently with the main-rotor kernel. The small-flap reproduction failed before correction and passes afterward; five assertions and both raw outputs are preserved in the test evidence. |
+| High: a supplied prepared aerodynamic context could disagree with its outer aircraft configuration. | Derive the canonical immutable context and compare supplied content before acceptance; reject malformed model/container/numeric types. Thirteen focused checks cover foreign density/radius/flow, mutable context, missing law and coercible inertia values. |
+| High: checkpoints lacked field/start identity and could preserve inconsistent simulation/configuration mirrors. | Native checkpoint v2 binds exact surfaces/start, aircraft and weather. Producer and restore verify accepted mass/gravity/inertia, rotor/RPM projection, commands and flight domain. Restore is atomic; v1, crash holds and foreign state are refused. |
+| Medium: failed setup could leave partially changed weather/field state; invalid profiles could appear connected. | Prepare before commit, validate profiles before connection, and require re-trim after tick-zero environment/start/model changes. Live changes to those configurations are refused. The 47-check state suite covers rejection atomicity and crash/reset recovery. |
+| Medium: recorder failure could save a partial trace as a successful recording. | Latch the error and refuse partial/empty/invalid saves. Valid trace columns and format remain unchanged. |
+| Cost: static curve/linkage validation repeated inside every RK stage. | Deep-freeze prepared curves, share interpolation/linkage arithmetic, and retain dynamic guards in `Electronics.fast_evaluate`. Reference/prepared parity passes 1,034 assertions over 512 seeded cases and boundary/malformed-input probes. Hub-height evaluation also reuses its computed offset. |
+| Presentation: rendering evaluated complete aerodynamics every frame; rotor phase depended on render time and capture approximated variable-RPM history. | Cache controls/envelope flags at accepted ticks; integrate display phase from endpoint shaft speeds and interpolate body, phase and rotor telemetry together. Twenty-six checks cover variable RPM, 30/60/144 Hz reads, pause/reset/restore, instance isolation and the legacy delta-time API. |
+
+**Final Windows verification:** 16 native suites, **2,529 assertions, zero failures**: swash 46, electronics 17, prepared electronics 1,034, prepared aerodynamics 1,087, context admission 13, disc normal 5, contact 8, drive 16, coupling 23, flight 40, trim 62, session 42, state audit 47, render audit 26, original visual 25 and articulated construction admission 38. The generated preset freshness check, four Python authoring tests, float64 transcendental-boundary guard and articulated compiler check also pass. [Commands, outputs, source fingerprints and negative control](audit-2026-10-14-tests.json) preserve this run. This is focused verification; the full repository runner was not rerun for this audit.
+
+The real AppRoot keyboard helper completed 480 ticks at 30/60/144 fps, with 61/121/289 frames and identical **v2** checkpoint hash `d5ecd6aadee40848a5c05ac570aa1d120bc53d8683cb9af09060621003a5c290`. Its different hash from the dated v1 record above reflects the checkpoint format change. The 19-value pulse-flight hash remains byte-identical to the pre-audit run: `9c252cbb1090596a461fefa0f4b850e18a64b9f7d948edf9624720c438187cba`. This single maneuver does not establish equality for every newly repaired contact/domain case.
+
+The production route generated a [reviewed close-up](audit-2026-10-14-closeup.png) at 1.5 simulated seconds with Godot 4.7.2 Compatibility on an NVIDIA RTX 3090, and a one-second trace with **241 finite 32-column rows**. Capture/trace exit without script/shader errors or leak warnings. The headless cadence helper with Dummy audio reports four leaked resources at immediate exit: MP3/WAV streams and their playback instances. Verbose output and an unsuccessful explicit-node-free diagnostic are retained in the JSON evidence. The audio shutdown issue remains open; it does not occur in the two production smoke routes tested here.
+
+**Paired development diagnostic:** seven rounds on the Windows Ryzen 5900X, 1,000 control evaluations and 480 actual-session ticks per round, alternating whole-session reference/candidate order. The reference is a disposable copy of the same repaired kernel/session using the public revalidating electronics entry; the candidate uses prepared electronics. All 14 endpoint state hashes agree. [Raw samples](audit-2026-10-14-paired.json), [timed source fingerprints](audit-2026-10-14-benchmark-provenance.json).
+
+| Median of batch means | Revalidating controls | Prepared controls | Reduction |
+| --- | ---: | ---: | ---: |
+| Electronics call | 89.331 µs | 42.237 µs | 52.7% |
+| Whole physics tick | 1,379.919 µs | 1,233.865 µs | 10.6% |
+
+Full flight-query median was 240.122 µs. This measures the control-validation change within the same repaired laws under concurrent development load; it is not an idle-host before/after comparison, a p95 measurement, rendering cost or H15 acceptance. Additional checkpoint-producer validation was verified after the timed run and is outside its per-tick loop. Both the proposed 37 µs evaluation target and 500 µs whole-tick gate remain unmet/open.
+
+Reproduce the focused suites using the script paths in the JSON evidence with `--headless --path app --script res://tests/<test>.gd`. The normal `app/test.sh` discovers these `test_*.gd` regressions. Repeat the cadence helper shown above at all three rates. Reproduce the paired measurement into a fresh local directory:
+
+```powershell
+python research/helicopter/audit/measure.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out .tools/heli-audit-repeat
+```
+
+The new articulated Blender revision still passes its unchanged neutral compiler/admission checks: 108 bindings, nine rods and preserved GLB/profile hashes. [HELI-25c](../HELI-25c/README.md) remains authoritative for material-bake defects and package admission. Physical servo lag/rate states, signed moving frames/operating travel, exact rotor phase replay and the separate electric HX-700 configuration are required before articulated flight activation. The audit does not replace those gates with decorative motion.
+
 ## Remaining acceptance
 
 Automatic localization across the published C/M inflow branch jumps is not qualified in the runtime. Separate engine/freewheel and servo states, forward trim/source response matching, slope/dynamic-rollover/scenery collision, environmental wake/audio, pilot review and the H15 500 µs whole-tick performance gate remain open. Development-host timing under concurrent tracks is not a target-machine performance result. Steady wind and deterministic gusts are supported; turbulence is refused until its state/replay integration is qualified.

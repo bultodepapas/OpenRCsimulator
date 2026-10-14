@@ -1,0 +1,121 @@
+[
+  {
+    "name": "bounds-shared-tree",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_grass_mask_bounds.gd"
+    ],
+    "exit_code": 0,
+    "sha256": "fd01951c504fd5f35410fc6c675a6fcbbe6663d64f8f0d31507958756d04f5f1",
+    "errors": false,
+    "warnings": []
+  },
+  {
+    "name": "test_imported_near_grass",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-grass-selection\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_imported_near_grass.gd"
+    ],
+    "exit_code": 0,
+    "sha256": "462c6909f4d7b837dfa88bf86b906315a1e34f052f35f049df4f86a77029e713",
+    "errors": false,
+    "warnings": []
+  },
+  {
+    "name": "test_near_grass",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-grass-selection\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_near_grass.gd"
+    ],
+    "exit_code": 0,
+    "sha256": "309e494d8f0ec913336927dae711c873d85abf34beacdda577b207e44679bc3a",
+    "errors": false,
+    "warnings": []
+  },
+  {
+    "name": "test_landscape_ground_lu18",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-grass-selection\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_landscape_ground_lu18.gd"
+    ],
+    "exit_code": 0,
+    "sha256": "8dc9fb2439de43b45b7ddd2a1be226c97c3b0dc2975824f105afefeeb6310891",
+    "errors": false,
+    "warnings": []
+  },
+  {
+    "name": "test_field_surfaces",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-grass-selection\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "exit_code": 0,
+    "sha256": "d0b3f78fa77c87d909876a01427fa40161280924103fd0ad394678780f9c292d",
+    "errors": false,
+    "warnings": []
+  },
+  {
+    "name": "test_field_integration",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-grass-selection\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_integration.gd"
+    ],
+    "exit_code": 0,
+    "sha256": "5d71d3afd86c2127ff174e9fef5e4d52dceba274096c930ee273141fe15b0a0e",
+    "errors": false,
+    "warnings": []
+  },
+  {
+    "name": "test_world_presentation_context",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-grass-selection\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_world_presentation_context.gd"
+    ],
+    "exit_code": 0,
+    "sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e",
+    "errors": false,
+    "warnings": []
+  }
+]

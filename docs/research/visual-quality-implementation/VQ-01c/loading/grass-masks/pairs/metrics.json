@@ -1,0 +1,237 @@
+{
+  "pairs": [
+    {
+      "pair": 1,
+      "home": {
+        "reference_usec": 12288254,
+        "candidate_usec": 9752728,
+        "gain_pct": 20.633736900295194
+      },
+      "home_sync": {
+        "reference_usec": 3529074,
+        "candidate_usec": 3107286,
+        "gain_pct": 11.951803787622476
+      },
+      "first_fly": {
+        "reference_usec": 5251446,
+        "candidate_usec": 3796998,
+        "gain_pct": 27.69614311943796
+      },
+      "first_fly_sync": {
+        "reference_usec": 5013843,
+        "candidate_usec": 3553934,
+        "gain_pct": 29.117565109238562
+      },
+      "warm_fly": {
+        "reference_usec": 2771865,
+        "candidate_usec": 2567622,
+        "gain_pct": 7.368432445303072
+      },
+      "return_home": {
+        "reference_usec": 1818635,
+        "candidate_usec": 1645138,
+        "gain_pct": 9.539957165676455
+      }
+    },
+    {
+      "pair": 2,
+      "home": {
+        "reference_usec": 9638190,
+        "candidate_usec": 10423316,
+        "gain_pct": -8.14599006659964
+      },
+      "home_sync": {
+        "reference_usec": 3069363,
+        "candidate_usec": 3532726,
+        "gain_pct": -15.096389706919645
+      },
+      "first_fly": {
+        "reference_usec": 4014313,
+        "candidate_usec": 4130780,
+        "gain_pct": -2.901293446724259
+      },
+      "first_fly_sync": {
+        "reference_usec": 3747495,
+        "candidate_usec": 3833982,
+        "gain_pct": -2.3078616515832575
+      },
+      "warm_fly": {
+        "reference_usec": 2665358,
+        "candidate_usec": 2652419,
+        "gain_pct": 0.4854507349481758
+      },
+      "return_home": {
+        "reference_usec": 1836511,
+        "candidate_usec": 1769496,
+        "gain_pct": 3.6490388568323304
+      }
+    },
+    {
+      "pair": 3,
+      "home": {
+        "reference_usec": 9747515,
+        "candidate_usec": 7871845,
+        "gain_pct": 19.242545407726993
+      },
+      "home_sync": {
+        "reference_usec": 3107972,
+        "candidate_usec": 2163537,
+        "gain_pct": 30.387500273490236
+      },
+      "first_fly": {
+        "reference_usec": 2963095,
+        "candidate_usec": 2962927,
+        "gain_pct": 0.005669747341884078
+      },
+      "first_fly_sync": {
+        "reference_usec": 2810379,
+        "candidate_usec": 2782813,
+        "gain_pct": 0.9808641467930126
+      },
+      "warm_fly": {
+        "reference_usec": 1705426,
+        "candidate_usec": 2191556,
+        "gain_pct": -28.504901414661205
+      },
+      "return_home": {
+        "reference_usec": 1227858,
+        "candidate_usec": 1241534,
+        "gain_pct": -1.1138095773289745
+      }
+    },
+    {
+      "pair": 4,
+      "home": {
+        "reference_usec": 7318284,
+        "candidate_usec": 8490297,
+        "gain_pct": -16.01486086082475
+      },
+      "home_sync": {
+        "reference_usec": 2479302,
+        "candidate_usec": 2762915,
+        "gain_pct": -11.4392276535896
+      },
+      "first_fly": {
+        "reference_usec": 2307542,
+        "candidate_usec": 3076437,
+        "gain_pct": -33.32095363811363
+      },
+      "first_fly_sync": {
+        "reference_usec": 2180478,
+        "candidate_usec": 2908689,
+        "gain_pct": -33.39685151604373
+      },
+      "warm_fly": {
+        "reference_usec": 2010223,
+        "candidate_usec": 2020112,
+        "gain_pct": -0.49193547183571174
+      },
+      "return_home": {
+        "reference_usec": 1006947,
+        "candidate_usec": 1254483,
+        "gain_pct": -24.582823127731647
+      }
+    },
+    {
+      "pair": 5,
+      "home": {
+        "reference_usec": 5828060,
+        "candidate_usec": 6029691,
+        "gain_pct": -3.459658960271514
+      },
+      "home_sync": {
+        "reference_usec": 1931439,
+        "candidate_usec": 1938256,
+        "gain_pct": -0.35294927771469875
+      },
+      "first_fly": {
+        "reference_usec": 2228278,
+        "candidate_usec": 2301437,
+        "gain_pct": -3.283207930069767
+      },
+      "first_fly_sync": {
+        "reference_usec": 2078044,
+        "candidate_usec": 2162252,
+        "gain_pct": -4.052272232926733
+      },
+      "warm_fly": {
+        "reference_usec": 1782753,
+        "candidate_usec": 2531386,
+        "gain_pct": -41.993085974332956
+      },
+      "return_home": {
+        "reference_usec": 1238886,
+        "candidate_usec": 1122854,
+        "gain_pct": 9.365833498804571
+      }
+    }
+  ],
+  "summary": {
+    "home": {
+      "reference_median_usec": 9638190,
+      "candidate_median_usec": 8490297,
+      "paired_gains_pct": [
+        20.633736900295194,
+        -8.14599006659964,
+        19.242545407726993,
+        -16.01486086082475,
+        -3.459658960271514
+      ]
+    },
+    "home_sync": {
+      "reference_median_usec": 3069363,
+      "candidate_median_usec": 2762915,
+      "paired_gains_pct": [
+        11.951803787622476,
+        -15.096389706919645,
+        30.387500273490236,
+        -11.4392276535896,
+        -0.35294927771469875
+      ]
+    },
+    "first_fly": {
+      "reference_median_usec": 2963095,
+      "candidate_median_usec": 3076437,
+      "paired_gains_pct": [
+        27.69614311943796,
+        -2.901293446724259,
+        0.005669747341884078,
+        -33.32095363811363,
+        -3.283207930069767
+      ]
+    },
+    "first_fly_sync": {
+      "reference_median_usec": 2810379,
+      "candidate_median_usec": 2908689,
+      "paired_gains_pct": [
+        29.117565109238562,
+        -2.3078616515832575,
+        0.9808641467930126,
+        -33.39685151604373,
+        -4.052272232926733
+      ]
+    },
+    "warm_fly": {
+      "reference_median_usec": 2010223,
+      "candidate_median_usec": 2531386,
+      "paired_gains_pct": [
+        7.368432445303072,
+        0.4854507349481758,
+        -28.504901414661205,
+        -0.49193547183571174,
+        -41.993085974332956
+      ]
+    },
+    "return_home": {
+      "reference_median_usec": 1238886,
+      "candidate_median_usec": 1254483,
+      "paired_gains_pct": [
+        9.539957165676455,
+        3.6490388568323304,
+        -1.1138095773289745,
+        -24.582823127731647,
+        9.365833498804571
+      ]
+    }
+  }
+}

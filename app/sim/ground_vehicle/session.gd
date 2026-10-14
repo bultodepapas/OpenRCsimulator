@@ -6,6 +6,7 @@ class_name GroundVehicleSession
 const VehicleDynamics := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const VehicleData := preload("res://physics/ground_vehicle/vehicle_data.gd")
 const Course := preload("res://physics/ground_vehicle/course.gd")
+const AirfieldCourse := preload("res://physics/ground_vehicle/airfield_course.gd")
 const Math3D := preload("res://physics/math3d.gd")
 
 const FORMAT := "openrc-ground-vehicle-checkpoint v2"
@@ -115,6 +116,26 @@ func prepare_default(experiment: Dictionary = {}) -> bool:
 	return prepare(vehicle_result, course_result, base_vehicle_result, pose_up_delta_m)
 
 
+## Prepare the Bisonte on the validated airplane field, sampling the same ground model as aircraft.
+## The terrain-aware kernel initializer computes model-specific static support at the selected spawn.
+func prepare_airfield(field_result: Dictionary, experiment: Dictionary = {}, lake: Dictionary = {}) -> bool:
+	var base_vehicle_result: Dictionary = VehicleData.load_default()
+	if not bool(base_vehicle_result.get("ok", false)):
+		load_error = "; ".join(_result_errors(base_vehicle_result, "vehicle data did not load"))
+		return false
+	var vehicle_result: Dictionary = base_vehicle_result
+	if not experiment.is_empty():
+		vehicle_result = VehicleData.with_experiment(base_vehicle_result, experiment)
+		if not bool(vehicle_result.get("ok", false)):
+			load_error = "; ".join(_result_errors(vehicle_result, "vehicle experiment was rejected"))
+			return false
+	var course_result: Dictionary = AirfieldCourse.build(field_result, {}, lake)
+	if not bool(course_result.get("ok", false)):
+		load_error = "; ".join(_result_errors(course_result, "airfield course could not be built"))
+		return false
+	return prepare(vehicle_result, course_result, base_vehicle_result, 0.0)
+
+
 ## Build every derived object before replacing a running session. A malformed model/course or
 ## failed kernel initialization leaves the previous state, identities, tape, and pause untouched.
 func prepare(vehicle_result: Dictionary, course_result: Dictionary,
@@ -166,9 +187,8 @@ func _stage_session(vehicle_result: Dictionary, course_result: Dictionary, reque
 	if not is_finite(pose_up_delta_m):
 		return {"ok": false, "errors": PackedStringArray(["spawn CG-height adjustment must be finite"])}
 	var spawn_pose: Dictionary = staged_spawn.pose.duplicate(true)
-	spawn_pose.vehicle_up_m = float(spawn_pose.vehicle_up_m) + pose_up_delta_m
 	var road := _make_road(course_copy)
-	var initial: Variant = VehicleDynamics.make_state(model_copy, spawn_pose, road)
+	var initial: Variant = _make_spawn_state(model_copy, course_copy, spawn_pose, road, pose_up_delta_m)
 	if not _state_is_valid(initial):
 		return {"ok": false, "errors": PackedStringArray(["vehicle kernel could not initialize the selected course spawn"])}
 	var telemetry: Dictionary = VehicleDynamics.telemetry(initial, model_copy, road, _neutral_controls())
@@ -464,8 +484,7 @@ func manual_recovery() -> bool:
 		load_error = str(pose.error)
 		return false
 	var recovery_pose: Dictionary = pose.pose.duplicate(true)
-	recovery_pose.vehicle_up_m = float(recovery_pose.vehicle_up_m) + _spawn_up_delta_m
-	var recovered: Variant = VehicleDynamics.make_state(_model, recovery_pose, _road)
+	var recovered: Variant = _make_spawn_state(_model, _course, recovery_pose, _road, _spawn_up_delta_m)
 	if not _state_is_valid(recovered):
 		load_error = "manual recovery pose was rejected"
 		return false
@@ -1269,8 +1288,20 @@ func _expand_control_tape(value: Variant) -> Dictionary:
 
 
 func _make_road(course_value: Dictionary) -> Callable:
+	if str(course_value.get("sampler", "")) == AirfieldCourse.FORMAT:
+		return func(north_m: float, east_m: float) -> Dictionary:
+			return AirfieldCourse.sample(course_value, north_m, east_m)
 	return func(north_m: float, east_m: float) -> Dictionary:
 		return Course.sample(course_value, north_m, east_m)
+
+
+func _make_spawn_state(model: Dictionary, course_value: Dictionary, pose: Dictionary,
+		road: Callable, pose_up_delta_m: float) -> PackedFloat64Array:
+	if str(course_value.get("sampler", "")) == AirfieldCourse.FORMAT:
+		return VehicleDynamics.make_terrain_state(model, pose, road)
+	var practice_pose := pose.duplicate(true)
+	practice_pose.vehicle_up_m = float(practice_pose.vehicle_up_m) + pose_up_delta_m
+	return VehicleDynamics.make_state(model, practice_pose, road)
 
 
 ## Keep the chassis datum at the authored spawn when mass, CG, springs, or tire stiffness change.
@@ -1284,6 +1315,9 @@ func _support_altitude_delta(experiment: Dictionary, baseline: Dictionary,
 	if typeof(experiment_model) != TYPE_DICTIONARY or typeof(baseline_model) != TYPE_DICTIONARY \
 			or typeof(course_value) != TYPE_DICTIONARY:
 		return {"ok": false, "error": "cannot estimate experiment support altitude from incomplete model/course data"}
+	if str(course_value.get("sampler", "")) == AirfieldCourse.FORMAT:
+		# make_terrain_state solves support from the current model and real wheel patches each prepare/reset.
+		return {"ok": true, "delta_m": 0.0}
 	var road := _make_road(course_value.duplicate(true))
 	var experiment_support: Dictionary = VehicleDynamics.initialize(experiment_model, road, 0.0, 0.0)
 	var baseline_support: Dictionary = VehicleDynamics.initialize(baseline_model, road, 0.0, 0.0)

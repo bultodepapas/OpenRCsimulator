@@ -21,6 +21,7 @@ func check(ok: bool, description: String) -> void:
 func _run() -> void:
 	TranslationServer.set_locale("en")
 	activity = Activity.new()
+	activity.use_practice_fixture = true # Historical jump regression; production opens the shared airfield.
 	activity.enable_audio = false
 	activity.enable_course_visual = false
 	root.add_child(activity)

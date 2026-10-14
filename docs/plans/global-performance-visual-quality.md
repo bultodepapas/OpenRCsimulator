@@ -1,12 +1,12 @@
 # Global performance and visual-quality implementation plan
 
-2026-10-14 · Revision 11 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
+2026-10-14 · Revision 12 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
 
 **Execution decision:** baseline → visibility reference → measured CPU/loading repairs → texture audit → ground and foliage comparisons → targeted aircraft/weather repairs → qualified quality profiles → native acceptance. Implementation has started with **VQ-01c / DT-01 / DT-10a** measurement tools and a read-only texture inventory. [First evidence and unresolved gates](../research/visual-quality-implementation/VQ-01c/README.md) now include an attributed **DT-11a lake geometry reuse repair** with exact buffer parity and faster Home/Fly transitions. Native flight, cold-loading and visual-change acceptance remain open. Current step status stays in the owning VQ plan.
 
 **Scope decision:** six of the 24 brainstorm ideas are selected as bounded probes/refinements; five are conditional, eight deferred and five rejected from this delivery. The three ambitious rendering branches are also rejected from this delivery. A selected probe ends in either a qualified change or a documented **retain baseline** decision. It does not guarantee that its candidate ships.
 
-**Latest DT-11a slice:** [default ground-image reuse](../research/visual-quality-implementation/VQ-01c/loading/ground-image/README.md) removes repeated noise generation while preserving all pixel/mip bytes and independent scene resources. Five frozen-source process pairs improve first Fly (median 3.376→2.869 s) and first return Home (1.609→1.271 s); initial Home is mixed and its median regresses. Cold-load non-regression, loading budgets and current-package/native acceptance remain open.
+**Latest DT-11a slice:** [conservative grass-mask filtering](../research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md) reduces the default per-row exclusion list from 20 to 5. Native grass construction median is 212.276→123.677 ms with exact instance output; complete-field construction improves only 2.9%. The rank-first alternative was rejected for sparse-field regressions. The five-pair Home/Fly attempt contains paused samples and does not qualify loading gains. [Previous ground-image evidence](../research/visual-quality-implementation/VQ-01c/loading/ground-image/README.md) remains separate. Next: attribute remaining initial Home/first-Fly work on a consistent current snapshot and reserve foreground host time. Cold-load non-regression, loading budgets and current-package/native acceptance remain open.
 
 Earlier [grain precomputation and package repairs](../research/visual-quality-implementation/VQ-01c/loading/grain/README.md) retain their own source identity, measurements and export scope; do not pool campaigns.
 

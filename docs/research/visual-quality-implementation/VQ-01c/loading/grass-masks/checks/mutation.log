@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Could not preload resource script "res://scenery/imported_near_grass.gd".
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-grass-selection/test_grass_mask_bounds.gd:4)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://scenery/imported_near_grass.gd".
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-grass-selection/test_grass_mask_bounds.gd:4)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "rows" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-grass-selection/test_grass_mask_bounds.gd:13)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "inside" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-grass-selection/test_grass_mask_bounds.gd:14)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "filtered" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-grass-selection/test_grass_mask_bounds.gd:61)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "edge_result" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-grass-selection/test_grass_mask_bounds.gd:70)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-grass-selection/test_grass_mask_bounds.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

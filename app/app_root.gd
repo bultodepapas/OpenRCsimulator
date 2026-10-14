@@ -284,6 +284,11 @@ func start_ground_vehicle() -> void:
 			candidate = script.new()
 	var error := "Ground vehicle activity could not be loaded"
 	if candidate != null:
+		if _has_property(candidate, "field_path"):
+			candidate.field_path = field_path
+			candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
+			candidate.night_options = _night_options_from_preferences()
+			candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
 		if controllers != null and _has_property(candidate, "controller_registry"):
 			candidate.controller_registry = controllers.registry
 		add_child(candidate)
