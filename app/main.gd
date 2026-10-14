@@ -24,6 +24,7 @@ const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 const ScenarioConfig := preload("res://scenarios/scenario_config.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
 const FlightAudio = preload("res://audio/flight_audio.gd")
@@ -79,6 +80,8 @@ var start_choice: String = "airborne"
 var weather_config: Dictionary = {}
 ## TOD: immutable selection for this flight; no preference reads on the direct route.
 var lighting_config: Dictionary = {}
+## FW-71: visual-only field lighting and campfire choices; direct launches resolve these from CLI defaults/flags.
+var night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
 var _lighting: Dictionary = {}
 var _visual_timeline: Dictionary = {}
 var _visual_context_status: String = "present"
@@ -198,6 +201,16 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 func _ready() -> void:
 	var args := _user_args()
+	var night_result: Dictionary = Preferences.validate_night_options(night_options) if interactive_start \
+		else Preferences.night_options_from_args(args)
+	if not night_result.get("ok", false):
+		startup_error = "; ".join(night_result.errors)
+		printerr("night lighting: " + startup_error)
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	night_options = night_result.options.duplicate(true)
 	# The field-world route owns --date when paired with its time selection.
 	var lighting_args: Dictionary = args.duplicate()
 	if (args.has("time_of_day") or args.has("time")) and not (args.has("time-of-day") or args.has("lighting") or args.has("lighting-config")):
@@ -1167,6 +1180,7 @@ func _trace_meta() -> Dictionary:
 	var build := BuildInfo.current()
 	meta.app_build = build.describe if build.source == "export" else "development"
 	meta.app_version = build.parsed.semver if build.source == "export" else build.version + " (development)"
+	meta.visual_night_options = JSON.stringify(night_options, "", true, true)
 	if not flight_scenario.is_empty():
 		meta.flight_scenario = JSON.stringify(flight_scenario, "", true, true)
 	if _visual_context_status != "present":
@@ -1206,6 +1220,7 @@ func _on_resetting() -> void:
 ## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
 ## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted),
 ## --rates=normal|full (D6e: the aircraft's normal-flight rates and expo on the keyboard/gamepad sticks, or the maximum throws),
+## --field-lighting=club|airfield|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
 func _user_args() -> Dictionary:
 	var args := {}
@@ -1262,7 +1277,7 @@ func _build_world() -> bool:
 		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
 		return false
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
-	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot)
+	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot, night_options)
 	_field_world_lighting = bool(built.conditions.time_of_day)
 	_env = built.environment
 	_world_environment = built.world_environment
@@ -1285,6 +1300,16 @@ func _build_world() -> bool:
 	else:
 		_panel = InputPanel.create(self)
 		_hud = Hud.create(self)
+	return true
+
+
+## Commits a validated presentation change to this flight's field world.
+func set_night_options(profile: String, campfire: bool) -> bool:
+	var checked: Dictionary = Preferences.validate_night_options({"field_lighting": profile, "campfire": campfire})
+	if not checked.get("ok", false):
+		return false
+	night_options = checked.options.duplicate(true)
+	World.set_night_options(profile, campfire)
 	return true
 
 
@@ -1540,7 +1565,8 @@ func capture_evidence() -> Dictionary:
 	var position: Vector3 = _last_render_pose.get("pos", Vector3.ZERO)
 	var basis: Basis = _last_render_pose.get("basis", Basis.IDENTITY)
 	return {
-		format = "openrc-visual-evidence v1", lighting = TimeOfDayLighting.context(lighting_config, _lighting), provenance = VisualEvidence.provenance(),
+		format = "openrc-visual-evidence v1", lighting = TimeOfDayLighting.context(lighting_config, _lighting),
+		night_options = night_options.duplicate(true), provenance = VisualEvidence.provenance(),
 		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,
 		field_data = {id = field.id, path = field_path, sha256 = FileAccess.get_sha256(field_path)},
 		visual_pose = str(args.get("visual_pose", "")), visual_distance_m = float(args.get("visual_distance", 0.0)),

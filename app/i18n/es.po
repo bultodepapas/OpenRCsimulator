@@ -1222,3 +1222,27 @@ msgstr "Carros RC · Bisonte MT8"
 
 msgid "Workshop"
 msgstr "Taller"
+
+msgid "Field lighting"
+msgstr "Iluminación del campo"
+
+msgid "Campfire"
+msgstr "Fogata"
+
+msgid "Soft club"
+msgstr "Club suave"
+
+msgid "Airfield"
+msgstr "Aeropuerto"
+
+msgid "Field lights off"
+msgstr "Apagada"
+
+msgid "Campfire off"
+msgstr "Apagada"
+
+msgid "Campfire on"
+msgstr "Encendida"
+
+msgid "Choose the field lights and campfire for this paused flight. These visual options do not change flight behavior."
+msgstr "Elige la iluminación del campo y la fogata para este vuelo en pausa. Estas opciones visuales no cambian el comportamiento del vuelo."

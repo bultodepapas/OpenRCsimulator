@@ -156,6 +156,7 @@ static func flight_script_path_for_aircraft(id: String) -> String:
 
 func show_home() -> void:
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
+	var night_options: Dictionary = _night_options_from_preferences()
 	var checked_lighting: Dictionary = TimeOfDay.validate(preferences.get("lighting_config", TimeOfDay.defaults()))
 	var lighting_config: Dictionary = checked_lighting.config if checked_lighting.get("ok", false) else TimeOfDay.defaults()
 	var world_preset: String = preferences.get("time_of_day", "day")
@@ -163,7 +164,7 @@ func show_home() -> void:
 		world_preset = "day" # one active lighting selection; an explicit lighting config supersedes the FW selector
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
-	home_scene = HomeScene.new(aircraft, field_path, lighting_config) # still, configured backdrop; no simulation behind Home
+	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options) # still, configured backdrop; no simulation behind Home
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
 		return
@@ -296,6 +297,14 @@ func set_time_of_day(preset: String) -> void:
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
 
 
+func _night_options_from_preferences() -> Dictionary:
+	var checked: Dictionary = Preferences.validate_night_options({
+		"field_lighting": preferences.get("night_field_lighting", Preferences.DEFAULTS.night_field_lighting),
+		"campfire": preferences.get("night_campfire", Preferences.DEFAULTS.night_campfire),
+	})
+	return checked.options.duplicate(true) if checked.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
+
+
 ## Creates the flight scene in this same frame (captures and traces stay frame-for-frame identical) and frees Home.
 func start_flight(request: Dictionary = {}) -> void:
 	if flight != null:
@@ -353,6 +362,7 @@ func start_flight(request: Dictionary = {}) -> void:
 	flight.start_choice = chosen_start
 	flight.weather_config = chosen_weather.duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
+	flight.night_options = _night_options_from_preferences() if has_home else Preferences.NIGHT_DEFAULTS.duplicate(true)
 	flight.interactive_start = has_home
 	if not helicopter_route:
 		flight.remember_lighting_selection = not is_random
@@ -391,6 +401,9 @@ func start_flight(request: Dictionary = {}) -> void:
 		preferences.start_choice = chosen_start
 		preferences.weather_config = chosen_weather.duplicate(true)
 		preferences.lighting_config = chosen_lighting.duplicate(true)
+		var selected_night: Dictionary = _night_options_from_preferences()
+		preferences.night_field_lighting = selected_night.field_lighting
+		preferences.night_campfire = selected_night.campfire
 		var err: Error = Preferences.save_to(preferences_path, preferences)
 		_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 		flight._note = _settings_note
@@ -582,6 +595,8 @@ func open_pause() -> void:
 		pause_menu.end_button.text = "Return to Workshop"
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.time_of_day_button.visible = not helicopter_route
+	if bool(flight.get("_field_world_lighting")):
+		pause_menu.time_of_day_button.text = tr("Field lighting")
 	pause_menu.overlays_requested.connect(open_overlays)
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
 	pause_menu.end_requested.connect(end_flight)
@@ -763,11 +778,12 @@ func open_time_of_day(from: Control = null) -> void:
 		return
 	if not flight.session.sim.paused:
 		return
-	if bool(flight.get("_field_world_lighting")):
-		pause_menu.set_note(tr("End this flight to change its time-of-day settings."))
-		return
 	from = from if from != null else pause_menu.time_of_day_button
-	var time_of_day_dialog := TimeOfDayDialog.new(flight.lighting_config.duplicate(true))
+	var time_of_day_dialog := TimeOfDayDialog.new(
+		flight.lighting_config.duplicate(true),
+		flight.get("night_options"),
+		bool(flight.get("_field_world_lighting")),
+	)
 	time_of_day_dialog.applied.connect(_on_time_of_day_applied)
 	time_of_day_dialog.cancelled.connect(close_time_of_day)
 	screens.push("time_of_day", time_of_day_dialog, from)
@@ -780,24 +796,55 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 	if not flight.session.sim.paused:
 		time_of_day_dialog.show_apply_error(["pause the flight before editing lighting"])
 		return
+	var night_result: Dictionary = Preferences.validate_night_options(time_of_day_dialog.applied_night_options)
+	if not night_result.get("ok", false):
+		time_of_day_dialog.show_apply_error(night_result.get("errors", []))
+		return
+	if time_of_day_dialog.night_only:
+		if not _apply_flight_night_options(night_result.options):
+			time_of_day_dialog.show_apply_error(["could not apply field lighting"])
+			return
+		if has_home and flight.remember_lighting_selection:
+			var night_changed: bool = _night_options_from_preferences() != night_result.options
+			preferences.night_field_lighting = night_result.options.field_lighting
+			preferences.night_campfire = night_result.options.campfire
+			if night_changed:
+				var save_error: Error = Preferences.save_to(preferences_path, preferences)
+				_settings_note = "" if save_error == OK else tr("Could not save settings (error %d).") % save_error
+				pause_menu.set_note(_settings_note)
+		close_time_of_day()
+		return
 	var result: Dictionary = flight.apply_lighting_config(raw)
 	if not result.get("ok", false):
 		time_of_day_dialog.show_apply_error(result.get("errors", []))
 		return
+	if not _apply_flight_night_options(night_result.options):
+		time_of_day_dialog.show_apply_error(["could not apply field lighting"])
+		return
 	if has_home and flight.remember_lighting_selection:
 		var applied_config: Dictionary = flight.lighting_config.duplicate(true)
+		var night_changed: bool = _night_options_from_preferences() != night_result.options
 		var save_selection: bool = bool(result.get("changed", false)) \
 			or preferences.get("lighting_config", TimeOfDay.defaults()) != applied_config \
-			or bool(preferences.get("lighting_invalid", false))
+			or bool(preferences.get("lighting_invalid", false)) or night_changed
 		preferences.lighting_config = applied_config
 		preferences.lighting_invalid = false
 		preferences.time_of_day = "day"
+		preferences.night_field_lighting = night_result.options.field_lighting
+		preferences.night_campfire = night_result.options.campfire
 		Conditions.session_preset = "day"
 		if save_selection:
 			var err: Error = Preferences.save_to(preferences_path, preferences)
 			_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 			pause_menu.set_note(_settings_note)
 	close_time_of_day()
+
+
+func _apply_flight_night_options(options: Dictionary) -> bool:
+	if flight == null or not flight.has_method("set_night_options"):
+		return false
+	var result: Variant = flight.call("set_night_options", options.field_lighting, options.campfire)
+	return typeof(result) != TYPE_BOOL or result
 
 
 ## Cancel and successful Apply both return focus to the pause button without releasing the menu hold.
@@ -814,6 +861,7 @@ func open_weather(from: Control = null) -> void:
 	var weather_dialog := WeatherDialog.new(
 		preferences.get("weather_config", WeatherSettings.defaults()),
 		preferences.get("lighting_config", TimeOfDay.defaults()),
+		_night_options_from_preferences(),
 	)
 	weather_dialog.applied.connect(_on_weather_applied)
 	weather_dialog.cancelled.connect(close_weather)
@@ -830,19 +878,26 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	var checked_lighting: Dictionary = TimeOfDay.validate(lighting_raw)
 	if not checked_lighting.get("ok", false):
 		return
+	var night_raw: Variant = weather_dialog.get("applied_night_options")
+	var checked_night: Dictionary = Preferences.validate_night_options(night_raw)
+	if not checked_night.get("ok", false):
+		return
 	var lighting_changed: bool = preferences.get("lighting_config", TimeOfDay.defaults()) != checked_lighting.config
+	var night_changed: bool = _night_options_from_preferences() != checked_night.options
 	preferences.weather_config = checked.config.duplicate(true)
 	preferences.lighting_config = checked_lighting.config.duplicate(true)
 	preferences.lighting_invalid = false
+	preferences.night_field_lighting = checked_night.options.field_lighting
+	preferences.night_campfire = checked_night.options.campfire
 	if lighting_changed:
 		preferences.time_of_day = "day"
 		Conditions.session_preset = "day"
 	if home != null:
 		home.set_weather_config(preferences.weather_config)
 		home.set_lighting_config(preferences.lighting_config)
-		if lighting_changed:
-			home.set_time_of_day("day")
 	if lighting_changed:
+			home.set_time_of_day("day")
+	if lighting_changed or night_changed:
 		_rebuild_home_scene.call_deferred()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
@@ -858,7 +913,7 @@ func _rebuild_home_scene() -> void:
 	var previous: Node3D = home_scene
 	remove_child(previous)
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
-	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config)
+	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences())
 	if not replacement.field_errors.is_empty():
 		replacement.free()
 		add_child(previous)

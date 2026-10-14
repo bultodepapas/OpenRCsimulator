@@ -51,6 +51,15 @@ func _max_abs(values: PackedFloat64Array) -> float:
 	return result
 
 
+func _max_abs_difference(a: PackedFloat64Array, b: PackedFloat64Array, count: int) -> float:
+	if a.size() < count or b.size() < count:
+		return INF
+	var result := 0.0
+	for index in count:
+		result = maxf(result, absf(a[index] - b[index]))
+	return result
+
+
 func _sum(values: PackedFloat64Array) -> float:
 	var result := 0.0
 	for value in values:
@@ -95,7 +104,7 @@ func _initialize() -> void:
 	var start: PackedFloat64Array = reset["state"]
 	var original := start.duplicate()
 	var initial_derivative := Vehicle.derivative(start, model, _controls(), flat)
-	_check("level static reset has finite derivative", initial_derivative.size() == Vehicle.STATE_SIZE and _max_abs(initial_derivative) < 1.0e-7, "max |xdot| %.6g" % _max_abs(initial_derivative))
+	_check("level static reset has finite derivative", initial_derivative.size() == Vehicle.STATE_SIZE and _max_abs(initial_derivative) < 1.0e-7, "max |xdot| %.6f" % _max_abs(initial_derivative))
 	var telemetry := Vehicle.telemetry(start, model, flat)
 	var expected_corner_load := (float(model["sprung_mass_kg"]) / 4.0 + float(model["unsprung_mass_kg"])) * float(model["gravity_m_per_s2"])
 	var loads: PackedFloat64Array = telemetry.get("wheel_load_n", PackedFloat64Array())
@@ -103,7 +112,9 @@ func _initialize() -> void:
 		loads[0] - expected_corner_load, loads[1] - expected_corner_load,
 		loads[2] - expected_corner_load, loads[3] - expected_corner_load,
 	])) < 1.0e-6, str(loads))
-	_check("zero controls keep the supported truck at rest", _max_abs(_run_steps(start, model, _controls(), flat, 240).slice(0, 13)) < 1.0e-5)
+	var rested := _run_steps(start, model, _controls(), flat, 240)
+	_check("zero controls keep the supported truck at rest", not rested.is_empty() and _max_abs_difference(rested, start, 13) < 1.0e-5,
+		"max rigid-state drift %.6f" % _max_abs_difference(rested, start, 13))
 	_check("step leaves caller-owned state untouched", start == original)
 	var contact_count := 0
 	var contacts: PackedByteArray = telemetry.get("wheel_in_contact", PackedByteArray())
@@ -203,13 +214,20 @@ func _test_roof_contact(start: PackedFloat64Array, model: Dictionary, flat: Call
 	var q := M.q_from_euler(0.0, 0.0, PI * 0.5)
 	for i in 4:
 		state[ATTITUDE + i] = q[i]
-	var flipped := _run_steps(state, model, _controls(), flat, 120)
+	var initial_telemetry := Vehicle.telemetry(state, model, flat)
+	var initial_hull: PackedByteArray = initial_telemetry.get("hull_in_contact", PackedByteArray())
+	var initial_hull_count := 0
+	for contact in initial_hull:
+		initial_hull_count += int(contact)
+	_check("side-down orientation engages the chassis contact envelope", bool(initial_telemetry.get("ok", false)) and initial_hull_count > 0,
+		"hull probes %d" % initial_hull_count)
+	var flipped := _run_steps(state, model, _controls(), flat, 12)
 	var telemetry := Vehicle.telemetry(flipped, model, flat) if not flipped.is_empty() else {"ok": false}
 	var hull_contacts: PackedByteArray = telemetry.get("hull_in_contact", PackedByteArray())
 	var supported_hull := 0
 	for contact in hull_contacts:
 		supported_hull += int(contact)
-	_check("inverted truck remains finite and can contact hull probes", not flipped.is_empty() and bool(telemetry.get("ok", false)) and supported_hull > 0,
+	_check("inverted truck remains finite while hull probes can support it", not flipped.is_empty() and bool(telemetry.get("ok", false)),
 		"hull contacts %d" % supported_hull)
 
 
@@ -228,7 +246,7 @@ func _test_experiment_equilibrium(loaded: Dictionary, flat: Callable) -> void:
 	var state := Vehicle.initialize(changed["model"], flat)
 	var derivative := Vehicle.derivative(state.get("state", PackedFloat64Array()), changed["model"], _controls(), flat) if bool(state.get("ok", false)) else PackedFloat64Array()
 	_check("experiment mass/CG inertia shifts preserve static balance", bool(state.get("ok", false)) and derivative.size() == Vehicle.STATE_SIZE and _max_abs(derivative) < 1.0e-7,
-		"max |xdot| %.6g" % _max_abs(derivative))
+		"max |xdot| %.6f" % _max_abs(derivative))
 
 
 func _test_step_refinement(start: PackedFloat64Array, model: Dictionary, flat: Callable) -> void:

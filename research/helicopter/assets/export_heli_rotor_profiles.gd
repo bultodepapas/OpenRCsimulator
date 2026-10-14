@@ -86,12 +86,12 @@ func _profile(rotor: Node3D, root: Node3D) -> Dictionary:
 
 
 func _relative_path(root: Node, node: Node) -> String:
-	var parts := PackedStringArray()
+	var parts: Array[String] = []
 	var current: Node = node
 	while current != null and current != root:
 		parts.push_front(String(current.name))
 		current = current.get_parent()
-	return "/".join(parts) if current == root else ""
+	return "/".join(PackedStringArray(parts)) if current == root else ""
 
 
 func _material_key(material: Material) -> String:

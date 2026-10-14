@@ -79,7 +79,8 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 						_add_error(errors, diagnostics, "invalid_support_contact_name", "landing_gear.contacts[%d].name" % contact_index, "expected a nonempty landing-gear contact name for legacy wheel-profile binding")
 						continue
 					if seen_profile_names.has(contact_name):
-						_add_error(errors, diagnostics, "duplicate_wheel_profile_contact_name", "landing_gear.contacts[%d].name" % contact_index, "duplicate wheel-profile contact name '%s'" % contact_name)
+					var duplicate_name_code := "duplicate_wheel_profile_contact_name" if authored_identity else "duplicate_contact_id"
+					_add_error(errors, diagnostics, duplicate_name_code, "landing_gear.contacts[%d].name" % contact_index, "duplicate wheel-profile contact name '%s'" % contact_name)
 						continue
 					seen_profile_names[contact_name] = true
 					var contact_id_value: Variant = contact.get("id", "") if authored_identity else contact_name_value
@@ -533,18 +534,18 @@ static func _wheel_profile(model: Dictionary, aircraft_id: String, support_point
 			if contact_order_value.size() != profile_names.size():
 				_add_error(errors, diagnostics, "wheel_contact_order_mismatch", "wheel_profile.contact_order", "profile contact order must match the support-contact count")
 			for index in contact_order_value.size():
-				var contact_id_value: Variant = contact_order_value[index]
-				if typeof(contact_id_value) != TYPE_STRING:
+				var contact_name_value: Variant = contact_order_value[index]
+				if typeof(contact_name_value) != TYPE_STRING:
 					_add_error(errors, diagnostics, "invalid_wheel_contact_reference", "wheel_profile.contact_order[%d]" % index, "profile contact references must be strings")
 					continue
-				var contact_id := str(contact_id_value)
-				if seen.has(contact_id):
-					_add_error(errors, diagnostics, "duplicate_contact_reference", "wheel_profile.contact_order[%d]" % index, "duplicate profile contact ID '%s'" % contact_id)
-				elif not profile_names.has(contact_id):
-					_add_error(errors, diagnostics, "unknown_contact_reference", "wheel_profile.contact_order[%d]" % index, "unknown profile contact ID '%s'" % contact_id)
-				elif index < profile_names.size() and profile_names[index] != contact_id:
-					_add_error(errors, diagnostics, "wheel_contact_order_mismatch", "wheel_profile.contact_order[%d]" % index, "profile contact order differs from normalized landing-gear order")
-				seen[contact_id] = true
+				var contact_name := str(contact_name_value)
+				if seen.has(contact_name):
+					_add_error(errors, diagnostics, "duplicate_contact_reference", "wheel_profile.contact_order[%d]" % index, "duplicate profile contact name '%s'" % contact_name)
+				elif not profile_names.has(contact_name):
+					_add_error(errors, diagnostics, "unknown_contact_reference", "wheel_profile.contact_order[%d]" % index, "unknown profile contact name '%s'" % contact_name)
+				elif index < profile_names.size() and profile_names[index] != contact_name:
+					_add_error(errors, diagnostics, "wheel_contact_order_mismatch", "wheel_profile.contact_order[%d]" % index, "profile contact name order differs from normalized landing-gear order")
+				seen[contact_name] = true
 	if status == "legacy_fallback":
 		_add_warning(diagnostics, "legacy_wheel_profile_fallback", "wheel_profile.status",
 			"aircraft has no explicit wheel profile; existing legacy wheel behavior applies")

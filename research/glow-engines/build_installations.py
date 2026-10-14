@@ -76,12 +76,21 @@ def aircraft(two, install, suffix=''):
     raw['start']['level_speed']=q(20.,'m/s')
     raw['balance']['configuration'] = 'virtual-glow-installation-v1'
     inv = raw['inventory']
-    # These IDs belong to the inherited source records. Keep the installation's engine,
-    # muffler, propeller, fuel and virtual ballast identities explicit as their values change.
-    for index, identity in ((0, 'item_engine_main'), (1, 'item_muffler_main'),
-                            (2, 'item_propeller_main'), (6, 'item_fuel_main'),
-                            (-1, 'item_balance_mass_virtual')):
-        inv[index]['id'] = identity
+    # These identities follow the inherited source records through display-name
+    # and array-order changes; installation, fuel and ballast values can change
+    # without changing the authored physical roles.
+    replacement_ids = {
+        'item_engine_main': 'item_engine_main',
+        'item_muffler_main': 'item_muffler_main',
+        'item_propeller_main': 'item_propeller_main',
+        'item_fuel_main': 'item_fuel_main',
+        'item_balance_mass_virtual': 'item_balance_mass_virtual',
+    }
+    for source_id, identity in replacement_ids.items():
+        matches = [item for item in inv if item.get('id') == source_id]
+        if len(matches) != 1:
+            raise ValueError('Stik source identity is missing or duplicated: '+source_id)
+        matches[0]['id'] = identity
     inv[0]['name'] = 'O.S. MAX-55AX' if two else 'O.S. FS-64V'
     url = 'https://www.os-engines.co.jp/english/line_up/engine/air/'+('aircraft/catalog/15612.htm' if two else 'single/catalog/3AY00.html')
     inv[0]['mass'] = q(.404 if two else .442,'kg','manual',url)

@@ -41,11 +41,12 @@ def main() -> int:
         started = time.monotonic()
         timed_out = False
         try:
-            result = subprocess.run(base + command, cwd=ROOT, capture_output=True, timeout=600)
-            log = (result.stdout + result.stderr).decode("utf-8", errors="replace")
+            with (out / (name + ".log")).open("wb") as stream:
+                result = subprocess.run(base + command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT, timeout=600)
+            log = (out / (name + ".log")).read_text(encoding="utf-8", errors="replace")
             code = result.returncode
-        except subprocess.TimeoutExpired as error:
-            log = ((error.stdout or b"") + (error.stderr or b"")).decode("utf-8", errors="replace")
+        except subprocess.TimeoutExpired:
+            log = (out / (name + ".log")).read_text(encoding="utf-8", errors="replace")
             code, timed_out = -1, True
         errors = [line for line in log.splitlines() if line.startswith(("ERROR:", "SCRIPT ERROR:", "SHADER ERROR:", "FAIL "))]
         passed = code == 0 and not errors

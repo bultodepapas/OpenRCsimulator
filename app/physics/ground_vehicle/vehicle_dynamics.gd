@@ -204,10 +204,15 @@ static func energy(state: PackedFloat64Array, model: Dictionary, road: Callable)
 
 ## Per-corner loads, slip and support diagnostics. Returned vectors use
 ## FL,FR,RL,RR order; `airborne` means no tire or hull sphere is supporting.
-static func telemetry(state: PackedFloat64Array, model: Dictionary, road: Callable) -> Dictionary:
-	if state.size() != STATE_SIZE or not _valid_model(model) or not road.is_valid() or not _finite_array(state):
+static func telemetry(
+	state: PackedFloat64Array,
+	model: Dictionary,
+	road: Callable,
+	controls: Dictionary = DEFAULT_CONTROLS,
+) -> Dictionary:
+	if state.size() != STATE_SIZE or not _valid_model(model) or not road.is_valid() or not _valid_controls(controls) or not _finite_array(state):
 		return {"ok": false, "error": "Invalid telemetry input"}
-	var evaluated := _evaluate(state, model, DEFAULT_CONTROLS, road)
+	var evaluated := _evaluate(state, model, controls, road)
 	if not bool(evaluated["ok"]):
 		return {"ok": false, "error": str(evaluated["error"])}
 	var velocity: PackedFloat64Array = _slice3(state, VEL)
@@ -429,7 +434,7 @@ static func _evaluate(state: PackedFloat64Array, model: Dictionary, controls: Di
 		var wheel_axis := spin_axis_body[corner]
 		var wheel_spin := state[WHEEL_SPIN + corner]
 		var wheel_omega := M.add(body_rate, M.add(
-			PackedFloat64Array([0.0, 0.0, left_steer_rate]), M.scale(wheel_axis, wheel_spin)))
+			PackedFloat64Array([0.0, 0.0, -left_steer_rate]), M.scale(wheel_axis, wheel_spin)))
 		wheel_abs_omega_body.append(wheel_omega)
 		var contact_velocity_ned := M.add(
 			hub_velocity_ned,
@@ -649,8 +654,11 @@ static func _corner_geometry(state: PackedFloat64Array, model: Dictionary, steer
 		var left_rate := -steer_rate_right if corner < 2 else 0.0
 		var left_accel := -steer_accel_right if corner < 2 else 0.0
 		var forward := PackedFloat64Array([M.cos_(left_angle), -M.sin_(left_angle), 0.0])
-		var axis := M.cross(forward, PackedFloat64Array([0.0, 0.0, -1.0]))
-		var axis_rate := M.scale(M.cross(PackedFloat64Array([0.0, 0.0, 1.0]), axis), left_rate)
+		# A positive spin rate means forward rolling: the wheel axle points
+		# forward × down (toward the vehicle's left at zero steer).
+		var axis := M.cross(PackedFloat64Array([0.0, 0.0, -1.0]), forward)
+		# The wheel assembly rotates around local up as its left angle grows.
+		var axis_rate := M.scale(M.cross(PackedFloat64Array([0.0, 0.0, 1.0]), axis), -left_rate)
 		hubs.append(r)
 		derivatives.append(r_prime)
 		second_derivatives.append(r_second)
@@ -845,7 +853,7 @@ static func _tire_contact_bias(
 	var angular_convective := M.add(
 		M.cross(body_rate, wheel_omega),
 	M.add(
-		M.scale(PackedFloat64Array([0.0, 0.0, 1.0]), steer_accel_left),
+		M.scale(PackedFloat64Array([0.0, 0.0, -1.0]), steer_accel_left),
 		M.scale(spin_axis_rate, wheel_spin),
 	)
 	)
@@ -904,10 +912,10 @@ static func _solve_tangent_friction(
 			var row1: PackedFloat64Array = rows[i1]
 			var col0: PackedFloat64Array = columns[i0]
 			var col1: PackedFloat64Array = columns[i1]
-			var w00 := M.dot(row0, col0)
-			var w01 := M.dot(row0, col1)
-			var w10 := M.dot(row1, col0)
-			var w11 := M.dot(row1, col1)
+			var w00 := _dot_generalized(row0, col0)
+			var w01 := _dot_generalized(row0, col1)
+			var w10 := _dot_generalized(row1, col0)
+			var w11 := _dot_generalized(row1, col1)
 			var determinant := w00 * w11 - w01 * w10
 			if not is_finite(determinant) or determinant <= 1.0e-18:
 				return _failure("Tangent contact mobility is singular")
@@ -950,6 +958,13 @@ static func _matrix_vector(matrix: PackedFloat64Array, vector: PackedFloat64Arra
 		for column in n:
 			value += matrix[row * n + column] * vector[column]
 		result[row] = value
+	return result
+
+
+static func _dot_generalized(a: PackedFloat64Array, b: PackedFloat64Array) -> float:
+	var result := 0.0
+	for i in GENERALIZED_SIZE:
+		result += a[i] * b[i]
 	return result
 
 
@@ -1007,12 +1022,12 @@ static func _travel_stop_force(travel: float, travel_rate: float, model: Diction
 	var bump := float(model["travel_bump_m"])
 	var droop := float(model["travel_droop_m"])
 	if travel > bump:
-		return (
+		return -(
 			float(model["bump_stop_stiffness_n_per_m"]) * (travel - bump)
 			+ float(model["bump_stop_damping_n_s_per_m"]) * maxf(travel_rate, 0.0)
 		)
 	if travel < -droop:
-		return -(
+		return (
 			float(model["droop_stop_stiffness_n_per_m"]) * (-droop - travel)
 			+ float(model["droop_stop_damping_n_s_per_m"]) * maxf(-travel_rate, 0.0)
 		)

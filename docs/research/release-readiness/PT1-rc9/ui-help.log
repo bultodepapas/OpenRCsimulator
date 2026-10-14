@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   headless (no layout): QWERTY names
+ok   AZERTY: physical A, W, Z print Q, Z, W
+ok   Russian: physical A, W print Ф, Ц
+ok   named keys get names, arrows are drawn
+ok   named keys are translated
+ok   Home: Help reachable by keyboard
+ok   Enter opens Help, focus on Close
+ok   Help shows every key of the shared table (35)
+ok   about: development build, Godot, licence
+ok   Help scrolls to keyboard focus
+ok   English Help fits without scrolling (594 <= 600 px)
+ok   Esc closes Help, focus back on Help
+ok   Esc in Help did not start or quit anything
+ok   Help: every text translated to Spanish
+ok   about in Spanish
+ok   Spanish Help fits without scrolling (594 <= 600 px)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   pause: Help reachable
+ok   Help over the pause menu swallows flight keys
+ok   Esc closes Help, the pause menu stays
+ok   Esc again continues the flight
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   first flight: the hint shows, three items
+ok   the hint takes no keyboard focus
+ok   flight keys fly under the hint
+ok   paused time does not use the hint up
+ok   after 0.5 s flown it goes and is remembered
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   next flight: no hint
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route: no hint, no settings
+all UI help checks passed

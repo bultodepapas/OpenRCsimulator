@@ -42,9 +42,12 @@ var _snapshot := PackedFloat64Array()
 var _previous := PackedFloat64Array()
 var _record_export_pending := false
 var _last_export := {}
+var _previous_auto_quit := true
 
 func _ready() -> void:
 	name = "GroundVehicleActivity"
+	_previous_auto_quit = get_tree().auto_accept_quit
+	get_tree().auto_accept_quit = false
 	session = Session.new()
 	session.name = "GroundVehicleSession"
 	add_child(session)
@@ -296,11 +299,16 @@ func _event(event: Dictionary) -> void:
 		dashboard.message("Braking distance %.2f m" % event.distance_m, "Distancia de frenado %.2f m" % event.distance_m)
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		if dashboard == null or _finish_recording(): get_tree().quit()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		_focused = false
 		if dashboard != null: open_garage()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
 		_focused = true
+
+func _exit_tree() -> void:
+	get_tree().auto_accept_quit = _previous_auto_quit
 
 func _unhandled_input(event: InputEvent) -> void:
 	if dashboard == null: return

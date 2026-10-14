@@ -171,9 +171,14 @@ def derive(inputs=None):
     shares={"main_left":(1-tail_share)/2,"main_right":(1-tail_share)/2,"tail":tail_share}
     ktot=mass*(v("heave_omega_dt")*240)**2
     gc=[]
-    for name,p in points.items():
+    contact_sources=i["landing_gear_contact_identity"]
+    if {record["source_name"] for record in contact_sources} != set(points):
+        raise ValueError("TT-07 contact identity source does not match the authored gear contacts")
+    for contact_source in contact_sources:
+        name=contact_source["source_name"]
+        p=points[name]
         stiffness=ktot*shares[name]
-        gc.append(dict(id={"main_left": "contact_main_left", "main_right": "contact_main_right", "tail": "contact_tail"}[name],
+        gc.append(dict(id=contact_source["id"],
             name=name,position=q(p,"m","measured","TT-19 imported r2 wheel centre minus radius; D0 frame"),
             stiffness=q(stiffness,"N/m",source=SOURCE+": E1 heave omega*dt rule, split by three-point static load share; assumed compliance"),
             damping=q(2*v("gear_damping_ratio")*math.sqrt(stiffness*mass/3),"N·s/m"),

@@ -17,6 +17,7 @@ const FieldLoader = preload("res://data/field_loader.gd")
 const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 
 ## Composition, in NED metres from the pilot's eyes and degrees: a low pass along the runway at eye height, banked
 ## toward the camera so the planform shows, seen with a long lens from the field edge (a photographer's view:
@@ -35,6 +36,7 @@ const CLOCK := 37.0
 
 var field: Dictionary = {}
 var lighting_config: Dictionary = {}
+var night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
 var _lighting: Dictionary = {}
 var field_errors: PackedStringArray = PackedStringArray()
 
@@ -44,13 +46,20 @@ var _shadow: MeshInstance3D
 
 
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
-func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}) -> void:
+func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}) -> void:
 	name = "HomeScene"
 	var checked_light: Dictionary = LightingConfig.validate(LightingConfig.defaults() if selected_lighting.is_empty() else selected_lighting)
 	if not checked_light.ok:
 		field_errors = PackedStringArray(checked_light.errors)
 		return
 	lighting_config = checked_light.config.duplicate(true)
+	var checked_night: Dictionary = Preferences.validate_night_options(
+		Preferences.NIGHT_DEFAULTS if selected_night_options.is_empty() else selected_night_options
+	)
+	if not checked_night.get("ok", false):
+		field_errors = PackedStringArray(checked_night.errors)
+		return
+	night_options = checked_night.options.duplicate(true)
 	_lighting = TimeOfDayLighting.snapshot(lighting_config)
 	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
 	field_errors = loaded_field.errors
@@ -58,7 +67,7 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 		return
 	field = loaded_field.field
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
-	var env: Environment = World.build(self, field, Callable(), {}, snapshot).environment
+	var env: Environment = World.build(self, field, Callable(), {}, snapshot, night_options).environment
 
 	_shadow = Shadow.create(self)
 	show_aircraft(aircraft)

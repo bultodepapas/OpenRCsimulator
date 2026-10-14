@@ -99,6 +99,9 @@ func prepare_default(experiment: Dictionary = {}) -> bool:
 ## failed kernel initialization leaves the previous state, identities, tape, and pause untouched.
 func prepare(vehicle_result: Dictionary, course_result: Dictionary,
 		baseline_vehicle_result: Dictionary = {}, pose_up_delta_m: float = 0.0) -> bool:
+	if recording:
+		load_error = "stop and export the current recording before preparing another session"
+		return false
 	var baseline := vehicle_result if baseline_vehicle_result.is_empty() else baseline_vehicle_result
 	var staged := _stage_session(vehicle_result, course_result, "", baseline, pose_up_delta_m)
 	if not staged.ok:
@@ -197,6 +200,9 @@ func _commit_prepared(staged: Dictionary) -> void:
 
 
 func reset(selected_spawn_id: String = "") -> bool:
+	if recording:
+		load_error = "stop and export the current recording before resetting"
+		return false
 	if not prepared:
 		load_error = "session is not prepared"
 		return false
@@ -517,7 +523,7 @@ func checkpoint() -> Dictionary:
 
 
 func can_restore_checkpoint(candidate: Variant) -> bool:
-	if not prepared or typeof(candidate) != TYPE_DICTIONARY:
+	if not prepared or recording or typeof(candidate) != TYPE_DICTIONARY:
 		return false
 	if candidate.get("format") != FORMAT or candidate.get("fixed_hz") != FIXED_HZ \
 			or candidate.get("control_layout") != CONTROL_LAYOUT \
@@ -533,22 +539,26 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 			or typeof(candidate.get("time_s")) not in [TYPE_FLOAT, TYPE_INT] \
 			or absf(float(candidate.time_s) - float(candidate.tick) * DT) > 1.0e-12:
 		return false
-	var candidate_state: Variant = candidate.get("state")
-	if not _state_is_valid(candidate_state) or candidate_state.size() != STATE_SIZE \
+	var candidate_state := _as_float64_array(candidate.get("state"), STATE_SIZE)
+	if not _state_is_valid(candidate_state) \
 			or _hash_bytes(candidate_state.to_byte_array()) != str(candidate.get("state_sha256", "")):
 		return false
 	var controls_value: Variant = candidate.get("control_tape")
 	var actions_value: Variant = candidate.get("recovery_actions")
 	var events_value: Variant = candidate.get("event_tape")
-	if typeof(controls_value) != TYPE_PACKED_FLOAT64_ARRAY or controls_value.size() != int(candidate.tick) * 5 \
+	var packed_controls := _as_control_tape(controls_value)
+	if typeof(controls_value) not in [TYPE_PACKED_FLOAT64_ARRAY, TYPE_ARRAY] \
+			or packed_controls.size() != controls_value.size() \
+			or (packed_controls.is_empty() and int(candidate.tick) > 0) \
+			or packed_controls.size() != int(candidate.tick) * 4 \
 			or typeof(actions_value) != TYPE_ARRAY or typeof(events_value) != TYPE_ARRAY:
 		return false
-	if not _expand_control_tape(controls_value).ok:
+	if not _expand_control_tape(packed_controls).ok:
 		return false
 	if not _actions_are_valid(actions_value, int(candidate.tick), str(candidate.spawn_id)) \
 			or not _events_are_valid(events_value, int(candidate.tick)):
 		return false
-	if _hash_bytes(controls_value.to_byte_array()) != str(candidate.get("control_tape_sha256", "")) \
+	if _hash_bytes(packed_controls.to_byte_array()) != str(candidate.get("control_tape_sha256", "")) \
 			or _hash_variant(events_value) != str(candidate.get("event_tape_sha256", "")):
 		return false
 	if typeof(candidate.get("run_valid")) != TYPE_BOOL or typeof(candidate.get("braking_run")) != TYPE_DICTIONARY:
@@ -564,14 +574,14 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 func restore_checkpoint(candidate: Variant) -> bool:
 	if not can_restore_checkpoint(candidate):
 		return false
-	var next_state: PackedFloat64Array = candidate.state.duplicate()
+	var next_state := _as_float64_array(candidate.state, STATE_SIZE)
 	var next_telemetry: Dictionary = VehicleDynamics.telemetry(next_state, _model, _road)
 	if not _telemetry_is_valid(next_telemetry):
 		return false
 	_state = next_state
 	tick = int(candidate.tick)
 	spawn_id = str(candidate.spawn_id)
-	_control_tape = candidate.control_tape.duplicate()
+	_control_tape = _as_control_tape(candidate.control_tape)
 	_recovery_actions = candidate.recovery_actions.duplicate(true)
 	_event_tape = candidate.event_tape.duplicate(true)
 	_braking_run = candidate.braking_run.duplicate(true)
@@ -798,17 +808,49 @@ func _append_control(controls: Dictionary) -> void:
 	]))
 
 
+func _as_float64_array(value: Variant, expected_size: int = -1) -> PackedFloat64Array:
+	var result := PackedFloat64Array()
+	if typeof(value) == TYPE_PACKED_FLOAT64_ARRAY:
+		result = value.duplicate()
+	elif typeof(value) == TYPE_ARRAY:
+		for raw in value:
+			if typeof(raw) not in [TYPE_INT, TYPE_FLOAT] or typeof(raw) == TYPE_BOOL \
+					or not is_finite(float(raw)):
+				return PackedFloat64Array()
+			result.append(float(raw))
+	else:
+		return PackedFloat64Array()
+	if expected_size >= 0 and result.size() != expected_size:
+		return PackedFloat64Array()
+	for item in result:
+		if not is_finite(float(item)):
+			return PackedFloat64Array()
+	return result
+
+
+func _as_control_tape(value: Variant) -> PackedFloat64Array:
+	if typeof(value) not in [TYPE_PACKED_FLOAT64_ARRAY, TYPE_ARRAY]:
+		return PackedFloat64Array()
+	var result := _as_float64_array(value)
+	if result.size() % 4 != 0 or result.size() != value.size():
+		return PackedFloat64Array()
+	return result
+
+
 func _expand_control_tape(value: Variant) -> Dictionary:
 	var staged: Array[Dictionary] = []
-	if typeof(value) == TYPE_PACKED_FLOAT64_ARRAY:
-		if value.size() % 4 != 0:
-			return {"ok": false, "error": "packed replay tape length must be divisible by four"}
-		for offset in range(0, value.size(), 4):
-			var reverse_value := float(value[offset + 3])
+	var packed := _as_control_tape(value)
+	var numeric_array: bool = typeof(value) == TYPE_ARRAY and (value.is_empty() \
+		or typeof(value[0]) in [TYPE_INT, TYPE_FLOAT])
+	if typeof(value) == TYPE_PACKED_FLOAT64_ARRAY or numeric_array:
+		if packed.size() != value.size():
+			return {"ok": false, "error": "packed replay tape must contain finite float64 groups of four"}
+		for offset in range(0, packed.size(), 4):
+			var reverse_value := float(packed[offset + 3])
 			if reverse_value != 0.0 and reverse_value != 1.0:
 				return {"ok": false, "error": "packed replay reverse flag must be 0 or 1"}
-			var item := {"throttle": value[offset], "steering": value[offset + 1],
-				"brake": value[offset + 2], "reverse": reverse_value == 1.0}
+			var item := {"throttle": packed[offset], "steering": packed[offset + 1],
+				"brake": packed[offset + 2], "reverse": reverse_value == 1.0}
 			var parsed := _parse_controls(item, false)
 			if not parsed.ok:
 				return {"ok": false, "error": str(parsed.error)}

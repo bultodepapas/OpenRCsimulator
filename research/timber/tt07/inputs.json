@@ -1,5 +1,10 @@
 {
   "format": "openrc-timber-inputs v1",
+  "landing_gear_contact_identity": [
+    {"source_name": "main_left", "id": "contact_main_left"},
+    {"source_name": "main_right", "id": "contact_main_right"},
+    {"source_name": "tail", "id": "contact_tail"}
+  ],
   "estimates": {
     "section_slope_factor": {
       "value": 0.9,
