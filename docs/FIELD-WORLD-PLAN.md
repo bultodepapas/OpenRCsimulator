@@ -41,6 +41,8 @@ FW-32 light pools were not needed for the first slice. Additional village, traff
 
 The owner's 2026-10-13 request adds a separate [night landscape lighting plan](plans/night-landscape-lighting.md), which owns FW-66–75: one mast with four downloaded lamp heads, softer overlapping field light, a selectable airport style and an optional animated campfire. [FW-66](research/field-world/FW-66/README.md) retains source downloads and starting views. This is planned work; existing behavior and the aircraft night-kit gate above are unchanged. The requested field/club refinement is active; unrelated village and traffic lighting remains parked.
 
+The [sky, clouds and storm plan](plans/sky-clouds-weather.md) owns proposed FW-76–90: a selectable cloud collection, wind-linked cloud transport, distant storms and a later experimental tornado scenario. [FW-76 research](research/field-world/FW-76/README.md) records Godot/GitHub/Reddit/tutorial and meteorology sources. It preserves the current sky and Compatibility renderer; spatial weather and distributed aircraft response remain coordinated with M5-W05/W07. No new sky preset or storm physics is implemented by that planning delivery.
+
 ## Acceptance and research
 
 Gate FW-U asks whether one field can be composed without changing existing visuals or traces. Gate FW-N asks whether a pilot can fly a complete dusk/night session and read the aircraft. Engineering captures do not close either owner decision.

@@ -4,7 +4,7 @@
 
 ## Frozen scope
 
-The local Linux preflight starts from `5a1fe87bd8b1b201274df3e3cc362a11a3fd842a`, with only the release fixes described below overlaid. The shared Windows checkout continues to change. Subsequent commits and uncommitted work are not automatically covered by these results. [Release notes](../../../releases/v0.1.0-rc9.md) describe the proposed integration scope.
+The local Linux preflight starts from `5a1fe87bd8b1b201274df3e3cc362a11a3fd842a`, with the release fixes described below overlaid. It additionally takes the imported-model contract and Timber compatibility facade from `69437cc4`, their generated model/Workshop bindings, the imported-model regression from that commit, and the manifest regression correction from `7265b2e0`. Other changes in those commits are outside this candidate. The shared Windows checkout continues to change; subsequent commits and uncommitted work are not automatically covered by these results. [Release notes](../../../releases/v0.1.0-rc9.md) describe the proposed integration scope.
 
 The isolated checkout is `/home/bulto/openrc-rc9-check` in WSL Ubuntu, created with `core.autocrlf=false`; repository attributes still control explicitly pinned files. Engine: official pinned Godot `4.7.2.stable.ed1daf0bf`. Schema dependencies use `research/aircraft-data/schema/requirements.txt` in a separate virtual environment.
 
@@ -14,6 +14,7 @@ The isolated checkout is `/home/bulto/openrc-rc9-check` in WSL Ubuntu, created w
 - The generated-model and Workshop checkout regressions invoked a literal `python` command, absent in this Linux environment. They now use `sys.executable`, preserving the active interpreter and environment. All fourteen model tests and the LF/CRLF checkout regression pass.
 - Timber's source manifest depended on platform-specific `Path` ordering. Its generator now sorts relative path components explicitly, matching the frozen Windows ordering on both platforms. All 144 delivery files (19,438,463 bytes), hashes and the visual revision `r2-d75ae605aa3a` were already identical; the manifest and delivery were not rewritten.
 - Python 3.12's changed floating-point `sum()` caused four last-bit differences in Timber's generated balance/CG data. Three generator reductions now accumulate explicitly from left to right, preserving the checked-in physical values across Python versions. The physics data and sensitivity outputs were not rewritten. Five authoring tests, sensitivity freshness and Windows/Linux generation checks pass.
+- The catalog exposed the existing imported-model version guard rejecting JSON's numeric `1` because it required `TYPE_INT`. The model owner's accepted contract/facade repairs from `69437cc4` restore Timber construction and metrology compatibility; dependent manifests were regenerated through their builders. The added regression's expected tail-wheel wrapper was corrected to the existing `tailwheel_spin` name. Catalog: 88 checks pass; imported model: 68 checks pass. The manifest negative control now rejects unsupported version 3, since version 2 is supported (`7265b2e0`).
 
 ## Checks
 
@@ -25,7 +26,7 @@ The isolated checkout is `/home/bulto/openrc-rc9-check` in WSL Ubuntu, created w
 | Offline tools (`research/test-tools.sh`) | Pass |
 | Generated model regression | 14 tests pass after interpreter repair |
 | Workshop checkout bindings | LF and CRLF disposable checkouts pass after interpreter repair |
-| Full app suite | In progress; initial attempt stopped at the missing `python` executable |
+| Full app suite | All-script parse passes; behavior checks in progress after the documented runner/model repairs |
 | CI geometry/physics generators | All twelve commands pass after the Timber reproducibility repairs |
 | Timber authoring | Five tests and sensitivity freshness pass; Windows and Linux preserve existing generated data |
 | Rendered captures, exports and downloaded packages | Not yet qualified |

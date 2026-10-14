@@ -33,21 +33,48 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, omega: float
 		collective_75: float, cyclic_forward: float, cyclic_right: float, flow_floor: float,
 		height_over_radius: float, loss: float, instability: float, diagnostics: bool,
 		prepared: bool) -> Dictionary:
-	if state.size() != 3:
+	var parts: Array = _evaluate_parts(model, state, omega, hub_air_velocity, body_rates,
+		collective_75, cyclic_forward, cyclic_right, flow_floor, height_over_radius,
+		loss, instability, diagnostics, prepared)
+	if parts.size() != 3:
 		return {"ok": false}
+	var rotor: Dictionary = parts[0]
+	var flow: Dictionary = parts[1]
+	var derivative: PackedFloat64Array = parts[2]
+	return {"ok": true, "loads": rotor.loads, "derivative": derivative,
+		"rotor": rotor, "inflow": flow}
+
+
+# The aerodynamic owner consumes these parts directly and avoids constructing
+# a short-lived stage Dictionary. The older public evaluate() shape is built by
+# _evaluate() above from this same calculation path.
+static func _evaluate_prepared_parts(model: Dictionary, state: PackedFloat64Array, omega: float,
+		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
+		collective_75: float, cyclic_forward: float, cyclic_right: float, flow_floor: float,
+		height_over_radius: float = -1.0, loss: float = 1.0, instability: float = 1.0,
+		diagnostics: bool = false) -> Array:
+	return _evaluate_parts(model, state, omega, hub_air_velocity, body_rates, collective_75,
+		cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss, instability, diagnostics, true)
+
+
+static func _evaluate_parts(model: Dictionary, state: PackedFloat64Array, omega: float,
+		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
+		collective_75: float, cyclic_forward: float, cyclic_right: float, flow_floor: float,
+		height_over_radius: float, loss: float, instability: float, diagnostics: bool,
+		prepared: bool) -> Array:
+	if state.size() != 3:
+		return []
 	var rotor: Dictionary = Rotor._evaluate_prepared(model, omega, state[2], hub_air_velocity, body_rates,
 		collective_75, cyclic_forward, cyclic_right, state[0], state[1], diagnostics) if prepared else Rotor.evaluate(
 		model, omega, state[2], hub_air_velocity, body_rates, collective_75, cyclic_forward, cyclic_right,
 		state[0], state[1], diagnostics)
 	if not rotor.ok:
-		return rotor
+		return []
 	# Match the paper's shaft/body-frame inflow approximation. Projecting this
 	# flow into the exact tilted TPP would be a separately qualified extension.
 	var crossflow: float = M.sqrt_(hub_air_velocity[0] * hub_air_velocity[0] + hub_air_velocity[1] * hub_air_velocity[1])
 	var flow: Dictionary = Inflow.evaluate(state[2], rotor.thrust_n, model.rho_kg_m3, model.rotor_radius_m,
 		-hub_air_velocity[2], crossflow, flow_floor, height_over_radius, loss, instability)
 	if not flow.ok:
-		return flow
-	return {"ok": true, "loads": rotor.loads,
-		"derivative": PackedFloat64Array([rotor.flap_rate_a1_rad_s, rotor.flap_rate_b1_rad_s, flow.rate]),
-		"rotor": rotor, "inflow": flow}
+		return []
+	return [rotor, flow, PackedFloat64Array([rotor.flap_rate_a1_rad_s, rotor.flap_rate_b1_rad_s, flow.rate])]

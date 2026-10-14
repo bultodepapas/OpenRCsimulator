@@ -1,6 +1,6 @@
 # Natural Random flight mode
 
-**Date:** 2026-10-13. **Status:** proposal; no runtime implementation in this change. **Owner:** Natural Random track, coordinated with UI, M5-W/M5-ATM, TOD/FW and the simulation/aircraft owners. **Step IDs:** NR-00…09 ([registry](../README.md#tracks-plans-and-step-ids)).
+**Date:** 2026-10-13. **Status:** initial runtime implementation; software evidence and remaining acceptance are tracked [here](../research/natural-random/README.md). Pilot handling, full readability and target-hardware acceptance remain open. **Owner:** Natural Random track, coordinated with UI, M5-W/M5-ATM, TOD/FW and the simulation/aircraft owners. **Step IDs:** NR-00…09 ([registry](../README.md#tracks-plans-and-step-ids)).
 
 **Outcome:** choose **Natural Random / Aleatorio natural** from Home, see a short briefing, and fly a stock airplane in a believable, varied day. Some flights are calm; others have substantial wind. The aircraft remains readable in the qualified flying area. Restart repeats the same conditions; another draw creates another flight.
 
@@ -8,7 +8,7 @@ This is recreational free flight. It adds no score, mandatory maneuver, aircraft
 
 ## 1. Scope and evidence
 
-The audit used the working tree on 2026-10-13, based on commit `5b924758`, including existing uncommitted work. Graph discovery was followed by current-source inspection because several indexed symbols had stale line ranges. This document records a design, not a test result or a physical-validation claim.
+The initial audit used the working tree on 2026-10-13, based on commit `5b924758`, including existing uncommitted work. Graph discovery was followed by current-source inspection because several indexed symbols had stale line ranges. The table records the baseline that informed implementation; dated software results live in the linked evidence, separately from physical-validation claims.
 
 | Current code / authoritative guide | Observed behavior | Consequence for this mode |
 | --- | --- | --- |
@@ -136,9 +136,9 @@ Use coherent provisional temperature/humidity bands: cooler, more humid early mo
 
 ## 5. Implementation boundaries
 
-The following files are **proposed**, not existing APIs:
+The initial implementation uses the following boundaries:
 
-| Proposed path | Responsibility |
+| Path | Responsibility |
 | --- | --- |
 | `app/scenarios/scenario_config.gd` | Validate/copy the scenario envelope, supported capabilities, versions and identities. Delegate nested weather/lighting validation to their current owners. |
 | `app/scenarios/natural_random.gd` | Pure bounded generation from an explicit request, seed and qualified catalog/recipe view; no scene, preference or simulation mutation. |
@@ -197,7 +197,7 @@ Performance: generation/preparation runs only when drawing or launching. Keep pe
 
 ## 7. Incremental delivery
 
-All implementation steps below are pending. Each lands as a small independently reviewable change. Required evidence uses the NR prefix; existing owner gates remain open unless their owner accepts the corresponding evidence.
+NR-01/02/04/05 and the core NR-06 lifecycle are implemented. The table retains the full acceptance obligations: numerical checks do not close NR-03 pilot/readability qualification, and NR-06 broader release gates remain open. NR-07…09 are future work. Required evidence uses the NR prefix; existing owner gates remain open unless their owner accepts the corresponding evidence.
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
@@ -216,7 +216,7 @@ NR-01/02 can be developed outside `app/` until scripts parse, as required by rep
 
 ### Verification map
 
-Use [TOOLS](../TOOLS.md) for the pinned engine, complete `app/test.sh`, captures and platform commands. This documentation-only change does not claim to have run the application suite.
+Use [TOOLS](../TOOLS.md) for the pinned engine, complete `app/test.sh`, captures and platform commands. [NR evidence](../research/natural-random/README.md) records the focused checks actually run, their commands and their limits; it does not claim a complete application-suite or pilot acceptance run.
 
 | Area | Existing checks to retain / extend | New defect-focused coverage |
 | --- | --- | --- |

@@ -1,0 +1,65 @@
+{
+  "schema": "openrc-aircraft-visual-source v1",
+  "asset_id": "HX-700",
+  "status": "experimental_visual_surrogate",
+  "visual_identity": "HX-700 flybarless 700-class visual design",
+  "flight_reference": "MIT X-Cell .60 SE flybar-lumped research configuration",
+  "pairing": "not established; the visual and flight reference remain distinct",
+  "source": {
+    "path": "Helicopter 3d acrobatic/HX-700_Helicoptero_RC.blend",
+    "sha256": "cc2301bbc4fd6aa84474fb0a33de37fe721fd2ecab6e806ceafbcc6953a795cb",
+    "size_bytes": 1587270,
+    "blender_version": "5.2.2 LTS",
+    "embedded_generator": {
+      "name": "generar_hx700.py",
+      "sha256": "8c9fefb28d339241b9d4937d73bb2c897a2f2a9ea8de18c4a38ec99f3c20189d"
+    },
+    "embedded_readme": "LEEME",
+    "external_provenance": "unknown",
+    "license": "unknown"
+  },
+  "runtime_asset": {
+    "path": "hx-700.glb",
+    "sha256": "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764",
+    "size_bytes": 3086608,
+    "export": "Blender glTF 2.0 static frame-1 preview; animations and physics excluded",
+    "coordinate_conversion": "Blender Z-up source to glTF Y-up; app model basis maps glTF +X to body -Z, +Y to body +Y, and +Z to body +X"
+  },
+  "runtime_adapter": {
+    "airframe_scale": 1.0,
+    "cg_model_m": [0.0, 0.11, 0.0],
+    "main_rotor": {
+      "source_radius_m": 0.791367365,
+      "xcell_reference_radius_m": 0.775,
+      "visual_scale_ratio": 0.9793176143926531,
+      "scope": "main rotor mount x/y only; not an airframe scale or physical validation"
+    },
+    "tail_rotor": {
+      "source_radius_m": 0.14743219,
+      "xcell_reference_radius_m": 0.13,
+      "visual_scale_ratio_if_aligned": 0.8814604436141778,
+      "default": "authored source radius; alignment must be requested from the runtime aircraft data"
+    },
+    "visual_spin_signs_about_mount_local_plus_z": {
+      "main": -1,
+      "tail": -1,
+      "reason": "source mount axes oppose the X-Cell physical positive FRD shaft axes"
+    }
+  },
+  "measured_geometry": {
+    "source_axes": "+X nose-forward, +Y left, +Z up",
+    "main_rotor_radius_m": 0.791367365,
+    "tail_rotor_radius_m": 0.14743219,
+    "skid_contact_source_world_m": {
+      "left_front": [0.0974, 0.0858, 0.0002],
+      "left_rear": [-0.0974, 0.0858, 0.0002],
+      "right_front": [0.0974, -0.0858, 0.0002],
+      "right_rear": [-0.0974, -0.0858, 0.0002]
+    },
+    "qualification": "visual geometry evidence only; no physical validation"
+  },
+  "distribution": {
+    "cleared_for_public_catalog_or_distribution": false,
+    "reason": "external source provenance and license are unknown"
+  }
+}

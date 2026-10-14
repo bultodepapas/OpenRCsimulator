@@ -129,7 +129,7 @@ static func impact_event(impact: ImpactSnapshot.Snapshot, bindings: Dictionary, 
 			contact_id = _string_property(impact, "obstacle_id")
 			probe_source = probe_kind if probe_kind in ["hull", "gear", "propeller"] else ""
 			if probe_source == "propeller":
-				probe_id = "propeller/single"
+				probe_id = _rotor_id(bindings)
 			else:
 				probe_id = _binding_id_at(bindings, "hull_probes" if probe_source == "hull" else "support_points",
 					impact.point_index)
@@ -170,10 +170,13 @@ static func impact_event(impact: ImpactSnapshot.Snapshot, bindings: Dictionary, 
 
 
 ## Serializes the one modeled propeller strike as an engine-stop event, without a made-up impulse.
-static func strike_event(strike: Dictionary, tick: int, policy: String) -> Dictionary:
+static func strike_event(strike: Dictionary, tick: int, policy: String, bindings: Dictionary = {}) -> Dictionary:
 	if tick < 0 or policy.strip_edges().is_empty() or not _strike_payload_is_valid(strike, tick):
 		return {}
-	var event := _base_event("strike", "propeller", "propeller/single", "new", tick,
+	var rotor_id := _rotor_id(bindings)
+	if rotor_id.is_empty():
+		return {}
+	var event := _base_event("strike", "propeller", rotor_id, "new", tick,
 		policy, "engine_stop_continue")
 	var measure := _record_measure(strike)
 	if not measure.is_empty():
@@ -252,7 +255,7 @@ static func _event_reference_is_valid(event: Dictionary, event_type: String, sou
 		if typeof(measure_value) != TYPE_DICTIONARY:
 			return false
 		var rpm_value: Variant = measure_value.get("rpm")
-		return source == "propeller" and contact_id == "propeller/single" and lifecycle == "new" \
+		return source == "propeller" and contact_id == _rotor_id(bindings) and lifecycle == "new" \
 			and response == "engine_stop_continue" and typeof(disc_value) == TYPE_DICTIONARY \
 			and not disc_value.is_empty() and typeof(rpm_value) in [TYPE_INT, TYPE_FLOAT] \
 			and is_finite(float(rpm_value)) and float(rpm_value) >= HullContact.STRIKE_MIN_RPM \
@@ -298,7 +301,7 @@ static func _event_reference_is_valid(event: Dictionary, event_type: String, sou
 			return false
 		if str(probe_source_value) == "propeller":
 			var disc_value: Variant = bindings.get("rotor_disc", {})
-			return point_index == -1 and str(probe_id_value) == "propeller/single" \
+			return point_index == -1 and str(probe_id_value) == _rotor_id(bindings) \
 				and typeof(disc_value) == TYPE_DICTIONARY and not disc_value.is_empty()
 		var binding_name := "hull_probes" if str(probe_source_value) == "hull" else \
 			("support_points" if str(probe_source_value) == "gear" else "")
@@ -439,6 +442,15 @@ static func _binding_id_at(bindings: Dictionary, binding_name: String, index: in
 	if typeof(item_value) != TYPE_DICTIONARY:
 		return ""
 	var id_value: Variant = item_value.get("id", "")
+	if typeof(id_value) != TYPE_STRING or str(id_value).strip_edges().is_empty():
+		return ""
+	return str(id_value)
+
+
+static func _rotor_id(bindings: Dictionary) -> String:
+	if not bindings.has("rotor_id"):
+		return "propeller/single"
+	var id_value: Variant = bindings.get("rotor_id")
 	if typeof(id_value) != TYPE_STRING or str(id_value).strip_edges().is_empty():
 		return ""
 	return str(id_value)

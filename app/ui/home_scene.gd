@@ -16,12 +16,14 @@ const Shadow := preload("res://render/shadow.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 
 ## Composition, in NED metres from the pilot's eyes and degrees: a low pass along the runway at eye height, banked
 ## toward the camera so the planform shows, seen with a long lens from the field edge (a photographer's view:
 ## flat perspective, the horizon in the lower third, the airplane in the right third facing the menu).
 const AIRPLANE_NED := [15.0, 3.0, -1.05]
 const ATTITUDE_DEG := { yaw = -112.0, pitch = 2.0, roll = -30.0 }
+const HELICOPTER_ATTITUDE_DEG := { yaw = -112.0, pitch = 0.0, roll = 0.0 }
 const CAMERA_NED := [2.0, 3.0, 0.0]
 const FOV_DEG := 12.0
 ## The camera looks this far left of the airplane (deg), and this far above the horizon (deg).
@@ -91,8 +93,7 @@ func _ready() -> void:
 		FieldError.report(self, field_errors)
 
 
-## Builds `id` in the composition's pose (and its shadow), replacing the airplane shown. Every catalog airplane uses
-## the same pose: the same photograph of a different model.
+## Builds `id` in the composition's pose (and its shadow), replacing the selected model.
 func show_aircraft(id: String) -> void:
 	var built := AirplaneBuilder.build(id)
 	if built.is_empty():
@@ -102,10 +103,18 @@ func show_aircraft(id: String) -> void:
 		airplane.root.queue_free()
 	airplane = built
 	add_child(airplane.root)
-	var basis := Frames.attitude_to_render(deg_to_rad(ATTITUDE_DEG.yaw), deg_to_rad(ATTITUDE_DEG.pitch), deg_to_rad(ATTITUDE_DEG.roll))
+	var rotorcraft: bool = Catalog.is_rotorcraft(id)
+	var attitude: Dictionary = HELICOPTER_ATTITUDE_DEG if rotorcraft else ATTITUDE_DEG
+	var basis := Frames.attitude_to_render(deg_to_rad(attitude.yaw), deg_to_rad(attitude.pitch), deg_to_rad(attitude.roll))
 	var pos := _composition_position(AIRPLANE_NED)
-	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
-	airplane.propeller.rotation.z = PROP_ANGLE
+	var model_cg: Vector3 = airplane.get("cg_model_m", Vector3.ZERO) if rotorcraft else Vector3.ZERO
+	airplane.root.transform = Frames.root_transform(basis, pos, model_cg)
+	if rotorcraft:
+		var main_pivot: Node3D = airplane.get("main_rotor_pivot") as Node3D
+		if main_pivot != null:
+			main_pivot.rotation.z = PROP_ANGLE
+	else:
+		airplane.propeller.rotation.z = PROP_ANGLE
 	var extent := Shadow.model_extent(airplane.root)
 	Shadow.bind_model(_shadow, airplane.root)
 	World.dress_aircraft(airplane.root)

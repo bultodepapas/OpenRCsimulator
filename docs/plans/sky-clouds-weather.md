@@ -90,6 +90,19 @@ Store source provenance under proposed `assets/sky/weather/`; approved minimal r
 
 Use actual runtime captures as selector thumbnails. Downloaded photographs can guide art review but must not advertise a result that the renderer does not produce.
 
+### Shader work for the first collection
+
+Keep the accepted classic code path intact and add new resolved layer inputs only for non-classic presets. The implementation sequence is:
+
+1. Resolve macro coverage and layer identity separately from optical thickness. Coverage changes where clouds exist; thickness changes transmission and shading inside them. A single threshold must not drive both effects.
+2. Shape low-deck masses at coarse scale, then add bounded billow/detail variation. Reuse the existing noise and relief until the downloaded comparison demonstrates a clear improvement. Filter/fade fine detail with projected size near the horizon and under zoom; MSAA does not remove procedural shader aliasing.
+3. Evaluate cirrus as an independent thin layer, with its own scale/transport and weak opacity. Compose layers in a declared order; clear disables all of them explicitly.
+4. Shade the visible mass using the existing light-direction relief, a bounded ambient term and an optical-depth transmission approximation. Parameters are artistic estimates. Keep lit shoulders distinct from an emissive outline; night clouds do not glow without a source.
+5. Compose cloud opacity with the sky and sun/moon discs, then apply the established haze/color pipeline once. Overcast needs its own horizon treatment and diffuse light response; pre-storm needs a readable base-to-opening contrast. Do not globally darken the whole screen to simulate cloud depth.
+6. Keep expensive visible detail out of the radiance branch where possible, while explicitly controlling any changed ambient/reflection approximation. Check all ground/grass shadow materials against the same accepted coverage/offset state.
+
+For the advanced volume comparison, inspect weather-map shape, height profile, base/detail noise, density-to-extinction mapping, light sampling, empty-space skipping, reconstruction and depth-aware compositing. Require camera-inside-cloud and aircraft-edge cases. Those concerns explain the need for a downloadable implementation trial; they are not a request to build a new volumetric engine from scratch.
+
 ## 5. Player flow and discoverability
 
 ### Entry and layout
@@ -161,7 +174,7 @@ For overcast/storm appearance, resolve direct-light attenuation, cloud ambient f
 | Mode | Required behavior |
 | --- | --- |
 | Classic legacy | Reproduces existing 1 s quantized drift and pixels; backward compatibility only |
-| Still | All cloud translation, shape evolution and associated cloud-shadow motion stop. Wind can still affect the aircraft. Lighting follows its separately selected clock. |
+| Still | Cloud translation, shape evolution and cloud-shadow advection stop. Wind can still affect the aircraft. Lighting follows its separately selected clock, so a moving sun can still change the shadow projection. |
 | Follow wind | Transport follows a declared mean wind mapping. Zero mean with gust/turbulence disabled produces no translation or shape evolution. More mean wind moves the field faster in the correct direction. |
 | Wind aloft | Explicit layer speed/direction; can differ from the windsock. Surface calm does not imply upper-air calm. Display a simple explanation. |
 
@@ -169,7 +182,7 @@ For the first Follow wind implementation, use the configured mean wind as an **a
 
 ### Coordinate and time requirements
 
-The project uses NED; renderer axes are east/up/south. For horizontal transport `(W_N, W_E)` and layer height `H` with scale `S` cells per deck unit, the existing planar projection implies:
+The project uses NED; renderer axes are east/up/south. Wind input is meteorological **FROM**; `(W_N, W_E)` below is the validated transport vector after the existing FROM-to-toward conversion. For example, 0° FROM north must move clouds south, not north. For layer height `H` with scale `S` cells per deck unit, the existing planar projection implies:
 
 ```text
 horizontal render velocity = (W_E, -W_N) m/s
@@ -237,8 +250,8 @@ Each row is a small independently reviewable change. Runtime work remains pendin
 | 0 · FW-76 | Research, source/license shortlist, baseline snapshots, exact renderer probes and acceptance budgets | **Research delivered.** Fresh baseline captures, isolated addon downloads/probes and minimum-hardware measurement pending. |
 | 1 · FW-77 | Validated appearance catalog, resolver and immutable composition contract; identity/migration design with TOD/NR | Invalid/unknown inputs refused; old inputs resolve to exact classic; no Spec mutation; all proposed fields have units/ranges/ownership. **Pending.** |
 | 1 · FW-78 | Sky gallery in existing conditions dialog, draft/apply/cancel, Home summary and EN/ES preferences | 720p keyboard/controller flows, cancel/no-write, focus return, save/reload, failed apply and technical-launch isolation. Share controls with paused route. **Pending.** |
-| 2 · FW-79 | Classic, clear, cirrus, fair cumulus, broken, overcast and pre-storm appearance | Side-by-side directional captures plus actual pilot flight; zero-cloud path has no residual cirrus/shadows; independent shapes distinguish overcast/pre-storm. **Pending.** |
-| 2 · FW-80 | Unified light/haze/ground-shadow response in fixed, TOD and FW-flow worlds | No stale overwrite, doubled exposure or double cloud attenuation; low-angle and night comparisons; classic remains exact. **Pending.** |
+| 2 · FW-79 | Classic, clear, cirrus, fair cumulus and broken-cloud appearance; overcast/pre-storm morphology prototypes | Side-by-side directional captures; zero-cloud path has no residual cirrus/shadows; independent shapes distinguish overcast/pre-storm. Final storm/overcast lighting and flight acceptance wait for FW-80. **Pending.** |
+| 2 · FW-80 | Unified light/haze/ground-shadow response in fixed, TOD and FW-flow worlds; complete overcast/pre-storm presets | No stale overwrite, doubled exposure or double cloud attenuation; low-angle/night comparisons and actual pilot flight of the complete collection; classic remains exact. **Pending.** |
 | 3 · FW-81 | Still / Follow wind / wind-aloft transport with M5-W07 | Cardinal sign/unit tests, zero-wind freeze, phase-continuous changes, shared shadow motion, no render RNG mutation, 30/60/144 FPS equality of accepted transport state. **Pending.** |
 | 3 · FW-82 | Visual history/checkpoint lifecycle and paused application; integrate NR-07 appearance input | Reset/restore/old records, aborted scene switch, Home preview isolation, passing Evening → fixed sky → Home. Physics bytes unchanged. **Pending.** |
 | 4 · FW-83 | Reused distant storm assets, thunderhead/rainband composition and camera qualification | License/provenance/import evidence, horizon/zoom/moving-camera checks, bounded resources and lighting coherence. **Pending.** |

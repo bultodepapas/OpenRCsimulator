@@ -2,6 +2,12 @@
 
 2026-10-13, America/Bogota · **Research and starting composition only.** This record supports the [night landscape plan](../../../plans/night-landscape-lighting.md), which owns FW-66–75 status. No new runtime lighting, fire, preference or physics behavior was installed.
 
+## Follow-up: 26 targeted Internet investigations
+
+The owner's requested minimum of 20 is addressed by [26 distinct investigations](investigations.md): eight on optics/composition/review, eight on free assets/effects and ten on Godot/verification. Each records its question/query, opened primary sources, evidence, plan decision, proposed test and limits. That record owns the follow-up findings and rejected alternatives.
+
+The revised plan corrects the original broad cones' above-horizontal output, adds a relative distance/incidence calculation, compares two four-head arrangements, strengthens glow/alpha/clock/reflection qualification and separates art preference from flight-readability tasks. Five newly retained CC0 source files add a flame alternative, smoke sheet and three hearth-ground maps. These are research results and static asset inspections; no native implementation or performance gate is closed by this round.
+
 ## Visual baseline
 
 A successful native capture of the current production world produced three 1280 × 720 night views. [stdout](stdout.log) records completion; [stderr](stderr.log) is empty. [Raw report](report.json) records Godot **4.7.2.stable.official.ed1daf0bf**, Compatibility/OpenGL and NVIDIA RTX 3090 / driver 610.88 (driver recorded in stdout). [Capture manifest](capture-manifest.json) identifies the retained bytes.
@@ -32,7 +38,7 @@ Graph discovery located the field-light/world modules. Its stored ranges lagged 
 
 ## Resource comparison
 
-Four selected assets and the campfire's required texture are preserved under [night-lighting sources](../../../../assets/landscape/night-lighting/README.md), totaling **716,564 bytes**. [PROVENANCE.json](../../../../assets/landscape/night-lighting/PROVENANCE.json) records URLs, file hashes and exact archive entries. [License evidence](../../../../assets/landscape/night-lighting/LICENSES.md) accompanies them. Downloads were inspected as data; no downloaded code was executed. Godot import and in-scene acceptance remain pending.
+The first-round four assets and the campfire's required texture total **716,564 bytes**. They remain under [night-lighting sources](../../../../assets/landscape/night-lighting/README.md). The follow-up added five source files totaling 3,245,373 bytes, bringing the collection to **10 files / 3,961,937 bytes**. [PROVENANCE.json](../../../../assets/landscape/night-lighting/PROVENANCE.json) records URLs, hashes, archive entries and new image/frame metadata. [License evidence](../../../../assets/landscape/night-lighting/LICENSES.md) accompanies them. Downloads were inspected as data; no downloaded code was executed. Godot import and in-scene acceptance remain pending.
 
 | Candidate | Retrieved evidence | Evaluation and plan role |
 | --- | --- | --- |

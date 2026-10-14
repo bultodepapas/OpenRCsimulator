@@ -40,12 +40,15 @@ func _check_aircraft(path: String) -> String:
 	if not soft.ok:
 		return ""
 	var expected_count: int = model.crash_hull.size() / 3
+	var authored_identity: Dictionary = model.get("physical_identity", {})
+	var authored_hull_ids: Variant = authored_identity.get("hull_ids", PackedStringArray())
 	_check("%s preserves hull point order and count" % aircraft_name, soft.hull_probes.size() == expected_count)
 	for index in soft.hull_probes.size():
 		var probe: Dictionary = soft.hull_probes[index]
 		var expected_label := str(model.crash_hull_components[index]) if not model.crash_hull_components.is_empty() else ""
+		var expected_hull_id := str(authored_hull_ids[index]) if typeof(authored_hull_ids) == TYPE_PACKED_STRING_ARRAY else "hull_point_%03d" % index
 		_check("%s hull point %d has its ordered model-local ID" % [aircraft_name, index],
-			probe.point_index == index and probe.id == "hull_point_%03d" % index)
+			probe.point_index == index and probe.id == expected_hull_id)
 		_check("%s hull point %d keeps label separate from visual section" % [aircraft_name, index],
 			probe.hull_label == expected_label and probe.visual_section_id == "" and probe.visual_section_status == "unbound")
 		_check("%s hull point %d retains normalized position" % [aircraft_name, index],
@@ -58,8 +61,9 @@ func _check_aircraft(path: String) -> String:
 	for index in soft.support_points.size():
 		var support: Dictionary = soft.support_points[index]
 		var source: Dictionary = gear_contacts[index]
-		_check("%s support ID uses existing contact name %d" % [aircraft_name, index],
-			support.id == source.name and support.contact_index == index and support.role == "wheel_support")
+		var expected_support_id := str(source.get("id", source.get("name", "")))
+		_check("%s support ID uses the normalized contact identity %d" % [aircraft_name, index],
+			support.id == expected_support_id and support.contact_index == index and support.role == "wheel_support")
 		_check("%s support %d retains model position" % [aircraft_name, index], support.position == source.position)
 	_check("%s reports existing wheel profile status" % aircraft_name,
 		soft.wheel_profile.status == model.wheel_profile.status)

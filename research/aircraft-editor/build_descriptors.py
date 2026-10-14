@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "research" / "aircraft-standardization"))
 from modules import classify as classify_aircraft_modules
+from physical_identity import validate_physical_identity
 
 
 CATALOG = ROOT / "app" / "app_state" / "aircraft_catalog.gd"
@@ -27,6 +28,9 @@ ENTRY_RE = re.compile(
 FAMILY_RE = re.compile(r'\bvisual_family\s*=\s*"(?P<family>[^\"]+)"')
 DATA_RE = re.compile(r"\bdata\s*=\s*\"(?P<path>[^\"]*)\"")
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+INVENTORY_ID_RE = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
+LEGACY_FORMAT = "openrc-aircraft-workshop v2"
+STABLE_FORMAT = "openrc-aircraft-workshop v3"
 
 
 def sha256(data: bytes) -> str:
@@ -77,6 +81,60 @@ def presentation_binding(base_id: str) -> dict[str, str]:
     return {"visual_family": family, "model_manifest_sha256": sha256(manifest_bytes), "scale_root": "airplane"}
 
 
+def inventory_binding_contract(base_id: str, base: dict[str, Any]) -> tuple[str, list[dict[str, Any]]]:
+    """Select stable physical IDs for new sources and exact index/name pins for history."""
+    inventory = base.get("inventory")
+    if not isinstance(inventory, list) or not inventory:
+        raise ValueError(f"{base_id}: inventory must be a non-empty array")
+    for index, item in enumerate(inventory):
+        if not isinstance(item, dict) or not isinstance(item.get("name"), str) or not item["name"]:
+            raise ValueError(f"{base_id}: inventory item {index} needs a non-empty name")
+
+    if "physical_identity_version" not in base:
+        if _has_physical_identity_metadata(base):
+            raise ValueError(f"{base_id}: stable physical identities require physical_identity_version=1")
+        bindings: list[dict[str, Any]] = []
+        for index, item in enumerate(inventory):
+            name_hash = sha256(item["name"].encode("utf-8"))
+            bindings.append({
+                "key": f"inventory-{index:03d}-{name_hash[:12]}",
+                "index": index,
+                "name_sha256": name_hash,
+            })
+        return LEGACY_FORMAT, bindings
+
+    version = base["physical_identity_version"]
+    if type(version) not in (int, float) or version != 1:
+        raise ValueError(f"{base_id}: unsupported physical_identity_version {version!r}")
+    try:
+        validate_physical_identity(base)
+    except ValueError as exc:
+        raise ValueError(f"{base_id}: invalid physical identities: {exc}") from exc
+
+    bindings = []
+    for index, item in enumerate(inventory):
+        identity = item.get("id")
+        if not isinstance(identity, str) or len(identity) > 80 or not INVENTORY_ID_RE.fullmatch(identity):
+            raise ValueError(f"{base_id}: inventory item {index} has an invalid stable ID")
+        bindings.append({"key": identity})
+    return STABLE_FORMAT, bindings
+
+
+def _has_physical_identity_metadata(base: dict[str, Any]) -> bool:
+    inventory = base.get("inventory", [])
+    if isinstance(inventory, list) and any(isinstance(item, dict) and "id" in item for item in inventory):
+        return True
+    gear = base.get("landing_gear", {})
+    contacts = gear.get("contacts", []) if isinstance(gear, dict) else []
+    if isinstance(contacts, list) and any(isinstance(item, dict) and "id" in item for item in contacts):
+        return True
+    propulsion = base.get("propulsion", {})
+    if isinstance(propulsion, dict) and "id" in propulsion:
+        return True
+    controls = base.get("controls", {})
+    return "crash_hull_ids" in base or (isinstance(controls, dict) and "surface_ids" in controls)
+
+
 def build_descriptor(base_id: str, resource_path: str) -> dict[str, Any]:
     source_path = ROOT / "app" / resource_path.removeprefix("res://")
     source_bytes = source_path.read_bytes()
@@ -88,24 +146,10 @@ def build_descriptor(base_id: str, resource_path: str) -> dict[str, Any]:
         raise ValueError(f"{resource_path}: expected an openrc-aircraft v2 object")
     if base.get("id") != base_id:
         raise ValueError(f"{resource_path}: source ID does not match catalog ID {base_id}")
-    inventory = base.get("inventory")
-    if not isinstance(inventory, list) or not inventory:
-        raise ValueError(f"{base_id}: inventory must be a non-empty array")
-    bindings: list[dict[str, Any]] = []
-    for index, item in enumerate(inventory):
-        if not isinstance(item, dict) or not isinstance(item.get("name"), str) or not item["name"]:
-            raise ValueError(f"{base_id}: inventory item {index} needs a non-empty name")
-        name_hash = sha256(item["name"].encode("utf-8"))
-        bindings.append(
-            {
-                "key": f"inventory-{index:03d}-{name_hash[:12]}",
-                "index": index,
-                "name_sha256": name_hash,
-            }
-        )
+    descriptor_format, bindings = inventory_binding_contract(base_id, base)
     return {
         "_generated_do_not_edit": GENERATED_MARKER,
-        "format": "openrc-aircraft-workshop v2",
+        "format": descriptor_format,
         "base_id": base_id,
         "base_sha256": sha256(source_bytes),
         "inventory_bindings": bindings,

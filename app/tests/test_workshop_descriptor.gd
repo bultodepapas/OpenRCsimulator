@@ -2,6 +2,7 @@ extends SceneTree
 
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const Descriptor = preload("res://workshop/descriptor.gd")
+const Modules = preload("res://physics/aircraft_modules.gd")
 
 var _checks: int = 0
 var _failures: int = 0
@@ -10,6 +11,7 @@ var _failures: int = 0
 func _initialize() -> void:
 	_test_catalog_descriptors()
 	_test_stale_binding()
+	_test_stable_inventory_identity()
 	_test_unfamiliar_identity()
 	_test_rejections()
 	_test_legacy_and_presentation()
@@ -23,14 +25,28 @@ func _test_catalog_descriptors() -> void:
 	for id: String in ids:
 		var entry: Dictionary = Catalog.entry(id)
 		var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(str(entry.get("data", "")))
+		var base: Dictionary = JSON.parse_string(base_bytes.get_string_from_utf8())
 		var loaded: Dictionary = Descriptor.load_for(id, base_bytes)
 		_check("catalog descriptor loads for " + id, bool(loaded["ok"]), str(loaded["errors"]))
 		if not bool(loaded["ok"]):
 			continue
 		var descriptor: Dictionary = loaded["descriptor"]
+		var expected_format: String = Descriptor.FORMAT if base.has("physical_identity_version") else Descriptor.V2_FORMAT
+		_check("descriptor version follows the source identity module for " + id, descriptor["format"] == expected_format)
 		_check("exact source bytes are pinned for " + id, str(descriptor["base_sha256"]) == _sha256(base_bytes))
 		_check("catalog identity and scale root are bound for " + id, descriptor["base_id"] == id and descriptor["presentation"]["visual_family"] == Catalog.visual_family(id) and descriptor["presentation"]["scale_root"] == "airplane")
 		_check("inventory bindings cover every source item for " + id, descriptor["inventory_bindings"].size() == JSON.parse_string(base_bytes.get_string_from_utf8())["inventory"].size())
+		if descriptor["format"] == Descriptor.FORMAT:
+			var source_ids: Dictionary = {}
+			for component: Dictionary in base["inventory"]:
+				source_ids[component.get("id", "")] = true
+			var bound_ids: Dictionary = {}
+			var only_id_keys: bool = true
+			for binding: Dictionary in descriptor["inventory_bindings"]:
+				only_id_keys = only_id_keys and binding.size() == 1 and binding.has("key")
+				bound_ids[str(binding.get("key", ""))] = true
+			_check("v3 uses only authored inventory IDs for " + id,
+				only_id_keys and bound_ids.size() == source_ids.size() and bound_ids == source_ids)
 		_check("descriptor names its generated source for " + id, str(descriptor["_generated_do_not_edit"]).contains("do not edit"))
 
 
@@ -46,13 +62,130 @@ func _test_stale_binding() -> void:
 	changed_base["inventory"][0]["name"] = str(changed_base["inventory"][0]["name"]) + " renamed"
 	var changed_bytes: PackedByteArray = (JSON.stringify(changed_base, "\t", true, true) + "\n").to_utf8_buffer()
 	var stale_descriptor: Dictionary = loaded["descriptor"].duplicate(true)
-	stale_descriptor["base_sha256"] = _sha256(changed_bytes)
-	var rejected: Dictionary = Descriptor.validate(stale_descriptor, id, changed_bytes)
-	_check("a matching source hash cannot hide a stale inventory name binding", not bool(rejected["ok"]) and _has_error(rejected["errors"], "stale"), str(rejected["errors"]))
+	var rejected: Dictionary
+	if stale_descriptor["format"] == Descriptor.FORMAT:
+		rejected = Descriptor.validate(stale_descriptor, id, changed_bytes)
+		_check("renaming a source cannot retarget a stale v3 descriptor", not bool(rejected["ok"]) and _has_error(rejected["errors"], "SHA-256"), str(rejected["errors"]))
+	else:
+		stale_descriptor["base_sha256"] = _sha256(changed_bytes)
+		rejected = Descriptor.validate(stale_descriptor, id, changed_bytes)
+		_check("a matching source hash cannot hide a stale v2 inventory name binding", not bool(rejected["ok"]) and _has_error(rejected["errors"], "stale"), str(rejected["errors"]))
 	var byte_changed: PackedByteArray = base_bytes.duplicate()
 	byte_changed[byte_changed.size() - 1] = 32 if byte_changed[byte_changed.size() - 1] != 32 else 10
 	var hash_rejected: Dictionary = Descriptor.validate(loaded["descriptor"], id, byte_changed)
 	_check("changed source bytes fail the pinned SHA-256", not bool(hash_rejected["ok"]) and _has_error(hash_rejected["errors"], "SHA-256"), str(hash_rejected["errors"]))
+
+
+func _test_stable_inventory_identity() -> void:
+	var base_id: String = Catalog.DEFAULT_ID
+	var source_bytes: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(base_id).data)
+	var source_descriptor_result: Dictionary = Descriptor.load_for(base_id, source_bytes)
+	if not bool(source_descriptor_result.get("ok", false)):
+		_check("identity fixture has a source descriptor", false, str(source_descriptor_result.get("errors", [])))
+		return
+	var base: Dictionary = JSON.parse_string(source_bytes.get_string_from_utf8())
+	_add_test_physical_identity(base)
+	var stable_bytes: PackedByteArray = _source_bytes(base)
+	var stable_descriptor: Dictionary = _stable_descriptor(base_id, stable_bytes, base,
+		source_descriptor_result["descriptor"]["presentation"])
+	var accepted: Dictionary = Descriptor.validate(stable_descriptor, base_id, stable_bytes)
+	_check("v3 descriptor accepts a complete physical identity module", bool(accepted.get("ok", false)), str(accepted.get("errors", [])))
+	if not bool(accepted.get("ok", false)):
+		return
+	var target_id: String = str(base["inventory"][0]["id"])
+	var original_index: int = Descriptor.resolve_inventory_index(accepted["descriptor"], target_id, base)
+	var original_component: Dictionary = base["inventory"][original_index]
+	var original_mass: Variant = original_component.get("mass", null)
+	_check("v3 binding resolves an inventory component by its authored ID", original_index == 0 and original_component.get("id", "") == target_id)
+
+	var changed: Dictionary = base.duplicate(true)
+	changed["inventory"][0]["name"] = str(changed["inventory"][0]["name"]) + " renamed"
+	changed["inventory"].reverse()
+	var changed_bytes: PackedByteArray = _source_bytes(changed)
+	var changed_descriptor: Dictionary = _stable_descriptor(base_id, changed_bytes, changed,
+		source_descriptor_result["descriptor"]["presentation"])
+	var regenerated: Dictionary = Descriptor.validate(changed_descriptor, base_id, changed_bytes)
+	_check("regenerated v3 descriptor accepts the renamed and reordered source", bool(regenerated.get("ok", false)), str(regenerated.get("errors", [])))
+	if bool(regenerated.get("ok", false)):
+		var resolved_index: int = Descriptor.resolve_inventory_index(regenerated["descriptor"], target_id, changed)
+		var resolved_component: Dictionary = changed["inventory"][resolved_index]
+		_check("regenerated binding still resolves the same physical component after reorder and rename",
+			resolved_index != original_index and resolved_component.get("id", "") == target_id
+			and resolved_component.get("mass", null) == original_mass)
+		var binding_order: Dictionary = changed_descriptor.duplicate(true)
+		binding_order["inventory_bindings"].reverse()
+		var order_check: Dictionary = Descriptor.validate(binding_order, base_id, changed_bytes)
+		_check("v3 binding-array order is independent of source order", bool(order_check.get("ok", false)), str(order_check.get("errors", [])))
+	var stale_source: Dictionary = Descriptor.validate(accepted["descriptor"], base_id, changed_bytes)
+	_check("source edits remain pinned to the exact descriptor snapshot",
+		not bool(stale_source.get("ok", false)) and _has_error(stale_source.get("errors", []), "SHA-256"), str(stale_source.get("errors", [])))
+
+	var duplicate: Dictionary = base.duplicate(true)
+	duplicate["landing_gear"]["contacts"][0]["id"] = duplicate["inventory"][0]["id"]
+	var duplicate_bytes: PackedByteArray = _source_bytes(duplicate)
+	var duplicate_descriptor: Dictionary = _stable_descriptor(base_id, duplicate_bytes, duplicate,
+		source_descriptor_result["descriptor"]["presentation"])
+	var duplicate_result: Dictionary = Descriptor.validate(duplicate_descriptor, base_id, duplicate_bytes)
+	_check("duplicate IDs across physical identity kinds are rejected", not bool(duplicate_result.get("ok", false))
+		and _has_error(duplicate_result.get("errors", []), "duplicate"), str(duplicate_result.get("errors", [])))
+
+	var missing: Dictionary = base.duplicate(true)
+	missing["inventory"][0].erase("id")
+	var missing_bytes: PackedByteArray = _source_bytes(missing)
+	var missing_descriptor: Dictionary = stable_descriptor.duplicate(true)
+	missing_descriptor["base_sha256"] = _sha256(missing_bytes)
+	var missing_result: Dictionary = Descriptor.validate(missing_descriptor, base_id, missing_bytes)
+	_check("missing source inventory ID is rejected", not bool(missing_result.get("ok", false))
+		and _has_error(missing_result.get("errors", []), "/inventory/0/id"), str(missing_result.get("errors", [])))
+
+	var unknown_descriptor: Dictionary = stable_descriptor.duplicate(true)
+	unknown_descriptor["inventory_bindings"][0]["key"] = "unknown_component"
+	var unknown_result: Dictionary = Descriptor.validate(unknown_descriptor, base_id, stable_bytes)
+	_check("binding to an unknown source inventory ID is rejected", not bool(unknown_result.get("ok", false))
+		and _has_error(unknown_result.get("errors", []), "does not resolve"), str(unknown_result.get("errors", [])))
+
+
+func _add_test_physical_identity(base: Dictionary) -> void:
+	base["physical_identity_version"] = 1
+	for index: int in base.get("inventory", []).size():
+		base["inventory"][index]["id"] = "part_%02d" % index
+	var gear: Dictionary = base.get("landing_gear", {})
+	for index: int in gear.get("contacts", []).size():
+		gear["contacts"][index]["id"] = "contact_%02d" % index
+	base["landing_gear"] = gear
+	base["propulsion"]["id"] = "propulsion_main"
+	var hull_points: Array = base.get("crash_hull", {}).get("value", [])
+	var hull_ids: Array = []
+	for index: int in hull_points.size():
+		hull_ids.append("hull_%03d" % index)
+	base["crash_hull_ids"] = hull_ids
+	base["controls"]["surface_ids"] = {
+		"aileron_left": "surface_aileron_left",
+		"aileron_right": "surface_aileron_right",
+		"elevator": "surface_elevator",
+		"rudder": "surface_rudder",
+	}
+
+
+func _stable_descriptor(base_id: String, base_bytes: PackedByteArray, base: Dictionary,
+		presentation: Dictionary) -> Dictionary:
+	var modules: Dictionary = Modules.classify(base)
+	var bindings: Array = []
+	for component: Dictionary in base.get("inventory", []):
+		bindings.append({"key": str(component.get("id", ""))})
+	return {
+		"_generated_do_not_edit": "Generated by research/aircraft-editor/build_descriptors.py; do not edit.",
+		"format": Descriptor.FORMAT,
+		"base_id": base_id,
+		"base_sha256": _sha256(base_bytes),
+		"inventory_bindings": bindings,
+		"modules": modules.get("modules", []),
+		"presentation": presentation.duplicate(true),
+	}
+
+
+func _source_bytes(base: Dictionary) -> PackedByteArray:
+	return (JSON.stringify(base, "\t", true, true) + "\n").to_utf8_buffer()
 
 
 func _test_unfamiliar_identity() -> void:
@@ -99,15 +232,31 @@ func _test_rejections() -> void:
 
 func _test_legacy_and_presentation() -> void:
 	var id: String = Catalog.DEFAULT_ID
-	var bytes := FileAccess.get_file_as_bytes(Catalog.entry(id).data)
-	var current: Dictionary = Descriptor.load_for(id, bytes).descriptor
-	_check("current descriptor names model contract v2", current.format == Descriptor.FORMAT)
+	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(id).data)
+	var current_result: Dictionary = Descriptor.load_for(id, bytes)
+	if not bool(current_result.get("ok", false)):
+		_check("current descriptor loads for presentation checks", false, str(current_result.get("errors", [])))
+		return
+	var current: Dictionary = current_result["descriptor"]
+	_check("current descriptor uses the current or historical supported binding version",
+		current.format in [Descriptor.FORMAT, Descriptor.V2_FORMAT])
 	var resolved: Dictionary = Descriptor.verify_presentation(current)
-	_check("v2 model dependencies resolve before flight", resolved.ok, str(resolved.errors))
-	var legacy: Dictionary = current.duplicate(true)
+	_check("current model dependencies resolve before flight", resolved.ok, str(resolved.errors))
+	if current.format == Descriptor.FORMAT:
+		_check("v3 retains the v2 model-family and manifest presentation fields",
+			current.presentation.has_all(["visual_family", "model_manifest_sha256", "scale_root"]))
+	var historical_base: Dictionary = JSON.parse_string(bytes.get_string_from_utf8())
+	_strip_physical_identity(historical_base)
+	var historical_bytes: PackedByteArray = _source_bytes(historical_base)
+	var historical_v2: Dictionary = _historical_descriptor(id, historical_base, historical_bytes, current)
+	var v2_result: Dictionary = Descriptor.validate(historical_v2, id, historical_bytes)
+	_check("v2 historical snapshot and its exact index/name bindings remain readable",
+		bool(v2_result.get("ok", false)), str(v2_result.get("errors", [])))
+	_check("v2 saved model dependencies still resolve", Descriptor.verify_presentation(historical_v2).get("ok", false))
+	var legacy: Dictionary = historical_v2.duplicate(true)
 	legacy.format = Descriptor.LEGACY_FORMAT
 	legacy.presentation = {"visual_id": id, "scale_root": "airplane"}
-	var legacy_result: Dictionary = Descriptor.validate(legacy, id, bytes)
+	var legacy_result: Dictionary = Descriptor.validate(legacy, id, historical_bytes)
 	_check("v1 saved descriptor remains readable", legacy_result.ok, str(legacy_result.errors))
 	_check("v1 catalog compatibility bridge resolves the same family", Descriptor.verify_presentation(legacy).ok)
 	var stale: Dictionary = current.duplicate(true)
@@ -123,6 +272,41 @@ func _test_legacy_and_presentation() -> void:
 	var unsafe: Dictionary = current.duplicate(true)
 	unsafe.presentation.visual_family = "../source"
 	_check("presentation rejects path traversal", not Descriptor.validate(unsafe, id, bytes).ok)
+
+
+func _strip_physical_identity(base: Dictionary) -> void:
+	base.erase("physical_identity_version")
+	for component: Variant in base.get("inventory", []):
+		if component is Dictionary:
+			component.erase("id")
+	var gear: Variant = base.get("landing_gear", {})
+	if gear is Dictionary:
+		for contact: Variant in gear.get("contacts", []):
+			if contact is Dictionary:
+				contact.erase("id")
+	var propulsion: Variant = base.get("propulsion", {})
+	if propulsion is Dictionary:
+		propulsion.erase("id")
+	base.erase("crash_hull_ids")
+	var controls: Variant = base.get("controls", {})
+	if controls is Dictionary:
+		controls.erase("surface_ids")
+
+
+func _historical_descriptor(base_id: String, base: Dictionary, base_bytes: PackedByteArray,
+		current: Dictionary) -> Dictionary:
+	var bindings: Array = []
+	for index: int in base.get("inventory", []).size():
+		var name: String = str(base["inventory"][index].get("name", ""))
+		var name_hash: String = _sha256(name.to_utf8_buffer())
+		bindings.append({"key": "inventory-%03d-%s" % [index, name_hash.substr(0, 12)],
+			"index": index, "name_sha256": name_hash})
+	var descriptor: Dictionary = current.duplicate(true)
+	descriptor["format"] = Descriptor.V2_FORMAT
+	descriptor["base_id"] = base_id
+	descriptor["base_sha256"] = _sha256(base_bytes)
+	descriptor["inventory_bindings"] = bindings
+	return descriptor
 
 
 func _has_error(errors: PackedStringArray, needle: String) -> bool:

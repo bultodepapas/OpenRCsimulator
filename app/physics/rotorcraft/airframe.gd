@@ -93,6 +93,118 @@ static func _evaluate_prepared(model: Dictionary, cg_air: PackedFloat64Array, ra
 	return result
 
 
+# Compact joint-stage path. The caller has checked cg/rates and the prepared
+# context. Evaluate all three CPs into one scalar buffer so no per-piece
+# dictionaries, packed load arrays, key-prefix strings or temporary finite
+# arrays are created. Full diagnostics continue to use the reference path above.
+static func _evaluate_compact_stage_prepared(model: Dictionary, cg_air: PackedFloat64Array,
+		rates: PackedFloat64Array, fuselage_wake: PackedFloat64Array,
+		fin_wake: PackedFloat64Array, tail_wake: PackedFloat64Array) -> Dictionary:
+	var density_scale: float = 0.5 * model.rho_kg_m3
+	var pieces: PackedFloat64Array = PackedFloat64Array()
+	pieces.resize(27)
+	for index: int in range(3):
+		var rx: float
+		var ry: float
+		var rz: float
+		var area_x: float = 0.0
+		var area_y: float = 0.0
+		var area_z: float = 0.0
+		var lift_slope: float = 0.0
+		var wake: PackedFloat64Array
+		if index == 0:
+			rx = model.fuselage_x_m
+			ry = model.fuselage_y_m
+			rz = model.fuselage_z_m
+			area_x = model.fuselage_area_x_m2
+			area_y = model.fuselage_area_y_m2
+			area_z = model.fuselage_area_z_m2
+			wake = fuselage_wake
+		elif index == 1:
+			rx = model.vertical_fin_x_m
+			ry = model.vertical_fin_y_m
+			rz = model.vertical_fin_z_m
+			area_x = model.vertical_fin_area_m2
+			lift_slope = model.vertical_fin_lift_curve_slope_per_rad
+			wake = fin_wake
+		else:
+			rx = model.horizontal_tail_x_m
+			ry = model.horizontal_tail_y_m
+			rz = model.horizontal_tail_z_m
+			area_x = model.horizontal_tail_area_m2
+			lift_slope = model.horizontal_tail_lift_curve_slope_per_rad
+			wake = tail_wake
+		var point_x: float = cg_air[0] + rates[1] * rz - rates[2] * ry
+		var point_y: float = cg_air[1] + rates[2] * rx - rates[0] * rz
+		var point_z: float = cg_air[2] + rates[0] * ry - rates[1] * rx
+		var ux: float = point_x - wake[0]
+		var uy: float = point_y - wake[1]
+		var uz: float = point_z - wake[2]
+		var speed_squared: float = ux * ux + uy * uy + uz * uz
+		if not is_finite(point_x) or not is_finite(point_y) or not is_finite(point_z) \
+			or not is_finite(ux) or not is_finite(uy) or not is_finite(uz) or not is_finite(speed_squared):
+			return {"ok": false}
+		var fx: float = 0.0
+		var fy: float = 0.0
+		var fz: float = 0.0
+		var ideal: float = 0.0
+		var normal_force: float = 0.0
+		if index == 0:
+			var speed: float = M.sqrt_(speed_squared)
+			fx = -density_scale * area_x * ux * speed
+			fy = -density_scale * area_y * uy * speed
+			fz = -density_scale * area_z * uz * speed
+		else:
+			var scale: float = density_scale * area_x
+			if index == 1:
+				var in_plane: float = M.sqrt_(ux * ux + uz * uz)
+				ideal = -scale * (lift_slope * in_plane + absf(uy)) * uy
+				var cap: float = scale * speed_squared
+				if not is_finite(scale) or not is_finite(in_plane) or not is_finite(cap):
+					return {"ok": false}
+				fy = clampf(ideal, -cap, cap)
+				normal_force = fy
+			else:
+				ideal = -scale * (lift_slope * absf(ux) + absf(uz)) * uz
+				var cap: float = scale * (ux * ux + uz * uz)
+				if not is_finite(scale) or not is_finite(cap):
+					return {"ok": false}
+				fz = clampf(ideal, -cap, cap)
+				normal_force = fz
+		var mx: float = ry * fz - rz * fy
+		var my: float = rz * fx - rx * fz
+		var mz: float = rx * fy - ry * fx
+		var relative_power: float = fx * ux + fy * uy + fz * uz
+		var body_power: float = fx * point_x + fy * point_y + fz * point_z
+		var wake_power: float = fx * wake[0] + fy * wake[1] + fz * wake[2]
+		if not is_finite(fx) or not is_finite(fy) or not is_finite(fz) \
+			or not is_finite(ideal) or not is_finite(normal_force) \
+			or not is_finite(mx) or not is_finite(my) or not is_finite(mz) \
+			or not is_finite(relative_power) or not is_finite(body_power) or not is_finite(wake_power):
+			return {"ok": false}
+		var base: int = index * 9
+		pieces[base] = fx
+		pieces[base + 1] = fy
+		pieces[base + 2] = fz
+		pieces[base + 3] = mx
+		pieces[base + 4] = my
+		pieces[base + 5] = mz
+		pieces[base + 6] = relative_power
+		pieces[base + 7] = body_power
+		pieces[base + 8] = wake_power
+	var loads: PackedFloat64Array = PackedFloat64Array([
+		pieces[0] + pieces[9] + pieces[18], pieces[1] + pieces[10] + pieces[19],
+		pieces[2] + pieces[11] + pieces[20], pieces[3] + pieces[12] + pieces[21],
+		pieces[4] + pieces[13] + pieces[22], pieces[5] + pieces[14] + pieces[23]])
+	var relative_power: float = pieces[6] + pieces[15] + pieces[24]
+	var body_power: float = pieces[7] + pieces[16] + pieces[25]
+	var wake_power: float = pieces[8] + pieces[17] + pieces[26]
+	if not _vector6(loads) or not _finite([relative_power, body_power, wake_power]):
+		return {"ok": false}
+	return {"ok": true, "loads": loads, "relative_power_w": relative_power,
+		"body_air_power_w": body_power, "wake_power_w": wake_power}
+
+
 static func _piece(model: Dictionary, prefix: String, cg_air: PackedFloat64Array,
 		rates: PackedFloat64Array, wake: PackedFloat64Array, diagnostics: bool) -> Dictionary:
 	var rx: float = model[prefix + "_x_m"]

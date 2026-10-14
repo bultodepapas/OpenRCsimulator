@@ -187,7 +187,7 @@ func _check_observation(label: String, flight: Node, observed: Dictionary) -> vo
 		observed.get("law_identity", "") == metadata.get("propulsion_model", "")
 		and observed.get("kind", "") == Propulsion.source_kind(flight.aircraft.model.propulsion))
 	_check(label + " has one stable model-scoped propulsion installation",
-		observed.get("installation_id", "") == "aircraft/%s/propulsion/single" % flight.aircraft.model.id
+		observed.get("installation_id", "") == "aircraft/%s/propulsion/%s" % [flight.aircraft.model.id, flight.aircraft.model.propulsion.get("id", "single")]
 		and observed.get("installation_scope", "") == "current_single_installation")
 	var telemetry: Dictionary = observed.get("telemetry", {})
 	if telemetry.has("rpm"):

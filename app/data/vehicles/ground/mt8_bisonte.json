@@ -1,0 +1,315 @@
+{
+  "format": "openrc-ground-vehicle",
+  "version": 1,
+  "id": "mt8-bisonte-electric-4wd-estimate-v1",
+  "name": "MT8 Bisonte, electric 4WD estimate",
+  "description": "Simulation-only estimated electric 4WD baseline scaled from the delivered MT8 blockout geometry. Mass, inertia, suspension, tire, drivetrain, and servo values are estimates, not measured vehicle data.",
+  "drive_configuration": "electric_4wd",
+  "geometry_source": {
+    "spec_path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json",
+    "spec_sha256": "8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef",
+    "glb_path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb",
+    "glb_sha256": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6",
+    "asset_frame": {
+      "right": "+X",
+      "up": "+Y",
+      "forward": "-Z"
+    },
+    "physics_frame": {
+      "forward": "+X",
+      "right": "+Y",
+      "down": "+Z"
+    },
+    "rights_status": "User confirmed the supplied model and scripts may be included and modified; original source paths and hashes remain recorded."
+  },
+  "parameters": {
+    "sprung_mass_kg": {
+      "value": 4.8,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "unsprung_mass_kg": {
+      "value": 0.18,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Per wheel; includes wheel-end hardware estimate."
+    },
+    "sprung_inertia_kg_m2": {
+      "value": [
+        0.067,
+        0.16,
+        0.115,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "kg m^2",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Symmetric entries [Jxx,Jyy,Jzz,Jxy,Jxz,Jyz] about sprung CG, using the delivered chassis/body envelope as a scale reference."
+    },
+    "wheel_spin_inertia_kg_m2": {
+      "value": 0.0015,
+      "unit": "kg m^2",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Per wheel; wheel-end spin inertia placeholder."
+    },
+    "gravity_m_per_s2": {
+      "value": 9.80665,
+      "unit": "m/s^2",
+      "kind": "borrowed",
+      "source": "Standard nominal terrestrial gravitational acceleration."
+    },
+    "corner_x_datum_frd_m": {
+      "value": [
+        0.21,
+        0.21,
+        -0.21,
+        -0.21
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR from each wheel_center_rest.z."
+    },
+    "corner_y_datum_frd_m": {
+      "value": [
+        -0.215,
+        0.215,
+        -0.215,
+        0.215
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR from each wheel_center_rest.x."
+    },
+    "corner_z_datum_frd_m": {
+      "value": [
+        0.025,
+        0.025,
+        0.025,
+        0.025
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR; down-positive wheel centers at rest."
+    },
+    "cg_forward_from_datum_m": {
+      "value": 0.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Centered longitudinal CG placeholder; no component mass inventory is supplied."
+    },
+    "cg_right_from_datum_m": {
+      "value": 0.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Centered lateral CG placeholder; no component mass inventory is supplied."
+    },
+    "cg_height_above_chassis_datum_m": {
+      "value": 0.095,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. CG height above the supplied chassis underside datum; the 0.125 m ride-origin dimension is not treated as a measured CG."
+    },
+    "arm_inner_offset_m": {
+      "value": 0.06,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: corners.FL.arm_lower_pivot.x magnitude; suspension inner pivot offset"
+    },
+    "arm_length_m": {
+      "value": 0.155,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: arm_length"
+    },
+    "wheel_center_rest_below_chassis_datum_m": {
+      "value": 0.025,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Mean of the four supplied wheel_center_rest heights."
+    },
+    "tire_radius_m": {
+      "value": 0.1,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: tire_radius"
+    },
+    "suspension_stiffness_n_per_m": {
+      "value": 900.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "suspension_damping_n_s_per_m": {
+      "value": 45.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "tire_stiffness_n_per_m": {
+      "value": 6500.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "tire_damping_n_s_per_m": {
+      "value": 28.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "tire_slip_relaxation_s": {
+      "value": 0.04,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "travel_droop_m": {
+      "value": 0.07,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: travel_droop"
+    },
+    "travel_bump_m": {
+      "value": 0.05,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: travel_bump"
+    },
+    "bump_stop_stiffness_n_per_m": {
+      "value": 8000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "bump_stop_damping_n_s_per_m": {
+      "value": 80.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "droop_stop_stiffness_n_per_m": {
+      "value": 10000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "droop_stop_damping_n_s_per_m": {
+      "value": 80.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "drive_torque_per_wheel_nm": {
+      "value": 3.0,
+      "unit": "N m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Equal-torque electric 4WD approximation."
+    },
+    "brake_torque_per_wheel_nm": {
+      "value": 6.0,
+      "unit": "N m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "reverse_torque_fraction": {
+      "value": 0.6,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "drive_torque_fade_rad_s": {
+      "value": 40.0,
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "rolling_resistance_coefficient": {
+      "value": 0.035,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "tire_friction_scale": {
+      "value": 0.9,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "max_steer_angle_rad": {
+      "value": 0.5235987755982988,
+      "unit": "rad",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: steer_max_deg converted to radians"
+    },
+    "steer_servo_natural_frequency_rad_s": {
+      "value": 18.0,
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "steer_servo_damping_ratio": {
+      "value": 0.9,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "hull_probe_centers_datum_frd_m": {
+      "value": [
+        0.2925,
+        0.0,
+        -0.0035,
+        -0.2925,
+        0.0,
+        -0.0035,
+        -0.0,
+        0.0,
+        0.0025,
+        -0.005,
+        0.0,
+        -0.205,
+        -0.0,
+        -0.18,
+        -0.1125,
+        -0.0,
+        0.18,
+        -0.1125
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Centers from the six supplied COL_* proxy boxes, flattened as FRD triplets."
+    },
+    "hull_probe_radii_m": {
+      "value": [
+        0.0385,
+        0.0385,
+        0.0625,
+        0.035,
+        0.0525,
+        0.0525
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: half of each COL_* proxy box vertical (+Y) dimension, used as simple hull contact probes"
+    },
+    "hull_contact_stiffness_n_per_m": {
+      "value": 15000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "hull_contact_damping_n_s_per_m": {
+      "value": 150.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    },
+    "hull_contact_friction_scale": {
+      "value": 0.6,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+    }
+  }
+}

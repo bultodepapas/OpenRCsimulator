@@ -33,6 +33,8 @@ func _bindings() -> Dictionary:
 func _initialize() -> void:
 	_check("event format is versioned", EventNormalizer.FORMAT == "openrc-aircraft-contact-events v1")
 	var bindings := _bindings()
+	var authored_bindings: Dictionary = bindings.duplicate(true)
+	authored_bindings["rotor_id"] = "propeller/engine/main"
 	var records: Array = [{
 		"index": 0,
 		"new": true,
@@ -179,6 +181,10 @@ func _initialize() -> void:
 	_check("water event uses authoritative time fraction and terminal response", water_record.get("time_fraction", -1.0) == 0.6
 		and water_record.get("response", "") == "terminal"
 		and EventNormalizer.validate_events([water_record], 14, bindings))
+	var authored_water_record := EventNormalizer.impact_event(water, authored_bindings, "lake-contact-v1:fixture")
+	_check("lake propeller probe carries the authored rotor ID",
+		authored_water_record.get("probe_id", "") == "propeller/engine/main"
+		and EventNormalizer.validate_events([authored_water_record], 14, authored_bindings))
 
 	var gear_water := LakeCollision.WaterEvent.new()
 	gear_water.tick = 15
@@ -208,6 +214,20 @@ func _initialize() -> void:
 		and strike.get("tick", -1) == 16 and strike.get("measure", {}).get("rpm", -1.0) == 850.0)
 	_check("propeller strike validates against rotor-disc binding", EventNormalizer.validate_events([strike], 16, bindings))
 	_check("strike normalization leaves source record unchanged", strike_input == saved_strike_input)
+	var authored_strike := EventNormalizer.strike_event(strike_input, 16,
+		"soft-hull-propeller-strike-v1", authored_bindings)
+	_check("authored rotor ID is carried into strike event and validates",
+		authored_strike.get("contact_id", "") == "propeller/engine/main"
+		and EventNormalizer.validate_events([authored_strike], 16, authored_bindings))
+	var mismatched_rotor: Dictionary = authored_strike.duplicate(true)
+	mismatched_rotor["contact_id"] = "propeller/single"
+	mismatched_rotor["event_id"] = "as13:strike:propeller:16:new:%d:%s" % [mismatched_rotor.contact_id.length(), mismatched_rotor.contact_id]
+	_check("legacy rotor ID cannot satisfy an authored rotor binding",
+		not EventNormalizer.validate_events([mismatched_rotor], 16, authored_bindings))
+	var malformed_rotor_bindings: Dictionary = bindings.duplicate(true)
+	malformed_rotor_bindings["rotor_id"] = ""
+	_check("empty rotor binding cannot serialize a strike", EventNormalizer.strike_event(strike_input,
+		16, "soft-hull-propeller-strike-v1", malformed_rotor_bindings).is_empty())
 	_check("malformed strike vector is rejected", EventNormalizer.strike_event({
 		"tick": 16,
 		"rpm": 850.0,

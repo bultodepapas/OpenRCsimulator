@@ -171,7 +171,7 @@ static func _context(session: Node) -> Dictionary:
 static func _base_description(context: Dictionary) -> Dictionary:
 	var result: Dictionary = {
 		ok = true,
-		installation_id = "aircraft/%s/propulsion/single" % str(context.model_id),
+		installation_id = "aircraft/%s/propulsion/%s" % [str(context.model_id), str(context.propulsion.get("id", "single"))],
 		installation_scope = "current_single_installation",
 		kind = context.kind,
 		family = context.family,

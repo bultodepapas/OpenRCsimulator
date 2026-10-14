@@ -150,9 +150,11 @@ for t in "$HERE"/tests/test_*.gd; do
   test_timeout=60
   # Four 46-second simulated landings at 240/480 Hz: measured 75–82 s wall time on Linux (PT1-rc8).
   if [ "$(basename "$t")" = "test_landing_maneuver.gd" ]; then test_timeout=180; fi
+  # Seven catalog aircraft rebuild and crash twice: measured 82.90 s in PT1-rc9.
+  if [ "$(basename "$t")" = "test_crash_integration.gd" ]; then test_timeout=180; fi
   # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
   case "$(basename "$t")" in
-    test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd) test_timeout=600 ;;
+    test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"
   # Godot reports runtime script errors without failing the run; treat any as a failure.

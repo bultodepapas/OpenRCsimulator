@@ -79,15 +79,25 @@ static func _evaluate_models(main_model: Dictionary, tail_model: Dictionary, air
 		cg_air[0] + rates[1] * main_model.hub_z_m - rates[2] * main_model.hub_y_m,
 		cg_air[1] + rates[2] * main_model.hub_x_m - rates[0] * main_model.hub_z_m,
 		cg_air[2] + rates[0] * main_model.hub_y_m - rates[1] * main_model.hub_x_m)
-	var main: Dictionary
+	var main_rotor: Dictionary
+	var inflow: Dictionary
+	var derivative: PackedFloat64Array
 	if prepared:
-		main = MainStage._evaluate_prepared(main_model, state, omega, hub_air, rates,
+		var parts: Array = MainStage._evaluate_prepared_parts(main_model, state, omega, hub_air, rates,
 			collective, cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss, instability, diagnostics)
+		if parts.size() != 3:
+			return {"ok": false}
+		main_rotor = parts[0]
+		inflow = parts[1]
+		derivative = parts[2]
 	else:
-		main = MainStage.evaluate(main_model, state, omega, hub_air, rates,
+		var main: Dictionary = MainStage.evaluate(main_model, state, omega, hub_air, rates,
 			collective, cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss, instability, diagnostics)
-	if not main.ok:
-		return main
+		if not main.ok:
+			return main
+		main_rotor = main.rotor
+		inflow = main.inflow
+		derivative = main.derivative
 	var tail: Dictionary = Tail._evaluate_prepared(tail_model, omega, state[2], cg_air, rates,
 		tail_collective, diagnostics) if prepared else Tail.evaluate(
 		tail_model, omega, state[2], cg_air, rates, tail_collective, diagnostics)
@@ -100,19 +110,26 @@ static func _evaluate_models(main_model: Dictionary, tail_model: Dictionary, air
 	var vertical_wake: float = tail.wake_factor * state[2]
 	var fin_wake: PackedFloat64Array = M.v3(0.0, fin_tail_wake_fraction * tail.induced_velocity_m_s, vertical_wake)
 	var horizontal_wake: PackedFloat64Array = M.v3(0.0, 0.0, vertical_wake)
-	var airframe: Dictionary = Airframe._evaluate_prepared(airframe_model, cg_air, rates,
-		fuselage_wake, fin_wake, horizontal_wake, diagnostics) if prepared else Airframe.evaluate(
-		airframe_model, cg_air, rates, fuselage_wake, fin_wake, horizontal_wake, diagnostics)
+	var airframe: Dictionary
+	if prepared and not diagnostics:
+		airframe = Airframe._evaluate_compact_stage_prepared(airframe_model, cg_air, rates,
+			fuselage_wake, fin_wake, horizontal_wake)
+	elif prepared:
+		airframe = Airframe._evaluate_prepared(airframe_model, cg_air, rates,
+			fuselage_wake, fin_wake, horizontal_wake, diagnostics)
+	else:
+		airframe = Airframe.evaluate(airframe_model, cg_air, rates,
+			fuselage_wake, fin_wake, horizontal_wake, diagnostics)
 	if not airframe.ok:
 		return airframe
 	var loads: PackedFloat64Array = PackedFloat64Array()
 	loads.resize(6)
 	for i: int in range(6):
-		loads[i] = main.loads[i] + tail.loads[i] + airframe.loads[i]
+		loads[i] = main_rotor.loads[i] + tail.loads[i] + airframe.loads[i]
 		if not is_finite(loads[i]):
 			return {"ok": false}
-	var result: Dictionary = {"ok": true, "loads": loads, "derivative": main.derivative,
-		"main_rotor": main.rotor, "inflow": main.inflow, "tail_rotor": tail, "airframe": airframe}
+	var result: Dictionary = {"ok": true, "loads": loads, "derivative": derivative,
+		"main_rotor": main_rotor, "inflow": inflow, "tail_rotor": tail, "airframe": airframe}
 	if diagnostics:
 		result["wake_law"] = WAKE_LAW
 		result["hub_air_velocity_body_frd_m_s"] = hub_air

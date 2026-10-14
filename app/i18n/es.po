@@ -1132,3 +1132,90 @@ msgstr "Cambio de ajustes reaplicado."
 
 msgid "Recovered revision %d from backup. Review it before saving."
 msgstr "Revisión %d recuperada de la copia de seguridad. Revísala antes de guardar."
+
+msgid "Natural Random"
+msgstr "Aleatorio natural"
+
+msgid "Another flight"
+msgstr "Otro vuelo"
+
+msgid "Repeat last flight"
+msgstr "Repetir último vuelo"
+
+msgid "Back"
+msgstr "Volver"
+
+msgid "NATURAL RANDOM"
+msgstr "ALEATORIO NATURAL"
+
+msgid "Stock airplane"
+msgstr "Avión de serie"
+
+msgid "Model status"
+msgstr "Estado del modelo"
+
+msgid "Custom from Natural Random"
+msgstr "Personalizado desde Aleatorio natural"
+
+msgid "No mean wind · %s m/s"
+msgstr "Sin viento medio · %s m/s"
+
+msgid "Wind from %03.0f° · %s m/s"
+msgstr "Viento desde %03.0f° · %s m/s"
+
+msgid "Gust increment: %s m/s"
+msgstr "Incremento de ráfaga: %s m/s"
+
+msgid "Airborne start · Current field"
+msgstr "Inicio en vuelo · Campo actual"
+
+msgid "Show details"
+msgstr "Ver detalles"
+
+msgid "Hide details"
+msgstr "Ocultar detalles"
+
+msgid "Flight details"
+msgstr "Detalles del vuelo"
+
+msgid "Flight seed: %s"
+msgstr "Semilla del vuelo: %s"
+
+msgid "Gust duration %s s · repeat every %s s"
+msgstr "Duración de la ráfaga %s s · repetición cada %s s"
+
+msgid "Vertical gust increment: %s m/s"
+msgstr "Incremento de ráfaga vertical: %s m/s"
+
+msgid "Morning light"
+msgstr "Luz de mañana"
+
+msgid "Late afternoon light"
+msgstr "Luz del final de la tarde"
+
+msgid "Custom lighting"
+msgstr "Iluminación personalizada"
+
+msgid "Calm air"
+msgstr "Aire en calma"
+
+msgid "Lively breeze"
+msgstr "Brisa moderada"
+
+msgid "Windy day"
+msgstr "Día ventoso"
+
+msgid "Preparing flight…"
+msgstr "Preparando vuelo…"
+
+msgid "Could not prepare random flight: %s"
+msgstr "No se pudo preparar el vuelo aleatorio: %s"
+
+msgid "Glow: cut, starter, lean/rich mixture"
+msgstr "Glow: corte, arranque, mezcla pobre/rica"
+
+msgid "Smoke: pump / AUX"
+msgstr "Humo: bomba / AUX"
+
+msgid "RC cars · Bisonte MT8"
+msgstr "Carros RC · Bisonte MT8"

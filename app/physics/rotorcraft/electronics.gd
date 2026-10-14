@@ -65,9 +65,9 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 ## State is the 19-value body/rotor/controller state. Continuous PI memory is
 ## returned as derivatives so it can be integrated at every RK stage.
 static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: PackedFloat64Array,
-		flight_mode: String, trainer_enabled: bool) -> Dictionary:
+		flight_mode: String, trainer_enabled: bool, trim: Dictionary = {}) -> Dictionary:
 	if not _prepared(model) or state.size() != STATE_SIZE or sticks.size() != 4 \
-			or flight_mode.is_empty() or typeof(trainer_enabled) != TYPE_BOOL:
+			or flight_mode.is_empty() or typeof(trainer_enabled) != TYPE_BOOL or not _trim_is_valid(trim, model):
 		return {"ok": false, "message": "invalid electronics context, state, mode or stick layout"}
 	for value: float in state:
 		if not is_finite(value):
@@ -86,22 +86,38 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Packe
 	var cyclic_lateral: float = sticks[1]
 	var euler: PackedFloat64Array = M.q_to_euler(PackedFloat64Array([state[6], state[7], state[8], state[9]]))
 	if trainer_enabled:
-		var desired_roll: float = cyclic_lateral * model.trainer_max_tilt_rad
-		var desired_pitch: float = -cyclic_longitudinal * model.trainer_max_tilt_rad
+		var desired_roll: float = clampf(float(trim.get("roll_reference_rad", 0.0))
+			+ cyclic_lateral * model.trainer_max_tilt_rad,
+			-model.trainer_max_tilt_rad, model.trainer_max_tilt_rad)
+		var desired_pitch: float = clampf(float(trim.get("pitch_reference_rad", 0.0))
+			- cyclic_longitudinal * model.trainer_max_tilt_rad,
+			-model.trainer_max_tilt_rad, model.trainer_max_tilt_rad)
 		var desired_roll_rate: float = clampf(model.trainer_roll_attitude_gain_per_s * (desired_roll - euler[2]),
 			-model.trainer_roll_rate_limit_rad_s, model.trainer_roll_rate_limit_rad_s)
 		var desired_pitch_rate: float = clampf(model.trainer_pitch_attitude_gain_per_s * (desired_pitch - euler[1]),
 			-model.trainer_pitch_rate_limit_rad_s, model.trainer_pitch_rate_limit_rad_s)
-		cyclic_lateral = clampf(model.trainer_roll_cyclic_gain_rad_per_rad_s * (desired_roll_rate - state[10]),
-			-model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
-		cyclic_longitudinal = clampf(-model.trainer_pitch_cyclic_gain_rad_per_rad_s * (desired_pitch_rate - state[11]),
-			-model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
+		var lateral_command_rad: float = model.trainer_roll_cyclic_gain_rad_per_rad_s * (desired_roll_rate - state[10])
+		var longitudinal_command_rad: float = -model.trainer_pitch_cyclic_gain_rad_per_rad_s * (desired_pitch_rate - state[11])
+		cyclic_lateral = clampf(lateral_command_rad / model.linkage.lateral_rad_per_unit, -1.0, 1.0)
+		cyclic_longitudinal = clampf(longitudinal_command_rad / model.linkage.longitudinal_rad_per_unit, -1.0, 1.0)
 	var mixed: Dictionary = Swash.mix_120(float(pitch_curve.value), cyclic_longitudinal, cyclic_lateral)
 	if not mixed.ok:
 		return {"ok": false, "message": "swash mix refused the physical stick commands"}
-	var swash: Dictionary = Swash.linkage_output(mixed.servo_targets, model.linkage)
+	var servo_positions: PackedFloat64Array = mixed.servo_targets.duplicate()
+	var servo_travel_limited: bool = false
+	for index: int in range(servo_positions.size()):
+		var clamped: float = clampf(servo_positions[index], -1.0, 1.0)
+		servo_travel_limited = servo_travel_limited or clamped != servo_positions[index]
+		servo_positions[index] = clamped
+	var swash: Dictionary = Swash.linkage_output(servo_positions, model.linkage)
 	if not swash.ok:
 		return {"ok": false, "message": "swash linkage refused the mixed commands"}
+	var cyclic_forward: float = clampf(float(swash.longitudinal_rad)
+		+ float(trim.get("cyclic_forward_bias_rad", 0.0)),
+		-model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
+	var cyclic_right: float = clampf(float(swash.lateral_rad)
+		+ float(trim.get("cyclic_right_bias_rad", 0.0)),
+		-model.linkage.cyclic_max_rad, model.linkage.cyclic_max_rad)
 	var yaw_stick: float = sticks[2]
 	var manual_yaw_rate: float = yaw_stick * model.yaw_max_rate_rad_s if absf(yaw_stick) > model.yaw_deadzone else 0.0
 	var heading_error: float = _wrap(state[HEADING_REF] - euler[0])
@@ -109,7 +125,8 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Packe
 		-model.yaw_max_rate_rad_s, model.yaw_max_rate_rad_s)
 	var yaw_rate_error: float = target_yaw_rate - state[12]
 	var integrator: float = clampf(state[YAW_INTEGRATOR], -model.yaw_integrator_limit_rad, model.yaw_integrator_limit_rad)
-	var tail_unsaturated: float = model.tail_collective_trim_rad + model.yaw_control_sign * (
+	var tail_unsaturated: float = model.tail_collective_trim_rad \
+		+ float(trim.get("tail_collective_bias_rad", 0.0)) + model.yaw_control_sign * (
 		model.yaw_rate_kp_rad_per_rad_s * yaw_rate_error + model.yaw_rate_ki_rad_per_rad * integrator)
 	var tail_collective: float = clampf(tail_unsaturated, model.tail_collective_min_rad, model.tail_collective_max_rad)
 	var integral_rate: float = yaw_rate_error
@@ -121,14 +138,15 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Packe
 		integral_rate = 0.0
 	var heading_rate: float = manual_yaw_rate if absf(yaw_stick) > model.yaw_deadzone else 0.0
 	return {"ok": true, "collective_75_rad": float(swash.theta0_rad),
-		"cyclic_forward_rad": cyclic_longitudinal, "cyclic_right_rad": cyclic_lateral,
+		"cyclic_forward_rad": cyclic_forward, "cyclic_right_rad": cyclic_right,
 		"tail_collective_rad": tail_collective, "drive_fraction": float(throttle_curve.value),
 		"controller_derivative": PackedFloat64Array([heading_rate, integral_rate]),
 		"target_yaw_rate_rad_s": target_yaw_rate, "measured_yaw_rate_rad_s": state[12],
 		"heading_error_rad": heading_error, "yaw_rate_error_rad_s": yaw_rate_error,
 		"tail_saturated": tail_collective != tail_unsaturated,
-		"trainer_active": trainer_enabled,
-		"swash_servo_targets": mixed.servo_targets}
+		"trainer_active": trainer_enabled, "trim": trim.duplicate(true),
+		"servo_travel_limited": servo_travel_limited,
+		"swash_servo_targets": servo_positions, "swash_servo_commands": mixed.servo_targets}
 
 
 static func _prepared(model: Dictionary) -> bool:
@@ -141,8 +159,6 @@ static func _prepared(model: Dictionary) -> bool:
 static func _freeze_curves(source: Dictionary) -> Dictionary:
 	var curves: Dictionary = source.duplicate(true)
 	for mode_name: String in curves.keys():
-		curves[mode_name]["pitch"].make_read_only()
-		curves[mode_name]["throttle"].make_read_only()
 		curves[mode_name].make_read_only()
 	curves.make_read_only()
 	return curves
@@ -150,6 +166,25 @@ static func _freeze_curves(source: Dictionary) -> Dictionary:
 
 static func _wrap(angle: float) -> float:
 	return M.atan2_(M.sin_(angle), M.cos_(angle))
+
+
+static func _trim_is_valid(trim: Dictionary, model: Dictionary) -> bool:
+	var keys: Array = ["roll_reference_rad", "pitch_reference_rad", "cyclic_forward_bias_rad",
+		"cyclic_right_bias_rad", "tail_collective_bias_rad"]
+	for key: Variant in trim.keys():
+		if typeof(key) != TYPE_STRING or not keys.has(key):
+			return false
+	for key: String in keys:
+		if trim.has(key) and not _number(trim[key]):
+			return false
+	if absf(float(trim.get("roll_reference_rad", 0.0))) >= PI / 2.0 \
+			or absf(float(trim.get("pitch_reference_rad", 0.0))) >= PI / 2.0:
+		return false
+	if absf(float(trim.get("cyclic_forward_bias_rad", 0.0))) > model.linkage.cyclic_max_rad \
+			or absf(float(trim.get("cyclic_right_bias_rad", 0.0))) > model.linkage.cyclic_max_rad:
+		return false
+	return absf(float(trim.get("tail_collective_bias_rad", 0.0))) \
+		<= model.tail_collective_max_rad - model.tail_collective_min_rad
 
 
 static func _number(value: Variant) -> bool:

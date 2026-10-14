@@ -1,0 +1,5 @@
+capture-land-30m.png: 67 airplane pixels, Weber contrast -0.279, 11.9 % with |contrast| < 0.1, mean ΔE 32.4, background saturation 54.1
+capture-land-low3m.png: 50 airplane pixels, Weber contrast -0.416, 24.0 % with |contrast| < 0.1, mean ΔE 30.5, background saturation 21.5
+capture-physics-inspect.png: 38695 airplane pixels, Weber contrast +0.655, 13.8 % with |contrast| < 0.1, mean ΔE 60.8, background saturation 50.7
+capture-physics-low-inspect.png: 77446 airplane pixels, Weber contrast -0.183, 5.9 % with |contrast| < 0.1, mean ΔE 45.2, background saturation 60.3
+FAIL readability: capture-land-low3m.png: 24.0 % nearly invisible > 15 %; capture-land-30m.png: contrast -0.279 > -0.40

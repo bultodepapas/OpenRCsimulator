@@ -1344,7 +1344,7 @@ func _check_prop_strike() -> void:
 	prop_strike = {tick = sim.tick, rpm = sim.aux[AUX_RPM], point_ned = disc.point_ned,
 		velocity_ned = M.q_rotate(q, RB._slice3(sim.state, RB.VEL))}
 	engine_running = false
-	_append_contact_event(ContactEvents.strike_event(prop_strike, sim.tick, HullContact.law()))
+	_append_contact_event(ContactEvents.strike_event(prop_strike, sim.tick, HullContact.law(), _contact_bindings))
 	print("PROP STRIKE at %.0f rpm, %.1f m/s: engine stopped" % [prop_strike.rpm, M.norm(prop_strike.velocity_ned)])
 
 

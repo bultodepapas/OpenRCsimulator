@@ -83,6 +83,16 @@ const ENTRIES := [
 		status_note = "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off.",
 		data = "res://data/aircraft/turbo_lumber_evolution.json",
 	},
+	{
+		id = "xcell-60-research",
+		vehicle = "rotorcraft",
+		visual_family = "hx-700",
+		name = "RC Helicopter Research Trainer",
+		summary = "X-Cell reference physics · HX-700 visual",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: X-Cell .60 reference physics with an HX-700 visual surrogate; hover start only; not flight-validated.",
+		data = "res://data/aircraft/xcell_60_research.json",
+	},
 ]
 
 
@@ -95,6 +105,12 @@ static func ids() -> PackedStringArray:
 
 static func has(id: String) -> bool:
 	return ids().has(id)
+
+
+## Vehicle ownership is explicit where the catalog crosses into aircraft-only systems.
+## Entries predating this field are airplanes.
+static func is_rotorcraft(id: String) -> bool:
+	return str(entry(id).get("vehicle", "airplane")) == "rotorcraft"
 
 
 ## Entries that carry flight data (never a PREVIEW): what physics, trace and session tests may load.

@@ -24,11 +24,11 @@ const SHORTCUTS := [
 	[[KEY_V], "Ground shadow: sun, vertical or off"],
 	[[KEY_T], "Record a flight trace (press again to save it)"],
 	[[KEY_K], "Calibrate the radio"],
-	[[KEY_H], "Stik smoke pump"],
-	[[KEY_J], "Assign smoke AUX"],
+	[[KEY_H, KEY_J], "Smoke: pump / AUX"],
 	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
 	[[KEY_F2, KEY_F3], "Overlay preset · developer overlays"],
 	[[KEY_F5], "Reload the aircraft data file"],
+	[[KEY_F6, KEY_F7, KEY_F8, KEY_F9], "Glow: cut, starter, lean/rich mixture"],
 ]
 
 ## The first-flight hint: at most three things (research 22), all of them already in the tables above.

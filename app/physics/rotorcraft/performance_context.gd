@@ -43,8 +43,10 @@ static func prepare(main_model: Dictionary, tail_model: Dictionary, airframe_mod
 	return {"ok": true, "context": context}
 
 
-# Per-stage check is deliberately structural. Component contexts were fully
-# checked at preparation and are detached, flat, read-only scalar dictionaries.
+# Per-stage check is deliberately shallow. Component contexts and the scalar
+# integration values were fully checked at preparation, then frozen. The fast
+# entry is for this returned context only; callers needing arbitrary model
+# validation continue to use AerodynamicStage.evaluate().
 static func has_valid_header(context: Dictionary) -> bool:
 	if not context.is_read_only() or context.get("law") != LAW or context.size() != KEYS.size() \
 		or not context.has_all(KEYS):
@@ -54,8 +56,10 @@ static func has_valid_header(context: Dictionary) -> bool:
 	var airframe_model: Variant = context.airframe_model
 	if typeof(main_model) != TYPE_DICTIONARY or typeof(tail_model) != TYPE_DICTIONARY \
 		or typeof(airframe_model) != TYPE_DICTIONARY \
-		or not MainRotor._prepared_header(main_model) or not TailRotor._prepared_header(tail_model) \
-		or not Airframe._prepared_header(airframe_model):
+		or not main_model.is_read_only() or not tail_model.is_read_only() or not airframe_model.is_read_only() \
+		or main_model.get("law") != MainRotor.LAW or main_model.size() != MainRotor.PREPARED_KEYS.size() \
+		or tail_model.get("law") != TailRotor.LAW or tail_model.size() != TailRotor.PREPARED_KEYS.size() \
+		or airframe_model.get("law") != Airframe.LAW or airframe_model.size() != Airframe.PREPARED_KEYS.size():
 		return false
 	for key: String in ["flow_floor_m_s", "fin_tail_wake_fraction", "height_over_radius", "loss", "instability"]:
 		if typeof(context[key]) != TYPE_FLOAT or not is_finite(context[key]):

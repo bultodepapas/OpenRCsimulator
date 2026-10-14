@@ -1,0 +1,680 @@
+{
+  "format": "openrc-aircraft v2",
+  "vehicle": "rotorcraft",
+  "id": "xcell-60-research",
+  "name": "RC Helicopter Research Trainer",
+  "capabilities": [
+    "main_rotor",
+    "tail_rotor",
+    "governor",
+    "trainer",
+    "skids"
+  ],
+  "qualification": "Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.",
+  "main_rotor": {
+    "rho_kg_m3": {
+      "value": 1.225,
+      "unit": "kg/m3",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "rotor_radius_m": {
+      "value": 0.775,
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "blade_chord_m": {
+      "value": 0.058,
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "rotor_blade_count": {
+      "value": 2,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "blade_lift_curve_slope_per_rad": {
+      "value": 5.5,
+      "unit": "1/rad",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "blade_section_cd0": {
+      "value": 0.024,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "thrust_coefficient_max": {
+      "value": 0.0055,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "blade_flapping_inertia_kg_m2": {
+      "value": 0.038,
+      "unit": "kg*m2",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "gamma_flybar": {
+      "value": 0.8,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "flapback_k_mu": {
+      "value": 0.2,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "omega_nominal_rad_s": {
+      "value": 167,
+      "unit": "rad/s",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "cyclic_longitudinal_gain_nominal_rad_per_rad": {
+      "value": 4.2,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "cyclic_lateral_gain_nominal_rad_per_rad": {
+      "value": 4.2,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "hub_spring_stiffness_nm_per_rad": {
+      "value": 54,
+      "unit": "N*m/rad",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "hub_position_body_frd_m": {
+      "value": [
+        0,
+        0,
+        -0.235
+      ],
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "rotation_sense": {
+      "value": 1,
+      "unit": "1",
+      "kind": "derived",
+      "source": "HELI-05 FRD convention: positive relative main spin about +Z"
+    }
+  },
+  "tail_rotor": {
+    "rho_kg_m3": {
+      "value": 1.225,
+      "unit": "kg/m3",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "main_rotor_radius_m": {
+      "value": 0.775,
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "tail_rotor_radius_m": {
+      "value": 0.13,
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "blade_chord_m": {
+      "value": 0.029,
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "rotor_blade_count": {
+      "value": 2,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "blade_lift_curve_slope_per_rad": {
+      "value": 5,
+      "unit": "1/rad",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "blade_section_cd0": {
+      "value": 0.024,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "thrust_coefficient_max": {
+      "value": 0.05,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "tail_to_main_speed_ratio": {
+      "value": 4.66,
+      "unit": "1",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "hub_distance_aft_m": {
+      "value": 0.91,
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "hub_height_above_cg_m": {
+      "value": 0.08,
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "vertical_fin_area_m2": {
+      "value": 0.012,
+      "unit": "m2",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "trim_collective_rad": {
+      "value": 0.1,
+      "unit": "rad",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "wake_efficiency": {
+      "value": 0.9,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "rotation_sense": {
+      "value": 1,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    }
+  },
+  "airframe": {
+    "rho_kg_m3": {
+      "value": 1.225,
+      "unit": "kg/m3",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "fuselage_drag_area_body_m2": {
+      "value": [
+        0.1,
+        0.22,
+        0.15
+      ],
+      "unit": "m2",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "fuselage_cp_body_frd_m": {
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "vertical_fin_area_m2": {
+      "value": 0.012,
+      "unit": "m2",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "vertical_fin_lift_curve_slope_per_rad": {
+      "value": 2,
+      "unit": "1/rad",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "vertical_fin_cp_body_frd_m": {
+      "value": [
+        -0.91,
+        0,
+        -0.08
+      ],
+      "unit": "m",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "horizontal_tail_area_m2": {
+      "value": 0.01,
+      "unit": "m2",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "horizontal_tail_lift_curve_slope_per_rad": {
+      "value": 3,
+      "unit": "1/rad",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "horizontal_tail_cp_body_frd_m": {
+      "value": [
+        -0.71,
+        0,
+        0
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    }
+  },
+  "body": {
+    "mass_kg": {
+      "value": 8.2,
+      "unit": "kg",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    },
+    "inertia_kg_m2": {
+      "value": [
+        0.18,
+        0.34,
+        0.28,
+        0,
+        0,
+        0
+      ],
+      "unit": "kg*m2",
+      "kind": "reference",
+      "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+    }
+  },
+  "gravity_m_s2": {
+    "value": 9.80665,
+    "unit": "m/s2",
+    "kind": "reference",
+    "source": "standard gravity"
+  },
+  "shaft_elements": [
+    {
+      "inertia_kg_m2": {
+        "value": 0.076,
+        "unit": "kg*m2",
+        "kind": "derived",
+        "source": "2 * published blade flapping inertia; rigid radial-blade estimate"
+      },
+      "speed_ratio": {
+        "value": 1,
+        "unit": "1",
+        "kind": "derived",
+        "source": "main shaft"
+      },
+      "spin_axis_body_frd": {
+        "value": [
+          0,
+          0,
+          1
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "FRD main rotor convention"
+      }
+    },
+    {
+      "inertia_kg_m2": {
+        "value": 0.00017498940853579914,
+        "unit": "kg*m2",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+      },
+      "speed_ratio": {
+        "value": 4.66,
+        "unit": "1",
+        "kind": "reference",
+        "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
+      },
+      "spin_axis_body_frd": {
+        "value": [
+          0,
+          1,
+          0
+        ],
+        "unit": "1",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+      }
+    }
+  ],
+  "drive": {
+    "engine_torque_max_nm": {
+      "value": 0.9,
+      "unit": "N*m",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "engine_power_max_w": {
+      "value": 1800,
+      "unit": "W",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "engine_speed_ratio_to_main": {
+      "value": 8.3,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "gear_efficiency": {
+      "value": 0.9,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "governor_target_main_rad_s": {
+      "value": 167,
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "governor_gain_nm_per_rad_s": {
+      "value": 0.08,
+      "unit": "N*m*s/rad",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "shaft_loss_torque_nm": {
+      "value": 0.08,
+      "unit": "N*m",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "shaft_viscous_loss_nm_per_rad_s": {
+      "value": 0.001,
+      "unit": "N*m*s/rad",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    }
+  },
+  "electronics": {
+    "tail_collective_trim_rad": {
+      "value": 0.1,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "tail_collective_min_rad": {
+      "value": -0.3,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "tail_collective_max_rad": {
+      "value": 0.3,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "yaw_control_sign": {
+      "value": 1,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "yaw_deadzone": {
+      "value": 0.025,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "yaw_max_rate_rad_s": {
+      "value": 1.5,
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "yaw_heading_gain_per_s": {
+      "value": 2,
+      "unit": "1/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "yaw_rate_kp_rad_per_rad_s": {
+      "value": 0.05,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "yaw_rate_ki_rad_per_rad": {
+      "value": 0.02,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "yaw_integrator_limit_rad": {
+      "value": 0.15,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "trainer_max_tilt_rad": {
+      "value": 0.35,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "trainer_roll_attitude_gain_per_s": {
+      "value": 3,
+      "unit": "1/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "trainer_pitch_attitude_gain_per_s": {
+      "value": 3,
+      "unit": "1/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "trainer_roll_rate_limit_rad_s": {
+      "value": 1.5,
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "trainer_pitch_rate_limit_rad_s": {
+      "value": 1.5,
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "trainer_roll_cyclic_gain_rad_per_rad_s": {
+      "value": 0.03,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "trainer_pitch_cyclic_gain_rad_per_rad_s": {
+      "value": 0.03,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "linkage": {
+      "collective_rad_per_unit": {
+        "value": 0.22,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+      },
+      "longitudinal_rad_per_unit": {
+        "value": 0.06,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+      },
+      "lateral_rad_per_unit": {
+        "value": 0.06,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+      },
+      "collective_min_rad": {
+        "value": -0.22,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+      },
+      "collective_max_rad": {
+        "value": 0.22,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+      },
+      "cyclic_max_rad": {
+        "value": 0.06,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+      }
+    },
+    "curves_by_mode": {
+      "normal": {
+        "pitch": {
+          "value": [
+            -0.2,
+            0.1,
+            0.45,
+            0.7,
+            1
+          ],
+          "unit": "1",
+          "kind": "estimated",
+          "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+        },
+        "throttle": {
+          "value": [
+            0.85,
+            0.85,
+            0.85,
+            0.85,
+            0.85
+          ],
+          "unit": "1",
+          "kind": "estimated",
+          "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+        }
+      },
+      "idle_up": {
+        "pitch": {
+          "value": [
+            -1,
+            -0.5,
+            0,
+            0.5,
+            1
+          ],
+          "unit": "1",
+          "kind": "estimated",
+          "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+        },
+        "throttle": {
+          "value": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "unit": "1",
+          "kind": "estimated",
+          "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+        }
+      }
+    }
+  },
+  "integration": {
+    "flow_floor_m_s": {
+      "value": 0.1,
+      "unit": "m/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "fin_tail_wake_fraction": {
+      "value": 0.2,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "height_over_radius": {
+      "value": -1,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "inflow_loss": {
+      "value": 1,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "inflow_instability": {
+      "value": 0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    }
+  },
+  "skids": {
+    "spring_n_m": {
+      "value": 10000,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "damping_n_s_m": {
+      "value": 190,
+      "unit": "N*s/m",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "friction": {
+      "value": 0.5,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "slip_m_s": {
+      "value": 0.15,
+      "unit": "m/s",
+      "kind": "estimated",
+      "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"
+    },
+    "points_body_frd_m": {
+      "value": [
+        0.0974,
+        -0.0858,
+        0.1098,
+        0.0974,
+        0.0858,
+        0.1098,
+        -0.0974,
+        -0.0858,
+        0.1098,
+        -0.0974,
+        0.0858,
+        0.1098
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "HELI-25: measured supplied HX-700 GLB rail corners, CG datum up 0.110 m"
+    }
+  }
+}

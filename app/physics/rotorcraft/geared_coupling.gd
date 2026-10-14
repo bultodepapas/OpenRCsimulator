@@ -41,7 +41,6 @@ static func prepare(elements: Array) -> Dictionary:
 		b[2] += signed_momentum * axis[2]
 		if not is_finite(spin_inertia) or not _vector(b):
 			return {"ok": false, "message": "geared reflected inertia overflowed"}
-	b.make_read_only()
 	return {"ok": true, "spin_inertia_kg_m2": spin_inertia, "b_body_frd_kg_m2": b}
 
 
@@ -70,7 +69,8 @@ static func response(body_rate: PackedFloat64Array, external_moment: PackedFloat
 	var gyroscopic: PackedFloat64Array = M.cross(body_rate, total_momentum)
 	var unreacted_moment: PackedFloat64Array = M.sub(external_moment, gyroscopic)
 	var unreacted_acceleration: PackedFloat64Array = _inertia_mul(inertia_inverse, unreacted_moment)
-	var spin_acceleration: float = (generalized_torque / spin_inertia - M.dot(b_body_frd, unreacted_acceleration)) / denominator
+	var spin_acceleration: float = (generalized_torque - M.dot(b_body_frd, unreacted_acceleration)) \
+		/ (spin_inertia * denominator)
 	if not is_finite(spin_acceleration):
 		return {"ok": false, "message": "geared spin acceleration is nonfinite"}
 	var reaction: PackedFloat64Array = M.scale(b_body_frd, -spin_acceleration)

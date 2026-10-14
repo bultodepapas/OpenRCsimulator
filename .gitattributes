@@ -38,3 +38,11 @@
 /assets/aircraft/turbo-lumber-evolution/source-manifest.json text eol=lf
 /assets/aircraft/turbo-lumber-evolution/mesh-measurements.json text eol=lf
 /assets/aircraft/turbo-lumber-evolution/geometry.json text eol=lf
+
+# Authorized Bisonte runtime bundle preserves the exact reviewed author bytes.
+/app/vehicles/ground/mt8_rig.gd -text
+/app/assets/vehicles/mt8-bisonte/mt8_spec.json -text
+/app/assets/vehicles/mt8-bisonte/SOURCE.txt text eol=lf
+/assets/vehicles/mt8-bisonte/source-manifest.json text eol=lf
+/app/data/vehicles/ground/*.json text eol=lf
+/app/data/ground_vehicle/*.json text eol=lf

@@ -1,0 +1,50 @@
+{
+	"format": "openrc-heli-aero-performance-v1",
+	"date": "2026-10-13",
+	"godot": "4.7.2-stable (official)",
+	"os": "Windows",
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"scenario": "hover compact payload",
+	"diagnostics": false,
+	"warmup_evaluations_per_path": 400,
+	"rounds": 9,
+	"evaluations_per_round": 2000,
+	"safe_samples_us_per_evaluation": [
+		114.684,
+		125.8985,
+		129.772,
+		129.797,
+		131.089,
+		131.6135,
+		134.294,
+		136.9455,
+		141.7775
+	],
+	"fast_samples_us_per_evaluation": [
+		79.7805,
+		83.9845,
+		85.722,
+		87.1125,
+		88.7605,
+		92.4595,
+		92.681,
+		93.5855,
+		97.896
+	],
+	"safe_median_us_per_evaluation": 131.089,
+	"fast_median_us_per_evaluation": 88.7605,
+	"speedup": 1.47688442494127,
+	"safe_checksum": -2575159.78364994,
+	"fast_checksum": -2575159.78364994,
+	"payload_parity": "full dictionary equality checked for all warmups; exact checksum equality during timed rounds",
+	"component_medians_us_per_evaluation": {
+		"main_stage_safe": 36.842,
+		"main_stage_prepared": 28.969,
+		"tail_safe": 23.685,
+		"tail_prepared": 15.0905,
+		"airframe_safe": 34.9885,
+		"airframe_compact_prepared": 11.1585
+	},
+	"component_profile_note": "Separate component calls are diagnostic and not additive. The main-stage prepared profile uses its dictionary-returning wrapper; the joint fast path uses the array-returning prepared-parts helper.",
+	"benchmark": "app/tests/bench_heli_performance.gd"
+}

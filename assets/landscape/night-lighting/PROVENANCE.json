@@ -68,6 +68,125 @@
       "sha256": "2e7739daddfc7bcfd70ef65a264ad56ef6c7addf8781010eb82c99031e473733",
       "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
       "modification": "none"
+    },
+    {
+      "file": "source/fire-fx-40-frames.zip",
+      "author": "Mikodrak (Martin Jelinek)",
+      "license": "CC0-1.0",
+      "source_url": "https://opengameart.org/content/fire-fx-burning-fire-animation",
+      "download_url": "https://opengameart.org/sites/default/files/FIRE.zip",
+      "retrieved": "2026-10-13",
+      "bytes": 1199576,
+      "sha256": "1f105f171df08bac5d116d44baead8219a31cce25244a136f3db24ccee46d1f8",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "contents": {
+        "png_frames": 80,
+        "frame_dimensions": [
+          [
+            81,
+            123
+          ]
+        ],
+        "image_modes": [
+          "RGBA"
+        ],
+        "layout": "two sets of 40 numbered PNG frames; GIF previews also included",
+        "playback_verified": false
+      }
+    },
+    {
+      "file": "source/smoke-sprite-sheet.png",
+      "author": "ohyhei",
+      "license": "CC0-1.0",
+      "source_url": "https://opengameart.org/content/smoke-sprite-sheet",
+      "download_url": "https://opengameart.org/sites/default/files/smoke_sheet.png",
+      "retrieved": "2026-10-13",
+      "bytes": 326885,
+      "sha256": "a66676a3ff943576979e0578a897231876958eaacc337c4584c58f35d0833636",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "image": {
+        "width": 1280,
+        "height": 1280,
+        "mode": "RGBA"
+      },
+      "atlas": {
+        "columns": 5,
+        "rows": 5,
+        "cell_pixels": 256,
+        "occupied_cells": 21,
+        "blank_cells_1_based": [
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            3
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            5,
+            5
+          ]
+        ],
+        "playback_verified": false
+      }
+    },
+    {
+      "file": "source/burned-ground-01-diff-1k.jpg",
+      "author": "Rob Tuytel / Poly Haven",
+      "license": "CC0-1.0",
+      "source_url": "https://polyhaven.com/a/burned_ground_01",
+      "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/burned_ground_01/burned_ground_01_diff_1k.jpg",
+      "retrieved": "2026-10-13",
+      "bytes": 1033112,
+      "sha256": "be83310cad64d23539e628f14525af651a03646f5a1cc6029bd19a9446ea72f9",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "source/burned-ground-01-nor-gl-1k.jpg",
+      "author": "Rob Tuytel / Poly Haven",
+      "license": "CC0-1.0",
+      "source_url": "https://polyhaven.com/a/burned_ground_01",
+      "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/burned_ground_01/burned_ground_01_nor_gl_1k.jpg",
+      "retrieved": "2026-10-13",
+      "bytes": 366727,
+      "sha256": "86125af02b64b05b0079dd6fa08ffae11878a3f9f50326a265e94c7a64cba865",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "source/burned-ground-01-rough-1k.jpg",
+      "author": "Rob Tuytel / Poly Haven",
+      "license": "CC0-1.0",
+      "source_url": "https://polyhaven.com/a/burned_ground_01",
+      "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/burned_ground_01/burned_ground_01_rough_1k.jpg",
+      "retrieved": "2026-10-13",
+      "bytes": 319073,
+      "sha256": "4dbbb69dc3391d5b98b4346ffe5f2b46340ad0307c3d1d7311b59407146753f5",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "L"
+      }
     }
   ]
 }

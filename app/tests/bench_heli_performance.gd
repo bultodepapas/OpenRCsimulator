@@ -3,6 +3,7 @@
 extends SceneTree
 
 const Stage = preload("res://physics/rotorcraft/aerodynamic_stage.gd")
+const MainStage = preload("res://physics/rotorcraft/main_rotor_stage.gd")
 const Main = preload("res://physics/rotorcraft/main_rotor.gd")
 const Tail = preload("res://physics/rotorcraft/tail_rotor.gd")
 const Airframe = preload("res://physics/rotorcraft/airframe.gd")
@@ -25,6 +26,12 @@ var airframe_model: Dictionary
 var context: Dictionary
 var safe_samples: Array[float] = []
 var fast_samples: Array[float] = []
+var main_safe_samples: Array[float] = []
+var main_fast_samples: Array[float] = []
+var tail_safe_samples: Array[float] = []
+var tail_fast_samples: Array[float] = []
+var airframe_safe_samples: Array[float] = []
+var airframe_fast_samples: Array[float] = []
 var safe_checksum: float = 0.0
 var fast_checksum: float = 0.0
 var failed: bool = false
@@ -51,13 +58,31 @@ func _initialize() -> void:
 		if round_index % 2 == 0:
 			safe_samples.append(_time_safe())
 			fast_samples.append(_time_fast())
+			main_safe_samples.append(_time_main(false))
+			main_fast_samples.append(_time_main(true))
+			tail_safe_samples.append(_time_tail(false))
+			tail_fast_samples.append(_time_tail(true))
+			airframe_safe_samples.append(_time_airframe(false))
+			airframe_fast_samples.append(_time_airframe(true))
 		else:
 			fast_samples.append(_time_fast())
 			safe_samples.append(_time_safe())
+			main_fast_samples.append(_time_main(true))
+			main_safe_samples.append(_time_main(false))
+			tail_fast_samples.append(_time_tail(true))
+			tail_safe_samples.append(_time_tail(false))
+			airframe_fast_samples.append(_time_airframe(true))
+			airframe_safe_samples.append(_time_airframe(false))
 	if failed:
 		quit(1)
 	safe_samples.sort()
 	fast_samples.sort()
+	main_safe_samples.sort()
+	main_fast_samples.sort()
+	tail_safe_samples.sort()
+	tail_fast_samples.sort()
+	airframe_safe_samples.sort()
+	airframe_fast_samples.sort()
 	var middle: int = int(safe_samples.size() / 2)
 	var safe_median: float = safe_samples[middle]
 	var fast_median: float = fast_samples[middle]
@@ -75,6 +100,14 @@ func _initialize() -> void:
 		"safe_median_us_per_evaluation": safe_median,
 		"fast_median_us_per_evaluation": fast_median,
 		"speedup": safe_median / fast_median if fast_median > 0.0 else 0.0,
+		"component_medians_us_per_evaluation": {
+			"main_stage_safe": main_safe_samples[middle],
+			"main_stage_prepared": main_fast_samples[middle],
+			"tail_safe": tail_safe_samples[middle],
+			"tail_prepared": tail_fast_samples[middle],
+			"airframe_safe": airframe_safe_samples[middle],
+			"airframe_prepared": airframe_fast_samples[middle],
+		},
 		"safe_checksum": safe_checksum,
 		"fast_checksum": fast_checksum,
 	}
@@ -126,4 +159,48 @@ func _time_fast() -> float:
 			break
 		checksum += result.loads[2]
 	fast_checksum += checksum
+	return float(Time.get_ticks_usec() - started) / float(ITERATIONS)
+
+
+func _time_main(prepared: bool) -> float:
+	var checksum: float = 0.0
+	var started: int = Time.get_ticks_usec()
+	for index: int in range(ITERATIONS):
+		var result: Dictionary = MainStage._evaluate_prepared(main_model, state, OMEGA, air, rates,
+			COLLECTIVE, 0.01, -0.01, FLOW_FLOOR, -1.0, 1.0, 0.0, false) if prepared else MainStage.evaluate(
+			main_model, state, OMEGA, air, rates, COLLECTIVE, 0.01, -0.01, FLOW_FLOOR, -1.0, 1.0, 0.0, false)
+		if not result.ok:
+			failed = true
+			break
+		checksum += result.loads[2]
+	return float(Time.get_ticks_usec() - started) / float(ITERATIONS)
+
+
+func _time_tail(prepared: bool) -> float:
+	var checksum: float = 0.0
+	var started: int = Time.get_ticks_usec()
+	for index: int in range(ITERATIONS):
+		var result: Dictionary = Tail._evaluate_prepared(tail_model, OMEGA, state[2], air, rates, 0.1, false) if prepared else Tail.evaluate(
+			tail_model, OMEGA, state[2], air, rates, 0.1, false)
+		if not result.ok:
+			failed = true
+			break
+		checksum += result.loads[1]
+	return float(Time.get_ticks_usec() - started) / float(ITERATIONS)
+
+
+func _time_airframe(prepared: bool) -> float:
+	var checksum: float = 0.0
+	var fuselage_wake := PackedFloat64Array([0.0, 0.0, 1.0])
+	var fin_wake := PackedFloat64Array([0.0, 0.2, 0.0])
+	var tail_wake := PackedFloat64Array([0.0, 0.0, 0.0])
+	var started: int = Time.get_ticks_usec()
+	for index: int in range(ITERATIONS):
+		var result: Dictionary = Airframe._evaluate_compact_stage_prepared(airframe_model, air, rates,
+			fuselage_wake, fin_wake, tail_wake) if prepared else Airframe.evaluate(
+			airframe_model, air, rates, fuselage_wake, fin_wake, tail_wake, false)
+		if not result.ok:
+			failed = true
+			break
+		checksum += result.loads[2]
 	return float(Time.get_ticks_usec() - started) / float(ITERATIONS)
