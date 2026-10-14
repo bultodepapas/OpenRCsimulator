@@ -4,6 +4,8 @@
 
 Purpose: support the [cross-track improvement plan](../plans/global-performance-visual-quality.md). This review inspected current configuration/source, existing measurements and native images, official Godot 4.7 documentation, upstream repositories, Godot Forum and Reddit. It did not run a new benchmark, fly the simulator, install an addon or change runtime code. Measurements below belong to the linked historical snapshots, not automatically to this commit.
 
+**Execution disposition, 2026-10-14:** the [implementation plan, revision 2](../plans/global-performance-visual-quality.md#9-exploratory-prototypes-from-the-second-research-round) now decides which ideas are selected, conditional, deferred or rejected and assigns their order/owners. The proposals below remain dated research; their earlier shortlist is not the current execution order.
+
 ## 1. Method and confidence
 
 - **Observed source:** current files read after graph discovery. The existing codebase-memory index was refreshed, but some symbol ranges still returned unrelated lines; direct source reads resolved those gaps. Graph complexity/recursion flags were not treated as runtime profiles.
@@ -205,7 +207,7 @@ No new assets, addons or dependencies were installed. The first experiments can 
 
 ### Selection: six experiments with different payoffs
 
-These are proposed prototypes, not six new commitments. The [execution plan](../plans/global-performance-visual-quality.md#9-exploratory-prototypes-from-the-second-research-round) gives their routing and exit evidence.
+This was the research-round shortlist, retained as rationale. It is **superseded as execution priority** by the [implementation plan's binding disposition](../plans/global-performance-visual-quality.md#9-exploratory-prototypes-from-the-second-research-round): in particular, shoreline work is conditional and the debrief product is deferred. Use the plan's numbered order and gates, not the historical order below.
 
 | Suggested order | Ideas | Why try it | Smallest useful result |
 | --- | --- | --- | --- |

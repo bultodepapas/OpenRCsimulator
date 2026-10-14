@@ -1,6 +1,6 @@
 # Landscape plan: current field and open work
 
-2026-10-14 · Revision 3 · Step prefix: **L**
+2026-10-14 · Revision 4 · Step prefix: **L**
 
 **Status:** the daytime field, treeline and visual cues are implemented. The separate LU-00…27 landscape integration is also delivered; its remaining cost and acceptance gates are summarized below. L9 ground review, L6c owner readability review, terrain work and wind integration remain open. Static tree and scenery contacts are gameplay estimates, not physical calibration. Gate L remains open.
 
@@ -26,6 +26,19 @@ The static collision world does not supply a heightfield. Until L12 terrain is i
 | L12a/b/c, L13a/b | Add the larger terrain grid, matching near/far mesh and generated relief. | Not implemented. GP already provides per-wheel float64 micro-relief and matching normal cues; it does not supply a displaced landscape heightfield. Do not treat visual hills as physical slopes. |
 | L15a/c | Extend calibrated windsock, grass/bush/flag response from M5. | Physical cue/advection acceptance remains open; wind/foliage audio is delivered by AUD. |
 | L15b/d | Connect the verified rendering to M5 wind. | Rendering is complete; integration remains open. |
+
+### Selected implementation follow-ups
+
+The [global implementation plan](plans/global-performance-visual-quality.md#3-order-dependencies-and-reviewable-deliveries) owns sequencing and acceptance details for this bounded delivery. These rows register unused follow-up IDs; all remain unimplemented. Existing L6c and L15a/c continue under their original IDs.
+
+| ID | Work | Status / acceptance |
+| --- | --- | --- |
+| LU-10-R1 | Attribute current scenery/lake query cost and repair one demonstrated bottleneck. | Planned after VQ-01c; same-world collision oracle/state parity and complete-workload gain, otherwise retain baseline. |
+| L9e-R1 | Compare current turf blending with one Laplacian candidate on retained maps. | Planned after VQ-02a and visibility reference; preserve masks/gradients/cues and pass combined visual/cost gates. |
+| L6b-R1 | Compare existing atlas alpha coverage with native alpha-to-coverage when a motion defect is reproduced. | Planned probe after VQ-02a; MSAA/scissor/edge compatibility, motion and cost proof. Custom mip importer excluded. |
+| LU-22-R1 | Correct one confirmed shore/material discontinuity using existing boundary/depth data. | Conditional on pilot/overview review after ground work; visual/contact alignment and no new water physics or general authoring system. |
+
+For L15a/c, compare the currently static windsock against already wind-driven vegetation on the same supported gust before changing it. A source-shader wind input is not independent calibration of the visual response. This delivery does not reopen completed foliage/audio work.
 
 ## Landscape integration
 
