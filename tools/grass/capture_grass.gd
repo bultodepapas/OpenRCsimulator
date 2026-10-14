@@ -7,6 +7,7 @@ const FieldBuilder := preload("res://render/field.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Frames := preload("res://render/frames.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
+const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 
 const FORMAT: String = "openrc-l11a-grass-capture v1"
 const WIDTH: int = 1280
@@ -17,6 +18,15 @@ const SETTLE_FRAMES: int = 3
 const GRASS_SHADER_PATH: String = "res://render/near_grass.gdshader"
 const GRASS_DATA_PATH: String = "res://data/fields/grass.json"
 const WIND: Vector3 = Vector3(5.0, 0.0, 0.0)
+const IMPORTED_GRASS_IDS: Array[String] = ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]
+const IMPORTED_FLOWER_IDS: Array[String] = ["clover_1", "flower_3_group", "flower_4_group"]
+const IMPORTED_GRASS_COUNTS: Dictionary = {
+	"grass_common_short": 67,
+	"grass_common_tall": 42,
+	"grass_wispy_tall": 41,
+}
+const IMPORTED_GRASS_TOTAL: int = 150
+const IMPORTED_GRASS_TRIANGLE_BUDGET: int = 50000
 
 var _args: Dictionary = {}
 var _out_dir: String = ""
@@ -61,6 +71,7 @@ func _run() -> void:
 
 	var scenery_on: bool = _mode == "scenery"
 	OS.set_environment("OPENRC_SCENERY", "on" if scenery_on else "off")
+	OS.set_environment("OPENRC_SCENERY_QUALITY", "high")
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
 	OS.set_environment("OPENRC_SCENERY_BIRDS", "off")
 	# Register both global shader uniforms before any production field material is built or compiled.
@@ -156,7 +167,7 @@ func _run() -> void:
 		"renderer": RenderingServer.get_video_adapter_name(),
 		"scenery_on": scenery_on,
 		"environment": "Atmosphere.environment() + Atmosphere.create_sun()",
-		"clock_policy": "clouds/ground frozen at t=0; ShaderClock drives grass wind probes",
+		"clock_policy": "clouds/ground frozen at t=0; ShaderClock wind probes cover only legacy shader grass",
 		"grass": _grass_report if _mode != "baseline" else {"present": false},
 		"flowers": _flower_report,
 		"cases": _cases,
@@ -288,8 +299,9 @@ func _inspect_grass(grass: Node3D) -> Dictionary:
 		_fail("cannot inspect missing NearGrass")
 		return {}
 	var chunks: Array[Node] = grass.find_children("*", "MultiMeshInstance3D", true, false)
-	if chunks.is_empty() or chunks.size() > 4:
-		_fail("NearGrass must have 1–4 MultiMesh children; found %d" % chunks.size())
+	var imported: bool = bool(grass.get_meta("imported", false))
+	if chunks.is_empty() or (imported and chunks.size() != IMPORTED_GRASS_IDS.size()) or (not imported and chunks.size() > 4):
+		_fail("NearGrass has an invalid MultiMesh count for its implementation: %d" % chunks.size())
 		return {}
 	var pilot: Dictionary = _field_data.pilot
 	var pilot_n: float = float(pilot.north)
@@ -309,6 +321,11 @@ func _inspect_grass(grass: Node3D) -> Dictionary:
 	if runway.is_empty():
 		_fail("default field does not contain its declared runway surface")
 		return {}
+	if (_mode == "scenery") != imported:
+		_fail("capture mode received the wrong near-grass implementation")
+		return {}
+	if imported:
+		return _inspect_imported_grass(grass, chunks, pilot_n, pilot_e, runway)
 	for child: Node in chunks:
 		var instance: MultiMeshInstance3D = child as MultiMeshInstance3D
 		if instance.multimesh == null:
@@ -416,6 +433,7 @@ func _inspect_grass(grass: Node3D) -> Dictionary:
 	var shader: Shader = load(GRASS_SHADER_PATH) as Shader
 	return {
 		"present": true,
+		"implementation": "legacy_shader_material",
 		"node_count": 1,
 		"multimesh_chunks": chunks.size(),
 		"clumps": total_clumps,
@@ -435,17 +453,205 @@ func _inspect_grass(grass: Node3D) -> Dictionary:
 	}
 
 
+func _inspect_imported_grass(grass: Node3D, chunks: Array[Node], pilot_n: float, pilot_e: float,
+		runway: Dictionary) -> Dictionary:
+	var expected_ids: Array[String] = IMPORTED_GRASS_IDS.duplicate()
+	expected_ids.sort()
+	var raw_ids: Variant = grass.get_meta("source_assets", null)
+	if not raw_ids is Array:
+		_fail("imported NearGrass must report its source asset IDs")
+		return {}
+	var source_ids: Array[String] = []
+	for raw_id: Variant in raw_ids:
+		if typeof(raw_id) != TYPE_STRING:
+			_fail("imported NearGrass source IDs must be strings")
+			return {}
+		source_ids.append(str(raw_id))
+	source_ids.sort()
+	if source_ids != expected_ids:
+		_fail("imported NearGrass source IDs differ from the three accepted grass assets: " + str(source_ids))
+		return {}
+	if int(grass.get_meta("asset_batches", -1)) != IMPORTED_GRASS_IDS.size() \
+			or int(grass.get_meta("batches", -1)) != IMPORTED_GRASS_IDS.size():
+		_fail("imported NearGrass must retain one batch for each source asset")
+		return {}
+
+	var batch_counts: Dictionary = {}
+	var source_triangles: int = 0
+	var textured_surfaces: int = 0
+	var lit_surfaces: int = 0
+	var total_clumps: int = 0
+	var max_radius: float = 0.0
+	var min_radius: float = INF
+	var shadow_nodes: Array[String] = []
+	for child: Node in chunks:
+		var instance: MultiMeshInstance3D = child as MultiMeshInstance3D
+		if instance == null or instance.multimesh == null:
+			_fail("imported NearGrass has a batch without a MultiMesh: " + str(child.name))
+			return {}
+		var child_name: String = str(child.name)
+		var part_marker: int = child_name.find("_Part_")
+		if part_marker <= 0 or child_name.substr(part_marker + 6) != "00":
+			_fail("imported NearGrass must retain one named source part per batch: " + child_name)
+			return {}
+		var asset_id: String = child_name.substr(0, part_marker)
+		if not IMPORTED_GRASS_COUNTS.has(asset_id) or batch_counts.has(asset_id):
+			_fail("imported NearGrass has an unknown or duplicate source batch: " + child_name)
+			return {}
+		var part_index: int = child_name.substr(part_marker + 6).to_int()
+		var source_parts: Array[Dictionary] = ImportedVegetation.get_parts(asset_id)
+		if part_index < 0 or part_index >= source_parts.size():
+			_fail("imported NearGrass batch does not resolve to its source mesh: " + child_name)
+			return {}
+		var expected_count: int = int(IMPORTED_GRASS_COUNTS[asset_id])
+		if instance.multimesh.instance_count != expected_count:
+			_fail("imported grass %s has %d clumps; expected %d" % [asset_id, instance.multimesh.instance_count, expected_count])
+			return {}
+		batch_counts[asset_id] = instance.multimesh.instance_count
+		if instance.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
+			shadow_nodes.append(child_name)
+		var mesh: Mesh = instance.multimesh.mesh
+		var source_mesh: Mesh = source_parts[part_index].get("mesh")
+		if mesh == null or source_mesh == null or mesh.get_surface_count() <= 0 \
+				or mesh.get_surface_count() != source_mesh.get_surface_count():
+			_fail("imported grass batch has no source mesh surfaces: " + child_name)
+			return {}
+		var triangles_per_clump: int = 0
+		for surface_index: int in mesh.get_surface_count():
+			if mesh.surface_get_primitive_type(surface_index) != Mesh.PRIMITIVE_TRIANGLES:
+				_fail("imported grass source surfaces must remain triangle meshes")
+				return {}
+			var material: StandardMaterial3D = mesh.surface_get_material(surface_index) as StandardMaterial3D
+			if material == null or material.albedo_texture == null:
+				_fail("imported grass must retain its textured StandardMaterial3D source surface")
+				return {}
+			if material.shading_mode != BaseMaterial3D.SHADING_MODE_PER_PIXEL:
+				_fail("imported grass source materials must remain per-pixel lit")
+				return {}
+			if source_mesh.surface_get_material(surface_index) != material:
+				_fail("imported grass source material was replaced: " + asset_id)
+				return {}
+			textured_surfaces += 1
+			lit_surfaces += 1
+			var arrays: Array = mesh.surface_get_arrays(surface_index)
+			var source_arrays: Array = source_mesh.surface_get_arrays(surface_index)
+			if arrays[Mesh.ARRAY_VERTEX] != source_arrays[Mesh.ARRAY_VERTEX] \
+					or arrays[Mesh.ARRAY_INDEX] != source_arrays[Mesh.ARRAY_INDEX]:
+				_fail("imported grass source mesh geometry was changed: " + asset_id)
+				return {}
+			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+			var triangle_indices: int = indices.size() if not indices.is_empty() else vertices.size()
+			if triangle_indices <= 0 or triangle_indices % 3 != 0:
+				_fail("imported grass source surface has malformed triangle arrays")
+				return {}
+			triangles_per_clump += triangle_indices / 3
+		source_triangles += triangles_per_clump * instance.multimesh.instance_count
+		for index: int in instance.multimesh.instance_count:
+			var point: Vector3 = instance.global_transform * instance.multimesh.get_instance_transform(index).origin
+			var east: float = point.x
+			var north: float = -point.z
+			var radius: float = Vector2(north - pilot_n, east - pilot_e).length()
+			max_radius = maxf(max_radius, radius)
+			min_radius = minf(min_radius, radius)
+			if radius > 30.001:
+				_fail("imported grass clump at %.3f m exceeds the 30 m pilot radius" % radius)
+				return {}
+			var inside_runway: bool = absf(north - float(runway.center_north)) <= float(runway.width_north_south) * 0.5 \
+				and absf(east - float(runway.center_east)) <= float(runway.length_east_west) * 0.5
+			if inside_runway:
+				_fail("imported grass clump lies on the runway at north=%.3f east=%.3f" % [north, east])
+				return {}
+			total_clumps += 1
+
+	var reported_triangles: int = int(grass.get_meta("source_triangles", -1))
+	if batch_counts.size() != IMPORTED_GRASS_IDS.size() or total_clumps != IMPORTED_GRASS_TOTAL \
+			or int(grass.get_meta("clumps", -1)) != total_clumps:
+		_fail("imported NearGrass clump inventory does not match the accepted high-quality layout")
+		return {}
+	if source_triangles != reported_triangles or source_triangles <= 0 or source_triangles > IMPORTED_GRASS_TRIANGLE_BUDGET:
+		_fail("imported grass source triangle readback disagrees with its metadata or exceeds its budget")
+		return {}
+	if not shadow_nodes.is_empty():
+		_fail("imported NearGrass must not cast shadows: " + str(shadow_nodes))
+		return {}
+	return {
+		"present": true,
+		"implementation": "imported_source_meshes",
+		"node_count": 1,
+		"multimesh_chunks": chunks.size(),
+		"source_ids": source_ids,
+		"source_batches": batch_counts,
+		"clumps": total_clumps,
+		"source_triangles": source_triangles,
+		"source_meshes_preserved": true,
+		"textured_surfaces": textured_surfaces,
+		"per_pixel_lit_surfaces": lit_surfaces,
+		"material_contract": "unchanged textured per-pixel-lit StandardMaterial3D source surfaces",
+		"pilot_radius_m": 30.0,
+		"observed_radius_m": {"min": min_radius, "max": max_radius},
+		"runway_clumps": 0,
+		"casts_shadows": false,
+		"placement_path": GRASS_DATA_PATH,
+		"wind_animation": "static imported source meshes; ShaderClock does not drive this path",
+	}
+
+
 func _inspect_flowers(field_node: Node3D) -> Dictionary:
+	var scenery: Node = field_node.get_node_or_null("Scenery")
+	var habitats: Node = scenery.get_node_or_null("BotanicalHabitats") if scenery != null else null
+	if habitats == null:
+		_fail("scenery-on capture is missing the production BotanicalHabitats node")
+		return {}
+	var placement_value: Variant = habitats.get_meta("plants", null)
+	if not placement_value is Array:
+		_fail("BotanicalHabitats must expose its current downloaded placement records")
+		return {}
+	var asset_counts: Dictionary = {}
+	for asset_id: String in IMPORTED_FLOWER_IDS:
+		asset_counts[asset_id] = 0
+	for placement_value_item: Variant in placement_value:
+		if not placement_value_item is Dictionary:
+			_fail("BotanicalHabitats contains a malformed placement record")
+			return {}
+		var asset_id: String = str(placement_value_item.get("asset_id", ""))
+		if asset_counts.has(asset_id):
+			asset_counts[asset_id] = int(asset_counts[asset_id]) + 1
 	var names: Array[String] = []
-	for child: Node in field_node.find_children("*", "MultiMeshInstance3D", true, false):
-		if str(child.name).begins_with("flowers_"):
-			names.append(str(child.name))
+	var source_ids: Array[String] = []
+	for child: Node in habitats.get_children():
+		if not child is MultiMeshInstance3D:
+			_fail("BotanicalHabitats must keep imported plants in MultiMesh batches")
+			return {}
+		var child_name: String = str(child.name)
+		var part_marker: int = child_name.find("_Part_")
+		if part_marker <= 0:
+			_fail("BotanicalHabitats has a batch without a source asset identity: " + child_name)
+			return {}
+		var asset_id: String = child_name.substr(0, part_marker)
+		if asset_counts.has(asset_id):
+			names.append(child_name)
+			if not source_ids.has(asset_id):
+				source_ids.append(asset_id)
+	var expected_ids: Array[String] = IMPORTED_FLOWER_IDS.duplicate()
+	expected_ids.sort()
+	source_ids.sort()
+	var total: int = 0
+	for asset_id: String in IMPORTED_FLOWER_IDS:
+		if int(asset_counts[asset_id]) <= 0:
+			_fail("BotanicalHabitats is missing downloaded flower placements for " + asset_id)
+			return {}
+		total += int(asset_counts[asset_id])
+	if source_ids != expected_ids or total <= 0:
+		_fail("BotanicalHabitats source flower IDs differ from the accepted downloaded set")
+		return {}
 	var unique: Dictionary = {}
 	for name: String in names:
 		unique[name] = true
 	if unique.size() != names.size():
-		_fail("duplicate SC-16 flower MultiMesh node names detected")
-	return {"count": names.size(), "names": names, "unique_names": unique.size() == names.size()}
+		_fail("duplicate downloaded flower MultiMesh node names detected")
+	return {"count": total, "asset_counts": asset_counts, "source_ids": source_ids,
+		"names": names, "unique_names": unique.size() == names.size()}
 
 
 func _validate_scenery_contract(scenery_on: bool) -> bool:
@@ -461,7 +667,7 @@ func _validate_scenery_contract(scenery_on: bool) -> bool:
 			_fail("--scenery=on did not attach the production Scenery child")
 			return false
 		if not bool(_flower_report.get("unique_names", false)):
-			_fail("SC-16 flower nodes are missing or duplicated")
+			_fail("downloaded botanical flower batches are missing or duplicated")
 			return false
 	else:
 		if _field_node.get_node_or_null("Scenery") != null:

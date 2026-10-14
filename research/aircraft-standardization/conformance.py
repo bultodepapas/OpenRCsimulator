@@ -142,6 +142,9 @@ def main() -> int:
             # Do not use --path app: the pack must supply every runtime dependency.
             ok = run("package-preflight", [str(godot), "--headless", "--audio-driver", "Dummy",
                       "--main-pack", str(pack), "--script", str(preflight), "--", str(out / "package-preflight.json")], 600) and ok
+            rotorcraft_smoke = ROOT / "research/aircraft-standardization/rotorcraft_package_smoke.gd"
+            ok = run("package-rotorcraft-smoke", [str(godot), "--headless", "--audio-driver", "Dummy",
+                      "--main-pack", str(pack), "--script", str(rotorcraft_smoke)], 600) and ok
     report = {"format": "openrc-aircraft-verification v1", "ok": bool(ok),
               "commands": sorted(commands, key=lambda row: row["name"]), "flight_comparison": comparison,
               "contact_comparison": contact_comparison}

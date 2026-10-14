@@ -1,6 +1,7 @@
 # Keep hashed glow profiles, schemas and flight evidence byte-stable across checkouts.
 # Workshop descriptors bind exact aircraft bytes on every platform.
 /app/data/aircraft/*.json text eol=crlf
+/app/data/rotorcraft/*.json text eol=crlf
 /app/data/workshop/*.json text eol=lf
 /app/data/ground/wheel_profiles.json text eol=lf
 /app/data/glow/*_candidate.json text eol=lf
@@ -24,6 +25,10 @@
 
 # Model manifests are exact-byte Workshop dependencies. Source-script hashes normalize text to LF.
 /app/data/aircraft_models/*.json text eol=lf
+
+# HX-700 source and runtime rotor profiles share the manifest's exact SHA-256.
+/assets/aircraft/hx-700/rotor_profiles.json text eol=lf
+/app/assets/aircraft/hx-700/rotor_profiles.json text eol=lf
 
 # RCV bench identity and generated independent oracle are byte-stable.
 /research/rc-monster-truck/suspension_bench.json text eol=lf

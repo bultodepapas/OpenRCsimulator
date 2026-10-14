@@ -136,5 +136,11 @@ jobs:
           # PT1h: every tag has reviewed notes; never publish a stale first-launch guide as release history.
           NOTES="docs/releases/${GITHUB_REF_NAME}.md"
           test -s "$NOTES"
+          RELEASE_FLAGS=()
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            RELEASE_FLAGS+=(--prerelease)
+          else
+            RELEASE_FLAGS+=(--latest)
+          fi
           gh release create "$GITHUB_REF_NAME" dist/openrc-simulator-*.zip dist/SHA256SUMS \
-            --title "OpenRC Simulator $GITHUB_REF_NAME" --notes-file "$NOTES" --prerelease
+            --title "OpenRC Simulator $GITHUB_REF_NAME" --notes-file "$NOTES" "${RELEASE_FLAGS[@]}"

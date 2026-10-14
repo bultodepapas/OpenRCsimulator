@@ -202,6 +202,10 @@ class ProcessTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory(prefix="openrc-val8a-test-")
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
+        # Keep the executable and hard-link probes on the same filesystem, even
+        # when the checkout and the OS temporary directory use different drives.
+        self.reducer = self.root / "reduce.py"
+        self.reducer.write_bytes((HERE / "reduce.py").read_bytes())
         campaign, events = fixture()
         self.campaign = self.root / "campaign.json"
         self.events = self.root / "events.csv"
@@ -210,7 +214,7 @@ class ProcessTests(unittest.TestCase):
         self.events.write_bytes(events)
 
     def run_cli(self, *args):
-        return subprocess.run([sys.executable, str(HERE/"reduce.py"), str(self.campaign), str(self.events), *map(str, args)],
+        return subprocess.run([sys.executable, str(self.reducer), str(self.campaign), str(self.events), *map(str, args)],
                               capture_output=True, timeout=10)
 
     def test_determinism_exact_input_hashes_and_stdout(self):
@@ -218,7 +222,7 @@ class ProcessTests(unittest.TestCase):
         self.assertEqual(first.returncode, 0, first.stderr)
         self.assertEqual(first.stdout, second.stdout)
         report = json.loads(first.stdout)
-        for key, path in (("campaign", self.campaign), ("events_csv", self.events), ("reducer", HERE/"reduce.py")):
+        for key, path in (("campaign", self.campaign), ("events_csv", self.events), ("reducer", self.reducer)):
             self.assertEqual(report["input_sha256"][key], hashlib.sha256(path.read_bytes()).hexdigest())
         self.campaign.write_bytes(self.campaign.read_bytes()+b"\n")
         changed = json.loads(self.run_cli().stdout)
@@ -237,7 +241,7 @@ class ProcessTests(unittest.TestCase):
         self.assertEqual(result.stdout, b"")
 
     def test_input_aliases_including_hardlinks(self):
-        for source in (self.campaign, self.events, HERE/"reduce.py"):
+        for source in (self.campaign, self.events, self.reducer):
             before = source.read_bytes()
             for kind in ("direct", "symlink", "hardlink"):
                 alias = self.root / "alias"
