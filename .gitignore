@@ -19,3 +19,6 @@ app/captures/
 
 # Reproducible RC GDExtension outputs; source and pinned builder live in research/rc-monster-truck/native/.
 /app/native/ground_vehicle/
+
+# Local isolated worktrees.
+/.drafts/
