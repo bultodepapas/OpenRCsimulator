@@ -24,6 +24,23 @@ func _key(code: Key, pressed: bool) -> void:
 	Input.parse_input_event(e)
 
 
+func _release_audio_players(node: Node) -> void:
+	if node is AudioStreamPlayer3D:
+		var player_3d: AudioStreamPlayer3D = node as AudioStreamPlayer3D
+		player_3d.stop()
+		player_3d.stream = null
+	elif node is AudioStreamPlayer2D:
+		var player_2d: AudioStreamPlayer2D = node as AudioStreamPlayer2D
+		player_2d.stop()
+		player_2d.stream = null
+	elif node is AudioStreamPlayer:
+		var player: AudioStreamPlayer = node as AudioStreamPlayer
+		player.stop()
+		player.stream = null
+	for child: Node in node.get_children():
+		_release_audio_players(child)
+
+
 func _release_main() -> void:
 	if _main == null:
 		return
@@ -32,15 +49,10 @@ func _release_main() -> void:
 	var audio: Node = _main.get("_soundscape_audio")
 	if audio != null:
 		audio.set_process(false)
-	var players: Array[Node] = _main.find_children("*", "AudioStreamPlayer", true, false)
-	for node: Node in players:
-		var player: AudioStreamPlayer = node as AudioStreamPlayer
-		if player != null:
-			player.stop()
-			player.stream = null
-	# Match the UI tests: let the audio server release stopped playback before freeing players.
-	await process_frame
-	await process_frame
+		audio.set_physics_process(false)
+	_release_audio_players(_main)
+	# A real audio mix interval releases stopped WAV/MP3 playback even in headless runs.
+	await create_timer(0.05).timeout
 	if _main.get_parent() == root:
 		root.remove_child(_main)
 	_main.free()
@@ -189,9 +201,7 @@ func _run() -> void:
 		DirAccess.remove_absolute(path)
 
 	# Run the same live input path against the Timber's own session after the Stik regression checks above.
-	root.remove_child(_main)
-	_main.free()
-	await process_frame
+	await _release_main()
 	_main = load("res://main.tscn").instantiate()
 	_main.aircraft_id = TIMBER # set before _ready so no other aircraft can supply the physics
 	root.add_child(_main)
