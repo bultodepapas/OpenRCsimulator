@@ -14,6 +14,8 @@ Finite-fuel glow models balance at launch within approximately 5e-12 m and 1e-10
 
 Unchanged landing-variation and thirteen-launch CLI checks passed in 60.62 s and 72.86 s respectively on Linux. Each now has a bounded 180-second deadline, retaining every assertion.
 
+Fresh Timber imports exposed a cache-dependent measurement mismatch. Default mesh compression changes 2,772 measurement leaves and would alter 337 derived geometry and 58 physics leaves. Explicitly disabling mesh attribute compression reproduces the accepted r2 measurement report exactly on a clean Godot 4.7.2 import. The release pins that option, regenerates only its model-manifest and Workshop dependency hashes, and preserves the GLB, canonical metrology, geometry and physics bytes. The [aircraft guide](../../../../assets/aircraft/turbo-lumber-evolution/README.md) owns this import policy.
+
 ## Daylight readability
 
 The reviewed source palette keeps hue, saturation, layout, geometry, normal maps and gloss. Display calibration changes red from `#c8102e` to `#b00e28` and white from `#f7f6f1` to `#b8b7b3`; black is unchanged. This is a display calibration, not measured paint reflectance. Appearance, model and Workshop descriptor outputs were regenerated through their source pipelines.
