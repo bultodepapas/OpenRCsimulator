@@ -67,7 +67,7 @@ static func evaluate(model: Dictionary, omega_main: float, main_vi: float,
 		return {"ok": false}
 	if omega_main == 0.0:
 		var stopped: Dictionary = {"ok": true, "rotor_active": false, "thrust_n": 0.0, "torque_nm": 0.0,
-			"induced_velocity_m_s": 0.0, "thrust_limited": false, "loads": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])}
+			"induced_velocity_m_s": 0.0, "wake_factor": wake, "thrust_limited": false, "loads": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])}
 		if diagnostics:
 			stopped.merge({"tail_omega_rad_s": 0.0, "tip_speed_m_s": 0.0, "wake_factor": wake,
 				"in_plane_velocity_m_s": in_plane, "normal_velocity_m_s": normal, "advance_ratio": null,
@@ -112,7 +112,7 @@ static func evaluate(model: Dictionary, omega_main: float, main_vi: float,
 	if not _finite([slope_collective, slope_normal, ct_ideal, ct, scale, thrust, vi, cq, torque, mx, my, mz]):
 		return {"ok": false}
 	var result: Dictionary = {"ok": true, "rotor_active": true, "thrust_n": thrust, "torque_nm": torque,
-		"induced_velocity_m_s": vi, "thrust_limited": ct != ct_ideal,
+		"induced_velocity_m_s": vi, "wake_factor": wake, "thrust_limited": ct != ct_ideal,
 		"loads": PackedFloat64Array([0.0, fy, 0.0, mx, my, mz])}
 	if diagnostics:
 		result.merge({"tail_omega_rad_s": omega, "tip_speed_m_s": tip, "wake_factor": wake,

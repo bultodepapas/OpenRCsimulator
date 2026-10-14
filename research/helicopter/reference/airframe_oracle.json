@@ -1,0 +1,1303 @@
+{
+  "cases": [
+    {
+      "expected": {
+        "body_air_power_w": 0.0,
+        "fuselage_body_air_power_w": 0.0,
+        "fuselage_force_body_frd_n": [
+          -0.0,
+          -0.0,
+          -0.0
+        ],
+        "fuselage_loads": [
+          -0.0,
+          -0.0,
+          -0.0,
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "fuselage_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "fuselage_relative_air_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fuselage_relative_power_w": 0.0,
+        "fuselage_wake_power_w": 0.0,
+        "horizontal_tail_body_air_power_w": 0.0,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "horizontal_tail_force_ideal_n": -0.0,
+        "horizontal_tail_force_n": -0.0,
+        "horizontal_tail_limited": false,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          -0.0,
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_relative_power_w": 0.0,
+        "horizontal_tail_wake_power_w": 0.0,
+        "loads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "relative_power_w": 0.0,
+        "vertical_fin_body_air_power_w": 0.0,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": -0.0,
+        "vertical_fin_force_n": -0.0,
+        "vertical_fin_limited": false,
+        "vertical_fin_loads": [
+          0.0,
+          -0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_relative_air_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_relative_power_w": 0.0,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "name": "zero_flow_rest"
+    },
+    {
+      "expected": {
+        "body_air_power_w": -796.4327966926962,
+        "fuselage_body_air_power_w": -584.22,
+        "fuselage_force_body_frd_n": [
+          -11.7,
+          24.96,
+          -37.44
+        ],
+        "fuselage_loads": [
+          -11.7,
+          24.96,
+          -37.44,
+          0.12479999999999991,
+          5.8968,
+          3.8922000000000008
+        ],
+        "fuselage_moment_body_frd_nm": [
+          0.12479999999999991,
+          5.8968,
+          3.8922000000000008
+        ],
+        "fuselage_relative_air_m_s": [
+          3.0,
+          -4.0,
+          12.0
+        ],
+        "fuselage_relative_power_w": -584.22,
+        "fuselage_wake_power_w": 0.0,
+        "horizontal_tail_body_air_power_w": -176.256,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          -14.688
+        ],
+        "horizontal_tail_force_ideal_n": -24.537599999999998,
+        "horizontal_tail_force_n": -14.688,
+        "horizontal_tail_limited": true,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          -14.688,
+          0.0,
+          -12.4848,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          -12.4848,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          3.0,
+          -4.0,
+          12.0
+        ],
+        "horizontal_tail_relative_power_w": -176.256,
+        "horizontal_tail_wake_power_w": 0.0,
+        "loads": [
+          -11.7,
+          33.94919917317405,
+          -52.128,
+          0.8439359338539238,
+          -6.588,
+          -5.995919090491453
+        ],
+        "relative_power_w": -796.4327966926962,
+        "vertical_fin_body_air_power_w": -35.956796692696194,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          8.989199173174049,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": 8.989199173174049,
+        "vertical_fin_force_n": 8.989199173174049,
+        "vertical_fin_limited": false,
+        "vertical_fin_loads": [
+          0.0,
+          8.989199173174049,
+          0.0,
+          0.7191359338539239,
+          0.0,
+          -9.888119090491454
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          0.7191359338539239,
+          0.0,
+          -9.888119090491454
+        ],
+        "vertical_fin_relative_air_m_s": [
+          3.0,
+          -4.0,
+          12.0
+        ],
+        "vertical_fin_relative_power_w": -35.956796692696194,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          3.0,
+          -4.0,
+          12.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "name": "three_axis_fuselage_and_surface_drag"
+    },
+    {
+      "expected": {
+        "body_air_power_w": -0.021242426625545933,
+        "fuselage_body_air_power_w": -0.0005273181455459344,
+        "fuselage_force_body_frd_n": [
+          -0.000559310718652879,
+          -0.005071083849119437,
+          -0.0
+        ],
+        "fuselage_loads": [
+          -0.000559310718652879,
+          -0.005071083849119437,
+          -0.0,
+          0.0002028433539647775,
+          -2.237242874611516e-05,
+          -0.0008788635759098906
+        ],
+        "fuselage_moment_body_frd_nm": [
+          0.0002028433539647775,
+          -2.237242874611516e-05,
+          -0.0008788635759098906
+        ],
+        "fuselage_relative_air_m_s": [
+          0.018,
+          0.10200000000000001,
+          0.0
+        ],
+        "fuselage_relative_power_w": -0.0005273181455459344,
+        "fuselage_wake_power_w": 0.0,
+        "horizontal_tail_body_air_power_w": 0.0,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "horizontal_tail_force_ideal_n": -0.0,
+        "horizontal_tail_force_n": -0.0,
+        "horizontal_tail_limited": false,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          -0.0,
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          0.0,
+          -0.51,
+          0.0
+        ],
+        "horizontal_tail_relative_power_w": 0.0,
+        "horizontal_tail_wake_power_w": 0.0,
+        "loads": [
+          -0.000559310718652879,
+          0.02631544415088056,
+          0.0,
+          0.0027137655939647775,
+          -2.237242874611516e-05,
+          -0.03540404437590989
+        ],
+        "relative_power_w": -0.021242426625545933,
+        "vertical_fin_body_air_power_w": -0.020715108479999998,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          0.031386528,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": 0.033244992,
+        "vertical_fin_force_n": 0.031386528,
+        "vertical_fin_limited": true,
+        "vertical_fin_loads": [
+          0.0,
+          0.031386528,
+          0.0,
+          0.00251092224,
+          0.0,
+          -0.0345251808
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          0.00251092224,
+          0.0,
+          -0.0345251808
+        ],
+        "vertical_fin_relative_air_m_s": [
+          -0.018,
+          -0.66,
+          0.0
+        ],
+        "vertical_fin_relative_power_w": -0.020715108479999998,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.6
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "name": "pure_yaw_rate_fin_damping"
+    },
+    {
+      "expected": {
+        "body_air_power_w": -0.013227517883610259,
+        "fuselage_body_air_power_w": -0.0002797521236102561,
+        "fuselage_force_body_frd_n": [
+          -0.0007544555652919528,
+          -0.0,
+          0.0025651489219926395
+        ],
+        "fuselage_loads": [
+          -0.0007544555652919528,
+          -0.0,
+          0.0025651489219926395,
+          -7.695446765977918e-05,
+          -0.00046625353935042687,
+          -2.2633666958758582e-05
+        ],
+        "fuselage_moment_body_frd_nm": [
+          -7.695446765977918e-05,
+          -0.00046625353935042687,
+          -2.2633666958758582e-05
+        ],
+        "fuselage_relative_air_m_s": [
+          0.024,
+          0.0,
+          -0.10200000000000001
+        ],
+        "fuselage_relative_power_w": -0.0002797521236102561,
+        "fuselage_wake_power_w": 0.0,
+        "horizontal_tail_body_air_power_w": -0.012947765760000002,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          -0.025387776000000004
+        ],
+        "horizontal_tail_force_ideal_n": -0.034986816,
+        "horizontal_tail_force_n": -0.025387776000000004,
+        "horizontal_tail_limited": true,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          -0.025387776000000004,
+          0.0,
+          -0.021579609600000004,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          -0.021579609600000004,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          -0.066,
+          0.0,
+          0.51
+        ],
+        "horizontal_tail_relative_power_w": -0.012947765760000002,
+        "horizontal_tail_wake_power_w": 0.0,
+        "loads": [
+          -0.0007544555652919528,
+          0.0,
+          -0.022822627078007366,
+          -7.695446765977918e-05,
+          -0.02204586313935043,
+          -2.2633666958758582e-05
+        ],
+        "relative_power_w": -0.013227517883610259,
+        "vertical_fin_body_air_power_w": 0.0,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": -0.0,
+        "vertical_fin_force_n": -0.0,
+        "vertical_fin_limited": false,
+        "vertical_fin_loads": [
+          0.0,
+          -0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_relative_air_m_s": [
+          -0.048,
+          0.0,
+          0.66
+        ],
+        "vertical_fin_relative_power_w": 0.0,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.6,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "name": "pure_pitch_rate_tail_damping"
+    },
+    {
+      "expected": {
+        "body_air_power_w": -4428.244499062502,
+        "fuselage_body_air_power_w": -3850.8044990625017,
+        "fuselage_force_body_frd_n": [
+          -6.007495318350236,
+          -192.23985018720757,
+          -0.0
+        ],
+        "fuselage_loads": [
+          -6.007495318350236,
+          -192.23985018720757,
+          -0.0,
+          7.689594007488303,
+          -0.24029981273400947,
+          -32.86099939137579
+        ],
+        "fuselage_moment_body_frd_nm": [
+          7.689594007488303,
+          -0.24029981273400947,
+          -32.86099939137579
+        ],
+        "fuselage_relative_air_m_s": [
+          1.0,
+          20.0,
+          0.0
+        ],
+        "fuselage_relative_power_w": -3850.8044990625017,
+        "fuselage_wake_power_w": 0.0,
+        "horizontal_tail_body_air_power_w": 0.0,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "horizontal_tail_force_ideal_n": -0.0,
+        "horizontal_tail_force_n": -0.0,
+        "horizontal_tail_limited": false,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          -0.0,
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          1.0,
+          20.0,
+          0.0
+        ],
+        "horizontal_tail_relative_power_w": 0.0,
+        "horizontal_tail_wake_power_w": 0.0,
+        "loads": [
+          -6.007495318350236,
+          -221.11185018720755,
+          0.0,
+          5.379834007488303,
+          -0.24029981273400947,
+          -1.101799391375792
+        ],
+        "relative_power_w": -4428.244499062502,
+        "vertical_fin_body_air_power_w": -577.4399999999999,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          -28.871999999999996,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": -31.967999999999996,
+        "vertical_fin_force_n": -28.871999999999996,
+        "vertical_fin_limited": true,
+        "vertical_fin_loads": [
+          0.0,
+          -28.871999999999996,
+          0.0,
+          -2.30976,
+          0.0,
+          31.7592
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          -2.30976,
+          0.0,
+          31.7592
+        ],
+        "vertical_fin_relative_air_m_s": [
+          1.0,
+          20.0,
+          0.0
+        ],
+        "vertical_fin_relative_power_w": -577.4399999999999,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          1.0,
+          20.0,
+          0.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "name": "vertical_fin_force_cap"
+    },
+    {
+      "expected": {
+        "body_air_power_w": -2698.3259971904263,
+        "fuselage_body_air_power_w": -1928.405997190426,
+        "fuselage_force_body_frd_n": [
+          -6.007495318350236,
+          -0.0,
+          -96.11992509360378
+        ],
+        "fuselage_loads": [
+          -6.007495318350236,
+          -0.0,
+          -96.11992509360378,
+          2.8835977528081136,
+          16.100087453178634,
+          -0.1802248595505071
+        ],
+        "fuselage_moment_body_frd_nm": [
+          2.8835977528081136,
+          16.100087453178634,
+          -0.1802248595505071
+        ],
+        "fuselage_relative_air_m_s": [
+          1.0,
+          0.0,
+          20.0
+        ],
+        "fuselage_relative_power_w": -1928.405997190426,
+        "fuselage_wake_power_w": 0.0,
+        "horizontal_tail_body_air_power_w": -769.9200000000001,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          -38.496
+        ],
+        "horizontal_tail_force_ideal_n": -44.352000000000004,
+        "horizontal_tail_force_n": -38.496,
+        "horizontal_tail_limited": true,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          -38.496,
+          0.0,
+          -32.7216,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          -32.7216,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          1.0,
+          0.0,
+          20.0
+        ],
+        "horizontal_tail_relative_power_w": -769.9200000000001,
+        "horizontal_tail_wake_power_w": 0.0,
+        "loads": [
+          -6.007495318350236,
+          0.0,
+          -134.61592509360378,
+          2.8835977528081136,
+          -16.621512546821368,
+          -0.1802248595505071
+        ],
+        "relative_power_w": -2698.3259971904263,
+        "vertical_fin_body_air_power_w": 0.0,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": -0.0,
+        "vertical_fin_force_n": -0.0,
+        "vertical_fin_limited": false,
+        "vertical_fin_loads": [
+          0.0,
+          -0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_relative_air_m_s": [
+          1.0,
+          0.0,
+          20.0
+        ],
+        "vertical_fin_relative_power_w": 0.0,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          1.0,
+          0.0,
+          20.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "name": "horizontal_tail_force_cap"
+    },
+    {
+      "expected": {
+        "body_air_power_w": -10082.810281115757,
+        "fuselage_body_air_power_w": -8159.450281115756,
+        "fuselage_force_body_frd_n": [
+          -8.490583018850943,
+          271.6986566032302,
+          135.8493283016151
+        ],
+        "fuselage_loads": [
+          -8.490583018850943,
+          271.6986566032302,
+          135.8493283016151,
+          -14.94342611317766,
+          -23.434009132028603,
+          45.93405413198361
+        ],
+        "fuselage_moment_body_frd_nm": [
+          -14.94342611317766,
+          -23.434009132028603,
+          45.93405413198361
+        ],
+        "fuselage_relative_air_m_s": [
+          1.0,
+          -20.0,
+          -20.0
+        ],
+        "fuselage_relative_power_w": -8159.450281115756,
+        "fuselage_wake_power_w": 0.0,
+        "horizontal_tail_body_air_power_w": -769.9200000000001,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          38.496
+        ],
+        "horizontal_tail_force_ideal_n": 44.352000000000004,
+        "horizontal_tail_force_n": 38.496,
+        "horizontal_tail_limited": true,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          38.496,
+          0.0,
+          32.7216,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          32.7216,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          1.0,
+          -20.0,
+          -20.0
+        ],
+        "horizontal_tail_relative_power_w": -769.9200000000001,
+        "horizontal_tail_wake_power_w": 0.0,
+        "loads": [
+          -8.490583018850943,
+          329.37065660323015,
+          174.3453283016151,
+          -10.329666113177659,
+          9.2875908679714,
+          -17.505145868016392
+        ],
+        "relative_power_w": -10082.810281115757,
+        "vertical_fin_body_air_power_w": -1153.44,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          57.672,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": 92.2391505617785,
+        "vertical_fin_force_n": 57.672,
+        "vertical_fin_limited": true,
+        "vertical_fin_loads": [
+          0.0,
+          57.672,
+          0.0,
+          4.61376,
+          0.0,
+          -63.4392
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          4.61376,
+          0.0,
+          -63.4392
+        ],
+        "vertical_fin_relative_air_m_s": [
+          1.0,
+          -20.0,
+          -20.0
+        ],
+        "vertical_fin_relative_power_w": -1153.44,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          1.0,
+          -20.0,
+          -20.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "name": "reverse_surface_force_caps"
+    },
+    {
+      "expected": {
+        "body_air_power_w": -892.326842536872,
+        "fuselage_body_air_power_w": -773.651642536872,
+        "fuselage_force_body_frd_n": [
+          48.965293831447596,
+          26.11482337677205,
+          16.321764610482532
+        ],
+        "fuselage_loads": [
+          48.965293831447596,
+          26.11482337677205,
+          16.321764610482532,
+          -1.534245873385358,
+          -0.8160882305241266,
+          5.908478788994677
+        ],
+        "fuselage_moment_body_frd_nm": [
+          -1.534245873385358,
+          -0.8160882305241266,
+          5.908478788994677
+        ],
+        "fuselage_relative_air_m_s": [
+          -12.0,
+          -4.0,
+          -5.0
+        ],
+        "fuselage_relative_power_w": -773.651642536872,
+        "fuselage_wake_power_w": 0.0,
+        "horizontal_tail_body_air_power_w": -81.12,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          16.224
+        ],
+        "horizontal_tail_force_ideal_n": 20.256000000000004,
+        "horizontal_tail_force_n": 16.224,
+        "horizontal_tail_limited": true,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          16.224,
+          0.0,
+          13.7904,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          13.7904,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          -12.0,
+          -4.0,
+          -5.0
+        ],
+        "horizontal_tail_relative_power_w": -81.12,
+        "horizontal_tail_wake_power_w": 0.0,
+        "loads": [
+          48.965293831447596,
+          35.503623376772055,
+          32.545764610482536,
+          -0.7831418733853579,
+          12.974311769475873,
+          -4.419201211005324
+        ],
+        "relative_power_w": -892.326842536872,
+        "vertical_fin_body_air_power_w": -37.5552,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          9.3888,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": 9.3888,
+        "vertical_fin_force_n": 9.3888,
+        "vertical_fin_limited": false,
+        "vertical_fin_loads": [
+          0.0,
+          9.3888,
+          0.0,
+          0.751104,
+          0.0,
+          -10.32768
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          0.751104,
+          0.0,
+          -10.32768
+        ],
+        "vertical_fin_relative_air_m_s": [
+          -12.0,
+          -4.0,
+          -5.0
+        ],
+        "vertical_fin_relative_power_w": -37.5552,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          -12.0,
+          -4.0,
+          -5.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "name": "backward_and_reverse_vertical_flow"
+    },
+    {
+      "expected": {
+        "body_air_power_w": -20.20188464745531,
+        "fuselage_body_air_power_w": -16.54438909526331,
+        "fuselage_force_body_frd_n": [
+          -0.9903011473789174,
+          -3.97880994324685,
+          -2.4163347996045585
+        ],
+        "fuselage_loads": [
+          -0.9903011473789174,
+          -3.97880994324685,
+          -2.4163347996045585,
+          0.23164244171801074,
+          0.3711648700376183,
+          -0.706106724773332
+        ],
+        "fuselage_moment_body_frd_nm": [
+          0.23164244171801074,
+          0.3711648700376183,
+          -0.706106724773332
+        ],
+        "fuselage_relative_air_m_s": [
+          0.9,
+          2.2600000000000002,
+          2.745
+        ],
+        "fuselage_relative_power_w": -16.516220529293424,
+        "fuselage_wake_power_w": -0.028168565969889203,
+        "horizontal_tail_body_air_power_w": -2.4897670012799997,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          -0.9070189439999998
+        ],
+        "horizontal_tail_force_ideal_n": -1.694561616,
+        "horizontal_tail_force_n": -0.9070189439999998,
+        "horizontal_tail_limited": true,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          -0.9070189439999998,
+          0.0,
+          -0.7709661023999999,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          -0.7709661023999999,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          1.033,
+          1.682,
+          2.895
+        ],
+        "horizontal_tail_relative_power_w": -2.6258198428799995,
+        "horizontal_tail_wake_power_w": 0.13605284159999997,
+        "loads": [
+          -0.9903011473789174,
+          -4.71975445524685,
+          -3.3233537436045584,
+          0.17236688075801074,
+          -0.3998012323623816,
+          0.1089322384266681
+        ],
+        "relative_power_w": -20.161580020685424,
+        "vertical_fin_body_air_power_w": -1.1677285509120001,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          -0.7409445120000001,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": -0.7679332715326391,
+        "vertical_fin_force_n": -0.7409445120000001,
+        "vertical_fin_limited": true,
+        "vertical_fin_loads": [
+          0.0,
+          -0.7409445120000001,
+          0.0,
+          -0.05927556096000001,
+          0.0,
+          0.8150389632000001
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          -0.05927556096000001,
+          0.0,
+          0.8150389632000001
+        ],
+        "vertical_fin_relative_air_m_s": [
+          1.112,
+          1.3760000000000001,
+          2.676
+        ],
+        "vertical_fin_relative_power_w": -1.0195396485120003,
+        "vertical_fin_wake_power_w": -0.14818890240000002,
+        "wake_power_w": -0.040304626769889246
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.2,
+          -0.3,
+          0.4
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          1.0,
+          2.0,
+          3.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.1,
+          -0.2,
+          0.3
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          -0.15
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          -0.1,
+          0.2,
+          0.0
+        ]
+      },
+      "name": "full_three_axis_body_rate_point_flow"
+    },
+    {
+      "expected": {
+        "body_air_power_w": 2.6879999999999997,
+        "fuselage_body_air_power_w": 1.92,
+        "fuselage_force_body_frd_n": [
+          -0.0,
+          -0.0,
+          0.96
+        ],
+        "fuselage_loads": [
+          -0.0,
+          -0.0,
+          0.96,
+          -0.0288,
+          -0.1632,
+          -0.0
+        ],
+        "fuselage_moment_body_frd_nm": [
+          -0.0288,
+          -0.1632,
+          -0.0
+        ],
+        "fuselage_relative_air_m_s": [
+          0.0,
+          0.0,
+          -2.0
+        ],
+        "fuselage_relative_power_w": -1.92,
+        "fuselage_wake_power_w": 3.84,
+        "horizontal_tail_body_air_power_w": 0.768,
+        "horizontal_tail_force_body_frd_n": [
+          0.0,
+          0.0,
+          0.384
+        ],
+        "horizontal_tail_force_ideal_n": 0.384,
+        "horizontal_tail_force_n": 0.384,
+        "horizontal_tail_limited": false,
+        "horizontal_tail_loads": [
+          0.0,
+          0.0,
+          0.384,
+          0.0,
+          0.3264,
+          -0.0
+        ],
+        "horizontal_tail_moment_body_frd_nm": [
+          0.0,
+          0.3264,
+          -0.0
+        ],
+        "horizontal_tail_relative_air_m_s": [
+          0.0,
+          0.0,
+          -2.0
+        ],
+        "horizontal_tail_relative_power_w": -0.768,
+        "horizontal_tail_wake_power_w": 1.536,
+        "loads": [
+          0.0,
+          0.0,
+          1.3439999999999999,
+          -0.0288,
+          0.1632,
+          0.0
+        ],
+        "relative_power_w": -2.6879999999999997,
+        "vertical_fin_body_air_power_w": 0.0,
+        "vertical_fin_force_body_frd_n": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "vertical_fin_force_ideal_n": -0.0,
+        "vertical_fin_force_n": -0.0,
+        "vertical_fin_limited": false,
+        "vertical_fin_loads": [
+          0.0,
+          -0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "vertical_fin_relative_air_m_s": [
+          0.0,
+          0.0,
+          -2.0
+        ],
+        "vertical_fin_relative_power_w": 0.0,
+        "vertical_fin_wake_power_w": 0.0,
+        "wake_power_w": 5.3759999999999994
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          2.0
+        ],
+        "fuselage_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          4.0
+        ],
+        "horizontal_tail_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          4.0
+        ],
+        "vertical_fin_wake_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          4.0
+        ]
+      },
+      "name": "wake_power_transfer_to_body"
+    }
+  ],
+  "format": "openrc-airframe-oracle-v1",
+  "law": "openrc-passive-rotorcraft-airframe-v1",
+  "parameters": {
+    "fuselage_cp_body_frd_m": [
+      0.17,
+      -0.03,
+      0.04
+    ],
+    "fuselage_drag_area_body_m2": [
+      0.5,
+      0.8,
+      0.4
+    ],
+    "horizontal_tail_area_m2": 0.16,
+    "horizontal_tail_cp_body_frd_m": [
+      -0.85,
+      0.0,
+      -0.11
+    ],
+    "horizontal_tail_lift_curve_slope_per_rad": 3.1,
+    "rho_kg_m3": 1.2,
+    "vertical_fin_area_m2": 0.12,
+    "vertical_fin_cp_body_frd_m": [
+      -1.1,
+      0.03,
+      -0.08
+    ],
+    "vertical_fin_lift_curve_slope_per_rad": 2.2
+  }
+}

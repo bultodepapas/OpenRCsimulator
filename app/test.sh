@@ -37,6 +37,12 @@ python3 "$HERE/../research/helicopter/reference/test_tail_rotor.py"
 python3 "$HERE/../research/helicopter/reference/make_tail_rotor_oracle.py" --check
 run --script res://tests/test_heli_tail_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/tail_rotor_oracle.json"
 
+echo "== HELI-06b/c: passive airframe and joint aerodynamic stage"
+python3 "$HERE/../research/helicopter/reference/test_airframe.py"
+python3 "$HERE/../research/helicopter/reference/make_airframe_oracle.py" --check
+run --script res://tests/test_heli_airframe.gd -- --oracle="$HERE/../research/helicopter/reference/airframe_oracle.json"
+run --script res://tests/test_heli_aerodynamic_stage.gd
+
 echo "== AS-01/02: versioned aircraft contract and migration stay current"
 python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
 python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check
