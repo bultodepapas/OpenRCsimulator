@@ -12,6 +12,7 @@ Status: current documentation and ownership index, checked 2026-10-14. Runtime c
 | Implemented architecture, boundaries and repository layout | [STACK](../STACK.md) |
 | Contribution workflow and durable agent rules | [CONTRIBUTING](../CONTRIBUTING.md), [AGENTS](../AGENTS.md) |
 | Main-line work and acceptance gates | [ROADMAP](../ROADMAP.md#where-we-are) |
+| Cross-track performance and visual improvement sequence | [Global improvement plan](plans/global-performance-visual-quality.md); [dated research and sources](research/godot-global-review-2026-10-14.md) |
 | Aircraft format, fields, conventions and extension rules | [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md) |
 | Aircraft geometry, generators and configuration limits | The aircraft guide below and its asset README |
 | Design rationale and reusable lessons | [DECISIONS](../DECISIONS.md), [LEARNINGS](../LEARNINGS.md) |
