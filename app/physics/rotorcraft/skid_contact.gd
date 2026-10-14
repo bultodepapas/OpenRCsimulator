@@ -3,9 +3,12 @@ extends RefCounted
 const M = preload("res://physics/math3d.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
 const GroundContact = preload("res://physics/ground_contact.gd")
-## Unloaded bristles lose their stored strain without applying an adhesive ground force.
-## The bounded 0.2 s decay remains stable at the simulator's 240 Hz base tick.
-const UNLOADED_BRISTLE_DECAY_S := 0.2
+## Unloaded bristles lose their stored strain without applying adhesive force. This 0.2 s
+## decay time is a numerical contact-memory proxy, not a measured skid property.
+const UNLOADED_BRISTLE_DECAY_TIME_PROXY_S := 0.2
+## Reuse the estimated vertical skid coefficients as an isotropic lateral proxy; no independent lateral test exists.
+## This bounded relaxation-rate proxy keeps explicit RK stages stable without depending on the selected dt.
+const MAX_BRISTLE_RELAXATION_RATE_PROXY_S := 100.0
 const ROTORPAD_ROLLING_FACTOR := 0.5
 const CONTACT_FORCE_EPSILON_N := 1.0e-8
 
@@ -34,7 +37,7 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
   if diagnostics:
    no_contact.merge({normal_forces_n=normal_forces,compressions_m=compressions,contact_count=0}, true)
   if has_bristles:
-   for index: int in 8: bristle_derivative[index] = -bristles[index] / UNLOADED_BRISTLE_DECAY_S
+   for index: int in 8: bristle_derivative[index] = -bristles[index] / UNLOADED_BRISTLE_DECAY_TIME_PROXY_S
    no_contact["bristle_derivative"] = bristle_derivative
    if diagnostics: no_contact["bristle_force_world_n"] = bristle_force_world
   return no_contact
@@ -86,8 +89,11 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
     var scale: float = minf(1.0, capacity / raw_magnitude) if raw_magnitude > 0.0 else 1.0
     var force_north: float = scale * raw_north
     var force_east: float = scale * raw_east
-    var z_rate_north: float = scale * world_velocity[0] - speed * z_north / z_max
-    var z_rate_east: float = scale * world_velocity[1] - speed * z_east / z_max
+    var relaxation_rate: float = minf(speed / z_max, MAX_BRISTLE_RELAXATION_RATE_PROXY_S)
+    # With alpha = min(1, mu*N/|Fraw|), this yields F·v + d(.5*K*|z|²)/dt
+    # = -alpha*C*|v|² - K*beta*|z|² <= 0, including the bounded beta proxy.
+    var z_rate_north: float = scale * world_velocity[0] - relaxation_rate * z_north
+    var z_rate_east: float = scale * world_velocity[1] - relaxation_rate * z_east
     bristle_derivative[point_index * 2] = z_rate_north
     bristle_derivative[point_index * 2 + 1] = z_rate_east
     if diagnostics:
@@ -111,6 +117,9 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
   point_index += 1
  for value: float in loads:
   if not is_finite(value): return {ok=false}
+ if has_bristles:
+  for value: float in bristle_derivative:
+   if not is_finite(value): return {ok=false}
  var result: Dictionary = {ok=true,loads=loads,max_depth_m=max_depth}
  if diagnostics:
   result.merge({normal_forces_n=normal_forces,compressions_m=compressions,contact_count=contact_count}, true)
@@ -132,8 +141,8 @@ static func _is_flat_rotorpad(surfaces: PackedFloat64Array, north: float, east: 
 
 static func _decay_bristle_pair(bristles: PackedFloat64Array, derivative: PackedFloat64Array,
   index: int) -> void:
- derivative[index] = -bristles[index] / UNLOADED_BRISTLE_DECAY_S
- derivative[index + 1] = -bristles[index + 1] / UNLOADED_BRISTLE_DECAY_S
+ derivative[index] = -bristles[index] / UNLOADED_BRISTLE_DECAY_TIME_PROXY_S
+ derivative[index + 1] = -bristles[index + 1] / UNLOADED_BRISTLE_DECAY_TIME_PROXY_S
 
 static func strike(state: PackedFloat64Array, main: Dictionary, tail: Dictionary, surfaces: PackedFloat64Array) -> String:
  if not _strike_inputs_valid(state, main, tail, surfaces): return "invalid rotor strike input"

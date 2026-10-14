@@ -117,7 +117,7 @@ func _run() -> void:
 	var continuous_endpoint: PackedFloat64Array = session.sim.continuous.duplicate()
 	var reset_signal_tick: Array = [-1]
 	session.resetting.connect(func() -> void: reset_signal_tick[0] = session.sim.tick, CONNECT_ONE_SHOT)
-	check("v2 checkpoint restores", session.restore_checkpoint(saved).ok)
+	check("v3 checkpoint restores", session.restore_checkpoint(saved).ok)
 	check("reset observers see the committed restored tick", reset_signal_tick[0] == saved.simulation.tick)
 	check("replayed control tail advances", run_steps(session, 8))
 	check("body and rotor state replay byte-identically", endpoint.to_byte_array() == session.sim.state.to_byte_array() and continuous_endpoint.to_byte_array() == session.sim.continuous.to_byte_array())

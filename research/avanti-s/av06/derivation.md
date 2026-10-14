@@ -13,7 +13,7 @@ wheel-profile hashes and rejects stale generated output/report, stale registry v
 
 The v1 baseline is upgraded to `openrc-aircraft v2` by the ID-gated standardizer, then the AV-09 gear module is added while
 preserving the historical AS-02 migration policy. Migration numeric parity: 502 original leaves
-preserved, 1 relocated CLadot leaves, 38 explicit
+preserved, 1 relocated CLadot leaves, 39 explicit
 compatibility-default leaves added, 0 differences.
 
 Flight mass 11.705 kg (fuel 1.28 kg), CG 240 mm aft of the root LE = 33.6 % MAC, static margin 8.5 % MAC.
@@ -155,6 +155,21 @@ AV-17-R1 adds an optional input-layer response: keyboard normal-profile pitch ta
 The manual's normal rates/expo, physical surface travel and servo rate still apply afterward. These are estimated
 device settings, not manufacturer actuator measurements. Radios, gamepads, scripted accepted commands and the explicit
 full-rate profile bypass this keyboard filter. No aerodynamic, mass, CG, inertia or turbine quantity changes.
+
+## Gamepad pitch and post-stall proxy
+
+AV-17-R2 adds a fixed normal-gamepad pitch scale of 0.40, applied after normal
+rates and before trim: ±6.0° before trim for a short
+gamepad stick. Full profile, physical radios and the keyboard retain their travel. This is simulator device tuning,
+not a SebArt setting or an airspeed/AoA limiter.
+
+`research/avanti-s/av17-r2/build_polar.py` derives the optional finite-wing strip polar from the tracked Sandia NACA 0015
+Table 3 proxy (hybrid computed/experimental, Re 1e6). It preserves the attached finite-wing line and CD0, scales lift
+and angle using the existing slope and nominal CLmax allocation, and joins the existing CD90 plate law at high angles.
+Its separation fraction is an estimated Kirchhoff-style inverse, not measured Avanti separation. The exact A200 section,
+polar and stall speed remain unidentified. The nominal 1-g speed above is a CLmax-based estimate; loaded, trimmed whole-aircraft
+stall behavior also depends on the tail, twist and moments. See `docs/research/avanti-realism/AV-17-R2/README.md` for
+source applicability, reproduction, measured simulated departures and numerical verification.
 Evidence: `docs/research/avanti-realism/AV-17-R1/README.md`.
 
 ## Turbine at sea level

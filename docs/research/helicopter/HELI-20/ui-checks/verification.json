@@ -1,0 +1,98 @@
+{
+  "platform": "Windows-10-10.0.26100-SP0",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "name": "test_ui_home",
+      "exit_code": 1,
+      "ok": false,
+      "seconds": 19.283797000010964,
+      "counts": [],
+      "log": "test_ui_home.log"
+    },
+    {
+      "name": "test_ui_aircraft",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 31.291355399996974,
+      "counts": [],
+      "log": "test_ui_aircraft.log"
+    },
+    {
+      "name": "test_ui_help",
+      "exit_code": 1,
+      "ok": false,
+      "seconds": 25.745910199999344,
+      "counts": [],
+      "log": "test_ui_help.log"
+    },
+    {
+      "name": "test_controls_reference",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.47947849999764003,
+      "counts": [],
+      "log": "test_controls_reference.log"
+    },
+    {
+      "name": "test_controller_flight_actions",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.684917600010522,
+      "counts": [],
+      "log": "test_controller_flight_actions.log"
+    },
+    {
+      "name": "test_field_loader",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 1.6744952000008198,
+      "counts": [
+        [
+          "178",
+          "0"
+        ]
+      ],
+      "log": "test_field_loader.log"
+    },
+    {
+      "name": "test_field_surfaces",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 7.255645400000503,
+      "counts": [
+        [
+          "19",
+          "0"
+        ]
+      ],
+      "log": "test_field_surfaces.log"
+    },
+    {
+      "name": "test_ground_surfaces",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 11.566653799993219,
+      "counts": [
+        [
+          "29",
+          "0"
+        ]
+      ],
+      "log": "test_ground_surfaces.log"
+    },
+    {
+      "name": "test_ground_terrain",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.787583600002108,
+      "counts": [
+        [
+          "21",
+          "0"
+        ]
+      ],
+      "log": "test_ground_terrain.log"
+    }
+  ]
+}

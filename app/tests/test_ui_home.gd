@@ -175,10 +175,10 @@ func _run() -> void:
 			and helicopter_flight.night_options == updated_night
 			and helicopter_flight.get_meta("night_options", {}) == updated_night)
 	var helicopter_session: Node = helicopter_flight.get("session") if helicopter_flight != null else null
-	_check("direct helicopter route completes setup and starts in a flyable hover",
+	_check("direct helicopter route completes setup and starts on the pad",
 		helicopter_flight != null and helicopter_flight.startup_error.is_empty()
 		and helicopter_session != null and helicopter_session.has_method("is_flyable")
-		and helicopter_session.is_flyable() and helicopter_flight.start_choice == "airborne")
+		and helicopter_session.is_flyable() and helicopter_flight.start_choice == "runway" and helicopter_session.start_choice == "ground" and not helicopter_session.power.armed)
 	helicopter_app.queue_free()
 	await process_frame
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
@@ -229,7 +229,7 @@ func _run() -> void:
 	home_helicopter_app.home.fly_button.pressed.emit()
 	await process_frame
 	var home_helicopter_flight: Node = home_helicopter_app.flight
-	_check("Home Fly starts a configured hover on helicopter_main.gd",
+	_check("Home Fly starts on the configured pad on helicopter_main.gd",
 		home_helicopter_flight != null
 		and home_helicopter_flight.get_script().resource_path == "res://helicopter_main.gd"
 		and home_helicopter_flight.aircraft_id == "xcell-60-research"
@@ -244,7 +244,7 @@ func _run() -> void:
 		var helicopter_hint: Node = home_helicopter_flight.get_node_or_null("FirstFlightHint")
 		_check("first-flight hint accepts the rotorcraft session and shows collective", helicopter_hint != null
 			and helicopter_hint._vehicle_type == "rotorcraft"
-			and _hint_labels(helicopter_hint) == PackedStringArray(["Cyclic", "Yaw", "Collective"]))
+			and _hint_labels(helicopter_hint) == PackedStringArray(["Arm, then release hold", "Cyclic", "Collective"]))
 		home_helicopter_flight.pause_requested.emit()
 		_check("pause menu hides airplane Workshop, time-of-day and absent overlays",
 			home_helicopter_app.pause_menu != null
@@ -258,8 +258,8 @@ func _run() -> void:
 		home_helicopter_flight.pause_requested.emit()
 		if home_helicopter_app.pause_menu != null:
 			home_helicopter_app.pause_menu.restart_requested.emit()
-		_check("Restart returns the helicopter to a flyable hover", home_helicopter_app.flight.session.is_flyable()
-			and home_helicopter_app.flight.session.start_choice == "airborne")
+		_check("Restart returns the helicopter to the pad with motor disarmed", home_helicopter_app.flight.session.is_flyable()
+			and home_helicopter_app.flight.session.start_choice == "ground" and not home_helicopter_app.flight.session.power.armed)
 		home_helicopter_flight.pause_requested.emit()
 		if home_helicopter_app.pause_menu != null:
 			home_helicopter_app.pause_menu.end_requested.emit()

@@ -48,6 +48,8 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	var title := _text("Help", "TitleLabel")
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
+	# A full-width header line leaves room for the vehicle's startup/radio instructions.
+	header.add_child(_text("Keys are shown as your keyboard layout prints them.", "SecondaryLabel"))
 	close_button = Button.new()
 	close_button.name = "Close"
 	close_button.text = "Close"
@@ -69,10 +71,9 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 		right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
 	else:
 		# Keep the existing table widths and use compact row spacing so the complete reference fits at 720p.
-		left.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return not (KEY_H in row[0] or KEY_J in row[0]))))
+		left.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return not (KEY_H in row[0] or KEY_J in row[0] or KEY_V in row[0] or KEY_F2 in row[0]))))
 		right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
-		right.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return KEY_H in row[0] or KEY_J in row[0]), 4, 145))
-	right.add_child(_text("Keys are shown as your keyboard layout prints them.", "SecondaryLabel", true))
+		right.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return KEY_H in row[0] or KEY_J in row[0] or KEY_V in row[0] or KEY_F2 in row[0]), 4, 145))
 	right.add_child(_text("RADIO", "SectionLabel"))
 	radio_help_label = _text("", "SecondaryLabel", true)
 	radio_help_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED

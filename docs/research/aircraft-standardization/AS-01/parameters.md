@@ -80,6 +80,7 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `balance.cg_tolerance` | m | ≥1e-06, ≤0.005 | AircraftData.validate_and_derive: inventory/declared CG acceptance |
 | `balance.firewall` | m | length 3…3, each(≥-2, ≤2) | AircraftData._q: reference validation only; no force effect |
 | `balance.plan_cg` | m | length 3…3, each(≥-2, ≤2) | AircraftData.validate_and_derive: inventory CG agreement; not an override |
+| `controls.gamepad.pitch_scale` | 1 | ≥0.05, ≤1 | AircraftData._controls → FlightSession.flown_commands; fixed normal-gamepad pitch travel after rates, before trim; full/radio bypass |
 | `controls.keyboard.pitch_press_time` | s | ≥0.05, ≤5 | AircraftData._controls → Commands.keyboard_pitch; keyboard normal-profile virtual stick only, before expo/rates; no aerodynamic or servo change |
 | `controls.keyboard.pitch_release_time` | s | ≥0.05, ≤5 | AircraftData._controls → Commands.keyboard_pitch; keyboard normal-profile virtual stick only, before expo/rates; no aerodynamic or servo change |
 | `controls.max_throw.aileron` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
@@ -180,4 +181,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 166 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 167 distinct quantity paths. Shared paths retain branch-dependent ranges.

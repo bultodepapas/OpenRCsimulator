@@ -2055,6 +2055,10 @@ func flown_commands() -> Dictionary:
 	var c := commands.duplicate()
 	if rates_active():
 		c = Commands.shape_sticks(c, aircraft.model.controls.rates.normal, not radio.connected)
+		# Short gamepad sticks may have an aircraft-specific normal pitch travel.
+		# This is a fixed device setting; trim and physical radio travel remain independent.
+		if radio.connected and radio.is_gamepad():
+			c.pitch *= float(aircraft.model.controls.get("gamepad", {}).get("pitch_scale", 1.0))
 	c.roll = clampf(c.roll + trims.roll, -1.0, 1.0)
 	c.pitch = clampf(c.pitch + trims.pitch, -1.0, 1.0)
 	c.yaw = clampf(c.yaw + trims.yaw, -1.0, 1.0)

@@ -147,7 +147,7 @@ func set_field(field: Dictionary) -> bool:
  if not Terrain.is_valid_surface_table(built.rects):
   surface_error="Field surface table is invalid."
   return false
- var changed: bool=ground_surfaces.to_byte_array()!=built.rects.to_byte_array() or _start.to_byte_array()!=candidate_start.to_byte_array()
+ var changed: bool=ground_surfaces.to_byte_array()!=built.rects.to_byte_array() or _start.to_byte_array()!=candidate_start.to_byte_array() or _field.get("rotorcraft_pad",{})!=field.get("rotorcraft_pad",{})
  ground_surfaces=built.rects
  _field=field.duplicate(true)
  _start=candidate_start
@@ -212,11 +212,21 @@ func reset() -> bool:
   _ground_start=GroundStart.resolve(_field,aircraft)
   var pickup: Dictionary=Lifecycle.collective_for_pitch(aircraft.context.electronics_model,"normal",0.0)
   if _ground_start.ok and pickup.ok:
+   # Derive the trainer's collective-to-tail precomp reference from this model.
+   # This does not seed the ground pose, RPM, wake, or cyclic with an airborne state.
+   var reference_position: PackedFloat64Array=_ground_start.state.slice(0,3)
+   reference_position[2]=-3.0
+   var reference: Dictionary=Hover.solve_hover(aircraft.context,_ground_start.pad.heading,reference_position,wind_at(0.0),{"ground_height_up_m":_ground_under_hub(_ground_start.state)})
+   if not reference.ok:
+    start_error="Ground trainer control reference refused: "+str(reference.get("message","no hover reference"))
+    pause_reason=start_error
+    sim.set_paused(true)
+    return false
    var state: PackedFloat64Array=_ground_start.state.duplicate()
    state.append_array(PackedFloat64Array([0,0,0,0,_ground_start.pad.heading,0]))
    # Four N/E elastic friction pairs are integrated and checkpointed with the rotor.
    state.append_array(PackedFloat64Array([0,0,0,0,0,0,0,0]))
-   solved={ok=true,state=state,trim={},sticks=PackedFloat64Array([0,0,0,pickup.stick])}
+   solved={ok=true,state=state,trim={ground_yaw_precomp_tail_bias_rad=reference.trim.tail_collective_bias_rad,ground_yaw_precomp_collective_rad=reference.collective_75_rad},sticks=PackedFloat64Array([0,0,0,pickup.stick])}
    startup_collective=pickup.collective
   else:
    solved={ok=false,message=_ground_start.get("reason","") if not _ground_start.ok else pickup.reason}
@@ -273,7 +283,7 @@ func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) ->
   return {}
  # Do not accumulate heading-hold I error against constrained skids during startup.
  # Existing airborne/contact trajectories retain their original control law.
- if start_choice=="ground" and contact.max_depth_m>0.0 and state[13]<.5*aircraft.context.drive_model.governor_target_main_rad_s:
+ if start_choice=="ground" and contact.max_depth_m>0.0:
   result.derivative[5]=0.0
  if continuous.size()==14: result.derivative.append_array(contact.bristle_derivative)
  return {loads=result.loads,body_derivative=result.body_derivative,derivative=result.derivative,rotor_momentum=result.rotor_momentum}

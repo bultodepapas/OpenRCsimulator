@@ -212,6 +212,7 @@
         "servo_full_throw_time",
         "rates",
         "keyboard",
+        "gamepad",
         "surface_ids"
       ]
     },
@@ -233,6 +234,11 @@
       "path": "/controls/keyboard",
       "required": ["pitch_press_time", "pitch_release_time"],
       "allowed": ["pitch_press_time", "pitch_release_time"]
+    },
+    {
+      "path": "/controls/gamepad",
+      "required": ["pitch_scale"],
+      "allowed": ["pitch_scale"]
     },
     {
       "path": "/controls/rates",
@@ -900,6 +906,7 @@
     "/controls/servo_full_throw_time",
     "/controls/rates/*/*",
     "/controls/keyboard/*",
+    "/controls/gamepad/*",
     "/aero/coefficients/*",
     "/aero/reference_coefficients/*",
     "/aero/envelope/*",

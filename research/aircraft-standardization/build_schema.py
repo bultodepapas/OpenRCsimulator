@@ -199,6 +199,11 @@ def add_v2_overlay(schema: dict, spec: dict):
             "unit": {"const": "s"}, "value": {"type": "number", "minimum": 0.05, "maximum": 5.0}}}
             for key in ["pitch_press_time", "pitch_release_time"]}}
     controls.setdefault("allOf", []).append({"if": {"required": ["keyboard"]}, "then": {"required": ["rates"]}})
+    controls["properties"]["gamepad"] = {
+        "type": "object", "additionalProperties": False, "required": ["pitch_scale"],
+        "properties": {"pitch_scale": {"$ref": "#/$defs/evidence", "properties": {
+            "unit": {"const": "1"}, "value": {"type": "number", "minimum": 0.05, "maximum": 1.0}}}}}
+    controls["allOf"].append({"if": {"required": ["gamepad"]}, "then": {"required": ["rates"]}})
 
     aero = root_props["aero"]
     aero_props = aero["properties"]

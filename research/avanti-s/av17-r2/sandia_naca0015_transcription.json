@@ -1,0 +1,58 @@
+{
+  "source": {
+    "report": "Sheldahl and Klimas, Sandia report SAND80-2114",
+    "title": "Aerodynamic Characteristics of Seven Symmetrical Airfoil Sections Through 180-Degree Angle of Attack for Use in Aerodynamic Analysis of Vertical Axis Wind Turbines",
+    "table": "Table 3 hybrid data",
+    "printed_pages": [35, 36],
+    "pdf_pages": [38, 39],
+    "pdf_url": "https://www.osti.gov/servlets/purl/6548367",
+    "pdf_sha256": "af5cb8e9f564121155014b7c88d3b41ef75cd0655bcdc41690cd4f5b6b38bb97",
+    "airfoil": "NACA 0015",
+    "reynolds_number": 1000000,
+    "transcription_note": "The CL and CD entries below reproduce the exact Table 3 rows from 10 through 30 degrees used by the candidate builder. Table 3 is hybrid data: its pre-stall and extended high-angle values include computed/synthesized values, so these rows are not all measured. This test-section airfoil and Reynolds number are a proxy; they do not identify the Avanti S airfoil or its flight Reynolds number."
+  },
+  "builder": "research/avanti-s/av17-r2/build_polar.py::build_polar",
+  "avanti_context": {
+    "aircraft_data": "app/data/aircraft/sebart_avanti_s_a200.json",
+    "cl_max": 0.85,
+    "cl_max_uncertainty": 0.10,
+    "relative_cl_max_uncertainty_percent": 11.76470588235294,
+    "cl_max_kind": "estimated",
+    "cl_max_source": "DATCOM wing CLmax for a thick symmetric section, swept and tapered, flaps up: 0.85 +- 0.10 (docs/research/avanti-s-av06-aero-references.md)"
+  },
+  "rows": [
+    [10, 1.0141, 0.0152],
+    [11, 1.0686, 0.0168],
+    [12, 1.0971, 0.0186],
+    [13, 1.0957, 0.0205],
+    [14, 1.0656, 0.0225],
+    [15, 1.0145, 0.0249],
+    [16, 0.9567, 0.0275],
+    [17, 0.8996, 0.0303],
+    [18, 0.8566, 0.145],
+    [19, 0.8226, 0.260],
+    [20, 0.8089, 0.282],
+    [21, 0.8063, 0.305],
+    [22, 0.8189, 0.329],
+    [23, 0.8408, 0.354],
+    [24, 0.8668, 0.379],
+    [25, 0.9023, 0.405],
+    [26, 0.9406, 0.432],
+    [27, 0.9912, 0.460],
+    [30, 0.855, 0.570]
+  ],
+  "candidate_policy": {
+    "classification": "estimated model policy; not a measured Avanti polar or measured separation location",
+    "lift_scale": "input aero.envelope.CL_max * (derived finite-wing strip lift slope / input aero.coefficients.CLa) / 1.0971",
+    "angle_scale": "lift_scale * (0.11 * 180 / pi) / derived finite-wing strip lift slope",
+    "profile_drag": "input aero.coefficients.CD0 + transcribed CD - 0.0126",
+    "attached_fraction": {
+      "reference": "NASA-TM-103855, eq. 2.58",
+      "url": "https://ntrs.nasa.gov/api/citations/19950008005/downloads/19950008005.pdf",
+      "formula": "min(previous, max(0, 2 * sqrt(source_CL / (0.11 * source_angle_deg)) - 1)^2)",
+      "note": "The equation motivates an inverse Kirchhoff-style surrogate. The resulting fraction is estimated policy, not measured separation."
+    },
+    "attached_join": "At 8 degrees, preserve the calibrated finite-wing line exactly: CL magnitude = slope * radians(8) + side * offset.",
+    "flat_plate_join": "Add 45, 60, 75, and 90 degree rows from the existing CD90 flat-plate law; the 90 degree row is [90, 0, CD0 + CD90, 0]."
+  }
+}

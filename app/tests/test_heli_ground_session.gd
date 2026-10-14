@@ -61,8 +61,10 @@ func _run() -> void:
 	bad.power.spool_start_s=1e20
 	check("future ramp state is refused atomically",not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint())==unchanged)
 	session.resume()
-	check("spool reaches running state",steps(1440))
+	check("spool reaches running state",steps(2400) and session.power_phase()=="GOVERNED")
 	print("SPOOL RPM=",session.sim.aux[0]," state=",session.sim.state," power=",session.power_phase())
+	check("spool keeps pad position within 2 mm",M.norm(M.sub(session.sim.state.slice(0,3),rest.slice(0,3)))<.002)
+	check("spool keeps heading within 1.5 degrees",absf(M.q_to_euler(session.sim.state.slice(6,10))[0]-PI/2)<1.5*PI/180.0)
 	check("zero pitch does not cause automatic liftoff",-session.sim.state[2]<.2)
 	session.set_controller_cut(true)
 	session.set_controller_cut(false)

@@ -1,8 +1,9 @@
 # HELI-07b/20b: deterministic one-speed trainer power lifecycle.
-# Four seconds is an explicit simulator soft-start estimate, not an ESC measurement.
+# Twelve seconds is an explicit simulator soft-start estimate, not an ESC measurement.
+# The four-second candidate exceeded the qualified pad's skid yaw capacity.
 extends RefCounted
 const LAW := "openrc-helicopter-soft-start-v1"
-const SOFT_START_S := 4.0
+const SOFT_START_S := 12.0
 const PICKUP_TOLERANCE_RAD := PI / 180.0
 
 static func initial(airborne: bool) -> Dictionary:

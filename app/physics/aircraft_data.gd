@@ -1392,6 +1392,13 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 			errors.append("controls.keyboard: requires controls.rates.normal")
 		if response.size() == 2:
 			out.keyboard = response
+	if node.has("gamepad"):
+		var gamepad := _dictionary(errors, "controls.gamepad", node.get("gamepad"))
+		var scale = _q(errors, "controls.gamepad.pitch_scale", gamepad.get("pitch_scale"), "1", 0.05, 1.0)
+		if not node.has("rates"):
+			errors.append("controls.gamepad: requires controls.rates.normal")
+		if scale != null:
+			out.gamepad = {pitch_scale = float(scale)}
 	return out
 
 

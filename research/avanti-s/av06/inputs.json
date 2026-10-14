@@ -69,6 +69,12 @@
   }
  },
  "controls": {
+  "gamepad_pitch_scale": {
+   "value": 0.4,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "AV-17-R2 simulator device setting for short gamepad sticks: normal-profile pitch uses 0.4 of the manual normal travel (6 deg before trim). Full profile and RC radios retain maximum travel; not manufacturer data or an aerodynamic limiter. docs/research/avanti-realism/AV-17-R2/README.md."
+  },
   "keyboard_pitch_press_time": {
    "value": 1.0,
    "unit": "s",

@@ -32,6 +32,8 @@ if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
 from migrate import legacy_input, numeric_parity, upgrade  # noqa: E402
 from physical_identity import validate_physical_identity  # noqa: E402
+sys.path.insert(0, str(ROOT / "research/avanti-s/av17-r2"))
+from build_polar import build_polar  # noqa: E402
 
 GEOMETRY = ROOT / "assets/aircraft/avanti-s-a200/geometry.json"
 COLLISION_GEOMETRY = ROOT / "assets/aircraft/avanti-s-a200/blender-geometry.json"
@@ -1108,7 +1110,10 @@ data["controls"]["keyboard"] = {
     "pitch_press_time": qi("controls.keyboard_pitch_press_time", "s"),
     "pitch_release_time": qi("controls.keyboard_pitch_release_time", "s"),
 }
+data["controls"]["gamepad"] = {"pitch_scale": qi("controls.gamepad_pitch_scale", "1")}
 parity = numeric_parity(legacy_data, data)
+# AV-17-R2: explicit finite-wing proxy, preserving the attached calibration and historical migration.
+data["aero"]["wing_polar"] = build_polar(data)
 # AS-02's ID-gated policy intentionally records the historical AV-06 gear-up state. AV-09 adds the new gear module after
 # that compatibility migration so the legacy record remains evidence of its original locked-up configuration.
 data["capabilities"]["gear"] = "retractable_tricycle"
@@ -1173,6 +1178,21 @@ AV-17-R1 adds an optional input-layer response: keyboard normal-profile pitch ta
 The manual's normal rates/expo, physical surface travel and servo rate still apply afterward. These are estimated
 device settings, not manufacturer actuator measurements. Radios, gamepads, scripted accepted commands and the explicit
 full-rate profile bypass this keyboard filter. No aerodynamic, mass, CG, inertia or turbine quantity changes.
+
+## Gamepad pitch and post-stall proxy
+
+AV-17-R2 adds a fixed normal-gamepad pitch scale of {v('controls.gamepad_pitch_scale'):.2f}, applied after normal
+rates and before trim: ±{v('controls.elevator') * 0.5 * v('controls.gamepad_pitch_scale'):.1f}° before trim for a short
+gamepad stick. Full profile, physical radios and the keyboard retain their travel. This is simulator device tuning,
+not a SebArt setting or an airspeed/AoA limiter.
+
+`research/avanti-s/av17-r2/build_polar.py` derives the optional finite-wing strip polar from the tracked Sandia NACA 0015
+Table 3 proxy (hybrid computed/experimental, Re 1e6). It preserves the attached finite-wing line and CD0, scales lift
+and angle using the existing slope and nominal CLmax allocation, and joins the existing CD90 plate law at high angles.
+Its separation fraction is an estimated Kirchhoff-style inverse, not measured Avanti separation. The exact A200 section,
+polar and stall speed remain unidentified. The nominal 1-g speed above is a CLmax-based estimate; loaded, trimmed whole-aircraft
+stall behavior also depends on the tail, twist and moments. See `docs/research/avanti-realism/AV-17-R2/README.md` for
+source applicability, reproduction, measured simulated departures and numerical verification.
 Evidence: `docs/research/avanti-realism/AV-17-R1/README.md`.
 
 ## Turbine at sea level
