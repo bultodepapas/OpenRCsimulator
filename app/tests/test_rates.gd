@@ -2,7 +2,8 @@
 # profile loaded from the aircraft data, and the session: "full" (the default of every FlightSession, so scripted
 # maneuvers and goldens are untouched) flies the maximum throws; "normal" shapes the keyboard sticks by the manual's
 # travel fractions and expo, adds the trims in maximum-throw units afterwards, and aircraft without controls.rates
-# are unaffected under either name.
+# (the Timber, the glow Stiks) are unaffected under either name. The Stik flies the Durafly Ugly Stik V2 low/high
+# ratios (D6e-S).
 # Run: godot --headless --path . --script res://tests/test_rates.gd
 extends SceneTree
 
@@ -41,7 +42,7 @@ func _initialize() -> void:
 	var travel_only := Commands.shape_sticks({ roll = 0.5, pitch = 0.5, yaw = 0.5, throttle = 0.0 }, profile, false)
 	_check("without expo only the travel applies", travel_only.roll == 0.25 and travel_only.pitch == 0.25 and travel_only.yaw == 0.4)
 
-	# Data: the generated aircraft declare the manuals' normal rates; the Stik declares none.
+	# Data: the generated aircraft declare the manuals' normal rates; the Stik borrows an Ugly Stik manual's ratios.
 	var avanti: Dictionary = AD.load_file(Catalog.entry("sebart-avanti-s-a200-p100rx").data)
 	_check("Avanti data loads with controls.rates.normal", avanti.ok and avanti.model.controls.has("rates"), str(avanti.get("errors", [])))
 	if avanti.ok and avanti.model.controls.has("rates"):
@@ -52,7 +53,21 @@ func _initialize() -> void:
 		_check("%s declares controls.rates.normal with travel below 1" % id, data.ok and data.model.controls.has("rates")
 			and data.model.controls.rates.normal.elevator < 1.0, str(data.get("errors", [])))
 	var stik: Dictionary = AD.load_file(Catalog.entry(Catalog.DEFAULT_ID).data)
-	_check("Stik declares no rates (its 20° throw is already its low rate)", stik.ok and not stik.model.controls.has("rates"))
+	_check("Stik declares controls.rates.normal", stik.ok and stik.model.controls.has("rates"), str(stik.get("errors", [])))
+	if stik.ok and stik.model.controls.has("rates"):
+		var s: Dictionary = stik.model.controls.rates.normal
+		# Durafly Ugly Stik V2 manual p.8: low/high elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm.
+		_check("Stik normal rates are the Durafly low/high ratios (elevator 0.50, aileron 0.556, rudder 0.667)",
+			s.elevator == 0.5 and absf(s.aileron - 10.0 / 18.0) < 1e-4 and absf(s.rudder - 12.0 / 18.0) < 1e-4, str(s))
+		var thr: Dictionary = stik.model.controls.throw_rad
+		_check("Stik full keyboard pull on normal rates is %.1f° of elevator (half the 20° maximum)" % rad_to_deg(thr.elevator * s.elevator),
+			absf(rad_to_deg(thr.elevator * s.elevator) - 10.0) < 1e-9)
+	# The glow variants stay byte-bound to NITRO's recorded flight evidence; their generator leaves the profile out.
+	for id in ["stik-glow-55ax-2t", "stik-glow-fs64v-4t"]:
+		var glow: Dictionary = AD.load_file(Catalog.entry(id).data)
+		_check("%s keeps its recorded bytes (no rates yet)" % id, glow.ok and not glow.model.controls.has("rates"))
+	var timber: Dictionary = AD.load_file(Catalog.entry("turbo-lumber-evolution").data)
+	_check("Timber declares no rates", timber.ok and not timber.model.controls.has("rates"))
 	# Loader rejects an incomplete profile.
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry("sebart-avanti-s-a200-p100rx").data))
 	raw.controls.rates.normal.erase("rudder_expo")
@@ -86,7 +101,16 @@ func _initialize() -> void:
 	stik_session.input_enabled = false
 	stik_session.rate_profile = "normal"
 	stik_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = stik_session.start.throttle }
-	_check("Stik under 'normal': no profile, so the maximum throws", not stik_session.rates_active()
-		and stik_session.flown_commands().pitch == clampf(1.0 + stik_session.trims.pitch, -1.0, 1.0))
+	var stik_flown: Dictionary = stik_session.flown_commands()
+	_check("Stik under 'normal': a full pull is half the throw plus the trim", stik_session.rates_active()
+		and absf(stik_flown.pitch - clampf(0.5 + stik_session.trims.pitch, -1.0, 1.0)) < 1e-12, str(stik_flown))
+	var timber_session := FlightSession.new()
+	timber_session.setup(Catalog.entry("turbo-lumber-evolution").data, "turbo-lumber-evolution")
+	root.add_child(timber_session)
+	timber_session.input_enabled = false
+	timber_session.rate_profile = "normal"
+	timber_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = timber_session.start.throttle }
+	_check("Timber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
+		and timber_session.flown_commands().pitch == clampf(1.0 + timber_session.trims.pitch, -1.0, 1.0))
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

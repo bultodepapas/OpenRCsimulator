@@ -4,7 +4,7 @@
 
 ## Why
 
-The simulator flew every aircraft on its manual's HIGH rates with no expo, and the keyboard commands full throw in 0.25 s. At 1.6 × the stall speed a quarter stick then reached the wing stall on the Avanti (30° elevator, 2.3° of α per degree), the P-51 and the Extra, after which the local strip model's post-stall autorotation rolled the airplane. The manuals state normal-flight rates: Avanti elevator 50 % travel with 40 % expo ([controls](../../avanti-s-controls-and-installation.md)), Extra low rate ¾ of 1¼ in at the elevator's widest part ([EX-06 primary sources](../../extra-300-realism/EX-06/primary-sources.md)), P-51 low rate 12° of 15° (Hangar 9 Mustang 1.50 manual, as the data's source). The Ugly Stik's 20° is already its estimated low rate and declares no profile.
+The simulator flew every aircraft on its manual's HIGH rates with no expo, and the keyboard commands full throw in 0.25 s. At 1.6 × the stall speed a quarter stick then reached the wing stall on the Avanti (30° elevator, 2.3° of α per degree), the P-51 and the Extra, after which the local strip model's post-stall autorotation rolled the airplane. The manuals state normal-flight rates: Avanti elevator 50 % travel with 40 % expo ([controls](../../avanti-s-controls-and-installation.md)), Extra low rate ¾ of 1¼ in at the elevator's widest part ([EX-06 primary sources](../../extra-300-realism/EX-06/primary-sources.md)), P-51 low rate 12° of 15° (Hangar 9 Mustang 1.50 manual, as the data's source). The Ugly Stik first declared no profile; D6e-S below gives it one.
 
 ## What
 
@@ -17,9 +17,22 @@ The simulator flew every aircraft on its manual's HIGH rates with no expo, and t
 
 With the normal profile a quarter stick is 7.5° × expo on the Avanti (2.8° of elevator at a quarter stick with 40 % expo), 3.5° on the Extra and 3.0° on the P-51, below the stall-reaching elevator of §3.4 of the plan at 1.6 Vs (9 %, 20 % and 13 % of the full throw there correspond to 2.7°, 4.8° and 2.0°). Full stick on the normal profile is 15° (Avanti), 14.1° (Extra) and 12° (P-51), which still stalls the wing from the start speed as the manuals warn ("excess throw can provoke a stall or snap roll", Extra p. 43).
 
+## D6e-S: the Ugly Stik's normal rates (2026-10-14)
+
+On the 2026-10-14 Stik audit the owner approved a profile for the Stik. No Jensen plan, note or article states throws ([sources](../../ugly-stik-sources.md)). The nearest primary source with both rates is the **Durafly Ugly Stik V2 manual** (Version 2, p. 8; a 1.1 m foam Ugly Stik): low/high rates of elevator 10/20 mm, aileron 10/18 mm and rudder 12/18 mm either way from neutral (PDF sha256 `652718b2…1d7de`, read 2026-10-14 from [air-rc.com](https://www.air-rc.com/assets/pdf/Ugly-Stik-V2_2216.pdf)). Millimetres do not transfer across scale and chord, so the data keeps the 20/20/25° `max_throw` as the high rate and borrows only the ratios: **elevator 0.50, aileron 0.556, rudder 0.667**. No Ugly Stik source states expo. The **0.15 expo** is labelled estimated, taken from an unattributed Hangar 9 Ultra Stick 10cc specification listing (15 % on low rates). The E-flite Ultra Stick 25e manual, the Stik's aerodynamic donor, gives ratios of 0.59/0.76/0.80 (p. 31, low/high 13/22, 19/25 and 51/63.5 mm) but no expo. The glow variants do not get it yet. NITRO's recorded flight evidence (`research/glow-engines/flight-*.json`, `refinement.json`) binds their exact aircraft bytes, so `build_installations.py` leaves the profile out until that track re-records. Re-running the bench showed those records already predate the current glow code (`propulsion_model` v1 against v2), with trajectories that agree to about 1e-15 relative.
+
+Effect, from the [elevator harness](../../../../research/flight-dynamics/elevator-repair/results/steps-comparison.md), `prod_repaired`. A full keyboard pull on normal rates is the trim plus half the throw, which is the harness's `a+0.50` case:
+
+| Trim speed | Normal rates, full pull (`a+0.50`) | Full rates, full pull (`a+1.00`) |
+| --- | --- | --- |
+| 21 m/s | α peak 7.8°, below the 12.1° stall start; 3.1 g; +76° of pitch over the 1.5 s hold. A 95 °/s maximum roll in the 5 s window comes as speed falls to 1.4 m/s near the vertical | α 16.8° in 0.5 s, 370 °/s roll |
+| 15 m/s, start speed | α reaches 12.2° at the end of the 1.5 s hold; 126 °/s maximum roll, speed down to 5.9 m/s | α 17.2° in 0.5 s, 269 °/s roll |
+
+At 21 m/s a full pull no longer reaches the stall at entry. Holding full up from the start speed until the airplane runs out of speed still stalls it, as on a real model. The roll that follows is the open post-stall item, D8b-R2.
+
 ## Checks
 
-`test_rates.gd` (expo curve, loader parsing and rejection, session default and shaping, Stik unaffected), `test_aircraft_contract.gd`, `test_aircraft_data.gd`, `test_controls.gd`, `test_regime_consistency.gd`, the AS-01 schema/register checks and the generators' `--check`; `app/test.sh` for the whole.
+`test_rates.gd` (expo curve, loader parsing and rejection, session default and shaping, the Stik's Durafly ratios, the glow Stiks and the Timber unaffected; 27/0 on 2026-10-14), `test_aircraft_contract.gd`, `test_aircraft_data.gd`, `test_controls.gd`, `test_regime_consistency.gd`, the AS-01 schema/register checks and the generators' `--check`; `app/test.sh` for the whole.
 
 ## Limits
 

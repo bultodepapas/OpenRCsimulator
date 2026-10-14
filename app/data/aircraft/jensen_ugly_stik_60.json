@@ -893,6 +893,46 @@
       "unit": "s",
       "kind": "estimated",
       "source": "Time for a surface to go from neutral to full throw: a standard analog servo at 0.19 s/60 deg (Hitec HS-311 / Futaba S3003 class at 6 V) times about 45 deg of servo-arm travel for full surface throw (typical linkage). Same for every surface"
+    },
+    "rates": {
+      "normal": {
+        "aileron": {
+          "value": 0.5556,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md"
+        },
+        "elevator": {
+          "value": 0.5,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md"
+        },
+        "rudder": {
+          "value": 0.6667,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md"
+        },
+        "aileron_expo": {
+          "value": 0.15,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it"
+        },
+        "elevator_expo": {
+          "value": 0.15,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it"
+        },
+        "rudder_expo": {
+          "value": 0.15,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it"
+        }
+      }
     }
   },
   "aero": {
