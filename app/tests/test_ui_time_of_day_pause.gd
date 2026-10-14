@@ -64,6 +64,8 @@ func _interactive_pause_edit() -> void:
 	await ui.tap(KEY_DOWN)
 	_check("Down reaches Restart", ui.focus_name() == "Restart", ui.focus_name())
 	await ui.tap(KEY_DOWN)
+	_check("next Down reaches Workshop", ui.focus_name() == "Workshop", ui.focus_name())
+	await ui.tap(KEY_DOWN)
 	_check("next Down reaches Time of day", ui.focus_name() == "TimeOfDay", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
@@ -178,7 +180,11 @@ func _interactive_pause_edit() -> void:
 		and night_draft.mode == "astronomical" and preset_picker.selected == 5, str(night_result))
 	for tab_index: int in 5:
 		await ui.tap(KEY_TAB)
-	_check("preset mode change refreshes the keyboard focus chain", ui.focus_name() == "Apply", ui.focus_name())
+	_check("preset mode change refreshes the keyboard focus chain through Campfire", ui.focus_name() == "Campfire", ui.focus_name())
+	await ui.tap(KEY_TAB)
+	_check("Tab from Campfire reaches Cancel", ui.focus_name() == "Cancel", ui.focus_name())
+	await ui.tap(KEY_TAB)
+	_check("Tab from Cancel reaches Apply", ui.focus_name() == "Apply", ui.focus_name())
 	apply_button = dialog.get("apply_button") as Button
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
