@@ -12,6 +12,7 @@ const Terrain = preload("res://physics/ground_terrain.gd")
 const Recorder = preload("res://sim/recorder.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
+const Preferences = preload("res://app_state/preferences.gd")
 signal pause_requested
 signal overlay_settings_changed(settings: Dictionary)
 var aircraft_id: String="xcell-60-research"
@@ -19,6 +20,7 @@ var field_path: String=FieldLoader.DEFAULT_PATH
 var field: Dictionary={}
 var weather_config: Dictionary={}
 var lighting_config: Dictionary={}
+var night_options: Dictionary=Preferences.NIGHT_DEFAULTS.duplicate(true)
 var start_choice: String="airborne"
 var interactive_start: bool=false
 var latency_marker_enabled: bool=false
@@ -49,8 +51,12 @@ func _ready() -> void:
  var checked: Dictionary=LightingConfig.validate(LightingConfig.defaults() if lighting_config.is_empty() else lighting_config)
  if not checked.ok: _refuse("; ".join(checked.errors)); return
  lighting_config=checked.config
+ var night_result: Dictionary=Preferences.validate_night_options(night_options) if interactive_start \
+  else Preferences.night_options_from_args(args)
+ if not night_result.get("ok",false): _refuse("; ".join(night_result.errors)); return
+ night_options=night_result.options.duplicate(true)
  var snapshot: Dictionary=Lighting.snapshot(lighting_config) if lighting_config.mode!="legacy" else {}
- var world: Dictionary=World.build(self,field,Callable(),{},snapshot)
+ var world: Dictionary=World.build(self,field,Callable(),{},snapshot,night_options)
  _environment=world.environment
  _airplane=Builder.build()
  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
@@ -171,6 +177,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func apply_lighting_config(_raw: Variant) -> Dictionary:
  return {ok=false,errors=["End the helicopter flight to select different lighting on Home."]}
+
+func set_night_options(profile: String, campfire: bool) -> bool:
+ var checked: Dictionary=Preferences.validate_night_options({"field_lighting":profile,"campfire":campfire})
+ if not checked.get("ok",false): return false
+ night_options=checked.options.duplicate(true)
+ return World.set_night_options(profile,campfire)
 
 func _user_args() -> Dictionary:
  var args: Dictionary={}
