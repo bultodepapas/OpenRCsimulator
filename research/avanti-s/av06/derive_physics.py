@@ -25,6 +25,7 @@ MIGRATOR_DIR = ROOT / "research/aircraft-standardization"
 if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
 from migrate import legacy_input, numeric_parity, upgrade  # noqa: E402
+from physical_identity import validate_physical_identity  # noqa: E402
 
 GEOMETRY = ROOT / "assets/aircraft/avanti-s-a200/geometry.json"
 INPUTS = ROOT / "research/avanti-s/av06/inputs.json"
@@ -193,6 +194,19 @@ note("reference", "equivalent trapezoid root/tip (m)", [cr_eq, ct_eq], f"same ar
 
 # --- Fuselage ----------------------------------------------------------------------------------------------------
 FS = g["fuselage_stations"]  # [z, half-width, top y, bottom y]
+FUSELAGE_SHELL_IDS = {
+    (-1.05, -1.0): "fuselage_shell_nose_to_front",
+    (-1.0, -0.85): "fuselage_shell_front_to_cabin",
+    (-0.85, -0.65): "fuselage_shell_cabin_forward",
+    (-0.65, -0.4): "fuselage_shell_cabin_center",
+    (-0.4, -0.15): "fuselage_shell_cabin_aft",
+    (-0.15, 0.0): "fuselage_shell_wing_front",
+    (0.0, 0.3): "fuselage_shell_wing_aft",
+    (0.3, 0.6): "fuselage_shell_mid_tail",
+    (0.6, 0.86): "fuselage_shell_tail_forward",
+    (0.86, 1.05): "fuselage_shell_tail_aft",
+    (1.05, 1.17): "fuselage_shell_exhaust_exit",
+}
 fus_len = note("fuselage", "length (m)", FS[-1][0] - FS[0][0], "nose to tail cone, geometry stations")
 fus_w = 2 * max(r[1] for r in FS)
 fus_d = max(r[2] - r[3] for r in FS)
@@ -339,7 +353,8 @@ ex_y = sum(c * y * dy for y, _, c, _, dy in exposed) / ex_area
 ex_z = sum((z + 0.42 * c) * c * dy for _, z, c, _, dy in exposed) / ex_area
 for side, sign in (("left", -1.0), ("right", 1.0)):
     items.append((f"wing panel {side}, covered, with flap and aileron", float(ST["wing_panel"]["value"]), ST["wing_panel"]["kind"], ST["wing_panel"]["source"],
-                  le(ex_z, ex_y * math.tan(dihedral), sign * ex_y), [mac, semi - Wg["stations"][0][0], 0.05], "derived", "42 % chord at the exposed panel's area centroid (geometry.json)"))
+                  le(ex_z, ex_y * math.tan(dihedral), sign * ex_y), [mac, semi - Wg["stations"][0][0], 0.05], "derived", "42 % chord at the exposed panel's area centroid (geometry.json)",
+                  {"left": "wing_left", "right": "wing_right"}[side]))
 tail_root_y = Tg["stations"][0][0]
 exposed_tail = [(y, le_z, chord, height, dy) for y, le_z, chord, height, dy in tst if y >= tail_root_y]
 th_area = sum(chord * dy for _, _, chord, _, dy in exposed_tail)
@@ -347,7 +362,8 @@ th_y = sum(chord * y * dy for y, _, chord, _, dy in exposed_tail) / th_area
 th_z = sum((le_z + 0.45 * chord) * chord * dy for _, le_z, chord, _, dy in exposed_tail) / th_area
 for side, sign in (("left", -1.0), ("right", 1.0)):
     items.append((f"stab half {side} with elevator", float(ST["stab_half"]["value"]), ST["stab_half"]["kind"], ST["stab_half"]["source"],
-                  le(th_z, h_stab, sign * th_y), [mach, bh / 2, 0.02], "derived", "45 % chord at the stab half's area centroid (geometry.json)"))
+                  le(th_z, h_stab, sign * th_y), [mach, bh / 2, 0.02], "derived", "45 % chord at the stab half's area centroid (geometry.json)",
+                  {"left": "stabilizer_left", "right": "stabilizer_right"}[side]))
 # Composite shell: mass spread over the stations in proportion to the wetted perimeter (Ramanujan ellipse) x length.
 shell = float(ST["fuselage_shell"]["value"])
 segs = []
@@ -361,21 +377,24 @@ for r0, r1, w_ in segs:
     zc = (r0[0] + r1[0]) / 2
     yc = ((r0[2] + r0[3]) + (r1[2] + r1[3])) / 4
     items.append((f"fuselage shell {r0[0]:+.2f} to {r1[0]:+.2f} m", shell * w_ / tot_wet, ST["fuselage_shell"]["kind"], ST["fuselage_shell"]["source"] + "; spread by wetted area",
-                  le(zc, yc), [r1[0] - r0[0], 2 * max(r0[1], r1[1]), max(r0[2] - r0[3], r1[2] - r1[3])], "derived", "segment centre, fuselage stations (geometry.json)"))
-items.append(("fin and rudder", float(ST["fin"]["value"]), ST["fin"]["kind"], ST["fin"]["source"], le(fin_cz, fin_cy), [0.3, 0.015, h_v], "derived", "fin outline area centroid (geometry.json)"))
+                  le(zc, yc), [r1[0] - r0[0], 2 * max(r0[1], r1[1]), max(r0[2] - r0[3], r1[2] - r1[3])], "derived", "segment centre, fuselage stations (geometry.json)",
+                  FUSELAGE_SHELL_IDS[(r0[0], r1[0])]))
+if set(FUSELAGE_SHELL_IDS) != {(r0[0], r1[0]) for r0, r1, _ in segs}:
+    raise ValueError("Avanti fuselage-shell identity source does not match the authored station pairs")
+items.append(("fin and rudder", float(ST["fin"]["value"]), ST["fin"]["kind"], ST["fin"]["source"], le(fin_cz, fin_cy), [0.3, 0.015, h_v], "derived", "fin outline area centroid (geometry.json)", "vertical_tail"))
 for it in IN["inventory"]:
     pos = list(it["position_model"])  # [model z, model y, model x]
     if it.get("attached", "fuselage") != "wing":
         pos[0] += DZ
     items.append((it["name"], float(it["mass"]["value"]), it["mass"]["kind"], it["mass"]["source"],
-                  le(pos[0], pos[1], pos[2]), it.get("size"), it["position_kind"], it["position_source"]))
+                  le(pos[0], pos[1], pos[2]), it.get("size"), it["position_kind"], it["position_source"], it["id"]))
 fuel_l = v("fuel.tank_l") * v("fuel.fraction")
 fuel_kg = fuel_l * v("fuel.density")
 fpos = list(v("fuel.position_model"))
 fpos[0] += DZ
 items.append(("kerosene + 5 % oil (declared fuel state)", fuel_kg, "derived",
               f"{v('fuel.tank_l')} l x {v('fuel.fraction')} x {v('fuel.density')} kg/l ({src('fuel.tank_l')[1]}; {src('fuel.fraction')[1]})",
-              le(fpos[0], fpos[1], fpos[2]), [0.25, 0.14, 0.10], "estimated", src("fuel.position_model")[1]))
+              le(fpos[0], fpos[1], fpos[2]), [0.25, 0.14, 0.10], "estimated", src("fuel.position_model")[1], "fuel_flight"))
 # Builders balance a jet by placing the batteries and electronics (inputs: "balance_item"): they move together, within
 # the bay limits, to put the CG on the manual's point; whatever they cannot reach becomes a virtual balancing mass.
 movable = [k for k, it in enumerate(IN["inventory"]) if it.get("balance_item")]
@@ -389,7 +408,7 @@ z_bal = min(max((cg_z * m_all - mom_fixed) / m_mov, z_lo), z_hi)
 for k in movable:
     it = items[offset + k]
     items[offset + k] = (it[0], it[1], it[2], it[3], [z_bal, it[4][1], it[4][2]], it[5], "derived",
-                         f"placed to balance: the batteries and electronics together at model z {z_bal:.3f} (bay {z_lo}..{z_hi} m)")
+                         f"placed to balance: the batteries and electronics together at model z {z_bal:.3f} (bay {z_lo}..{z_hi} m)", it[8])
 note("balance", "batteries/electronics station (model z)", z_bal, f"{m_mov:.2f} kg moved within {z_lo}..{z_hi} m to approach the manual CG" + (" (at the bay limit)" if z_bal in (z_lo, z_hi) else ""))
 dry = sum(i[1] for i in items[:-1])
 note("balance", "pre-balance dry components (kg)", dry, f"inventory before virtual balance mass; SebArt manual reference is {v('airframe.dry_mass')} kg complete RTF dry with P100")
@@ -403,7 +422,7 @@ note("balance", "balancing mass (kg)", mb, ("nose" if nose else "tail") + " weig
 if mb > 1e-6:
     items.append(("virtual reference-build balancing mass", mb, "derived",
                   f"{SCRIPT}: m = M (x_CG - x0) / (x_ballast - x_CG) for the manual balance point; a virtual reference build, NOT measured hardware",
-                  [xb, 0.0, 0.0], [0.04, 0.04, 0.04], "estimated", "nose cone" if nose else "tail cone"))
+                  [xb, 0.0, 0.0], [0.04, 0.04, 0.04], "estimated", "nose cone" if nose else "tail cone", "ballast_reference"))
 mass = sum(i[1] for i in items)
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
 cg[1] = 0.0
@@ -641,6 +660,7 @@ tip = Wg["stations"][-1]
 ts = Tg["stations"][-1]
 data = {
     "format": "openrc-aircraft v1",
+    "physical_identity_version": 1,
     "id": "sebart-avanti-s-a200-p100rx",
     "description": f"Ventage Jet, based on the SebArt Avanti S Jet 2.2m ARF (A200, {b:.2f} m span) with a JetCat P100-RX turbine. EXPERIMENTAL first physics estimate (AV-06), generated by {SCRIPT}; not flight-identified. Flaps up, gear up (in-air start; no landing gear contacts). Visual geometry: assets/aircraft/avanti-s-a200/geometry.json.",
     "frames": {
@@ -664,7 +684,7 @@ data = {
         "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the manual's point, NOT a measured airplane")),
     },
     "inventory": [
-        dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(x) for x in it[4]], "m", it[6], it[7])},
+        dict({"id": it[8], "name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(x) for x in it[4]], "m", it[6], it[7])},
              **({"size": q([float(x) for x in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
@@ -677,6 +697,7 @@ data = {
         le(max(z for z, _ in fin_raw), fin_top_y),
         le(canopy_top[0], canopy_top[2]),
     ], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tips LE/TE, nose and tail cone, belly at three stations (gear UP), stab tips, fin top, canopy top. No landing gear contacts: any ground contact is a crash (gear up)"),
+    "crash_hull_ids": ["probe_wing_left_le", "probe_wing_right_le", "probe_wing_left_te", "probe_wing_right_te", "probe_nose_tip", "probe_tail_cone", "probe_belly_station_zero", "probe_belly_station_minus_half", "probe_belly_station_plus_six", "probe_stabilizer_left_tip", "probe_stabilizer_right_tip", "probe_fin_top", "probe_canopy_top"],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
     "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "nose", "tail_end", "belly", "belly", "belly", "left_stab_tip", "right_stab_tip", "fin_top", "canopy"],
     "plausibility": {
@@ -684,6 +705,7 @@ data = {
         "inertia_reference": stik["plausibility"]["inertia_reference"],
     },
     "controls": {
+        "surface_ids": {"aileron_left": "surface_aileron_left", "aileron_right": "surface_aileron_right", "elevator": "surface_elevator", "rudder": "surface_rudder"},
         "max_throw": {
             "aileron": qi("controls.aileron_up", "deg"),
             "aileron_down": qi("controls.aileron_down", "deg"),
@@ -745,6 +767,7 @@ data = {
         },
     },
     "propulsion": {
+        "id": "propulsion_main",
         "kind": "turbine",
         "description": "JetCat P100-RX (2017 catalog, non-BL) in a fixed thrust tube: ECU throttle map, acceleration/deceleration-limited spool with a governor lag, bench thrust at STP x installed factor, momentum ram drag and inlet normal force at the intakes (physics/turbine.gd, docs/research/avanti-s-av05-turbine-dynamics.md).",
         "engine": {
@@ -789,6 +812,7 @@ check_consistency(data)
 
 legacy_data = data
 data = upgrade(legacy_data)
+validate_physical_identity(data)
 parity = numeric_parity(legacy_data, data)
 text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]

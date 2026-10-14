@@ -32,6 +32,9 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	check("Home keyboard opens Workshop", host.screens.is_top("workshop"))
 	var editor: Node = host.screens.top()
+	editor.set_recipe({scale = 0.5})
+	editor.set_recipe({scale = 2.0})
+	var editor_history_size: int = editor.get("_undo_history").size()
 	var source: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)
 	var payload := {base_id = Catalog.DEFAULT_ID, base_bytes = source, recipe = {scale = 2.0}}
 	host._start_workshop_trial(payload)
@@ -61,9 +64,16 @@ func _run() -> void:
 		visual.root.free()
 		_check_wreck_scale(flight._airplane.root, Catalog.DEFAULT_ID, 2.0)
 		host.open_pause()
+		host.restart_flight()
+		check("trial restart keeps frozen identity and experimental mass", session.sim.tick == 0
+			and session.sim.mass == mass and session.aircraft.input_identity.sha256 == fingerprint
+			and host.flight == flight)
+		host.open_pause()
 		host.end_flight()
 		await ui.settle()
 		check("return restores same editor instance", host.screens.top() == editor and host.flight == null)
+		check("trial return preserves draft and edit history", editor.get_recipe().scale == 2.0
+			and editor.get("_undo_history").size() == editor_history_size)
 		check("Home is still behind editor", host.home != null and host.home_scene.is_inside_tree())
 	for scale_value: float in [0.5, 2.0]:
 		editor.set_aircraft("gp-extra-300s-60")

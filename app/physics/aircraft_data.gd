@@ -16,6 +16,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const FORMAT := "openrc-aircraft v2"
 const LEGACY_FORMAT := "openrc-aircraft v1"
 const Contract := preload("res://physics/aircraft_contract.gd")
+const PhysicalIdentity := preload("res://physics/physical_identity.gd")
 const Aero := preload("res://physics/aero.gd")
 const WingPolar := preload("res://physics/wing_polar.gd")
 const Ground := preload("res://physics/ground_contact.gd")
@@ -159,6 +160,13 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 				return {ok=false,errors=installed.errors,warnings=result.warnings,model={}}
 			result.model = installed.model
 			result.warnings.append("Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending")
+		var identities := PhysicalIdentity.describe(raw)
+		if not identities.is_empty():
+			result.model.physical_identity = identities
+			result.model.propulsion.id = identities.propulsion_id
+			result.model.controls.surface_ids = identities.surface_ids.duplicate(true)
+			for i in identities.support_ids.size():
+				result.model.landing_gear.contacts[i].id = identities.support_ids[i]
 	return result
 
 

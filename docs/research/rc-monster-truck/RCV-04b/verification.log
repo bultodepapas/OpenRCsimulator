@@ -1,0 +1,327 @@
+== parse physics/ground_vehicle/four_corner.gd
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --check-only --script res://physics/ground_vehicle/four_corner.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+exit=0
+
+== parse physics/ground_vehicle/support_bench_data.gd
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --check-only --script res://physics/ground_vehicle/support_bench_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+exit=0
+
+== parse tests/test_rcv_support.gd
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --check-only --script res://tests/test_rcv_support.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+exit=0
+
+== parse support runner
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --check-only --script C:\DEVELOPMENT\OpenRCsimulator\research\rc-monster-truck\run_support_bench.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+exit=0
+
+== suspension reference freshness
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe research/rc-monster-truck/generate_suspension_reference.py --check
+oracle checks passed: relative thirds-semigroup residual <= 1.397e-11; undamped energy drift <= 2.089e-12; minimum tire load 12.233177 N
+fixture is current: C:\DEVELOPMENT\OpenRCsimulator\research\rc-monster-truck\fixtures\suspension_reference.json
+
+exit=0
+
+== suspension numerical tests
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --script res://tests/test_rcv_suspension.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   load bench profile []
+ok   profile accepts synthetic quantities 
+ok   validation leaves source untouched 
+ok   reject non-object 
+ok   reject missing format 
+ok   reject missing version 
+ok   reject missing id 
+ok   reject missing description 
+ok   reject missing parameters 
+ok   reject unknown top-level field 
+ok   reject future version 
+ok   reject boolean version 
+ok   reject unknown parameter 
+ok   reject missing parameter 
+ok   reject invalid mass true 
+ok   reject invalid mass 1.2 
+ok   reject invalid mass <null> 
+ok   reject invalid mass nan 
+ok   reject invalid mass inf 
+ok   reject invalid mass -inf 
+ok   reject invalid mass 0.0 
+ok   reject invalid mass -1.0 
+ok   reject missing quantity value 
+ok   reject missing quantity unit 
+ok   reject missing quantity kind 
+ok   reject missing quantity source 
+ok   reject malformed quantity { "unit": "g" } 
+ok   reject malformed quantity { "kind": "verified" } 
+ok   reject malformed quantity { "source": "  " } 
+ok   reject malformed quantity { "extra": "ignored?" } 
+ok   reject negative sprung_mass_kg 
+ok   reject negative unsprung_mass_kg 
+ok   reject negative suspension_stiffness_n_per_m 
+ok   reject negative suspension_damping_n_s_per_m 
+ok   reject negative tire_stiffness_n_per_m 
+ok   reject negative gravity_m_per_s2 
+ok   reject negative suspension_rest_length_m 
+ok   reject negative tire_radius_m 
+ok   zero damping and zero gravity are explicit supported cases 
+ok   reject statically collapsed tire 
+ok   reject statically inverted suspension 
+ok   missing file fails closed 
+ok   static tire supports both masses 
+ok   static suspension supports sprung mass 
+ok   equilibrium accelerations vanish 
+ok   equilibrium remains at rest 
+ok   road translation preserves static geometry 
+ok   damper removes relative-motion energy 
+ok   separated tire cannot pull on road 
+ok   unstrained airborne masses fall together 
+ok   airborne free fall matches analytic polynomial 
+ok   kernel never mutates input state 
+ok   road sampled at both substeps' RK stage times 
+ok   substeps preserve nonautonomous stage time 
+ok   same-build repeated trajectory is byte-identical 
+ok   moving road preserves equivalent trajectory 
+ok   independent matrix-exponential fixture exists 
+ok   fixture/profile agree: sprung_mass_kg 
+ok   fixture/profile agree: unsprung_mass_kg 
+ok   fixture/profile agree: suspension_stiffness_n_per_m 
+ok   fixture/profile agree: suspension_damping_n_s_per_m 
+ok   fixture/profile agree: tire_stiffness_n_per_m 
+ok   fixture/profile agree: gravity_m_per_s2 
+ok   fixture/profile agree: suspension_rest_length_m 
+ok   fixture/profile agree: tire_radius_m 
+ok   damped matches independent oracle [0.00001141907457, 0.00000057449821, 0.00000003125006, 0.00000000180372]
+ok   damped position accuracy [0.00000005487566, 0.000000003539, 0.00000000023586, 0.00000000001515]
+ok   damped smooth fourth-order convergence [19.8766060527856, 18.3839058698616, 17.3253794965854]
+ok   undamped matches independent oracle [0.00034379500669, 0.0000184829425, 0.00000104853911, 0.00000006242588]
+ok   undamped position accuracy [0.00000407711823, 0.00000025355347, 0.00000001553982, 0.00000000095869]
+ok   undamped smooth fourth-order convergence [18.6006641876896, 17.6273277863563, 16.7965459606041]
+ok   undamped contact conserves perturbation energy at 1920 Hz relative=6.010609341454274e-08
+ok   damped release does not gain energy max gain=0
+ok   moving road work closes local energy balance 
+ok   drop separates and reacquires contact at 240 Hz 
+ok   drop event energy gain <= 1 mJ at 240 Hz 1.8864413380281775e-05
+ok   drop separates and reacquires contact at 480 Hz 
+ok   drop event energy gain <= 1 mJ at 480 Hz 0
+ok   drop separates and reacquires contact at 960 Hz 
+ok   drop event energy gain <= 1 mJ at 960 Hz 1.9380568815119403e-05
+ok   drop separates and reacquires contact at 1920 Hz 
+ok   drop event energy gain <= 1 mJ at 1920 Hz 0
+ok   drop endpoint refines without claiming fourth order at contact 0.00001155579909 0.00000026631165 0.00000012531809
+RCV-04a: 83 checks, 0 failed
+
+exit=0
+
+== suspension CLI suite
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe app/tests/test_rcv_suspension_cli.py
+......
+----------------------------------------------------------------------
+Ran 6 tests in 108.043s
+
+OK
+
+exit=0
+
+== support reference freshness
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe research/rc-monster-truck/generate_support_reference.py --check
+oracle checks passed: relative thirds-semigroup residual <= 9.463e-12; undamped energy drift <= 3.174e-12; minimum tire load 12.442314 N
+fixture is current: C:\DEVELOPMENT\OpenRCsimulator\research\rc-monster-truck\fixtures\support_reference.json
+
+exit=0
+
+== support numerical tests
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --script res://tests/test_rcv_support.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   load strict support profile []
+ok   data validation preserves source 
+ok   custom experiment identity survives validation 
+ok   reject empty identity 
+ok   reject non-object profile 
+ok   reject missing format 
+ok   reject missing version 
+ok   reject missing id 
+ok   reject missing description 
+ok   reject missing parameters 
+ok   reject future version 
+ok   reject unknown top-level field 
+ok   reject unknown parameter 
+ok   reject missing parameter sprung_mass_kg 
+ok   reject nonfinite sprung_mass_kg 
+ok   reject missing parameter unsprung_mass_kg 
+ok   reject nonfinite unsprung_mass_kg 
+ok   reject missing parameter suspension_stiffness_n_per_m 
+ok   reject nonfinite suspension_stiffness_n_per_m 
+ok   reject missing parameter suspension_damping_n_s_per_m 
+ok   reject nonfinite suspension_damping_n_s_per_m 
+ok   reject missing parameter tire_stiffness_n_per_m 
+ok   reject nonfinite tire_stiffness_n_per_m 
+ok   reject missing parameter gravity_m_per_s2 
+ok   reject nonfinite gravity_m_per_s2 
+ok   reject missing parameter suspension_rest_length_m 
+ok   reject nonfinite suspension_rest_length_m 
+ok   reject missing parameter tire_radius_m 
+ok   reject nonfinite tire_radius_m 
+ok   reject missing parameter roll_inertia_kg_m2 
+ok   reject nonfinite roll_inertia_kg_m2 
+ok   reject missing parameter pitch_inertia_kg_m2 
+ok   reject nonfinite pitch_inertia_kg_m2 
+ok   reject missing parameter front_axle_x_m 
+ok   reject nonfinite front_axle_x_m 
+ok   reject missing parameter rear_axle_x_m 
+ok   reject nonfinite rear_axle_x_m 
+ok   reject missing parameter half_track_m 
+ok   reject nonfinite half_track_m 
+ok   reject malformed mass true 
+ok   reject malformed mass 4.8 
+ok   reject malformed mass <null> 
+ok   reject malformed mass inf 
+ok   reject malformed mass 0.0 
+ok   reject malformed mass -1.0 
+ok   reject malformed quantity { "unit": "g" } 
+ok   reject malformed quantity { "kind": "proven" } 
+ok   reject malformed quantity { "source": " " } 
+ok   reject malformed quantity { "extra": 1 } 
+ok   reject degenerate support roll_inertia_kg_m2 
+ok   reject degenerate support pitch_inertia_kg_m2 
+ok   reject degenerate support half_track_m 
+ok   reject degenerate support front_axle_x_m 
+ok   reject degenerate support rear_axle_x_m 
+ok   reject CG outside axle interval 
+ok   reject static collapse tire_stiffness_n_per_m 
+ok   reject static collapse suspension_stiffness_n_per_m 
+ok   zero gravity and damping accepted explicitly 
+ok   corner ordering and handedness 
+ok   malformed JSON is refused 
+ok   missing profile is refused 
+ok   four-contact equilibrium exists []
+ok   static force and moment balance 0.00000000000019
+ok   four tires support disjoint body and hub masses once 
+ok   equilibrium remains at rest for two seconds 
+ok   forward CG changes front axle load by lever-arm law 
+ok   forward CG gives symmetric left/right loading 
+ok   inclined support equilibrium 
+ok   refuse all-contact equilibrium that needs tensile ground 
+ok   zero-g planar equilibrium exists without preload 
+ok   zero-g neutral load and acceleration vanish 
+ok   zero-g saddle cannot be an unstrained neutral pose 
+ok   equilibrium rejects invalid road shape 
+ok   symmetric four-corner motion reduces to the verified quarter car 0.0
+ok   symmetric heave creates no roll or pitch 
+ok   independent 14-state reference exists 
+ok   independent reference agrees with input parameters 
+ok   damped all reference times sampled at 240 Hz 
+ok   damped all reference times sampled at 480 Hz 
+ok   damped all reference times sampled at 960 Hz 
+ok   damped all reference times sampled at 1920 Hz 
+ok   damped independent response accuracy [0.00001496422985, 0.00000073671035, 0.00000003946337, 0.00000000225612]
+ok   damped displacement/angle accuracy [0.00000007679754, 0.00000000509334, 0.00000000033703, 0.00000000002158]
+ok   damped smooth fourth-order refinement [20.3122296993393, 18.6682088816298, 17.4916633739908]
+ok   undamped all reference times sampled at 240 Hz 
+ok   undamped all reference times sampled at 480 Hz 
+ok   undamped all reference times sampled at 960 Hz 
+ok   undamped all reference times sampled at 1920 Hz 
+ok   undamped independent response accuracy [0.00047327805979, 0.00002553200957, 0.00000145148984, 0.0000000859582]
+ok   undamped displacement/angle accuracy [0.00000555901751, 0.00000034721581, 0.00000002132343, 0.00000000131685]
+ok   undamped smooth fourth-order refinement [18.536655271321, 17.590208950068, 16.8859965611288]
+ok   internal forces cancel in total vertical momentum 
+ok   four moving supports close energy/work balance 0.00000000343467
+ok   moving road trajectory respects a constant-velocity change of frame 
+ok   input state immutable and same-build replay exact 
+ok   front-left lift raises left side and nose 
+ok   left/right wheel excitation is a mirror image 
+ok   coupled undamped perturbation energy conserved 1.4610967251941146e-07
+ok   drop separates/recontacts and stays finite at 240 Hz 
+ok   drop per-tick energy gain <= 4 mJ at 240 Hz 0
+ok   drop accumulated energy/work residual <= 0.5 percent at 240 Hz 9.25014876031535e-05
+ok   drop separates/recontacts and stays finite at 480 Hz 
+ok   drop per-tick energy gain <= 4 mJ at 480 Hz 0
+ok   drop accumulated energy/work residual <= 0.5 percent at 480 Hz 2.205118617188989e-05
+ok   drop separates/recontacts and stays finite at 960 Hz 
+ok   drop per-tick energy gain <= 4 mJ at 960 Hz 0
+ok   drop accumulated energy/work residual <= 0.5 percent at 960 Hz 1.62242600810355e-05
+ok   drop separates/recontacts and stays finite at 1920 Hz 
+ok   drop per-tick energy gain <= 4 mJ at 1920 Hz 0
+ok   drop accumulated energy/work residual <= 0.5 percent at 1920 Hz 1.4315785294059568e-06
+ok   drop endpoint refines, without smooth-order claim 0.00000060536395 0.00000011846607
+RCV-04b: 111 checks, 0 failed
+
+exit=0
+
+== support CLI suite
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe app/tests/test_rcv_support_cli.py
+........
+----------------------------------------------------------------------
+Ran 8 tests in 147.661s
+
+OK
+
+exit=0
+
+== aircraft golden replay
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --script res://tests/test_golden.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   golden roll_15 replays (600 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 6.938893903907228e-18, rate 2.220446049250313e-16 rad/s; auxiliary/discrete ok
+ok   golden pull_throttle replays (720 ticks): worst error: position 4.263256414560601e-14 m, velocity 1.0658141036401503e-14 m/s, attitude 2.3869795029440866e-15, rate 2.581268532253489e-15 rad/s; auxiliary/discrete ok
+ok   golden rudder_doublet replays (720 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 1.3877787807814457e-17, rate 1.3877787807814457e-17 rad/s; auxiliary/discrete ok
+ok   golden glide_15 replays (1200 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 1.0408340855860843e-17, rate 1.6764205996180584e-17 rad/s; auxiliary/discrete ok
+4 golden flights, 0 failed
+
+exit=0
+
+== global math guard
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe app/tests/check_transcendentals.py
+all physics/sim transcendental calls route through math3d
+
+exit=0
+
+== portable guard negative control
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe app/tests/check_transcendentals.py --self-test
+isolated injection rejected
+
+exit=0
+
+== support reference in focused fresh Windows clone
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe C:\Users\bulto\AppData\Local\Temp\rcv-support-checkout-1bq1jihy\checkout\research\rc-monster-truck\generate_support_reference.py --check
+oracle checks passed: relative thirds-semigroup residual <= 9.463e-12; undamped energy drift <= 3.174e-12; minimum tire load 12.442314 N
+fixture is current: C:\Users\bulto\AppData\Local\Temp\rcv-support-checkout-1bq1jihy\checkout\research\rc-monster-truck\fixtures\support_reference.json
+
+exit=0
+
+== serial timing heave
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --script C:\DEVELOPMENT\OpenRCsimulator\research\rc-monster-truck\run_support_bench.gd -- --scenario=heave --hz=240 --duration=5 --timing=true --out=C:\Users\bulto\AppData\Local\Temp\rcv-support-cost-6cqs2i92\heave.csv
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+support bench complete: 1201 samples, C:/Users/bulto/AppData/Local/Temp/rcv-support-cost-6cqs2i92/heave.csv
+
+exit=0
+
+== serial timing front_left_bump
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --script C:\DEVELOPMENT\OpenRCsimulator\research\rc-monster-truck\run_support_bench.gd -- --scenario=front_left_bump --hz=240 --duration=5 --timing=true --out=C:\Users\bulto\AppData\Local\Temp\rcv-support-cost-6cqs2i92\front_left_bump.csv
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+support bench complete: 1201 samples, C:/Users/bulto/AppData/Local/Temp/rcv-support-cost-6cqs2i92/front_left_bump.csv
+
+exit=0
+
+== serial timing drop
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --audio-driver Dummy --script C:\DEVELOPMENT\OpenRCsimulator\research\rc-monster-truck\run_support_bench.gd -- --scenario=drop --hz=240 --duration=5 --timing=true --out=C:\Users\bulto\AppData\Local\Temp\rcv-support-cost-6cqs2i92\drop.csv
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+support bench complete: 1201 samples, C:/Users/bulto/AppData/Local/Temp/rcv-support-cost-6cqs2i92/drop.csv
+
+exit=0

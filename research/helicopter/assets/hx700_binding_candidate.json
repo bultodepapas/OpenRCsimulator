@@ -1,0 +1,125 @@
+{
+  "schema": "openrc-heli-visual-binding-candidate-v1",
+  "status": "research_candidate_unqualified",
+  "asset_id": "HX-700",
+  "source": {
+    "path": "Helicopter 3d acrobatic/HX-700_Helicoptero_RC.blend",
+    "sha256": "cc2301bbc4fd6aa84474fb0a33de37fe721fd2ecab6e806ceafbcc6953a795cb",
+    "size_bytes": 1587270,
+    "blender_version": "5.2.2 LTS",
+    "embedded_generator": {
+      "name": "generar_hx700.py",
+      "sha256": "8c9fefb28d339241b9d4937d73bb2c897a2f2a9ea8de18c4a38ec99f3c20189d"
+    },
+    "embedded_readme": "LEEME",
+    "embedded_claim": "Procedural flybarless 700-class visual design; claimed original visual design is not independently verified.",
+    "external_provenance": "unknown",
+    "license": "unknown"
+  },
+  "identity_boundary": {
+    "visual_asset": "HX-700 flybarless visual design",
+    "flight_reference": "MIT X-Cell .60 SE flybar-lumped research configuration",
+    "pairing": "not established; the models/configurations remain distinct",
+    "catalog_or_flyable_preview_qualified": false
+  },
+  "coordinates": {
+    "scene_unit_system": "METRIC",
+    "scene_scale_length": 1.0,
+    "scene_length_display_unit": "MILLIMETERS",
+    "measurement_unit": "m",
+    "source_axes": "+X nose-forward, +Y left, +Z up",
+    "root_node": "HX-700",
+    "root_translation_m": [0.0, 0.0, 0.0],
+    "root_scale": [1.0, 1.0, 1.0],
+    "gltf_conversion": "Blender Z-up to glTF Y-up"
+  },
+  "source_hierarchy": {
+    "root": "HX-700",
+    "hierarchy_objects_including_root": 25,
+    "mesh_objects": 22,
+    "pivot_nodes": ["Pivote_Rotor_Principal", "Pivote_Rotor_Cola"],
+    "armatures": 0,
+    "shape_key_meshes": 0
+  },
+  "measured_geometry": {
+    "aircraft_world_aabb_min_m": [-1.02721608, -0.66327804, 0.0002],
+    "aircraft_world_aabb_max_m": [0.45807338, 0.66327798, 0.36250001],
+    "aircraft_world_aabb_size_m": [1.48528945, 1.32655603, 0.36230001],
+    "bounds_note": "Frame-1 aircraft mesh bounds include the main blades parked at 32 degrees; Y extent is not a rotor-disk measurement.",
+    "main_rotor_diameter_from_mesh_m": 1.58273473,
+    "main_rotor_diameter_generator_nominal_m": 1.58,
+    "tail_rotor_diameter_from_mesh_m": 0.29486438,
+    "tail_rotor_diameter_generator_nominal_m": 0.292
+  },
+  "binding_candidates": [
+    {
+      "channel": "main_rotor",
+      "source_pivot_node": "Pivote_Rotor_Principal",
+      "source_blade_nodes": ["Pala_Principal_A", "Pala_Principal_B"],
+      "source_hub_node": "Rotor_Cabeza",
+      "pivot_center_source_world_m": [0.0, 0.0, 0.345],
+      "pivot_rest_euler_source_world_deg": [0.0, 0.0, 32.00026613],
+      "blade_plane_spin_axis_source_world_unsigned": [0.0, 0.0, 1.0],
+      "glTF_pivot_translation_m": [0.0, 0.3449999988, 0.0],
+      "source_driver": "rotation_euler[2] = 0.55851 - (frame - 1) * velocidad_rotor",
+      "driver_interpretation": "visual frame-rate rotation only; not an RPM calibration"
+    },
+    {
+      "channel": "tail_rotor",
+      "source_pivot_node": "Pivote_Rotor_Cola",
+      "source_blade_nodes": ["Pala_Cola_A", "Pala_Cola_B"],
+      "source_hub_node": "Rotor_Cola_Buje",
+      "pivot_center_source_world_m": [-0.942, 0.0, 0.197],
+      "pivot_rest_euler_source_world_deg": [90.0000025, 35.00027304, 0.0],
+      "blade_plane_spin_axis_source_world_unsigned": [0.0, 1.0, 0.0],
+      "blade_geometry_center_source_world_m": [-0.94199994, -0.062, 0.197],
+      "glTF_pivot_translation_m": [-0.9419999719, 0.1969999969, 0.0],
+      "source_driver": "rotation_euler[1] = 0.61087 - (frame - 1) * velocidad_rotor * 4.6",
+      "driver_interpretation": "visual ratio only; does not establish a physical gear ratio"
+    }
+  ],
+  "articulation_gaps": [
+    "No main-blade feathering or collective-pitch hinge/control.",
+    "No swashplate lift/tilt linkage or cyclic-pitch articulation; the swash and link mesh is static.",
+    "No blade flap/teeter articulation or rotor-disk response.",
+    "No tail-blade pitch slider/control articulation; the tail servo/link mesh is static.",
+    "Only the main and tail spin pivots have drivers; driver animation is excluded from the preview export."
+  ],
+  "geometry_budget_evidence": {
+    "aircraft_source_evaluated_triangles": 217892,
+    "aircraft_source_base_triangles": 103348,
+    "preview_gltf_triangles_native_probe": 103348,
+    "triangle_count_note": "The source evaluated count includes Blender modifier evaluation. The static GLB export uses base mesh geometry (export_apply=false), matching the 103348 source base triangles; these counts describe different geometry stages."
+  },
+  "static_preview": {
+    "path": ".tools/heli25/hx700-preview.glb",
+    "sha256": "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764",
+    "size_bytes": 3086608,
+    "gltf_version": "2.0",
+    "nodes": 25,
+    "mesh_objects": 22,
+    "materials": 18,
+    "images": 3,
+    "textures": 3,
+    "animation_tracks": 0,
+    "physics_data": false,
+    "presentation_only": true,
+    "native_godot_preflight": {
+      "version": "4.7.2.stable.official.ed1daf0bf",
+      "checks": 83,
+      "failed": 0,
+      "nodes_including_wrapper": 26,
+      "mesh_instances": 22,
+      "surfaces": 62,
+      "triangles": 103348,
+      "scope": "static import, metric pivot centers and independent pivot-transform checks; no flight or presentation-budget qualification"
+    }
+  },
+  "provenance_gates": {
+    "asset_author_or_external_origin": "unknown",
+    "source_license": "unknown",
+    "supplied_pdf_identity_match": false,
+    "supplied_pdf_license_match": false,
+    "cleared_for_public_catalog_or_distribution": false
+  }
+}

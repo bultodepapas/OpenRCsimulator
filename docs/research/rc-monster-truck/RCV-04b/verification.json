@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-13",
+  "step": "RCV-04b",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "verification_head": "d5651deb7b3a8f507c9f811dc0fdf40a6994d65d",
+  "scope": "Shared dirty live tree. Focused verification; not full app/test.sh, Linux, full truck performance or physical validation.",
+  "checks": [
+    {
+      "check": "parse physics/ground_vehicle/four_corner.gd",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "parse physics/ground_vehicle/support_bench_data.gd",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "parse tests/test_rcv_support.gd",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "parse support runner",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "suspension reference freshness",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "suspension numerical tests",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "suspension CLI suite",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "support reference freshness",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "support numerical tests",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "support CLI suite",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "aircraft golden replay",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "global math guard",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "portable guard negative control",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "float64 guard all physics/sim",
+      "passed": true,
+      "findings": []
+    },
+    {
+      "check": "identified profile/reference bytes preserved in fresh clone",
+      "passed": true
+    },
+    {
+      "check": "support reference in focused fresh Windows clone",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "serial timing heave",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "serial timing front_left_bump",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "check": "serial timing drop",
+      "passed": true,
+      "exit_code": 0
+    }
+  ],
+  "raw_byte_sha256": {
+    "app/physics/ground_vehicle/four_corner.gd": "cb86d370d047c1e6c5f55c4b1b3815181a17d16dc4785d79847357a7a9f04436",
+    "app/physics/ground_vehicle/support_bench_data.gd": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+    "app/tests/test_rcv_support.gd": "31b794dfbd76c7010337bcd3ef8a84c9d1f22507650e7d458939d64ce0f49078",
+    "app/tests/test_rcv_support_cli.py": "b70c4755c834d4d40c52e405aa2a61e7263aca8d62fa4cd97dece32c586079d5",
+    "app/tests/check_transcendentals.py": "63abddea6a948ffbe2936220186f945ad2cc35653983530c1a2e2345a3dd15ef",
+    "research/rc-monster-truck/run_support_bench.gd": "0988647baf7a5b30754e2818e1ac01b72da2cd5a1ae3593398206ef4eff1b076",
+    "research/rc-monster-truck/support_bench.json": "0a8c97c59b2c88d1096b09d72b1d043d65b9d19c516e877c4febf6ef84a87bdd",
+    "research/rc-monster-truck/fixtures/support_reference.json": "841b54ad848122aad0673a243ff733759faba76e75720039eb8987535cced85e",
+    "research/rc-monster-truck/generate_support_reference.py": "c9fa003d7fb0c8e6cc0d6611f3fcf37b957aafbabba5b981125d10cee5c2e744",
+    "research/rc-monster-truck/generate_suspension_reference.py": "98436062963942806c7679a26b16218969fcfe508ec862136118a2fbf083e9c1",
+    "app/physics/ground_vehicle/quarter_car.gd": "5a141caa4dba4628990df398f98043469f2868cc6dc959fb7f252c2943f56605",
+    "app/physics/integrator.gd": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/sim/flight_session.gd": "ff9da48546be12fc417b5d6c74d549bdb1262907fd686628a5792275e3bb2289",
+    "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+    "app/tests/golden/glide_15.json": "fa5f195b62253a6bd2d243269c21a23de62d1564b0510583172dae17efc9f5ff",
+    "app/tests/golden/pull_throttle.json": "f779dcc4eb9a82dc2c7ae3ec3ba6c72490401773c6000857e85bb4dbafe560c7",
+    "app/tests/golden/roll_15.json": "f0513760a0b63058219755420ff7c4e2da7cf8f527a154c8add534337e96fe32",
+    "app/tests/golden/rudder_doublet.json": "68b15407788e33db80cce49307b12ecb099b7e85cfc56e04714d1de8b5cf61f5"
+  }
+}

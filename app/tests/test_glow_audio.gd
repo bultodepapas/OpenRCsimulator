@@ -5,6 +5,8 @@ extends SceneTree
 
 const GlowVoice := preload("res://audio/glow_voice.gd")
 const Soundscape := preload("res://audio/soundscape.gd")
+const GlowProfile := preload("res://physics/glow/profile.gd")
+const GlowVibration := preload("res://physics/glow/vibration.gd")
 
 var _failures: int = 0
 var _count: int = 0
@@ -157,6 +159,7 @@ func _initialize() -> void:
 	native_adapter_voice.set_telemetry(_telemetry("glow_4t"))
 	_check("legacy native-generator render signature returns stereo PCM", native_adapter_voice.render(6000.0, 12000.0, 512).size() == 512)
 	_test_physical_telemetry_sync()
+	_test_source_vibration_audio()
 
 	if _artifacts:
 		_write_wav("glow_2t_full_fire.wav", two_t)
@@ -255,6 +258,135 @@ func _test_physical_telemetry_sync() -> void:
 	cut_voice.render_telemetry(restart, 1)
 	_check("restart resumes combustion only after physics reports a successful fire",
 		cut_voice._opportunity_fires and absf(cut_voice._fraction_accumulator) < 1e-10)
+
+
+func _source_snapshot(family: String, running: bool = false) -> Dictionary:
+	var path: String = "res://data/glow/os_max_55ax_candidate.json" if family == "glow_2t" else "res://data/glow/os_fs_64v_candidate.json"
+	var loaded: Dictionary = GlowProfile.load_file(path)
+	if not loaded.ok:
+		_check("load geometry source profile " + family, false, str(loaded.errors))
+		return {}
+	var model_before: Dictionary = loaded.model.duplicate(true)
+	var prepared: Dictionary = GlowVibration.prepare(loaded.model)
+	if not prepared.ok:
+		_check("prepare geometry source profile " + family, false, str(prepared.errors))
+		return {}
+	var phase_cycles: float = 0.37
+	var rpm: float = 6000.0
+	var source: Dictionary = GlowVibration.evaluate(prepared, phase_cycles * TAU,
+		rpm * TAU / 60.0, 0.0, 0.75)
+	_check("geometry source uses a constant-speed accepted crank state " + family,
+		source.ok and source.constant_speed_assumption and source.cycle_revolutions == GlowVoice.cycle_revolutions(family))
+	_check("source observer leaves profile snapshot unchanged " + family, loaded.model == model_before)
+	var snapshot: Dictionary = _telemetry(family, running)
+	snapshot["phase_revolutions"] = phase_cycles
+	snapshot["source_vibration"] = source
+	return snapshot
+
+
+func _test_source_vibration_audio() -> void:
+	var two_snapshot: Dictionary = _source_snapshot("glow_2t")
+	var four_snapshot: Dictionary = _source_snapshot("glow_4t")
+	if two_snapshot.is_empty() or four_snapshot.is_empty():
+		return
+	var two_source: Dictionary = two_snapshot.source_vibration
+	var four_source: Dictionary = four_snapshot.source_vibration
+	var two_levels: Dictionary = GlowVoice.source_vibration_pcm_peaks(two_source, "glow_2t", 6000.0)
+	var four_levels: Dictionary = GlowVoice.source_vibration_pcm_peaks(four_source, "glow_4t", 6000.0)
+	_check("both validated source observers drive their matching mechanical layer", two_levels.ok and four_levels.ok)
+	if not two_levels.ok or not four_levels.ok:
+		return
+	var gain: float = GlowVoice.SOURCE_FORCE_PCM_GAIN
+	_check("one shared authored PCM-per-newton gain applies to 1X and 2X",
+		absf(two_levels.order_1x_peak_pcm / two_source.order_1x_force_peak_n - gain) < 1e-12
+		and absf(two_levels.order_2x_peak_pcm / two_source.order_2x_force_peak_n - gain) < 1e-12
+		and absf(four_levels.order_1x_peak_pcm / four_source.order_1x_force_peak_n - gain) < 1e-12
+		and absf(four_levels.order_2x_peak_pcm / four_source.order_2x_force_peak_n - gain) < 1e-12)
+	var force_ratio: float = two_source.order_1x_force_peak_n / four_source.order_1x_force_peak_n
+	var pcm_ratio: float = two_levels.order_1x_peak_pcm / four_levels.order_1x_peak_pcm
+	_check("profile geometry controls cross-family force and PCM amplitude ratio", absf(force_ratio - pcm_ratio) < 1e-10 * maxf(force_ratio, pcm_ratio))
+	_check("2T and 4T source layers are unclipped at the checked RPM",
+		two_levels.limiter_scale == 1.0 and four_levels.limiter_scale == 1.0
+		and two_levels.order_1x_peak_pcm + two_levels.order_2x_peak_pcm <= GlowVoice.MAX_SOURCE_MECHANICAL_PEAK
+		and four_levels.order_1x_peak_pcm + four_levels.order_2x_peak_pcm <= GlowVoice.MAX_SOURCE_MECHANICAL_PEAK)
+	_check("source-driven 1X and 2X PCM retain observer cosine/sine phase",
+		absf(two_levels.order_1x_cosine_pcm / (two_source.order_1x_force_cosine_n * gain) - 1.0) < 1e-12
+		and absf(two_levels.order_2x_cosine_pcm / (two_source.order_2x_force_cosine_n * gain) - 1.0) < 1e-12
+		and absf(two_levels.order_1x_sine_pcm) < 1e-12 and absf(two_levels.order_2x_sine_pcm) < 1e-12)
+
+	# Missing or malformed observer data must take the exact legacy mechanical fallback.
+	var missing: Dictionary = _telemetry("glow_2t", false)
+	missing["phase_revolutions"] = 0.37
+	var missing_pcm: PackedVector2Array = GlowVoice.new().render_telemetry(missing, 4096)
+	var wrong_family: Dictionary = missing.duplicate(true)
+	wrong_family["source_vibration"] = four_source
+	var invalid_phase: Dictionary = missing.duplicate(true)
+	var bad_phase_source: Dictionary = two_source.duplicate(true)
+	bad_phase_source["constant_speed_assumption"] = false
+	invalid_phase["source_vibration"] = bad_phase_source
+	var invalid_acceleration: Dictionary = missing.duplicate(true)
+	var bad_acceleration_source: Dictionary = two_source.duplicate(true)
+	bad_acceleration_source["alpha_rad_s2"] = 1.0
+	invalid_acceleration["source_vibration"] = bad_acceleration_source
+	var invalid_crank_phase: Dictionary = missing.duplicate(true)
+	var bad_crank_phase_source: Dictionary = two_source.duplicate(true)
+	bad_crank_phase_source["phase_rad"] = INF
+	invalid_crank_phase["source_vibration"] = bad_crank_phase_source
+	var invalid_order: Dictionary = missing.duplicate(true)
+	var bad_order_source: Dictionary = two_source.duplicate(true)
+	bad_order_source["order_1x_force_peak_n"] = -1.0
+	invalid_order["source_vibration"] = bad_order_source
+	var invalid_components: Dictionary = missing.duplicate(true)
+	var bad_components_source: Dictionary = two_source.duplicate(true)
+	bad_components_source["order_2x_force_cosine_n"] = INF
+	invalid_components["source_vibration"] = bad_components_source
+	_check("missing source telemetry preserves fallback samples exactly",
+		_worst_difference(missing_pcm, GlowVoice.new().render_telemetry(missing.duplicate(true), 4096)) == 0.0)
+	_check("wrong-family source telemetry preserves fallback samples exactly",
+		_worst_difference(missing_pcm, GlowVoice.new().render_telemetry(wrong_family, 4096)) == 0.0)
+	_check("non-constant-speed observer preserves fallback samples exactly",
+		_worst_difference(missing_pcm, GlowVoice.new().render_telemetry(invalid_phase, 4096)) == 0.0)
+	_check("nonzero angular acceleration or malformed phase preserves exact fallback",
+		_worst_difference(missing_pcm, GlowVoice.new().render_telemetry(invalid_acceleration, 4096)) == 0.0
+		and _worst_difference(missing_pcm, GlowVoice.new().render_telemetry(invalid_crank_phase, 4096)) == 0.0)
+	_check("invalid peak or harmonic components preserve fallback samples exactly",
+		_worst_difference(missing_pcm, GlowVoice.new().render_telemetry(invalid_order, 4096)) == 0.0
+		and _worst_difference(missing_pcm, GlowVoice.new().render_telemetry(invalid_components, 4096)) == 0.0)
+
+	# With running=false, output differences are the mechanical layer alone; phase remains continuous.
+	var source_pcm: PackedVector2Array = GlowVoice.new().render_telemetry(two_snapshot, 4096)
+	var fallback_pcm: PackedVector2Array = GlowVoice.new().render_telemetry(missing, 4096)
+	var source_delta: PackedVector2Array = PackedVector2Array()
+	source_delta.resize(4096)
+	for index: int in source_delta.size():
+		source_delta[index] = source_pcm[index] - fallback_pcm[index]
+	var delta_mono: PackedFloat32Array = _mono(source_delta)
+	_check("source layer synthesizes geometry-driven crank orders at audio rate", _power(delta_mono, 100.0) > 0.0 and _power(delta_mono, 200.0) > 0.0)
+	var snapshot_before: Dictionary = two_snapshot.duplicate(true)
+	var source_before: Dictionary = two_source.duplicate(true)
+	var read_voice := GlowVoice.new()
+	read_voice.set_telemetry(two_snapshot)
+	read_voice.render_telemetry(two_snapshot, 4096)
+	_check("source-driven render preserves caller state and nested telemetry",
+		two_snapshot == snapshot_before and two_snapshot.source_vibration == source_before and two_source.is_read_only())
+
+	var huge_source: Dictionary = two_source.duplicate(true)
+	huge_source["order_1x_force_cosine_n"] = -1e12
+	huge_source["order_1x_force_sine_n"] = 0.0
+	huge_source["order_1x_force_peak_n"] = 1e12
+	huge_source["order_2x_force_cosine_n"] = -1e12
+	huge_source["order_2x_force_sine_n"] = 0.0
+	huge_source["order_2x_force_peak_n"] = 1e12
+	var limited: Dictionary = GlowVoice.source_vibration_pcm_peaks(huge_source, "glow_2t", 6000.0)
+	_check("extreme finite source amplitudes use one common bounded gain", limited.ok and limited.limiter_scale < 1.0
+		and limited.order_1x_peak_pcm + limited.order_2x_peak_pcm <= GlowVoice.MAX_SOURCE_MECHANICAL_PEAK + 1e-12)
+	var huge_snapshot: Dictionary = missing.duplicate(true)
+	huge_snapshot["source_vibration"] = huge_source
+	var huge_pcm: PackedVector2Array = GlowVoice.new().render_telemetry(huge_snapshot, 4096)
+	_check("limited source layer remains finite and nonclipping in the rendered PCM",
+		_bounded(huge_pcm) and _rms(_mono(huge_pcm)) < 0.98)
+	_check("source force snapshot is immutable and observer evaluation is side-effect free",
+		two_source.is_read_only() and two_snapshot.source_vibration == two_source)
 
 
 func _write_wav(name: String, samples: PackedFloat32Array) -> void:
@@ -356,13 +488,26 @@ func _capture_segment(soundscape: Node, capture: AudioEffectCapture, family: Str
 	var captured := PackedVector2Array()
 	var steps: int = ceili(seconds * 60.0)
 	var cycle_revolutions: int = GlowVoice.cycle_revolutions(family)
+	var profile_path: String = "res://data/glow/os_max_55ax_candidate.json" if family == "glow_2t" else "res://data/glow/os_fs_64v_candidate.json"
+	var loaded_profile: Dictionary = GlowProfile.load_file(profile_path)
+	_check("native %s capture profile loads for source excitation" % family, loaded_profile.ok, str(loaded_profile.errors))
+	if not loaded_profile.ok:
+		return captured
+	var prepared_vibration: Dictionary = GlowVibration.prepare(loaded_profile.model)
+	_check("native %s capture profile prepares source excitation" % family, prepared_vibration.ok, str(prepared_vibration.errors))
+	if not prepared_vibration.ok:
+		return captured
 	var initial_opportunity: int = floori(phase_revolutions / float(cycle_revolutions))
 	var fire_base: int = initial_fire_count if initial_fire_count >= 0 else initial_opportunity
 	for frame: int in steps:
 		var elapsed: float = float(frame) / 60.0
 		var unwrapped_phase: float = phase_revolutions + elapsed * 100.0
+		var crank_phase: float = fposmod(unwrapped_phase, 1.0)
 		var opportunity_count: int = floori(unwrapped_phase / float(cycle_revolutions))
 		var fire_count: int = fire_base + (opportunity_count - initial_opportunity) if running else fire_base
+		var source_vibration: Dictionary = GlowVibration.evaluate(prepared_vibration, crank_phase * TAU,
+			6000.0 * TAU / 60.0, 0.0, firing_fraction)
+		var source_levels: Dictionary = GlowVoice.source_vibration_pcm_peaks(source_vibration, family, 6000.0)
 		var glow: Dictionary = {
 			"family": family, "rpm": 6000.0, "max_rpm": 12000.0,
 			"running": running, "firing_fraction": firing_fraction,
@@ -370,7 +515,11 @@ func _capture_segment(soundscape: Node, capture: AudioEffectCapture, family: Str
 			"opportunity_count": opportunity_count, "fire_count": fire_count,
 			"firing_accumulator": 0.0, "fuel_kg": 0.5, "sample_tick": _native_tick,
 			"blade_count": 2, "load": 0.65, "throttle": 0.7,
+			"source_vibration": source_vibration,
 		}
+		if frame == 0:
+			_check("native %s snapshot accepts current-phase source orders" % family,
+				source_vibration.ok and source_vibration.phase_rad == crank_phase * TAU and source_levels.ok)
 		_native_tick += 1
 		var snapshot: Dictionary = {
 			"rpm": 6000.0, "max_rpm": 12000.0, "load": 0.65, "throttle": 0.7,
@@ -381,6 +530,11 @@ func _capture_segment(soundscape: Node, capture: AudioEffectCapture, family: Str
 			"paused": false, "sun_elevation": 0.0, "glow": glow,
 		}
 		soundscape.update_sound(snapshot, 1.0 / 60.0)
+		if frame == 0:
+			var forwarded: Variant = soundscape.glow_voice._telemetry.get("source_vibration", null)
+			_check("native %s soundscape forwards valid source telemetry to the voice" % family,
+				forwarded is Dictionary and forwarded == source_vibration
+				and GlowVoice.source_vibration_pcm_peaks(forwarded, family, 6000.0).ok)
 		await create_timer(1.0 / 60.0).timeout
 		var available: int = capture.get_frames_available()
 		if available > 0:

@@ -1,0 +1,108 @@
+# HELI-16: strict v2 rotorcraft reader. Invalid quantities or module contexts cannot fly.
+extends RefCounted
+const Main = preload("res://physics/rotorcraft/main_rotor.gd")
+const Tail = preload("res://physics/rotorcraft/tail_rotor.gd")
+const Airframe = preload("res://physics/rotorcraft/airframe.gd")
+const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
+const M = preload("res://physics/math3d.gd")
+const UNITS: Dictionary = {
+ "rho_kg_m3":"kg/m3", "rotor_radius_m":"m", "main_rotor_radius_m":"m", "tail_rotor_radius_m":"m", "blade_chord_m":"m",
+ "rotor_blade_count":"1", "blade_lift_curve_slope_per_rad":"1/rad", "blade_section_cd0":"1", "thrust_coefficient_max":"1",
+ "blade_flapping_inertia_kg_m2":"kg*m2", "gamma_flybar":"1", "flapback_k_mu":"1", "omega_nominal_rad_s":"rad/s",
+ "cyclic_longitudinal_gain_nominal_rad_per_rad":"1", "cyclic_lateral_gain_nominal_rad_per_rad":"1", "hub_spring_stiffness_nm_per_rad":"N*m/rad",
+ "hub_position_body_frd_m":"m", "rotation_sense":"1", "tail_to_main_speed_ratio":"1", "hub_distance_aft_m":"m", "hub_height_above_cg_m":"m",
+ "vertical_fin_area_m2":"m2", "trim_collective_rad":"rad", "wake_efficiency":"1", "fuselage_drag_area_body_m2":"m2", "fuselage_cp_body_frd_m":"m",
+ "vertical_fin_lift_curve_slope_per_rad":"1/rad", "vertical_fin_cp_body_frd_m":"m", "horizontal_tail_area_m2":"m2",
+ "horizontal_tail_lift_curve_slope_per_rad":"1/rad", "horizontal_tail_cp_body_frd_m":"m", "mass_kg":"kg", "inertia_kg_m2":"kg*m2",
+ "gravity_m_s2":"m/s2", "speed_ratio":"1", "spin_axis_body_frd":"1", "engine_torque_max_nm":"N*m", "engine_power_max_w":"W",
+ "engine_speed_ratio_to_main":"1", "gear_efficiency":"1", "governor_target_main_rad_s":"rad/s", "governor_gain_nm_per_rad_s":"N*m*s/rad",
+ "shaft_loss_torque_nm":"N*m", "shaft_viscous_loss_nm_per_rad_s":"N*m*s/rad", "tail_collective_trim_rad":"rad",
+ "tail_collective_min_rad":"rad", "tail_collective_max_rad":"rad", "yaw_control_sign":"1", "yaw_deadzone":"1", "yaw_max_rate_rad_s":"rad/s",
+ "yaw_heading_gain_per_s":"1/s", "yaw_rate_kp_rad_per_rad_s":"s", "yaw_rate_ki_rad_per_rad":"1", "yaw_integrator_limit_rad":"rad",
+ "trainer_max_tilt_rad":"rad", "trainer_roll_attitude_gain_per_s":"1/s", "trainer_pitch_attitude_gain_per_s":"1/s",
+ "trainer_roll_rate_limit_rad_s":"rad/s", "trainer_pitch_rate_limit_rad_s":"rad/s", "trainer_roll_cyclic_gain_rad_per_rad_s":"s", "trainer_pitch_cyclic_gain_rad_per_rad_s":"s",
+ "collective_rad_per_unit":"rad", "longitudinal_rad_per_unit":"rad", "lateral_rad_per_unit":"rad", "collective_min_rad":"rad", "collective_max_rad":"rad", "cyclic_max_rad":"rad",
+ "pitch":"1", "throttle":"1", "flow_floor_m_s":"m/s", "fin_tail_wake_fraction":"1", "height_over_radius":"1", "inflow_loss":"1", "inflow_instability":"1",
+ "points_body_frd_m":"m", "spring_n_m":"N/m", "damping_n_s_m":"N*s/m", "friction":"1", "slip_m_s":"m/s",
+}
+
+static func load_file(path: String, density: float = 1.225) -> Dictionary:
+ var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
+ return validate(raw, density)
+
+static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
+ var errors: PackedStringArray = PackedStringArray()
+ if not raw is Dictionary or raw.get("format") != "openrc-aircraft v2" or raw.get("vehicle") != "rotorcraft":
+  return {ok=false, errors=["expected openrc-aircraft v2 with vehicle rotorcraft"]}
+ if raw.get("id") != "xcell-60-research" or raw.get("capabilities") != ["main_rotor", "tail_rotor", "governor", "trainer", "skids"]:
+  return {ok=false, errors=["unsupported identity or capabilities"]}
+ var parts: Dictionary = {}
+ for key: String in ["main_rotor", "tail_rotor", "airframe", "body", "drive", "electronics", "integration", "skids"]:
+  parts[key] = _unpack(raw.get(key), key, errors)
+ var shafts: Array = []
+ if not raw.get("shaft_elements") is Array:
+  errors.append("shaft_elements missing")
+ else:
+  for item: Variant in raw.shaft_elements:
+   shafts.append(_unpack(item, "shaft_elements", errors))
+ var gravity: Variant = _quantity(raw.get("gravity_m_s2"), "gravity_m_s2", errors)
+ if not is_finite(density) or density <= 0.0: errors.append("invalid atmosphere density")
+ if not errors.is_empty(): return {ok=false,errors=errors}
+ for key: String in ["main_rotor", "tail_rotor", "airframe"]: parts[key].rho_kg_m3 = density
+ var main: Dictionary = Main.prepare(parts.main_rotor)
+ var tail: Dictionary = Tail.prepare(parts.tail_rotor)
+ var airframe: Dictionary = Airframe.prepare(parts.airframe)
+ if not main.ok or not tail.ok or not airframe.ok:
+  return {ok=false,errors=["invalid rotor or airframe module"]}
+ var cfg: Dictionary = parts.integration.duplicate()
+ cfg.merge(parts.body)
+ cfg["inertia_body_kg_m2"]=cfg.inertia_kg_m2
+ cfg.erase("inertia_kg_m2")
+ cfg.merge({"gravity_m_s2":gravity, "main_model":main.model, "tail_model":tail.model, "airframe_model":airframe.model,
+  "shaft_elements":shafts, "drive":parts.drive, "electronics":parts.electronics})
+ var prepared: Dictionary = Flight.prepare(cfg)
+ if not prepared.ok: return {ok=false,errors=["invalid coupled flight configuration: "+str(prepared.get("message","unknown module failure"))]}
+ var skids: Dictionary = parts.skids
+ if skids.size() != 5 or not skids.get("points_body_frd_m") is PackedFloat64Array or skids.points_body_frd_m.size() != 12:
+  return {ok=false,errors=["skids require four FRD contact points"]}
+ for key: String in ["spring_n_m", "damping_n_s_m", "friction", "slip_m_s"]:
+  if not skids.has(key) or not skids[key] is float or skids[key] <= 0.0: return {ok=false,errors=["invalid skid parameter: "+key]}
+ var reach: float = 0.0
+ for i: int in range(0,12,3):
+  var p: PackedFloat64Array=skids.points_body_frd_m.slice(i,i+3)
+  reach=maxf(reach,M.norm(p))
+ if not is_finite(reach) or reach<=0.0 or M.sqrt_(4.0*skids.spring_n_m/cfg.mass_kg)/Engine.physics_ticks_per_second>.5 or 4.0*skids.damping_n_s_m/(cfg.mass_kg*Engine.physics_ticks_per_second)>1.0:
+  return {ok=false,errors=["skid geometry or fixed-step stiffness exceeds the supported envelope"]}
+ skids.reach_m=reach
+ skids.make_read_only()
+ return {ok=true,errors=errors,id=raw.id,context=prepared.context,skids=skids,qualification=raw.qualification,raw=raw.duplicate(true)}
+
+static func _unpack(raw: Variant, path: String, errors: PackedStringArray) -> Dictionary:
+ var out: Dictionary = {}
+ if not raw is Dictionary:
+  errors.append(path+": missing object")
+  return out
+ for key: String in raw:
+  if UNITS.has(key): out[key] = _quantity(raw[key], key, errors)
+  elif key in ["linkage", "curves_by_mode", "normal", "idle_up"]: out[key] = _unpack(raw[key], path+"."+key, errors)
+  else: errors.append(path+"."+key+": unknown field")
+ return out
+
+static func _quantity(node: Variant, key: String, errors: PackedStringArray) -> Variant:
+ if not node is Dictionary or node.size() != 4 or not node.has_all(["value", "unit", "kind", "source"]):
+  errors.append(key+": requires value, unit, kind, source")
+  return null
+ if node.unit != UNITS[key] or node.kind not in ["reference", "derived", "estimated"] or not node.source is String or node.source.strip_edges().is_empty():
+  errors.append(key+": invalid units or evidence")
+  return null
+ if node.value is Array:
+  var vector: PackedFloat64Array = PackedFloat64Array()
+  for value: Variant in node.value:
+   if not _number(value): errors.append(key+": nonfinite vector"); return null
+   vector.append(float(value))
+  return vector
+ if not _number(node.value): errors.append(key+": nonfinite number"); return null
+ return float(node.value)
+
+static func _number(value: Variant) -> bool:
+ return typeof(value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(value))

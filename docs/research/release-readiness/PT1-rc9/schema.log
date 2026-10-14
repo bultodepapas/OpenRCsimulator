@@ -1,0 +1,33 @@
+PASS gp_extra_300s_60.json
+PASS jensen_ugly_stik_60.json
+PASS p51d_mustang_120.json
+PASS sebart_avanti_s_a200.json
+PASS stik_glow_55ax_2t.json
+PASS stik_glow_55ax_2t_apc_13x6.json
+PASS stik_glow_fs64v_4t.json
+PASS stik_glow_fs64v_4t_apc_13x6.json
+PASS synthetic_stik_electric_4s.json
+PASS synthetic_stik_electric_4s_battery.json
+PASS synthetic_stik_electric_6s.json
+PASS synthetic_stik_electric_6s_battery.json
+PASS turbo_lumber_evolution.json
+13 aircraft, 0 failed structural preflight
+...1991 schema/loader cases; 147 valid controls; 21 runtime-only checks
+.
+----------------------------------------------------------------------
+Ran 4 tests in 52.176s
+
+OK
+{
+  "counts": {
+    "cases": 67,
+    "schema_loader_agreements": 65,
+    "positive_fleet": 13,
+    "combustion_masks": 18,
+    "turbine_masks": 8,
+    "legacy_v1": 2,
+    "runtime_only_coupled_cases": 2
+  },
+  "failures": [],
+  "report": null
+}

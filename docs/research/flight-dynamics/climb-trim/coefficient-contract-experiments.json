@@ -1,0 +1,1188 @@
+{
+	"aircraft": [
+		{
+			"attached_global_finite_differences": {
+				"about_alpha_rad": 0.0523598775598299,
+				"dCD_dalpha_per_rad": 0.0870456652427715,
+				"dCD_dde_central_at_zero": 0.00186825085020381,
+				"dCD_dde_left_at_zero": -0.011631757024233,
+				"dCD_dde_right_at_zero": 0.0153682587246406,
+				"dCD_dqhat": 0.0,
+				"dCL_dalpha_per_rad": 4.58000000000403,
+				"dCL_dde_per_rad": 0.0983000000009948,
+				"dCL_dqhat": 2.95100000000104,
+				"dCmARP_dalpha_per_rad": -0.723000000001084,
+				"dCmARP_dde_per_rad": -0.848800000000094,
+				"dCmARP_dqhat": -7.47599999999932,
+				"dCmCG_dalpha_per_rad": -0.83811300342039,
+				"dCmCG_dde_per_rad": -0.849553036028766,
+				"dCmCG_dqhat": -7.51146928635489,
+				"qhat_definition": "q*c/(2V)"
+			},
+			"coefficient_provenance": {
+				"CLde": {
+					"kind": "borrowed",
+					"source": "OpenFlightSim UltraStick25e",
+					"unit": "1/rad",
+					"value": 0.0983
+				},
+				"Cmde": {
+					"kind": "borrowed",
+					"source": "OpenFlightSim UltraStick25e",
+					"unit": "1/rad",
+					"value": -0.8488
+				}
+			},
+			"coefficient_samples": [
+				{
+					"CD": 0.0455291634615973,
+					"CL": 0.338029945950469,
+					"Cm_ARP": 0.00841558197888234,
+					"Cm_CG": 0.0147945035030772,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": -0.0872664625997165,
+					"force_body_frd_n": [
+						-1.77808507194172,
+						0.0,
+						-21.7621981598082
+					]
+				},
+				{
+					"CD": 0.0445081049951989,
+					"CL": 0.346608239224021,
+					"Cm_ARP": -0.065656191475757,
+					"Cm_CG": -0.0596145496844566,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0,
+					"force_body_frd_n": [
+						-1.68407042450431,
+						0.0,
+						-22.3071724760326
+					]
+				},
+				{
+					"CD": 0.0458552347474673,
+					"CL": 0.355186532497573,
+					"Cm_ARP": -0.139727964930396,
+					"Cm_CG": -0.133480472987045,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0872664625997165,
+					"force_body_frd_n": [
+						-1.74144988606847,
+						0.0,
+						-22.8600810213063
+					]
+				}
+			],
+			"counterfactual_candidates": {
+				"global_CLde_to_preserve_authored_Cmde_at_tail_aft_of_ARP_per_rad": 0.359325333333333,
+				"global_ratio_equivalent_aft_arm_m_pure_lift_only": 2.63188443540183,
+				"interpretation": "Sensitivity candidates only. The ratio assumes a single lift force at the tail and omits force-axis rotation, drag, wing/control interaction, dynamic flow and coefficient provenance uncertainty.",
+				"local_tail_finite_difference_CLde_per_rad": 0.422828541597232,
+				"local_tail_finite_difference_Cmde_at_ARP_per_rad": -1.00302810440329
+			},
+			"derived_model_sha256": "747a219bba47926ae18b60cd864c93f540b09aa44e4d1e3081724337bd5aee10",
+			"global_coefficients_at_attached_probe": {
+				"CD0": 0.0434,
+				"CDde_per_rad_magnitude": 0.0135,
+				"CL0": 0.1068,
+				"CL_minD": 0.23,
+				"CLa_per_rad": 4.58,
+				"CLde_per_rad": 0.0983,
+				"CLq_per_rad": 2.951,
+				"Cm0": -0.0278,
+				"Cma_per_rad": -0.723,
+				"Cmde_per_rad": -0.8488,
+				"Cmq_per_rad": -7.476,
+				"input_kind_CLde": "borrowed",
+				"input_kind_Cmde": "borrowed",
+				"k_induced": 0.0814934
+			},
+			"id": "jensen-das-ugly-stik-60",
+			"local_horizontal_tail_control_derivative_at_alpha0": {
+				"baseline_CD": 0.00265185614344108,
+				"baseline_CL": 0.0138481749782031,
+				"baseline_Cm_CG": -0.0331093067542417,
+				"dCD_dde_per_rad": 0.0111243191972758,
+				"dCL_dde_per_rad": 0.422828541597232,
+				"dCmARP_dde_per_rad": -1.00302810440329,
+				"dCmCG_dde_per_rad": -1.00047330668721,
+				"tail_model_CLde_from_lift_slope_times_tau_area_ratio": 0.42282854159715
+			},
+			"negative_elevator_sign_check": {
+				"aero_de_rad": -0.0872664625997165,
+				"delta_CL": -0.00857829327355214,
+				"delta_Cm_ARP": 0.0740717734546393,
+				"delta_Cm_CG": 0.0744090531875338,
+				"negative_aero_de_expected": "less attached lift, positive pitch moment (nose-up)",
+				"pilot_elevator_te_up_deg": 5.0,
+				"positive_aero_de_expected": "more attached lift, negative pitch moment for a stabilizing tail"
+			},
+			"production_cross_check_max_abs_CL_CD_Cm": 0.0,
+			"reference": {
+				"S_m2": 0.464515,
+				"arp_le_aft_right_up_m": [
+					0.1209,
+					0.0,
+					0.07
+				],
+				"arp_minus_cg_body_frd_m": [
+					-0.0000000000000000138777878078145,
+					0.0,
+					-0.07
+				],
+				"b_m": 1.524,
+				"c_m": 0.3048,
+				"cg_le_aft_right_up_m": [
+					0.1209,
+					0.0,
+					0.00000000000000000120255696833718
+				],
+				"tail_aft_of_arp_m": 0.72,
+				"tail_arm_from_cg_body_frd_m": [
+					-0.72,
+					0.0,
+					0.04564
+				]
+			},
+			"runtime_global_load_cross_check": {
+				"case_count": 18,
+				"force_tolerance_n": 0.000000001,
+				"max_abs_fx_error_n": 0.00000000000000111022302462516,
+				"max_abs_fz_error_n": 0.000000000000007105427357601,
+				"max_abs_my_error_nm": 0.000000000000000888178419700125,
+				"moment_tolerance_nm": 0.000000001,
+				"passed": true,
+				"worst_case_coordinates": {
+					"alpha_rad": 0.0523598775598299,
+					"elevator_rad": 0.0872664625997165,
+					"qhat": 0.01
+				}
+			},
+			"source_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+			"source_sha256": "b2f2b88e41e5e640974610e8ce925765b5734d31d9b86a7ce9487ff376d523a9"
+		},
+		{
+			"attached_global_finite_differences": {
+				"about_alpha_rad": 0.0523598775598299,
+				"dCD_dalpha_per_rad": 0.0870456652427715,
+				"dCD_dde_central_at_zero": 0.00186825085020381,
+				"dCD_dde_left_at_zero": -0.011631757024233,
+				"dCD_dde_right_at_zero": 0.0153682587246406,
+				"dCD_dqhat": 0.0,
+				"dCL_dalpha_per_rad": 4.58000000000403,
+				"dCL_dde_per_rad": 0.0983000000009948,
+				"dCL_dqhat": 2.95100000000104,
+				"dCmARP_dalpha_per_rad": -0.723000000001084,
+				"dCmARP_dde_per_rad": -0.848800000000094,
+				"dCmARP_dqhat": -7.47599999999932,
+				"dCmCG_dalpha_per_rad": -0.838113003420737,
+				"dCmCG_dde_per_rad": -0.849553036028419,
+				"dCmCG_dqhat": -7.51146928635454,
+				"qhat_definition": "q*c/(2V)"
+			},
+			"coefficient_provenance": {
+				"CLde": {
+					"kind": "borrowed",
+					"source": "OpenFlightSim UltraStick25e",
+					"unit": "1/rad",
+					"value": 0.0983
+				},
+				"Cmde": {
+					"kind": "borrowed",
+					"source": "OpenFlightSim UltraStick25e",
+					"unit": "1/rad",
+					"value": -0.8488
+				}
+			},
+			"coefficient_samples": [
+				{
+					"CD": 0.0455291634615973,
+					"CL": 0.338029945950469,
+					"Cm_ARP": 0.00841558197888234,
+					"Cm_CG": 0.0147945035030772,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": -0.0872664625997165,
+					"force_body_frd_n": [
+						-1.77808507194172,
+						0.0,
+						-21.7621981598082
+					]
+				},
+				{
+					"CD": 0.0445081049951989,
+					"CL": 0.346608239224021,
+					"Cm_ARP": -0.065656191475757,
+					"Cm_CG": -0.0596145496844566,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0,
+					"force_body_frd_n": [
+						-1.68407042450431,
+						0.0,
+						-22.3071724760326
+					]
+				},
+				{
+					"CD": 0.0458552347474673,
+					"CL": 0.355186532497573,
+					"Cm_ARP": -0.139727964930396,
+					"Cm_CG": -0.133480472987045,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0872664625997165,
+					"force_body_frd_n": [
+						-1.74144988606847,
+						0.0,
+						-22.8600810213063
+					]
+				}
+			],
+			"counterfactual_candidates": {
+				"global_CLde_to_preserve_authored_Cmde_at_tail_aft_of_ARP_per_rad": 0.359325333333333,
+				"global_ratio_equivalent_aft_arm_m_pure_lift_only": 2.63188443540183,
+				"interpretation": "Sensitivity candidates only. The ratio assumes a single lift force at the tail and omits force-axis rotation, drag, wing/control interaction, dynamic flow and coefficient provenance uncertainty.",
+				"local_tail_finite_difference_CLde_per_rad": 0.422828541597232,
+				"local_tail_finite_difference_Cmde_at_ARP_per_rad": -1.00302810440329
+			},
+			"derived_model_sha256": "9c3ef2ecd7a1eec4cec1772104cf3237ef0c56074026c9ec9d14d59976866256",
+			"global_coefficients_at_attached_probe": {
+				"CD0": 0.0434,
+				"CDde_per_rad_magnitude": 0.0135,
+				"CL0": 0.1068,
+				"CL_minD": 0.23,
+				"CLa_per_rad": 4.58,
+				"CLde_per_rad": 0.0983,
+				"CLq_per_rad": 2.951,
+				"Cm0": -0.0278,
+				"Cma_per_rad": -0.723,
+				"Cmde_per_rad": -0.8488,
+				"Cmq_per_rad": -7.476,
+				"input_kind_CLde": "borrowed",
+				"input_kind_Cmde": "borrowed",
+				"k_induced": 0.0814934
+			},
+			"id": "stik-glow-55ax-2t",
+			"local_horizontal_tail_control_derivative_at_alpha0": {
+				"baseline_CD": 0.00265185614344108,
+				"baseline_CL": 0.0138481749782031,
+				"baseline_Cm_CG": -0.0331093067542417,
+				"dCD_dde_per_rad": 0.0111243191972758,
+				"dCL_dde_per_rad": 0.422828541597232,
+				"dCmARP_dde_per_rad": -1.00302810440329,
+				"dCmCG_dde_per_rad": -1.00047330668721,
+				"tail_model_CLde_from_lift_slope_times_tau_area_ratio": 0.42282854159715
+			},
+			"negative_elevator_sign_check": {
+				"aero_de_rad": -0.0872664625997165,
+				"delta_CL": -0.00857829327355214,
+				"delta_Cm_ARP": 0.0740717734546393,
+				"delta_Cm_CG": 0.0744090531875338,
+				"negative_aero_de_expected": "less attached lift, positive pitch moment (nose-up)",
+				"pilot_elevator_te_up_deg": 5.0,
+				"positive_aero_de_expected": "more attached lift, negative pitch moment for a stabilizing tail"
+			},
+			"production_cross_check_max_abs_CL_CD_Cm": 0.0,
+			"reference": {
+				"S_m2": 0.464515,
+				"arp_le_aft_right_up_m": [
+					0.1209,
+					0.0,
+					0.07
+				],
+				"arp_minus_cg_body_frd_m": [
+					0.0,
+					0.0,
+					-0.07
+				],
+				"b_m": 1.524,
+				"c_m": 0.3048,
+				"cg_le_aft_right_up_m": [
+					0.1209,
+					0.0,
+					-0.00000000000000000132275274440165
+				],
+				"tail_aft_of_arp_m": 0.72,
+				"tail_arm_from_cg_body_frd_m": [
+					-0.72,
+					0.0,
+					0.04564
+				]
+			},
+			"runtime_global_load_cross_check": {
+				"case_count": 18,
+				"force_tolerance_n": 0.000000001,
+				"max_abs_fx_error_n": 0.00000000000000111022302462516,
+				"max_abs_fz_error_n": 0.000000000000007105427357601,
+				"max_abs_my_error_nm": 0.000000000000000888178419700125,
+				"moment_tolerance_nm": 0.000000001,
+				"passed": true,
+				"worst_case_coordinates": {
+					"alpha_rad": 0.0523598775598299,
+					"elevator_rad": 0.0872664625997165,
+					"qhat": 0.01
+				}
+			},
+			"source_path": "res://data/aircraft/stik_glow_55ax_2t.json",
+			"source_sha256": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9"
+		},
+		{
+			"attached_global_finite_differences": {
+				"about_alpha_rad": 0.0523598775598299,
+				"dCD_dalpha_per_rad": 0.0870456652427715,
+				"dCD_dde_central_at_zero": 0.00186825085020381,
+				"dCD_dde_left_at_zero": -0.011631757024233,
+				"dCD_dde_right_at_zero": 0.0153682587246406,
+				"dCD_dqhat": 0.0,
+				"dCL_dalpha_per_rad": 4.58000000000403,
+				"dCL_dde_per_rad": 0.0983000000009948,
+				"dCL_dqhat": 2.95100000000104,
+				"dCmARP_dalpha_per_rad": -0.723000000001084,
+				"dCmARP_dde_per_rad": -0.848800000000094,
+				"dCmARP_dqhat": -7.47599999999932,
+				"dCmCG_dalpha_per_rad": -0.83811300342039,
+				"dCmCG_dde_per_rad": -0.849553036028766,
+				"dCmCG_dqhat": -7.51146928635489,
+				"qhat_definition": "q*c/(2V)"
+			},
+			"coefficient_provenance": {
+				"CLde": {
+					"kind": "borrowed",
+					"source": "OpenFlightSim UltraStick25e",
+					"unit": "1/rad",
+					"value": 0.0983
+				},
+				"Cmde": {
+					"kind": "borrowed",
+					"source": "OpenFlightSim UltraStick25e",
+					"unit": "1/rad",
+					"value": -0.8488
+				}
+			},
+			"coefficient_samples": [
+				{
+					"CD": 0.0455291634615973,
+					"CL": 0.338029945950469,
+					"Cm_ARP": 0.00841558197888234,
+					"Cm_CG": 0.0147945035030772,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": -0.0872664625997165,
+					"force_body_frd_n": [
+						-1.77808507194172,
+						0.0,
+						-21.7621981598082
+					]
+				},
+				{
+					"CD": 0.0445081049951989,
+					"CL": 0.346608239224021,
+					"Cm_ARP": -0.065656191475757,
+					"Cm_CG": -0.0596145496844566,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0,
+					"force_body_frd_n": [
+						-1.68407042450431,
+						0.0,
+						-22.3071724760326
+					]
+				},
+				{
+					"CD": 0.0458552347474673,
+					"CL": 0.355186532497573,
+					"Cm_ARP": -0.139727964930396,
+					"Cm_CG": -0.133480472987045,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0872664625997165,
+					"force_body_frd_n": [
+						-1.74144988606847,
+						0.0,
+						-22.8600810213063
+					]
+				}
+			],
+			"counterfactual_candidates": {
+				"global_CLde_to_preserve_authored_Cmde_at_tail_aft_of_ARP_per_rad": 0.359325333333333,
+				"global_ratio_equivalent_aft_arm_m_pure_lift_only": 2.63188443540183,
+				"interpretation": "Sensitivity candidates only. The ratio assumes a single lift force at the tail and omits force-axis rotation, drag, wing/control interaction, dynamic flow and coefficient provenance uncertainty.",
+				"local_tail_finite_difference_CLde_per_rad": 0.422828541597232,
+				"local_tail_finite_difference_Cmde_at_ARP_per_rad": -1.00302810440329
+			},
+			"derived_model_sha256": "2a306a7d7b32d79e4d9e5d04151c0ca5c5d16c7247d5beae57100fe7cf36bd18",
+			"global_coefficients_at_attached_probe": {
+				"CD0": 0.0434,
+				"CDde_per_rad_magnitude": 0.0135,
+				"CL0": 0.1068,
+				"CL_minD": 0.23,
+				"CLa_per_rad": 4.58,
+				"CLde_per_rad": 0.0983,
+				"CLq_per_rad": 2.951,
+				"Cm0": -0.0278,
+				"Cma_per_rad": -0.723,
+				"Cmde_per_rad": -0.8488,
+				"Cmq_per_rad": -7.476,
+				"input_kind_CLde": "borrowed",
+				"input_kind_Cmde": "borrowed",
+				"k_induced": 0.0814934
+			},
+			"id": "stik-glow-fs64v-4t",
+			"local_horizontal_tail_control_derivative_at_alpha0": {
+				"baseline_CD": 0.00265185614344108,
+				"baseline_CL": 0.0138481749782031,
+				"baseline_Cm_CG": -0.0331093067542417,
+				"dCD_dde_per_rad": 0.0111243191972758,
+				"dCL_dde_per_rad": 0.422828541597232,
+				"dCmARP_dde_per_rad": -1.00302810440329,
+				"dCmCG_dde_per_rad": -1.00047330668721,
+				"tail_model_CLde_from_lift_slope_times_tau_area_ratio": 0.42282854159715
+			},
+			"negative_elevator_sign_check": {
+				"aero_de_rad": -0.0872664625997165,
+				"delta_CL": -0.00857829327355214,
+				"delta_Cm_ARP": 0.0740717734546393,
+				"delta_Cm_CG": 0.0744090531875338,
+				"negative_aero_de_expected": "less attached lift, positive pitch moment (nose-up)",
+				"pilot_elevator_te_up_deg": 5.0,
+				"positive_aero_de_expected": "more attached lift, negative pitch moment for a stabilizing tail"
+			},
+			"production_cross_check_max_abs_CL_CD_Cm": 0.0,
+			"reference": {
+				"S_m2": 0.464515,
+				"arp_le_aft_right_up_m": [
+					0.1209,
+					0.0,
+					0.07
+				],
+				"arp_minus_cg_body_frd_m": [
+					-0.0000000000000000138777878078145,
+					-0.00000000000000000083613118876683,
+					-0.07
+				],
+				"b_m": 1.524,
+				"c_m": 0.3048,
+				"cg_le_aft_right_up_m": [
+					0.1209,
+					0.00000000000000000083613118876683,
+					0.00000000000000000133780990202693
+				],
+				"tail_aft_of_arp_m": 0.72,
+				"tail_arm_from_cg_body_frd_m": [
+					-0.72,
+					-0.00000000000000000083613118876683,
+					0.04564
+				]
+			},
+			"runtime_global_load_cross_check": {
+				"case_count": 18,
+				"force_tolerance_n": 0.000000001,
+				"max_abs_fx_error_n": 0.00000000000000111022302462516,
+				"max_abs_fz_error_n": 0.000000000000007105427357601,
+				"max_abs_my_error_nm": 0.000000000000000888178419700125,
+				"moment_tolerance_nm": 0.000000001,
+				"passed": true,
+				"worst_case_coordinates": {
+					"alpha_rad": 0.0523598775598299,
+					"elevator_rad": 0.0872664625997165,
+					"qhat": 0.01
+				}
+			},
+			"source_path": "res://data/aircraft/stik_glow_fs64v_4t.json",
+			"source_sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5"
+		},
+		{
+			"attached_global_finite_differences": {
+				"about_alpha_rad": 0.0523598775598299,
+				"dCD_dalpha_per_rad": 0.149859273790992,
+				"dCD_dde_central_at_zero": 0.0139678229562484,
+				"dCD_dde_left_at_zero": 0.000467695403238988,
+				"dCD_dde_right_at_zero": 0.0274679505092579,
+				"dCD_dqhat": 0.0,
+				"dCL_dalpha_per_rad": 4.45057000000026,
+				"dCL_dde_per_rad": 0.414820999999899,
+				"dCL_dqhat": 5.81328900000066,
+				"dCmARP_dalpha_per_rad": -0.906209000000116,
+				"dCmARP_dde_per_rad": -1.05505400000011,
+				"dCmARP_dqhat": -9.22690300000015,
+				"dCmCG_dalpha_per_rad": -0.635318346137517,
+				"dCmCG_dde_per_rad": -1.03198240222254,
+				"dCmCG_dqhat": -8.88523039441202,
+				"qhat_definition": "q*c/(2V)"
+			},
+			"coefficient_provenance": {
+				"CLde": {
+					"kind": "derived",
+					"source": "research/extra-300/ex05/derive_physics.py: tail slope x elevator effectiveness",
+					"unit": "1/rad",
+					"value": 0.414821
+				},
+				"Cmde": {
+					"kind": "derived",
+					"source": "research/extra-300/ex05/derive_physics.py: elevator lift x tail arm from the ARP",
+					"unit": "1/rad",
+					"value": -1.055054
+				}
+			},
+			"coefficient_samples": [
+				{
+					"CD": 0.0352502024583996,
+					"CL": 0.190926338989375,
+					"Cm_ARP": 0.0596408381480654,
+					"Cm_CG": 0.0675582777271236,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": -0.0872664625997165,
+					"force_body_frd_n": [
+						-1.6676102929505,
+						0.0,
+						-12.7344791525304
+					]
+				},
+				{
+					"CD": 0.0351938902452405,
+					"CL": 0.227126300271452,
+					"Cm_ARP": -0.0324299922836159,
+					"Cm_CG": -0.022379643128221,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0,
+					"force_body_frd_n": [
+						-1.53856549709377,
+						0.0,
+						-15.1256249018895
+					]
+				},
+				{
+					"CD": 0.0376880474575772,
+					"CL": 0.263326261553529,
+					"Cm_ARP": -0.124500822715297,
+					"Cm_CG": -0.112556629687028,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0872664625997165,
+					"force_body_frd_n": [
+						-1.57800268666859,
+						0.0,
+						-17.5256004179543
+					]
+				}
+			],
+			"counterfactual_candidates": {
+				"global_CLde_to_preserve_authored_Cmde_at_tail_aft_of_ARP_per_rad": 0.414821111889332,
+				"global_ratio_equivalent_aft_arm_m_pure_lift_only": 0.75100120256689,
+				"interpretation": "Sensitivity candidates only. The ratio assumes a single lift force at the tail and omits force-axis rotation, drag, wing/control interaction, dynamic flow and coefficient provenance uncertainty.",
+				"local_tail_finite_difference_CLde_per_rad": 0.414821909153033,
+				"local_tail_finite_difference_Cmde_at_ARP_per_rad": -1.05626917522444
+			},
+			"derived_model_sha256": "1dcb344ef4247a2eb8bcff706acb06bacc0b6f88e8172cb8f65de8906d57d472",
+			"global_coefficients_at_attached_probe": {
+				"CD0": 0.03137,
+				"CDde_per_rad_magnitude": 0.0135,
+				"CL0": -0.005905,
+				"CL_minD": 0.0,
+				"CLa_per_rad": 4.45057,
+				"CLde_per_rad": 0.414821,
+				"CLq_per_rad": 5.813289,
+				"Cm0": 0.015019,
+				"Cma_per_rad": -0.906209,
+				"Cmde_per_rad": -1.055054,
+				"Cmq_per_rad": -9.226903,
+				"input_kind_CLde": "derived",
+				"input_kind_Cmde": "derived",
+				"k_induced": 0.074126
+			},
+			"id": "gp-extra-300s-60",
+			"local_horizontal_tail_control_derivative_at_alpha0": {
+				"baseline_CD": 0.00251850158833796,
+				"baseline_CL": -0.00590495469220012,
+				"baseline_Cm_CG": 0.0151287827865605,
+				"dCD_dde_per_rad": -0.00455161522990195,
+				"dCL_dde_per_rad": 0.414821909153033,
+				"dCmARP_dde_per_rad": -1.05626917522444,
+				"dCmCG_dde_per_rad": -1.03351659468225,
+				"tail_model_CLde_from_lift_slope_times_tau_area_ratio": 0.41482190915308
+			},
+			"negative_elevator_sign_check": {
+				"aero_de_rad": -0.0872664625997165,
+				"delta_CL": -0.036199961282077,
+				"delta_Cm_ARP": 0.0920708304316813,
+				"delta_Cm_CG": 0.0899379208553446,
+				"negative_aero_de_expected": "less attached lift, positive pitch moment (nose-up)",
+				"pilot_elevator_te_up_deg": 5.0,
+				"positive_aero_de_expected": "more attached lift, negative pitch moment for a stabilizing tail"
+			},
+			"production_cross_check_max_abs_CL_CD_Cm": 0.0,
+			"reference": {
+				"S_m2": 0.479999,
+				"arp_le_aft_right_up_m": [
+					0.086778,
+					0.0,
+					-0.0525
+				],
+				"arp_minus_cg_body_frd_m": [
+					0.015882310387373,
+					0.0,
+					0.0285476465790449
+				],
+				"b_m": 1.6256,
+				"c_m": 0.295275,
+				"cg_le_aft_right_up_m": [
+					0.102660310387373,
+					0.0,
+					-0.0239523534209551
+				],
+				"tail_aft_of_arp_m": 0.751001,
+				"tail_arm_from_cg_body_frd_m": [
+					-0.735118689612627,
+					0.0,
+					-0.0501523534209551
+				]
+			},
+			"runtime_global_load_cross_check": {
+				"case_count": 18,
+				"force_tolerance_n": 0.000000001,
+				"max_abs_fx_error_n": 0.000000000000000666133814775094,
+				"max_abs_fz_error_n": 0.0000000000000035527136788005,
+				"max_abs_my_error_nm": 0.000000000000000888178419700125,
+				"moment_tolerance_nm": 0.000000001,
+				"passed": true,
+				"worst_case_coordinates": {
+					"alpha_rad": -0.0523598775598299,
+					"elevator_rad": -0.0872664625997165,
+					"qhat": -0.01
+				}
+			},
+			"source_path": "res://data/aircraft/gp_extra_300s_60.json",
+			"source_sha256": "ac18151e91916fedfb04cd15ece149286189328cdc7539d11550e1bb2536a0e8"
+		},
+		{
+			"attached_global_finite_differences": {
+				"about_alpha_rad": 0.0523598775598299,
+				"dCD_dalpha_per_rad": 0.187420541445521,
+				"dCD_dde_central_at_zero": 0.0148645892036198,
+				"dCD_dde_left_at_zero": 0.00136450250751152,
+				"dCD_dde_right_at_zero": 0.028364675899728,
+				"dCD_dqhat": 0.0,
+				"dCL_dalpha_per_rad": 4.33773600000409,
+				"dCL_dde_per_rad": 0.344031999999217,
+				"dCL_dqhat": 5.45060100000105,
+				"dCmARP_dalpha_per_rad": -0.895896000000645,
+				"dCmARP_dde_per_rad": -0.902966999999366,
+				"dCmARP_dqhat": -8.32344099999938,
+				"dCmCG_dalpha_per_rad": -0.243790721866227,
+				"dCmCG_dde_per_rad": -0.857137722816426,
+				"dCmCG_dqhat": -7.55207398119365,
+				"qhat_definition": "q*c/(2V)"
+			},
+			"coefficient_provenance": {
+				"CLde": {
+					"kind": "derived",
+					"source": "research/p51/p51-05/derive_physics.py: tail slope x elevator effectiveness",
+					"unit": "1/rad",
+					"value": 0.344032
+				},
+				"Cmde": {
+					"kind": "derived",
+					"source": "research/p51/p51-05/derive_physics.py: elevator lift x tail arm from the ARP",
+					"unit": "1/rad",
+					"value": -0.902967
+				}
+			},
+			"coefficient_samples": [
+				{
+					"CD": 0.0509905098481814,
+					"CL": 0.318665870185761,
+					"Cm_ARP": -0.0349262689320632,
+					"Cm_CG": 0.000367300303281525,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": -0.0872664625997165,
+					"force_body_frd_n": [
+						-6.47694468108489,
+						0.0,
+						-60.6967989225111
+					]
+				},
+				{
+					"CD": 0.0510435698926798,
+					"CL": 0.348688325846866,
+					"Cm_ARP": -0.113725004866341,
+					"Cm_CG": -0.0741928707268223,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0,
+					"force_body_frd_n": [
+						-6.189769367883,
+						0.0,
+						-66.3681940761862
+					]
+				},
+				{
+					"CD": 0.0535848700838096,
+					"CL": 0.378710781507972,
+					"Cm_ARP": -0.19252374080062,
+					"Cm_CG": -0.149231453758811,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0872664625997165,
+					"force_body_frd_n": [
+						-6.37259178962943,
+						0.0,
+						-72.0642207674179
+					]
+				}
+			],
+			"counterfactual_candidates": {
+				"global_CLde_to_preserve_authored_Cmde_at_tail_aft_of_ARP_per_rad": 0.344031725513005,
+				"global_ratio_equivalent_aft_arm_m_pure_lift_only": 1.27742198080411,
+				"interpretation": "Sensitivity candidates only. The ratio assumes a single lift force at the tail and omits force-axis rotation, drag, wing/control interaction, dynamic flow and coefficient provenance uncertainty.",
+				"local_tail_finite_difference_CLde_per_rad": 0.344031251916111,
+				"local_tail_finite_difference_Cmde_at_ARP_per_rad": -0.897723618891247
+			},
+			"derived_model_sha256": "9411c1b10e35335e96cd55cb1b83fb6357b7d9942e2bec052114f2eba157dbb4",
+			"global_coefficients_at_attached_probe": {
+				"CD0": 0.044672,
+				"CDde_per_rad_magnitude": 0.0135,
+				"CL0": 0.121565,
+				"CL_minD": 0.053756,
+				"CLa_per_rad": 4.337736,
+				"CLde_per_rad": 0.344032,
+				"CLq_per_rad": 5.450601,
+				"Cm0": -0.066816,
+				"Cma_per_rad": -0.895896,
+				"Cmde_per_rad": -0.902967,
+				"Cmq_per_rad": -8.323441,
+				"input_kind_CLde": "derived",
+				"input_kind_Cmde": "derived",
+				"k_induced": 0.073249
+			},
+			"id": "p51d-mustang-120",
+			"local_horizontal_tail_control_derivative_at_alpha0": {
+				"baseline_CD": 0.0024260485745545,
+				"baseline_CL": 0.0140538715271774,
+				"baseline_Cm_CG": -0.034251106842137,
+				"dCD_dde_per_rad": 0.00997789832558708,
+				"dCL_dde_per_rad": 0.344031251916111,
+				"dCmARP_dde_per_rad": -0.897723618891247,
+				"dCmCG_dde_per_rad": -0.854554730892604,
+				"tail_model_CLde_from_lift_slope_times_tau_area_ratio": 0.344031251916096
+			},
+			"negative_elevator_sign_check": {
+				"aero_de_rad": -0.0872664625997165,
+				"delta_CL": -0.0300224556611057,
+				"delta_Cm_ARP": 0.0787987359342782,
+				"delta_Cm_CG": 0.0745601710301039,
+				"negative_aero_de_expected": "less attached lift, positive pitch moment (nose-up)",
+				"pilot_elevator_te_up_deg": 5.0,
+				"positive_aero_de_expected": "more attached lift, negative pitch moment for a stabilizing tail"
+			},
+			"production_cross_check_max_abs_CL_CD_Cm": 0.0,
+			"reference": {
+				"S_m2": 1.372494,
+				"arp_le_aft_right_up_m": [
+					0.113877,
+					0.0,
+					-0.1682
+				],
+				"arp_minus_cg_body_frd_m": [
+					0.0638857436057556,
+					0.0,
+					0.0970539618386959
+				],
+				"b_m": 2.82,
+				"c_m": 0.4867,
+				"cg_le_aft_right_up_m": [
+					0.177762743605756,
+					0.0,
+					-0.0711460381613041
+				],
+				"tail_aft_of_arp_m": 1.277423,
+				"tail_arm_from_cg_body_frd_m": [
+					-1.21353725639424,
+					0.0,
+					-0.158646038161304
+				]
+			},
+			"runtime_global_load_cross_check": {
+				"case_count": 18,
+				"force_tolerance_n": 0.000000001,
+				"max_abs_fx_error_n": 0.00000000000000177635683940025,
+				"max_abs_fz_error_n": 0.000000000000014210854715202,
+				"max_abs_my_error_nm": 0.0000000000000035527136788005,
+				"moment_tolerance_nm": 0.000000001,
+				"passed": true,
+				"worst_case_coordinates": {
+					"alpha_rad": 0.0523598775598299,
+					"elevator_rad": 0.0872664625997165,
+					"qhat": 0.01
+				}
+			},
+			"source_path": "res://data/aircraft/p51d_mustang_120.json",
+			"source_sha256": "08f7eea6ce77ae230a6cf5a453f0ac12363308efd6532132f67d31be983a0551"
+		},
+		{
+			"attached_global_finite_differences": {
+				"about_alpha_rad": 0.0523598775598299,
+				"dCD_dalpha_per_rad": 0.167169474614426,
+				"dCD_dde_central_at_zero": 0.0158962860249967,
+				"dCD_dde_left_at_zero": 0.00239614167882318,
+				"dCD_dde_right_at_zero": 0.0293964303711702,
+				"dCD_dqhat": 0.0,
+				"dCL_dalpha_per_rad": 4.62855300000092,
+				"dCL_dde_per_rad": 0.440132999998677,
+				"dCL_dqhat": 6.24824300000104,
+				"dCmARP_dalpha_per_rad": -0.850788000000477,
+				"dCmARP_dde_per_rad": -0.954597999999751,
+				"dCmARP_dqhat": -7.54999400000011,
+				"dCmCG_dalpha_per_rad": -0.39949001465877,
+				"dCmCG_dde_per_rad": -0.912268555957642,
+				"dCmCG_dqhat": -6.94689964062193,
+				"qhat_definition": "q*c/(2V)"
+			},
+			"coefficient_provenance": {
+				"CLde": {
+					"kind": "derived",
+					"source": "research/avanti-s/av06/derive_physics.py: tail slope x elevator effectiveness",
+					"unit": "1/rad",
+					"value": 0.440133
+				},
+				"Cmde": {
+					"kind": "derived",
+					"source": "research/avanti-s/av06/derive_physics.py: elevator lift x tail arm from the ARP",
+					"unit": "1/rad",
+					"value": -0.954598
+				}
+			},
+			"coefficient_samples": [
+				{
+					"CD": 0.0394282972217452,
+					"CL": 0.203941618375782,
+					"Cm_ARP": 0.0387572351553916,
+					"Cm_CG": 0.0580622072089558,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": -0.0872664625997165,
+					"force_body_frd_n": [
+						-2.77772697932902,
+						0.0,
+						-19.910595251384
+					]
+				},
+				{
+					"CD": 0.0395274866112799,
+					"CL": 0.242350468359183,
+					"Cm_ARP": -0.0445471555093725,
+					"Cm_CG": -0.0215358313148939,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0,
+					"force_body_frd_n": [
+						-2.59276536633478,
+						0.0,
+						-23.6232990615516
+					]
+				},
+				{
+					"CD": 0.0422027225215202,
+					"CL": 0.280759318342584,
+					"Cm_ARP": -0.127851546174137,
+					"Cm_CG": -0.10115869242983,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0872664625997165,
+					"force_body_frd_n": [
+						-2.65677771367714,
+						0.0,
+						-27.3490510440796
+					]
+				}
+			],
+			"counterfactual_candidates": {
+				"global_CLde_to_preserve_authored_Cmde_at_tail_aft_of_ARP_per_rad": 0.440132354215004,
+				"global_ratio_equivalent_aft_arm_m_pure_lift_only": 0.761575882576403,
+				"interpretation": "Sensitivity candidates only. The ratio assumes a single lift force at the tail and omits force-axis rotation, drag, wing/control interaction, dynamic flow and coefficient provenance uncertainty.",
+				"local_tail_finite_difference_CLde_per_rad": 0.44013351578025,
+				"local_tail_finite_difference_Cmde_at_ARP_per_rad": -0.9546005193055
+			},
+			"derived_model_sha256": "a436b48f139f4e2c0bd3a97d57c4e82e589ae8b79c8fa791c2807730c6e7b648",
+			"global_coefficients_at_attached_probe": {
+				"CD0": 0.035151,
+				"CDde_per_rad_magnitude": 0.0135,
+				"CL0": 0.0,
+				"CL_minD": 0.0,
+				"CLa_per_rad": 4.628553,
+				"CLde_per_rad": 0.440133,
+				"CLq_per_rad": 6.248243,
+				"Cm0": 0.0,
+				"Cma_per_rad": -0.850788,
+				"Cmde_per_rad": -0.954598,
+				"Cmq_per_rad": -7.549994,
+				"input_kind_CLde": "derived",
+				"input_kind_Cmde": "derived",
+				"k_induced": 0.074514
+			},
+			"id": "sebart-avanti-s-a200-p100rx",
+			"local_horizontal_tail_control_derivative_at_alpha0": {
+				"baseline_CD": 0.0028153073938272,
+				"baseline_CL": -0.00000000000000000009359223530502,
+				"baseline_Cm_CG": 0.000479837136700229,
+				"dCD_dde_per_rad": 0.0,
+				"dCL_dde_per_rad": 0.44013351578025,
+				"dCmARP_dde_per_rad": -0.9546005193055,
+				"dCmCG_dde_per_rad": -0.9123980327673,
+				"tail_model_CLde_from_lift_slope_times_tau_area_ratio": 0.44013351578025
+			},
+			"negative_elevator_sign_check": {
+				"aero_de_rad": -0.0872664625997165,
+				"delta_CL": -0.038408849983401,
+				"delta_Cm_ARP": 0.0833043906647641,
+				"delta_Cm_CG": 0.0795980385238497,
+				"negative_aero_de_expected": "less attached lift, positive pitch moment (nose-up)",
+				"pilot_elevator_te_up_deg": 5.0,
+				"positive_aero_de_expected": "more attached lift, negative pitch moment for a stabilizing tail"
+			},
+			"production_cross_check_max_abs_CL_CD_Cm": 0.0,
+			"reference": {
+				"S_m2": 0.702275,
+				"arp_le_aft_right_up_m": [
+					0.206331,
+					0.0,
+					0.0
+				],
+				"arp_minus_cg_body_frd_m": [
+					0.0336689981204758,
+					0.0,
+					0.00515269059466357
+				],
+				"b_m": 2.0,
+				"c_m": 0.351137,
+				"cg_le_aft_right_up_m": [
+					0.239999998120476,
+					0.0,
+					0.00515269059466357
+				],
+				"tail_aft_of_arp_m": 0.761577,
+				"tail_arm_from_cg_body_frd_m": [
+					-0.727908001879524,
+					0.0,
+					-0.0598473094053364
+				]
+			},
+			"runtime_global_load_cross_check": {
+				"case_count": 18,
+				"force_tolerance_n": 0.000000001,
+				"max_abs_fx_error_n": 0.000000000000000888178419700125,
+				"max_abs_fz_error_n": 0.0000000000000035527136788005,
+				"max_abs_my_error_nm": 0.00000000000000133226762955019,
+				"moment_tolerance_nm": 0.000000001,
+				"passed": true,
+				"worst_case_coordinates": {
+					"alpha_rad": -0.0523598775598299,
+					"elevator_rad": 0.0,
+					"qhat": -0.01
+				}
+			},
+			"source_path": "res://data/aircraft/sebart_avanti_s_a200.json",
+			"source_sha256": "578a5438b289f9096409073f8d55ac9df07e9047d696ded713a8ecaf692445de"
+		},
+		{
+			"attached_global_finite_differences": {
+				"about_alpha_rad": 0.0523598775598299,
+				"dCD_dalpha_per_rad": 0.121579356416115,
+				"dCD_dde_central_at_zero": 0.0122083041231846,
+				"dCD_dde_left_at_zero": -0.0012918219625957,
+				"dCD_dde_right_at_zero": 0.025708430208965,
+				"dCD_dqhat": 0.0,
+				"dCL_dalpha_per_rad": 4.8117471420972,
+				"dCL_dde_per_rad": 0.4831681480022,
+				"dCL_dqhat": 4.42423558172367,
+				"dCmARP_dalpha_per_rad": -1.40228588551491,
+				"dCmARP_dde_per_rad": -1.39015872735321,
+				"dCmARP_dqhat": -12.5766766839709,
+				"dCmCG_dalpha_per_rad": -1.54691640826612,
+				"dCmCG_dde_per_rad": -1.37961186924343,
+				"dCmCG_dqhat": -12.5324719381103,
+				"qhat_definition": "q*c/(2V)"
+			},
+			"coefficient_provenance": {
+				"CLde": {
+					"kind": "derived",
+					"source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md",
+					"unit": "1/rad",
+					"value": 0.48316814799911
+				},
+				"Cmde": {
+					"kind": "derived",
+					"source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md",
+					"unit": "1/rad",
+					"value": -1.39015872735342
+				}
+			},
+			"coefficient_samples": [
+				{
+					"CD": 0.0464441880620037,
+					"CL": 0.491750953938997,
+					"Cm_ARP": 0.0713798756354792,
+					"Cm_CG": 0.0980511409733441,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": -0.0872664625997165,
+					"force_body_frd_n": [
+						-0.93380757882422,
+						0.0,
+						-22.3229496171577
+					]
+				},
+				{
+					"CD": 0.046235446774397,
+					"CL": 0.533915329055736,
+					"Cm_ARP": -0.0499343589527774,
+					"Cm_CG": -0.0229395983513919,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0,
+					"force_body_frd_n": [
+						-0.824561719111529,
+						0.0,
+						-24.2270726347389
+					]
+				},
+				{
+					"CD": 0.0485749390923462,
+					"CL": 0.576079704172474,
+					"Cm_ARP": -0.171248593541034,
+					"Cm_CG": -0.142736554205583,
+					"alpha_rad": 0.0523598775598299,
+					"elevator_aero_rad_te_down_positive": 0.0872664625997165,
+					"force_body_frd_n": [
+						-0.830422735286486,
+						0.0,
+						-26.1372281480656
+					]
+				}
+			],
+			"counterfactual_candidates": {
+				"global_CLde_to_preserve_authored_Cmde_at_tail_aft_of_ARP_per_rad": 0.48316814799911,
+				"global_ratio_equivalent_aft_arm_m_pure_lift_only": 0.607302,
+				"interpretation": "Sensitivity candidates only. The ratio assumes a single lift force at the tail and omits force-axis rotation, drag, wing/control interaction, dynamic flow and coefficient provenance uncertainty.",
+				"local_tail_finite_difference_CLde_per_rad": 0.483168147998904,
+				"local_tail_finite_difference_Cmde_at_ARP_per_rad": -1.38034797286385
+			},
+			"derived_model_sha256": "2285e726ee211417a2b74b8441d61fc9b52e8e6f9cb86e524df0c4b67dff351b",
+			"global_coefficients_at_attached_probe": {
+				"CD0": 0.0432802545830122,
+				"CDde_per_rad_magnitude": 0.0135,
+				"CL0": 0.281972837846622,
+				"CL_minD": 0.3,
+				"CLa_per_rad": 4.81174714209802,
+				"CLde_per_rad": 0.48316814799911,
+				"CLq_per_rad": 4.4242355817273,
+				"Cm0": 0.0234891583166733,
+				"Cma_per_rad": -1.40228588551515,
+				"Cmde_per_rad": -1.39015872735342,
+				"Cmq_per_rad": -12.5766766839707,
+				"input_kind_CLde": "derived",
+				"input_kind_Cmde": "derived",
+				"k_induced": 0.0540092770819689
+			},
+			"id": "turbo-lumber-evolution",
+			"local_horizontal_tail_control_derivative_at_alpha0": {
+				"baseline_CD": 0.00312156080247264,
+				"baseline_CL": -0.0203286845925107,
+				"baseline_Cm_CG": 0.0573468379038596,
+				"dCD_dde_per_rad": -0.0161200407640828,
+				"dCL_dde_per_rad": 0.483168147998904,
+				"dCmARP_dde_per_rad": -1.38034797286385,
+				"dCmCG_dde_per_rad": -1.37121371415853,
+				"tail_model_CLde_from_lift_slope_times_tau_area_ratio": 0.48316814799911
+			},
+			"negative_elevator_sign_check": {
+				"aero_de_rad": -0.0872664625997165,
+				"delta_CL": -0.0421643751167386,
+				"delta_Cm_ARP": 0.121314234588257,
+				"delta_Cm_CG": 0.120990739324736,
+				"negative_aero_de_expected": "less attached lift, positive pitch moment (nose-up)",
+				"pilot_elevator_te_up_deg": 5.0,
+				"positive_aero_de_expected": "more attached lift, negative pitch moment for a stabilizing tail"
+			},
+			"production_cross_check_max_abs_CL_CD_Cm": 0.0,
+			"reference": {
+				"S_m2": 0.328223,
+				"arp_le_aft_right_up_m": [
+					0.05271875,
+					0.0,
+					0.0964620621800532
+				],
+				"arp_minus_cg_body_frd_m": [
+					0.00728125,
+					0.0,
+					-0.0986378612668112
+				],
+				"b_m": 1.555,
+				"c_m": 0.211075884244373,
+				"cg_le_aft_right_up_m": [
+					0.06,
+					0.0,
+					-0.00217579908675799
+				],
+				"tail_aft_of_arp_m": 0.607302,
+				"tail_arm_from_cg_body_frd_m": [
+					-0.60002075,
+					0.0,
+					0.029824200913242
+				]
+			},
+			"runtime_global_load_cross_check": {
+				"case_count": 18,
+				"force_tolerance_n": 0.000000001,
+				"max_abs_fx_error_n": 0.000000000000000222044604925031,
+				"max_abs_fz_error_n": 0.0000000000000035527136788005,
+				"max_abs_my_error_nm": 0.000000000000000444089209850063,
+				"moment_tolerance_nm": 0.000000001,
+				"passed": true,
+				"worst_case_coordinates": {
+					"alpha_rad": 0.0523598775598299,
+					"elevator_rad": 0.0,
+					"qhat": -0.01
+				}
+			},
+			"source_path": "res://data/aircraft/turbo_lumber_evolution.json",
+			"source_sha256": "abc812f1363504ceae3cca9a988e2b94c3f8f9e945340209cc8edd19726ffd70"
+		}
+	],
+	"condition": {
+		"alpha_probe_deg": 3.0,
+		"alpha_probe_rad": 0.0523598775598299,
+		"attached_only": true,
+		"elevator_sample_deg": 5.0,
+		"elevator_sample_rad": 0.0872664625997165,
+		"finite_difference_step_rad": 0.00001,
+		"qbar_pa": 137.8125,
+		"rho_kg_m3": 1.225,
+		"speed_m_s": 15.0
+	},
+	"format": "openrc-coefficient-contract-experiments-v2",
+	"method": {
+		"finite_difference": "Central differences use 1e-5 rad for alpha, aero elevator and qhat. The absolute-value global CDde term is nondifferentiable at de=0, so both one-sided slopes are also retained.",
+		"global_oracle": "CL = CL0 + CLa*alpha + CLde*de + CLq*qhat; CD = CD0 + k*(CL_static-CL_minD)^2 + abs(CDde*de); Cm_ARP = Cm0 + Cma*alpha + Cmde*de + Cmq*qhat. qhat=q*c/(2V). The body force is resolved in FRD and M_CG=M_ARP+(r_ARP-CG cross F).",
+		"input_loader": "AircraftData.load_file validates and derives each catalog model; raw source bytes are SHA-256 fingerprinted.",
+		"local_oracle": "Scalar horizontal-tail law at alpha=0, qhat=0; section lift and drag are evaluated at de=+/-1e-5 rad and force is resolved with the authored tail arm about CG. This isolates the local tail's elevator derivative; the local wing has no direct elevator term.",
+		"production_comparison": "Aero.coefficients is cross-checked at alpha=+/-3 deg and elevator=+/-5 deg. Aero._global_loads is separately cross-checked for Fx, Fz and My_CG over alpha=+/-3 deg, elevator=-5/0/+5 deg and qhat=-0.01/0/+0.01. Neither function supplies oracle results.",
+		"sign_and_frame": {
+			"arp_transfer": "r_ARP-CG=[-(arp_x-cg_x), arp_y-cg_y, -(arp_z-cg_z)]; M_CG=M_ARP+r cross F",
+			"body_axes": "FRD: x forward, y right, z down",
+			"data_control": "aero elevator positive = trailing edge down",
+			"mapping": "pilot +5 deg maps to aero de=-5 deg; negative aero elevator therefore decreases attached CL and, for negative Cmde, adds nose-up Cm",
+			"pilot_control": "pilot elevator positive = trailing edge up",
+			"position_datum": "LE data [aft,right,up] to body arm [-(x-cg_x), y-cg_y, -(z-cg_z)]"
+		},
+		"state_layout": "RigidBody.make_state constructs the 13-value state with body rates at indices 10..12; the pitch rate passed to runtime is q=2*V*qhat/c."
+	},
+	"purpose": "Independent scalar audit of the attached global coefficient reference, force transfer ARP to CG, and local horizontal-tail elevator force/moment derivative.",
+	"scope": "Seven catalog aircraft at fixed 15 m/s and sea-level density. Coefficients are authored or estimated inputs; agreement between two model paths is an internal contract check, not physical validation.",
+	"validation": {
+		"passed": true,
+		"production_coefficients_cross_check_passed": true,
+		"runtime_force_tolerance_n": 0.000000001,
+		"runtime_global_load_case_count": 126,
+		"runtime_global_load_cross_check_passed": true,
+		"runtime_max_abs_fx_error_n": 0.00000000000000177635683940025,
+		"runtime_max_abs_fz_error_n": 0.000000000000014210854715202,
+		"runtime_max_abs_my_error_nm": 0.0000000000000035527136788005,
+		"runtime_moment_tolerance_nm": 0.000000001,
+		"source_hash_guard_passed": true,
+		"source_hashes_end": {
+			"aero_gd": "cf034742d69332061eb9414ccd57f7d0b6cb6e1c2f17cc5ae39e70fe26655539",
+			"probe_gd": "5f39d9c43e2402715e96e6fec5a23e7a9d032ca7e9fb45f186d385b8c7210761"
+		},
+		"source_hashes_start": {
+			"aero_gd": "cf034742d69332061eb9414ccd57f7d0b6cb6e1c2f17cc5ae39e70fe26655539",
+			"probe_gd": "5f39d9c43e2402715e96e6fec5a23e7a9d032ca7e9fb45f186d385b8c7210761"
+		}
+	}
+}

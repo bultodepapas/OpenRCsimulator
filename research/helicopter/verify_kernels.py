@@ -1,4 +1,4 @@
-"""HELI-03a/04-R1/05/05a/13: native verification and disposable defects.
+"""HELI-03a/04-R1/05/05a/06a–c/13: native verification and disposable defects.
 
 Run from any directory. --out must name a fresh directory; generated logs are
 not source artifacts. --parse-all additionally checks every application script.
@@ -22,6 +22,9 @@ SCRIPTS = (
     "physics/rotorcraft/dynamic_inflow.gd", "physics/rotorcraft/main_rotor.gd",
     "physics/rotorcraft/main_rotor_stage.gd", "tests/test_heli_dynamic_inflow.gd",
     "tests/test_heli_main_rotor.gd", "tests/test_heli_main_rotor_stage.gd",
+    "physics/rotorcraft/tail_rotor.gd", "tests/test_heli_tail_rotor.gd",
+    "physics/rotorcraft/airframe.gd", "tests/test_heli_airframe.gd",
+    "physics/rotorcraft/aerodynamic_stage.gd", "tests/test_heli_aerodynamic_stage.gd",
 )
 ERROR = re.compile(r"^(?:SCRIPT |SHADER )?ERROR:", re.MULTILINE)
 
@@ -60,6 +63,8 @@ def main() -> int:
         run("oracle-current", [sys.executable, "research/helicopter/reference/make_oracle.py", "--check"])
         run("dynamic-oracle-current", [sys.executable, "research/helicopter/reference/make_dynamic_oracle.py", "--check"])
         run("main-oracle-current", [sys.executable, "research/helicopter/reference/make_main_rotor_oracle.py", "--check"])
+        run("tail-oracle-current", [sys.executable, "research/helicopter/reference/make_tail_rotor_oracle.py", "--check"])
+        run("airframe-oracle-current", [sys.executable, "research/helicopter/reference/make_airframe_oracle.py", "--check"])
     run("math-boundary", [sys.executable, "app/tests/check_transcendentals.py"])
     for index, script in enumerate(SCRIPTS):
         run(f"parse-kernel-{index}", engine(APP, "--check-only", "--script", f"res://{script}"))
@@ -71,6 +76,11 @@ def main() -> int:
     run("main-rotor", engine(APP, "--script", "res://tests/test_heli_main_rotor.gd", "--",
         f"--oracle={ROOT / 'research/helicopter/reference/main_rotor_oracle.json'}"))
     run("main-stage", engine(APP, "--script", "res://tests/test_heli_main_rotor_stage.gd"))
+    run("tail-rotor", engine(APP, "--script", "res://tests/test_heli_tail_rotor.gd", "--",
+        f"--oracle={ROOT / 'research/helicopter/reference/tail_rotor_oracle.json'}"))
+    run("airframe", engine(APP, "--script", "res://tests/test_heli_airframe.gd", "--",
+        f"--oracle={ROOT / 'research/helicopter/reference/airframe_oracle.json'}"))
+    run("aerodynamic-stage", engine(APP, "--script", "res://tests/test_heli_aerodynamic_stage.gd"))
     run("airplane-goldens", engine(APP, "--script", "res://tests/test_golden.gd"))
     hashes: list[str] = []
     for fps in (30, 60, 144):
@@ -119,6 +129,43 @@ def main() -> int:
         (disposable / "project.godot").write_text("config_version=5\n", encoding="utf-8")
         (disposable / "physics/rotorcraft/main_rotor.gd").write_text(rotor_source.replace(old, new), encoding="utf-8")
         run(name, engine(disposable, "--script", "res://tests/test_heli_main_rotor.gd"), expect_defect=True)
+
+    tail_source = (APP / "physics/rotorcraft/tail_rotor.gd").read_text(encoding="utf-8")
+    tail_defects = {
+        "tail-yaw-arm-reversed": ("var mz: float = -model.hub_distance_aft_m * fy", "var mz: float = model.hub_distance_aft_m * fy"),
+        "tail-blockage-omitted": ("var thrust: float = model.blockage_factor * scale * ct", "var thrust: float = scale * ct"),
+        "tail-hub-roll-velocity-reversed": ("+ model.hub_height_above_cg_m * body_rates[0]", "- model.hub_height_above_cg_m * body_rates[0]"),
+    }
+    for name, (old, new) in tail_defects.items():
+        if tail_source.count(old) != 1:
+            raise RuntimeError(f"tail-rotor mutation anchor drifted: {name}")
+        disposable = out / name / "app"
+        for relative in ("physics/rotorcraft/tail_rotor.gd", "physics/math3d.gd", "tests/test_heli_tail_rotor.gd"):
+            target = disposable / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(APP / relative, target)
+        (disposable / "project.godot").write_text("config_version=5\n", encoding="utf-8")
+        (disposable / "physics/rotorcraft/tail_rotor.gd").write_text(tail_source.replace(old, new), encoding="utf-8")
+        run(name, engine(disposable, "--script", "res://tests/test_heli_tail_rotor.gd"), expect_defect=True)
+
+    airframe_source = (APP / "physics/rotorcraft/airframe.gd").read_text(encoding="utf-8")
+    airframe_defects = {
+        "airframe-wake-sign-reversed": ("var uz: float = point_z - wake[2]", "var uz: float = point_z + wake[2]"),
+        "airframe-pitch-point-sign-reversed": ("rates[0] * ry - rates[1] * rx", "rates[0] * ry + rates[1] * rx"),
+        "airframe-tail-force-injects-energy": ("ideal = -scale * (model.horizontal_tail_lift_curve_slope_per_rad", "ideal = scale * (model.horizontal_tail_lift_curve_slope_per_rad"),
+        "airframe-tail-cap-includes-lateral-flow": ("var cap: float = scale * (ux * ux + uz * uz)", "var cap: float = scale * (ux * ux + uy * uy + uz * uz)"),
+    }
+    for name, (old, new) in airframe_defects.items():
+        if airframe_source.count(old) != 1:
+            raise RuntimeError(f"airframe mutation anchor drifted: {name}")
+        disposable = out / name / "app"
+        for relative in ("physics/rotorcraft/airframe.gd", "physics/math3d.gd", "tests/test_heli_airframe.gd"):
+            target = disposable / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(APP / relative, target)
+        (disposable / "project.godot").write_text("config_version=5\n", encoding="utf-8")
+        (disposable / "physics/rotorcraft/airframe.gd").write_text(airframe_source.replace(old, new), encoding="utf-8")
+        run(name, engine(disposable, "--script", "res://tests/test_heli_airframe.gd"), expect_defect=True)
 
     if args.parse_all:
         scripts = sorted(path for path in APP.rglob("*.gd") if ".godot" not in path.parts)

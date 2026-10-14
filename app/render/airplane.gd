@@ -7,6 +7,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const SurfaceContract := preload("res://physics/control_surfaces.gd")
 const Controls := preload("res://aircraft/ugly_stik_controls.gd")
 const UglyStik := preload("res://aircraft/ugly_stik_model.gd")
+const HX700 := preload("res://aircraft/hx700_model.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
@@ -15,6 +16,7 @@ const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
+const X_CELL_ID := "xcell-60-research"
 
 # Accepted builds populate this small render-only cache. Every new build revalidates dependencies.
 static var _accepted_datums: Dictionary = {}
@@ -29,6 +31,20 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	if family.is_empty():
 		push_error("render/airplane.gd: unknown aircraft '%s'" % id)
 		return {}
+	# The static Home composition may display the helicopter, but it has no
+	# airplane manifest, propeller, control hinges, or AircraftData v2 record.
+	# Keep that visual route explicit and out of the airplane model registry.
+	if Catalog.is_rotorcraft(id):
+		if id != X_CELL_ID or family != "hx-700" or not expected_presentation.is_empty():
+			push_error("render/airplane.gd: unsupported rotorcraft presentation '%s'" % id)
+			return {}
+		var helicopter: Dictionary = HX700.build()
+		if helicopter.is_empty() or not (helicopter.get("root") is Node3D):
+			return {}
+		helicopter.aircraft_id = id
+		helicopter.visual_family = family
+		helicopter.root.set_meta("aircraft_id", id)
+		return helicopter
 	var registry: Script = load("res://aircraft/model_registry.gd")
 	var resolved: Dictionary = registry.describe(family)
 	if not resolved.get("ok", false):
@@ -43,7 +59,8 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	if builder == null or not builder.has_method("build"):
 		push_error("Aircraft model builder has no build method: " + str(manifest.builder.script))
 		return {}
-	var airplane: Dictionary = builder.call("build")
+	# V1 builders keep their zero-argument ABI. V2 constructs imported scenes from checked bindings.
+	var airplane: Dictionary = builder.call("build", manifest) if manifest.version == 2 else builder.call("build")
 	var verified: Dictionary = registry.validate_derived(manifest, airplane)
 	if not verified.get("ok", false):
 		if airplane.get("root") is Node:

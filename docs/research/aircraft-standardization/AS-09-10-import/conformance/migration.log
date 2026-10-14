@@ -1,0 +1,8 @@
+app/data/aircraft/jensen_ugly_stik_60.json: jensen-das-ugly-stik-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/gp_extra_300s_60.json: gp-extra-300s-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/p51d_mustang_120.json: p51d-mustang-120 v2, glow_prop, prescribed_fuel
+app/data/aircraft/sebart_avanti_s_a200.json: sebart-avanti-s-a200-p100rx v2, turbine, prescribed_fuel
+app/data/aircraft/synthetic_stik_electric_4s.json: synthetic_stik_electric_4s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_6s.json: synthetic_stik_electric_6s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_4s_battery.json: synthetic_stik_electric_4s_battery v2, electric_prop, ocv_resistance
+app/data/aircraft/synthetic_stik_electric_6s_battery.json: synthetic_stik_electric_6s_battery v2, electric_prop, ocv_resistance

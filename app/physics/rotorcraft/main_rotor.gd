@@ -78,8 +78,19 @@ static func evaluate(model: Dictionary, omega: float, induced_velocity: float,
 		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
 		collective_75: float, cyclic_forward: float, cyclic_right: float,
 		a1: float, b1: float, diagnostics: bool = true) -> Dictionary:
-	if not _prepared(model) \
-		or not _vector(hub_air_velocity) or not _vector(body_rates) \
+	if not _prepared(model):
+		return {"ok": false}
+	return _evaluate_prepared(model, omega, induced_velocity, hub_air_velocity, body_rates,
+		collective_75, cyclic_forward, cyclic_right, a1, b1, diagnostics)
+
+
+# Internal stage entry. Its caller has already validated and frozen the complete
+# model context; dynamic inputs and computed outputs are still checked below.
+static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity: float,
+		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
+		collective_75: float, cyclic_forward: float, cyclic_right: float,
+		a1: float, b1: float, diagnostics: bool = true) -> Dictionary:
+	if not _vector(hub_air_velocity) or not _vector(body_rates) \
 		or not _finite([omega, induced_velocity, collective_75, cyclic_forward, cyclic_right, a1, b1]) or omega < 0.0:
 		return {"ok": false}
 	for angle: float in [collective_75, cyclic_forward, cyclic_right, a1, b1]:
@@ -203,8 +214,7 @@ static func _number(value: Variant) -> bool:
 # Cheap structural/numeric guard for the immutable owner-prepared context.
 # Coupled derived-value identity is established by prepare, not a file reader here.
 static func _prepared(model: Dictionary) -> bool:
-	if not model.is_read_only() or model.get("law") != LAW or model.size() != PREPARED_KEYS.size() \
-		or not model.has_all(PREPARED_KEYS):
+	if not _prepared_header(model):
 		return false
 	# prepare converts every numeric field to float. Batch the native dictionary
 	# read and inline finite/type checks rather than 21 script dispatches.
@@ -217,3 +227,8 @@ static func _prepared(model: Dictionary) -> bool:
 		and model.omega_nominal_rad_s > 0.0 and model.blade_lift_curve_slope_per_rad > 0.0 \
 		and model.thrust_coefficient_max > 0.0 and model.solidity > 0.0 and model.solidity < 1.0 \
 		and model.rotor_blade_count == 2.0 and absf(model.rotation_sense) == 1.0
+
+
+static func _prepared_header(model: Dictionary) -> bool:
+	return model.is_read_only() and model.get("law") == LAW and model.size() == PREPARED_KEYS.size() \
+		and model.has_all(PREPARED_KEYS)

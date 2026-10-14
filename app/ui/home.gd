@@ -27,7 +27,9 @@ const UpdateNotice := preload("res://ui/update_notice.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
+signal ground_vehicle_requested
 signal workshop_requested(from: Control)
+signal natural_random_requested(from: Control)
 signal quit_requested
 ## The player asked for the next interface language (a Preferences.LANGUAGES code).
 signal language_requested(code: String)
@@ -56,7 +58,9 @@ var time_of_day: String = "day"
 var start_button: Button
 
 var fly_button: Button
+var ground_vehicle_button: Button
 var workshop_button: Button
+var natural_random_button: Button
 var weather_button: Button
 var time_button: Button
 var language_button: Button
@@ -198,7 +202,7 @@ func _init() -> void:
 	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
 	fly_row.add_child(weather_button)
 	column.add_child(fly_row)
-	workshop_button = _button("Aircraft Workshop", "")
+	workshop_button = _button("Workshop", "")
 	workshop_button.name = "Workshop"
 	workshop_button.add_theme_font_size_override("font_size", 16)
 	for state: String in ["normal", "hover", "pressed", "disabled"]:
@@ -207,7 +211,27 @@ func _init() -> void:
 		compact.content_margin_bottom = 2
 		workshop_button.add_theme_stylebox_override(state, compact)
 	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
-	column.add_child(workshop_button)
+	var mode_row := HBoxContainer.new()
+	mode_row.add_theme_constant_override("separation", 8)
+	workshop_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	workshop_button.clip_text = true
+	mode_row.add_child(workshop_button)
+	natural_random_button = _button("Natural Random", "")
+	natural_random_button.name = "NaturalRandom"
+	natural_random_button.add_theme_font_size_override("font_size", 16)
+	natural_random_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	natural_random_button.clip_text = true
+	for state: String in ["normal", "hover", "pressed", "disabled"]:
+		natural_random_button.add_theme_stylebox_override(state, workshop_button.get_theme_stylebox(state))
+	natural_random_button.pressed.connect(func() -> void: natural_random_requested.emit(natural_random_button))
+	mode_row.add_child(natural_random_button)
+	column.add_child(mode_row)
+	ground_vehicle_button = _button("RC cars · Bisonte MT8", "")
+	ground_vehicle_button.name = "GroundVehicles"
+	ground_vehicle_button.add_theme_font_size_override("font_size", 16)
+	ground_vehicle_button.custom_minimum_size.y = 36
+	ground_vehicle_button.pressed.connect(func() -> void: ground_vehicle_requested.emit())
+	column.add_child(ground_vehicle_button)
 	column.add_child(_gap(10))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
@@ -266,7 +290,13 @@ func _ready() -> void:
 	# Fly reach the aircraft arrows, so changing airplane is two keys away from the start.
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(workshop_button)
 	workshop_button.focus_neighbor_top = workshop_button.get_path_to(fly_button)
-	workshop_button.focus_neighbor_bottom = workshop_button.get_path_to(language_button)
+	workshop_button.focus_neighbor_bottom = workshop_button.get_path_to(ground_vehicle_button)
+	workshop_button.focus_neighbor_right = workshop_button.get_path_to(natural_random_button)
+	natural_random_button.focus_neighbor_left = natural_random_button.get_path_to(workshop_button)
+	natural_random_button.focus_neighbor_top = natural_random_button.get_path_to(weather_button)
+	natural_random_button.focus_neighbor_bottom = natural_random_button.get_path_to(ground_vehicle_button)
+	ground_vehicle_button.focus_neighbor_top = ground_vehicle_button.get_path_to(workshop_button)
+	ground_vehicle_button.focus_neighbor_bottom = ground_vehicle_button.get_path_to(language_button)
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button)
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
@@ -309,6 +339,7 @@ func set_aircraft(id: String) -> void:
 	set_start_choice(start_choice)
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
+	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
 	var had_focus := fly_button.has_focus()
 	aircraft_name_label.text = tr(e.name) # proper names have no catalog entry and pass through; the Timber's fictional name has one
 	aircraft_summary_label.text = e.summary
@@ -316,6 +347,10 @@ func set_aircraft(id: String) -> void:
 	limits_label.visible = flyable
 	fly_button.disabled = _fly_sent or not flyable
 	fly_button.focus_mode = Control.FOCUS_ALL if flyable else Control.FOCUS_NONE
+	workshop_button.disabled = rotorcraft
+	workshop_button.tooltip_text = tr("Aircraft Workshop is not available for this rotorcraft yet.") if rotorcraft else ""
+	natural_random_button.disabled = rotorcraft
+	natural_random_button.tooltip_text = tr("Natural Random currently supports airplanes only.") if rotorcraft else ""
 	if had_focus and not flyable:
 		next_button.grab_focus()
 	if is_node_ready():
@@ -323,6 +358,13 @@ func set_aircraft(id: String) -> void:
 
 
 func set_start_choice(choice: String) -> void:
+	if Catalog.is_rotorcraft(aircraft_id):
+		start_choice = "airborne"
+		start_button.disabled = true
+		start_button.text = tr("Start: hover")
+		start_button.tooltip_text = tr("The experimental research helicopter starts in a trimmed hover.")
+		limits_label.text = tr("Experimental helicopter: hover start only; flight validation pending.")
+		return
 	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
 	var half_power: bool = FlightSession.half_power_start_supported(aircraft_id)
 	start_choice = "runway" if supported and choice == "runway" else "airborne"
@@ -337,6 +379,8 @@ func set_start_choice(choice: String) -> void:
 
 
 func _cycle_start_choice() -> void:
+	if Catalog.is_rotorcraft(aircraft_id):
+		return
 	var choices: Array[String] = ["airborne"]
 	if FlightSession.runway_aircraft_supported(aircraft_id) and runway_available:
 		choices.append("runway")

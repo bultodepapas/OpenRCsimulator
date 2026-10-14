@@ -36,6 +36,7 @@ SOURCE_PATHS = [
     "app/physics/glow/thermal.gd",
     "app/physics/glow/fuel_mass.gd",
     "app/physics/glow/propeller.gd",
+    "app/physics/glow/vibration.gd",
     "app/physics/dynamics.gd",
     "app/physics/propulsion.gd",
     "app/physics/glow/operating_point.gd",
@@ -125,7 +126,7 @@ def read_runs() -> tuple[dict[int, dict[tuple[str, str], dict[str, Any]]], list[
     shared_sources = None
     for hz, path in RUNS.items():
         raw = json.loads(path.read_text(encoding="utf-8"))
-        if raw.get("format") != "openrc-glow-flight-experiment v2" or raw.get("ok") is not True:
+        if raw.get("format") != "openrc-glow-flight-experiment v3" or raw.get("ok") is not True:
             raise ValueError(f"{path.relative_to(ROOT)} is not a successful supported flight bench output")
         sources = raw.get('source_sha256', {})
         if set(sources) != set(SOURCE_PATHS) or any(
@@ -241,6 +242,41 @@ def compare_metric(name: str, candidate: list[float], reference: list[float]) ->
     return result
 
 
+def mode_events(run: dict[str, Any], hz: int) -> list[dict[str, Any]]:
+    events = run.get("mode_events")
+    if not isinstance(events, list):
+        raise ValueError("missing accepted-step mode-event brackets")
+    previous_end = 0.0
+    for event in events:
+        if not isinstance(event, dict) or event.get("kind") not in {"command", "accepted_step"}:
+            raise ValueError("invalid mode-event kind")
+        lower = finite(event.get("lower_time_s"), "event lower time")
+        upper = finite(event.get("upper_time_s"), "event upper time")
+        limit = 0.0 if event["kind"] == "command" else 1.0 / hz
+        if lower < previous_end - 1e-8 or upper < lower or upper - lower > limit + 1e-8:
+            raise ValueError("invalid mode-event time bracket")
+        for prefix in ("from", "to"):
+            if type(event.get(prefix + "_running")) is not bool or type(event.get(prefix + "_reason")) is not int:
+                raise ValueError("invalid mode-event state")
+            if event[prefix + "_reason"] not in range(6):
+                raise ValueError("invalid mode-event reason")
+        previous_end = upper
+    return events
+
+
+def compare_mode_events(candidate: dict[str, Any], reference: dict[str, Any], hz: int) -> dict[str, Any]:
+    coarse, fine = mode_events(candidate, hz), mode_events(reference, 960)
+    keys = ("kind", "from_running", "from_reason", "to_running", "to_reason")
+    same = len(coarse) == len(fine) and all(all(a[k] == b[k] for k in keys) for a, b in zip(coarse, fine))
+    differences = [abs(a["upper_time_s"] - b["upper_time_s"]) for a, b in zip(coarse, fine)] if same else []
+    maximum = max(differences, default=0.0) if same else None
+    return {"candidate_brackets": coarse, "reference_brackets": fine,
+            "same_ordered_transitions": same, "max_endpoint_difference_s": maximum,
+            "endpoint_difference_budget_s": 1.0 / hz,
+            "passes_budget": same and maximum <= 1.0 / hz + 1e-8,
+            "scope": "Command transitions are exact-time; autonomous running/reason changes are bracketed by accepted steps. This compares lifecycle events within the mean model, not crank pulses or physical ignition timing."}
+
+
 def compare_runs(candidate: dict[str, Any], reference: dict[str, Any], candidate_hz: int) -> dict[str, Any]:
     candidate_times = times(candidate)
     reference_times = times(reference)
@@ -262,13 +298,15 @@ def compare_runs(candidate: dict[str, Any], reference: dict[str, Any], candidate
     r_indices = c_indices
     opportunities_c, fires_c = (int(round(c_final["continuous"][i])) for i in c_indices)
     opportunities_r, fires_r = (int(round(r_final["continuous"][i])) for i in r_indices)
-    passed = all(bool(item["passes_budget"]) for item in metrics.values())
+    mode_timing = compare_mode_events(candidate, reference, candidate_hz)
+    passed = all(bool(item["passes_budget"]) for item in metrics.values()) and mode_timing["passes_budget"]
     return {
         "candidate_hz": candidate_hz,
         "reference_hz": 960,
         "common_sample_count": len(candidate_times),
         "comparison_method": "same-time comparison of every saved 0.1 s snapshot; fuel is trapezoid-integrated from saved fuel-transport flow",
         "metrics": metrics,
+        "mode_event_timing": mode_timing,
         "firing_events": {
             "candidate_opportunities": opportunities_c,
             "reference_opportunities": opportunities_r,
@@ -379,9 +417,10 @@ def build() -> dict[str, Any]:
         },
         "event_timing_limit": {
             "accepted_step_quantization_s": {str(hz): 1.0 / hz for hz in RUNS},
-            "saved_event_observation_interval_s": CONFIGURATION["sample_interval_s"],
+            "saved_trajectory_observation_interval_s": CONFIGURATION["sample_interval_s"],
+            "lifecycle_event_observation": "Every accepted step, with exact-time command events and before/after brackets for autonomous running/reason transitions. Runway starter occurs before the initial sample and is excluded.",
             "model": "Mean-cycle work has no crank-angle-resolved torque ripple; firing opportunity/fire counters advance on accepted simulation steps.",
-            "limitation": "The report compares endpoint event counts only. It cannot establish cycle pulse timing or event phase against a measured cycle oracle; no matched physical cycle trace is available.",
+            "limitation": "Lifecycle brackets are numerical mean-model evidence. Firing opportunities/successes still compare endpoint counts only; this does not establish crank pulse timing or physical ignition phase.",
         },
         "source_hashes": source_hashes,
         "source_hash_scope": "Declared runner/runtime files hashed by each bench before and after execution; changed sources refuse the run, and all refinement rates must share the same hashes. Later working-tree edits do not relabel retained trajectories.",

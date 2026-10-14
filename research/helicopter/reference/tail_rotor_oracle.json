@@ -1,0 +1,802 @@
+{
+  "cases": [
+    {
+      "expected": {
+        "advance_ratio": 0.0,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -2.3573015573201017,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 0.0,
+        "induced_velocity_m_s": 2.6283548004124,
+        "loads": [
+          0.0,
+          -2.3573015573201017,
+          0.0,
+          -0.18858412458560814,
+          -0.046455781380832666,
+          2.145144417161293
+        ],
+        "moment_body_frd_nm": [
+          -0.18858412458560814,
+          -0.046455781380832666,
+          2.145144417161293
+        ],
+        "normal_flow_ratio": 0.0,
+        "normal_velocity_m_s": 0.0,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.00426401530289435,
+        "thrust_coefficient_ideal": 0.00426401530289435,
+        "thrust_collective_slope_per_rad": 0.05685353737192467,
+        "thrust_limited": false,
+        "thrust_n": 2.3573015573201017,
+        "thrust_normal_flow_slope": 0.0426401530289435,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.000536824428778391,
+        "torque_nm": 0.046455781380832666,
+        "trim_ct": 0.0037413515080171804,
+        "trim_lambda": 0.04559088303120594,
+        "wake_factor": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.075
+      },
+      "name": "hover_small_collective",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.0,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          1.2572274972373876,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 0.0,
+        "induced_velocity_m_s": -1.4017892268866134,
+        "loads": [
+          0.0,
+          1.2572274972373876,
+          0.0,
+          0.100578199778991,
+          -0.03959603812984856,
+          -1.1440770224860228
+        ],
+        "moment_body_frd_nm": [
+          0.100578199778991,
+          -0.03959603812984856,
+          -1.1440770224860228
+        ],
+        "normal_flow_ratio": 0.0,
+        "normal_velocity_m_s": 0.0,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": -0.0022741414948769865,
+        "thrust_coefficient_ideal": -0.0022741414948769865,
+        "thrust_collective_slope_per_rad": 0.05685353737192467,
+        "thrust_limited": false,
+        "thrust_n": -1.2572274972373876,
+        "thrust_normal_flow_slope": 0.0426401530289435,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.0004575559794526129,
+        "torque_nm": 0.03959603812984856,
+        "trim_ct": 0.0037413515080171804,
+        "trim_lambda": 0.04559088303120594,
+        "wake_factor": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": -0.04
+      },
+      "name": "negative_collective_hover",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.08709175268430183,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -3.885743022204615,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 8.810950690617059,
+        "induced_velocity_m_s": 3.7397383123700845,
+        "loads": [
+          0.0,
+          -3.885743022204615,
+          0.0,
+          -0.3108594417763692,
+          -0.0585510985782364,
+          3.5360261502062
+        ],
+        "moment_body_frd_nm": [
+          -0.3108594417763692,
+          -0.0585510985782364,
+          3.5360261502062
+        ],
+        "normal_flow_ratio": 0.002392046544085813,
+        "normal_velocity_m_s": 0.242,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.0070287433775048005,
+        "thrust_coefficient_ideal": 0.0070287433775048005,
+        "thrust_collective_slope_per_rad": 0.06213386650411623,
+        "thrust_limited": false,
+        "thrust_n": 3.885743022204615,
+        "thrust_normal_flow_slope": 0.08110965170460947,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.0006765930765632866,
+        "torque_nm": 0.0585510985782364,
+        "trim_ct": 0.005831589560304854,
+        "trim_lambda": 0.034574650077193084,
+        "wake_factor": 0.8942307692307693
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.3,
+          -0.15,
+          0.2
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          8.0,
+          0.4,
+          0.2
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.11
+      },
+      "name": "forward_partial_wake_with_body_rates",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.07907591881275415,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -3.4765889900361797,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 8.0,
+        "induced_velocity_m_s": 3.5239172556993115,
+        "loads": [
+          0.0,
+          -3.4765889900361797,
+          0.0,
+          -0.2781271192028944,
+          -0.054749254209416974,
+          3.1636959809329235
+        ],
+        "moment_body_frd_nm": [
+          -0.2781271192028944,
+          -0.054749254209416974,
+          3.1636959809329235
+        ],
+        "normal_flow_ratio": 0.0029653469554782805,
+        "normal_velocity_m_s": 0.3,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.006288643304610211,
+        "thrust_coefficient_ideal": 0.006288643304610211,
+        "thrust_collective_slope_per_rad": 0.060603908763511814,
+        "thrust_limited": false,
+        "thrust_n": 3.4765889900361797,
+        "thrust_normal_flow_slope": 0.07697326204522151,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.0006326604836559612,
+        "torque_nm": 0.054749254209416974,
+        "trim_ct": 0.0055919583323201065,
+        "trim_lambda": 0.035791343614349005,
+        "wake_factor": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          -8.0,
+          0.3,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.1
+      },
+      "name": "reverse_translation_outside_wake",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.16997011900946532,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -4.371109396623314,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 17.195638982020995,
+        "induced_velocity_m_s": 2.530795329110608,
+        "loads": [
+          0.0,
+          -4.371109396623314,
+          0.0,
+          -0.34968875172986513,
+          -0.05647098644316937,
+          3.9777095509272162
+        ],
+        "moment_body_frd_nm": [
+          -0.34968875172986513,
+          -0.05647098644316937,
+          3.9777095509272162
+        ],
+        "normal_flow_ratio": 0.0,
+        "normal_velocity_m_s": 0.0,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.007906700481297884,
+        "thrust_coefficient_ideal": 0.007906700481297884,
+        "thrust_collective_slope_per_rad": 0.07906700481297885,
+        "thrust_limited": false,
+        "thrust_n": 4.371109396623314,
+        "thrust_normal_flow_slope": 0.11125143167430276,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.0006525561327101997,
+        "torque_nm": 0.05647098644316937,
+        "trim_ct": 0.00784524834405695,
+        "trim_lambda": 0.02536179296467607,
+        "wake_factor": 1.5
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          16.0,
+          0.0,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.1
+      },
+      "name": "full_forward_wake",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.0766638613059233,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -3.3263136091182965,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 7.755975518914433,
+        "induced_velocity_m_s": 3.375031444347783,
+        "loads": [
+          0.0,
+          -3.3263136091182965,
+          0.0,
+          -0.2661050887294637,
+          -0.05474506337039275,
+          3.02694538429765
+        ],
+        "moment_body_frd_nm": [
+          -0.2661050887294637,
+          -0.05474506337039275,
+          3.02694538429765
+        ],
+        "normal_flow_ratio": 0.0,
+        "normal_velocity_m_s": 0.0,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.006016817020063656,
+        "thrust_coefficient_ideal": 0.006016817020063656,
+        "thrust_collective_slope_per_rad": 0.06016817020063656,
+        "thrust_limited": false,
+        "thrust_n": 3.3263136091182965,
+        "thrust_normal_flow_slope": 0.07568517026408393,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.0006326120559964017,
+        "torque_nm": 0.05474506337039275,
+        "trim_ct": 0.0055184854475309976,
+        "trim_lambda": 0.03616766578393836,
+        "wake_factor": 0.75
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          7.0875,
+          0.0,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.1
+      },
+      "name": "wake_ramp_midpoint",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.0,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -27.641804612192654,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 0.0,
+        "induced_velocity_m_s": 38.95058231994343,
+        "loads": [
+          0.0,
+          -27.641804612192654,
+          0.0,
+          -2.2113443689754124,
+          -1.702756868482129,
+          25.154042197095315
+        ],
+        "moment_body_frd_nm": [
+          -2.2113443689754124,
+          -1.702756868482129,
+          25.154042197095315
+        ],
+        "normal_flow_ratio": 0.0,
+        "normal_velocity_m_s": 0.0,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.05,
+        "thrust_coefficient_ideal": 0.05685353737192467,
+        "thrust_collective_slope_per_rad": 0.05685353737192467,
+        "thrust_limited": true,
+        "thrust_n": 27.641804612192654,
+        "thrust_normal_flow_slope": 0.0426401530289435,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.01967637732272747,
+        "torque_nm": 1.702756868482129,
+        "trim_ct": 0.0037413515080171804,
+        "trim_lambda": 0.04559088303120594,
+        "wake_factor": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 1.0
+      },
+      "name": "positive_thrust_cap",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.0,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          27.641804612192654,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 0.0,
+        "induced_velocity_m_s": -38.95058231994343,
+        "loads": [
+          0.0,
+          27.641804612192654,
+          0.0,
+          2.2113443689754124,
+          -1.702756868482129,
+          -25.154042197095315
+        ],
+        "moment_body_frd_nm": [
+          2.2113443689754124,
+          -1.702756868482129,
+          -25.154042197095315
+        ],
+        "normal_flow_ratio": 0.0,
+        "normal_velocity_m_s": 0.0,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": -0.05,
+        "thrust_coefficient_ideal": -0.05685353737192467,
+        "thrust_collective_slope_per_rad": 0.05685353737192467,
+        "thrust_limited": true,
+        "thrust_n": -27.641804612192654,
+        "thrust_normal_flow_slope": 0.0426401530289435,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.01967637732272747,
+        "torque_nm": 1.702756868482129,
+        "trim_ct": 0.0037413515080171804,
+        "trim_lambda": 0.04559088303120594,
+        "wake_factor": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": -1.0
+      },
+      "name": "negative_thrust_cap",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.0530835713097132,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -3.9959355017575815,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 5.370390592403852,
+        "induced_velocity_m_s": 4.6609011655364885,
+        "loads": [
+          0.0,
+          -3.9959355017575815,
+          0.0,
+          -0.31967484014060654,
+          -0.061894664473297376,
+          3.636301306599399
+        ],
+        "moment_body_frd_nm": [
+          -0.31967484014060654,
+          -0.061894664473297376,
+          3.636301306599399
+        ],
+        "normal_flow_ratio": 0.00644962962816526,
+        "normal_velocity_m_s": 0.6525000000000001,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.007228065529402874,
+        "thrust_coefficient_ideal": 0.007228065529402874,
+        "thrust_collective_slope_per_rad": 0.056881354554639725,
+        "thrust_limited": false,
+        "thrust_n": 3.9959355017575815,
+        "thrust_normal_flow_slope": 0.06237613724193817,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.0007152299867249051,
+        "torque_nm": 0.061894664473297376,
+        "trim_ct": 0.004784781540131816,
+        "trim_lambda": 0.03999481888143054,
+        "wake_factor": 0.5078264758497316
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.2,
+          0.3,
+          -0.15
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          5.0,
+          0.5,
+          -0.1
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.12
+      },
+      "name": "off_axis_hub_moments",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.0,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -2.3573015573201017,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 0.0,
+        "induced_velocity_m_s": 2.6283548004124,
+        "loads": [
+          0.0,
+          -2.3573015573201017,
+          0.0,
+          -0.18858412458560814,
+          -0.046455781380832666,
+          2.145144417161293
+        ],
+        "moment_body_frd_nm": [
+          -0.18858412458560814,
+          -0.046455781380832666,
+          2.145144417161293
+        ],
+        "normal_flow_ratio": 0.0,
+        "normal_velocity_m_s": 0.0,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.00426401530289435,
+        "thrust_coefficient_ideal": 0.00426401530289435,
+        "thrust_collective_slope_per_rad": 0.05685353737192467,
+        "thrust_limited": false,
+        "thrust_n": 2.3573015573201017,
+        "thrust_normal_flow_slope": 0.0426401530289435,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.000536824428778391,
+        "torque_nm": 0.046455781380832666,
+        "trim_ct": 0.0037413515080171804,
+        "trim_lambda": 0.04559088303120594,
+        "wake_factor": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.075
+      },
+      "name": "spin_positive",
+      "parameter_overrides": {
+        "rotation_sense": 1
+      }
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.0,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -2.3573015573201017,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 0.0,
+        "induced_velocity_m_s": 2.6283548004124,
+        "loads": [
+          0.0,
+          -2.3573015573201017,
+          0.0,
+          -0.18858412458560814,
+          0.046455781380832666,
+          2.145144417161293
+        ],
+        "moment_body_frd_nm": [
+          -0.18858412458560814,
+          0.046455781380832666,
+          2.145144417161293
+        ],
+        "normal_flow_ratio": 0.0,
+        "normal_velocity_m_s": 0.0,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.00426401530289435,
+        "thrust_coefficient_ideal": 0.00426401530289435,
+        "thrust_collective_slope_per_rad": 0.05685353737192467,
+        "thrust_limited": false,
+        "thrust_n": 2.3573015573201017,
+        "thrust_normal_flow_slope": 0.0426401530289435,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.000536824428778391,
+        "torque_nm": 0.046455781380832666,
+        "trim_ct": 0.0037413515080171804,
+        "trim_lambda": 0.04559088303120594,
+        "wake_factor": 0.0
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.075
+      },
+      "name": "spin_negative",
+      "parameter_overrides": {
+        "rotation_sense": -1
+      }
+    },
+    {
+      "expected": {
+        "advance_ratio": null,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 3.1889746093645206,
+        "induced_velocity_m_s": 0.0,
+        "loads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "moment_body_frd_nm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "normal_flow_ratio": null,
+        "normal_velocity_m_s": 0.29900000000000004,
+        "rotor_active": false,
+        "tail_omega_rad_s": 0.0,
+        "thrust_coefficient": null,
+        "thrust_coefficient_ideal": null,
+        "thrust_collective_slope_per_rad": null,
+        "thrust_limited": false,
+        "thrust_n": 0.0,
+        "thrust_normal_flow_slope": null,
+        "tip_speed_m_s": 0.0,
+        "torque_coefficient": null,
+        "torque_nm": 0.0,
+        "trim_ct": null,
+        "trim_lambda": null,
+        "wake_factor": 0.30082417582417575
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          0.1,
+          0.2,
+          -0.1
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          3.0,
+          0.2,
+          0.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 0.0,
+        "tail_collective_rad": 0.1
+      },
+      "name": "stopped_tail_with_live_wake",
+      "parameter_overrides": {}
+    },
+    {
+      "expected": {
+        "advance_ratio": 0.06389118437195083,
+        "blockage_factor": 0.8304858594287505,
+        "force_body_frd_n": [
+          0.0,
+          -2.342356649769812,
+          0.0
+        ],
+        "in_plane_velocity_m_s": 6.463781675252147,
+        "induced_velocity_m_s": 2.314821600997388,
+        "loads": [
+          0.0,
+          -2.342356649769812,
+          0.0,
+          -0.18738853198158495,
+          -0.04937364018243619,
+          2.1315445512905287
+        ],
+        "moment_body_frd_nm": [
+          -0.18738853198158495,
+          -0.04937364018243619,
+          2.1315445512905287
+        ],
+        "normal_flow_ratio": -0.010265042710880648,
+        "normal_velocity_m_s": -1.0385,
+        "rotor_active": true,
+        "tail_omega_rad_s": 778.22,
+        "thrust_coefficient": 0.004236982141058567,
+        "thrust_coefficient_ideal": 0.004236982141058567,
+        "thrust_collective_slope_per_rad": 0.05812985140792059,
+        "thrust_limited": false,
+        "thrust_n": 2.342356649769812,
+        "thrust_normal_flow_slope": 0.06858765700686316,
+        "tip_speed_m_s": 101.16860000000001,
+        "torque_coefficient": 0.0005705420380375282,
+        "torque_nm": 0.04937364018243619,
+        "trim_ct": 0.00512208166013075,
+        "trim_lambda": 0.03822116142599462,
+        "wake_factor": 0.8365384615384616
+      },
+      "inputs": {
+        "body_rates_body_frd_rad_s": [
+          -0.25,
+          0.12,
+          0.35
+        ],
+        "cg_air_velocity_body_frd_m_s": [
+          6.0,
+          -0.7,
+          1.0
+        ],
+        "main_induced_velocity_m_s": 4.2,
+        "omega_main_rad_s": 167.0,
+        "tail_collective_rad": 0.085
+      },
+      "name": "changed_vertical_and_yaw_flow",
+      "parameter_overrides": {}
+    }
+  ],
+  "equation_anchors": {
+    "expected_thrust_collective_slope_per_rad": 0.059205315506061666,
+    "expected_thrust_normal_flow_slope": 0.044403986629546255,
+    "source": "Gavrilets et al. Eqs. 9-10, hover, eta=1",
+    "thrust_collective_slope_per_rad": 0.059205315506061666,
+    "thrust_normal_flow_slope": 0.044403986629546255,
+    "trim_ct": 0.0039477398646473455,
+    "trim_lambda": 0.04442825601262865
+  },
+  "format": "openrc-tail-rotor-oracle-v1",
+  "parameters": {
+    "blade_chord_m": 0.029,
+    "blade_lift_curve_slope_per_rad": 5.0,
+    "blade_section_cd0": 0.024,
+    "hub_distance_aft_m": 0.91,
+    "hub_height_above_cg_m": 0.08,
+    "main_rotor_radius_m": 0.775,
+    "rho_kg_m3": 1.225,
+    "rotation_sense": 1,
+    "rotor_blade_count": 2,
+    "tail_rotor_radius_m": 0.13,
+    "tail_to_main_speed_ratio": 4.66,
+    "thrust_coefficient_max": 0.05,
+    "trim_collective_rad": 0.1,
+    "vertical_fin_area_m2": 0.012,
+    "wake_efficiency": 0.9
+  }
+}

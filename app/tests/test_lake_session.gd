@@ -81,7 +81,7 @@ func _test_earliest_event(lake: Dictionary) -> void:
 	_check("later scenery proxy installs", bank_session.set_collision_world(_world(late_proxy)))
 	var bank_previous := _state([110.0, 177.0, 0.5], [0.0, -100.0, 0.0])
 	var bank_candidate := _state([110.0, 174.0, 0.5], [0.0, -100.0, 0.0])
-	bank_session._resolve_collision_step(bank_previous, bank_candidate, 1)
+	_accept_sweep(bank_session, bank_previous, bank_candidate)
 	_check("earlier bank TOI wins over later scenery", bank_session.last_lake_event() != null
 		and bank_session.last_lake_event().trigger == "lake_bank" and bank_session.last_scenery_event() == null
 		and str(bank_session.crash.get("impact").trigger) == "lake_bank")
@@ -90,9 +90,25 @@ func _test_earliest_event(lake: Dictionary) -> void:
 	_check("earlier water-path scenery proxy installs", scenery_session.set_collision_world(_world(early_proxy)))
 	var water_previous := _state([110.0, 125.0, -1.0], [0.0, 0.0, 480.0])
 	var water_candidate := _state([110.0, 125.0, 1.0], [0.0, 0.0, 480.0])
-	scenery_session._resolve_collision_step(water_previous, water_candidate, 1)
+	_accept_sweep(scenery_session, water_previous, water_candidate)
 	_check("earlier scenery TOI wins over later water entry", scenery_session.last_scenery_event() != null
 		and scenery_session.last_lake_event() == null and str(scenery_session.crash.get("impact").trigger) == "scenery")
+
+## Supply the controlled geometric sweep through the actual simulation acceptance boundary.
+func _accept_sweep(session: Session, previous: PackedFloat64Array, candidate: PackedFloat64Array) -> void:
+	# These fixtures replace the aircraft's geometry; disable propulsion callbacks tied to its original gear.
+	session.sim.continuous = PackedFloat64Array()
+	for field: String in ["continuous_step", "continuous_evaluate", "continuous_loads",
+		"continuous_derivative", "continuous_rotor_momentum", "continuous_aux"]:
+		session.sim.set(field, Callable())
+	_set_direct_state(session, Array(previous.slice(RB.POS, RB.POS + 3)), Array(previous.slice(RB.VEL, RB.VEL + 3)))
+	session.sim.post_step = func(_previous: PackedFloat64Array, _candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
+		var filtered: PackedFloat64Array = session._resolve_collision_step(previous, candidate, tick)
+		_check("unaccepted sweep keeps impact private", session.crash.is_empty()
+			and session.last_lake_event() == null and session.last_scenery_event() == null)
+		return filtered
+	session.sim.step()
+	_check("controlled sweep commits", session.sim.tick == 1 and session.sim.fault_reason.is_empty())
 
 func _test_outside_parity(lake: Dictionary) -> void:
 	var dry: Session = _new_session()

@@ -10,6 +10,7 @@ The [operating/configuration guide](../../docs/GLOW-ENGINES.md) owns the install
 
 | Kernel input | Meaning |
 | --- | --- |
+| Bore/stroke, rod-to-crank ratio, reciprocating mass | Manufacturer dimensions plus explicitly estimated rod geometry/moving mass feed the detached source-excitation observer. They do not inject aliased forces into flight. |
 | Common displacement, mechanical torque, indicated efficiency | Cycle volume; positive moving loss torque; fraction of released chemical energy converted to indicated cycle work. These losses are subtracted once from indicated torque. |
 | 2T delivery / trapping / scavenging pressure | Delivered charge per swept volume, retained fraction, and gas-exchange work `pressure * volume * delivery * admission` per revolution. |
 | 4T volumetric efficiency / pumping pressure / intake pressure drop / valve torque | Fresh inducted charge per swept volume per 720° cycle; base pumping pressure **excluding throttle depression**; additional throttle-dependent depression; separate valve-train loss torque. |
@@ -60,3 +61,7 @@ python3 research/glow-engines/mutations.py --godot "$GODOT" --out /absolute/fres
 ```
 
 This makes disposable minimal projects. The unchanged control must pass; cycle-angle, opportunity-frequency, premix-oil and valve-loss defects must fail the independent oracle. Never mutate production scripts to exercise faults.
+
+## Independent crank-angle comparison
+
+`cycle_oracle.py --write` reproduces the separate 360° ported and 720° valve-cycle pressure/work hypotheses, static installed-prop roots, periodic rotor-energy maps and quadrature/phase sensitivity. Run `test_cycle_oracle.py` for geometry, conservation and convergence checks. The [dossier](../../docs/research/glow-engines/NITRO-02/cycle-oracle.md) distinguishes within-model averaging error from disagreement between inferred work closures; neither is physical validation.

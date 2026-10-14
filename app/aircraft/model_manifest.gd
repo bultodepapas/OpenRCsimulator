@@ -1,17 +1,27 @@
 extends RefCounted
 
+const ConstructionContract := preload("res://aircraft/imported_model_contract.gd")
+
 const ADAPTERS := ["euler_hinges", "axis_hinges", "imported_glb"]
 const CONTROL_ROLES := ["aileron_left", "aileron_right", "elevator", "rudder", "flap_left", "flap_right"]
 const GEAR_ROLES := ["left", "right", "tail", "steering", "nose"]
 const DEPENDENCY_ROLES := ["builder", "generated_geometry", "imported_asset", "crash_metadata", "script_dependency", "resource_dependency"]
+const SHARED_IMPORTED_BUILDER := "res://aircraft/imported_model.gd"
 
 
 static func validate(manifest: Dictionary, expected_family_id := "") -> Dictionary:
 	var errors := PackedStringArray()
 	var diagnostics: Array[Dictionary] = []
-	_check_fields(manifest, ["schema", "version", "family_id", "builder", "surface_method", "datum", "coordinates", "root_node", "source_registry", "geometry", "asset", "bindings", "authoring_sources", "dependencies"], "$", errors, diagnostics)
+	var version_value: Variant = manifest.get("version")
+	var model_version := 0
+	if typeof(version_value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(version_value)):
+		if float(version_value) == 1.0: model_version = 1
+		elif float(version_value) == 2.0: model_version = 2
+	var top_level_fields := ["schema", "version", "family_id", "builder", "surface_method", "datum", "coordinates", "root_node", "source_registry", "geometry", "asset", "bindings", "authoring_sources", "dependencies"]
+	if model_version == 2: top_level_fields.append("construction")
+	_check_fields(manifest, top_level_fields, "$", errors, diagnostics)
 	if manifest.get("schema") != "openrc-aircraft-model": _fail(errors, diagnostics, "MODEL_SCHEMA_UNKNOWN", "$.schema", "expected openrc-aircraft-model")
-	if typeof(manifest.get("version")) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(manifest.get("version", -1))) or float(manifest.get("version", -1)) != 1.0: _fail(errors, diagnostics, "MODEL_VERSION_UNSUPPORTED", "$.version", "only model manifest version 1 is supported")
+	if model_version == 0: _fail(errors, diagnostics, "MODEL_VERSION_UNSUPPORTED", "$.version", "only model manifest versions 1 and 2 are supported")
 	var family_id := str(manifest.get("family_id", ""))
 	if not _is_slug(family_id): _fail(errors, diagnostics, "MODEL_FAMILY_INVALID", "$.family_id", "family_id must be a lowercase stable slug")
 	if not expected_family_id.is_empty() and family_id != expected_family_id: _fail(errors, diagnostics, "MODEL_FAMILY_MISMATCH", "$.family_id", "manifest family does not match requested visual family")
@@ -75,6 +85,30 @@ static func validate(manifest: Dictionary, expected_family_id := "") -> Dictiona
 		_check_rotor(bindings.get("rotor", {}), errors, diagnostics)
 		_check_gear(bindings.get("gear", {}), errors, diagnostics)
 		_check_crash(bindings.get("crash", {}), errors, diagnostics)
+
+	if model_version == 2:
+		var builder_script := str(builder.get("script", "")) if typeof(builder) == TYPE_DICTIONARY else ""
+		if builder_script != SHARED_IMPORTED_BUILDER:
+			_fail(errors, diagnostics, "MODEL_V2_BUILDER_INVALID", "$.builder.script", "version 2 is reserved for the shared imported model builder")
+		if adapter != "imported_glb":
+			_fail(errors, diagnostics, "MODEL_V2_ADAPTER_INVALID", "$.builder.adapter", "version 2 requires the imported_glb adapter")
+		if asset_kind != "imported_glb":
+			_fail(errors, diagnostics, "MODEL_V2_ASSET_INVALID", "$.asset.kind", "version 2 requires an imported_glb asset")
+		var binding_object: Dictionary = bindings if typeof(bindings) == TYPE_DICTIONARY else {}
+		var construction_result: Dictionary = ConstructionContract.validate(manifest.get("construction"), binding_object)
+		var construction_diagnostics: Variant = construction_result.get("diagnostics", [])
+		if typeof(construction_diagnostics) == TYPE_ARRAY:
+			for issue: Variant in construction_diagnostics:
+				if typeof(issue) == TYPE_DICTIONARY:
+					diagnostics.append(issue)
+					errors.append(str(issue.get("message", "invalid construction")))
+		if not construction_result.get("ok", false) and typeof(construction_diagnostics) != TYPE_ARRAY:
+			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_INVALID", "$.construction", "construction failed validation")
+		var crash: Variant = binding_object.get("crash", {})
+		if typeof(crash) == TYPE_DICTIONARY and crash.get("provider") == "generated_triangle_map":
+			_fail(errors, diagnostics, "MODEL_V2_CRASH_PROVIDER_UNSUPPORTED", "$.bindings.crash.provider", "version 2 imported models use none or gltf_extras crash metadata")
+	elif typeof(builder) == TYPE_DICTIONARY and builder.get("script") == SHARED_IMPORTED_BUILDER:
+		_fail(errors, diagnostics, "MODEL_V2_REQUIRED", "$.version", "the shared imported model builder requires manifest version 2")
 
 	_check_sources(manifest.get("authoring_sources", []), "$.authoring_sources", errors, diagnostics)
 	_check_dependencies(manifest.get("dependencies", []), manifest, errors, diagnostics)
@@ -167,9 +201,9 @@ static func _check_crash(value: Variant, errors: PackedStringArray, diagnostics:
 		_fail(errors, diagnostics, "MODEL_CRASH_INVALID", path, "crash binding must be an object")
 		return
 	var provider := str(value.get("provider", ""))
-	if provider == "none":
+	if provider in ["none", "gltf_extras"]:
 		_check_fields(value, ["provider", "metadata_script", "asset_node"], path, errors, diagnostics)
-		if value.get("metadata_script") != "" or value.get("asset_node") != "": _fail(errors, diagnostics, "MODEL_CRASH_INVALID", path, "provider none must not declare crash references")
+		if value.get("metadata_script") != "" or value.get("asset_node") != "": _fail(errors, diagnostics, "MODEL_CRASH_INVALID", path, "provider %s must not declare separate crash references" % provider)
 	elif provider == "generated_triangle_map":
 		_check_fields(value, ["provider", "metadata_script", "asset_node"], path, errors, diagnostics)
 		if not _resource_path(str(value.get("metadata_script", "")), ["aircraft"]): _fail(errors, diagnostics, "MODEL_CRASH_PATH_INVALID", path + ".metadata_script", "crash metadata must be a safe bundled aircraft script")
@@ -236,6 +270,8 @@ static func _check_dependencies(value: Variant, manifest: Dictionary, errors: Pa
 	if typeof(manifest_bindings) == TYPE_DICTIONARY and typeof(manifest_bindings.get("crash", {})) == TYPE_DICTIONARY:
 		crash = manifest_bindings.get("crash", {})
 	if crash.get("provider") == "generated_triangle_map": _expect_dependency(roles, str(crash.get("metadata_script", "")), "crash_metadata", errors, diagnostics)
+	if crash.get("provider") == "gltf_extras" and asset.get("kind") != "imported_glb":
+		_fail(errors, diagnostics, "MODEL_CRASH_ASSET_INVALID", "$.bindings.crash.provider", "gltf_extras requires an imported_glb asset")
 
 
 static func _expect_dependency(roles: Dictionary, path: String, role: String, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:

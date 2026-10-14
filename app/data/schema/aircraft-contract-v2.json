@@ -68,7 +68,9 @@
         "plausibility",
         "controls",
         "aero",
-        "propulsion"
+        "propulsion",
+        "physical_identity_version",
+        "crash_hull_ids"
       ]
     },
     {
@@ -183,7 +185,8 @@
         "mass",
         "position",
         "size",
-        "energy_source"
+        "energy_source",
+        "id"
       ]
     },
     {
@@ -206,7 +209,8 @@
       "allowed": [
         "max_throw",
         "servo_full_throw_time",
-        "rates"
+        "rates",
+        "surface_ids"
       ]
     },
     {
@@ -514,7 +518,8 @@
         "stiffness",
         "damping",
         "max_compression",
-        "max_steering"
+        "max_steering",
+        "id"
       ]
     },
     {
@@ -532,7 +537,8 @@
         "kind",
         "description",
         "engine",
-        "propeller"
+        "propeller",
+        "id"
       ]
     },
     {
@@ -553,7 +559,8 @@
         "engine",
         "thrust_line_offset",
         "intake_offset",
-        "thrust_angles"
+        "thrust_angles",
+        "id"
       ]
     },
     {
@@ -574,7 +581,8 @@
         "motor",
         "battery",
         "esc",
-        "propeller"
+        "propeller",
+        "id"
       ]
     },
     {
@@ -838,6 +846,21 @@
         "kind",
         "command_mapping"
       ]
+    },
+    {
+      "path": "/controls/surface_ids",
+      "required": [
+        "aileron_left",
+        "aileron_right",
+        "elevator",
+        "rudder"
+      ],
+      "allowed": [
+        "aileron_left",
+        "aileron_right",
+        "elevator",
+        "rudder"
+      ]
     }
   ],
   "quantity_paths": [
@@ -902,6 +925,10 @@
     {
       "path": "/crash_hull_components",
       "min_items": 4
+    },
+    {
+      "path": "/crash_hull_ids",
+      "min_items": 4
     }
   ],
   "string_rules": [
@@ -963,6 +990,26 @@
     },
     {
       "path": "/propulsion/engine/glow_installation",
+      "nonempty": true
+    },
+    {
+      "path": "/inventory/*/id",
+      "nonempty": true
+    },
+    {
+      "path": "/landing_gear/contacts/*/id",
+      "nonempty": true
+    },
+    {
+      "path": "/propulsion/id",
+      "nonempty": true
+    },
+    {
+      "path": "/controls/surface_ids/*",
+      "nonempty": true
+    },
+    {
+      "path": "/crash_hull_ids/*",
       "nonempty": true
     }
   ],
@@ -1094,6 +1141,10 @@
     {
       "path": "/propulsion/propeller/rotation",
       "value": "clockwise_from_rear"
+    },
+    {
+      "path": "/physical_identity_version",
+      "value": 1
     }
   ]
 }

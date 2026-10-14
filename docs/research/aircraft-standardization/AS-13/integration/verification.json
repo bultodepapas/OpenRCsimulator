@@ -1,0 +1,996 @@
+{
+  "format": "openrc-aircraft-verification v1",
+  "ok": true,
+  "commands": [
+    {
+      "name": "aircraft_catalog",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_catalog.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 26.860000000000582,
+      "log": "aircraft_catalog.log",
+      "log_sha256": "3c7f975ce12a0e2f11670d762a41c5ad91e72ce0f738a2010432961748ee2cbe"
+    },
+    {
+      "name": "aircraft_contact_contract",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_contract.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.811999999998079,
+      "log": "aircraft_contact_contract.log",
+      "log_sha256": "ca6b98b92f12ce256fa3be08881844839a9248d79d40847054179f44223a22a0"
+    },
+    {
+      "name": "aircraft_contact_events",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_events.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.485000000000582,
+      "log": "aircraft_contact_events.log",
+      "log_sha256": "7426eb0a5c713ace3f32c2728ff02eb47f68aa63477e2d3bf92eaf507344aff2"
+    },
+    {
+      "name": "aircraft_contact_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 7.953000000001339,
+      "log": "aircraft_contact_session.log",
+      "log_sha256": "1f9fede8cd0dade3697056240cd6fd79be2699bed456b6d6e30334be3542e7f8"
+    },
+    {
+      "name": "aircraft_contract",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contract.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 9.421999999998661,
+      "log": "aircraft_contract.log",
+      "log_sha256": "112f61bfb42df6cc7a250eb0d51ac499eee54e23b95d602d2503667c7652312a"
+    },
+    {
+      "name": "aircraft_data",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_data.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.438000000001921,
+      "log": "aircraft_data.log",
+      "log_sha256": "9f4895a8f55d7d4799ee5ce2568add90cecb4ede4167bfa563f4aaf994b14322"
+    },
+    {
+      "name": "aircraft_model_manifest",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_model_manifest.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 10.31300000000192,
+      "log": "aircraft_model_manifest.log",
+      "log_sha256": "d1fb4fc9155858a0b8ed692494734852e419c27249e3682a9ce10e3aac917f5e"
+    },
+    {
+      "name": "aircraft_modules",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_modules.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 11.56199999999808,
+      "log": "aircraft_modules.log",
+      "log_sha256": "73aa3341c5cb94f2c6416e0091a36422904aa75e2514515e117da4ea1808e19a"
+    },
+    {
+      "name": "aircraft_package_proofs",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_package_proofs.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 53.04699999999866,
+      "log": "aircraft_package_proofs.log",
+      "log_sha256": "dc0c15f33159329247341d4ad14a684d49ca95f0e5c144a27c81777f55f3b1e6"
+    },
+    {
+      "name": "aircraft_propulsion_runtime",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_propulsion_runtime.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 9.796999999998661,
+      "log": "aircraft_propulsion_runtime.log",
+      "log_sha256": "0e6eb36bc0651619d863f32a38afc50f6f49f5075b6c4809c2df8fe56ef69d3a"
+    },
+    {
+      "name": "aircraft_render_contract",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_render_contract.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 6.671999999998661,
+      "log": "aircraft_render_contract.log",
+      "log_sha256": "621df8bc3d50917a6dbeba10c9d18ffbdb9ec7960ea40bbacef0f700e298c792"
+    },
+    {
+      "name": "checkpoint",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 7.125,
+      "log": "checkpoint.log",
+      "log_sha256": "249065b6c88b8b531eb4f452f4990af55e1b5feb047d6ea81303f3d45c5a01b5"
+    },
+    {
+      "name": "checkpoint_integrity",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint_integrity.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.563000000001921,
+      "log": "checkpoint_integrity.log",
+      "log_sha256": "00bafa2bb63d598134184ec7d6ef53dfef0c80e4ea6102dc347229ed698ad06f"
+    },
+    {
+      "name": "contact_policy",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_contact_policy.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 10.031000000002678,
+      "log": "contact_policy.log",
+      "log_sha256": "ed776be6d50b05c59463e322522a408fb840879780231a3a7756ff37000d13c3"
+    },
+    {
+      "name": "control_surfaces",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_control_surfaces.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 6.328000000001339,
+      "log": "control_surfaces.log",
+      "log_sha256": "f06001bdf2092f7cd901b4550abae06ecdeb16f9fb8b3554de2624a6e51d844d"
+    },
+    {
+      "name": "controls",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controls.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 11.860000000000582,
+      "log": "controls.log",
+      "log_sha256": "6f36863e3c9ff302fe595257cec9cfb4f75312771fc9ca708a4ee6c6dbdad9ca"
+    },
+    {
+      "name": "crash_snapshot",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_crash_snapshot.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.8589999999967404,
+      "log": "crash_snapshot.log",
+      "log_sha256": "db1ddb698f20e02b6dea4298ae34a0588da05abe4d59f4a6a017f34bd441ce8f"
+    },
+    {
+      "name": "descriptor-checkout",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\test_descriptor_checkout.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 2.125,
+      "log": "descriptor-checkout.log",
+      "log_sha256": "cfe8cbea823872b4250644b35c1e915dcbeb57616d75be63f0219e44358d9141"
+    },
+    {
+      "name": "descriptors-current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\build_descriptors.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.15600000000267755,
+      "log": "descriptors-current.log",
+      "log_sha256": "27446d8a3dffa3acb6a429a0f308b9a9d9b6b85750dd25914805c05dd3ddfb93"
+    },
+    {
+      "name": "electric_battery_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_electric_battery_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 36.43699999999808,
+      "log": "electric_battery_session.log",
+      "log_sha256": "1058165a5c8f87da2e7458728f8e8b0762ff6615529aae60be6f50dce3cd980c"
+    },
+    {
+      "name": "electric_event_localization",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_electric_event_localization.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.26600000000326,
+      "log": "electric_event_localization.log",
+      "log_sha256": "b8b2cddc64c13497856fcfbef41701a45608672dfb7b5161ccb30b647c0e00bb"
+    },
+    {
+      "name": "electric_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_electric_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 18.890999999995984,
+      "log": "electric_session.log",
+      "log_sha256": "0f97324376ed4331a3f619039f35f742ab3fdf61326a5c46dbe7427328154aa6"
+    },
+    {
+      "name": "fleet",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\fleet_probe.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as13-events\\final-conformance\\fleet.json"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 12.921999999998661,
+      "log": "fleet.log",
+      "log_sha256": "97cfc57e9852f6c1c3924e131c3604bce511c65dab3b1d3c137260e98d4ce41f"
+    },
+    {
+      "name": "glow_lifecycle",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_glow_lifecycle.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.5469999999986612,
+      "log": "glow_lifecycle.log",
+      "log_sha256": "f5402148cc5b8e698a60ba918e4dc40491f73fd7155e2e45fc8f32170db11ce8"
+    },
+    {
+      "name": "glow_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_glow_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 24.265999999995984,
+      "log": "glow_session.log",
+      "log_sha256": "3162eb630978e4004ba10eaacd57829d18c8b9d0a18954c68c9a225ae166d6bc"
+    },
+    {
+      "name": "glow_trace",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_glow_trace.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.922000000005937,
+      "log": "glow_trace.log",
+      "log_sha256": "36a3aab13126a99f227b58b17e3fe5c87b0004ea61510c6f01ef75855f34e8a5"
+    },
+    {
+      "name": "import",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 7.297000000005937,
+      "log": "import.log",
+      "log_sha256": "f15ffd4c558b01611d562c8c257508942bdc2dc542124f423ae2a592a46edfa6"
+    },
+    {
+      "name": "lake_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_lake_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.1719999999986612,
+      "log": "lake_session.log",
+      "log_sha256": "2bfd217748700f86b1c6914c01b1afc3f03e9872684e718cc938aa63f10a2543"
+    },
+    {
+      "name": "landscape_collision_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_collision_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.953000000001339,
+      "log": "landscape_collision_session.log",
+      "log_sha256": "27bf8bffbf523b7860e741cd391238008ef8c401947d93257545d79823873507"
+    },
+    {
+      "name": "migration",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\migrate.py",
+        "--check-known"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.14099999999598367,
+      "log": "migration.log",
+      "log_sha256": "fc81fbed664edb653399f57d50145ce9c653316b0a486bda00af684e95ec8957"
+    },
+    {
+      "name": "models-current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\build_models.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.17100000000209548,
+      "log": "models-current.log",
+      "log_sha256": "59e2026db8477aa4e7b35a531f9ba817af511d1fb2a8c0f81877e3bda8441295"
+    },
+    {
+      "name": "models-python",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\test_models.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.2039999999979045,
+      "log": "models-python.log",
+      "log_sha256": "7dc0758718767c632b1a0223eabf3e28350451af0e629f6baa0d2c02ffd172ed"
+    },
+    {
+      "name": "modules-python",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\test_modules.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.438000000001921,
+      "log": "modules-python.log",
+      "log_sha256": "c5c165c9317188b986951a0fd20cc2054f389a6da9506096650d84c14234a733"
+    },
+    {
+      "name": "parameters",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\parameter_register.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.125,
+      "log": "parameters.log",
+      "log_sha256": "dce936fd7bfc13c7b99125164e95e49237cab3f313089cbe258bb5f0bc2aff25"
+    },
+    {
+      "name": "preflight",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\preflight.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as13-events\\final-conformance\\preflight.json"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 8.421999999998661,
+      "log": "preflight.log",
+      "log_sha256": "e0d1138e24bfa70a8ce859389a07515f2a4feb527eaf849eed41b3ca2139799d"
+    },
+    {
+      "name": "prop_strike",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_prop_strike.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 12.031000000002678,
+      "log": "prop_strike.log",
+      "log_sha256": "5b2f8727f545514b8af858abfc83fb33d4542e029ca448a3e6aad4bf1b8cd45c"
+    },
+    {
+      "name": "prop_strike_feedback",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_prop_strike_feedback.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 15.25,
+      "log": "prop_strike_feedback.log",
+      "log_sha256": "b1792fa0d5168e7fb35a8188b58cd70e657720d902b4e707bedb629beb241e39"
+    },
+    {
+      "name": "scenery_damage_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_damage_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 6.5310000000026776,
+      "log": "scenery_damage_session.log",
+      "log_sha256": "23ca6ea4d0e438eb327fca358166fce44111c3be2369d3adbc6978080e9cbae0"
+    },
+    {
+      "name": "schema",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\build_schema.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.13999999999941792,
+      "log": "schema.log",
+      "log_sha256": "3c700854bdc83285bb6edfb53e811dad3c7345d6bedd2e0975d92b5fd36a54fd"
+    },
+    {
+      "name": "servo",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_servo.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.718000000000757,
+      "log": "servo.log",
+      "log_sha256": "fda2daa451c4a6eeee5c60ee4912d647dd1f326dc3b96a80a9e0a2b296f8afd8"
+    },
+    {
+      "name": "session_guards",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_session_guards.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.264999999999418,
+      "log": "session_guards.log",
+      "log_sha256": "e00f0e6a3bd8636ef2607f35796a3f7428a078cdffde468804f57fd75d5d034d"
+    },
+    {
+      "name": "shaft_coupled",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shaft_coupled.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 7.156999999999243,
+      "log": "shaft_coupled.log",
+      "log_sha256": "75e2e1475884d6a1199e7feca52e6168a8e17e8dbdb588a01d047426bb6c8045"
+    },
+    {
+      "name": "soft_contact_feedback",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_soft_contact_feedback.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 13.452999999994063,
+      "log": "soft_contact_feedback.log",
+      "log_sha256": "04d47a2fdf59cb0493a63520977a12f1196f9edddd098eebe03369faa24a6177"
+    },
+    {
+      "name": "soft_contacts",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_soft_contacts.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 7.5939999999973224,
+      "log": "soft_contacts.log",
+      "log_sha256": "e4cf6a72660fe28992ac7c4ac428a820f1d84d96658edeb3710f93fb2777062f"
+    },
+    {
+      "name": "turbine_continuous",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_turbine_continuous.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.796999999998661,
+      "log": "turbine_continuous.log",
+      "log_sha256": "0d1ad3aabbcd409b451550c6cb59e10b1e741bb12122da847dc9cf526207d7cf"
+    },
+    {
+      "name": "wheel_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wheel_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.813000000001921,
+      "log": "wheel_session.log",
+      "log_sha256": "7b9ea5b35d355dda2141105c7022a97faa91846a5f40baba0ec24165cbe18688"
+    },
+    {
+      "name": "workshop_compiler",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_compiler.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 14.18699999999808,
+      "log": "workshop_compiler.log",
+      "log_sha256": "0e8303195d87851268b759c17c222508f981e5bdd603379e3ec911b731da61af"
+    },
+    {
+      "name": "workshop_descriptor",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_descriptor.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 7.343000000000757,
+      "log": "workshop_descriptor.log",
+      "log_sha256": "db3dd9264c5d3c22bab8ddc2d3ba37de7097bbf14ac734c83f6939f558122cae"
+    },
+    {
+      "name": "workshop_integration",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_integration.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 50.36000000000058,
+      "log": "workshop_integration.log",
+      "log_sha256": "c212d33abfe803965f2c9f0dc5167f27dea2a2bd4d4212bdcd93684730ba0574"
+    },
+    {
+      "name": "workshop_store",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_store.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.2810000000026776,
+      "log": "workshop_store.log",
+      "log_sha256": "68773a988b528f09e7ffac15616a93abaf5dad44988b9d3d045d7b50e2906bf4"
+    },
+    {
+      "name": "workshop_trial",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_trial.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 9.031000000002678,
+      "log": "workshop_trial.log",
+      "log_sha256": "a645ed2045e357a87a574e9da4fe17a80d7d6515654ebd3a34c2cbe1052ce65f"
+    }
+  ],
+  "flight_comparison": {
+    "source_drift_during_probe": false,
+    "source_sha256": {
+      "app/data/aircraft/gp_extra_300s_60.json": "ac18151e91916fedfb04cd15ece149286189328cdc7539d11550e1bb2536a0e8",
+      "app/data/aircraft/jensen_ugly_stik_60.json": "b2f2b88e41e5e640974610e8ce925765b5734d31d9b86a7ce9487ff376d523a9",
+      "app/data/aircraft/p51d_mustang_120.json": "08f7eea6ce77ae230a6cf5a453f0ac12363308efd6532132f67d31be983a0551",
+      "app/data/aircraft/sebart_avanti_s_a200.json": "578a5438b289f9096409073f8d55ac9df07e9047d696ded713a8ecaf692445de",
+      "app/data/aircraft/stik_glow_55ax_2t.json": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+      "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "b99109f752506edf8a002b703b2b839d496da5e36b55eb4950e3a590bd10a59d",
+      "app/data/aircraft/stik_glow_fs64v_4t.json": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+      "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf",
+      "app/data/aircraft/synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+      "app/data/aircraft/synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+      "app/data/aircraft/synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+      "app/data/aircraft/synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+      "app/data/aircraft/turbo_lumber_evolution.json": "1115df83ad3847eff914ff67f63622e6d4f34c11d9ca0e73dd8f49fc7c8c2f5e",
+      "app/data/glow/openrc-glow-engine-v1.schema.json": "cb19a66c457c87c4092be9bd86be33f0781712aef6a1bbcf3412eb0ceb1cb0fc",
+      "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+      "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+      "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+      "app/data/glow/stik_55ax_2t.json": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+      "app/data/glow/stik_55ax_2t_apc_13x6.json": "e2e00bd5e0940198676ab463c6891e2b0a05762e83b8c6c9042ea887076a23d0",
+      "app/data/glow/stik_fs64v_4t.json": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+      "app/data/glow/stik_fs64v_4t_apc_13x6.json": "e4c1f402fe236d40b3ec89262f5999ac0702d7ef52c514eb99cb551c2a41357e",
+      "app/input/commands.gd": "f2c144baf6b9546c4d6977a3cb340e9a979eb1ac298681a858877e753d78d8da",
+      "app/input/input_report.gd": "4621faaab6124c4ac02b2d8e37313ffe066abadcb67f6ffa746593aef72ea077",
+      "app/input/input_report_data.gd": "02f7c2dc9cb974068d4f82830b26bb82e4cb9e1b70661523f7bea03b148ea1cb",
+      "app/input/keyboard.gd": "1ab15c7b1d523f7ecd216ea7339707217d2ca243ee51972211f23a0302148c76",
+      "app/input/latency_patch.gd": "aa0f895093f3c365a399e531891d0d6c238f7f10833a804ebd25c0033cc25131",
+      "app/input/rc_calibration.gd": "61d51597d77b00cd06dde4fb9d180f2995ba97a8969c85ee353f0c24764535db",
+      "app/input/rc_input.gd": "f9943a3319fdd93ac4db4be1efb1c9ee0978afe2eb913c3ac43200cb26563a3f",
+      "app/input/smoke_aux.gd": "07649da097d4c56fadccaddbc9bdd833719fbd358254fde0ffd14848e45bf83f",
+      "app/physics/aero.gd": "cf034742d69332061eb9414ccd57f7d0b6cb6e1c2f17cc5ae39e70fe26655539",
+      "app/physics/air_data.gd": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+      "app/physics/aircraft_contact_contract.gd": "7a41321a1ca7b1d6abaaeb7ded6e4acf98bd6c72dad67631eec81f15d813b490",
+      "app/physics/aircraft_contract.gd": "f441fae6c8da8171bc76e344892eb0427d3112d2be9308ee93a1a2d45c3ca015",
+      "app/physics/aircraft_data.gd": "e70e67bbf573b6974ca93f0c028487229289a09025a2e7bf8233d2248d3e4eba",
+      "app/physics/aircraft_modules.gd": "ff954ffef50f7dfda0ce65a8e94aac760e5ddcbf728c68514c8f5244077b0e51",
+      "app/physics/atmosphere.gd": "f395ab497f34f3107ee8ac69ad6e8cff856eebbae56bb6c6e127f75b49e69599",
+      "app/physics/control_surfaces.gd": "5801e48d56637b53588620847fbf69d89686c69ea40383206530bb2c45bb18ea",
+      "app/physics/cruise_trim.gd": "a8e8418808f691119e45a00ade08f525261b321368a0e9d78c92e52b7df9dd02",
+      "app/physics/dynamics.gd": "313851831baa6ccf9769a2a4a28220de96650ff3b64c60dc5275857da89806d3",
+      "app/physics/effective_mass.gd": "d645149af791bcd20e21111cb5a2754bb7c290f78dcaba0e58aa52124f1af5c4",
+      "app/physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+      "app/physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "app/physics/electric_stop.gd": "b86a0c87fb305e926f1074b49cedda22618af560614e830091f34dde1c7476ef",
+      "app/physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "app/physics/event_bracket.gd": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "app/physics/flight_modes.gd": "df5dc6cc84a14ddf5bd5c7f96e45c67f172fe71f09b6cb19343e84d5848d2418",
+      "app/physics/glow/flight.gd": "b973735e24ee367393b54a1a4728cecebb51862b421ed18cc128af60e0bf0bc3",
+      "app/physics/glow/four_stroke.gd": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f",
+      "app/physics/glow/fuel_mass.gd": "dfc4fdd21223360f86d7b93647eac2d72dde5f7e83406fbc6a30d9442730a03d",
+      "app/physics/glow/installation.gd": "0a6873ecdab5abaf44498f4130d4af1e0d6e4fab454f71664401f20a9bbfd3b9",
+      "app/physics/glow/lifecycle.gd": "eb48dfe650fc40dbee04bf357c12bec2df7bc7d615ae0b392bd71e3d25bd01ac",
+      "app/physics/glow/operating_point.gd": "9beaa48ea3ac2e5b4616b6fd3f01523ec8a543a739e9e33d14a58c8b60d55dc4",
+      "app/physics/glow/profile.gd": "a7fe30027c00c010217d08b44219c83e0ee55aff83b82722f527eb82caf290e5",
+      "app/physics/glow/propeller.gd": "68cc348bfa09f3599971184062eda861a891a05ff41702748f9ec4e091710a37",
+      "app/physics/glow/source.gd": "4a40ed6584a89a87e1626fedd2aac60ffedf70b42a120bb8f15387744aa115c0",
+      "app/physics/glow/thermal.gd": "ce4137c380309ca85307a7f3a5ce073625cd4cbdedf68609f053f1b07e9ffd65",
+      "app/physics/glow/two_stroke.gd": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353",
+      "app/physics/glow/vibration.gd": "d36c8159cca6a79aebea17676917b6e68b409fbc0028471f8a8071d9ac547a11",
+      "app/physics/ground_contact.gd": "2fa30d5bcebf1b36e67dba9546ee96b42b970df3fdfcb77630c6620df02e4355",
+      "app/physics/ground_effect.gd": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+      "app/physics/ground_start.gd": "87cc2b78a039441459bc3e795d1c4a394f43eb1e43cee6bf98066c094f65f80e",
+      "app/physics/ground_surfaces.gd": "b501ac2a568b295f44b796c24ce96defcbc5e6d0d14d3bf4f92c7b69bb88ad6f",
+      "app/physics/ground_terrain.gd": "9373dfc3410ed1eb1dd129e8445f76598ee450c627155a4dd1f8da79b6a7d757",
+      "app/physics/ground_vehicle/four_corner.gd": "cb86d370d047c1e6c5f55c4b1b3815181a17d16dc4785d79847357a7a9f04436",
+      "app/physics/ground_vehicle/quarter_car.gd": "5a141caa4dba4628990df398f98043469f2868cc6dc959fb7f252c2943f56605",
+      "app/physics/ground_vehicle/support_bench_data.gd": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+      "app/physics/ground_vehicle/suspension_bench_data.gd": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+      "app/physics/ground_wheels.gd": "76fbaefb1c1495493e89f947a6a017f46286719e56e9df1ebe0cb46ade353d14",
+      "app/physics/hull_contact.gd": "f6c683f0fe0b3becea94f7a29c035dba42fadbb1425b8c448f593d1339c91eed",
+      "app/physics/hull_crossing.gd": "c57cc1d92885a0957fbad6ad6b885bd6f017621cea8044a16aacf134e69c93b1",
+      "app/physics/impact_snapshot.gd": "606c9f7ab59974f548504abfc302804bb47e673c82a3e5560258371c0b2f0807",
+      "app/physics/integrator.gd": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+      "app/physics/lake_surface.gd": "dd9e3c3690eb2a71ad0928aee206d0fedcc4399a4b6cc41b542c1282e06a04a1",
+      "app/physics/linearize.gd": "f7bb02f2b625317e1db7daa456adc6140cb8ddd2fe9ea07b3756c176634bd0cd",
+      "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+      "app/physics/propulsion.gd": "4368f5636a983757e2587eadf92db07677d6283d0fe2b3cb3a43cb83e37ebff5",
+      "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+      "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+      "app/physics/rotorcraft/dynamic_inflow.gd": "cf5f381cf4f1a4de4efe844e9c3a4b1c4f6d1a780973f768431940fccb02b975",
+      "app/physics/rotorcraft/inflow.gd": "8b33aaf47d5515f8074d1041b1749b21860e3c008c4744ba72c4570b38c8a29d",
+      "app/physics/rotorcraft/main_rotor.gd": "7e6a89872f18de6b7f92c4c12883bbec1b1f82b915b04181f77850ab07010bed",
+      "app/physics/rotorcraft/main_rotor_stage.gd": "373ad2c6ac56ef1cea08c3d4dd2878ec3d9d26a6b5843d4d4fdc4c78771a6fb9",
+      "app/physics/rotorcraft/swash.gd": "5821c186cf5de1b0296dbf08a31aad6acb1e5c73f1d437f91ad550161f1411ff",
+      "app/physics/rotorcraft/tail_rotor.gd": "cf23979b9be63e327a5a21a5c2f8ffb1547fa72671a7a636eb2d901372850080",
+      "app/physics/slipstream.gd": "9f14a283d8d9529375374228ffcc93c650b4a924fa498df14034fe3fdc00edd8",
+      "app/physics/swirl_loads.gd": "38abd6917fa8c8fa483433fec53ea136d60b823eec2ef663a32daf0dfd5cdb7b",
+      "app/physics/trim.gd": "7fa0919ba460c5bdbffc34982fc4d289cae0ddc5aa98fc7d7b5d2edc079596e6",
+      "app/physics/turbine.gd": "1b9559219e1f3542821c6c56c7c62a9b3cbf79d35668175d6c8bee1ef87b8e2c",
+      "app/physics/wash_transport.gd": "2814d3d640997d1ac62b9c45c32d4ff632c29f37a113f263a0f2bca9ed86b67d",
+      "app/physics/wheel_profiles.gd": "b9c8995eea9eb500f6c776694c5d607a894493506b7fe4ad66487ed9a17becb5",
+      "app/physics/wind_config.gd": "e7171e0365c2e12088069638f1bbe650626e7ea4eb6f089ffef0ac1440095ac2",
+      "app/physics/wind_field.gd": "ca8c0a3f88fce57e09357c444ce431c3a4ad481565e4f1fa26f05a3e8a3ed72c",
+      "app/physics/wind_turbulence.gd": "edc55a08df419f50e28b9ec7f4dc83f8f2b58a795658c8485ae1a9384c52e270",
+      "app/physics/wing_polar.gd": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+      "app/sim/aircraft_contact_events.gd": "31c2ff81e88939b1e8b7ce46030abd18f4ca0442f80690314509503241b818a6",
+      "app/sim/aircraft_propulsion_runtime.gd": "cdd9bada5a4b0194dab7297db9e62bf6f42f4d22a6bb73ab2be168abc4b92fd7",
+      "app/sim/flight_session.gd": "965fb3127f1c5d86c54aff80b4555c1a251f65ba9f624036985b29b914cba65f",
+      "app/sim/lake_collision.gd": "eb036e890c4c203257d24517a6af3e72ba96dd0bbc0e2000db45088b359dcc07",
+      "app/sim/landing_maneuver.gd": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+      "app/sim/maneuvers.gd": "092b91067eced1200d595dfe05a194d2e2fc9090d9ea1fcc4736a0d4bc161594",
+      "app/sim/recorder.gd": "cd8d5028e1d1f820ad9abec9f4b449f9c25a35252ef1d730c03b8f8d2d60f59f",
+      "app/sim/scenarios.gd": "ed4dcebae1ec5b11368160fbbb064cec1a6fd84916ac5011797267cf5db074bc",
+      "app/sim/scenery_collision.gd": "894e2fb97de3bd87b9effe41c740662c3b9c65ca4149f03021f8b5001db75e91",
+      "app/sim/scenery_damage.gd": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48",
+      "app/sim/scripted.gd": "540537392f683002b43172314fe0596e8be9d38829584a3796f9f3e47fcd1801",
+      "app/sim/simulation.gd": "4da92d66a613df03ddd1e7dc4257e97769199ccfb135223f0ef8aaeefe0d5404",
+      "app/sim/trace.gd": "88f465719541e58e0f39b70bc43cb22c57c9fa3e33eba3db1264918954afdda8"
+    }
+  }
+}

@@ -1,0 +1,587 @@
+{
+  "format": "openrc-glow-matched-cycle-oracle v1",
+  "generated_by": "research/glow-engines/matched_cycle_oracle.py",
+  "source_sha256": "257faafa093c276ad32b445de6c2954e928987976ade3ae306fee0a8ab7ceff4",
+  "method": {
+    "question": "How close is the 240 Hz mean shaft reduction to a separate high-resolution crank-angle integration when both use the exact same candidate profile work/fuel/heat/loss closure per 360/720-degree opportunity?",
+    "mean_reduction": "A separate float64 RK4 energy ODE evaluates the candidate profile closure and installed propeller load at each integration stage, with opportunity frequency rpm/60 for 2T or rpm/120 for 4T.",
+    "phase_reference": "An independent crank-angle kinetic-energy update integrates the normalized inferred torque waveform and continuous propeller load. Candidate cycle work, fuel, heat and loss quantities are held from cycle start to the next opportunity; each result includes fixed-step angle refinement.",
+    "waveform": "Unit-integral raised-cosine indicated-work pulse over 90 crank degrees (2T) or 100 degrees (4T), delayed/advanced by declared phase scenarios; independent unit-integral sin-squared pump-loss window from the existing candidate loss work; uniform mechanical/valve torque loss.",
+    "inertia": "Primary uses exact installed candidate rotor_inertia value. Sensitivity repeats the full-admission static orbit at 0.5x/1x/2x; no added piston/rod effective mass in the matched comparison.",
+    "sampling": "Phase trajectory is sampled at 960 Hz for event crossing and aggregated to exact 240 Hz reporting intervals. Mean ODE refinement is at 240/480/960 Hz. Static crank-angle quadrature uses 0.5/0.25/0.125-degree maximum increments."
+  },
+  "plan_budgets": {
+    "mean_rpm_relative": 0.001,
+    "delivered_shaft_work_relative": 0.005,
+    "fuel_relative": 0.005,
+    "temperature_k": 0.5,
+    "event_time_s": 0.004166666666666667,
+    "basis": "RC_NITRO_ENGINE_REALISM_PLAN.md software/numerical acceptance; not physical accuracy tolerances"
+  },
+  "engines": {
+    "glow_2t": {
+      "engine_id": "os_max_55ax_candidate",
+      "family": "glow_2t",
+      "inputs": {
+        "paths": {
+          "profile": "app/data/glow/os_max_55ax_candidate.json",
+          "installation": "app/data/glow/stik_55ax_2t.json",
+          "aircraft": "app/data/aircraft/stik_glow_55ax_2t.json",
+          "kernel": "app/physics/glow/two_stroke.gd"
+        },
+        "sha256": {
+          "profile": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+          "installation": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+          "aircraft": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+          "kernel": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353"
+        },
+        "profile_mean_kernel_sha256": "e9cdfb64d0b4a36a1de7fa5cb3a03eb88d8dc949a50c4fa02d1c64bb9e6ed353",
+        "propeller_kernel_sha256": "68cc348bfa09f3599971184062eda861a891a05ff41702748f9ec4e091710a37",
+        "mean_profile_helper_sha256": "17d2575922971bbb43d7af30159c57302796c322484792758437324a278cf19e",
+        "installed_rotor_inertia_kg_m2": 0.00035585373583766657,
+        "installed_propeller_parameters": {
+          "diameter_m": 0.30479999999999996,
+          "pitch_m": 0.17779999999999999,
+          "chord_m": 0.0211364169120926,
+          "blades": 2.0,
+          "lift_slope": 5.5,
+          "cd0": 0.022,
+          "induced_drag": 0.06
+        },
+        "supported_max_rpm": 17000.0
+      },
+      "operating_points": {
+        "full_admission": 1.0,
+        "full_static_mean_root_rpm": 10330.000000000011,
+        "full_static_mean_root_residual_nm": 2.220446049250313e-16,
+        "low_command": 0.6,
+        "low_admission": 0.712,
+        "low_static_mean_root_rpm": 7664.430203804277,
+        "low_static_mean_root_residual_nm": 0.0
+      },
+      "static_phase_sensitivity": {
+        "scenario_rows": [
+          {
+            "rotor_inertia_multiplier": 0.5,
+            "phase_shift_deg": -10.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10351.388852113512,
+            "relative_difference_from_mean_root_fraction": 0.002070556835769731,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 0.5,
+            "phase_shift_deg": 0.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10350.213991480521,
+            "relative_difference_from_mean_root_fraction": 0.001956823957455006,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 0.5,
+            "phase_shift_deg": 20.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10347.005430545089,
+            "relative_difference_from_mean_root_fraction": 0.0016462178649639494,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 1.0,
+            "phase_shift_deg": -10.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10353.633249283701,
+            "relative_difference_from_mean_root_fraction": 0.002287826648953533,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 1.0,
+            "phase_shift_deg": 0.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10352.442458926142,
+            "relative_difference_from_mean_root_fraction": 0.0021725516869439193,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 1.0,
+            "phase_shift_deg": 20.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10349.076501108808,
+            "relative_difference_from_mean_root_fraction": 0.0018467087230200317,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 2.0,
+            "phase_shift_deg": -10.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10346.526689972741,
+            "relative_difference_from_mean_root_fraction": 0.0015998731822584988,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 2.0,
+            "phase_shift_deg": 0.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10345.720361915855,
+            "relative_difference_from_mean_root_fraction": 0.001521816255164033,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 2.0,
+            "phase_shift_deg": 20.0,
+            "candidate_mean_root_rpm": 10330.000000000011,
+            "phase_time_average_rpm_after_warmup": 10343.399828728048,
+            "relative_difference_from_mean_root_fraction": 0.0012971760627335312,
+            "cycle_count": 44,
+            "angle_step_deg": 0.25
+          }
+        ],
+        "rotor_inertia_multipliers": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "combustion_phase_shifts_deg": [
+          -10.0,
+          0.0,
+          20.0
+        ],
+        "interpretation": "Steady, fixed-carrier conditional orbit; exact candidate cycle work/fuel/heat/loss totals are redistributed by the declared estimated phase pulse. Values are numerical consequences of that hypothesis, not measured vibration/RPM ripple."
+      },
+      "angle_grid_convergence": {
+        "rows": [
+          {
+            "step_deg_max": 0.5,
+            "mean_rpm_after_warmup": 10352.442477663923,
+            "profile_cycle_count": 44,
+            "net_profile_work_j": 195.78104888825874,
+            "phase_engine_work_j": 194.74023255931868,
+            "prop_work_j": 193.16047726071145,
+            "mean_rpm_error_vs_finest_fraction": 2.0064811278215042e-09
+          },
+          {
+            "step_deg_max": 0.25,
+            "mean_rpm_after_warmup": 10352.442458926142,
+            "profile_cycle_count": 44,
+            "net_profile_work_j": 195.78104879885427,
+            "phase_engine_work_j": 194.74020936355362,
+            "prop_work_j": 193.1604764511161,
+            "mean_rpm_error_vs_finest_fraction": 1.9649464416905284e-10
+          },
+          {
+            "step_deg_max": 0.125,
+            "mean_rpm_after_warmup": 10352.442456891942,
+            "profile_cycle_count": 44,
+            "net_profile_work_j": 195.781048793321,
+            "phase_engine_work_j": 194.74020416379457,
+            "prop_work_j": 193.1604763825512,
+            "mean_rpm_error_vs_finest_fraction": 0.0
+          }
+        ],
+        "quadrature_budget_fraction": 0.001,
+        "steady_mean_rpm_relative_error_vs_mean_root_fraction": 0.0021725514900223807,
+        "status": "evaluated"
+      },
+      "throttle_transient": {
+        "events_command_fraction": [
+          {
+            "time_s": 0.0,
+            "command": 0.6,
+            "admission": 0.712
+          },
+          {
+            "time_s": 0.4,
+            "command": 1.0,
+            "admission": 1.0
+          },
+          {
+            "time_s": 0.9,
+            "command": 0.6,
+            "admission": 0.712
+          }
+        ],
+        "duration_s": 1.4,
+        "phase_reference": {
+          "method": "independent crank-angle energy integration",
+          "max_angle_step_deg": 0.125,
+          "mean_sample_hz": 960,
+          "comparison_rows_aggregated_to_hz": 240,
+          "cycle_count": 196,
+          "totals": {
+            "burned_fuel_kg": 0.00020203461030806792,
+            "delivered_premix_kg": 0.00038849874005606323,
+            "chemical_heat_j": 3748.487310745619,
+            "profile_indicated_work_j": 634.2103680359672,
+            "profile_net_shaft_work_j": 597.1261017798688,
+            "actual_engine_work_j": 594.716152035132,
+            "prop_work_j": 575.8517366002844,
+            "ideal_power_refusals": 0.0
+          },
+          "mean_rpm": 8359.625979702589
+        },
+        "mean_reduction_240hz_vs_phase": {
+          "mean_rpm_relative_error_fraction": 0.001306321301397957,
+          "mean_rpm_relative_error_percent": 0.1306321301397957,
+          "max_tick_mean_rpm_error_fraction": 0.006252316134620078,
+          "max_tick_mean_rpm_error_percent": 0.6252316134620078,
+          "prop_shaft_work_relative_error_fraction": 0.004635573630724764,
+          "engine_shaft_work_relative_error_fraction": 0.007283977761356142,
+          "delivered_fuel_relative_error_fraction": 0.000844309124329374,
+          "burned_fuel_relative_error_fraction": 0.0013297815980903348,
+          "chemical_heat_relative_error_fraction": 0.001329781598091397,
+          "phase_event_count": 196,
+          "threshold_events": {
+            "definition": "first sampled 50%-of-low/high mean-root RPM crossing after each instantaneous throttle-command edge; no fuel/thermal threshold is modeled",
+            "up_threshold_rpm": 8997.215101902144,
+            "down_threshold_rpm": 8997.215101902144,
+            "up_mean_time_s": 0.7788502970380096,
+            "up_phase_reference_time_s": 0.7738658369230285,
+            "up_absolute_error_s": 0.004984460114981104,
+            "down_mean_time_s": 1.0085974599053473,
+            "down_phase_reference_time_s": 0.9884516727285474,
+            "down_absolute_error_s": 0.020145787176799934
+          }
+        },
+        "mean_solver_refinement": [
+          {
+            "mean_step_hz": 240,
+            "mean_rpm_error_vs_960hz_fraction": 2.9076386070198503e-05,
+            "max_aligned_tick_rpm_error_vs_960hz_fraction": 0.0006074525151582135
+          },
+          {
+            "mean_step_hz": 480,
+            "mean_rpm_error_vs_960hz_fraction": 9.719752336951741e-06,
+            "max_aligned_tick_rpm_error_vs_960hz_fraction": 0.00020222126031207134
+          },
+          {
+            "mean_step_hz": 960,
+            "mean_rpm_error_vs_960hz_fraction": 0.0,
+            "max_aligned_tick_rpm_error_vs_960hz_fraction": 0.0
+          }
+        ],
+        "mean_reduction_rpm_budget_fraction": 0.001,
+        "mean_reduction_shaft_work_fuel_budget_fraction": 0.005,
+        "result_classification": {
+          "steady_mean_rpm_relative_error_fraction": 0.0021725514900223807,
+          "steady_rpm_budget_pass": false,
+          "transient_mean_rpm_budget_pass": false,
+          "rpm_budget_pass": false,
+          "shaft_work_budget_pass": true,
+          "fuel_budget_pass": true,
+          "temperature_budget": "NOT TESTED: temperature state and heat-transfer/cooling law are outside this shaft-only harness",
+          "event_time_budget_pass": false
+        }
+      },
+      "closure_audit": {
+        "method": "For each phase-resolved opportunity, the analytic indicated and pumping pulse densities integrate to one over the exact 360/720-degree cycle; mechanical and valve losses are uniform. The per-opportunity fuel, chemical heat, indicated work and pumping/mechanical/valve work are sampled from the candidate profile helper at cycle start, and totals are recorded before propeller work is coupled.",
+        "waveform_integrals": {
+          "indicated_work_j_per_opportunity": "exact profile cycle_work_j",
+          "fuel_kg_per_opportunity": "exact profile burned_fuel_kg_cycle and delivered_premix_kg_cycle",
+          "chemical_heat_j_per_opportunity": "exact profile chemical_heat_j_cycle",
+          "pumping_loss_work_j_per_opportunity": "exact profile pumping_work_j",
+          "mechanical_and_valve_loss_j_per_opportunity": "profile torque × family cycle angle"
+        },
+        "normalization_warning": "The estimated indicated phase pulse and gas-exchange loss windows are normalized to close the candidate mean energy ledger. That is deliberately a matched-work numerical probe and cannot validate those phase timings, pressure, fuel chemistry, cycle stability or actual engine output."
+      },
+      "limitations": [
+        "Fixed-carrier, zero axial airspeed. The annular installed propeller surrogate and its lower-bound gate are evaluated independently from production code.",
+        "No cylinder pressure, burn law, port/valve flow, glow ignition, fuel transport, servo lag, mixture memory, temperature, cooling, firing/extinction, starter, tank depletion, aircraft acceleration, or reciprocating-mass dynamics is integrated.",
+        "Throttle steps change admission instantly and phase integration holds a profile closure until the next cycle opportunity. This does not qualify lifecycle throttle-response accuracy.",
+        "Plan RPM/work/fuel comparisons are conditional numerical budgets for the candidate closure and chosen phase waveform. Mean fuel and temperature event gates remain open outside the explicitly modeled opportunity counters.",
+        "No engine or propeller measurements, held-out point, physical pilot trial, or audio/vibration claim is made."
+      ]
+    },
+    "glow_4t": {
+      "engine_id": "os_fs_64v_candidate",
+      "family": "glow_4t",
+      "inputs": {
+        "paths": {
+          "profile": "app/data/glow/os_fs_64v_candidate.json",
+          "installation": "app/data/glow/stik_fs64v_4t.json",
+          "aircraft": "app/data/aircraft/stik_glow_fs64v_4t.json",
+          "kernel": "app/physics/glow/four_stroke.gd"
+        },
+        "sha256": {
+          "profile": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+          "installation": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+          "aircraft": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+          "kernel": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f"
+        },
+        "profile_mean_kernel_sha256": "e954e059ebaf90911c04da260fb46b6f092da8fccc266c05f3e43ba4cf09863f",
+        "propeller_kernel_sha256": "68cc348bfa09f3599971184062eda861a891a05ff41702748f9ec4e091710a37",
+        "mean_profile_helper_sha256": "17d2575922971bbb43d7af30159c57302796c322484792758437324a278cf19e",
+        "installed_rotor_inertia_kg_m2": 0.0006653817999999998,
+        "installed_propeller_parameters": {
+          "diameter_m": 0.35559999999999997,
+          "pitch_m": 0.15239999999999998,
+          "chord_m": 0.03,
+          "blades": 2.0,
+          "lift_slope": 5.5,
+          "cd0": 0.022,
+          "induced_drag": 0.075
+        },
+        "supported_max_rpm": 15000.0
+      },
+      "operating_points": {
+        "full_admission": 1.0,
+        "full_static_mean_root_rpm": 7785.230844803131,
+        "full_static_mean_root_residual_nm": -3.3306690738754696e-16,
+        "low_command": 0.6,
+        "low_admission": 0.74,
+        "low_static_mean_root_rpm": 5991.064980933255,
+        "low_static_mean_root_residual_nm": 1.1102230246251565e-16
+      },
+      "static_phase_sensitivity": {
+        "scenario_rows": [
+          {
+            "rotor_inertia_multiplier": 0.5,
+            "phase_shift_deg": -10.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7830.256011780691,
+            "relative_difference_from_mean_root_fraction": 0.0057834080806499705,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 0.5,
+            "phase_shift_deg": 0.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7829.631858367175,
+            "relative_difference_from_mean_root_fraction": 0.005703236609057357,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 0.5,
+            "phase_shift_deg": 20.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7827.066044448057,
+            "relative_difference_from_mean_root_fraction": 0.005373662063322458,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 1.0,
+            "phase_shift_deg": -10.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7832.206748164267,
+            "relative_difference_from_mean_root_fraction": 0.00603397693627724,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 1.0,
+            "phase_shift_deg": 0.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7831.478886668018,
+            "relative_difference_from_mean_root_fraction": 0.005940484333327042,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 1.0,
+            "phase_shift_deg": 20.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7828.643382114214,
+            "relative_difference_from_mean_root_fraction": 0.005576268472509322,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 2.0,
+            "phase_shift_deg": -10.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7816.423704188029,
+            "relative_difference_from_mean_root_fraction": 0.0040066710938597375,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 2.0,
+            "phase_shift_deg": 0.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7815.921274233761,
+            "relative_difference_from_mean_root_fraction": 0.00394213479888233,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          },
+          {
+            "rotor_inertia_multiplier": 2.0,
+            "phase_shift_deg": 20.0,
+            "candidate_mean_root_rpm": 7785.230844803131,
+            "phase_time_average_rpm_after_warmup": 7814.000910769492,
+            "relative_difference_from_mean_root_fraction": 0.0036954672944048065,
+            "cycle_count": 17,
+            "angle_step_deg": 0.25
+          }
+        ],
+        "rotor_inertia_multipliers": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "combustion_phase_shifts_deg": [
+          -10.0,
+          0.0,
+          20.0
+        ],
+        "interpretation": "Steady, fixed-carrier conditional orbit; exact candidate cycle work/fuel/heat/loss totals are redistributed by the declared estimated phase pulse. Values are numerical consequences of that hypothesis, not measured vibration/RPM ripple."
+      },
+      "angle_grid_convergence": {
+        "rows": [
+          {
+            "step_deg_max": 0.5,
+            "mean_rpm_after_warmup": 7831.47888691405,
+            "profile_cycle_count": 17,
+            "net_profile_work_j": 166.89875523614032,
+            "phase_engine_work_j": 167.2538109550379,
+            "prop_work_j": 162.9508021033644,
+            "mean_rpm_error_vs_finest_fraction": -2.159308712771456e-10
+          },
+          {
+            "step_deg_max": 0.25,
+            "mean_rpm_after_warmup": 7831.478886668018,
+            "profile_cycle_count": 17,
+            "net_profile_work_j": 166.89875526528198,
+            "phase_engine_work_j": 167.25381171380528,
+            "prop_work_j": 162.95080215312132,
+            "mean_rpm_error_vs_finest_fraction": -2.473466437959329e-10
+          },
+          {
+            "step_deg_max": 0.125,
+            "mean_rpm_after_warmup": 7831.478888605108,
+            "profile_cycle_count": 17,
+            "net_profile_work_j": 166.89875529621997,
+            "phase_engine_work_j": 167.25381208157285,
+            "prop_work_j": 162.95080226059565,
+            "mean_rpm_error_vs_finest_fraction": 0.0
+          }
+        ],
+        "quadrature_budget_fraction": 0.001,
+        "steady_mean_rpm_relative_error_vs_mean_root_fraction": 0.005940484582143045,
+        "status": "evaluated"
+      },
+      "throttle_transient": {
+        "events_command_fraction": [
+          {
+            "time_s": 0.0,
+            "command": 0.6,
+            "admission": 0.74
+          },
+          {
+            "time_s": 0.4,
+            "command": 1.0,
+            "admission": 1.0
+          },
+          {
+            "time_s": 0.9,
+            "command": 0.6,
+            "admission": 0.74
+          }
+        ],
+        "duration_s": 1.4,
+        "phase_reference": {
+          "method": "independent crank-angle energy integration",
+          "max_angle_step_deg": 0.125,
+          "mean_sample_hz": 960,
+          "comparison_rows_aggregated_to_hz": 240,
+          "cycle_count": 75,
+          "totals": {
+            "burned_fuel_kg": 0.00011458299808699152,
+            "delivered_premix_kg": 0.00016509742393895733,
+            "chemical_heat_j": 2125.9373020362436,
+            "profile_indicated_work_j": 560.4964403537849,
+            "profile_net_shaft_work_j": 521.668245232878,
+            "actual_engine_work_j": 521.7081049206977,
+            "prop_work_j": 505.0098044602855,
+            "ideal_power_refusals": 0.0
+          },
+          "mean_rpm": 6420.352800777643
+        },
+        "mean_reduction_240hz_vs_phase": {
+          "mean_rpm_relative_error_fraction": 0.0006929875082601774,
+          "mean_rpm_relative_error_percent": 0.06929875082601773,
+          "max_tick_mean_rpm_error_fraction": 0.017743354552954796,
+          "max_tick_mean_rpm_error_percent": 1.7743354552954795,
+          "prop_shaft_work_relative_error_fraction": 0.0030435498617750138,
+          "engine_shaft_work_relative_error_fraction": 0.009188848525090046,
+          "delivered_fuel_relative_error_fraction": 0.004917167251597186,
+          "burned_fuel_relative_error_fraction": 0.004917167251598628,
+          "chemical_heat_relative_error_fraction": 0.004917167251597215,
+          "phase_event_count": 75,
+          "threshold_events": {
+            "definition": "first sampled 50%-of-low/high mean-root RPM crossing after each instantaneous throttle-command edge; no fuel/thermal threshold is modeled",
+            "up_threshold_rpm": 6888.147912868193,
+            "down_threshold_rpm": 6888.147912868193,
+            "up_mean_time_s": 0.8451741386837807,
+            "up_phase_reference_time_s": 0.8287575150523057,
+            "up_absolute_error_s": 0.016416623631475002,
+            "down_mean_time_s": 0.9528339034753125,
+            "down_phase_reference_time_s": 0.9118129667235154,
+            "down_absolute_error_s": 0.04102093675179708
+          }
+        },
+        "mean_solver_refinement": [
+          {
+            "mean_step_hz": 240,
+            "mean_rpm_error_vs_960hz_fraction": 2.53762252496335e-05,
+            "max_aligned_tick_rpm_error_vs_960hz_fraction": 0.00046144139745452517
+          },
+          {
+            "mean_step_hz": 480,
+            "mean_rpm_error_vs_960hz_fraction": 8.480446611336984e-06,
+            "max_aligned_tick_rpm_error_vs_960hz_fraction": 0.00015363207564613354
+          },
+          {
+            "mean_step_hz": 960,
+            "mean_rpm_error_vs_960hz_fraction": 0.0,
+            "max_aligned_tick_rpm_error_vs_960hz_fraction": 0.0
+          }
+        ],
+        "mean_reduction_rpm_budget_fraction": 0.001,
+        "mean_reduction_shaft_work_fuel_budget_fraction": 0.005,
+        "result_classification": {
+          "steady_mean_rpm_relative_error_fraction": 0.005940484582143045,
+          "steady_rpm_budget_pass": false,
+          "transient_mean_rpm_budget_pass": true,
+          "rpm_budget_pass": false,
+          "shaft_work_budget_pass": true,
+          "fuel_budget_pass": true,
+          "temperature_budget": "NOT TESTED: temperature state and heat-transfer/cooling law are outside this shaft-only harness",
+          "event_time_budget_pass": false
+        }
+      },
+      "closure_audit": {
+        "method": "For each phase-resolved opportunity, the analytic indicated and pumping pulse densities integrate to one over the exact 360/720-degree cycle; mechanical and valve losses are uniform. The per-opportunity fuel, chemical heat, indicated work and pumping/mechanical/valve work are sampled from the candidate profile helper at cycle start, and totals are recorded before propeller work is coupled.",
+        "waveform_integrals": {
+          "indicated_work_j_per_opportunity": "exact profile cycle_work_j",
+          "fuel_kg_per_opportunity": "exact profile burned_fuel_kg_cycle and delivered_premix_kg_cycle",
+          "chemical_heat_j_per_opportunity": "exact profile chemical_heat_j_cycle",
+          "pumping_loss_work_j_per_opportunity": "exact profile pumping_work_j",
+          "mechanical_and_valve_loss_j_per_opportunity": "profile torque × family cycle angle"
+        },
+        "normalization_warning": "The estimated indicated phase pulse and gas-exchange loss windows are normalized to close the candidate mean energy ledger. That is deliberately a matched-work numerical probe and cannot validate those phase timings, pressure, fuel chemistry, cycle stability or actual engine output."
+      },
+      "limitations": [
+        "Fixed-carrier, zero axial airspeed. The annular installed propeller surrogate and its lower-bound gate are evaluated independently from production code.",
+        "No cylinder pressure, burn law, port/valve flow, glow ignition, fuel transport, servo lag, mixture memory, temperature, cooling, firing/extinction, starter, tank depletion, aircraft acceleration, or reciprocating-mass dynamics is integrated.",
+        "Throttle steps change admission instantly and phase integration holds a profile closure until the next cycle opportunity. This does not qualify lifecycle throttle-response accuracy.",
+        "Plan RPM/work/fuel comparisons are conditional numerical budgets for the candidate closure and chosen phase waveform. Mean fuel and temperature event gates remain open outside the explicitly modeled opportunity counters.",
+        "No engine or propeller measurements, held-out point, physical pilot trial, or audio/vibration claim is made."
+      ]
+    }
+  },
+  "overall_status": {
+    "matched_work_averaging_test": "evaluated for installed static equilibrium and instantaneous throttle-step shaft/fuel cases",
+    "temperature_and_fuel_lifecycle_gate": "OPEN: thermal, cooling, transport, exhaustion and extinction states are not represented by this model",
+    "physical_validation": "NOT PERFORMED",
+    "pilot_validation": "NOT PERFORMED"
+  }
+}

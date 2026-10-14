@@ -1,0 +1,2298 @@
+{
+ "file": "export/aircraft.glb",
+ "checks": {
+  "structure:names_unique_ascii_no_suffix": {
+   "pass": true,
+   "detail": {
+    "duplicates": [],
+    "invalid": []
+   }
+  },
+  "structure:single_root_TurboTimberEvolution": {
+   "pass": true,
+   "detail": [
+    "TurboTimberEvolution"
+   ]
+  },
+  "structure:hierarchy_matches_spec_tree": {
+   "pass": true,
+   "detail": {
+    "missing": [],
+    "unexpected": [],
+    "wrong_parent": {}
+   }
+  },
+  "structure:mesh_nodes_match_spec": {
+   "pass": true,
+   "detail": {
+    "mesh_nodes": [
+     "aileron_left",
+     "aileron_right",
+     "canopy_glass",
+     "cowl",
+     "elevator",
+     "fin_fixed",
+     "flap_left",
+     "flap_right",
+     "fuselage_core",
+     "gear_cables",
+     "gear_left_leg",
+     "gear_right_leg",
+     "propeller_rotor",
+     "rudder",
+     "stabilizer_fixed",
+     "tailwheel",
+     "tailwheel_fork",
+     "wheel_left",
+     "wheel_right",
+     "wing_left_fixed",
+     "wing_right_fixed"
+    ],
+    "expected": [
+     "aileron_left",
+     "aileron_right",
+     "canopy_glass",
+     "cowl",
+     "elevator",
+     "fin_fixed",
+     "flap_left",
+     "flap_right",
+     "fuselage_core",
+     "gear_cables",
+     "gear_left_leg",
+     "gear_right_leg",
+     "propeller_rotor",
+     "rudder",
+     "stabilizer_fixed",
+     "tailwheel",
+     "tailwheel_fork",
+     "wheel_left",
+     "wheel_right",
+     "wing_left_fixed",
+     "wing_right_fixed"
+    ]
+   }
+  },
+  "structure:node_scales_unit": {
+   "pass": true,
+   "detail": []
+  },
+  "structure:no_reflections": {
+   "pass": true,
+   "detail": []
+  },
+  "structure:rotations_normalised": {
+   "pass": true,
+   "detail": []
+  },
+  "structure:root_identity_D0": {
+   "pass": true,
+   "detail": {
+    "translation": null,
+    "rotation": null,
+    "scale": null
+   }
+  },
+  "structure:openrc_section_present": {
+   "pass": true,
+   "detail": []
+  },
+  "structure:openrc_section_valid": {
+   "pass": true,
+   "detail": {}
+  },
+  "structure:root_and_thrust_frame_untagged": {
+   "pass": true,
+   "detail": {}
+  },
+  "structure:one_section_per_mesh": {
+   "pass": true,
+   "detail": {}
+  },
+  "structure:rotor_not_under_engine_tag": {
+   "pass": true,
+   "detail": []
+  },
+  "structure:no_cameras": {
+   "pass": true
+  },
+  "structure:no_lights": {
+   "pass": true
+  },
+  "structure:no_animations": {
+   "pass": true,
+   "detail": 0
+  },
+  "structure:no_textures_or_images": {
+   "pass": true
+  },
+  "structure:self_contained_buffers": {
+   "pass": true
+  },
+  "structure:no_compression": {
+   "pass": true,
+   "detail": []
+  },
+  "structure:materials_le_10": {
+   "pass": true,
+   "detail": [
+    "white",
+    "glass",
+    "black",
+    "red",
+    "metal",
+    "light_red",
+    "foam",
+    "light_grey",
+    "dark_grey",
+    "light_green"
+   ]
+  },
+  "structure:materials_unique": {
+   "pass": true,
+   "detail": [
+    "white",
+    "glass",
+    "black",
+    "red",
+    "metal",
+    "light_red",
+    "foam",
+    "light_grey",
+    "dark_grey",
+    "light_green"
+   ]
+  },
+  "structure:triangles_le_64k": {
+   "pass": true,
+   "detail": 42519
+  },
+  "structure:surfaces_le_40": {
+   "pass": false,
+   "detail": 49,
+   "advisory": true
+  },
+  "structure:pivots_match_r1_rest": {
+   "pass": true,
+   "detail": {
+    "aileron_left_hinge": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "aileron_right_hinge": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "flap_left_hinge": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "flap_right_hinge": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "elevator_hinge": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "rudder_hinge": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "propeller_spin": {
+     "translation_mm": 2e-05,
+     "rotation_deg": 0.0
+    },
+    "gear_left_suspension": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "wheel_left_axle": {
+     "translation_mm": 2e-05,
+     "rotation_deg": 0.0
+    },
+    "gear_right_suspension": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "wheel_right_axle": {
+     "translation_mm": 2e-05,
+     "rotation_deg": 0.0
+    },
+    "tailwheel_steer": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    },
+    "tailwheel_axle": {
+     "translation_mm": 0.0,
+     "rotation_deg": 1e-05
+    },
+    "thrust_frame": {
+     "translation_mm": 0.0,
+     "rotation_deg": 0.0
+    }
+   }
+  },
+  "structure:pivot_parents_match_r1": {
+   "pass": true,
+   "detail": {}
+  },
+  "moving_pivots_13": {
+   "pass": true,
+   "detail": {
+    "present": 13,
+    "missing": []
+   }
+  },
+  "reimport_pivot_positions_0p1mm": {
+   "pass": true,
+   "detail": {
+    "missing": [],
+    "mm": {
+     "aileron_left_hinge": 0.0002,
+     "aileron_right_hinge": 0.0002,
+     "elevator_hinge": 6e-05,
+     "flap_left_hinge": 0.00045,
+     "flap_right_hinge": 0.00046,
+     "gear_left_suspension": 0.00039,
+     "wheel_left_axle": 0.00019,
+     "gear_right_suspension": 0.00039,
+     "wheel_right_axle": 0.00021,
+     "rudder_hinge": 6e-05,
+     "tailwheel_steer": 0.00038,
+     "tailwheel_axle": 6e-05,
+     "thrust_frame": 0.0,
+     "propeller_spin": 0.00029
+    }
+   }
+  },
+  "reimport_pivot_axes_0p01deg": {
+   "pass": true,
+   "detail": {
+    "aileron_left_hinge": 0.0,
+    "aileron_right_hinge": 0.0,
+    "elevator_hinge": 0.0,
+    "flap_left_hinge": 0.0,
+    "flap_right_hinge": 0.0,
+    "gear_left_suspension": 0.0,
+    "wheel_left_axle": 0.0,
+    "gear_right_suspension": 0.0,
+    "wheel_right_axle": 0.0,
+    "rudder_hinge": 0.0,
+    "tailwheel_steer": 0.0,
+    "tailwheel_axle": 0.0,
+    "thrust_frame": 0.0,
+    "propeller_spin": 0.0
+   }
+  },
+  "reimport_rest_rotation_0p01deg": {
+   "pass": true,
+   "detail": {
+    "aileron_left_hinge": 0.0,
+    "aileron_right_hinge": 0.0,
+    "elevator_hinge": 0.0,
+    "flap_left_hinge": 0.0,
+    "flap_right_hinge": 0.0,
+    "gear_left_suspension": 0.0,
+    "wheel_left_axle": 0.0,
+    "gear_right_suspension": 0.0,
+    "wheel_right_axle": 0.0,
+    "rudder_hinge": 0.0,
+    "tailwheel_steer": 0.0,
+    "tailwheel_axle": 0.0,
+    "thrust_frame": 0.0,
+    "propeller_spin": 0.0
+   }
+  },
+  "meshes_identity_under_pivot": {
+   "pass": true,
+   "detail": []
+  },
+  "world_scales_unit": {
+   "pass": true,
+   "detail": []
+  },
+  "articulation_extras_survive": {
+   "pass": true,
+   "detail": {
+    "aileron_left_hinge": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule",
+     "sim_range_deg_approx",
+     "sim_range_source"
+    ],
+    "aileron_right_hinge": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule",
+     "sim_range_deg_approx",
+     "sim_range_source"
+    ],
+    "flap_left_hinge": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule",
+     "sim_flap_steps_deg"
+    ],
+    "flap_right_hinge": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule",
+     "sim_flap_steps_deg"
+    ],
+    "elevator_hinge": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule",
+     "sim_range_deg_approx",
+     "sim_range_source"
+    ],
+    "rudder_hinge": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule",
+     "sim_range_deg_approx",
+     "sim_range_source"
+    ],
+    "propeller_spin": [
+     "articulation",
+     "axis_local",
+     "continuous",
+     "driven_by",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule"
+    ],
+    "gear_left_suspension": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule"
+    ],
+    "wheel_left_axle": [
+     "articulation",
+     "axis_local",
+     "continuous",
+     "driven_by",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule"
+    ],
+    "gear_right_suspension": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule"
+    ],
+    "wheel_right_axle": [
+     "articulation",
+     "axis_local",
+     "continuous",
+     "driven_by",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule"
+    ],
+    "tailwheel_steer": [
+     "articulation",
+     "axis_local",
+     "driven_by",
+     "max_deg",
+     "min_deg",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule"
+    ],
+    "tailwheel_axle": [
+     "articulation",
+     "axis_local",
+     "continuous",
+     "driven_by",
+     "openrc_section",
+     "positive",
+     "range_source",
+     "rotation_rule"
+    ]
+   }
+  },
+  "mesh_sections_survive_reimport": {
+   "pass": true,
+   "detail": {
+    "aileron_left": "wing_left",
+    "aileron_right": "wing_right",
+    "canopy_glass": "canopy",
+    "cowl": "engine",
+    "elevator": "horizontal_tail",
+    "fin_fixed": "vertical_tail",
+    "flap_left": "wing_left",
+    "flap_right": "wing_right",
+    "fuselage_core": "core",
+    "gear_cables": "gear",
+    "gear_left_leg": "gear",
+    "wheel_left": "gear",
+    "gear_right_leg": "gear",
+    "wheel_right": "gear",
+    "rudder": "vertical_tail",
+    "stabilizer_fixed": "horizontal_tail",
+    "tailwheel": "gear",
+    "tailwheel_fork": "gear",
+    "propeller_rotor": "propeller",
+    "wing_left_fixed": "wing_left",
+    "wing_right_fixed": "wing_right"
+   }
+  },
+  "reimport_triangles_match": {
+   "pass": true,
+   "detail": {
+    "imported": 42519,
+    "exported": 42519
+   }
+  },
+  "reimport_surfaces_match": {
+   "pass": true,
+   "detail": {
+    "imported": 49,
+    "exported": 49
+   }
+  },
+  "budget_triangles_target_30_50k": {
+   "pass": true,
+   "detail": 42519,
+   "advisory": true
+  },
+  "budget_triangles_le_64k": {
+   "pass": true,
+   "detail": 42519
+  },
+  "budget_surfaces_le_40": {
+   "pass": false,
+   "detail": {
+    "surfaces": 49,
+    "reason_if_over": "one glTF primitive per material per section mesh: 20 section meshes are required by the crash split"
+   },
+   "advisory": true
+  },
+  "materials_le_10_shared": {
+   "pass": true,
+   "detail": [
+    "black",
+    "dark_grey",
+    "foam",
+    "glass",
+    "light_green",
+    "light_grey",
+    "light_red",
+    "metal",
+    "red",
+    "white"
+   ]
+  },
+  "backface_culling_on": {
+   "pass": true,
+   "detail": {
+    "black": true,
+    "dark_grey": true,
+    "foam": true,
+    "glass": true,
+    "light_green": true,
+    "light_grey": true,
+    "light_red": true,
+    "metal": true,
+    "red": true,
+    "white": true
+   }
+  },
+  "reimport_bbox_0p1mm": {
+   "pass": true,
+   "detail": {
+    "min": [
+     -0.7727518081665039,
+     -0.8320000171661377,
+     -0.25600001215934753
+    ],
+    "max": [
+     0.7727518081665039,
+     0.2834610641002655,
+     0.1780000627040863
+    ]
+   }
+  },
+  "reimport_landmarks_0p1mm": {
+   "pass": true,
+   "detail": {
+    "left_wingtip": 0.00053,
+    "right_wingtip": 0.00053,
+    "nose_spinner_tip": 0.00025,
+    "tail_rudder_trailing_edge": 0.0,
+    "wing_root_leading_edge": 0.00053,
+    "left_main_wheel_center": 0.00019,
+    "right_main_wheel_center": 0.00021,
+    "tailwheel_center": 6e-05,
+    "propeller_hub": 0.00029,
+    "left_main_wheel_contact": 0.0,
+    "right_main_wheel_contact": 0.0,
+    "tailwheel_contact": 0.00032
+   }
+  },
+  "span_length_consistent_with_r1_1mm": {
+   "pass": false,
+   "detail": {
+    "span_m": 1.5455,
+    "length_m": 1.11546,
+    "r1_span_m": 1.5479,
+    "r1_length_m": 1.1166,
+    "manual_span_m": 1.555,
+    "manual_length_m": 1.04,
+    "rescaled": false
+   },
+   "advisory": true
+  },
+  "positive_directions": {
+   "pass": true,
+   "detail": {
+    "aileron_left_hinge": true,
+    "aileron_right_hinge": true,
+    "flap_left_hinge": true,
+    "flap_right_hinge": true,
+    "elevator_hinge": true,
+    "rudder_hinge": true,
+    "tailwheel_steer": true,
+    "gear_left_suspension": true,
+    "gear_right_suspension": true,
+    "wheel_left_axle": true,
+    "wheel_right_axle": true,
+    "tailwheel_axle": true,
+    "propeller_spin": true
+   }
+  },
+  "clearance_authored_ranges": {
+   "pass": false,
+   "detail": {
+    "aileron_left_hinge": [
+     -34.5,
+     34.5
+    ],
+    "aileron_right_hinge": [
+     -34.5,
+     34.5
+    ],
+    "elevator_hinge": [
+     -22.0,
+     22.0
+    ],
+    "rudder_hinge": [
+     -30.0,
+     30.0
+    ],
+    "flap_left_hinge": [
+     0.0,
+     39.0
+    ],
+    "flap_right_hinge": [
+     0.0,
+     39.0
+    ],
+    "tailwheel_steer": [
+     -30.0,
+     30.0
+    ],
+    "gear_left_suspension": [
+     0.0,
+     6.0
+    ],
+    "gear_right_suspension": [
+     0.0,
+     6.0
+    ],
+    "propeller_spin": [
+     0.0,
+     360.0
+    ],
+    "wheel_left_axle": [
+     0.0,
+     360.0
+    ],
+    "wheel_right_axle": [
+     0.0,
+     360.0
+    ],
+    "tailwheel_axle": [
+     0.0,
+     360.0
+    ]
+   },
+   "advisory": true
+  },
+  "clearance_sweep_ran": {
+   "pass": true,
+   "detail": 13
+  },
+  "sections_separable": {
+   "pass": true,
+   "detail": {
+    "shared_mesh_data": {},
+    "coincident_seam_vertices_not_welded": {
+     "canopy_glass|fuselage_core": 1,
+     "cowl|fuselage_core": 31,
+     "fin_fixed|fuselage_core": 5,
+     "fuselage_core|gear_right_leg": 4,
+     "fuselage_core|gear_left_leg": 4
+    }
+   }
+  },
+  "closure_faces_at_joints": {
+   "pass": true,
+   "detail": {
+    "wing_left_fixed|wing_right_fixed": 0,
+    "wing_left_fixed|fuselage_core": 93,
+    "wing_right_fixed|fuselage_core": 86,
+    "cowl|fuselage_core": 76,
+    "stabilizer_fixed|fuselage_core": 106,
+    "fin_fixed|fuselage_core": 383,
+    "fin_fixed|stabilizer_fixed": 0
+   }
+  },
+  "closure_faces_hidden_separation": {
+   "pass": true,
+   "detail": {
+    "wing_left_fixed|wing_right_fixed": {
+     "min_max_mm": null,
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "wing_right_fixed|wing_left_fixed": {
+     "min_max_mm": null,
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "wing_left_fixed|fuselage_core": {
+     "min_max_mm": [
+      0.03,
+      0.591
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|wing_left_fixed": {
+     "min_max_mm": [
+      0.057,
+      0.557
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "wing_right_fixed|fuselage_core": {
+     "min_max_mm": [
+      0.033,
+      0.582
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|wing_right_fixed": {
+     "min_max_mm": [
+      0.061,
+      0.503
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "cowl|fuselage_core": {
+     "min_max_mm": [
+      0.009,
+      0.4
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|cowl": {
+     "min_max_mm": [
+      0.106,
+      0.564
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "stabilizer_fixed|fuselage_core": {
+     "min_max_mm": [
+      0.143,
+      0.597
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|stabilizer_fixed": {
+     "min_max_mm": [
+      0.396,
+      0.417
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "fin_fixed|fuselage_core": {
+     "min_max_mm": [
+      0.007,
+      0.474
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|fin_fixed": {
+     "min_max_mm": [
+      0.02,
+      0.58
+     ],
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "fin_fixed|stabilizer_fixed": {
+     "min_max_mm": null,
+     "area_lt_0p05mm_mm2": 0.0
+    },
+    "stabilizer_fixed|fin_fixed": {
+     "min_max_mm": null,
+     "area_lt_0p05mm_mm2": 0.0
+    }
+   }
+  },
+  "no_degenerate_faces": {
+   "pass": true,
+   "detail": {}
+  },
+  "no_duplicate_faces": {
+   "pass": true,
+   "detail": {}
+  },
+  "non_manifold_edges_reported": {
+   "pass": true,
+   "detail": {
+    "aileron_left": 4,
+    "aileron_right": 4,
+    "cowl": 148,
+    "elevator": 4,
+    "fin_fixed": 462,
+    "flap_left": 4,
+    "flap_right": 4,
+    "fuselage_core": 880,
+    "rudder": 24,
+    "stabilizer_fixed": 151,
+    "propeller_rotor": 96,
+    "wing_left_fixed": 489,
+    "wing_right_fixed": 481
+   },
+   "advisory": true
+  },
+  "no_flicker_coplanar_overlaps": {
+   "pass": true,
+   "detail": {
+    "residual_mm2": 0,
+    "pairs": {},
+    "rule": "same-direction coplanar area of different materials < 10 mm2"
+   }
+  },
+  "demo_animates_13_pivots": {
+   "pass": true,
+   "detail": [
+    "aileron_left_hinge",
+    "aileron_right_hinge",
+    "elevator_hinge",
+    "flap_left_hinge",
+    "flap_right_hinge",
+    "gear_left_suspension",
+    "gear_right_suspension",
+    "propeller_spin",
+    "rudder_hinge",
+    "tailwheel_axle",
+    "tailwheel_steer",
+    "wheel_left_axle",
+    "wheel_right_axle"
+   ]
+  },
+  "demo_one_control_at_a_time": {
+   "pass": true,
+   "detail": []
+  },
+  "silhouette_master_vs_game_within_1px": {
+   "pass": true,
+   "detail": {
+    "side": {
+     "iou": 0.99576,
+     "game_only_px": 368,
+     "master_only_px": 465,
+     "mismatch_beyond_1px": 142,
+     "mismatch_beyond_1px_fraction": 0.00072,
+     "pixel_mm": 0.964
+    },
+    "top": {
+     "iou": 0.99766,
+     "game_only_px": 595,
+     "master_only_px": 99,
+     "mismatch_beyond_1px": 62,
+     "mismatch_beyond_1px_fraction": 0.00021,
+     "pixel_mm": 1.25
+    },
+    "front": {
+     "iou": 0.96618,
+     "game_only_px": 73,
+     "master_only_px": 1671,
+     "mismatch_beyond_1px": 436,
+     "mismatch_beyond_1px_fraction": 0.00846,
+     "pixel_mm": 1.25
+    }
+   }
+  }
+ },
+ "structure": {
+  "file": "/home/claude/tt/r2work/pkg/r2/export/aircraft.glb",
+  "triangles": {
+   "aileron_left": 928,
+   "aileron_right": 928,
+   "canopy_glass": 1032,
+   "cowl": 2310,
+   "elevator": 1462,
+   "fin_fixed": 2314,
+   "flap_left": 1392,
+   "flap_right": 1392,
+   "fuselage_core": 4542,
+   "gear_cables": 112,
+   "gear_left_leg": 794,
+   "wheel_left": 1660,
+   "gear_right_leg": 794,
+   "wheel_right": 1660,
+   "rudder": 1244,
+   "stabilizer_fixed": 4999,
+   "tailwheel": 816,
+   "tailwheel_fork": 238,
+   "propeller_rotor": 3580,
+   "wing_left_fixed": 5197,
+   "wing_right_fixed": 5125
+  },
+  "surfaces": {
+   "aileron_left": 1,
+   "aileron_right": 1,
+   "canopy_glass": 1,
+   "cowl": 4,
+   "elevator": 3,
+   "fin_fixed": 3,
+   "flap_left": 1,
+   "flap_right": 1,
+   "fuselage_core": 4,
+   "gear_cables": 1,
+   "gear_left_leg": 2,
+   "wheel_left": 2,
+   "gear_right_leg": 2,
+   "wheel_right": 2,
+   "rudder": 3,
+   "stabilizer_fixed": 3,
+   "tailwheel": 2,
+   "tailwheel_fork": 1,
+   "propeller_rotor": 2,
+   "wing_left_fixed": 5,
+   "wing_right_fixed": 5
+  },
+  "total_triangles": 42519,
+  "total_surfaces": 49,
+  "sections": {
+   "aileron_left": "wing_left",
+   "aileron_left_hinge": "wing_left",
+   "aileron_right": "wing_right",
+   "aileron_right_hinge": "wing_right",
+   "canopy_glass": "canopy",
+   "cowl": "engine",
+   "elevator": "horizontal_tail",
+   "elevator_hinge": "horizontal_tail",
+   "fin_fixed": "vertical_tail",
+   "flap_left": "wing_left",
+   "flap_left_hinge": "wing_left",
+   "flap_right": "wing_right",
+   "flap_right_hinge": "wing_right",
+   "fuselage_core": "core",
+   "gear_cables": "gear",
+   "gear_left_leg": "gear",
+   "wheel_left": "gear",
+   "wheel_left_axle": "gear",
+   "gear_left_suspension": "gear",
+   "gear_right_leg": "gear",
+   "wheel_right": "gear",
+   "wheel_right_axle": "gear",
+   "gear_right_suspension": "gear",
+   "rudder": "vertical_tail",
+   "rudder_hinge": "vertical_tail",
+   "stabilizer_fixed": "horizontal_tail",
+   "tailwheel": "gear",
+   "tailwheel_axle": "gear",
+   "tailwheel_fork": "gear",
+   "tailwheel_steer": "gear",
+   "propeller_rotor": "propeller",
+   "propeller_spin": "propeller",
+   "thrust_frame": null,
+   "wing_left_fixed": "wing_left",
+   "wing_right_fixed": "wing_right",
+   "TurboTimberEvolution": null
+  },
+  "failed": [],
+  "pass": true
+ },
+ "blender_version": "5.2.2 LTS",
+ "imported_extras": {
+  "TurboTimberEvolution": {
+   "datum": "D0: wing-root leading-edge station x symmetry plane x CAD thrust-axis height",
+   "units": "m",
+   "pose": "neutral body pose (no ground presentation offset or attitude)"
+  },
+  "aileron_left_hinge": {
+   "articulation": "aileron_left_hinge",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "trailing edge down",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler)",
+   "driven_by": "roll: right stick -> right aileron negative (up), left aileron positive (down); authored differential 0.7 (down travel = 0.7 x up travel)",
+   "min_deg": -22.0,
+   "max_deg": 22.0,
+   "openrc_section": "wing_left",
+   "sim_range_deg_approx": 34.5,
+   "sim_range_source": "OpenRC Simulator: manual linear travel at an assumed measurement station (delivery spec r2, sec. 4)"
+  },
+  "aileron_right_hinge": {
+   "articulation": "aileron_right_hinge",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "trailing edge down",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler)",
+   "driven_by": "roll: right stick -> right aileron negative (up), left aileron positive (down); authored differential 0.7 (down travel = 0.7 x up travel)",
+   "min_deg": -22.0,
+   "max_deg": 22.0,
+   "openrc_section": "wing_right",
+   "sim_range_deg_approx": 34.5,
+   "sim_range_source": "OpenRC Simulator: manual linear travel at an assumed measurement station (delivery spec r2, sec. 4)"
+  },
+  "elevator_hinge": {
+   "articulation": "elevator_hinge",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "trailing edge down (nose-down pitch)",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler)",
+   "driven_by": "pitch: stick back (nose up) -> negative; single one-piece elevator joined by a torsion rod",
+   "min_deg": -22.0,
+   "max_deg": 22.0,
+   "openrc_section": "horizontal_tail",
+   "sim_range_deg_approx": 17.8,
+   "sim_range_source": "OpenRC Simulator: manual linear travel at an assumed measurement station (delivery spec r2, sec. 4)"
+  },
+  "flap_left_hinge": {
+   "articulation": "flap_left_hinge",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "trailing edge down",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler)",
+   "driven_by": "flap channel (both flaps equal)",
+   "min_deg": 0.0,
+   "max_deg": 40.0,
+   "openrc_section": "wing_left",
+   "sim_flap_steps_deg": "[0.0, 20.7, 36.6]"
+  },
+  "flap_right_hinge": {
+   "articulation": "flap_right_hinge",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "trailing edge down",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler)",
+   "driven_by": "flap channel (both flaps equal)",
+   "min_deg": 0.0,
+   "max_deg": 40.0,
+   "openrc_section": "wing_right",
+   "sim_flap_steps_deg": "[0.0, 20.7, 36.6]"
+  },
+  "gear_left_suspension": {
+   "articulation": "gear_left_suspension",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "leg swings outboard (compression)",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler); cross-wire springs limit it",
+   "driven_by": "ground load (suspension); springs: cross cables with tension springs, see metadata",
+   "min_deg": 0.0,
+   "max_deg": 12.0,
+   "openrc_section": "gear"
+  },
+  "wheel_left_axle": {
+   "articulation": "wheel_left_axle",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "forward rolling",
+   "range_source": "continuous",
+   "driven_by": "ground contact (rolling without slip, radius 58.0 mm)",
+   "continuous": true,
+   "openrc_section": "gear"
+  },
+  "gear_right_suspension": {
+   "articulation": "gear_right_suspension",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "leg swings outboard (compression)",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler); cross-wire springs limit it",
+   "driven_by": "ground load (suspension); springs: cross cables with tension springs, see metadata",
+   "min_deg": 0.0,
+   "max_deg": 12.0,
+   "openrc_section": "gear"
+  },
+  "wheel_right_axle": {
+   "articulation": "wheel_right_axle",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "forward rolling",
+   "range_source": "continuous",
+   "driven_by": "ground contact (rolling without slip, radius 58.0 mm)",
+   "continuous": true,
+   "openrc_section": "gear"
+  },
+  "rudder_hinge": {
+   "articulation": "rudder_hinge",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "trailing edge to the pilot's right (nose right)",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler)",
+   "driven_by": "yaw: right pedal -> positive",
+   "min_deg": -30.0,
+   "max_deg": 30.0,
+   "openrc_section": "vertical_tail",
+   "sim_range_deg_approx": 18.2,
+   "sim_range_source": "OpenRC Simulator: manual linear travel at an assumed measurement station (delivery spec r2, sec. 4)"
+  },
+  "tailwheel_steer": {
+   "articulation": "tailwheel_steer",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "same sense as rudder (wheel trails to the right)",
+   "range_source": "authored approximation (no manufacturer manual available to the modeler)",
+   "driven_by": "coupled to rudder_hinge 1:1 (wire tip sits inside the rudder)",
+   "min_deg": -30.0,
+   "max_deg": 30.0,
+   "openrc_section": "gear"
+  },
+  "tailwheel_axle": {
+   "articulation": "tailwheel_axle",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "forward rolling",
+   "range_source": "continuous",
+   "driven_by": "ground contact (rolling without slip, radius 14.0 mm)",
+   "continuous": true,
+   "openrc_section": "gear"
+  },
+  "thrust_frame": {
+   "fixed": true,
+   "downthrust_deg": 2.0,
+   "right_thrust_deg": 2.0,
+   "note": "fixed shaft orientation; +X = thrust direction"
+  },
+  "propeller_spin": {
+   "articulation": "propeller_spin",
+   "axis_local": "+X",
+   "rotation_rule": "right-hand about local +X",
+   "positive": "normal tractor rotation: clockwise seen from behind (pilot view)",
+   "range_source": "continuous",
+   "driven_by": "throttle / motor rpm",
+   "continuous": true,
+   "openrc_section": "propeller"
+  }
+ },
+ "mesh_counts": {
+  "aileron_left": {
+   "triangles": 928,
+   "surfaces": 1,
+   "section": "wing_left"
+  },
+  "aileron_right": {
+   "triangles": 928,
+   "surfaces": 1,
+   "section": "wing_right"
+  },
+  "canopy_glass": {
+   "triangles": 1032,
+   "surfaces": 1,
+   "section": "canopy"
+  },
+  "cowl": {
+   "triangles": 2310,
+   "surfaces": 4,
+   "section": "engine"
+  },
+  "elevator": {
+   "triangles": 1462,
+   "surfaces": 3,
+   "section": "horizontal_tail"
+  },
+  "fin_fixed": {
+   "triangles": 2314,
+   "surfaces": 3,
+   "section": "vertical_tail"
+  },
+  "flap_left": {
+   "triangles": 1392,
+   "surfaces": 1,
+   "section": "wing_left"
+  },
+  "flap_right": {
+   "triangles": 1392,
+   "surfaces": 1,
+   "section": "wing_right"
+  },
+  "fuselage_core": {
+   "triangles": 4542,
+   "surfaces": 4,
+   "section": "core"
+  },
+  "gear_cables": {
+   "triangles": 112,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  "gear_left_leg": {
+   "triangles": 794,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  "wheel_left": {
+   "triangles": 1660,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  "gear_right_leg": {
+   "triangles": 794,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  "wheel_right": {
+   "triangles": 1660,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  "rudder": {
+   "triangles": 1244,
+   "surfaces": 3,
+   "section": "vertical_tail"
+  },
+  "stabilizer_fixed": {
+   "triangles": 4999,
+   "surfaces": 3,
+   "section": "horizontal_tail"
+  },
+  "tailwheel": {
+   "triangles": 816,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  "tailwheel_fork": {
+   "triangles": 238,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  "propeller_rotor": {
+   "triangles": 3580,
+   "surfaces": 2,
+   "section": "propeller"
+  },
+  "wing_left_fixed": {
+   "triangles": 5197,
+   "surfaces": 5,
+   "section": "wing_left"
+  },
+  "wing_right_fixed": {
+   "triangles": 5125,
+   "surfaces": 5,
+   "section": "wing_right"
+  }
+ },
+ "dimensions": {
+  "span_m": 1.5455,
+  "length_m": 1.11546,
+  "r1_span_m": 1.5479,
+  "r1_length_m": 1.1166,
+  "manual_span_m": 1.555,
+  "manual_length_m": 1.04,
+  "rescaled": false
+ },
+ "sign_checks": {
+  "aileron_left_hinge": {
+   "expected": "TE down",
+   "displacement_mm_at_plus10deg_blender": [
+    -0.33,
+    2.18,
+    -9.45
+   ],
+   "pass": true
+  },
+  "aileron_right_hinge": {
+   "expected": "TE down",
+   "displacement_mm_at_plus10deg_blender": [
+    0.33,
+    2.18,
+    -9.45
+   ],
+   "pass": true
+  },
+  "flap_left_hinge": {
+   "expected": "TE down",
+   "displacement_mm_at_plus10deg_blender": [
+    -0.33,
+    2.18,
+    -9.45
+   ],
+   "pass": true
+  },
+  "flap_right_hinge": {
+   "expected": "TE down",
+   "displacement_mm_at_plus10deg_blender": [
+    0.33,
+    2.18,
+    -9.45
+   ],
+   "pass": true
+  },
+  "elevator_hinge": {
+   "expected": "TE down",
+   "displacement_mm_at_plus10deg_blender": [
+    0.0,
+    0.98,
+    -11.18
+   ],
+   "pass": true
+  },
+  "rudder_hinge": {
+   "expected": "TE to the pilot's right",
+   "displacement_mm_at_plus10deg_blender": [
+    16.32,
+    1.43,
+    -0.0
+   ],
+   "pass": true
+  },
+  "tailwheel_steer": {
+   "expected": "trailing wheel to the right (follows rudder)",
+   "displacement_mm_at_plus10deg_blender": [
+    3.65,
+    0.32,
+    0.0
+   ],
+   "pass": true
+  },
+  "gear_left_suspension": {
+   "expected": "left wheel outboard",
+   "displacement_mm_at_plus10deg_blender": [
+    -17.39,
+    0.0,
+    16.57
+   ],
+   "pass": true
+  },
+  "gear_right_suspension": {
+   "expected": "right wheel outboard",
+   "displacement_mm_at_plus10deg_blender": [
+    17.39,
+    0.0,
+    16.57
+   ],
+   "pass": true
+  },
+  "wheel_left_axle": {
+   "expected": "top of tyre forward = forward roll",
+   "displacement_mm_at_plus10deg_blender": [
+    0.0,
+    8.68,
+    -0.76
+   ],
+   "pass": true
+  },
+  "wheel_right_axle": {
+   "expected": "top of tyre forward = forward roll",
+   "displacement_mm_at_plus10deg_blender": [
+    0.0,
+    8.68,
+    -0.76
+   ],
+   "pass": true
+  },
+  "tailwheel_axle": {
+   "expected": "top of tyre forward = forward roll",
+   "displacement_mm_at_plus10deg_blender": [
+    0.0,
+    1.74,
+    -0.15
+   ],
+   "pass": true
+  },
+  "propeller_spin": {
+   "expected": "top blade to the right = clockwise seen from behind",
+   "displacement_mm_at_plus10deg_blender": [
+    17.34,
+    -0.66,
+    -1.52
+   ],
+   "pass": true
+  }
+ },
+ "clearance": {
+  "method": "Blender BVH triangle-triangle overlap of the moving meshes against their neighbours; pairs already touching at rest (hinge-line contacts) and moving faces buried in the static foam at rest (gear wire in its bracket) are ignored; tailwheel_steer is swept together with rudder_hinge (the wire is rudder-driven); envelope = widest interval around 0 with no new overlap",
+  "per_articulation": {
+   "aileron_left_hinge": {
+    "moving": [
+     "aileron_left"
+    ],
+    "against": [
+     "flap_left",
+     "wing_left_fixed"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     -34.5,
+     34.5
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     -34.5,
+     34.5
+    ],
+    "authored_range_deg": [
+     -22,
+     22
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": [
+     -34.5,
+     34.5
+    ],
+    "simulator_clear": true,
+    "interfering_angles_deg": []
+   },
+   "aileron_right_hinge": {
+    "moving": [
+     "aileron_right"
+    ],
+    "against": [
+     "flap_right",
+     "wing_right_fixed"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     -34.5,
+     34.5
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     -34.5,
+     34.5
+    ],
+    "authored_range_deg": [
+     -22,
+     22
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": [
+     -34.5,
+     34.5
+    ],
+    "simulator_clear": true,
+    "interfering_angles_deg": []
+   },
+   "elevator_hinge": {
+    "moving": [
+     "elevator"
+    ],
+    "against": [
+     "fin_fixed",
+     "fuselage_core",
+     "rudder",
+     "stabilizer_fixed"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     -22,
+     22
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     -22.0,
+     22.0
+    ],
+    "authored_range_deg": [
+     -22,
+     22
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": [
+     -17.8,
+     17.8
+    ],
+    "simulator_clear": true,
+    "interfering_angles_deg": []
+   },
+   "rudder_hinge": {
+    "moving": [
+     "rudder"
+    ],
+    "against": [
+     "elevator",
+     "fin_fixed",
+     "fuselage_core",
+     "stabilizer_fixed"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     -30,
+     30
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     -30.0,
+     30.0
+    ],
+    "authored_range_deg": [
+     -30,
+     30
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": [
+     -18.2,
+     18.2
+    ],
+    "simulator_clear": true,
+    "interfering_angles_deg": []
+   },
+   "flap_left_hinge": {
+    "moving": [
+     "flap_left"
+    ],
+    "against": [
+     "aileron_left",
+     "fuselage_core",
+     "wing_left_fixed"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     0,
+     40
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     0.0,
+     39.0
+    ],
+    "authored_range_deg": [
+     0,
+     40
+    ],
+    "authored_clear": false,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": [
+     40.0
+    ],
+    "steps_checked_deg": {
+     "20.7": "clear",
+     "36.6": "clear"
+    }
+   },
+   "flap_right_hinge": {
+    "moving": [
+     "flap_right"
+    ],
+    "against": [
+     "aileron_right",
+     "fuselage_core",
+     "wing_right_fixed"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     0,
+     40
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     0.0,
+     39.0
+    ],
+    "authored_range_deg": [
+     0,
+     40
+    ],
+    "authored_clear": false,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": [
+     40.0
+    ],
+    "steps_checked_deg": {
+     "20.7": "clear",
+     "36.6": "clear"
+    }
+   },
+   "tailwheel_steer": {
+    "moving": [
+     "tailwheel",
+     "tailwheel_fork"
+    ],
+    "against": [
+     "fuselage_core"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "coupled_with": "rudder_hinge",
+    "swept_deg": [
+     -30,
+     30
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     -30.0,
+     30.0
+    ],
+    "authored_range_deg": [
+     -30,
+     30
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": []
+   },
+   "gear_left_suspension": {
+    "moving": [
+     "gear_left_leg",
+     "wheel_left"
+    ],
+    "against": [
+     "fuselage_core"
+    ],
+    "rest_contact_pairs_ignored": 142,
+    "embedded_mount_faces_excluded": 21,
+    "swept_deg": [
+     0,
+     12
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     0.0,
+     6.0
+    ],
+    "authored_range_deg": [
+     0,
+     12
+    ],
+    "authored_clear": false,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": [
+     7.0,
+     8.0,
+     9.0,
+     10.0,
+     11.0,
+     12.0
+    ]
+   },
+   "gear_right_suspension": {
+    "moving": [
+     "gear_right_leg",
+     "wheel_right"
+    ],
+    "against": [
+     "fuselage_core"
+    ],
+    "rest_contact_pairs_ignored": 145,
+    "embedded_mount_faces_excluded": 21,
+    "swept_deg": [
+     0,
+     12
+    ],
+    "step_deg": 1.0,
+    "clear_envelope_deg": [
+     0.0,
+     6.0
+    ],
+    "authored_range_deg": [
+     0,
+     12
+    ],
+    "authored_clear": false,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": [
+     7.0,
+     8.0,
+     9.0,
+     10.0,
+     11.0,
+     12.0
+    ]
+   },
+   "propeller_spin": {
+    "moving": [
+     "propeller_rotor"
+    ],
+    "against": [
+     "cowl",
+     "fuselage_core"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     0,
+     360
+    ],
+    "step_deg": 10.0,
+    "clear_envelope_deg": [
+     0.0,
+     360.0
+    ],
+    "authored_range_deg": [
+     0,
+     360
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": []
+   },
+   "wheel_left_axle": {
+    "moving": [
+     "wheel_left"
+    ],
+    "against": [
+     "fuselage_core",
+     "gear_left_leg"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     0,
+     360
+    ],
+    "step_deg": 10.0,
+    "clear_envelope_deg": [
+     0.0,
+     360.0
+    ],
+    "authored_range_deg": [
+     0,
+     360
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": []
+   },
+   "wheel_right_axle": {
+    "moving": [
+     "wheel_right"
+    ],
+    "against": [
+     "fuselage_core",
+     "gear_right_leg"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     0,
+     360
+    ],
+    "step_deg": 10.0,
+    "clear_envelope_deg": [
+     0.0,
+     360.0
+    ],
+    "authored_range_deg": [
+     0,
+     360
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": []
+   },
+   "tailwheel_axle": {
+    "moving": [
+     "tailwheel"
+    ],
+    "against": [
+     "fuselage_core",
+     "rudder"
+    ],
+    "rest_contact_pairs_ignored": 0,
+    "embedded_mount_faces_excluded": 0,
+    "swept_deg": [
+     0,
+     360
+    ],
+    "step_deg": 10.0,
+    "clear_envelope_deg": [
+     0.0,
+     360.0
+    ],
+    "authored_range_deg": [
+     0,
+     360
+    ],
+    "authored_clear": true,
+    "simulator_range_deg": null,
+    "simulator_clear": null,
+    "interfering_angles_deg": []
+   }
+  },
+  "combined_new_pairs": {
+   "rudder_+-30_with_elevator_-22": {
+    "-30": 0,
+    "30": 0
+   },
+   "rudder_+-30_with_elevator_+22": {
+    "-30": 0,
+    "30": 0
+   },
+   "rudder_-30_with_tailwheel_-30": {
+    "-30": 0
+   },
+   "rudder_+30_with_tailwheel_+30": {
+    "30": 0
+   }
+  },
+  "note": "ranges are reported, not clamped: the GLB carries no limits, the simulator applies its own"
+ },
+ "sections": {
+  "wing_left": [
+   "aileron_left_hinge",
+   "aileron_left",
+   "flap_left_hinge",
+   "flap_left",
+   "wing_left_fixed"
+  ],
+  "wing_right": [
+   "aileron_right_hinge",
+   "aileron_right",
+   "flap_right_hinge",
+   "flap_right",
+   "wing_right_fixed"
+  ],
+  "canopy": [
+   "canopy_glass"
+  ],
+  "engine": [
+   "cowl"
+  ],
+  "horizontal_tail": [
+   "elevator_hinge",
+   "elevator",
+   "stabilizer_fixed"
+  ],
+  "vertical_tail": [
+   "fin_fixed",
+   "rudder_hinge",
+   "rudder"
+  ],
+  "core": [
+   "fuselage_core"
+  ],
+  "gear": [
+   "gear_cables",
+   "gear_left_suspension",
+   "gear_left_leg",
+   "wheel_left_axle",
+   "wheel_left",
+   "gear_right_suspension",
+   "gear_right_leg",
+   "wheel_right_axle",
+   "wheel_right",
+   "tailwheel_steer",
+   "tailwheel_axle",
+   "tailwheel",
+   "tailwheel_fork"
+  ],
+  "propeller": [
+   "propeller_spin",
+   "propeller_rotor"
+  ]
+ },
+ "closures": {
+  "wing_left_fixed|wing_right_fixed": {
+   "faces": 0,
+   "area_cm2": 0.0,
+   "material": [],
+   "separation_mm_min_max": null,
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "wing_right_fixed|wing_left_fixed": {
+   "faces": 0,
+   "area_cm2": 0.0,
+   "material": [],
+   "separation_mm_min_max": null,
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "wing_left_fixed|fuselage_core": {
+   "faces": 30,
+   "area_cm2": 99.9,
+   "material": [
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.03,
+    0.591
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "fuselage_core|wing_left_fixed": {
+   "faces": 63,
+   "area_cm2": 106.83,
+   "material": [
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.057,
+    0.557
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "wing_right_fixed|fuselage_core": {
+   "faces": 24,
+   "area_cm2": 99.26,
+   "material": [
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.033,
+    0.582
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "fuselage_core|wing_right_fixed": {
+   "faces": 62,
+   "area_cm2": 106.78,
+   "material": [
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.061,
+    0.503
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "cowl|fuselage_core": {
+   "faces": 38,
+   "area_cm2": 71.26,
+   "material": [
+    "black",
+    "red",
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.009,
+    0.4
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "fuselage_core|cowl": {
+   "faces": 38,
+   "area_cm2": 71.05,
+   "material": [
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.106,
+    0.564
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "stabilizer_fixed|fuselage_core": {
+   "faces": 80,
+   "area_cm2": 9.12,
+   "material": [
+    "red",
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.143,
+    0.597
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "fuselage_core|stabilizer_fixed": {
+   "faces": 26,
+   "area_cm2": 3.09,
+   "material": [
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.396,
+    0.417
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "fin_fixed|fuselage_core": {
+   "faces": 256,
+   "area_cm2": 69.23,
+   "material": [
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.007,
+    0.474
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "fuselage_core|fin_fixed": {
+   "faces": 127,
+   "area_cm2": 63.76,
+   "material": [
+    "black",
+    "red",
+    "white"
+   ],
+   "separation_mm_min_max": [
+    0.02,
+    0.58
+   ],
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "fin_fixed|stabilizer_fixed": {
+   "faces": 0,
+   "area_cm2": 0.0,
+   "material": [],
+   "separation_mm_min_max": null,
+   "contact_lt_0p05mm_mm2": 0.0
+  },
+  "stabilizer_fixed|fin_fixed": {
+   "faces": 0,
+   "area_cm2": 0.0,
+   "material": [],
+   "separation_mm_min_max": null,
+   "contact_lt_0p05mm_mm2": 0.0
+  }
+ },
+ "mesh_hygiene": {
+  "aileron_left": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 4
+  },
+  "aileron_right": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 4
+  },
+  "canopy_glass": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 0
+  },
+  "cowl": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 148
+  },
+  "elevator": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 4
+  },
+  "fin_fixed": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 462
+  },
+  "flap_left": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 4
+  },
+  "flap_right": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 4
+  },
+  "fuselage_core": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 880
+  },
+  "gear_cables": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 0
+  },
+  "gear_left_leg": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 0
+  },
+  "wheel_left": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 0
+  },
+  "gear_right_leg": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 0
+  },
+  "wheel_right": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 0
+  },
+  "rudder": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 24
+  },
+  "stabilizer_fixed": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 151
+  },
+  "tailwheel": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 0
+  },
+  "tailwheel_fork": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 0
+  },
+  "propeller_rotor": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 96
+  },
+  "wing_left_fixed": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 489
+  },
+  "wing_right_fixed": {
+   "zero_area_faces": 0,
+   "duplicate_faces": 0,
+   "non_manifold_edges": 481
+  }
+ },
+ "coplanar_overlaps": {},
+ "demo": {
+  "file": "export/aircraft_demo.glb",
+  "animations": [
+   "control_demo"
+  ],
+  "active_intervals_s": {
+   "aileron_left_hinge": [
+    0.042,
+    2.042
+   ],
+   "aileron_right_hinge": [
+    2.292,
+    4.292
+   ],
+   "elevator_hinge": [
+    9.042,
+    11.042
+   ],
+   "flap_left_hinge": [
+    4.542,
+    6.542
+   ],
+   "flap_right_hinge": [
+    6.792,
+    8.792
+   ],
+   "gear_left_suspension": [
+    15.792,
+    16.792
+   ],
+   "wheel_left_axle": [
+    20.542,
+    21.542
+   ],
+   "gear_right_suspension": [
+    17.042,
+    18.042
+   ],
+   "wheel_right_axle": [
+    21.792,
+    22.792
+   ],
+   "rudder_hinge": [
+    11.292,
+    13.292
+   ],
+   "tailwheel_steer": [
+    13.542,
+    15.542
+   ],
+   "tailwheel_axle": [
+    23.042,
+    24.042
+   ],
+   "propeller_spin": [
+    18.292,
+    20.292
+   ]
+  },
+  "overlapping": [],
+  "cameras": 0,
+  "lights": false
+ },
+ "silhouette_master_vs_game": {
+  "rule": "pass if under 1 % of the silhouette pixels differ by more than one pixel (about 1 mm); the wing seen edge-on from the front is the tightest case (0.3 mm chordal tessellation + <=0.25 mm decimation)",
+  "master": "full-resolution master STL export of the same CAD parts without marking layers (stl_v17, CAD sidecar frame)",
+  "parts_loaded": 70,
+  "views": {
+   "side": {
+    "iou": 0.99576,
+    "game_only_px": 368,
+    "master_only_px": 465,
+    "mismatch_beyond_1px": 142,
+    "mismatch_beyond_1px_fraction": 0.00072,
+    "pixel_mm": 0.964
+   },
+   "top": {
+    "iou": 0.99766,
+    "game_only_px": 595,
+    "master_only_px": 99,
+    "mismatch_beyond_1px": 62,
+    "mismatch_beyond_1px_fraction": 0.00021,
+    "pixel_mm": 1.25
+   },
+   "front": {
+    "iou": 0.96618,
+    "game_only_px": 73,
+    "master_only_px": 1671,
+    "mismatch_beyond_1px": 436,
+    "mismatch_beyond_1px_fraction": 0.00846,
+    "pixel_mm": 1.25
+   }
+  }
+ },
+ "previews": [
+  "control_extremes.png",
+  "exploded_sections.png",
+  "exploded_sections_rear.png",
+  "front.png",
+  "side_right.png",
+  "silhouette_master_vs_game.png",
+  "three_quarter.png",
+  "three_quarter_rear.png",
+  "top.png",
+  "underside.png"
+ ],
+ "failed": [],
+ "pass": true,
+ "release_checks": {
+  "clean_copy_rebuild": {
+   "pass": true,
+   "detail": "source/{inputs,scripts,stl_juego_r2} copied to an empty folder; exporta_r2.py produced byte-identical export/aircraft.glb, aircraft_demo.glb and _export_data.json"
+  },
+  "reexport_from_blend": {
+   "pass": true,
+   "detail": "exporta_desde_blend.py on source/aircraft_game.blend -> sha256 d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722 (identical)"
+  },
+  "negative_tests": {
+   "pass": true,
+   "detail": "source/verification_negative/negative_tests.json (valida_glb.py and verifica_r2.py both exit 1 on every broken copy; the unmodified file passes)"
+  },
+  "r1_not_overwritten": {
+   "pass": true,
+   "r1_sha256": {
+    "CHANGELOG.md": "cc89fe4e613ea1aae34c5a1334929b1588a23ef078c332dad7fd34a39848540e",
+    "LICENSE.txt": "76879725d59b894c59a3300eb999e76347b0b61b7e6ce171dcd2a2ef82dcda57",
+    "README.md": "939ffdb09206196a1708af9599efbfb68808d00266bbb72fdd7442735ef20a4e",
+    "export-map.json": "1f4eecbc9950ab2f1bb8dcc76554f80394855fa55ea309a0839e152bc5229e45",
+    "metadata.json": "7e0afb84661c1dfb9eb050ce6d8fc088707ddcd0dbd97928f6420ef0886ca047",
+    "verification.json": "4bc73f00d912c125066cc921c9845ef5de920584a16470d51becb07ce60ee511",
+    "export/aircraft.glb": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5",
+    "export/aircraft_demo.glb": "aefc81f6d8e669f7db3be2ca2a374ed74313fec85ccdc5d6bd8f45b0ea570cc2",
+    "previews/control_extremes.png": "fd0d63ca52133ce9e95704aab50ce4cd92997ebf81f8eecd5bb243fba06dd623",
+    "previews/front.png": "fa5e737bae26233984c1a1c7f9fdee67c1fddc1d8251fe85641c753ea458fc7a",
+    "previews/side_right.png": "e7504090cdcea18ee5aedeeec28e8b79921b59ba6e36feab12b46068cd525d76",
+    "previews/three_quarter.png": "56519bccbf3fca31330f159a38a043a4909fedb62f241d168963b4da089d8d41",
+    "previews/three_quarter_rear.png": "ab9108ba9aa2179560f89c96ae0590c9abc090ab1d27d8a771fe5b8c91f1b3a9",
+    "previews/top.png": "d03a546975176d020d3f2a20893e9af4b2509086d4f1072c225b9fa331add9f3",
+    "previews/underside.png": "18f25f26fd1cccd560adb1f908b879737f86d43bb361837059d11ee943bf5f48",
+    "source/aircraft.blend": "2c2787984b4cfce7ad5bb8eecd8eef64f2b2eb5bc4ba39210cd78a3c8e02f3f6",
+    "source/reference/PRESENTATION_MODEL.txt": "07a2ed4535530dc5ef1cb32137580cdb798074eb5a6f2fc2079f2687fa110382",
+    "source/reference/analisis_v12.json": "c63c7f2fb582f48885eee4a47ddfe87fd736dc7d864a1feb2e4fa4c73e380867",
+    "source/reference/auditoria2_v12.json": "21faa7d961853ac636453875eb5d8afc89156f11d700cc138b9885ae9d346943",
+    "source/reference/auditoria_tren_v12.json": "41af7ea63ce89c59a971811ea896510f681605870a2bd1fe3d7d6d84d9545e5f",
+    "source/reference/retessellation_report.json": "832fea8f1dc268fd36ca3405fea916eb7f3b924fcebbb12ef67673dc570598fb",
+    "source/scripts/analisis_mecanico.py": "7bdebd43661ee1d430e364ccb6c84ee8f2edc1f9191ccdd077928b3e288fe3e0",
+    "source/scripts/auditoria2.py": "aad44dafd484b1b3ca31d7c4b96bfa2d062f743de8a5c7548d3438ed1e8e7ff4",
+    "source/scripts/auditoria_tren.py": "c0ef90a389a51788b7f801d7378d39708212b49b8bfc7e3d22e7f968b212e923",
+    "source/scripts/documenta.py": "10ea9e8fc9bddb838a302b9eb8f61a58c5085b6f0855c8ee64123106d917011e",
+    "source/scripts/escena_blender_v12.py": "f8a6a41334faac2539fc77697e9318686b1dbd1695fa7efca732e8d5f5b69897",
+    "source/scripts/exporta_juego.py": "514ec3ac62e6ef347406ec1cd201cf1dad421b4e5601f3ef4dc35b9fd4f00b5d",
+    "source/scripts/helice_spinner.py": "64b2dc6d803a5ff476b794cd60e84681e752bd1ce7d07eaf0948e27cfb6dbc55",
+    "source/scripts/hoja_mandos.py": "5060522dd56a053833fd3c3f2683f24270e4b72b5feed2d5756ea9c00de4bdc1",
+    "source/scripts/mapa.py": "347e37b861d29b7fa75c25e4d0373c40baef4ac0418a5a8956877e70e0d135c9",
+    "source/scripts/modelo_v12.py": "c08714c29a69c713a3b38ffe675f35badd72b78f2166288b0f2224c299557573",
+    "source/scripts/retesela.py": "373a4c9efddf6e1f01a4cbad6fa15fbf10c39bf6cda06768705bec7ca5062845",
+    "source/scripts/rig_mandos.py": "66124d20794dca85002ff98f77f990b469525374b8f0e871e5b559e71e590836",
+    "source/scripts/rig_tren.py": "3f910066ada91d8babec44a6a112acfb62413fe881705f59043f0537469888f7",
+    "source/scripts/rig_v7.py": "85a63b8177906d19b30ce1327f1ef3dba8466c7a591f30511c14cf7d479e659a",
+    "source/scripts/tren_aterrizaje_v12.py": "1202f2852c95ffbeaae6bcdfa9c5df23d3dbf76326f0cb24ab7ff00fe8aae1ab",
+    "source/scripts/verifica_glb.py": "eeb735d4680aba82f882c2fd2fa930766a0cb3386097eabb5f9ca9210d9e6cef",
+    "textures/.keep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   }
+  },
+  "cad_rebuild": {
+   "supported": false,
+   "detail": "retesela_r2.py needs the master BREP caches (not shipped); its output is shipped in source/stl_juego_r2"
+  }
+ },
+ "tools": {
+  "blender": "5.2.2 LTS",
+  "gltf_exporter": "5.2.40",
+  "python": "3.13.16",
+  "build123d (tessellation only)": "0.13.0"
+ },
+ "glb_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+ "demo_sha256": "75c835dd0ded0c1d49ceb01fc080eb349f5269eb6e71b8bfa591ee5cab39fff7"
+}

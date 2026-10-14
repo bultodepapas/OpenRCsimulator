@@ -55,6 +55,19 @@ func _run() -> void:
 		for voice_index: int in [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13]:
 			loops_started = loops_started and rig.voices[voice_index].playing
 		_check("loops start only after the first positioned update", silent_until_positioned and loops_started)
+		var release_order: Array[bool] = []
+		rig.buses_releasing.connect(func() -> void:
+			release_order.append(AudioServer.get_bus_index(rig.output_bus()) > 0))
+		root.remove_child(rig)
+		_check("external audio can stop before its bus is removed", release_order == [true])
+		_check("suspended audio releases its buses", AudioServer.bus_count == buses_before)
+		root.add_child(rig)
+		rig.update_sound(_flight_snapshot(), 1.0 / 60.0)
+		var restored_loops := true
+		for voice_index: int in [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13]:
+			restored_loops = restored_loops and rig.voices[voice_index].playing
+		_check("reattached flight restores its audio buses", AudioServer.bus_count == buses_before + 3)
+		_check("reattached flight restarts its continuous audio", restored_loops)
 		# AUD-07d: the stateless limiter recovers after an overshoot; Godot 4.7.2's HardLimiter does not.
 		var mix_index: int = AudioServer.get_bus_index(rig.output_bus())
 		_check("mix bus limits with the recovering stateless limiter at -1 dBFS",
@@ -215,6 +228,20 @@ func _run() -> void:
 			AudioServer.get_bus_index(output_bus) == -1 and AudioServer.get_bus_index(aircraft_bus) == -1
 			and AudioServer.get_bus_index(environment_bus) == -1)
 
+	for family: String in ["glow_2t", "glow_4t"]:
+		var buses_before := AudioServer.bus_count
+		var rig: Variant = SoundscapeScript.new()
+		root.add_child(rig)
+		rig.configure(field, "glow_prop", 93100, family)
+		rig.update_sound(_flight_snapshot(), 1.0 / 60.0)
+		_check("%s generator starts" % family, rig.glow_player.playing)
+		root.remove_child(rig)
+		root.add_child(rig)
+		rig.update_sound(_flight_snapshot(), 1.0 / 60.0)
+		_check("%s reattachment restarts its generator on a live bus" % family,
+			rig.glow_player.playing and AudioServer.get_bus_index(rig.glow_player.bus) > 0)
+		rig.free()
+		_check("%s reattachment leaves no buses after disposal" % family, AudioServer.bus_count == buses_before)
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 

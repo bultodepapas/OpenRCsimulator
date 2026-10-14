@@ -1,5 +1,10 @@
 {
   "format": "openrc-timber-inputs v1",
+  "landing_gear_contact_identity": [
+    {"source_name": "main_left", "id": "contact_main_left"},
+    {"source_name": "main_right", "id": "contact_main_right"},
+    {"source_name": "tail", "id": "contact_tail"}
+  ],
   "estimates": {
     "section_slope_factor": {
       "value": 0.9,
@@ -454,6 +459,7 @@
   },
   "inventory": [
     {
+      "id": "wing_main",
       "name": "wing, flaps, ailerons and wing servos",
       "mass_kg": 0.456,
       "position": [
@@ -470,6 +476,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "fuselage_main",
       "name": "fuselage foam, canopy and fittings",
       "mass_kg": 0.605,
       "position": [
@@ -486,6 +493,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "tail_surfaces",
       "name": "horizontal and vertical tail",
       "mass_kg": 0.08,
       "position": [
@@ -502,6 +510,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "gear_main",
       "name": "main gear and wheels",
       "mass_kg": 0.135,
       "position": [
@@ -518,6 +527,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "gear_tail",
       "name": "tailwheel and fork",
       "mass_kg": 0.012,
       "position": [
@@ -534,6 +544,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "propeller_main",
       "name": "three-blade propeller and spinner",
       "mass_kg": 0.032,
       "position": [
@@ -550,6 +561,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "motor_main",
       "name": "800 Kv motor",
       "mass_kg": 0.16,
       "position": [
@@ -566,6 +578,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "esc_main",
       "name": "70 A ESC",
       "mass_kg": 0.06,
       "position": [
@@ -582,6 +595,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "receiver_radio",
       "name": "receiver",
       "mass_kg": 0.012,
       "position": [
@@ -598,6 +612,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "tail_servos",
       "name": "elevator and rudder servos",
       "mass_kg": 0.018,
       "position": [
@@ -614,6 +629,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "wiring_lighting",
       "name": "wiring and navigation LEDs",
       "mass_kg": 0.04,
       "position": [
@@ -630,6 +646,7 @@
       "source": "TT-07 component-class mass and box estimates; stations from r1 ledger/mesh, battery mass manual empty-to-loaded difference; not weighed"
     },
     {
+      "id": "battery_main",
       "name": "4S 3200 mAh battery",
       "mass_kg": 0.33,
       "position": [

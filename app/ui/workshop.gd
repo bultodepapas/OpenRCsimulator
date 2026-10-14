@@ -15,6 +15,7 @@ signal trial_requested(payload: Dictionary)
 const LAYER := 20
 const VARIANT_ROOT := "user://aircraft_variants"
 const FACTOR_STEP := 0.05
+const HISTORY_LIMIT := 32
 const SCALE_OPTIONS := [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 const FACTOR_CAPABILITIES := {
 	"weight_multiplier": "weight",
@@ -51,6 +52,7 @@ var _base_selector: OptionButton
 var _variant_selector: OptionButton
 var _variant_name: LineEdit
 var _save_button: Button
+var _copy_button: Button
 var _load_button: Button
 var _delete_button: Button
 var _restore_button: Button
@@ -72,6 +74,7 @@ var _aircraft_status_label: Label
 var _validation_label: Label
 var _trial_button: Button
 var _undo_button: Button
+var _redo_button: Button
 var _preview: WorkshopPreview
 var _delete_dialog: ConfirmationDialog
 
@@ -89,8 +92,9 @@ var _recipe: Dictionary = {}
 var _compiled: Dictionary = {"ok": false, "errors": ["Choose an aircraft to begin."]}
 var _capabilities: Dictionary = {}
 var _selected_variant_id := ""
-var _undo_recipe: Dictionary = {}
-var _undo_available := false
+var _undo_history: Array[Dictionary] = []
+var _redo_history: Array[Dictionary] = []
+var _slider_dragging := false
 var _slider_gesture := false
 var _syncing_controls := false
 var _closing := false
@@ -285,6 +289,10 @@ func _build_ui() -> void:
 	_undo_button.disabled = true
 	_undo_button.pressed.connect(_undo)
 	footer.add_child(_undo_button)
+	_redo_button = _button("Redo", "", "RedoRecipe")
+	_redo_button.disabled = true
+	_redo_button.pressed.connect(_redo)
+	footer.add_child(_redo_button)
 	_status_label = _label("", "SecondaryLabel", true)
 	_status_label.name = "WorkshopStatus"
 	_status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -372,9 +380,9 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_save_button.disabled = true
 	_save_button.pressed.connect(_save_variant)
 	content.add_child(_save_button)
-	var copy_button := _button("Save a copy", "", "CopyVariant")
-	copy_button.pressed.connect(save_variant_copy)
-	content.add_child(copy_button)
+	_copy_button = _button("Save a copy", "", "CopyVariant")
+	_copy_button.pressed.connect(save_variant_copy)
+	content.add_child(_copy_button)
 
 
 func _build_presets_panel(parent: VBoxContainer) -> void:
@@ -579,8 +587,7 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	_refresh_base_summary()
 	if not preserve_recipe:
 		_recipe = Compiler.defaults()
-		_undo_recipe.clear()
-		_undo_available = false
+		_clear_history()
 	_capabilities = Compiler.capabilities(_base)
 	_selected_variant_id = ""
 	_update_aircraft_description(entry)
@@ -635,11 +642,12 @@ func _sync_variant_actions() -> void:
 
 func _sync_save_button() -> void:
 	_save_button.disabled = _variant_name.text.strip_edges().is_empty() or not bool(_compiled.get("ok", false))
+	_copy_button.disabled = _save_button.disabled
 
 
 func _on_base_selected(index: int) -> void:
 	var id := str(_base_selector.get_item_metadata(index))
-	if id == "" or id == _base_id:
+	if id == "" or (id == _base_id and _saved_variant_id.is_empty() and _workshop_descriptor.is_empty()):
 		return
 	_selected_variant_id = ""
 	_variant_selector.select(0)
@@ -669,10 +677,17 @@ func _load_selected_variant() -> void:
 	if not snapshot_bytes is PackedByteArray or snapshot_bytes.is_empty():
 		set_note("The saved build has no exact aircraft source snapshot.")
 		return
-	_base_id = str(variant.get("base_id", ""))
-	if Catalog.entry(_base_id).is_empty():
+	var next_base_id := str(variant.get("base_id", ""))
+	if Catalog.entry(next_base_id).is_empty():
 		set_note("The saved build refers to an unknown catalog aircraft.")
 		return
+	var next_recipe: Dictionary = Compiler.defaults()
+	next_recipe.merge(variant.get("recipe", {}), true)
+	var checked: Dictionary = Parameters.validate(next_recipe)
+	if not checked.ok:
+		set_note(_messages(checked.errors, "The saved build could not be loaded."))
+		return
+	_base_id = next_base_id
 	_base = (variant.base as Dictionary).duplicate(true)
 	_base_bytes = snapshot_bytes.duplicate()
 	_refresh_base_summary()
@@ -683,9 +698,12 @@ func _load_selected_variant() -> void:
 	_saved_compiler_version = str(variant.get("compiler_version", ""))
 	var saved_dependencies: Variant = variant.get("dependencies", {})
 	_variant_dependencies = saved_dependencies.duplicate(true) if saved_dependencies is Dictionary else {}
-	_recipe = Compiler.defaults()
-	if variant.get("recipe", {}) is Dictionary:
-		_recipe.merge(variant.recipe, true)
+	# Record identity/name have dedicated fields; legacy recipe copies must not
+	# override rename, Save a copy, or the ancestry of a retained deleted draft.
+	_recipe = checked.values.duplicate(true)
+	_recipe.erase("id")
+	_recipe.erase("name")
+	_clear_history()
 	_capabilities = Compiler.capabilities(_base)
 	_variant_name.text = str(variant.get("name", ""))
 	_select_base(_base_id)
@@ -694,7 +712,10 @@ func _load_selected_variant() -> void:
 	_sync_controls()
 	_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
-	set_note("Saved build loaded. Review the experimental values before a trial.")
+	if variant.get("recovered_from_manifest_backup", false):
+		set_note(tr("Recovered revision %d from backup. Review it before saving.") % _saved_variant_revision)
+	else:
+		set_note("Saved build loaded. Review the experimental values before a trial.")
 	_sync_variant_actions()
 
 
@@ -710,7 +731,8 @@ func _save_variant() -> void:
 		_saved_variant_id,
 		variants_root,
 		_workshop_descriptor.duplicate(true),
-		_variant_dependencies.duplicate(true)
+		_variant_dependencies.duplicate(true),
+		_saved_variant_revision if not _saved_variant_id.is_empty() else -1
 	)
 	if not bool(result.get("ok", false)):
 		set_note(_messages(result.get("errors", []), "The build could not be saved."))
@@ -785,6 +807,8 @@ func _on_variant_name_changed(_text: String) -> void:
 func _on_scale_selected(index: int) -> void:
 	if _syncing_controls or _base.is_empty():
 		return
+	if _recipe.get("scale", 1.0) == _scale_selector.get_item_metadata(index):
+		return
 	_capture_undo()
 	_recipe["scale"] = float(_scale_selector.get_item_metadata(index))
 	_preview.set_aircraft(_base_id, _preview_scale())
@@ -794,6 +818,8 @@ func _on_scale_selected(index: int) -> void:
 func _on_mass_policy_selected(index: int) -> void:
 	if _syncing_controls or _base.is_empty():
 		return
+	if _recipe.get("mass_policy", "") == _mass_policy_selector.get_item_metadata(index):
+		return
 	_capture_undo()
 	_recipe["mass_policy"] = str(_mass_policy_selector.get_item_metadata(index))
 	_compile_recipe()
@@ -802,22 +828,26 @@ func _on_mass_policy_selected(index: int) -> void:
 func _on_factor_value_changed(value: float, key: String) -> void:
 	if _syncing_controls or _base.is_empty():
 		return
+	if is_equal_approx(float(_recipe.get(key, 1.0)), value):
+		return
 	if not _slider_gesture:
 		_capture_undo()
+		_slider_gesture = _slider_dragging
 	var bounds := _factor_bounds(key)
 	_recipe[key] = clampf(value, bounds.x, bounds.y)
-	_factor_values[key].text = "%.2f×" % value
+	_factor_values[key].text = String.num(value, 4) + "×"
 	_compile_recipe()
 
 
 func _on_slider_drag_started() -> void:
 	if not _syncing_controls:
-		_capture_undo()
-		_slider_gesture = true
+		_slider_dragging = true
+		_slider_gesture = false
 
 
 func _on_slider_drag_ended(_changed: bool) -> void:
 	_slider_gesture = false
+	_slider_dragging = false
 
 
 func _apply_preset(preset_id: String) -> void:
@@ -837,7 +867,7 @@ func _apply_preset(preset_id: String) -> void:
 		var capability := str(FACTOR_CAPABILITIES[key])
 		next[key] = preset.get(key, next.get(key, 1.0)) if bool(caps.get(capability, false)) else _recipe.get(key, next.get(key, 1.0))
 	_set_recipe(next, true)
-	set_note(tr("Applied the %s preset where this aircraft supports it.") % tr(preset_id.capitalize()))
+	set_note(tr("Applied the %s preset where this aircraft supports it.") % tr(PRESET_LABELS[preset_id]))
 
 
 func _reset_recipe() -> void:
@@ -848,21 +878,38 @@ func _reset_recipe() -> void:
 
 
 func _undo() -> void:
-	if not _undo_available:
+	if _undo_history.is_empty():
 		return
-	var previous := _undo_recipe.duplicate(true)
-	_undo_available = false
-	_undo_recipe.clear()
+	_redo_history.append(_recipe.duplicate(true))
+	var previous: Dictionary = _undo_history.pop_back()
 	_set_recipe(previous, false)
 	_update_undo_button()
 	set_note("Previous recipe restored.")
 
 
+func _redo() -> void:
+	if _redo_history.is_empty():
+		return
+	_undo_history.append(_recipe.duplicate(true))
+	var next: Dictionary = _redo_history.pop_back()
+	_set_recipe(next, false)
+	_update_undo_button()
+	set_note("Recipe change reapplied.")
+
+
 func _set_recipe(next_recipe: Dictionary, remember_current: bool) -> void:
+	var checked: Dictionary = Parameters.validate(next_recipe)
+	if not checked.ok:
+		set_note(_messages(checked.errors, "The recipe could not be applied."))
+		return
+	var next: Dictionary = checked.values
+	next.erase("id")
+	next.erase("name")
+	if next == _recipe:
+		return
 	if remember_current:
 		_capture_undo()
-	_recipe = Compiler.defaults()
-	_recipe.merge(next_recipe, true)
+	_recipe = next
 	_sync_controls()
 	if is_instance_valid(_preview):
 		_preview.set_aircraft(_base_id, _preview_scale())
@@ -889,31 +936,44 @@ func _refresh_base_summary() -> void:
 
 
 func _capture_undo() -> void:
-	_undo_recipe = _recipe.duplicate(true)
-	_undo_available = true
+	_undo_history.append(_recipe.duplicate(true))
+	if _undo_history.size() > HISTORY_LIMIT:
+		_undo_history.pop_front()
+	_redo_history.clear()
+	_update_undo_button()
+
+
+func _clear_history() -> void:
+	_undo_history.clear()
+	_redo_history.clear()
+	_slider_gesture = false
+	_slider_dragging = false
 	_update_undo_button()
 
 
 func _update_undo_button() -> void:
 	if is_instance_valid(_undo_button):
-		_undo_button.disabled = not _undo_available
+		_undo_button.disabled = _undo_history.is_empty()
+	if is_instance_valid(_redo_button):
+		_redo_button.disabled = _redo_history.is_empty()
 
 
 func _sync_controls() -> void:
 	if not is_instance_valid(_scale_selector) or _recipe.is_empty():
 		return
 	_syncing_controls = true
-	var scale := _nearest_scale(float(_recipe.get("scale", 1.0)))
-	_recipe["scale"] = scale
+	var scale := float(_recipe.get("scale", 1.0))
+	while _scale_selector.item_count > SCALE_OPTIONS.size():
+		_scale_selector.remove_item(_scale_selector.item_count - 1)
+	if scale not in SCALE_OPTIONS:
+		_scale_selector.add_item(String.num(scale * 100.0, 4) + "%")
+		_scale_selector.set_item_metadata(_scale_selector.item_count - 1, scale)
 	for index in _scale_selector.item_count:
-		if is_equal_approx(float(_scale_selector.get_item_metadata(index)), scale):
+		if float(_scale_selector.get_item_metadata(index)) == scale:
 			_scale_selector.select(index)
 			break
 	_scale_selector.disabled = not bool(_capabilities.get("scale", false))
 	var policy := str(_recipe.get("mass_policy", "constant_wing_loading"))
-	if policy not in ["constant_wing_loading", "geometric"]:
-		policy = "constant_wing_loading"
-		_recipe["mass_policy"] = policy
 	for index in _mass_policy_selector.item_count:
 		if str(_mass_policy_selector.get_item_metadata(index)) == policy:
 			_mass_policy_selector.select(index)
@@ -921,10 +981,12 @@ func _sync_controls() -> void:
 	_mass_policy_selector.disabled = not bool(_capabilities.get("weight", false))
 	for key: String in FACTOR_CAPABILITIES:
 		var bounds := _factor_bounds(key)
-		var value := clampf(float(_recipe.get(key, 1.0)), bounds.x, bounds.y)
-		_recipe[key] = value
+		var value := float(_recipe.get(key, 1.0))
+		# Range preserves its exact value when step is restored; avoid quantizing a loaded recipe.
+		_factor_sliders[key].step = 0.0
 		_factor_sliders[key].set_value_no_signal(value)
-		_factor_values[key].text = "%.2f×" % value
+		_factor_sliders[key].step = FACTOR_STEP
+		_factor_values[key].text = String.num(value, 4) + "×"
 		var supported := bool(_capabilities.get(str(FACTOR_CAPABILITIES[key]), false))
 		_factor_sliders[key].editable = supported
 		_factor_hints[key].text = (
@@ -935,17 +997,6 @@ func _sync_controls() -> void:
 	_update_capabilities()
 	_update_undo_button()
 	_sync_save_button()
-
-
-func _nearest_scale(requested: float) -> float:
-	var nearest := float(SCALE_OPTIONS[0])
-	var distance := absf(requested - nearest)
-	for option: float in SCALE_OPTIONS:
-		var candidate_distance := absf(requested - option)
-		if candidate_distance < distance:
-			nearest = option
-			distance = candidate_distance
-	return nearest
 
 
 func _update_capabilities() -> void:
@@ -1001,9 +1052,9 @@ func _format_summary(summary_value: Variant, model: Dictionary) -> String:
 		return tr("No build values are available.")
 	var summary: Dictionary = summary_value
 	var lines := PackedStringArray()
-	var scale_percent: int = roundi(float(summary.get("scale", 1.0)) * 100.0)
+	var scale_percent := String.num(float(summary.get("scale", 1.0)) * 100.0, 4)
 	var mass_policy: String = tr("Constant wing loading") if summary.get("mass_policy", "constant_wing_loading") == "constant_wing_loading" else tr("Geometric")
-	lines.append(tr("Scale %d%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f") % [
+	lines.append(tr("Scale %s%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f") % [
 		scale_percent,
 		mass_policy,
 		float(summary.get("weight_multiplier", 1.0)),

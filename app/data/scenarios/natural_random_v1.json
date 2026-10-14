@@ -1,0 +1,115 @@
+{
+  "format": "openrc-natural-random-catalog v1",
+  "generator_version": 1,
+  "recipe_version": 1,
+  "qualification_status": "software_bounds_only",
+  "qualification_note": "Estimated gameplay candidates only. Physical and pilot acceptance is pending.",
+  "aircraft_ids": [
+    "jensen-das-ugly-stik-60",
+    "gp-extra-300s-60",
+    "p51d-mustang-120",
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution"
+  ],
+  "start_choice": "airborne",
+  "required_capabilities": [
+    "airborne_start",
+    "fixed_lighting_snapshot",
+    "weather_v3"
+  ],
+  "field_context": {
+    "elevation_m": 0.0,
+    "date": "2026-03-20",
+    "utc_offset_minutes": 0,
+    "latitude_deg": 0.0,
+    "longitude_deg": 0.0,
+    "location_name": "Reference field (synthetic)"
+  },
+  "recipes": [
+    {
+      "id": "calm_air",
+      "weight_pct": 20,
+      "speed_mps": [0.0, 0.5],
+      "gust_increment_mps": [0.0, 0.2],
+      "gust_up_abs_max_mps": 0.05,
+      "horizontal_rms_mps": [0.0, 0.08],
+      "vertical_rms_mps": [0.0, 0.04],
+      "perfectly_still_probability_pct": 25,
+      "gust_duration_s": [3.0, 8.0],
+      "gust_period_s": [12.0, 30.0],
+      "gust_delay_s": [5.0, 10.0],
+      "turbulence_tau_s": [2.0, 6.0]
+    },
+    {
+      "id": "gentle_breeze",
+      "weight_pct": 40,
+      "speed_mps": [0.5, 3.0],
+      "gust_increment_mps": [0.2, 0.8],
+      "gust_up_abs_max_mps": 0.15,
+      "horizontal_rms_mps": [0.05, 0.2],
+      "vertical_rms_mps": [0.01, 0.1],
+      "perfectly_still_probability_pct": 0,
+      "gust_duration_s": [3.0, 8.0],
+      "gust_period_s": [12.0, 30.0],
+      "gust_delay_s": [5.0, 10.0],
+      "turbulence_tau_s": [2.0, 6.0]
+    },
+    {
+      "id": "lively_afternoon",
+      "weight_pct": 25,
+      "speed_mps": [3.0, 5.0],
+      "gust_increment_mps": [0.5, 1.5],
+      "gust_up_abs_max_mps": 0.25,
+      "horizontal_rms_mps": [0.15, 0.4],
+      "vertical_rms_mps": [0.03, 0.2],
+      "perfectly_still_probability_pct": 0,
+      "gust_duration_s": [3.0, 8.0],
+      "gust_period_s": [12.0, 30.0],
+      "gust_delay_s": [5.0, 10.0],
+      "turbulence_tau_s": [2.0, 6.0]
+    },
+    {
+      "id": "windy_day",
+      "weight_pct": 15,
+      "speed_mps": [5.0, 8.0],
+      "gust_increment_mps": [1.0, 2.0],
+      "gust_up_abs_max_mps": 0.3,
+      "horizontal_rms_mps": [0.25, 0.6],
+      "vertical_rms_mps": [0.05, 0.3],
+      "perfectly_still_probability_pct": 0,
+      "gust_duration_s": [3.0, 8.0],
+      "gust_period_s": [12.0, 30.0],
+      "gust_delay_s": [5.0, 10.0],
+      "turbulence_tau_s": [2.0, 6.0]
+    }
+  ],
+  "daylight": [
+    {
+      "id": "morning",
+      "weight_pct": 25,
+      "solar_elevation_deg": [6.0, 20.0],
+      "hour_angle": "rising",
+      "temperature_c": [12.0, 18.0],
+      "relative_humidity_pct": [55.0, 80.0],
+      "qnh_hpa": [1000.0, 1025.0]
+    },
+    {
+      "id": "day",
+      "weight_pct": 50,
+      "solar_elevation_deg": [20.0, 90.0],
+      "hour_angle": "any",
+      "temperature_c": [20.0, 30.0],
+      "relative_humidity_pct": [30.0, 65.0],
+      "qnh_hpa": [1000.0, 1025.0]
+    },
+    {
+      "id": "afternoon",
+      "weight_pct": 25,
+      "solar_elevation_deg": [8.0, 25.0],
+      "hour_angle": "setting",
+      "temperature_c": [17.0, 26.0],
+      "relative_humidity_pct": [40.0, 75.0],
+      "qnh_hpa": [1000.0, 1025.0]
+    }
+  ]
+}

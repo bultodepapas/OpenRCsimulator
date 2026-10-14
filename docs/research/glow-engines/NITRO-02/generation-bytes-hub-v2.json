@@ -1,0 +1,150 @@
+{
+  "format": "openrc-glow-generation-byte-proof v1",
+  "commands": [
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "Python 3.11.9\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "wsl",
+        "--",
+        "python3",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "Python 3.12.3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/glow-engines/build_installations.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "Glow installations current\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/glow-engines/build_profiles.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "Glow profile generator: current (4 files)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/glow-engines/test_profiles.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.002s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/glow-engines/test_installation_line_endings.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.024s\n\nOK\n"
+    },
+    {
+      "command": [
+        "wsl",
+        "--",
+        "python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/glow-engines/build_installations.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "Glow installations current\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "wsl",
+        "--",
+        "python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/glow-engines/build_profiles.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "Glow profile generator: current (4 files)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "wsl",
+        "--",
+        "python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/glow-engines/test_profiles.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "command": [
+        "wsl",
+        "--",
+        "python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/glow-engines/test_installation_line_endings.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.079s\n\nOK\n"
+    }
+  ],
+  "sha256_before": {
+    ".gitattributes": "b3227e27cd2fa9dc1f5181cd170c4d1c4fc3504cfa13f79f25e2f8f78ccca65b",
+    "research/glow-engines/build_installations.py": "b6b1eb563fdb8281ecaf4e11e825e8f097853f60be81c2d4ed10fd70fc7b67be",
+    "research/glow-engines/test_installation_line_endings.py": "9c8d6ceba00e1360c9682ca1d32d735dec2fc1d7527fb6cc2bc3db54e81ce7b6",
+    "app/data/glow/stik_55ax_2t.json": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+    "app/data/glow/stik_55ax_2t_apc_13x6.json": "e2e00bd5e0940198676ab463c6891e2b0a05762e83b8c6c9042ea887076a23d0",
+    "app/data/glow/stik_fs64v_4t.json": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+    "app/data/glow/stik_fs64v_4t_apc_13x6.json": "e4c1f402fe236d40b3ec89262f5999ac0702d7ef52c514eb99cb551c2a41357e",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+    "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "b99109f752506edf8a002b703b2b839d496da5e36b55eb4950e3a590bd10a59d",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+    "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf",
+    "research/glow-engines/build_profiles.py": "dfbb934d90ea4669ebfabe86b56a7b35f8862151e190fab9ef50287f8290d6b3",
+    "research/glow-engines/test_profiles.py": "6a8cdc59033c12195eac83b0419665546d503b542941d15d98c9b46b949dbd3a",
+    "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+    "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+    "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+    "app/data/glow/openrc-glow-engine-v1.schema.json": "cb19a66c457c87c4092be9bd86be33f0781712aef6a1bbcf3412eb0ceb1cb0fc"
+  },
+  "sha256_after": {
+    ".gitattributes": "b3227e27cd2fa9dc1f5181cd170c4d1c4fc3504cfa13f79f25e2f8f78ccca65b",
+    "research/glow-engines/build_installations.py": "b6b1eb563fdb8281ecaf4e11e825e8f097853f60be81c2d4ed10fd70fc7b67be",
+    "research/glow-engines/test_installation_line_endings.py": "9c8d6ceba00e1360c9682ca1d32d735dec2fc1d7527fb6cc2bc3db54e81ce7b6",
+    "app/data/glow/stik_55ax_2t.json": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+    "app/data/glow/stik_55ax_2t_apc_13x6.json": "e2e00bd5e0940198676ab463c6891e2b0a05762e83b8c6c9042ea887076a23d0",
+    "app/data/glow/stik_fs64v_4t.json": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+    "app/data/glow/stik_fs64v_4t_apc_13x6.json": "e4c1f402fe236d40b3ec89262f5999ac0702d7ef52c514eb99cb551c2a41357e",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+    "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "b99109f752506edf8a002b703b2b839d496da5e36b55eb4950e3a590bd10a59d",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+    "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf",
+    "research/glow-engines/build_profiles.py": "dfbb934d90ea4669ebfabe86b56a7b35f8862151e190fab9ef50287f8290d6b3",
+    "research/glow-engines/test_profiles.py": "6a8cdc59033c12195eac83b0419665546d503b542941d15d98c9b46b949dbd3a",
+    "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+    "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+    "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+    "app/data/glow/openrc-glow-engine-v1.schema.json": "cb19a66c457c87c4092be9bd86be33f0781712aef6a1bbcf3412eb0ceb1cb0fc"
+  },
+  "unchanged": true,
+  "ok": true,
+  "scope": "Both hosts verify eight generated installation/aircraft outputs, the updated engine profiles/schema/contract, and byte/order/profile regression tests without rewriting records."
+}

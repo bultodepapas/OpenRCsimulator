@@ -1,0 +1,10 @@
+; Proyecto minimo de verificacion para el Bisonte MT8 (Godot 4.7.2, renderer Compatibility)
+config_version=5
+
+[application]
+config/name="MT8 verificacion"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

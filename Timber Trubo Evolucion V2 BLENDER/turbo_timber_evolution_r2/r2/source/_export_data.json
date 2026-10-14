@@ -1,0 +1,1419 @@
+{
+ "landmarks_export": {
+  "left_wingtip": [
+   -0.772752,
+   -0.186293,
+   0.077909
+  ],
+  "right_wingtip": [
+   0.772752,
+   -0.186293,
+   0.077909
+  ],
+  "nose_spinner_tip": [
+   0.001116,
+   0.283461,
+   -0.001117
+  ],
+  "tail_rudder_trailing_edge": [
+   -0.0,
+   -0.832,
+   0.002
+  ],
+  "wing_root_leading_edge": [
+   0.001263,
+   -3.2e-05,
+   0.097386
+  ],
+  "left_main_wheel_center": [
+   -0.131979,
+   -0.008,
+   -0.198
+  ],
+  "right_main_wheel_center": [
+   0.131979,
+   -0.008,
+   -0.198
+  ],
+  "tailwheel_center": [
+   0.0,
+   -0.759,
+   -0.112
+  ],
+  "propeller_hub": [
+   -0.000327,
+   0.24214,
+   0.000327
+  ],
+  "datum_D0": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "left_main_wheel_contact": [
+   -0.132,
+   -0.008,
+   -0.256
+  ],
+  "right_main_wheel_contact": [
+   0.132,
+   -0.008,
+   -0.256
+  ],
+  "tailwheel_contact": [
+   -0.000331,
+   -0.759057,
+   -0.125999
+  ]
+ },
+ "landmarks_sim": {
+  "left_wingtip": [
+   -0.772752,
+   0.077909,
+   0.186293
+  ],
+  "right_wingtip": [
+   0.772752,
+   0.077909,
+   0.186293
+  ],
+  "nose_spinner_tip": [
+   0.001116,
+   -0.001117,
+   -0.283461
+  ],
+  "tail_rudder_trailing_edge": [
+   -0.0,
+   0.002,
+   0.832
+  ],
+  "wing_root_leading_edge": [
+   0.001263,
+   0.097386,
+   3.2e-05
+  ],
+  "left_main_wheel_center": [
+   -0.131979,
+   -0.198,
+   0.008
+  ],
+  "right_main_wheel_center": [
+   0.131979,
+   -0.198,
+   0.008
+  ],
+  "tailwheel_center": [
+   0.0,
+   -0.112,
+   0.759
+  ],
+  "propeller_hub": [
+   -0.000327,
+   0.000327,
+   -0.24214
+  ],
+  "datum_D0": [
+   0.0,
+   0.0,
+   -0.0
+  ],
+  "left_main_wheel_contact": [
+   -0.132,
+   -0.256,
+   0.008
+  ],
+  "right_main_wheel_contact": [
+   0.132,
+   -0.256,
+   0.008
+  ],
+  "tailwheel_contact": [
+   -0.000331,
+   -0.125999,
+   0.759057
+  ]
+ },
+ "bbox_export": {
+  "min": [
+   -0.7727518081665039,
+   -0.8320000171661377,
+   -0.25600001215934753
+  ],
+  "max": [
+   0.7727518081665039,
+   0.2834610641002655,
+   0.1780000627040863
+  ]
+ },
+ "span_m": 1.5455,
+ "length_m": 1.1155,
+ "dimensions": {
+  "wheel_radius_main_m": 0.05802,
+  "wheel_radius_tail_m": 0.014,
+  "propeller_diameter_m": 0.28064
+ },
+ "pivots": {
+  "aileron_left_hinge": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    -0.562017,
+    -0.157726,
+    0.116965
+   ],
+   "pivot_sim": [
+    -0.562017,
+    0.116965,
+    0.157726
+   ],
+   "axis": [
+    0.999391,
+    0.0,
+    -0.034899
+   ],
+   "axis_sim": [
+    0.999391,
+    -0.034899,
+    -0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.999848,
+    0.0,
+    0.017452,
+    0.0
+   ],
+   "members": [
+    "aileron_left"
+   ],
+   "section": "wing_left"
+  },
+  "aileron_right_hinge": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    0.562017,
+    -0.157726,
+    0.116965
+   ],
+   "pivot_sim": [
+    0.562017,
+    0.116965,
+    0.157726
+   ],
+   "axis": [
+    0.999391,
+    0.0,
+    0.034899
+   ],
+   "axis_sim": [
+    0.999391,
+    0.034899,
+    -0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.999848,
+    0.0,
+    -0.017452,
+    0.0
+   ],
+   "members": [
+    "aileron_right"
+   ],
+   "section": "wing_right"
+  },
+  "elevator_hinge": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    0.0,
+    -0.704,
+    -0.032
+   ],
+   "pivot_sim": [
+    0.0,
+    -0.032,
+    0.704
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_sim": [
+    1.0,
+    0.0,
+    -0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "members": [
+    "elevator"
+   ],
+   "section": "horizontal_tail"
+  },
+  "flap_left_hinge": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    -0.240247,
+    -0.157726,
+    0.105729
+   ],
+   "pivot_sim": [
+    -0.240247,
+    0.105729,
+    0.157726
+   ],
+   "axis": [
+    0.999391,
+    0.0,
+    -0.034899
+   ],
+   "axis_sim": [
+    0.999391,
+    -0.034899,
+    -0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.999848,
+    0.0,
+    0.017452,
+    0.0
+   ],
+   "members": [
+    "flap_left"
+   ],
+   "section": "wing_left"
+  },
+  "flap_right_hinge": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    0.240247,
+    -0.157726,
+    0.105729
+   ],
+   "pivot_sim": [
+    0.240247,
+    0.105729,
+    0.157726
+   ],
+   "axis": [
+    0.999391,
+    0.0,
+    0.034899
+   ],
+   "axis_sim": [
+    0.999391,
+    0.034899,
+    -0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.999848,
+    0.0,
+    -0.017452,
+    0.0
+   ],
+   "members": [
+    "flap_right"
+   ],
+   "section": "wing_right"
+  },
+  "gear_left_suspension": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    -0.046,
+    -0.031,
+    -0.090347
+   ],
+   "pivot_sim": [
+    -0.046,
+    -0.090347,
+    0.031
+   ],
+   "axis": [
+    -0.0,
+    1.0,
+    0.0
+   ],
+   "axis_sim": [
+    -0.0,
+    0.0,
+    -1.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.707107,
+    0.0,
+    0.0,
+    0.707107
+   ],
+   "members": [
+    "gear_left_leg"
+   ],
+   "section": "gear"
+  },
+  "wheel_left_axle": {
+   "parent": "gear_left_suspension",
+   "pivot_m": [
+    -0.131979,
+    -0.008,
+    -0.198
+   ],
+   "pivot_sim": [
+    -0.131979,
+    -0.198,
+    0.008
+   ],
+   "axis": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "axis_sim": [
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.707107,
+    0.0,
+    0.0,
+    0.707107
+   ],
+   "members": [
+    "wheel_left"
+   ],
+   "section": "gear"
+  },
+  "gear_right_suspension": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    0.046,
+    -0.031,
+    -0.090347
+   ],
+   "pivot_sim": [
+    0.046,
+    -0.090347,
+    0.031
+   ],
+   "axis": [
+    -0.0,
+    -1.0,
+    0.0
+   ],
+   "axis_sim": [
+    -0.0,
+    0.0,
+    1.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.707107,
+    -0.0,
+    -0.0,
+    -0.707107
+   ],
+   "members": [
+    "gear_right_leg"
+   ],
+   "section": "gear"
+  },
+  "wheel_right_axle": {
+   "parent": "gear_right_suspension",
+   "pivot_m": [
+    0.131979,
+    -0.008,
+    -0.198
+   ],
+   "pivot_sim": [
+    0.131979,
+    -0.198,
+    0.008
+   ],
+   "axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "axis_sim": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.707107,
+    0.0,
+    0.0,
+    -0.707107
+   ],
+   "members": [
+    "wheel_right"
+   ],
+   "section": "gear"
+  },
+  "rudder_hinge": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    0.0,
+    -0.738,
+    0.0538
+   ],
+   "pivot_sim": [
+    0.0,
+    0.0538,
+    0.738
+   ],
+   "axis": [
+    -0.0,
+    0.0,
+    1.0
+   ],
+   "axis_sim": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.5,
+    0.5,
+    -0.5,
+    0.5
+   ],
+   "members": [
+    "rudder"
+   ],
+   "section": "vertical_tail"
+  },
+  "tailwheel_steer": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    0.0,
+    -0.738,
+    -0.084092
+   ],
+   "pivot_sim": [
+    0.0,
+    -0.084092,
+    0.738
+   ],
+   "axis": [
+    -0.0,
+    0.0,
+    1.0
+   ],
+   "axis_sim": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.5,
+    0.5,
+    -0.5,
+    0.5
+   ],
+   "members": [
+    "tailwheel_fork"
+   ],
+   "section": "gear"
+  },
+  "tailwheel_axle": {
+   "parent": "tailwheel_steer",
+   "pivot_m": [
+    0.0,
+    -0.759,
+    -0.112
+   ],
+   "pivot_sim": [
+    0.0,
+    -0.112,
+    0.759
+   ],
+   "axis": [
+    -1.0,
+    -0.0,
+    -0.0
+   ],
+   "axis_sim": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.5,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "members": [
+    "tailwheel"
+   ],
+   "section": "gear"
+  },
+  "thrust_frame": {
+   "parent": "TurboTimberEvolution",
+   "pivot_m": [
+    0.0,
+    0.2515,
+    0.0
+   ],
+   "pivot_sim": [
+    0.0,
+    0.0,
+    -0.2515
+   ],
+   "axis": [
+    0.034878,
+    0.998782,
+    -0.034899
+   ],
+   "axis_sim": [
+    0.034878,
+    -0.034899,
+    -0.998782
+   ],
+   "rest_local_quaternion_wxyz": [
+    0.71923,
+    -0.012123,
+    0.012554,
+    0.694553
+   ],
+   "members": [],
+   "section": null
+  },
+  "propeller_spin": {
+   "parent": "thrust_frame",
+   "pivot_m": [
+    -0.000327,
+    0.24214,
+    0.000327
+   ],
+   "pivot_sim": [
+    -0.000327,
+    0.000327,
+    -0.24214
+   ],
+   "axis": [
+    0.034878,
+    0.998782,
+    -0.034899
+   ],
+   "axis_sim": [
+    0.034878,
+    -0.034899,
+    -0.998782
+   ],
+   "rest_local_quaternion_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "members": [
+    "propeller_rotor"
+   ],
+   "section": "propeller"
+  }
+ },
+ "sections": {
+  "core": [
+   "fuselage_core"
+  ],
+  "wing_left": [
+   "wing_left_fixed",
+   "aileron_left",
+   "flap_left",
+   "aileron_left_hinge",
+   "flap_left_hinge"
+  ],
+  "wing_right": [
+   "wing_right_fixed",
+   "aileron_right",
+   "flap_right",
+   "aileron_right_hinge",
+   "flap_right_hinge"
+  ],
+  "horizontal_tail": [
+   "stabilizer_fixed",
+   "elevator",
+   "elevator_hinge"
+  ],
+  "vertical_tail": [
+   "fin_fixed",
+   "rudder",
+   "rudder_hinge"
+  ],
+  "engine": [
+   "cowl"
+  ],
+  "canopy": [
+   "canopy_glass"
+  ],
+  "propeller": [
+   "propeller_rotor",
+   "propeller_spin"
+  ],
+  "gear": [
+   "gear_left_leg",
+   "gear_right_leg",
+   "wheel_left",
+   "wheel_right",
+   "tailwheel_fork",
+   "tailwheel",
+   "gear_cables",
+   "gear_left_suspension",
+   "wheel_left_axle",
+   "gear_right_suspension",
+   "wheel_right_axle",
+   "tailwheel_steer",
+   "tailwheel_axle"
+  ]
+ },
+ "mesh_counts": {
+  "fuselage_core": {
+   "triangles": 4542,
+   "surfaces": 4,
+   "section": "core",
+   "parent": "TurboTimberEvolution",
+   "materials": [
+    "white",
+    "red",
+    "black",
+    "light_red"
+   ]
+  },
+  "wing_left_fixed": {
+   "triangles": 5197,
+   "surfaces": 5,
+   "section": "wing_left",
+   "parent": "TurboTimberEvolution",
+   "materials": [
+    "white",
+    "black",
+    "red",
+    "dark_grey",
+    "light_red"
+   ]
+  },
+  "wing_right_fixed": {
+   "triangles": 5125,
+   "surfaces": 5,
+   "section": "wing_right",
+   "parent": "TurboTimberEvolution",
+   "materials": [
+    "white",
+    "black",
+    "red",
+    "dark_grey",
+    "light_green"
+   ]
+  },
+  "aileron_left": {
+   "triangles": 928,
+   "surfaces": 1,
+   "section": "wing_left",
+   "parent": "aileron_left_hinge",
+   "materials": [
+    "white"
+   ]
+  },
+  "aileron_right": {
+   "triangles": 928,
+   "surfaces": 1,
+   "section": "wing_right",
+   "parent": "aileron_right_hinge",
+   "materials": [
+    "white"
+   ]
+  },
+  "flap_left": {
+   "triangles": 1392,
+   "surfaces": 1,
+   "section": "wing_left",
+   "parent": "flap_left_hinge",
+   "materials": [
+    "white"
+   ]
+  },
+  "flap_right": {
+   "triangles": 1392,
+   "surfaces": 1,
+   "section": "wing_right",
+   "parent": "flap_right_hinge",
+   "materials": [
+    "white"
+   ]
+  },
+  "stabilizer_fixed": {
+   "triangles": 4999,
+   "surfaces": 3,
+   "section": "horizontal_tail",
+   "parent": "TurboTimberEvolution",
+   "materials": [
+    "white",
+    "black",
+    "red"
+   ]
+  },
+  "elevator": {
+   "triangles": 1462,
+   "surfaces": 3,
+   "section": "horizontal_tail",
+   "parent": "elevator_hinge",
+   "materials": [
+    "white",
+    "black",
+    "red"
+   ]
+  },
+  "fin_fixed": {
+   "triangles": 2314,
+   "surfaces": 3,
+   "section": "vertical_tail",
+   "parent": "TurboTimberEvolution",
+   "materials": [
+    "red",
+    "black",
+    "white"
+   ]
+  },
+  "rudder": {
+   "triangles": 1244,
+   "surfaces": 3,
+   "section": "vertical_tail",
+   "parent": "rudder_hinge",
+   "materials": [
+    "white",
+    "red",
+    "black"
+   ]
+  },
+  "cowl": {
+   "triangles": 2310,
+   "surfaces": 4,
+   "section": "engine",
+   "parent": "TurboTimberEvolution",
+   "materials": [
+    "white",
+    "black",
+    "red",
+    "metal"
+   ]
+  },
+  "canopy_glass": {
+   "triangles": 1032,
+   "surfaces": 1,
+   "section": "canopy",
+   "parent": "TurboTimberEvolution",
+   "materials": [
+    "glass"
+   ]
+  },
+  "propeller_rotor": {
+   "triangles": 3580,
+   "surfaces": 2,
+   "section": "propeller",
+   "parent": "propeller_spin",
+   "materials": [
+    "black",
+    "metal"
+   ]
+  },
+  "gear_left_leg": {
+   "triangles": 794,
+   "surfaces": 2,
+   "section": "gear",
+   "parent": "gear_left_suspension",
+   "materials": [
+    "white",
+    "metal"
+   ]
+  },
+  "gear_right_leg": {
+   "triangles": 794,
+   "surfaces": 2,
+   "section": "gear",
+   "parent": "gear_right_suspension",
+   "materials": [
+    "white",
+    "metal"
+   ]
+  },
+  "wheel_left": {
+   "triangles": 1660,
+   "surfaces": 2,
+   "section": "gear",
+   "parent": "wheel_left_axle",
+   "materials": [
+    "foam",
+    "light_grey"
+   ]
+  },
+  "wheel_right": {
+   "triangles": 1660,
+   "surfaces": 2,
+   "section": "gear",
+   "parent": "wheel_right_axle",
+   "materials": [
+    "foam",
+    "light_grey"
+   ]
+  },
+  "tailwheel_fork": {
+   "triangles": 238,
+   "surfaces": 1,
+   "section": "gear",
+   "parent": "tailwheel_steer",
+   "materials": [
+    "metal"
+   ]
+  },
+  "tailwheel": {
+   "triangles": 816,
+   "surfaces": 2,
+   "section": "gear",
+   "parent": "tailwheel_axle",
+   "materials": [
+    "foam",
+    "light_grey"
+   ]
+  },
+  "gear_cables": {
+   "triangles": 112,
+   "surfaces": 1,
+   "section": "gear",
+   "parent": "TurboTimberEvolution",
+   "materials": [
+    "metal"
+   ]
+  }
+ },
+ "total_triangles": 42519,
+ "total_surfaces": 49,
+ "materials": [
+  "black",
+  "dark_grey",
+  "foam",
+  "glass",
+  "light_green",
+  "light_grey",
+  "light_red",
+  "metal",
+  "red",
+  "white"
+ ],
+ "informe": {
+  "decal_underside_faces_removed": {
+   "franjas_negras@aft": 17,
+   "franja_blanca_cola": 1,
+   "franja_negra_cola": 0,
+   "panel_nariz@aft": 22,
+   "escotilla_panel_nariz": 15,
+   "filete_nariz@aft": 5,
+   "panel_nariz@fwd": 44,
+   "filete_nariz@fwd": 0,
+   "franjas_negras@fwd": 2
+  },
+  "closure_faces": {
+   "wing_left_fixed|wing_right_fixed": 0,
+   "wing_right_fixed|wing_left_fixed": 0,
+   "wing_left_fixed|fuselage_core": 21,
+   "fuselage_core|wing_left_fixed": 59,
+   "wing_right_fixed|fuselage_core": 17,
+   "fuselage_core|wing_right_fixed": 58,
+   "cowl|fuselage_core": 38,
+   "fuselage_core|cowl": 45,
+   "stabilizer_fixed|fuselage_core": 67,
+   "fuselage_core|stabilizer_fixed": 26,
+   "fin_fixed|fuselage_core": 267,
+   "fuselage_core|fin_fixed": 116,
+   "fin_fixed|stabilizer_fixed": 0,
+   "stabilizer_fixed|fin_fixed": 0
+  },
+  "decal_offset_mm": {
+   "franjas_negras@aft": 0.48,
+   "franja_blanca_cola": 0.12,
+   "franja_negra_cola": 0.48,
+   "panel_nariz@aft": 0.48,
+   "escotilla_panel_nariz": 0.48,
+   "filete_nariz@aft": 0.36,
+   "panel_nariz@fwd": 0.48,
+   "filete_nariz@fwd": 0.36,
+   "franjas_negras@fwd": 0.48
+  },
+  "decimation": {
+   "method": "Blender Decimate COLLAPSE",
+   "ratios_tried": [
+    0.5,
+    0.7
+   ],
+   "max_deviation_mm": 0.25,
+   "min_triangles": 600,
+   "parts": {
+    "fuselaje_blanco@aft": {
+     "triangles_before": 1162,
+     "triangles_after": 1162,
+     "ratio": 1.0,
+     "max_deviation_mm": 0.0,
+     "rejected": [
+      {
+       "ratio": 0.5,
+       "triangles": 580,
+       "max_deviation_mm": 0.955
+      },
+      {
+       "ratio": 0.7,
+       "triangles": 812,
+       "max_deviation_mm": 0.314
+      }
+     ]
+    },
+    "fuselaje_panza_roja@aft": {
+     "triangles_before": 922,
+     "triangles_after": 644,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.235
+    },
+    "ala_izq (painted)": {
+     "triangles_before": 7856,
+     "triangles_after": 3928,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.037
+    },
+    "puntera_izq": {
+     "triangles_before": 1462,
+     "triangles_after": 730,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.048
+    },
+    "soportes_slat_izq": {
+     "triangles_before": 768,
+     "triangles_after": 384,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.194
+    },
+    "ala_der (painted)": {
+     "triangles_before": 7874,
+     "triangles_after": 3936,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.038
+    },
+    "puntera_der": {
+     "triangles_before": 1300,
+     "triangles_after": 650,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.085
+    },
+    "soportes_slat_der": {
+     "triangles_before": 768,
+     "triangles_after": 384,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.194
+    },
+    "aleron_izq": {
+     "triangles_before": 1500,
+     "triangles_after": 750,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.062
+    },
+    "aleron_der": {
+     "triangles_before": 1500,
+     "triangles_after": 750,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.059
+    },
+    "flap_izq": {
+     "triangles_before": 2428,
+     "triangles_after": 1214,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.056
+    },
+    "flap_der": {
+     "triangles_before": 2428,
+     "triangles_after": 1214,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.056
+    },
+    "estabilizador (painted)": {
+     "triangles_before": 9999,
+     "triangles_after": 4999,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.052
+    },
+    "timon_profundidad (painted)": {
+     "triangles_before": 2416,
+     "triangles_after": 1208,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.033
+    },
+    "deriva (painted)": {
+     "triangles_before": 3710,
+     "triangles_after": 1854,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.054
+    },
+    "timon_direccion (painted)": {
+     "triangles_before": 2074,
+     "triangles_after": 1036,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.032
+    },
+    "capota@fwd": {
+     "triangles_before": 1432,
+     "triangles_after": 716,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.185
+    },
+    "escapes": {
+     "triangles_before": 1238,
+     "triangles_after": 618,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.143
+    },
+    "ventanas": {
+     "triangles_before": 706,
+     "triangles_after": 494,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.12
+    },
+    "helice": {
+     "triangles_before": 3839,
+     "triangles_after": 1914,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.129
+    },
+    "spinner": {
+     "triangles_before": 1200,
+     "triangles_after": 600,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.082
+    },
+    "campana_motor": {
+     "triangles_before": 764,
+     "triangles_after": 534,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.181
+    },
+    "neumatico_izq": {
+     "triangles_before": 1044,
+     "triangles_after": 730,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.229
+    },
+    "buje_izq": {
+     "triangles_before": 1056,
+     "triangles_after": 738,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.081
+    },
+    "neumatico_der": {
+     "triangles_before": 1044,
+     "triangles_after": 730,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.229
+    },
+    "buje_der": {
+     "triangles_before": 1056,
+     "triangles_after": 738,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.081
+    },
+    "rueda_cola": {
+     "triangles_before": 1512,
+     "triangles_after": 756,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.044
+    }
+   }
+  },
+  "marking_seating": {
+   "fuselage_core": {
+    "covered_foam_samples": 71,
+    "foam_samples_above_sheet": 11,
+    "foam_vertices_pulled_in": 6,
+    "foam_max_mm": 0.367,
+    "sheet_vertices_pushed_out": 27,
+    "sheet_max_mm": 1.347,
+    "clearance_mm": 0.1
+   },
+   "cowl": {
+    "covered_foam_samples": 112,
+    "foam_samples_above_sheet": 46,
+    "foam_vertices_pulled_in": 15,
+    "foam_max_mm": 2.095,
+    "sheet_vertices_pushed_out": 1,
+    "sheet_max_mm": 0.11,
+    "clearance_mm": 0.1
+   }
+  },
+  "painted": {
+   "ala_izq": {
+    "pieces": [
+     "ala_izq#barras_ala_izq",
+     "ala_izq#extrados_negro_izq",
+     "ala_izq#extrados_rojo_izq",
+     "ala_izq#intrados_gris_izq"
+    ],
+    "hidden_walls_removed": 1244,
+    "open_edges_after_weld": 420,
+    "triangles_before_decimation": 7856,
+    "triangles": 3928
+   },
+   "ala_der": {
+    "pieces": [
+     "ala_der#barras_ala_der",
+     "ala_der#extrados_negro_der",
+     "ala_der#extrados_rojo_der",
+     "ala_der#intrados_gris_der"
+    ],
+    "hidden_walls_removed": 1244,
+    "open_edges_after_weld": 420,
+    "triangles_before_decimation": 7874,
+    "triangles": 3936
+   },
+   "estabilizador": {
+    "pieces": [
+     "estabilizador#estab_superior_negro",
+     "estabilizador#estab_superior_rojo"
+    ],
+    "hidden_walls_removed": 248,
+    "open_edges_after_weld": 29,
+    "triangles_before_decimation": 9999,
+    "triangles": 4999
+   },
+   "timon_profundidad": {
+    "pieces": [
+     "timon_profundidad#elevador_superior_negro",
+     "timon_profundidad#elevador_superior_rojo"
+    ],
+    "hidden_walls_removed": 100,
+    "open_edges_after_weld": 0,
+    "triangles_before_decimation": 2416,
+    "triangles": 1208
+   },
+   "deriva": {
+    "pieces": [
+     "deriva#deriva_franja_roja",
+     "deriva#deriva_franjas_negras%00%10",
+     "deriva#deriva_franjas_negras%00%11",
+     "deriva#deriva_franjas_negras%01",
+     "deriva%00",
+     "deriva%01%10",
+     "deriva%01%11"
+    ],
+    "hidden_walls_removed": 503,
+    "open_edges_after_weld": 88,
+    "triangles_before_decimation": 3710,
+    "triangles": 1854
+   },
+   "aleta_dorsal": {
+    "pieces": [
+     "aleta_dorsal#deriva_franja_roja",
+     "aleta_dorsal#deriva_franjas_negras"
+    ],
+    "hidden_walls_removed": 515,
+    "open_edges_after_weld": 64,
+    "triangles_before_decimation": 460,
+    "triangles": 460
+   },
+   "timon_direccion": {
+    "pieces": [
+     "timon_direccion#timon_franja_roja",
+     "timon_direccion#timon_franjas_negras"
+    ],
+    "hidden_walls_removed": 180,
+    "open_edges_after_weld": 24,
+    "triangles_before_decimation": 2074,
+    "triangles": 1036
+   }
+  }
+ },
+ "r1_mesh_parent": {
+  "aileron_left": "aileron_left_hinge",
+  "aileron_right": "aileron_right_hinge",
+  "airframe": "TurboTimberEvolution",
+  "elevator": "elevator_hinge",
+  "flap_left": "flap_left_hinge",
+  "flap_right": "flap_right_hinge",
+  "gear_cables": "TurboTimberEvolution",
+  "gear_left_leg": "gear_left_suspension",
+  "wheel_left": "wheel_left_axle",
+  "gear_right_leg": "gear_right_suspension",
+  "wheel_right": "wheel_right_axle",
+  "rudder": "rudder_hinge",
+  "tailwheel": "tailwheel_axle",
+  "tailwheel_fork": "tailwheel_steer",
+  "propeller_rotor": "propeller_spin"
+ },
+ "blender_version": "5.2.2 LTS",
+ "demo_timeline_frames_24fps": {
+  "aileron_left_hinge": {
+   "frames": [
+    1,
+    49
+   ],
+   "angles_deg": [
+    0,
+    22,
+    0,
+    -22,
+    0
+   ]
+  },
+  "aileron_right_hinge": {
+   "frames": [
+    55,
+    103
+   ],
+   "angles_deg": [
+    0,
+    22,
+    0,
+    -22,
+    0
+   ]
+  },
+  "flap_left_hinge": {
+   "frames": [
+    109,
+    157
+   ],
+   "angles_deg": [
+    0,
+    20.7,
+    36.6,
+    40,
+    0
+   ]
+  },
+  "flap_right_hinge": {
+   "frames": [
+    163,
+    211
+   ],
+   "angles_deg": [
+    0,
+    20.7,
+    36.6,
+    40,
+    0
+   ]
+  },
+  "elevator_hinge": {
+   "frames": [
+    217,
+    265
+   ],
+   "angles_deg": [
+    0,
+    22,
+    0,
+    -22,
+    0
+   ]
+  },
+  "rudder_hinge": {
+   "frames": [
+    271,
+    319
+   ],
+   "angles_deg": [
+    0,
+    30,
+    0,
+    -30,
+    0
+   ]
+  },
+  "tailwheel_steer": {
+   "frames": [
+    325,
+    373
+   ],
+   "angles_deg": [
+    0,
+    30,
+    0,
+    -30,
+    0
+   ]
+  },
+  "gear_left_suspension": {
+   "frames": [
+    379,
+    403
+   ],
+   "angles_deg": [
+    0,
+    12,
+    0
+   ]
+  },
+  "gear_right_suspension": {
+   "frames": [
+    409,
+    433
+   ],
+   "angles_deg": [
+    0,
+    12,
+    0
+   ]
+  },
+  "propeller_spin": {
+   "frames": [
+    439,
+    487
+   ],
+   "angles_deg": [
+    0,
+    90,
+    180,
+    270,
+    360,
+    450,
+    540,
+    630,
+    720
+   ]
+  },
+  "wheel_left_axle": {
+   "frames": [
+    493,
+    517
+   ],
+   "angles_deg": [
+    0,
+    90,
+    180,
+    270,
+    360
+   ]
+  },
+  "wheel_right_axle": {
+   "frames": [
+    523,
+    547
+   ],
+   "angles_deg": [
+    0,
+    90,
+    180,
+    270,
+    360
+   ]
+  },
+  "tailwheel_axle": {
+   "frames": [
+    553,
+    577
+   ],
+   "angles_deg": [
+    0,
+    90,
+    180,
+    270,
+    360
+   ]
+  }
+ }
+}

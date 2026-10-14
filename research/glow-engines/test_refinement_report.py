@@ -16,8 +16,10 @@ class ProvenanceTests(unittest.TestCase):
         self.runs = {path: json.loads(path.read_text(encoding="utf-8"))
                      for path in report.RUNS.values()}
         for value in self.runs.values():
-            value["format"] = "openrc-glow-flight-experiment v2"
+            value["format"] = "openrc-glow-flight-experiment v3"
             value["source_sha256"] = {p: "f" * 64 for p in report.SOURCE_PATHS}
+            for run in value["runs"]:
+                run.setdefault("mode_events", [])
 
     def fixture(self):
         def read(path, *args, **kwargs):
@@ -53,6 +55,19 @@ class ProvenanceTests(unittest.TestCase):
         with self.fixture():
             built = report.build()
         self.assertEqual({row["sha256"] for row in built["source_hashes"]}, {"f" * 64})
+
+    def test_lifecycle_event_order_and_tick_brackets_are_checked(self):
+        event = dict(kind="accepted_step", lower_time_s=0.5, upper_time_s=0.5 + 1 / 240,
+                     from_running=True, from_reason=0, to_running=False, to_reason=4)
+        fine = dict(event, upper_time_s=0.5 + 1 / 960)
+        self.assertTrue(report.compare_mode_events({"mode_events": [event]}, {"mode_events": [fine]}, 240)["passes_budget"])
+        self.assertFalse(report.compare_mode_events({"mode_events": [event]}, {"mode_events": []}, 240)["passes_budget"])
+        late = dict(fine, lower_time_s=0.6, upper_time_s=0.6 + 1 / 960)
+        self.assertFalse(report.compare_mode_events({"mode_events": [event]}, {"mode_events": [late]}, 240)["passes_budget"])
+        with self.assertRaisesRegex(ValueError, "time bracket"):
+            report.mode_events({"mode_events": [dict(event, upper_time_s=0.6)]}, 240)
+        with self.assertRaisesRegex(ValueError, "missing"):
+            report.mode_events({}, 240)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,21 @@ func _initialize() -> void:
 	var recipe: Dictionary = _recipe()
 	_check("base fixture read", not base_bytes.is_empty())
 	_test_dependency_manifests()
+	var integer_recipe: Dictionary = _recipe()
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+		integer_recipe[key] = 1
+	var integer_saved: Dictionary = Store.save_variant("Integer recipe", "jensen-das-ugly-stik-60", base_bytes, integer_recipe, "", _root)
+	_check("integer-valued recipes survive their own disk round-trip", bool(integer_saved["ok"]), str(integer_saved["errors"]))
+	if integer_saved["ok"]:
+		_check("integer recipe remains loadable", Store.load_variant(integer_saved.variant.id, _root).ok)
+		_check("saving does not normalize the caller's recipe in place", typeof(integer_recipe["scale"]) == TYPE_INT)
+		integer_recipe["power_multiplier"] = 1.25
+		var mixed_saved: Dictionary = Store.save_variant("Mixed numeric recipe", "jensen-das-ugly-stik-60",
+			base_bytes, integer_recipe, integer_saved.variant.id, _root, {}, {}, 1)
+		_check("mixed numeric recipe update remains readable", mixed_saved.ok
+			and Store.load_variant(integer_saved.variant.id, _root).variant.revision == 2,
+			str(mixed_saved.errors))
+		Store.delete_variant(integer_saved.variant.id, _root)
 	var saved: Dictionary = Store.save_variant("Store test Stik", "jensen-das-ugly-stik-60", base_bytes, recipe, "", _root)
 	_check("first variant save succeeds", bool(saved["ok"]), str(saved["errors"]))
 	if not bool(saved["ok"]):
@@ -33,11 +48,12 @@ func _initialize() -> void:
 	_check("catalog descriptor is pinned with the exact source snapshot", typeof(first.get("workshop_descriptor", null)) == TYPE_DICTIONARY and str(first["workshop_descriptor"].get("base_sha256", "")) == _sha256(base_bytes))
 	_check("dependency manifest is pinned with the variant", typeof(first.get("dependencies", null)) == TYPE_DICTIONARY and str(first["dependencies"].get("format", "")) == "openrc-aircraft-workshop-dependencies v1")
 	_check("variant list discovers the saved item", _contains_variant(Store.list_variants(_root), id))
+	_test_exclusive_lock(id, first, base_bytes)
 
 	var renamed_recipe: Dictionary = _recipe()
 	renamed_recipe["scale"] = 1.25
 	renamed_recipe["name"] = "Renamed Stik"
-	var renamed: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root)
+	var renamed: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], first["dependencies"], 1)
 	_check("same-base save creates a new revision", bool(renamed["ok"]), str(renamed["errors"]))
 	if bool(renamed["ok"]):
 		_check("revision increments monotonically", int(renamed["variant"]["revision"]) == 2)
@@ -47,16 +63,26 @@ func _initialize() -> void:
 		_check("later revisions retain the original Workshop descriptor", renamed["variant"].get("workshop_descriptor", {}) == first.get("workshop_descriptor", {}))
 		_check("later revisions retain the original dependency manifest", renamed["variant"].get("dependencies", {}) == first.get("dependencies", {}))
 		_check("load returns latest saved revision", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
+		var unversioned_save: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], first["dependencies"])
+		_check("same-ID save requires an expected revision", not bool(unversioned_save["ok"]) and _has_error(unversioned_save["errors"], "Expected revision is required"), str(unversioned_save["errors"]))
+		var stale_recipe: Dictionary = renamed_recipe.duplicate(true)
+		stale_recipe["power_multiplier"] = 1.1
+		var stale_save: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, stale_recipe, id, _root, first["workshop_descriptor"], first["dependencies"], 1)
+		_check("stale same-ID save is refused", not bool(stale_save["ok"]) and _has_error(stale_save["errors"], "expected revision"), str(stale_save["errors"]))
+		_check("stale save leaves the latest revision and history untouched", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2 and not FileAccess.file_exists(ProjectSettings.globalize_path(_root + "/" + id + "/revisions/00000003.json")))
 		var changed_dependencies: Dictionary = first["dependencies"].duplicate(true)
 		changed_dependencies["files"][Dependencies.WHEEL_PROFILES_PATH] = "0".repeat(64)
-		var rebased: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], changed_dependencies)
+		var rebased: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], changed_dependencies, 2)
 		_check("a same-ID revision cannot silently replace dependency hashes", not bool(rebased["ok"]) and _has_error(rebased["errors"], "dependencies are immutable"), str(rebased["errors"]))
 		_check("rejected dependency replacement leaves saved revision untouched", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
+
+	_test_unpinned_descriptor_is_immutable(base_bytes)
+	_test_save_after_manifest_recovery(base_bytes)
 
 	var edited_base: Dictionary = first["base"].duplicate(true)
 	edited_base["description"] = str(edited_base["description"]) + " changed"
 	var changed_base_bytes: PackedByteArray = (JSON.stringify(edited_base, "\t", true, true) + "\n").to_utf8_buffer()
-	var changed_base_save: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", changed_base_bytes, renamed_recipe, id, _root)
+	var changed_base_save: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", changed_base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], first["dependencies"], 2)
 	_check("an existing variant cannot replace its base snapshot", not bool(changed_base_save["ok"]) and _has_error(changed_base_save["errors"], "immutable"), str(changed_base_save["errors"]))
 	_check("rejected base change leaves saved revision untouched", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
 
@@ -87,6 +113,25 @@ func _initialize() -> void:
 		_check("restored item retains its latest revision", int(restored["variant"]["revision"]) == 2)
 		_check("restored item retains exact base bytes", restored["variant"]["base_bytes"] == base_bytes)
 	_finish()
+
+
+func _test_exclusive_lock(id: String, saved: Dictionary, base_bytes: PackedByteArray) -> void:
+	var root_path := ProjectSettings.globalize_path(_root)
+	var guard: RefCounted = Store.VariantWriteGuard.new(root_path, id)
+	_check("completed saves release the per-variant reservation", guard.acquired)
+	var competing: RefCounted = Store.VariantWriteGuard.new(root_path, id)
+	_check("another writer cannot reserve the same variant", not competing.acquired)
+	competing = null
+	_check("failed reservation cannot release another writer's lock", DirAccess.dir_exists_absolute(guard.directory))
+	var refused: Dictionary = Store.save_variant("Locked variant", saved.base_id, base_bytes, _recipe(), id,
+		_root, saved.workshop_descriptor, saved.dependencies, int(saved.revision))
+	_check("busy saves are refused before changing any revision", not refused.ok and _has_error(refused.errors, "busy")
+		and Store.load_variant(id, _root).variant.revision == saved.revision)
+	_check("delete cannot race an active save", not Store.delete_variant(id, _root).ok)
+	_check("restore cannot race an active save", not Store.restore_variant(id, _root).ok)
+	var lock_path: String = guard.directory
+	guard = null
+	_check("scope exit releases the exclusive reservation", not DirAccess.dir_exists_absolute(lock_path))
 
 
 func _test_root_guard() -> void:
@@ -139,6 +184,19 @@ func _test_manifest_recovery(id: String) -> void:
 	_check("backup recovers the last committed revision", bool(recovered["ok"]) and int(recovered["variant"]["revision"]) == 1)
 	var restore_error: Error = DirAccess.rename_absolute(manifest_path + ".interrupted", manifest_path)
 	_check("restore interrupted-write fixture", restore_error == OK)
+	if restore_error != OK:
+		return
+	_check("corrupt current-manifest fixture writes", _write_file(manifest_path, "{".to_utf8_buffer()))
+	var recovered_corrupt: Dictionary = Store.load_variant(id, _root)
+	_check("corrupt current manifest recovers from its valid backup", bool(recovered_corrupt["ok"]) and bool(recovered_corrupt["variant"].get("recovered_from_manifest_backup", false)) and int(recovered_corrupt["variant"]["revision"]) == 1, str(recovered_corrupt["errors"]))
+	_check("restore valid current-manifest fixture", _write_file(manifest_path, current_bytes))
+	var missing_revision_manifest: Dictionary = JSON.parse_string(current_bytes.get_string_from_utf8())
+	missing_revision_manifest["revision"] = 999
+	var missing_revision_bytes: PackedByteArray = (JSON.stringify(missing_revision_manifest, "\t", true, true) + "\n").to_utf8_buffer()
+	_check("missing-revision manifest fixture writes", _write_file(manifest_path, missing_revision_bytes))
+	var recovered_missing_revision: Dictionary = Store.load_variant(id, _root)
+	_check("manifest pointing at a missing revision recovers its backup", bool(recovered_missing_revision["ok"]) and bool(recovered_missing_revision["variant"].get("recovered_from_manifest_backup", false)) and int(recovered_missing_revision["variant"]["revision"]) == 1, str(recovered_missing_revision["errors"]))
+	_check("restore valid manifest after missing-revision fixture", _write_file(manifest_path, current_bytes))
 
 
 func _test_persisted_integrity(id: String) -> void:
@@ -157,8 +215,8 @@ func _test_persisted_integrity(id: String) -> void:
 	var tampered: PackedByteArray = (JSON.stringify(record, "\t", true, true) + "\n").to_utf8_buffer()
 	_check("tampered revision fixture writes", _write_file(record_path, tampered))
 	var rejected_hash: Dictionary = Store.load_variant(id, _root)
-	_check("base hash mismatch is rejected", not bool(rejected_hash["ok"]) and _has_error(rejected_hash["errors"], "SHA-256"), str(rejected_hash["errors"]))
-	_check("corrupt hash removes item from the usable library", not _contains_variant(Store.list_variants(_root), id))
+	_check("tampered latest revision is rejected in favor of the prior committed revision", bool(rejected_hash["ok"]) and bool(rejected_hash["variant"].get("recovered_from_manifest_backup", false)) and int(rejected_hash["variant"]["revision"]) == 1, str(rejected_hash["errors"]))
+	_check("the prior committed revision remains available in the library", _contains_variant(Store.list_variants(_root), id))
 	_check("restore valid hash fixture", _write_file(record_path, original))
 	var restored_hash: Dictionary = Store.load_variant(id, _root)
 	_check("restored hash loads again", bool(restored_hash["ok"]), str(restored_hash["errors"]))
@@ -168,8 +226,15 @@ func _test_persisted_integrity(id: String) -> void:
 	var unknown_version: PackedByteArray = (JSON.stringify(restored_record, "\t", true, true) + "\n").to_utf8_buffer()
 	_check("tampered schema fixture writes", _write_file(record_path, unknown_version))
 	var rejected_version: Dictionary = Store.load_variant(id, _root)
-	_check("unknown persisted schema version is rejected", not bool(rejected_version["ok"]) and _has_error(rejected_version["errors"], "version"), str(rejected_version["errors"]))
+	_check("unknown latest schema version recovers the prior committed revision", bool(rejected_version["ok"]) and bool(rejected_version["variant"].get("recovered_from_manifest_backup", false)) and int(rejected_version["variant"]["revision"]) == 1, str(rejected_version["errors"]))
 	_check("restore valid schema fixture", _write_file(record_path, original))
+	var fractional_revision: Dictionary = JSON.parse_string(original.get_string_from_utf8())
+	fractional_revision["revision"] = 2.5
+	var fractional_revision_bytes: PackedByteArray = (JSON.stringify(fractional_revision, "\t", true, true) + "\n").to_utf8_buffer()
+	_check("fractional revision fixture writes", _write_file(record_path, fractional_revision_bytes))
+	var rejected_fractional_revision: Dictionary = Store.load_variant(id, _root)
+	_check("fractional persisted revisions are rejected and recovered", bool(rejected_fractional_revision["ok"]) and bool(rejected_fractional_revision["variant"].get("recovered_from_manifest_backup", false)) and int(rejected_fractional_revision["variant"]["revision"]) == 1, str(rejected_fractional_revision["errors"]))
+	_check("restore valid revision fixture", _write_file(record_path, original))
 	var old_compiler_record: Dictionary = JSON.parse_string(original.get_string_from_utf8())
 	old_compiler_record["compiler_version"] = "openrc-aircraft-workshop-legacy-compiler-0"
 	var old_compiler_bytes: PackedByteArray = (JSON.stringify(old_compiler_record, "\t", true, true) + "\n").to_utf8_buffer()
@@ -178,7 +243,7 @@ func _test_persisted_integrity(id: String) -> void:
 	_check("older pinned compiler version remains loadable", bool(old_compiler_load["ok"]) and str(old_compiler_load["variant"].get("compiler_version", "")) == "openrc-aircraft-workshop-legacy-compiler-0", str(old_compiler_load["errors"]))
 	if bool(old_compiler_load["ok"]):
 		var old_variant: Dictionary = old_compiler_load["variant"]
-		var old_compiler_save: Dictionary = Store.save_variant(str(old_variant["name"]), str(old_variant["base_id"]), old_variant["base_bytes"], old_variant["recipe"], id, _root, old_variant.get("workshop_descriptor", {}), old_variant.get("dependencies", {}))
+		var old_compiler_save: Dictionary = Store.save_variant(str(old_variant["name"]), str(old_variant["base_id"]), old_variant["base_bytes"], old_variant["recipe"], id, _root, old_variant.get("workshop_descriptor", {}), old_variant.get("dependencies", {}), 2)
 		_check("same-ID save refuses to change an older compiler pin", not bool(old_compiler_save["ok"]) and _has_error(old_compiler_save["errors"], "create a new variant"), str(old_compiler_save["errors"]))
 		_check("refused compiler change leaves the stored revision untouched", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
 	var empty_compiler_record: Dictionary = JSON.parse_string(original.get_string_from_utf8())
@@ -186,7 +251,7 @@ func _test_persisted_integrity(id: String) -> void:
 	var empty_compiler_bytes: PackedByteArray = (JSON.stringify(empty_compiler_record, "\t", true, true) + "\n").to_utf8_buffer()
 	_check("empty compiler-version fixture writes", _write_file(record_path, empty_compiler_bytes))
 	var empty_compiler_load: Dictionary = Store.load_variant(id, _root)
-	_check("empty compiler versions are rejected", not bool(empty_compiler_load["ok"]) and _has_error(empty_compiler_load["errors"], "compiler version"), str(empty_compiler_load["errors"]))
+	_check("empty compiler version in the latest record recovers the prior committed revision", bool(empty_compiler_load["ok"]) and bool(empty_compiler_load["variant"].get("recovered_from_manifest_backup", false)) and int(empty_compiler_load["variant"]["revision"]) == 1, str(empty_compiler_load["errors"]))
 	_check("restore valid compiler-version fixture", _write_file(record_path, original))
 	var descriptor_tamper: Dictionary = JSON.parse_string(original.get_string_from_utf8())
 	if typeof(descriptor_tamper.get("workshop_descriptor", null)) == TYPE_DICTIONARY:
@@ -194,8 +259,61 @@ func _test_persisted_integrity(id: String) -> void:
 		var bad_descriptor: PackedByteArray = (JSON.stringify(descriptor_tamper, "\t", true, true) + "\n").to_utf8_buffer()
 		_check("tampered descriptor fixture writes", _write_file(record_path, bad_descriptor))
 		var rejected_descriptor: Dictionary = Store.load_variant(id, _root)
-		_check("pinned descriptor integrity is validated on load", not bool(rejected_descriptor["ok"]) and _has_error(rejected_descriptor["errors"], "descriptor source SHA-256"), str(rejected_descriptor["errors"]))
+		_check("tampered pinned descriptor recovers the prior committed revision", bool(rejected_descriptor["ok"]) and bool(rejected_descriptor["variant"].get("recovered_from_manifest_backup", false)) and int(rejected_descriptor["variant"]["revision"]) == 1, str(rejected_descriptor["errors"]))
 		_check("restore valid descriptor fixture", _write_file(record_path, original))
+
+
+func _test_unpinned_descriptor_is_immutable(base_bytes: PackedByteArray) -> void:
+	var saved: Dictionary = Store.save_variant("Legacy descriptor pin", "jensen-das-ugly-stik-60", base_bytes, _recipe(), "", _root)
+	_check("legacy descriptor-pin fixture saves", bool(saved["ok"]), str(saved["errors"]))
+	if not bool(saved["ok"]):
+		return
+	var variant: Dictionary = saved["variant"]
+	var id: String = str(variant["id"])
+	var descriptor: Dictionary = variant.get("workshop_descriptor", {})
+	_check("descriptor-pin fixture has a current descriptor", not descriptor.is_empty())
+	if descriptor.is_empty():
+		Store.delete_variant(id, _root)
+		return
+	var record_path: String = ProjectSettings.globalize_path(_root + "/" + id + "/revisions/00000001.json")
+	var record: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(record_path))
+	record.erase("workshop_descriptor")
+	var without_pin: PackedByteArray = (JSON.stringify(record, "\t", true, true) + "\n").to_utf8_buffer()
+	_check("unpinned historical record fixture writes", _write_file(record_path, without_pin))
+	var loaded: Dictionary = Store.load_variant(id, _root)
+	_check("historical record without a descriptor remains readable", bool(loaded["ok"]) and not loaded["variant"].has("workshop_descriptor"), str(loaded["errors"]))
+	var attempted: Dictionary = Store.save_variant("Legacy descriptor pin", "jensen-das-ugly-stik-60", base_bytes, _recipe(), id, _root, descriptor, variant.get("dependencies", {}), 1)
+	_check("same-ID save cannot add a descriptor to an unpinned historical variant", not bool(attempted["ok"]) and _has_error(attempted["errors"], "without a pinned Workshop descriptor"), str(attempted["errors"]))
+	_check("rejected descriptor pin change leaves the historical revision intact", int(Store.load_variant(id, _root)["variant"]["revision"]) == 1)
+	var deleted: Dictionary = Store.delete_variant(id, _root)
+	_check("descriptor-pin fixture is removed", bool(deleted["ok"]), str(deleted["errors"]))
+
+
+func _test_save_after_manifest_recovery(base_bytes: PackedByteArray) -> void:
+	var first: Dictionary = Store.save_variant("Recovery save Stik", "jensen-das-ugly-stik-60", base_bytes, _recipe(), "", _root)
+	_check("recovery-save fixture starts", bool(first["ok"]), str(first["errors"]))
+	if not bool(first["ok"]):
+		return
+	var variant: Dictionary = first["variant"]
+	var id: String = str(variant["id"])
+	var second_recipe: Dictionary = _recipe()
+	second_recipe["scale"] = 1.2
+	var second: Dictionary = Store.save_variant("Recovery save Stik", "jensen-das-ugly-stik-60", base_bytes, second_recipe, id, _root, variant.get("workshop_descriptor", {}), variant.get("dependencies", {}), 1)
+	_check("recovery-save fixture has a previous manifest backup", bool(second["ok"]) and FileAccess.file_exists(ProjectSettings.globalize_path(_root + "/" + id + "/manifest.json.bak")), str(second["errors"]))
+	if not bool(second["ok"]):
+		Store.delete_variant(id, _root)
+		return
+	var manifest_path: String = ProjectSettings.globalize_path(_root + "/" + id + "/manifest.json")
+	_check("recovery-save corrupt manifest fixture writes", _write_file(manifest_path, "{".to_utf8_buffer()))
+	var before_save: Dictionary = Store.load_variant(id, _root)
+	_check("recovery-save fixture reloads the last committed revision", bool(before_save["ok"]) and int(before_save["variant"]["revision"]) == 1, str(before_save["errors"]))
+	var third_recipe: Dictionary = _recipe()
+	third_recipe["scale"] = 1.3
+	var third: Dictionary = Store.save_variant("Recovery save Stik", "jensen-das-ugly-stik-60", base_bytes, third_recipe, id, _root, {}, {}, 1)
+	_check("save after backup recovery commits a new immutable revision", bool(third["ok"]) and int(third.get("variant", {}).get("revision", 0)) == 3, str(third["errors"]))
+	_check("save after recovery keeps the valid prior backup", bool(third["ok"]) and FileAccess.file_exists(ProjectSettings.globalize_path(_root + "/" + id + "/manifest.json.bak")) and int(Store.load_variant(id, _root).get("variant", {}).get("revision", 0)) == 3)
+	var deleted: Dictionary = Store.delete_variant(id, _root)
+	_check("recovery-save fixture is removed", bool(deleted["ok"]), str(deleted["errors"]))
 
 
 func _recipe() -> Dictionary:

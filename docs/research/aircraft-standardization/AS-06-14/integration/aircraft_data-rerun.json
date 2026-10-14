@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_aircraft_data.gd"
+  ],
+  "exit_code": 0,
+  "seconds": 2.235000000000582,
+  "log": "aircraft_data-rerun.log",
+  "log_sha256": "200b2a58403d64702ce6acb7ce79853a25349612eb6716374eef18537dc95d0a",
+  "ok": true
+}

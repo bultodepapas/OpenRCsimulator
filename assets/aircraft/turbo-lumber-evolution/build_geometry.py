@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""TT-02: build geometry.json for the Turbo Lumber Evolution from three provenance-bearing inputs.
+"""TT-02: build geometry.json for the Turbo Timber Evolution r2 from three provenance-bearing inputs.
 
-  * the author's r1 metadata.json (pivots, axes, rest transforms, ranges, landmarks, component stations), identified by
+  * the author's r2 metadata.json (pivots, axes, rest transforms, ranges, landmarks, component stations), identified by
     SHA-256 through source-manifest.json (TT-01);
   * mesh-measurements.json, written by research/timber/tt02/measure_mesh.gd from the scene Godot imports (planform
     slices, extents, extreme vertices, wheel and propeller radii);
   * manual.json, the hand-edited manufacturer anchors (span, length, masses, CG, throws in millimetres).
 
 Model axes: metres, +X right, +Y up, -Z nose; the datum D0 (origin) is the symmetry plane x the wing-root leading-edge
-station x the thrust-axis height, exactly as the r1 export. Structural positions for the aircraft contract convert as
+station x the thrust-axis height, exactly as the r2 export. Structural positions for the aircraft contract convert as
 [x_aft, y_right, z_up] = [z_model, x_model, y_model].
 
     python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py          # writes geometry.json
@@ -28,12 +28,14 @@ MANUAL = HERE / "manual.json"
 TARGET = HERE / "geometry.json"
 CATALOG_ID = "turbo-lumber-evolution"
 SCRIPT = "assets/aircraft/turbo-lumber-evolution/build_geometry.py"
-MEASURED = "research/timber/tt02/measure_mesh.gd on the Godot-imported r1 scene (mesh-measurements.json)"
-AUTHOR = "r1/metadata.json (author's CAD export)"
+MEASURED = "research/timber/tt02/measure_mesh.gd on the Godot-imported r2 scene (mesh-measurements.json)"
+AUTHOR = "r2/metadata.json (author's CAD export)"
+FIXED_AIRFRAME_MESHES = ("fuselage_core", "cowl", "wing_left_fixed", "wing_right_fixed", "stabilizer_fixed", "fin_fixed")
+WING_MESHES = ("wing_left_fixed", "wing_right_fixed", "aileron_left", "aileron_right", "flap_left", "flap_right")
 CLEAN_WING_Y_EXTENT = 0.05  # a slice with more vertical extent than this contains the fuselage, not a wing section
 CLEAN_TAIL_Y_EXTENT = 0.02
 CLEAN_FIN_X_EXTENT = 0.02
-## apply_surfaces() receives degrees positive trailing-edge UP (ailerons, elevator) and RIGHT (rudder); r1 pivots are
+## apply_surfaces() receives degrees positive trailing-edge UP (ailerons, elevator) and RIGHT (rudder); the authored pivots are
 ## positive trailing-edge DOWN (ailerons, flaps, elevator) and RIGHT (rudder). Flaps are positive down in both.
 APP_SIGN = {"aileron_left_hinge": -1.0, "aileron_right_hinge": -1.0, "elevator_hinge": -1.0, "rudder_hinge": 1.0,
             "flap_left_hinge": 1.0, "flap_right_hinge": 1.0}
@@ -86,7 +88,7 @@ def main():
     delivery = ROOT / manifest["delivery_root"]
     metadata_path = delivery / manifest["key_files"]["metadata"]["path"]
     if sha256(metadata_path) != manifest["key_files"]["metadata"]["sha256"]:
-        sys.exit("r1 metadata.json does not match source-manifest.json: run research/timber/tt01/manifest.py and review")
+        sys.exit("r2 metadata.json does not match source-manifest.json: run research/timber/tt01/manifest.py and review")
     md = json.loads(metadata_path.read_text(encoding="utf-8"))
     mm = json.loads(MEASUREMENTS.read_text(encoding="utf-8"))
     if mm["glb_sha256"] != manifest["key_files"]["glb"]["sha256"]:
@@ -119,12 +121,13 @@ def main():
     hinge_z = arts["aileron_right_hinge"]["pivot_sim_m"][2]
     aileron = meshes["aileron_right"]["extents_root"]
     flap = meshes["flap_right"]["extents_root"]
-    skin = mm["extents"]["skin"]
-    span_skin = skin["max"][0] - skin["min"][0]
-    span_all = mm["extents"]["all"]["max"][0] - mm["extents"]["all"]["min"][0]
+    wing_meshes = [meshes[name] for name in WING_MESHES]
+    span_skin = max(m["skin_extents_root"]["max"][0] for m in wing_meshes) - min(m["skin_extents_root"]["min"][0] for m in wing_meshes)
+    span_all = max(m["extents_root"]["max"][0] for m in wing_meshes) - min(m["extents_root"]["min"][0] for m in wing_meshes)
+    wing_skin_max_x = max(m["skin_extents_root"]["max"][0] for m in wing_meshes)
     # Chord distribution for the area: the panel chord from the centreline to the last panel station, then the measured
     # tip stations, then zero at the skin tip. Trapezoid integration, both halves.
-    stations = [(0.0, chord)] + [(s["x"], s["te"][2] - s["le"][2]) for s in panel] + [(s["x"], s["te"][2] - s["le"][2]) for s in tip] + [(skin["max"][0], 0.0)]
+    stations = [(0.0, chord)] + [(s["x"], s["te"][2] - s["le"][2]) for s in panel] + [(s["x"], s["te"][2] - s["le"][2]) for s in tip] + [(wing_skin_max_x, 0.0)]
     half_area = sum((x1 - x0) * (c0 + c1) / 2.0 for (x0, c0), (x1, c1) in zip(stations, stations[1:]))
     dihedral_slope, _ = linear_fit([s["x"] for s in panel], [s["le"][1] for s in panel])
     incidence_apparent = [math.degrees(math.atan2(s["le"][1] - s["te"][1], s["te"][2] - s["le"][2])) for s in panel]
@@ -138,16 +141,16 @@ def main():
                                       for row in mm["slices"]["fuselage"]["rows"] if 0.06 - 1e-9 <= row["station"] <= 0.16 + 1e-9 and "airframe_skin" in row["groups"])
     wing = {
         "planform": "rectangular, constant chord from the fuselage side to the last aileron station, rounded tips; the model is mirrored about x = 0",
-        "span": q(r(span_all, 6), "m", "measured", MEASURED + ": outermost vertices, nav-light lenses included (manual: 1.555 m)"),
-        "span_skin": q(r(span_skin, 6), "m", "measured", MEASURED + ": outermost white skin vertices (lenses excluded)"),
+        "span": q(r(span_all, 6), "m", "measured", MEASURED + ": outermost vertices of the wing and control sections, including lenses and brackets"),
+        "span_skin": q(r(span_skin, 6), "m", "measured", MEASURED + ": outermost non-excluded skin vertices of the wing and control sections"),
         "le_z": q(r(le_z), "m", "measured", MEASURED + ": median leading-edge z of the constant-chord stations (datum D0 is the root LE station)"),
         "te_z": q(r(te_z), "m", "measured", MEASURED + ": median trailing-edge z of the flap/aileron stations"),
         "chord": q(r(chord), "m", "measured", MEASURED + ": te_z - le_z, constant over the flap and aileron stations"),
-        "mac": q(r(chord), "m", "derived", "rectangular panel: MAC = chord (r1 metadata: 0.213 m from the CAD)"),
-        "area": q(r(2.0 * half_area), "m2", "derived", SCRIPT + ": trapezoid integral of the measured chord over the span, fuselage carry-through at the panel chord, rounded tips from the tip slices (r1 CAD: 0.329 m2)"),
+        "mac": q(r(chord), "m", "derived", "rectangular panel: MAC = chord (r2 metadata: 0.213 m from the CAD)"),
+        "area": q(r(2.0 * half_area), "m2", "derived", SCRIPT + ": trapezoid integral of the measured chord over the span, fuselage carry-through at the panel chord, rounded tips from the tip slices (r2 CAD: 0.329 m2)"),
         "area_rectangular": q(r(span_all * chord), "m2", "derived", "span x chord, no tip rounding"),
         "panel_x": [r(panel[0]["x"], 3), r(panel[-1]["x"], 3)],
-        "fuselage_half_width_at_wing": q(r(fuselage_half_width_at_wing, 4), "m", "measured", MEASURED + ": largest airframe-skin half-width of the fuselage slices between z = 0.06 and 0.16 m"),
+        "fuselage_half_width_at_wing": q(r(fuselage_half_width_at_wing, 4), "m", "measured", MEASURED + ": largest fixed-skin half-width of the fuselage slices between z = 0.06 and 0.16 m"),
         "hinge_z": q(r(hinge_z), "m", "measured", AUTHOR + ": aileron and flap pivots share z = 0.157726 m"),
         "hinge_fraction": q(r((hinge_z - le_z) / chord, 4), "1", "derived", "(hinge_z - le_z) / chord"),
         "control_chord_aft_of_hinge": q(r(te_z - hinge_z), "m", "measured", "te_z - hinge_z"),
@@ -193,11 +196,11 @@ def main():
         "tip_chord": q(r((te_0 + te_slope * half_span_t) - (le_0 + le_slope * half_span_t)), "m", "derived", "chord at the elevator tip from the fits"),
         "le_sweep_deg": q(r(math.degrees(math.atan(le_slope)), 3), "deg", "measured", MEASURED + ": leading-edge slope"),
         "te_sweep_deg": q(r(math.degrees(math.atan(te_slope)), 3), "deg", "measured", MEASURED + ": elevator trailing-edge slope (negative = forward)"),
-        "area": q(r(tail_area), "m2", "derived", SCRIPT + ": planform between the fitted edges from the centreline to the tip, both sides (r1 CAD: 0.0756 m2)"),
+        "area": q(r(tail_area), "m2", "derived", SCRIPT + ": planform between the fitted edges from the centreline to the tip, both sides (CAD v12: 0.0756 m2)"),
         "elevator_chord_aft_of_hinge_root": q(r(r_elevator_root), "m", "measured", "distance from the hinge axis to the trailing edge at x = %.2f m" % tail_clean[0]["x"]),
         "elevator_chord_aft_of_hinge_tip": q(r(r_elevator_tip), "m", "measured", "distance from the hinge axis to the trailing edge at x = %.2f m" % tail_clean[-1]["x"]),
         "section_y_extent": q(r(sum(s["y_max"] - s["y_min"] for s in tail_clean) / len(tail_clean)), "m", "measured", MEASURED + ": mean vertical extent of the stabilizer sections"),
-        "tail_arm_quarter_chords": q(r((le_0 + (te_0 - le_0) / 4.0) - (le_z + chord / 4.0)), "m", "derived", "stabilizer centreline quarter chord minus wing quarter chord (r1 CAD Lt: 0.612 m)"),
+        "tail_arm_quarter_chords": q(r((le_0 + (te_0 - le_0) / 4.0) - (le_z + chord / 4.0)), "m", "derived", "stabilizer centreline quarter chord minus wing quarter chord (CAD v12: 0.612 m)"),
         "stations": [[r(s["x"], 3), r(s["le"][2]), r(s["te_fixed_z"]), r(s["te"][2])] for s in tail_clean],
         "stations_columns": ["x", "le_z", "fixed_te_z", "elevator_te_z"],
     }
@@ -239,7 +242,7 @@ def main():
         "stations": [[r(s["y"], 3), r(s["le"][2]), r(s["te_fixed_z"]), r(s["te"][2])] for s in fin_clean],
         "stations_columns": ["y", "le_z", "fixed_te_z", "rudder_te_z"],
     }
-    # ---- fuselage stations (airframe skin inside |x| <= 0.09 m) ----
+    # ---- fuselage stations (fixed-section skin inside |x| <= 0.09 m) ----
     fus = []
     for row in mm["slices"]["fuselage"]["rows"]:
         g = row["groups"].get("airframe_skin")
@@ -248,16 +251,19 @@ def main():
         z = row["station"]
         fus.append([r(z, 3), r(max(abs(g["min"][0]), abs(g["max"][0]))), r(g["min"][1]), r(g["max"][1]),
                     bool(le_z - 0.005 <= z <= te_z + 0.005), bool(z >= tail["le_z_centreline"]["value"] - 0.01)])
+    fixed_skin_aft_z = max(meshes[name]["skin_extents_root"]["max"][2] for name in FIXED_AIRFRAME_MESHES)
     fuselage = {
         "stations": fus,
         "stations_columns": ["z", "half_width", "y_bottom", "y_top", "inside_wing_chord", "inside_tail"],
-        "note": "airframe skin slices (glazing, lenses and grey brackets excluded) limited to |x| <= 0.09 m; stations inside the wing chord include the wing carry-through and stations inside the tail include the fin/stabilizer roots",
-        "cowl_front_z": q(r(meshes["airframe"]["extents_root"]["min"][2]), "m", "measured", MEASURED + ": front of the airframe mesh (cowl)"),
-        "aft_end_z": q(r(meshes["airframe"]["skin_extents_root"]["max"][2]), "m", "measured", MEASURED + ": aft-most airframe skin vertex (fin trailing edge ahead of the rudder)"),
+        "note": "combined fixed-section skin slices (glazing, lenses and grey brackets excluded) limited to |x| <= 0.09 m; stations inside the wing chord include the wing carry-through and stations inside the tail include the fin/stabilizer roots",
+        "cowl_front_z": q(r(meshes["cowl"]["extents_root"]["min"][2]), "m", "measured", MEASURED + ": foremost vertex of the separate cowl section"),
+        "aft_end_z": q(r(fixed_skin_aft_z), "m", "measured", MEASURED + ": aft-most skin vertex among the fixed sections, ahead of the moving rudder"),
     }
     # ---- articulations: pivots, axes, rest transforms, ranges and the app mapping ----
     articulations = {}
     for name, a in arts.items():
+        if name == "thrust_frame":
+            continue  # r2 lists the fixed thrust axis under articulations for export metadata; geometry reports it separately.
         p = pivots[name]
         rng = a["range"]
         if name in APP_SIGN:
@@ -313,14 +319,14 @@ def main():
         "main_wheel_radius": q(r_main, "m", "measured", MEASURED + ": largest radial vertex distance of wheel_left about its axle (author estimate 0.058 m)"),
         "tail_wheel_radius": q(r_tail, "m", "measured", MEASURED + ": largest radial vertex distance of tailwheel about its axle (author estimate 0.014 m)"),
         "main_wheel_width": q(r(mm["radial"]["wheel_left"]["axial_max"] - mm["radial"]["wheel_left"]["axial_min"]), "m", "measured", MEASURED),
-        "track": q(r(wr["root_origin"][0] - wl["root_origin"][0]), "m", "measured", "right minus left axle x (r1 CAD: 0.264 m)"),
+        "track": q(r(wr["root_origin"][0] - wl["root_origin"][0]), "m", "measured", "right minus left axle x (r2 metadata: 0.264 m)"),
         "contacts_neutral": contacts,
         "contacts_measured_bottom_y": {"main_left": meshes["wheel_left"]["extents_root"]["min"][1], "main_right": meshes["wheel_right"]["extents_root"]["min"][1], "tail": meshes["tailwheel"]["extents_root"]["min"][1]},
-        "three_point_attitude_deg": q(r(ground, 3), "deg", "derived", "line through the main and tail contact points (r1 CAD: 9.8 deg)"),
+        "three_point_attitude_deg": q(r(ground, 3), "deg", "derived", "line through the main and tail contact points (r2 metadata: 9.8 deg)"),
         "suspension": {
             "pivots": {"left": pivots["gear_left_suspension"]["root_origin"], "right": pivots["gear_right_suspension"]["root_origin"]},
             "axes": {"left": pivots["gear_left_suspension"]["root_axis_x"], "right": pivots["gear_right_suspension"]["root_axis_x"]},
-            "travel_deg": q(md["landing_gear"]["suspension_travel_deg"]["value"], "deg", "estimated", AUTHOR + ": " + md["landing_gear"]["suspension_travel_deg"]["source"]),
+            "travel_deg": q(md["landing_gear"]["suspension_travel_deg"], "deg", "estimated", AUTHOR + ": suspension travel from the r2 metadata"),
             "spring_stiffness": "unknown (author); the simulator's contact stiffness is a model input (TT-07)",
             "cable_endpoints": md["landing_gear"]["cable_endpoints_sim_m"],
         },
@@ -357,16 +363,21 @@ def main():
     L = md["landmarks"]
     ex = mm["extremes"]
     measured_landmarks = {
-        "left_wingtip": ex["minx"]["root"], "right_wingtip": ex["maxx"]["root"],
+        "left_wingtip": mm["landmarks"]["left_wingtip"]["root"], "right_wingtip": mm["landmarks"]["right_wingtip"]["root"],
         "nose_spinner_tip": rotor["axial_max_point_root"], "tail_rudder_trailing_edge": ex["maxz"]["root"],
         "left_main_wheel_center": wl["root_origin"], "right_main_wheel_center": wr["root_origin"], "tailwheel_center": tw["root_origin"],
-        "propeller_hub": thrust_p["root_origin"], "datum_D0": [0.0, 0.0, 0.0],
+        "left_main_wheel_contact": [wl["root_origin"][0], meshes["wheel_left"]["extents_root"]["min"][1], wl["root_origin"][2]],
+        "right_main_wheel_contact": [wr["root_origin"][0], meshes["wheel_right"]["extents_root"]["min"][1], wr["root_origin"][2]],
+        "tailwheel_contact": [tw["root_origin"][0], meshes["tailwheel"]["extents_root"]["min"][1], tw["root_origin"][2]],
+        "wing_root_leading_edge": mm["landmarks"]["wing_root_leading_edge"]["root"],
+        "propeller_hub": pivots["propeller_spin"]["root_origin"], "datum_D0": [0.0, 0.0, 0.0],
     }
     landmarks = {}
     for key, rec in L.items():
         mv = measured_landmarks[key]
-        # Wingtips are defined by their outermost x only: several lens vertices share that x at different y/z.
-        axes = [0] if key.endswith("wingtip") else [0, 1, 2]
+        # Near the symmetry plane, multiple leading-edge vertices satisfy the author's 3 mm band; compare only the
+        # recorded lateral station for this landmark. Wingtip points are now selected from named fixed-skin meshes.
+        axes = [0] if key.endswith("wingtip") or key == "wing_root_leading_edge" else [0, 1, 2]
         landmarks[key] = {"author": rec["sim_m"], "measured": mv, "compared_axes": axes,
                           "difference_mm": r(1000.0 * max(abs(rec["sim_m"][i] - mv[i]) for i in axes), 3),
                           "definition": rec.get("definition", "")}
@@ -377,18 +388,18 @@ def main():
         "height": q(r(mm["extents"]["all"]["max"][1] - mm["extents"]["all"]["min"][1]), "m", "measured", MEASURED + ": fin top minus main-wheel bottom at neutral suspension"),
         "bbox": {"min": mm["extents"]["all"]["min"], "max": mm["extents"]["all"]["max"]},
         "forward_extent_vertex": {"mesh": forward["mesh"], "surface": forward["surface"], "material": forward["material"], "root": forward["root"], "local": forward["local"],
-                                  "finding": "the spinner tip of propeller_rotor (author landmark); the -0.2913 m extent reported by the TT-00-R1 probe came from the axis-aligned bounding box of the 2 deg/2 deg tilted rotor, not from a vertex"},
+                                  "finding": "the spinner tip of propeller_rotor (author landmark); the extent is measured at the furthest mesh vertex, not from a tilted axis-aligned box"},
         "manual_span": man["span_m"], "manual_length": man["length_m"],
     }
     discrepancies = {
         "span_mm": q(r(1000.0 * (span_all - man["span_m"]["value"]), 3), "mm", "derived", "measured span (lenses included) minus the manual span"),
         "length_mm": q(r(1000.0 * (dimensions["length"]["value"] - man["length_m"]["value"]), 3), "mm", "derived", "measured length minus the manual length; the author attributes most of it to the nose/cowl ahead of the wing (r2 request); kept as delivered (decision D4)"),
-        "area_vs_r1_cad_percent": q(r(100.0 * (wing["area"]["value"] / md["dimensions"]["model"]["wing_area_m2"]["value"] - 1.0), 3), "%", "derived", "measured planform area against the author's CAD 0.329 m2"),
-        "propeller_radius_mm": q(r(1000.0 * (rotor["radius"] - md["dimensions"]["model"]["propeller_radius_m"]["value"]), 3), "mm", "derived", "measured blade-tip radius minus the author's estimate (0.1381 m); the manual propeller is 11 in = 0.1397 m radius"),
-        "silhouette_overlay": "pending owner review: r1 side/top previews over the manual three-view (TT-02 evidence lists the files)",
+        "area_vs_author_cad_percent": q(r(100.0 * (wing["area"]["value"] / md["dimensions"]["model"]["wing_area_m2"]["value"] - 1.0), 3), "%", "derived", "measured planform area against the author's r2 metadata CAD value of 0.329 m2"),
+        "propeller_radius_mm": q(r(1000.0 * (rotor["radius"] - md["dimensions"]["model"]["propeller_diameter_m"]["value"] / 2.0), 3), "mm", "derived", "measured blade-tip radius minus half of the author's measured r2 propeller diameter"),
+        "silhouette_overlay": "pending owner review: r2 side/top previews against the manual three-view (TT-02 evidence lists the files)",
     }
-    # ---- r1 component stations: positions only, never a mass budget ----
-    components = [{"name": c["name"], "mass_kg_r1_estimate": c["mass"]["value"], "z_model": r(c["x_cad_mm"] / 1000.0, 4)} for c in md["mass_properties"]["components"]]
+    # ---- author's component stations: positions only, never a flight mass budget ----
+    components = [{"name": c["name"], "mass_kg_author_estimate": c["mass"]["value"], "z_model": r(c["x_cad_mm"] / 1000.0, 4)} for c in md["mass_properties"]["components"]]
     materials = {}
     for mesh in meshes.values():
         for s in mesh["surfaces"]:
@@ -406,7 +417,7 @@ def main():
         "revision": revision,
         "catalog_id": CATALOG_ID,
         "source_alias": manifest["source_alias"],
-        "status": "visual preview geometry of the author's r1 export; dimensions measured on the Godot-imported scene, ranges and installation angles estimated by the author; not calibrated, not flyable",
+        "status": "visual preview geometry of the author's r2 export; dimensions measured on the Godot-imported scene, ranges and installation angles estimated by the author; not calibrated, not flyable",
         "generator": SCRIPT,
         "inputs": {
             "manifest": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
@@ -431,7 +442,7 @@ def main():
         "landing_gear": landing_gear,
         "controls": controls,
         "manual": {k: man[k] for k in ("span_m", "length_m", "mass_empty_kg", "mass_flying_kg", "cg_aft_of_root_le_m", "cg_tolerance_m", "propeller", "motor", "battery", "servos")},
-        "r1_component_stations": {"note": "author's class-typical component estimates (1.46 kg total) as stations only; the manual's 2.190 kg flying mass is the TT-07 target (TT-00-R1 section 2)", "components": components},
+        "author_component_stations": {"note": "author's class-typical component estimates (1.46 kg total) as stations only; the selected 2.190 kg reference mass is separate and does not create a flight mass budget", "components": components},
         "discrepancies": discrepancies,
         "evidence": {
             "pivots": {"kind": "measured", "source": MEASURED + "; agree with " + AUTHOR + " within 1e-6 m and 1e-6 in axis components"},
@@ -448,7 +459,7 @@ def main():
             sys.exit("stale geometry.json: run build_geometry.py")
         print("Timber geometry.json is up to date (revision %s)" % revision)
     else:
-        TARGET.write_text(text, encoding="utf-8")
+        TARGET.write_bytes(text.encode("utf-8"))
         print("wrote %s (revision %s, span %.4f m, chord %.4f m, area %.4f m2, tail %.4f m2, fin %.4f m2)" % (
             TARGET.relative_to(ROOT), revision, span_all, chord, 2.0 * half_area, tail_area, fin_area))
 

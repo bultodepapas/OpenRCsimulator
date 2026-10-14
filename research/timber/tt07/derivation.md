@@ -4,7 +4,7 @@
 
 ## Configuration and frames
 
-The B-reference loadout uses the manual's 1.555 m span, 2.190 kg loaded mass, 60 mm longitudinal CG and 800 Kv motor, a nominal 14.8 V fixed bus and an 11-inch propeller. The imported r1 mesh's measured area is 0.328223 m². Flaps stay neutral; slats, floats and receiver assists are absent. The bus does not model SOC, sag, thermal protection or ESC current limiting.
+The B-reference loadout uses the manual's 1.555 m span, 2.190 kg loaded mass, 60 mm longitudinal CG and 800 Kv motor, a nominal 14.8 V fixed bus and an 11-inch propeller. TT-19 regenerates the same formulas from the r2 skin measurement: wing area 0.327007 m² (r1: 0.328223 m²). The 0.37% change follows removed paint-shell geometry, not an aerodynamic retune. The TT-07 inventory and all empirical input estimates are retained; source provenance that names r1 remains historical. Flaps stay neutral; slats, floats and receiver assists are absent. The bus does not model SOC, sag, thermal protection or ESC current limiting.
 
 D0 is the model datum, not the wing mid-plane. Structural `[aft,right,up]` equals model `[Z,X,Y]`. The aerodynamic reference is the wing quarter chord at its measured height, extrapolated across the fuselage using the measured dihedral. Tail pressure centres use measured planforms. The thrust arm is the imported hub minus the derived inventory CG; down/right thrust are the imported 2°/2° angles. Wheel contacts are the imported centres minus their radii. Rendering and flight therefore use the same datum without copying render vectors into simulation state.
 
@@ -18,9 +18,9 @@ Throws solve `theta = 2 asin(d/(2r))` at the TT-02 assumed manual measurement st
 
 Helmbold finite-wing lift slope is `2 pi kappa AR/(2+sqrt(4+AR²))`. The wing uses estimated section factor 0.9. Horizontal/vertical areas and arms come from the imported planforms. Downwash is the provisional elliptic estimate `2 a_w/(pi AR)`; horizontal pressure ratio is 0.9. A measured configuration would replace these assumptions. Thin-airfoil flap effectiveness and a gap/large-deflection factor 0.8 provide control derivatives; strip integration uses the measured aileron span. Tail-volume force/arm expressions supply pitch and yaw derivatives. The fin's linked CYdr/Cndr/Cldr/Cnb exactly obey the loader's force-arm consistency rule.
 
-The estimated cambered section's zero-lift angle is −0.035 rad and its pitching couple is −0.035. The supported `wing_section_cm_ac` module applies that couple to the local wing; Cm0 carries it in the oracle. Drag is an assumed skin/form coefficient 0.025 plus exposed gear drag area 0.004 m² and excrescence area 0.002 m², divided by wing area; CD0 is 0.0432803. Induced drag uses estimated Oswald efficiency 0.8. Control drag, body side force, high-wing dihedral increment, tail limits and adverse yaw remain identified estimates.
+The estimated cambered section's zero-lift angle is −0.035 rad and its pitching couple is −0.035. The supported `wing_section_cm_ac` module applies that couple to the local wing; Cm0 carries it in the oracle. Drag is an assumed skin/form coefficient 0.025 plus exposed gear drag area 0.004 m² and excrescence area 0.002 m², divided by wing area; CD0 is 0.0433482. Induced drag uses estimated Oswald efficiency 0.8. Control drag, body side force, high-wing dihedral increment, tail limits and adverse yaw remain identified estimates.
 
-Clean peak lift 1.6 yields a nominal 1-g stall speed of 8.17118 m/s. Airborne start is 1.6 times that speed: 13.07389 m/s. These are model estimates, not flight measurements. The current local/attached solver, post-stall blend and coupled electric shaft remain the production physics; no aircraft-specific force kernel or hidden handling gain is added.
+Clean peak lift 1.6 yields a nominal 1-g stall speed of 8.18636 m/s. Airborne start is 1.6 times that speed: 13.09818 m/s. These are model estimates, not flight measurements. The current local/attached solver, post-stall blend and coupled electric shaft remain the production physics; no aircraft-specific force kernel or hidden handling gain is added.
 
 ## Propeller and motor evidence
 

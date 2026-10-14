@@ -83,6 +83,16 @@ const ENTRIES := [
 		status_note = "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off.",
 		data = "res://data/aircraft/turbo_lumber_evolution.json",
 	},
+	{
+		id = "xcell-60-research",
+		vehicle = "rotorcraft",
+		visual_family = "hx-700",
+		name = "RC Helicopter Research Trainer",
+		summary = "X-Cell reference physics · HX-700 visual",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: X-Cell .60 reference physics with an HX-700 visual surrogate; hover start only; not flight-validated.",
+		data = "res://data/aircraft/xcell_60_research.json",
+	},
 ]
 
 
@@ -97,15 +107,34 @@ static func has(id: String) -> bool:
 	return ids().has(id)
 
 
+## Vehicle ownership is explicit where the catalog crosses into aircraft-only systems.
+## Entries predating this field are airplanes.
+static func is_rotorcraft(id: String) -> bool:
+	return str(entry(id).get("vehicle", "airplane")) == "rotorcraft"
+
+
 ## Entries that carry flight data (never a PREVIEW): what physics, trace and session tests may load.
 static func flyable_entries() -> Array:
 	return ENTRIES.filter(func(e: Dictionary) -> bool: return e.status != PREVIEW and e.data != "")
+
+
+## Flyable airplane configurations for airplane-only solvers and evidence loops.
+static func airplane_flyable_entries() -> Array:
+	return flyable_entries().filter(func(e: Dictionary) -> bool: return not is_rotorcraft(str(e.get("id", ""))))
 
 
 ## IDs of flyable_entries(), in menu order. Previews are skipped explicitly, never silently substituted.
 static func flyable_ids() -> PackedStringArray:
 	var out := PackedStringArray()
 	for e in flyable_entries():
+		out.append(e.id)
+	return out
+
+
+## IDs of airplane_flyable_entries(), in catalog order.
+static func airplane_flyable_ids() -> PackedStringArray:
+	var out := PackedStringArray()
+	for e in airplane_flyable_entries():
 		out.append(e.id)
 	return out
 

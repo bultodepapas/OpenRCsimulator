@@ -174,7 +174,7 @@ func _run() -> void:
 		"renderer": RenderingServer.get_video_adapter_name(),
 		"rendering_method": RenderingServer.get_current_rendering_method(),
 		"captures": records,
-		"limits": "Prepared views for geometry and material review of the imported r1 model under the Compatibility renderer; not a pilot readability test.",
+		"limits": "Prepared views for geometry and material review of the imported r2 model under the Compatibility renderer; not a pilot readability test.",
 	}
 	var file := FileAccess.open(out.path_join("manifest.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(manifest, "  ") + "\n")

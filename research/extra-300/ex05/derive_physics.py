@@ -24,6 +24,7 @@ MIGRATOR_DIR = ROOT / "research/aircraft-standardization"
 if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
 from migrate import legacy_input, numeric_parity, upgrade  # noqa: E402
+from physical_identity import validate_physical_identity  # noqa: E402
 
 GEOMETRY = ROOT / "assets/aircraft/extra-300s-60/geometry.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
@@ -232,28 +233,28 @@ fw = g["firewall_z"]
 # CR-22b: which inventory items carry energy (crash fire/smoke presentation only).
 ENERGY_SOURCES = {"fuel (half tank)": "glow_fuel"}
 items = [
-    ("engine O.S. MAX-61FX", 0.55, "manual", "O.S. catalog 17750 (same engine as the Stik); manual p3 prototype engine", le(fw - 0.045), [0.1, 0.05, 0.1], "estimated", "crankcase ~1.8 in ahead of the firewall"),
-    ("in-cowl muffler Slimline Pitts #3217", 0.13, "estimated", "manual p3 names it; ~4.5 oz typical for a .61 Pitts-style muffler (no catalog mass found)", le(fw - 0.03, -0.06), None, "estimated", "below the engine inside the cowl"),
-    ("propeller APC 12x6 Sport", 0.046, "manual", "APC LP12060 1.62 oz (same propeller data as the Stik)", le(g["propeller"]["z"]), [0.01, 0.305, 0.025], "measured", "propeller plane from geometry.json"),
-    ("2-1/2 in spinner and prop nut", 0.03, "estimated", "manual p3 GPMQ4520", le(g["spinner"]["back_z"] - 0.02), None, "measured", "spinner from geometry.json"),
-    ("engine mount and bolts", 0.06, "estimated", "glass-filled beam mount", le(fw - 0.02, -0.005), None, "estimated", "on the firewall"),
-    ("cowl", 0.09, "estimated", "ABS/fiberglass cowl of a .60 kit", le((g["spinner"]["back_z"] + g["cowl_rear_z"]) / 2, -0.01), [0.24, 0.15, 0.17], "measured", "between the spinner back and the cowl rear (geometry.json)"),
-    ("fuel tank 12 oz (empty)", 0.06, "estimated", "manual p3 GPMQ4105", le(fw + 0.07), None, "estimated", "behind the firewall, on the thrust line"),
-    ("receiver battery 4.8 V", 0.11, "estimated", "1100 mAh NiMH pack", le(fw + 0.05, -0.07), None, "estimated", "under the tank (manual: location shown on the plans)"),
-    ("receiver and switch", 0.04, "estimated", "typical 7-ch receiver + switch harness", le(0.0, -0.05), None, "estimated", "under the wing saddle"),
-    ("fuselage servos (3: elevator, rudder, throttle)", 0.135, "estimated", "manual p3: five standard servos ~45 g", le(0.12, -0.03), None, "estimated", "servo tray behind the wing LE"),
-    ("aileron servos (2)", 0.09, "estimated", "standard servos ~45 g", le(0.05, W["chord_plane_y"]), [0.02, 0.6, 0.02], "estimated", "one per wing half, mid-panel"),
-    ("main gear, 2-3/4 in wheels and pants", 0.2, "estimated", "aluminium strap, two wheels and two pants", le(GEAR["main_axle"][0], -0.16), [0.08, GEAR["track"], 0.15], "measured", "axle station from geometry.json; height midway down the leg"),
-    ("tail wheel assembly", 0.03, "estimated", "1 in tail wheel and wire", le(GEAR["tail_axle"][0], GEAR["tail_axle"][1]), None, "measured", "geometry.json tail axle"),
-    ("wing incl. ailerons, covered", 0.66, "estimated", "built-up sheeted 64 in tapered wing, MonoKote", le(mac_le_z + 0.4 * mac, W["chord_plane_y"]), [mac, b, 0.045], "derived", "40 % MAC, on the chord plane"),
-    ("fuselage front (firewall to cockpit), covered", 0.33, "estimated", "lite-ply formers/doublers, balsa sides", le(-0.05, -0.02), [0.4, fus_w, fus_d], "estimated", "from the stations in geometry.json"),
-    ("fuselage rear and turtle deck, covered", 0.2, "estimated", "balsa sides and sheeted turtle deck", le(0.45, 0.01), [0.7, 0.09, 0.13], "estimated", "from the stations in geometry.json"),
-    ("canopy and pilot", 0.08, "estimated", "butyrate canopy; DGA 1/4 scale sportsman pilot (manual p3)", le(0.27, 0.09), None, "measured", "pilot block in geometry.json"),
-    ("stabilizer and elevators, covered", 0.12, "estimated", "sheeted built-up stab", le(0.75, T["stab_y"]), [0.17, bh, 0.01], "measured", "stab from geometry.json"),
-    ("fin and rudder, covered", 0.07, "estimated", "sheeted built-up fin", le(fin_cz, fin_cy), [0.22, 0.01, 0.3], "derived", "area centroid of the fin polygon"),
-    ("pushrods, horns, hardware", 0.1, "estimated", "clevises, horns, pushrods, screws: rough sum", le(0.3), None, "estimated", "spread along the fuselage"),
+    ("engine O.S. MAX-61FX", 0.55, "manual", "O.S. catalog 17750 (same engine as the Stik); manual p3 prototype engine", le(fw - 0.045), [0.1, 0.05, 0.1], "estimated", "crankcase ~1.8 in ahead of the firewall", "engine_main"),
+    ("in-cowl muffler Slimline Pitts #3217", 0.13, "estimated", "manual p3 names it; ~4.5 oz typical for a .61 Pitts-style muffler (no catalog mass found)", le(fw - 0.03, -0.06), None, "estimated", "below the engine inside the cowl", "muffler_main"),
+    ("propeller APC 12x6 Sport", 0.046, "manual", "APC LP12060 1.62 oz (same propeller data as the Stik)", le(g["propeller"]["z"]), [0.01, 0.305, 0.025], "measured", "propeller plane from geometry.json", "propeller_main"),
+    ("2-1/2 in spinner and prop nut", 0.03, "estimated", "manual p3 GPMQ4520", le(g["spinner"]["back_z"] - 0.02), None, "measured", "spinner from geometry.json", "spinner_main"),
+    ("engine mount and bolts", 0.06, "estimated", "glass-filled beam mount", le(fw - 0.02, -0.005), None, "estimated", "on the firewall", "engine_mount"),
+    ("cowl", 0.09, "estimated", "ABS/fiberglass cowl of a .60 kit", le((g["spinner"]["back_z"] + g["cowl_rear_z"]) / 2, -0.01), [0.24, 0.15, 0.17], "measured", "between the spinner back and the cowl rear (geometry.json)", "cowl_main"),
+    ("fuel tank 12 oz (empty)", 0.06, "estimated", "manual p3 GPMQ4105", le(fw + 0.07), None, "estimated", "behind the firewall, on the thrust line", "fuel_tank"),
+    ("receiver battery 4.8 V", 0.11, "estimated", "1100 mAh NiMH pack", le(fw + 0.05, -0.07), None, "estimated", "under the tank (manual: location shown on the plans)", "receiver_battery"),
+    ("receiver and switch", 0.04, "estimated", "typical 7-ch receiver + switch harness", le(0.0, -0.05), None, "estimated", "under the wing saddle", "receiver_radio"),
+    ("fuselage servos (3: elevator, rudder, throttle)", 0.135, "estimated", "manual p3: five standard servos ~45 g", le(0.12, -0.03), None, "estimated", "servo tray behind the wing LE", "fuselage_servos"),
+    ("aileron servos (2)", 0.09, "estimated", "standard servos ~45 g", le(0.05, W["chord_plane_y"]), [0.02, 0.6, 0.02], "estimated", "one per wing half, mid-panel", "aileron_servos"),
+    ("main gear, 2-3/4 in wheels and pants", 0.2, "estimated", "aluminium strap, two wheels and two pants", le(GEAR["main_axle"][0], -0.16), [0.08, GEAR["track"], 0.15], "measured", "axle station from geometry.json; height midway down the leg", "landing_gear_main"),
+    ("tail wheel assembly", 0.03, "estimated", "1 in tail wheel and wire", le(GEAR["tail_axle"][0], GEAR["tail_axle"][1]), None, "measured", "geometry.json tail axle", "landing_gear_tail"),
+    ("wing incl. ailerons, covered", 0.66, "estimated", "built-up sheeted 64 in tapered wing, MonoKote", le(mac_le_z + 0.4 * mac, W["chord_plane_y"]), [mac, b, 0.045], "derived", "40 % MAC, on the chord plane", "wing_main"),
+    ("fuselage front (firewall to cockpit), covered", 0.33, "estimated", "lite-ply formers/doublers, balsa sides", le(-0.05, -0.02), [0.4, fus_w, fus_d], "estimated", "from the stations in geometry.json", "fuselage_front"),
+    ("fuselage rear and turtle deck, covered", 0.2, "estimated", "balsa sides and sheeted turtle deck", le(0.45, 0.01), [0.7, 0.09, 0.13], "estimated", "from the stations in geometry.json", "fuselage_rear"),
+    ("canopy and pilot", 0.08, "estimated", "butyrate canopy; DGA 1/4 scale sportsman pilot (manual p3)", le(0.27, 0.09), None, "measured", "pilot block in geometry.json", "canopy_pilot"),
+    ("stabilizer and elevators, covered", 0.12, "estimated", "sheeted built-up stab", le(0.75, T["stab_y"]), [0.17, bh, 0.01], "measured", "stab from geometry.json", "horizontal_tail"),
+    ("fin and rudder, covered", 0.07, "estimated", "sheeted built-up fin", le(fin_cz, fin_cy), [0.22, 0.01, 0.3], "derived", "area centroid of the fin polygon", "vertical_tail"),
+    ("pushrods, horns, hardware", 0.1, "estimated", "clevises, horns, pushrods, screws: rough sum", le(0.3), None, "estimated", "spread along the fuselage", "control_hardware"),
 ]
-fuel_item = ("fuel (half tank)", 0.146, "estimated", "12 oz tank = 355 ml, half at 0.82 g/ml glow fuel; prescribed flight state (no consumption model, G4)", le(fw + 0.07), None, "estimated", "same as the tank")
+fuel_item = ("fuel (half tank)", 0.146, "estimated", "12 oz tank = 355 ml, half at 0.82 g/ml glow fuel; prescribed flight state (no consumption model, G4)", le(fw + 0.07), None, "estimated", "same as the tank", "fuel_flight")
 mass0 = sum(i[1] for i in items)
 mom0 = [sum(i[1] * i[4][k] for i in items) for k in range(3)]
 x_target = cg_target_model_z - LE0
@@ -266,7 +267,7 @@ note("balance", "dry inventory before balancing mass (kg, CG x_aft m)", [mass0, 
 note("balance", "virtual balancing mass (kg)", mb, ("spinner/nose weight" if nose else "tail weight") + " that puts the dry inventory on the manual p43 empty-tank balance point")
 items.append(("virtual reference-build balancing mass", mb, "derived",
               f"{SCRIPT}: m = M (x_CG - x0) / (x_ballast - x_CG) on the dry inventory for manual p43 empty-tank balance; virtual reference build, NOT measured hardware or a ballast recommendation (manual: balance with the receiver battery first)",
-              ballast_pos, [0.025, 0.025, 0.025], "estimated", "spinner weight position (manual p43)" if nose else "stick-on tail weight position (manual p43)"))
+              ballast_pos, [0.025, 0.025, 0.025], "estimated", "spinner weight position (manual p43)" if nose else "stick-on tail weight position (manual p43)", "ballast_reference"))
 dry_mass = mass0 + mb
 dry_cg = [sum(i[1] * i[4][k] for i in items) / dry_mass for k in range(3)]
 note("balance", "dry balanced reference (kg, CG x_aft m)", [dry_mass, dry_cg[0]], "manual p43 target with empty tank; virtual ballast is derived from the estimated inventory")
@@ -396,8 +397,9 @@ note("gear", "three-point pitch (deg), tail load share, static sag (mm)",
      "E5a: point-contact rest geometry; stiffness shares use ground-projected CG moment arms")
 
 
-def gear_contact(name, position, stiffness, travel, steering=0.0):
+def gear_contact(identity, name, position, stiffness, travel, steering=0.0):
     contact = {
+        "id": identity,
         "name": name,
         "position": q(position, "m", "derived", GEO_SRC + "; wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."),
         "stiffness": q(stiffness, "N/m", "estimated", "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."),
@@ -411,9 +413,9 @@ def gear_contact(name, position, stiffness, travel, steering=0.0):
 
 landing_gear = {
     "description": "E5a: fixed main wheels and rudder-linked tail wheel. File-backed GP-02 wheel profiles supply per-contact radius, inertia and rim-speed dynamics; terrain-aware contact and wheel-radius corrections are active. E5a spring, damping, tyre and steering values remain provisional; no caster, brakes or stiction anchors.",
-    "contacts": [gear_contact("main_left", main_pos[0], k_main, 0.08),
-                 gear_contact("main_right", main_pos[1], k_main, 0.08),
-                 gear_contact("tail", tail_pos, k_tail, 0.05, -25.0)],
+    "contacts": [gear_contact("contact_main_left", "main_left", main_pos[0], k_main, 0.08),
+                 gear_contact("contact_main_right", "main_right", main_pos[1], k_main, 0.08),
+                 gear_contact("contact_tail", "tail", tail_pos, k_tail, 0.05, -25.0)],
     "rolling_resistance": q(0.04, "1", "estimated", "E5a: reuse Stik E2 reference C_rr for similarly sized model wheels; Extra 69.85 mm mains and 25.4 mm tail are not separately calibrated. Field factors apply per contact."),
     "side_friction": q(0.8, "1", "borrowed", "E5a: same provisional JSBSim c172x coefficient used by Stik and P-51 E2 fixtures; no Extra tyre measurement."),
     "peak_slip_angle": q(6.0, "deg", "borrowed", "E5a: same provisional 6 degree peak-slip regularization as Stik/P-51 E2; no Extra tyre measurement."),
@@ -491,6 +493,7 @@ surf = stik["aero"]["surfaces"]
 same = lambda key: dict(surf[key], source="same provisional value as the Ugly Stik surface model (" + surf[key]["source"].split(";")[-1].strip() + ")", kind=surf[key]["kind"] if surf[key]["kind"] != "derived" else "estimated")
 data = {
     "format": "openrc-aircraft v1",
+    "physical_identity_version": 1,
     "id": "gp-extra-300s-60",
     "description": "Great Planes Extra 300S .60 (GPMA0236), 64 in span, O.S. .61FX glow. EXPERIMENTAL first physics estimate (EX-05), generated by " + SCRIPT + "; not flight-identified. Visual geometry lives in assets/aircraft/extra-300s-60/geometry.json.",
     "frames": {
@@ -514,7 +517,7 @@ data = {
         "cg_tolerance": q(0.001, "m", "estimated", D("dry virtual reference build balanced to the manual p43 empty-tank point, then fixed half-tank fuel added; NOT a measured airplane")),
     },
     "inventory": [
-        dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
+        dict({"id": it[8], "name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
              **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
@@ -528,6 +531,7 @@ data = {
         le(T["rudder_top_te_z"], T["fin_top_y"]),
         le(max(g["canopy"]["top"], key=lambda p: p[1])[0], max(p[1] for p in g["canopy"]["top"])),
     ], "m", "measured", "Body crash points (le frame) from " + GEO_SRC + ": wing tip LE/TE, spinner tip, rudder bottom TE, stab tips, fin top, canopy top. Wheel bottoms use E5a landing_gear contacts and are excluded from this crash hull."),
+    "crash_hull_ids": ["probe_wing_left_le", "probe_wing_right_le", "probe_wing_left_te", "probe_wing_right_te", "probe_spinner_tip", "probe_rudder_bottom", "probe_stabilizer_left_tip", "probe_stabilizer_right_tip", "probe_fin_top", "probe_canopy_top"],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
     "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "spinner", "tail_end", "left_stab_tip", "right_stab_tip", "fin_top", "canopy"],
     "plausibility": {
@@ -535,6 +539,7 @@ data = {
         "inertia_reference": stik["plausibility"]["inertia_reference"],
     },
     "controls": {
+        "surface_ids": {"aileron_left": "surface_aileron_left", "aileron_right": "surface_aileron_right", "elevator": "surface_elevator", "rudder": "surface_rudder"},
         "max_throw": {
             k: q(v, "deg", "derived", f"{MANUAL} p43 HIGH rate at the widest part, delta = asin(d / chord): mechanical maximum with transmitter ATV near 100 % (manual); the radio's dual rate reduces it")
             for k, v in throws.items()
@@ -595,6 +600,7 @@ data = {
     "landing_gear": landing_gear,
 }
 p = data["propulsion"]
+p["id"] = "propulsion_main"
 p["description"] = "O.S. MAX-61FX prototype engine (manual p3); APC 12x6 Sport nominal propeller using borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived right/down shaft angles and visual propeller hub are applied; exact prototype propeller remains unidentified."
 p["propeller"]["thrust_angles"] = q([down_deg, right_deg], "deg", "manual",
     "Original plan thrust-frame notes transcribed in " + GEO_SRC + "; ordered [down, right] to match the v2 propulsion contract")
@@ -618,6 +624,7 @@ check_consistency(data)
 
 legacy_data = data
 data = upgrade(legacy_data)
+validate_physical_identity(data)
 parity = numeric_parity(legacy_data, data)
 text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]

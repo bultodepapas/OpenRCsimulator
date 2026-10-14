@@ -20,6 +20,14 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ## Entry points per track
 
+### Random failures and emergency practice
+
+[EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the current session/control limitations. The [failure-mode plan](../plans/failure-mode.md) owns probability, menus, standardized mechanisms, phases and acceptance. This is planning research, not implemented failures or physical validation.
+
+### Natural Random flight
+
+[NR initial implementation](natural-random/README.md) records the stock-only scenario generator, menu/lifecycle checks, numerical flight matrix and native captures. [Active plan](../plans/natural-random-flight.md) retains pilot/readability acceptance and future sky, runway and catalog work.
+
 ### Aircraft Workshop
 
 [AE-01–10 initial implementation](aircraft-editor/AE-01-10/README.md) records shared compiler/store/descriptor/trial/UI checks, native captures and the remaining acceptance scope. The [current guide](../AIRCRAFT-WORKSHOP.md) documents supported experiments; the [AE plan](../plans/aircraft-editor.md) owns engine-family editing and fleet continuation.
@@ -130,6 +138,8 @@ The [scenery guide](../SCENERY-PLAN.md) records current default-on behavior and 
 
 The [field-world guide](../FIELD-WORLD-PLAN.md) owns composition and night acceptance. Key evidence: [FW-02 parity](field-world/FW-02/README.md), [FW-20 ephemeris](field-world/FW-20/README.md), [FW-23 night rendering](field-world/FW-23/README.md), [FW-24 stars](field-world/FW-24/README.md), [FW-35 aircraft/field lights](field-world/FW-35/README.md), and the [world tools](../../tools/world/README.md).
 
+[FW-76 sky/cloud planning research](field-world/FW-76/README.md) compares free Godot cloud resources, renderer constraints, tutorials, first-hand Reddit reports and primary storm/wind references, including night lightning, reusable bolt VFX and CC0 thunder recordings. The [implementation plan](../plans/sky-clouds-weather.md) owns proposed FW-76–90, with electrical-storm delivery in FW-84a–e; this source review is not an addon, performance or physical-validation result.
+
 ### Immersive audio
 
 The [audio guide](../AUDIO-PLAN.md) owns the current soundscape. Read [AUD-01 sources and licenses](audio/AUD-01/sources.md), [AUD-02 asset record](audio/AUD-02/assets.md), [AUD-03 integration](audio/AUD-03/README.md), [AUD-04 acceptance](audio/AUD-04/README.md), [AUD-05 export qualification](audio/AUD-05/README.md), and the [AUD-06/07 bench and first fixes](audio/AUD-06/README.md) for the [audio realism plan](../plans/audio-realism.md). The earlier [G3b engine-audio research](audio/G3b/README.md) is a separate responsive-engine path.
@@ -144,7 +154,11 @@ The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begi
 
 ### Helicopter and shared rotor foundations
 
-[HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the steady inflow reference and published crossflow seams; [HELI-04-R1](helicopter/HELI-04-R1/README.md) qualifies dimensional transient flow with prescribed events. [HELI-05/05a](helicopter/HELI-05/README.md) verifies main-rotor loads/flapping and the fixed-body joint stage; [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.
+[HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the steady inflow reference and published crossflow seams; [HELI-04-R1](helicopter/HELI-04-R1/README.md) qualifies dimensional transient flow with prescribed events. [HELI-05/05a](helicopter/HELI-05/README.md) verifies main-rotor loads/flapping and the fixed-body joint stage; [HELI-06a](helicopter/HELI-06/README.md) verifies the standalone linearized tail. [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. [HELI-25a](helicopter/HELI-25/README.md) audits and exports the supplied HX-700 Blender visual. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.
+
+[HELI-06b/c](helicopter/HELI-06b/README.md) records the passive airframe extension, source-sign audit, joint aerodynamic stand and unresolved cost gate. [HELI-07/08](helicopter/HELI-07/README.md) audits drivetrain/rotor-momentum ownership and remaining finite-startup/freewheel requirements.
+
+[HELI-09](helicopter/HELI-09/README.md) records the immutable prepared aerodynamic stage, parity and invalid-input tests, and paired compact-hover timing.
 
 ### Drone racing (shared-foundation review)
 

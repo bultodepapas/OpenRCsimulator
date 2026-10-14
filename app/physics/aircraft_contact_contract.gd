@@ -5,10 +5,11 @@ extends RefCounted
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
+const PhysicalIdentity := preload("res://physics/physical_identity.gd")
 
 
-## Describes the normalized model returned by AircraftData. Hull point IDs are scoped to this
-## model's existing ordered hull list until an authoring manifest supplies durable component IDs.
+## Describes the normalized model returned by AircraftData. Authored physical identity is used
+## only when the full v1 identity contract is present; older ID-less models retain their exact IDs.
 static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 	var errors := PackedStringArray()
 	var diagnostics: Array[Dictionary] = []
@@ -35,12 +36,15 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 
 	var labels := _labels(model.get("crash_hull_components", PackedStringArray()), hull_value,
 		errors, diagnostics)
+	var identity := _physical_identity(model, hull_value, errors, diagnostics)
+	var authored_identity: bool = bool(identity.get("authored", false))
+	var authored_hull_ids: PackedStringArray = identity.get("hull_ids", PackedStringArray())
 	if errors.is_empty():
 		var point_count: int = hull_value.size() / 3
 		for point_index in point_count:
 			var label := str(labels[point_index]) if not labels.is_empty() else ""
 			hull_points.append({
-				id = "hull_point_%03d" % point_index,
+				id = str(authored_hull_ids[point_index]) if authored_identity else "hull_point_%03d" % point_index,
 				point_index = point_index,
 				position = hull_value.slice(point_index * 3, point_index * 3 + 3),
 				hull_label = label,
@@ -50,6 +54,7 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 			})
 
 	var support_points: Array[Dictionary] = []
+	var wheel_profile_contact_names := PackedStringArray()
 	var gear_value: Variant = model.get("landing_gear", {})
 	if typeof(gear_value) != TYPE_DICTIONARY:
 		_add_error(errors, diagnostics, "invalid_landing_gear", "landing_gear", "expected a normalized landing-gear object")
@@ -61,19 +66,32 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 				_add_error(errors, diagnostics, "invalid_landing_gear", "landing_gear.contacts", "expected a nonempty normalized support-contact list")
 			else:
 				var seen_contact_ids: Dictionary = {}
+				var seen_profile_names: Dictionary = {}
 				for contact_index in contacts_value.size():
 					var contact_value: Variant = contacts_value[contact_index]
 					if typeof(contact_value) != TYPE_DICTIONARY:
 						_add_error(errors, diagnostics, "invalid_support_contact", "landing_gear.contacts[%d]" % contact_index, "expected a normalized support-contact object")
 						continue
 					var contact: Dictionary = contact_value
-					var contact_id_value: Variant = contact.get("name", "")
+					var contact_name_value: Variant = contact.get("name", "")
+					var contact_name := str(contact_name_value)
+					if typeof(contact_name_value) != TYPE_STRING or contact_name.strip_edges().is_empty():
+						_add_error(errors, diagnostics, "invalid_support_contact_name", "landing_gear.contacts[%d].name" % contact_index, "expected a nonempty landing-gear contact name for legacy wheel-profile binding")
+						continue
+					if seen_profile_names.has(contact_name):
+					var duplicate_name_code := "duplicate_wheel_profile_contact_name" if authored_identity else "duplicate_contact_id"
+					_add_error(errors, diagnostics, duplicate_name_code, "landing_gear.contacts[%d].name" % contact_index, "duplicate wheel-profile contact name '%s'" % contact_name)
+						continue
+					seen_profile_names[contact_name] = true
+					var contact_id_value: Variant = contact.get("id", "") if authored_identity else contact_name_value
 					var contact_id := str(contact_id_value)
 					if typeof(contact_id_value) != TYPE_STRING or contact_id.strip_edges().is_empty():
-						_add_error(errors, diagnostics, "invalid_support_contact_id", "landing_gear.contacts[%d].name" % contact_index, "expected a nonempty stable contact name")
+						var id_field := "id" if authored_identity else "name"
+						_add_error(errors, diagnostics, "invalid_support_contact_id", "landing_gear.contacts[%d].%s" % [contact_index, id_field], "expected a nonempty stable contact ID")
 						continue
 					if seen_contact_ids.has(contact_id):
-						_add_error(errors, diagnostics, "duplicate_contact_id", "landing_gear.contacts[%d].name" % contact_index, "duplicate support contact ID '%s'" % contact_id)
+						var id_field := "id" if authored_identity else "name"
+						_add_error(errors, diagnostics, "duplicate_contact_id", "landing_gear.contacts[%d].%s" % [contact_index, id_field], "duplicate support contact ID '%s'" % contact_id)
 						continue
 					seen_contact_ids[contact_id] = true
 					var position_value: Variant = contact.get("position")
@@ -88,6 +106,7 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 						visual_section_id = "",
 						visual_section_status = "unbound",
 					})
+					wheel_profile_contact_names.append(contact_name)
 				if contacts_value.size() < 3:
 					_add_error(errors, diagnostics, "invalid_landing_gear", "landing_gear.contacts", "normalized landing gear must retain at least three support contacts")
 
@@ -110,7 +129,8 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 			if propulsion.has("axis") and not _is_finite_point(propulsion.axis):
 				_add_error(errors, diagnostics, "invalid_rotor_disc", "propulsion.axis", "a declared propeller axis must be a finite 3D vector")
 
-	var wheel_profile_result := _wheel_profile(model, aircraft_id, support_points, errors, diagnostics)
+	var wheel_profile_result := _wheel_profile(model, aircraft_id, support_points, wheel_profile_contact_names,
+		errors, diagnostics)
 	if errors.is_empty():
 		for support: Dictionary in support_points:
 			for probe: Dictionary in hull_points:
@@ -161,6 +181,8 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 		hull_probes = hull_points,
 		support_points = support_points,
 		rotor_disc = rotor_disc,
+		propulsion_id = str(identity.get("propulsion_id", "")) if authored_identity else "",
+		rotor_id = str(identity.get("rotor_id", "propeller/single")),
 		wheel_profile = wheel_profile_result,
 		policy = policy,
 		contact_lifecycle = lifecycle,
@@ -287,8 +309,195 @@ static func _labels(value: Variant, hull_value: Variant, errors: PackedStringArr
 	return out
 
 
+static func _physical_identity(model: Dictionary, hull_value: Variant, errors: PackedStringArray,
+		diagnostics: Array[Dictionary]) -> Dictionary:
+	if not _has_physical_identity_metadata(model):
+		return {authored = false, hull_ids = PackedStringArray(), support_ids = PackedStringArray(),
+			propulsion_id = "", rotor_id = "propeller/single"}
+	var identity_value: Variant = model.get("physical_identity")
+	if model.has("physical_identity_version") \
+			and (typeof(model.get("physical_identity_version")) not in [TYPE_INT, TYPE_FLOAT] \
+			or float(model.get("physical_identity_version")) != 1.0):
+		_add_error(errors, diagnostics, "invalid_physical_identity_version", "physical_identity_version", "expected physical identity version 1 when present")
+	if typeof(identity_value) != TYPE_DICTIONARY:
+		_add_error(errors, diagnostics, "incomplete_physical_identity", "physical_identity", "authored component IDs require the complete physical_identity v1 object")
+		return {authored = true, hull_ids = PackedStringArray(), support_ids = PackedStringArray(),
+			propulsion_id = "", rotor_id = ""}
+	var identity: Dictionary = identity_value
+	if typeof(identity.get("version")) != TYPE_INT or int(identity.get("version", -1)) != 1:
+		_add_error(errors, diagnostics, "invalid_physical_identity_version", "physical_identity.version", "expected physical identity version 1")
+	if typeof(identity.get("status")) != TYPE_STRING or str(identity.get("status", "")) != "authored":
+		_add_error(errors, diagnostics, "invalid_physical_identity_status", "physical_identity.status", "expected authored physical identity status")
+
+	var inventory_ids := _physical_identity_ids(identity.get("inventory_ids"), "physical_identity.inventory_ids", false, errors, diagnostics)
+	var hull_ids := _physical_identity_ids(identity.get("hull_ids"), "physical_identity.hull_ids", false, errors, diagnostics)
+	var support_ids := _physical_identity_ids(identity.get("support_ids"), "physical_identity.support_ids", true, errors, diagnostics)
+	var inventory_set: Dictionary = {}
+	for inventory_id: String in inventory_ids:
+		inventory_set[inventory_id] = true
+
+	var index_value: Variant = identity.get("inventory_index_by_id")
+	if typeof(index_value) != TYPE_DICTIONARY:
+		_add_error(errors, diagnostics, "invalid_physical_identity_index", "physical_identity.inventory_index_by_id", "expected an ID-to-index dictionary")
+	else:
+		var index_by_id: Dictionary = index_value
+		if index_by_id.size() != inventory_ids.size():
+			_add_error(errors, diagnostics, "physical_identity_index_mismatch", "physical_identity.inventory_index_by_id", "inventory index must contain exactly one entry per inventory ID")
+		for index in inventory_ids.size():
+			var inventory_id: String = inventory_ids[index]
+			var mapped_index: Variant = index_by_id.get(inventory_id)
+			if typeof(mapped_index) != TYPE_INT or int(mapped_index) != index:
+				_add_error(errors, diagnostics, "physical_identity_index_mismatch", "physical_identity.inventory_index_by_id.%s" % inventory_id, "inventory index must match the ordered inventory_ids entry")
+		for key: Variant in index_by_id.keys():
+			if typeof(key) != TYPE_STRING or not inventory_set.has(str(key)):
+				_add_error(errors, diagnostics, "physical_identity_index_mismatch", "physical_identity.inventory_index_by_id", "inventory index contains an ID outside inventory_ids")
+
+	if typeof(hull_value) == TYPE_PACKED_FLOAT64_ARRAY and hull_value.size() % 3 == 0 \
+			and hull_ids.size() != hull_value.size() / 3:
+		_add_error(errors, diagnostics, "physical_identity_hull_count_mismatch", "physical_identity.hull_ids", "hull_ids must match the ordered crash_hull point count")
+	var gear_value: Variant = model.get("landing_gear", {})
+	var contacts_value: Variant = gear_value.get("contacts", []) if typeof(gear_value) == TYPE_DICTIONARY else []
+	if typeof(contacts_value) == TYPE_ARRAY and support_ids.size() != contacts_value.size():
+		_add_error(errors, diagnostics, "physical_identity_support_count_mismatch", "physical_identity.support_ids", "support_ids must match the ordered landing-gear contact count")
+	if typeof(contacts_value) == TYPE_ARRAY:
+		for contact_index in mini(contacts_value.size(), support_ids.size()):
+			var contact_value: Variant = contacts_value[contact_index]
+			if typeof(contact_value) != TYPE_DICTIONARY:
+				continue
+			var contact: Dictionary = contact_value
+			var contact_id_value: Variant = contact.get("id")
+			if typeof(contact_id_value) != TYPE_STRING or str(contact_id_value).strip_edges().is_empty():
+				_add_error(errors, diagnostics, "invalid_support_contact_id", "landing_gear.contacts[%d].id" % contact_index, "authored physical identity requires an explicit support contact ID")
+			elif str(contact_id_value) != support_ids[contact_index]:
+				_add_error(errors, diagnostics, "physical_identity_support_mismatch", "landing_gear.contacts[%d].id" % contact_index, "contact ID must match physical_identity.support_ids at the same index")
+
+	var propulsion_id_value: Variant = identity.get("propulsion_id")
+	var propulsion_id := ""
+	if typeof(propulsion_id_value) != TYPE_STRING or str(propulsion_id_value).strip_edges().is_empty():
+		_add_error(errors, diagnostics, "invalid_physical_identity_propulsion_id", "physical_identity.propulsion_id", "expected a nonempty authored propulsion ID")
+	else:
+		propulsion_id = str(propulsion_id_value)
+		var propulsion_value: Variant = model.get("propulsion")
+		var normalized_propulsion_id: Variant = propulsion_value.get("id") if typeof(propulsion_value) == TYPE_DICTIONARY else null
+		if typeof(normalized_propulsion_id) != TYPE_STRING or str(normalized_propulsion_id).strip_edges().is_empty():
+			_add_error(errors, diagnostics, "invalid_propulsion_id", "propulsion.id", "authored physical identity requires an explicit normalized propulsion ID")
+		elif str(normalized_propulsion_id) != propulsion_id:
+			_add_error(errors, diagnostics, "physical_identity_propulsion_mismatch", "propulsion.id", "normalized propulsion ID must match physical_identity.propulsion_id")
+
+	var identity_surfaces_value: Variant = identity.get("surface_ids")
+	var controls_value: Variant = model.get("controls")
+	var controls_surfaces_value: Variant = controls_value.get("surface_ids") if typeof(controls_value) == TYPE_DICTIONARY else null
+	var surface_ids: Dictionary = {}
+	if typeof(identity_surfaces_value) != TYPE_DICTIONARY:
+		_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids", "expected a control-surface name-to-ID dictionary")
+	else:
+		surface_ids = identity_surfaces_value
+	if typeof(controls_surfaces_value) != TYPE_DICTIONARY:
+		_add_error(errors, diagnostics, "incomplete_physical_identity", "controls.surface_ids", "authored physical identity requires normalized controls.surface_ids")
+	elif typeof(identity_surfaces_value) == TYPE_DICTIONARY and controls_surfaces_value != identity_surfaces_value:
+		_add_error(errors, diagnostics, "physical_identity_surface_mismatch", "controls.surface_ids", "normalized control surface IDs must match physical_identity.surface_ids")
+	if typeof(identity_surfaces_value) == TYPE_DICTIONARY:
+		if surface_ids.size() != PhysicalIdentity.SURFACES.size():
+			_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids", "expected IDs for exactly the four conventional control surfaces")
+		for surface_name: String in PhysicalIdentity.SURFACES:
+			if not surface_ids.has(surface_name):
+				_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids.%s" % surface_name, "missing conventional control-surface ID")
+		for surface_name_value: Variant in surface_ids.keys():
+			if typeof(surface_name_value) != TYPE_STRING or str(surface_name_value) not in PhysicalIdentity.SURFACES:
+				_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids", "unsupported control-surface name")
+
+	var used_ids: Dictionary = {}
+	for inventory_id: String in inventory_ids:
+		used_ids[inventory_id] = "physical_identity.inventory_ids"
+	_validate_identity_members(hull_ids, "physical_identity.hull_ids", used_ids, errors, diagnostics)
+	_validate_identity_members(support_ids, "physical_identity.support_ids", used_ids, errors, diagnostics)
+	if not propulsion_id.is_empty():
+		_validate_identity_member(propulsion_id, "physical_identity.propulsion_id", used_ids, errors, diagnostics)
+	for surface_name_value: Variant in surface_ids.keys():
+		if typeof(surface_name_value) != TYPE_STRING or str(surface_name_value).strip_edges().is_empty():
+			_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids", "surface names must be nonempty strings")
+			continue
+		var surface_id_value: Variant = surface_ids.get(surface_name_value)
+		if typeof(surface_id_value) != TYPE_STRING or str(surface_id_value).strip_edges().is_empty():
+			_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids.%s" % str(surface_name_value), "surface IDs must be nonempty strings")
+			continue
+		_validate_identity_member(str(surface_id_value), "physical_identity.surface_ids.%s" % str(surface_name_value), used_ids, errors, diagnostics)
+
+	return {
+		authored = true,
+		hull_ids = hull_ids,
+		support_ids = support_ids,
+		propulsion_id = propulsion_id,
+		rotor_id = "propeller/" + propulsion_id if not propulsion_id.is_empty() else "",
+	}
+
+
+static func _has_physical_identity_metadata(model: Dictionary) -> bool:
+	if model.has("physical_identity_version") or model.has("physical_identity"):
+		return true
+	var gear_value: Variant = model.get("landing_gear")
+	if typeof(gear_value) == TYPE_DICTIONARY:
+		var contacts_value: Variant = gear_value.get("contacts")
+		if typeof(contacts_value) == TYPE_ARRAY:
+			for contact_value: Variant in contacts_value:
+				if typeof(contact_value) == TYPE_DICTIONARY and contact_value.has("id"):
+					return true
+	var propulsion_value: Variant = model.get("propulsion")
+	if typeof(propulsion_value) == TYPE_DICTIONARY and propulsion_value.has("id"):
+		return true
+	var controls_value: Variant = model.get("controls")
+	return typeof(controls_value) == TYPE_DICTIONARY and controls_value.has("surface_ids")
+
+
+static func _physical_identity_ids(value: Variant, path: String, allow_empty: bool,
+		errors: PackedStringArray, diagnostics: Array[Dictionary]) -> PackedStringArray:
+	var out := PackedStringArray()
+	if typeof(value) != TYPE_PACKED_STRING_ARRAY:
+		_add_error(errors, diagnostics, "invalid_physical_identity_ids", path, "expected a packed string array of authored IDs")
+		return out
+	out = value
+	if not allow_empty and out.is_empty():
+		_add_error(errors, diagnostics, "invalid_physical_identity_ids", path, "authored ID list must not be empty")
+	var seen: Dictionary = {}
+	for index in out.size():
+		var item_id: String = out[index]
+		if not _is_physical_identity_id(item_id):
+			_add_error(errors, diagnostics, "invalid_physical_identity_id", "%s[%d]" % [path, index], "ID must use lowercase snake_case and be at most 80 characters")
+		elif seen.has(item_id):
+			_add_error(errors, diagnostics, "duplicate_physical_identity_id", "%s[%d]" % [path, index], "duplicate authored ID '%s'" % item_id)
+		else:
+			seen[item_id] = true
+	return out
+
+
+static func _validate_identity_members(ids: PackedStringArray, path: String, used_ids: Dictionary,
+		errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:
+	for index in ids.size():
+		_validate_identity_member(ids[index], "%s[%d]" % [path, index], used_ids, errors, diagnostics)
+
+
+static func _validate_identity_member(identity_id: String, path: String, used_ids: Dictionary,
+		errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:
+	if not _is_physical_identity_id(identity_id):
+		_add_error(errors, diagnostics, "invalid_physical_identity_id", path, "ID must use lowercase snake_case and be at most 80 characters")
+		return
+	if used_ids.has(identity_id):
+		_add_error(errors, diagnostics, "duplicate_physical_identity_id", path, "authored ID '%s' is assigned to more than one physical role" % identity_id)
+	else:
+		used_ids[identity_id] = path
+
+
+static func _is_physical_identity_id(identity_id: String) -> bool:
+	if identity_id.is_empty() or identity_id.length() > PhysicalIdentity.MAX_ID_LENGTH:
+		return false
+	var pattern := RegEx.create_from_string(PhysicalIdentity.ID_PATTERN)
+	var matched := pattern.search(identity_id)
+	return matched != null and matched.get_string() == identity_id
+
+
 static func _wheel_profile(model: Dictionary, aircraft_id: String, support_points: Array[Dictionary],
-		errors: PackedStringArray, diagnostics: Array[Dictionary]) -> Dictionary:
+		wheel_profile_names: PackedStringArray, errors: PackedStringArray,
+		diagnostics: Array[Dictionary]) -> Dictionary:
 	var gearless: bool = support_points.is_empty()
 	if not model.has("wheel_profile"):
 		var fallback_status := "no_gear" if gearless else "legacy_fallback"
@@ -318,25 +527,25 @@ static func _wheel_profile(model: Dictionary, aircraft_id: String, support_point
 		if typeof(contact_order_value) != TYPE_ARRAY:
 			_add_error(errors, diagnostics, "invalid_wheel_contact_order", "wheel_profile.contact_order", "applied profile must declare its ordered contact IDs")
 		else:
-			var support_ids := PackedStringArray()
-			for support: Dictionary in support_points:
-				support_ids.append(str(support.id))
+			var profile_names := PackedStringArray()
+			for index in support_points.size():
+				profile_names.append(wheel_profile_names[index] if index < wheel_profile_names.size() else str(support_points[index].get("id", "")))
 			var seen: Dictionary = {}
-			if contact_order_value.size() != support_ids.size():
+			if contact_order_value.size() != profile_names.size():
 				_add_error(errors, diagnostics, "wheel_contact_order_mismatch", "wheel_profile.contact_order", "profile contact order must match the support-contact count")
 			for index in contact_order_value.size():
-				var contact_id_value: Variant = contact_order_value[index]
-				if typeof(contact_id_value) != TYPE_STRING:
+				var contact_name_value: Variant = contact_order_value[index]
+				if typeof(contact_name_value) != TYPE_STRING:
 					_add_error(errors, diagnostics, "invalid_wheel_contact_reference", "wheel_profile.contact_order[%d]" % index, "profile contact references must be strings")
 					continue
-				var contact_id := str(contact_id_value)
-				if seen.has(contact_id):
-					_add_error(errors, diagnostics, "duplicate_contact_reference", "wheel_profile.contact_order[%d]" % index, "duplicate profile contact ID '%s'" % contact_id)
-				elif not support_ids.has(contact_id):
-					_add_error(errors, diagnostics, "unknown_contact_reference", "wheel_profile.contact_order[%d]" % index, "unknown profile contact ID '%s'" % contact_id)
-				elif index < support_ids.size() and support_ids[index] != contact_id:
-					_add_error(errors, diagnostics, "wheel_contact_order_mismatch", "wheel_profile.contact_order[%d]" % index, "profile contact order differs from normalized landing-gear order")
-				seen[contact_id] = true
+				var contact_name := str(contact_name_value)
+				if seen.has(contact_name):
+					_add_error(errors, diagnostics, "duplicate_contact_reference", "wheel_profile.contact_order[%d]" % index, "duplicate profile contact name '%s'" % contact_name)
+				elif not profile_names.has(contact_name):
+					_add_error(errors, diagnostics, "unknown_contact_reference", "wheel_profile.contact_order[%d]" % index, "unknown profile contact name '%s'" % contact_name)
+				elif index < profile_names.size() and profile_names[index] != contact_name:
+					_add_error(errors, diagnostics, "wheel_contact_order_mismatch", "wheel_profile.contact_order[%d]" % index, "profile contact name order differs from normalized landing-gear order")
+				seen[contact_name] = true
 	if status == "legacy_fallback":
 		_add_warning(diagnostics, "legacy_wheel_profile_fallback", "wheel_profile.status",
 			"aircraft has no explicit wheel profile; existing legacy wheel behavior applies")
@@ -381,6 +590,8 @@ static func _empty_description(errors: PackedStringArray, diagnostics: Array[Dic
 		hull_probes = [],
 		support_points = [],
 		rotor_disc = {},
+		propulsion_id = "",
+		rotor_id = "",
 		wheel_profile = {},
 		policy = {},
 		contact_lifecycle = {},

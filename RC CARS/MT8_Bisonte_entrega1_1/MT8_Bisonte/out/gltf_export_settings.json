@@ -1,0 +1,17 @@
+{
+ "export_format": "GLB",
+ "use_selection": true,
+ "export_yup": true,
+ "export_apply": true,
+ "export_texcoords": true,
+ "export_normals": true,
+ "export_tangents": false,
+ "export_materials": "EXPORT",
+ "export_extras": true,
+ "export_cameras": false,
+ "export_lights": false,
+ "export_animations": false,
+ "export_skins": false,
+ "export_morph": false,
+ "export_image_format": "AUTO"
+}

@@ -58,6 +58,23 @@ const VARIANT_REQUIRED_KEYS: PackedStringArray = [
 const INDEX_KEYS: PackedStringArray = ["format", "version", "id", "revision"]
 
 
+class VariantWriteGuard extends RefCounted:
+	var directory: String
+	var acquired := false
+
+	func _init(root_path: String, id: String) -> void:
+		var locks_root := root_path.path_join("_locks")
+		if DirAccess.make_dir_recursive_absolute(locks_root) != OK:
+			return
+		directory = locks_root.path_join(id)
+		# Unlike check-then-rename, directory creation exclusively reserves this ID.
+		acquired = DirAccess.make_dir_absolute(directory) == OK
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_PREDELETE and acquired:
+			DirAccess.remove_absolute(directory)
+
+
 static func list_variants(root: String = DEFAULT_ROOT) -> Array:
 	var root_result: Dictionary = _resolve_root(root)
 	if not bool(root_result["ok"]):
@@ -84,9 +101,13 @@ static func save_variant(
 		id: String = "",
 		root: String = DEFAULT_ROOT,
 		workshop_descriptor: Dictionary = {},
-		dependencies: Dictionary = {}
+		dependencies: Dictionary = {},
+		expected_revision: int = -1
 ) -> Dictionary:
 	var errors := PackedStringArray()
+	if expected_revision < -1:
+		errors.append("Expected revision must be -1 or a non-negative integer.")
+		return _result(false, errors)
 	var root_result: Dictionary = _resolve_root(root)
 	if not bool(root_result["ok"]):
 		errors.append_array(root_result["errors"])
@@ -131,11 +152,16 @@ static func save_variant(
 		errors.append("Could not create the variant store directory (%s)." % error_string(root_error))
 		return _result(false, errors)
 	var variant_dir: String = root_path.path_join(safe_id)
+	var write_guard := VariantWriteGuard.new(root_path, safe_id)
+	if not write_guard.acquired:
+		return _result(false, PackedStringArray(["This variant is busy or its write lock is unavailable. Retry or save a copy; the saved variant is unchanged."]))
 	var existing_variant: Dictionary = {}
 	var stored_descriptor: Dictionary = {}
 	var stored_dependencies: Dictionary = {}
 	var stored_compiler_version: String = WorkshopCompiler.COMPILER_VERSION
 	var revision: int = 1
+	var previous_revision: int = 0
+	var is_existing_variant: bool = false
 	var created_at: int = int(Time.get_unix_time_from_system())
 	var directory_exists: bool = DirAccess.dir_exists_absolute(variant_dir)
 	if directory_exists:
@@ -144,6 +170,14 @@ static func save_variant(
 			errors.append("Existing variant ID cannot be updated: %s" % "; ".join(existing_result["errors"]))
 			return _result(false, errors)
 		existing_variant = existing_result["variant"]
+		is_existing_variant = true
+		previous_revision = int(existing_variant["revision"])
+		if expected_revision < 0:
+			errors.append("Expected revision is required when updating a saved variant.")
+			return _result(false, errors)
+		if previous_revision != expected_revision:
+			errors.append("Saved variant changed from expected revision %d to revision %d; reload before saving." % [expected_revision, previous_revision])
+			return _result(false, errors)
 		var pinned_compiler_version: String = str(existing_variant.get("compiler_version", ""))
 		if pinned_compiler_version != WorkshopCompiler.COMPILER_VERSION:
 			errors.append("This variant is pinned to compiler %s; create a new variant to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.COMPILER_VERSION])
@@ -155,12 +189,16 @@ static func save_variant(
 		if (existing_variant["base_bytes"] as PackedByteArray) != base_bytes:
 			errors.append("A saved variant's exact base snapshot is immutable.")
 			return _result(false, errors)
+		var has_pinned_descriptor: bool = existing_variant.has("workshop_descriptor")
 		var pinned_descriptor: Dictionary = existing_variant.get("workshop_descriptor", {})
-		if not pinned_descriptor.is_empty():
+		if has_pinned_descriptor:
 			if not workshop_descriptor.is_empty() and workshop_descriptor != pinned_descriptor:
 				errors.append("A saved variant's Workshop descriptor is immutable.")
 				return _result(false, errors)
 			stored_descriptor = pinned_descriptor.duplicate(true)
+		elif not workshop_descriptor.is_empty():
+			errors.append("A saved variant without a pinned Workshop descriptor cannot add one; create a new variant to change its pins.")
+			return _result(false, errors)
 		var pinned_dependencies: Dictionary = existing_variant.get("dependencies", {})
 		if pinned_dependencies.is_empty():
 			errors.append("This saved variant has no pinned dependencies; create a new variant to record the current dependencies.")
@@ -174,7 +212,10 @@ static func save_variant(
 	elif FileAccess.file_exists(variant_dir):
 		errors.append("Variant ID collides with a file in the local store.")
 		return _result(false, errors)
-	if stored_descriptor.is_empty():
+	elif expected_revision > 0:
+		errors.append("Expected saved revision %d, but this variant ID no longer exists; reload before saving." % expected_revision)
+		return _result(false, errors)
+	if stored_descriptor.is_empty() and not is_existing_variant:
 		var descriptor_result: Dictionary = _resolve_workshop_descriptor(base_id, base_bytes, workshop_descriptor)
 		if not bool(descriptor_result["ok"]):
 			errors.append_array(descriptor_result["errors"])
@@ -193,6 +234,10 @@ static func save_variant(
 		return _result(false, errors)
 	var now: int = maxi(created_at, int(Time.get_unix_time_from_system()))
 	var stored_recipe: Dictionary = recipe.duplicate(true)
+	# JSON parses every number as float. Hash the representation that will be
+	# read back, while retaining optional metadata and historical recipe ranges.
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+		stored_recipe[key] = float(stored_recipe[key])
 	var recipe_json: String = JSON.stringify(stored_recipe, "", true, true)
 	var recipe_hash: String = _sha256(recipe_json.to_utf8_buffer())
 	var record: Dictionary = {
@@ -232,7 +277,7 @@ static func save_variant(
 		"revision": revision,
 	}
 	var index_bytes: PackedByteArray = (JSON.stringify(index, "\t", true, true) + "\n").to_utf8_buffer()
-	var index_result: Dictionary = _write_index_atomic(variant_dir, index_bytes)
+	var index_result: Dictionary = _write_index_atomic(variant_dir, index_bytes, safe_id, previous_revision)
 	if not bool(index_result["ok"]):
 		errors.append_array(index_result["errors"])
 		return _result(false, errors)
@@ -269,6 +314,9 @@ static func delete_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionar
 		errors.append("Variant ID must be a lowercase UUID.")
 		return _result(false, errors)
 	var root_path: String = root_result["path"]
+	var write_guard := VariantWriteGuard.new(root_path, id)
+	if not write_guard.acquired:
+		return _result(false, PackedStringArray(["This variant is busy or its write lock is unavailable. Retry after the other operation finishes."]))
 	var variant_dir: String = root_path.path_join(id)
 	var loaded: Dictionary = _load_from_directory(variant_dir, id)
 	if not bool(loaded["ok"]):
@@ -298,6 +346,9 @@ static func restore_variant(id: String, root: String = DEFAULT_ROOT) -> Dictiona
 		errors.append("Variant ID must be a lowercase UUID.")
 		return _result(false, errors)
 	var root_path: String = root_result["path"]
+	var write_guard := VariantWriteGuard.new(root_path, id)
+	if not write_guard.acquired:
+		return _result(false, PackedStringArray(["This variant is busy or its write lock is unavailable. Retry after the other operation finishes."]))
 	var live_path: String = root_path.path_join(id)
 	if DirAccess.dir_exists_absolute(live_path) or FileAccess.file_exists(live_path):
 		errors.append("A live variant with this ID already exists.")
@@ -324,17 +375,28 @@ static func restore_variant(id: String, root: String = DEFAULT_ROOT) -> Dictiona
 
 
 static func _load_from_directory(variant_dir: String, expected_id: String) -> Dictionary:
-	var errors := PackedStringArray()
 	var manifest_path: String = variant_dir.path_join("manifest.json")
-	var manifest_backup: String = manifest_path + ".bak"
-	var manifest_source: String = manifest_path
-	var recovered: bool = false
-	if not FileAccess.file_exists(manifest_path):
-		if not FileAccess.file_exists(manifest_backup):
-			errors.append("Variant manifest is missing.")
-			return _result(false, errors)
-		manifest_source = manifest_backup
-		recovered = true
+	var current: Dictionary = _load_from_manifest_source(variant_dir, expected_id, manifest_path, false)
+	if bool(current["ok"]):
+		return current
+	var backup_path: String = manifest_path + ".bak"
+	if not FileAccess.file_exists(backup_path):
+		return current
+	var backup: Dictionary = _load_from_manifest_source(variant_dir, expected_id, backup_path, true)
+	if bool(backup["ok"]):
+		return backup
+	var errors: PackedStringArray = current["errors"]
+	errors.append("Manifest backup recovery also failed: " + "; ".join(backup["errors"]))
+	return _result(false, errors)
+
+
+static func _load_from_manifest_source(
+		variant_dir: String,
+		expected_id: String,
+		manifest_source: String,
+		recovered: bool
+) -> Dictionary:
+	var errors := PackedStringArray()
 	var manifest_result: Dictionary = _read_json_file(manifest_source)
 	if not bool(manifest_result["ok"]):
 		errors.append_array(manifest_result["errors"])
@@ -675,12 +737,11 @@ static func _write_new_file_atomic(path: String, bytes: PackedByteArray) -> Dict
 	if FileAccess.file_exists(path) or DirAccess.dir_exists_absolute(path):
 		errors.append("Refusing to overwrite an existing immutable revision file.")
 		return {"ok": false, "errors": errors}
-	var temporary: String = path + ".tmp"
-	if FileAccess.file_exists(temporary):
-		var remove_error: Error = DirAccess.remove_absolute(temporary)
-		if remove_error != OK:
-			errors.append("Could not remove a stale revision temporary file.")
-			return {"ok": false, "errors": errors}
+	var temporary_id: String = _new_uuid()
+	if temporary_id.is_empty():
+		errors.append("Could not generate a unique revision temporary filename.")
+		return {"ok": false, "errors": errors}
+	var temporary: String = path + ".tmp-" + temporary_id
 	var write_result: Dictionary = _write_bytes(temporary, bytes)
 	if not bool(write_result["ok"]):
 		errors.append_array(write_result["errors"])
@@ -698,16 +759,20 @@ static func _write_new_file_atomic(path: String, bytes: PackedByteArray) -> Dict
 	return {"ok": true, "errors": errors}
 
 
-static func _write_index_atomic(variant_dir: String, bytes: PackedByteArray) -> Dictionary:
+static func _write_index_atomic(
+		variant_dir: String,
+		bytes: PackedByteArray,
+		expected_id: String,
+		expected_previous_revision: int
+) -> Dictionary:
 	var errors := PackedStringArray()
 	var index_path: String = variant_dir.path_join("manifest.json")
 	var backup_path: String = index_path + ".bak"
-	var temporary: String = index_path + ".tmp"
-	if FileAccess.file_exists(temporary):
-		var remove_error: Error = DirAccess.remove_absolute(temporary)
-		if remove_error != OK:
-			errors.append("Could not remove a stale manifest temporary file.")
-			return {"ok": false, "errors": errors}
+	var temporary_id: String = _new_uuid()
+	if temporary_id.is_empty():
+		errors.append("Could not generate a unique manifest temporary filename.")
+		return {"ok": false, "errors": errors}
+	var temporary: String = index_path + ".tmp-" + temporary_id
 	var write_result: Dictionary = _write_bytes(temporary, bytes)
 	if not bool(write_result["ok"]):
 		errors.append_array(write_result["errors"])
@@ -718,7 +783,19 @@ static func _write_index_atomic(variant_dir: String, bytes: PackedByteArray) -> 
 		errors.append("Temporary manifest failed its exact-byte readback check.")
 		return {"ok": false, "errors": errors}
 	var moved_current: bool = false
-	if FileAccess.file_exists(index_path):
+	var current_result: Dictionary = _load_from_manifest_source(variant_dir, expected_id, index_path, false)
+	var backup_result: Dictionary = {}
+	if FileAccess.file_exists(backup_path):
+		backup_result = _load_from_manifest_source(variant_dir, expected_id, backup_path, true)
+	var current_matches: bool = bool(current_result["ok"]) and int(current_result["variant"]["revision"]) == expected_previous_revision
+	var backup_matches: bool = not bool(backup_result.is_empty()) and bool(backup_result["ok"]) and int(backup_result["variant"]["revision"]) == expected_previous_revision
+	var preserve_backup: bool = false
+	if expected_previous_revision == 0:
+		if FileAccess.file_exists(index_path) or DirAccess.dir_exists_absolute(index_path) or FileAccess.file_exists(backup_path):
+			DirAccess.remove_absolute(temporary)
+			errors.append("Variant store changed while it was being saved; reload before retrying.")
+			return {"ok": false, "errors": errors}
+	elif current_matches:
 		if FileAccess.file_exists(backup_path):
 			var remove_backup_error: Error = DirAccess.remove_absolute(backup_path)
 			if remove_backup_error != OK:
@@ -731,9 +808,25 @@ static func _write_index_atomic(variant_dir: String, bytes: PackedByteArray) -> 
 			errors.append("Could not preserve the previous manifest (%s)." % error_string(backup_error))
 			return {"ok": false, "errors": errors}
 		moved_current = true
+	elif not bool(current_result["ok"]) and backup_matches:
+		if DirAccess.dir_exists_absolute(index_path):
+			DirAccess.remove_absolute(temporary)
+			errors.append("Could not replace an invalid manifest directory.")
+			return {"ok": false, "errors": errors}
+		if FileAccess.file_exists(index_path):
+			var remove_current_error: Error = DirAccess.remove_absolute(index_path)
+			if remove_current_error != OK:
+				DirAccess.remove_absolute(temporary)
+				errors.append("Could not replace the invalid current manifest (%s)." % error_string(remove_current_error))
+				return {"ok": false, "errors": errors}
+		preserve_backup = true
+	else:
+		DirAccess.remove_absolute(temporary)
+		errors.append("Saved variant changed while it was being saved; reload before retrying.")
+		return {"ok": false, "errors": errors}
 	var commit_error: Error = DirAccess.rename_absolute(temporary, index_path)
 	if commit_error != OK:
-		if moved_current and not FileAccess.file_exists(index_path):
+		if moved_current and not FileAccess.file_exists(index_path) and not preserve_backup:
 			DirAccess.rename_absolute(backup_path, index_path)
 		DirAccess.remove_absolute(temporary)
 		errors.append("Could not atomically commit the manifest (%s)." % error_string(commit_error))
@@ -878,7 +971,8 @@ static func _integer_number(value: Variant) -> bool:
 		return true
 	if typeof(value) != TYPE_FLOAT or not is_finite(float(value)):
 		return false
-	return floor(float(value)) == float(value)
+	var number: float = float(value)
+	return floor(number) == number and abs(number) <= 9007199254740991.0
 
 
 static func _sha256(bytes: PackedByteArray) -> String:

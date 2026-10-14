@@ -1,0 +1,187 @@
+{
+  "platform": "Windows-10-10.0.26100-SP0",
+  "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "condition": "Serial RCV runs after its tests/agents; shared development workstation, no controlled whole-host isolation. Diagnostic only.",
+  "run_order": [
+    "heave",
+    "front_left_bump",
+    "drop"
+  ],
+  "runs": [
+    {
+      "complete": true,
+      "contact_sample_counts": [
+        1201,
+        1201,
+        1201,
+        1201
+      ],
+      "csv_sha256": "81db859218d9e84b4520190c3f782a2aa65ac3bfa93fec77a8f22ac6072b58ff",
+      "duration_s": 5.0,
+      "format": "openrc-support-bench-run",
+      "hz": 240,
+      "max_abs_pitch_rad": 0.0,
+      "max_abs_roll_rad": 0.0,
+      "model": "linear-seven-dof-unilateral-tires-v1",
+      "peak_sampled_tire_load_n": [
+        16.8967185614858,
+        16.8967185614858,
+        16.8967185614858,
+        16.8967185614858
+      ],
+      "profile_id": "rcv-four-corner-synthetic-v1",
+      "profile_sha256": "0a8c97c59b2c88d1096b09d72b1d043d65b9d19c516e877c4febf6ef84a87bdd",
+      "sample_count": 1201,
+      "scenario": "heave",
+      "scope": "Synthetic small-angle vertical rig, not full-vehicle/rollover validation. Peaks are public-tick samples.",
+      "state_order": [
+        "z_m",
+        "roll_rad",
+        "pitch_rad",
+        "zu_fl_m",
+        "zu_fr_m",
+        "zu_rl_m",
+        "zu_rr_m",
+        "vz_m_per_s",
+        "roll_rate_rad_per_s",
+        "pitch_rate_rad_per_s",
+        "vu_fl_m_per_s",
+        "vu_fr_m_per_s",
+        "vu_rl_m_per_s",
+        "vu_rr_m_per_s"
+      ],
+      "substeps_per_tick": 2,
+      "timing": {
+        "enabled": true,
+        "max": 377.0,
+        "max_public_contact_change_tick": null,
+        "measured_ticks": 1200,
+        "median": 65.0,
+        "p95": 125.0,
+        "p99": 158.0,
+        "public_contact_change_ticks": 0,
+        "scope": "Rig.step only, both substeps and stage road callbacks; excludes telemetry, CSV, rendering, session, drivetrain and obstacle broadphase. Not full truck performance.",
+        "unit": "microseconds",
+        "warmup_ticks": 240
+      },
+      "version": 1
+    },
+    {
+      "complete": true,
+      "contact_sample_counts": [
+        1201,
+        1201,
+        1201,
+        1201
+      ],
+      "csv_sha256": "9ad4d674bbd7a5135b13cb7c84cb5ff22e6a9bc5f5525acfb10b3576f83c0bc0",
+      "duration_s": 5.0,
+      "format": "openrc-support-bench-run",
+      "hz": 240,
+      "max_abs_pitch_rad": 0.0104865885532509,
+      "max_abs_roll_rad": 0.00943792969792585,
+      "model": "linear-seven-dof-unilateral-tires-v1",
+      "peak_sampled_tire_load_n": [
+        17.0771109844338,
+        14.6923030512833,
+        14.6923030512834,
+        15.0649132280832
+      ],
+      "profile_id": "rcv-four-corner-synthetic-v1",
+      "profile_sha256": "0a8c97c59b2c88d1096b09d72b1d043d65b9d19c516e877c4febf6ef84a87bdd",
+      "sample_count": 1201,
+      "scenario": "front_left_bump",
+      "scope": "Synthetic small-angle vertical rig, not full-vehicle/rollover validation. Peaks are public-tick samples.",
+      "state_order": [
+        "z_m",
+        "roll_rad",
+        "pitch_rad",
+        "zu_fl_m",
+        "zu_fr_m",
+        "zu_rl_m",
+        "zu_rr_m",
+        "vz_m_per_s",
+        "roll_rate_rad_per_s",
+        "pitch_rate_rad_per_s",
+        "vu_fl_m_per_s",
+        "vu_fr_m_per_s",
+        "vu_rl_m_per_s",
+        "vu_rr_m_per_s"
+      ],
+      "substeps_per_tick": 2,
+      "timing": {
+        "enabled": true,
+        "max": 240.0,
+        "max_public_contact_change_tick": null,
+        "measured_ticks": 1200,
+        "median": 67.0,
+        "p95": 110.0,
+        "p99": 158.0,
+        "public_contact_change_ticks": 0,
+        "scope": "Rig.step only, both substeps and stage road callbacks; excludes telemetry, CSV, rendering, session, drivetrain and obstacle broadphase. Not full truck performance.",
+        "unit": "microseconds",
+        "warmup_ticks": 240
+      },
+      "version": 1
+    },
+    {
+      "complete": true,
+      "contact_sample_counts": [
+        1183,
+        1183,
+        1183,
+        1183
+      ],
+      "csv_sha256": "a6f448638fbccac133257c70e927e08abb8a3b06f57b5ba4b5750e708959b91b",
+      "duration_s": 5.0,
+      "format": "openrc-support-bench-run",
+      "hz": 240,
+      "max_abs_pitch_rad": 0.0,
+      "max_abs_roll_rad": 0.0,
+      "model": "linear-seven-dof-unilateral-tires-v1",
+      "peak_sampled_tire_load_n": [
+        32.9326128891504,
+        32.9326128891504,
+        32.9326128891504,
+        32.9326128891504
+      ],
+      "profile_id": "rcv-four-corner-synthetic-v1",
+      "profile_sha256": "0a8c97c59b2c88d1096b09d72b1d043d65b9d19c516e877c4febf6ef84a87bdd",
+      "sample_count": 1201,
+      "scenario": "drop",
+      "scope": "Synthetic small-angle vertical rig, not full-vehicle/rollover validation. Peaks are public-tick samples.",
+      "state_order": [
+        "z_m",
+        "roll_rad",
+        "pitch_rad",
+        "zu_fl_m",
+        "zu_fr_m",
+        "zu_rl_m",
+        "zu_rr_m",
+        "vz_m_per_s",
+        "roll_rate_rad_per_s",
+        "pitch_rate_rad_per_s",
+        "vu_fl_m_per_s",
+        "vu_fr_m_per_s",
+        "vu_rl_m_per_s",
+        "vu_rr_m_per_s"
+      ],
+      "substeps_per_tick": 2,
+      "timing": {
+        "enabled": true,
+        "max": 324.0,
+        "max_public_contact_change_tick": 104.0,
+        "measured_ticks": 1200,
+        "median": 65.0,
+        "p95": 116.0,
+        "p99": 139.0,
+        "public_contact_change_ticks": 3,
+        "scope": "Rig.step only, both substeps and stage road callbacks; excludes telemetry, CSV, rendering, session, drivetrain and obstacle broadphase. Not full truck performance.",
+        "unit": "microseconds",
+        "warmup_ticks": 240
+      },
+      "version": 1
+    }
+  ]
+}

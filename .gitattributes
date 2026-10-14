@@ -25,4 +25,24 @@
 
 # RCV bench identity and generated independent oracle are byte-stable.
 /research/rc-monster-truck/suspension_bench.json text eol=lf
+/research/rc-monster-truck/support_bench.json text eol=lf
 /research/rc-monster-truck/fixtures/*.json text eol=lf
+
+# RCV-14a pins the author's delivery bytes, including the supplied visual rig.
+"RC CARS/**" -text
+/docs/research/rc-monster-truck/RCV-14a/intake.json text eol=lf
+
+# Timber r2 is an immutable author delivery; manifests hash its original bytes.
+"Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/**" -text
+/app/assets/aircraft/turbo-lumber-evolution/LICENSE.txt -text
+/assets/aircraft/turbo-lumber-evolution/source-manifest.json text eol=lf
+/assets/aircraft/turbo-lumber-evolution/mesh-measurements.json text eol=lf
+/assets/aircraft/turbo-lumber-evolution/geometry.json text eol=lf
+
+# Authorized Bisonte runtime bundle preserves the exact reviewed author bytes.
+/app/vehicles/ground/mt8_rig.gd -text
+/app/assets/vehicles/mt8-bisonte/mt8_spec.json -text
+/app/assets/vehicles/mt8-bisonte/SOURCE.txt text eol=lf
+/assets/vehicles/mt8-bisonte/source-manifest.json text eol=lf
+/app/data/vehicles/ground/*.json text eol=lf
+/app/data/ground_vehicle/*.json text eol=lf

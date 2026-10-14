@@ -834,6 +834,10 @@ def run_family(family: str) -> dict[str, Any]:
     if profile["family"] != family or install["family"] != family:
         raise ValueError(f"family mismatch for {family}")
     rated_rpm = float(qvalue(profile["operation"], "rated_rpm"))
+    recommended_engine_rpm = float(qvalue(profile["operation"], "recommended_max_rpm"))
+    generated_search_support_rpm = float(qvalue(profile["operation"], "max_rpm"))
+    installed_prop_rpm_limit = float(qvalue(install["propeller"], "max_rpm"))
+    installed_prop_name = str(aircraft["propulsion"]["propeller"]["name"])
     nominal = dict(config["nominal"])
     nominal["rod_to_crank_ratio"] = float(qvalue(profile["parameters"], "rod_to_crank_radius_ratio"))
     profile_geometry = {key: profile["parameters"][key] for key in [
@@ -1017,11 +1021,16 @@ def run_family(family: str) -> dict[str, Any]:
             "admission": DEFAULT_ADMISSION,
             "firing_fraction": DEFAULT_FIRING_FRACTION,
             "mean_model_cycle_frequency_hz_at_rated": profile_rating["opportunity_hz"],
+            "profile_rated_rpm": rated_rpm,
+            "profile_recommended_engine_max_rpm": recommended_engine_rpm,
+            "generated_profile_search_support_max_rpm_not_runtime_cap": generated_search_support_rpm,
+            "installed_propeller_name": installed_prop_name,
+            "installed_propeller_rpm_limit": install["propeller"]["max_rpm"],
         },
         "provenance": {
             "engine_displacement_bore_stroke": "O.S. manufacturer dimensions from the linked product page; displacement checked against bore×stroke.",
             "compression_ratio_rod_ratio_port_valve_events_gamma_heat_transfer_residual_temperature": "Not published for these candidate engines; explicit engineering assumptions and ranges below.",
-            "fuel_formula": "Candidate profile composition borrowed from AIAA-2016-5011 Table 1 as an adjacent single-cylinder 2-stroke test fuel basis; not treated as MAX-55AX or FS64V test data.",
+            "fuel_formula": "Candidate profile fuel properties use AIAA-2016-5011 Table 1 for Omega 10% (72% methanol, 10% nitromethane, 18% castor oil by volume), the same blend tested with O.S. MAX-55AX 2-cycle and O.S. FS 56-a 4-cycle engines. Fuel properties alone are borrowed; the paper's engine-output results are not used as calibration targets, and FS 56-a is not FS-64V.",
             "combustion_law": "Normalized single-Wiebe prescribed mass-burn fraction, used as an assumed heat-release shape; not inferred from measured cylinder pressure.",
             "profile_comparison": "The source candidate kernel computes cycle work as burned fuel × LHV × a generated indicated-efficiency table. The pressure oracle instead integrates a crank-angle first-law pressure-volume path; disagreement compares two inferred closures, not measurement error.",
             "dynamic_comparison": "The periodic crank-energy map uses the independent pressure trace plus exact installed candidate prop parameters and RPM-varying annular load. It is a fixed-carrier software experiment; no in-flight, prop-map or physical-engine validation is implied.",
@@ -1031,6 +1040,12 @@ def run_family(family: str) -> dict[str, Any]:
         "nominal_port_or_valve_events": raw_events,
         "rated_point": {
             "rpm": rated_rpm,
+            "rpm_constraint_check": {
+                "profile_recommended_engine_max_rpm": recommended_engine_rpm,
+                "installed_propeller_max_rpm": installed_prop_rpm_limit,
+                "within_both_recommended_limits": rated_rpm <= min(recommended_engine_rpm, installed_prop_rpm_limit),
+                "interpretation": "A rating point above the installed propeller limit is retained as a manufacturer engine reference point, not a valid installed operating prediction.",
+            },
             "profile_candidate_mean_cycle": profile_rating,
             "pressure_oracle_indicated_work_rate_w": nominal_trace["cycle_work_j"] * profile_rating["opportunity_hz"],
             "pressure_oracle_net_pv_work_rate_w": nominal_trace["net_pv_cycle_work_j"] * profile_rating["opportunity_hz"],
@@ -1044,6 +1059,18 @@ def run_family(family: str) -> dict[str, Any]:
         },
         "mean_root_comparisons": {
             "assumption": "Full admission, static 0 m/s carrier, 1.225 kg/m^3; restoring roots only.",
+            "rpm_limit_checks": {
+                "profile_recommended_engine_max_rpm": recommended_engine_rpm,
+                "installed_propeller_max_rpm": installed_prop_rpm_limit,
+                "profile_candidate_mean_root_within_both": (
+                    bool(profile_roots) and profile_roots[-1]["rpm"] <= min(recommended_engine_rpm, installed_prop_rpm_limit)),
+                "pressure_oracle_mean_root_within_both": (
+                    bool(thermo_roots) and thermo_roots[-1]["rpm"] <= min(recommended_engine_rpm, installed_prop_rpm_limit)),
+                "periodic_orbit_time_average_within_both": (
+                    bool(orbit_by_inertia[1]["selected_restoring_orbit"])
+                    and orbit_by_inertia[1]["selected_restoring_orbit"]["time_average_rpm"]
+                    <= min(recommended_engine_rpm, installed_prop_rpm_limit)),
+            },
             "inertia_sensitivity_method": "Primary periodic orbit uses the aircraft configuration's installed rotating_inertia value. Sensitivity cases use 0.5× and 2× that estimate; rotating mass distribution and crank contribution are not measured. The profile's separate estimated equivalent piston mass is included as angle-dependent inertia, with one-cycle 1%-to-5%-of-dry-mass perturbations around the primary speed (not re-solved equilibria).",
             "profile_candidate_mean_cycle_roots": profile_roots,
             "profile_candidate_mean_cycle_selected_root": candidate_root_point,
@@ -1096,12 +1123,12 @@ def report() -> dict[str, Any]:
             {"title": "Simulation of a Crankcase Scavenged, Two-Stroke, SI Engine and Comparisons with Experimental Data", "url": "https://saemobilus.sae.org/papers/simulation-a-crankcase-scavenged-two-stroke-si-engine-comparisons-experimental-data-690135", "use": "Coupled crankcase/cylinder/inlet control-volume precedent; highlights what this single-zone port-boundary oracle omits."},
             {"title": "O.S. MAX-55AX manufacturer specifications", "url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/15612.htm", "use": "Bore, stroke, displacement and engine identity for the 2T candidate."},
             {"title": "O.S. FS-64V manufacturer specifications", "url": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html", "use": "Bore, stroke, displacement and engine identity for the 4T candidate."},
-            {"title": "Experimental Evaluation of a Small Single-Cylinder Two-Stroke Glow-Engine Fuel Blend (AIAA 2016-5011)", "url": "https://doi.org/10.2514/6.2016-5011", "use": "Adjacent experimental paper used only for candidate fuel-composition basis; its FS-a56 engine data are not imported as output targets for either O.S. engine."},
+            {"title": "Development And Analysis of a Group 1 UAV Series Hybrid Power System with Two Engine Options (AIAA 2016-5011)", "url": "https://doi.org/10.2514/6.2016-5011", "use": "Table 1 gives Omega 10% fuel properties for the same blend tested with O.S. MAX-55AX (2-cycle) and O.S. FS 56-a (4-cycle). The paper's engine-output data are not imported as calibration targets here; FS 56-a is not FS-64V."},
         ],
         "limitations": [
             "Neither manufacturer publishes these candidates' compression ratio, connecting-rod ratio, port/valve timing, in-cylinder pressure trace, heat-transfer history, residual fraction or engine rotating inertia.",
             "Open-system scavenging/intake/exhaust boundary pressures are imposed estimates; mass exchange, short-circuit fuel loss, crankcase dynamics, exhaust resonance, variable properties, wall heat transfer and glow ignition kinetics are not solved.",
-            "Fuel values are borrowed from the candidate's AIAA-based fuel table as composition only. The FS-a56 2T experimental engine in AIAA-2016-5011 is not either O.S. engine and is not used as an output target.",
+            "AIAA-2016-5011 reports O.S. MAX-55AX 2-cycle and O.S. FS 56-a 4-cycle engine results using the Omega 10% blend. Its Table 1 fuel properties are borrowed; its engine-output results are not imported as calibration targets in this pressure oracle, and FS 56-a is not FS-64V.",
             "The profile root and pressure-oracle root use different candidate closures. Only the within-oracle angle-mean versus periodic-map comparison tests the mean reduction numerically for the declared waveform; no result proves actual engine accuracy.",
             "The annular propeller method preserves estimated uniform chord/section coefficients. Its dynamic evaluation and ideal-power lower bound do not constitute a measured propeller map or aircraft data.",
         ],

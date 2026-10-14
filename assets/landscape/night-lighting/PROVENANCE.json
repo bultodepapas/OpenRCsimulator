@@ -1,0 +1,192 @@
+{
+  "format": "openrc-provenance v1",
+  "track": "FW-66",
+  "written": "2026-10-13",
+  "status": "research inputs, not runtime assets",
+  "license_record": "LICENSES.md",
+  "files": [
+    {
+      "file": "source/motion-security-floodlight.glb",
+      "author": "Innerscene",
+      "license": "CC0-1.0",
+      "source_url": "https://www.innerscene.com/tools/library/3d-parts/security-motion-floodlight-d771cce2",
+      "download_url": "https://www.innerscene.com/api/library/security-motion-floodlight-d771cce2/download",
+      "retrieved": "2026-10-13",
+      "bytes": 253564,
+      "sha256": "bbd6b776bfa9e16141e7e12e03e08b68917b56b191cfcf9893896a9beb889edb",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none"
+    },
+    {
+      "file": "source/stake-path-light.glb",
+      "author": "Innerscene",
+      "license": "CC0-1.0",
+      "source_url": "https://www.innerscene.com/tools/library/3d-parts/path-stake-path-light-132d4aa2",
+      "download_url": "https://www.innerscene.com/api/library/path-stake-path-light-132d4aa2/download",
+      "retrieved": "2026-10-13",
+      "bytes": 120092,
+      "sha256": "1801601dcca7de5414de0eaebf4668bed40471c4b4c31a9e1a6a68688fb9fb0e",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none"
+    },
+    {
+      "file": "source/campfire-pit.glb",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "source_url": "https://kenney.nl/assets/survival-kit",
+      "download_url": "https://kenney.nl/media/pages/assets/survival-kit/4065a8185b-1712149243/kenney_survival-kit.zip",
+      "retrieved": "2026-10-13",
+      "bytes": 26468,
+      "sha256": "a78ce38de408456649146077e1917d70bb39f7c87c3c7370276d809d2409b0ab",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none",
+      "archive_entry": "Models/GLB format/campfire-pit.glb",
+      "archive_sha256": "c3586341b5932c87eb43d75d915434f47daed168b17ed36a03e8ca9977c7443e"
+    },
+    {
+      "file": "source/Textures/colormap.png",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "source_url": "https://kenney.nl/assets/survival-kit",
+      "download_url": "https://kenney.nl/media/pages/assets/survival-kit/4065a8185b-1712149243/kenney_survival-kit.zip",
+      "retrieved": "2026-10-13",
+      "bytes": 7440,
+      "sha256": "6ca023be9f12e8c2358fcf94320c8a894b4c05a3dd0bad1f5c268312053caca1",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none",
+      "archive_entry": "Models/GLB format/Textures/colormap.png",
+      "archive_sha256": "c3586341b5932c87eb43d75d915434f47daed168b17ed36a03e8ca9977c7443e"
+    },
+    {
+      "file": "source/flame.png",
+      "author": "tauran",
+      "license": "CC0-1.0",
+      "source_url": "https://opengameart.org/content/animated-flame-texture",
+      "download_url": "https://opengameart.org/sites/default/files/flame_0.png",
+      "retrieved": "2026-10-13",
+      "bytes": 309000,
+      "sha256": "2e7739daddfc7bcfd70ef65a264ad56ef6c7addf8781010eb82c99031e473733",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none"
+    },
+    {
+      "file": "source/fire-fx-40-frames.zip",
+      "author": "Mikodrak (Martin Jelinek)",
+      "license": "CC0-1.0",
+      "source_url": "https://opengameart.org/content/fire-fx-burning-fire-animation",
+      "download_url": "https://opengameart.org/sites/default/files/FIRE.zip",
+      "retrieved": "2026-10-13",
+      "bytes": 1199576,
+      "sha256": "1f105f171df08bac5d116d44baead8219a31cce25244a136f3db24ccee46d1f8",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "contents": {
+        "png_frames": 80,
+        "frame_dimensions": [
+          [
+            81,
+            123
+          ]
+        ],
+        "image_modes": [
+          "RGBA"
+        ],
+        "layout": "two sets of 40 numbered PNG frames; GIF previews also included",
+        "playback_verified": false
+      }
+    },
+    {
+      "file": "source/smoke-sprite-sheet.png",
+      "author": "ohyhei",
+      "license": "CC0-1.0",
+      "source_url": "https://opengameart.org/content/smoke-sprite-sheet",
+      "download_url": "https://opengameart.org/sites/default/files/smoke_sheet.png",
+      "retrieved": "2026-10-13",
+      "bytes": 326885,
+      "sha256": "a66676a3ff943576979e0578a897231876958eaacc337c4584c58f35d0833636",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "image": {
+        "width": 1280,
+        "height": 1280,
+        "mode": "RGBA"
+      },
+      "atlas": {
+        "columns": 5,
+        "rows": 5,
+        "cell_pixels": 256,
+        "occupied_cells": 21,
+        "blank_cells_1_based": [
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            3
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            5,
+            5
+          ]
+        ],
+        "playback_verified": false
+      }
+    },
+    {
+      "file": "source/burned-ground-01-diff-1k.jpg",
+      "author": "Rob Tuytel / Poly Haven",
+      "license": "CC0-1.0",
+      "source_url": "https://polyhaven.com/a/burned_ground_01",
+      "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/burned_ground_01/burned_ground_01_diff_1k.jpg",
+      "retrieved": "2026-10-13",
+      "bytes": 1033112,
+      "sha256": "be83310cad64d23539e628f14525af651a03646f5a1cc6029bd19a9446ea72f9",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "source/burned-ground-01-nor-gl-1k.jpg",
+      "author": "Rob Tuytel / Poly Haven",
+      "license": "CC0-1.0",
+      "source_url": "https://polyhaven.com/a/burned_ground_01",
+      "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/burned_ground_01/burned_ground_01_nor_gl_1k.jpg",
+      "retrieved": "2026-10-13",
+      "bytes": 366727,
+      "sha256": "86125af02b64b05b0079dd6fa08ffae11878a3f9f50326a265e94c7a64cba865",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "RGB"
+      }
+    },
+    {
+      "file": "source/burned-ground-01-rough-1k.jpg",
+      "author": "Rob Tuytel / Poly Haven",
+      "license": "CC0-1.0",
+      "source_url": "https://polyhaven.com/a/burned_ground_01",
+      "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/burned_ground_01/burned_ground_01_rough_1k.jpg",
+      "retrieved": "2026-10-13",
+      "bytes": 319073,
+      "sha256": "4dbbb69dc3391d5b98b4346ffe5f2b46340ad0307c3d1d7311b59407146753f5",
+      "status": "round 2 research candidate; static inspection only; Godot import/playback/material acceptance pending",
+      "modification": "none",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "mode": "L"
+      }
+    }
+  ]
+}

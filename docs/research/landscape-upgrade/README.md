@@ -1,6 +1,6 @@
 # Landscape upgrade evidence
 
-Status: implementation and native evidence delivered through **LU-21**, updated 2026-10-12. Latest: real replacement cars and people plus horizon, vegetation, ground and lighting refinements. Known Linux extreme-density trim discrepancy and nearby collision cost remain open. Owner: environment integration lead.
+Status: implementation and native evidence delivered through **LU-27**, updated 2026-10-13. Latest: downloaded plant variety and a finite 5 m lake with actual water contacts, splash/audio and native/export evidence. Known Linux extreme-density trim discrepancy and nearby collision cost remain open. Owner: environment integration lead.
 
 The requested [implementation plan](../../plans/landscape-upgrade.md) was written before application edits. The installed target is Godot **4.7.2**, Compatibility/OpenGL.
 
@@ -16,5 +16,6 @@ The requested [implementation plan](../../plans/landscape-upgrade.md) was writte
 | LU-15 | [Review of 14 native images and selection of the next upgrades](LU-15/README.md); followed by the implementation below |
 | LU-16–20 | [Image-led horizon, vegetation, ground and lighting refinements](LU-16/README.md) |
 | LU-21 | [Replacement cars/people, native images, performance, collisions, regression and licenses](LU-21/README.md) |
+| LU-22–27 | [Downloaded vegetation, finite lake, water contacts/audio, native captures, performance and export proof](LU-22/README.md) |
 
 The source/license ledger is [UPGRADE_CREDITS](../../../app/assets/landscape/UPGRADE_CREDITS.md). LU-21 adds exact-source CC0 car and human assets; no runtime plugin was added. Existing exact-package CC0 evidence remains authoritative; current author-wide licensing is not substituted for it.

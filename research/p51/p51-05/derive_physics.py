@@ -25,6 +25,7 @@ MIGRATOR_DIR = ROOT / "research/aircraft-standardization"
 if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
 from migrate import legacy_input, numeric_parity, upgrade  # noqa: E402
+from physical_identity import validate_physical_identity  # noqa: E402
 
 GEOMETRY = ROOT / "assets/aircraft/p51d-mustang-120/geometry.json"
 SOURCE = ROOT / "assets/aircraft/p51d-mustang-120/source.json"
@@ -261,38 +262,38 @@ spinner_d_in = 2 * g["spinner"]["radius"] / IN
 # CR-22b: which inventory items carry energy (crash fire/smoke presentation only).
 ENERGY_SOURCES = {"fuel (half tank)": "gasoline"}
 items = [
-    ("engine DA-120 with ignition module", 2.45, "manual", "DA-120: 2300 g engine, 2445 g with ignition (toni-clark.com/en/da-120); DLE-120 2.78-2.90 kg complete", le(g["spinner"]["back_z"] + 0.13), [0.16, 0.30, 0.16], "estimated", "crankshaft on the thrust line, crankcase ~0.13 m behind the spinner back"),
-    ("mufflers / canisters (2)", 0.60, "estimated", "two in-cowl canister mufflers for a 120 cc twin", le(g["spinner"]["back_z"] + 0.20, -0.07), [0.25, 0.20, 0.08], "estimated", "under the cylinders inside the cowl"),
-    (f"propeller 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}", 0.43, "manual", "Biela 26x12 4-blade CFK semi-scale: 428 g (pp-rc.de product page, read 2026-10-06)", le(PROP["z"]), [0.02, PROP["diameter"], PROP["diameter"]], "measured", "propeller plane from geometry.json"),
-    (f"spinner {spinner_d_in:.1f} in aluminium with backplate", 0.35, "estimated", "machined aluminium spinner of this diameter", le(g["spinner"]["back_z"] - 0.06), [0.17, 0.15, 0.15], "measured", "spinner from geometry.json"),
-    ("engine standoffs / mount and bolts", 0.25, "estimated", "aluminium standoffs on a plywood firewall", le(rc_fw - 0.03), None, "estimated", "on the model's firewall"),
-    ("cowl (fiberglass) with dummy exhausts", 0.60, "estimated", "fiberglass cowl of a 2.5 m warbird", le((g["spinner"]["back_z"] + g["cowl_rear_z"]) / 2, 0.0), [g["cowl_rear_z"] - g["spinner"]["back_z"], fus_w, fus_d], "measured", "between the spinner back and the cowl rear (geometry.json)"),
-    ("fuel tank 1 l (empty) with lines", 0.20, "estimated", "gasoline tank with clunk and lines", le(rc_fw + 0.10, -0.02), None, "estimated", "behind the model's firewall"),
-    ("fuel (half tank)", 0.37, "estimated", "0.5 l at 0.74 g/ml gasoline; flight state: half tank (no consumption model, G4)", le(rc_fw + 0.10, -0.02), None, "estimated", "same as the tank"),
-    ("ignition battery 2S LiFe", 0.15, "estimated", "1500-2100 mAh LiFe pack", le(rc_fw + 0.03, -0.08), None, "estimated", "below the tank, as far forward as the cowl allows"),
-    ("receiver batteries 2S LiFe (2)", 0.30, "estimated", "two 2100 mAh LiFe packs (redundant)", le(rc_fw + 0.06, -0.09), None, "estimated", "forward fuselage floor, next to the ignition pack (warbird practice: everything heavy forward)"),
-    ("receiver, switches, power distribution", 0.12, "estimated", "receiver, two switches, harnesses", le(0.25, -0.05), None, "estimated", "under the cockpit floor"),
-    ("aileron servo left", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.12, cp_y, -aileron_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the aileron span midpoint y = -({W['aileron_inner']:.4f} + {W['aileron_outer']:.4f})/2 m; individual servo envelope estimated"),
-    ("aileron servo right", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.12, cp_y, aileron_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the aileron span midpoint y = +({W['aileron_inner']:.4f} + {W['aileron_outer']:.4f})/2 m; individual servo envelope estimated"),
-    ("flap servo left", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.30, cp_y, -flap_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the flap span midpoint y = -({W['flap_inner']:.4f} + {W['flap_outer']:.4f})/2 m; individual servo envelope estimated"),
-    ("flap servo right", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.30, cp_y, flap_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the flap span midpoint y = +({W['flap_inner']:.4f} + {W['flap_outer']:.4f})/2 m; individual servo envelope estimated"),
-    ("elevator servo left", 0.08, "estimated", "one of two estimated tail servos (~80 g each)", le(T["stab_root_le_z"] - 0.05, T["stab_y"], -elevator_half_spacing), [0.04, 0.02, 0.04], "estimated", "one servo near the left stabilizer root; ±0.15 m retains the former 0.30 m paired-box half-width; mounting station is inferred, not measured"),
-    ("elevator servo right", 0.08, "estimated", "one of two estimated tail servos (~80 g each)", le(T["stab_root_le_z"] - 0.05, T["stab_y"], elevator_half_spacing), [0.04, 0.02, 0.04], "estimated", "one servo near the right stabilizer root; ±0.15 m retains the former 0.30 m paired-box half-width; mounting station is inferred, not measured"),
-    ("rudder servo and pull-pull", 0.10, "estimated", "one servo with cables", le(0.55, -0.02), None, "estimated", "aft of the cockpit"),
-    ("throttle, choke servos and linkage", 0.08, "estimated", "two small servos", le(rc_fw + 0.05, 0.02), None, "estimated", "behind the model's firewall"),
-    ("main gear assembly left", 1.00, "estimated", "half of estimated 2.00 kg paired retract/strut/wheel/door inventory", le(GEAR["main_axle"][0], (GEAR["main_axle"][1] + cp_y) / 2, -gear_half_track), [0.12, 0.10, cp_y - GEAR["main_axle"][1]], "estimated", f"left assembly lateral center -track/2 = -{gear_half_track:.4f} m from geometry.json; x/z retain the estimated combined mid-strut center; individual envelope estimated"),
-    ("main gear assembly right", 1.00, "estimated", "half of estimated 2.00 kg paired retract/strut/wheel/door inventory", le(GEAR["main_axle"][0], (GEAR["main_axle"][1] + cp_y) / 2, gear_half_track), [0.12, 0.10, cp_y - GEAR["main_axle"][1]], "estimated", f"right assembly lateral center +track/2 = +{gear_half_track:.4f} m from geometry.json; x/z retain the estimated combined mid-strut center; individual envelope estimated"),
-    ("tail wheel assembly (retractable)", 0.20, "estimated", "retractable tail wheel unit", le(GEAR["tail_axle"][0], GEAR["tail_axle"][1] + 0.04), None, "measured", "geometry.json tail axle"),
-    ("wing panel, left, sheeted, with flap and aileron", 2.00, "estimated", "built-up sheeted/glassed 1.25 m panel of a 2.5 m warbird ARF (wings 4-5 kg a pair)", le(mac_le_z + 0.42 * mac, cp_y, -y_mac), [mac, semi, 0.07], "derived", "42 % MAC at the MAC span station"),
-    ("wing panel, right, sheeted, with flap and aileron", 2.00, "estimated", "same as the left panel", le(mac_le_z + 0.42 * mac, cp_y, y_mac), [mac, semi, 0.07], "derived", "42 % MAC at the MAC span station"),
-    ("wing tube and bolts", 0.35, "estimated", "aluminium or carbon wing joiner", le(0.17, cp_y), [0.04, 0.6, 0.04], "estimated", "main spar"),
-    ("fuselage front (engine box to cockpit rear), covered", 1.80, "estimated", "lite-ply/balsa box with doublers, glassed", le(0.20, -0.02), [1.0, fus_w, fus_d], "estimated", "from the stations in geometry.json"),
-    ("belly scoop (fiberglass)", 0.35, "estimated", "moulded scoop", le(0.70, -0.18), [0.5, 0.15, 0.12], "measured", "scoop stations in geometry.json"),
-    ("fuselage rear and turtle deck, covered", 1.00, "estimated", "balsa sides and stringered deck", le(1.05, 0.02), [0.9, 0.18, 0.2], "estimated", "from the stations in geometry.json"),
-    ("canopy, frame and pilot", 0.35, "estimated", "blown canopy with frame; 1/4.5 WWII pilot bust", le(0.62, 0.17), None, "measured", "pilot block in geometry.json"),
-    ("stabilizer and elevators, covered", 0.65, "estimated", "sheeted built-up stab", le(T["stab_root_le_z"] + 0.45 * crh, T["stab_y"]), [crh, bh, 0.025], "measured", "stab from geometry.json"),
-    ("fin and rudder, covered", 0.35, "estimated", "sheeted built-up fin", le(fin_cz, fin_cy), [0.3, 0.02, h_v], "derived", "area centroid of the fin polygon"),
-    ("pushrods, horns, cowl fasteners, hardware", 0.35, "estimated", "clevises, horns, ball links, screws, bolts: rough sum", le(0.6), None, "estimated", "spread along the fuselage"),
+    ("engine DA-120 with ignition module", 2.45, "manual", "DA-120: 2300 g engine, 2445 g with ignition (toni-clark.com/en/da-120); DLE-120 2.78-2.90 kg complete", le(g["spinner"]["back_z"] + 0.13), [0.16, 0.30, 0.16], "estimated", "crankshaft on the thrust line, crankcase ~0.13 m behind the spinner back", "engine_main"),
+    ("mufflers / canisters (2)", 0.60, "estimated", "two in-cowl canister mufflers for a 120 cc twin", le(g["spinner"]["back_z"] + 0.20, -0.07), [0.25, 0.20, 0.08], "estimated", "under the cylinders inside the cowl", "muffler_pair"),
+    (f"propeller 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}", 0.43, "manual", "Biela 26x12 4-blade CFK semi-scale: 428 g (pp-rc.de product page, read 2026-10-06)", le(PROP["z"]), [0.02, PROP["diameter"], PROP["diameter"]], "measured", "propeller plane from geometry.json", "propeller_main"),
+    (f"spinner {spinner_d_in:.1f} in aluminium with backplate", 0.35, "estimated", "machined aluminium spinner of this diameter", le(g["spinner"]["back_z"] - 0.06), [0.17, 0.15, 0.15], "measured", "spinner from geometry.json", "spinner_main"),
+    ("engine standoffs / mount and bolts", 0.25, "estimated", "aluminium standoffs on a plywood firewall", le(rc_fw - 0.03), None, "estimated", "on the model's firewall", "engine_mount"),
+    ("cowl (fiberglass) with dummy exhausts", 0.60, "estimated", "fiberglass cowl of a 2.5 m warbird", le((g["spinner"]["back_z"] + g["cowl_rear_z"]) / 2, 0.0), [g["cowl_rear_z"] - g["spinner"]["back_z"], fus_w, fus_d], "measured", "between the spinner back and the cowl rear (geometry.json)", "cowl_main"),
+    ("fuel tank 1 l (empty) with lines", 0.20, "estimated", "gasoline tank with clunk and lines", le(rc_fw + 0.10, -0.02), None, "estimated", "behind the model's firewall", "fuel_tank"),
+    ("fuel (half tank)", 0.37, "estimated", "0.5 l at 0.74 g/ml gasoline; flight state: half tank (no consumption model, G4)", le(rc_fw + 0.10, -0.02), None, "estimated", "same as the tank", "fuel_flight"),
+    ("ignition battery 2S LiFe", 0.15, "estimated", "1500-2100 mAh LiFe pack", le(rc_fw + 0.03, -0.08), None, "estimated", "below the tank, as far forward as the cowl allows", "ignition_battery"),
+    ("receiver batteries 2S LiFe (2)", 0.30, "estimated", "two 2100 mAh LiFe packs (redundant)", le(rc_fw + 0.06, -0.09), None, "estimated", "forward fuselage floor, next to the ignition pack (warbird practice: everything heavy forward)", "receiver_batteries"),
+    ("receiver, switches, power distribution", 0.12, "estimated", "receiver, two switches, harnesses", le(0.25, -0.05), None, "estimated", "under the cockpit floor", "receiver_radio"),
+    ("aileron servo left", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.12, cp_y, -aileron_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the aileron span midpoint y = -({W['aileron_inner']:.4f} + {W['aileron_outer']:.4f})/2 m; individual servo envelope estimated", "servo_aileron_left"),
+    ("aileron servo right", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.12, cp_y, aileron_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the aileron span midpoint y = +({W['aileron_inner']:.4f} + {W['aileron_outer']:.4f})/2 m; individual servo envelope estimated", "servo_aileron_right"),
+    ("flap servo left", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.30, cp_y, -flap_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the flap span midpoint y = -({W['flap_inner']:.4f} + {W['flap_outer']:.4f})/2 m; individual servo envelope estimated", "servo_flap_left"),
+    ("flap servo right", 0.08, "estimated", "one of two estimated 20-25 kg·cm servos (~80 g each)", le(0.30, cp_y, flap_mid), [0.03, 0.02, 0.04], "estimated", f"one servo at the flap span midpoint y = +({W['flap_inner']:.4f} + {W['flap_outer']:.4f})/2 m; individual servo envelope estimated", "servo_flap_right"),
+    ("elevator servo left", 0.08, "estimated", "one of two estimated tail servos (~80 g each)", le(T["stab_root_le_z"] - 0.05, T["stab_y"], -elevator_half_spacing), [0.04, 0.02, 0.04], "estimated", "one servo near the left stabilizer root; ±0.15 m retains the former 0.30 m paired-box half-width; mounting station is inferred, not measured", "servo_elevator_left"),
+    ("elevator servo right", 0.08, "estimated", "one of two estimated tail servos (~80 g each)", le(T["stab_root_le_z"] - 0.05, T["stab_y"], elevator_half_spacing), [0.04, 0.02, 0.04], "estimated", "one servo near the right stabilizer root; ±0.15 m retains the former 0.30 m paired-box half-width; mounting station is inferred, not measured", "servo_elevator_right"),
+    ("rudder servo and pull-pull", 0.10, "estimated", "one servo with cables", le(0.55, -0.02), None, "estimated", "aft of the cockpit", "servo_rudder"),
+    ("throttle, choke servos and linkage", 0.08, "estimated", "two small servos", le(rc_fw + 0.05, 0.02), None, "estimated", "behind the model's firewall", "servo_throttle_choke"),
+    ("main gear assembly left", 1.00, "estimated", "half of estimated 2.00 kg paired retract/strut/wheel/door inventory", le(GEAR["main_axle"][0], (GEAR["main_axle"][1] + cp_y) / 2, -gear_half_track), [0.12, 0.10, cp_y - GEAR["main_axle"][1]], "estimated", f"left assembly lateral center -track/2 = -{gear_half_track:.4f} m from geometry.json; x/z retain the estimated combined mid-strut center; individual envelope estimated", "gear_main_left"),
+    ("main gear assembly right", 1.00, "estimated", "half of estimated 2.00 kg paired retract/strut/wheel/door inventory", le(GEAR["main_axle"][0], (GEAR["main_axle"][1] + cp_y) / 2, gear_half_track), [0.12, 0.10, cp_y - GEAR["main_axle"][1]], "estimated", f"right assembly lateral center +track/2 = +{gear_half_track:.4f} m from geometry.json; x/z retain the estimated combined mid-strut center; individual envelope estimated", "gear_main_right"),
+    ("tail wheel assembly (retractable)", 0.20, "estimated", "retractable tail wheel unit", le(GEAR["tail_axle"][0], GEAR["tail_axle"][1] + 0.04), None, "measured", "geometry.json tail axle", "gear_tail"),
+    ("wing panel, left, sheeted, with flap and aileron", 2.00, "estimated", "built-up sheeted/glassed 1.25 m panel of a 2.5 m warbird ARF (wings 4-5 kg a pair)", le(mac_le_z + 0.42 * mac, cp_y, -y_mac), [mac, semi, 0.07], "derived", "42 % MAC at the MAC span station", "wing_left"),
+    ("wing panel, right, sheeted, with flap and aileron", 2.00, "estimated", "same as the left panel", le(mac_le_z + 0.42 * mac, cp_y, y_mac), [mac, semi, 0.07], "derived", "42 % MAC at the MAC span station", "wing_right"),
+    ("wing tube and bolts", 0.35, "estimated", "aluminium or carbon wing joiner", le(0.17, cp_y), [0.04, 0.6, 0.04], "estimated", "main spar", "wing_joiner"),
+    ("fuselage front (engine box to cockpit rear), covered", 1.80, "estimated", "lite-ply/balsa box with doublers, glassed", le(0.20, -0.02), [1.0, fus_w, fus_d], "estimated", "from the stations in geometry.json", "fuselage_front"),
+    ("belly scoop (fiberglass)", 0.35, "estimated", "moulded scoop", le(0.70, -0.18), [0.5, 0.15, 0.12], "measured", "scoop stations in geometry.json", "belly_scoop"),
+    ("fuselage rear and turtle deck, covered", 1.00, "estimated", "balsa sides and stringered deck", le(1.05, 0.02), [0.9, 0.18, 0.2], "estimated", "from the stations in geometry.json", "fuselage_rear"),
+    ("canopy, frame and pilot", 0.35, "estimated", "blown canopy with frame; 1/4.5 WWII pilot bust", le(0.62, 0.17), None, "measured", "pilot block in geometry.json", "canopy_pilot"),
+    ("stabilizer and elevators, covered", 0.65, "estimated", "sheeted built-up stab", le(T["stab_root_le_z"] + 0.45 * crh, T["stab_y"]), [crh, bh, 0.025], "measured", "stab from geometry.json", "horizontal_tail"),
+    ("fin and rudder, covered", 0.35, "estimated", "sheeted built-up fin", le(fin_cz, fin_cy), [0.3, 0.02, h_v], "derived", "area centroid of the fin polygon", "vertical_tail"),
+    ("pushrods, horns, cowl fasteners, hardware", 0.35, "estimated", "clevises, horns, ball links, screws, bolts: rough sum", le(0.6), None, "estimated", "spread along the fuselage", "control_hardware"),
 ]
 # Built weight (P51-09): plan weights (Veich 18-27 kg, Don Smith 112 in 35-40 lb) understate real 1/4-scale P-51s with
 # retracts and a 120 cc twin: "easy 50-55 lb" (giantscalenews.com/threads/don-smith-p-51-mustang.10787), Bates "50 lb+";
@@ -327,7 +328,7 @@ note("balance", "inventory without balancing mass (kg, CG x_aft m)", [mass0, x_c
 note("balance", "balancing mass (kg)", mb, ("nose weight" if nose else "tail weight") + " that puts the CG on the kit's balance point")
 items.append(("virtual reference-build balancing mass", mb, "derived",
               f"{SCRIPT}: m = M (x_CG - x0) / (x_ballast - x_CG) for the kit balance point; a virtual reference build, NOT measured hardware or a ballast recommendation",
-              ballast_pos, [0.04, 0.04, 0.04], "estimated", "behind the spinner backplate" if nose else "tail post"))
+              ballast_pos, [0.04, 0.04, 0.04], "estimated", "behind the spinner backplate" if nose else "tail post", "ballast_reference"))
 mass = mass0 + mb
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
 cg[1] = 0.0  # symmetric build
@@ -584,7 +585,8 @@ k_main, k_tail = k_total * (1 - tail_share) / 2, k_total * tail_share
 damp = lambda k_: 2 * 0.3 * math.sqrt(k_ * mass / 3)
 note("gear", "tail-wheel load share, sum k (N/m), static sag (mm)", [tail_share, k_total, 1000 * mass * G0 / k_total], "")
 GEAR_SRC = "wheel bottom from geometry.json (axle station and height measured on the AN 01-60-3 three-view, track 142 in full size per NACA, wheel 6.75 in)"
-gear_contact = lambda name, pos, k_, travel, steer, how: dict({
+gear_contact = lambda identity, name, pos, k_, travel, steer, how: dict({
+    "id": identity,
     "name": name,
     "position": q([float(v) for v in pos], "m", "measured", GEAR_SRC),
     "stiffness": q(k_, "N/m", "estimated", f"E1 rule: heave ω·dt 0.09 at 240 Hz (Σk = {k_total:.0f} N/m for {mass:.2f} kg), split by the static load ({100 * tail_share:.1f} % on the tail wheel) so all three wheels sag alike ({1000 * mass * G0 / k_total:.0f} mm); softer than a real oleo, which a 240 Hz explicit tick cannot resolve"),
@@ -594,9 +596,9 @@ gear_contact = lambda name, pos, k_, travel, steer, how: dict({
 landing_gear = {
     "description": "P51-12: taildragger, two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces). Retracts are not simulated: the gear stays down.",
     "contacts": [
-        gear_contact("main_left", main_pos[0], k_main, 0.12, 0, "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"),
-        gear_contact("main_right", main_pos[1], k_main, 0.12, 0, "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"),
-        gear_contact("tail", tail_pos, k_tail, 0.08, -25.0, "tail-wheel leg travel before the fuselage hits: estimated"),
+        gear_contact("contact_main_left", "main_left", main_pos[0], k_main, 0.12, 0, "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"),
+        gear_contact("contact_main_right", "main_right", main_pos[1], k_main, 0.12, 0, "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"),
+        gear_contact("contact_tail", "tail", tail_pos, k_tail, 0.08, -25.0, "tail-wheel leg travel before the fuselage hits: estimated"),
     ],
     "rolling_resistance": q(0.03, "1", "estimated", "between a full-size tyre on concrete (JSBSim c172x 0.022) and the Stik's 76 mm wheel (0.04): the 171 mm wheels deform less; per-surface factors (grass) come from the field"),
     "side_friction": q(0.8, "1", "borrowed", "JSBSim c172x static_friction 0.8 (as the Stik, E2)"),
@@ -647,6 +649,7 @@ same = lambda key: dict(surf[key], source="same provisional value as the Ugly St
 canopy_top = max(g["canopy"]["top"], key=lambda p: p[1])
 data = {
     "format": "openrc-aircraft v1",
+    "physical_identity_version": 1,
     "id": "p51d-mustang-120",
     "description": f"{KIT_NAME}: {b:.3f} m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by {SCRIPT} (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4 and documented NACA/RC-class sources; exercised by scripted tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps and retracts are not simulated (gear DOWN). Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
     "frames": {
@@ -670,7 +673,7 @@ data = {
         "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the kit's point, NOT a measured airplane")),
     },
     "inventory": [
-        dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3] + (f"; x{k_total_struct:.3f}: airframe scaled to the built weight (P51-09)" if is_structure(it) else "")), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
+        dict({"id": it[8], "name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3] + (f"; x{k_total_struct:.3f}: airframe scaled to the built weight (P51-09)" if is_structure(it) else "")), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
              **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
@@ -686,6 +689,7 @@ data = {
         le(canopy_top[0], canopy_top[1]),
         le(g["scoop_stations"][2][0], g["scoop_stations"][2][2]),
     ], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tip LE/TE (with dihedral), spinner tip, propeller disc bottom and lower quarters (a prop strike), rudder bottom TE, stab tips, fin top, canopy top, scoop bottom. The wheels are landing-gear contacts (P51-12)"),
+    "crash_hull_ids": ["probe_wing_left_le", "probe_wing_right_le", "probe_wing_left_te", "probe_wing_right_te", "probe_spinner_tip", "probe_propeller_bottom", "probe_propeller_lower_left", "probe_propeller_lower_right", "probe_rudder_bottom", "probe_stabilizer_left_tip", "probe_stabilizer_right_tip", "probe_fin_top", "probe_canopy_top", "probe_scoop_bottom"],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
     "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "spinner", "propeller", "propeller", "propeller", "tail_end", "left_stab_tip", "right_stab_tip", "fin_top", "canopy", "belly"],
     "plausibility": {
@@ -693,6 +697,7 @@ data = {
         "inertia_reference": stik["plausibility"]["inertia_reference"],
     },
     "controls": {
+        "surface_ids": {"aileron_left": "surface_aileron_left", "aileron_right": "surface_aileron_right", "elevator": "surface_elevator", "rudder": "surface_rudder"},
         "max_throw": {k: q(float(v), "deg", "estimated", THROWS_SRC) for k, v in throws.items()},
         # D6e: the manual's low rates as travel fractions of the high rates above, applied by the session to the
         # keyboard sticks as a radio would (controls.rates.normal); the manual lists no expo.
@@ -749,6 +754,7 @@ data = {
         },
     },
     "propulsion": {
+        "id": "propulsion_main",
         "description": f"120 cc gasoline twin turning a 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}. Shaft balance (rpm from engine torque against propeller torque), blade-element tables calibrated on Mejzlik's 26x12 2- and 3-blade data, down and right thrust, propeller normal force and P-factor, tail slipstream with swirl ({SCRIPT}, P51-06/P51-12).",
         "engine": {
             "name": "Desert Aircraft DA-120 (121 cc twin, 2.45 kg with ignition) or DLE-120",
@@ -808,6 +814,7 @@ check_consistency(data)
 
 legacy_data = data
 data = upgrade(legacy_data)
+validate_physical_identity(data)
 parity = numeric_parity(legacy_data, data)
 text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]

@@ -70,6 +70,18 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 			"name": "propeller", "disc": prop_disc, "reach": prop_radius})
 	if probes.is_empty():
 		return null
+	# Every rotating probe lies within max_radius of the interpolated CG. Bound the extra
+	# chord pad with SceneryCollision's full 2-degree limit, wider than these 0.5-degree
+	# subdivisions, so the aggregate reject cannot skip a rotating or grazing contact.
+	var max_rotation_padding: float = max_radius * (1.0 - M.cos_(
+		MAX_ROTATION_STEP_RAD * 0.5)) \
+		+ SceneryCollision.ROTATION_PADDING_EPSILON_M
+	var highest_possible_down: float = minf(0.0,
+		float(lake.water_level_down_m) - float(lake.wave_bounds.max_amplitude_m))
+	var lowest_possible_probe_down: float = maxf(previous[RB.POS + 2], candidate[RB.POS + 2]) \
+		+ max_radius + max_rotation_padding
+	if lowest_possible_probe_down < highest_possible_down - LakeSurface.CONTACT_EPSILON_M:
+		return null
 	var bank_bounds: PackedFloat64Array = _polygon_bounds(lake.bank_ne_m)
 	var shore_bounds: PackedFloat64Array = _polygon_bounds(lake.shoreline_ne_m)
 	var start_north: float = minf(previous[RB.POS], candidate[RB.POS]) - max_radius

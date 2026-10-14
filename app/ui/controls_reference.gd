@@ -17,8 +17,7 @@ const FLIGHT := [
 const SHORTCUTS := [
 	[[KEY_PAGEUP, KEY_PAGEDOWN], "Elevator trim: nose down / up"],
 	[[KEY_ESCAPE], "Pause menu (in the radio calibration: cancel it)"],
-	[[KEY_R], "Restart the flight"],
-	[[KEY_P], "Resume after a radio failsafe"],
+	[[KEY_R, KEY_P], "Restart / resume after radio failsafe"],
 	[[KEY_C, KEY_1, KEY_2, KEY_5], "Views: next (Shift+C back), pilot, chase, orbit"],
 	[[KEY_Z, KEY_EQUAL, KEY_MINUS, KEY_BACKSPACE], "Zoom: auto on/off, in, out, reset"],
 	[[KEY_V, KEY_L], "Ground shadow · night lights"],
@@ -29,6 +28,7 @@ const SHORTCUTS := [
 	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
 	[[KEY_F2, KEY_F3], "Overlay preset · developer overlays"],
 	[[KEY_F5], "Reload the aircraft data file"],
+	[[KEY_F6, KEY_F7, KEY_F8, KEY_F9], "Glow: cut, starter, lean/rich mixture"],
 ]
 
 ## The first-flight hint: at most three things (research 22), all of them already in the tables above.

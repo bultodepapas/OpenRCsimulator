@@ -10,6 +10,9 @@ const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const OverlaySettings := preload("res://render/overlays/overlay_settings.gd")
 
+const NIGHT_FIELD_LIGHTING_CHOICES: Array[String] = ["club", "airfield", "off"]
+const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false}
+
 const DEFAULT_PATH := "user://settings.cfg"
 const SCHEMA := 4
 const LEGACY_SCHEMA := 1
@@ -34,6 +37,9 @@ const DEFAULTS := {
 	lighting_invalid = false,
 	# HUD-06: flight overlays ([hud] in the file). An additive section: older builds ignore it, no schema change.
 	hud = OverlaySettings.DEFAULTS,
+	# FW-71: compact presentation choices, kept outside flight physics and the existing weather schema.
+	night_field_lighting = "club",
+	night_campfire = false,
 }
 
 
@@ -101,6 +107,12 @@ static func load_from(path: String) -> Dictionary:
 			prefs.lighting_invalid = true
 			prefs.time_of_day = "day" # invalid explicit lighting always recovers to the documented legacy daylight
 			prefs.note = _append_note(prefs.note, "invalid time-of-day settings; using legacy daylight")
+	var night_field_lighting: Variant = cfg.get_value("night", "field_lighting", DEFAULTS.night_field_lighting)
+	if typeof(night_field_lighting) == TYPE_STRING and NIGHT_FIELD_LIGHTING_CHOICES.has(night_field_lighting):
+		prefs.night_field_lighting = night_field_lighting
+	var night_campfire: Variant = cfg.get_value("night", "campfire", DEFAULTS.night_campfire)
+	if typeof(night_campfire) == TYPE_BOOL:
+		prefs.night_campfire = night_campfire
 	return prefs
 
 
@@ -114,6 +126,12 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 		return ERR_INVALID_DATA
 	var checked_lighting: Dictionary = TimeOfDay.validate(prefs.get("lighting_config", DEFAULTS.lighting_config))
 	if not checked_lighting.get("ok", false):
+		return ERR_INVALID_DATA
+	var checked_night: Dictionary = validate_night_options({
+		"field_lighting": prefs.get("night_field_lighting", DEFAULTS.night_field_lighting),
+		"campfire": prefs.get("night_campfire", DEFAULTS.night_campfire),
+	})
+	if not checked_night.ok:
 		return ERR_INVALID_DATA
 	var time_of_day: Variant = prefs.get("time_of_day", DEFAULTS.time_of_day)
 	if typeof(time_of_day) != TYPE_STRING or not Conditions.HOME_CHOICES.has(time_of_day):
@@ -133,12 +151,41 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("flight", "weather_config", checked_weather.config.duplicate(true))
 	if checked_lighting.config != TimeOfDay.defaults():
 		cfg.set_value("flight", "lighting_config", checked_lighting.config.duplicate(true))
+	cfg.set_value("night", "field_lighting", checked_night.options.field_lighting)
+	cfg.set_value("night", "campfire", checked_night.options.campfire)
 	var hud: Dictionary = OverlaySettings.validate(prefs.get("hud", DEFAULTS.hud))
 	cfg.set_value("hud", "preset", hud.preset)
 	cfg.set_value("hud", "visible", hud.visible)
 	cfg.set_value("hud", "units", hud.units)
 	cfg.set_value("hud", "stick_mode", hud.stick_mode)
 	return cfg.save(path)
+
+
+## Night options are visual-only. Keep their product values strict in preferences and direct CLI launches.
+static func validate_night_options(raw: Variant) -> Dictionary:
+	if not raw is Dictionary or raw.size() != 2 or not raw.has_all(["field_lighting", "campfire"]):
+		return {ok = false, options = {}, errors = PackedStringArray(["night options must contain field_lighting and campfire only"])}
+	if typeof(raw.field_lighting) != TYPE_STRING or not NIGHT_FIELD_LIGHTING_CHOICES.has(raw.field_lighting):
+		return {ok = false, options = {}, errors = PackedStringArray(["field_lighting must be club, airfield or off"])}
+	if typeof(raw.campfire) != TYPE_BOOL:
+		return {ok = false, options = {}, errors = PackedStringArray(["campfire must be a boolean"])}
+	return {ok = true, options = {"field_lighting": raw.field_lighting, "campfire": raw.campfire}, errors = PackedStringArray()}
+
+
+## The direct route always starts from product defaults and never consults saved preferences.
+static func night_options_from_args(args: Dictionary) -> Dictionary:
+	var options: Dictionary = NIGHT_DEFAULTS.duplicate(true)
+	if args.has("field-lighting"):
+		var field_lighting: Variant = args.get("field-lighting")
+		if typeof(field_lighting) != TYPE_STRING or not NIGHT_FIELD_LIGHTING_CHOICES.has(field_lighting):
+			return {ok = false, options = {}, errors = PackedStringArray(["--field-lighting must be club, airfield or off"])}
+		options.field_lighting = field_lighting
+	if args.has("campfire"):
+		var campfire: Variant = args.get("campfire")
+		if typeof(campfire) != TYPE_STRING or campfire not in ["on", "off"]:
+			return {ok = false, options = {}, errors = PackedStringArray(["--campfire must be on or off"])}
+		options.campfire = campfire == "on"
+	return validate_night_options(options)
 
 
 static func _append_note(existing: String, addition: String) -> String:

@@ -2,6 +2,10 @@
 
 2026-10-13 · Revision 2 · To the aircraft model developer · Delivery specification for Timber r2
 
+**Delivery status, 2026-10-13:** r2 `d75ae605aa3a` has been received and integrated. The requirements below remain the authoring contract; do not recreate the accepted package. The [TT-19 review](research/timber-integration/TT-19/README.md) records its source identity, native Godot captures, accepted behavior and remaining source corrections, including cowl marking seating and assembled closure-face visibility.
+
+For the next source revision, preserve the accepted shape, pivots and section IDs. Fix the remaining white cowl foam showing through the black/red marking shells; make the coating conform to the skin or use material regions, and fail verification when covered foam still protrudes. Keep the separation caps, but ensure the white wing-root closure faces are hidden when assembled. Review the 49 material surfaces against the soft budget of 40. Keep the suspension link and bracket identifiable if checking their clearance: intersecting a whole merged leg with the entire fuselage also includes its mechanical attachment. OpenRC currently leaves suspension static and uses a temporary 0.8 mm render-only offset on the cowl's two marking materials; a corrected source should make that offset unnecessary. These are incremental corrections to r2.
+
 Please prepare a lightweight, editable game version of the existing precise aircraft. Preserve its silhouette, proportions, control surfaces and recognizable finish. The requested work is export preparation, simplification and separation into usable parts. Keep the detailed master intact.
 
 The aircraft is called **Turbo Lumber Evolution** in OpenRC Simulator and **Turbo Timber Evolution** in the source package. The simulator already imports and flies the r1 model. We now need a convenient `.blend`, a self-contained `.glb`, correctly articulated controls and real sections that can detach in a crash. This specification includes everything needed to prepare that delivery; repository links at the end are supporting evidence only.

@@ -50,7 +50,7 @@ func _initialize() -> void:
 		var ref: Array = REFERENCE[n]
 		_check("AR 5 rectangular, %d strips per side: CLα %.4f, Clp %.4f match the independent Weissinger %.4f, %.4f" % [n, r.CLa, r.Clp, ref[0], ref[1]],
 			absf(r.CLa - ref[0]) < 1e-3 and absf(r.Clp - ref[1]) < 1e-3)
-	for id in Catalog.flyable_ids(): # TT-06: previews carry no data file
+	for id in Catalog.airplane_flyable_ids(): # TT-06: previews carry no data file
 		_aircraft(id)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

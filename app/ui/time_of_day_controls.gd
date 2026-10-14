@@ -3,9 +3,13 @@ extends VBoxContainer
 
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const Solar := preload("res://environment/solar_position.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 
 const PRESET_IDS: Array[String] = ["", "legacy", "dawn", "noon", "sunset", "night"]
 const PRESET_LABELS: Array[String] = ["Custom", "Legacy daylight", "Dawn", "Noon", "Sunset", "Night"]
+const NIGHT_PROFILE_LABELS: Array[String] = ["Soft club", "Airfield", "Field lights off"]
+const CAMPFIRE_LABELS: Array[String] = ["Campfire off", "Campfire on"]
+const NIGHT_PROFILE_IDS: Array[String] = ["club", "airfield", "off"]
 
 signal focus_order_changed
 
@@ -24,8 +28,13 @@ var time_note: Label
 var night_note: Label
 var phase_summary: Label
 var validation_note: Label
+var field_lighting_picker: OptionButton
+var campfire_picker: OptionButton
 
 var _draft: Dictionary = {}
+var _night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
+var _time_controls_visible: bool = true
+var _time_control_nodes: Array[Control] = []
 var _setting_fields: bool = false
 var _latitude_form_text: String = ""
 var _longitude_form_text: String = ""
@@ -33,15 +42,20 @@ var _latitude_form_value: float = 0.0
 var _longitude_form_value: float = 0.0
 
 
-func _init(initial_config: Variant = null) -> void:
+func _init(initial_config: Variant = null, initial_night_options: Variant = null) -> void:
 	name = "TimeOfDayControls"
 	add_theme_constant_override("separation", 8)
 	var checked: Dictionary = TimeOfDay.validate(
 		initial_config if initial_config != null else TimeOfDay.defaults()
 	)
 	_draft = checked.config.duplicate(true) if checked.get("ok", false) else TimeOfDay.defaults()
+	var checked_night: Dictionary = Preferences.validate_night_options(
+		Preferences.NIGHT_DEFAULTS if initial_night_options == null else initial_night_options
+	)
+	_night_options = checked_night.options.duplicate(true) if checked_night.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
 	_build_controls()
 	_set_controls(_draft)
+	_set_night_options(_night_options)
 
 
 func _build_controls() -> void:
@@ -132,6 +146,29 @@ func _build_controls() -> void:
 	latitude_input = _add_text_field("Latitude (degrees)", "Latitude", 144.0, 16)
 	longitude_input = _add_text_field("Longitude (degrees)", "Longitude", 144.0, 16)
 	location_input = _add_text_field("Location name", "LocationName", 260.0, 80)
+	_time_control_nodes = [mode_row, preset_row, phase_summary, validation_note, time_row, time_note, night_note, advanced_toggle, advanced_grid]
+
+	var field_lighting_row: HBoxContainer = HBoxContainer.new()
+	field_lighting_row.name = "FieldLightingRow"
+	field_lighting_row.add_theme_constant_override("separation", 12)
+	field_lighting_row.add_child(_choice_label("Field lighting"))
+	field_lighting_picker = OptionButton.new()
+	field_lighting_picker.name = "FieldLighting"
+	field_lighting_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	field_lighting_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	field_lighting_row.add_child(field_lighting_picker)
+	add_child(field_lighting_row)
+
+	var campfire_row: HBoxContainer = HBoxContainer.new()
+	campfire_row.name = "CampfireRow"
+	campfire_row.add_theme_constant_override("separation", 12)
+	campfire_row.add_child(_choice_label("Campfire"))
+	campfire_picker = OptionButton.new()
+	campfire_picker.name = "Campfire"
+	campfire_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	campfire_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	campfire_row.add_child(campfire_picker)
+	add_child(campfire_row)
 
 	mode_picker.item_selected.connect(_on_mode_selected)
 	preset_picker.item_selected.connect(_on_preset_selected)
@@ -178,6 +215,16 @@ func _set_titles() -> void:
 		if field_label != null:
 			field_label.text = tr(String(key_value[1]))
 			field_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	var selected_field: int = field_lighting_picker.selected if field_lighting_picker != null else 0
+	var selected_campfire: int = campfire_picker.selected if campfire_picker != null else 0
+	field_lighting_picker.clear()
+	for title: String in NIGHT_PROFILE_LABELS:
+		field_lighting_picker.add_item(tr(title))
+	campfire_picker.clear()
+	for title: String in CAMPFIRE_LABELS:
+		campfire_picker.add_item(tr(title))
+	field_lighting_picker.select(clampi(selected_field, 0, NIGHT_PROFILE_LABELS.size() - 1))
+	campfire_picker.select(clampi(selected_campfire, 0, CAMPFIRE_LABELS.size() - 1))
 	mode_picker.select(0 if _draft.get("mode", "legacy") == "legacy" else 1)
 	advanced_toggle.text = tr("Date and location (advanced)")
 	time_note.text = tr("Date, time and UTC offset are explicit. The selected time stays fixed during flight; OS time is not used.")
@@ -342,17 +389,46 @@ func read_draft() -> Dictionary:
 	return TimeOfDay.validate(raw)
 
 
+## The field profile and campfire are separate, validated presentation choices.
+func read_night_options() -> Dictionary:
+	if field_lighting_picker.selected < 0 or field_lighting_picker.selected >= NIGHT_PROFILE_IDS.size() \
+			or campfire_picker.selected < 0 or campfire_picker.selected > 1:
+		return {"ok": false, "options": {}, "errors": PackedStringArray(["select a field-lighting and campfire option"])}
+	return Preferences.validate_night_options({
+		"field_lighting": NIGHT_PROFILE_IDS[field_lighting_picker.selected],
+		"campfire": campfire_picker.selected == 1,
+	})
+
+
+func _set_night_options(raw: Variant) -> void:
+	var checked: Dictionary = Preferences.validate_night_options(raw)
+	_night_options = checked.options.duplicate(true) if checked.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
+	field_lighting_picker.select(NIGHT_PROFILE_IDS.find(str(_night_options.field_lighting)))
+	campfire_picker.select(1 if bool(_night_options.campfire) else 0)
+
+
+func set_time_editing_visible(visible: bool) -> void:
+	_time_controls_visible = visible
+	for control: Control in _time_control_nodes:
+		control.visible = visible
+	if visible:
+		_update_enabled()
+
+
 func focus_controls() -> Array[Control]:
-	var controls: Array[Control] = [mode_picker, preset_picker]
-	if time_slider.focus_mode != Control.FOCUS_NONE:
-		controls.append(time_slider)
-	if time_input.focus_mode != Control.FOCUS_NONE:
-		controls.append(time_input)
-	if not advanced_toggle.disabled:
-		controls.append(advanced_toggle)
-		if advanced_grid.visible:
-			for edit: LineEdit in [date_input, offset_input, latitude_input, longitude_input, location_input]:
-				controls.append(edit)
+	var controls: Array[Control] = []
+	if _time_controls_visible:
+		controls.append_array([mode_picker, preset_picker])
+		if time_slider.focus_mode != Control.FOCUS_NONE:
+			controls.append(time_slider)
+		if time_input.focus_mode != Control.FOCUS_NONE:
+			controls.append(time_input)
+		if not advanced_toggle.disabled:
+			controls.append(advanced_toggle)
+			if advanced_grid.visible:
+				for edit: LineEdit in [date_input, offset_input, latitude_input, longitude_input, location_input]:
+					controls.append(edit)
+	controls.append_array([field_lighting_picker, campfire_picker])
 	return controls
 
 
@@ -362,6 +438,13 @@ static func _label(text: String, variation: String, wrap: bool = false) -> Label
 	label_control.theme_type_variation = variation
 	if wrap:
 		label_control.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	return label_control
+
+
+static func _choice_label(text: String) -> Label:
+	var label_control: Label = _label(text, "SecondaryLabel")
+	label_control.text = tr(text)
+	label_control.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	return label_control
 
 

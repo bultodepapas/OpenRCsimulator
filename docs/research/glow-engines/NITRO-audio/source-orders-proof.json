@@ -1,0 +1,105 @@
+{
+  "format": "openrc-glow-hub-audio-software-proof v1",
+  "passed": true,
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\glow-hub-verify-snapshot\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_glow_audio.gd",
+    "--",
+    "--write-glow-audio-wavs"
+  ],
+  "exit_code": 0,
+  "source": "15d7363db13d1471daaca152eee9204fc06043c194c3ac85c9ee1ad20594bd93",
+  "log_sha256": "b8f63826f178601ba65fcbc3b7dd6a0830ea53e8dd78338c5939333858534ada",
+  "claim": "Native Dummy-driver software mixer and direct renderer tests; no physical acoustic, vibration, speaker or pilot validation.",
+  "artifacts": [
+    {
+      "path": ".tools/glow-hub-audio-20261013/glow_2t_full_fire.wav",
+      "sha256": "ba2cd01ac60526188b9b254f5b5ba0e559d738d0f8128af1885e67addc0fee5c",
+      "channels": 1,
+      "sample_rate_hz": 22050,
+      "frames": 22050,
+      "sample_bytes": 2
+    },
+    {
+      "path": ".tools/glow-hub-audio-20261013/glow_4t_full_fire.wav",
+      "sha256": "af2e75c7187e643831cfd12e1479c11b2b0acffbe942f5177e340283885ccb9d",
+      "channels": 1,
+      "sample_rate_hz": 22050,
+      "frames": 22050,
+      "sample_bytes": 2
+    },
+    {
+      "path": ".tools/glow-hub-audio-20261013/glow_2t_rich_half_fire.wav",
+      "sha256": "bf93b498ecd8a904c21daa5cbbbdc17f026dab0aa618f1297b853902a1874abd",
+      "channels": 1,
+      "sample_rate_hz": 22050,
+      "frames": 22050,
+      "sample_bytes": 2
+    },
+    {
+      "path": ".tools/glow-hub-audio-20261013/glow_2t_throttle_cut.wav",
+      "sha256": "37f8c4d6a392dda1541d0ec0194fb45b9ad54d545574847247e1e2cb47fb96c0",
+      "channels": 1,
+      "sample_rate_hz": 22050,
+      "frames": 22050,
+      "sample_bytes": 2
+    },
+    {
+      "path": ".tools/glow-hub-audio-20261013/glow_2t_restart.wav",
+      "sha256": "31615599d9e833dad42a54f7d072ebe1fd196676edc4a73b47f3b77cf5c36238",
+      "channels": 1,
+      "sample_rate_hz": 22050,
+      "frames": 5512,
+      "sample_bytes": 2
+    },
+    {
+      "path": ".tools/glow-hub-audio-20261013/native_glow_2t_full_cut_restart_full.wav",
+      "sha256": "c84b0ff4257b7bef43faef9cf2269d4f61cf76a97d633b2915767da8d16fd58d",
+      "channels": 2,
+      "sample_rate_hz": 44100,
+      "frames": 45056,
+      "sample_bytes": 2
+    },
+    {
+      "path": ".tools/glow-hub-audio-20261013/native_glow_2t_throttle_cut.wav",
+      "sha256": "772f14039ca9725a998fbc45bfcb148e19d7d08a1eb67cdcab35f5c888179281",
+      "channels": 2,
+      "sample_rate_hz": 44100,
+      "frames": 20480,
+      "sample_bytes": 2
+    },
+    {
+      "path": ".tools/glow-hub-audio-20261013/native_glow_2t_restart.wav",
+      "sha256": "b9ec5b255847d45094d0196b1617785f0f4a30cb06d174ac93d8f30bf9d637d0",
+      "channels": 2,
+      "sample_rate_hz": 44100,
+      "frames": 45056,
+      "sample_bytes": 2
+    },
+    {
+      "path": ".tools/glow-hub-audio-20261013/native_glow_4t_full_fire.wav",
+      "sha256": "259620eef44c5df05a8327ebbfd32a313c475990ea4f586a1ac8b3060190e520",
+      "channels": 2,
+      "sample_rate_hz": 44100,
+      "frames": 45056,
+      "sample_bytes": 2
+    }
+  ],
+  "checks": 73,
+  "failures": 0,
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "source_files_sha256": {
+    "tests/test_glow_audio.gd": "d47191cec8778c9adca41d6edcecd9944b7d91df72a0cc5e3222ed41ed156269",
+    "audio/glow_voice.gd": "f025a4d59752be25d3b34a768c024959f0e215c4a4384dc83b6dac2b25cc8f17",
+    "audio/soundscape.gd": "342dc6326334c2dcb4eaf7afc39530df239af80543d3625dbb5fb1f401ddb55c",
+    "physics/glow/vibration.gd": "d36c8159cca6a79aebea17676917b6e68b409fbc0028471f8a8071d9ac547a11",
+    "data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+    "data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39"
+  }
+}

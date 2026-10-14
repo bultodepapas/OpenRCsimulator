@@ -1034,8 +1034,8 @@ msgstr "Revisa los valores indicados antes de probar el avión."
 msgid "No build values are available."
 msgstr "No hay valores disponibles para esta variante."
 
-msgid "Scale %d%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f"
-msgstr "Escala %d%% · masa: %s · peso ×%.2f · potencia ×%.2f · mandos ×%.2f"
+msgid "Scale %s%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f"
+msgstr "Escala %s%% · masa: %s · peso ×%.2f · potencia ×%.2f · mandos ×%.2f"
 
 msgid "Base → proposed"
 msgstr "Original → variante"
@@ -1070,8 +1070,8 @@ msgstr "n/d"
 msgid "Scale 100%"
 msgstr "Escala 100%"
 
-msgid "Scale %d%%  ·  span %.2f m"
-msgstr "Escala %d%%  ·  envergadura %.2f m"
+msgid "Scale %s%%  ·  span %.2f m"
+msgstr "Escala %s%%  ·  envergadura %.2f m"
 
 msgid "Delete saved build?"
 msgstr "¿Eliminar esta variante?"
@@ -1132,3 +1132,126 @@ msgstr "Más recorrido"
 
 msgid "Light / low power"
 msgstr "Ligero / suave"
+
+msgid "Redo"
+msgstr "Rehacer"
+
+msgid "Recipe change reapplied."
+msgstr "Cambio de ajustes reaplicado."
+
+msgid "Recovered revision %d from backup. Review it before saving."
+msgstr "Revisión %d recuperada de la copia de seguridad. Revísala antes de guardar."
+
+msgid "Natural Random"
+msgstr "Aleatorio natural"
+
+msgid "Another flight"
+msgstr "Otro vuelo"
+
+msgid "Repeat last flight"
+msgstr "Repetir último vuelo"
+
+msgid "Back"
+msgstr "Volver"
+
+msgid "NATURAL RANDOM"
+msgstr "ALEATORIO NATURAL"
+
+msgid "Stock airplane"
+msgstr "Avión de serie"
+
+msgid "Model status"
+msgstr "Estado del modelo"
+
+msgid "Custom from Natural Random"
+msgstr "Personalizado desde Aleatorio natural"
+
+msgid "No mean wind · %s m/s"
+msgstr "Sin viento medio · %s m/s"
+
+msgid "Wind from %03.0f° · %s m/s"
+msgstr "Viento desde %03.0f° · %s m/s"
+
+msgid "Gust increment: %s m/s"
+msgstr "Incremento de ráfaga: %s m/s"
+
+msgid "Airborne start · Current field"
+msgstr "Inicio en vuelo · Campo actual"
+
+msgid "Show details"
+msgstr "Ver detalles"
+
+msgid "Hide details"
+msgstr "Ocultar detalles"
+
+msgid "Flight details"
+msgstr "Detalles del vuelo"
+
+msgid "Flight seed: %s"
+msgstr "Semilla del vuelo: %s"
+
+msgid "Gust duration %s s · repeat every %s s"
+msgstr "Duración de la ráfaga %s s · repetición cada %s s"
+
+msgid "Vertical gust increment: %s m/s"
+msgstr "Incremento de ráfaga vertical: %s m/s"
+
+msgid "Morning light"
+msgstr "Luz de mañana"
+
+msgid "Late afternoon light"
+msgstr "Luz del final de la tarde"
+
+msgid "Custom lighting"
+msgstr "Iluminación personalizada"
+
+msgid "Calm air"
+msgstr "Aire en calma"
+
+msgid "Lively breeze"
+msgstr "Brisa moderada"
+
+msgid "Windy day"
+msgstr "Día ventoso"
+
+msgid "Preparing flight…"
+msgstr "Preparando vuelo…"
+
+msgid "Could not prepare random flight: %s"
+msgstr "No se pudo preparar el vuelo aleatorio: %s"
+
+msgid "Glow: cut, starter, lean/rich mixture"
+msgstr "Glow: corte, arranque, mezcla pobre/rica"
+
+msgid "Restart / resume after radio failsafe"
+msgstr "Reiniciar / reanudar tras fallo de radio"
+
+msgid "RC cars · Bisonte MT8"
+msgstr "Carros RC · Bisonte MT8"
+
+msgid "Workshop"
+msgstr "Taller"
+
+msgid "Field lighting"
+msgstr "Iluminación del campo"
+
+msgid "Campfire"
+msgstr "Fogata"
+
+msgid "Soft club"
+msgstr "Club suave"
+
+msgid "Airfield"
+msgstr "Aeropuerto"
+
+msgid "Field lights off"
+msgstr "Apagada"
+
+msgid "Campfire off"
+msgstr "Apagada"
+
+msgid "Campfire on"
+msgstr "Encendida"
+
+msgid "Choose the field lights and campfire for this paused flight. These visual options do not change flight behavior."
+msgstr "Elige la iluminación del campo y la fogata para este vuelo en pausa. Estas opciones visuales no cambian el comportamiento del vuelo."

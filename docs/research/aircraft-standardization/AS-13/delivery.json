@@ -1,0 +1,36 @@
+{
+  "format": "openrc-as13-delivery v1",
+  "recorded_utc": "2026-10-13T22:59:24.053128+00:00",
+  "head": "0a07a3a82f6ec53a293838a12172daedb63210ab",
+  "engine": {
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  "focused_conformance": {
+    "ok": true,
+    "commands": 51,
+    "report": "integration/verification.json"
+  },
+  "final_reruns": {
+    "ok": true,
+    "report": "final-reruns.json"
+  },
+  "event_checks": 45,
+  "final_session_checks": 63,
+  "fleet_exact_cases": 14,
+  "contact_exact_cases": 7,
+  "live_contact_match_to_isolated_baseline": true,
+  "source_sha256": {
+    "app/sim/flight_session.gd": "965fb3127f1c5d86c54aff80b4555c1a251f65ba9f624036985b29b914cba65f",
+    "app/sim/aircraft_contact_events.gd": "31c2ff81e88939b1e8b7ce46030abd18f4ca0442f80690314509503241b818a6",
+    "app/tests/test_aircraft_contact_events.gd": "cb4f9fffb5610941056f4daf06f81fc0040573723cd729fc22c8bb47a416ba40",
+    "app/tests/test_aircraft_contact_session.gd": "689d69fc7200c98c90741efd77434f4590d318e82c50f0c9e04a5ba5b6ef9bda",
+    "app/tests/test_lake_session.gd": "594da3f51b5c963545f8d67fb1bf2577281c591365ae916637eb553335bb3161",
+    "research/aircraft-standardization/conformance.py": "e22aa0f14f8486f792747a28fedc6f64cd4988a46bffb0d75c9d9d4194eb308b",
+    "research/aircraft-standardization/contact_probe.gd": "0180665d3499f9fd44ae94b6a31a01e964751fe16c61e209c49dae2e8266d672",
+    "research/aircraft-standardization/test_models.py": "da2ff05fc931e361ba942a5004b0c58352b1d92c4cf8af74aaab3c85832a28fc"
+  },
+  "full_app_suite": "not run; broad parse attempt stopped, focused native compile/execution retained",
+  "physical_changes": "none; no golden re-recorded",
+  "remaining": "durable identities and section binding, generic Blender gear-pivot projection/second delivery, AS15-18 capability qualification"
+}

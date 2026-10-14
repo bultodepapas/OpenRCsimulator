@@ -1,0 +1,900 @@
+WorkerThreadPool: 24 threads, 7 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/test_workshop_integration.gd remapped: res://tests/test_workshop_integration.gd
+Loading resource: res://render/treeline.gdshader remapped: res://render/treeline.gdshader
+Loading resource: res://render/tree_identity.gdshaderinc remapped: res://render/tree_identity.gdshaderinc
+Completed load for: 'res://render/tree_identity.gdshaderinc' remapped 'res://render/tree_identity.gdshaderinc' at thread -1
+Loading resource: res://render/tree_wind.gdshaderinc remapped: res://render/tree_wind.gdshaderinc
+Completed load for: 'res://render/tree_wind.gdshaderinc' remapped 'res://render/tree_wind.gdshaderinc' at thread -1
+Completed load for: 'res://render/treeline.gdshader' remapped 'res://render/treeline.gdshader' at thread -1
+Loading resource: res://render/sky.gdshader remapped: res://render/sky.gdshader
+Loading resource: res://render/cloud_field.gdshaderinc remapped: res://render/cloud_field.gdshaderinc
+Completed load for: 'res://render/cloud_field.gdshaderinc' remapped 'res://render/cloud_field.gdshaderinc' at thread -1
+Loading resource: res://render/cloud_relief.gdshaderinc remapped: res://render/cloud_relief.gdshaderinc
+Completed load for: 'res://render/cloud_relief.gdshaderinc' remapped 'res://render/cloud_relief.gdshaderinc' at thread -1
+Completed load for: 'res://render/sky.gdshader' remapped 'res://render/sky.gdshader' at thread -1
+Loading resource: res://render/ground.gdshader remapped: res://render/ground.gdshader
+Loading resource: res://render/grass_surface.gdshaderinc remapped: res://render/grass_surface.gdshaderinc
+Completed load for: 'res://render/grass_surface.gdshaderinc' remapped 'res://render/grass_surface.gdshaderinc' at thread -1
+Loading resource: res://render/turf_detail.gdshaderinc remapped: res://render/turf_detail.gdshaderinc
+Completed load for: 'res://render/turf_detail.gdshaderinc' remapped 'res://render/turf_detail.gdshaderinc' at thread -1
+Completed load for: 'res://render/ground.gdshader' remapped 'res://render/ground.gdshader' at thread -1
+Loading resource: res://render/projected_shadow_mask.gdshader remapped: res://render/projected_shadow_mask.gdshader
+Completed load for: 'res://render/projected_shadow_mask.gdshader' remapped 'res://render/projected_shadow_mask.gdshader' at thread -1
+Loading resource: res://render/projected_shadow_receiver.gdshader remapped: res://render/projected_shadow_receiver.gdshader
+Completed load for: 'res://render/projected_shadow_receiver.gdshader' remapped 'res://render/projected_shadow_receiver.gdshader' at thread -1
+Loading resource: res://assets/landscape/turf/detail.png remapped: res://assets/landscape/turf/detail.png
+Loading resource: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex remapped: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex
+Completed load for: 'res://assets/landscape/turf/detail.png' remapped 'res://assets/landscape/turf/detail.png' at thread -1
+Loading resource: res://render/near_grass.gdshader remapped: res://render/near_grass.gdshader
+Completed load for: 'res://render/near_grass.gdshader' remapped 'res://render/near_grass.gdshader' at thread -1
+Loading resource: res://render/lake/bank.gdshader remapped: res://render/lake/bank.gdshader
+Completed load for: 'res://render/lake/bank.gdshader' remapped 'res://render/lake/bank.gdshader' at thread -1
+Loading resource: res://render/lake/water.gdshader remapped: res://render/lake/water.gdshader
+Completed load for: 'res://render/lake/water.gdshader' remapped 'res://render/lake/water.gdshader' at thread -1
+Loading resource: res://assets/audio/water/peludo-splash1.wav remapped: res://assets/audio/water/peludo-splash1.wav
+Loading resource: res://.godot/imported/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.sample remapped: res://.godot/imported/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.sample
+Completed load for: 'res://assets/audio/water/peludo-splash1.wav' remapped 'res://assets/audio/water/peludo-splash1.wav' at thread -1
+Loading resource: res://assets/audio/water/peludo-splash2.wav remapped: res://assets/audio/water/peludo-splash2.wav
+Loading resource: res://.godot/imported/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.sample remapped: res://.godot/imported/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.sample
+Completed load for: 'res://assets/audio/water/peludo-splash2.wav' remapped 'res://assets/audio/water/peludo-splash2.wav' at thread -1
+Loading resource: res://assets/audio/water/randommind-vistula-short.mp3 remapped: res://assets/audio/water/randommind-vistula-short.mp3
+Loading resource: res://.godot/imported/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.mp3str remapped: res://.godot/imported/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.mp3str
+Completed load for: 'res://assets/audio/water/randommind-vistula-short.mp3' remapped 'res://assets/audio/water/randommind-vistula-short.mp3' at thread -1
+Loading resource: res://scenery/gravel.gdshader remapped: res://scenery/gravel.gdshader
+Completed load for: 'res://scenery/gravel.gdshader' remapped 'res://scenery/gravel.gdshader' at thread -1
+Loading resource: res://scenery/motion.gdshader remapped: res://scenery/motion.gdshader
+Completed load for: 'res://scenery/motion.gdshader' remapped 'res://scenery/motion.gdshader' at thread -1
+Loading resource: res://scenery/population_person.gdshader remapped: res://scenery/population_person.gdshader
+Completed load for: 'res://scenery/population_person.gdshader' remapped 'res://scenery/population_person.gdshader' at thread -1
+Loading resource: res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader remapped: res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader
+Completed load for: 'res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader' remapped 'res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader' at thread -1
+Loading resource: res://scenery/flowers.gdshader remapped: res://scenery/flowers.gdshader
+Completed load for: 'res://scenery/flowers.gdshader' remapped 'res://scenery/flowers.gdshader' at thread -1
+Loading resource: res://scenery/birds.gdshader remapped: res://scenery/birds.gdshader
+Completed load for: 'res://scenery/birds.gdshader' remapped 'res://scenery/birds.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/ridge_haze.gdshader remapped: res://render/landscape_upgrade/ridge_haze.gdshader
+Completed load for: 'res://render/landscape_upgrade/ridge_haze.gdshader' remapped 'res://render/landscape_upgrade/ridge_haze.gdshader' at thread -1
+Loading resource: res://render/world/stars.gdshader remapped: res://render/world/stars.gdshader
+Loading resource: res://render/world/engine_srgb.gdshaderinc remapped: res://render/world/engine_srgb.gdshaderinc
+Completed load for: 'res://render/world/engine_srgb.gdshaderinc' remapped 'res://render/world/engine_srgb.gdshaderinc' at thread -1
+Completed load for: 'res://render/world/stars.gdshader' remapped 'res://render/world/stars.gdshader' at thread -1
+Loading resource: res://render/world/light_sprite.gdshader remapped: res://render/world/light_sprite.gdshader
+Completed load for: 'res://render/world/light_sprite.gdshader' remapped 'res://render/world/light_sprite.gdshader' at thread -1
+Loading resource: res://render/world/led_strip.gdshader remapped: res://render/world/led_strip.gdshader
+Completed load for: 'res://render/world/led_strip.gdshader' remapped 'res://render/world/led_strip.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/sun_glare.gdshader remapped: res://render/landscape_upgrade/sun_glare.gdshader
+Completed load for: 'res://render/landscape_upgrade/sun_glare.gdshader' remapped 'res://render/landscape_upgrade/sun_glare.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/window_glow.gdshader remapped: res://render/landscape_upgrade/window_glow.gdshader
+Completed load for: 'res://render/landscape_upgrade/window_glow.gdshader' remapped 'res://render/landscape_upgrade/window_glow.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/runway_marker.gdshader remapped: res://render/landscape_upgrade/runway_marker.gdshader
+Completed load for: 'res://render/landscape_upgrade/runway_marker.gdshader' remapped 'res://render/landscape_upgrade/runway_marker.gdshader' at thread -1
+Loading resource: res://ui/slider_grabber.svg remapped: res://ui/slider_grabber.svg
+Loading resource: res://.godot/imported/slider_grabber.svg-4cd5cdcc96619b15b7619cc1fa30c789.ctex remapped: res://.godot/imported/slider_grabber.svg-4cd5cdcc96619b15b7619cc1fa30c789.ctex
+Completed load for: 'res://ui/slider_grabber.svg' remapped 'res://ui/slider_grabber.svg' at thread -1
+Completed load for: 'res://tests/test_workshop_integration.gd' remapped 'res://tests/test_workshop_integration.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+Loading resource: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png remapped: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png
+Loading resource: res://.godot/imported/bush_common_flowers_4view.png-dc10a4cfb048bb02e62177041552fb0f.ctex remapped: res://.godot/imported/bush_common_flowers_4view.png-dc10a4cfb048bb02e62177041552fb0f.ctex
+Completed load for: 'res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png' remapped 'res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Pine_1.gltf remapped: res://assets/landscape/vegetation/models/Pine_1.gltf
+Loading resource: res://.godot/imported/Pine_1.gltf-e0cb0bbe723504e29f0268031ef9b4e0.scn remapped: res://.godot/imported/Pine_1.gltf-e0cb0bbe723504e29f0268031ef9b4e0.scn
+Loading resource: res://assets/landscape/vegetation/models/Bark_NormalTree.png remapped: res://assets/landscape/vegetation/models/Bark_NormalTree.png
+Loading resource: res://.godot/imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.ctex remapped: res://.godot/imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png' remapped 'res://assets/landscape/vegetation/models/Bark_NormalTree.png' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png remapped: res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png
+Loading resource: res://.godot/imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.ctex remapped: res://.godot/imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png' remapped 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Leaf_Pine_C.png remapped: res://assets/landscape/vegetation/models/Leaf_Pine_C.png
+Loading resource: res://.godot/imported/Leaf_Pine_C.png-016dab428dc30ce651e3cfdbe4017841.ctex remapped: res://.godot/imported/Leaf_Pine_C.png-016dab428dc30ce651e3cfdbe4017841.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png' remapped 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Pine_1.gltf' remapped 'res://assets/landscape/vegetation/models/Pine_1.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/CommonTree_3.gltf remapped: res://assets/landscape/vegetation/models/CommonTree_3.gltf
+Loading resource: res://.godot/imported/CommonTree_3.gltf-bbff1f85eb21b0413f98a2d334ce4925.scn remapped: res://.godot/imported/CommonTree_3.gltf-bbff1f85eb21b0413f98a2d334ce4925.scn
+Loading resource: res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png remapped: res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png
+Loading resource: res://.godot/imported/Leaves_NormalTree_C.png-adc42005f213f2d18702805b22ad557e.ctex remapped: res://.godot/imported/Leaves_NormalTree_C.png-adc42005f213f2d18702805b22ad557e.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png' remapped 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf' remapped 'res://assets/landscape/vegetation/models/CommonTree_3.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/CommonTree_1.gltf remapped: res://assets/landscape/vegetation/models/CommonTree_1.gltf
+Loading resource: res://.godot/imported/CommonTree_1.gltf-272007b09f00de3f6135f6e6ae7c8158.scn remapped: res://.godot/imported/CommonTree_1.gltf-272007b09f00de3f6135f6e6ae7c8158.scn
+Completed load for: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf' remapped 'res://assets/landscape/vegetation/models/CommonTree_1.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf remapped: res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf
+Loading resource: res://.godot/imported/Bush_Common_Flowers.gltf-643600e369714c782fa0031321113ea0.scn remapped: res://.godot/imported/Bush_Common_Flowers.gltf-643600e369714c782fa0031321113ea0.scn
+Loading resource: res://assets/landscape/vegetation/models/Flowers.png remapped: res://assets/landscape/vegetation/models/Flowers.png
+Loading resource: res://.godot/imported/Flowers.png-646ddc610b3a5e1e88ea7934ccf9d804.ctex remapped: res://.godot/imported/Flowers.png-646ddc610b3a5e1e88ea7934ccf9d804.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Flowers.png' remapped 'res://assets/landscape/vegetation/models/Flowers.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf' remapped 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Bush_Common.gltf remapped: res://assets/landscape/vegetation/models/Bush_Common.gltf
+Loading resource: res://.godot/imported/Bush_Common.gltf-0f588a0629eff29de809f2ac0b6e2873.scn remapped: res://.godot/imported/Bush_Common.gltf-0f588a0629eff29de809f2ac0b6e2873.scn
+Loading resource: res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png remapped: res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png
+Loading resource: res://.godot/imported/Leaves_TwistedTree_C.png-c9a7e5d8a166f375df2bbebcaa52fb7f.ctex remapped: res://.godot/imported/Leaves_TwistedTree_C.png-c9a7e5d8a166f375df2bbebcaa52fb7f.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png' remapped 'res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Bush_Common.gltf' remapped 'res://assets/landscape/vegetation/models/Bush_Common.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Clover_1.gltf remapped: res://assets/landscape/vegetation/models/Clover_1.gltf
+Loading resource: res://.godot/imported/Clover_1.gltf-720834edb4524bd441c2aad1a64ff6fc.scn remapped: res://.godot/imported/Clover_1.gltf-720834edb4524bd441c2aad1a64ff6fc.scn
+Loading resource: res://assets/landscape/vegetation/models/Leaves.png remapped: res://assets/landscape/vegetation/models/Leaves.png
+Loading resource: res://.godot/imported/Leaves.png-a573ffb4f4f874222087bdbc6b92f7b8.ctex remapped: res://.godot/imported/Leaves.png-a573ffb4f4f874222087bdbc6b92f7b8.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Leaves.png' remapped 'res://assets/landscape/vegetation/models/Leaves.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Clover_1.gltf' remapped 'res://assets/landscape/vegetation/models/Clover_1.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Flower_4_Group.gltf remapped: res://assets/landscape/vegetation/models/Flower_4_Group.gltf
+Loading resource: res://.godot/imported/Flower_4_Group.gltf-9cddf6c6cded07d6c33eb2f995dbe133.scn remapped: res://.godot/imported/Flower_4_Group.gltf-9cddf6c6cded07d6c33eb2f995dbe133.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf' remapped 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Flower_3_Group.gltf remapped: res://assets/landscape/vegetation/models/Flower_3_Group.gltf
+Loading resource: res://.godot/imported/Flower_3_Group.gltf-ccfcab329a805813503a1bba1e513e81.scn remapped: res://.godot/imported/Flower_3_Group.gltf-ccfcab329a805813503a1bba1e513e81.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf' remapped 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf' at thread -1
+Loading resource: res://assets/scenery/population/pilot.glb remapped: res://assets/scenery/population/pilot.glb
+Loading resource: res://.godot/imported/pilot.glb-89740728232196ca73f8cd9b7390f758.scn remapped: res://.godot/imported/pilot.glb-89740728232196ca73f8cd9b7390f758.scn
+Loading resource: res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png remapped: res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png
+Loading resource: res://.godot/imported/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png-c242f96b10a52383a8a635b59be06f41.ctex remapped: res://.godot/imported/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png-c242f96b10a52383a8a635b59be06f41.ctex
+Completed load for: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png' remapped 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png remapped: res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png
+Loading resource: res://.godot/imported/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png-79cf26cc367e0aef2be0a8cc07a2a6ac.ctex remapped: res://.godot/imported/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png-79cf26cc367e0aef2be0a8cc07a2a6ac.ctex
+Completed load for: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png' remapped 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png remapped: res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png
+Loading resource: res://.godot/imported/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png-f07a31f1e2860128e78953523f5c2e15.ctex remapped: res://.godot/imported/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png-f07a31f1e2860128e78953523f5c2e15.ctex
+Completed load for: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png' remapped 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png remapped: res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png
+Loading resource: res://.godot/imported/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png-e96a8a8a8ca9a5147f04d8f2904c0825.ctex remapped: res://.godot/imported/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png-e96a8a8a8ca9a5147f04d8f2904c0825.ctex
+Completed load for: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png' remapped 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png remapped: res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png
+Loading resource: res://.godot/imported/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png-6a39999e6d4382f4041c6e1a949db640.ctex remapped: res://.godot/imported/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png-6a39999e6d4382f4041c6e1a949db640.ctex
+Completed load for: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png' remapped 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png remapped: res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png
+Loading resource: res://.godot/imported/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png-9e99dc6340a612be7d3a7b6b6d6d08c6.ctex remapped: res://.godot/imported/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png-9e99dc6340a612be7d3a7b6b6d6d08c6.ctex
+Completed load for: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png' remapped 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png remapped: res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png
+Loading resource: res://.godot/imported/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png-050e3a69db0c393e61a58baa6a52c46c.ctex remapped: res://.godot/imported/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png-050e3a69db0c393e61a58baa6a52c46c.ctex
+Completed load for: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png' remapped 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png' at thread -1
+Completed load for: 'res://assets/scenery/population/pilot.glb' remapped 'res://assets/scenery/population/pilot.glb' at thread -1
+Loading resource: res://assets/scenery/population/standing.glb remapped: res://assets/scenery/population/standing.glb
+Loading resource: res://.godot/imported/standing.glb-3d2db20a525321499495f9d901e53356.scn remapped: res://.godot/imported/standing.glb-3d2db20a525321499495f9d901e53356.scn
+Completed load for: 'res://assets/scenery/population/standing.glb' remapped 'res://assets/scenery/population/standing.glb' at thread -1
+Loading resource: res://assets/scenery/population/sitting.glb remapped: res://assets/scenery/population/sitting.glb
+Loading resource: res://.godot/imported/sitting.glb-c0b6804321cbcc07a783a05192aeeed9.scn remapped: res://.godot/imported/sitting.glb-c0b6804321cbcc07a783a05192aeeed9.scn
+Completed load for: 'res://assets/scenery/population/sitting.glb' remapped 'res://assets/scenery/population/sitting.glb' at thread -1
+Loading resource: res://assets/scenery/population/hatch.glb remapped: res://assets/scenery/population/hatch.glb
+Loading resource: res://.godot/imported/hatch.glb-97b0207543d52fefc036088ec7ba9c08.scn remapped: res://.godot/imported/hatch.glb-97b0207543d52fefc036088ec7ba9c08.scn
+Loading resource: res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png remapped: res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png
+Loading resource: res://.godot/imported/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png-4d046b6974e4991f8d697000fe29eed6.ctex remapped: res://.godot/imported/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png-4d046b6974e4991f8d697000fe29eed6.ctex
+Completed load for: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png' remapped 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png remapped: res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png
+Loading resource: res://.godot/imported/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png-9d6adb8a3a1c0d5adcc05525efbd42ee.ctex remapped: res://.godot/imported/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png-9d6adb8a3a1c0d5adcc05525efbd42ee.ctex
+Completed load for: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png' remapped 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png remapped: res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png
+Loading resource: res://.godot/imported/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png-d622270794504620d5a83bf45bb7f0e7.ctex remapped: res://.godot/imported/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png-d622270794504620d5a83bf45bb7f0e7.ctex
+Completed load for: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png' remapped 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png remapped: res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png
+Loading resource: res://.godot/imported/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png-6464f14e3a680930a180b04fbc40a3e9.ctex remapped: res://.godot/imported/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png-6464f14e3a680930a180b04fbc40a3e9.ctex
+Completed load for: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png' remapped 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png remapped: res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png
+Loading resource: res://.godot/imported/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png-aeffcf87c65dfb8905a4b804384e678f.ctex remapped: res://.godot/imported/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png-aeffcf87c65dfb8905a4b804384e678f.ctex
+Completed load for: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png' remapped 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png remapped: res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png
+Loading resource: res://.godot/imported/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png-ed7294581163d3b6ce9dde8ebb25b793.ctex remapped: res://.godot/imported/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png-ed7294581163d3b6ce9dde8ebb25b793.ctex
+Completed load for: 'res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png' remapped 'res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png remapped: res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png
+Loading resource: res://.godot/imported/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png-627d64227fc589815b43d4ad721d9a57.ctex remapped: res://.godot/imported/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png-627d64227fc589815b43d4ad721d9a57.ctex
+Completed load for: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png' remapped 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png remapped: res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png
+Loading resource: res://.godot/imported/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png-5f8eb4ce079de1908a8be452640f7e05.ctex remapped: res://.godot/imported/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png-5f8eb4ce079de1908a8be452640f7e05.ctex
+Completed load for: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png' remapped 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png remapped: res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png
+Loading resource: res://.godot/imported/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png-35c61d584a1353abe1f1e01c2ae03e24.ctex remapped: res://.godot/imported/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png-35c61d584a1353abe1f1e01c2ae03e24.ctex
+Completed load for: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png' remapped 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png remapped: res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png
+Loading resource: res://.godot/imported/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png-d82c44aaeaeb1afeb8162ca6bf4cc48f.ctex remapped: res://.godot/imported/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png-d82c44aaeaeb1afeb8162ca6bf4cc48f.ctex
+Completed load for: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png' remapped 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png' at thread -1
+Completed load for: 'res://assets/scenery/population/hatch.glb' remapped 'res://assets/scenery/population/hatch.glb' at thread -1
+Loading resource: res://assets/scenery/population/crossover.glb remapped: res://assets/scenery/population/crossover.glb
+Loading resource: res://.godot/imported/crossover.glb-32e7122d5e3de4101b9d92e905729cd3.scn remapped: res://.godot/imported/crossover.glb-32e7122d5e3de4101b9d92e905729cd3.scn
+Loading resource: res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png remapped: res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png
+Loading resource: res://.godot/imported/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png-918f716c903a4226b842681db67a56bd.ctex remapped: res://.godot/imported/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png-918f716c903a4226b842681db67a56bd.ctex
+Completed load for: 'res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png' remapped 'res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png' at thread -1
+Completed load for: 'res://assets/scenery/population/crossover.glb' remapped 'res://assets/scenery/population/crossover.glb' at thread -1
+Loading resource: res://assets/scenery/population/sedan.glb remapped: res://assets/scenery/population/sedan.glb
+Loading resource: res://.godot/imported/sedan.glb-f232efc5a5bf129ff6438b65285f66aa.scn remapped: res://.godot/imported/sedan.glb-f232efc5a5bf129ff6438b65285f66aa.scn
+Loading resource: res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png remapped: res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png
+Loading resource: res://.godot/imported/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png-e7c7fa5a444acec8eb7938c4695a0ac3.ctex remapped: res://.godot/imported/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png-e7c7fa5a444acec8eb7938c4695a0ac3.ctex
+Completed load for: 'res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png' remapped 'res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png' at thread -1
+Completed load for: 'res://assets/scenery/population/sedan.glb' remapped 'res://assets/scenery/population/sedan.glb' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf remapped: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf
+Loading resource: res://.godot/imported/Grass_Common_Short.gltf-876bbbf048b395985b2a294d9faf1abf.scn remapped: res://.godot/imported/Grass_Common_Short.gltf-876bbbf048b395985b2a294d9faf1abf.scn
+Loading resource: res://assets/landscape/vegetation/models/Grass.png remapped: res://assets/landscape/vegetation/models/Grass.png
+Loading resource: res://.godot/imported/Grass.png-0f8c4704eafceedf3c661e0f69e7b564.ctex remapped: res://.godot/imported/Grass.png-0f8c4704eafceedf3c661e0f69e7b564.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Grass.png' remapped 'res://assets/landscape/vegetation/models/Grass.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf' remapped 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Fern_1.gltf remapped: res://assets/landscape/vegetation/models/Fern_1.gltf
+Loading resource: res://.godot/imported/Fern_1.gltf-8408317c172591bbebc72d68094373c7.scn remapped: res://.godot/imported/Fern_1.gltf-8408317c172591bbebc72d68094373c7.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Fern_1.gltf' remapped 'res://assets/landscape/vegetation/models/Fern_1.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf remapped: res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf
+Loading resource: res://.godot/imported/Grass_Common_Tall.gltf-d0e949d6b4cbfe9660497b3aa3f1d888.scn remapped: res://.godot/imported/Grass_Common_Tall.gltf-d0e949d6b4cbfe9660497b3aa3f1d888.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf' remapped 'res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf remapped: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf
+Loading resource: res://.godot/imported/Grass_Wispy_Tall.gltf-47448376d02a5391e52cae693c124e04.scn remapped: res://.godot/imported/Grass_Wispy_Tall.gltf-47448376d02a5391e52cae693c124e04.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf' remapped 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj remapped: res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj
+Loading resource: res://.godot/imported/Corn_4.obj-45a3391544b7ad685ae22b82922757a8.mesh remapped: res://.godot/imported/Corn_4.obj-45a3391544b7ad685ae22b82922757a8.mesh
+Completed load for: 'res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj' remapped 'res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj remapped: res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj
+Loading resource: res://.godot/imported/Wheat_4.obj-645d0d651afebd3a9ec7bc3c22f0a7a4.mesh remapped: res://.godot/imported/Wheat_4.obj-645d0d651afebd3a9ec7bc3c22f0a7a4.mesh
+Completed load for: 'res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj' remapped 'res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj remapped: res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj
+Loading resource: res://.godot/imported/reed.obj-6447901ba401c4ab445beb38d4e3b0a1.mesh remapped: res://.godot/imported/reed.obj-6447901ba401c4ab445beb38d4e3b0a1.mesh
+Completed load for: 'res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj' remapped 'res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj' at thread -1
+Loading resource: res://aircraft/model_registry.gd remapped: res://aircraft/model_registry.gd
+Completed load for: 'res://aircraft/model_registry.gd' remapped 'res://aircraft/model_registry.gd' at thread -1
+Loading resource: res://ui/key_labels.gd remapped: res://ui/key_labels.gd
+Completed load for: 'res://ui/key_labels.gd' remapped 'res://ui/key_labels.gd' at thread -1
+Loading resource: res://ui/workshop.gd remapped: res://ui/workshop.gd
+Completed load for: 'res://ui/workshop.gd' remapped 'res://ui/workshop.gd' at thread -1
+ok   Home keyboard opens Workshop
+Loading resource: res://workshop/trial.gd remapped: res://workshop/trial.gd
+Completed load for: 'res://workshop/trial.gd' remapped 'res://workshop/trial.gd' at thread -1
+Loading resource: res://main.tscn remapped: res://main.tscn
+Loading resource: res://main.gd remapped: res://main.gd
+Loading resource: res://render/smoke/process.gdshader remapped: res://render/smoke/process.gdshader
+Completed load for: 'res://render/smoke/process.gdshader' remapped 'res://render/smoke/process.gdshader' at thread -1
+Completed load for: 'res://main.gd' remapped 'res://main.gd' at thread -1
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 6.1934 kg·m2 is 2.11× the scaled UltraStick25e value
+Loading resource: res://assets/audio/soundscape/motor_combustion.wav remapped: res://assets/audio/soundscape/motor_combustion.wav
+Loading resource: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample remapped: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample
+Completed load for: 'res://assets/audio/soundscape/motor_combustion.wav' remapped 'res://assets/audio/soundscape/motor_combustion.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/motor_propeller.wav remapped: res://assets/audio/soundscape/motor_propeller.wav
+Loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample remapped: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample
+Completed load for: 'res://assets/audio/soundscape/motor_propeller.wav' remapped 'res://assets/audio/soundscape/motor_propeller.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/airframe.wav remapped: res://assets/audio/soundscape/airframe.wav
+Loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample remapped: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample
+Completed load for: 'res://assets/audio/soundscape/airframe.wav' remapped 'res://assets/audio/soundscape/airframe.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_low.wav remapped: res://assets/audio/soundscape/wind_low.wav
+Loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample remapped: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample
+Completed load for: 'res://assets/audio/soundscape/wind_low.wav' remapped 'res://assets/audio/soundscape/wind_low.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_high.wav remapped: res://assets/audio/soundscape/wind_high.wav
+Loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample remapped: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample
+Completed load for: 'res://assets/audio/soundscape/wind_high.wav' remapped 'res://assets/audio/soundscape/wind_high.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_01.wav remapped: res://assets/audio/soundscape/birds_01.wav
+Loading resource: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample remapped: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample
+Completed load for: 'res://assets/audio/soundscape/birds_01.wav' remapped 'res://assets/audio/soundscape/birds_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_02.wav remapped: res://assets/audio/soundscape/birds_02.wav
+Loading resource: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample remapped: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample
+Completed load for: 'res://assets/audio/soundscape/birds_02.wav' remapped 'res://assets/audio/soundscape/birds_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_03.wav remapped: res://assets/audio/soundscape/birds_03.wav
+Loading resource: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample remapped: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample
+Completed load for: 'res://assets/audio/soundscape/birds_03.wav' remapped 'res://assets/audio/soundscape/birds_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_04.wav remapped: res://assets/audio/soundscape/birds_04.wav
+Loading resource: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample remapped: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample
+Completed load for: 'res://assets/audio/soundscape/birds_04.wav' remapped 'res://assets/audio/soundscape/birds_04.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_05.wav remapped: res://assets/audio/soundscape/birds_05.wav
+Loading resource: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample remapped: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample
+Completed load for: 'res://assets/audio/soundscape/birds_05.wav' remapped 'res://assets/audio/soundscape/birds_05.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_06.wav remapped: res://assets/audio/soundscape/birds_06.wav
+Loading resource: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample remapped: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample
+Completed load for: 'res://assets/audio/soundscape/birds_06.wav' remapped 'res://assets/audio/soundscape/birds_06.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_01.wav remapped: res://assets/audio/soundscape/wildlife/bird_01.wav
+Loading resource: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample remapped: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_01.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_02.wav remapped: res://assets/audio/soundscape/wildlife/bird_02.wav
+Loading resource: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample remapped: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_02.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_03.wav remapped: res://assets/audio/soundscape/wildlife/bird_03.wav
+Loading resource: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample remapped: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_03.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_04.wav remapped: res://assets/audio/soundscape/wildlife/bird_04.wav
+Loading resource: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample remapped: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_04.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_04.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_01.wav remapped: res://assets/audio/soundscape/wildlife/crow_01.wav
+Loading resource: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample remapped: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_01.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_02.wav remapped: res://assets/audio/soundscape/wildlife/crow_02.wav
+Loading resource: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample remapped: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_02.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav remapped: res://assets/audio/soundscape/wildlife/crow_03.wav
+Loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample remapped: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_03.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_01.wav remapped: res://assets/audio/soundscape/wildlife/owl_01.wav
+Loading resource: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample remapped: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_01.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_02.wav remapped: res://assets/audio/soundscape/wildlife/owl_02.wav
+Loading resource: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample remapped: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_02.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_03.wav remapped: res://assets/audio/soundscape/wildlife/owl_03.wav
+Loading resource: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample remapped: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_03.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_01.wav remapped: res://assets/audio/soundscape/wildlife/dog_01.wav
+Loading resource: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample remapped: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_01.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_02.wav remapped: res://assets/audio/soundscape/wildlife/dog_02.wav
+Loading resource: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample remapped: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_02.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_03.wav remapped: res://assets/audio/soundscape/wildlife/dog_03.wav
+Loading resource: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample remapped: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_03.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_01.wav remapped: res://assets/audio/soundscape/wildlife/cricket_01.wav
+Loading resource: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample remapped: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_01.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_02.wav remapped: res://assets/audio/soundscape/wildlife/cricket_02.wav
+Loading resource: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample remapped: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_02.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_02.wav' at thread -1
+Loading resource: res://assets/crash/smoke.png remapped: res://assets/crash/smoke.png
+Loading resource: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex remapped: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex
+Completed load for: 'res://assets/crash/smoke.png' remapped 'res://assets/crash/smoke.png' at thread -1
+Loading resource: res://assets/crash/flame.png remapped: res://assets/crash/flame.png
+Loading resource: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex remapped: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex
+Completed load for: 'res://assets/crash/flame.png' remapped 'res://assets/crash/flame.png' at thread -1
+Loading resource: res://assets/audio/crash/crack_light.wav remapped: res://assets/audio/crash/crack_light.wav
+Loading resource: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample remapped: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample
+Completed load for: 'res://assets/audio/crash/crack_light.wav' remapped 'res://assets/audio/crash/crack_light.wav' at thread -1
+Loading resource: res://assets/audio/crash/crack_heavy.wav remapped: res://assets/audio/crash/crack_heavy.wav
+Loading resource: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample remapped: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample
+Completed load for: 'res://assets/audio/crash/crack_heavy.wav' remapped 'res://assets/audio/crash/crack_heavy.wav' at thread -1
+Loading resource: res://assets/audio/crash/tear.wav remapped: res://assets/audio/crash/tear.wav
+Loading resource: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample remapped: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample
+Completed load for: 'res://assets/audio/crash/tear.wav' remapped 'res://assets/audio/crash/tear.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_grass.wav remapped: res://assets/audio/crash/impact_grass.wav
+Loading resource: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample remapped: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample
+Completed load for: 'res://assets/audio/crash/impact_grass.wav' remapped 'res://assets/audio/crash/impact_grass.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_dirt.wav remapped: res://assets/audio/crash/impact_dirt.wav
+Loading resource: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample remapped: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample
+Completed load for: 'res://assets/audio/crash/impact_dirt.wav' remapped 'res://assets/audio/crash/impact_dirt.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_hard.wav remapped: res://assets/audio/crash/impact_hard.wav
+Loading resource: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample remapped: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample
+Completed load for: 'res://assets/audio/crash/impact_hard.wav' remapped 'res://assets/audio/crash/impact_hard.wav' at thread -1
+Loading resource: res://assets/audio/crash/scrape.wav remapped: res://assets/audio/crash/scrape.wav
+Loading resource: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample remapped: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample
+Completed load for: 'res://assets/audio/crash/scrape.wav' remapped 'res://assets/audio/crash/scrape.wav' at thread -1
+Loading resource: res://assets/audio/crash/debris.wav remapped: res://assets/audio/crash/debris.wav
+Loading resource: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample remapped: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample
+Completed load for: 'res://assets/audio/crash/debris.wav' remapped 'res://assets/audio/crash/debris.wav' at thread -1
+Loading resource: res://assets/audio/crash/secondary_hit.wav remapped: res://assets/audio/crash/secondary_hit.wav
+Loading resource: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample remapped: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample
+Completed load for: 'res://assets/audio/crash/secondary_hit.wav' remapped 'res://assets/audio/crash/secondary_hit.wav' at thread -1
+Loading resource: res://assets/audio/crash/engine_cut.wav remapped: res://assets/audio/crash/engine_cut.wav
+Loading resource: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample remapped: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample
+Completed load for: 'res://assets/audio/crash/engine_cut.wav' remapped 'res://assets/audio/crash/engine_cut.wav' at thread -1
+Loading resource: res://assets/audio/crash/turbine_spool.wav remapped: res://assets/audio/crash/turbine_spool.wav
+Loading resource: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample remapped: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample
+Completed load for: 'res://assets/audio/crash/turbine_spool.wav' remapped 'res://assets/audio/crash/turbine_spool.wav' at thread -1
+Loading resource: res://assets/audio/crash/fire_loop.wav remapped: res://assets/audio/crash/fire_loop.wav
+Loading resource: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample remapped: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample
+Completed load for: 'res://assets/audio/crash/fire_loop.wav' remapped 'res://assets/audio/crash/fire_loop.wav' at thread -1
+ok   200% trial starts
+ok   trial has distinct physical identity
+ok   catalog visual identity is retained
+ok   trial is airborne
+ok   trial trace records exact source
+aircraft data warning: inertia: Jyy = 6.1934 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   F5 resolves frozen candidate
+ok   render pose preserves 200% scale
+ok   scaled CG is the simulated world position
+ok   camera extent follows scaled geometry
+ok   wreck geometry follows jensen-das-ugly-stik-60 at 200%
+ok   wreck rigid bodies keep unit scale
+ok   trial restart keeps frozen identity and experimental mass
+ok   return restores same editor instance
+ok   trial return preserves draft and edit history
+ok   Home is still behind editor
+Loading resource: res://aircraft/extra_300s_model.gd remapped: res://aircraft/extra_300s_model.gd
+Completed load for: 'res://aircraft/extra_300s_model.gd' remapped 'res://aircraft/extra_300s_model.gd' at thread -1
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+Loading resource: res://assets/audio/soundscape/motor_combustion.wav remapped: res://assets/audio/soundscape/motor_combustion.wav
+Loading resource: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample remapped: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample
+Completed load for: 'res://assets/audio/soundscape/motor_combustion.wav' remapped 'res://assets/audio/soundscape/motor_combustion.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/motor_propeller.wav remapped: res://assets/audio/soundscape/motor_propeller.wav
+Loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample remapped: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample
+Completed load for: 'res://assets/audio/soundscape/motor_propeller.wav' remapped 'res://assets/audio/soundscape/motor_propeller.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/airframe.wav remapped: res://assets/audio/soundscape/airframe.wav
+Loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample remapped: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample
+Completed load for: 'res://assets/audio/soundscape/airframe.wav' remapped 'res://assets/audio/soundscape/airframe.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_low.wav remapped: res://assets/audio/soundscape/wind_low.wav
+Loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample remapped: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample
+Completed load for: 'res://assets/audio/soundscape/wind_low.wav' remapped 'res://assets/audio/soundscape/wind_low.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_high.wav remapped: res://assets/audio/soundscape/wind_high.wav
+Loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample remapped: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample
+Completed load for: 'res://assets/audio/soundscape/wind_high.wav' remapped 'res://assets/audio/soundscape/wind_high.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_01.wav remapped: res://assets/audio/soundscape/birds_01.wav
+Loading resource: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample remapped: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample
+Completed load for: 'res://assets/audio/soundscape/birds_01.wav' remapped 'res://assets/audio/soundscape/birds_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_02.wav remapped: res://assets/audio/soundscape/birds_02.wav
+Loading resource: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample remapped: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample
+Completed load for: 'res://assets/audio/soundscape/birds_02.wav' remapped 'res://assets/audio/soundscape/birds_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_03.wav remapped: res://assets/audio/soundscape/birds_03.wav
+Loading resource: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample remapped: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample
+Completed load for: 'res://assets/audio/soundscape/birds_03.wav' remapped 'res://assets/audio/soundscape/birds_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_04.wav remapped: res://assets/audio/soundscape/birds_04.wav
+Loading resource: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample remapped: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample
+Completed load for: 'res://assets/audio/soundscape/birds_04.wav' remapped 'res://assets/audio/soundscape/birds_04.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_05.wav remapped: res://assets/audio/soundscape/birds_05.wav
+Loading resource: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample remapped: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample
+Completed load for: 'res://assets/audio/soundscape/birds_05.wav' remapped 'res://assets/audio/soundscape/birds_05.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_06.wav remapped: res://assets/audio/soundscape/birds_06.wav
+Loading resource: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample remapped: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample
+Completed load for: 'res://assets/audio/soundscape/birds_06.wav' remapped 'res://assets/audio/soundscape/birds_06.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_01.wav remapped: res://assets/audio/soundscape/wildlife/bird_01.wav
+Loading resource: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample remapped: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_01.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_02.wav remapped: res://assets/audio/soundscape/wildlife/bird_02.wav
+Loading resource: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample remapped: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_02.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_03.wav remapped: res://assets/audio/soundscape/wildlife/bird_03.wav
+Loading resource: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample remapped: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_03.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_04.wav remapped: res://assets/audio/soundscape/wildlife/bird_04.wav
+Loading resource: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample remapped: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_04.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_04.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_01.wav remapped: res://assets/audio/soundscape/wildlife/crow_01.wav
+Loading resource: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample remapped: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_01.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_02.wav remapped: res://assets/audio/soundscape/wildlife/crow_02.wav
+Loading resource: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample remapped: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_02.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav remapped: res://assets/audio/soundscape/wildlife/crow_03.wav
+Loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample remapped: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_03.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_01.wav remapped: res://assets/audio/soundscape/wildlife/owl_01.wav
+Loading resource: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample remapped: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_01.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_02.wav remapped: res://assets/audio/soundscape/wildlife/owl_02.wav
+Loading resource: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample remapped: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_02.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_03.wav remapped: res://assets/audio/soundscape/wildlife/owl_03.wav
+Loading resource: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample remapped: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_03.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_01.wav remapped: res://assets/audio/soundscape/wildlife/dog_01.wav
+Loading resource: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample remapped: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_01.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_02.wav remapped: res://assets/audio/soundscape/wildlife/dog_02.wav
+Loading resource: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample remapped: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_02.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_03.wav remapped: res://assets/audio/soundscape/wildlife/dog_03.wav
+Loading resource: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample remapped: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_03.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_01.wav remapped: res://assets/audio/soundscape/wildlife/cricket_01.wav
+Loading resource: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample remapped: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_01.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_02.wav remapped: res://assets/audio/soundscape/wildlife/cricket_02.wav
+Loading resource: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample remapped: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_02.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_02.wav' at thread -1
+Loading resource: res://assets/crash/smoke.png remapped: res://assets/crash/smoke.png
+Loading resource: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex remapped: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex
+Completed load for: 'res://assets/crash/smoke.png' remapped 'res://assets/crash/smoke.png' at thread -1
+Loading resource: res://assets/crash/flame.png remapped: res://assets/crash/flame.png
+Loading resource: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex remapped: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex
+Completed load for: 'res://assets/crash/flame.png' remapped 'res://assets/crash/flame.png' at thread -1
+Loading resource: res://assets/audio/crash/crack_light.wav remapped: res://assets/audio/crash/crack_light.wav
+Loading resource: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample remapped: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample
+Completed load for: 'res://assets/audio/crash/crack_light.wav' remapped 'res://assets/audio/crash/crack_light.wav' at thread -1
+Loading resource: res://assets/audio/crash/crack_heavy.wav remapped: res://assets/audio/crash/crack_heavy.wav
+Loading resource: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample remapped: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample
+Completed load for: 'res://assets/audio/crash/crack_heavy.wav' remapped 'res://assets/audio/crash/crack_heavy.wav' at thread -1
+Loading resource: res://assets/audio/crash/tear.wav remapped: res://assets/audio/crash/tear.wav
+Loading resource: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample remapped: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample
+Completed load for: 'res://assets/audio/crash/tear.wav' remapped 'res://assets/audio/crash/tear.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_grass.wav remapped: res://assets/audio/crash/impact_grass.wav
+Loading resource: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample remapped: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample
+Completed load for: 'res://assets/audio/crash/impact_grass.wav' remapped 'res://assets/audio/crash/impact_grass.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_dirt.wav remapped: res://assets/audio/crash/impact_dirt.wav
+Loading resource: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample remapped: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample
+Completed load for: 'res://assets/audio/crash/impact_dirt.wav' remapped 'res://assets/audio/crash/impact_dirt.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_hard.wav remapped: res://assets/audio/crash/impact_hard.wav
+Loading resource: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample remapped: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample
+Completed load for: 'res://assets/audio/crash/impact_hard.wav' remapped 'res://assets/audio/crash/impact_hard.wav' at thread -1
+Loading resource: res://assets/audio/crash/scrape.wav remapped: res://assets/audio/crash/scrape.wav
+Loading resource: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample remapped: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample
+Completed load for: 'res://assets/audio/crash/scrape.wav' remapped 'res://assets/audio/crash/scrape.wav' at thread -1
+Loading resource: res://assets/audio/crash/debris.wav remapped: res://assets/audio/crash/debris.wav
+Loading resource: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample remapped: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample
+Completed load for: 'res://assets/audio/crash/debris.wav' remapped 'res://assets/audio/crash/debris.wav' at thread -1
+Loading resource: res://assets/audio/crash/secondary_hit.wav remapped: res://assets/audio/crash/secondary_hit.wav
+Loading resource: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample remapped: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample
+Completed load for: 'res://assets/audio/crash/secondary_hit.wav' remapped 'res://assets/audio/crash/secondary_hit.wav' at thread -1
+Loading resource: res://assets/audio/crash/engine_cut.wav remapped: res://assets/audio/crash/engine_cut.wav
+Loading resource: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample remapped: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample
+Completed load for: 'res://assets/audio/crash/engine_cut.wav' remapped 'res://assets/audio/crash/engine_cut.wav' at thread -1
+Loading resource: res://assets/audio/crash/turbine_spool.wav remapped: res://assets/audio/crash/turbine_spool.wav
+Loading resource: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample remapped: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample
+Completed load for: 'res://assets/audio/crash/turbine_spool.wav' remapped 'res://assets/audio/crash/turbine_spool.wav' at thread -1
+Loading resource: res://assets/audio/crash/fire_loop.wav remapped: res://assets/audio/crash/fire_loop.wav
+Loading resource: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample remapped: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample
+Completed load for: 'res://assets/audio/crash/fire_loop.wav' remapped 'res://assets/audio/crash/fire_loop.wav' at thread -1
+ok   Extra 50% starts through the same Workshop action
+ok   wreck geometry follows gp-extra-300s-60 at 50%
+ok   wreck rigid bodies keep unit scale
+ok   Extra returns to the same draft
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+Loading resource: res://assets/audio/soundscape/motor_combustion.wav remapped: res://assets/audio/soundscape/motor_combustion.wav
+Loading resource: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample remapped: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample
+Completed load for: 'res://assets/audio/soundscape/motor_combustion.wav' remapped 'res://assets/audio/soundscape/motor_combustion.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/motor_propeller.wav remapped: res://assets/audio/soundscape/motor_propeller.wav
+Loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample remapped: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample
+Completed load for: 'res://assets/audio/soundscape/motor_propeller.wav' remapped 'res://assets/audio/soundscape/motor_propeller.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/airframe.wav remapped: res://assets/audio/soundscape/airframe.wav
+Loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample remapped: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample
+Completed load for: 'res://assets/audio/soundscape/airframe.wav' remapped 'res://assets/audio/soundscape/airframe.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_low.wav remapped: res://assets/audio/soundscape/wind_low.wav
+Loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample remapped: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample
+Completed load for: 'res://assets/audio/soundscape/wind_low.wav' remapped 'res://assets/audio/soundscape/wind_low.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_high.wav remapped: res://assets/audio/soundscape/wind_high.wav
+Loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample remapped: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample
+Completed load for: 'res://assets/audio/soundscape/wind_high.wav' remapped 'res://assets/audio/soundscape/wind_high.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_01.wav remapped: res://assets/audio/soundscape/birds_01.wav
+Loading resource: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample remapped: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample
+Completed load for: 'res://assets/audio/soundscape/birds_01.wav' remapped 'res://assets/audio/soundscape/birds_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_02.wav remapped: res://assets/audio/soundscape/birds_02.wav
+Loading resource: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample remapped: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample
+Completed load for: 'res://assets/audio/soundscape/birds_02.wav' remapped 'res://assets/audio/soundscape/birds_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_03.wav remapped: res://assets/audio/soundscape/birds_03.wav
+Loading resource: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample remapped: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample
+Completed load for: 'res://assets/audio/soundscape/birds_03.wav' remapped 'res://assets/audio/soundscape/birds_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_04.wav remapped: res://assets/audio/soundscape/birds_04.wav
+Loading resource: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample remapped: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample
+Completed load for: 'res://assets/audio/soundscape/birds_04.wav' remapped 'res://assets/audio/soundscape/birds_04.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_05.wav remapped: res://assets/audio/soundscape/birds_05.wav
+Loading resource: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample remapped: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample
+Completed load for: 'res://assets/audio/soundscape/birds_05.wav' remapped 'res://assets/audio/soundscape/birds_05.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_06.wav remapped: res://assets/audio/soundscape/birds_06.wav
+Loading resource: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample remapped: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample
+Completed load for: 'res://assets/audio/soundscape/birds_06.wav' remapped 'res://assets/audio/soundscape/birds_06.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_01.wav remapped: res://assets/audio/soundscape/wildlife/bird_01.wav
+Loading resource: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample remapped: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_01.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_02.wav remapped: res://assets/audio/soundscape/wildlife/bird_02.wav
+Loading resource: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample remapped: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_02.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_03.wav remapped: res://assets/audio/soundscape/wildlife/bird_03.wav
+Loading resource: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample remapped: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_03.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_04.wav remapped: res://assets/audio/soundscape/wildlife/bird_04.wav
+Loading resource: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample remapped: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_04.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_04.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_01.wav remapped: res://assets/audio/soundscape/wildlife/crow_01.wav
+Loading resource: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample remapped: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_01.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_02.wav remapped: res://assets/audio/soundscape/wildlife/crow_02.wav
+Loading resource: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample remapped: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_02.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav remapped: res://assets/audio/soundscape/wildlife/crow_03.wav
+Loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample remapped: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_03.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_01.wav remapped: res://assets/audio/soundscape/wildlife/owl_01.wav
+Loading resource: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample remapped: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_01.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_02.wav remapped: res://assets/audio/soundscape/wildlife/owl_02.wav
+Loading resource: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample remapped: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_02.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_03.wav remapped: res://assets/audio/soundscape/wildlife/owl_03.wav
+Loading resource: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample remapped: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_03.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_01.wav remapped: res://assets/audio/soundscape/wildlife/dog_01.wav
+Loading resource: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample remapped: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_01.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_02.wav remapped: res://assets/audio/soundscape/wildlife/dog_02.wav
+Loading resource: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample remapped: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_02.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_03.wav remapped: res://assets/audio/soundscape/wildlife/dog_03.wav
+Loading resource: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample remapped: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_03.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_01.wav remapped: res://assets/audio/soundscape/wildlife/cricket_01.wav
+Loading resource: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample remapped: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_01.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_02.wav remapped: res://assets/audio/soundscape/wildlife/cricket_02.wav
+Loading resource: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample remapped: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_02.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_02.wav' at thread -1
+Loading resource: res://assets/crash/smoke.png remapped: res://assets/crash/smoke.png
+Loading resource: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex remapped: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex
+Completed load for: 'res://assets/crash/smoke.png' remapped 'res://assets/crash/smoke.png' at thread -1
+Loading resource: res://assets/crash/flame.png remapped: res://assets/crash/flame.png
+Loading resource: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex remapped: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex
+Completed load for: 'res://assets/crash/flame.png' remapped 'res://assets/crash/flame.png' at thread -1
+Loading resource: res://assets/audio/crash/crack_light.wav remapped: res://assets/audio/crash/crack_light.wav
+Loading resource: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample remapped: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample
+Completed load for: 'res://assets/audio/crash/crack_light.wav' remapped 'res://assets/audio/crash/crack_light.wav' at thread -1
+Loading resource: res://assets/audio/crash/crack_heavy.wav remapped: res://assets/audio/crash/crack_heavy.wav
+Loading resource: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample remapped: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample
+Completed load for: 'res://assets/audio/crash/crack_heavy.wav' remapped 'res://assets/audio/crash/crack_heavy.wav' at thread -1
+Loading resource: res://assets/audio/crash/tear.wav remapped: res://assets/audio/crash/tear.wav
+Loading resource: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample remapped: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample
+Completed load for: 'res://assets/audio/crash/tear.wav' remapped 'res://assets/audio/crash/tear.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_grass.wav remapped: res://assets/audio/crash/impact_grass.wav
+Loading resource: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample remapped: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample
+Completed load for: 'res://assets/audio/crash/impact_grass.wav' remapped 'res://assets/audio/crash/impact_grass.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_dirt.wav remapped: res://assets/audio/crash/impact_dirt.wav
+Loading resource: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample remapped: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample
+Completed load for: 'res://assets/audio/crash/impact_dirt.wav' remapped 'res://assets/audio/crash/impact_dirt.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_hard.wav remapped: res://assets/audio/crash/impact_hard.wav
+Loading resource: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample remapped: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample
+Completed load for: 'res://assets/audio/crash/impact_hard.wav' remapped 'res://assets/audio/crash/impact_hard.wav' at thread -1
+Loading resource: res://assets/audio/crash/scrape.wav remapped: res://assets/audio/crash/scrape.wav
+Loading resource: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample remapped: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample
+Completed load for: 'res://assets/audio/crash/scrape.wav' remapped 'res://assets/audio/crash/scrape.wav' at thread -1
+Loading resource: res://assets/audio/crash/debris.wav remapped: res://assets/audio/crash/debris.wav
+Loading resource: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample remapped: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample
+Completed load for: 'res://assets/audio/crash/debris.wav' remapped 'res://assets/audio/crash/debris.wav' at thread -1
+Loading resource: res://assets/audio/crash/secondary_hit.wav remapped: res://assets/audio/crash/secondary_hit.wav
+Loading resource: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample remapped: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample
+Completed load for: 'res://assets/audio/crash/secondary_hit.wav' remapped 'res://assets/audio/crash/secondary_hit.wav' at thread -1
+Loading resource: res://assets/audio/crash/engine_cut.wav remapped: res://assets/audio/crash/engine_cut.wav
+Loading resource: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample remapped: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample
+Completed load for: 'res://assets/audio/crash/engine_cut.wav' remapped 'res://assets/audio/crash/engine_cut.wav' at thread -1
+Loading resource: res://assets/audio/crash/turbine_spool.wav remapped: res://assets/audio/crash/turbine_spool.wav
+Loading resource: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample remapped: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample
+Completed load for: 'res://assets/audio/crash/turbine_spool.wav' remapped 'res://assets/audio/crash/turbine_spool.wav' at thread -1
+Loading resource: res://assets/audio/crash/fire_loop.wav remapped: res://assets/audio/crash/fire_loop.wav
+Loading resource: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample remapped: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample
+Completed load for: 'res://assets/audio/crash/fire_loop.wav' remapped 'res://assets/audio/crash/fire_loop.wav' at thread -1
+ok   Extra 200% starts through the same Workshop action
+ok   wreck geometry follows gp-extra-300s-60 at 200%
+ok   wreck rigid bodies keep unit scale
+ok   Extra returns to the same draft
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Loading resource: res://assets/audio/soundscape/motor_combustion.wav remapped: res://assets/audio/soundscape/motor_combustion.wav
+Loading resource: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample remapped: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample
+Completed load for: 'res://assets/audio/soundscape/motor_combustion.wav' remapped 'res://assets/audio/soundscape/motor_combustion.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/motor_propeller.wav remapped: res://assets/audio/soundscape/motor_propeller.wav
+Loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample remapped: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample
+Completed load for: 'res://assets/audio/soundscape/motor_propeller.wav' remapped 'res://assets/audio/soundscape/motor_propeller.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/airframe.wav remapped: res://assets/audio/soundscape/airframe.wav
+Loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample remapped: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample
+Completed load for: 'res://assets/audio/soundscape/airframe.wav' remapped 'res://assets/audio/soundscape/airframe.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_low.wav remapped: res://assets/audio/soundscape/wind_low.wav
+Loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample remapped: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample
+Completed load for: 'res://assets/audio/soundscape/wind_low.wav' remapped 'res://assets/audio/soundscape/wind_low.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_high.wav remapped: res://assets/audio/soundscape/wind_high.wav
+Loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample remapped: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample
+Completed load for: 'res://assets/audio/soundscape/wind_high.wav' remapped 'res://assets/audio/soundscape/wind_high.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_01.wav remapped: res://assets/audio/soundscape/birds_01.wav
+Loading resource: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample remapped: res://.godot/imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample
+Completed load for: 'res://assets/audio/soundscape/birds_01.wav' remapped 'res://assets/audio/soundscape/birds_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_02.wav remapped: res://assets/audio/soundscape/birds_02.wav
+Loading resource: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample remapped: res://.godot/imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample
+Completed load for: 'res://assets/audio/soundscape/birds_02.wav' remapped 'res://assets/audio/soundscape/birds_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_03.wav remapped: res://assets/audio/soundscape/birds_03.wav
+Loading resource: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample remapped: res://.godot/imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample
+Completed load for: 'res://assets/audio/soundscape/birds_03.wav' remapped 'res://assets/audio/soundscape/birds_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_04.wav remapped: res://assets/audio/soundscape/birds_04.wav
+Loading resource: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample remapped: res://.godot/imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample
+Completed load for: 'res://assets/audio/soundscape/birds_04.wav' remapped 'res://assets/audio/soundscape/birds_04.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_05.wav remapped: res://assets/audio/soundscape/birds_05.wav
+Loading resource: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample remapped: res://.godot/imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample
+Completed load for: 'res://assets/audio/soundscape/birds_05.wav' remapped 'res://assets/audio/soundscape/birds_05.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/birds_06.wav remapped: res://assets/audio/soundscape/birds_06.wav
+Loading resource: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample remapped: res://.godot/imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample
+Completed load for: 'res://assets/audio/soundscape/birds_06.wav' remapped 'res://assets/audio/soundscape/birds_06.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_01.wav remapped: res://assets/audio/soundscape/wildlife/bird_01.wav
+Loading resource: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample remapped: res://.godot/imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_01.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_02.wav remapped: res://assets/audio/soundscape/wildlife/bird_02.wav
+Loading resource: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample remapped: res://.godot/imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_02.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_03.wav remapped: res://assets/audio/soundscape/wildlife/bird_03.wav
+Loading resource: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample remapped: res://.godot/imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_03.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/bird_04.wav remapped: res://assets/audio/soundscape/wildlife/bird_04.wav
+Loading resource: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample remapped: res://.godot/imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/bird_04.wav' remapped 'res://assets/audio/soundscape/wildlife/bird_04.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_01.wav remapped: res://assets/audio/soundscape/wildlife/crow_01.wav
+Loading resource: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample remapped: res://.godot/imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_01.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_02.wav remapped: res://assets/audio/soundscape/wildlife/crow_02.wav
+Loading resource: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample remapped: res://.godot/imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_02.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav remapped: res://assets/audio/soundscape/wildlife/crow_03.wav
+Loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample remapped: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/crow_03.wav' remapped 'res://assets/audio/soundscape/wildlife/crow_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_01.wav remapped: res://assets/audio/soundscape/wildlife/owl_01.wav
+Loading resource: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample remapped: res://.godot/imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_01.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_02.wav remapped: res://assets/audio/soundscape/wildlife/owl_02.wav
+Loading resource: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample remapped: res://.godot/imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_02.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/owl_03.wav remapped: res://assets/audio/soundscape/wildlife/owl_03.wav
+Loading resource: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample remapped: res://.godot/imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/owl_03.wav' remapped 'res://assets/audio/soundscape/wildlife/owl_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_01.wav remapped: res://assets/audio/soundscape/wildlife/dog_01.wav
+Loading resource: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample remapped: res://.godot/imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_01.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_02.wav remapped: res://assets/audio/soundscape/wildlife/dog_02.wav
+Loading resource: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample remapped: res://.godot/imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_02.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_02.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/dog_03.wav remapped: res://assets/audio/soundscape/wildlife/dog_03.wav
+Loading resource: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample remapped: res://.godot/imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/dog_03.wav' remapped 'res://assets/audio/soundscape/wildlife/dog_03.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_01.wav remapped: res://assets/audio/soundscape/wildlife/cricket_01.wav
+Loading resource: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample remapped: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_01.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_02.wav remapped: res://assets/audio/soundscape/wildlife/cricket_02.wav
+Loading resource: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample remapped: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_02.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_02.wav' at thread -1
+Loading resource: res://assets/crash/smoke.png remapped: res://assets/crash/smoke.png
+Loading resource: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex remapped: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex
+Completed load for: 'res://assets/crash/smoke.png' remapped 'res://assets/crash/smoke.png' at thread -1
+Loading resource: res://assets/crash/flame.png remapped: res://assets/crash/flame.png
+Loading resource: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex remapped: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex
+Completed load for: 'res://assets/crash/flame.png' remapped 'res://assets/crash/flame.png' at thread -1
+Loading resource: res://assets/audio/crash/crack_light.wav remapped: res://assets/audio/crash/crack_light.wav
+Loading resource: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample remapped: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample
+Completed load for: 'res://assets/audio/crash/crack_light.wav' remapped 'res://assets/audio/crash/crack_light.wav' at thread -1
+Loading resource: res://assets/audio/crash/crack_heavy.wav remapped: res://assets/audio/crash/crack_heavy.wav
+Loading resource: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample remapped: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample
+Completed load for: 'res://assets/audio/crash/crack_heavy.wav' remapped 'res://assets/audio/crash/crack_heavy.wav' at thread -1
+Loading resource: res://assets/audio/crash/tear.wav remapped: res://assets/audio/crash/tear.wav
+Loading resource: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample remapped: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample
+Completed load for: 'res://assets/audio/crash/tear.wav' remapped 'res://assets/audio/crash/tear.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_grass.wav remapped: res://assets/audio/crash/impact_grass.wav
+Loading resource: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample remapped: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample
+Completed load for: 'res://assets/audio/crash/impact_grass.wav' remapped 'res://assets/audio/crash/impact_grass.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_dirt.wav remapped: res://assets/audio/crash/impact_dirt.wav
+Loading resource: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample remapped: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample
+Completed load for: 'res://assets/audio/crash/impact_dirt.wav' remapped 'res://assets/audio/crash/impact_dirt.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_hard.wav remapped: res://assets/audio/crash/impact_hard.wav
+Loading resource: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample remapped: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample
+Completed load for: 'res://assets/audio/crash/impact_hard.wav' remapped 'res://assets/audio/crash/impact_hard.wav' at thread -1
+Loading resource: res://assets/audio/crash/scrape.wav remapped: res://assets/audio/crash/scrape.wav
+Loading resource: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample remapped: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample
+Completed load for: 'res://assets/audio/crash/scrape.wav' remapped 'res://assets/audio/crash/scrape.wav' at thread -1
+Loading resource: res://assets/audio/crash/debris.wav remapped: res://assets/audio/crash/debris.wav
+Loading resource: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample remapped: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample
+Completed load for: 'res://assets/audio/crash/debris.wav' remapped 'res://assets/audio/crash/debris.wav' at thread -1
+Loading resource: res://assets/audio/crash/secondary_hit.wav remapped: res://assets/audio/crash/secondary_hit.wav
+Loading resource: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample remapped: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample
+Completed load for: 'res://assets/audio/crash/secondary_hit.wav' remapped 'res://assets/audio/crash/secondary_hit.wav' at thread -1
+Loading resource: res://assets/audio/crash/engine_cut.wav remapped: res://assets/audio/crash/engine_cut.wav
+Loading resource: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample remapped: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample
+Completed load for: 'res://assets/audio/crash/engine_cut.wav' remapped 'res://assets/audio/crash/engine_cut.wav' at thread -1
+Loading resource: res://assets/audio/crash/turbine_spool.wav remapped: res://assets/audio/crash/turbine_spool.wav
+Loading resource: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample remapped: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample
+Completed load for: 'res://assets/audio/crash/turbine_spool.wav' remapped 'res://assets/audio/crash/turbine_spool.wav' at thread -1
+Loading resource: res://assets/audio/crash/fire_loop.wav remapped: res://assets/audio/crash/fire_loop.wav
+Loading resource: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample remapped: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample
+Completed load for: 'res://assets/audio/crash/fire_loop.wav' remapped 'res://assets/audio/crash/fire_loop.wav' at thread -1
+ok   original aircraft still starts
+ok   invalid draft retains original flight and editor
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+ok   failed candidate startup preserves old flight and camera
+ok   failed candidate startup preserves old recorder
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.0242 kg·m2 is 2.11× the scaled UltraStick25e value
+Loading resource: res://assets/audio/soundscape/motor_combustion.wav remapped: res://assets/audio/soundscape/motor_combustion.wav
+Loading resource: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample remapped: res://.godot/imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample
+Completed load for: 'res://assets/audio/soundscape/motor_combustion.wav' remapped 'res://assets/audio/soundscape/motor_combustion.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/motor_propeller.wav remapped: res://assets/audio/soundscape/motor_propeller.wav
+Loading resource: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample remapped: res://.godot/imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample
+Completed load for: 'res://assets/audio/soundscape/motor_propeller.wav' remapped 'res://assets/audio/soundscape/motor_propeller.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/airframe.wav remapped: res://assets/audio/soundscape/airframe.wav
+Loading resource: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample remapped: res://.godot/imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample
+Completed load for: 'res://assets/audio/soundscape/airframe.wav' remapped 'res://assets/audio/soundscape/airframe.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_low.wav remapped: res://assets/audio/soundscape/wind_low.wav
+Loading resource: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample remapped: res://.godot/imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample
+Completed load for: 'res://assets/audio/soundscape/wind_low.wav' remapped 'res://assets/audio/soundscape/wind_low.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wind_high.wav remapped: res://assets/audio/soundscape/wind_high.wav
+Loading resource: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample remapped: res://.godot/imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample
+Completed load for: 'res://assets/audio/soundscape/wind_high.wav' remapped 'res://assets/audio/soundscape/wind_high.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/foliage.wav
+Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample
+Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundscape/foliage.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_01.wav remapped: res://assets/audio/soundscape/wildlife/cricket_01.wav
+Loading resource: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample remapped: res://.godot/imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_01.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_01.wav' at thread -1
+Loading resource: res://assets/audio/soundscape/wildlife/cricket_02.wav remapped: res://assets/audio/soundscape/wildlife/cricket_02.wav
+Loading resource: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample remapped: res://.godot/imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample
+Completed load for: 'res://assets/audio/soundscape/wildlife/cricket_02.wav' remapped 'res://assets/audio/soundscape/wildlife/cricket_02.wav' at thread -1
+Loading resource: res://assets/audio/crash/crack_light.wav remapped: res://assets/audio/crash/crack_light.wav
+Loading resource: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample remapped: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample
+Completed load for: 'res://assets/audio/crash/crack_light.wav' remapped 'res://assets/audio/crash/crack_light.wav' at thread -1
+Loading resource: res://assets/audio/crash/crack_heavy.wav remapped: res://assets/audio/crash/crack_heavy.wav
+Loading resource: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample remapped: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample
+Completed load for: 'res://assets/audio/crash/crack_heavy.wav' remapped 'res://assets/audio/crash/crack_heavy.wav' at thread -1
+Loading resource: res://assets/audio/crash/tear.wav remapped: res://assets/audio/crash/tear.wav
+Loading resource: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample remapped: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample
+Completed load for: 'res://assets/audio/crash/tear.wav' remapped 'res://assets/audio/crash/tear.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_grass.wav remapped: res://assets/audio/crash/impact_grass.wav
+Loading resource: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample remapped: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample
+Completed load for: 'res://assets/audio/crash/impact_grass.wav' remapped 'res://assets/audio/crash/impact_grass.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_dirt.wav remapped: res://assets/audio/crash/impact_dirt.wav
+Loading resource: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample remapped: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample
+Completed load for: 'res://assets/audio/crash/impact_dirt.wav' remapped 'res://assets/audio/crash/impact_dirt.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_hard.wav remapped: res://assets/audio/crash/impact_hard.wav
+Loading resource: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample remapped: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample
+Completed load for: 'res://assets/audio/crash/impact_hard.wav' remapped 'res://assets/audio/crash/impact_hard.wav' at thread -1
+Loading resource: res://assets/audio/crash/scrape.wav remapped: res://assets/audio/crash/scrape.wav
+Loading resource: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample remapped: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample
+Completed load for: 'res://assets/audio/crash/scrape.wav' remapped 'res://assets/audio/crash/scrape.wav' at thread -1
+Loading resource: res://assets/audio/crash/debris.wav remapped: res://assets/audio/crash/debris.wav
+Loading resource: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample remapped: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample
+Completed load for: 'res://assets/audio/crash/debris.wav' remapped 'res://assets/audio/crash/debris.wav' at thread -1
+Loading resource: res://assets/audio/crash/secondary_hit.wav remapped: res://assets/audio/crash/secondary_hit.wav
+Loading resource: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample remapped: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample
+Completed load for: 'res://assets/audio/crash/secondary_hit.wav' remapped 'res://assets/audio/crash/secondary_hit.wav' at thread -1
+Loading resource: res://assets/audio/crash/engine_cut.wav remapped: res://assets/audio/crash/engine_cut.wav
+Loading resource: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample remapped: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample
+Completed load for: 'res://assets/audio/crash/engine_cut.wav' remapped 'res://assets/audio/crash/engine_cut.wav' at thread -1
+Loading resource: res://assets/audio/crash/turbine_spool.wav remapped: res://assets/audio/crash/turbine_spool.wav
+Loading resource: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample remapped: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample
+Completed load for: 'res://assets/audio/crash/turbine_spool.wav' remapped 'res://assets/audio/crash/turbine_spool.wav' at thread -1
+Loading resource: res://assets/audio/crash/fire_loop.wav remapped: res://assets/audio/crash/fire_loop.wav
+Loading resource: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample remapped: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample
+Completed load for: 'res://assets/audio/crash/fire_loop.wav' remapped 'res://assets/audio/crash/fire_loop.wav' at thread -1
+ok   50% trial from Pause starts independently
+ok   return restores previous flight
+ok   original tick and state preserved
+ok   previous flight remains paused
+ok   Pause editor draft preserved
+Workshop integration: 0 failed
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"

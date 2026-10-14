@@ -35,9 +35,18 @@ func _press_key(flight: Node, physical_keycode: int) -> void:
 
 func _initialize() -> void:
 	_check("default is the Ugly Stik and it is in the catalog", Catalog.DEFAULT_ID == AirplaneBuilder.STIK_ID and Catalog.has(Catalog.DEFAULT_ID))
-	_check("seven aircraft, unique IDs", Catalog.ids().size() == 7 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 7, str(Catalog.ids()))
-	_check("seven simulated entries, including glow variants and experimental Timber", Catalog.flyable_ids().size() == 7 and Catalog.flyable_ids().has(AirplaneBuilder.TIMBER_ID)
+	_check("eight catalog entries, unique IDs", Catalog.ids().size() == 8 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 8, str(Catalog.ids()))
+	_check("seven airplane configurations remain available to airplane solvers", Catalog.airplane_flyable_ids().size() == 7 and Catalog.airplane_flyable_ids().has(AirplaneBuilder.TIMBER_ID))
+	_check("eight simulated entries include the experimental helicopter", Catalog.flyable_ids().size() == 8 and Catalog.flyable_ids().has("xcell-60-research")
 		and Catalog.flyable_entries().all(func(e): return e.data != "" and e.status != Catalog.PREVIEW), str(Catalog.flyable_ids()))
+	var helicopter_entry: Dictionary = Catalog.entry("xcell-60-research")
+	_check("research helicopter catalog identity and visual family are explicit",
+		helicopter_entry.get("vehicle", "") == "rotorcraft"
+		and helicopter_entry.get("visual_family", "") == "hx-700"
+		and helicopter_entry.get("name", "") == "RC Helicopter Research Trainer"
+		and helicopter_entry.get("summary", "") == "X-Cell reference physics · HX-700 visual"
+		and helicopter_entry.get("data", "") == "res://data/aircraft/xcell_60_research.json"
+		and Catalog.is_rotorcraft("xcell-60-research") and not Catalog.is_rotorcraft(AirplaneBuilder.STIK_ID))
 	_check("glow Stik variants are explicitly experimental and identify inferred profiles",
 		Catalog.entry(AirplaneBuilder.STIK_GLOW_55AX_ID).status == Catalog.EXPERIMENTAL
 		and Catalog.entry(AirplaneBuilder.STIK_GLOW_55AX_ID).status_note.contains("inferred")
@@ -45,12 +54,21 @@ func _initialize() -> void:
 		and Catalog.entry(AirplaneBuilder.STIK_GLOW_FS64V_ID).status_note.contains("inferred"))
 	_check("unknown ID: no entry, cannot fly", Catalog.entry("nope").is_empty() and not Catalog.can_fly("nope"))
 	_check("step wraps both ways", Catalog.step(Catalog.ids()[-1], 1) == Catalog.ids()[0] and Catalog.step(Catalog.ids()[0], -1) == Catalog.ids()[-1])
-	_check("the render adapter knows every catalog ID by the same name",
-		[AirplaneBuilder.STIK_ID, AirplaneBuilder.STIK_GLOW_55AX_ID, AirplaneBuilder.STIK_GLOW_FS64V_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID] == Array(Catalog.ids()))
+	_check("the airplane render adapter retains its seven catalog IDs",
+		[AirplaneBuilder.STIK_ID, AirplaneBuilder.STIK_GLOW_55AX_ID, AirplaneBuilder.STIK_GLOW_FS64V_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID] == Array(Catalog.airplane_flyable_ids()))
 
 	for id in Catalog.ids():
 		var e := Catalog.entry(id)
 		var airplane := AirplaneBuilder.build(id)
+		if Catalog.is_rotorcraft(id):
+			var heli_contract: bool = airplane.get("root") is Node3D and airplane.root.name == "airplane" \
+				and airplane.get("main_rotor_pivot") is Node3D and airplane.get("tail_rotor_pivot") is Node3D \
+				and airplane.get("cg_model_m") is Vector3 and airplane.aircraft_id == id \
+				and not airplane.has("model_manifest") and airplane.visual_family == "hx-700"
+			_check("%s: explicit rotorcraft adapter bypasses airplane manifests" % id, heli_contract)
+			if airplane.get("root") is Node:
+				airplane.root.free()
+			continue
 		var ok_contract: bool = airplane.get("root") is Node3D and airplane.root.name == "airplane" and airplane.get("propeller") is Node3D \
 			and airplane.get("hinges", {}).size() >= 4 and airplane.aircraft_id == id
 		_check("%s: builds root/propeller/hinges" % id, ok_contract)

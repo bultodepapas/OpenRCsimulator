@@ -120,7 +120,8 @@
         "description",
         "engine",
         "kind",
-        "propeller"
+        "propeller",
+        "id"
       ],
       "required_fields": [
         "engine",
@@ -228,7 +229,8 @@
         "esc",
         "kind",
         "motor",
-        "propeller"
+        "propeller",
+        "id"
       ],
       "required_fields": [
         "battery",
@@ -316,7 +318,8 @@
         "intake_offset",
         "kind",
         "thrust_angles",
-        "thrust_line_offset"
+        "thrust_line_offset",
+        "id"
       ],
       "required_fields": [
         "engine",

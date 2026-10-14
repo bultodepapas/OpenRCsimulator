@@ -1,0 +1,547 @@
+{
+  "format": "openrc-glow-checkout-byte-proof v2",
+  "git": "git version 2.52.0.windows.1",
+  "clone_base_commit": "d5651deb7b3a8f507c9f811dc0fdf40a6994d65d",
+  "private_index_blobs": {
+    "app/data/glow/os_max_55ax_candidate.json": "4f25238346dd583ee5aaf2ee0c649241a9f4383c",
+    "app/data/glow/os_fs_64v_candidate.json": "6463763c552cf29b182aab4d839b8fefdc8dea0e",
+    "app/data/glow/profile_contract.json": "f6333040566154e4270b362dd6338a97b3abbd88",
+    "app/data/glow/openrc-glow-engine-v1.schema.json": "edb6a8da31974647ae18e2ce87fffaced43bf6cd",
+    "app/data/glow/stik_55ax_2t.json": "1672c1b5fb794195e4daf14491fee2fa819b7234",
+    "app/data/glow/stik_55ax_2t_apc_13x6.json": "671003ba23db90ebe4f9c47edda271ab8f5ad395",
+    "app/data/glow/stik_fs64v_4t.json": "d76726f67c6f6a350e6a1a815a54e85dd84e888c",
+    "app/data/glow/stik_fs64v_4t_apc_13x6.json": "921c4747619a60e5b2a3cc32701f77cc96355974",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "48a4d8ffe0b7c9a8bd74a967c77eb5b2e11fe258",
+    "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "4d0f052cbfc77409ab0c6e1e597098a232485fda",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "126083d2c6c2f44d529beaa18e8e9e517fc49fd8",
+    "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "8f9b242b28cce48733b6119131a56daf041e2482",
+    "research/glow-engines/flight-240.json": "c5ac88d926f4603c67cc409f7a2cd474772803f2",
+    "research/glow-engines/flight-480.json": "9bff176e5ac142a8d4838720b9e5a2ea160669f5",
+    "research/glow-engines/flight-960.json": "2d9331b5c6c2f18d02e31b9463f4adb8c5d886d5"
+  },
+  "attributes_sha256": "ea74163cd5103fc5b966695e363407f1cb7504cf5946493b2dbc9735664692c7",
+  "input_sha256": {
+    "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+    "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+    "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+    "app/data/glow/openrc-glow-engine-v1.schema.json": "cb19a66c457c87c4092be9bd86be33f0781712aef6a1bbcf3412eb0ceb1cb0fc",
+    "app/data/glow/stik_55ax_2t.json": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+    "app/data/glow/stik_55ax_2t_apc_13x6.json": "e2e00bd5e0940198676ab463c6891e2b0a05762e83b8c6c9042ea887076a23d0",
+    "app/data/glow/stik_fs64v_4t.json": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+    "app/data/glow/stik_fs64v_4t_apc_13x6.json": "e4c1f402fe236d40b3ec89262f5999ac0702d7ef52c514eb99cb551c2a41357e",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+    "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "b99109f752506edf8a002b703b2b839d496da5e36b55eb4950e3a590bd10a59d",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+    "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf",
+    "research/glow-engines/flight-240.json": "659a2474e55eb51a41abad4cf2e7040dab577024df887d33541f2c63c95978f9",
+    "research/glow-engines/flight-480.json": "238ff784a1a964137373d625cbebdb398a2b825bba654cd616c572c12ea6f1e4",
+    "research/glow-engines/flight-960.json": "8b76213439c190310ece82062828570f3947eb14d7293ae8d0c972fc2929b84a"
+  },
+  "cases": [
+    {
+      "core_autocrlf": "true",
+      "input_sha256": {
+        "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+        "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+        "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+        "app/data/glow/openrc-glow-engine-v1.schema.json": "cb19a66c457c87c4092be9bd86be33f0781712aef6a1bbcf3412eb0ceb1cb0fc",
+        "app/data/glow/stik_55ax_2t.json": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+        "app/data/glow/stik_55ax_2t_apc_13x6.json": "e2e00bd5e0940198676ab463c6891e2b0a05762e83b8c6c9042ea887076a23d0",
+        "app/data/glow/stik_fs64v_4t.json": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+        "app/data/glow/stik_fs64v_4t_apc_13x6.json": "e4c1f402fe236d40b3ec89262f5999ac0702d7ef52c514eb99cb551c2a41357e",
+        "app/data/aircraft/stik_glow_55ax_2t.json": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+        "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "b99109f752506edf8a002b703b2b839d496da5e36b55eb4950e3a590bd10a59d",
+        "app/data/aircraft/stik_glow_fs64v_4t.json": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+        "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf",
+        "research/glow-engines/flight-240.json": "659a2474e55eb51a41abad4cf2e7040dab577024df887d33541f2c63c95978f9",
+        "research/glow-engines/flight-480.json": "238ff784a1a964137373d625cbebdb398a2b825bba654cd616c572c12ea6f1e4",
+        "research/glow-engines/flight-960.json": "8b76213439c190310ece82062828570f3947eb14d7293ae8d0c972fc2929b84a"
+      },
+      "matches": true
+    },
+    {
+      "core_autocrlf": "false",
+      "input_sha256": {
+        "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+        "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+        "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+        "app/data/glow/openrc-glow-engine-v1.schema.json": "cb19a66c457c87c4092be9bd86be33f0781712aef6a1bbcf3412eb0ceb1cb0fc",
+        "app/data/glow/stik_55ax_2t.json": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+        "app/data/glow/stik_55ax_2t_apc_13x6.json": "e2e00bd5e0940198676ab463c6891e2b0a05762e83b8c6c9042ea887076a23d0",
+        "app/data/glow/stik_fs64v_4t.json": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+        "app/data/glow/stik_fs64v_4t_apc_13x6.json": "e4c1f402fe236d40b3ec89262f5999ac0702d7ef52c514eb99cb551c2a41357e",
+        "app/data/aircraft/stik_glow_55ax_2t.json": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+        "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "b99109f752506edf8a002b703b2b839d496da5e36b55eb4950e3a590bd10a59d",
+        "app/data/aircraft/stik_glow_fs64v_4t.json": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+        "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf",
+        "research/glow-engines/flight-240.json": "659a2474e55eb51a41abad4cf2e7040dab577024df887d33541f2c63c95978f9",
+        "research/glow-engines/flight-480.json": "238ff784a1a964137373d625cbebdb398a2b825bba654cd616c572c12ea6f1e4",
+        "research/glow-engines/flight-960.json": "8b76213439c190310ece82062828570f3947eb14d7293ae8d0c972fc2929b84a"
+      },
+      "matches": true
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "git",
+        "clone",
+        "--quiet",
+        "--shared",
+        "--no-checkout",
+        "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\glow-hub-events-checkout-20261013\\clone"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "read-tree",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/glow/os_max_55ax_candidate.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\glow\\os_max_55ax_candidate.json"
+      ],
+      "exit_code": 0,
+      "stdout": "4f25238346dd583ee5aaf2ee0c649241a9f4383c\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,4f25238346dd583ee5aaf2ee0c649241a9f4383c,app/data/glow/os_max_55ax_candidate.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/glow/os_fs_64v_candidate.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\glow\\os_fs_64v_candidate.json"
+      ],
+      "exit_code": 0,
+      "stdout": "6463763c552cf29b182aab4d839b8fefdc8dea0e\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,6463763c552cf29b182aab4d839b8fefdc8dea0e,app/data/glow/os_fs_64v_candidate.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/glow/profile_contract.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\glow\\profile_contract.json"
+      ],
+      "exit_code": 0,
+      "stdout": "f6333040566154e4270b362dd6338a97b3abbd88\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,f6333040566154e4270b362dd6338a97b3abbd88,app/data/glow/profile_contract.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/glow/openrc-glow-engine-v1.schema.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\glow\\openrc-glow-engine-v1.schema.json"
+      ],
+      "exit_code": 0,
+      "stdout": "edb6a8da31974647ae18e2ce87fffaced43bf6cd\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,edb6a8da31974647ae18e2ce87fffaced43bf6cd,app/data/glow/openrc-glow-engine-v1.schema.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/glow/stik_55ax_2t.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\glow\\stik_55ax_2t.json"
+      ],
+      "exit_code": 0,
+      "stdout": "1672c1b5fb794195e4daf14491fee2fa819b7234\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,1672c1b5fb794195e4daf14491fee2fa819b7234,app/data/glow/stik_55ax_2t.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/glow/stik_55ax_2t_apc_13x6.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\glow\\stik_55ax_2t_apc_13x6.json"
+      ],
+      "exit_code": 0,
+      "stdout": "671003ba23db90ebe4f9c47edda271ab8f5ad395\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,671003ba23db90ebe4f9c47edda271ab8f5ad395,app/data/glow/stik_55ax_2t_apc_13x6.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/glow/stik_fs64v_4t.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\glow\\stik_fs64v_4t.json"
+      ],
+      "exit_code": 0,
+      "stdout": "d76726f67c6f6a350e6a1a815a54e85dd84e888c\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,d76726f67c6f6a350e6a1a815a54e85dd84e888c,app/data/glow/stik_fs64v_4t.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/glow/stik_fs64v_4t_apc_13x6.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\glow\\stik_fs64v_4t_apc_13x6.json"
+      ],
+      "exit_code": 0,
+      "stdout": "921c4747619a60e5b2a3cc32701f77cc96355974\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,921c4747619a60e5b2a3cc32701f77cc96355974,app/data/glow/stik_fs64v_4t_apc_13x6.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/aircraft/stik_glow_55ax_2t.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\stik_glow_55ax_2t.json"
+      ],
+      "exit_code": 0,
+      "stdout": "48a4d8ffe0b7c9a8bd74a967c77eb5b2e11fe258\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,48a4d8ffe0b7c9a8bd74a967c77eb5b2e11fe258,app/data/aircraft/stik_glow_55ax_2t.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\stik_glow_55ax_2t_apc_13x6.json"
+      ],
+      "exit_code": 0,
+      "stdout": "4d0f052cbfc77409ab0c6e1e597098a232485fda\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,4d0f052cbfc77409ab0c6e1e597098a232485fda,app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/aircraft/stik_glow_fs64v_4t.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\stik_glow_fs64v_4t.json"
+      ],
+      "exit_code": 0,
+      "stdout": "126083d2c6c2f44d529beaa18e8e9e517fc49fd8\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,126083d2c6c2f44d529beaa18e8e9e517fc49fd8,app/data/aircraft/stik_glow_fs64v_4t.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\stik_glow_fs64v_4t_apc_13x6.json"
+      ],
+      "exit_code": 0,
+      "stdout": "8f9b242b28cce48733b6119131a56daf041e2482\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,8f9b242b28cce48733b6119131a56daf041e2482,app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=research/glow-engines/flight-240.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\glow-engines\\flight-240.json"
+      ],
+      "exit_code": 0,
+      "stdout": "c5ac88d926f4603c67cc409f7a2cd474772803f2\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,c5ac88d926f4603c67cc409f7a2cd474772803f2,research/glow-engines/flight-240.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=research/glow-engines/flight-480.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\glow-engines\\flight-480.json"
+      ],
+      "exit_code": 0,
+      "stdout": "9bff176e5ac142a8d4838720b9e5a2ea160669f5\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,9bff176e5ac142a8d4838720b9e5a2ea160669f5,research/glow-engines/flight-480.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "hash-object",
+        "-w",
+        "--path=research/glow-engines/flight-960.json",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\glow-engines\\flight-960.json"
+      ],
+      "exit_code": 0,
+      "stdout": "2d9331b5c6c2f18d02e31b9463f4adb8c5d886d5\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "update-index",
+        "--add",
+        "--cacheinfo",
+        "100644,2d9331b5c6c2f18d02e31b9463f4adb8c5d886d5,research/glow-engines/flight-960.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.autocrlf=true",
+        "checkout-index",
+        "--prefix=C:/DEVELOPMENT/OpenRCsimulator/.tools/glow-hub-events-checkout-20261013/autocrlf-true/",
+        "--",
+        "app/data/glow/os_max_55ax_candidate.json",
+        "app/data/glow/os_fs_64v_candidate.json",
+        "app/data/glow/profile_contract.json",
+        "app/data/glow/openrc-glow-engine-v1.schema.json",
+        "app/data/glow/stik_55ax_2t.json",
+        "app/data/glow/stik_55ax_2t_apc_13x6.json",
+        "app/data/glow/stik_fs64v_4t.json",
+        "app/data/glow/stik_fs64v_4t_apc_13x6.json",
+        "app/data/aircraft/stik_glow_55ax_2t.json",
+        "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+        "app/data/aircraft/stik_glow_fs64v_4t.json",
+        "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+        "research/glow-engines/flight-240.json",
+        "research/glow-engines/flight-480.json",
+        "research/glow-engines/flight-960.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.autocrlf=false",
+        "checkout-index",
+        "--prefix=C:/DEVELOPMENT/OpenRCsimulator/.tools/glow-hub-events-checkout-20261013/autocrlf-false/",
+        "--",
+        "app/data/glow/os_max_55ax_candidate.json",
+        "app/data/glow/os_fs_64v_candidate.json",
+        "app/data/glow/profile_contract.json",
+        "app/data/glow/openrc-glow-engine-v1.schema.json",
+        "app/data/glow/stik_55ax_2t.json",
+        "app/data/glow/stik_55ax_2t_apc_13x6.json",
+        "app/data/glow/stik_fs64v_4t.json",
+        "app/data/glow/stik_fs64v_4t_apc_13x6.json",
+        "app/data/aircraft/stik_glow_55ax_2t.json",
+        "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+        "app/data/aircraft/stik_glow_fs64v_4t.json",
+        "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+        "research/glow-engines/flight-240.json",
+        "research/glow-engines/flight-480.json",
+        "research/glow-engines/flight-960.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "git version 2.52.0.windows.1\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "d5651deb7b3a8f507c9f811dc0fdf40a6994d65d\n",
+      "stderr": ""
+    }
+  ],
+  "ok": true,
+  "scope": "Fresh shared-object clone with current attributes and current 15 records staged only in its private index; fresh prefix checkouts under both autocrlf modes. Main index/configuration untouched."
+}

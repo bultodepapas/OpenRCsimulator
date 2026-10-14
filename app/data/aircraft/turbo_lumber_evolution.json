@@ -1,7 +1,8 @@
 {
   "format": "openrc-aircraft v2",
+  "physical_identity_version": 1,
   "id": "turbo-lumber-evolution",
-  "description": "EXPERIMENTAL TT-07: photograph-inspired r1 mesh (revision unconfirmed), B-reference 800 Kv/70 A/4S 3200 mAh/11x7.3 three-blade loadout. Estimated inventory, motor losses and borrowed two-blade propeller map. Wheels fixed, flaps up, slats absent, assists off; prescribed bus, no battery depletion. Not physical validation.",
+  "description": "EXPERIMENTAL TT-07: photograph-inspired r2 mesh (r2-d75ae605aa3a), B-reference 800 Kv/70 A/4S 3200 mAh/11x7.3 three-blade loadout. Estimated inventory, motor losses and borrowed two-blade propeller map. Wheels fixed, flaps up, slats absent, assists off; prescribed bus, no battery depletion. Not physical validation.",
   "convention_id": "openrc-le-frd-v1",
   "capabilities": {
     "controls": "conventional",
@@ -17,10 +18,10 @@
   },
   "reference": {
     "wing_area": {
-      "value": 0.328223,
+      "value": 0.327007,
       "unit": "m2",
       "kind": "derived",
-      "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: trapezoid integral of the measured chord over the span, fuselage carry-through at the panel chord, rounded tips from the tip slices (r1 CAD: 0.329 m2)"
+      "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: trapezoid integral of the measured chord over the span, fuselage carry-through at the panel chord, rounded tips from the tip slices (r2 CAD: 0.329 m2)"
     },
     "wing_span": {
       "value": 1.555,
@@ -29,16 +30,16 @@
       "source": "EFL105250B manual p.3 (1,555 mm)"
     },
     "mean_chord": {
-      "value": 0.21107588424437299,
+      "value": 0.21029389067524115,
       "unit": "m",
       "kind": "derived",
       "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
     },
     "aero_reference_point": {
       "value": [
-        0.05271875,
+        0.0532295,
         0,
-        0.0964620621800532
+        0.095452118408788
       ],
       "unit": "m",
       "kind": "derived",
@@ -65,7 +66,7 @@
       ],
       "unit": "m",
       "kind": "estimated",
-      "source": "TT-07 assumed motor mount station inside r1 cowl"
+      "source": "TT-07 assumed motor mount station retained inside r2 cowl"
     },
     "configuration": "virtual-balanced-reference-v1",
     "cg_tolerance": {
@@ -77,6 +78,7 @@
   },
   "inventory": [
     {
+      "id": "wing_main",
       "name": "wing, flaps, ailerons and wing servos",
       "mass": {
         "value": 0.456,
@@ -106,6 +108,7 @@
       }
     },
     {
+      "id": "fuselage_main",
       "name": "fuselage foam, canopy and fittings",
       "mass": {
         "value": 0.605,
@@ -135,6 +138,7 @@
       }
     },
     {
+      "id": "tail_surfaces",
       "name": "horizontal and vertical tail",
       "mass": {
         "value": 0.08,
@@ -164,6 +168,7 @@
       }
     },
     {
+      "id": "gear_main",
       "name": "main gear and wheels",
       "mass": {
         "value": 0.135,
@@ -193,6 +198,7 @@
       }
     },
     {
+      "id": "gear_tail",
       "name": "tailwheel and fork",
       "mass": {
         "value": 0.012,
@@ -222,6 +228,7 @@
       }
     },
     {
+      "id": "propeller_main",
       "name": "three-blade propeller and spinner",
       "mass": {
         "value": 0.032,
@@ -251,6 +258,7 @@
       }
     },
     {
+      "id": "motor_main",
       "name": "800 Kv motor",
       "mass": {
         "value": 0.16,
@@ -280,6 +288,7 @@
       }
     },
     {
+      "id": "esc_main",
       "name": "70 A ESC",
       "mass": {
         "value": 0.06,
@@ -309,6 +318,7 @@
       }
     },
     {
+      "id": "receiver_radio",
       "name": "receiver",
       "mass": {
         "value": 0.012,
@@ -338,6 +348,7 @@
       }
     },
     {
+      "id": "tail_servos",
       "name": "elevator and rudder servos",
       "mass": {
         "value": 0.018,
@@ -367,6 +378,7 @@
       }
     },
     {
+      "id": "wiring_lighting",
       "name": "wiring and navigation LEDs",
       "mass": {
         "value": 0.04,
@@ -396,6 +408,7 @@
       }
     },
     {
+      "id": "battery_main",
       "name": "4S 3200 mAh battery",
       "mass": {
         "value": 0.33,
@@ -426,6 +439,7 @@
       "energy_source": "lipo"
     },
     {
+      "id": "ballast_reference",
       "name": "virtual reference-build balancing mass",
       "mass": {
         "value": 0.24999999999999978,
@@ -457,13 +471,19 @@
   ],
   "start": {
     "level_speed": {
-      "value": 13.073890242907106,
+      "value": 13.09817580654029,
       "unit": "m/s",
       "kind": "derived",
       "source": "research/timber/tt07/derive_physics.py: 1.6 times clean 1-g stall from manual mass, measured model area and estimated CL_max"
     }
   },
   "controls": {
+    "surface_ids": {
+      "aileron_left": "surface_aileron_left",
+      "aileron_right": "surface_aileron_right",
+      "elevator": "surface_elevator",
+      "rudder": "surface_rudder"
+    },
     "max_throw": {
       "aileron": {
         "value": 34.47472044218067,
@@ -472,13 +492,13 @@
         "source": "research/timber/tt07/derive_physics.py: 2 asin(manual displacement/(2 measured hinge radius)); TT-02 assumed measurement station"
       },
       "elevator": {
-        "value": 17.806082401415896,
+        "value": 17.893465899524767,
         "unit": "deg",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: 2 asin(manual displacement/(2 measured hinge radius)); TT-02 assumed measurement station"
       },
       "rudder": {
-        "value": 18.150365949381552,
+        "value": 18.364395397705255,
         "unit": "deg",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: 2 asin(manual displacement/(2 measured hinge radius)); TT-02 assumed measurement station"
@@ -504,37 +524,37 @@
     },
     "coefficients": {
       "CL0": {
-        "value": 0.2819728378466222,
+        "value": 0.28230989795925626,
         "unit": "1",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CLa": {
-        "value": 4.811747142098018,
+        "value": 4.817036644809798,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CLq": {
-        "value": 4.424235581727298,
+        "value": 4.441837692934845,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CLde": {
-        "value": 0.48316814799910957,
+        "value": 0.4826208733881941,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CLda_each": {
-        "value": 0.3676471458332059,
+        "value": 0.36877823145317806,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CD0": {
-        "value": 0.043280254583012163,
+        "value": 0.043348231077622194,
         "unit": "1",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
@@ -546,7 +566,7 @@
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "k_induced": {
-        "value": 0.054009277081968926,
+        "value": 0.05380918360609529,
         "unit": "1",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
@@ -570,127 +590,127 @@
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CYb": {
-        "value": -0.2691424401360689,
+        "value": -0.2694887818870855,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CYp": {
-        "value": -0.015136192578246221,
+        "value": -0.015180192813890941,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CYr": {
-        "value": 0.10088947213358586,
+        "value": 0.10116103133625341,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "CYdr": {
-        "value": 0.08240972068148673,
+        "value": 0.08214925220154477,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Clb": {
-        "value": -0.05979583942111725,
+        "value": -0.059929544341589494,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Clp": {
-        "value": -0.7207273398413249,
+        "value": -0.721427339741555,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Clr": {
-        "value": 0.16265864194819044,
+        "value": 0.16267589177278385,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Clda_right": {
-        "value": -0.13293754328328058,
+        "value": -0.1333470068818135,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Clda_left": {
-        "value": 0.13293754328328058,
+        "value": 0.1333470068818135,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cldr": {
-        "value": 7.310236149986264e-06,
+        "value": 6.064155262635622e-05,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cm0": {
-        "value": 0.023489158316673323,
+        "value": 0.023512103020145884,
         "unit": "1",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cma": {
-        "value": -1.4022858855151474,
+        "value": -1.408983605992392,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cmq": {
-        "value": -12.57667668397068,
+        "value": -12.669331896193976,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cmde": {
-        "value": -1.3901587273534195,
+        "value": -1.392104469440576,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cmda_each": {
-        "value": -0.05407626398512382,
+        "value": -0.05419436189715931,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cnb": {
-        "value": 0.051002617669520106,
+        "value": 0.05110077212971289,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cnp": {
-        "value": -0.078125,
+        "value": -0.07812499999999997,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cnr": {
-        "value": -0.05714320745961584,
+        "value": -0.057271648980256135,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cnda_right": {
-        "value": 0.02492578936561511,
+        "value": 0.02500256379034002,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cnda_left": {
-        "value": -0.02492578936561511,
+        "value": -0.02500256379034002,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
       },
       "Cndr": {
-        "value": -0.03527803754371294,
+        "value": -0.03513208646937564,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md"
@@ -698,7 +718,7 @@
     },
     "surfaces": {
       "wing_aileron_effectiveness": {
-        "value": 0.22102166112630292,
+        "value": 0.2214589868656957,
         "unit": "1",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
@@ -740,21 +760,21 @@
         "source": "TT-07 inputs.json: Tail induced drag coefficient; provisional"
       },
       "tail_CD90": {
-        "value": 1.242606337764264,
+        "value": 1.2430994443544023,
         "unit": "1",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
       },
       "horizontal": {
         "area": {
-          "value": 0.076104,
+          "value": 0.075715,
           "unit": "m2",
           "kind": "derived",
-          "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: planform between the fitted edges from the centreline to the tip, both sides (r1 CAD: 0.0756 m2)"
+          "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: planform between the fitted edges from the centreline to the tip, both sides (CAD v12: 0.0756 m2)"
         },
         "position": {
           "value": [
-            0.66002075,
+            0.6598155,
             0,
             -0.032
           ],
@@ -763,25 +783,25 @@
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "lift_slope": {
-          "value": 2.101996534116511,
+          "value": 2.1096739297116516,
           "unit": "1/rad",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "control_effectiveness": {
-          "value": 0.991351864632601,
+          "value": 0.9880203456732718,
           "unit": "1",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "incidence": {
-          "value": -0.041709867382132705,
+          "value": -0.04152788064480988,
           "unit": "rad",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "downwash_gradient": {
-          "value": 0.3736892409411888,
+          "value": 0.3726663953530581,
           "unit": "1",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
@@ -789,14 +809,14 @@
       },
       "vertical": {
         "area": {
-          "value": 0.024964,
+          "value": 0.024848,
           "unit": "m2",
           "kind": "derived",
           "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: trapezoid between root_y and top_y"
         },
         "position": {
           "value": [
-            0.71838474093931,
+            0.718243398432685,
             0,
             0.09659999999999999
           ],
@@ -805,13 +825,13 @@
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "lift_slope": {
-          "value": 1.5664672780316038,
+          "value": 1.572507569967409,
           "unit": "1/rad",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "control_effectiveness": {
-          "value": 0.6916907240389664,
+          "value": 0.6875059809311149,
           "unit": "1",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
@@ -826,7 +846,7 @@
     },
     "reference_coefficients": {
       "CLadot": {
-        "value": 1.6532892362806728,
+        "value": 1.6553236417693726,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
@@ -852,7 +872,7 @@
         "source": "TT-07 inputs.json: Attached-to-flat-plate stall blending width, degrees"
       },
       "CD90": {
-        "value": 1.242606337764264,
+        "value": 1.2430994443544023,
         "unit": "1",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
@@ -1170,30 +1190,32 @@
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: imported propeller hub minus inventory CG, structural axes"
       }
-    }
+    },
+    "id": "propulsion_main"
   },
   "landing_gear": {
     "contacts": [
       {
+        "id": "contact_main_left",
         "name": "main_left",
         "position": {
           "value": [
             0.008,
             -0.131979,
-            -0.256002
+            -0.256016
           ],
           "unit": "m",
           "kind": "measured",
-          "source": "TT-02 imported r1 wheel centre minus radius; D0 frame"
+          "source": "TT-19 imported r2 wheel centre minus radius; D0 frame"
         },
         "stiffness": {
-          "value": 447.51774262116214,
+          "value": 447.5141931720565,
           "unit": "N/m",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: E1 heave omega*dt rule, split by three-point static load share; assumed compliance"
         },
         "damping": {
-          "value": 10.844706670115213,
+          "value": 10.84466366309331,
           "unit": "N·s/m",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
@@ -1212,25 +1234,26 @@
         }
       },
       {
+        "id": "contact_main_right",
         "name": "main_right",
         "position": {
           "value": [
             0.008,
             0.131979,
-            -0.256002
+            -0.256016
           ],
           "unit": "m",
           "kind": "measured",
-          "source": "TT-02 imported r1 wheel centre minus radius; D0 frame"
+          "source": "TT-19 imported r2 wheel centre minus radius; D0 frame"
         },
         "stiffness": {
-          "value": 447.51774262116214,
+          "value": 447.5141931720565,
           "unit": "N/m",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: E1 heave omega*dt rule, split by three-point static load share; assumed compliance"
         },
         "damping": {
-          "value": 10.844706670115213,
+          "value": 10.84466366309331,
           "unit": "N·s/m",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
@@ -1249,25 +1272,26 @@
         }
       },
       {
+        "id": "contact_tail",
         "name": "tail",
         "position": {
           "value": [
             0.759,
             0.0,
-            -0.126
+            -0.126004
           ],
           "unit": "m",
           "kind": "measured",
-          "source": "TT-02 imported r1 wheel centre minus radius; D0 frame"
+          "source": "TT-19 imported r2 wheel centre minus radius; D0 frame"
         },
         "stiffness": {
-          "value": 126.73091475767548,
+          "value": 126.73801365588675,
           "unit": "N/m",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: E1 heave omega*dt rule, split by three-point static load share; assumed compliance"
         },
         "damping": {
-          "value": 5.771038415945358,
+          "value": 5.771200047543581,
           "unit": "N·s/m",
           "kind": "derived",
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
@@ -1314,90 +1338,114 @@
   "crash_hull": {
     "value": [
       [
-        0.028922,
-        -0.773956,
-        0.096984
+        0.010157,
+        -0.77,
+        0.086904
       ],
       [
-        0.031077,
-        0.773956,
-        0.096985
+        0.010157,
+        0.77,
+        0.086904
       ],
       [
         -0.283461,
         0.001116,
-        -0.00112
+        -0.001117
       ],
       [
-        0.833099,
+        0.832,
         0.0,
-        0.027266
+        0.002
       ],
       [
-        0.77072,
+        0.770449,
         -0.298,
         -0.032
       ],
       [
-        0.77072,
+        0.770449,
         0.298,
         -0.032
       ],
       [
-        0.833099,
+        0.832,
         0,
         0.178
       ],
       [
         -0.2515,
         0,
-        -0.140321
+        -0.14032
       ],
       [
         -0.22,
         0,
-        -0.035964
+        -0.035958
       ],
       [
         -0.1,
         0,
-        -0.051412
+        -0.051408
       ],
       [
         0.02,
         0,
-        -0.08151
+        -0.094526
       ],
       [
         0.14,
         0,
-        -0.094456
+        -0.094247
       ],
       [
         0.26,
         0,
-        -0.09783
+        -0.09776
       ],
       [
         0.38,
         0,
-        -0.094001
+        -0.093166
       ],
       [
         0.5,
         0,
-        -0.085653
+        -0.085901
       ],
       [
         0.62,
         0,
-        -0.078494
+        -0.078078
+      ],
+      [
+        0.74,
+        0,
+        -0.078
       ]
     ],
     "unit": "m",
     "kind": "derived",
-    "source": "research/timber/tt07/derive_physics.py: TT-02 imported extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"
+    "source": "research/timber/tt07/derive_physics.py: TT-19 outermost measured wing leading-skin station mirrored left/right (not max-span cap or nav lens), imported nose/tail extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"
   },
+  "crash_hull_ids": [
+    "probe_wing_left_tip",
+    "probe_wing_right_tip",
+    "probe_spinner_tip",
+    "probe_tail_rudder_edge",
+    "probe_stabilizer_left_tip",
+    "probe_stabilizer_right_tip",
+    "probe_fin_top",
+    "probe_propeller_bottom",
+    "probe_belly_nose",
+    "probe_belly_forward_fuselage",
+    "probe_belly_wing_front",
+    "probe_belly_wing_center",
+    "probe_belly_wing_aft",
+    "probe_belly_cabin_aft",
+    "probe_belly_tail_forward",
+    "probe_belly_tail_center",
+    "probe_belly_tail_end"
+  ],
   "crash_hull_components": [
     "left_wing_tip",
     "right_wing_tip",
@@ -1407,6 +1455,7 @@
     "right_stab_tip",
     "fin_top",
     "propeller",
+    "belly",
     "belly",
     "belly",
     "belly",

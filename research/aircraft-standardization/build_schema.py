@@ -99,6 +99,43 @@ def capability_schema(spec: dict):
     }
 
 
+def add_physical_identity(schema: dict):
+    """Optional complete v1 identities; numerical v2 shapes remain unchanged."""
+    identifier = {"type": "string", "minLength": 1, "maxLength": 80,
+                  "pattern": r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+                  "not": {"pattern": r"\s"}}
+    props = schema["properties"]
+    props["physical_identity_version"] = {"type": "integer", "const": 1}
+    props["crash_hull_ids"] = {"type": "array", "minItems": 4, "uniqueItems": True,
+                               "items": copy.deepcopy(identifier)}
+    props["inventory"]["items"]["properties"]["id"] = copy.deepcopy(identifier)
+    props["landing_gear"]["properties"]["contacts"]["items"]["properties"]["id"] = copy.deepcopy(identifier)
+    for branch in ("glowPropulsion", "turbinePropulsion", "electricPropulsion"):
+        schema["$defs"][branch]["properties"]["id"] = copy.deepcopy(identifier)
+    props["propulsion"]["properties"]["id"] = copy.deepcopy(identifier)
+    roles = ["aileron_left", "aileron_right", "elevator", "rudder"]
+    props["controls"]["properties"]["surface_ids"] = {
+        "type": "object", "required": roles, "additionalProperties": False,
+        "properties": {key: copy.deepcopy(identifier) for key in roles}}
+    required = {
+        "inventory": {"items": {"required": ["id"]}},
+        "landing_gear": {"properties": {"contacts": {"items": {"required": ["id"]}}}},
+        "propulsion": {"required": ["id"]}, "controls": {"required": ["surface_ids"]}}
+    absent = {
+        "inventory": {"items": {"not": {"required": ["id"]}}},
+        "landing_gear": {"properties": {"contacts": {"items": {"not": {"required": ["id"]}}}}},
+        "propulsion": {"not": {"required": ["id"]}},
+        "controls": {"not": {"required": ["surface_ids"]}}}
+    schema.setdefault("allOf", []).append({
+        "if": {"required": ["physical_identity_version"]},
+        "then": {"required": ["crash_hull_ids"], "properties": required},
+        "else": {"not": {"required": ["crash_hull_ids"]}, "properties": absent}})
+    schema["$comment"] += (
+        " PhysicalIdentity additionally enforces hull-point count alignment and global ID uniqueness "
+        "across inventory, supports, hull probes, propulsion and surfaces; the offline companion is "
+        "research/aircraft-standardization/physical_identity.py.")
+
+
 def add_v2_overlay(schema: dict, spec: dict):
     schema["title"] = "OpenRC aircraft data v2"
     schema["description"] = "Strict structural and per-field validation for openrc-aircraft v2. Coupled physical validation remains in AircraftData and AircraftContract."
@@ -289,6 +326,7 @@ def add_v2_overlay(schema: dict, spec: dict):
         rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": gear_kind}}}}}, "then": {"required": ["landing_gear"]}})
     rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": "locked_up"}}}}}, "then": {"not": {"required": ["landing_gear"]}}})
     schema["allOf"] = list(schema.get("allOf", [])) + rules
+    add_physical_identity(schema)
     return schema
 
 

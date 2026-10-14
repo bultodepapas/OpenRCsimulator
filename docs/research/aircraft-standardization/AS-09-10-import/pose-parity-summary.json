@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "comparison_difference_count": 0,
+  "tolerance": 1e-06,
+  "state_count": 6,
+  "tree_rows_per_state": {
+    "combined_full": 47,
+    "full_conventional": 47,
+    "full_flaps": 47,
+    "gear_spin_and_steer": 47,
+    "neutral": 47,
+    "propeller_spin": 47
+  },
+  "tree_metadata_mismatches": 0,
+  "section_metadata_mismatches": 0,
+  "material_rows_per_state": {
+    "combined_full": 2,
+    "full_conventional": 2,
+    "full_flaps": 2,
+    "gear_spin_and_steer": 2,
+    "neutral": 2,
+    "propeller_spin": 2
+  },
+  "material_value_mismatches": 0,
+  "root_relative_matrix_max_abs_error": 0.0,
+  "local_matrix_max_abs_error": 0.0,
+  "root_relative_matrices_exact": true,
+  "local_matrices_exact": true
+}

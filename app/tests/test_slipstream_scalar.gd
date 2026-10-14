@@ -20,7 +20,7 @@ func _initialize() -> void:
 	var washed := 0
 	var static_air := 0
 	var stopped := 0
-	for id in Catalog.flyable_ids(): # TT-06: previews carry no data file
+	for id in Catalog.airplane_flyable_ids(): # TT-06: previews carry no data file
 		var flight := Flight.new()
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)

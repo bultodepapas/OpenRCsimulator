@@ -1,0 +1,3202 @@
+{
+ "schema": "openrc-aircraft-delivery r2 (delivery specification 2026-10-13, revision 2)",
+ "aircraft": {
+  "id": "eflite_turbo_timber_evolution",
+  "revision": "r2",
+  "display_name": "Turbo Timber Evolution (game build)",
+  "status": "r2: airframe split into crash sections (openrc_section), r1 pivots kept unchanged (names, parents, rest transforms), closure faces at section joints, master v15 exterior + v17 markings and 10-size rotor",
+  "configuration": {
+   "variant": "landplane, stock tundra-style foam main wheels, steerable tailwheel",
+   "floats": {
+    "value": false,
+    "unit": null,
+    "evidence": "manual",
+    "source": "modeler decision",
+    "note": "no floats modelled or exported"
+   },
+   "slats": {
+    "value": false,
+    "unit": null,
+    "evidence": "manual",
+    "source": "modeler decision",
+    "note": "no slats exported; the small grey slat brackets stay on the fixed wing sections as fixed parts"
+   },
+   "flaps": "present, exported at 0 deg with their own hinges; simulator steps 0 / 20.7 / 36.6 deg",
+   "lights": "nav/strobe lenses modeled as emissive materials; no light objects exported",
+   "motor": {
+    "value": "10-size outrunner (bell modelled; stator/windings hidden, not exported)",
+    "unit": null,
+    "evidence": "estimated",
+    "source": "master v17 research: product listings of the type (10-size, ~800 Kv)"
+   },
+   "propeller": {
+    "value": "3-blade, ~11x7 equivalent, radius 138.1 mm",
+    "unit": null,
+    "evidence": "estimated",
+    "source": "photo proportions"
+   },
+   "battery": {
+    "value": "4S 3200 mAh (~340 g)",
+    "unit": null,
+    "evidence": "estimated",
+    "source": "typical for this class; not from a manual"
+   },
+   "livery": "red/white/black scheme approximated with solid materials; no logos, no text, no textures",
+   "ground_attitude": "none: the export is the neutral body pose (no ground pitch, neutral controls)"
+  }
+ },
+ "units": {
+  "length": "m",
+  "angle_metadata": "deg",
+  "angle_runtime": "rad (glTF quaternions)",
+  "mass": "kg"
+ },
+ "frames": {
+  "simulator": {
+   "description": "glTF / OpenRC Simulator frame",
+   "units": "m",
+   "x": "+X right (pilot view)",
+   "y": "+Y up",
+   "z": "nose points -Z (so +Z is aft)",
+   "handedness": "right-handed",
+   "left_right": "pilot view (sitting in the cockpit, looking forward)"
+  },
+  "blender_export": {
+   "description": "authoring frame of export/aircraft.glb inside Blender (exporter applies +Y-up conversion)",
+   "units": "m",
+   "x": "+X right",
+   "y": "+Y forward (nose)",
+   "z": "+Z up",
+   "to_simulator": "sim = (bx, bz, -by)"
+  },
+  "cad": {
+   "description": "frame of the parametric CAD and of metadata fields named *_cad_mm",
+   "units": "mm",
+   "x": "+X aft",
+   "y": "+Y right wing",
+   "z": "+Z up",
+   "origin": "datum D0",
+   "to_blender_export": "b = (y, -x, z) / 1000",
+   "to_simulator": "sim = (y, z, x) / 1000"
+  },
+  "cad_photo": {
+   "description": "older CAD working frame used for photo matching; x measured aft from the propeller plane",
+   "relation": "x_photo = x_cad + 242.0 mm (y, z identical)"
+  }
+ },
+ "datum": {
+  "id": "D0",
+  "position_sim_m": [
+   0,
+   0,
+   0
+  ],
+  "definition": "symmetry plane  x  wing-root leading-edge station  x  CAD thrust-axis height (motor shaft line before down/right thrust)",
+  "why": "stable geometric points that do not move when masses or CG change; CG is given separately below",
+  "root_node": "TurboTimberEvolution (identity transform, at D0)"
+ },
+ "pose": {
+  "export_pose": "neutral body pose: no ground presentation offset, no presentation pitch",
+  "kept_built_in_angles": {
+   "wing_incidence_deg": {
+    "value": 2.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "user-supplied photographs of a Turbo Timber Evolution (side, 3/4, top, front, nose, gear close-up)"
+   },
+   "wing_dihedral_deg": {
+    "value": 2.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "user-supplied photographs of a Turbo Timber Evolution (side, 3/4, top, front, nose, gear close-up)"
+   },
+   "downthrust_deg": {
+    "value": 2.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "typical for the type; not measured"
+   },
+   "right_thrust_deg": {
+    "value": 2.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "typical for the type; not measured"
+   }
+  },
+  "three_point_ground_attitude_deg": {
+   "value": 9.8,
+   "unit": "deg",
+   "evidence": "derived",
+   "source": "derived from the parametric CAD v12 (modelo_v12.py) (wheel + tailwheel contact)",
+   "note": "NOT applied to the export; for the simulator to place the aircraft on the ground"
+  }
+ },
+ "dimensions": {
+  "model": {
+   "span_m": {
+    "value": 1.5455,
+    "unit": "m",
+    "evidence": "measured",
+    "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+    "note": "outermost wingtip vertices (master v15 wingtip)"
+   },
+   "length_m": {
+    "value": 1.1155,
+    "unit": "m",
+    "evidence": "measured",
+    "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+    "note": "spinner tip to rudder trailing edge along the body axis"
+   },
+   "bbox_sim_m": {
+    "min": [
+     -0.7727518081665039,
+     -0.25600001215934753,
+     -0.2834610641002655
+    ],
+    "max": [
+     0.7727518081665039,
+     0.1780000627040863,
+     0.8320000171661377
+    ]
+   },
+   "wing_area_m2": {
+    "value": 0.32899999999999996,
+    "unit": "m2",
+    "evidence": "derived",
+    "source": "derived from the parametric CAD v12 (modelo_v12.py)"
+   },
+   "mac_m": {
+    "value": 0.213,
+    "unit": "m",
+    "evidence": "derived",
+    "source": "derived from the parametric CAD v12 (modelo_v12.py)"
+   },
+   "main_wheel_radius_m": {
+    "value": 0.05802,
+    "unit": "m",
+    "evidence": "measured",
+    "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+    "note": "max radial distance from wheel_left_axle"
+   },
+   "tailwheel_radius_m": {
+    "value": 0.014,
+    "unit": "m",
+    "evidence": "measured",
+    "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)"
+   },
+   "main_gear_track_m": {
+    "value": 0.264,
+    "unit": "m",
+    "evidence": "derived",
+    "source": "derived from the parametric CAD v12 (modelo_v12.py)"
+   },
+   "propeller_diameter_m": {
+    "value": 0.28064,
+    "unit": "m",
+    "evidence": "measured",
+    "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+    "note": "blade tip circle about the propeller_spin axis"
+   }
+  },
+  "reference": {
+   "span_m": {
+    "value": 1.555,
+    "unit": "m",
+    "evidence": "borrowed",
+    "source": "integration-team letter (reference listing)"
+   },
+   "length_m": {
+    "value": 1.04,
+    "unit": "m",
+    "evidence": "borrowed",
+    "source": "integration-team letter (reference listing)"
+   }
+  },
+  "reconciliation": {
+   "scale_changed": false,
+   "span_difference_to_r1_mm": -2.4,
+   "length_difference_to_r1_mm": -1.1,
+   "span_difference_to_manual_mm": -9.5,
+   "length_difference_to_manual_mm": 75.5,
+   "explanation": "not rescaled (delivery spec). The span is 2.4 mm shorter than r1 because the r2 sections come from the master v15 wingtip (r1 used v12); the length differs by -1.1 mm: v17 spinner (-0.8 mm) and the rudder trailing edge, which is now the foam edge itself (r1 measured the marking shell standing proud of it). The manual length (1.040 m) is a listing value whose measuring stations are unknown."
+  },
+  "r1_measured": {
+   "span_m": 1.5479,
+   "length_m": 1.1166,
+   "source": "r1 metadata (master v12)"
+  }
+ },
+ "landmarks": {
+  "left_wingtip": {
+   "sim_m": [
+    -0.772752,
+    0.077909,
+    0.186293
+   ],
+   "blender_export_m": [
+    -0.772752,
+    -0.186293,
+    0.077909
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "outermost vertex of wing_left_fixed (pilot's left)"
+  },
+  "right_wingtip": {
+   "sim_m": [
+    0.772752,
+    0.077909,
+    0.186293
+   ],
+   "blender_export_m": [
+    0.772752,
+    -0.186293,
+    0.077909
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "outermost vertex of wing_right_fixed"
+  },
+  "nose_spinner_tip": {
+   "sim_m": [
+    0.001116,
+    -0.001117,
+    -0.283461
+   ],
+   "blender_export_m": [
+    0.001116,
+    0.283461,
+    -0.001117
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "foremost vertex of propeller_rotor"
+  },
+  "tail_rudder_trailing_edge": {
+   "sim_m": [
+    -0.0,
+    0.002,
+    0.832
+   ],
+   "blender_export_m": [
+    -0.0,
+    -0.832,
+    0.002
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "aftmost vertex of rudder"
+  },
+  "wing_root_leading_edge": {
+   "sim_m": [
+    0.001263,
+    0.097386,
+    3.2e-05
+   ],
+   "blender_export_m": [
+    0.001263,
+    -3.2e-05,
+    0.097386
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "foremost wing vertex within 3 mm of the symmetry plane"
+  },
+  "left_main_wheel_center": {
+   "sim_m": [
+    -0.131979,
+    -0.198,
+    0.008
+   ],
+   "blender_export_m": [
+    -0.131979,
+    -0.008,
+    -0.198
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "wheel_left_axle origin"
+  },
+  "right_main_wheel_center": {
+   "sim_m": [
+    0.131979,
+    -0.198,
+    0.008
+   ],
+   "blender_export_m": [
+    0.131979,
+    -0.008,
+    -0.198
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "wheel_right_axle origin"
+  },
+  "tailwheel_center": {
+   "sim_m": [
+    0.0,
+    -0.112,
+    0.759
+   ],
+   "blender_export_m": [
+    0.0,
+    -0.759,
+    -0.112
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "tailwheel_axle origin"
+  },
+  "propeller_hub": {
+   "sim_m": [
+    -0.000327,
+    0.000327,
+    -0.24214
+   ],
+   "blender_export_m": [
+    -0.000327,
+    0.24214,
+    0.000327
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "propeller_spin origin"
+  },
+  "datum_D0": {
+   "sim_m": [
+    0.0,
+    0.0,
+    -0.0
+   ],
+   "blender_export_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "root node origin"
+  },
+  "left_main_wheel_contact": {
+   "sim_m": [
+    -0.132,
+    -0.256,
+    0.008
+   ],
+   "blender_export_m": [
+    -0.132,
+    -0.008,
+    -0.256
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "lowest vertex of wheel_left (neutral, no ground)"
+  },
+  "right_main_wheel_contact": {
+   "sim_m": [
+    0.132,
+    -0.256,
+    0.008
+   ],
+   "blender_export_m": [
+    0.132,
+    -0.008,
+    -0.256
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "lowest vertex of wheel_right"
+  },
+  "tailwheel_contact": {
+   "sim_m": [
+    -0.000331,
+    -0.125999,
+    0.759057
+   ],
+   "blender_export_m": [
+    -0.000331,
+    -0.759057,
+    -0.125999
+   ],
+   "evidence": "measured",
+   "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)",
+   "definition": "lowest vertex of tailwheel"
+  }
+ },
+ "ground_contacts_neutral": {
+  "left_main_wheel_bottom_sim_m": [
+   -0.132,
+   -0.256,
+   0.008
+  ],
+  "right_main_wheel_bottom_sim_m": [
+   0.132,
+   -0.256,
+   0.008
+  ],
+  "tailwheel_bottom_sim_m": [
+   -0.000331,
+   -0.125999,
+   0.759057
+  ],
+  "evidence": "measured",
+  "source": "measured on the exported mesh (transformed vertices, Blender, before export; re-checked after GLB re-import)"
+ },
+ "articulations": {
+  "aileron_left_hinge": {
+   "id": "aileron_left_hinge",
+   "node": "aileron_left_hinge",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "aileron_left",
+   "members_cad": [
+    "aleron_izq",
+    "cuerno_aleron_izq"
+   ],
+   "members_description": "left aileron + horn",
+   "pivot_sim_m": [
+    -0.562017,
+    0.116965,
+    0.157726
+   ],
+   "pivot_blender_export_m": [
+    -0.562017,
+    -0.157726,
+    0.116965
+   ],
+   "axis_sim": [
+    0.999391,
+    -0.034899,
+    -0.0
+   ],
+   "axis_blender_export": [
+    0.999391,
+    0.0,
+    -0.034899
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    0,
+    -0.017452,
+    0.999848
+   ],
+   "rest_local_translation_gltf_m": [
+    -0.562017,
+    0.116965,
+    0.157726
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.999848,
+    0.0,
+    0.017452,
+    0.0
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "trailing edge down",
+   "range": {
+    "min": -22.0,
+    "max": 22.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler)"
+   },
+   "driven_by": "roll: right stick -> right aileron negative (up), left aileron positive (down); authored differential 0.7 (down travel = 0.7 x up travel)",
+   "mixing": {
+    "differential": {
+     "value": 0.7,
+     "unit": "ratio down/up",
+     "evidence": "estimated",
+     "source": "authored, typical for the type"
+    },
+    "note": "roll right: right aileron TE up (negative), left aileron TE down (positive)"
+   },
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "aileron_left"
+   ],
+   "openrc_section": "wing_left",
+   "unchanged_from_r1": true,
+   "range_authored": {
+    "min": -22.0,
+    "max": 22.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (r1 value, unchanged)"
+   },
+   "range_simulator": {
+    "min": -34.5,
+    "max": 34.5,
+    "unit": "deg",
+    "evidence": "borrowed",
+    "source": "OpenRC Simulator manual linear travel converted at an assumed measurement station (delivery spec r2, sec. 4)",
+    "approximate": true
+   },
+   "clearance": {
+    "clear_envelope_deg": [
+     -34.5,
+     34.5
+    ],
+    "swept_deg": [
+     -34.5,
+     34.5
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": true,
+    "interfering_angles_deg": [],
+    "against": [
+     "flap_left",
+     "wing_left_fixed"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "flap_left_hinge": {
+   "id": "flap_left_hinge",
+   "node": "flap_left_hinge",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "flap_left",
+   "members_cad": [
+    "flap_izq",
+    "cuerno_flap_izq"
+   ],
+   "members_description": "left flap + horn",
+   "pivot_sim_m": [
+    -0.240247,
+    0.105729,
+    0.157726
+   ],
+   "pivot_blender_export_m": [
+    -0.240247,
+    -0.157726,
+    0.105729
+   ],
+   "axis_sim": [
+    0.999391,
+    -0.034899,
+    -0.0
+   ],
+   "axis_blender_export": [
+    0.999391,
+    0.0,
+    -0.034899
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    0,
+    -0.017452,
+    0.999848
+   ],
+   "rest_local_translation_gltf_m": [
+    -0.240247,
+    0.105729,
+    0.157726
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.999848,
+    0.0,
+    0.017452,
+    0.0
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "trailing edge down",
+   "range": {
+    "min": 0.0,
+    "max": 40.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler)"
+   },
+   "driven_by": "flap channel (both flaps equal)",
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "flap_left"
+   ],
+   "openrc_section": "wing_left",
+   "unchanged_from_r1": true,
+   "range_authored": {
+    "min": 0.0,
+    "max": 40.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler)"
+   },
+   "simulator_steps_deg": {
+    "value": [
+     0.0,
+     20.7,
+     36.6
+    ],
+    "unit": "deg",
+    "evidence": "borrowed",
+    "source": "delivery spec r2, sec. 4"
+   },
+   "clearance": {
+    "clear_envelope_deg": [
+     0.0,
+     39.0
+    ],
+    "swept_deg": [
+     0,
+     40
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": false,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [
+     40.0
+    ],
+    "against": [
+     "aileron_left",
+     "fuselage_core",
+     "wing_left_fixed"
+    ],
+    "steps_checked_deg": {
+     "20.7": "clear",
+     "36.6": "clear"
+    },
+    "note": "reported, not clamped"
+   }
+  },
+  "aileron_right_hinge": {
+   "id": "aileron_right_hinge",
+   "node": "aileron_right_hinge",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "aileron_right",
+   "members_cad": [
+    "aleron_der",
+    "cuerno_aleron_der"
+   ],
+   "members_description": "right aileron + horn",
+   "pivot_sim_m": [
+    0.562017,
+    0.116965,
+    0.157726
+   ],
+   "pivot_blender_export_m": [
+    0.562017,
+    -0.157726,
+    0.116965
+   ],
+   "axis_sim": [
+    0.999391,
+    0.034899,
+    -0.0
+   ],
+   "axis_blender_export": [
+    0.999391,
+    0.0,
+    0.034899
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    0,
+    0.017452,
+    0.999848
+   ],
+   "rest_local_translation_gltf_m": [
+    0.562017,
+    0.116965,
+    0.157726
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.999848,
+    0.0,
+    -0.017452,
+    0.0
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "trailing edge down",
+   "range": {
+    "min": -22.0,
+    "max": 22.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler)"
+   },
+   "driven_by": "roll: right stick -> right aileron negative (up), left aileron positive (down); authored differential 0.7 (down travel = 0.7 x up travel)",
+   "mixing": {
+    "differential": {
+     "value": 0.7,
+     "unit": "ratio down/up",
+     "evidence": "estimated",
+     "source": "authored, typical for the type"
+    },
+    "note": "roll right: right aileron TE up (negative), left aileron TE down (positive)"
+   },
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "aileron_right"
+   ],
+   "openrc_section": "wing_right",
+   "unchanged_from_r1": true,
+   "range_authored": {
+    "min": -22.0,
+    "max": 22.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (r1 value, unchanged)"
+   },
+   "range_simulator": {
+    "min": -34.5,
+    "max": 34.5,
+    "unit": "deg",
+    "evidence": "borrowed",
+    "source": "OpenRC Simulator manual linear travel converted at an assumed measurement station (delivery spec r2, sec. 4)",
+    "approximate": true
+   },
+   "clearance": {
+    "clear_envelope_deg": [
+     -34.5,
+     34.5
+    ],
+    "swept_deg": [
+     -34.5,
+     34.5
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": true,
+    "interfering_angles_deg": [],
+    "against": [
+     "flap_right",
+     "wing_right_fixed"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "flap_right_hinge": {
+   "id": "flap_right_hinge",
+   "node": "flap_right_hinge",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "flap_right",
+   "members_cad": [
+    "flap_der",
+    "cuerno_flap_der"
+   ],
+   "members_description": "right flap + horn",
+   "pivot_sim_m": [
+    0.240247,
+    0.105729,
+    0.157726
+   ],
+   "pivot_blender_export_m": [
+    0.240247,
+    -0.157726,
+    0.105729
+   ],
+   "axis_sim": [
+    0.999391,
+    0.034899,
+    -0.0
+   ],
+   "axis_blender_export": [
+    0.999391,
+    0.0,
+    0.034899
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    0,
+    0.017452,
+    0.999848
+   ],
+   "rest_local_translation_gltf_m": [
+    0.240247,
+    0.105729,
+    0.157726
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.999848,
+    0.0,
+    -0.017452,
+    0.0
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "trailing edge down",
+   "range": {
+    "min": 0.0,
+    "max": 40.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler)"
+   },
+   "driven_by": "flap channel (both flaps equal)",
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "flap_right"
+   ],
+   "openrc_section": "wing_right",
+   "unchanged_from_r1": true,
+   "range_authored": {
+    "min": 0.0,
+    "max": 40.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler)"
+   },
+   "simulator_steps_deg": {
+    "value": [
+     0.0,
+     20.7,
+     36.6
+    ],
+    "unit": "deg",
+    "evidence": "borrowed",
+    "source": "delivery spec r2, sec. 4"
+   },
+   "clearance": {
+    "clear_envelope_deg": [
+     0.0,
+     39.0
+    ],
+    "swept_deg": [
+     0,
+     40
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": false,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [
+     40.0
+    ],
+    "against": [
+     "aileron_right",
+     "fuselage_core",
+     "wing_right_fixed"
+    ],
+    "steps_checked_deg": {
+     "20.7": "clear",
+     "36.6": "clear"
+    },
+    "note": "reported, not clamped"
+   }
+  },
+  "elevator_hinge": {
+   "id": "elevator_hinge",
+   "node": "elevator_hinge",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "elevator",
+   "members_cad": [
+    "timon_profundidad",
+    "union_elevador",
+    "elevador_superior_rojo",
+    "elevador_superior_negro",
+    "cuerno_elevador"
+   ],
+   "members_description": "one-piece elevator (both halves + torsion rod), markings, horn",
+   "pivot_sim_m": [
+    0.0,
+    -0.032,
+    0.704
+   ],
+   "pivot_blender_export_m": [
+    0.0,
+    -0.704,
+    -0.032
+   ],
+   "axis_sim": [
+    1.0,
+    0.0,
+    -0.0
+   ],
+   "axis_blender_export": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "rest_local_translation_gltf_m": [
+    0,
+    -0.032,
+    0.704
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "trailing edge down (nose-down pitch)",
+   "range": {
+    "min": -22.0,
+    "max": 22.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler)"
+   },
+   "driven_by": "pitch: stick back (nose up) -> negative; single one-piece elevator joined by a torsion rod",
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "elevator"
+   ],
+   "openrc_section": "horizontal_tail",
+   "unchanged_from_r1": true,
+   "range_authored": {
+    "min": -22.0,
+    "max": 22.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (r1 value, unchanged)"
+   },
+   "range_simulator": {
+    "min": -17.8,
+    "max": 17.8,
+    "unit": "deg",
+    "evidence": "borrowed",
+    "source": "OpenRC Simulator manual linear travel converted at an assumed measurement station (delivery spec r2, sec. 4)",
+    "approximate": true
+   },
+   "clearance": {
+    "clear_envelope_deg": [
+     -22.0,
+     22.0
+    ],
+    "swept_deg": [
+     -22,
+     22
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": true,
+    "interfering_angles_deg": [],
+    "against": [
+     "fin_fixed",
+     "fuselage_core",
+     "rudder",
+     "stabilizer_fixed"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "rudder_hinge": {
+   "id": "rudder_hinge",
+   "node": "rudder_hinge",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "rudder",
+   "members_cad": [
+    "timon_direccion",
+    "timon_franja_roja",
+    "timon_franjas_negras",
+    "cuerno_timon"
+   ],
+   "members_description": "rudder + markings + horn",
+   "pivot_sim_m": [
+    0.0,
+    0.0538,
+    0.738
+   ],
+   "pivot_blender_export_m": [
+    0.0,
+    -0.738,
+    0.0538
+   ],
+   "axis_sim": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "axis_blender_export": [
+    -0.0,
+    0.0,
+    1.0
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0.5,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "rest_local_translation_gltf_m": [
+    0,
+    0.0538,
+    0.738
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.5,
+    0.5,
+    -0.5,
+    0.5
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "trailing edge to the pilot's right (nose right)",
+   "range": {
+    "min": -30.0,
+    "max": 30.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler)"
+   },
+   "driven_by": "yaw: right pedal -> positive",
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "rudder"
+   ],
+   "openrc_section": "vertical_tail",
+   "unchanged_from_r1": true,
+   "range_authored": {
+    "min": -30.0,
+    "max": 30.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (r1 value, unchanged)"
+   },
+   "range_simulator": {
+    "min": -18.2,
+    "max": 18.2,
+    "unit": "deg",
+    "evidence": "borrowed",
+    "source": "OpenRC Simulator manual linear travel converted at an assumed measurement station (delivery spec r2, sec. 4)",
+    "approximate": true
+   },
+   "clearance": {
+    "clear_envelope_deg": [
+     -30.0,
+     30.0
+    ],
+    "swept_deg": [
+     -30,
+     30
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": true,
+    "interfering_angles_deg": [],
+    "against": [
+     "elevator",
+     "fin_fixed",
+     "fuselage_core",
+     "stabilizer_fixed"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "tailwheel_steer": {
+   "id": "tailwheel_steer",
+   "node": "tailwheel_steer",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "tailwheel_fork",
+   "members_cad": [
+    "alambre_rueda_cola"
+   ],
+   "members_description": "steerable tailwheel wire (coaxial with rudder hinge)",
+   "pivot_sim_m": [
+    0.0,
+    -0.084092,
+    0.738
+   ],
+   "pivot_blender_export_m": [
+    0.0,
+    -0.738,
+    -0.084092
+   ],
+   "axis_sim": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "axis_blender_export": [
+    -0.0,
+    0.0,
+    1.0
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0.5,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "rest_local_translation_gltf_m": [
+    0,
+    -0.084092,
+    0.738
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.5,
+    0.5,
+    -0.5,
+    0.5
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "trailing wheel to the pilot's right (follows the rudder)",
+   "range": {
+    "min": -30.0,
+    "max": 30.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "delivery spec r2 / authored (follows rudder)"
+   },
+   "driven_by": "coupled to rudder_hinge 1:1 (wire tip sits inside the rudder)",
+   "coupling": {
+    "follows": "rudder_hinge",
+    "ratio": 1.0,
+    "note": "tailwheel wire rides in the rudder; coaxial hinge line"
+   },
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "tailwheel_fork"
+   ],
+   "openrc_section": "gear",
+   "unchanged_from_r1": true,
+   "clearance": {
+    "clear_envelope_deg": [
+     -30.0,
+     30.0
+    ],
+    "swept_deg": [
+     -30,
+     30
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [],
+    "against": [
+     "fuselage_core"
+    ],
+    "coupled_with": "rudder_hinge",
+    "note": "reported, not clamped"
+   }
+  },
+  "tailwheel_axle": {
+   "id": "tailwheel_axle",
+   "node": "tailwheel_axle",
+   "parent_node": "tailwheel_steer",
+   "mesh_node": "tailwheel",
+   "members_cad": [
+    "rueda_cola",
+    "buje_cola"
+   ],
+   "members_description": "tailwheel tire + hub",
+   "pivot_sim_m": [
+    0.0,
+    -0.112,
+    0.759
+   ],
+   "pivot_blender_export_m": [
+    0.0,
+    -0.759,
+    -0.112
+   ],
+   "axis_sim": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "axis_blender_export": [
+    -1.0,
+    -0.0,
+    -0.0
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0.5,
+    0.5,
+    -0.5,
+    0.5
+   ],
+   "rest_local_translation_gltf_m": [
+    -0.027908,
+    0.021,
+    0
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.5,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "forward rolling",
+   "range": {
+    "continuous": true,
+    "source": "continuous"
+   },
+   "driven_by": "ground contact (rolling without slip, radius 14.0 mm)",
+   "radius_m": {
+    "value": 0.014,
+    "unit": "m",
+    "evidence": "estimated",
+    "source": "user-supplied photographs of a Turbo Timber Evolution (side, 3/4, top, front, nose, gear close-up)"
+   },
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "tailwheel"
+   ],
+   "openrc_section": "gear",
+   "unchanged_from_r1": true,
+   "clearance": {
+    "clear_envelope_deg": [
+     0.0,
+     360.0
+    ],
+    "swept_deg": [
+     0,
+     360
+    ],
+    "step_deg": 10.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [],
+    "against": [
+     "fuselage_core",
+     "rudder"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "propeller_spin": {
+   "id": "propeller_spin",
+   "node": "propeller_spin",
+   "parent_node": "thrust_frame",
+   "mesh_node": "propeller_rotor",
+   "members_cad": [
+    "helice",
+    "spinner",
+    "contraplaca",
+    "campana_motor"
+   ],
+   "members_description": "rotating: 3 blades, spinner, backplate, outrunner bell",
+   "pivot_sim_m": [
+    -0.000327,
+    0.000327,
+    -0.24214
+   ],
+   "pivot_blender_export_m": [
+    -0.000327,
+    0.24214,
+    0.000327
+   ],
+   "axis_sim": [
+    0.034878,
+    -0.034899,
+    -0.998782
+   ],
+   "axis_blender_export": [
+    0.034878,
+    0.998782,
+    -0.034899
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "rest_local_translation_gltf_m": [
+    -0.009372,
+    0,
+    0
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "normal tractor rotation: clockwise seen from behind (pilot view)",
+   "range": {
+    "continuous": true,
+    "source": "continuous"
+   },
+   "driven_by": "throttle / motor rpm",
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "propeller_rotor"
+   ],
+   "openrc_section": "propeller",
+   "unchanged_from_r1": true,
+   "clearance": {
+    "clear_envelope_deg": [
+     0.0,
+     360.0
+    ],
+    "swept_deg": [
+     0,
+     360
+    ],
+    "step_deg": 10.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [],
+    "against": [
+     "cowl",
+     "fuselage_core"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "gear_left_suspension": {
+   "id": "gear_left_suspension",
+   "node": "gear_left_suspension",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "gear_left_leg",
+   "members_cad": [
+    "pata_izq",
+    "collarin_izq",
+    "perno_eje_izq",
+    "eslabon_izq"
+   ],
+   "members_description": "left leg + axle bolt + spacer + wire link",
+   "pivot_sim_m": [
+    -0.046,
+    -0.090347,
+    0.031
+   ],
+   "pivot_blender_export_m": [
+    -0.046,
+    -0.031,
+    -0.090347
+   ],
+   "axis_sim": [
+    -0.0,
+    0.0,
+    -1.0
+   ],
+   "axis_blender_export": [
+    -0.0,
+    1.0,
+    0.0
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    0.707107,
+    0,
+    0.707107
+   ],
+   "rest_local_translation_gltf_m": [
+    -0.046,
+    -0.090347,
+    0.031
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.707107,
+    0.0,
+    0.0,
+    0.707107
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "leg swings outboard (left)",
+   "range": {
+    "min": 0.0,
+    "max": 12.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler); cross-wire springs limit it"
+   },
+   "driven_by": "ground load (suspension); springs: cross cables with tension springs, see metadata",
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "gear_left_leg"
+   ],
+   "openrc_section": "gear",
+   "unchanged_from_r1": true,
+   "clearance": {
+    "clear_envelope_deg": [
+     0.0,
+     6.0
+    ],
+    "swept_deg": [
+     0,
+     12
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": false,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [
+     7.0,
+     8.0,
+     9.0,
+     10.0,
+     11.0,
+     12.0
+    ],
+    "against": [
+     "fuselage_core"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "wheel_left_axle": {
+   "id": "wheel_left_axle",
+   "node": "wheel_left_axle",
+   "parent_node": "gear_left_suspension",
+   "mesh_node": "wheel_left",
+   "members_cad": [
+    "neumatico_izq",
+    "buje_izq",
+    "arandela_izq",
+    "tuerca_izq"
+   ],
+   "members_description": "left tire, hub, washer, nut",
+   "pivot_sim_m": [
+    -0.131979,
+    -0.198,
+    0.008
+   ],
+   "pivot_blender_export_m": [
+    -0.131979,
+    -0.008,
+    -0.198
+   ],
+   "axis_sim": [
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "axis_blender_export": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    0.707107,
+    0,
+    0.707107
+   ],
+   "rest_local_translation_gltf_m": [
+    0.023,
+    -0.107653,
+    -0.085979
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.707107,
+    0.0,
+    0.0,
+    0.707107
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "forward rolling",
+   "range": {
+    "continuous": true,
+    "source": "continuous"
+   },
+   "driven_by": "ground contact (rolling without slip, radius 58.0 mm)",
+   "radius_m": {
+    "value": 0.058,
+    "unit": "m",
+    "evidence": "estimated",
+    "source": "user-supplied photographs of a Turbo Timber Evolution (side, 3/4, top, front, nose, gear close-up)"
+   },
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "wheel_left"
+   ],
+   "openrc_section": "gear",
+   "unchanged_from_r1": true,
+   "clearance": {
+    "clear_envelope_deg": [
+     0.0,
+     360.0
+    ],
+    "swept_deg": [
+     0,
+     360
+    ],
+    "step_deg": 10.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [],
+    "against": [
+     "fuselage_core",
+     "gear_left_leg"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "gear_right_suspension": {
+   "id": "gear_right_suspension",
+   "node": "gear_right_suspension",
+   "parent_node": "TurboTimberEvolution",
+   "mesh_node": "gear_right_leg",
+   "members_cad": [
+    "pata_der",
+    "collarin_der",
+    "perno_eje_der",
+    "eslabon_der"
+   ],
+   "members_description": "right leg + axle bolt + spacer + wire link",
+   "pivot_sim_m": [
+    0.046,
+    -0.090347,
+    0.031
+   ],
+   "pivot_blender_export_m": [
+    0.046,
+    -0.031,
+    -0.090347
+   ],
+   "axis_sim": [
+    -0.0,
+    0.0,
+    1.0
+   ],
+   "axis_blender_export": [
+    -0.0,
+    -1.0,
+    0.0
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    -0.707107,
+    0,
+    0.707107
+   ],
+   "rest_local_translation_gltf_m": [
+    0.046,
+    -0.090347,
+    0.031
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.707107,
+    -0.0,
+    -0.0,
+    -0.707107
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "leg swings outboard (right)",
+   "range": {
+    "min": 0.0,
+    "max": 12.0,
+    "unit": "deg",
+    "evidence": "estimated",
+    "source": "authored approximation (no manufacturer manual available to the modeler); cross-wire springs limit it"
+   },
+   "driven_by": "ground load (suspension); springs: cross cables with tension springs, see metadata",
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "gear_right_leg"
+   ],
+   "openrc_section": "gear",
+   "unchanged_from_r1": true,
+   "clearance": {
+    "clear_envelope_deg": [
+     0.0,
+     6.0
+    ],
+    "swept_deg": [
+     0,
+     12
+    ],
+    "step_deg": 1.0,
+    "authored_range_clear": false,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [
+     7.0,
+     8.0,
+     9.0,
+     10.0,
+     11.0,
+     12.0
+    ],
+    "against": [
+     "fuselage_core"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "wheel_right_axle": {
+   "id": "wheel_right_axle",
+   "node": "wheel_right_axle",
+   "parent_node": "gear_right_suspension",
+   "mesh_node": "wheel_right",
+   "members_cad": [
+    "neumatico_der",
+    "buje_der",
+    "arandela_der",
+    "tuerca_der"
+   ],
+   "members_description": "right tire, hub, washer, nut",
+   "pivot_sim_m": [
+    0.131979,
+    -0.198,
+    0.008
+   ],
+   "pivot_blender_export_m": [
+    0.131979,
+    -0.008,
+    -0.198
+   ],
+   "axis_sim": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "axis_blender_export": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "axis_frame": "aircraft root frame (same orientation as the frame named in the key)",
+   "axis_local": "+X of the pivot node",
+   "rotation_rule": "right-hand rule about the axis; angle 0 = rest orientation",
+   "rest_local_rotation_gltf_xyzw": [
+    0,
+    -0.707107,
+    0,
+    0.707107
+   ],
+   "rest_local_translation_gltf_m": [
+    -0.023,
+    -0.107653,
+    -0.085979
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.707107,
+    0.0,
+    0.0,
+    -0.707107
+   ],
+   "rest_note": "the glTF node carries the rest rotation; apply the control angle as rest * axisAngle(+X local, angle)",
+   "positive_direction": "forward rolling",
+   "range": {
+    "continuous": true,
+    "source": "continuous"
+   },
+   "driven_by": "ground contact (rolling without slip, radius 58.0 mm)",
+   "radius_m": {
+    "value": 0.058,
+    "unit": "m",
+    "evidence": "estimated",
+    "source": "user-supplied photographs of a Turbo Timber Evolution (side, 3/4, top, front, nose, gear close-up)"
+   },
+   "frame": "rest_local: parent-relative rest transform of the node; angle applied as rest * rot(+X local, angle)",
+   "mesh_members": [
+    "wheel_right"
+   ],
+   "openrc_section": "gear",
+   "unchanged_from_r1": true,
+   "clearance": {
+    "clear_envelope_deg": [
+     0.0,
+     360.0
+    ],
+    "swept_deg": [
+     0,
+     360
+    ],
+    "step_deg": 10.0,
+    "authored_range_clear": true,
+    "simulator_range_clear": null,
+    "interfering_angles_deg": [],
+    "against": [
+     "fuselage_core",
+     "gear_right_leg"
+    ],
+    "note": "reported, not clamped"
+   }
+  },
+  "thrust_frame": {
+   "id": "thrust_frame",
+   "node": "thrust_frame",
+   "parent_node": "TurboTimberEvolution",
+   "moving": false,
+   "openrc_section": null,
+   "pivot_sim_m": [
+    0.0,
+    0.0,
+    -0.2515
+   ],
+   "axis_sim": [
+    0.034878,
+    -0.034899,
+    -0.998782
+   ],
+   "rest_local_quaternion_wxyz_blender": [
+    0.71923,
+    -0.012123,
+    0.012554,
+    0.694553
+   ],
+   "note": "fixed frame (thrust line, 2 deg down / 2 deg right); untagged by rule; parent of propeller_spin"
+  }
+ },
+ "articulation_summary": {
+  "primary_controls": [
+   "aileron_left_hinge",
+   "aileron_right_hinge",
+   "elevator_hinge",
+   "rudder_hinge"
+  ],
+  "secondary": [
+   "flap_left_hinge",
+   "flap_right_hinge",
+   "tailwheel_steer"
+  ],
+  "continuous": [
+   "propeller_spin",
+   "wheel_left_axle",
+   "wheel_right_axle",
+   "tailwheel_axle"
+  ],
+  "suspension": [
+   "gear_left_suspension",
+   "gear_right_suspension"
+  ]
+ },
+ "thrust": {
+  "thrust_frame_node": "thrust_frame",
+  "fixed": true,
+  "origin_sim_m": [
+   0.0,
+   0.0,
+   -0.2515
+  ],
+  "direction_sim": [
+   0.034878,
+   -0.034899,
+   -0.998782
+  ],
+  "downthrust_deg": {
+   "value": 2.0,
+   "unit": "deg",
+   "evidence": "estimated",
+   "source": "typical for the type"
+  },
+  "right_thrust_deg": {
+   "value": 2.0,
+   "unit": "deg",
+   "evidence": "estimated",
+   "source": "typical for the type"
+  },
+  "propeller_plane_origin": "propeller hub (CAD x = -251.5 mm from D0)",
+  "rotating_child": "propeller_spin (spinner, 3 blades, backplate, outrunner bell)",
+  "rotation_sense": "clockwise seen from behind (normal tractor) = positive about the thrust direction",
+  "axis_sim": [
+   0.034878,
+   -0.034899,
+   -0.998782
+  ]
+ },
+ "landing_gear": {
+  "type": "two wire-sprung legs hinged on fuselage pins, crossed cables with tension springs between each leg and the opposite fuselage eyelet",
+  "suspension_travel_deg": {
+   "value": 12.0,
+   "unit": "deg",
+   "evidence": "estimated",
+   "source": "derived from the parametric CAD v12 (modelo_v12.py) (spring stretch audit)"
+  },
+  "spring_stretch_at_full_travel_mm": {
+   "value": 8.0,
+   "unit": "mm",
+   "evidence": "derived",
+   "source": "derived from the parametric CAD v12 (modelo_v12.py)"
+  },
+  "spring_stiffness": {
+   "value": null,
+   "unit": "N/m",
+   "evidence": "estimated",
+   "source": "unknown; not provided",
+   "note": "simulator should tune; geometry only"
+  },
+  "cables_cosmetic": "gear_cables mesh is static in the rest pose; endpoints below let the simulator re-draw it if legs move",
+  "cable_endpoints_sim_m": {
+   "der": {
+    "fuselage_eyelet": [
+     0.022,
+     -0.090358,
+     0.044
+    ],
+    "anchor_rest": [
+     -0.075231,
+     -0.167417,
+     0.017691
+    ],
+    "rigid_cable_length_m": 0.07082320767062981
+   },
+   "izq": {
+    "fuselage_eyelet": [
+     -0.022,
+     -0.090358,
+     0.03
+    ],
+    "anchor_rest": [
+     0.07495,
+     -0.167194,
+     0.015505
+    ],
+    "rigid_cable_length_m": 0.06855160099103486
+   }
+  },
+  "wheel_axis_note": "wheel_*_axle rotate about their own +X (pointing to the pilot's left) so forward rolling is positive; steering (tailwheel_steer) and suspension are separate parent nodes",
+  "cable_source": "master v17 escena.json (the cosmetic gear_cables mesh is rebuilt from these points, rest pose only)",
+  "suspension_clearance_note": "the modelled leg link meets its foam bracket beyond about 6 deg; the 0-12 deg range is kept (reported in articulations.*.clearance, not clamped)"
+ },
+ "mass_properties": {
+  "status": "NON-FLIGHT PLACEHOLDER. The 1.46 kg ledger below is a modelling estimate and must not be used as flight data.",
+  "total_mass": {
+   "value": 1.46,
+   "unit": "kg",
+   "evidence": "estimated",
+   "source": "sum of component estimates below",
+   "uncertainty": "+/- 15 %",
+   "placeholder": true
+  },
+  "cg": {
+   "position_cad_mm": [
+    60.6,
+    0.0,
+    -10.9
+   ],
+   "position_sim_m": [
+    0.0,
+    -0.0109,
+    0.0606
+   ],
+   "percent_mac": {
+    "value": 28.5,
+    "unit": "% MAC",
+    "evidence": "derived",
+    "source": "component estimates",
+    "uncertainty": "+/- 5 % MAC"
+   },
+   "recommended_range_aft_of_LE_mm": {
+    "value": [
+     53.0,
+     64.0
+    ],
+    "unit": "mm",
+    "evidence": "estimated",
+    "source": "25-30 % MAC rule of thumb, not the manual"
+   },
+   "note": "CG kept as data, not as the model origin"
+  },
+  "components": [
+   {
+    "name": "ala (2 semialas, flaps, alerones)",
+    "mass": {
+     "value": 0.2556,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 101.3
+   },
+   {
+    "name": "fuselaje",
+    "mass": {
+     "value": 0.29,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 220.8
+   },
+   {
+    "name": "cola",
+    "mass": {
+     "value": 0.0613,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 703.3
+   },
+   {
+    "name": "tren principal",
+    "mass": {
+     "value": 0.135,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 12.0
+   },
+   {
+    "name": "rueda de cola",
+    "mass": {
+     "value": 0.012,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 738.4
+   },
+   {
+    "name": "helice y cono",
+    "mass": {
+     "value": 0.032,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": -251.0
+   },
+   {
+    "name": "motor",
+    "mass": {
+     "value": 0.16,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": -212.5
+   },
+   {
+    "name": "variador",
+    "mass": {
+     "value": 0.06,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": -142.0
+   },
+   {
+    "name": "receptor",
+    "mass": {
+     "value": 0.012,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 118.0
+   },
+   {
+    "name": "servos_cola",
+    "mass": {
+     "value": 0.026,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 228.0
+   },
+   {
+    "name": "servos_ala",
+    "mass": {
+     "value": 0.036,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 100.1
+   },
+   {
+    "name": "cableado_luces",
+    "mass": {
+     "value": 0.04,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": 58.0
+   },
+   {
+    "name": "bateria",
+    "mass": {
+     "value": 0.34,
+     "unit": "kg",
+     "evidence": "estimated",
+     "source": "class-typical values"
+    },
+    "x_cad_mm": -52.0
+   }
+  ],
+  "inertia": {
+   "value": null,
+   "unit": "kg m2",
+   "evidence": "estimated",
+   "source": "not provided in r1",
+   "note": "can be derived from the component list if needed"
+  },
+  "wing_loading": {
+   "value": 44.4,
+   "unit": "g/dm2",
+   "evidence": "derived",
+   "source": "estimated mass / model wing area"
+  },
+  "tail_volume_horizontal": {
+   "value": 0.66,
+   "unit": null,
+   "evidence": "derived",
+   "source": "derived from the parametric CAD v12 (modelo_v12.py)"
+  },
+  "selected_reference_mass": {
+   "value": 2.19,
+   "unit": "kg",
+   "evidence": "borrowed",
+   "source": "manual reference selected by the integration team (delivery spec r2)",
+   "note": "use this value (with the simulator's own CG/inertia) for flight; r2 geometry does not define mass, CG or inertia"
+  },
+  "geometry_creates_mass_values": false
+ },
+ "meshes": {
+  "nodes": {
+   "fuselage_core": {
+    "triangles": 4542,
+    "surfaces": 4,
+    "section": "core",
+    "parent": "TurboTimberEvolution",
+    "materials": [
+     "white",
+     "red",
+     "black",
+     "light_red"
+    ]
+   },
+   "wing_left_fixed": {
+    "triangles": 5197,
+    "surfaces": 5,
+    "section": "wing_left",
+    "parent": "TurboTimberEvolution",
+    "materials": [
+     "white",
+     "black",
+     "red",
+     "dark_grey",
+     "light_red"
+    ]
+   },
+   "wing_right_fixed": {
+    "triangles": 5125,
+    "surfaces": 5,
+    "section": "wing_right",
+    "parent": "TurboTimberEvolution",
+    "materials": [
+     "white",
+     "black",
+     "red",
+     "dark_grey",
+     "light_green"
+    ]
+   },
+   "aileron_left": {
+    "triangles": 928,
+    "surfaces": 1,
+    "section": "wing_left",
+    "parent": "aileron_left_hinge",
+    "materials": [
+     "white"
+    ]
+   },
+   "aileron_right": {
+    "triangles": 928,
+    "surfaces": 1,
+    "section": "wing_right",
+    "parent": "aileron_right_hinge",
+    "materials": [
+     "white"
+    ]
+   },
+   "flap_left": {
+    "triangles": 1392,
+    "surfaces": 1,
+    "section": "wing_left",
+    "parent": "flap_left_hinge",
+    "materials": [
+     "white"
+    ]
+   },
+   "flap_right": {
+    "triangles": 1392,
+    "surfaces": 1,
+    "section": "wing_right",
+    "parent": "flap_right_hinge",
+    "materials": [
+     "white"
+    ]
+   },
+   "stabilizer_fixed": {
+    "triangles": 4999,
+    "surfaces": 3,
+    "section": "horizontal_tail",
+    "parent": "TurboTimberEvolution",
+    "materials": [
+     "white",
+     "black",
+     "red"
+    ]
+   },
+   "elevator": {
+    "triangles": 1462,
+    "surfaces": 3,
+    "section": "horizontal_tail",
+    "parent": "elevator_hinge",
+    "materials": [
+     "white",
+     "black",
+     "red"
+    ]
+   },
+   "fin_fixed": {
+    "triangles": 2314,
+    "surfaces": 3,
+    "section": "vertical_tail",
+    "parent": "TurboTimberEvolution",
+    "materials": [
+     "red",
+     "black",
+     "white"
+    ]
+   },
+   "rudder": {
+    "triangles": 1244,
+    "surfaces": 3,
+    "section": "vertical_tail",
+    "parent": "rudder_hinge",
+    "materials": [
+     "white",
+     "red",
+     "black"
+    ]
+   },
+   "cowl": {
+    "triangles": 2310,
+    "surfaces": 4,
+    "section": "engine",
+    "parent": "TurboTimberEvolution",
+    "materials": [
+     "white",
+     "black",
+     "red",
+     "metal"
+    ]
+   },
+   "canopy_glass": {
+    "triangles": 1032,
+    "surfaces": 1,
+    "section": "canopy",
+    "parent": "TurboTimberEvolution",
+    "materials": [
+     "glass"
+    ]
+   },
+   "propeller_rotor": {
+    "triangles": 3580,
+    "surfaces": 2,
+    "section": "propeller",
+    "parent": "propeller_spin",
+    "materials": [
+     "black",
+     "metal"
+    ]
+   },
+   "gear_left_leg": {
+    "triangles": 794,
+    "surfaces": 2,
+    "section": "gear",
+    "parent": "gear_left_suspension",
+    "materials": [
+     "white",
+     "metal"
+    ]
+   },
+   "gear_right_leg": {
+    "triangles": 794,
+    "surfaces": 2,
+    "section": "gear",
+    "parent": "gear_right_suspension",
+    "materials": [
+     "white",
+     "metal"
+    ]
+   },
+   "wheel_left": {
+    "triangles": 1660,
+    "surfaces": 2,
+    "section": "gear",
+    "parent": "wheel_left_axle",
+    "materials": [
+     "foam",
+     "light_grey"
+    ]
+   },
+   "wheel_right": {
+    "triangles": 1660,
+    "surfaces": 2,
+    "section": "gear",
+    "parent": "wheel_right_axle",
+    "materials": [
+     "foam",
+     "light_grey"
+    ]
+   },
+   "tailwheel_fork": {
+    "triangles": 238,
+    "surfaces": 1,
+    "section": "gear",
+    "parent": "tailwheel_steer",
+    "materials": [
+     "metal"
+    ]
+   },
+   "tailwheel": {
+    "triangles": 816,
+    "surfaces": 2,
+    "section": "gear",
+    "parent": "tailwheel_axle",
+    "materials": [
+     "foam",
+     "light_grey"
+    ]
+   },
+   "gear_cables": {
+    "triangles": 112,
+    "surfaces": 1,
+    "section": "gear",
+    "parent": "TurboTimberEvolution",
+    "materials": [
+     "metal"
+    ]
+   }
+  },
+  "total_triangles": 42519,
+  "total_surfaces": 49,
+  "materials": [
+   "black",
+   "dark_grey",
+   "foam",
+   "glass",
+   "light_green",
+   "light_grey",
+   "light_red",
+   "metal",
+   "red",
+   "white"
+  ],
+  "textures": 0,
+  "budget": {
+   "triangles_target": [
+    30000,
+    50000
+   ],
+   "triangles_acceptable": 64000,
+   "surfaces_max": 40,
+   "materials_max": 10
+  },
+  "surfaces_over_budget_reason": "49 glTF primitives > 40: the crash split needs 21 separate meshes (one per section part) and each mesh needs one primitive per material it shows (wings 5: white foam, red/black paint, dark-grey brackets, nav lens). Merging colours would remove the paint scheme; textures were avoided by request (base colour only). All 10 materials are shared across meshes.",
+  "decimation": {
+   "method": "Blender Decimate COLLAPSE",
+   "ratios_tried": [
+    0.5,
+    0.7
+   ],
+   "max_deviation_mm": 0.25,
+   "min_triangles": 600,
+   "parts": {
+    "fuselaje_blanco@aft": {
+     "triangles_before": 1162,
+     "triangles_after": 1162,
+     "ratio": 1.0,
+     "max_deviation_mm": 0.0,
+     "rejected": [
+      {
+       "ratio": 0.5,
+       "triangles": 580,
+       "max_deviation_mm": 0.955
+      },
+      {
+       "ratio": 0.7,
+       "triangles": 812,
+       "max_deviation_mm": 0.314
+      }
+     ]
+    },
+    "fuselaje_panza_roja@aft": {
+     "triangles_before": 922,
+     "triangles_after": 644,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.235
+    },
+    "ala_izq (painted)": {
+     "triangles_before": 7856,
+     "triangles_after": 3928,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.037
+    },
+    "puntera_izq": {
+     "triangles_before": 1462,
+     "triangles_after": 730,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.048
+    },
+    "soportes_slat_izq": {
+     "triangles_before": 768,
+     "triangles_after": 384,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.194
+    },
+    "ala_der (painted)": {
+     "triangles_before": 7874,
+     "triangles_after": 3936,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.038
+    },
+    "puntera_der": {
+     "triangles_before": 1300,
+     "triangles_after": 650,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.085
+    },
+    "soportes_slat_der": {
+     "triangles_before": 768,
+     "triangles_after": 384,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.194
+    },
+    "aleron_izq": {
+     "triangles_before": 1500,
+     "triangles_after": 750,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.062
+    },
+    "aleron_der": {
+     "triangles_before": 1500,
+     "triangles_after": 750,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.059
+    },
+    "flap_izq": {
+     "triangles_before": 2428,
+     "triangles_after": 1214,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.056
+    },
+    "flap_der": {
+     "triangles_before": 2428,
+     "triangles_after": 1214,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.056
+    },
+    "estabilizador (painted)": {
+     "triangles_before": 9999,
+     "triangles_after": 4999,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.052
+    },
+    "timon_profundidad (painted)": {
+     "triangles_before": 2416,
+     "triangles_after": 1208,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.033
+    },
+    "deriva (painted)": {
+     "triangles_before": 3710,
+     "triangles_after": 1854,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.054
+    },
+    "timon_direccion (painted)": {
+     "triangles_before": 2074,
+     "triangles_after": 1036,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.032
+    },
+    "capota@fwd": {
+     "triangles_before": 1432,
+     "triangles_after": 716,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.185
+    },
+    "escapes": {
+     "triangles_before": 1238,
+     "triangles_after": 618,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.143
+    },
+    "ventanas": {
+     "triangles_before": 706,
+     "triangles_after": 494,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.12
+    },
+    "helice": {
+     "triangles_before": 3839,
+     "triangles_after": 1914,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.129
+    },
+    "spinner": {
+     "triangles_before": 1200,
+     "triangles_after": 600,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.082
+    },
+    "campana_motor": {
+     "triangles_before": 764,
+     "triangles_after": 534,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.181
+    },
+    "neumatico_izq": {
+     "triangles_before": 1044,
+     "triangles_after": 730,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.229
+    },
+    "buje_izq": {
+     "triangles_before": 1056,
+     "triangles_after": 738,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.081
+    },
+    "neumatico_der": {
+     "triangles_before": 1044,
+     "triangles_after": 730,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.229
+    },
+    "buje_der": {
+     "triangles_before": 1056,
+     "triangles_after": 738,
+     "ratio": 0.7,
+     "max_deviation_mm": 0.081
+    },
+    "rueda_cola": {
+     "triangles_before": 1512,
+     "triangles_after": 756,
+     "ratio": 0.5,
+     "max_deviation_mm": 0.044
+    }
+   }
+  },
+  "decal_offset_mm": {
+   "franjas_negras@aft": 0.48,
+   "franja_blanca_cola": 0.12,
+   "franja_negra_cola": 0.48,
+   "panel_nariz@aft": 0.48,
+   "escotilla_panel_nariz": 0.48,
+   "filete_nariz@aft": 0.36,
+   "panel_nariz@fwd": 0.48,
+   "filete_nariz@fwd": 0.36,
+   "franjas_negras@fwd": 0.48
+  },
+  "painted_base_colour": {
+   "ala_izq": {
+    "pieces": [
+     "ala_izq#barras_ala_izq",
+     "ala_izq#extrados_negro_izq",
+     "ala_izq#extrados_rojo_izq",
+     "ala_izq#intrados_gris_izq"
+    ],
+    "hidden_walls_removed": 1244,
+    "open_edges_after_weld": 420,
+    "triangles_before_decimation": 7856,
+    "triangles": 3928
+   },
+   "ala_der": {
+    "pieces": [
+     "ala_der#barras_ala_der",
+     "ala_der#extrados_negro_der",
+     "ala_der#extrados_rojo_der",
+     "ala_der#intrados_gris_der"
+    ],
+    "hidden_walls_removed": 1244,
+    "open_edges_after_weld": 420,
+    "triangles_before_decimation": 7874,
+    "triangles": 3936
+   },
+   "estabilizador": {
+    "pieces": [
+     "estabilizador#estab_superior_negro",
+     "estabilizador#estab_superior_rojo"
+    ],
+    "hidden_walls_removed": 248,
+    "open_edges_after_weld": 29,
+    "triangles_before_decimation": 9999,
+    "triangles": 4999
+   },
+   "timon_profundidad": {
+    "pieces": [
+     "timon_profundidad#elevador_superior_negro",
+     "timon_profundidad#elevador_superior_rojo"
+    ],
+    "hidden_walls_removed": 100,
+    "open_edges_after_weld": 0,
+    "triangles_before_decimation": 2416,
+    "triangles": 1208
+   },
+   "deriva": {
+    "pieces": [
+     "deriva#deriva_franja_roja",
+     "deriva#deriva_franjas_negras%00%10",
+     "deriva#deriva_franjas_negras%00%11",
+     "deriva#deriva_franjas_negras%01",
+     "deriva%00",
+     "deriva%01%10",
+     "deriva%01%11"
+    ],
+    "hidden_walls_removed": 503,
+    "open_edges_after_weld": 88,
+    "triangles_before_decimation": 3710,
+    "triangles": 1854
+   },
+   "aleta_dorsal": {
+    "pieces": [
+     "aleta_dorsal#deriva_franja_roja",
+     "aleta_dorsal#deriva_franjas_negras"
+    ],
+    "hidden_walls_removed": 515,
+    "open_edges_after_weld": 64,
+    "triangles_before_decimation": 460,
+    "triangles": 460
+   },
+   "timon_direccion": {
+    "pieces": [
+     "timon_direccion#timon_franja_roja",
+     "timon_direccion#timon_franjas_negras"
+    ],
+    "hidden_walls_removed": 180,
+    "open_edges_after_weld": 24,
+    "triangles_before_decimation": 2074,
+    "triangles": 1036
+   }
+  },
+  "marking_shell_seating": {
+   "fuselage_core": {
+    "covered_foam_samples": 71,
+    "foam_samples_above_sheet": 11,
+    "foam_vertices_pulled_in": 6,
+    "foam_max_mm": 0.367,
+    "sheet_vertices_pushed_out": 27,
+    "sheet_max_mm": 1.347,
+    "clearance_mm": 0.1
+   },
+   "cowl": {
+    "covered_foam_samples": 112,
+    "foam_samples_above_sheet": 46,
+    "foam_vertices_pulled_in": 15,
+    "foam_max_mm": 2.095,
+    "sheet_vertices_pushed_out": 1,
+    "sheet_max_mm": 0.11,
+    "clearance_mm": 0.1
+   }
+  }
+ },
+ "export": {
+  "file": "export/aircraft.glb",
+  "sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+  "bytes": 1258464,
+  "demo_file": "export/aircraft_demo.glb",
+  "demo_sha256": "75c835dd0ded0c1d49ceb01fc080eb349f5269eb6e71b8bfa591ee5cab39fff7",
+  "demo_animation": "one 'control_demo' animation, one control at a time (timeline in source/_export_data.json)",
+  "tool": "Blender 5.2.2 LTS (bpy module) + glTF 2.0 exporter io_scene_gltf2 5.2.40",
+  "settings": {
+   "export_format": "GLB",
+   "use_active_collection": "EXPORT_aircraft",
+   "export_yup": true,
+   "export_apply": true,
+   "export_extras": true,
+   "export_materials": "EXPORT",
+   "export_animations": false,
+   "export_cameras": false,
+   "export_lights": false,
+   "export_draco_mesh_compression_enable": false
+  },
+  "scripts": {
+   "build": "source/scripts/exporta_r2.py --pkg .",
+   "re-export from .blend": "source/scripts/exporta_desde_blend.py"
+  },
+  "frame_conversion": "godot = (blender.x, blender.z, -blender.y)"
+ },
+ "generators": {
+  "cad": "build123d 0.13.0, Python 3.13 (master v15/v17 BREP caches; not shipped: CAD rebuild from this package is UNSUPPORTED)",
+  "retessellation": "source/scripts/retesela_r2.py (needs the master caches; output shipped in source/stl_juego_r2)",
+  "export": "source/scripts/exporta_r2.py",
+  "re_export": "source/scripts/exporta_desde_blend.py",
+  "verification": "source/scripts/verifica_r2.py + source/scripts/valida_glb.py + source/scripts/pruebas_negativas.py",
+  "metadata": "source/scripts/documenta_r2.py",
+  "mapping": "source/scripts/mapa_r2.py",
+  "python": "3.13.16",
+  "blender": "5.2.2 LTS",
+  "gltf_exporter": "5.2.40"
+ },
+ "verification": {
+  "file": "verification.json",
+  "pass": true,
+  "failed": [],
+  "summary": {
+   "structure:names_unique_ascii_no_suffix": true,
+   "structure:single_root_TurboTimberEvolution": true,
+   "structure:hierarchy_matches_spec_tree": true,
+   "structure:mesh_nodes_match_spec": true,
+   "structure:node_scales_unit": true,
+   "structure:no_reflections": true,
+   "structure:rotations_normalised": true,
+   "structure:root_identity_D0": true,
+   "structure:openrc_section_present": true,
+   "structure:openrc_section_valid": true,
+   "structure:root_and_thrust_frame_untagged": true,
+   "structure:one_section_per_mesh": true,
+   "structure:rotor_not_under_engine_tag": true,
+   "structure:no_cameras": true,
+   "structure:no_lights": true,
+   "structure:no_animations": true,
+   "structure:no_textures_or_images": true,
+   "structure:self_contained_buffers": true,
+   "structure:no_compression": true,
+   "structure:materials_le_10": true,
+   "structure:materials_unique": true,
+   "structure:triangles_le_64k": true,
+   "structure:surfaces_le_40": false,
+   "structure:pivots_match_r1_rest": true,
+   "structure:pivot_parents_match_r1": true,
+   "moving_pivots_13": true,
+   "reimport_pivot_positions_0p1mm": true,
+   "reimport_pivot_axes_0p01deg": true,
+   "reimport_rest_rotation_0p01deg": true,
+   "meshes_identity_under_pivot": true,
+   "world_scales_unit": true,
+   "articulation_extras_survive": true,
+   "mesh_sections_survive_reimport": true,
+   "reimport_triangles_match": true,
+   "reimport_surfaces_match": true,
+   "budget_triangles_target_30_50k": true,
+   "budget_triangles_le_64k": true,
+   "budget_surfaces_le_40": false,
+   "materials_le_10_shared": true,
+   "backface_culling_on": true,
+   "reimport_bbox_0p1mm": true,
+   "reimport_landmarks_0p1mm": true,
+   "span_length_consistent_with_r1_1mm": false,
+   "positive_directions": true,
+   "clearance_authored_ranges": false,
+   "clearance_sweep_ran": true,
+   "sections_separable": true,
+   "closure_faces_at_joints": true,
+   "closure_faces_hidden_separation": true,
+   "no_degenerate_faces": true,
+   "no_duplicate_faces": true,
+   "non_manifold_edges_reported": true,
+   "no_flicker_coplanar_overlaps": true,
+   "demo_animates_13_pivots": true,
+   "demo_one_control_at_a_time": true,
+   "silhouette_master_vs_game_within_1px": true
+  },
+  "advisory_not_passed": [
+   "structure:surfaces_le_40",
+   "budget_surfaces_le_40",
+   "span_length_consistent_with_r1_1mm",
+   "clearance_authored_ranges"
+  ],
+  "negative_tests": {
+   "pass": true,
+   "cases": {
+    "missing_hinge_elevator": true,
+    "missing_section_wing_left_fixed": true,
+    "invalid_section_rudder_hinge": true,
+    "non_string_section_cowl": true,
+    "rotor_under_engine_tag": true,
+    "mirrored_scale_aileron_left_hinge": true,
+    "blender_suffix_flap_right": true
+   }
+  }
+ },
+ "hinge_lines": {
+  "aileron_left_hinge": {
+   "pivot_sim_m": [
+    -0.562017,
+    0.116965,
+    0.157726
+   ],
+   "axis_sim": [
+    0.999391,
+    -0.034899,
+    -0.0
+   ]
+  },
+  "aileron_right_hinge": {
+   "pivot_sim_m": [
+    0.562017,
+    0.116965,
+    0.157726
+   ],
+   "axis_sim": [
+    0.999391,
+    0.034899,
+    -0.0
+   ]
+  },
+  "elevator_hinge": {
+   "pivot_sim_m": [
+    0.0,
+    -0.032,
+    0.704
+   ],
+   "axis_sim": [
+    1.0,
+    0.0,
+    -0.0
+   ]
+  },
+  "flap_left_hinge": {
+   "pivot_sim_m": [
+    -0.240247,
+    0.105729,
+    0.157726
+   ],
+   "axis_sim": [
+    0.999391,
+    -0.034899,
+    -0.0
+   ]
+  },
+  "flap_right_hinge": {
+   "pivot_sim_m": [
+    0.240247,
+    0.105729,
+    0.157726
+   ],
+   "axis_sim": [
+    0.999391,
+    0.034899,
+    -0.0
+   ]
+  },
+  "rudder_hinge": {
+   "pivot_sim_m": [
+    0.0,
+    0.0538,
+    0.738
+   ],
+   "axis_sim": [
+    -0.0,
+    1.0,
+    -0.0
+   ]
+  }
+ },
+ "sections": [
+  {
+   "name": "core",
+   "nodes": [
+    "fuselage_core"
+   ],
+   "meshes": [
+    "fuselage_core"
+   ],
+   "triangles": 4542
+  },
+  {
+   "name": "wing_left",
+   "nodes": [
+    "aileron_left",
+    "aileron_left_hinge",
+    "flap_left",
+    "flap_left_hinge",
+    "wing_left_fixed"
+   ],
+   "meshes": [
+    "aileron_left",
+    "flap_left",
+    "wing_left_fixed"
+   ],
+   "triangles": 7517
+  },
+  {
+   "name": "wing_right",
+   "nodes": [
+    "aileron_right",
+    "aileron_right_hinge",
+    "flap_right",
+    "flap_right_hinge",
+    "wing_right_fixed"
+   ],
+   "meshes": [
+    "aileron_right",
+    "flap_right",
+    "wing_right_fixed"
+   ],
+   "triangles": 7445
+  },
+  {
+   "name": "wing_center",
+   "nodes": [],
+   "meshes": [],
+   "triangles": 0
+  },
+  {
+   "name": "horizontal_tail",
+   "nodes": [
+    "elevator",
+    "elevator_hinge",
+    "stabilizer_fixed"
+   ],
+   "meshes": [
+    "elevator",
+    "stabilizer_fixed"
+   ],
+   "triangles": 6461
+  },
+  {
+   "name": "vertical_tail",
+   "nodes": [
+    "fin_fixed",
+    "rudder",
+    "rudder_hinge"
+   ],
+   "meshes": [
+    "fin_fixed",
+    "rudder"
+   ],
+   "triangles": 3558
+  },
+  {
+   "name": "engine",
+   "nodes": [
+    "cowl"
+   ],
+   "meshes": [
+    "cowl"
+   ],
+   "triangles": 2310
+  },
+  {
+   "name": "propeller",
+   "nodes": [
+    "propeller_rotor",
+    "propeller_spin"
+   ],
+   "meshes": [
+    "propeller_rotor"
+   ],
+   "triangles": 3580
+  },
+  {
+   "name": "gear",
+   "nodes": [
+    "gear_cables",
+    "gear_left_leg",
+    "gear_left_suspension",
+    "gear_right_leg",
+    "gear_right_suspension",
+    "tailwheel",
+    "tailwheel_axle",
+    "tailwheel_fork",
+    "tailwheel_steer",
+    "wheel_left",
+    "wheel_left_axle",
+    "wheel_right",
+    "wheel_right_axle"
+   ],
+   "meshes": [
+    "gear_cables",
+    "gear_left_leg",
+    "gear_right_leg",
+    "tailwheel",
+    "tailwheel_fork",
+    "wheel_left",
+    "wheel_right"
+   ],
+   "triangles": 6074
+  },
+  {
+   "name": "canopy",
+   "nodes": [
+    "canopy_glass"
+   ],
+   "meshes": [
+    "canopy_glass"
+   ],
+   "triangles": 1032
+  }
+ ],
+ "sections_rules": {
+  "property": "openrc_section (string, glTF node extras)",
+  "vocabulary": [
+   "core",
+   "wing_left",
+   "wing_right",
+   "wing_center",
+   "horizontal_tail",
+   "vertical_tail",
+   "engine",
+   "propeller",
+   "gear",
+   "canopy"
+  ],
+  "untagged": [
+   "TurboTimberEvolution",
+   "thrust_frame"
+  ],
+  "one_section_per_mesh": true,
+  "welds_across_sections": false,
+  "unused_vocabulary": [
+   "wing_center"
+  ],
+  "unused_note": "wing_center is not used: the wing is two plug-in halves meeting on the symmetry plane, no centre section",
+  "cuts": {
+   "cowl_joint": {
+    "sidecar_x_mm": -157.0,
+    "blender_y_m": 0.157,
+    "parts_cut": [
+     "capota",
+     "filete_nariz",
+     "franjas_negras",
+     "fuselaje_blanco",
+     "fuselaje_panza_roja",
+     "panel_nariz",
+     "placas_escape"
+    ]
+   }
+  },
+  "closures": {
+   "rule": "faces of a section lying on another section (within 0.3 mm, facing it) are split off, painted the plain unpainted-foam colour (material 'white') and set 0.2 mm inside their own piece",
+   "faces_per_joint": {
+    "wing_left_fixed|wing_right_fixed": 0,
+    "wing_right_fixed|wing_left_fixed": 0,
+    "wing_left_fixed|fuselage_core": 21,
+    "fuselage_core|wing_left_fixed": 59,
+    "wing_right_fixed|fuselage_core": 17,
+    "fuselage_core|wing_right_fixed": 58,
+    "cowl|fuselage_core": 38,
+    "fuselage_core|cowl": 45,
+    "stabilizer_fixed|fuselage_core": 67,
+    "fuselage_core|stabilizer_fixed": 26,
+    "fin_fixed|fuselage_core": 267,
+    "fuselage_core|fin_fixed": 116,
+    "fin_fixed|stabilizer_fixed": 0,
+    "stabilizer_fixed|fin_fixed": 0
+   },
+   "verified": {
+    "wing_left_fixed|wing_right_fixed": {
+     "faces": 0,
+     "area_cm2": 0.0,
+     "material": [],
+     "separation_mm_min_max": null,
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "wing_right_fixed|wing_left_fixed": {
+     "faces": 0,
+     "area_cm2": 0.0,
+     "material": [],
+     "separation_mm_min_max": null,
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "wing_left_fixed|fuselage_core": {
+     "faces": 30,
+     "area_cm2": 99.9,
+     "material": [
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.03,
+      0.591
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|wing_left_fixed": {
+     "faces": 63,
+     "area_cm2": 106.83,
+     "material": [
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.057,
+      0.557
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "wing_right_fixed|fuselage_core": {
+     "faces": 24,
+     "area_cm2": 99.26,
+     "material": [
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.033,
+      0.582
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|wing_right_fixed": {
+     "faces": 62,
+     "area_cm2": 106.78,
+     "material": [
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.061,
+      0.503
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "cowl|fuselage_core": {
+     "faces": 38,
+     "area_cm2": 71.26,
+     "material": [
+      "black",
+      "red",
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.009,
+      0.4
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|cowl": {
+     "faces": 38,
+     "area_cm2": 71.05,
+     "material": [
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.106,
+      0.564
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "stabilizer_fixed|fuselage_core": {
+     "faces": 80,
+     "area_cm2": 9.12,
+     "material": [
+      "red",
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.143,
+      0.597
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|stabilizer_fixed": {
+     "faces": 26,
+     "area_cm2": 3.09,
+     "material": [
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.396,
+      0.417
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "fin_fixed|fuselage_core": {
+     "faces": 256,
+     "area_cm2": 69.23,
+     "material": [
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.007,
+      0.474
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "fuselage_core|fin_fixed": {
+     "faces": 127,
+     "area_cm2": 63.76,
+     "material": [
+      "black",
+      "red",
+      "white"
+     ],
+     "separation_mm_min_max": [
+      0.02,
+      0.58
+     ],
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "fin_fixed|stabilizer_fixed": {
+     "faces": 0,
+     "area_cm2": 0.0,
+     "material": [],
+     "separation_mm_min_max": null,
+     "contact_lt_0p05mm_mm2": 0.0
+    },
+    "stabilizer_fixed|fin_fixed": {
+     "faces": 0,
+     "area_cm2": 0.0,
+     "material": [],
+     "separation_mm_min_max": null,
+     "contact_lt_0p05mm_mm2": 0.0
+    }
+   }
+  }
+ },
+ "hygiene": {
+  "no_degenerate_faces": {
+   "pass": true,
+   "detail": {}
+  },
+  "no_duplicate_faces": {
+   "pass": true,
+   "detail": {}
+  },
+  "no_flicker_coplanar_overlaps": {
+   "pass": true,
+   "detail": {
+    "residual_mm2": 0,
+    "pairs": {},
+    "rule": "same-direction coplanar area of different materials < 10 mm2"
+   }
+  },
+  "backface_culling_on": {
+   "pass": true,
+   "detail": {
+    "black": true,
+    "dark_grey": true,
+    "foam": true,
+    "glass": true,
+    "light_green": true,
+    "light_grey": true,
+    "light_red": true,
+    "metal": true,
+    "red": true,
+    "white": true
+   }
+  },
+  "non_manifold_edges": {
+   "value": {
+    "aileron_left": 4,
+    "aileron_right": 4,
+    "cowl": 148,
+    "elevator": 4,
+    "fin_fixed": 462,
+    "flap_left": 4,
+    "flap_right": 4,
+    "fuselage_core": 880,
+    "rudder": 24,
+    "stabilizer_fixed": 151,
+    "propeller_rotor": 96,
+    "wing_left_fixed": 489,
+    "wing_right_fixed": 481
+   },
+   "note": "open edges come from single-sided marking sheets (their hidden underside is removed) and from the split-off closure faces; every foam shell is closed"
+  }
+ }
+}

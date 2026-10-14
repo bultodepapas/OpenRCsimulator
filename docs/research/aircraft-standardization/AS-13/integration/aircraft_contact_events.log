@@ -1,0 +1,48 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   event format is versioned
+ok   active hull contact normalizes
+ok   hull identity and lifecycle use bound point ID
+ok   hull record carries law, response, tick and measures
+ok   normalized hull event array validates
+ok   hull normalization leaves source records and bindings unchanged
+ok   event measurements do not alias source records
+ok   prior contact becomes persistent
+ok   missing prior contact emits an ended lifecycle
+ok   malformed source lifecycle is rejected
+ok   NaN scalar measurement is rejected
+ok   malformed vector is rejected
+ok   hull impact resolves its stable binding and observed tick
+ok   hull impact keeps optional crossing and available kinematics
+ok   impact snapshot arrays are copied
+ok   serialized impact vectors do not alias snapshot
+ok   hull impact validates
+ok   gear impact uses support ID and measured compression
+ok   gear snapshot invents no impulse
+ok   pending scenery response cannot claim a dissipative impulse
+ok   scenery contact links its hull probe and sub-tick timing
+ok   scenery soft contact records dissipative response and real measurements
+ok   conflicting response status is rejected
+ok   swept events require their observed contact fraction
+ok   failed scenery response is terminal
+ok   lake propeller probe uses its single-rotor binding at index minus one
+ok   water event uses authoritative time fraction and terminal response
+ok   lake gear probe resolves support binding
+ok   single propeller strike is engine-stop-and-continue
+ok   propeller strike validates against rotor-disc binding
+ok   strike normalization leaves source record unchanged
+ok   malformed strike vector is rejected
+ok   strike without its authoritative tick or measurements is rejected
+ok   strike payload tick must match serializer tick
+ok   event validation requires strike rpm and kinematics
+ok   event validation rejects missing strike velocity
+ok   duplicate event IDs are rejected
+ok   a terminal contact replaces rather than duplicates its hull observation
+ok   contact ID pointing at the wrong source binding is rejected
+ok   source and response combinations are checked
+ok   unknown response is rejected
+ok   unknown lifecycle is rejected
+ok   nonfinite event scalar is rejected
+ok   nonfinite event vector is rejected
+ok   Object values are rejected from snapshots
+45 checks, 0 failed

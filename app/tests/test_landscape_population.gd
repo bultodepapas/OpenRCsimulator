@@ -49,7 +49,7 @@ func _group(groups: Array, id: String) -> Dictionary:
 
 func _test_catalog_fleet(groups: Array) -> void:
 	var fleet := _group(groups, "fleet")
-	var catalog_ids := Array(AircraftCatalog.flyable_ids())
+	var catalog_ids := Array(AircraftCatalog.airplane_flyable_ids())
 	var parked_ids: Array = fleet.get("aircraft", [])
 	var model_ids: Array = Models.FLEET.values()
 	var unique_models: Dictionary = {}

@@ -11,7 +11,6 @@ const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const Sim := preload("res://sim/simulation.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Airplane := preload("res://render/airplane.gd")
-const TimberModel := preload("res://aircraft/timber_model.gd")
 
 const TIMBER_ID := "turbo-lumber-evolution"
 const G := 9.80665
@@ -49,7 +48,7 @@ func _run() -> void:
 	_check("Timber has three named profiled contacts", gear.get("contacts", []).size() == 3)
 	for contact: Dictionary in gear.get("contacts", []):
 		var expected_radius: float = 0.014 if contact.name == "tail" else 0.058002
-		_check("%s mesh radius is present in the profile" % str(contact.name),
+		_check("%s accepted tyre-profile radius is retained" % str(contact.name),
 			absf(float(contact.get("wheel_radius", 0.0)) - expected_radius) < 1e-9,
 			str(contact.get("wheel_radius", NAN)))
 	_check("wheel profile identity is recorded for trace v6", str(model.get("wheel_profile", {}).get("profile_sha256", "")).length() == 64)
@@ -146,7 +145,8 @@ func _run() -> void:
 		and str(right_turn.fault).is_empty() and str(left_turn.fault).is_empty(),
 		"right %s rad/s; left %s rad/s" % [str(right_turn.yaw_rate), str(left_turn.yaw_rate)])
 
-	var visual: Dictionary = TimberModel.build()
+	# Exercise the same manifest-bound model as flight; raw builders do not supply common adapter bindings.
+	var visual: Dictionary = Airplane.build(TIMBER_ID)
 	var steering_angle: float = float(tail.get("max_steering", 0.0))
 	Airplane.apply_gear(visual, {}, steering_angle)
 	var applied_steering: float = visual.gear.steering.rotation.y

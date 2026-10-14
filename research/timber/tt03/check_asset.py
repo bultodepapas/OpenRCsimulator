@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""TT-03: prove that the runtime Timber asset is the frozen r1 delivery, byte for byte, and that every generated
+"""TT-03: prove that the runtime Timber asset is the r2 delivery, byte for byte, and that every generated
 artifact describes the same bytes.
 
 Checks (all must hold):
@@ -32,13 +32,15 @@ def main() -> None:
     problems = []
     manifest = json.loads((SOURCE_DIR / "source-manifest.json").read_text(encoding="utf-8"))
     delivery = ROOT / manifest["delivery_root"]
+    delivery_revision = manifest["delivery_revision"]
     glb_hash = manifest["key_files"]["glb"]["sha256"]
     revision = manifest["visual_revision"]
     glb = ASSET_DIR / "timber.glb"
     if not glb.exists():
         problems.append("missing %s" % glb.relative_to(ROOT))
     elif sha256(glb) != glb_hash:
-        problems.append("timber.glb is not the r1 export (sha256 %s != manifest %s)" % (sha256(glb), glb_hash))
+        problems.append("timber.glb is not the %s export (sha256 %s != manifest %s)"
+                        % (delivery_revision, sha256(glb), glb_hash))
     license_copy = ASSET_DIR / "LICENSE.txt"
     license_source = delivery / manifest["key_files"]["license"]["path"]
     if not license_copy.exists() or sha256(license_copy) != sha256(license_source):
@@ -69,7 +71,8 @@ def main() -> None:
         problems.append("missing app/aircraft/timber_model.gd")
     if problems:
         sys.exit("Timber asset check failed:\n  " + "\n  ".join(problems))
-    print("Timber asset: timber.glb = r1 export %s, licence copied, sidecar present, generated artifacts at revision %s" % (glb_hash[:12], revision))
+    print("Timber asset: timber.glb = %s export %s, licence copied, sidecar present, generated artifacts at revision %s"
+          % (delivery_revision, glb_hash[:12], revision))
 
 
 if __name__ == "__main__":

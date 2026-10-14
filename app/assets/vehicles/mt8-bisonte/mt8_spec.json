@@ -1,0 +1,512 @@
+{
+ "name": "Bisonte MT8",
+ "version": "0.1.0-blockout",
+ "units": "m",
+ "frame": {
+  "right": "+X",
+  "up": "+Y",
+  "forward": "-Z"
+ },
+ "origin": "x=0 plano de simetria, z=0 punto medio entre ejes, y=0 cara inferior de las placas del chasis",
+ "ride_origin_height": 0.125,
+ "wheelbase": 0.42,
+ "track": 0.43,
+ "tire_radius": 0.1,
+ "tire_width": 0.09,
+ "rim_radius": 0.062,
+ "arm_length": 0.155,
+ "travel_bump": 0.05,
+ "travel_droop": 0.07,
+ "steer_max_deg": 30.0,
+ "steer_axis": "local +Y del nodo XX_Steer, pasa por el centro de rueda; + = gira a la izquierda",
+ "spin_axis": "local +X del nodo XX_Spin; avanzar (-Z) = angulo decreciente",
+ "shock_length": {
+  "rest": 0.16492422502470644,
+  "min": 0.1483346384510484,
+  "max": 0.18818098084188292
+ },
+ "shock_body_len": 0.1323,
+ "shock_shaft_len": 0.0709,
+ "shock_cap_up": 0.012,
+ "shock_cap_lo": 0.018,
+ "spring_rest_len": 0.13492422502470644,
+ "driveshaft_in_len": 0.075,
+ "driveshaft_out_len": 0.075,
+ "cv_offset": 0.022,
+ "corners": {
+  "FL": {
+   "side": "left",
+   "axle": "front",
+   "wheel_center_rest": [
+    -0.215,
+    -0.025,
+    -0.21
+   ],
+   "arm_lower_pivot": [
+    -0.06,
+    -0.047,
+    -0.21
+   ],
+   "arm_upper_pivot": [
+    -0.06,
+    -0.0030000000000000027,
+    -0.21
+   ],
+   "arm_axis": [
+    0,
+    0,
+    1
+   ],
+   "arm_rotation_sign": -1.0,
+   "driveshaft_inner": [
+    -0.065,
+    -0.025,
+    -0.21
+   ],
+   "driveshaft_in_rest_dir": [
+    -1.0,
+    0,
+    0
+   ],
+   "driveshaft_out_rest_dir": [
+    1.0,
+    0,
+    0
+   ],
+   "driveshaft_out_local_pos": [
+    0.022,
+    0,
+    0
+   ],
+   "shocks": {
+    "A": {
+     "upper_mount": [
+      -0.07,
+      0.125,
+      -0.24
+     ],
+     "lower_mount_rest": [
+      -0.11,
+      -0.035,
+      -0.24
+     ],
+     "lower_mount_arm_local": [
+      -0.05,
+      0.012,
+      0.0
+     ]
+    },
+    "B": {
+     "upper_mount": [
+      -0.07,
+      0.125,
+      -0.18
+     ],
+     "lower_mount_rest": [
+      -0.11,
+      -0.035,
+      -0.18
+     ],
+     "lower_mount_arm_local": [
+      -0.05,
+      0.012,
+      0.0
+     ]
+    }
+   }
+  },
+  "FR": {
+   "side": "right",
+   "axle": "front",
+   "wheel_center_rest": [
+    0.215,
+    -0.025,
+    -0.21
+   ],
+   "arm_lower_pivot": [
+    0.06,
+    -0.047,
+    -0.21
+   ],
+   "arm_upper_pivot": [
+    0.06,
+    -0.0030000000000000027,
+    -0.21
+   ],
+   "arm_axis": [
+    0,
+    0,
+    1
+   ],
+   "arm_rotation_sign": 1.0,
+   "driveshaft_inner": [
+    0.065,
+    -0.025,
+    -0.21
+   ],
+   "driveshaft_in_rest_dir": [
+    1.0,
+    0,
+    0
+   ],
+   "driveshaft_out_rest_dir": [
+    -1.0,
+    0,
+    0
+   ],
+   "driveshaft_out_local_pos": [
+    -0.022,
+    0,
+    0
+   ],
+   "shocks": {
+    "A": {
+     "upper_mount": [
+      0.07,
+      0.125,
+      -0.24
+     ],
+     "lower_mount_rest": [
+      0.11,
+      -0.035,
+      -0.24
+     ],
+     "lower_mount_arm_local": [
+      0.05,
+      0.012,
+      0.0
+     ]
+    },
+    "B": {
+     "upper_mount": [
+      0.07,
+      0.125,
+      -0.18
+     ],
+     "lower_mount_rest": [
+      0.11,
+      -0.035,
+      -0.18
+     ],
+     "lower_mount_arm_local": [
+      0.05,
+      0.012,
+      0.0
+     ]
+    }
+   }
+  },
+  "RL": {
+   "side": "left",
+   "axle": "rear",
+   "wheel_center_rest": [
+    -0.215,
+    -0.025,
+    0.21
+   ],
+   "arm_lower_pivot": [
+    -0.06,
+    -0.047,
+    0.21
+   ],
+   "arm_upper_pivot": [
+    -0.06,
+    -0.0030000000000000027,
+    0.21
+   ],
+   "arm_axis": [
+    0,
+    0,
+    1
+   ],
+   "arm_rotation_sign": -1.0,
+   "driveshaft_inner": [
+    -0.065,
+    -0.025,
+    0.21
+   ],
+   "driveshaft_in_rest_dir": [
+    -1.0,
+    0,
+    0
+   ],
+   "driveshaft_out_rest_dir": [
+    1.0,
+    0,
+    0
+   ],
+   "driveshaft_out_local_pos": [
+    0.022,
+    0,
+    0
+   ],
+   "shocks": {
+    "A": {
+     "upper_mount": [
+      -0.07,
+      0.125,
+      0.18
+     ],
+     "lower_mount_rest": [
+      -0.11,
+      -0.035,
+      0.18
+     ],
+     "lower_mount_arm_local": [
+      -0.05,
+      0.012,
+      0.0
+     ]
+    },
+    "B": {
+     "upper_mount": [
+      -0.07,
+      0.125,
+      0.24
+     ],
+     "lower_mount_rest": [
+      -0.11,
+      -0.035,
+      0.24
+     ],
+     "lower_mount_arm_local": [
+      -0.05,
+      0.012,
+      0.0
+     ]
+    }
+   }
+  },
+  "RR": {
+   "side": "right",
+   "axle": "rear",
+   "wheel_center_rest": [
+    0.215,
+    -0.025,
+    0.21
+   ],
+   "arm_lower_pivot": [
+    0.06,
+    -0.047,
+    0.21
+   ],
+   "arm_upper_pivot": [
+    0.06,
+    -0.0030000000000000027,
+    0.21
+   ],
+   "arm_axis": [
+    0,
+    0,
+    1
+   ],
+   "arm_rotation_sign": 1.0,
+   "driveshaft_inner": [
+    0.065,
+    -0.025,
+    0.21
+   ],
+   "driveshaft_in_rest_dir": [
+    1.0,
+    0,
+    0
+   ],
+   "driveshaft_out_rest_dir": [
+    -1.0,
+    0,
+    0
+   ],
+   "driveshaft_out_local_pos": [
+    -0.022,
+    0,
+    0
+   ],
+   "shocks": {
+    "A": {
+     "upper_mount": [
+      0.07,
+      0.125,
+      0.18
+     ],
+     "lower_mount_rest": [
+      0.11,
+      -0.035,
+      0.18
+     ],
+     "lower_mount_arm_local": [
+      0.05,
+      0.012,
+      0.0
+     ]
+    },
+    "B": {
+     "upper_mount": [
+      0.07,
+      0.125,
+      0.24
+     ],
+     "lower_mount_rest": [
+      0.11,
+      -0.035,
+      0.24
+     ],
+     "lower_mount_arm_local": [
+      0.05,
+      0.012,
+      0.0
+     ]
+    }
+   }
+  }
+ },
+ "collision_boxes": {
+  "COL_Chassis": {
+   "center": [
+    0.0,
+    -0.0025,
+    0.0
+   ],
+   "size": [
+    0.2,
+    0.125,
+    0.54
+   ]
+  },
+  "COL_Roof": {
+   "center": [
+    0.0,
+    0.205,
+    0.005
+   ],
+   "size": [
+    0.32,
+    0.07,
+    0.15
+   ]
+  },
+  "COL_Side_L": {
+   "center": [
+    -0.18,
+    0.1125,
+    0.0
+   ],
+   "size": [
+    0.04,
+    0.105,
+    0.56
+   ]
+  },
+  "COL_Side_R": {
+   "center": [
+    0.18,
+    0.1125,
+    0.0
+   ],
+   "size": [
+    0.04,
+    0.105,
+    0.56
+   ]
+  },
+  "COL_Bumper_F": {
+   "center": [
+    0.0,
+    0.0035,
+    -0.2925
+   ],
+   "size": [
+    0.28,
+    0.077,
+    0.085
+   ]
+  },
+  "COL_Bumper_R": {
+   "center": [
+    0.0,
+    0.0035,
+    0.2925
+   ],
+   "size": [
+    0.28,
+    0.077,
+    0.085
+   ]
+  }
+ },
+ "propulsion_origin": [
+  0.0,
+  0.06,
+  0.0
+ ],
+ "bumper_origins": {
+  "Bumper_F": [
+   0,
+   0,
+   -0.255
+  ],
+  "Bumper_R": [
+   0,
+   0,
+   0.255
+  ]
+ },
+ "blender": "5.2.2 LTS",
+ "triangles": {
+  "total_visual": 72800,
+  "per_object": {
+   "Chassis": 5300,
+   "Bumper_F": 1064,
+   "Bumper_R": 1064,
+   "Body": 8188,
+   "Propulsion": 1584,
+   "FL_ArmLower": 656,
+   "FL_ArmUpper": 160,
+   "FL_Knuckle": 756,
+   "FL_WheelMesh": 6888,
+   "FL_ShockA_Body": 820,
+   "FL_ShockA_Spring": 1448,
+   "FL_ShockA_Shaft": 264,
+   "FL_ShockB_Body": 820,
+   "FL_ShockB_Spring": 1448,
+   "FL_ShockB_Shaft": 264,
+   "FL_DriveshaftIn": 232,
+   "FL_DriveshaftOut": 204,
+   "FR_ArmLower": 656,
+   "FR_ArmUpper": 160,
+   "FR_Knuckle": 756,
+   "FR_WheelMesh": 6888,
+   "FR_ShockA_Body": 820,
+   "FR_ShockA_Spring": 1448,
+   "FR_ShockA_Shaft": 264,
+   "FR_ShockB_Body": 820,
+   "FR_ShockB_Spring": 1448,
+   "FR_ShockB_Shaft": 264,
+   "FR_DriveshaftIn": 232,
+   "FR_DriveshaftOut": 204,
+   "RL_ArmLower": 656,
+   "RL_ArmUpper": 160,
+   "RL_Carrier": 636,
+   "RL_WheelMesh": 6888,
+   "RL_ShockA_Body": 820,
+   "RL_ShockA_Spring": 1448,
+   "RL_ShockA_Shaft": 264,
+   "RL_ShockB_Body": 820,
+   "RL_ShockB_Spring": 1448,
+   "RL_ShockB_Shaft": 264,
+   "RL_DriveshaftIn": 232,
+   "RL_DriveshaftOut": 204,
+   "RR_ArmLower": 656,
+   "RR_ArmUpper": 160,
+   "RR_Carrier": 636,
+   "RR_WheelMesh": 6888,
+   "RR_ShockA_Body": 820,
+   "RR_ShockA_Spring": 1448,
+   "RR_ShockA_Shaft": 264,
+   "RR_ShockB_Body": 820,
+   "RR_ShockB_Spring": 1448,
+   "RR_ShockB_Shaft": 264,
+   "RR_DriveshaftIn": 232,
+   "RR_DriveshaftOut": 204
+  }
+ }
+}

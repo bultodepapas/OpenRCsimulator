@@ -1,0 +1,288 @@
+{
+  "format": "openrc-glow-event-observer-parity v1",
+  "scope": "Saved initial/final/0.1s states and telemetry for36runs before/after per-accepted-step mode brackets. Configuration excludes only volatile created_utc. Cost samples, runner hash and new mode_events intentionally excluded. No claim about unsaved intermediate states or physical validation.",
+  "inputs": [
+    {
+      "hz": 240,
+      "before_path": ".tools/glow-hub-checkout-20261013/autocrlf-true/research/glow-engines/flight-240.json",
+      "before_sha256": "61fd633e28f20af1b1f14c6cbef1798d353fd71f974d0ee9b2c4961994665f00",
+      "after_path": "research/glow-engines/flight-240.json",
+      "after_sha256": "659a2474e55eb51a41abad4cf2e7040dab577024df887d33541f2c63c95978f9",
+      "before_runner_sha256": "cc4fdc8b4f52f1f989234515349f5987a23c16c476b08e19ff635422f9fa3066",
+      "after_runner_sha256": "eb3193eb5451f90851cc4b7fc93b984d6ad768609720c3d4d964df293b54be36"
+    },
+    {
+      "hz": 480,
+      "before_path": ".tools/glow-hub-checkout-20261013/autocrlf-true/research/glow-engines/flight-480.json",
+      "before_sha256": "4ede983b9b6dd6487bdb14090642a97a0a44e78d6b4db15e026a3ec566c736ab",
+      "after_path": "research/glow-engines/flight-480.json",
+      "after_sha256": "238ff784a1a964137373d625cbebdb398a2b825bba654cd616c572c12ea6f1e4",
+      "before_runner_sha256": "cc4fdc8b4f52f1f989234515349f5987a23c16c476b08e19ff635422f9fa3066",
+      "after_runner_sha256": "eb3193eb5451f90851cc4b7fc93b984d6ad768609720c3d4d964df293b54be36"
+    },
+    {
+      "hz": 960,
+      "before_path": ".tools/glow-hub-checkout-20261013/autocrlf-true/research/glow-engines/flight-960.json",
+      "before_sha256": "76d3c464dc94edf9b65da1cfbf8b617a52eb0bf0f1acab0e324d0f7caa9ff590",
+      "after_path": "research/glow-engines/flight-960.json",
+      "after_sha256": "8b76213439c190310ece82062828570f3947eb14d7293ae8d0c972fc2929b84a",
+      "before_runner_sha256": "cc4fdc8b4f52f1f989234515349f5987a23c16c476b08e19ff635422f9fa3066",
+      "after_runner_sha256": "eb3193eb5451f90851cc4b7fc93b984d6ad768609720c3d4d964df293b54be36"
+    }
+  ],
+  "comparisons": [
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 240,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 480,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "cruise",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "steps",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "rich",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "lean",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "exhaustion",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "55ax_2t",
+      "scenario": "takeoff",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "cruise",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "steps",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "rich",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "lean",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "exhaustion",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    },
+    {
+      "hz": 960,
+      "engine": "fs64v_4t",
+      "scenario": "takeoff",
+      "saved_states_and_telemetry_identical": true,
+      "configuration_excluding_creation_time_identical": true
+    }
+  ],
+  "ok": true
+}

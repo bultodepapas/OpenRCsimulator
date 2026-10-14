@@ -1,7 +1,7 @@
-# TT-02: measure the Turbo Lumber Evolution r1 model as Godot imports it (the runtime asset), never from Blender.
+# TT-02: measure the Turbo Timber Evolution r2 model as Godot imports it (the runtime asset), never from Blender.
 # Writes assets/aircraft/turbo-lumber-evolution/mesh-measurements.json: scene structure, pivot rest transforms,
 # per-mesh/per-surface extents and extreme vertices, planform slices of the wing, tail, fin and fuselage, wheel and
-# propeller radii. build_geometry.py turns these numbers (plus r1/metadata.json) into geometry.json.
+# propeller radii. build_geometry.py turns these numbers (plus r2/metadata.json) into geometry.json.
 # Run from the repository root after `--import`:
 #   "$(app/get-godot.sh)" --headless --path app --script "$PWD/research/timber/tt02/measure_mesh.gd" -- --out=<abs path> [--check]
 # --check regenerates the measurements and fails (exit 1) when they differ from the file: the importer or the asset changed.
@@ -11,9 +11,14 @@ const SCENE_PATH := "res://assets/aircraft/turbo-lumber-evolution/timber.glb"
 const PIVOTS := ["aileron_left_hinge", "aileron_right_hinge", "flap_left_hinge", "flap_right_hinge", "elevator_hinge",
 	"rudder_hinge", "tailwheel_steer", "tailwheel_axle", "thrust_frame", "propeller_spin", "gear_left_suspension",
 	"gear_right_suspension", "wheel_left_axle", "wheel_right_axle"]
-## Lenses, glazing and the grey brackets/underside decals are not the planform outline.
+## Lenses, glazing and the grey brackets are not the planform outline.
 const SKIN_EXCLUDED_MATERIALS := ["glass", "light_red", "light_green", "light_grey", "dark_grey"]
 const CONTROL_MESHES := ["aileron_left", "aileron_right", "flap_left", "flap_right", "elevator", "rudder"]
+## r2 split the former airframe mesh into independently separable fixed sections.
+const WING_FIXED_MESHES := ["fuselage_core", "cowl", "wing_left_fixed", "wing_right_fixed"]
+const TAIL_FIXED_MESHES := ["fuselage_core", "stabilizer_fixed", "fin_fixed"]
+const FIN_FIXED_MESHES := ["fuselage_core", "fin_fixed"]
+const FUSELAGE_FIXED_MESHES := ["fuselage_core", "cowl"]
 ## Slice bands (root frame, metres). Python decides which stations are clean wing/tail/fin sections from the extents.
 const WING_BAND := {axis = 0, lo = Vector3(-INF, 0.04, -0.15), hi = Vector3(INF, 0.24, 0.45), start = 0.0, stop = 0.78, step = 0.01, mirrored = true}
 const TAIL_BAND := {axis = 0, lo = Vector3(-INF, -0.09, 0.45), hi = Vector3(INF, 0.03, 0.90), start = 0.0, stop = 0.32, step = 0.01, mirrored = true}
@@ -78,6 +83,32 @@ func _collect_faces() -> void:
 			all.append_array(tri)
 			if not SKIN_EXCLUDED_MATERIALS.has(_material_name(mi, s)): skin.append_array(tri)
 		_faces[String(mi.name)] = {all = all, skin = skin}
+
+
+func _mesh_group(names: Array, kind: String) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	for raw_name in names:
+		var faces: Dictionary = _faces[String(raw_name)]
+		var points: PackedVector3Array = faces[kind]
+		out.append_array(points)
+	return out
+
+
+## Select an exact non-excluded source vertex while retaining the landmark's mesh, axis and x-range definition.
+func _vertex_extreme(mesh_names: Array, kind: String, axis: int, sign: float, x_min: float, x_max: float) -> Dictionary:
+	var best := -INF
+	var point := Vector3.ZERO
+	for raw_name in mesh_names:
+		var faces: Dictionary = _faces[String(raw_name)]
+		var vertices: PackedVector3Array = faces[kind]
+		for p in vertices:
+			if p.x < x_min or p.x > x_max:
+				continue
+			var score := p[axis] * sign
+			if score > best:
+				best = score
+				point = p
+	return {root = _v(point)}
 
 
 func _extents(points: PackedVector3Array) -> Dictionary:
@@ -301,12 +332,23 @@ func _run() -> void:
 	for pair in [["wheel_left", "wheel_left_axle"], ["wheel_right", "wheel_right_axle"], ["tailwheel", "tailwheel_axle"], ["propeller_rotor", "thrust_frame"]]:
 		radial[pair[0]] = _radial(_root.find_child(pair[0], true, false), _root.find_child(pair[1], true, false))
 	report.radial = radial
-	# Planform slices.
-	var wing_groups := {airframe_skin = _faces.airframe.skin, aileron_left = _faces.aileron_left.all, aileron_right = _faces.aileron_right.all,
+	# Preserve the old slice definitions by combining only the fixed sections that belong in each band. In particular,
+	# fuselage stations exclude the detached wing and tail sections so their roots do not inflate body half-width.
+	var wing_skin := _mesh_group(WING_FIXED_MESHES, "skin")
+	var tail_skin := _mesh_group(TAIL_FIXED_MESHES, "skin")
+	var fin_skin := _mesh_group(FIN_FIXED_MESHES, "skin")
+	var fuselage_skin := _mesh_group(FUSELAGE_FIXED_MESHES, "skin")
+	var fuselage_all := _mesh_group(FUSELAGE_FIXED_MESHES, "all")
+	var wing_groups := {airframe_skin = wing_skin, aileron_left = _faces.aileron_left.all, aileron_right = _faces.aileron_right.all,
 		flap_left = _faces.flap_left.all, flap_right = _faces.flap_right.all}
-	var tail_groups := {airframe_skin = _faces.airframe.skin, elevator = _faces.elevator.all}
-	var fin_groups := {airframe_skin = _faces.airframe.skin, rudder = _faces.rudder.all}
-	var fuselage_groups := {airframe_skin = _faces.airframe.skin, airframe_all = _faces.airframe.all}
+	var tail_groups := {airframe_skin = tail_skin, elevator = _faces.elevator.all}
+	var fin_groups := {airframe_skin = fin_skin, rudder = _faces.rudder.all}
+	var fuselage_groups := {airframe_skin = fuselage_skin, airframe_all = fuselage_all}
+	report.landmarks = {
+		left_wingtip = _vertex_extreme(["wing_left_fixed"], "skin", 0, -1.0, -INF, 0.0),
+		right_wingtip = _vertex_extreme(["wing_right_fixed"], "skin", 0, 1.0, 0.0, INF),
+		wing_root_leading_edge = _vertex_extreme(["wing_right_fixed"], "skin", 2, -1.0, 0.0, 0.003),
+	}
 	report.slices = {
 		wing = {band = _band_json(WING_BAND), rows = _slices(WING_BAND, wing_groups)},
 		tail = {band = _band_json(TAIL_BAND), rows = _slices(TAIL_BAND, tail_groups)},

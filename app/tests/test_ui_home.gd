@@ -6,6 +6,7 @@ const AppRoot := preload("res://app_root.gd")
 const Home := preload("res://ui/home.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
 const PREFS := "user://test_ui_home_settings.cfg"
@@ -32,6 +33,17 @@ func _run() -> void:
 	_check("route: no user arguments -> Home", not AppRoot.wants_direct_flight(PackedStringArray()))
 	_check("route: --trace -> direct flight", AppRoot.wants_direct_flight(PackedStringArray(["--trace=/tmp/t.csv", "--t=3"])))
 	_check("route: --quick-flight -> direct flight", AppRoot.wants_direct_flight(PackedStringArray(["--quick-flight"])))
+	_check("airplane selection preserves the current flight scene", AppRoot.flight_script_path_for_aircraft(Catalog.DEFAULT_ID) == "res://main.tscn")
+	_check("research helicopter selects the dedicated flight script", AppRoot.flight_script_path_for_aircraft("xcell-60-research") == "res://helicopter_main.gd")
+	_check("direct CLI selector finds a helicopter catalog ID", AppRoot.aircraft_argument(PackedStringArray(["--trace=/tmp/h.csv", "--aircraft=xcell-60-research"])) == "xcell-60-research")
+	var helicopter_home: Control = Home.new()
+	helicopter_home.set_aircraft("xcell-60-research")
+	_check("research helicopter Home offers Fly with hover-only start",
+		helicopter_home.fly_button.disabled == false and helicopter_home.start_choice == "airborne"
+		and helicopter_home.start_button.disabled and helicopter_home.start_button.text == "Start: hover")
+	_check("airplane Workshop and Natural Random are disabled for the rotorcraft",
+		helicopter_home.workshop_button.disabled and helicopter_home.natural_random_button.disabled)
+	helicopter_home.free()
 
 	TranslationServer.set_locale("en")
 	var app: Node = load("res://app_root.tscn").instantiate()
@@ -126,6 +138,26 @@ func _run() -> void:
 	await process_frame
 	for path in [PREFS, PREFS + ".bad"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+	# Exercise the actual app-root direct CLI branch: it must create and initialize the rotorcraft route.
+	var helicopter_app: Node = load("res://app_root.tscn").instantiate()
+	helicopter_app.user_args = PackedStringArray(["--aircraft=xcell-60-research"])
+	helicopter_app.preferences_path = PREFS
+	root.add_child(helicopter_app)
+	await process_frame
+	var helicopter_flight: Node = helicopter_app.flight
+	_check("direct --aircraft=xcell-60-research creates the dedicated helicopter main",
+		helicopter_flight != null and helicopter_flight.get_script().resource_path == "res://helicopter_main.gd"
+		and helicopter_flight.aircraft_id == "xcell-60-research")
+	var helicopter_session: Node = helicopter_flight.get("session") if helicopter_flight != null else null
+	_check("direct helicopter route completes setup and starts in a flyable hover",
+		helicopter_flight != null and helicopter_flight.startup_error.is_empty()
+		and helicopter_session != null and helicopter_session.has_method("is_flyable")
+		and helicopter_session.is_flyable() and helicopter_flight.start_choice == "airborne")
+	helicopter_app.queue_free()
+	await process_frame
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + ".bad"))
 	print("all UI home checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
 

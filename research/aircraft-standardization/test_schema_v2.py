@@ -34,6 +34,11 @@ EXPECTED_FLEET = {
     "synthetic_stik_electric_6s",
     "synthetic_stik_electric_4s_battery",
     "synthetic_stik_electric_6s_battery",
+    "stik_glow_55ax_2t",
+    "stik_glow_55ax_2t_apc_13x6",
+    "stik_glow_fs64v_4t",
+    "stik_glow_fs64v_4t_apc_13x6",
+    "turbo_lumber_evolution",
 }
 ENGINE_ERROR = re.compile(r"(?:SCRIPT ERROR:|Parse Error:|ERROR:)")
 @dataclass
@@ -102,13 +107,13 @@ def build_cases(app: Path) -> list[Case]:
     fleet_paths = {path.stem: path for path in sorted(fleet_dir.glob("*.json"))}
     if set(fleet_paths) != EXPECTED_FLEET:
         raise AssertionError(
-            "expected the four catalog and four electric v2 files; "
+            "expected the four catalog, four electric, four glow, and Turbo Lumber v2 files; "
             f"missing={sorted(EXPECTED_FLEET - set(fleet_paths))}, "
             f"extra={sorted(set(fleet_paths) - EXPECTED_FLEET)}"
         )
     fleet = {name: read_json(path) for name, path in fleet_paths.items()}
     if any(data.get("format") != "openrc-aircraft v2" for data in fleet.values()):
-        raise AssertionError("all eight current fleet files must be explicitly migrated to v2")
+        raise AssertionError("all thirteen current aircraft data files must be explicitly migrated to v2")
     stik = fleet["jensen_ugly_stik_60"]
     p51 = fleet["p51d_mustang_120"]
     avanti = fleet["sebart_avanti_s_a200"]
@@ -124,6 +129,55 @@ def build_cases(app: Path) -> list[Case]:
         data = deepcopy(source)
         cases.append(Case(name, data, schema_ok, loader_ok, classification))
         return data
+
+    # AS-08: complete optional identities preserve old v2, and fail closed when partial.
+    if stik.get("physical_identity_version") != 1:
+        raise AssertionError("catalog Stik must carry authored physical identities")
+    idless = add("identity:legacy-v2", stik, schema_ok=True, loader_ok=True)
+    idless.pop("physical_identity_version")
+    idless.pop("crash_hull_ids")
+    for item in idless["inventory"] + idless["landing_gear"]["contacts"]:
+        item.pop("id")
+    idless["propulsion"].pop("id")
+    idless["controls"].pop("surface_ids")
+    for name, path in [
+        ("version", ("physical_identity_version",)),
+        ("inventory", ("inventory", 0, "id")),
+        ("support", ("landing_gear", "contacts", 0, "id")),
+        ("hull", ("crash_hull_ids",)),
+        ("propulsion", ("propulsion", "id")),
+        ("surfaces", ("controls", "surface_ids")),
+        ("elevator", ("controls", "surface_ids", "elevator")),
+    ]:
+        cases.append(Case("identity:missing-" + name, without(stik, path), False, False, "identity"))
+    for index, value in enumerate([None, True, False, "1", 0, 2, 1.5]):
+        mutant = add(f"identity:version-{index}", stik, schema_ok=False, loader_ok=False)
+        mutant["physical_identity_version"] = value
+    for index, value in enumerate([None, True, 1, "Wing", "a__b", "a-1", "1_wing", "wing\n", "a" * 81]):
+        mutant = add(f"identity:syntax-{index}", stik, schema_ok=False, loader_ok=False)
+        mutant["inventory"][0]["id"] = value
+    hull_duplicate = add("identity:duplicate-hull", stik, schema_ok=False, loader_ok=False)
+    hull_duplicate["crash_hull_ids"][1] = hull_duplicate["crash_hull_ids"][0]
+    # JSON Schema cannot express these comparisons of independently nested values.
+    duplicate = add("identity:cross-group-duplicate", stik, schema_ok=True, loader_ok=False,
+                    classification="coupled-runtime-only")
+    duplicate["propulsion"]["id"] = duplicate["inventory"][0]["id"]
+    misaligned = add("identity:hull-count", stik, schema_ok=True, loader_ok=False,
+                     classification="coupled-runtime-only")
+    misaligned["crash_hull_ids"].pop()
+    gear_up = add("identity:gear-up", stik, schema_ok=True, loader_ok=True)
+    gear_up["capabilities"]["gear"] = "locked_up"
+    gear_up.pop("landing_gear")
+    for name in ("synthetic_stik_electric_4s", "synthetic_stik_electric_4s_battery"):
+        identified = add("identity:" + name, fleet[name], schema_ok=True, loader_ok=True)
+        identified["physical_identity_version"] = 1
+        identified["propulsion"]["id"] = "propulsion_main"
+        identified["controls"]["surface_ids"] = deepcopy(stik["controls"]["surface_ids"])
+        identified["crash_hull_ids"] = deepcopy(stik["crash_hull_ids"])
+        for i, item in enumerate(identified["inventory"]):
+            item["id"] = f"fixture_part_{i}"
+        for i, item in enumerate(identified["landing_gear"]["contacts"]):
+            item["id"] = f"fixture_support_{i}"
 
     # Fixed and missing required fields, exact capability branch selectors, and version routing.
     all_zero_steering = add("positive:all-zero-steering", stik, schema_ok=True,

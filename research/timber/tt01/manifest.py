@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""TT-01: freeze the identity of the Turbo Lumber Evolution r1 delivery.
+"""TT-01: freeze the identity of the Turbo Timber Evolution r2 delivery.
 
-Hashes every file of `Timber turbo evolution/turbo_timber_evolution/r1/` (the author's game delivery, tracked in git)
+Hashes every file of the author's exact nested r2 game delivery
+`Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/`
 and writes assets/aircraft/turbo-lumber-evolution/source-manifest.json: the SHA-256 and size of each file, the
-key files by role, the visual revision string (r1 plus the first 12 hex digits of the GLB hash) and the git commit
+key files by role, the visual revision string (r2 plus the first 12 hex digits of the GLB hash) and the git commit
 that last touched the delivery. Downstream generators (build_geometry.py, check_asset.py, compile_geometry.py)
 read this manifest to prove that they describe these exact bytes.
 
@@ -20,7 +21,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-DELIVERY = ROOT / "Timber turbo evolution/turbo_timber_evolution/r1"
+DELIVERY = ROOT / "Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2"
 TARGET = ROOT / "assets/aircraft/turbo-lumber-evolution/source-manifest.json"
 KEY_FILES = {
     "glb": "export/aircraft.glb",
@@ -28,7 +29,7 @@ KEY_FILES = {
     "metadata": "metadata.json",
     "export_map": "export-map.json",
     "verification": "verification.json",
-    "blend": "source/aircraft.blend",
+    "blend": "source/aircraft_game.blend",
     "license": "LICENSE.txt",
     "readme": "README.md",
     "changelog": "CHANGELOG.md",
@@ -51,7 +52,16 @@ IGNORED_NAMES = {".DS_Store", "Thumbs.db"}
 def file_table() -> list:
     """Every delivery file, except caches and editor leftovers that running the delivery's own scripts can create."""
     rows = []
-    for path in sorted(p for p in DELIVERY.rglob("*") if p.is_file()):
+    paths = (path for path in DELIVERY.rglob("*") if path.is_file())
+    # pathlib sorts case-insensitively on Windows but case-sensitively on POSIX.
+    # Sort relative path components explicitly to preserve the frozen order.
+    for path in sorted(
+        paths,
+        key=lambda item: (
+            tuple(part.casefold() for part in item.relative_to(DELIVERY).parts),
+            item.relative_to(DELIVERY).as_posix(),
+        ),
+    ):
         rel = path.relative_to(DELIVERY)
         if IGNORED_DIRS & set(rel.parts[:-1]) or path.suffix in IGNORED_SUFFIXES or path.name in IGNORED_NAMES or path.name.endswith("~"):
             continue
@@ -86,7 +96,7 @@ def build() -> dict:
         "catalog_id": "turbo-lumber-evolution",
         "delivery_revision": revision,
         "visual_revision": "%s-%s" % (revision, glb_hash[:12]),
-        "terms": "NOT SET (r1 LICENSE.txt: internal evaluation only); owner decision D1 pending, blocks TT-17 packaging",
+        "terms": "NOT SET (r2 LICENSE.txt: internal evaluation only); owner decision D1 pending, blocks TT-17 packaging",
         "git_commit_informational": git_commit(),
         "key_files": {role: {"path": rel, "sha256": by_path[rel]["sha256"], "bytes": by_path[rel]["bytes"]} for role, rel in KEY_FILES.items()},
         "file_count": len(files),
@@ -102,13 +112,14 @@ def main() -> None:
         if not TARGET.exists():
             sys.exit("missing %s: run manifest.py" % TARGET.relative_to(ROOT))
         stored = json.loads(TARGET.read_text(encoding="utf-8"))
-        if stored["files"] != manifest["files"] or stored["visual_revision"] != manifest["visual_revision"]:
-            sys.exit("Timber r1 delivery bytes differ from %s: a new revision needs a new manifest entry and a re-run of "
+        if (stored.get("delivery_root") != manifest["delivery_root"] or stored["files"] != manifest["files"]
+                or stored["visual_revision"] != manifest["visual_revision"]):
+            sys.exit("Timber r2 delivery bytes differ from %s: a new revision needs a new manifest entry and a re-run of "
                      "the geometry pipeline" % TARGET.relative_to(ROOT))
-        print("Timber r1 delivery: %d files, %d bytes, visual revision %s: identical to the manifest"
+        print("Timber r2 delivery: %d files, %d bytes, visual revision %s: identical to the manifest"
               % (manifest["file_count"], manifest["total_bytes"], manifest["visual_revision"]))
     else:
-        TARGET.write_text(text, encoding="utf-8")
+        TARGET.write_bytes(text.encode("utf-8"))
         print("wrote %s (%d files, %d bytes, visual revision %s)"
               % (TARGET.relative_to(ROOT), manifest["file_count"], manifest["total_bytes"], manifest["visual_revision"]))
 

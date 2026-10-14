@@ -32,6 +32,17 @@ python3 "$HERE/../research/helicopter/reference/make_main_rotor_oracle.py" --che
 run --script res://tests/test_heli_dynamic_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/dynamic_oracle.json"
 run --script res://tests/test_heli_main_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/main_rotor_oracle.json"
 
+echo "== HELI-06a: linearized tail-rotor reference stays current"
+python3 "$HERE/../research/helicopter/reference/test_tail_rotor.py"
+python3 "$HERE/../research/helicopter/reference/make_tail_rotor_oracle.py" --check
+run --script res://tests/test_heli_tail_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/tail_rotor_oracle.json"
+
+echo "== HELI-06b/c: passive airframe and joint aerodynamic stage"
+python3 "$HERE/../research/helicopter/reference/test_airframe.py"
+python3 "$HERE/../research/helicopter/reference/make_airframe_oracle.py" --check
+run --script res://tests/test_heli_airframe.gd -- --oracle="$HERE/../research/helicopter/reference/airframe_oracle.json"
+run --script res://tests/test_heli_aerodynamic_stage.gd
+
 echo "== AS-01/02: versioned aircraft contract and migration stay current"
 python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
 python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check
@@ -53,6 +64,7 @@ python3 "$HERE/../research/glow-engines/build_installations.py" --check
 python3 "$HERE/../research/glow-engines/installation_schema.py" --check
 python3 "$HERE/../research/glow-engines/test_profiles.py"
 python3 "$HERE/../research/glow-engines/test_calibration_report.py"
+python3 "$HERE/../research/glow-engines/test_cycle_oracle.py"
 python3 "$HERE/../research/glow-engines/test_installation_schema.py"
 python3 "$HERE/../research/glow-engines/test_installation_line_endings.py"
 python3 "$HERE/../research/glow-engines/test_refinement_report.py"
@@ -96,6 +108,17 @@ echo "== RCV-04a: independent suspension reference and headless bench exports"
 python3 "$HERE/../research/rc-monster-truck/generate_suspension_reference.py" --check
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_suspension_cli.py"
 
+echo "== RCV-04b: coupled support reference and headless experiments"
+python3 "$HERE/../research/rc-monster-truck/generate_support_reference.py" --check
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_support_cli.py"
+
+echo "== RCV-14a: supplied MT8 visual intake and isolated inspector"
+python3 "$HERE/../research/rc-monster-truck/asset_intake.py" --check
+python3 "$HERE/../research/rc-monster-truck/test_asset_intake.py"
+run_with_timeout 180 --script "$HERE/../research/rc-monster-truck/visual/test_mt8_visual.gd"
+run --script "$HERE/../research/rc-monster-truck/visual/test_preview.gd" -- --lang=en
+run --script "$HERE/../research/rc-monster-truck/visual/test_preview.gd" -- --lang=es
+
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
 # Comment lines are ignored. Rendering code (render/) may use them at the boundary.
@@ -127,9 +150,13 @@ for t in "$HERE"/tests/test_*.gd; do
   test_timeout=60
   # Four 46-second simulated landings at 240/480 Hz: measured 75–82 s wall time on Linux (PT1-rc8).
   if [ "$(basename "$t")" = "test_landing_maneuver.gd" ]; then test_timeout=180; fi
+  # Seven catalog aircraft rebuild and crash twice: measured 82.90 s in PT1-rc9.
+  if [ "$(basename "$t")" = "test_crash_integration.gd" ]; then test_timeout=180; fi
+  # Wreck lifecycle checks include timed scene updates: measured 65.46 s in PT1-rc9.
+  if [ "$(basename "$t")" = "test_crash_wreck.gd" ]; then test_timeout=180; fi
   # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
   case "$(basename "$t")" in
-    test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd) test_timeout=600 ;;
+    test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"
   # Godot reports runtime script errors without failing the run; treat any as a failure.

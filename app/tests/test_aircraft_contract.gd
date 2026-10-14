@@ -37,7 +37,7 @@ func at(value: Dictionary, path: Array) -> Dictionary:
 
 func _initialize() -> void:
 	var paths: Array[String] = []
-	for entry: Dictionary in Catalog.flyable_entries(): # TT-06: previews carry no data file
+	for entry: Dictionary in Catalog.airplane_flyable_entries(): # TT-06: previews carry no data file
 		paths.append(entry.data)
 	for suffix: String in ["4s", "6s", "4s_battery", "6s_battery"]:
 		paths.append("res://data/aircraft/synthetic_stik_electric_%s.json" % suffix)
@@ -68,8 +68,12 @@ func _initialize() -> void:
 			var profiled_old: Dictionary = AD.WheelProfiles.apply_to_model(old.model)
 			check("legacy wheel profile loads", profiled_old.ok, profiled_old.errors)
 			var comparable: Dictionary = loaded.model.duplicate(true)
-			for key: String in ["capabilities", "convention_id", "data_sha256"]:
+			for key: String in ["capabilities", "convention_id", "data_sha256", "physical_identity"]:
 				comparable.erase(key)
+			comparable.propulsion.erase("id")
+			comparable.controls.erase("surface_ids")
+			for contact: Dictionary in comparable.landing_gear.get("contacts", []):
+				contact.erase("id")
 			profiled_old.model.erase("data_sha256")
 			check(path + " same physical derivation", comparable == profiled_old.model)
 		# Every object, including quantity/table metadata and each inventory component,

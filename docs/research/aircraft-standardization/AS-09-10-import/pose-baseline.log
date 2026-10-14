@@ -1,0 +1,23 @@
+AS-09/10 imported Timber pose probe
+executable: C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64.exe
+command: C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --script C:\DEVELOPMENT\OpenRCsimulator\research\aircraft-standardization\imported_pose_probe.gd -- --out=C:\DEVELOPMENT\OpenRCsimulator\docs\research\aircraft-standardization\AS-09-10-import\pose-baseline.json --builder-source=C:\DEVELOPMENT\OpenRCsimulator\.tools\as-import\legacy_timber_model.gd
+return code: 0
+current timber_model.gd sha256: e958d6067f08633e2c33d3076cf5a04f49bf4b71bc6689bd7dd8a6f5fc6077eb
+legacy snapshot sha256: a36e1251da54d6b0af9f37eb741ef1dc480452e600dde666168af7f07d120675
+selected builder source sha256: a36e1251da54d6b0af9f37eb741ef1dc480452e600dde666168af7f07d120675
+
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AS_IMPORT_POSE_PROBE ok=C:\DEVELOPMENT\OpenRCsimulator\docs\research\aircraft-standardization\AS-09-10-import\pose-baseline.json
+
+--- stderr ---
+
+
+--- immutable-source cross-check ---
+source revision: 4e8755d524d03ca48e1d027fb92cf484946c96ce
+source path: app/aircraft/timber_model.gd
+Git blob SHA-256 (LF): 60ae983ed3f3f8bec8d906aa783ba2fde28bcc5f7aef5a4cbf550c5ebe99290d
+archived Windows checkout SHA-256 (CRLF): a36e1251da54d6b0af9f37eb741ef1dc480452e600dde666168af7f07d120675
+verification: Git source converted from LF to CRLF is byte-identical to the archived builder source.
+baseline input: the command above used --builder-source=.tools/as-import/legacy_timber_model.gd. The current timber_model.gd hash records live working-tree state at capture time; it was not the baseline input.

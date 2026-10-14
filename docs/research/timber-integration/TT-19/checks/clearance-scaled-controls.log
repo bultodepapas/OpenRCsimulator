@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aileron manual +34.5 | aileron_right vs wing_right_fixed | no surface crossing | gap not recomputed | 905 fixed triangles nearby | 623 ms
+aileron manual +34.5 | aileron_left vs wing_left_fixed | no surface crossing | gap not recomputed | 925 fixed triangles nearby | 1250 ms
+aileron manual -34.5 | aileron_right vs wing_right_fixed | no surface crossing | gap not recomputed | 925 fixed triangles nearby | 1900 ms
+aileron manual -34.5 | aileron_left vs wing_left_fixed | no surface crossing | gap not recomputed | 911 fixed triangles nearby | 2514 ms
+elevator manual +17.9 | elevator vs stabilizer_fixed | no surface crossing | gap not recomputed | 2143 fixed triangles nearby | 4916 ms
+elevator manual -17.9 | elevator vs stabilizer_fixed | no surface crossing | gap not recomputed | 2158 fixed triangles nearby | 7265 ms
+rudder manual +18.4 | rudder vs fin_fixed | no surface crossing | gap not recomputed | 1372 fixed triangles nearby | 8548 ms
+rudder manual -18.4 | rudder vs fin_fixed | no surface crossing | gap not recomputed | 1530 fixed triangles nearby | 9906 ms
+flaps manual full 36.6 | flap_right vs wing_right_fixed | no surface crossing | gap not recomputed | 1555 fixed triangles nearby | 11519 ms
+flaps manual full 36.6 | flap_left vs wing_left_fixed | no surface crossing | gap not recomputed | 1506 fixed triangles nearby | 13096 ms
+ailerons authored ±22° | aileron_right vs wing_right_fixed | no surface crossing | gap not recomputed | 905 fixed triangles nearby | 13708 ms
+ailerons authored ±22° | aileron_left vs wing_left_fixed | no surface crossing | gap not recomputed | 917 fixed triangles nearby | 14339 ms
+elevator authored +22° | elevator vs stabilizer_fixed | no surface crossing | gap not recomputed | 2143 fixed triangles nearby | 17029 ms
+elevator authored -22° | elevator vs stabilizer_fixed | no surface crossing | gap not recomputed | 2162 fixed triangles nearby | 19782 ms
+rudder authored +30° | rudder vs fin_fixed | no surface crossing | gap not recomputed | 1372 fixed triangles nearby | 21199 ms
+rudder authored -30° | rudder vs fin_fixed | no surface crossing | gap not recomputed | 1605 fixed triangles nearby | 22941 ms
+flaps supplier limit 40° | flap_right vs wing_right_fixed | no surface crossing | gap not recomputed | 1555 fixed triangles nearby | 24705 ms
+flaps supplier limit 40° | flap_left vs wing_left_fixed | no surface crossing | gap not recomputed | 1506 fixed triangles nearby | 26301 ms
+verify_timber_clearance: 19 checks, 0 failed, smallest gap n/a (26301 ms)

@@ -289,6 +289,7 @@ const GroundEffect := preload("res://physics/ground_effect.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
 const ContactContract := preload("res://physics/aircraft_contact_contract.gd")
+const ContactEvents := preload("res://sim/aircraft_contact_events.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
@@ -331,6 +332,9 @@ func _selected_airborne_trim(model: Dictionary) -> Dictionary:
 signal resetting
 ## Emitted when the detached scenery damage state changes or a session reset/restore succeeds.
 signal scenery_damage_changed
+## Accepted contact observations changed, including decisions made between integration steps.
+## Consumers read the detached contact_events() snapshot; no signal is emitted for rejected candidates.
+signal contact_events_changed
 
 ## Auxiliary simulation state (advanced once per tick in _pre_step): engine rpm, then the servos' actual positions
 ## (roll, pitch, yaw in command units, −1…1 of each surface's throw, trims included).
@@ -405,6 +409,18 @@ var soft_contacts: Array = []
 ## stopped through engine_running (a simulation mode); presentation hides the broken blades.
 var prop_strike: Dictionary = {}
 var _prop_disc := {}
+## AS-13: detached events at the last accepted tick; no force evaluation reads this history.
+var _contact_bindings: Dictionary = {}
+var _contact_tick: int = -1
+var _contact_events: Array[Dictionary] = []
+var _active_hull_ids := PackedStringArray()
+var _resolving_contact: bool = false
+var _committing_contacts: bool = false
+var _pending_contact_tick: int = -1
+var _pending_crash: ImpactSnapshot.Snapshot = null
+var _pending_crash_state := PackedFloat64Array()
+var _pending_scenery_event: SceneryCollision.Event = null
+var _pending_lake_event: LakeCollision.WaterEvent = null
 ## The last crash while shown: CG speed/sink (m/s), ticks_left, why and a typed tick-boundary impact; empty while flying.
 var crash := {}
 ## Why the session paused the simulation ("" = it did not), for the panel.
@@ -828,6 +844,7 @@ func _apply(data: Dictionary) -> bool:
 
 func _commit_aircraft(prepared: Dictionary) -> void:
 	aircraft = prepared.data
+	_contact_bindings = ContactContract.describe(aircraft.model, soft_hull_contacts)
 	if not _shaft_explicit:
 		_shaft_integrator = "coupled-rk4" if Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active() else "split"
 	start = prepared.start
@@ -929,18 +946,183 @@ func _start_failure_reason() -> String:
 
 func _on_sim_faulted(reason: String) -> void:
 	_clear_pending_scenery_damage()
+	_clear_pending_contacts()
 	pause_reason = "simulation fault: " + reason
 
 
 func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
-	if _pending_scenery_tick != tick or _pending_scenery_damage.is_empty():
-		_clear_pending_scenery_damage()
-		return
-	for damage_id: String in _pending_scenery_damage:
-		_scenery_damage[damage_id] = _pending_scenery_damage[damage_id].duplicate(true)
+	_committing_contacts = true
+	_observe_contact_tick(tick)
+	if _pending_contact_tick == tick:
+		_last_scenery_event = _pending_scenery_event
+		_last_lake_event = _pending_lake_event
+		if _pending_crash != null:
+			_crash(_pending_crash, _pending_crash_state)
+		elif _pending_scenery_event != null:
+			_append_contact_event(ContactEvents.impact_event(
+				_pending_scenery_event, _contact_bindings, _impact_policy(_pending_scenery_event)))
+	_clear_pending_contacts()
+	var damage_changed: bool = _pending_scenery_tick == tick and not _pending_scenery_damage.is_empty()
+	if damage_changed:
+		for damage_id: String in _pending_scenery_damage:
+			_scenery_damage[damage_id] = _pending_scenery_damage[damage_id].duplicate(true)
 	_clear_pending_scenery_damage()
-	scenery_damage_changed.emit()
+	if damage_changed:
+		scenery_damage_changed.emit()
+	_committing_contacts = false
+	contact_events_changed.emit()
+
+
+func contact_events() -> Dictionary:
+	return {format = "openrc-aircraft-contact-state v1", tick = _contact_tick,
+		active_hull_ids = _active_hull_ids.duplicate(), events = _contact_events.duplicate(true),
+		prop_strike = prop_strike.duplicate(true)}
+
+
+func _observe_contact_tick(tick: int) -> void:
+	_contact_tick = tick
+	_contact_events.clear()
+	if tick == 0:
+		_active_hull_ids.clear()
+		prop_strike = {}
+	if not soft_hull_contacts or not aircraft.get("ok", false):
+		_active_hull_ids.clear()
+		return
+	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+	if soft_contacts.is_empty() and _active_hull_ids.is_empty():
+		return
+	var observed: Dictionary = ContactEvents.hull_events(soft_contacts, _contact_bindings, _active_hull_ids, tick)
+	if not observed.ok:
+		push_error("Aircraft contact events: " + str(observed.get("errors", [])))
+		return
+	_active_hull_ids = observed.active_ids
+	if tick > 0:
+		_contact_events.assign(observed.events)
+
+
+func _append_contact_event(event: Dictionary) -> void:
+	if event.is_empty():
+		return
+	# A terminal decision upgrades the same hull observation instead of duplicating the touch.
+	for index in _contact_events.size():
+		var existing: Dictionary = _contact_events[index]
+		if existing.source == event.source and existing.contact_id == event.contact_id:
+			_contact_events[index] = event.duplicate(true)
+			if not _committing_contacts:
+				contact_events_changed.emit()
+			return
+	_contact_events.append(event.duplicate(true))
+	if not _committing_contacts:
+		contact_events_changed.emit()
+
+
+func _impact_policy(impact: ImpactSnapshot.Snapshot) -> String:
+	if impact is LakeCollision.WaterEvent:
+		return "lake-contact-v1:" + _lake_identity()
+	if impact is SceneryCollision.Event:
+		return "scenery-response-v1:" + SceneryDamage.POLICY_VERSION
+	if impact.trigger == "gear_limit":
+		return "gear-overtravel-terminal-v1"
+	return HullContact.law() if soft_hull_contacts else "legacy-terminal-hull-v1"
+
+
+func _clear_pending_contacts() -> void:
+	_pending_contact_tick = -1
+	_pending_crash = null
+	_pending_crash_state = PackedFloat64Array()
+	_pending_scenery_event = null
+	_pending_lake_event = null
+
+
+func _reset_contact_history() -> void:
+	_contact_tick = -1
+	_contact_events.clear()
+	_active_hull_ids.clear()
+	_clear_pending_contacts()
+
+
+func _restore_contact_history(record: Dictionary) -> void:
+	_contact_tick = int(record.tick)
+	_active_hull_ids = record.active_hull_ids.duplicate()
+	_contact_events.assign(record.events.duplicate(true))
+	prop_strike = record.prop_strike.duplicate(true)
+	_clear_pending_contacts()
+
+
+func _contact_history_is_valid(value: Variant, snapshot: Dictionary) -> bool:
+	if typeof(value) != TYPE_DICTIONARY:
+		return false
+	var record: Dictionary = value
+	if record.size() != 5 or record.get("format") != "openrc-aircraft-contact-state v1" \
+			or typeof(record.get("tick")) != TYPE_INT or record.tick != snapshot.tick \
+			or typeof(record.get("active_hull_ids")) != TYPE_PACKED_STRING_ARRAY \
+			or typeof(record.get("prop_strike")) != TYPE_DICTIONARY:
+		return false
+	if not ContactEvents.validate_events(record.get("events"), snapshot.tick, _contact_bindings):
+		return false
+	for event: Dictionary in record.events:
+		if not _contact_event_context_is_valid(event):
+			return false
+		if event.event_type == "hull_contact" and (record.active_hull_ids.has(event.contact_id) == (event.lifecycle == "ended")):
+			return false
+	var expected_ids := _active_contacts_at(snapshot.state)
+	if record.active_hull_ids != expected_ids:
+		return false
+	var strike: Dictionary = record.prop_strike
+	if strike.is_empty():
+		return true
+	if not soft_hull_contacts or _prop_disc.is_empty() or strike.size() != 4 \
+			or typeof(strike.get("tick")) != TYPE_INT or strike.tick < 0 or strike.tick > snapshot.tick \
+			or typeof(strike.get("rpm")) not in [TYPE_FLOAT, TYPE_INT] \
+			or not is_finite(float(strike.rpm)) or float(strike.rpm) < HullContact.STRIKE_MIN_RPM:
+		return false
+	for key: String in ["point_ned", "velocity_ned"]:
+		if typeof(strike.get(key)) != TYPE_PACKED_FLOAT64_ARRAY or strike[key].size() != 3:
+			return false
+		for component: float in strike[key]:
+			if not is_finite(component):
+				return false
+	return true
+
+
+## Environment membership and selected policy are checked only at save/restore boundaries.
+func _contact_event_context_is_valid(event: Dictionary) -> bool:
+	match event.source:
+		"hull":
+			if event.event_type == "hull_contact" and not soft_hull_contacts:
+				return false
+			return event.policy == (HullContact.law() if soft_hull_contacts else "legacy-terminal-hull-v1")
+		"gear":
+			return event.policy == "gear-overtravel-terminal-v1"
+		"propeller":
+			return soft_hull_contacts and event.policy == HullContact.law()
+		"lake":
+			return not _lake.is_empty() and event.lake_id == str(_lake.id) \
+				and event.policy == "lake-contact-v1:" + _lake_identity()
+		"scenery":
+			if event.policy != "scenery-response-v1:" + SceneryDamage.POLICY_VERSION:
+				return false
+			for proxy: Dictionary in _collision_world.get("proxies", []):
+				if event.contact_id == str(proxy.get("id", "")):
+					return event.get("obstacle_kind") == str(proxy.get("kind", "")) \
+						and event.get("obstacle_part") == str(proxy.get("part", "")) \
+						and event.get("response_class") == str(proxy.get("response_class", ""))
+	return false
+
+
+func _active_contacts_at(state: PackedFloat64Array) -> PackedStringArray:
+	var ids := PackedStringArray()
+	if soft_hull_contacts:
+		for contact: Dictionary in HullContact.contacts(state, state, _hull_contact):
+			ids.append(str(_contact_bindings.hull_probes[int(contact.index)].id))
+	return ids
+
+
+func _legacy_contact_history(snapshot: Dictionary) -> Dictionary:
+	# Historical checkpoints lack presentation history. Seed ongoing contacts without inventing impacts.
+	return {format = "openrc-aircraft-contact-state v1", tick = snapshot.tick,
+		active_hull_ids = _active_contacts_at(snapshot.state), events = [], prop_strike = {}}
 
 
 func _stage_scenery_damage(event: SceneryCollision.Event) -> void:
@@ -1021,6 +1203,10 @@ func reload() -> String:
 	var old_launch_metadata: Dictionary = _launch_metadata.duplicate(true)
 	var old_paused: bool = sim.paused
 	var old_damage: Dictionary = _scenery_damage.duplicate(true)
+	var old_contacts: Dictionary = contact_events()
+	var old_soft_contacts: Array = soft_contacts.duplicate(true)
+	var old_scenery_event: SceneryCollision.Event = _last_scenery_event
+	var old_lake_event: LakeCollision.WaterEvent = _last_lake_event
 	_commit_aircraft(prepared)
 	reset()
 	if not sim.fault_reason.is_empty():
@@ -1029,6 +1215,10 @@ func reload() -> String:
 			return "aircraft reload failed during reset; simulation paused: %s" % reason
 		_commit_aircraft(old_flight)
 		if _restore_reload_checkpoint(old_snapshot):
+			_restore_contact_history(old_contacts)
+			soft_contacts = old_soft_contacts
+			_last_scenery_event = old_scenery_event
+			_last_lake_event = old_lake_event
 			_scenery_damage = old_damage
 			if not old_damage.is_empty():
 				scenery_damage_changed.emit()
@@ -1039,6 +1229,7 @@ func reload() -> String:
 			start_error = old_start_error
 			_launch_metadata = old_launch_metadata
 			sim.set_paused(old_paused)
+			contact_events_changed.emit()
 			return "reload failed; previous aircraft and flight retained: " + reason
 		return "aircraft reload failed during reset; simulation paused: %s" % reason
 	if str(_launch_metadata.get("launch_choice", "")) == "runway":
@@ -1153,6 +1344,7 @@ func _check_prop_strike() -> void:
 	prop_strike = {tick = sim.tick, rpm = sim.aux[AUX_RPM], point_ned = disc.point_ned,
 		velocity_ned = M.q_rotate(q, RB._slice3(sim.state, RB.VEL))}
 	engine_running = false
+	_append_contact_event(ContactEvents.strike_event(prop_strike, sim.tick, HullContact.law(), _contact_bindings))
 	print("PROP STRIKE at %.0f rpm, %.1f m/s: engine stopped" % [prop_strike.rpm, M.norm(prop_strike.velocity_ned)])
 
 
@@ -1222,6 +1414,22 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 
 
 func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		next_tick: int) -> PackedFloat64Array:
+	_clear_pending_contacts()
+	_pending_contact_tick = next_tick
+	var accepted_scenery: SceneryCollision.Event = _last_scenery_event
+	var accepted_lake: LakeCollision.WaterEvent = _last_lake_event
+	_resolving_contact = true
+	var filtered: PackedFloat64Array = _resolve_collision_candidate(previous, candidate, next_tick)
+	_resolving_contact = false
+	_pending_scenery_event = _last_scenery_event
+	_pending_lake_event = _last_lake_event
+	_last_scenery_event = accepted_scenery
+	_last_lake_event = accepted_lake
+	return filtered
+
+
+func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int) -> PackedFloat64Array:
 	_clear_pending_scenery_damage()
 	if not _lake.is_empty():
@@ -1373,6 +1581,13 @@ func _flat_ground_hit_outside_lake(previous: PackedFloat64Array, candidate: Pack
 
 
 func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = PackedFloat64Array()) -> void:
+	if _resolving_contact:
+		# Engine modes already belong to Simulation's transaction and roll back on failure.
+		if impact.trigger == "water":
+			engine_running = false
+		_pending_crash = impact
+		_pending_crash_state = impact_state.duplicate()
+		return
 	var why: String = impact.description()
 	if impact.trigger == "water":
 		engine_running = false
@@ -1386,12 +1601,14 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 	sim.set_paused(true)
 	pause_reason = "CRASH at %.1f m/s (sink %.1f m/s%s) - %s" % [speed, sink, "" if why.is_empty() else ", " + why, "restarting" if crash_auto_restart else "[R] restart"]
 	print(pause_reason)
+	_append_contact_event(ContactEvents.impact_event(impact, _contact_bindings, _impact_policy(impact)))
 
 
 func reset() -> void:
 	_shaft_pending_reset = false
 	resetting.emit()
 	_clear_scenery_damage(true)
+	_reset_contact_history()
 	soft_contacts = []
 	prop_strike = {}
 	crash = {}
@@ -2503,6 +2720,9 @@ func checkpoint() -> Dictionary:
 			boundary.lake_id = str(_lake.id)
 		if not _collision_world.is_empty() and not _scenery_damage.is_empty():
 			boundary.scenery_damage = _scenery_damage.duplicate(true)
+	boundary.contact_state = contact_events()
+	if not _contact_history_is_valid(boundary.contact_state, snapshot):
+		return {}
 	return boundary
 
 
@@ -2626,6 +2846,13 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	for at in range(AUX_ANCHORS + 2, mini(snapshot.aux.size(), AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE), Ground.ANCHOR_STRIDE):
 		if snapshot.aux[at] != 0.0 and snapshot.aux[at] != 1.0:
 			return false # an anchor is stuck or sliding, nothing in between
+	var restored_contacts: Dictionary
+	if candidate.has("contact_state"):
+		if not _contact_history_is_valid(candidate.contact_state, snapshot):
+			return false
+		restored_contacts = candidate.contact_state.duplicate(true)
+	else:
+		restored_contacts = _legacy_contact_history(snapshot)
 	resetting.emit() # close recording before the clock moves backwards
 	# Layout was fully preflighted above; resize only at this owner-controlled environment boundary.
 	var old_aux: PackedFloat64Array = sim.aux
@@ -2637,6 +2864,8 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 		sim.modes = old_modes
 		return false
 	_scenery_damage = restored_damage
+	_restore_contact_history(restored_contacts)
+	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact) if soft_hull_contacts else []
 	_clear_pending_scenery_damage()
 	_weather = restored_weather
 	_weather_pending_reset = false
@@ -2656,6 +2885,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	pause_reason = "checkpoint restored (recorded inputs)"
 	_deflection_key = PackedFloat64Array()
 	scenery_damage_changed.emit()
+	contact_events_changed.emit()
 	return true
 
 

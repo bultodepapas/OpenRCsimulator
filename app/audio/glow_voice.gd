@@ -70,7 +70,13 @@ static func source_vibration_pcm_peaks(source_vibration: Variant, family: String
 		return _source_vibration_levels_failure()
 	var cycle_value: Variant = source_vibration.get("cycle_revolutions", null)
 	var omega_value: Variant = source_vibration.get("omega_rad_s", null)
+	var alpha_value: Variant = source_vibration.get("alpha_rad_s2", null)
+	var phase_value: Variant = source_vibration.get("phase_rad", null)
 	if not _is_number(cycle_value) or not is_finite(float(cycle_value)) or float(cycle_value) != float(cycle_revs) or not _is_number(omega_value):
+		return _source_vibration_levels_failure()
+	if not _is_number(alpha_value) or not is_finite(float(alpha_value)) or float(alpha_value) != 0.0 \
+			or not _is_number(phase_value) or not is_finite(float(phase_value)) \
+			or float(phase_value) < 0.0 or float(phase_value) >= TAU_VALUE:
 		return _source_vibration_levels_failure()
 	var expected_omega: float = rpm * TAU_VALUE / 60.0
 	var source_omega: float = float(omega_value)

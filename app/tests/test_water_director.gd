@@ -104,6 +104,13 @@ func _run() -> void:
 			and director.audio._primary_played and director.report.get("trigger", "") == "hull_contact")
 	_check("water event count is retained in director stats across the dry transition",
 		director.stats().water_event_count == 1 and not director.stats().water_active)
+	flight.session.reset()
+	var bank_hit := _impact(flight.session, "lake_bank",
+		PackedFloat64Array([110.0, 174.5, 0.2]), PackedFloat64Array([0.0, 0.0, 16.0]))
+	flight.session.crash = {"impact": bank_hit, "why": "test bank contact", "ticks_left": 20}
+	director.update(1.0 / 60.0)
+	_check("dry bank aftermath preserves the detected excavated height",
+		is_equal_approx(director._impact_point.y, -0.2) and not director._water_active)
 
 	flight.session.reset()
 	flight.free()

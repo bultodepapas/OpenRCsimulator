@@ -38,7 +38,8 @@ void vertex() {
 	// Derive world size from this camera's projection and render target, so FOV/resolution changes keep
 	// the authored pixel readability estimate stable.
 	float projected_pixels = max(VIEWPORT_SIZE.y * abs(PROJECTION_MATRIX[1][1]), 1.0);
-	float units_per_pixel = (2.0 * view_depth) / projected_pixels;
+	float depth_scale = PROJECTION_MATRIX[3][3] == 0.0 ? view_depth : 1.0;
+	float units_per_pixel = (2.0 * depth_scale) / projected_pixels;
 	float core_diameter = max(size_m, core_min_px * units_per_pixel);
 	float halo_diameter = max(core_diameter * 2.25, halo_min_px * units_per_pixel);
 	VERTEX = center + vec3(VERTEX.xy * halo_diameter, camera_offset_m);

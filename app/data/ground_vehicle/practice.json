@@ -1,0 +1,617 @@
+{
+  "format": "openrc-ground-course",
+  "version": 1,
+  "id": "mt8-practice-course-estimate-v1",
+  "name": "MT8 practice course",
+  "description": "Synthetic small practice field. Surface properties and non-flat features are estimated teaching values, not surveyed track data.",
+  "bounds": {
+    "north_min_m": {
+      "value": -8.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+    },
+    "north_max_m": {
+      "value": 28.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+    },
+    "east_min_m": {
+      "value": -10.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+    },
+    "east_max_m": {
+      "value": 10.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+    }
+  },
+  "surfaces": [
+    {
+      "id": "asphalt",
+      "name": "Asphalt",
+      "mu": {
+        "value": 0.85,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "rolling": {
+        "value": 0.025,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "color_srgb": [
+        0.18,
+        0.19,
+        0.2
+      ],
+      "roughness": 0.82
+    },
+    {
+      "id": "gravel",
+      "name": "Gravel",
+      "mu": {
+        "value": 0.65,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "rolling": {
+        "value": 0.055,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "color_srgb": [
+        0.44,
+        0.38,
+        0.29
+      ],
+      "roughness": 0.95
+    },
+    {
+      "id": "grass",
+      "name": "Grass",
+      "mu": {
+        "value": 0.5,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "rolling": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "color_srgb": [
+        0.15,
+        0.34,
+        0.13
+      ],
+      "roughness": 0.92
+    },
+    {
+      "id": "slippery",
+      "name": "Low-grip pad",
+      "mu": {
+        "value": 0.2,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "rolling": {
+        "value": 0.015,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "color_srgb": [
+        0.43,
+        0.57,
+        0.7
+      ],
+      "roughness": 0.48
+    }
+  ],
+  "regions": [
+    {
+      "id": "gravel-pad",
+      "surface_id": "gravel",
+      "north_min_m": {
+        "value": -3.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "north_max_m": {
+        "value": 1.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_min_m": {
+        "value": -7.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_max_m": {
+        "value": -2.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "priority": 10
+    },
+    {
+      "id": "grass-pad",
+      "surface_id": "grass",
+      "north_min_m": {
+        "value": -3.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "north_max_m": {
+        "value": 1.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_min_m": {
+        "value": 2.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_max_m": {
+        "value": 7.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "priority": 10
+    },
+    {
+      "id": "slippery-pad",
+      "surface_id": "slippery",
+      "north_min_m": {
+        "value": 2.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "north_max_m": {
+        "value": 5.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_min_m": {
+        "value": -5.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_max_m": {
+        "value": 5.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "priority": 20
+    }
+  ],
+  "features": [
+    {
+      "id": "tabletop-01",
+      "type": "tabletop",
+      "surface_id": "asphalt",
+      "center_north_m": {
+        "value": 8.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "center_east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "width_m": {
+        "value": 3.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "shoulder_width_m": {
+        "value": 0.7,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "height_m": {
+        "value": 0.12,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "approach_length_m": {
+        "value": 1.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "top_length_m": {
+        "value": 1.2,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "departure_length_m": {
+        "value": 1.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    },
+    {
+      "id": "wedge-01",
+      "type": "wedge",
+      "surface_id": "asphalt",
+      "center_north_m": {
+        "value": 13.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "center_east_m": {
+        "value": -4.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "width_m": {
+        "value": 2.2,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "shoulder_width_m": {
+        "value": 0.45,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "height_m": {
+        "value": 0.065,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "length_m": {
+        "value": 2.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    },
+    {
+      "id": "bump-lane-01",
+      "type": "bump_lane",
+      "surface_id": "asphalt",
+      "center_north_m": {
+        "value": 17.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "center_east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "width_m": {
+        "value": 3.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "shoulder_width_m": {
+        "value": 0.4,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "height_m": {
+        "value": 0.04,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "bump_length_m": {
+        "value": 0.7,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "bump_spacing_m": {
+        "value": 1.4,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "bump_count": 3
+    },
+    {
+      "id": "slope-01",
+      "type": "slope",
+      "surface_id": "asphalt",
+      "center_north_m": {
+        "value": 23.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "center_east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "width_m": {
+        "value": 3.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "shoulder_width_m": {
+        "value": 0.8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "height_m": {
+        "value": 0.08,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "approach_length_m": {
+        "value": 2.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "top_length_m": {
+        "value": 1.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "departure_length_m": {
+        "value": 2.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    }
+  ],
+  "spawns": [
+    {
+      "id": "start",
+      "north_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "heading_rad": {
+        "value": 0.0,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "vehicle_up_m": {
+        "value": 0.205,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    },
+    {
+      "id": "gravel",
+      "north_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_m": {
+        "value": -5.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "heading_rad": {
+        "value": 0.0,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "vehicle_up_m": {
+        "value": 0.205,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    },
+    {
+      "id": "grass",
+      "north_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_m": {
+        "value": 5.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "heading_rad": {
+        "value": 0.0,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "vehicle_up_m": {
+        "value": 0.205,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    },
+    {
+      "id": "slippery",
+      "north_m": {
+        "value": 3.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "heading_rad": {
+        "value": 0.0,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "vehicle_up_m": {
+        "value": 0.205,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    },
+    {
+      "id": "bump_lane",
+      "north_m": {
+        "value": 14.2,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "heading_rad": {
+        "value": 0.0,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "vehicle_up_m": {
+        "value": 0.205,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    },
+    {
+      "id": "jump_start",
+      "north_m": {
+        "value": 6.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "heading_rad": {
+        "value": 0.0,
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "vehicle_up_m": {
+        "value": 0.205,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "after-tabletop",
+      "north_m": {
+        "value": 11.3,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "radius_m": {
+        "value": 1.2,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    },
+    {
+      "id": "finish",
+      "north_m": {
+        "value": 26.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "east_m": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      },
+      "radius_m": {
+        "value": 1.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Synthetic practice-course estimate; analytical surfaces and friction are unmeasured placeholders for deterministic simulation and renderer alignment."
+      }
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "FL delante-izquierda (x<0, z<0)": {
+    "detail": "(-0.215, -0.025, -0.21)",
+    "ok": true
+  },
+  "FR delante-derecha (x>0, z<0)": {
+    "detail": "(0.215, -0.025, -0.21)",
+    "ok": true
+  },
+  "RL detras-izquierda (x<0, z>0)": {
+    "detail": "(-0.215, -0.025, 0.21)",
+    "ok": true
+  },
+  "RR detras-derecha (x>0, z>0)": {
+    "detail": "(0.215, -0.025, 0.21)",
+    "ok": true
+  },
+  "Shaft es hijo de ArmLower": {
+    "detail": "",
+    "ok": true
+  },
+  "Spin es hijo de Steer (delantera)": {
+    "detail": "",
+    "ok": true
+  },
+  "Steer es hijo de Suspension": {
+    "detail": "",
+    "ok": true
+  },
+  "WheelMesh es hijo de Spin": {
+    "detail": "",
+    "ok": true
+  },
+  "aabb": {
+    "position": [
+      -0.261676847934723,
+      -0.125416696071625,
+      -0.333499997854233
+    ],
+    "size": [
+      0.523353695869446,
+      0.364916682243347,
+      0.666999995708466
+    ]
+  },
+  "ancho total ~0.52 m": {
+    "detail": "0.52335369586945",
+    "ok": true
+  },
+  "batalla = 0.420": {
+    "detail": "0.41999998688698",
+    "ok": true
+  },
+  "dato: VehicleBody3D avanza hacia +Z con engine_force > 0": {
+    "detail": "15.8569775081246",
+    "ok": true
+  },
+  "direccion + gira la rueda hacia la izquierda (-X)": {
+    "detail": "(-0.34202, 0.0, -0.939693)",
+    "ok": true
+  },
+  "el techo queda en +Y": {
+    "detail": "(0.0, 0.205, 0.005)",
+    "ok": true
+  },
+  "extras glTF importados como metadata": {
+    "detail": "{ \"travel_bump_m\": 0.05, \"travel_droop_m\": 0.07, \"arm_length_m\": 0.155 }",
+    "ok": true
+  },
+  "giro negativo sobre +X: la parte alta va hacia delante (-Z)": {
+    "detail": "(0.0, 0.098007, -0.019867)",
+    "ok": true
+  },
+  "juntas cerradas en 15 poses extremas (error max < 1e-4 m)": {
+    "detail": "FL palier en copa t=-0.07 steer=-30.0 0.0000002",
+    "ok": true
+  },
+  "largo total ~0.66 m": {
+    "detail": "0.66699999570847",
+    "ok": true
+  },
+  "materiales StandardMaterial3D": {
+    "detail": "18",
+    "ok": true
+  },
+  "materials": {
+    "MT8_Alu_Raw": "StandardMaterial3D",
+    "MT8_Alu_Teal": "StandardMaterial3D",
+    "MT8_Battery_Wrap": "StandardMaterial3D",
+    "MT8_Chrome": "StandardMaterial3D",
+    "MT8_Decal_Black": "StandardMaterial3D",
+    "MT8_Decal_White": "StandardMaterial3D",
+    "MT8_Glass_Dark": "StandardMaterial3D",
+    "MT8_Light_Amber": "StandardMaterial3D",
+    "MT8_Light_White": "StandardMaterial3D",
+    "MT8_Motor_Red": "StandardMaterial3D",
+    "MT8_Paint_Orange": "StandardMaterial3D",
+    "MT8_Plastic_Black": "StandardMaterial3D",
+    "MT8_Plastic_Grey": "StandardMaterial3D",
+    "MT8_Plastic_Orange": "StandardMaterial3D",
+    "MT8_Rim_Bronze": "StandardMaterial3D",
+    "MT8_Spring_Yellow": "StandardMaterial3D",
+    "MT8_Steel": "StandardMaterial3D",
+    "MT8_Tire_Rubber": "StandardMaterial3D"
+  },
+  "ninguna escala negativa ni determinante <= 0": {
+    "detail": "[]",
+    "ok": true
+  },
+  "rig con entradas 0 reproduce la pose del .glb": {
+    "detail": " 0.0000000",
+    "ok": true
+  },
+  "root MT8_Root existe": {
+    "detail": "",
+    "ok": true
+  },
+  "spring_scale_range": [
+    0.877045154571533,
+    1.17236888408661
+  ],
+  "suelo a y = -0.125 (fondo de los neumaticos)": {
+    "detail": "-0.12541669607162",
+    "ok": true
+  },
+  "todas las piezas presentes (72)": {
+    "detail": "[]",
+    "ok": true
+  },
+  "triangles_godot": 72800,
+  "vehiclebody3d_engine_positive_dz": 15.8569775081246,
+  "via (centro a centro) = 0.430": {
+    "detail": "0.43000000715256",
+    "ok": true
+  }
+}

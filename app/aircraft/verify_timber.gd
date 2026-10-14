@@ -1,5 +1,5 @@
 # TT-03/TT-05 contract checks for the Turbo Lumber Evolution imported model (headless; visual preview, not flyable).
-# Proves that the scene Godot imports is the frozen r1 asset (hash, counts, pivots, landmarks), that the builder's
+# Proves that the scene Godot imports is the frozen r2 asset (hash, counts, section tags, pivots, landmarks), that the builder's
 # wrappers leave every world transform untouched, and that surfaces, propeller and wheels move in the app's signs with
 # witness vertices. Run: godot --headless --path app --script res://aircraft/verify_timber.gd
 extends SceneTree
@@ -8,6 +8,26 @@ const Commands := preload("res://input/commands.gd")
 const Timber := preload("res://aircraft/timber_model.gd")
 const TimberGeometry := preload("res://aircraft/timber_geometry.gd")
 const GLB_PATH := "res://assets/aircraft/turbo-lumber-evolution/timber.glb"
+const EXPECTED_MESH_SECTIONS := {
+	"fuselage_core": "core", "wing_left_fixed": "wing_left", "wing_right_fixed": "wing_right",
+	"aileron_left": "wing_left", "aileron_right": "wing_right", "flap_left": "wing_left", "flap_right": "wing_right",
+	"stabilizer_fixed": "horizontal_tail", "elevator": "horizontal_tail", "fin_fixed": "vertical_tail", "rudder": "vertical_tail",
+	"cowl": "engine", "canopy_glass": "canopy", "propeller_rotor": "propeller",
+	"gear_left_leg": "gear", "gear_right_leg": "gear", "wheel_left": "gear", "wheel_right": "gear",
+	"tailwheel_fork": "gear", "tailwheel": "gear", "gear_cables": "gear",
+}
+const EXPECTED_PIVOT_SECTIONS := {
+	"aileron_left_hinge": "wing_left", "aileron_right_hinge": "wing_right",
+	"flap_left_hinge": "wing_left", "flap_right_hinge": "wing_right",
+	"elevator_hinge": "horizontal_tail", "rudder_hinge": "vertical_tail",
+	"gear_left_suspension": "gear", "gear_right_suspension": "gear",
+	"wheel_left_axle": "gear", "wheel_right_axle": "gear", "tailwheel_axle": "gear",
+	"tailwheel_steer": "gear", "propeller_spin": "propeller",
+}
+const FIXED_SECTION_MESHES := ["fuselage_core", "wing_left_fixed", "wing_right_fixed", "stabilizer_fixed", "fin_fixed", "cowl", "canopy_glass"]
+const VALID_SECTIONS := ["core", "wing_left", "wing_right", "horizontal_tail", "vertical_tail", "engine", "propeller", "gear", "canopy"]
+const EXPECTED_TRIANGLES := 42519
+const EXPECTED_SURFACES := 49
 const HINGE_NAMES := ["flap_left", "flap_right", "aileron_left", "aileron_right", "elevator", "rudder"]
 ## Pivots that the builder moves under an identity wrapper (their parent name changes, their world transform must not).
 const WRAPPED := ["propeller_spin", "wheel_left_axle", "wheel_right_axle", "tailwheel_axle", "tailwheel_steer"]
@@ -73,6 +93,19 @@ func _bounds(points: PackedVector3Array) -> AABB:
 	return box
 
 
+func _extreme_point(points: PackedVector3Array, axis: int, minimum: bool, x_limit := -1.0) -> Vector3:
+	var found := false
+	var best_point := Vector3.ZERO
+	var best := INF if minimum else -INF
+	for point in points:
+		if x_limit >= 0.0 and absf(point.x) > x_limit: continue
+		if not found or (point[axis] < best if minimum else point[axis] > best):
+			found = true
+			best = point[axis]
+			best_point = point
+	return best_point
+
+
 # Root-frame position of the aft-most rest vertex of a hinge's mesh, tracked through the current pose.
 func _aft_point(root: Node3D, h: Dictionary) -> Vector3:
 	var posed_basis: Basis = h.node.basis
@@ -111,6 +144,15 @@ func _structure(root: Node3D) -> Array:
 	return out
 
 
+func _fixed_transforms(root: Node3D) -> Dictionary:
+	var out := {}
+	for name in FIXED_SECTION_MESHES:
+		var mesh := root.find_child(name, true, false) as Node3D
+		if mesh != null:
+			out[name] = Timber.relative(root, mesh)
+	return out
+
+
 func _run() -> void:
 	var model := Timber.build()
 	var root: Node3D = model.root
@@ -135,8 +177,34 @@ func _run() -> void:
 		triangles += m.mesh.get_faces().size() / 3
 		identity_meshes = identity_meshes and m.transform == Transform3D.IDENTITY and D.scene.mesh_nodes.has(String(m.name))
 		_check("mesh %s surfaces as measured" % m.name, D.scene.mesh_nodes.has(String(m.name)) and m.mesh.get_surface_count() == int(D.scene.mesh_nodes[String(m.name)].surfaces))
-	_check("15 meshes, 36 surfaces, 64291 triangles", meshes.size() == 15 and surfaces == 36 and triangles == 64291, "%d/%d/%d" % [meshes.size(), surfaces, triangles])
+	var expected_names: Array = EXPECTED_MESH_SECTIONS.keys()
+	expected_names.sort()
+	var actual_names: Array = []
+	var generated_surfaces := 0
+	var generated_triangles := 0
+	for name in D.scene.mesh_nodes:
+		generated_surfaces += int(D.scene.mesh_nodes[name].surfaces)
+		generated_triangles += int(D.scene.mesh_nodes[name].triangles)
+	for m in meshes:
+		actual_names.append(String(m.name))
+		if EXPECTED_MESH_SECTIONS.has(String(m.name)):
+			var extras: Variant = m.get_meta("extras", {})
+			var section := String(extras.get("openrc_section", "")) if extras is Dictionary else ""
+			_check("mesh %s has its r2 openrc_section" % m.name, section == String(EXPECTED_MESH_SECTIONS[String(m.name)]), section)
+			_check("mesh %s section is valid" % m.name, VALID_SECTIONS.has(section), section)
+			_check("mesh %s triangles as measured" % m.name, m.mesh.get_faces().size() / 3 == int(D.scene.mesh_nodes[String(m.name)].triangles))
+		else:
+			_check("mesh %s is a known r2 part" % m.name, false)
+	actual_names.sort()
+	_check("generated geometry names every r2 mesh", D.scene.mesh_nodes.size() == EXPECTED_MESH_SECTIONS.size() and actual_names == expected_names, str(actual_names))
+	_check("generated r2 totals are 49 surfaces and 42,519 triangles", generated_surfaces == EXPECTED_SURFACES and generated_triangles == EXPECTED_TRIANGLES,
+		"%d/%d" % [generated_surfaces, generated_triangles])
+	_check("21 meshes, 49 surfaces, 42,519 triangles", meshes.size() == EXPECTED_MESH_SECTIONS.size() and surfaces == generated_surfaces and triangles == generated_triangles,
+		"%d/%d/%d" % [meshes.size(), surfaces, triangles])
 	_check("meshes identity under their pivots", identity_meshes)
+	_check("no legacy merged airframe", root.find_child("airframe", true, false) == null)
+	var fixed_before := _fixed_transforms(root)
+	_check("all seven fixed section meshes are present", fixed_before.size() == FIXED_SECTION_MESHES.size(), str(fixed_before.keys()))
 	_check("no animation player, camera or light", root.find_children("*", "AnimationPlayer", true, false).is_empty()
 		and root.find_children("*", "Camera3D", true, false).is_empty() and root.find_children("*", "Light3D", true, false).is_empty())
 	# Pivots: parents and rest transforms (unwrapped), world transforms (all), glTF extras agree with the constants.
@@ -159,11 +227,28 @@ func _run() -> void:
 		_check("%s world basis = declared parent x rest" % name, (world.basis.x - expected_basis.x).length() < REST_TOLERANCE
 			and (world.basis.y - expected_basis.y).length() < REST_TOLERANCE and (world.basis.z - expected_basis.z).length() < REST_TOLERANCE, str(world.basis))
 		var extras: Dictionary = node.get_meta("extras", {})
-		_check("%s glTF extras agree" % name, extras.get("articulation", "") == name and extras.get("positive", "") == String(a.positive)
+		_check("%s glTF articulation and range extras agree" % name, extras.get("articulation", "") == name and not String(extras.get("positive", "")).is_empty()
 			and (a.range_deg == null or (absf(float(extras.get("min_deg", NAN)) - float(a.range_deg[0])) < 1e-9 and absf(float(extras.get("max_deg", NAN)) - float(a.range_deg[1])) < 1e-9)), str(extras))
+		var expected_section := String(EXPECTED_PIVOT_SECTIONS.get(String(name), ""))
+		_check("%s has its r2 openrc_section" % name, not expected_section.is_empty() and extras.get("openrc_section", "") == expected_section, str(extras.get("openrc_section", "")))
 	var thrust := root.find_child("thrust_frame", true, false) as Node3D
 	_check("thrust frame fixed at the hub with the thrust axis", thrust != null and thrust.get_parent() == aircraft_node
 		and thrust.position.distance_to(_v3(D.thrust.origin.value)) < POSITION_TOLERANCE_M and (thrust.basis.x - _v3(D.thrust.direction.value)).length() < REST_TOLERANCE)
+	var root_extras: Variant = root.get_meta("extras", {})
+	var root_section := String(root_extras.get("openrc_section", "")) if root_extras is Dictionary else ""
+	var thrust_extras: Variant = thrust.get_meta("extras", {}) if thrust != null else {}
+	var thrust_section := String(thrust_extras.get("openrc_section", "")) if thrust_extras is Dictionary else ""
+	_check("root and thrust frame remain untagged", root_section.is_empty() and thrust_section.is_empty())
+	# r2 tags each real mesh and moving pivot in glTF extras; the wreck resolves those directly on its duplicate.
+	var tagged_nodes := 0
+	var tags_valid := true
+	for node in root.find_children("*", "", true, false):
+		var extras: Variant = node.get_meta("extras", {})
+		if extras is Dictionary and (extras as Dictionary).has("openrc_section"):
+			tagged_nodes += 1
+			tags_valid = tags_valid and VALID_SECTIONS.has(String(extras.openrc_section))
+	_check("all 21 meshes and 13 moving pivots have valid section tags", tags_valid
+		and tagged_nodes == EXPECTED_MESH_SECTIONS.size() + EXPECTED_PIVOT_SECTIONS.size(), str(tagged_nodes))
 
 	# Landmarks and dimensions from the live vertices.
 	var points := _all_points(root)
@@ -174,17 +259,31 @@ func _run() -> void:
 	for p in rotor_points: if p.z < spinner_tip.z: spinner_tip = p
 	var rudder_te := rudder_points[0]
 	for p in rudder_points: if p.z > rudder_te.z: rudder_te = p
-	var live := {left_wingtip = Vector3(box.position.x, 0, 0), right_wingtip = Vector3(box.end.x, 0, 0), nose_spinner_tip = spinner_tip,
-		tail_rudder_trailing_edge = rudder_te, propeller_hub = Timber.relative(root, thrust).origin, datum_D0 = Vector3.ZERO,
+	var left_wing_points := _all_points(root, "wing_left_fixed")
+	var right_wing_points := _all_points(root, "wing_right_fixed")
+	var live := {left_wingtip = _extreme_point(left_wing_points, 0, true), right_wingtip = _extreme_point(right_wing_points, 0, false),
+		nose_spinner_tip = spinner_tip, tail_rudder_trailing_edge = rudder_te,
+		propeller_hub = Timber.relative(root, root.find_child("propeller_spin", true, false)).origin, datum_D0 = Vector3.ZERO,
 		left_main_wheel_center = Timber.relative(root, root.find_child("wheel_left_axle", true, false)).origin,
 		right_main_wheel_center = Timber.relative(root, root.find_child("wheel_right_axle", true, false)).origin,
-		tailwheel_center = Timber.relative(root, root.find_child("tailwheel_axle", true, false)).origin}
+		tailwheel_center = Timber.relative(root, root.find_child("tailwheel_axle", true, false)).origin,
+		left_main_wheel_contact = _extreme_point(_all_points(root, "wheel_left"), 1, true),
+		right_main_wheel_contact = _extreme_point(_all_points(root, "wheel_right"), 1, true),
+		tailwheel_contact = _extreme_point(_all_points(root, "tailwheel"), 1, true),
+		wing_root_leading_edge = _extreme_point(left_wing_points, 2, true, 0.003)}
 	for key in D.landmarks:
 		var rec: Dictionary = D.landmarks[key]
-		var ok := true
+		var available := live.has(key)
+		var measured_ok := available
+		var author_ok := available
+		# The supplier reports approximate local bounds; allow its recorded source deviation plus 0.5 mm import tolerance.
+		var landmark_tolerance_m := LANDMARK_TOLERANCE_M + float(rec.get("difference_mm", 0.0)) / 1000.0
 		for axis in rec.compared_axes:
-			ok = ok and absf(live[key][int(axis)] - float(rec.measured[int(axis)])) < LANDMARK_TOLERANCE_M and absf(live[key][int(axis)] - float(rec.author[int(axis)])) < LANDMARK_TOLERANCE_M
-		_check("landmark %s within 0.5 mm of the measurement and the author" % key, ok, str(live[key]))
+			if available:
+				measured_ok = measured_ok and absf(live[key][int(axis)] - float(rec.measured[int(axis)])) < landmark_tolerance_m
+				author_ok = author_ok and absf(live[key][int(axis)] - float(rec.author[int(axis)])) < landmark_tolerance_m
+		_check("landmark %s matches source measurement and approximate author bound" % key, available and measured_ok and author_ok,
+			str(live.get(key, Vector3(NAN, NAN, NAN))))
 	_check("span within 1 %% of the manual 1.555 m", absf(box.size.x / MANUAL_SPAN_M - 1.0) < SPAN_TOLERANCE, "%.4f m" % box.size.x)
 	_check("span = measured", absf(box.size.x - float(D.dimensions.span.value)) < 1e-4, "%.6f" % box.size.x)
 	_check("length = measured (spinner tip to rudder TE)", absf((rudder_te.z - spinner_tip.z) - float(D.dimensions.length.value)) < 1e-4)
@@ -192,22 +291,44 @@ func _run() -> void:
 	_check("forward extent is the spinner tip, not an AABB corner", absf(box.position.z - spinner_tip.z) < 1e-6 and absf(spinner_tip.z - float(D.dimensions.forward_extent_vertex.root[2])) < 1e-6, "%.6f" % box.position.z)
 	_check("lateral symmetry", absf(box.position.x + box.end.x) < 1e-5, str(box))
 	_check("nose toward -Z", box.position.z < -0.25 and box.end.z > 0.8)
-	# Materials: ten imported resources, named as measured, shared by every surface that uses them.
+	# Materials: ten imported resources, named as measured, shared by every source surface. The builder clones only the
+	# cowl's black/red surfaces and grows those instance overrides to seat the supplier's decal shells.
 	var materials := {}
+	var cowl_seating := {}
 	var transparent := 0
 	var emissive := 0
 	for m in meshes:
 		for s in m.mesh.get_surface_count():
-			var mat := m.get_active_material(s) as BaseMaterial3D
-			if mat == null: continue
-			var key := mat.resource_name
-			_check("material %s:%d is one shared resource" % [m.name, s], not materials.has(key) or materials[key] == mat)
-			materials[key] = mat
+			var source_mat := m.mesh.surface_get_material(s) as BaseMaterial3D
+			var active_mat := m.get_active_material(s) as BaseMaterial3D
+			if source_mat == null or active_mat == null: continue
+			var key := source_mat.resource_name
+			_check("material %s:%d source is one shared resource" % [m.name, s], not materials.has(key) or materials[key] == source_mat)
+			materials[key] = source_mat
+			if m.name == "cowl" and key in ["black", "red"]:
+				var override := m.get_surface_override_material(s) as StandardMaterial3D
+				var expected_override := override != null and override != source_mat and override.grow and is_equal_approx(override.grow_amount, 0.0008)
+				_check("cowl %s has its isolated 0.8 mm grow override" % key, expected_override,
+					"override=%s grow=%s amount=%.4f" % [str(override != null), str(override.grow if override != null else false), override.grow_amount if override != null else 0.0])
+				cowl_seating[key] = override
+			else:
+				_check("material %s:%d keeps its shared instance resource" % [m.name, s], active_mat == source_mat)
 	for key in materials:
 		if materials[key].transparency != BaseMaterial3D.TRANSPARENCY_DISABLED: transparent += 1
 		if materials[key].emission_enabled: emissive += 1
 	_check("ten materials as measured", materials.size() == 10 and materials.keys().all(func(k): return D.scene.materials.has(k)), str(materials.keys()))
 	_check("one transparent (glass), two emissive lenses", transparent == 1 and emissive == 2 and materials.has("glass") and materials.glass.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED, "%d/%d" % [transparent, emissive])
+	_check("cowl seating overrides cover exactly black and red", cowl_seating.size() == 2 and cowl_seating.has("black") and cowl_seating.has("red"))
+	var isolated_model := Timber.build()
+	var isolated_cowl := isolated_model.root.find_child("cowl", true, false) as MeshInstance3D
+	var isolated_ok := isolated_cowl != null
+	if isolated_cowl != null:
+		for s in isolated_cowl.mesh.get_surface_count():
+			var source_mat := isolated_cowl.mesh.surface_get_material(s) as BaseMaterial3D
+			if source_mat != null and cowl_seating.has(source_mat.resource_name):
+				isolated_ok = isolated_ok and isolated_cowl.get_surface_override_material(s) != cowl_seating[source_mat.resource_name]
+	_check("separate Timber builds do not share cowl seating overrides", isolated_ok)
+	isolated_model.root.free()
 
 	# TT-05: hinge records and apply_surfaces signs on trailing-edge witness vertices.
 	_check("hinge keys", model.hinges.size() == HINGE_NAMES.size() and HINGE_NAMES.all(func(k): return model.hinges.has(k)), str(model.hinges.keys()))
@@ -234,9 +355,7 @@ func _run() -> void:
 	_check("right roll: left aileron down", moved.aileron_left.y < -MIN_TRAVEL_M)
 	_check("pull: elevator up", moved.elevator.y > MIN_TRAVEL_M)
 	_check("right yaw: rudder TE right", moved.rudder.x > MIN_TRAVEL_M)
-	# Every surface of a moving mesh (horns, markings) follows its hinge; the fixed airframe does not move.
-	var airframe := root.find_child("airframe", true, false) as MeshInstance3D
-	var airframe_before := Timber.relative(root, airframe)
+	# Every surface of a moving mesh follows its hinge; the fixed r2 section meshes do not move.
 	Timber.apply_surfaces(model, deflections)
 	for key in ["elevator", "rudder"]:
 		var h: Dictionary = model.hinges[key]
@@ -262,7 +381,7 @@ func _run() -> void:
 			var turned: float = (a - axis * a.dot(axis)).signed_angle_to(b - axis * b.dot(axis), axis)
 			all_follow = all_follow and absf(turned - applied) < 1e-4
 		_check("%s: every surface (markings, horn, rod) turns with the hinge" % key, all_follow)
-	_check("airframe fixed under deflection", Timber.relative(root, airframe) == airframe_before)
+	_check("fixed section meshes stay fixed under deflection", _fixed_transforms(root) == fixed_before)
 	for key in HINGE_NAMES:
 		var h: Dictionary = model.hinges[key]
 		_check("%s pivot fixed" % key, h.node.position.distance_to(h.pivot) < EXACT_M)
@@ -323,7 +442,7 @@ func _run() -> void:
 	var swept := (p0 - d * p0.dot(d)).signed_angle_to(p1 - d * p1.dot(d), d)
 	_check("propeller +0.3 rad spins the tip +0.3 rad about the thrust direction (clockwise from behind)", absf(swept - 0.3) < 1e-5, "%.6f" % swept)
 	_check("propeller spin keeps the hub and the rotor origin", (Timber.relative(root, rotor).origin - rotor_rest.origin).length() < EXACT_M and Timber.relative(root, thrust).origin.distance_to(hub) < EXACT_M)
-	_check("propeller spin leaves the thrust frame and the airframe", Timber.relative(root, thrust).basis.x.distance_to(d) < 1e-7 and Timber.relative(root, airframe) == airframe_before)
+	_check("propeller spin leaves the thrust frame and fixed sections", Timber.relative(root, thrust).basis.x.distance_to(d) < 1e-7 and _fixed_transforms(root) == fixed_before)
 	propeller.rotation.z = 0.0
 	_check("propeller zero restores the rotor exactly", Timber.relative(root, rotor) == rotor_rest)
 
@@ -375,8 +494,9 @@ func _run() -> void:
 	_check("instances independent", _aft_point(other.root, other.hinges.aileron_right).distance_to(other_rest) < EXACT_M
 		and other.hinges.flap_left.node.transform == rest.flap_left and other.propeller.transform == Transform3D.IDENTITY and other.gear.steering.transform.basis == Basis.IDENTITY)
 	_check("instances own their nodes", other.root != root and other.hinges.rudder.node != model.hinges.rudder.node and other.propeller != model.propeller)
-	var other_airframe := other.root.find_child("airframe", true, false) as MeshInstance3D
-	_check("instances share meshes and materials", other_airframe.mesh == airframe.mesh and other_airframe.get_active_material(0) == airframe.get_active_material(0))
+	var fixed_mesh := root.find_child("fuselage_core", true, false) as MeshInstance3D
+	var other_fixed_mesh := other.root.find_child("fuselage_core", true, false) as MeshInstance3D
+	_check("instances share meshes and materials", other_fixed_mesh.mesh == fixed_mesh.mesh and other_fixed_mesh.get_active_material(0) == fixed_mesh.get_active_material(0))
 	Timber.apply_surfaces(model, {})
 	Timber.set_flaps(model, 0.0)
 	model.propeller.rotation.z = 0.0

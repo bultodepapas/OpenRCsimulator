@@ -2,6 +2,7 @@ extends RefCounted
 class_name AircraftContract
 
 const SPEC_PATH := "res://data/schema/aircraft-contract-v2.json"
+const PhysicalIdentity := preload("res://physics/physical_identity.gd")
 const EVIDENCE_FIELDS := ["value", "unit", "kind", "source"]
 const EVIDENCE_KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
 static var _spec_cache: Dictionary = {}
@@ -21,6 +22,7 @@ static func validate(raw: Variant) -> PackedStringArray:
 	if not issues.is_empty():
 		return issues
 	_validate_relations(root, spec, issues)
+	issues.append_array(PhysicalIdentity.validate(root))
 	return issues
 
 static func _load_spec() -> Dictionary:

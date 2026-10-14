@@ -24,10 +24,10 @@ The [current Workshop guide](../AIRCRAFT-WORKSHOP.md) is authoritative for opera
 | --- | --- | --- |
 | AE-00 | Source audit, ownership and implemented-path reconciliation | Coordinate each later family/authoring seam with its owner |
 | AE-01/02 | Seven generated descriptors; closed recipe; exact source/dependency/compiler pins; deterministic trial fingerprints | Rich authoring manifest, stable cross-version component keys, full reusable module composition and migrations |
-| AE-03 | Atomic local library, immutable revisions, copies, load, trash and last-delete recovery | Persistent draft recovery, portable bundles and richer trash/revision navigation |
+| AE-03 | Atomic local library, immutable revisions, exclusive per-variant writes, stale-revision refusal, backup recovery, copies, load, trash and last-delete recovery | Persistent draft recovery, automatic orphan-lock recovery, portable bundles and richer trash/revision navigation |
 | AE-04…07 | Shared no-op/compiler, uniform inventory/control/legacy propulsion/geometry transforms; Stik and Extra six-size flight fixtures; 20 unfamiliar IDs compile without special cases | Broader combination/refinement matrix and richer module dependency conflict checks |
 | AE-08 | Common preview, scaled render/CG/camera, hull/inventory and wreck geometry | Complete presentation-anchor matrix, richer imported bindings and authoring migration |
-| AE-09 | Home/Pause menu, all-catalog selection, presets, before/after metrics, saved builds, single undo, EN/ES, 720p/1080p checks | Persistent drafts, full undo/redo history, control-response editor and wider usability/playtest acceptance |
+| AE-09 | Home/Pause menu, all-catalog selection, presets, exact loaded values, before/after metrics, saved builds, 32-edit undo/redo, EN/ES, 720p/1080p checks | Persistent drafts, control-response editor and wider usability/playtest acceptance |
 | AE-10 | Frozen airborne trials, F5 identity, return to the same draft, old-flight rollback, Stik/Extra public workflow | Full planned crash/replay/recording and long-duration trial matrix before closing the complete V1 gate |
 | AE-11…26 | Not delivered by this slice | Continue the steps and gates below; AE-19 full-fleet editing and AE-25 twenty-airframe onboarding remain open |
 
@@ -570,6 +570,8 @@ Names below are proposed files/APIs, not existing symbols.
 Keep pure calculations usable headlessly. Scalar doubles and packed float64 arrays remain the physics representation. Only the preview/presentation layer creates Godot render vectors/transforms. Do not preload visual builders from the compiler. A new dependency is not necessary for V1.
 
 The menu/preferences owner adds only selection/reference data to saved preferences; the full recipe belongs in its own store. Direct automation still ignores player preferences. Add an explicit proposed `--aircraft-variant=<bundle-or-local-path>` route for reproducible checks, mutually exclusive with `--aircraft`; the direct path must neither migrate nor overwrite user files.
+
+The [2026-10-13 robustness audit](../research/aircraft-editor/AE-01-10/README.md#ae-020309-audit-follow-up--2026-10-13) fixes JSON numeric round-trip identity and historical recipe metadata. AE-03 still requires first-save interruption recovery, unambiguous trash generations and revision-aware delete confirmation; existing passing suites do not close those cases.
 
 ## 14. Incremental implementation and acceptance
 

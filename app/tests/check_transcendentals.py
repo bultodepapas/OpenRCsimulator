@@ -66,7 +66,7 @@ def scan(root: Path) -> list[str]:
             code = _mask_strings_and_comments(path.read_text(encoding="utf-8"))
             for match in CALL.finditer(code):
                 line = code.count("\n", 0, match.start()) + 1
-                findings.append(f"{path.relative_to(root)}:{line}: bare {match.group(1)}( call")
+                findings.append(f"{path.relative_to(root).as_posix()}:{line}: bare {match.group(1)}( call")
     return findings
 
 

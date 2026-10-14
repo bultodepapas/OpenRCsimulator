@@ -153,7 +153,7 @@ func _start() -> void:
 		_start_water(impact, point, point_velocity, began)
 		return
 	_impact_point = Frames.ned_to_render(Array(point))
-	if impact.trigger != "scenery":
+	if impact.trigger not in ["scenery", "lake_bank"]:
 		_impact_point.y = 0.025
 	var normal_speed := maxf(0.0,point_velocity[2])
 	var tangent_speed := sqrt(point_velocity[0]*point_velocity[0]+point_velocity[1]*point_velocity[1])

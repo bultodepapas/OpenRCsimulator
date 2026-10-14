@@ -1,6 +1,6 @@
 # Downloaded vegetation and nearby lake — implementation plan
 
-Date: 2026-10-13. **Status: implementation authorized and integrated; final native verification in progress.** Owner: landscape integration lead. Steps: **LU-22–27**, continuing the [landscape track](landscape-upgrade.md). This revision supersedes the previous procedural-vegetation direction. Current proof: [LU-22 evidence](../research/landscape-upgrade/LU-22/README.md).
+Date: 2026-10-13. **Status: LU-22–27 implemented and software-verified; independent acceptance remains open.** Owner: landscape integration lead. Steps: **LU-22–27**, continuing the [landscape track](landscape-upgrade.md). This revision supersedes the previous procedural-vegetation direction. Current proof: [LU-22 evidence](../research/landscape-upgrade/LU-22/README.md).
 
 ## Owner's requirement and delivery order
 
@@ -36,7 +36,7 @@ Poly Haven's listed full meshes were not adopted for this iteration because thei
 | [Poly Haven Coast Rocks 01](https://polyhaven.com/a/coast_rocks_01) | Shore stone/pebble source trial | Check freshwater visual fit, source complexity and lower-detail options; avoid repeating a complete coastal formation around the lake. |
 | [Big Water Splash — qubodup](https://freesound.org/people/qubodup/sounds/442773/) | Initial water-impact sound audition | Asset page declares CC0; approximately 2.17 s, 48 kHz stereo WAV. Download currently requires login. Use an accessible, exactly licensed alternative if necessary; verify and retain the actual file's license. |
 
-**Remaining resource searches:** additional broadleaf trees/saplings, flowers of different shapes and colours, reeds/rushes, low shoreline plants, crop meshes, water normal maps and quiet shoreline recordings. Do not invent these models to fill a catalog gap. Continue the asset search and record a substitute when a candidate fails quality, license or performance checks.
+**Selected resource coverage is complete for this delivery.** Future variety may add broadleaf species, flower shapes or more locally appropriate shoreline recordings. Do not invent these models to fill a catalog gap. Continue the asset search and record a substitute when a candidate fails quality, license or performance checks.
 
 For each adopted item retain source URL, author, retrieval date, exact version/commit or archive, SHA-256, original license, source files and a reproducible conversion recipe. Shipped credits must include any required attribution. A shader's code license does not automatically cover its example textures, recordings or models.
 
@@ -89,7 +89,7 @@ Choose a shared water-surface definition for visual and contact height. If visib
 
 ## Steps, ownership and proof
 
-LU-22–26 are integrated. LU-27 is undergoing native capture, performance, export and regression verification. The lead owns shared integration and final evidence; bounded Luna Max tasks covered source import, scalar lake contacts, audio/checkpoint seams and focused tests.
+LU-22–27 are integrated and software-verified. Native captures, water impact/audio, focused regression results and final 65/65 exported-pack checks are recorded in the evidence report; full-suite and hardware qualifications remain explicit. The lead owns shared integration and final evidence; bounded Luna Max tasks covered source import, scalar lake contacts, audio/checkpoint seams and focused tests.
 
 | Step | Work | Required proof |
 | --- | --- | --- |
@@ -118,4 +118,4 @@ Independent pilot preference, lower-end hardware acceptance and physical water-i
 
 ## Remaining acceptance
 
-Complete the native evidence and exported application checks. Independent pilot preference and lower-end hardware acceptance remain external review gates. Current aircraft entering water terminate the flight; the short sinking animation is render-only and does not claim buoyancy or hydrodynamic validation.
+Native evidence and exported-resource checks are complete. Final measured siting is 82.152 m from runway edge to shore and 77.026 m to the outer bank, with 5 m maximum water depth. The source-geometry gate is revised to 650k after native measurement (624,109 actual); the final reflection atlas uses two slots and adds approximately 17.32 MiB over lake-off. The evolving shared aircraft tree must regain a valid model-bindings hash before its live Main can be requalified; the isolated production Main and exported pack pass. Independent pilot preference and lower-end hardware acceptance remain external review gates. Current aircraft entering water terminate the flight; the short sinking animation is render-only and does not claim buoyancy or hydrodynamic validation.

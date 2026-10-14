@@ -1,0 +1,91 @@
+{
+  "commands": [
+    {
+      "name": "landscape_collision_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_collision_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "log": "landscape_collision_session-final.log",
+      "log_sha256": "2fc84c9c37e3c9360fc70ea13506cbc1d25860ed108996d1e0429ccf64441b5d"
+    },
+    {
+      "name": "scenery_damage_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_damage_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "log": "scenery_damage_session-final.log",
+      "log_sha256": "689387bb5c64031be3bac913ea8bb780fef04bbfca55b204e7f86c26939512d1"
+    },
+    {
+      "name": "lake_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_lake_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "log": "lake_session-final.log",
+      "log_sha256": "1d847e1ebb17720250180a214c6737f1b382ad74967502b856c8220210e85750"
+    },
+    {
+      "name": "aircraft_contact_session-final",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_aircraft_contact_session.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "log": "aircraft_contact_session-final.log",
+      "log_sha256": "c1eaf436bebc68e46b66e8b69d323b201edaed7297efc2ee15356324e3036c75"
+    },
+    {
+      "name": "live-contacts",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\contact_probe.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as13-events\\live-contacts.json"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "log": "live-contacts.log",
+      "log_sha256": "32b8822de15a59b03e1c986912b21fa786fb015362b839cf02590aae66b38a91"
+    }
+  ]
+}

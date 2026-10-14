@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field and normalized lake load
+ok   default production scenery collision world builds
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   all 20 paired steps remain precontact at 10 m
+ok   airborne session state remains bit-identical with bounded lake context
+lake session airborne / full production scenery: proxies=4980 bins=1038 start_ned=[110.0, 125.0, -10.0] ticks=20; wall_usec dry p50/p95=796/847 lake=1141/1297 paired_added_p50=330 total_added=7147 avg_added=357.4; sim.step_usec dry avg=831.6 lake avg=1168.8
+lake session airborne benchmark: 0 failures
