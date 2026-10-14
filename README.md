@@ -15,11 +15,11 @@ The five aircraft shown from changing angles. [Still views and render provenance
 
 ## Download and fly
 
-[Download the rc8 alpha](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc8) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. Packages are unsigned; see the [first-launch guide](docs/FIRST-LAUNCH.md) for platform setup, controls, radio calibration and diagnostics.
+[Download v0.1.0, the first official release](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. Packages are unsigned; see the [first-launch guide](docs/FIRST-LAUNCH.md) for platform setup, controls, radio calibration and diagnostics.
 
 **First flight:** new Home preferences start on the Stik runway with gentle wind and passing evening; saved choices take precedence. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. [Player guide and controls](docs/FIRST-LAUNCH.md).
 
-The downloads are the **rc8 snapshot**; the features and aircraft below describe **current source, checked 2026-10-13**. In rc8, Turbo Lumber Evolution is a visual preview; its electric flight and runway start are newer source features. See the [rc8 release notes](docs/releases/v0.1.0-rc8.md) for the packaged build.
+The downloads contain the **v0.1.0 snapshot**, an official early-development release. The features and aircraft below describe current source and may include later changes. See the [v0.1.0 release notes](docs/releases/v0.1.0.md) for the packaged build.
 
 ## Aircraft
 
