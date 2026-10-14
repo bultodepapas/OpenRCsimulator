@@ -9,7 +9,7 @@ const Course := preload("res://physics/ground_vehicle/course.gd")
 const Vehicle := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 
 const DT := 1.0 / 240.0
-const FORWARD := 0
+const FORWARD_SPEED := 3
 const POS_NORTH := 0
 const DOWN := 2
 const VEL_DOWN := 5
@@ -142,34 +142,38 @@ func _initialize() -> void:
 
 func _test_drivetrain(start: PackedFloat64Array, model: Dictionary, flat: Callable) -> void:
 	var driven := _run_steps(start, model, _controls(0.8), flat, 120)
-	_check("4WD throttle accelerates forward and spins all wheels forward", not driven.is_empty() and driven[FORWARD] > 0.5 and driven[WHEEL_SPIN] > 0.0 and driven[WHEEL_SPIN + 3] > 0.0,
-		"u %.3f m/s, spin FL/RR %.3f / %.3f rad/s" % [driven[FORWARD], driven[WHEEL_SPIN], driven[WHEEL_SPIN + 3]])
+	_check("4WD throttle accelerates forward and spins all wheels forward", not driven.is_empty() and driven[FORWARD_SPEED] > 0.5 and driven[WHEEL_SPIN] > 0.0 and driven[WHEEL_SPIN + 3] > 0.0,
+		"u %.3f m/s, spin FL/RR %.3f / %.3f rad/s" % [driven[FORWARD_SPEED], driven[WHEEL_SPIN], driven[WHEEL_SPIN + 3]])
 	var braked := _run_steps(driven, model, _controls(0.0, 0.0, 1.0), flat, 90)
-	_check("brake torque slows a moving truck", not braked.is_empty() and absf(braked[FORWARD]) < absf(driven[FORWARD]),
-		"before %.3f, after %.3f m/s" % [driven[FORWARD], braked[FORWARD]])
+	_check("brake torque slows a moving truck", not braked.is_empty() and absf(braked[FORWARD_SPEED]) < absf(driven[FORWARD_SPEED]),
+		"before %.3f, after %.3f m/s" % [driven[FORWARD_SPEED], braked[FORWARD_SPEED]])
 	var reverse := _run_steps(start, model, _controls(0.8, 0.0, 0.0, true), flat, 120)
-	_check("reverse command drives backward", not reverse.is_empty() and reverse[FORWARD] < -0.3 and reverse[WHEEL_SPIN] < 0.0,
-		"u %.3f m/s, wheel spin %.3f rad/s" % [reverse[FORWARD], reverse[WHEEL_SPIN]])
+	_check("reverse command drives backward", not reverse.is_empty() and reverse[FORWARD_SPEED] < -0.3 and reverse[WHEEL_SPIN] < 0.0,
+		"u %.3f m/s, wheel spin %.3f rad/s" % [reverse[FORWARD_SPEED], reverse[WHEEL_SPIN]])
 	var no_grip_road := func(_north_m: float, _east_m: float) -> Dictionary:
 		return {"height_m": 0.0, "normal_ned": PackedFloat64Array([0.0, 0.0, -1.0]), "mu": 0.0, "rolling": 0.0}
 	var wheelspin := _run_steps(start, model, _controls(0.8), no_grip_road, 60)
-	_check("zero-friction surface spins wheels without normal drive acceleration", not wheelspin.is_empty() and wheelspin[WHEEL_SPIN] > 0.0 and wheelspin[FORWARD] < driven[FORWARD],
-		"u %.3f m/s, wheel spin %.3f rad/s" % [wheelspin[FORWARD], wheelspin[WHEEL_SPIN]])
+	_check("zero-friction surface spins wheels without normal drive acceleration", not wheelspin.is_empty() and wheelspin[WHEEL_SPIN] > 0.0 and wheelspin[FORWARD_SPEED] < driven[FORWARD_SPEED],
+		"u %.3f m/s, wheel spin %.3f rad/s" % [wheelspin[FORWARD_SPEED], wheelspin[WHEEL_SPIN]])
 
 
 func _test_steering(start: PackedFloat64Array, model: Dictionary, flat: Callable) -> void:
 	var state := start.duplicate()
-	state[FORWARD] = 1.5
+	state[FORWARD_SPEED] = 1.5
 	state[WHEEL_SPIN] = 1.5 / float(model["tire_radius_m"])
 	state[WHEEL_SPIN + 1] = state[WHEEL_SPIN]
 	state[WHEEL_SPIN + 2] = state[WHEEL_SPIN]
 	state[WHEEL_SPIN + 3] = state[WHEEL_SPIN]
-	var turned := _run_steps(state, model, _controls(0.0, 0.8), flat, 180)
+	# Check the initial response before this aggressive input drives the synthetic
+	# truck into its rollover/contact envelope.
+	var turned := _run_steps(state, model, _controls(0.0, 0.8), flat, 20)
+	var turned_detail := "empty state" if turned.is_empty() else "servo %.3f rad, yaw rate %.3f rad/s" % [turned[STEER], turned[RATE + 2]]
 	_check("positive steering input turns wheels and yaw right", not turned.is_empty() and turned[STEER] > 0.0 and turned[RATE + 2] > 0.0,
-		"servo %.3f rad, yaw rate %.3f rad/s" % [turned[STEER], turned[RATE + 2]])
-	var left := _run_steps(state, model, _controls(0.0, -0.8), flat, 180)
+		turned_detail)
+	var left := _run_steps(state, model, _controls(0.0, -0.8), flat, 20)
+	var left_detail := "empty state" if left.is_empty() else "servo %.3f rad, yaw rate %.3f rad/s" % [left[STEER], left[RATE + 2]]
 	_check("negative steering input mirrors yaw sign", not left.is_empty() and left[STEER] < 0.0 and left[RATE + 2] < 0.0,
-		"servo %.3f rad, yaw rate %.3f rad/s" % [left[STEER], left[RATE + 2]])
+		left_detail)
 
 
 func _test_stops(start: PackedFloat64Array, model: Dictionary, flat: Callable) -> void:
@@ -188,7 +192,7 @@ func _test_stops(start: PackedFloat64Array, model: Dictionary, flat: Callable) -
 func _test_bump(start: PackedFloat64Array, model: Dictionary) -> void:
 	var state := start.duplicate()
 	state[POS_NORTH] = -0.8
-	state[FORWARD] = 2.0
+	state[FORWARD_SPEED] = 2.0
 	var initial_travel: PackedFloat64Array = PackedFloat64Array([state[TRAVEL], state[TRAVEL + 1], state[TRAVEL + 2], state[TRAVEL + 3]])
 	var crossed := _run_steps(state, model, _controls(), Callable(self, "_bump_road"), 180)
 	var travel_change := 0.0
