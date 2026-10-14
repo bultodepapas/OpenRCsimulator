@@ -67,7 +67,7 @@ The GitHub Actions `app` job (`.github/workflows/ci.yml`) runs aircraft-schema c
 1. Review the selected diff and retain each step's proof under `docs/research/`; stage explicit paths in the shared checkout.
 2. Run the relevant app, offline-tool, schema/generator and capture checks. Build from an isolated Linux checkout with `app/export.sh`; it deletes and recreates the whole `dist/` directory, so do not keep unrelated files there.
 3. The export script takes no version argument. Add `docs/releases/<tag>.md`; a `vX.Y.Z` tag must match `app/project.godot`, while `git describe` supplies the full package/build identity.
-4. Push the reviewed commit and tag. CI runs app checks on pushes and pull requests; it exports on `main`, `v*` tags and manual dispatch. A `v*` tag publishes a GitHub prerelease after its own release notes pass.
+4. Push the reviewed commit and tag. CI runs app checks on pushes and pull requests; it exports on `main`, `v*` tags and manual dispatch. A `v*` tag publishes a GitHub release after its own release notes pass. Tags with a suffix (such as `-rc8`) are prereleases; numeric `vX.Y.Z` tags become the latest official release.
 5. Check the tagged workflow and verify the three ZIPs and `dist/SHA256SUMS`. Export smoke tests cover the Linux binary and structural pack checks; native OS, radio, GPU and pilot acceptance remain separate evidence.
 
 ## Radio diagnostics
