@@ -90,7 +90,87 @@ func _test_session(field_result: Dictionary, course: Dictionary) -> void:
 		_check("airfield session identity matches the bridge", session.identities_snapshot().course.sha256.length() == 64)
 		_check("runway-end reset uses the second airfield spawn", session.reset("runway_end")
 			and is_equal_approx(session.state_snapshot()[1], float(course.spawns[1].east_m)))
+		_test_checkpoint_identity_and_experiment(session, field_result)
 	session.free()
+	_test_drive_into_rough(field_result)
+
+
+func _test_checkpoint_identity_and_experiment(session, field_result: Dictionary) -> void:
+	var base_checkpoint: Dictionary = session.checkpoint()
+	var json_checkpoint: Variant = JSON.parse_string(JSON.stringify(base_checkpoint, "", true, true))
+	_check("airfield tick-zero checkpoint survives JSON byte roundtrip",
+		typeof(json_checkpoint) == TYPE_DICTIONARY and session.can_restore_checkpoint(json_checkpoint))
+	var before_roundtrip: PackedFloat64Array = session.state_snapshot()
+	_check("airfield JSON checkpoint restores the exact supported float64 state",
+		session.restore_checkpoint(json_checkpoint) and _arrays_equal(session.state_snapshot(), before_roundtrip))
+	var shifted_field: Dictionary = field_result.field.duplicate(true)
+	for surface: Dictionary in shifted_field.surfaces:
+		surface.center_north = float(surface.center_north) + 120.0
+		surface.center_east = float(surface.center_east) - 90.0
+	var foreign_session = Session.new()
+	var shifted_result := {"ok": true, "field": shifted_field}
+	_check("second airfield session prepares on a different field identity",
+		foreign_session.prepare_airfield(shifted_result))
+	if foreign_session.prepared:
+		var foreign_state: PackedFloat64Array = foreign_session.state_snapshot()
+		_check("checkpoint from a different field is rejected atomically",
+			not foreign_session.restore_checkpoint(base_checkpoint)
+			and _arrays_equal(foreign_session.state_snapshot(), foreign_state))
+	foreign_session.free()
+	var baseline_model_identity: Dictionary = session.identities_snapshot().model
+	_check("airfield suspension experiment prepares from immutable baseline",
+		session.set_experiment({"spring_scale": 1.05, "damper_scale": 1.0,
+			"gravity_scale": 1.0, "grip_scale": 1.0, "ballast_kg": 0.0,
+			"ballast_height_m": 0.03}))
+	_check("airfield experiment changes model identity and resets support",
+		session.identities_snapshot().model != baseline_model_identity
+		and session.tick == 0 and is_finite(session.state_snapshot()[2]))
+	var experiment_checkpoint: Dictionary = session.checkpoint()
+	var parsed_experiment_checkpoint: Variant = JSON.parse_string(JSON.stringify(experiment_checkpoint, "", true, true))
+	var experiment_state: PackedFloat64Array = session.state_snapshot()
+	_check("experiment checkpoint JSON roundtrip restores same airfield support",
+		typeof(parsed_experiment_checkpoint) == TYPE_DICTIONARY
+		and session.restore_checkpoint(parsed_experiment_checkpoint)
+		and _arrays_equal(session.state_snapshot(), experiment_state))
+	_check("experiment reset returns to a supported named runway spawn",
+		session.reset("start") and is_finite(session.state_snapshot()[2])
+		and is_equal_approx(session.state_snapshot()[0], 15.0))
+
+
+func _test_drive_into_rough(field_result: Dictionary) -> void:
+	var driver = Session.new()
+	_check("driving session prepares on the airfield", driver.prepare_airfield(field_result))
+	if not driver.prepared:
+		driver.free()
+		return
+	_check("drive starts at runway end", driver.reset("runway_end"))
+	var neutral := {"throttle": 0.0, "steering": 0.0, "brake": 0.0,
+		"reverse": false, "armed": true}
+	driver.tick_once(neutral)
+	_check("airfield session resumes after neutral arming", driver.resume())
+	for _tick in 2400:
+		var state: PackedFloat64Array = driver.state_snapshot()
+		var q := PackedFloat64Array([state[6], state[7], state[8], state[9]])
+		var yaw := M.q_to_euler(q)[0]
+		var steering := 1.0 if absf(yaw) > 0.35 else 0.0
+		var controls := {"throttle": 0.45, "steering": steering, "brake": 0.0,
+			"reverse": false, "armed": true}
+		if not driver.tick_once(controls) or driver.state_snapshot()[0] > 22.0:
+			break
+	var final_state: PackedFloat64Array = driver.state_snapshot()
+	var road: Dictionary = AirfieldCourse.sample(driver.course_snapshot(), final_state[0], final_state[1])
+	_check("short powered drive leaves runway and samples existing rough field", final_state[0] > 21.0
+		and road.surface_id == "rough")
+	driver.free()
+
+
+func _arrays_equal(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:
+	if left.size() != right.size():
+		return false
+	for index in left.size():
+		if left[index] != right[index]:
+			return false
+	return true
 
 
 func _test_lake(field_result: Dictionary) -> void:

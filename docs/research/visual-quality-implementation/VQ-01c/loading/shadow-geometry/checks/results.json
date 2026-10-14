@@ -1,0 +1,87 @@
+[
+  {
+    "name": "test_shadow_collection",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_shadow_collection.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "log_sha256": "2652c9e6af36c3162904fbc19c3dbad09beac69c020d5283f2da5aee3beeb83e"
+  },
+  {
+    "name": "test_projected_shadow",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_projected_shadow.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "log_sha256": "fc45f338a4676e2af7a58e35f9ecee9e339daf89adbd07c76c9f6cd465060b3d"
+  },
+  {
+    "name": "test_field_projected_shadows",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_projected_shadows.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "log_sha256": "4ba57287fc66e1c42988261a5908853352c4f6e905eabe1cb9990ed4881599de"
+  },
+  {
+    "name": "test_field_integration",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_integration.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "log_sha256": "5d71d3afd86c2127ff174e9fef5e4d52dceba274096c930ee273141fe15b0a0e"
+  },
+  {
+    "name": "test_world_presentation_context",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_world_presentation_context.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "log_sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e"
+  }
+]

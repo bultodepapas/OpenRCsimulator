@@ -1,0 +1,14 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-grass-selection\\source\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-shadow-geometry\\probe.gd",
+    "--",
+    "--directory=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-shadow-geometry"
+  ],
+  "exit_code": 0
+}

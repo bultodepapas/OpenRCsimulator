@@ -1,0 +1,50 @@
+[
+  {
+    "name": "test_shadow_collection",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_shadow_collection.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "log_sha256": "54b3be1165f1ac48c6089c49dcc39bf236dc69dd84912a4aeeeef79ff93234a2"
+  },
+  {
+    "name": "test_projected_shadow",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_projected_shadow.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "log_sha256": "1a5c3f0c21d14834fbd40636d80e4388085473fd44c9391f9dba6363d364324e"
+  },
+  {
+    "name": "test_field_projected_shadows",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_projected_shadows.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "warnings": [],
+    "log_sha256": "d80351f093b88d3811e2f2487fddc1add907e3bb190d10e42a8d3f05490fff0a"
+  }
+]

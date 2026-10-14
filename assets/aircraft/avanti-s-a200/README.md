@@ -56,10 +56,13 @@ python research/avanti-s/av06/derive_physics.py --check
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://tests/test_retractable_gear.gd
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://tests/test_retractable_gear_ground.gd
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://tests/test_retractable_gear_trace.gd
+& '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://tests/test_retractable_gear_input.gd
 python research/aircraft-standardization/conformance.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out .tools/av31-conformance --models-only
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --path app --script ../research/avanti-s/av31/capture.gd -- --out=C:/DEVELOPMENT/OpenRCsimulator/.tools/av31-new-captures
 ```
 
 Capture output must be fresh. Inspect the real rendered rest/full-travel views and turbine cutaway. Select **Ventage Jet** in the aircraft catalog, or launch with `-- --aircraft=sebart-avanti-s-a200-p100rx --quick-flight`. Source hash changes require regeneration of model manifests and Workshop descriptors; an already frozen trial refuses a changed visual dependency.
+
+For gear-specific captures, run `research/avanti-s/av09/capture_gear.gd` using the same Godot command and a fresh absolute `--out` directory. It captures accepted session fractions 0, 0.5 and 1, then nose steering; [AV-09](../../../docs/research/avanti-gear/AV-09/README.md) retains source and packaged results.
 
 For package qualification, use the project's full Windows export, retaining its external `openrc_ground_vehicle.dll` beside the executable. A bare `--export-pack` result omits that native sidecar: `conformance.py --package` must run with the matching DLL beside its Godot executable. AV-31's [package evidence](../../../docs/research/avanti-blender/AV-31/README.md#package-qualification) records both the initial omission and successful isolated reruns; the native dependency is shared by the project, not supplied by this aircraft.

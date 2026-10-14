@@ -173,7 +173,7 @@ for t in "$HERE"/tests/test_*.gd; do
     test_heli_session.gd) test_timeout=300 ;; # Actual preset hover, pilot-compensated landing and checkpoint replay.
     test_failure_session.gd|test_failure_shutdown.gd) test_timeout=180 ;; # EM: real 20-second onsets at 240 Hz, fleet parity and replay
     test_failure_routes.gd) test_timeout=180 ;; # EM: two complete flights and Home/Pause transitions
-    test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd) test_timeout=300 ;;
+    test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_airfield_course.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd) test_timeout=300 ;;
     test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"

@@ -1,0 +1,22 @@
+--- a/app/render/projected_shadow.gd
++++ b/app/render/projected_shadow.gd
+@@ -39,11 +39,15 @@
+ 			node = node.get_parent()
+ 		if not include:
+ 			continue
+-		var faces := mi.mesh.get_faces()
++		var faces: PackedVector3Array = transform * mi.mesh.get_faces()
++		# Aircraft collection has no height cutoff; preserve the packed face order.
++		if min_height == -INF:
++			vertices.append_array(faces)
++			continue
+ 		for first in range(0, faces.size(), 3):
+-			var a := transform * faces[first]
+-			var b := transform * faces[first + 1]
+-			var c := transform * faces[first + 2]
++			var a := faces[first]
++			var b := faces[first + 1]
++			var c := faces[first + 2]
+ 			if maxf(a.y, maxf(b.y, c.y)) <= min_height:
+ 				continue # static receivers must not recast their ground/pad polygons
+ 			vertices.append(a)

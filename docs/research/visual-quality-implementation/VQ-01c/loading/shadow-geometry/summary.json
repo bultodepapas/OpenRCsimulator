@@ -1,0 +1,275 @@
+{
+  "warm_samples_per_variant_workload": 15,
+  "reports": 3,
+  "exact_pairs": 1206,
+  "field_collect_55_meshes_aggregate_median_usec": {
+    "reference": 15150,
+    "candidate": 14495
+  },
+  "workloads": [
+    {
+      "workload": "aircraft:gp-extra-300s-60",
+      "median_usec": {
+        "reference": 4387,
+        "candidate": 1881
+      },
+      "reduction_pct": 57.12331889674037,
+      "run_medians_usec": [
+        {
+          "reference": 5198,
+          "candidate": 1941
+        },
+        {
+          "reference": 3878,
+          "candidate": 1520
+        },
+        {
+          "reference": 5030,
+          "candidate": 1906
+        }
+      ]
+    },
+    {
+      "workload": "aircraft:jensen-das-ugly-stik-60",
+      "median_usec": {
+        "reference": 14315,
+        "candidate": 7048
+      },
+      "reduction_pct": 50.76493188962626,
+      "run_medians_usec": [
+        {
+          "reference": 14515,
+          "candidate": 7256
+        },
+        {
+          "reference": 13120,
+          "candidate": 6047
+        },
+        {
+          "reference": 17556,
+          "candidate": 7989
+        }
+      ]
+    },
+    {
+      "workload": "aircraft:p51d-mustang-120",
+      "median_usec": {
+        "reference": 15545,
+        "candidate": 6848
+      },
+      "reduction_pct": 55.947249919588295,
+      "run_medians_usec": [
+        {
+          "reference": 23736,
+          "candidate": 11265
+        },
+        {
+          "reference": 12282,
+          "candidate": 5889
+        },
+        {
+          "reference": 15545,
+          "candidate": 6848
+        }
+      ]
+    },
+    {
+      "workload": "aircraft:sebart-avanti-s-a200-p100rx",
+      "median_usec": {
+        "reference": 1547,
+        "candidate": 644
+      },
+      "reduction_pct": 58.37104072398189,
+      "run_medians_usec": [
+        {
+          "reference": 1707,
+          "candidate": 965
+        },
+        {
+          "reference": 1546,
+          "candidate": 608
+        },
+        {
+          "reference": 1547,
+          "candidate": 548
+        }
+      ]
+    },
+    {
+      "workload": "aircraft:turbo-lumber-evolution",
+      "median_usec": {
+        "reference": 10976,
+        "candidate": 5062
+      },
+      "reduction_pct": 53.88119533527696,
+      "run_medians_usec": [
+        {
+          "reference": 10760,
+          "candidate": 5062
+        },
+        {
+          "reference": 9485,
+          "candidate": 4067
+        },
+        {
+          "reference": 12308,
+          "candidate": 6684
+        }
+      ]
+    },
+    {
+      "workload": "aircraft:xcell-60-research",
+      "median_usec": {
+        "reference": 30246,
+        "candidate": 15052
+      },
+      "reduction_pct": 50.23474178403755,
+      "run_medians_usec": [
+        {
+          "reference": 32614,
+          "candidate": 16001
+        },
+        {
+          "reference": 23567,
+          "candidate": 10647
+        },
+        {
+          "reference": 30246,
+          "candidate": 15052
+        }
+      ]
+    },
+    {
+      "workload": "bind:gp-extra-300s-60",
+      "median_usec": {
+        "reference": 10183,
+        "candidate": 7558
+      },
+      "reduction_pct": 25.778257880781695,
+      "run_medians_usec": [
+        {
+          "reference": 10315,
+          "candidate": 7479
+        },
+        {
+          "reference": 10149,
+          "candidate": 7647
+        },
+        {
+          "reference": 10192,
+          "candidate": 7475
+        }
+      ]
+    },
+    {
+      "workload": "bind:jensen-das-ugly-stik-60",
+      "median_usec": {
+        "reference": 17928,
+        "candidate": 10990
+      },
+      "reduction_pct": 38.69924141008478,
+      "run_medians_usec": [
+        {
+          "reference": 16287,
+          "candidate": 9941
+        },
+        {
+          "reference": 17589,
+          "candidate": 11680
+        },
+        {
+          "reference": 22377,
+          "candidate": 12921
+        }
+      ]
+    },
+    {
+      "workload": "bind:p51d-mustang-120",
+      "median_usec": {
+        "reference": 21367,
+        "candidate": 11948
+      },
+      "reduction_pct": 44.08199560069266,
+      "run_medians_usec": [
+        {
+          "reference": 25891,
+          "candidate": 14398
+        },
+        {
+          "reference": 17840,
+          "candidate": 10418
+        },
+        {
+          "reference": 21367,
+          "candidate": 11948
+        }
+      ]
+    },
+    {
+      "workload": "bind:sebart-avanti-s-a200-p100rx",
+      "median_usec": {
+        "reference": 7631,
+        "candidate": 6474
+      },
+      "reduction_pct": 15.1618398637138,
+      "run_medians_usec": [
+        {
+          "reference": 8317,
+          "candidate": 6380
+        },
+        {
+          "reference": 6733,
+          "candidate": 5937
+        },
+        {
+          "reference": 7581,
+          "candidate": 6788
+        }
+      ]
+    },
+    {
+      "workload": "bind:turbo-lumber-evolution",
+      "median_usec": {
+        "reference": 15198,
+        "candidate": 10255
+      },
+      "reduction_pct": 32.524016317936564,
+      "run_medians_usec": [
+        {
+          "reference": 15198,
+          "candidate": 10001
+        },
+        {
+          "reference": 14476,
+          "candidate": 9330
+        },
+        {
+          "reference": 19440,
+          "candidate": 10768
+        }
+      ]
+    },
+    {
+      "workload": "bind:xcell-60-research",
+      "median_usec": {
+        "reference": 32810,
+        "candidate": 16130
+      },
+      "reduction_pct": 50.83815909783602,
+      "run_medians_usec": [
+        {
+          "reference": 32810,
+          "candidate": 15912
+        },
+        {
+          "reference": 27553,
+          "candidate": 14638
+        },
+        {
+          "reference": 36346,
+          "candidate": 19301
+        }
+      ]
+    }
+  ]
+}

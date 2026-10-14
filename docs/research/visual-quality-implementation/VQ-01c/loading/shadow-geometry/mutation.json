@@ -1,0 +1,17 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-grass-selection\\source\\app",
+    "--audio-driver",
+    "Dummy",
+    "--headless",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-shadow-geometry\\test_shadow_collection.gd",
+    "--",
+    "--collector=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-shadow-geometry\\mutation.gd"
+  ],
+  "exit_code": 1,
+  "detected": true,
+  "expected_failure": true
+}

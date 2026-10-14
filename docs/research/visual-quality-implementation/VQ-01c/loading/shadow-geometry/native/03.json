@@ -1,0 +1,5576 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"failures": [],
+	"pairs": 402,
+	"samples": [
+		{
+			"pair": 0,
+			"triangles": 49716,
+			"usec": 39288,
+			"variant": "reference",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 0,
+			"triangles": 49716,
+			"usec": 8661,
+			"variant": "candidate",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 1,
+			"triangles": 49716,
+			"usec": 9173,
+			"variant": "candidate",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 1,
+			"triangles": 49716,
+			"usec": 14275,
+			"variant": "reference",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 2,
+			"triangles": 49716,
+			"usec": 17556,
+			"variant": "reference",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 2,
+			"triangles": 49716,
+			"usec": 7989,
+			"variant": "candidate",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 3,
+			"triangles": 49716,
+			"usec": 6587,
+			"variant": "candidate",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 3,
+			"triangles": 49716,
+			"usec": 20594,
+			"variant": "reference",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 4,
+			"triangles": 49716,
+			"usec": 16207,
+			"variant": "reference",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 4,
+			"triangles": 49716,
+			"usec": 8341,
+			"variant": "candidate",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 5,
+			"triangles": 49716,
+			"usec": 7731,
+			"variant": "candidate",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 5,
+			"triangles": 49716,
+			"usec": 19108,
+			"variant": "reference",
+			"workload": "aircraft:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 0,
+			"usec": 22936,
+			"variant": "reference",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 0,
+			"usec": 14759,
+			"variant": "candidate",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 1,
+			"usec": 12921,
+			"variant": "candidate",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 1,
+			"usec": 21259,
+			"variant": "reference",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 2,
+			"usec": 24917,
+			"variant": "reference",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 2,
+			"usec": 14631,
+			"variant": "candidate",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 3,
+			"usec": 13566,
+			"variant": "candidate",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 3,
+			"usec": 22509,
+			"variant": "reference",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 4,
+			"usec": 22377,
+			"variant": "reference",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 4,
+			"usec": 12379,
+			"variant": "candidate",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 5,
+			"usec": 10990,
+			"variant": "candidate",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 5,
+			"usec": 21857,
+			"variant": "reference",
+			"workload": "bind:jensen-das-ugly-stik-60"
+		},
+		{
+			"pair": 0,
+			"triangles": 16538,
+			"usec": 10521,
+			"variant": "reference",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 0,
+			"triangles": 16538,
+			"usec": 1590,
+			"variant": "candidate",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 1,
+			"triangles": 16538,
+			"usec": 1447,
+			"variant": "candidate",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 1,
+			"triangles": 16538,
+			"usec": 3783,
+			"variant": "reference",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 2,
+			"triangles": 16538,
+			"usec": 3547,
+			"variant": "reference",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 2,
+			"triangles": 16538,
+			"usec": 1586,
+			"variant": "candidate",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 3,
+			"triangles": 16538,
+			"usec": 1906,
+			"variant": "candidate",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 3,
+			"triangles": 16538,
+			"usec": 5030,
+			"variant": "reference",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 4,
+			"triangles": 16538,
+			"usec": 5474,
+			"variant": "reference",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 4,
+			"triangles": 16538,
+			"usec": 2566,
+			"variant": "candidate",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 5,
+			"triangles": 16538,
+			"usec": 2591,
+			"variant": "candidate",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 5,
+			"triangles": 16538,
+			"usec": 5550,
+			"variant": "reference",
+			"workload": "aircraft:gp-extra-300s-60"
+		},
+		{
+			"pair": 0,
+			"usec": 9019,
+			"variant": "reference",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 0,
+			"usec": 7822,
+			"variant": "candidate",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 1,
+			"usec": 13297,
+			"variant": "candidate",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 1,
+			"usec": 11429,
+			"variant": "reference",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 2,
+			"usec": 11471,
+			"variant": "reference",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 2,
+			"usec": 7219,
+			"variant": "candidate",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 3,
+			"usec": 7475,
+			"variant": "candidate",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 3,
+			"usec": 10192,
+			"variant": "reference",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 4,
+			"usec": 9856,
+			"variant": "reference",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 4,
+			"usec": 10475,
+			"variant": "candidate",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 5,
+			"usec": 6579,
+			"variant": "candidate",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 5,
+			"usec": 9016,
+			"variant": "reference",
+			"workload": "bind:gp-extra-300s-60"
+		},
+		{
+			"pair": 0,
+			"triangles": 5892,
+			"usec": 5075,
+			"variant": "reference",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 0,
+			"triangles": 5892,
+			"usec": 927,
+			"variant": "candidate",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 1,
+			"triangles": 5892,
+			"usec": 897,
+			"variant": "candidate",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 1,
+			"triangles": 5892,
+			"usec": 2005,
+			"variant": "reference",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 2,
+			"triangles": 5892,
+			"usec": 1547,
+			"variant": "reference",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 2,
+			"triangles": 5892,
+			"usec": 546,
+			"variant": "candidate",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 3,
+			"triangles": 5892,
+			"usec": 548,
+			"variant": "candidate",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 3,
+			"triangles": 5892,
+			"usec": 1249,
+			"variant": "reference",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 4,
+			"triangles": 5892,
+			"usec": 1263,
+			"variant": "reference",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 4,
+			"triangles": 5892,
+			"usec": 533,
+			"variant": "candidate",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 5,
+			"triangles": 5892,
+			"usec": 618,
+			"variant": "candidate",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 5,
+			"triangles": 5892,
+			"usec": 1987,
+			"variant": "reference",
+			"workload": "aircraft:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 0,
+			"usec": 7255,
+			"variant": "reference",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 0,
+			"usec": 6207,
+			"variant": "candidate",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 1,
+			"usec": 6491,
+			"variant": "candidate",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 1,
+			"usec": 7512,
+			"variant": "reference",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 2,
+			"usec": 7311,
+			"variant": "reference",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 2,
+			"usec": 6242,
+			"variant": "candidate",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 3,
+			"usec": 8549,
+			"variant": "candidate",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 3,
+			"usec": 8172,
+			"variant": "reference",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 4,
+			"usec": 7854,
+			"variant": "reference",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 4,
+			"usec": 8874,
+			"variant": "candidate",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 5,
+			"usec": 6788,
+			"variant": "candidate",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 5,
+			"usec": 7581,
+			"variant": "reference",
+			"workload": "bind:sebart-avanti-s-a200-p100rx"
+		},
+		{
+			"pair": 0,
+			"triangles": 46293,
+			"usec": 38952,
+			"variant": "reference",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 0,
+			"triangles": 46293,
+			"usec": 7488,
+			"variant": "candidate",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 1,
+			"triangles": 46293,
+			"usec": 9129,
+			"variant": "candidate",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 1,
+			"triangles": 46293,
+			"usec": 13118,
+			"variant": "reference",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 2,
+			"triangles": 46293,
+			"usec": 18041,
+			"variant": "reference",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 2,
+			"triangles": 46293,
+			"usec": 6848,
+			"variant": "candidate",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 3,
+			"triangles": 46293,
+			"usec": 5752,
+			"variant": "candidate",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 3,
+			"triangles": 46293,
+			"usec": 17610,
+			"variant": "reference",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 4,
+			"triangles": 46293,
+			"usec": 15545,
+			"variant": "reference",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 4,
+			"triangles": 46293,
+			"usec": 8682,
+			"variant": "candidate",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 5,
+			"triangles": 46293,
+			"usec": 6047,
+			"variant": "candidate",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 5,
+			"triangles": 46293,
+			"usec": 14686,
+			"variant": "reference",
+			"workload": "aircraft:p51d-mustang-120"
+		},
+		{
+			"pair": 0,
+			"usec": 18600,
+			"variant": "reference",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 0,
+			"usec": 12958,
+			"variant": "candidate",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 1,
+			"usec": 11178,
+			"variant": "candidate",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 1,
+			"usec": 21293,
+			"variant": "reference",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 2,
+			"usec": 20398,
+			"variant": "reference",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 2,
+			"usec": 12401,
+			"variant": "candidate",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 3,
+			"usec": 13640,
+			"variant": "candidate",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 3,
+			"usec": 23181,
+			"variant": "reference",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 4,
+			"usec": 25301,
+			"variant": "reference",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 4,
+			"usec": 10976,
+			"variant": "candidate",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 5,
+			"usec": 11948,
+			"variant": "candidate",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 5,
+			"usec": 21367,
+			"variant": "reference",
+			"workload": "bind:p51d-mustang-120"
+		},
+		{
+			"pair": 0,
+			"triangles": 38939,
+			"usec": 30217,
+			"variant": "reference",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 0,
+			"triangles": 38939,
+			"usec": 4584,
+			"variant": "candidate",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 1,
+			"triangles": 38939,
+			"usec": 6718,
+			"variant": "candidate",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 1,
+			"triangles": 38939,
+			"usec": 12133,
+			"variant": "reference",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 2,
+			"triangles": 38939,
+			"usec": 14378,
+			"variant": "reference",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 2,
+			"triangles": 38939,
+			"usec": 6733,
+			"variant": "candidate",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 3,
+			"triangles": 38939,
+			"usec": 5061,
+			"variant": "candidate",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 3,
+			"triangles": 38939,
+			"usec": 12308,
+			"variant": "reference",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 4,
+			"triangles": 38939,
+			"usec": 13923,
+			"variant": "reference",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 4,
+			"triangles": 38939,
+			"usec": 6084,
+			"variant": "candidate",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 5,
+			"triangles": 38939,
+			"usec": 6684,
+			"variant": "candidate",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 5,
+			"triangles": 38939,
+			"usec": 12204,
+			"variant": "reference",
+			"workload": "aircraft:turbo-lumber-evolution"
+		},
+		{
+			"pair": 0,
+			"usec": 15415,
+			"variant": "reference",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 0,
+			"usec": 12687,
+			"variant": "candidate",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 1,
+			"usec": 10529,
+			"variant": "candidate",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 1,
+			"usec": 26484,
+			"variant": "reference",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 2,
+			"usec": 19080,
+			"variant": "reference",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 2,
+			"usec": 14209,
+			"variant": "candidate",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 3,
+			"usec": 10255,
+			"variant": "candidate",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 3,
+			"usec": 21991,
+			"variant": "reference",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 4,
+			"usec": 19440,
+			"variant": "reference",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 4,
+			"usec": 11351,
+			"variant": "candidate",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 5,
+			"usec": 10768,
+			"variant": "candidate",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 5,
+			"usec": 17443,
+			"variant": "reference",
+			"workload": "bind:turbo-lumber-evolution"
+		},
+		{
+			"pair": 0,
+			"triangles": 95320,
+			"usec": 71670,
+			"variant": "reference",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 0,
+			"triangles": 95320,
+			"usec": 13417,
+			"variant": "candidate",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 1,
+			"triangles": 95320,
+			"usec": 15052,
+			"variant": "candidate",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 1,
+			"triangles": 95320,
+			"usec": 30671,
+			"variant": "reference",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 2,
+			"triangles": 95320,
+			"usec": 30246,
+			"variant": "reference",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 2,
+			"triangles": 95320,
+			"usec": 14096,
+			"variant": "candidate",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 3,
+			"triangles": 95320,
+			"usec": 16403,
+			"variant": "candidate",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 3,
+			"triangles": 95320,
+			"usec": 29506,
+			"variant": "reference",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 4,
+			"triangles": 95320,
+			"usec": 27719,
+			"variant": "reference",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 4,
+			"triangles": 95320,
+			"usec": 11419,
+			"variant": "candidate",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 5,
+			"triangles": 95320,
+			"usec": 15062,
+			"variant": "candidate",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 5,
+			"triangles": 95320,
+			"usec": 31451,
+			"variant": "reference",
+			"workload": "aircraft:xcell-60-research"
+		},
+		{
+			"pair": 0,
+			"usec": 33258,
+			"variant": "reference",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 0,
+			"usec": 21398,
+			"variant": "candidate",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 1,
+			"usec": 16780,
+			"variant": "candidate",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 1,
+			"usec": 35965,
+			"variant": "reference",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 2,
+			"usec": 36407,
+			"variant": "reference",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 2,
+			"usec": 19235,
+			"variant": "candidate",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 3,
+			"usec": 20120,
+			"variant": "candidate",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 3,
+			"usec": 36346,
+			"variant": "reference",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 4,
+			"usec": 37611,
+			"variant": "reference",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 4,
+			"usec": 19922,
+			"variant": "candidate",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 5,
+			"usec": 19301,
+			"variant": "candidate",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 5,
+			"usec": 32913,
+			"variant": "reference",
+			"workload": "bind:xcell-60-research"
+		},
+		{
+			"pair": 0,
+			"triangles": 184,
+			"usec": 123,
+			"variant": "reference",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 0,
+			"triangles": 184,
+			"usec": 102,
+			"variant": "candidate",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 1,
+			"triangles": 184,
+			"usec": 83,
+			"variant": "candidate",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 1,
+			"triangles": 184,
+			"usec": 83,
+			"variant": "reference",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 2,
+			"triangles": 184,
+			"usec": 83,
+			"variant": "reference",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 2,
+			"triangles": 184,
+			"usec": 78,
+			"variant": "candidate",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 3,
+			"triangles": 184,
+			"usec": 90,
+			"variant": "candidate",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 3,
+			"triangles": 184,
+			"usec": 82,
+			"variant": "reference",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 4,
+			"triangles": 184,
+			"usec": 82,
+			"variant": "reference",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 4,
+			"triangles": 184,
+			"usec": 74,
+			"variant": "candidate",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 5,
+			"triangles": 184,
+			"usec": 71,
+			"variant": "candidate",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 5,
+			"triangles": 184,
+			"usec": 75,
+			"variant": "reference",
+			"workload": "field:cell_-2_-1"
+		},
+		{
+			"pair": 0,
+			"triangles": 8434,
+			"usec": 2853,
+			"variant": "reference",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 0,
+			"triangles": 8434,
+			"usec": 2627,
+			"variant": "candidate",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 1,
+			"triangles": 8434,
+			"usec": 2309,
+			"variant": "candidate",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 1,
+			"triangles": 8434,
+			"usec": 2932,
+			"variant": "reference",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 2,
+			"triangles": 8434,
+			"usec": 2598,
+			"variant": "reference",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 2,
+			"triangles": 8434,
+			"usec": 2417,
+			"variant": "candidate",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 3,
+			"triangles": 8434,
+			"usec": 2406,
+			"variant": "candidate",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 3,
+			"triangles": 8434,
+			"usec": 2363,
+			"variant": "reference",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 4,
+			"triangles": 8434,
+			"usec": 2175,
+			"variant": "reference",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 4,
+			"triangles": 8434,
+			"usec": 1675,
+			"variant": "candidate",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 5,
+			"triangles": 8434,
+			"usec": 2176,
+			"variant": "candidate",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 5,
+			"triangles": 8434,
+			"usec": 2303,
+			"variant": "reference",
+			"workload": "field:cell_-1_-1"
+		},
+		{
+			"pair": 0,
+			"triangles": 8353,
+			"usec": 1737,
+			"variant": "reference",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 0,
+			"triangles": 8353,
+			"usec": 2064,
+			"variant": "candidate",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 1,
+			"triangles": 8353,
+			"usec": 2266,
+			"variant": "candidate",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 1,
+			"triangles": 8353,
+			"usec": 1924,
+			"variant": "reference",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 2,
+			"triangles": 8353,
+			"usec": 1842,
+			"variant": "reference",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 2,
+			"triangles": 8353,
+			"usec": 2114,
+			"variant": "candidate",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 3,
+			"triangles": 8353,
+			"usec": 2541,
+			"variant": "candidate",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 3,
+			"triangles": 8353,
+			"usec": 2029,
+			"variant": "reference",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 4,
+			"triangles": 8353,
+			"usec": 2296,
+			"variant": "reference",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 4,
+			"triangles": 8353,
+			"usec": 2533,
+			"variant": "candidate",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 5,
+			"triangles": 8353,
+			"usec": 1842,
+			"variant": "candidate",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 5,
+			"triangles": 8353,
+			"usec": 2205,
+			"variant": "reference",
+			"workload": "field:cell_-1_0"
+		},
+		{
+			"pair": 0,
+			"triangles": 184,
+			"usec": 189,
+			"variant": "reference",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 0,
+			"triangles": 184,
+			"usec": 59,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 1,
+			"triangles": 184,
+			"usec": 52,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 1,
+			"triangles": 184,
+			"usec": 62,
+			"variant": "reference",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 2,
+			"triangles": 184,
+			"usec": 76,
+			"variant": "reference",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 2,
+			"triangles": 184,
+			"usec": 74,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 3,
+			"triangles": 184,
+			"usec": 69,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 3,
+			"triangles": 184,
+			"usec": 69,
+			"variant": "reference",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 4,
+			"triangles": 184,
+			"usec": 72,
+			"variant": "reference",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 4,
+			"triangles": 184,
+			"usec": 66,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 5,
+			"triangles": 184,
+			"usec": 69,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 5,
+			"triangles": 184,
+			"usec": 69,
+			"variant": "reference",
+			"workload": "field:cell_-1_7"
+		},
+		{
+			"pair": 0,
+			"triangles": 1906,
+			"usec": 1597,
+			"variant": "reference",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 0,
+			"triangles": 1906,
+			"usec": 601,
+			"variant": "candidate",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 1,
+			"triangles": 1906,
+			"usec": 604,
+			"variant": "candidate",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 1,
+			"triangles": 1906,
+			"usec": 639,
+			"variant": "reference",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 2,
+			"triangles": 1906,
+			"usec": 648,
+			"variant": "reference",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 2,
+			"triangles": 1906,
+			"usec": 610,
+			"variant": "candidate",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 3,
+			"triangles": 1906,
+			"usec": 615,
+			"variant": "candidate",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 3,
+			"triangles": 1906,
+			"usec": 616,
+			"variant": "reference",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 4,
+			"triangles": 1906,
+			"usec": 598,
+			"variant": "reference",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 4,
+			"triangles": 1906,
+			"usec": 601,
+			"variant": "candidate",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 5,
+			"triangles": 1906,
+			"usec": 527,
+			"variant": "candidate",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 5,
+			"triangles": 1906,
+			"usec": 549,
+			"variant": "reference",
+			"workload": "field:cell_-1_8"
+		},
+		{
+			"pair": 0,
+			"triangles": 534,
+			"usec": 340,
+			"variant": "reference",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 0,
+			"triangles": 534,
+			"usec": 151,
+			"variant": "candidate",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 1,
+			"triangles": 534,
+			"usec": 177,
+			"variant": "candidate",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 1,
+			"triangles": 534,
+			"usec": 192,
+			"variant": "reference",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 2,
+			"triangles": 534,
+			"usec": 188,
+			"variant": "reference",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 2,
+			"triangles": 534,
+			"usec": 188,
+			"variant": "candidate",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 3,
+			"triangles": 534,
+			"usec": 187,
+			"variant": "candidate",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 3,
+			"triangles": 534,
+			"usec": 183,
+			"variant": "reference",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 4,
+			"triangles": 534,
+			"usec": 177,
+			"variant": "reference",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 4,
+			"triangles": 534,
+			"usec": 212,
+			"variant": "candidate",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 5,
+			"triangles": 534,
+			"usec": 196,
+			"variant": "candidate",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 5,
+			"triangles": 534,
+			"usec": 202,
+			"variant": "reference",
+			"workload": "field:cell_-1_9"
+		},
+		{
+			"pair": 0,
+			"triangles": 0,
+			"usec": 1904,
+			"variant": "reference",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 0,
+			"triangles": 0,
+			"usec": 329,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 1,
+			"triangles": 0,
+			"usec": 321,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 1,
+			"triangles": 0,
+			"usec": 359,
+			"variant": "reference",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 2,
+			"triangles": 0,
+			"usec": 491,
+			"variant": "reference",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 2,
+			"triangles": 0,
+			"usec": 480,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 3,
+			"triangles": 0,
+			"usec": 474,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 3,
+			"triangles": 0,
+			"usec": 364,
+			"variant": "reference",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 4,
+			"triangles": 0,
+			"usec": 370,
+			"variant": "reference",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 4,
+			"triangles": 0,
+			"usec": 434,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 5,
+			"triangles": 0,
+			"usec": 474,
+			"variant": "candidate",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 5,
+			"triangles": 0,
+			"usec": 528,
+			"variant": "reference",
+			"workload": "field:cell_-1_7776"
+		},
+		{
+			"pair": 0,
+			"triangles": 1862,
+			"usec": 1339,
+			"variant": "reference",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 0,
+			"triangles": 1862,
+			"usec": 516,
+			"variant": "candidate",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 1,
+			"triangles": 1862,
+			"usec": 417,
+			"variant": "candidate",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 1,
+			"triangles": 1862,
+			"usec": 442,
+			"variant": "reference",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 2,
+			"triangles": 1862,
+			"usec": 464,
+			"variant": "reference",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 2,
+			"triangles": 1862,
+			"usec": 399,
+			"variant": "candidate",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 3,
+			"triangles": 1862,
+			"usec": 547,
+			"variant": "candidate",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 3,
+			"triangles": 1862,
+			"usec": 613,
+			"variant": "reference",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 4,
+			"triangles": 1862,
+			"usec": 483,
+			"variant": "reference",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 4,
+			"triangles": 1862,
+			"usec": 386,
+			"variant": "candidate",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 5,
+			"triangles": 1862,
+			"usec": 500,
+			"variant": "candidate",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 5,
+			"triangles": 1862,
+			"usec": 601,
+			"variant": "reference",
+			"workload": "field:cell_0_8"
+		},
+		{
+			"pair": 0,
+			"triangles": 2074,
+			"usec": 1773,
+			"variant": "reference",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 0,
+			"triangles": 2074,
+			"usec": 678,
+			"variant": "candidate",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 1,
+			"triangles": 2074,
+			"usec": 668,
+			"variant": "candidate",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 1,
+			"triangles": 2074,
+			"usec": 692,
+			"variant": "reference",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 2,
+			"triangles": 2074,
+			"usec": 697,
+			"variant": "reference",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 2,
+			"triangles": 2074,
+			"usec": 664,
+			"variant": "candidate",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 3,
+			"triangles": 2074,
+			"usec": 459,
+			"variant": "candidate",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 3,
+			"triangles": 2074,
+			"usec": 516,
+			"variant": "reference",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 4,
+			"triangles": 2074,
+			"usec": 670,
+			"variant": "reference",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 4,
+			"triangles": 2074,
+			"usec": 598,
+			"variant": "candidate",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 5,
+			"triangles": 2074,
+			"usec": 425,
+			"variant": "candidate",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 5,
+			"triangles": 2074,
+			"usec": 458,
+			"variant": "reference",
+			"workload": "field:cell_0_9"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 115,
+			"variant": "reference",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 30,
+			"variant": "candidate",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 27,
+			"variant": "candidate",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 26,
+			"variant": "reference",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 26,
+			"variant": "reference",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 23,
+			"variant": "candidate",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 25,
+			"variant": "candidate",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 42,
+			"variant": "reference",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 35,
+			"variant": "reference",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 26,
+			"variant": "candidate",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 25,
+			"variant": "candidate",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 31,
+			"variant": "reference",
+			"workload": "field:cell_1_1"
+		},
+		{
+			"pair": 0,
+			"triangles": 168,
+			"usec": 176,
+			"variant": "reference",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 168,
+			"usec": 76,
+			"variant": "candidate",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 168,
+			"usec": 76,
+			"variant": "candidate",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 168,
+			"usec": 77,
+			"variant": "reference",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 168,
+			"usec": 77,
+			"variant": "reference",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 168,
+			"usec": 74,
+			"variant": "candidate",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 168,
+			"usec": 73,
+			"variant": "candidate",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 168,
+			"usec": 73,
+			"variant": "reference",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 168,
+			"usec": 65,
+			"variant": "reference",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 168,
+			"usec": 61,
+			"variant": "candidate",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 168,
+			"usec": 64,
+			"variant": "candidate",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 168,
+			"usec": 62,
+			"variant": "reference",
+			"workload": "field:cell_1_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 67,
+			"variant": "reference",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 25,
+			"variant": "candidate",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 28,
+			"variant": "candidate",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 30,
+			"variant": "reference",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 27,
+			"variant": "reference",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 27,
+			"variant": "candidate",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 31,
+			"variant": "candidate",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 27,
+			"variant": "reference",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 27,
+			"variant": "reference",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 25,
+			"variant": "candidate",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 42,
+			"variant": "candidate",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 47,
+			"variant": "reference",
+			"workload": "field:cell_1_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 690,
+			"usec": 547,
+			"variant": "reference",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 0,
+			"triangles": 690,
+			"usec": 218,
+			"variant": "candidate",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 1,
+			"triangles": 690,
+			"usec": 220,
+			"variant": "candidate",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 1,
+			"triangles": 690,
+			"usec": 238,
+			"variant": "reference",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 2,
+			"triangles": 690,
+			"usec": 253,
+			"variant": "reference",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 2,
+			"triangles": 690,
+			"usec": 243,
+			"variant": "candidate",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 3,
+			"triangles": 690,
+			"usec": 156,
+			"variant": "candidate",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 3,
+			"triangles": 690,
+			"usec": 156,
+			"variant": "reference",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 4,
+			"triangles": 690,
+			"usec": 156,
+			"variant": "reference",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 4,
+			"triangles": 690,
+			"usec": 147,
+			"variant": "candidate",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 5,
+			"triangles": 690,
+			"usec": 153,
+			"variant": "candidate",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 5,
+			"triangles": 690,
+			"usec": 202,
+			"variant": "reference",
+			"workload": "field:cell_1_8"
+		},
+		{
+			"pair": 0,
+			"triangles": 476,
+			"usec": 395,
+			"variant": "reference",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 0,
+			"triangles": 476,
+			"usec": 157,
+			"variant": "candidate",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 1,
+			"triangles": 476,
+			"usec": 157,
+			"variant": "candidate",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 1,
+			"triangles": 476,
+			"usec": 162,
+			"variant": "reference",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 2,
+			"triangles": 476,
+			"usec": 162,
+			"variant": "reference",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 2,
+			"triangles": 476,
+			"usec": 156,
+			"variant": "candidate",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 3,
+			"triangles": 476,
+			"usec": 106,
+			"variant": "candidate",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 3,
+			"triangles": 476,
+			"usec": 109,
+			"variant": "reference",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 4,
+			"triangles": 476,
+			"usec": 109,
+			"variant": "reference",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 4,
+			"triangles": 476,
+			"usec": 103,
+			"variant": "candidate",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 5,
+			"triangles": 476,
+			"usec": 103,
+			"variant": "candidate",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 5,
+			"triangles": 476,
+			"usec": 108,
+			"variant": "reference",
+			"workload": "field:cell_1_9"
+		},
+		{
+			"pair": 0,
+			"triangles": 252,
+			"usec": 161,
+			"variant": "reference",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 252,
+			"usec": 59,
+			"variant": "candidate",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 252,
+			"usec": 58,
+			"variant": "candidate",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 252,
+			"usec": 59,
+			"variant": "reference",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 252,
+			"usec": 59,
+			"variant": "reference",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 252,
+			"usec": 57,
+			"variant": "candidate",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 252,
+			"usec": 66,
+			"variant": "candidate",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 252,
+			"usec": 63,
+			"variant": "reference",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 252,
+			"usec": 60,
+			"variant": "reference",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 252,
+			"usec": 57,
+			"variant": "candidate",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 252,
+			"usec": 93,
+			"variant": "candidate",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 252,
+			"usec": 102,
+			"variant": "reference",
+			"workload": "field:cell_2_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 168,
+			"usec": 183,
+			"variant": "reference",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 0,
+			"triangles": 168,
+			"usec": 71,
+			"variant": "candidate",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 1,
+			"triangles": 168,
+			"usec": 70,
+			"variant": "candidate",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 1,
+			"triangles": 168,
+			"usec": 70,
+			"variant": "reference",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 2,
+			"triangles": 168,
+			"usec": 72,
+			"variant": "reference",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 2,
+			"triangles": 168,
+			"usec": 69,
+			"variant": "candidate",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 3,
+			"triangles": 168,
+			"usec": 66,
+			"variant": "candidate",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 3,
+			"triangles": 168,
+			"usec": 70,
+			"variant": "reference",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 4,
+			"triangles": 168,
+			"usec": 72,
+			"variant": "reference",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 4,
+			"triangles": 168,
+			"usec": 69,
+			"variant": "candidate",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 5,
+			"triangles": 168,
+			"usec": 70,
+			"variant": "candidate",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 5,
+			"triangles": 168,
+			"usec": 70,
+			"variant": "reference",
+			"workload": "field:cell_2_3"
+		},
+		{
+			"pair": 0,
+			"triangles": 252,
+			"usec": 241,
+			"variant": "reference",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 252,
+			"usec": 100,
+			"variant": "candidate",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 252,
+			"usec": 101,
+			"variant": "candidate",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 252,
+			"usec": 104,
+			"variant": "reference",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 252,
+			"usec": 107,
+			"variant": "reference",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 252,
+			"usec": 95,
+			"variant": "candidate",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 252,
+			"usec": 107,
+			"variant": "candidate",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 252,
+			"usec": 105,
+			"variant": "reference",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 252,
+			"usec": 110,
+			"variant": "reference",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 252,
+			"usec": 104,
+			"variant": "candidate",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 252,
+			"usec": 105,
+			"variant": "candidate",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 252,
+			"usec": 106,
+			"variant": "reference",
+			"workload": "field:cell_2_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 97,
+			"variant": "reference",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "candidate",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 44,
+			"variant": "candidate",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 44,
+			"variant": "reference",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 44,
+			"variant": "reference",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "candidate",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "candidate",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 47,
+			"variant": "reference",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 46,
+			"variant": "reference",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "candidate",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 44,
+			"variant": "candidate",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 57,
+			"variant": "reference",
+			"workload": "field:cell_2_5"
+		},
+		{
+			"pair": 0,
+			"triangles": 168,
+			"usec": 174,
+			"variant": "reference",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 168,
+			"usec": 73,
+			"variant": "candidate",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 168,
+			"usec": 72,
+			"variant": "candidate",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 168,
+			"usec": 73,
+			"variant": "reference",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 168,
+			"usec": 73,
+			"variant": "reference",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 168,
+			"usec": 68,
+			"variant": "candidate",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 168,
+			"usec": 71,
+			"variant": "candidate",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 168,
+			"usec": 71,
+			"variant": "reference",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 168,
+			"usec": 75,
+			"variant": "reference",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 168,
+			"usec": 77,
+			"variant": "candidate",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 168,
+			"usec": 79,
+			"variant": "candidate",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 168,
+			"usec": 81,
+			"variant": "reference",
+			"workload": "field:cell_3_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 168,
+			"usec": 181,
+			"variant": "reference",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 0,
+			"triangles": 168,
+			"usec": 87,
+			"variant": "candidate",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 1,
+			"triangles": 168,
+			"usec": 81,
+			"variant": "candidate",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 1,
+			"triangles": 168,
+			"usec": 81,
+			"variant": "reference",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 2,
+			"triangles": 168,
+			"usec": 82,
+			"variant": "reference",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 2,
+			"triangles": 168,
+			"usec": 77,
+			"variant": "candidate",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 3,
+			"triangles": 168,
+			"usec": 85,
+			"variant": "candidate",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 3,
+			"triangles": 168,
+			"usec": 73,
+			"variant": "reference",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 4,
+			"triangles": 168,
+			"usec": 75,
+			"variant": "reference",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 4,
+			"triangles": 168,
+			"usec": 71,
+			"variant": "candidate",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 5,
+			"triangles": 168,
+			"usec": 72,
+			"variant": "candidate",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 5,
+			"triangles": 168,
+			"usec": 72,
+			"variant": "reference",
+			"workload": "field:cell_3_3"
+		},
+		{
+			"pair": 0,
+			"triangles": 336,
+			"usec": 324,
+			"variant": "reference",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 336,
+			"usec": 126,
+			"variant": "candidate",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 336,
+			"usec": 124,
+			"variant": "candidate",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 336,
+			"usec": 128,
+			"variant": "reference",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 336,
+			"usec": 128,
+			"variant": "reference",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 336,
+			"usec": 121,
+			"variant": "candidate",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 336,
+			"usec": 122,
+			"variant": "candidate",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 336,
+			"usec": 134,
+			"variant": "reference",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 336,
+			"usec": 149,
+			"variant": "reference",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 336,
+			"usec": 122,
+			"variant": "candidate",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 336,
+			"usec": 123,
+			"variant": "candidate",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 336,
+			"usec": 125,
+			"variant": "reference",
+			"workload": "field:cell_3_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 95,
+			"variant": "reference",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "candidate",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 42,
+			"variant": "candidate",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 42,
+			"variant": "reference",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "reference",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 40,
+			"variant": "candidate",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "candidate",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "reference",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "reference",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 39,
+			"variant": "candidate",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 42,
+			"variant": "candidate",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "reference",
+			"workload": "field:cell_3_5"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 95,
+			"variant": "reference",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 45,
+			"variant": "candidate",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "candidate",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "reference",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 49,
+			"variant": "reference",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 48,
+			"variant": "candidate",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 52,
+			"variant": "candidate",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 50,
+			"variant": "reference",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 52,
+			"variant": "reference",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 45,
+			"variant": "candidate",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 51,
+			"variant": "candidate",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 53,
+			"variant": "reference",
+			"workload": "field:cell_4_1"
+		},
+		{
+			"pair": 0,
+			"triangles": 336,
+			"usec": 317,
+			"variant": "reference",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 336,
+			"usec": 139,
+			"variant": "candidate",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 336,
+			"usec": 131,
+			"variant": "candidate",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 336,
+			"usec": 136,
+			"variant": "reference",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 336,
+			"usec": 135,
+			"variant": "reference",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 336,
+			"usec": 130,
+			"variant": "candidate",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 336,
+			"usec": 130,
+			"variant": "candidate",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 336,
+			"usec": 138,
+			"variant": "reference",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 336,
+			"usec": 139,
+			"variant": "reference",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 336,
+			"usec": 130,
+			"variant": "candidate",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 336,
+			"usec": 148,
+			"variant": "candidate",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 336,
+			"usec": 135,
+			"variant": "reference",
+			"workload": "field:cell_4_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 106,
+			"variant": "reference",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 55,
+			"variant": "candidate",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 50,
+			"variant": "candidate",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 49,
+			"variant": "reference",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 53,
+			"variant": "reference",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "candidate",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 51,
+			"variant": "candidate",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 50,
+			"variant": "reference",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 52,
+			"variant": "reference",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 48,
+			"variant": "candidate",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 49,
+			"variant": "candidate",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 49,
+			"variant": "reference",
+			"workload": "field:cell_4_3"
+		},
+		{
+			"pair": 0,
+			"triangles": 252,
+			"usec": 251,
+			"variant": "reference",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 252,
+			"usec": 106,
+			"variant": "candidate",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 252,
+			"usec": 105,
+			"variant": "candidate",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 252,
+			"usec": 108,
+			"variant": "reference",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 252,
+			"usec": 109,
+			"variant": "reference",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 252,
+			"usec": 105,
+			"variant": "candidate",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 252,
+			"usec": 105,
+			"variant": "candidate",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 252,
+			"usec": 101,
+			"variant": "reference",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 252,
+			"usec": 101,
+			"variant": "reference",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 252,
+			"usec": 106,
+			"variant": "candidate",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 252,
+			"usec": 96,
+			"variant": "candidate",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 252,
+			"usec": 98,
+			"variant": "reference",
+			"workload": "field:cell_4_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 98,
+			"variant": "reference",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 0,
+			"triangles": 84,
+			"usec": 43,
+			"variant": "candidate",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 42,
+			"variant": "candidate",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 1,
+			"triangles": 84,
+			"usec": 40,
+			"variant": "reference",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "reference",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 2,
+			"triangles": 84,
+			"usec": 40,
+			"variant": "candidate",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "candidate",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 3,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "reference",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 42,
+			"variant": "reference",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 4,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "candidate",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 41,
+			"variant": "candidate",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 5,
+			"triangles": 84,
+			"usec": 40,
+			"variant": "reference",
+			"workload": "field:cell_4_5"
+		},
+		{
+			"pair": 0,
+			"triangles": 322,
+			"usec": 285,
+			"variant": "reference",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 0,
+			"triangles": 322,
+			"usec": 118,
+			"variant": "candidate",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 1,
+			"triangles": 322,
+			"usec": 139,
+			"variant": "candidate",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 1,
+			"triangles": 322,
+			"usec": 126,
+			"variant": "reference",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 2,
+			"triangles": 322,
+			"usec": 124,
+			"variant": "reference",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 2,
+			"triangles": 322,
+			"usec": 113,
+			"variant": "candidate",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 3,
+			"triangles": 322,
+			"usec": 110,
+			"variant": "candidate",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 3,
+			"triangles": 322,
+			"usec": 110,
+			"variant": "reference",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 4,
+			"triangles": 322,
+			"usec": 112,
+			"variant": "reference",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 4,
+			"triangles": 322,
+			"usec": 109,
+			"variant": "candidate",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 5,
+			"triangles": 322,
+			"usec": 120,
+			"variant": "candidate",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 5,
+			"triangles": 322,
+			"usec": 124,
+			"variant": "reference",
+			"workload": "field:cell_5_-8"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 544,
+			"variant": "reference",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 239,
+			"variant": "candidate",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 220,
+			"variant": "candidate",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 231,
+			"variant": "reference",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 230,
+			"variant": "reference",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 212,
+			"variant": "candidate",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 211,
+			"variant": "candidate",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 220,
+			"variant": "reference",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 223,
+			"variant": "reference",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 222,
+			"variant": "candidate",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 214,
+			"variant": "candidate",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 207,
+			"variant": "reference",
+			"workload": "field:cell_5_-7"
+		},
+		{
+			"pair": 0,
+			"triangles": 598,
+			"usec": 534,
+			"variant": "reference",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 0,
+			"triangles": 598,
+			"usec": 195,
+			"variant": "candidate",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 1,
+			"triangles": 598,
+			"usec": 205,
+			"variant": "candidate",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 1,
+			"triangles": 598,
+			"usec": 157,
+			"variant": "reference",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 2,
+			"triangles": 598,
+			"usec": 176,
+			"variant": "reference",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 2,
+			"triangles": 598,
+			"usec": 134,
+			"variant": "candidate",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 3,
+			"triangles": 598,
+			"usec": 135,
+			"variant": "candidate",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 3,
+			"triangles": 598,
+			"usec": 140,
+			"variant": "reference",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 4,
+			"triangles": 598,
+			"usec": 135,
+			"variant": "reference",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 4,
+			"triangles": 598,
+			"usec": 126,
+			"variant": "candidate",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 5,
+			"triangles": 598,
+			"usec": 128,
+			"variant": "candidate",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 5,
+			"triangles": 598,
+			"usec": 132,
+			"variant": "reference",
+			"workload": "field:cell_5_-6"
+		},
+		{
+			"pair": 0,
+			"triangles": 634,
+			"usec": 553,
+			"variant": "reference",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 0,
+			"triangles": 634,
+			"usec": 188,
+			"variant": "candidate",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 1,
+			"triangles": 634,
+			"usec": 150,
+			"variant": "candidate",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 1,
+			"triangles": 634,
+			"usec": 146,
+			"variant": "reference",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 2,
+			"triangles": 634,
+			"usec": 143,
+			"variant": "reference",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 2,
+			"triangles": 634,
+			"usec": 134,
+			"variant": "candidate",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 3,
+			"triangles": 634,
+			"usec": 133,
+			"variant": "candidate",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 3,
+			"triangles": 634,
+			"usec": 140,
+			"variant": "reference",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 4,
+			"triangles": 634,
+			"usec": 198,
+			"variant": "reference",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 4,
+			"triangles": 634,
+			"usec": 196,
+			"variant": "candidate",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 5,
+			"triangles": 634,
+			"usec": 210,
+			"variant": "candidate",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 5,
+			"triangles": 634,
+			"usec": 212,
+			"variant": "reference",
+			"workload": "field:cell_5_-5"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 564,
+			"variant": "reference",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 187,
+			"variant": "candidate",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 193,
+			"variant": "candidate",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 193,
+			"variant": "reference",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 196,
+			"variant": "reference",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 133,
+			"variant": "candidate",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 132,
+			"variant": "candidate",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 138,
+			"variant": "reference",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 144,
+			"variant": "reference",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 138,
+			"variant": "candidate",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 129,
+			"variant": "candidate",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 134,
+			"variant": "reference",
+			"workload": "field:cell_5_-4"
+		},
+		{
+			"pair": 0,
+			"triangles": 598,
+			"usec": 519,
+			"variant": "reference",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 0,
+			"triangles": 598,
+			"usec": 193,
+			"variant": "candidate",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 1,
+			"triangles": 598,
+			"usec": 202,
+			"variant": "candidate",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 1,
+			"triangles": 598,
+			"usec": 219,
+			"variant": "reference",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 2,
+			"triangles": 598,
+			"usec": 206,
+			"variant": "reference",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 2,
+			"triangles": 598,
+			"usec": 204,
+			"variant": "candidate",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 3,
+			"triangles": 598,
+			"usec": 204,
+			"variant": "candidate",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 3,
+			"triangles": 598,
+			"usec": 210,
+			"variant": "reference",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 4,
+			"triangles": 598,
+			"usec": 208,
+			"variant": "reference",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 4,
+			"triangles": 598,
+			"usec": 196,
+			"variant": "candidate",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 5,
+			"triangles": 598,
+			"usec": 199,
+			"variant": "candidate",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 5,
+			"triangles": 598,
+			"usec": 204,
+			"variant": "reference",
+			"workload": "field:cell_5_-3"
+		},
+		{
+			"pair": 0,
+			"triangles": 634,
+			"usec": 555,
+			"variant": "reference",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 0,
+			"triangles": 634,
+			"usec": 141,
+			"variant": "candidate",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 1,
+			"triangles": 634,
+			"usec": 138,
+			"variant": "candidate",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 1,
+			"triangles": 634,
+			"usec": 142,
+			"variant": "reference",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 2,
+			"triangles": 634,
+			"usec": 141,
+			"variant": "reference",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 2,
+			"triangles": 634,
+			"usec": 133,
+			"variant": "candidate",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 3,
+			"triangles": 634,
+			"usec": 133,
+			"variant": "candidate",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 3,
+			"triangles": 634,
+			"usec": 140,
+			"variant": "reference",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 4,
+			"triangles": 634,
+			"usec": 140,
+			"variant": "reference",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 4,
+			"triangles": 634,
+			"usec": 132,
+			"variant": "candidate",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 5,
+			"triangles": 634,
+			"usec": 160,
+			"variant": "candidate",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 5,
+			"triangles": 634,
+			"usec": 218,
+			"variant": "reference",
+			"workload": "field:cell_5_-2"
+		},
+		{
+			"pair": 0,
+			"triangles": 598,
+			"usec": 542,
+			"variant": "reference",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 0,
+			"triangles": 598,
+			"usec": 203,
+			"variant": "candidate",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 1,
+			"triangles": 598,
+			"usec": 209,
+			"variant": "candidate",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 1,
+			"triangles": 598,
+			"usec": 204,
+			"variant": "reference",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 2,
+			"triangles": 598,
+			"usec": 203,
+			"variant": "reference",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 2,
+			"triangles": 598,
+			"usec": 144,
+			"variant": "candidate",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 3,
+			"triangles": 598,
+			"usec": 155,
+			"variant": "candidate",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 3,
+			"triangles": 598,
+			"usec": 138,
+			"variant": "reference",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 4,
+			"triangles": 598,
+			"usec": 153,
+			"variant": "reference",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 4,
+			"triangles": 598,
+			"usec": 128,
+			"variant": "candidate",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 5,
+			"triangles": 598,
+			"usec": 160,
+			"variant": "candidate",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 5,
+			"triangles": 598,
+			"usec": 141,
+			"variant": "reference",
+			"workload": "field:cell_5_-1"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 436,
+			"variant": "reference",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 198,
+			"variant": "candidate",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 213,
+			"variant": "candidate",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 206,
+			"variant": "reference",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 217,
+			"variant": "reference",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 193,
+			"variant": "candidate",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 193,
+			"variant": "candidate",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 171,
+			"variant": "reference",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 138,
+			"variant": "reference",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 128,
+			"variant": "candidate",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 129,
+			"variant": "candidate",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 202,
+			"variant": "reference",
+			"workload": "field:cell_5_0"
+		},
+		{
+			"pair": 0,
+			"triangles": 634,
+			"usec": 495,
+			"variant": "reference",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 0,
+			"triangles": 634,
+			"usec": 198,
+			"variant": "candidate",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 1,
+			"triangles": 634,
+			"usec": 208,
+			"variant": "candidate",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 1,
+			"triangles": 634,
+			"usec": 253,
+			"variant": "reference",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 2,
+			"triangles": 634,
+			"usec": 178,
+			"variant": "reference",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 2,
+			"triangles": 634,
+			"usec": 167,
+			"variant": "candidate",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 3,
+			"triangles": 634,
+			"usec": 137,
+			"variant": "candidate",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 3,
+			"triangles": 634,
+			"usec": 142,
+			"variant": "reference",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 4,
+			"triangles": 634,
+			"usec": 141,
+			"variant": "reference",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 4,
+			"triangles": 634,
+			"usec": 133,
+			"variant": "candidate",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 5,
+			"triangles": 634,
+			"usec": 134,
+			"variant": "candidate",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 5,
+			"triangles": 634,
+			"usec": 163,
+			"variant": "reference",
+			"workload": "field:cell_5_1"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 514,
+			"variant": "reference",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 165,
+			"variant": "candidate",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 197,
+			"variant": "candidate",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 208,
+			"variant": "reference",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 216,
+			"variant": "reference",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 211,
+			"variant": "candidate",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 200,
+			"variant": "candidate",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 218,
+			"variant": "reference",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 158,
+			"variant": "reference",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 163,
+			"variant": "candidate",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 144,
+			"variant": "candidate",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 153,
+			"variant": "reference",
+			"workload": "field:cell_5_2"
+		},
+		{
+			"pair": 0,
+			"triangles": 682,
+			"usec": 480,
+			"variant": "reference",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 0,
+			"triangles": 682,
+			"usec": 222,
+			"variant": "candidate",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 1,
+			"triangles": 682,
+			"usec": 217,
+			"variant": "candidate",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 1,
+			"triangles": 682,
+			"usec": 236,
+			"variant": "reference",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 2,
+			"triangles": 682,
+			"usec": 227,
+			"variant": "reference",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 2,
+			"triangles": 682,
+			"usec": 214,
+			"variant": "candidate",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 3,
+			"triangles": 682,
+			"usec": 230,
+			"variant": "candidate",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 3,
+			"triangles": 682,
+			"usec": 187,
+			"variant": "reference",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 4,
+			"triangles": 682,
+			"usec": 158,
+			"variant": "reference",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 4,
+			"triangles": 682,
+			"usec": 145,
+			"variant": "candidate",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 5,
+			"triangles": 682,
+			"usec": 230,
+			"variant": "candidate",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 5,
+			"triangles": 682,
+			"usec": 161,
+			"variant": "reference",
+			"workload": "field:cell_5_3"
+		},
+		{
+			"pair": 0,
+			"triangles": 718,
+			"usec": 609,
+			"variant": "reference",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 718,
+			"usec": 182,
+			"variant": "candidate",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 718,
+			"usec": 159,
+			"variant": "candidate",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 1,
+			"triangles": 718,
+			"usec": 246,
+			"variant": "reference",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 718,
+			"usec": 250,
+			"variant": "reference",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 2,
+			"triangles": 718,
+			"usec": 231,
+			"variant": "candidate",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 718,
+			"usec": 243,
+			"variant": "candidate",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 3,
+			"triangles": 718,
+			"usec": 246,
+			"variant": "reference",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 718,
+			"usec": 250,
+			"variant": "reference",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 4,
+			"triangles": 718,
+			"usec": 239,
+			"variant": "candidate",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 718,
+			"usec": 224,
+			"variant": "candidate",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 5,
+			"triangles": 718,
+			"usec": 258,
+			"variant": "reference",
+			"workload": "field:cell_5_4"
+		},
+		{
+			"pair": 0,
+			"triangles": 598,
+			"usec": 587,
+			"variant": "reference",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 0,
+			"triangles": 598,
+			"usec": 217,
+			"variant": "candidate",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 1,
+			"triangles": 598,
+			"usec": 210,
+			"variant": "candidate",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 1,
+			"triangles": 598,
+			"usec": 226,
+			"variant": "reference",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 2,
+			"triangles": 598,
+			"usec": 218,
+			"variant": "reference",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 2,
+			"triangles": 598,
+			"usec": 203,
+			"variant": "candidate",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 3,
+			"triangles": 598,
+			"usec": 202,
+			"variant": "candidate",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 3,
+			"triangles": 598,
+			"usec": 211,
+			"variant": "reference",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 4,
+			"triangles": 598,
+			"usec": 234,
+			"variant": "reference",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 4,
+			"triangles": 598,
+			"usec": 202,
+			"variant": "candidate",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 5,
+			"triangles": 598,
+			"usec": 200,
+			"variant": "candidate",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 5,
+			"triangles": 598,
+			"usec": 211,
+			"variant": "reference",
+			"workload": "field:cell_5_5"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 581,
+			"variant": "reference",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 0,
+			"triangles": 608,
+			"usec": 208,
+			"variant": "candidate",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 206,
+			"variant": "candidate",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 1,
+			"triangles": 608,
+			"usec": 229,
+			"variant": "reference",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 212,
+			"variant": "reference",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 2,
+			"triangles": 608,
+			"usec": 210,
+			"variant": "candidate",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 200,
+			"variant": "candidate",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 3,
+			"triangles": 608,
+			"usec": 218,
+			"variant": "reference",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 225,
+			"variant": "reference",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 4,
+			"triangles": 608,
+			"usec": 208,
+			"variant": "candidate",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 206,
+			"variant": "candidate",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 5,
+			"triangles": 608,
+			"usec": 229,
+			"variant": "reference",
+			"workload": "field:cell_5_6"
+		},
+		{
+			"pair": 0,
+			"triangles": 322,
+			"usec": 298,
+			"variant": "reference",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 0,
+			"triangles": 322,
+			"usec": 128,
+			"variant": "candidate",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 1,
+			"triangles": 322,
+			"usec": 128,
+			"variant": "candidate",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 1,
+			"triangles": 322,
+			"usec": 134,
+			"variant": "reference",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 2,
+			"triangles": 322,
+			"usec": 138,
+			"variant": "reference",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 2,
+			"triangles": 322,
+			"usec": 128,
+			"variant": "candidate",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 3,
+			"triangles": 322,
+			"usec": 130,
+			"variant": "candidate",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 3,
+			"triangles": 322,
+			"usec": 128,
+			"variant": "reference",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 4,
+			"triangles": 322,
+			"usec": 127,
+			"variant": "reference",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 4,
+			"triangles": 322,
+			"usec": 125,
+			"variant": "candidate",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 5,
+			"triangles": 322,
+			"usec": 119,
+			"variant": "candidate",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 5,
+			"triangles": 322,
+			"usec": 118,
+			"variant": "reference",
+			"workload": "field:cell_5_7"
+		},
+		{
+			"pair": 0,
+			"triangles": 1240,
+			"usec": 1180,
+			"variant": "reference",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 0,
+			"triangles": 1240,
+			"usec": 404,
+			"variant": "candidate",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 1,
+			"triangles": 1240,
+			"usec": 346,
+			"variant": "candidate",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 1,
+			"triangles": 1240,
+			"usec": 395,
+			"variant": "reference",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 2,
+			"triangles": 1240,
+			"usec": 388,
+			"variant": "reference",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 2,
+			"triangles": 1240,
+			"usec": 375,
+			"variant": "candidate",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 3,
+			"triangles": 1240,
+			"usec": 394,
+			"variant": "candidate",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 3,
+			"triangles": 1240,
+			"usec": 440,
+			"variant": "reference",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 4,
+			"triangles": 1240,
+			"usec": 416,
+			"variant": "reference",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 4,
+			"triangles": 1240,
+			"usec": 395,
+			"variant": "candidate",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 5,
+			"triangles": 1240,
+			"usec": 389,
+			"variant": "candidate",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 5,
+			"triangles": 1240,
+			"usec": 419,
+			"variant": "reference",
+			"workload": "field:cell_999000_994000"
+		},
+		{
+			"pair": 0,
+			"triangles": 178,
+			"usec": 186,
+			"variant": "reference",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 0,
+			"triangles": 178,
+			"usec": 71,
+			"variant": "candidate",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 1,
+			"triangles": 178,
+			"usec": 73,
+			"variant": "candidate",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 1,
+			"triangles": 178,
+			"usec": 71,
+			"variant": "reference",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 2,
+			"triangles": 178,
+			"usec": 77,
+			"variant": "reference",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 2,
+			"triangles": 178,
+			"usec": 83,
+			"variant": "candidate",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 3,
+			"triangles": 178,
+			"usec": 84,
+			"variant": "candidate",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 3,
+			"triangles": 178,
+			"usec": 86,
+			"variant": "reference",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 4,
+			"triangles": 178,
+			"usec": 79,
+			"variant": "reference",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 4,
+			"triangles": 178,
+			"usec": 81,
+			"variant": "candidate",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 5,
+			"triangles": 178,
+			"usec": 84,
+			"variant": "candidate",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 5,
+			"triangles": 178,
+			"usec": 76,
+			"variant": "reference",
+			"workload": "field:cell_999000_995000"
+		},
+		{
+			"pair": 0,
+			"triangles": 816,
+			"usec": 765,
+			"variant": "reference",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 0,
+			"triangles": 816,
+			"usec": 264,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 1,
+			"triangles": 816,
+			"usec": 228,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 1,
+			"triangles": 816,
+			"usec": 261,
+			"variant": "reference",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 2,
+			"triangles": 816,
+			"usec": 273,
+			"variant": "reference",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 2,
+			"triangles": 816,
+			"usec": 257,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 3,
+			"triangles": 816,
+			"usec": 278,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 3,
+			"triangles": 816,
+			"usec": 280,
+			"variant": "reference",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 4,
+			"triangles": 816,
+			"usec": 283,
+			"variant": "reference",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 4,
+			"triangles": 816,
+			"usec": 271,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 5,
+			"triangles": 816,
+			"usec": 271,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 5,
+			"triangles": 816,
+			"usec": 222,
+			"variant": "reference",
+			"workload": "field:cell_999000_1001000"
+		},
+		{
+			"pair": 0,
+			"triangles": 936,
+			"usec": 899,
+			"variant": "reference",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 0,
+			"triangles": 936,
+			"usec": 288,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 1,
+			"triangles": 936,
+			"usec": 284,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 1,
+			"triangles": 936,
+			"usec": 300,
+			"variant": "reference",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 2,
+			"triangles": 936,
+			"usec": 302,
+			"variant": "reference",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 2,
+			"triangles": 936,
+			"usec": 211,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 3,
+			"triangles": 936,
+			"usec": 211,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 3,
+			"triangles": 936,
+			"usec": 203,
+			"variant": "reference",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 4,
+			"triangles": 936,
+			"usec": 298,
+			"variant": "reference",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 4,
+			"triangles": 936,
+			"usec": 295,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 5,
+			"triangles": 936,
+			"usec": 298,
+			"variant": "candidate",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 5,
+			"triangles": 936,
+			"usec": 311,
+			"variant": "reference",
+			"workload": "field:cell_999000_1004000"
+		},
+		{
+			"pair": 0,
+			"triangles": 58,
+			"usec": 73,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 0,
+			"triangles": 58,
+			"usec": 30,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 1,
+			"triangles": 58,
+			"usec": 32,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 1,
+			"triangles": 58,
+			"usec": 33,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 2,
+			"triangles": 58,
+			"usec": 34,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 2,
+			"triangles": 58,
+			"usec": 30,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 3,
+			"triangles": 58,
+			"usec": 31,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 3,
+			"triangles": 58,
+			"usec": 30,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 4,
+			"triangles": 58,
+			"usec": 40,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 4,
+			"triangles": 58,
+			"usec": 36,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 5,
+			"triangles": 58,
+			"usec": 36,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 5,
+			"triangles": 58,
+			"usec": 33,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1000000"
+		},
+		{
+			"pair": 0,
+			"triangles": 3250,
+			"usec": 3075,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 0,
+			"triangles": 3250,
+			"usec": 1080,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 1,
+			"triangles": 3250,
+			"usec": 1006,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 1,
+			"triangles": 3250,
+			"usec": 733,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 2,
+			"triangles": 3250,
+			"usec": 1063,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 2,
+			"triangles": 3250,
+			"usec": 907,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 3,
+			"triangles": 3250,
+			"usec": 953,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 3,
+			"triangles": 3250,
+			"usec": 1045,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 4,
+			"triangles": 3250,
+			"usec": 1159,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 4,
+			"triangles": 3250,
+			"usec": 1118,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 5,
+			"triangles": 3250,
+			"usec": 950,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 5,
+			"triangles": 3250,
+			"usec": 1142,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1001000"
+		},
+		{
+			"pair": 0,
+			"triangles": 3744,
+			"usec": 3512,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 0,
+			"triangles": 3744,
+			"usec": 1071,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 1,
+			"triangles": 3744,
+			"usec": 997,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 1,
+			"triangles": 3744,
+			"usec": 993,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 2,
+			"triangles": 3744,
+			"usec": 1184,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 2,
+			"triangles": 3744,
+			"usec": 1004,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 3,
+			"triangles": 3744,
+			"usec": 1121,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 3,
+			"triangles": 3744,
+			"usec": 961,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 4,
+			"triangles": 3744,
+			"usec": 1137,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 4,
+			"triangles": 3744,
+			"usec": 1103,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 5,
+			"triangles": 3744,
+			"usec": 892,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 5,
+			"triangles": 3744,
+			"usec": 1150,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1003000"
+		},
+		{
+			"pair": 0,
+			"triangles": 70,
+			"usec": 118,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 0,
+			"triangles": 70,
+			"usec": 43,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 1,
+			"triangles": 70,
+			"usec": 29,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 1,
+			"triangles": 70,
+			"usec": 25,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 2,
+			"triangles": 70,
+			"usec": 27,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 2,
+			"triangles": 70,
+			"usec": 23,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 3,
+			"triangles": 70,
+			"usec": 30,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 3,
+			"triangles": 70,
+			"usec": 61,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 4,
+			"triangles": 70,
+			"usec": 27,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 4,
+			"triangles": 70,
+			"usec": 23,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 5,
+			"triangles": 70,
+			"usec": 23,
+			"variant": "candidate",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 5,
+			"triangles": 70,
+			"usec": 40,
+			"variant": "reference",
+			"workload": "field:cell_1000000_1011000"
+		},
+		{
+			"pair": 0,
+			"triangles": 1140,
+			"usec": 932,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 0,
+			"triangles": 1140,
+			"usec": 360,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 1,
+			"triangles": 1140,
+			"usec": 345,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 1,
+			"triangles": 1140,
+			"usec": 282,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 2,
+			"triangles": 1140,
+			"usec": 249,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 2,
+			"triangles": 1140,
+			"usec": 300,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 3,
+			"triangles": 1140,
+			"usec": 368,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 3,
+			"triangles": 1140,
+			"usec": 395,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 4,
+			"triangles": 1140,
+			"usec": 372,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 4,
+			"triangles": 1140,
+			"usec": 240,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 5,
+			"triangles": 1140,
+			"usec": 237,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 5,
+			"triangles": 1140,
+			"usec": 245,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1000000"
+		},
+		{
+			"pair": 0,
+			"triangles": 70,
+			"usec": 68,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 0,
+			"triangles": 70,
+			"usec": 24,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 1,
+			"triangles": 70,
+			"usec": 24,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 1,
+			"triangles": 70,
+			"usec": 23,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 2,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 2,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 3,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 3,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 4,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 4,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 5,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "candidate",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 5,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "reference",
+			"workload": "field:cell_1001000_1010000"
+		},
+		{
+			"pair": 0,
+			"triangles": 70,
+			"usec": 58,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 0,
+			"triangles": 70,
+			"usec": 26,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 1,
+			"triangles": 70,
+			"usec": 23,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 1,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 2,
+			"triangles": 70,
+			"usec": 23,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 2,
+			"triangles": 70,
+			"usec": 20,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 3,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 3,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 4,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 4,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 5,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 5,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1009000"
+		},
+		{
+			"pair": 0,
+			"triangles": 70,
+			"usec": 50,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 0,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 1,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 1,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 2,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 2,
+			"triangles": 70,
+			"usec": 20,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 3,
+			"triangles": 70,
+			"usec": 33,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 3,
+			"triangles": 70,
+			"usec": 23,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 4,
+			"triangles": 70,
+			"usec": 22,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 4,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 5,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "candidate",
+			"workload": "field:cell_1002000_1010000"
+		},
+		{
+			"pair": 5,
+			"triangles": 70,
+			"usec": 21,
+			"variant": "reference",
+			"workload": "field:cell_1002000_1010000"
+		}
+	],
+	"scope": "Native collect constructor only, alternating order; exclude pair zero; shared host; no startup or FPS claim"
+}

@@ -26,4 +26,34 @@ Timing, brake torque, suspension and tires are estimates requiring physical meas
 
 ## Verification
 
-Qualification results and reproducible commands are recorded here after the generated rig and real-session checks complete.
+Godot 4.7.2, Windows, 2026-10-14. [Verification manifest](verification.json) records identities, checks and retained logs. The [source conformance report](conformance/verification.json) passes all 17 commands, including generated identities, schema/module parity, historical migration, imported-model/render contracts, Workshop descriptors and all eight aircraft preflights.
+
+| Check | Result |
+| --- | --- |
+| Actuator, drag, physical/visual contracts, rollback and checkpoint continuation | 68 checks passed |
+| Actual-session runway, crosswind, taxi, steering, braking and landing | 26 checks passed |
+| Gear trace v10 roundtrip, replay, turbulence placement and malformed data rejection | 19 checks passed |
+| Keyboard G/B, paused release and radio AUX priority | 8 checks passed |
+| Imported model, rig articulation, doors, wheel centres, steering/spin/compression and instance isolation | 389 checks passed |
+| Existing generic trace and UI runway routes | 37 trace checks and all runway UI checks passed |
+| Aircraft contract, handling, turbine and continuous turbine/wheel state | 2,887 / 47 / 27 / 46 checks passed |
+| Checkpoints, replay integrity, replay policy and simulation kernel | 92 / 153 / 50 / 11 checks passed |
+| Ground contact, friction, stiction, surfaces and runway-start integrity | 22 / 26 / 25 / 28 / 254 checks passed |
+
+The new runtime tests are `app/tests/test_retractable_gear{,_ground,_trace,_input}.gd`; `app/test.sh` discovers them automatically. The [asset guide](../../../../assets/aircraft/avanti-s-a200/README.md#regenerate-and-verify) gives the generator and direct test commands. Existing glow-flight, runway-start and runway-checkpoint tests also passed. The broader Python CLI acceptance setup timed out during process startup and is not reported as a passing suite; focused real Avanti traces below passed independently.
+
+### Measured software scenarios
+
+The [ground-session log](logs/gear-ground.log) records positive static compression on all three wheels (20.9, 20.9 and 21.8 mm), 0.7 mm drift over two seconds at engine-off rest, and stationary rest in a 1.5 m/s crosswind. Powered taxi reaches 1.096 m/s after 2.5 s and yaws right by 0.115 rad with right steering. From 3 m/s, optional 1 N·m main brakes reduce stopping distance from 6.003 to 4.926 m and time from 3.95 to 3.38 s, using a 0.05 m/s stop threshold.
+
+The 1.5 m/s sink scenario touches down at 1.508 m/s, reaches 64 mm peak equivalent compression and settles without a gear-limit event. The 4 m/s descent scenario triggers the nose terminal limit at 0.037 s. Repeating the nominal landing at 240/480 Hz changes final position by 0.02 mm and final speed by less than the printed 0.00001 m/s precision. These results qualify the chosen numerical model; they are not measured real-aircraft performance.
+
+Actual one-second Avanti CLI traces with `--weather=turbulent` and `--weather=hot-high` pass the independent Python readers. They contain 241 rows each, metadata v8 and trace v10. Maximum turbulent wind/OU error is below 5e-10 m/s; the hot/high density is 0.9439353 kg/m³. Results are retained as [turbulent](logs/turbulent-check.json) and [hot/high](logs/hot-high-check.json) reports.
+
+### Source and Windows package
+
+The four [source captures](captures/captures.json) and [packaged captures](package-captures/captures.json) show stowed, 50% extension, downlocked and nose-steered states. They use the real `FlightSession`, accepted six-channel commands, 240 Hz stepping and the runtime ground-gear renderer. The capture harness is `research/avanti-s/av09/capture_gear.gd`; view [downlocked](package-captures/03-downlocked.png) and [in transit](package-captures/02-transit.png). Both native runs completed without engine errors using the Compatibility renderer on an RTX 3090.
+
+The Windows release export includes its native vehicle DLL. The actual standalone executable completed a three-second Avanti flight, and `check_trimmed_flight.py` verified all 720 ticks, finite samples, stable 30 m altitude / 29 m/s speed and exact current aircraft input bytes ([result](logs/package-flight-check.txt)). The packaged render harness loads the exported PCK using the matching Godot executable with that DLL alongside it. This is recorded separately from the standalone executable flight, rather than treating an editor render as executable proof.
+
+Model revision is `av09-retractable-gear-1`. The supplied master remains byte-identical. Exported GLB SHA-256 is `803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36`; its 38 meshes contain 146,652 triangles. The [source manifest](../../../../assets/aircraft/avanti-s-a200/source-manifest.json) retains the master identity, interpolation measurements and export settings.

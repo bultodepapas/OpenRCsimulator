@@ -1,0 +1,147 @@
+{
+  "format": "openrc-rcv-runtime-verification",
+  "date": "2026-10-14",
+  "started_utc": "2026-10-14T20:46:46.714793+00:00",
+  "godot": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "checks": [
+    {
+      "name": "visual-source",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.117,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/rc-monster-truck/build_visual.py",
+        "--check"
+      ]
+    },
+    {
+      "name": "vehicle-source",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.123,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/rc-monster-truck/build_vehicle_data.py",
+        "--check"
+      ]
+    },
+    {
+      "name": "generator-mutations",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.634,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/rc-monster-truck/test_vehicle_data_generator.py"
+      ]
+    },
+    {
+      "name": "float64-guard",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.467,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "app/tests/check_transcendentals.py"
+      ]
+    },
+    {
+      "name": "test_rcv_vehicle_data",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.488,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_vehicle_data.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_course",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.425,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_course.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_airfield_course",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 2.714,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_airfield_course.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_input",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.309,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_input.gd"
+      ]
+    }
+  ],
+  "physical_validation": false,
+  "source_sha256": {
+    "app/app_root.gd": "9085e24dc1e4c3c69fa3285e21360adae092525576ccab5b0c2b55f6eab0f435",
+    "app/data/ground_vehicle/practice.json": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+    "app/data/vehicles/ground/mt8_bisonte.json": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+    "app/input/ground_vehicle_input.gd": "b61b22215a5e2cf882715d05803611f39bc6ff248492cdc4992db45d432e5d41",
+    "app/native/ground_vehicle/build-receipt.json": "816f8d26359a763aa73884bd504a9335f610524706582ed81dd198fbe57d690c",
+    "app/native/ground_vehicle/libopenrc_ground_vehicle.so": "21966983e1bceab446e4ee0fa5f57a909c17cf711570ad9663bd916a25f8447c",
+    "app/native/ground_vehicle/LICENSE.godot-cpp.md": "26a5b210d90760156ce886267ce9df235787dcc6cebfd7ecd95ef5b6fdcc95bf",
+    "app/native/ground_vehicle/openrc_ground_vehicle.dll": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+    "app/native/ground_vehicle/openrc_ground_vehicle.gdextension": "1d4b4cbd1070c411922be4ce3c067cf8db610eec6c394dc4811fcfd02236e916",
+    "app/physics/ground_vehicle/airfield_course.gd": "47084ce71538868eaf87b16d86a2ea8f75e1c41291e1c020cda80299752ec969",
+    "app/physics/ground_vehicle/course.gd": "313b43fe7e4816c54d4647c21644a2337640e1510536dcaaa95794f884bf0ca6",
+    "app/physics/ground_vehicle/four_corner.gd": "cb86d370d047c1e6c5f55c4b1b3815181a17d16dc4785d79847357a7a9f04436",
+    "app/physics/ground_vehicle/quarter_car.gd": "5a141caa4dba4628990df398f98043469f2868cc6dc959fb7f252c2943f56605",
+    "app/physics/ground_vehicle/support_bench_data.gd": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+    "app/physics/ground_vehicle/suspension_bench_data.gd": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+    "app/physics/ground_vehicle/vehicle_data.gd": "3b2dd900dbe08bd3552058f8699654dcaeeb230bfa9aa2f3ca2e3dad534b1194",
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "0e2251515d6d14c7e8b76c39ebf2808159f47a30c91c53d8136cb953b6ff9c6b",
+    "app/sim/ground_vehicle/session.gd": "b5bade4c818e2c7c3832231560737d187fa24fce9968ffae21a22d78030ad619",
+    "app/ui/home.gd": "e19c135114123934861cfffbb40325ea160c4b83caf8a7b33ad1c5ece8d25d88",
+    "app/vehicles/ground/contact_debug.gd": "cd0d4986fb40715fb810f62bf40bb175d709b724329c1b6af7658f9711e0693e",
+    "app/vehicles/ground/course_surface.gdshader": "75d7c11d2b516284f89bc233b73a6f2a040ecb8f2b183c2c976da356a80c6201",
+    "app/vehicles/ground/course_view.gd": "14525c151e80878bdaa75696ee79631dae58ae7ca3587dfdef29d988946074df",
+    "app/vehicles/ground/ground_camera.gd": "c1abc8d64306258e825c27ec64bc2d709d3fd33ff439c1df3070c39290711e4a",
+    "app/vehicles/ground/ground_dashboard.gd": "0194143881334a98d6f83188aabb783a361f3b6b9a20549bae0570dd275270c5",
+    "app/vehicles/ground/ground_scene.gd": "90d252c44d5d2c14f43b95e3566b9adc6c0e834c7bb18c32bb6dce219d27a225",
+    "app/vehicles/ground/mt8_model.gd": "eb1076020a548050aea1d4961f887b68eb3fc12fc0354a8a52db5cea283b9c65",
+    "app/vehicles/ground/mt8_rig.gd": "b120b5d202b78d537bb3c71a61339af95463209eb918966535e3c34f760e65a2",
+    "app/vehicles/ground/telemetry_plot.gd": "f2aa9bf83803c1c3d8e2df97c89cfb7f7bf6e0fddddc7d59f05500dd277f4f03"
+  },
+  "ok": true
+}

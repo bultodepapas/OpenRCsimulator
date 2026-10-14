@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL height cutoff rejects all faces
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL height cutoff rejects all faces
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL complete face bytes and order match scalar oracle
+FAIL incremental bounds and triangle count stay exact
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+FAIL height cutoff rejects all faces
+shadow collection: 77 checks, 31 failed
