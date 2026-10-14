@@ -8,6 +8,8 @@ This plan is a scoped revision of [MENU-PLAN](MENU-PLAN.md): it keeps its princi
 
 ## 1. What "modern, mature, professional, useful and ready for the future" means here
 
+Responsiveness follow-up (2026-10-14): [UI-05-R2](research/menu-investigations/UI-05-R2/README.md) bounds recent aircraft-preview reuse to three models and measures the complete selector. First-visit construction and rapid fleet traversal remain the next performance probes; theme/display delivery status is unchanged.
+
 Measurable targets, so that "done" is not a matter of taste:
 
 | Quality | Target | Checked by |

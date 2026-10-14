@@ -13,6 +13,7 @@ const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
+const ProjectedShadow := preload("res://render/projected_shadow.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
@@ -41,6 +42,12 @@ var night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
 var sky_config: Dictionary = SkyConfig.defaults()
 var _lighting: Dictionary = {}
 var field_errors: PackedStringArray = PackedStringArray()
+
+# Bound retained geometry to the current Home: one visible model and two recent selections.
+const PREVIEW_MODEL_LIMIT := 3
+var _preview_models: Dictionary = {}
+var _preview_geometry: Dictionary = {}
+var _preview_order: Array[String] = []
 
 var airplane: Dictionary
 var camera: Camera3D
@@ -110,16 +117,31 @@ func _ready() -> void:
 		FieldError.report(self, field_errors)
 
 
-## Builds `id` in the composition's pose (and its shadow), replacing the selected model.
+## Shows `id` in the fixed pose, retaining at most three recent visual models for this Home only.
+## Flight still builds and validates independently; replacing Home drops the cache and its resources.
 func show_aircraft(id: String) -> void:
-	var built := AirplaneBuilder.build(id)
+	var retained := _preview_models.has(id)
+	var built: Dictionary = _preview_models[id] if retained else AirplaneBuilder.build(id)
 	if built.is_empty():
 		return
 	if not airplane.is_empty():
-		remove_child(airplane.root)
-		airplane.root.queue_free()
+		airplane.root.hide()
+		airplane.root.process_mode = Node.PROCESS_MODE_DISABLED
 	airplane = built
-	add_child(airplane.root)
+	if not retained:
+		_preview_models[id] = built
+		add_child(airplane.root)
+	airplane.root.show()
+	airplane.root.process_mode = Node.PROCESS_MODE_INHERIT
+	_preview_order.erase(id)
+	_preview_order.append(id)
+	if _preview_order.size() > PREVIEW_MODEL_LIMIT:
+		var evicted: String = _preview_order.pop_front()
+		var obsolete: Node3D = _preview_models[evicted].root
+		_preview_models.erase(evicted)
+		_preview_geometry.erase(evicted)
+		remove_child(obsolete)
+		obsolete.queue_free()
 	var rotorcraft: bool = Catalog.is_rotorcraft(id)
 	var attitude: Dictionary = HELICOPTER_ATTITUDE_DEG if rotorcraft else ATTITUDE_DEG
 	var basis := Frames.attitude_to_render(deg_to_rad(attitude.yaw), deg_to_rad(attitude.pitch), deg_to_rad(attitude.roll))
@@ -132,9 +154,14 @@ func show_aircraft(id: String) -> void:
 			main_pivot.rotation.z = PROP_ANGLE
 	else:
 		airplane.propeller.rotation.z = PROP_ANGLE
-	var extent := Shadow.model_extent(airplane.root)
-	Shadow.bind_model(_shadow, airplane.root)
-	World.dress_aircraft(airplane.root)
+	if not retained:
+		# Capture the neutral model before the night kit is fitted; it must not enter the silhouette.
+		_preview_geometry[id] = {extent = Shadow.model_extent(airplane.root), shape = ProjectedShadow.collect(airplane.root)}
+	var geometry: Dictionary = _preview_geometry[id]
+	var extent: Vector2 = geometry.extent
+	Shadow.bind_model(_shadow, airplane.root, geometry.shape)
+	if not retained:
+		World.dress_aircraft(airplane.root)
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else 1.0
 	_shadow.visible = strength > 0.0

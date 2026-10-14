@@ -1,0 +1,279 @@
+{
+	"probe": "AV-17-R2 runtime trim and roll-rate derivative",
+	"method": {
+		"density_kg_m3": 1.225,
+		"gravity_m_s2": 9.80665,
+		"trim": "Trim.solve(level, V, model, g, throw_rad, rho), clean model, calm air",
+		"minimum_trim_resolution_m_s": 0.05,
+		"clp_rate_difference_rad_s": 0.01,
+		"clp_definition": "(dMx/dp) * 2V / (qbar*S*b^2); positive means roll anti-damping",
+		"lift_cl_definition": "Aero.loads force (excluding propulsion) projected normal to the body longitudinal velocity, divided by qbar*S; prop_normal_cl is computed separately from Dynamics.evaluate",
+		"limits": "software-model result only; not an A200 flight validation or measured polar"
+	},
+	"cases": [
+		{
+			"aircraft_file": "avanti-baseline.json",
+			"case_id": "avanti-baseline",
+			"ok": true,
+			"input_identity": {
+				"format": "openrc-aircraft v2",
+				"sha256": "88d5d82552dc9d16b44a4e12bf1e344cdb5608d575f6e4f6383a4d3eeb6ef3a5"
+			},
+			"model_identity": "sebart-avanti-s-a200-p100rx",
+			"declared_global_cl_max": 0.85,
+			"vs_from_declared_clmax_m_s": 17.7186889542327,
+			"min_successful_trim_grid_m_s": 18.5,
+			"preceding_failed_grid_m_s": 18.45,
+			"trim_speed_grid_step_m_s": 0.05,
+			"successful_trim_points_16_to_24_m_s": 111,
+			"trim_at_grid_floor": {
+				"ok": true,
+				"speed_m_s": 18.5,
+				"alpha_deg": 10.3450649507457,
+				"beta_deg": 0.00000000000000663758380549069,
+				"elevator_deg": -4.99688340373927,
+				"throttle": 0.0498454361330527,
+				"rpm": 84469.34893881,
+				"wing_cl": 0.725662842616424,
+				"total_aero_cl": 0.761866257382862,
+				"prop_normal_cl": 0.0178536769276772,
+				"aero_plus_prop_normal_cl": 0.77971993431054,
+				"weight_required_cl_at_speed": 0.779719934312112,
+				"normal_force_cl_residual": -0.00000000000157251989207907,
+				"vs_from_aero_cl_no_thrust_m_s": 18.7155104871441,
+				"max_tip_separation_weight": 0.199552015969662
+			},
+			"maximum_total_cl_in_trim_sweep": {
+				"total_cl": 0.761866257382862,
+				"sample": {
+					"ok": true,
+					"speed_m_s": 18.5,
+					"alpha_deg": 10.3450649507457,
+					"beta_deg": 0.00000000000000663758380549069,
+					"elevator_deg": -4.99688340373927,
+					"throttle": 0.0498454361330527,
+					"rpm": 84469.34893881,
+					"wing_cl": 0.725662842616424,
+					"total_aero_cl": 0.761866257382862,
+					"prop_normal_cl": 0.0178536769276772,
+					"aero_plus_prop_normal_cl": 0.77971993431054,
+					"weight_required_cl_at_speed": 0.779719934312112,
+					"normal_force_cl_residual": -0.00000000000157251989207907,
+					"vs_from_aero_cl_no_thrust_m_s": 18.7155104871441,
+					"max_tip_separation_weight": 0.199552015969662
+				}
+			},
+			"rate_derivatives_at_comparison_speeds": [
+				{
+					"speed_m_s": 18.5,
+					"trim_ok": true,
+					"alpha_deg": 10.3450649507457,
+					"tip_separation_weight": 0.199552015969662,
+					"dMx_dp_N_m_per_rad_s": 9.3510789083499,
+					"Clp_p_hat": 0.587552524006216,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.761866257382862,
+					"local_cl": 0.761866257382862,
+					"global_cl_at_trim_state": 0.7973253719797
+				},
+				{
+					"speed_m_s": 18.6,
+					"trim_ok": true,
+					"alpha_deg": 9.9679453208235,
+					"tip_separation_weight": 0.0968982836571948,
+					"dMx_dp_N_m_per_rad_s": 4.61029971306306,
+					"Clp_p_hat": 0.288119676324404,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.754428256556505,
+					"local_cl": 0.754428256556505,
+					"global_cl_at_trim_state": 0.771040160507518
+				},
+				{
+					"speed_m_s": 19.0,
+					"trim_ok": true,
+					"alpha_deg": 9.33578254777385,
+					"tip_separation_weight": 0.00347967899182266,
+					"dMx_dp_N_m_per_rad_s": -5.69288958781061,
+					"Clp_p_hat": -0.348285875894021,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.723954614011,
+					"local_cl": 0.723954614011,
+					"global_cl_at_trim_state": 0.724514782294369
+				},
+				{
+					"speed_m_s": 19.2,
+					"trim_ok": true,
+					"alpha_deg": 9.13768940409251,
+					"tip_separation_weight": 0.0,
+					"dMx_dp_N_m_per_rad_s": -8.33203572486456,
+					"Clp_p_hat": -0.504436609012967,
+					"local_flow_weight": 0.998050260004058,
+					"total_cl": 0.709223210316342,
+					"local_cl": 0.709223210250193,
+					"global_cl_at_trim_state": 0.70922324417733
+				},
+				{
+					"speed_m_s": 29.0,
+					"trim_ok": true,
+					"alpha_deg": 4.0453062252223,
+					"tip_separation_weight": 0.0,
+					"dMx_dp_N_m_per_rad_s": -15.1307788133411,
+					"Clp_p_hat": -0.606484893267127,
+					"local_flow_weight": 0.0,
+					"total_cl": 0.313495902844868,
+					"local_cl": 0.313495887261234,
+					"global_cl_at_trim_state": 0.313495902844868
+				}
+			],
+			"wing_station_incidence_rad_root_mid_tip": [
+				-0.02,
+				0.0,
+				0.02
+			]
+		},
+		{
+			"aircraft_file": "avanti-candidate.json",
+			"case_id": "avanti-candidate",
+			"ok": true,
+			"input_identity": {
+				"format": "openrc-aircraft v2",
+				"sha256": "1ec44b95c3d43a0a31c820e8dbd83b942b9d691117c9f83f8d0a5a9583a51d09"
+			},
+			"model_identity": "sebart-avanti-s-a200-p100rx",
+			"declared_global_cl_max": 0.85,
+			"vs_from_declared_clmax_m_s": 17.7186889542327,
+			"min_successful_trim_grid_m_s": 17.9,
+			"preceding_failed_grid_m_s": 17.85,
+			"trim_speed_grid_step_m_s": 0.05,
+			"successful_trim_points_16_to_24_m_s": 123,
+			"trim_at_grid_floor": {
+				"ok": true,
+				"speed_m_s": 17.9,
+				"alpha_deg": 12.6756983394787,
+				"beta_deg": -0.00000000000000945076039275658,
+				"elevator_deg": -8.31523031628859,
+				"throttle": 0.0421269551310431,
+				"rpm": 81725.2488447056,
+				"wing_cl": 0.773137176241066,
+				"total_aero_cl": 0.81178084517677,
+				"prop_normal_cl": 0.0210868790406222,
+				"aero_plus_prop_normal_cl": 0.832867724217392,
+				"weight_required_cl_at_speed": 0.832867724223091,
+				"normal_force_cl_residual": -0.00000000000569833069619108,
+				"vs_from_aero_cl_no_thrust_m_s": 18.1309953882242,
+				"max_tip_separation_weight": 0.448602342263816
+			},
+			"maximum_total_cl_in_trim_sweep": {
+				"total_cl": 0.81178084517677,
+				"sample": {
+					"ok": true,
+					"speed_m_s": 17.9,
+					"alpha_deg": 12.6756983394787,
+					"beta_deg": -0.00000000000000945076039275658,
+					"elevator_deg": -8.31523031628859,
+					"throttle": 0.0421269551310431,
+					"rpm": 81725.2488447056,
+					"wing_cl": 0.773137176241066,
+					"total_aero_cl": 0.81178084517677,
+					"prop_normal_cl": 0.0210868790406222,
+					"aero_plus_prop_normal_cl": 0.832867724217392,
+					"weight_required_cl_at_speed": 0.832867724223091,
+					"normal_force_cl_residual": -0.00000000000569833069619108,
+					"vs_from_aero_cl_no_thrust_m_s": 18.1309953882242,
+					"max_tip_separation_weight": 0.448602342263816
+				}
+			},
+			"rate_derivatives_at_comparison_speeds": [
+				{
+					"speed_m_s": 18.5,
+					"trim_ok": true,
+					"alpha_deg": 10.7095519759131,
+					"tip_separation_weight": 0.247093448979903,
+					"dMx_dp_N_m_per_rad_s": -3.13861972352312,
+					"Clp_p_hat": -0.197207611926474,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.762107916636096,
+					"local_cl": 0.762107916636096,
+					"global_cl_at_trim_state": 0.80653402905554
+				},
+				{
+					"speed_m_s": 18.6,
+					"trim_ok": true,
+					"alpha_deg": 10.5093300761274,
+					"tip_separation_weight": 0.230475978146448,
+					"dMx_dp_N_m_per_rad_s": -3.06799266493566,
+					"Clp_p_hat": -0.191733533306366,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.75416987000193,
+					"local_cl": 0.75416987000193,
+					"global_cl_at_trim_state": 0.804044678474636
+				},
+				{
+					"speed_m_s": 19.0,
+					"trim_ok": true,
+					"alpha_deg": 9.81477894154784,
+					"tip_separation_weight": 0.180036273770653,
+					"dMx_dp_N_m_per_rad_s": -4.40715190841965,
+					"Clp_p_hat": -0.269625598555173,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.723556891780781,
+					"local_cl": 0.723556891780781,
+					"global_cl_at_trim_state": 0.756495084143233
+				},
+				{
+					"speed_m_s": 19.2,
+					"trim_ok": true,
+					"alpha_deg": 9.52642833782837,
+					"tip_separation_weight": 0.160996384089886,
+					"dMx_dp_N_m_per_rad_s": -4.67923268328255,
+					"Clp_p_hat": -0.283289263930282,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.708898217184891,
+					"local_cl": 0.708898217184891,
+					"global_cl_at_trim_state": 0.735177599433321
+				},
+				{
+					"speed_m_s": 29.0,
+					"trim_ok": true,
+					"alpha_deg": 4.0453062252223,
+					"tip_separation_weight": 0.0,
+					"dMx_dp_N_m_per_rad_s": -15.1307788133411,
+					"Clp_p_hat": -0.606484893267127,
+					"local_flow_weight": 0.0,
+					"total_cl": 0.313495902844868,
+					"local_cl": 0.313495887261234,
+					"global_cl_at_trim_state": 0.313495902844868
+				},
+				{
+					"speed_m_s": 17.9,
+					"trim_ok": true,
+					"alpha_deg": 12.6756983394787,
+					"tip_separation_weight": 0.448602342263816,
+					"dMx_dp_N_m_per_rad_s": 0.76579266656622,
+					"Clp_p_hat": 0.0497295895813707,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.81178084517677,
+					"local_cl": 0.81178084517677,
+					"global_cl_at_trim_state": 0.483664724992518
+				},
+				{
+					"speed_m_s": 18.0,
+					"trim_ok": true,
+					"alpha_deg": 12.1322294985764,
+					"tip_separation_weight": 0.387535936567273,
+					"dMx_dp_N_m_per_rad_s": -0.336121758269247,
+					"Clp_p_hat": -0.0217060512691864,
+					"local_flow_weight": 1.0,
+					"total_cl": 0.803362616101432,
+					"local_cl": 0.803362616101432,
+					"global_cl_at_trim_state": 0.614911685189504
+				}
+			],
+			"wing_station_incidence_rad_root_mid_tip": [
+				-0.02,
+				0.0,
+				0.02
+			]
+		}
+	]
+}

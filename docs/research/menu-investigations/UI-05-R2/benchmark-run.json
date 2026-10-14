@@ -1,0 +1,30 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\snapshot\\app",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\bench.gd",
+    "--",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview"
+  ],
+  "exit_code": 0,
+  "warm_median_usec": {
+    "gp-extra-300s-60": {
+      "reference": 138620.5,
+      "candidate": 3604.0
+    },
+    "jensen-das-ugly-stik-60": {
+      "reference": 174278.0,
+      "candidate": 3872.5
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "reference": 684293.5,
+      "candidate": 3264.5
+    }
+  }
+}

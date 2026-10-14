@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"alpha_max":7.78408477211875,"beta_max":0.0901827062867986,"completed":true,"finite":true,"hold_s":2.0,"normal_g_max":1.7621919642489,"pitch":0.5,"pull_roll_rate_max":0.368269928269855,"roll_rate_max":0.368269928269855,"speed":29.0,"speed_min":16.9415955972797,"stall_first":-1.0,"stall_max":0.0316522442714784,"unwanted_command_max":0.0}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"alpha_max":11.8734938220218,"beta_max":0.469255760709249,"completed":true,"finite":true,"hold_s":2.0,"normal_g_max":2.194394735348,"pitch":0.75,"pull_roll_rate_max":0.760858413722265,"roll_rate_max":1.10720364211534,"speed":29.0,"speed_min":11.7576223820831,"stall_first":-1.0,"stall_max":0.3702838022021,"unwanted_command_max":0.0}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"alpha_max":10.7801380459249,"beta_max":0.176841853693709,"completed":true,"finite":true,"hold_s":2.0,"normal_g_max":5.60505408836683,"pitch":1.0,"pull_roll_rate_max":1.7984094633327,"roll_rate_max":1.7984094633327,"speed":45.0,"speed_min":14.1588130740614,"stall_first":-1.0,"stall_max":0.251865687302954,"unwanted_command_max":0.0}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"alpha_max":10.1745141485867,"beta_max":0.103499650573322,"completed":true,"finite":true,"hold_s":2.0,"normal_g_max":9.66395518068367,"pitch":1.0,"pull_roll_rate_max":1.82521555482601,"roll_rate_max":1.82521555482601,"speed":60.0,"speed_min":40.5523591027318,"stall_first":-1.0,"stall_max":0.203155277634162,"unwanted_command_max":0.0}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"alpha_max":4.47826681738155,"beta_max":0.0971598372440435,"completed":true,"finite":true,"hold_s":2.0,"normal_g_max":4.11235466111383,"pitch":-0.75,"pull_roll_rate_max":1.00721311922685,"roll_rate_max":1.00721311922685,"speed":45.0,"speed_min":44.9967151735467,"stall_first":-1.0,"stall_max":0.0,"unwanted_command_max":0.0}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"alpha_max":9.78081724936883,"beta_max":0.264751620846057,"completed":true,"finite":true,"hold_s":2.0,"normal_g_max":5.26955099017734,"pitch":0.5,"pull_roll_rate_max":1.31101164564369,"roll_rate_max":1.31101164564369,"speed":45.0,"speed_min":11.0671588686554,"stall_first":-1.0,"stall_max":0.176261645050025,"unwanted_command_max":0.0}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"alpha_max":12.0079342660232,"beta_max":5.14076611078161,"completed":true,"finite":true,"hold_s":2.0,"normal_g_max":2.46067897115919,"pitch":0.5,"pull_roll_rate_max":255.357563478581,"roll_rate_max":255.357563478581,"speed":29.0,"speed_min":26.5331371358943,"stall_first":0.958333333333333,"stall_max":1.0,"unwanted_command_max":0.0}
+AV-17-R2 gamepad flight: 22 checks, 0 failed

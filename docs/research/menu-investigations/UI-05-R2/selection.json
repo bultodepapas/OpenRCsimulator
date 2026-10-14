@@ -1,0 +1,302 @@
+[
+	{
+		"card_matches": true,
+		"cycle": 0,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 408954,
+		"usec": 396823,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 0,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 342057,
+		"usec": 305725,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 0,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 1699166,
+		"usec": 1513461,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 1,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 355821,
+		"usec": 341018,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 1,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 216109,
+		"usec": 203807,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 1,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 1498361,
+		"usec": 1438415,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 2,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 416165,
+		"usec": 398512,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 2,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 224516,
+		"usec": 208457,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 2,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 1247809,
+		"usec": 1211677,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 3,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 359620,
+		"usec": 345304,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 3,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 226360,
+		"usec": 215087,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 3,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 1305088,
+		"usec": 1251779,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 4,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 424557,
+		"usec": 409697,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 4,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 236566,
+		"usec": 226329,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 4,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 1409235,
+		"usec": 1341102,
+		"variant": "reference"
+	},
+	{
+		"card_matches": true,
+		"cycle": 0,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 26101,
+		"usec": 11597,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 0,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 361305,
+		"usec": 355434,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 0,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 1466773,
+		"usec": 1415422,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 1,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 16643,
+		"usec": 7585,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 1,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 11955,
+		"usec": 5502,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 1,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 12682,
+		"usec": 5111,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 2,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 13768,
+		"usec": 4881,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 2,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 14338,
+		"usec": 7988,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 2,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 12205,
+		"usec": 5304,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 3,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 11648,
+		"usec": 4585,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 3,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 13821,
+		"usec": 5893,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 3,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 13487,
+		"usec": 6069,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 4,
+		"focus": "Fly",
+		"id": "jensen-das-ugly-stik-60",
+		"preview_matches": true,
+		"through_draw_usec": 12674,
+		"usec": 4849,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 4,
+		"focus": "Fly",
+		"id": "gp-extra-300s-60",
+		"preview_matches": true,
+		"through_draw_usec": 12375,
+		"usec": 5867,
+		"variant": "candidate"
+	},
+	{
+		"card_matches": true,
+		"cycle": 4,
+		"focus": "Fly",
+		"id": "sebart-avanti-s-a200-p100rx",
+		"preview_matches": true,
+		"through_draw_usec": 10520,
+		"usec": 4220,
+		"variant": "candidate"
+	}
+]

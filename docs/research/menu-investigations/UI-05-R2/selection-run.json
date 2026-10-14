@@ -1,0 +1,48 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\snapshot\\app",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\selection.gd",
+    "--",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview"
+  ],
+  "exit_code": 0,
+  "warm_median_usec": {
+    "gp-extra-300s-60": {
+      "reference": {
+        "usec": 211772.0,
+        "through_draw_usec": 225438.0
+      },
+      "candidate": {
+        "usec": 5880.0,
+        "through_draw_usec": 13098.0
+      }
+    },
+    "jensen-das-ugly-stik-60": {
+      "reference": {
+        "usec": 371908.0,
+        "through_draw_usec": 387892.5
+      },
+      "candidate": {
+        "usec": 4865.0,
+        "through_draw_usec": 13221.0
+      }
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "reference": {
+        "usec": 1296440.5,
+        "through_draw_usec": 1357161.5
+      },
+      "candidate": {
+        "usec": 5207.5,
+        "through_draw_usec": 12443.5
+      }
+    }
+  }
+}

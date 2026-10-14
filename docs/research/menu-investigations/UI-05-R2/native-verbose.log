@@ -1,0 +1,345 @@
+WorkerThreadPool: 24 threads, 7 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Accessibility: AccessKit driver loaded.
+Native OpenGL API detected: 3.3: NVIDIA - NVIDIA GeForce RTX 3090
+NVAPI: Init OK!
+NVAPI: Application not found in profile, creating...
+NVAPI: Error creating application: NVAPI_EXECUTABLE_ALREADY_IN_USE(code -167)
+Accessibility: window 0 adapter created.
+SDL: Gamepad XInput Controller connected
+SDL: Init OK!
+Using "winink" pen tablet driver...
+Shader 'CanvasSdfShaderGLES3' SHA256: bcf622261d8230341b0d3aa86d8cd95ee09925cda953aa4c58d1e5dd0327aaa1
+Shader 'SkeletonShaderGLES3' SHA256: 1ed966a6d71ec3fe0f04e63935f2fbd0a664dfb1ef000553923d209372e106b3
+Shader 'ParticlesShaderGLES3' SHA256: 0846b56cf77e00f1ebb8e1af26d9e333881a5dd366b96f40c0aa6db768b9e5af
+Shader 'ParticlesCopyShaderGLES3' SHA256: 7a9fe6010ed3e7823060ff66d15e973b458e0a1a97e4ec14d2542596af87e466
+Shader 'CopyShaderGLES3' SHA256: 0f95e9d8162f0a48740ac240ca0b8ea2cb86a2be986de3cbc87f794718ea848f
+Shader 'CubemapFilterShaderGLES3' SHA256: b0afd32f136571f6342de576d0d60044adc05fbffdd7bd811daec143e765c5f1
+Shader 'GlowShaderGLES3' SHA256: 56519597c1c3526d5480b78cb66b0165a8b325d64b0d47fd7b1441ec6a8ec614
+Shader 'PostShaderGLES3' SHA256: 78de008caefe8a1f849095618ad7501f149118dd01542d74d40a4ab2e5c377c9
+Shader 'FeedShaderGLES3' SHA256: 1593b65bfbfc0875e5ecfd808c92a69898ac75ecf9d64c69509f2f6807b0c9be
+Shader 'CanvasShaderGLES3' SHA256: cc45952ace5485ebbf54e39aa0a87cf4978afb85f49a9d7bc1f195b5c133e509
+Shader 'CanvasOcclusionShaderGLES3' SHA256: 57e02805adce36250a1929cfe9d0a542f6468fe593cc58ceeb0cce270db17492
+Shader 'SceneShaderGLES3' SHA256: 1c32abf65da2b2b73056815fcf8eba89426f63a9e88ba0a685a99967e0c87a6f
+Shader 'SkyShaderGLES3' SHA256: 3535f5a0dbea97d035639a0515c513116c9811dd7d0e1fa9a9da3e4f5d03f323
+Shader 'TexBlitShaderGLES3' SHA256: 694b98cba401d065743fc551ca81698da07a19db68767ef96d3d2ed8544ce38d
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/test_ui_home_preview_cache.gd remapped: res://tests/test_ui_home_preview_cache.gd
+Completed load for: 'res://tests/test_ui_home_preview_cache.gd' remapped 'res://tests/test_ui_home_preview_cache.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+Loading resource: res://ui/home_scene.gd remapped: res://ui/home_scene.gd
+Loading resource: res://render/sky.gdshader remapped: res://render/sky.gdshader
+Loading resource: res://render/cloud_field.gdshaderinc remapped: res://render/cloud_field.gdshaderinc
+Completed load for: 'res://render/cloud_field.gdshaderinc' remapped 'res://render/cloud_field.gdshaderinc' at thread -1
+Loading resource: res://render/cloud_relief.gdshaderinc remapped: res://render/cloud_relief.gdshaderinc
+Completed load for: 'res://render/cloud_relief.gdshaderinc' remapped 'res://render/cloud_relief.gdshaderinc' at thread -1
+Completed load for: 'res://render/sky.gdshader' remapped 'res://render/sky.gdshader' at thread -1
+Loading resource: res://render/ground.gdshader remapped: res://render/ground.gdshader
+Loading resource: res://render/grass_surface.gdshaderinc remapped: res://render/grass_surface.gdshaderinc
+Completed load for: 'res://render/grass_surface.gdshaderinc' remapped 'res://render/grass_surface.gdshaderinc' at thread -1
+Loading resource: res://render/turf_detail.gdshaderinc remapped: res://render/turf_detail.gdshaderinc
+Completed load for: 'res://render/turf_detail.gdshaderinc' remapped 'res://render/turf_detail.gdshaderinc' at thread -1
+Completed load for: 'res://render/ground.gdshader' remapped 'res://render/ground.gdshader' at thread -1
+Loading resource: res://render/near_grass.gdshader remapped: res://render/near_grass.gdshader
+Completed load for: 'res://render/near_grass.gdshader' remapped 'res://render/near_grass.gdshader' at thread -1
+Loading resource: res://render/projected_shadow_mask.gdshader remapped: res://render/projected_shadow_mask.gdshader
+Completed load for: 'res://render/projected_shadow_mask.gdshader' remapped 'res://render/projected_shadow_mask.gdshader' at thread -1
+Loading resource: res://render/projected_shadow_receiver.gdshader remapped: res://render/projected_shadow_receiver.gdshader
+Completed load for: 'res://render/projected_shadow_receiver.gdshader' remapped 'res://render/projected_shadow_receiver.gdshader' at thread -1
+Loading resource: res://render/treeline.gdshader remapped: res://render/treeline.gdshader
+Loading resource: res://render/tree_identity.gdshaderinc remapped: res://render/tree_identity.gdshaderinc
+Completed load for: 'res://render/tree_identity.gdshaderinc' remapped 'res://render/tree_identity.gdshaderinc' at thread -1
+Loading resource: res://render/tree_wind.gdshaderinc remapped: res://render/tree_wind.gdshaderinc
+Completed load for: 'res://render/tree_wind.gdshaderinc' remapped 'res://render/tree_wind.gdshaderinc' at thread -1
+Completed load for: 'res://render/treeline.gdshader' remapped 'res://render/treeline.gdshader' at thread -1
+Loading resource: res://assets/landscape/turf/detail.png remapped: res://assets/landscape/turf/detail.png
+Loading resource: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex remapped: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex
+Completed load for: 'res://assets/landscape/turf/detail.png' remapped 'res://assets/landscape/turf/detail.png' at thread -1
+Loading resource: res://render/lake/bank.gdshader remapped: res://render/lake/bank.gdshader
+Completed load for: 'res://render/lake/bank.gdshader' remapped 'res://render/lake/bank.gdshader' at thread -1
+Loading resource: res://render/lake/water.gdshader remapped: res://render/lake/water.gdshader
+Completed load for: 'res://render/lake/water.gdshader' remapped 'res://render/lake/water.gdshader' at thread -1
+Loading resource: res://assets/audio/water/peludo-splash1.wav remapped: res://assets/audio/water/peludo-splash1.wav
+Loading resource: res://.godot/imported/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.sample remapped: res://.godot/imported/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.sample
+Completed load for: 'res://assets/audio/water/peludo-splash1.wav' remapped 'res://assets/audio/water/peludo-splash1.wav' at thread -1
+Loading resource: res://assets/audio/water/peludo-splash2.wav remapped: res://assets/audio/water/peludo-splash2.wav
+Loading resource: res://.godot/imported/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.sample remapped: res://.godot/imported/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.sample
+Completed load for: 'res://assets/audio/water/peludo-splash2.wav' remapped 'res://assets/audio/water/peludo-splash2.wav' at thread -1
+Loading resource: res://assets/audio/water/randommind-vistula-short.mp3 remapped: res://assets/audio/water/randommind-vistula-short.mp3
+Loading resource: res://.godot/imported/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.mp3str remapped: res://.godot/imported/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.mp3str
+Completed load for: 'res://assets/audio/water/randommind-vistula-short.mp3' remapped 'res://assets/audio/water/randommind-vistula-short.mp3' at thread -1
+Loading resource: res://scenery/gravel.gdshader remapped: res://scenery/gravel.gdshader
+Completed load for: 'res://scenery/gravel.gdshader' remapped 'res://scenery/gravel.gdshader' at thread -1
+Loading resource: res://scenery/motion.gdshader remapped: res://scenery/motion.gdshader
+Completed load for: 'res://scenery/motion.gdshader' remapped 'res://scenery/motion.gdshader' at thread -1
+Loading resource: res://scenery/population_person.gdshader remapped: res://scenery/population_person.gdshader
+Completed load for: 'res://scenery/population_person.gdshader' remapped 'res://scenery/population_person.gdshader' at thread -1
+Loading resource: res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader remapped: res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader
+Completed load for: 'res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader' remapped 'res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader' at thread -1
+Loading resource: res://scenery/flowers.gdshader remapped: res://scenery/flowers.gdshader
+Completed load for: 'res://scenery/flowers.gdshader' remapped 'res://scenery/flowers.gdshader' at thread -1
+Loading resource: res://scenery/birds.gdshader remapped: res://scenery/birds.gdshader
+Completed load for: 'res://scenery/birds.gdshader' remapped 'res://scenery/birds.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/ridge_haze.gdshader remapped: res://render/landscape_upgrade/ridge_haze.gdshader
+Completed load for: 'res://render/landscape_upgrade/ridge_haze.gdshader' remapped 'res://render/landscape_upgrade/ridge_haze.gdshader' at thread -1
+Loading resource: res://render/world/stars.gdshader remapped: res://render/world/stars.gdshader
+Loading resource: res://render/world/engine_srgb.gdshaderinc remapped: res://render/world/engine_srgb.gdshaderinc
+Completed load for: 'res://render/world/engine_srgb.gdshaderinc' remapped 'res://render/world/engine_srgb.gdshaderinc' at thread -1
+Completed load for: 'res://render/world/stars.gdshader' remapped 'res://render/world/stars.gdshader' at thread -1
+Loading resource: res://render/world/light_sprite.gdshader remapped: res://render/world/light_sprite.gdshader
+Completed load for: 'res://render/world/light_sprite.gdshader' remapped 'res://render/world/light_sprite.gdshader' at thread -1
+Loading resource: res://render/world/led_strip.gdshader remapped: res://render/world/led_strip.gdshader
+Completed load for: 'res://render/world/led_strip.gdshader' remapped 'res://render/world/led_strip.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/sun_glare.gdshader remapped: res://render/landscape_upgrade/sun_glare.gdshader
+Completed load for: 'res://render/landscape_upgrade/sun_glare.gdshader' remapped 'res://render/landscape_upgrade/sun_glare.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/window_glow.gdshader remapped: res://render/landscape_upgrade/window_glow.gdshader
+Completed load for: 'res://render/landscape_upgrade/window_glow.gdshader' remapped 'res://render/landscape_upgrade/window_glow.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/field_lamp.gdshader remapped: res://render/landscape_upgrade/field_lamp.gdshader
+Completed load for: 'res://render/landscape_upgrade/field_lamp.gdshader' remapped 'res://render/landscape_upgrade/field_lamp.gdshader' at thread -1
+Loading resource: res://render/landscape_upgrade/runway_marker.gdshader remapped: res://render/landscape_upgrade/runway_marker.gdshader
+Completed load for: 'res://render/landscape_upgrade/runway_marker.gdshader' remapped 'res://render/landscape_upgrade/runway_marker.gdshader' at thread -1
+Completed load for: 'res://ui/home_scene.gd' remapped 'res://ui/home_scene.gd' at thread -1
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+Loading resource: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png remapped: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png
+Loading resource: res://.godot/imported/bush_common_flowers_4view.png-dc10a4cfb048bb02e62177041552fb0f.ctex remapped: res://.godot/imported/bush_common_flowers_4view.png-dc10a4cfb048bb02e62177041552fb0f.ctex
+Completed load for: 'res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png' remapped 'res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Pine_1.gltf remapped: res://assets/landscape/vegetation/models/Pine_1.gltf
+Loading resource: res://.godot/imported/Pine_1.gltf-e0cb0bbe723504e29f0268031ef9b4e0.scn remapped: res://.godot/imported/Pine_1.gltf-e0cb0bbe723504e29f0268031ef9b4e0.scn
+Loading resource: res://assets/landscape/vegetation/models/Bark_NormalTree.png remapped: res://assets/landscape/vegetation/models/Bark_NormalTree.png
+Loading resource: res://.godot/imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.ctex remapped: res://.godot/imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png' remapped 'res://assets/landscape/vegetation/models/Bark_NormalTree.png' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png remapped: res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png
+Loading resource: res://.godot/imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.ctex remapped: res://.godot/imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png' remapped 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Leaf_Pine_C.png remapped: res://assets/landscape/vegetation/models/Leaf_Pine_C.png
+Loading resource: res://.godot/imported/Leaf_Pine_C.png-016dab428dc30ce651e3cfdbe4017841.ctex remapped: res://.godot/imported/Leaf_Pine_C.png-016dab428dc30ce651e3cfdbe4017841.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png' remapped 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Pine_1.gltf' remapped 'res://assets/landscape/vegetation/models/Pine_1.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/CommonTree_3.gltf remapped: res://assets/landscape/vegetation/models/CommonTree_3.gltf
+Loading resource: res://.godot/imported/CommonTree_3.gltf-bbff1f85eb21b0413f98a2d334ce4925.scn remapped: res://.godot/imported/CommonTree_3.gltf-bbff1f85eb21b0413f98a2d334ce4925.scn
+Loading resource: res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png remapped: res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png
+Loading resource: res://.godot/imported/Leaves_NormalTree_C.png-adc42005f213f2d18702805b22ad557e.ctex remapped: res://.godot/imported/Leaves_NormalTree_C.png-adc42005f213f2d18702805b22ad557e.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png' remapped 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf' remapped 'res://assets/landscape/vegetation/models/CommonTree_3.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/CommonTree_1.gltf remapped: res://assets/landscape/vegetation/models/CommonTree_1.gltf
+Loading resource: res://.godot/imported/CommonTree_1.gltf-272007b09f00de3f6135f6e6ae7c8158.scn remapped: res://.godot/imported/CommonTree_1.gltf-272007b09f00de3f6135f6e6ae7c8158.scn
+Completed load for: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf' remapped 'res://assets/landscape/vegetation/models/CommonTree_1.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf remapped: res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf
+Loading resource: res://.godot/imported/Bush_Common_Flowers.gltf-643600e369714c782fa0031321113ea0.scn remapped: res://.godot/imported/Bush_Common_Flowers.gltf-643600e369714c782fa0031321113ea0.scn
+Loading resource: res://assets/landscape/vegetation/models/Flowers.png remapped: res://assets/landscape/vegetation/models/Flowers.png
+Loading resource: res://.godot/imported/Flowers.png-646ddc610b3a5e1e88ea7934ccf9d804.ctex remapped: res://.godot/imported/Flowers.png-646ddc610b3a5e1e88ea7934ccf9d804.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Flowers.png' remapped 'res://assets/landscape/vegetation/models/Flowers.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf' remapped 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Bush_Common.gltf remapped: res://assets/landscape/vegetation/models/Bush_Common.gltf
+Loading resource: res://.godot/imported/Bush_Common.gltf-0f588a0629eff29de809f2ac0b6e2873.scn remapped: res://.godot/imported/Bush_Common.gltf-0f588a0629eff29de809f2ac0b6e2873.scn
+Loading resource: res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png remapped: res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png
+Loading resource: res://.godot/imported/Leaves_TwistedTree_C.png-c9a7e5d8a166f375df2bbebcaa52fb7f.ctex remapped: res://.godot/imported/Leaves_TwistedTree_C.png-c9a7e5d8a166f375df2bbebcaa52fb7f.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png' remapped 'res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Bush_Common.gltf' remapped 'res://assets/landscape/vegetation/models/Bush_Common.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Clover_1.gltf remapped: res://assets/landscape/vegetation/models/Clover_1.gltf
+Loading resource: res://.godot/imported/Clover_1.gltf-720834edb4524bd441c2aad1a64ff6fc.scn remapped: res://.godot/imported/Clover_1.gltf-720834edb4524bd441c2aad1a64ff6fc.scn
+Loading resource: res://assets/landscape/vegetation/models/Leaves.png remapped: res://assets/landscape/vegetation/models/Leaves.png
+Loading resource: res://.godot/imported/Leaves.png-a573ffb4f4f874222087bdbc6b92f7b8.ctex remapped: res://.godot/imported/Leaves.png-a573ffb4f4f874222087bdbc6b92f7b8.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Leaves.png' remapped 'res://assets/landscape/vegetation/models/Leaves.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Clover_1.gltf' remapped 'res://assets/landscape/vegetation/models/Clover_1.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Flower_4_Group.gltf remapped: res://assets/landscape/vegetation/models/Flower_4_Group.gltf
+Loading resource: res://.godot/imported/Flower_4_Group.gltf-9cddf6c6cded07d6c33eb2f995dbe133.scn remapped: res://.godot/imported/Flower_4_Group.gltf-9cddf6c6cded07d6c33eb2f995dbe133.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf' remapped 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Flower_3_Group.gltf remapped: res://assets/landscape/vegetation/models/Flower_3_Group.gltf
+Loading resource: res://.godot/imported/Flower_3_Group.gltf-ccfcab329a805813503a1bba1e513e81.scn remapped: res://.godot/imported/Flower_3_Group.gltf-ccfcab329a805813503a1bba1e513e81.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf' remapped 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf' at thread -1
+Loading resource: res://assets/scenery/population/pilot.glb remapped: res://assets/scenery/population/pilot.glb
+Loading resource: res://.godot/imported/pilot.glb-89740728232196ca73f8cd9b7390f758.scn remapped: res://.godot/imported/pilot.glb-89740728232196ca73f8cd9b7390f758.scn
+Loading resource: res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png remapped: res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png
+Loading resource: res://.godot/imported/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png-c242f96b10a52383a8a635b59be06f41.ctex remapped: res://.godot/imported/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png-c242f96b10a52383a8a635b59be06f41.ctex
+Completed load for: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png' remapped 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png remapped: res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png
+Loading resource: res://.godot/imported/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png-79cf26cc367e0aef2be0a8cc07a2a6ac.ctex remapped: res://.godot/imported/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png-79cf26cc367e0aef2be0a8cc07a2a6ac.ctex
+Completed load for: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png' remapped 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png remapped: res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png
+Loading resource: res://.godot/imported/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png-f07a31f1e2860128e78953523f5c2e15.ctex remapped: res://.godot/imported/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png-f07a31f1e2860128e78953523f5c2e15.ctex
+Completed load for: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png' remapped 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png remapped: res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png
+Loading resource: res://.godot/imported/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png-e96a8a8a8ca9a5147f04d8f2904c0825.ctex remapped: res://.godot/imported/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png-e96a8a8a8ca9a5147f04d8f2904c0825.ctex
+Completed load for: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png' remapped 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png remapped: res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png
+Loading resource: res://.godot/imported/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png-6a39999e6d4382f4041c6e1a949db640.ctex remapped: res://.godot/imported/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png-6a39999e6d4382f4041c6e1a949db640.ctex
+Completed load for: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png' remapped 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png remapped: res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png
+Loading resource: res://.godot/imported/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png-9e99dc6340a612be7d3a7b6b6d6d08c6.ctex remapped: res://.godot/imported/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png-9e99dc6340a612be7d3a7b6b6d6d08c6.ctex
+Completed load for: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png' remapped 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png remapped: res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png
+Loading resource: res://.godot/imported/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png-050e3a69db0c393e61a58baa6a52c46c.ctex remapped: res://.godot/imported/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png-050e3a69db0c393e61a58baa6a52c46c.ctex
+Completed load for: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png' remapped 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png' at thread -1
+Completed load for: 'res://assets/scenery/population/pilot.glb' remapped 'res://assets/scenery/population/pilot.glb' at thread -1
+Loading resource: res://assets/scenery/population/standing.glb remapped: res://assets/scenery/population/standing.glb
+Loading resource: res://.godot/imported/standing.glb-3d2db20a525321499495f9d901e53356.scn remapped: res://.godot/imported/standing.glb-3d2db20a525321499495f9d901e53356.scn
+Completed load for: 'res://assets/scenery/population/standing.glb' remapped 'res://assets/scenery/population/standing.glb' at thread -1
+Loading resource: res://assets/scenery/population/sitting.glb remapped: res://assets/scenery/population/sitting.glb
+Loading resource: res://.godot/imported/sitting.glb-c0b6804321cbcc07a783a05192aeeed9.scn remapped: res://.godot/imported/sitting.glb-c0b6804321cbcc07a783a05192aeeed9.scn
+Completed load for: 'res://assets/scenery/population/sitting.glb' remapped 'res://assets/scenery/population/sitting.glb' at thread -1
+Loading resource: res://assets/scenery/population/hatch.glb remapped: res://assets/scenery/population/hatch.glb
+Loading resource: res://.godot/imported/hatch.glb-97b0207543d52fefc036088ec7ba9c08.scn remapped: res://.godot/imported/hatch.glb-97b0207543d52fefc036088ec7ba9c08.scn
+Loading resource: res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png remapped: res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png
+Loading resource: res://.godot/imported/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png-4d046b6974e4991f8d697000fe29eed6.ctex remapped: res://.godot/imported/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png-4d046b6974e4991f8d697000fe29eed6.ctex
+Completed load for: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png' remapped 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png remapped: res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png
+Loading resource: res://.godot/imported/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png-9d6adb8a3a1c0d5adcc05525efbd42ee.ctex remapped: res://.godot/imported/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png-9d6adb8a3a1c0d5adcc05525efbd42ee.ctex
+Completed load for: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png' remapped 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png remapped: res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png
+Loading resource: res://.godot/imported/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png-d622270794504620d5a83bf45bb7f0e7.ctex remapped: res://.godot/imported/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png-d622270794504620d5a83bf45bb7f0e7.ctex
+Completed load for: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png' remapped 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png remapped: res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png
+Loading resource: res://.godot/imported/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png-6464f14e3a680930a180b04fbc40a3e9.ctex remapped: res://.godot/imported/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png-6464f14e3a680930a180b04fbc40a3e9.ctex
+Completed load for: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png' remapped 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png remapped: res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png
+Loading resource: res://.godot/imported/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png-aeffcf87c65dfb8905a4b804384e678f.ctex remapped: res://.godot/imported/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png-aeffcf87c65dfb8905a4b804384e678f.ctex
+Completed load for: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png' remapped 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png remapped: res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png
+Loading resource: res://.godot/imported/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png-ed7294581163d3b6ce9dde8ebb25b793.ctex remapped: res://.godot/imported/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png-ed7294581163d3b6ce9dde8ebb25b793.ctex
+Completed load for: 'res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png' remapped 'res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png remapped: res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png
+Loading resource: res://.godot/imported/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png-627d64227fc589815b43d4ad721d9a57.ctex remapped: res://.godot/imported/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png-627d64227fc589815b43d4ad721d9a57.ctex
+Completed load for: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png' remapped 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png remapped: res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png
+Loading resource: res://.godot/imported/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png-5f8eb4ce079de1908a8be452640f7e05.ctex remapped: res://.godot/imported/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png-5f8eb4ce079de1908a8be452640f7e05.ctex
+Completed load for: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png' remapped 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png remapped: res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png
+Loading resource: res://.godot/imported/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png-35c61d584a1353abe1f1e01c2ae03e24.ctex remapped: res://.godot/imported/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png-35c61d584a1353abe1f1e01c2ae03e24.ctex
+Completed load for: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png' remapped 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png' at thread -1
+Loading resource: res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png remapped: res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png
+Loading resource: res://.godot/imported/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png-d82c44aaeaeb1afeb8162ca6bf4cc48f.ctex remapped: res://.godot/imported/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png-d82c44aaeaeb1afeb8162ca6bf4cc48f.ctex
+Completed load for: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png' remapped 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png' at thread -1
+Completed load for: 'res://assets/scenery/population/hatch.glb' remapped 'res://assets/scenery/population/hatch.glb' at thread -1
+Loading resource: res://assets/scenery/population/crossover.glb remapped: res://assets/scenery/population/crossover.glb
+Loading resource: res://.godot/imported/crossover.glb-32e7122d5e3de4101b9d92e905729cd3.scn remapped: res://.godot/imported/crossover.glb-32e7122d5e3de4101b9d92e905729cd3.scn
+Loading resource: res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png remapped: res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png
+Loading resource: res://.godot/imported/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png-918f716c903a4226b842681db67a56bd.ctex remapped: res://.godot/imported/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png-918f716c903a4226b842681db67a56bd.ctex
+Completed load for: 'res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png' remapped 'res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png' at thread -1
+Completed load for: 'res://assets/scenery/population/crossover.glb' remapped 'res://assets/scenery/population/crossover.glb' at thread -1
+Loading resource: res://assets/scenery/population/sedan.glb remapped: res://assets/scenery/population/sedan.glb
+Loading resource: res://.godot/imported/sedan.glb-f232efc5a5bf129ff6438b65285f66aa.scn remapped: res://.godot/imported/sedan.glb-f232efc5a5bf129ff6438b65285f66aa.scn
+Loading resource: res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png remapped: res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png
+Loading resource: res://.godot/imported/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png-e7c7fa5a444acec8eb7938c4695a0ac3.ctex remapped: res://.godot/imported/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png-e7c7fa5a444acec8eb7938c4695a0ac3.ctex
+Completed load for: 'res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png' remapped 'res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png' at thread -1
+Completed load for: 'res://assets/scenery/population/sedan.glb' remapped 'res://assets/scenery/population/sedan.glb' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf remapped: res://assets/landscape/vegetation/models/Grass_Common_Short.gltf
+Loading resource: res://.godot/imported/Grass_Common_Short.gltf-876bbbf048b395985b2a294d9faf1abf.scn remapped: res://.godot/imported/Grass_Common_Short.gltf-876bbbf048b395985b2a294d9faf1abf.scn
+Loading resource: res://assets/landscape/vegetation/models/Grass.png remapped: res://assets/landscape/vegetation/models/Grass.png
+Loading resource: res://.godot/imported/Grass.png-0f8c4704eafceedf3c661e0f69e7b564.ctex remapped: res://.godot/imported/Grass.png-0f8c4704eafceedf3c661e0f69e7b564.ctex
+Completed load for: 'res://assets/landscape/vegetation/models/Grass.png' remapped 'res://assets/landscape/vegetation/models/Grass.png' at thread -1
+Completed load for: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf' remapped 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Fern_1.gltf remapped: res://assets/landscape/vegetation/models/Fern_1.gltf
+Loading resource: res://.godot/imported/Fern_1.gltf-8408317c172591bbebc72d68094373c7.scn remapped: res://.godot/imported/Fern_1.gltf-8408317c172591bbebc72d68094373c7.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Fern_1.gltf' remapped 'res://assets/landscape/vegetation/models/Fern_1.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf remapped: res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf
+Loading resource: res://.godot/imported/Grass_Common_Tall.gltf-d0e949d6b4cbfe9660497b3aa3f1d888.scn remapped: res://.godot/imported/Grass_Common_Tall.gltf-d0e949d6b4cbfe9660497b3aa3f1d888.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf' remapped 'res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf remapped: res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf
+Loading resource: res://.godot/imported/Grass_Wispy_Tall.gltf-47448376d02a5391e52cae693c124e04.scn remapped: res://.godot/imported/Grass_Wispy_Tall.gltf-47448376d02a5391e52cae693c124e04.scn
+Completed load for: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf' remapped 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj remapped: res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj
+Loading resource: res://.godot/imported/Corn_4.obj-45a3391544b7ad685ae22b82922757a8.mesh remapped: res://.godot/imported/Corn_4.obj-45a3391544b7ad685ae22b82922757a8.mesh
+Completed load for: 'res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj' remapped 'res://assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj remapped: res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj
+Loading resource: res://.godot/imported/Wheat_4.obj-645d0d651afebd3a9ec7bc3c22f0a7a4.mesh remapped: res://.godot/imported/Wheat_4.obj-645d0d651afebd3a9ec7bc3c22f0a7a4.mesh
+Completed load for: 'res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj' remapped 'res://assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj' at thread -1
+Loading resource: res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj remapped: res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj
+Loading resource: res://.godot/imported/reed.obj-6447901ba401c4ab445beb38d4e3b0a1.mesh remapped: res://.godot/imported/reed.obj-6447901ba401c4ab445beb38d4e3b0a1.mesh
+Completed load for: 'res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj' remapped 'res://assets/landscape/vegetation/models/additional/aredon_reed/reed.obj' at thread -1
+Loading resource: res://assets/landscape/lake/default_geometry.res remapped: res://assets/landscape/lake/default_geometry.res
+Completed load for: 'res://assets/landscape/lake/default_geometry.res' remapped 'res://assets/landscape/lake/default_geometry.res' at thread -1
+Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb
+Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn
+Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1
+Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb
+Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn
+Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1
+Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb
+Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn
+Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1
+Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb
+Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn
+Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1
+Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb
+Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn
+Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1
+Loading resource: res://render/world/campfire.gd remapped: res://render/world/campfire.gd
+Loading resource: res://assets/landscape/night-lighting/campfire-pit.glb remapped: res://assets/landscape/night-lighting/campfire-pit.glb
+Loading resource: res://.godot/imported/campfire-pit.glb-b525844a605935f12dbf3d6e43e99fa1.scn remapped: res://.godot/imported/campfire-pit.glb-b525844a605935f12dbf3d6e43e99fa1.scn
+Loading resource: res://assets/landscape/night-lighting/Textures/colormap.png remapped: res://assets/landscape/night-lighting/Textures/colormap.png
+Loading resource: res://.godot/imported/colormap.png-d53b5897cf9a82dae5b4ec3145b7b195.ctex remapped: res://.godot/imported/colormap.png-d53b5897cf9a82dae5b4ec3145b7b195.ctex
+Completed load for: 'res://assets/landscape/night-lighting/Textures/colormap.png' remapped 'res://assets/landscape/night-lighting/Textures/colormap.png' at thread -1
+Completed load for: 'res://assets/landscape/night-lighting/campfire-pit.glb' remapped 'res://assets/landscape/night-lighting/campfire-pit.glb' at thread -1
+Loading resource: res://assets/landscape/night-lighting/flames-8x10.png remapped: res://assets/landscape/night-lighting/flames-8x10.png
+Loading resource: res://.godot/imported/flames-8x10.png-c7891dcc5db811a602cbb6d0542ed9fd.ctex remapped: res://.godot/imported/flames-8x10.png-c7891dcc5db811a602cbb6d0542ed9fd.ctex
+Completed load for: 'res://assets/landscape/night-lighting/flames-8x10.png' remapped 'res://assets/landscape/night-lighting/flames-8x10.png' at thread -1
+Loading resource: res://render/world/campfire_flame.gdshader remapped: res://render/world/campfire_flame.gdshader
+Completed load for: 'res://render/world/campfire_flame.gdshader' remapped 'res://render/world/campfire_flame.gdshader' at thread -1
+Completed load for: 'res://render/world/campfire.gd' remapped 'res://render/world/campfire.gd' at thread -1
+Loading resource: res://aircraft/model_registry.gd remapped: res://aircraft/model_registry.gd
+Completed load for: 'res://aircraft/model_registry.gd' remapped 'res://aircraft/model_registry.gd' at thread -1
+Loading resource: res://aircraft/ugly_stik_grain.res remapped: res://aircraft/ugly_stik_grain.res
+Completed load for: 'res://aircraft/ugly_stik_grain.res' remapped 'res://aircraft/ugly_stik_grain.res' at thread -1
+Loading resource: res://aircraft/extra_300s_model.gd remapped: res://aircraft/extra_300s_model.gd
+Completed load for: 'res://aircraft/extra_300s_model.gd' remapped 'res://aircraft/extra_300s_model.gd' at thread -1
+Loading resource: res://aircraft/imported_model.gd remapped: res://aircraft/imported_model.gd
+Completed load for: 'res://aircraft/imported_model.gd' remapped 'res://aircraft/imported_model.gd' at thread -1
+Loading resource: res://aircraft/avanti_s_blender_geometry.gd remapped: res://aircraft/avanti_s_blender_geometry.gd
+Completed load for: 'res://aircraft/avanti_s_blender_geometry.gd' remapped 'res://aircraft/avanti_s_blender_geometry.gd' at thread -1
+Loading resource: res://assets/aircraft/avanti-s-a200/avanti_s.glb remapped: res://assets/aircraft/avanti-s-a200/avanti_s.glb
+Loading resource: res://.godot/imported/avanti_s.glb-fc7a5a1dc6035541eb3b14179dea3924.scn remapped: res://.godot/imported/avanti_s.glb-fc7a5a1dc6035541eb3b14179dea3924.scn
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 33 ms.
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 45 ms.
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 52 ms.
+BasisU: Transcoding a 512x512 image with 9 mipmaps into BPTC_RGBA took 4 ms.
+BasisU: Transcoding a 512x512 image with 9 mipmaps into BPTC_RGBA took 2 ms.
+BasisU: Transcoding a 512x512 image with 9 mipmaps into BPTC_RGBA took 4 ms.
+BasisU: Transcoding a 1024x2048 image with 11 mipmaps into BPTC_RGBA took 22 ms.
+BasisU: Transcoding a 1024x2048 image with 11 mipmaps into BPTC_RGBA took 25 ms.
+BasisU: Transcoding a 1024x2048 image with 11 mipmaps into BPTC_RGBA took 27 ms.
+BasisU: Transcoding a 128x512 image with 9 mipmaps into BPTC_RGBA took 1 ms.
+BasisU: Transcoding a 768x320 image with 9 mipmaps into BPTC_RGBA took 3 ms.
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 36 ms.
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 48 ms.
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 52 ms.
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 42 ms.
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 35 ms.
+BasisU: Transcoding a 2048x2048 image with 11 mipmaps into BPTC_RGBA took 38 ms.
+BasisU: Transcoding a 2048x1024 image with 11 mipmaps into BPTC_RGBA took 18 ms.
+BasisU: Transcoding a 2048x1024 image with 11 mipmaps into BPTC_RGBA took 19 ms.
+BasisU: Transcoding a 2048x1024 image with 11 mipmaps into BPTC_RGBA took 23 ms.
+Completed load for: 'res://assets/aircraft/avanti-s-a200/avanti_s.glb' remapped 'res://assets/aircraft/avanti-s-a200/avanti_s.glb' at thread -1
+Loading resource: res://aircraft/timber_geometry.gd remapped: res://aircraft/timber_geometry.gd
+Completed load for: 'res://aircraft/timber_geometry.gd' remapped 'res://aircraft/timber_geometry.gd' at thread -1
+Loading resource: res://assets/aircraft/turbo-lumber-evolution/timber.glb remapped: res://assets/aircraft/turbo-lumber-evolution/timber.glb
+Loading resource: res://.godot/imported/timber.glb-449a28c452d4e5961641c23545d6074c.scn remapped: res://.godot/imported/timber.glb-449a28c452d4e5961641c23545d6074c.scn
+Completed load for: 'res://assets/aircraft/turbo-lumber-evolution/timber.glb' remapped 'res://assets/aircraft/turbo-lumber-evolution/timber.glb' at thread -1
+Loading resource: res://assets/aircraft/hx-700/hx-700.glb remapped: res://assets/aircraft/hx-700/hx-700.glb
+Loading resource: res://.godot/imported/hx-700.glb-397bb47da050d028a1ba0c9221fdcc7f.scn remapped: res://.godot/imported/hx-700.glb-397bb47da050d028a1ba0c9221fdcc7f.scn
+Loading resource: res://assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png remapped: res://assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png
+Loading resource: res://.godot/imported/hx-700_hx700_botalon_mascaras.png-29706ae174ec2105c045252f0bc6b772.ctex remapped: res://.godot/imported/hx-700_hx700_botalon_mascaras.png-29706ae174ec2105c045252f0bc6b772.ctex
+Completed load for: 'res://assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png' remapped 'res://assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png' at thread -1
+Loading resource: res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png remapped: res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png
+Loading resource: res://.godot/imported/hx-700_hx700_carenado_mascaras.png-460cbe3a5330a6c7a3722f31e0572751.ctex remapped: res://.godot/imported/hx-700_hx700_carenado_mascaras.png-460cbe3a5330a6c7a3722f31e0572751.ctex
+Completed load for: 'res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png' remapped 'res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png' at thread -1
+Loading resource: res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png remapped: res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png
+Loading resource: res://.godot/imported/hx-700_hx700_carenado_mascaras_2.png-d88d4bf9dc1fdf9aaf08d7bc25db8257.ctex remapped: res://.godot/imported/hx-700_hx700_carenado_mascaras_2.png-d88d4bf9dc1fdf9aaf08d7bc25db8257.ctex
+Completed load for: 'res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png' remapped 'res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png' at thread -1
+Completed load for: 'res://assets/aircraft/hx-700/hx-700.glb' remapped 'res://assets/aircraft/hx-700/hx-700.glb' at thread -1
+Home preview cache: 18 checks, 0 failed
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Accessibility: window 0 adapter destroyed.

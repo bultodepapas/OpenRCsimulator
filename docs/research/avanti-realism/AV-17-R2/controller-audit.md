@@ -3,6 +3,8 @@
 Date: 2026-10-14  
 Scope: read-only audit of the gamepad-to-flight-command path after the report that pulling up causes an unexpected roll and loss of control. No runtime or profile data was changed. The code graph identified the relevant route, but its stored snippets did not match the working tree; findings below use the current source files.
 
+This is the pre-integration snapshot. The subsequent [R2 implementation and controlled reproduction](README.md) add a fixed normal-gamepad pitch scale and revise the wing polar; the saved device mapping remains unchanged.
+
 ## Findings
 
 The saved profile under this installation's `user://controller_profiles.cfg` is `Gamepad Mode 2`. Its flight channels are pitch axis 3, roll axis 2, yaw axis 0, and throttle axis 1. Pitch and roll both use calibrated `[-1, 0, +1]` centered ranges, `invert: false`, deadzone `0.08`, and expo `0.30`; throttle is a centered `stick_rate` channel with inversion. These are the shipped Mode-2 defaults (`app/input/controller_profile.gd:31-73`). The supplied feedback log identifies an `XInput Controller` using a gamepad profile; its logged GUID and vendor/product pair match this saved profile's association. The saved profile contains separate channel axes and no evident pitch/roll misassignment.

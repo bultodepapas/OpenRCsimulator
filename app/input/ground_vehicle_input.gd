@@ -4,7 +4,6 @@ extends RefCounted
 
 const STEERING_DEADZONE := 0.12
 const TRIGGER_NEUTRAL := 0.04
-const NEUTRAL_STEERING := 0.08
 
 var _keyboard_armed := true
 var _gamepad_armed := false
@@ -25,14 +24,14 @@ func sample(keys: Dictionary, joy: Dictionary) -> Dictionary:
 
 	var connected := _flag(joy, "connected")
 	if connected:
-		var device_id := _integer(joy.get("device_id", 0), -1)
+		var device_id := _integer(joy.get("device_id", -1), -1)
 		if not _gamepad_was_connected or device_id != _gamepad_device_id:
 			_gamepad_armed = false
 			_gamepad_device_id = device_id
 			_keyboard_armed = false
 		_gamepad_was_connected = true
 		var values := _validated_gamepad(joy)
-		if values.is_empty():
+		if device_id < 0 or values.is_empty():
 			_gamepad_armed = false
 			return _result("gamepad", false)
 		if not _gamepad_armed:
@@ -40,9 +39,9 @@ func sample(keys: Dictionary, joy: Dictionary) -> Dictionary:
 				_gamepad_armed = true
 			return _result("gamepad", _gamepad_armed)
 		var steer := _shape_steering(float(values.left_x))
-		var throttle := float(values.right_trigger)
-		var brake := float(values.left_trigger)
-		if brake > TRIGGER_NEUTRAL:
+		var throttle := _shape_trigger(float(values.right_trigger))
+		var brake := _shape_trigger(float(values.left_trigger))
+		if brake > 0.0:
 			throttle = 0.0
 		return {
 			"throttle": throttle,
@@ -109,7 +108,7 @@ func _validated_gamepad(joy: Dictionary) -> Dictionary:
 
 
 func _gamepad_is_neutral(values: Dictionary) -> bool:
-	return absf(float(values.left_x)) <= NEUTRAL_STEERING \
+	return absf(float(values.left_x)) <= STEERING_DEADZONE \
 		and float(values.right_trigger) <= TRIGGER_NEUTRAL \
 		and float(values.left_trigger) <= TRIGGER_NEUTRAL \
 		and not bool(values.reverse)
@@ -120,6 +119,12 @@ func _shape_steering(value: float) -> float:
 	if magnitude <= STEERING_DEADZONE:
 		return 0.0
 	return signf(value) * (magnitude - STEERING_DEADZONE) / (1.0 - STEERING_DEADZONE)
+
+
+## Use the same rest region for arming and driving. Raw trigger noise must not
+## become a command immediately after the one neutral sample that armed the pad.
+func _shape_trigger(value: float) -> float:
+	return maxf(0.0, (value - TRIGGER_NEUTRAL) / (1.0 - TRIGGER_NEUTRAL))
 
 
 func _flag(source: Dictionary, key: String) -> bool:

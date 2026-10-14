@@ -36,12 +36,15 @@ static func create(parent: Node3D) -> MeshInstance3D:
 
 
 ## Bind the built model without modifying its meshes, materials or hinges.
-static func bind_model(shadow: MeshInstance3D, model: Node3D) -> void:
+## A precomputed shape is valid only for the same unchanged neutral model (e.g. a static Home preview).
+## Dynamic/flight callers omit it and retain the existing geometry collection path.
+static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}) -> void:
 	var old := shadow.get_node_or_null("ProjectedShadow")
 	if old != null:
 		shadow.remove_child(old)
 		old.queue_free()
-	var shape: Dictionary = Projected.collect(model)
+	if shape.is_empty():
+		shape = Projected.collect(model)
 	if shape.is_empty():
 		shadow.mesh = shadow.get_meta("legacy_shadow_mesh")
 		return # legacy mask remains a supported fallback

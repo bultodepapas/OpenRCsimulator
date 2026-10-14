@@ -1,5 +1,7 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+2026-10-14 responsiveness follow-up: [UI-05-R2 — fast return to recent aircraft](UI-05-R2/README.md), with bounded model/shadow reuse, complete-selector timings, native visual comparisons and lifecycle tests.
+
 2026-10-14 layout follow-up: [UI-06d-R2 — launch captions and live language](UI-06d-R2/README.md) closes the reproduced sidebar-width defect and stale helicopter launch translations, with native captures and input regressions.
 
 2026-10-14 implementation follow-up: [UI-05-R1 — unchanged Home legend reuse](UI-05-R1/README.md), with native measurements, keyboard-layout regression coverage and reference/candidate visual comparisons. Remaining baseline layout and field-validation failures are recorded separately from the optimization's passing checks.

@@ -216,7 +216,9 @@ func reset() -> bool:
    # This does not seed the ground pose, RPM, wake, or cyclic with an airborne state.
    var reference_position: PackedFloat64Array=_ground_start.state.slice(0,3)
    reference_position[2]=-3.0
-   var reference: Dictionary=Hover.solve_hover(aircraft.context,_ground_start.pad.heading,reference_position,wind_at(0.0),{"ground_height_up_m":_ground_under_hub(_ground_start.state)})
+   # A calm reference at the selected density is controller calibration, not a
+   # wind-cancelling start. Actual weather still enters every live dynamics stage.
+   var reference: Dictionary=Hover.solve_hover(aircraft.context,_ground_start.pad.heading,reference_position,PackedFloat64Array([0,0,0]),{"ground_height_up_m":_ground_under_hub(_ground_start.state)})
    if not reference.ok:
     start_error="Ground trainer control reference refused: "+str(reference.get("message","no hover reference"))
     pause_reason=start_error
@@ -226,7 +228,7 @@ func reset() -> bool:
    state.append_array(PackedFloat64Array([0,0,0,0,_ground_start.pad.heading,0]))
    # Four N/E elastic friction pairs are integrated and checkpointed with the rotor.
    state.append_array(PackedFloat64Array([0,0,0,0,0,0,0,0]))
-   solved={ok=true,state=state,trim={ground_yaw_precomp_tail_bias_rad=reference.trim.tail_collective_bias_rad,ground_yaw_precomp_collective_rad=reference.collective_75_rad},sticks=PackedFloat64Array([0,0,0,pickup.stick])}
+   solved={ok=true,state=state,trim={"ground_yaw_precomp_tail_bias_rad":reference.trim.tail_collective_bias_rad,"ground_yaw_precomp_collective_rad":reference.collective_75_rad},sticks=PackedFloat64Array([0,0,0,pickup.stick])}
    startup_collective=pickup.collective
   else:
    solved={ok=false,message=_ground_start.get("reason","") if not _ground_start.ok else pickup.reason}
@@ -261,7 +263,7 @@ func reset() -> bool:
  sim.continuous=solved.state.slice(13)
  sim.aux=PackedFloat64Array([solved.state[13]*60.0/(2.0*PI)])
  _ready_to_fly=sim.reset(solved.state.slice(0,13))
- start_error="" if _ready_to_fly else sim.fault_reason
+ start_error="" if _ready_to_fly else sim.fault_reason+(" · "+_stage_failure if not _stage_failure.is_empty() else "")
  pause_reason=start_error
  sim.process_mode=Node.PROCESS_MODE_INHERIT if physics_enabled else Node.PROCESS_MODE_DISABLED
  sim.set_paused(not holds.is_empty() or not _ready_to_fly)
@@ -525,14 +527,14 @@ func trace_controls() -> PackedFloat64Array:
  return PackedFloat64Array([1.0 if power.armed else 0.0,1.0 if zero_drive_hold else 0.0,0.0 if flight_mode=="normal" else 1.0,Lifecycle.scale(power,zero_drive_hold,sim.time()),shaft_phase[0],shaft_phase[1]])
 
 func telemetry() -> Dictionary:
- if sim.continuous.size() not in [6,14]: return {}
+ if sim.continuous.size() not in [6,14] or sim.state.size()!=13: return {}
  var state: PackedFloat64Array=sim.state.duplicate()
  state.append_array(sim.continuous.slice(0,6))
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
  var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(sim.time()),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,sim.time()))
  return out
 func trace_meta() -> Dictionary:
- return {aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
+ return {aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),control_reference=_trim.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
 func checkpoint() -> Dictionary:
  if not _ready_to_fly or not aircraft.get("ok",false) or not crash.is_empty() \
  or not Terrain.is_valid_surface_table(ground_surfaces) or _start.size()!=3:

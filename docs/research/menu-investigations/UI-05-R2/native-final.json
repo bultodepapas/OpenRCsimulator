@@ -1,0 +1,16 @@
+{
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--verbose",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--script",
+    "res://tests/test_ui_home_preview_cache.gd"
+  ],
+  "exit_code": 0,
+  "issues": []
+}

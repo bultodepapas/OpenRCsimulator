@@ -316,7 +316,7 @@ def _evidence_source(
         f"Estimated {side} finite-wing post-stall proxy. Source CL/CD rows transcribed from {report['report']}, "
         f"{report['table']}, printed pp. {report['printed_pages'][0]}–{report['printed_pages'][1]} "
         f"(PDF pp. {report['pdf_pages'][0]}–{report['pdf_pages'][1]}), NACA 0015 at Re={report['reynolds_number']}; "
-        f"PDF SHA-256 {report['pdf_sha256']}. This does not identify the Avanti S airfoil or its flight polar. "
+        f"PDF {report['pdf_url']} (SHA-256 {report['pdf_sha256']}). This does not identify the Avanti S airfoil or its flight polar. "
         "Table 3 is hybrid data and includes computed/synthesized pre-stall and extended high-angle values; these rows "
         "are not all measured. "
         f"The input CL_max is {float(cl_max['value']):.6g} ({original_source}); table CL scale={scale:.12g} and "

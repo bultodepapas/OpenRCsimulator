@@ -1,0 +1,110 @@
+[
+  {
+    "case": "day-gp-extra-300s-60.png",
+    "reference_repeat": {
+      "changed_pixels": 2,
+      "max_channel_delta": 59,
+      "mean_channel_delta": 5.099826388888889e-05
+    },
+    "candidate_repeat": {
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    "comparison": {
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    }
+  },
+  {
+    "case": "day-jensen-das-ugly-stik-60.png",
+    "reference_repeat": {
+      "changed_pixels": 7,
+      "max_channel_delta": 26,
+      "mean_channel_delta": 5.425347222222222e-05
+    },
+    "candidate_repeat": {
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    "comparison": {
+      "changed_pixels": 6,
+      "max_channel_delta": 29,
+      "mean_channel_delta": 0.00012188946759259259
+    }
+  },
+  {
+    "case": "day-sebart-avanti-s-a200-p100rx.png",
+    "reference_repeat": {
+      "changed_pixels": 51,
+      "max_channel_delta": 53,
+      "mean_channel_delta": 0.00010706018518518519
+    },
+    "candidate_repeat": {
+      "changed_pixels": 37,
+      "max_channel_delta": 1,
+      "mean_channel_delta": 1.3744212962962963e-05
+    },
+    "comparison": {
+      "changed_pixels": 38,
+      "max_channel_delta": 56,
+      "mean_channel_delta": 0.0002470341435185185
+    }
+  },
+  {
+    "case": "night-gp-extra-300s-60.png",
+    "reference_repeat": {
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    "candidate_repeat": {
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    "comparison": {
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    }
+  },
+  {
+    "case": "night-jensen-das-ugly-stik-60.png",
+    "reference_repeat": {
+      "changed_pixels": 3,
+      "max_channel_delta": 2,
+      "mean_channel_delta": 2.170138888888889e-06
+    },
+    "candidate_repeat": {
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    "comparison": {
+      "changed_pixels": 5,
+      "max_channel_delta": 2,
+      "mean_channel_delta": 2.8935185185185184e-06
+    }
+  },
+  {
+    "case": "night-sebart-avanti-s-a200-p100rx.png",
+    "reference_repeat": {
+      "changed_pixels": 11,
+      "max_channel_delta": 26,
+      "mean_channel_delta": 2.712673611111111e-05
+    },
+    "candidate_repeat": {
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    "comparison": {
+      "changed_pixels": 7,
+      "max_channel_delta": 26,
+      "mean_channel_delta": 2.5679976851851852e-05
+    }
+  }
+]

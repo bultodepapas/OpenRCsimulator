@@ -1,0 +1,115 @@
+[
+  {
+    "name": "preview-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_home_preview_cache.gd"
+    ],
+    "exit_code": 0,
+    "issues": [],
+    "tail": [
+      "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "",
+      "Home preview cache: 18 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "preview-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_home_preview_cache.gd"
+    ],
+    "exit_code": 0,
+    "issues": [
+      "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ],
+    "tail": [
+      "",
+      "Home preview cache: 18 checks, 0 failed",
+      "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "   at: cleanup (core/object/object.cpp:2536)"
+    ]
+  },
+  {
+    "name": "shadow",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_projected_shadow.gd"
+    ],
+    "exit_code": 0,
+    "issues": [],
+    "tail": [
+      "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "",
+      "Projected shadow regression: 37 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "collection",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_shadow_collection.gd"
+    ],
+    "exit_code": 0,
+    "issues": [],
+    "tail": [
+      "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "",
+      "shadow collection: 77 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "aircraft",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_aircraft.gd"
+    ],
+    "exit_code": 0,
+    "issues": [],
+    "tail": [
+      "ok   Fly with the Extra still starts the matching model and physics",
+      "ok   unknown saved aircraft -> default",
+      "ok   saved aircraft of the wrong type -> default",
+      "all UI aircraft checks passed"
+    ]
+  }
+]

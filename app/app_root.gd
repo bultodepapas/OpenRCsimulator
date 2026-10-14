@@ -324,6 +324,8 @@ func end_ground_vehicle() -> void:
 	remove_child(ground_vehicle)
 	ground_vehicle.queue_free()
 	ground_vehicle = null
+	if controllers != null:
+		_controller_ui_changed(controllers.registry.selected_device_id("ui"))
 	if has_home:
 		show_home()
 	else:
@@ -584,6 +586,9 @@ func _controller_bindings(id: int) -> Dictionary:
 
 
 func _controller_ui_changed(id: int) -> void:
+	if ground_vehicle != null:
+		ground_vehicle._refresh_controller_ui()
+		return
 	UiInput.set_gamepad(id, _controller_bindings(id))
 	_clear_controller_actions()
 	_update_controller_home()

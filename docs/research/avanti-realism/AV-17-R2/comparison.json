@@ -1,0 +1,400 @@
+{
+  "case_count": 54,
+  "all_complete_finite": true,
+  "sample_hz": 20,
+  "protocol": "500 m initial altitude; trimmed level at initial speed; standard Mode2 gamepad; pure pitch from 0.5 to 2.5 s; release until 6 s; trim throttle held, no roll/yaw inputs; sea-level-density model",
+  "metric_note": "body p measures axial roll; Euler bank can flip by 180 degrees during a pitch loop and is deliberately excluded. Separation is max strip model weight, not measured stalled wing area.",
+  "max_240_480_absolute_difference": {
+    "alpha_max": 0.0020873509079990527,
+    "roll_rate_max": 0.0026880987363000486,
+    "pull_roll_rate_max": 0.0016579862266898893,
+    "speed_min": 0.005598260860209869,
+    "normal_g_max": 0.007897655408619642,
+    "stall_max": 0.00015221619690000687
+  },
+  "runs": {
+    "baseline-240.json": "878f8aa62e74ce670e0ac13bd6c70557f49adb1f23842811b75a30c8f7ea7459",
+    "candidate-240.json": "82f190cdf86fbc232a178925d12fada607b1d2a3a2337742ccb614d6f0b56876",
+    "candidate-480.json": "e43906d4f7c880ae36ecf8c9fc64e808fc9693f4bc23022bba714ccc3cfe64e6"
+  },
+  "cases": [
+    {
+      "speed": 29.0,
+      "pitch": -0.75,
+      "baseline": {
+        "alpha_max": 10.6259716958498,
+        "roll_rate_max": 1.83704137082146,
+        "pull_roll_rate_max": 1.83704137082146,
+        "speed_min": 28.9923156927944,
+        "normal_g_max": 4.5089512077211,
+        "stall_max": 0.270497646210902
+      },
+      "candidate": {
+        "alpha_max": 4.04530622522246,
+        "roll_rate_max": 0.774733674808679,
+        "pull_roll_rate_max": 0.774733674808679,
+        "speed_min": 28.9979905303096,
+        "normal_g_max": 2.14461020848168,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 29.0,
+      "pitch": -0.5,
+      "baseline": {
+        "alpha_max": 4.89962271322793,
+        "roll_rate_max": 1.12076850545995,
+        "pull_roll_rate_max": 1.12076850545995,
+        "speed_min": 28.9965299418899,
+        "normal_g_max": 2.58842009493827,
+        "stall_max": 0.0
+      },
+      "candidate": {
+        "alpha_max": 4.04530622522246,
+        "roll_rate_max": 0.412425023209998,
+        "pull_roll_rate_max": 0.412425023209998,
+        "speed_min": 28.9995256295702,
+        "normal_g_max": 1.60286111198153,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 29.0,
+      "pitch": 0.25,
+      "baseline": {
+        "alpha_max": 7.57126624822649,
+        "roll_rate_max": 0.349443677231429,
+        "pull_roll_rate_max": 0.349443677231429,
+        "speed_min": 17.5845868663645,
+        "normal_g_max": 1.72058923736601,
+        "stall_max": 0.0
+      },
+      "candidate": {
+        "alpha_max": 5.44553699479978,
+        "roll_rate_max": 0.144251528168123,
+        "pull_roll_rate_max": 0.144251528168123,
+        "speed_min": 24.4386737289268,
+        "normal_g_max": 1.29365398111375,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 29.0,
+      "pitch": 0.5,
+      "baseline": {
+        "alpha_max": 12.0079342660232,
+        "roll_rate_max": 255.357563478581,
+        "pull_roll_rate_max": 255.357563478581,
+        "speed_min": 26.5331371358943,
+        "normal_g_max": 2.46067897115919,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 7.78408477211875,
+        "roll_rate_max": 0.368269928269855,
+        "pull_roll_rate_max": 0.368269928269855,
+        "speed_min": 16.9415955972797,
+        "normal_g_max": 1.7621919642489,
+        "stall_max": 0.0316522442714784
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 29.0,
+      "pitch": 0.75,
+      "baseline": {
+        "alpha_max": 17.5831393060133,
+        "roll_rate_max": 357.42888188589,
+        "pull_roll_rate_max": 344.175601260518,
+        "speed_min": 24.1131514962864,
+        "normal_g_max": 2.34032284105625,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 11.8734938220218,
+        "roll_rate_max": 1.10720364211534,
+        "pull_roll_rate_max": 0.760858413722265,
+        "speed_min": 11.7576223820831,
+        "normal_g_max": 2.194394735348,
+        "stall_max": 0.3702838022021
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 29.0,
+      "pitch": 1.0,
+      "baseline": {
+        "alpha_max": 20.5793361557039,
+        "roll_rate_max": 164.629040173433,
+        "pull_roll_rate_max": 164.629040173433,
+        "speed_min": 21.9809203372931,
+        "normal_g_max": 2.24657010196754,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 16.2744698177453,
+        "roll_rate_max": 58.4378156728598,
+        "pull_roll_rate_max": 3.85068285250927,
+        "speed_min": 9.34383029192438,
+        "normal_g_max": 2.49085006646505,
+        "stall_max": 0.945581830865514
+      },
+      "candidate_first_half_separated_s": 4.4
+    },
+    {
+      "speed": 45.0,
+      "pitch": -0.75,
+      "baseline": {
+        "alpha_max": 13.6460431531372,
+        "roll_rate_max": 495.608472403203,
+        "pull_roll_rate_max": 495.608472403203,
+        "speed_min": 44.6457044417745,
+        "normal_g_max": 7.35653944732947,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 4.47826681738155,
+        "roll_rate_max": 1.00721311922685,
+        "pull_roll_rate_max": 1.00721311922685,
+        "speed_min": 44.9967151735467,
+        "normal_g_max": 4.11235466111383,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 45.0,
+      "pitch": -0.5,
+      "baseline": {
+        "alpha_max": 6.86743567471382,
+        "roll_rate_max": 1.45651625890287,
+        "pull_roll_rate_max": 1.45651625890287,
+        "speed_min": 44.9947903086394,
+        "normal_g_max": 6.28538674850982,
+        "stall_max": 0.0
+      },
+      "candidate": {
+        "alpha_max": 1.7458010767673,
+        "roll_rate_max": 0.536575222679805,
+        "pull_roll_rate_max": 0.536575222679805,
+        "speed_min": 44.9988091440745,
+        "normal_g_max": 1.62700652406196,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 45.0,
+      "pitch": 0.25,
+      "baseline": {
+        "alpha_max": 4.81043456231383,
+        "roll_rate_max": 0.455673461991487,
+        "pull_roll_rate_max": 0.455673461991487,
+        "speed_min": 22.2794823005832,
+        "normal_g_max": 2.81007678539026,
+        "stall_max": 0.0
+      },
+      "candidate": {
+        "alpha_max": 2.95761343864467,
+        "roll_rate_max": 0.187825912941157,
+        "pull_roll_rate_max": 0.187825912941157,
+        "speed_min": 36.0741499643539,
+        "normal_g_max": 1.73277373741666,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 45.0,
+      "pitch": 0.5,
+      "baseline": {
+        "alpha_max": 9.98720952139608,
+        "roll_rate_max": 25.1439706643026,
+        "pull_roll_rate_max": 25.1439706643026,
+        "speed_min": 16.1649315909799,
+        "normal_g_max": 5.45519469483122,
+        "stall_max": 0.161805168235239
+      },
+      "candidate": {
+        "alpha_max": 4.99324893984619,
+        "roll_rate_max": 0.481994427686824,
+        "pull_roll_rate_max": 0.481994427686824,
+        "speed_min": 20.9061668457797,
+        "normal_g_max": 2.91787607988017,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 45.0,
+      "pitch": 0.75,
+      "baseline": {
+        "alpha_max": 27.2166193835881,
+        "roll_rate_max": 525.849464591001,
+        "pull_roll_rate_max": 525.849464591001,
+        "speed_min": 27.8728069727415,
+        "normal_g_max": 5.67755920216575,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 7.62892903498096,
+        "roll_rate_max": 1.52917527962683,
+        "pull_roll_rate_max": 0.825965149487872,
+        "speed_min": 7.20912126073226,
+        "normal_g_max": 4.36519981794305,
+        "stall_max": 0.0218023472776124
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 45.0,
+      "pitch": 1.0,
+      "baseline": {
+        "alpha_max": 29.1590967293471,
+        "roll_rate_max": 380.672773158865,
+        "pull_roll_rate_max": 380.672773158865,
+        "speed_min": 22.4796236059762,
+        "normal_g_max": 5.48336577423275,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 10.7801380459249,
+        "roll_rate_max": 1.7984094633327,
+        "pull_roll_rate_max": 1.7984094633327,
+        "speed_min": 14.1588130740614,
+        "normal_g_max": 5.60505408836683,
+        "stall_max": 0.251865687302954
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 60.0,
+      "pitch": -0.75,
+      "baseline": {
+        "alpha_max": 14.8700998639384,
+        "roll_rate_max": 703.423247495138,
+        "pull_roll_rate_max": 703.423247495138,
+        "speed_min": 58.5867632553153,
+        "normal_g_max": 11.3951421408616,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 5.10706694326197,
+        "roll_rate_max": 1.20525716533269,
+        "pull_roll_rate_max": 1.20525716533269,
+        "speed_min": 59.9945389273782,
+        "normal_g_max": 7.60436953039134,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 60.0,
+      "pitch": -0.5,
+      "baseline": {
+        "alpha_max": 7.42152766770361,
+        "roll_rate_max": 1.74243856797803,
+        "pull_roll_rate_max": 1.74243856797803,
+        "speed_min": 59.8764868086267,
+        "normal_g_max": 10.1355361103148,
+        "stall_max": 0.0
+      },
+      "candidate": {
+        "alpha_max": 2.41451798949096,
+        "roll_rate_max": 0.64229599600017,
+        "pull_roll_rate_max": 0.64229599600017,
+        "speed_min": 59.9977486404983,
+        "normal_g_max": 3.53391842837971,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 60.0,
+      "pitch": 0.25,
+      "baseline": {
+        "alpha_max": 4.02228996080869,
+        "roll_rate_max": 0.545591263088503,
+        "pull_roll_rate_max": 0.545591263088503,
+        "speed_min": 30.9061273618556,
+        "normal_g_max": 4.24595497134541,
+        "stall_max": 0.0
+      },
+      "candidate": {
+        "alpha_max": 2.17869397180996,
+        "roll_rate_max": 0.224863218290533,
+        "pull_roll_rate_max": 0.224863218290533,
+        "speed_min": 47.8418984653102,
+        "normal_g_max": 2.30884947307507,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 60.0,
+      "pitch": 0.5,
+      "baseline": {
+        "alpha_max": 9.24165993133203,
+        "roll_rate_max": 1.14409104200954,
+        "pull_roll_rate_max": 1.14409104200954,
+        "speed_min": 39.8615185817587,
+        "normal_g_max": 9.1989459088912,
+        "stall_max": 4.05018279440266e-06
+      },
+      "candidate": {
+        "alpha_max": 4.21063593984204,
+        "roll_rate_max": 0.57711382970862,
+        "pull_roll_rate_max": 0.57711382970862,
+        "speed_min": 29.5834657962445,
+        "normal_g_max": 4.44060775637491,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 60.0,
+      "pitch": 0.75,
+      "baseline": {
+        "alpha_max": 28.9778392845237,
+        "roll_rate_max": 707.496207501453,
+        "pull_roll_rate_max": 707.496207501453,
+        "speed_min": 33.5541890292353,
+        "normal_g_max": 10.1196049971268,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 6.8349455143071,
+        "roll_rate_max": 0.994549114229844,
+        "pull_roll_rate_max": 0.994549114229844,
+        "speed_min": 29.5325970201298,
+        "normal_g_max": 7.08785893203833,
+        "stall_max": 0.0
+      },
+      "candidate_first_half_separated_s": -1.0
+    },
+    {
+      "speed": 60.0,
+      "pitch": 1.0,
+      "baseline": {
+        "alpha_max": 22.1451884991504,
+        "roll_rate_max": 567.964391641126,
+        "pull_roll_rate_max": 567.964391641126,
+        "speed_min": 32.4463519532908,
+        "normal_g_max": 9.78889428820143,
+        "stall_max": 1.0
+      },
+      "candidate": {
+        "alpha_max": 10.1745141485867,
+        "roll_rate_max": 1.82521555482601,
+        "pull_roll_rate_max": 1.82521555482601,
+        "speed_min": 40.5523591027318,
+        "normal_g_max": 9.66395518068367,
+        "stall_max": 0.203155277634162
+      },
+      "candidate_first_half_separated_s": -1.0
+    }
+  ]
+}

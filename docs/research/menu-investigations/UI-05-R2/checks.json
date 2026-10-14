@@ -1,0 +1,39 @@
+[
+  {
+    "name": "headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\test_ui_home_preview_cache.gd",
+      "--",
+      "--home=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\candidate.gd"
+    ],
+    "exit_code": 0,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nHome preview cache: 18 checks, 0 failed\n"
+  },
+  {
+    "name": "native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\test_ui_home_preview_cache.gd",
+      "--",
+      "--home=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-preview\\candidate.gd"
+    ],
+    "exit_code": 0,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nOpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090\n\nHome preview cache: 18 checks, 0 failed\n"
+  }
+]

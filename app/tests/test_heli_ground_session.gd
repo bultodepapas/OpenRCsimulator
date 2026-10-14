@@ -3,6 +3,7 @@ const Session=preload("res://sim/helicopter_flight_session.gd")
 const Field=preload("res://data/field_loader.gd")
 const M=preload("res://physics/math3d.gd")
 const Wind=preload("res://physics/wind_config.gd")
+const Recorder=preload("res://sim/rotorcraft_recorder.gd")
 var checks:=0
 var failures:=0
 var session: Node
@@ -15,6 +16,17 @@ func steps(count: int) -> bool:
 		if not session.is_flyable(): print("FAULT ",session.pause_reason); return false
 	return true
 func _initialize() -> void: _run.call_deferred()
+func replay(label: String,count: int) -> void:
+	var saved: Dictionary=session.checkpoint()
+	check(label+" checkpoint exists",not saved.is_empty())
+	if saved.is_empty(): return
+	check(label+" advances",steps(count))
+	var body: PackedByteArray=session.sim.state.to_byte_array()
+	var continuous: PackedByteArray=session.sim.continuous.to_byte_array()
+	var phase: PackedByteArray=session.shaft_phase.to_byte_array()
+	check(label+" restores paused",session.restore_checkpoint(saved).ok and session.sim.paused)
+	check(label+" exact replay",steps(count) and body==session.sim.state.to_byte_array() and continuous==session.sim.continuous.to_byte_array() and phase==session.shaft_phase.to_byte_array())
+	session.resume()
 func _run() -> void:
 	session=Session.new()
 	session.physics_enabled=false
@@ -29,6 +41,7 @@ func _run() -> void:
 	check("zero pitch derives low startup stick",absf(session.commands.throttle-1.0/6.0)<1e-12 and absf(session.collective_pitch())<1e-12)
 	check("ground starts disarmed in hold",not session.power.armed and session.zero_drive_hold)
 	check("cannot release hold before motor arm",not session.set_drive_hold(false) and session.zero_drive_hold)
+	replay("disarmed",12)
 	var rest: PackedFloat64Array=session.sim.state.duplicate()
 	check("sixty second rotor-off rest stays finite",steps(14400))
 	var drift: float=M.norm(M.sub(session.sim.state.slice(0,3),rest.slice(0,3)))
@@ -44,6 +57,7 @@ func _run() -> void:
 	session.commands.throttle=session.startup_collective
 	session.sim.inputs[3]=session.commands.throttle
 	check("explicit arm keeps hold",session.toggle_motor_arm() and session.power.armed and session.zero_drive_hold)
+	replay("armed hold",12)
 	check("explicit hold release starts soft ramp",session.set_drive_hold(false) and session.trace_controls()[3]==0.0)
 	check("spool starts without fault",steps(480))
 	var saved: Dictionary=session.checkpoint()
@@ -66,6 +80,13 @@ func _run() -> void:
 	check("spool keeps pad position within 2 mm",M.norm(M.sub(session.sim.state.slice(0,3),rest.slice(0,3)))<.002)
 	check("spool keeps heading within 1.5 degrees",absf(M.q_to_euler(session.sim.state.slice(6,10))[0]-PI/2)<1.5*PI/180.0)
 	check("zero pitch does not cause automatic liftoff",-session.sim.state[2]<.2)
+	replay("governed on pad",48)
+	var recorder: RefCounted=Recorder.new(session.sim,session.trace_controls)
+	recorder.start(session.trace_meta())
+	check("ground trace records complete bristle and lifecycle state",steps(2) and recorder.trace.row_count()==3 and Recorder.FlightRows.COLUMNS.size()==46)
+	var recorded: PackedFloat64Array=recorder.trace.rows.slice(recorder.trace.rows.size()-8)
+	check("trace retains exact eight contact memory values",recorded.to_byte_array()==session.sim.continuous.slice(6).to_byte_array())
+	recorder.detach()
 	session.set_controller_cut(true)
 	session.set_controller_cut(false)
 	check("cut release cannot restart motor",session.zero_drive_hold)
@@ -73,6 +94,7 @@ func _run() -> void:
 	print("STOP RPM=",session.sim.aux[0])
 	check("coast-down reaches exact zero",session.sim.continuous[0]==0.0)
 	check("stopped hold has no drive-induced restart",steps(240) and session.sim.continuous[0]==0.0)
+	replay("stopped hold",24)
 	check("disarm latches hold",session.toggle_motor_arm() and not session.power.armed and session.zero_drive_hold)
 	check("new reset still cold",session.reset() and session.sim.continuous[0]==0.0)
 	# Real curve change is explicit; no silent movement of the pilot stick.
@@ -80,6 +102,12 @@ func _run() -> void:
 	var stick: float=session.commands.throttle
 	check("large mode pitch jump needs a second explicit action",not session.request_flight_mode() and session.flight_mode=="normal")
 	check("second mode action applies the authored curve",session.request_flight_mode() and session.flight_mode=="idle_up" and session.commands.throttle==stick)
+	check("reset recovers normal cold controls",session.reset() and session.flight_mode=="normal")
+	check("aborted startup begins",session.toggle_motor_arm() and session.set_drive_hold(false) and steps(240))
+	session.set_drive_hold(true)
+	check("aborted startup reaches stable zero",steps(2400) and session.sim.continuous[0]==0.0)
+	check("restart after abort remains cold",session.reset() and not session.power.armed and session.zero_drive_hold)
+	check("changing start invalidates prior solved state",session.set_start_choice("airborne") and not session.is_flyable() and session.sim.paused)
 	session.free()
 	print("HELI-20 ground session: %d checks, %d failed"%[checks,failures])
 	quit(1 if failures else 0)

@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+{ &"id": "jensen-das-ugly-stik-60", "build": 164902, "extent": 189, "shadow_bind": 36856, "dress": 14, "shadow_update": 72, &"total": 202684, &"cycle": 0 }
+{ &"id": "stik-glow-61fx-2t", "build": 136151, "extent": 187, "shadow_bind": 30364, "dress": 6, "shadow_update": 43, &"total": 167410, &"cycle": 0 }
+{ &"id": "stik-glow-55ax-2t", "build": 126557, "extent": 155, "shadow_bind": 28237, "dress": 8, "shadow_update": 50, &"total": 155505, &"cycle": 0 }
+{ &"id": "stik-glow-fs64v-4t", "build": 127653, "extent": 302, "shadow_bind": 28961, "dress": 6, "shadow_update": 40, &"total": 157629, &"cycle": 0 }
+{ &"id": "gp-extra-300s-60", "build": 154315, "extent": 83, "shadow_bind": 10266, "dress": 5, "shadow_update": 34, &"total": 165150, &"cycle": 0 }
+{ &"id": "p51d-mustang-120", "build": 301401, "extent": 153, "shadow_bind": 26143, "dress": 9, "shadow_update": 42, &"total": 328136, &"cycle": 0 }
+{ &"id": "sebart-avanti-s-a200-p100rx", "build": 738998, "extent": 109, "shadow_bind": 93147, "dress": 8, "shadow_update": 50, &"total": 832942, &"cycle": 0 }
+{ &"id": "turbo-lumber-evolution", "build": 82388, "extent": 48, "shadow_bind": 26005, "dress": 8, "shadow_update": 52, &"total": 108780, &"cycle": 0 }
+{ &"id": "xcell-60-research", "build": 105610, "extent": 31, "shadow_bind": 64137, "dress": 6, "shadow_update": 39, &"total": 170048, &"cycle": 0 }
+{ &"id": "jensen-das-ugly-stik-60", "build": 160702, "extent": 255, "shadow_bind": 31274, "dress": 9, "shadow_update": 53, &"total": 192659, &"cycle": 1 }
+{ &"id": "stik-glow-61fx-2t", "build": 161939, "extent": 277, "shadow_bind": 30707, "dress": 7, "shadow_update": 41, &"total": 193646, &"cycle": 1 }
+{ &"id": "stik-glow-55ax-2t", "build": 145362, "extent": 163, "shadow_bind": 38183, "dress": 9, "shadow_update": 57, &"total": 184275, &"cycle": 1 }
+{ &"id": "stik-glow-fs64v-4t", "build": 151507, "extent": 182, "shadow_bind": 31136, "dress": 24, "shadow_update": 54, &"total": 183388, &"cycle": 1 }
+{ &"id": "gp-extra-300s-60", "build": 133976, "extent": 57, "shadow_bind": 11324, "dress": 10, "shadow_update": 54, &"total": 145831, &"cycle": 1 }
+{ &"id": "p51d-mustang-120", "build": 202869, "extent": 152, "shadow_bind": 27698, "dress": 6, "shadow_update": 37, &"total": 231077, &"cycle": 1 }
+{ &"id": "sebart-avanti-s-a200-p100rx", "build": 645155, "extent": 97, "shadow_bind": 84808, "dress": 7, "shadow_update": 44, &"total": 730616, &"cycle": 1 }
+{ &"id": "turbo-lumber-evolution", "build": 50938, "extent": 51, "shadow_bind": 20964, "dress": 5, "shadow_update": 32, &"total": 72293, &"cycle": 1 }
+{ &"id": "xcell-60-research", "build": 78218, "extent": 29, "shadow_bind": 50101, "dress": 7, "shadow_update": 40, &"total": 128609, &"cycle": 1 }

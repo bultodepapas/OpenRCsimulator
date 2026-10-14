@@ -1,0 +1,488 @@
+{
+  "aircraft_envelope": {
+    "actual_bound_m": 1.0435097153287425,
+    "actual_bound_method": "GroundStart._actual_envelope_radius: main hub vector norm plus main radius, tail hub offset norm plus tail radius, and maximum skid-arm norm; take maximum.",
+    "actual_bound_plus_margin_m": 1.7935097153287425,
+    "authored_conservative_radius_m": 1.25,
+    "authored_envelope_quantity": {
+      "aircraft_id": "xcell-60-research",
+      "max_takeoff_tilt": {
+        "kind": "estimated",
+        "source": "HELI-20a layout envelope for initial lift-off; spherical reach is orientation-independent and the value is not a qualified flight limit.",
+        "unit": "rad",
+        "value": 0.35
+      },
+      "radius": {
+        "kind": "estimated",
+        "source": "HELI-20a conservative radial envelope around the loaded main and tail discs and four skids; estimated model geometry, not a measured safety radius.",
+        "unit": "m",
+        "value": 1.25
+      }
+    },
+    "authored_radius_plus_margin_m": 2.0,
+    "basis": "Derived from the validated aircraft data, not measured clearance geometry.",
+    "clearance_margin_m": 0.75,
+    "main_disc_reach_m": 1.01,
+    "skid_reach_m": 0.17001305832200064,
+    "tail_disc_reach_m": 1.0435097153287425
+  },
+  "candidate": {
+    "aircraft_id": "xcell-60-research",
+    "authored_geometry_quantities": {
+      "clearance_margin": {
+        "kind": "estimated",
+        "source": "HELI-20a explicit simulator placement margin around the modeled aircraft envelope; not a real-world separation standard.",
+        "unit": "m",
+        "value": 0.75
+      },
+      "east": {
+        "kind": "estimated",
+        "source": "HELI-16 ground-3d audit 2026-10-14 section Field placement consequences; candidate centered on runway, not surveyed.",
+        "unit": "m",
+        "value": 0.0
+      },
+      "heading": {
+        "kind": "derived",
+        "source": "HELI-20a candidate nose-east heading in NED coordinates; normalized by the field loader.",
+        "unit": "rad",
+        "value": 1.5707963267948966
+      },
+      "north": {
+        "kind": "estimated",
+        "source": "HELI-16 ground-3d audit 2026-10-14 section Field placement consequences; candidate beside runway midpoint, not surveyed.",
+        "unit": "m",
+        "value": 6.0
+      }
+    },
+    "clearance_margin_m": 0.75,
+    "east_m": 0.0,
+    "field_id": "default",
+    "heading_deg": 90.0,
+    "heading_description": "NED nose east",
+    "heading_rad": 1.5707963267948966,
+    "north_m": 6.0,
+    "pad_footprint_m": {
+      "east_max": 3.0,
+      "east_min": -3.0,
+      "length_east_west": 6.0,
+      "north_max": 9.0,
+      "north_min": 3.0,
+      "placement_kind": "estimated",
+      "width_north_south": 6.0
+    },
+    "pad_id": "default-helicopter-pad",
+    "rotorpad_material": "rotorpad",
+    "runway": {
+      "east_bounds_m": [
+        -50.0,
+        50.0
+      ],
+      "interpretation": "The 6 m pad ends at N=9 m, where the runway begins; the physical rectangles share an edge. The radial aircraft envelope plus margin remains inside the south side of the runway boundary.",
+      "north_bounds_m": [
+        9.0,
+        21.0
+      ],
+      "pad_north_edge_gap_m": 0.0,
+      "pad_surface_edge_gap_m": 0.0
+    }
+  },
+  "clearances": [
+    {
+      "actual_rotorcraft_bound_plus_margin_clearance_m": 1.2064902846712575,
+      "authored_radius_plus_margin_clearance_m": 1.0,
+      "edge_distance_from_pad_cg_m": 3.0,
+      "method": "Distance from pad CG to the axis-aligned runway rectangle; rectangle from validated field surface.",
+      "obstacle": "runway"
+    },
+    {
+      "actual_rotorcraft_bound_plus_margin_clearance_m": 1.542895502730549,
+      "authored_radius_plus_margin_clearance_m": 1.3364052180592916,
+      "edge_distance_from_pad_cg_m": 3.3364052180592916,
+      "method": "Horizontal distance to the nearest rendered post footprint; posts are 0.08 m square.",
+      "obstacle": "flightline_barrier_nearest_post"
+    },
+    {
+      "actual_rotorcraft_bound_plus_margin_clearance_m": 3.606490284671258,
+      "authored_radius_plus_margin_clearance_m": 3.4000000000000004,
+      "edge_distance_from_pad_cg_m": 5.4,
+      "method": "Distance from pad CG to the validated 1.5 m east by 1.2 m north station footprint.",
+      "obstacle": "pilot_station_footprint"
+    },
+    {
+      "actual_rotorcraft_bound_plus_margin_clearance_m": 30.139988469196094,
+      "authored_radius_plus_margin_clearance_m": 29.933498184524836,
+      "edge_distance_from_pad_cg_m": 31.933498184524836,
+      "method": "Conservative point-to-circle lower bound from the baked mesh's horizontal half-diagonal.",
+      "obstacle": "nearest_parked_aircraft_mesh_bound"
+    },
+    {
+      "actual_rotorcraft_bound_plus_margin_clearance_m": 12.120764568864063,
+      "authored_radius_plus_margin_clearance_m": 11.914274284192805,
+      "edge_distance_from_pad_cg_m": 13.914274284192805,
+      "method": "Conservative point-to-circle lower bound from the prefab catalog horizontal half-diagonal.",
+      "obstacle": "nearest_scenery_instance_proxy"
+    },
+    {
+      "actual_rotorcraft_bound_plus_margin_clearance_m": 12.136490284671257,
+      "authored_radius_plus_margin_clearance_m": 11.93,
+      "edge_distance_from_pad_cg_m": 13.93,
+      "method": "Point-to-circle lower bound using the light installation's authored collision-radius proxy.",
+      "obstacle": "nearest_field_light_installation"
+    },
+    {
+      "actual_rotorcraft_bound_plus_margin_clearance_m": 11.806490284671257,
+      "authored_radius_plus_margin_clearance_m": 11.6,
+      "edge_distance_from_pad_cg_m": 13.6,
+      "method": "Distance to the nearest axis-aligned estimated keepout rectangle in rotorcraft_pad.",
+      "obstacle": "nearest_authored_pad_keepout"
+    }
+  ],
+  "format": "openrc-heli-ground-support-evidence-v1",
+  "generated_utc": "2026-10-14T21:48:18",
+  "generator": "research/helicopter/ground_start/verify_support.gd",
+  "inputs_sha256": {
+    "data/aircraft/xcell_60_research.json": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+    "data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+    "data/fields/lights.json": "3cfafe6fda67891738c886c5f03e936681c290c6e5abf8733c769a09135f286e",
+    "data/ground/surface_friction.json": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
+    "data/scenery/default.json": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61",
+    "data/scenery/models/fleet_avanti.json": "5e4d7d9bc4c7ee561dfb0ffad5478b8954552d7fc244f41d18057321b25b3bec",
+    "data/scenery/models/fleet_extra.json": "80afd7e94d33436f2ecec4567917a9235202fd847b59e948a5b823653d6d58f8",
+    "data/scenery/models/fleet_p51.json": "7e2c94a4553961faeaf2c70eb6ba5cfe39927f97b683c0e701ab52e131cbf4d3",
+    "data/scenery/models/fleet_stik.json": "cc951075d79dc53afb76f3eccd2cca507411e807f15166fbe66311645a023949",
+    "physics/ground_surfaces.gd": "abe57e2426179ea70d5fcc0d76bc4789b68fc6ed1598b031963cde68e5625536",
+    "physics/rotorcraft/ground_start.gd": "4c65de9104610526d0aa1fec0e6480fd8b5b9b967a7dbeaa51a0468a58bdd92b",
+    "physics/rotorcraft/skid_contact.gd": "9207684b706216dadf5e83e66b4bce00793a6978b7b0938f3cecc3460d9e1adc",
+    "render/flightline_barrier.gd": "06b8c0d3bbfda404886430575167cdd02438050fed3d6112b535591b7a1929d1",
+    "render/pilot_station.gd": "25aac08fb25e87cc3926c8769399197e0018f10551ba974af6c059af9ba41bb2",
+    "scenery/models.gd": "cc2e28f9b34c19c9b9ceca7629460a87f2966ac32670bb9c8f22e65cebdfd2d3",
+    "scenery/prefabs.gd": "8fc73f533889fa8e26a62d37a3c0a91100e667be4d3b69be272258f62db30213"
+  },
+  "limitations": [
+    "Candidate coordinates, field-cue dimensions, pad margin and visual keepouts are simulator layout estimates, not surveyed positions or safety standards.",
+    "Scenery bounds are conservative catalog/mesh proxies. Collision-disabled scenery remains visual-only in the application.",
+    "The support solve is qualified only for this zero-relief horizontal rotorpad; this evidence does not qualify slope parking.",
+    "The reported yaw value is a Coulomb torque upper bound from the solved normal reactions. It does not itself prove drift-free spool-up, which is a separate session acceptance test."
+  ],
+  "model_evidence": {
+    "contact_normals_and_residuals": "derived by GroundStart.resolve from estimated mass, CG, support arms, stiffness, gravity and flat-pad material.",
+    "effective_skid_mu": 0.35,
+    "measured_ground_support_or_friction_data": [],
+    "measurement_status": "No ground reaction, spring/damper or skid-friction measurement is represented in this artifact; solver reactions and torque bound are model-derived.",
+    "rotorpad_friction_factor": {
+      "kind": "estimated",
+      "source": "HELI-20a mown-like ground-contact factor reused as an explicit simulator estimate; no rotorpad surface measurement is available.",
+      "unit": "1",
+      "value": 0.7
+    },
+    "source_quantities": {
+      "body.mass_kg": {
+        "kind": "borrowed",
+        "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+        "unit": "kg",
+        "value": 8.2
+      },
+      "gravity_m_s2": {
+        "kind": "manual",
+        "source": "standard gravity",
+        "unit": "m/s2",
+        "value": 9.80665
+      },
+      "main_rotor.hub_position_body_frd_m": {
+        "kind": "borrowed",
+        "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+        "unit": "m",
+        "value": [
+          0.0,
+          0.0,
+          -0.235
+        ]
+      },
+      "main_rotor.rotor_radius_m": {
+        "kind": "borrowed",
+        "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+        "unit": "m",
+        "value": 0.775
+      },
+      "skids.damping_n_s_m": {
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates",
+        "unit": "N*s/m",
+        "value": 190.0
+      },
+      "skids.friction": {
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates",
+        "unit": "1",
+        "value": 0.5
+      },
+      "skids.points_body_frd_m": {
+        "kind": "derived",
+        "source": "HELI-25: measured supplied HX-700 GLB rail corners, CG datum up 0.110 m",
+        "unit": "m",
+        "value": [
+          0.0974,
+          -0.0858,
+          0.1098,
+          0.0974,
+          0.0858,
+          0.1098,
+          -0.0974,
+          -0.0858,
+          0.1098,
+          -0.0974,
+          0.0858,
+          0.1098
+        ]
+      },
+      "skids.spring_n_m": {
+        "kind": "estimated",
+        "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates",
+        "unit": "N/m",
+        "value": 10000.0
+      },
+      "tail_rotor.hub_distance_aft_m": {
+        "kind": "borrowed",
+        "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+        "unit": "m",
+        "value": 0.91
+      },
+      "tail_rotor.hub_height_above_cg_m": {
+        "kind": "borrowed",
+        "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+        "unit": "m",
+        "value": 0.08
+      },
+      "tail_rotor.tail_rotor_radius_m": {
+        "kind": "borrowed",
+        "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+        "unit": "m",
+        "value": 0.13
+      }
+    }
+  },
+  "nearest_obstacles": {
+    "authored_pad_keepout": {
+      "east_m": 0.0,
+      "edge_distance_m": 13.6,
+      "id": "field-light-mast",
+      "length_east_west_m": 0.8,
+      "north_m": -8.0,
+      "source": "Default scenery light mast near N=-8, E=0; estimated ground-base keepout.",
+      "width_north_south_m": 0.8
+    },
+    "barrier_post": {
+      "east_m": -3.0399999618530273,
+      "edge_distance_m": 3.3364052180592916,
+      "gap_width_m": 6.0,
+      "id": "flightline_barrier",
+      "kind": "estimated visual field cue geometry",
+      "north_m": 4.5,
+      "post_depth_north_south_m": 0.07999999821186066,
+      "post_index": 9,
+      "post_width_east_west_m": 0.07999999821186066,
+      "type": "rendered_post_footprint"
+    },
+    "field_light_installation": {
+      "basis": "Authored light-installation collision radius; the dimensions remain estimates.",
+      "center_distance_m": 14.0,
+      "collision_radius_proxy_m": 0.07,
+      "east_m": 0.0,
+      "edge_distance_m": 13.93,
+      "id": "field_mast",
+      "north_m": -8.0,
+      "type": "mast"
+    },
+    "parked_aircraft": {
+      "aircraft_id": "p51d-mustang-120",
+      "baked_mesh_size_m": [
+        2.819999933242798,
+        0.9120000004768372,
+        2.446000099182129
+      ],
+      "basis": "Conservative circle around baked horizontal mesh bounds; orientation independent.",
+      "center_distance_m": 33.800000000000004,
+      "east_m": 24.0,
+      "edge_distance_lower_bound_m": 31.933498184524836,
+      "group_id": "fleet",
+      "heading_deg": 10.0,
+      "horizontal_circumscribed_radius_m": 1.8665018154751665,
+      "model_id": "fleet_p51",
+      "north_m": -17.8
+    },
+    "pilot_station": {
+      "depth_north_south_m": 1.2,
+      "east_m": 0.0,
+      "id": "pilot_station",
+      "kind": "estimated visual field cue",
+      "north_m": 0.0,
+      "pad_cg_to_footprint_m": 5.4,
+      "width_east_west_m": 1.5
+    },
+    "scenery_instance": {
+      "basis": "Conservative circle from prefab catalog horizontal footprint; the catalog describes a visual mesh envelope, not collision geometry.",
+      "catalog_kind": "estimated",
+      "catalog_size_m": [
+        0.6700000166893005,
+        1.7799999713897705,
+        0.44999998807907104
+      ],
+      "catalog_source": "LU-21 MPFB pilot pose with transmitter; uniform adult scale",
+      "center_distance_m": 14.317821063276353,
+      "east_m": -13.0,
+      "edge_distance_lower_bound_m": 13.914274284192805,
+      "group_id": "pilots",
+      "heading_deg": 5.0,
+      "horizontal_circumscribed_radius_m": 0.4035467790835491,
+      "north_m": 0.0,
+      "prefab": "person_pilot"
+    }
+  },
+  "reproduction": "Godot 4.7.2 --headless --path app --audio-driver Dummy --script research/helicopter/ground_start/verify_support.gd -- --out=<repository-root>/docs/research/helicopter/HELI-20/ground-support.json",
+  "runtime": "4.7.2-stable (official)",
+  "scope": "Static default-field pad geometry and zero-drive four-skid equilibrium snapshot. Geometry inputs are estimated visual/layout models; this is not a real-world separation standard or flight certification.",
+  "support": {
+    "compression_m_by_skid": [
+      0.002010363249999994,
+      0.002010363249999994,
+      0.002010363249999994,
+      0.002010363249999994
+    ],
+    "contact_count": 4,
+    "force_residual_magnitude_n": 2.2737367544323206e-13,
+    "force_residual_world_ned_n": [
+      0.0,
+      0.0,
+      2.2737367544323206e-13
+    ],
+    "moment_residual_magnitude_nm": 0.0,
+    "moment_residual_world_ned_nm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "newton_iterations": 0,
+    "normal_force_n_by_skid": [
+      20.10363249999994,
+      20.10363249999994,
+      20.10363249999994,
+      20.10363249999994
+    ],
+    "relative_force_residual": 2.8275197957786e-15,
+    "relative_moment_residual": 0.0,
+    "solver": "GroundStart.resolve on validated default field and xcell-60-research data",
+    "state_cg_height_above_datum_m": 0.10778963675,
+    "state_down_m": -0.10778963675,
+    "state_east_m": 0.0,
+    "state_float64": [
+      6.0,
+      0.0,
+      -0.10778963675,
+      0.0,
+      0.0,
+      0.0,
+      0.7071067811865476,
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "state_north_m": 6.0,
+    "state_order": [
+      "north_m",
+      "east_m",
+      "down_m",
+      "velocity_n_m_s",
+      "velocity_e_m_s",
+      "velocity_down_m_s",
+      "quaternion_w",
+      "quaternion_x",
+      "quaternion_y",
+      "quaternion_z",
+      "body_rate_p_rad_s",
+      "body_rate_q_rad_s",
+      "body_rate_r_rad_s"
+    ],
+    "support_points_body_frd_m": [
+      [
+        0.0974,
+        -0.0858,
+        0.1098
+      ],
+      [
+        0.0974,
+        0.0858,
+        0.1098
+      ],
+      [
+        -0.0974,
+        -0.0858,
+        0.1098
+      ],
+      [
+        -0.0974,
+        0.0858,
+        0.1098
+      ]
+    ],
+    "tangential_support": "not modeled; result is qualified only on this horizontal zero-relief pad",
+    "yaw_capacity_upper_bound": {
+      "basis": "Derived model bound; estimated skid friction and estimated rotorpad friction factor, with solver-derived normal reactions.",
+      "effective_mu": 0.35,
+      "formula": "sum_i(mu_skid * normal_force_i * horizontal_skid_lever_i)",
+      "per_skid": [
+        {
+          "arm_body_frd_m": [
+            0.0974,
+            -0.0858,
+            0.1098
+          ],
+          "friction_force_upper_bound_n": 7.036271374999978,
+          "horizontal_lever_m": 0.12980138674143663,
+          "index": 0,
+          "normal_force_n": 20.10363249999994,
+          "yaw_torque_contribution_upper_bound_nm": 0.9133177819640722
+        },
+        {
+          "arm_body_frd_m": [
+            0.0974,
+            0.0858,
+            0.1098
+          ],
+          "friction_force_upper_bound_n": 7.036271374999978,
+          "horizontal_lever_m": 0.12980138674143663,
+          "index": 1,
+          "normal_force_n": 20.10363249999994,
+          "yaw_torque_contribution_upper_bound_nm": 0.9133177819640722
+        },
+        {
+          "arm_body_frd_m": [
+            -0.0974,
+            -0.0858,
+            0.1098
+          ],
+          "friction_force_upper_bound_n": 7.036271374999978,
+          "horizontal_lever_m": 0.12980138674143663,
+          "index": 2,
+          "normal_force_n": 20.10363249999994,
+          "yaw_torque_contribution_upper_bound_nm": 0.9133177819640722
+        },
+        {
+          "arm_body_frd_m": [
+            -0.0974,
+            0.0858,
+            0.1098
+          ],
+          "friction_force_upper_bound_n": 7.036271374999978,
+          "horizontal_lever_m": 0.12980138674143663,
+          "index": 3,
+          "normal_force_n": 20.10363249999994,
+          "yaw_torque_contribution_upper_bound_nm": 0.9133177819640722
+        }
+      ],
+      "value_nm": 3.653271127856289
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Ventage Jet turbine jet: plan
 
-2026-10-14 · Revision 11 · **Status: AV-17-R1 improves keyboard pitch progression and verifies dive recovery while retaining accelerated stalls. AV-31 integrates the supplied Blender model; AV-09 enables retracts, wheel contact, nose steering, main brakes and runway starts. AV-20 continuous turbine response remains integrated. The catalog aircraft remains experimental: calibrated planform/installation, flap aerodynamics, finite fuel and independent physical validation remain open.**
+2026-10-14 · Revision 12 · **Status: AV-17-R2 corrects reproduced gamepad pull-up departures with a progressive estimated wing polar and explicit short-stick pitch travel. AV-17-R1 keyboard progression remains active. AV-31 integrates the supplied Blender model; AV-09 enables retracts, wheel contact, nose steering, main brakes and runway starts. AV-20 continuous turbine response remains integrated. The catalog aircraft remains experimental: calibrated planform/installation, flap aerodynamics, finite fuel and independent physical validation remain open.**
 
 Step-ID prefix `AV-`. Owned paths: `assets/aircraft/avanti-s-a200/`, `app/aircraft/avanti_s_*`, `app/aircraft/verify_avanti.gd`, `app/physics/turbine.gd`, `app/data/aircraft/sebart_avanti_s_a200.json` (generated), `app/tests/test_turbine.gd`, `app/tests/test_avanti_handling.gd`, `research/avanti-s/`, `docs/research/avanti-s-*`.
 
@@ -38,6 +38,7 @@ Same flow as the other aircraft: declarative geometry → generated data with `{
 | AV-12 | Delivery | clean clone, export smoke per ID, full suite, renderer captures | pending |
 | AV-13 | Extended ground/propulsion behavior | AV-09 covers point-contact gear and main brakes; vectoring and extended ECU remain separate | future extensions |
 | AV-17-R1 | Keyboard pitch and dive-recovery follow-up | [Audit and evidence](research/avanti-realism/AV-17-R1/README.md): manufacturer/parameter review, 63 complete pullouts, 240/480 Hz comparison, real-key and contract regressions | Implemented: gradual keyboard normal-mode pitch, prompt release, full authority and accelerated stalls retained; physical aircraft validation remains open |
+| AV-17-R2 | Gamepad pull-up and post-stall correction | [Audit and evidence](research/avanti-realism/AV-17-R2/README.md): real input-path reproduction, Sandia proxy provenance, before/after trajectories and 240/480 Hz comparison | Implemented: fixed normal-gamepad pitch travel and progressive polar; pilot feedback and A200 physical identification remain open |
 | AV-31 | Supplied Blender jet integration | reproducible source exporter, common model contract, 340 model checks, focused flight/crash/audio/Workshop tests, native Windows package and capture | Complete for the admitted gear-up/clean configuration; [evidence](research/avanti-blender/AV-31/README.md), [authoring guide](../assets/aircraft/avanti-s-a200/README.md) |
 
 ## 4. Known limits of the experimental model

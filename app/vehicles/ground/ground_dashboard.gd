@@ -3,10 +3,12 @@ extends CanvasLayer
 
 const UiTheme = preload("res://ui/ui_theme.gd")
 const Plot = preload("res://vehicles/ground/telemetry_plot.gd")
+const Prompts = preload("res://ui/controller_prompts.gd")
 signal action_requested(action: String)
 signal mode_selected(index: int)
 signal experiment_requested(knobs: Dictionary)
 signal spawn_selected(id: String)
+signal controller_selected(device_id: int)
 
 var menu_visible := true
 var panel: PanelContainer
@@ -14,6 +16,12 @@ var status: Label
 var telemetry: Label
 var toast: Label
 var resume_button: Button
+var controller_choice: OptionButton
+var input_status: Label
+var control_hint: Label
+var _controller_ids: Array[int] = []
+var _using_gamepad := false
+var _menu_button: Button
 var record_button: Button
 var modes: OptionButton
 var locations: OptionButton
@@ -48,20 +56,22 @@ func _ready() -> void:
 	status = _label("BISONTE MT8", 24)
 	status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(status)
-	var garage_button := _button(words("Garage · Esc", "Garaje · Esc"), "menu")
-	garage_button.size_flags_horizontal = Control.SIZE_SHRINK_END
-	top.add_child(garage_button)
+	_menu_button = _button(words("Garage · Esc", "Garaje · Esc"), "menu")
+	_menu_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	top.add_child(_menu_button)
 	var foot := VBoxContainer.new()
 	foot.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	foot.offset_left = 24
 	foot.offset_right = -24
-	foot.offset_top = -112
+	foot.offset_top = -136
 	root_control.add_child(foot)
 	telemetry = _label("0.0 km/h", 28)
 	foot.add_child(telemetry)
 	toast = _label(words("Release controls, then press Enter to drive.", "Suelta los controles y pulsa Enter para conducir."), 16)
 	foot.add_child(toast)
-	foot.add_child(_label(words("W/S  Forward / reverse   A/D  Steer   Space  Brake   C  Camera   R  Recover   Esc  Garage", "W/S  Avanzar / reversa   A/D  Girar   Espacio  Frenar   C  Cámara   R  Recuperar   Esc  Garaje"), 14))
+	control_hint = _label("", 14)
+	control_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	foot.add_child(control_hint)
 	panel = PanelContainer.new()
 	panel.theme_type_variation = "Sidebar"
 	var panel_style: StyleBoxFlat = root_control.theme.get_stylebox("panel", "Sidebar").duplicate()
@@ -73,7 +83,7 @@ func _ready() -> void:
 	panel.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
 	panel.offset_left = -358
 	panel.offset_top = 78
-	panel.offset_bottom = -132
+	panel.offset_bottom = -156
 	panel.offset_right = -20
 	root_control.add_child(panel)
 	var scroll := ScrollContainer.new()
@@ -92,6 +102,18 @@ func _ready() -> void:
 		var directions := _label(words("Dirt circuit north of the runway. Follow the access lane or choose a circuit start below.", "Circuito de tierra al norte de la pista. Sigue el camino de acceso o elige una entrada abajo."), 14)
 		directions.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		column.add_child(directions)
+	column.add_child(_label(words("Driving controls", "Controles del carro"), 15))
+	controller_choice = OptionButton.new()
+	controller_choice.fit_to_longest_item = false
+	controller_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	controller_choice.item_selected.connect(func(index: int): controller_selected.emit(_controller_ids[index]))
+	column.add_child(controller_choice)
+	input_status = _label("", 14)
+	input_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(input_status)
+	resume_button = _button(words("DRIVE · Enter", "CONDUCIR · Enter"), "resume")
+	resume_button.theme_type_variation = "PrimaryButton"
+	column.add_child(resume_button)
 	modes = OptionButton.new()
 	modes.add_item(words("Free drive", "Conducción libre"), 0)
 	if not airfield:
@@ -109,9 +131,6 @@ func _ready() -> void:
 		locations.add_item(title)
 	locations.item_selected.connect(func(index: int): spawn_selected.emit(spawn_ids[index]))
 	column.add_child(locations)
-	resume_button = _button(words("DRIVE · Enter", "CONDUCIR · Enter"), "resume")
-	resume_button.theme_type_variation = "PrimaryButton"
-	column.add_child(resume_button)
 	var row := HBoxContainer.new()
 	row.add_child(_button(words("Reset", "Reiniciar"), "reset"))
 	row.add_child(_button(words("Recover · R", "Recuperar · R"), "recover"))
@@ -162,7 +181,63 @@ func _ready() -> void:
 	plot.size = Vector2(300, 120)
 	plot.visible = false
 	root_control.add_child(plot)
+	set_controllers([], -1, false)
 	resume_button.grab_focus.call_deferred()
+
+
+func set_controllers(devices: Array, selected: int, needs_selection: bool) -> void:
+	controller_choice.clear()
+	_controller_ids = [-1]
+	controller_choice.add_item(words("Keyboard", "Teclado"))
+	var current := {}
+	for device: Dictionary in devices:
+		if not device.get("connected", false) or not device.get("known", false) or device.get("kind", "") != "gamepad":
+			continue
+		_controller_ids.append(int(device.id))
+		controller_choice.add_item(str(device.get("name", "Gamepad")))
+		if int(device.id) == selected: current = device
+	_using_gamepad = not current.is_empty()
+	if needs_selection:
+		controller_choice.add_item(words("Select controls…", "Elige los controles…"))
+		_controller_ids.append(-2)
+		controller_choice.set_item_disabled(controller_choice.item_count - 1, true)
+		controller_choice.select(controller_choice.item_count - 1)
+	else:
+		controller_choice.select(maxi(0, _controller_ids.find(selected)))
+	var family := Prompts.resolve_family("auto", current)
+	var rt := "R2" if family == "playstation" else ("ZR" if family == "nintendo" else "RT")
+	var lt := "L2" if family == "playstation" else ("ZL" if family == "nintendo" else "LT")
+	var reverse := _button_name(JOY_BUTTON_B, current)
+	var camera_button := _button_name(JOY_BUTTON_X, current)
+	var recover_button := _button_name(JOY_BUTTON_Y, current)
+	var start := _button_name(JOY_BUTTON_START, current)
+	if _using_gamepad:
+		control_hint.text = words("Left stick: steer · %s: accelerate · %s: brake · Hold %s + %s: reverse\n%s: camera · %s: recover · %s: garage / continue",
+			"Palanca izquierda: girar · %s: acelerar · %s: frenar · Mantén %s + %s: reversa\n%s: cámara · %s: recuperar · %s: garaje / continuar") % [rt, lt, reverse, rt, camera_button, recover_button, start]
+		resume_button.text = words("DRIVE · ", "CONDUCIR · ") + start
+		_menu_button.text = words("Garage · ", "Garaje · ") + start
+	else:
+		control_hint.text = words("W/S or ↑/↓: forward / reverse · A/D or ←/→: steer · Space: brake\nC: camera · R: recover · Esc: garage · Enter: continue",
+			"W/S o ↑/↓: avanzar / reversa · A/D o ←/→: girar · Espacio: frenar\nC: cámara · R: recuperar · Esc: garaje · Enter: continuar")
+		resume_button.text = words("DRIVE · Enter", "CONDUCIR · Enter")
+		_menu_button.text = words("Garage · Esc", "Garaje · Esc")
+	controller_choice.tooltip_text = words("This selection only controls the car. Aircraft settings are preserved.", "Esta selección controla solo el carro. Los ajustes de vuelo se conservan.")
+	update_input_status(false, needs_selection, true)
+
+
+func _button_name(button: JoyButton, device: Dictionary) -> String:
+	return str(Prompts.prompt({"type": "button", "button": button}, "auto", device).text)
+
+
+func update_input_status(ready: bool, needs_selection: bool, focused: bool) -> void:
+	if needs_selection:
+		input_status.text = words("Controller disconnected. Choose a gamepad or Keyboard above.", "Mando desconectado. Elige un mando o Teclado arriba.")
+	elif not focused:
+		input_status.text = words("Return to this window to continue.", "Vuelve a esta ventana para continuar.")
+	elif ready:
+		input_status.text = words("Controls ready. Select Drive.", "Controles listos. Pulsa Conducir.")
+	else:
+		input_status.text = words("Release the stick, triggers and reverse button.", "Suelta la palanca, los gatillos y el botón de reversa.") if _using_gamepad else words("Release the driving keys.", "Suelta las teclas de conducción.")
 
 func _label(text: String, size: int) -> Label:
 	var result := Label.new()

@@ -1,0 +1,32 @@
+{
+  "format": "openrc-heli-profile-diagnostics-v1",
+  "date": "2026-10-14",
+  "attempts": [
+    {
+      "attempt": 1,
+      "complete": false,
+      "stage": "session setup",
+      "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+      "error": "reset rejected: aircraft returned nonfinite or malformed loads",
+      "timed_samples": 0,
+      "note": "The first launch preceded the Electronics trim-key correction; setup was refused before any profile samples."
+    },
+    {
+      "attempt": 2,
+      "complete": false,
+      "stage": "source consistency guard after sampling",
+      "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+      "elapsed_wall_time_s": 30.9,
+      "timed_samples_expected": {
+        "stoppedground": 2400,
+        "12ssoftspool": 2880,
+        "governedground": 2400,
+        "legacyairbornehover": 2400
+      },
+      "raw_samples_saved": false,
+      "discard_reason": "The initial wrapper raised after sampling when before/after source hashes differed, before writing the in-memory results to files.",
+      "source_change_report": "The root agent inspected the concurrent edit and identified only app/sim/helicopter_flight_session.gd trace_meta; it is outside the timed step path.",
+      "note": "No timing statistics are claimed from this attempt. The wrapper now preserves before/after hashes and samples even if a later run detects a concurrent source change."
+    }
+  ]
+}

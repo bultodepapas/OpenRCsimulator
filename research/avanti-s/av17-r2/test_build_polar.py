@@ -38,12 +38,17 @@ class CandidatePolarTests(unittest.TestCase):
             self.assertEqual(quantity["unit"], "deg, 1, 1, 1")
             self.assertEqual(quantity["kind"], "estimated")
             self.assertIn(self.transcription["source"]["pdf_sha256"], quantity["source"])
+            self.assertIn(self.transcription["source"]["pdf_url"], quantity["source"])
             self.assertIn("does not identify the Avanti S airfoil", quantity["source"])
+            self.assertIn("not all measured", quantity["source"])
             self.assertIn("not measured separation", quantity["source"])
 
     def test_exact_signed_attached_8_degree_anchor_includes_offset(self):
         slope, offset = _finite_wing_line(self.aircraft)
         self.assertGreater(abs(offset), 1e-8)
+        # Python mirror cross-checked with AircraftData._induced_map through Godot 4.7.2.
+        self.assertAlmostEqual(slope, 4.236283082716884, delta=1e-9)
+        self.assertAlmostEqual(offset, -0.00299688529980005, delta=1e-9)
         expected_positive = slope * math.radians(8.0) + offset
         expected_negative = slope * math.radians(8.0) - offset
         positive = _rows(self.polar["positive"])[0]
@@ -59,9 +64,13 @@ class CandidatePolarTests(unittest.TestCase):
         expected_angles = list(range(10, 28)) + [30]
         self.assertEqual([row[0] for row in self.transcription["rows"]], expected_angles)
         self.assertEqual(self.transcription["source"]["pdf_sha256"], "af5cb8e9f564121155014b7c88d3b41ef75cd0655bcdc41690cd4f5b6b38bb97")
+        self.assertIn("build_polar.py::build_polar", self.transcription["builder"])
+        self.assertTrue(self.transcription["source"]["pdf_url"].startswith("https://www.osti.gov/"))
+        self.assertNotIn(".tools", json.dumps(self.transcription))
         policy = self.transcription["candidate_policy"]
         self.assertIn("not a measured Avanti polar", policy["classification"])
         self.assertIn("not measured separation", policy["attached_fraction"]["note"])
+        self.assertIn("not all measured", self.transcription["source"]["transcription_note"])
 
     def test_angles_fractions_and_drag_are_finite_and_passive(self):
         cd0 = self.aircraft["aero"]["coefficients"]["CD0"]["value"]
@@ -82,6 +91,20 @@ class CandidatePolarTests(unittest.TestCase):
                     self.assertGreater(angle, rows[index - 1][0])
                     self.assertLessEqual(fraction, rows[index - 1][3])
             self.assertEqual(rows[-1], [90.0, 0.0, cd0 + cd90, 0.0])
+
+    def test_high_angle_rows_follow_the_existing_flat_plate_law(self):
+        cd0 = self.aircraft["aero"]["coefficients"]["CD0"]["value"]
+        cd90 = self.aircraft["aero"]["envelope"]["CD90"]["value"]
+        for side in ("positive", "negative"):
+            rows = _rows(self.polar[side])[-4:]
+            for row, angle in zip(rows, (45.0, 60.0, 75.0, 90.0)):
+                radians = math.radians(angle)
+                expected_cl = 0.5 * cd90 * math.sin(2.0 * radians) if angle < 90.0 else 0.0
+                expected_cd = cd0 + cd90 * math.sin(radians) ** 2
+                self.assertEqual(row[0], angle)
+                self.assertAlmostEqual(row[1], expected_cl, delta=1e-15)
+                self.assertAlmostEqual(row[2], expected_cd, delta=1e-15)
+                self.assertEqual(row[3], 0.0)
 
     def test_builder_is_deterministic_and_does_not_mutate_input(self):
         untouched = copy.deepcopy(self.aircraft)

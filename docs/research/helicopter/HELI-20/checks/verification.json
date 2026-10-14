@@ -1,0 +1,383 @@
+{
+  "platform": "Windows-10-10.0.26100-SP0",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "name": "test_heli_3d_controller",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.867044700004044,
+      "counts": [
+        [
+          "36",
+          "0"
+        ]
+      ],
+      "log": "test_heli_3d_controller.log"
+    },
+    {
+      "name": "test_heli_aerodynamic_stage",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.2960689999890747,
+      "counts": [
+        [
+          "49",
+          "0"
+        ]
+      ],
+      "log": "test_heli_aerodynamic_stage.log"
+    },
+    {
+      "name": "test_heli_airframe",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.46816150000086054,
+      "counts": [
+        [
+          "768",
+          "0"
+        ]
+      ],
+      "log": "test_heli_airframe.log"
+    },
+    {
+      "name": "test_heli_construction",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.506781300005969,
+      "counts": [
+        [
+          "38",
+          "0"
+        ]
+      ],
+      "log": "test_heli_construction.log"
+    },
+    {
+      "name": "test_heli_contact_audit",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.5130860999925062,
+      "counts": [
+        [
+          "8",
+          "0"
+        ]
+      ],
+      "log": "test_heli_contact_audit.log"
+    },
+    {
+      "name": "test_heli_coupling",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.34377589999348857,
+      "counts": [
+        [
+          "23",
+          "0"
+        ]
+      ],
+      "log": "test_heli_coupling.log"
+    },
+    {
+      "name": "test_heli_disc_normal_audit",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.7176180000096792,
+      "counts": [
+        [
+          "5",
+          "0"
+        ]
+      ],
+      "log": "test_heli_disc_normal_audit.log"
+    },
+    {
+      "name": "test_heli_drive",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.7032701999996789,
+      "counts": [
+        [
+          "22",
+          "0"
+        ]
+      ],
+      "log": "test_heli_drive.log"
+    },
+    {
+      "name": "test_heli_dynamic_inflow",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.4437130000005709,
+      "counts": [
+        [
+          "32",
+          "0"
+        ]
+      ],
+      "log": "test_heli_dynamic_inflow.log"
+    },
+    {
+      "name": "test_heli_electronics",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.7235921999963466,
+      "counts": [
+        [
+          "33",
+          "0"
+        ]
+      ],
+      "log": "test_heli_electronics.log"
+    },
+    {
+      "name": "test_heli_electronics_prepared",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.8192654999875231,
+      "counts": [
+        [
+          "1034",
+          "0"
+        ]
+      ],
+      "log": "test_heli_electronics_prepared.log"
+    },
+    {
+      "name": "test_heli_flight",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.7169740000099409,
+      "counts": [
+        [
+          "41",
+          "0"
+        ]
+      ],
+      "log": "test_heli_flight.log"
+    },
+    {
+      "name": "test_heli_ground_session",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 102.30521940000472,
+      "counts": [
+        [
+          "56",
+          "0"
+        ]
+      ],
+      "log": "test_heli_ground_session.log"
+    },
+    {
+      "name": "test_heli_ground_start",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.7590649999910966,
+      "counts": [
+        [
+          "14",
+          "0"
+        ]
+      ],
+      "log": "test_heli_ground_start.log"
+    },
+    {
+      "name": "test_heli_inflow",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.28202719999535475,
+      "counts": [
+        [
+          "3949",
+          "0"
+        ]
+      ],
+      "log": "test_heli_inflow.log"
+    },
+    {
+      "name": "test_heli_lifecycle",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.37203679999220185,
+      "counts": [
+        [
+          "19",
+          "0"
+        ]
+      ],
+      "log": "test_heli_lifecycle.log"
+    },
+    {
+      "name": "test_heli_main_rotor",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.27951770000800025,
+      "counts": [
+        [
+          "65",
+          "0"
+        ]
+      ],
+      "log": "test_heli_main_rotor.log"
+    },
+    {
+      "name": "test_heli_main_rotor_stage",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.7446042000083253,
+      "counts": [
+        [
+          "25",
+          "0"
+        ]
+      ],
+      "log": "test_heli_main_rotor_stage.log"
+    },
+    {
+      "name": "test_heli_performance_context",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.3752782999945339,
+      "counts": [
+        [
+          "1087",
+          "0"
+        ]
+      ],
+      "log": "test_heli_performance_context.log"
+    },
+    {
+      "name": "test_heli_prepared_context_audit",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.46132740000030026,
+      "counts": [
+        [
+          "13",
+          "0"
+        ]
+      ],
+      "log": "test_heli_prepared_context_audit.log"
+    },
+    {
+      "name": "test_heli_render_audit",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 2.965400999994017,
+      "counts": [
+        [
+          "26",
+          "0"
+        ]
+      ],
+      "log": "test_heli_render_audit.log"
+    },
+    {
+      "name": "test_heli_session",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 17.642089100001613,
+      "counts": [
+        [
+          "42",
+          "0"
+        ]
+      ],
+      "log": "test_heli_session.log"
+    },
+    {
+      "name": "test_heli_skid_bristles",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.940270099992631,
+      "counts": [
+        [
+          "15",
+          "0"
+        ]
+      ],
+      "log": "test_heli_skid_bristles.log"
+    },
+    {
+      "name": "test_heli_startup_kernel",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.9041451000084635,
+      "counts": [
+        [
+          "62",
+          "0"
+        ]
+      ],
+      "log": "test_heli_startup_kernel.log"
+    },
+    {
+      "name": "test_heli_state_audit",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.0418325000064215,
+      "counts": [
+        [
+          "47",
+          "0"
+        ]
+      ],
+      "log": "test_heli_state_audit.log"
+    },
+    {
+      "name": "test_heli_swash",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.3152239999908488,
+      "counts": [
+        [
+          "46",
+          "0"
+        ]
+      ],
+      "log": "test_heli_swash.log"
+    },
+    {
+      "name": "test_heli_tail_rotor",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.3172794999991311,
+      "counts": [
+        [
+          "162",
+          "0"
+        ]
+      ],
+      "log": "test_heli_tail_rotor.log"
+    },
+    {
+      "name": "test_heli_trim",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.076454800000647,
+      "counts": [
+        [
+          "62",
+          "0"
+        ]
+      ],
+      "log": "test_heli_trim.log"
+    },
+    {
+      "name": "test_heli_visual",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.41537309999694116,
+      "counts": [
+        [
+          "25",
+          "0"
+        ]
+      ],
+      "log": "test_heli_visual.log"
+    }
+  ]
+}

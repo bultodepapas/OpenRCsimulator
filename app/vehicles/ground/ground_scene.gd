@@ -3,6 +3,8 @@ extends Node3D
 
 const Session = preload("res://sim/ground_vehicle/session.gd")
 const Driver = preload("res://input/ground_vehicle_input.gd")
+const Registry = preload("res://input/controller_registry.gd")
+const UiInput = preload("res://ui/ui_input.gd")
 const Model = preload("res://vehicles/ground/mt8_model.gd")
 const Dashboard = preload("res://vehicles/ground/ground_dashboard.gd")
 const CameraRig = preload("res://vehicles/ground/ground_camera.gd")
@@ -64,7 +66,6 @@ var _best_jump := 0.0
 var _landing_pending := false
 var _landing_tick := 0
 var _show_diagnostics := false
-var _last_device := -1
 var _snapshot := PackedFloat64Array()
 var _previous := PackedFloat64Array()
 var _record_export_pending := false
@@ -77,10 +78,14 @@ var _controller_device_id := -1
 var _controller_generation := 0
 var _controller_requires_selection := false
 var _keyboard_neutral_gate := false
+var _source_controller_registry: RefCounted
+var _last_controls := {}
+var _shortcut_buttons := {}
 
 func _ready() -> void:
 	name = "GroundVehicleActivity"
 	_presentation_context = World.presentation_context()
+	_initialize_driving_devices()
 	_connect_controller_registry()
 	_previous_auto_quit = get_tree().auto_accept_quit
 	get_tree().auto_accept_quit = false
@@ -130,6 +135,7 @@ func _ready() -> void:
 	dashboard.track_available = _course.has("track")
 	add_child(dashboard)
 	dashboard.action_requested.connect(handle_action)
+	dashboard.controller_selected.connect(select_driving_device)
 	dashboard.mode_selected.connect(_select_mode)
 	dashboard.experiment_requested.connect(_experiment)
 	dashboard.spawn_selected.connect(func(id: String):
@@ -147,7 +153,68 @@ func _ready() -> void:
 		_build_audio()
 	open_garage()
 	_capture_initial_controller_selection()
+	_refresh_controller_ui()
 	_process(0.0)
+
+
+## Driving owns a local selection. Aircraft profiles and menu preferences survive
+## a visit to the garage; a raw radio is never interpreted as an Xbox axis layout.
+func _initialize_driving_devices() -> void:
+	_source_controller_registry = controller_registry
+	controller_registry = Registry.new()
+	_refresh_driving_devices()
+	if _source_controller_registry != null:
+		_source_controller_registry.devices_changed.connect(_refresh_driving_devices)
+	else:
+		Input.joy_connection_changed.connect(_native_connection_changed)
+	var preferred := -1
+	if _source_controller_registry != null:
+		preferred = _source_controller_registry.selected_device_id("flight")
+	if not _is_flight_gamepad(_registry_device_for_id(preferred)):
+		preferred = -1
+		for record: Dictionary in controller_registry.get_devices():
+			if _is_flight_gamepad(record):
+				preferred = int(record.id)
+				break
+	controller_registry.select_device("flight", preferred)
+
+
+func _native_connection_changed(id: int, connected: bool) -> void:
+	if not connected:
+		controller_registry.disconnect_device(id)
+	_refresh_driving_devices.call_deferred()
+
+
+func _refresh_driving_devices() -> void:
+	var observations: Array = []
+	if _source_controller_registry != null:
+		for record: Dictionary in _source_controller_registry.get_devices():
+			if record.get("connected", false): observations.append(record)
+	else:
+		for id: int in Input.get_connected_joypads():
+			var record := Input.get_joy_info(id)
+			record.merge({"id": id, "name": Input.get_joy_name(id), "guid": Input.get_joy_guid(id),
+				"known": Input.is_joy_known(id), "kind": "gamepad" if Input.is_joy_known(id) else "joystick"}, true)
+			observations.append(record)
+	controller_registry.update_devices(observations)
+	_refresh_controller_ui()
+
+
+func select_driving_device(device: int) -> void:
+	if device >= 0 and not _is_flight_gamepad(_registry_device_for_id(device)):
+		return
+	if controller_registry.select_device("flight", device):
+		# Selecting the same item is also an explicit reconnect acknowledgement.
+		apply_controller_selection(device)
+	_refresh_controller_ui()
+
+
+func _refresh_controller_ui() -> void:
+	if dashboard == null or controller_registry == null:
+		return
+	var selected := _registry_selected_device_id("flight")
+	dashboard.set_controllers(controller_registry.get_devices(), selected, _controller_requires_selection)
+	UiInput.set_gamepad(selected if _has_flight_gamepad() else -1)
 
 func _build_airfield() -> void:
 	var exclusions: Array = []
@@ -206,6 +273,10 @@ func _physics_process(_delta: float) -> void:
 	var controls := _read_controls()
 	if scripted_controls.is_valid():
 		controls = scripted_controls.call(session.tick)
+	_last_controls = controls
+	if not controls.get("armed", false) and not session.paused:
+		open_garage()
+		dashboard.message("Controls unavailable. Release them and check the selected device.", "Controles no disponibles. Suéltalos y revisa el dispositivo seleccionado.")
 	session.tick_once(controls)
 	if _landing_pending and session.tick >= _landing_tick + 120:
 		_landing_pending = false
@@ -218,7 +289,7 @@ func _physics_process(_delta: float) -> void:
 			dashboard.message("Rollover. Try less approach speed; R recovers the truck.", "Volcamiento. Prueba con menos velocidad; R recupera el carro.")
 
 func _read_controls() -> Dictionary:
-	var joy: Dictionary = _registry_joy_controls() if controller_registry != null else _legacy_joy_controls()
+	var joy: Dictionary = _registry_joy_controls() if controller_registry != null else {"connected": false}
 	var keys := {"accelerate": _key(KEY_W) or _key(KEY_UP), "reverse": _key(KEY_S) or _key(KEY_DOWN),
 		"left": _key(KEY_A) or _key(KEY_LEFT), "right": _key(KEY_D) or _key(KEY_RIGHT),
 		"brake": _key(KEY_SPACE), "blocked": not _focused, "focused": _focused}
@@ -228,16 +299,6 @@ func _read_controls() -> Dictionary:
 	if controller_registry != null and _keyboard_neutral_gate:
 		_keyboard_neutral_gate = false
 	return controls
-
-func _legacy_joy_controls() -> Dictionary:
-	var devices := Input.get_connected_joypads()
-	var device := -1 if devices.is_empty() else int(devices[0])
-	if _last_device >= 0 and device != _last_device:
-		open_garage()
-		if dashboard != null:
-			dashboard.message("Controller disconnected. Release controls to continue.", "Control desconectado. Suelta los controles para continuar.")
-	_last_device = device
-	return _joy_controls(device) if device >= 0 else {"connected": false}
 
 func _registry_joy_controls() -> Dictionary:
 	var device: int = _registry_selected_device_id("flight")
@@ -268,8 +329,8 @@ func _registry_joy_controls() -> Dictionary:
 func _joy_controls(device: int) -> Dictionary:
 	return {"connected": true, "device_id": device,
 		"left_x": joy_axis_reader.call(device, JOY_AXIS_LEFT_X),
-		"right_trigger": maxf(0.0, joy_axis_reader.call(device, JOY_AXIS_TRIGGER_RIGHT)),
-		"left_trigger": maxf(0.0, joy_axis_reader.call(device, JOY_AXIS_TRIGGER_LEFT)),
+		"right_trigger": joy_axis_reader.call(device, JOY_AXIS_TRIGGER_RIGHT),
+		"left_trigger": joy_axis_reader.call(device, JOY_AXIS_TRIGGER_LEFT),
 		"reverse": joy_button_reader.call(device, JOY_BUTTON_B)}
 
 func _connect_controller_registry() -> void:
@@ -332,6 +393,7 @@ func apply_controller_selection(device: int) -> bool:
 		_keyboard_neutral_gate = true
 		driver.reset()
 		open_garage()
+		_refresh_controller_ui()
 		return true
 	if device < 0:
 		return false
@@ -345,6 +407,7 @@ func apply_controller_selection(device: int) -> bool:
 	_keyboard_neutral_gate = false
 	driver.reset()
 	open_garage()
+	_refresh_controller_ui()
 	return true
 
 func _begin_controller_loss(message_en: String, message_es: String) -> void:
@@ -355,6 +418,7 @@ func _begin_controller_loss(message_en: String, message_es: String) -> void:
 		open_garage()
 		if dashboard != null:
 			dashboard.message(message_en, message_es)
+		_refresh_controller_ui()
 
 func _has_flight_gamepad() -> bool:
 	if controller_registry == null or _controller_requires_selection:
@@ -368,7 +432,7 @@ func _has_flight_gamepad() -> bool:
 
 func _accept_controller_button(device: int) -> bool:
 	if controller_registry == null:
-		return true
+		return false
 	for role: String in ["ui", "flight"]:
 		if _registry_selected_device_id(role) != device:
 			continue
@@ -407,6 +471,7 @@ func _process(delta: float) -> void:
 	telemetry.surface_id = _render_road.call(drawn[0], drawn[1]).surface_id
 	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)
 	dashboard.update_snapshot(telemetry, session.paused, session.time_s(), session.recording, _show_diagnostics or mode == 2)
+	dashboard.update_input_status(_controls_ready(_last_controls), _controller_requires_selection, _focused)
 	if visual.travel_outside_art:
 		dashboard.message("Suspension beyond visual travel; see recorded physical state.", "Suspensión fuera del recorrido visual; consulta el estado físico grabado.")
 	if _sound != null:
@@ -429,16 +494,32 @@ func open_garage() -> void:
 	if dashboard == null:
 		return
 	session.add_pause_hold("garage")
+	driver.sample({"blocked": true}, {})
+	_last_controls = {}
 	dashboard.set_menu(true)
 	camera_rig.reset()
+
+
+func _controls_ready(controls: Dictionary) -> bool:
+	return controls.get("armed", false) == true and controls.get("throttle", -1.0) == 0.0 \
+		and controls.get("brake", -1.0) == 0.0 and controls.get("steering", -1.0) == 0.0 \
+		and controls.get("reverse", true) == false
 
 func handle_action(action: String) -> void:
 	match action:
 		"menu": open_garage()
 		"resume":
+			if not session.paused or not _focused:
+				return
 			if controller_registry != null and _controller_requires_selection:
 				open_garage()
 				dashboard.message("Select a connected gamepad or explicitly choose keyboard controls.", "Selecciona un mando conectado o elige explícitamente los controles de teclado.")
+				return
+			# Recheck at the click/Start boundary: the most recent physics sample
+			# may precede a new trigger or key press. Never integrate a tick here.
+			var current: Dictionary = _read_controls()
+			if not _controls_ready(current):
+				dashboard.message("Release all controls before continuing.", "Suelta todos los controles antes de continuar.")
 				return
 			session.release_pause_hold("garage")
 			if session.resume():
@@ -446,12 +527,8 @@ func handle_action(action: String) -> void:
 				camera_rig.reset()
 				if mode == 1:
 					dashboard.message("Follow the central lane. Start gently; release throttle before landing.", "Sigue el carril central. Empieza suave; suelta el acelerador antes de aterrizar.")
-				elif controller_registry != null and not _has_flight_gamepad():
-					dashboard.message("W forward · S reverse · A/D steer · Space brake", "W avanzar · S reversa · A/D girar · Espacio frenar")
-				elif controller_registry == null and Input.get_connected_joypads().is_empty():
-					dashboard.message("W forward · S reverse · A/D steer · Space brake", "W avanzar · S reversa · A/D girar · Espacio frenar")
 				else:
-					dashboard.message("RT drive · LT brake · Left stick steer · Hold B + RT reverse", "RT acelerar · LT frenar · Stick izquierdo girar · B + RT reversa")
+					dashboard.message("Ready to drive.", "Listo para conducir.")
 			else:
 				session.add_pause_hold("garage")
 				dashboard.message("Release all controls before continuing.", "Suelta todos los controles antes de continuar.")
@@ -593,10 +670,19 @@ func _exit_tree() -> void:
 		var callback := Callable(self, "_on_controller_selection_changed")
 		if controller_registry.is_connected("selection_changed", callback):
 			controller_registry.disconnect("selection_changed", callback)
+	if _source_controller_registry != null and _source_controller_registry.devices_changed.is_connected(_refresh_driving_devices):
+		_source_controller_registry.devices_changed.disconnect(_refresh_driving_devices)
+	if Input.joy_connection_changed.is_connected(_native_connection_changed):
+		Input.joy_connection_changed.disconnect(_native_connection_changed)
+	UiInput.isolate_joypads()
 	get_tree().auto_accept_quit = _previous_auto_quit
 
 func _unhandled_input(event: InputEvent) -> void:
 	if dashboard == null: return
+	if event is InputEventJoypadButton and not event.pressed:
+		_shortcut_buttons.erase("%d:%d" % [event.device, event.button_index])
+		return
+	if not _focused: return
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
 			KEY_ESCAPE: handle_action("menu")
@@ -606,9 +692,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_F9: handle_action("record")
 			_: return
 		get_viewport().set_input_as_handled()
-	elif event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_START \
-			and _accept_controller_button(event.device):
-		handle_action("resume" if dashboard.menu_visible else "menu")
+	elif event is InputEventJoypadButton and event.pressed and _accept_controller_button(event.device):
+		var action := ""
+		if event.button_index == JOY_BUTTON_START:
+			action = "resume" if dashboard.menu_visible else "menu"
+		elif not dashboard.menu_visible:
+			if event.button_index == JOY_BUTTON_X: action = "camera"
+			elif event.button_index == JOY_BUTTON_Y: action = "recover"
+		if action.is_empty(): return
+		var edge := "%d:%d" % [event.device, event.button_index]
+		if not _shortcut_buttons.has(edge):
+			_shortcut_buttons[edge] = true
+			handle_action(action)
 		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		camera_rig.drag(event.relative)

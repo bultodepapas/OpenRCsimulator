@@ -61,6 +61,8 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 [AV-17-R1 keyboard pitch and dive recovery](avanti-realism/AV-17-R1/README.md) records the 2026-10-14 manufacturer/parameter audit, accelerated-stall reproduction, progressive keyboard response, before/after traces and regression evidence.
 
+[AV-17-R2 gamepad pitch and progressive stall](avanti-realism/AV-17-R2/README.md) records the reproduced pure-elevator roll departure, source-based estimated wing polar, fixed gamepad travel, paired traces and remaining physical-validation limits.
+
 [AV-18 fuel-turbine source review](turbine-realism/AV-18/README.md) compares identified JetCat revisions, Xicoy and KingTech manufacturer data with original engine experiments, and fingerprints the current propulsion/fuel gaps. The [turbine realism plan](../plans/turbine-realism.md) owns detailed response, ECU, fuel/mass and integration work.
 
 [AV-18…20 implementation](turbine-realism/AV-20/README.md) records continuous turbine RPM, explicit model selection, checkpoint/trace guards, analytic and paired-flight proofs, and remaining physical/ECU/fuel gates. The [AV-10b reference](../../research/avanti-s/av10/README.md) verifies open-system mass mechanics separately from production fuel integration.

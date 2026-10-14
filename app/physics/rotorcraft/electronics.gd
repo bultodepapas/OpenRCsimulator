@@ -217,11 +217,11 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Pack
 			-model.yaw_max_rate_rad_s, model.yaw_max_rate_rad_s)
 	var yaw_rate_error: float = target_yaw_rate - state[12]
 	var integrator: float = clampf(state[YAW_INTEGRATOR], -model.yaw_integrator_limit_rad, model.yaw_integrator_limit_rad)
-var ground_yaw_precomp: float = 0.0
-if trim.has("ground_yaw_precomp_tail_bias_rad"):
-	var reference_collective: float = float(trim.ground_yaw_precomp_collective_rad)
-	ground_yaw_precomp = float(trim.ground_yaw_precomp_tail_bias_rad) \
-		* clampf(float(swash.theta0_rad) / reference_collective, 0.0, 1.0)
+	var ground_yaw_precomp: float = 0.0
+	if trim.has("ground_yaw_precomp_tail_bias_rad"):
+		var reference_collective: float = float(trim.ground_yaw_precomp_collective_rad)
+		ground_yaw_precomp = float(trim.ground_yaw_precomp_tail_bias_rad) \
+			* clampf(float(swash.theta0_rad) / reference_collective, 0.0, 1.0)
 	var tail_unsaturated: float = model.tail_collective_trim_rad \
 		+ float(trim.get("tail_collective_bias_rad", 0.0)) + ground_yaw_precomp + model.yaw_control_sign * (
 		model.yaw_rate_kp_rad_per_rad_s * yaw_rate_error + model.yaw_rate_ki_rad_per_rad * integrator)

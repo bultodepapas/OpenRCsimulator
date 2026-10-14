@@ -1,0 +1,540 @@
+{
+	"memory": [
+		{
+			"initial_static_bytes": 129536670.0,
+			"lighting": "day",
+			"scene_nodes": 345,
+			"variant": "reference",
+			"warm_static_bytes": 150971541.0
+		},
+		{
+			"initial_static_bytes": 159346590.0,
+			"lighting": "day",
+			"scene_nodes": 563,
+			"variant": "candidate",
+			"warm_static_bytes": 186552570.0
+		},
+		{
+			"initial_static_bytes": 159271886.0,
+			"lighting": "night",
+			"scene_nodes": 345,
+			"variant": "reference",
+			"warm_static_bytes": 173205770.0
+		},
+		{
+			"initial_static_bytes": 181408014.0,
+			"lighting": "night",
+			"scene_nodes": 563,
+			"variant": "candidate",
+			"warm_static_bytes": 208568626.0
+		}
+	],
+	"pixels": [
+		{
+			"case": "day-jensen-das-ugly-stik-60",
+			"equal": false
+		},
+		{
+			"case": "day-gp-extra-300s-60",
+			"equal": true
+		},
+		{
+			"case": "day-sebart-avanti-s-a200-p100rx",
+			"equal": false
+		},
+		{
+			"case": "night-jensen-das-ugly-stik-60",
+			"equal": false
+		},
+		{
+			"case": "night-gp-extra-300s-60",
+			"equal": true
+		},
+		{
+			"case": "night-sebart-avanti-s-a200-p100rx",
+			"equal": false
+		}
+	],
+	"samples": [
+		{
+			"cycle": 0,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 252950,
+			"usec": 241782,
+			"variant": "reference"
+		},
+		{
+			"cycle": 0,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 349178,
+			"usec": 296280,
+			"variant": "reference"
+		},
+		{
+			"cycle": 0,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 1532742,
+			"usec": 1475851,
+			"variant": "reference"
+		},
+		{
+			"cycle": 1,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 312828,
+			"usec": 299839,
+			"variant": "reference"
+		},
+		{
+			"cycle": 1,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 229612,
+			"usec": 221097,
+			"variant": "reference"
+		},
+		{
+			"cycle": 1,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 903475,
+			"usec": 869284,
+			"variant": "reference"
+		},
+		{
+			"cycle": 2,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 201812,
+			"usec": 187103,
+			"variant": "reference"
+		},
+		{
+			"cycle": 2,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 137838,
+			"usec": 126977,
+			"variant": "reference"
+		},
+		{
+			"cycle": 2,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 886601,
+			"usec": 852615,
+			"variant": "reference"
+		},
+		{
+			"cycle": 3,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 208932,
+			"usec": 196835,
+			"variant": "reference"
+		},
+		{
+			"cycle": 3,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 148977,
+			"usec": 139942,
+			"variant": "reference"
+		},
+		{
+			"cycle": 3,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 719087,
+			"usec": 688114,
+			"variant": "reference"
+		},
+		{
+			"cycle": 4,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 174092,
+			"usec": 161812,
+			"variant": "reference"
+		},
+		{
+			"cycle": 4,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 160100,
+			"usec": 152959,
+			"variant": "reference"
+		},
+		{
+			"cycle": 4,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 695219,
+			"usec": 663478,
+			"variant": "reference"
+		},
+		{
+			"cycle": 0,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 12567,
+			"usec": 4550,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 0,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 163134,
+			"usec": 156053,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 0,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 753939,
+			"usec": 721493,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 1,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 13884,
+			"usec": 7428,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 1,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 10269,
+			"usec": 4075,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 1,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 12630,
+			"usec": 3297,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 2,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 9828,
+			"usec": 3891,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 2,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 8117,
+			"usec": 3286,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 2,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 8135,
+			"usec": 3232,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 3,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 11915,
+			"usec": 3679,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 3,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 10151,
+			"usec": 4517,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 3,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 8131,
+			"usec": 3000,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 4,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "day",
+			"through_draw_usec": 11053,
+			"usec": 4044,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 4,
+			"id": "gp-extra-300s-60",
+			"lighting": "day",
+			"through_draw_usec": 10750,
+			"usec": 3885,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 4,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "day",
+			"through_draw_usec": 10839,
+			"usec": 3666,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 0,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 184170,
+			"usec": 177269,
+			"variant": "reference"
+		},
+		{
+			"cycle": 0,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 151903,
+			"usec": 145949,
+			"variant": "reference"
+		},
+		{
+			"cycle": 0,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 733737,
+			"usec": 704910,
+			"variant": "reference"
+		},
+		{
+			"cycle": 1,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 171587,
+			"usec": 162201,
+			"variant": "reference"
+		},
+		{
+			"cycle": 1,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 127583,
+			"usec": 122572,
+			"variant": "reference"
+		},
+		{
+			"cycle": 1,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 698427,
+			"usec": 669508,
+			"variant": "reference"
+		},
+		{
+			"cycle": 2,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 198367,
+			"usec": 186355,
+			"variant": "reference"
+		},
+		{
+			"cycle": 2,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 180045,
+			"usec": 171801,
+			"variant": "reference"
+		},
+		{
+			"cycle": 2,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 709581,
+			"usec": 670080,
+			"variant": "reference"
+		},
+		{
+			"cycle": 3,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 171509,
+			"usec": 160253,
+			"variant": "reference"
+		},
+		{
+			"cycle": 3,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 146525,
+			"usec": 137299,
+			"variant": "reference"
+		},
+		{
+			"cycle": 3,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 710764,
+			"usec": 681587,
+			"variant": "reference"
+		},
+		{
+			"cycle": 4,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 163601,
+			"usec": 155118,
+			"variant": "reference"
+		},
+		{
+			"cycle": 4,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 131925,
+			"usec": 126986,
+			"variant": "reference"
+		},
+		{
+			"cycle": 4,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 720377,
+			"usec": 687000,
+			"variant": "reference"
+		},
+		{
+			"cycle": 0,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 8048,
+			"usec": 3378,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 0,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 141827,
+			"usec": 139000,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 0,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 798053,
+			"usec": 761372,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 1,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 8333,
+			"usec": 4267,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 1,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 8039,
+			"usec": 3433,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 1,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 8070,
+			"usec": 3340,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 2,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 8306,
+			"usec": 3854,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 2,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 8104,
+			"usec": 3226,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 2,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 14083,
+			"usec": 6584,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 3,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 8156,
+			"usec": 3690,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 3,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 9278,
+			"usec": 3775,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 3,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 10962,
+			"usec": 3228,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 4,
+			"id": "jensen-das-ugly-stik-60",
+			"lighting": "night",
+			"through_draw_usec": 9101,
+			"usec": 3033,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 4,
+			"id": "gp-extra-300s-60",
+			"lighting": "night",
+			"through_draw_usec": 5587,
+			"usec": 2905,
+			"variant": "candidate"
+		},
+		{
+			"cycle": 4,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"lighting": "night",
+			"through_draw_usec": 5637,
+			"usec": 2885,
+			"variant": "candidate"
+		}
+	]
+}

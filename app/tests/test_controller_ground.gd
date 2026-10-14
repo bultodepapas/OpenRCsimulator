@@ -73,10 +73,10 @@ func _run() -> void:
 	axis_values[JOY_AXIS_LEFT_X] = 0.5
 	axis_values[JOY_AXIS_TRIGGER_RIGHT] = 0.7
 	var drive_controls: Dictionary = ground._read_controls()
-	check("RT accelerates and left stick steers using ground profile", is_equal_approx(drive_controls.throttle, 0.7) and is_equal_approx(drive_controls.steering, (0.5 - 0.12) / (1.0 - 0.12)))
+	check("RT accelerates and left stick steers using ground profile", is_equal_approx(drive_controls.throttle, (0.7 - 0.04) / 0.96) and is_equal_approx(drive_controls.steering, (0.5 - 0.12) / (1.0 - 0.12)))
 	axis_values[JOY_AXIS_TRIGGER_LEFT] = 0.3
 	var brake_controls: Dictionary = ground._read_controls()
-	check("LT brakes and overrides RT throttle", brake_controls.brake == 0.3 and brake_controls.throttle == 0.0)
+	check("LT brakes and overrides RT throttle", is_equal_approx(brake_controls.brake, (0.3 - 0.04) / 0.96) and brake_controls.throttle == 0.0)
 
 	registry.select("flight", 9)
 	var radio_controls: Dictionary = ground._registry_joy_controls()
@@ -108,7 +108,7 @@ func _run() -> void:
 	check("unselected handle is rejected for Start", not ground._accept_controller_button(99))
 
 	ground.controller_registry = null
-	check("legacy route keeps prior unrestricted Start handling", ground._accept_controller_button(99))
+	check("uninitialized activity rejects unowned controller buttons", not ground._accept_controller_button(99))
 	ground.free()
 	print("Ground controller integration: %d/%d checks passed" % [checks - failures, checks])
 	quit(1 if failures else 0)
