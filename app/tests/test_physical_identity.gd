@@ -65,7 +65,7 @@ func _initialize() -> void:
 		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(entry.data))
 		var loaded := AD.validate_and_derive(raw)
 		check(entry.id + " authored identities", loaded.ok and loaded.model.has("physical_identity"), loaded.errors)
-		if not loaded.ok:
+		if not loaded.ok or not loaded.model.has("physical_identity"):
 			continue
 		var old := AD.validate_and_derive(legacy(raw))
 		check(entry.id + " old v2 supported", old.ok and not old.model.has("physical_identity"), old.errors)

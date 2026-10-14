@@ -246,7 +246,7 @@ AUD owns a bounded pending-event queue and spatial voices on the existing enviro
 
 #### Free resource intake and proposed file boundaries
 
-First audit/download the MIT [Godot3DLightning](https://github.com/AurelienCaille/Godot3DLightning) source: its project targets 4.2 and its update is marked WIP, so 4.7.2 Compatibility remains unverified. Evaluate [ARCFLUX Lite](https://gennai.itch.io/arcflux-lite) separately as a free 3D bolt prototype: its author reports 4.7.2 Compatibility testing. Its custom terms restrict pack redistribution, so it is **not yet cleared for this public repository**; keep evaluation external until terms cover source and exports. [JarLowrey/GodotLightning](https://github.com/JarLowrey/GodotLightning) is an MIT 2D algorithm fallback, not a 3D drop-in. No redistributable, Compatibility-qualified 3D drop-in was confirmed by this research. Prefer adapting licensed 3D source; document failed candidates before authoring missing components. No paid pack is a dependency.
+First audit/download the MIT [Godot3DLightning](https://github.com/AurelienCaille/Godot3DLightning) source: its project targets 4.2 and its update is marked WIP, so 4.7.2 Compatibility remains unverified. Evaluate [ARCFLUX Lite](https://gennai.itch.io/arcflux-lite) separately as a free 3D bolt prototype: its author reports 4.7.2 Compatibility testing. Its terms permit commercial/noncommercial project use but restrict pack redistribution: **public source vendoring remains unresolved**. Keep evaluation external and record those terms; do not interpret the source restriction as a blanket ban on game exports. [JarLowrey/GodotLightning](https://github.com/JarLowrey/GodotLightning) is an MIT 2D algorithm fallback, not a 3D drop-in. No redistributable, Compatibility-qualified 3D drop-in was confirmed by this research. Prefer adapting licensed 3D source; document failed candidates before authoring missing components. No paid pack is a dependency.
 
 For actual thunder, audition Emulius's CC0 [Thunder 08](https://freesound.org/people/Emulius/sounds/744723/) and the thunder in rubberduck's CC0 [100 SFX #2](https://opengameart.org/content/100-cc0-sfx-2). Verify each selected file, archive its license/hash and keep edits reproducible; a pack's name is not an audition. Freesound download requires login; the OpenGameArt pack is an alternate intake route. The detailed [electrical-storm research](../research/field-world/FW-76/README.md#electrical-storms-and-night-lightning) records tutorials, creator Reddit evidence and remaining license limits.
 
@@ -307,7 +307,7 @@ Each row is a small independently reviewable change. Runtime work remains pendin
 | 7 · FW-89 | Experimental tornado challenge with briefing, aircraft restrictions and restart/recovery flow | Actual flown entry/exit, expected distributed disturbance, crash/reset and failure handling, enabled-aircraft matrix, owner play review. **Pending.** |
 | 8 · FW-90 | Release qualification for each delivered slice and documentation consolidation | Native Windows/Linux/macOS exports, licensed assets packaged, settings migration, regression/capture/performance records and owner sky/flight review. **Pending; repeat only for newly changed scope.** |
 
-FW-84 is split into independently reviewable changes; it is no longer an optional placeholder:
+FW-84 is split into five independently reviewable changes:
 
 | Substep | Work / owner | Required proof |
 | --- | --- | --- |
@@ -323,8 +323,7 @@ Dependencies:
 
 ```text
 FW-76 → FW-77 → FW-78/79 → FW-80 → FW-81 → FW-82 → ordinary-sky release gate
-                                           └────→ FW-83 → FW-84a → FW-84b/c/d → FW-84e
-                                                                            → electrical-storm release gate
+FW-82 → FW-83 → FW-84a → FW-84b/c/d → FW-84e → electrical-storm release gate
 FW-85 is an isolated decision branch; it does not block ordinary skies.
 M5-W05 + FW-82 → FW-86 → FW-87 → FW-88 → FW-89 → challenge release gate
 FW-90 qualifies each shippable slice; early sky delivery does not wait for a tornado.

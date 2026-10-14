@@ -1,5 +1,6 @@
 {
   "format": "openrc-aircraft v2",
+  "physical_identity_version": 1,
   "id": "turbo-lumber-evolution",
   "description": "EXPERIMENTAL TT-07: photograph-inspired r2 mesh (r2-d75ae605aa3a), B-reference 800 Kv/70 A/4S 3200 mAh/11x7.3 three-blade loadout. Estimated inventory, motor losses and borrowed two-blade propeller map. Wheels fixed, flaps up, slats absent, assists off; prescribed bus, no battery depletion. Not physical validation.",
   "convention_id": "openrc-le-frd-v1",
@@ -77,6 +78,7 @@
   },
   "inventory": [
     {
+      "id": "wing_main",
       "name": "wing, flaps, ailerons and wing servos",
       "mass": {
         "value": 0.456,
@@ -106,6 +108,7 @@
       }
     },
     {
+      "id": "fuselage_main",
       "name": "fuselage foam, canopy and fittings",
       "mass": {
         "value": 0.605,
@@ -135,6 +138,7 @@
       }
     },
     {
+      "id": "tail_surfaces",
       "name": "horizontal and vertical tail",
       "mass": {
         "value": 0.08,
@@ -164,6 +168,7 @@
       }
     },
     {
+      "id": "gear_main",
       "name": "main gear and wheels",
       "mass": {
         "value": 0.135,
@@ -193,6 +198,7 @@
       }
     },
     {
+      "id": "gear_tail",
       "name": "tailwheel and fork",
       "mass": {
         "value": 0.012,
@@ -222,6 +228,7 @@
       }
     },
     {
+      "id": "propeller_main",
       "name": "three-blade propeller and spinner",
       "mass": {
         "value": 0.032,
@@ -251,6 +258,7 @@
       }
     },
     {
+      "id": "motor_main",
       "name": "800 Kv motor",
       "mass": {
         "value": 0.16,
@@ -280,6 +288,7 @@
       }
     },
     {
+      "id": "esc_main",
       "name": "70 A ESC",
       "mass": {
         "value": 0.06,
@@ -309,6 +318,7 @@
       }
     },
     {
+      "id": "receiver_radio",
       "name": "receiver",
       "mass": {
         "value": 0.012,
@@ -338,6 +348,7 @@
       }
     },
     {
+      "id": "tail_servos",
       "name": "elevator and rudder servos",
       "mass": {
         "value": 0.018,
@@ -367,6 +378,7 @@
       }
     },
     {
+      "id": "wiring_lighting",
       "name": "wiring and navigation LEDs",
       "mass": {
         "value": 0.04,
@@ -396,6 +408,7 @@
       }
     },
     {
+      "id": "battery_main",
       "name": "4S 3200 mAh battery",
       "mass": {
         "value": 0.33,
@@ -426,6 +439,7 @@
       "energy_source": "lipo"
     },
     {
+      "id": "ballast_reference",
       "name": "virtual reference-build balancing mass",
       "mass": {
         "value": 0.24999999999999978,
@@ -464,6 +478,12 @@
     }
   },
   "controls": {
+    "surface_ids": {
+      "aileron_left": "surface_aileron_left",
+      "aileron_right": "surface_aileron_right",
+      "elevator": "surface_elevator",
+      "rudder": "surface_rudder"
+    },
     "max_throw": {
       "aileron": {
         "value": 34.47472044218067,
@@ -1170,11 +1190,13 @@
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: imported propeller hub minus inventory CG, structural axes"
       }
-    }
+    },
+    "id": "propulsion_main"
   },
   "landing_gear": {
     "contacts": [
       {
+        "id": "contact_main_left",
         "name": "main_left",
         "position": {
           "value": [
@@ -1212,6 +1234,7 @@
         }
       },
       {
+        "id": "contact_main_right",
         "name": "main_right",
         "position": {
           "value": [
@@ -1249,6 +1272,7 @@
         }
       },
       {
+        "id": "contact_tail",
         "name": "tail",
         "position": {
           "value": [
@@ -1403,6 +1427,25 @@
     "kind": "derived",
     "source": "research/timber/tt07/derive_physics.py: TT-19 outermost measured wing leading-skin station mirrored left/right (not max-span cap or nav lens), imported nose/tail extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"
   },
+  "crash_hull_ids": [
+    "probe_wing_left_tip",
+    "probe_wing_right_tip",
+    "probe_spinner_tip",
+    "probe_tail_rudder_edge",
+    "probe_stabilizer_left_tip",
+    "probe_stabilizer_right_tip",
+    "probe_fin_top",
+    "probe_propeller_bottom",
+    "probe_belly_nose",
+    "probe_belly_forward_fuselage",
+    "probe_belly_wing_front",
+    "probe_belly_wing_center",
+    "probe_belly_wing_aft",
+    "probe_belly_cabin_aft",
+    "probe_belly_tail_forward",
+    "probe_belly_tail_center",
+    "probe_belly_tail_end"
+  ],
   "crash_hull_components": [
     "left_wing_tip",
     "right_wing_tip",

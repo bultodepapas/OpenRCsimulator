@@ -81,6 +81,10 @@ func _test_strict_mutations(scenario: Dictionary) -> void:
 	var bad_digest: Dictionary = scenario.duplicate(true)
 	bad_digest.identity = "0".repeat(64)
 	_check("tampered canonical identity is rejected", not _valid(bad_digest))
+	var float_mutation: Dictionary = scenario.duplicate(true)
+	float_mutation.weather_config.qnh_hpa = float(float_mutation.weather_config.qnh_hpa) + 0.000001
+	_check("float changes at the published 12-significant-digit identity precision alter the digest",
+		ScenarioConfig.identity_for(float_mutation) != scenario.identity and not _valid(float_mutation))
 
 
 func _test_custom_lighting(scenario: Dictionary) -> void:

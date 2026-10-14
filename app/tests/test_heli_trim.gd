@@ -124,5 +124,18 @@ func _initialize() -> void:
 		check("positive right roll command produces right-bank response", roll_euler[2] > initial_euler[2])
 		check("positive yaw-rate command produces positive heading response", yaw_euler[0] > initial_euler[0])
 		check("higher collective unloads the NED down position", collective_final[2] < trim.state[2])
+	var steady_wind: PackedFloat64Array = M.v3(3.0, 0.0, 0.0)
+	var wind_trim: Dictionary = Trim.solve_hover(context, 0.0, position, steady_wind, {})
+	check("hover trim balances a 3 m/s steady wind while remaining ground-stationary", wind_trim.ok)
+	if wind_trim.ok:
+		var wind_equilibrium: Dictionary = Flight.evaluate(wind_trim.state, context, wind_trim.sticks,
+			"normal", false, false, steady_wind, false, PackedFloat64Array(), wind_trim.trim)
+		check("wind hover evaluates to finite source flight equations", wind_equilibrium.ok)
+		if wind_equilibrium.ok:
+			for axis: int in range(3):
+				close("wind hover ground velocity " + str(axis), wind_trim.state[RB.VEL + axis], 0.0, 1.0e-10)
+				close("wind hover position rate " + str(axis), wind_equilibrium.body_derivative[RB.POS + axis], 0.0, 1.0e-8)
+				close("wind hover acceleration residual " + str(axis),
+					wind_equilibrium.body_derivative[RB.VEL + axis], 0.0, 1.0e-8)
 	print("HELI-18 airborne hover trim: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

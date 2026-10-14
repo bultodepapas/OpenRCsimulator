@@ -183,8 +183,11 @@ static func customize_lighting(scenario: Variant, lighting_config: Variant) -> D
 	return result.scenario if bool(result.get("ok", false)) else {}
 
 
-## Canonical SHA-256 over the whole resolved scenario except its identity field.
-## Recursive key sorting and JSON full-precision formatting keep it stable after JSON round trips.
+## SHA-256 over the whole resolved scenario except its identity field.
+## Dictionary keys are sorted and numeric values are canonicalized to 12 significant decimal digits.
+## This digest precision avoids a one-ULP drift observed when Godot parses serialized float64 JSON;
+## stored scenario values and transport JSON remain full precision. Identity is therefore a content
+## check at 12 significant digits, not a bit-exact digest of every stored float bit.
 static func identity_for(scenario: Variant) -> String:
 	if typeof(scenario) != TYPE_DICTIONARY:
 		return ""
@@ -630,9 +633,7 @@ static func _file_stamp(path: String) -> String:
 
 
 static func _sorted_value(value: Variant) -> Variant:
-	# JSON.parse() materializes JSON numbers as float64, even when the source was an int.
-	# It can also round a decimal by one ULP, so use 12 significant digits for the digest form.
-	# Stored values and their JSON use full precision; this is only identity canonicalization.
+	# Normalize integer and float variants before the 12-significant-digit digest serialization.
 	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
 		return ("%.12g" % float(value)).to_float()
 	if typeof(value) == TYPE_DICTIONARY:

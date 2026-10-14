@@ -82,7 +82,11 @@ class InventoryBindings(unittest.TestCase):
                          {item["key"] for item in changed_bindings})
 
     def test_idless_historical_sources_keep_exact_v2_bindings(self):
-        source = {"inventory": [{"name": "Wing"}, {"name": "Battery"}]}
+        source = {
+            "inventory": [{"name": "Wing"}, {"name": "Battery"}],
+            # A legacy source can have a landing-gear object without contact records.
+            "landing_gear": {},
+        }
         descriptor_format, bindings = build_descriptors.inventory_binding_contract("legacy-fixture", source)
         self.assertEqual(descriptor_format, "openrc-aircraft-workshop v2")
         self.assertEqual([set(item) for item in bindings], [

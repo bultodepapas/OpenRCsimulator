@@ -20,8 +20,9 @@ func _initialize() -> void:
 
 
 func _test_catalog_descriptors() -> void:
-	var ids: PackedStringArray = Catalog.ids()
-	_check("every current catalog aircraft is discovered", ids.size() == Catalog.ENTRIES.size() and not ids.is_empty(), str(ids))
+	var ids: PackedStringArray = Catalog.airplane_flyable_ids()
+	_check("every airplane catalog entry is discovered", ids.size() == 7 and not ids.is_empty(), str(ids))
+	_check("rotorcraft has no airplane Workshop descriptor", Catalog.is_rotorcraft("xcell-60-research") and not ids.has("xcell-60-research"))
 	for id: String in ids:
 		var entry: Dictionary = Catalog.entry(id)
 		var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(str(entry.get("data", "")))
@@ -280,12 +281,34 @@ func _test_legacy_and_presentation() -> void:
 	_check("v2 historical snapshot and its exact index/name bindings remain readable",
 		bool(v2_result.get("ok", false)), str(v2_result.get("errors", [])))
 	_check("v2 saved model dependencies still resolve", Descriptor.verify_presentation(historical_v2).get("ok", false))
+	var gear_up_legacy: Dictionary = historical_base.duplicate(true)
+	gear_up_legacy["landing_gear"] = {}
+	var gear_up_bytes: PackedByteArray = _source_bytes(gear_up_legacy)
+	var gear_up_descriptor: Dictionary = _historical_descriptor(id, gear_up_legacy, gear_up_bytes, current)
+	var gear_up_result: Dictionary = Descriptor.validate(gear_up_descriptor, id, gear_up_bytes)
+	_check("v2 legacy snapshots with an empty landing-gear object remain readable",
+		bool(gear_up_result.get("ok", false)), str(gear_up_result.get("errors", [])))
+	var renamed_historical: Dictionary = historical_base.duplicate(true)
+	renamed_historical["inventory"][0]["name"] = str(renamed_historical["inventory"][0]["name"]) + " renamed"
+	var renamed_historical_bytes: PackedByteArray = _source_bytes(renamed_historical)
+	var stale_v2: Dictionary = historical_v2.duplicate(true)
+	stale_v2["base_sha256"] = _sha256(renamed_historical_bytes)
+	var stale_v2_result: Dictionary = Descriptor.validate(stale_v2, id, renamed_historical_bytes)
+	_check("v2 still rejects renamed inventory even when the source SHA is refreshed",
+		not bool(stale_v2_result.get("ok", false)) and _has_error(stale_v2_result.get("errors", []), "stale"),
+		str(stale_v2_result.get("errors", [])))
 	var legacy: Dictionary = historical_v2.duplicate(true)
 	legacy.format = Descriptor.LEGACY_FORMAT
 	legacy.presentation = {"visual_id": id, "scale_root": "airplane"}
 	var legacy_result: Dictionary = Descriptor.validate(legacy, id, historical_bytes)
 	_check("v1 saved descriptor remains readable", legacy_result.ok, str(legacy_result.errors))
 	_check("v1 catalog compatibility bridge resolves the same family", Descriptor.verify_presentation(legacy).ok)
+	var stale_v1: Dictionary = legacy.duplicate(true)
+	stale_v1["base_sha256"] = _sha256(renamed_historical_bytes)
+	var stale_v1_result: Dictionary = Descriptor.validate(stale_v1, id, renamed_historical_bytes)
+	_check("v1 still rejects renamed inventory even when the source SHA is refreshed",
+		not bool(stale_v1_result.get("ok", false)) and _has_error(stale_v1_result.get("errors", []), "stale"),
+		str(stale_v1_result.get("errors", [])))
 	var stale: Dictionary = current.duplicate(true)
 	stale.presentation.model_manifest_sha256 = "0".repeat(64)
 	_check("stale model still allows reading a saved variant", Descriptor.validate(stale, id, bytes).ok)

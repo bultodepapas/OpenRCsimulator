@@ -121,7 +121,11 @@ static func hover_seed(context: Dictionary, yaw: float = 0.0) -> PackedFloat64Ar
 static func _evaluate(x: PackedFloat64Array, context: Dictionary, flight_mode: String,
 		yaw: float, position_ned: PackedFloat64Array, wind_ned_m_s: PackedFloat64Array) -> Dictionary:
 	var attitude: PackedFloat64Array = M.q_from_euler(yaw, x[1], x[0])
-	var velocity_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), wind_ned_m_s)
+	# Hover trim is a ground-stationary aircraft. Wind belongs in the air-relative
+	# velocity calculation inside Flight.evaluate, not in the body's ground
+	# velocity; otherwise a 3 m/s wind silently asks the solver to trim a 3 m/s
+	# translating aircraft while calling it a hover.
+	var velocity_body: PackedFloat64Array = M.v3(0.0, 0.0, 0.0)
 	var body: PackedFloat64Array = RB.make_state(position_ned, velocity_body, attitude, M.v3(0.0, 0.0, 0.0))
 	body.append_array(PackedFloat64Array([x[9], x[6], x[7], x[8], yaw, 0.0]))
 	var sticks: PackedFloat64Array = PackedFloat64Array([x[2], x[3], 0.0, x[5]])

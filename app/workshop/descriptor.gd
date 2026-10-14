@@ -252,8 +252,9 @@ static func _has_physical_identity_metadata(base: Dictionary) -> bool:
 			if item is Dictionary and item.has("id"):
 				return true
 	var gear: Variant = base.get("landing_gear", {})
-	if gear is Dictionary and gear.get("contacts", []) is Array:
-		for item: Variant in gear.contacts:
+	var contacts: Variant = gear.get("contacts", []) if gear is Dictionary else []
+	if contacts is Array:
+		for item: Variant in contacts:
 			if item is Dictionary and item.has("id"):
 				return true
 	var propulsion: Variant = base.get("propulsion", {})
@@ -284,7 +285,7 @@ static func _validate_presentation(value: Variant, base_id: String, format: Stri
 
 
 ## Recheck at trial preparation, never while merely listing saved variants or on a physics tick.
-## v1 retains its historical catalog resolution; v2 additionally pins the exact generated model manifest.
+## v1 retains historical catalog resolution; v2 and v3 pin the exact generated model manifest.
 static func verify_presentation(descriptor: Dictionary) -> Dictionary:
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
 	var registry: Script = load("res://aircraft/model_registry.gd")

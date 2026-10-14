@@ -152,6 +152,8 @@ for t in "$HERE"/tests/test_*.gd; do
   if [ "$(basename "$t")" = "test_landing_maneuver.gd" ]; then test_timeout=180; fi
   # Seven catalog aircraft rebuild and crash twice: measured 82.90 s in PT1-rc9.
   if [ "$(basename "$t")" = "test_crash_integration.gd" ]; then test_timeout=180; fi
+  # Wreck lifecycle checks include timed scene updates: measured 65.46 s in PT1-rc9.
+  if [ "$(basename "$t")" = "test_crash_wreck.gd" ]; then test_timeout=180; fi
   # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
   case "$(basename "$t")" in
     test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;

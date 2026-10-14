@@ -1,5 +1,6 @@
 {
   "format": "openrc-aircraft v2",
+  "physical_identity_version": 1,
   "id": "p51d-mustang-120",
   "description": "P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class: Chad Veich 1/4 plans, Jerry Bates 1/4, FokkeRC 1/4 short kit): 2.820 m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by research/p51/p51-05/derive_physics.py (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4 and documented NACA/RC-class sources; exercised by scripted tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps and retracts are not simulated (gear DOWN). Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
   "frames": {
@@ -88,6 +89,7 @@
   },
   "inventory": [
     {
+      "id": "engine_main",
       "name": "engine DA-120 with ignition module",
       "mass": {
         "value": 2.45,
@@ -117,6 +119,7 @@
       }
     },
     {
+      "id": "muffler_pair",
       "name": "mufflers / canisters (2)",
       "mass": {
         "value": 0.6,
@@ -146,6 +149,7 @@
       }
     },
     {
+      "id": "propeller_main",
       "name": "propeller 4-blade 26x12",
       "mass": {
         "value": 0.43,
@@ -175,6 +179,7 @@
       }
     },
     {
+      "id": "spinner_main",
       "name": "spinner 7.7 in aluminium with backplate",
       "mass": {
         "value": 0.35,
@@ -204,6 +209,7 @@
       }
     },
     {
+      "id": "engine_mount",
       "name": "engine standoffs / mount and bolts",
       "mass": {
         "value": 0.25,
@@ -233,6 +239,7 @@
       }
     },
     {
+      "id": "cowl_main",
       "name": "cowl (fiberglass) with dummy exhausts",
       "mass": {
         "value": 0.742858,
@@ -262,6 +269,7 @@
       }
     },
     {
+      "id": "fuel_tank",
       "name": "fuel tank 1 l (empty) with lines",
       "mass": {
         "value": 0.2,
@@ -291,6 +299,7 @@
       }
     },
     {
+      "id": "fuel_flight",
       "name": "fuel (half tank)",
       "mass": {
         "value": 0.37,
@@ -321,6 +330,7 @@
       }
     },
     {
+      "id": "ignition_battery",
       "name": "ignition battery 2S LiFe",
       "mass": {
         "value": 0.15,
@@ -350,6 +360,7 @@
       }
     },
     {
+      "id": "receiver_batteries",
       "name": "receiver batteries 2S LiFe (2)",
       "mass": {
         "value": 0.3,
@@ -379,6 +390,7 @@
       }
     },
     {
+      "id": "receiver_radio",
       "name": "receiver, switches, power distribution",
       "mass": {
         "value": 0.12,
@@ -408,6 +420,7 @@
       }
     },
     {
+      "id": "servo_aileron_left",
       "name": "aileron servo left",
       "mass": {
         "value": 0.08,
@@ -437,6 +450,7 @@
       }
     },
     {
+      "id": "servo_aileron_right",
       "name": "aileron servo right",
       "mass": {
         "value": 0.08,
@@ -466,6 +480,7 @@
       }
     },
     {
+      "id": "servo_flap_left",
       "name": "flap servo left",
       "mass": {
         "value": 0.08,
@@ -495,6 +510,7 @@
       }
     },
     {
+      "id": "servo_flap_right",
       "name": "flap servo right",
       "mass": {
         "value": 0.08,
@@ -524,6 +540,7 @@
       }
     },
     {
+      "id": "servo_elevator_left",
       "name": "elevator servo left",
       "mass": {
         "value": 0.08,
@@ -553,6 +570,7 @@
       }
     },
     {
+      "id": "servo_elevator_right",
       "name": "elevator servo right",
       "mass": {
         "value": 0.08,
@@ -582,6 +600,7 @@
       }
     },
     {
+      "id": "servo_rudder",
       "name": "rudder servo and pull-pull",
       "mass": {
         "value": 0.1,
@@ -611,6 +630,7 @@
       }
     },
     {
+      "id": "servo_throttle_choke",
       "name": "throttle, choke servos and linkage",
       "mass": {
         "value": 0.08,
@@ -640,6 +660,7 @@
       }
     },
     {
+      "id": "gear_main_left",
       "name": "main gear assembly left",
       "mass": {
         "value": 1.0,
@@ -669,6 +690,7 @@
       }
     },
     {
+      "id": "gear_main_right",
       "name": "main gear assembly right",
       "mass": {
         "value": 1.0,
@@ -698,6 +720,7 @@
       }
     },
     {
+      "id": "gear_tail",
       "name": "tail wheel assembly (retractable)",
       "mass": {
         "value": 0.2,
@@ -727,6 +750,7 @@
       }
     },
     {
+      "id": "wing_left",
       "name": "wing panel, left, sheeted, with flap and aileron",
       "mass": {
         "value": 2.476195,
@@ -756,6 +780,7 @@
       }
     },
     {
+      "id": "wing_right",
       "name": "wing panel, right, sheeted, with flap and aileron",
       "mass": {
         "value": 2.476195,
@@ -785,6 +810,7 @@
       }
     },
     {
+      "id": "wing_joiner",
       "name": "wing tube and bolts",
       "mass": {
         "value": 0.433334,
@@ -814,6 +840,7 @@
       }
     },
     {
+      "id": "fuselage_front",
       "name": "fuselage front (engine box to cockpit rear), covered",
       "mass": {
         "value": 2.228575,
@@ -843,6 +870,7 @@
       }
     },
     {
+      "id": "belly_scoop",
       "name": "belly scoop (fiberglass)",
       "mass": {
         "value": 0.433334,
@@ -872,6 +900,7 @@
       }
     },
     {
+      "id": "fuselage_rear",
       "name": "fuselage rear and turtle deck, covered",
       "mass": {
         "value": 1.238097,
@@ -901,6 +930,7 @@
       }
     },
     {
+      "id": "canopy_pilot",
       "name": "canopy, frame and pilot",
       "mass": {
         "value": 0.433334,
@@ -930,6 +960,7 @@
       }
     },
     {
+      "id": "horizontal_tail",
       "name": "stabilizer and elevators, covered",
       "mass": {
         "value": 0.804763,
@@ -959,6 +990,7 @@
       }
     },
     {
+      "id": "vertical_tail",
       "name": "fin and rudder, covered",
       "mass": {
         "value": 0.433334,
@@ -988,6 +1020,7 @@
       }
     },
     {
+      "id": "control_hardware",
       "name": "pushrods, horns, cowl fasteners, hardware",
       "mass": {
         "value": 0.433334,
@@ -1017,6 +1050,7 @@
       }
     },
     {
+      "id": "ballast_reference",
       "name": "virtual reference-build balancing mass",
       "mass": {
         "value": 1.286646,
@@ -1123,6 +1157,22 @@
     "kind": "derived",
     "source": "Points that hit the ground first (le frame) from assets/aircraft/p51d-mustang-120/geometry.json (P51-01: full-size P-51D dimensions scaled to the kit span): wing tip LE/TE (with dihedral), spinner tip, propeller disc bottom and lower quarters (a prop strike), rudder bottom TE, stab tips, fin top, canopy top, scoop bottom. The wheels are landing-gear contacts (P51-12)"
   },
+  "crash_hull_ids": [
+    "probe_wing_left_le",
+    "probe_wing_right_le",
+    "probe_wing_left_te",
+    "probe_wing_right_te",
+    "probe_spinner_tip",
+    "probe_propeller_bottom",
+    "probe_propeller_lower_left",
+    "probe_propeller_lower_right",
+    "probe_rudder_bottom",
+    "probe_stabilizer_left_tip",
+    "probe_stabilizer_right_tip",
+    "probe_fin_top",
+    "probe_canopy_top",
+    "probe_scoop_bottom"
+  ],
   "crash_hull_components": [
     "left_wing_tip",
     "right_wing_tip",
@@ -1161,6 +1211,12 @@
     }
   },
   "controls": {
+    "surface_ids": {
+      "aileron_left": "surface_aileron_left",
+      "aileron_right": "surface_aileron_right",
+      "elevator": "surface_elevator",
+      "rudder": "surface_rudder"
+    },
     "max_throw": {
       "aileron": {
         "value": 18.0,
@@ -1616,6 +1672,7 @@
     }
   },
   "propulsion": {
+    "id": "propulsion_main",
     "description": "120 cc gasoline twin turning a 4-blade 26x12. Shaft balance (rpm from engine torque against propeller torque), blade-element tables calibrated on Mejzlik's 26x12 2- and 3-blade data, down and right thrust, propeller normal force and P-factor, tail slipstream with swirl (research/p51/p51-05/derive_physics.py, P51-06/P51-12).",
     "engine": {
       "name": "Desert Aircraft DA-120 (121 cc twin, 2.45 kg with ignition) or DLE-120",
@@ -2336,6 +2393,7 @@
     "description": "P51-12: taildragger, two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces). Retracts are not simulated: the gear stays down.",
     "contacts": [
       {
+        "id": "contact_main_left",
         "name": "main_left",
         "position": {
           "value": [
@@ -2373,6 +2431,7 @@
         }
       },
       {
+        "id": "contact_main_right",
         "name": "main_right",
         "position": {
           "value": [
@@ -2410,6 +2469,7 @@
         }
       },
       {
+        "id": "contact_tail",
         "name": "tail",
         "position": {
           "value": [

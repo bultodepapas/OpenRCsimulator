@@ -151,7 +151,9 @@ func _physics_process(_dt: float) -> void:
   radio.poll(read_axis,sim.dt())
   calibration.sample(radio.axes)
   return
- if sim.paused: return
+ if sim.paused:
+  if radio.connected: radio.poll(read_axis,0.0)
+  return
  if radio.connected:
   radio.poll(read_axis,sim.dt())
   commands=radio.sticks()
@@ -177,6 +179,8 @@ func _on_joy_connection_changed(id: int,connected: bool) -> void:
  if connected and not radio.connected:
   var info: Dictionary=device_info.call(id)
   radio.connect_device(id,info,RcCalibration.load_profile(profiles_path,RcInput.key_for(id,info)))
+  sim.set_paused(true)
+  pause_reason="Radio connected: move collective fully low to arm, then P to resume."
  elif not connected and radio.connected and id==radio.device_id:
   radio.disconnect_device()
   cancel_calibration()
@@ -188,7 +192,7 @@ func hold(reason: String) -> void:
  sim.set_paused(true)
 func release(reason: String) -> void: holds.erase(reason)
 func is_flyable() -> bool: return _ready_to_fly and sim.fault_reason.is_empty() and crash.is_empty()
-func can_resume() -> bool: return is_flyable() and holds.is_empty() and calibration==null
+func can_resume() -> bool: return is_flyable() and holds.is_empty() and calibration==null and (not radio.connected or radio.armed)
 func resume() -> void:
  if can_resume():
   pause_reason=""
@@ -235,6 +239,14 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
    return {ok=false,errors=["invalid saved pilot commands"]}
  if not candidate.simulation is Dictionary or not sim.can_restore_checkpoint(candidate.simulation,1,0):
   return {ok=false,errors=["invalid saved simulation"]}
+ var saved: Dictionary=candidate.simulation
+ var expected: PackedFloat64Array=PackedFloat64Array([candidate.commands.roll,candidate.commands.pitch,candidate.commands.yaw,candidate.commands.throttle])
+ if saved.inputs.to_byte_array()!=expected.to_byte_array(): return {ok=false,errors=["saved commands disagree with sampled inputs"]}
+ var state: PackedFloat64Array=saved.state.duplicate()
+ state.append_array(saved.continuous)
+ var sticks: PackedFloat64Array=PackedFloat64Array([-expected[1],expected[0],expected[2],2.0*expected[3]-1.0])
+ var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,candidate.flight_mode,candidate.trainer_enabled,candidate.zero_drive_hold,wind_at(saved.tick*saved.dt),false,PackedFloat64Array(),_trim)
+ if not evaluated.ok: return {ok=false,errors=["saved flight state is outside the rotorcraft domain"]}
  # Every check finishes before recorder/state mutation.
  resetting.emit()
  if not sim.restore_checkpoint(candidate.simulation): return {ok=false,errors=["simulation restore refused"]}
