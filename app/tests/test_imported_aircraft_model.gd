@@ -9,7 +9,7 @@ const FAMILY_ID := "turbo-lumber-evolution"
 const EXPECTED_GEAR_WRAPPERS := {
 	"left": "wheel_left_spin",
 	"right": "wheel_right_spin",
-	"tail": "tailwheel_spin",
+	"tail": "wheel_tail_spin",
 	"steering": "tail_steering",
 }
 
