@@ -25,9 +25,10 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	# Fleet: every catalog aircraft gets top strips on both wings.
-	for id in Catalog.ids():
+	# Every flyable airplane gets top strips on both wings.
+	for id in Catalog.airplane_flyable_ids():
 		var plane: Dictionary = Builder.build(id)
+		_check("%s airplane model builds for night kit" % id, not plane.is_empty())
 		if plane.is_empty():
 			continue
 		root.add_child(plane.root)

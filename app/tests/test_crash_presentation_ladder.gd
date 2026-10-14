@@ -125,7 +125,7 @@ func _audio_ladder() -> void:
 
 
 func _airframe_colors() -> void:
-	for entry: Dictionary in AircraftCatalog.ENTRIES:
+	for entry: Dictionary in AircraftCatalog.airplane_flyable_entries():
 		var airplane: Node3D = AirplaneBuilder.build(String(entry.id)).root
 		root.add_child(airplane)
 		await process_frame

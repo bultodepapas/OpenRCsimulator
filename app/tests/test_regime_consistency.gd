@@ -44,9 +44,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _initialize() -> void:
-	for entry in Catalog.ENTRIES:
-		if String(entry.data).is_empty():
-			continue
+	for entry in Catalog.airplane_flyable_entries():
 		var loaded: Dictionary = AD.load_file(entry.data)
 		_check("%s: aircraft data loads" % entry.id, loaded.ok, str(loaded.get("errors", [])))
 		if loaded.ok:

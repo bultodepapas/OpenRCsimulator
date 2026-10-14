@@ -14,7 +14,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	for entry: Dictionary in AircraftCatalog.ENTRIES:
+	for entry: Dictionary in AircraftCatalog.airplane_flyable_entries():
 		await _check_aircraft(entry)
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -76,11 +76,11 @@ func _check_aircraft(entry: Dictionary) -> void:
 	wreck.start(pose, incoming, angular, severity)
 	var started: Dictionary = wreck.stats()
 	if String(entry.id) == "turbo-lumber-evolution":
-		# TT-06: the Timber preview is one imported airframe mesh (wing, fuselage and tail together) with tail, gear
+		# TT-06: the Timber is one imported airframe mesh (wing, fuselage and tail together) with tail, gear
 		# and propeller pivots, so C4 has no wing/engine group to release at once; its tail/gear/propeller groups
 		# detach on their delays. Catalog promotion does not change that geometry contract.
 		# Splitting the airframe for the crash twin is TT-13's decision.
-		_check(String(entry.id) + " C4 (preview, merged airframe) marks delayed groups for release", int(started.detached_group_count) >= 1 and int(started.active_body_count) >= 1 and int(started.active_body_count) <= 24)
+		_check(String(entry.id) + " C4 (merged airframe) marks delayed groups for release", int(started.detached_group_count) >= 1 and int(started.active_body_count) >= 1 and int(started.active_body_count) <= 24)
 	else:
 		_check(String(entry.id) + " C4 releases progressive real submeshes", int(started.detached_group_count) >= 1 and int(started.active_body_count) > 1 and int(started.active_body_count) <= 24)
 	_check(String(entry.id) + " C4 core remains visually present", wreck._twin.visible and _visible_mesh_count(wreck._twin) > 0)
