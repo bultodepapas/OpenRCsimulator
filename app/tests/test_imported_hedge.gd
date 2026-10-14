@@ -131,9 +131,10 @@ func _test_stable_layouts() -> void:
 		_layout_signature(high_trees) == _layout_signature(ImportedHedge.tree_layout(points, 417, "high"))
 		and _subset(low_trees, balanced_trees) and _subset(balanced_trees, high_trees)
 		and high_trees.size() <= 4)
+	var packed_root := ImportedHedge.build_packed(PackedVector2Array(points), 2.2, 1.3, 417, "high", false)
 	_check("packed scenery polyline wrapper matches the Array API",
-		_layout_signature(ImportedHedge.build_packed(PackedVector2Array(points), 2.2, 1.3, 417, "high", false)
-			.get_meta("cpu_placements", [])) == _layout_signature(high))
+		_layout_signature(packed_root.get_meta("cpu_placements", [])) == _layout_signature(high))
+	packed_root.free()
 
 
 func _test_batched_build() -> void:
