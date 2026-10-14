@@ -150,6 +150,8 @@ for t in "$HERE"/tests/test_*.gd; do
   test_timeout=60
   # Four 46-second simulated landings at 240/480 Hz: measured 75–82 s wall time on Linux (PT1-rc8).
   if [ "$(basename "$t")" = "test_landing_maneuver.gd" ]; then test_timeout=180; fi
+  # Three full landing variations also exceed 60 s on Linux (PT1-v0.1.0: 60.62 s).
+  if [ "$(basename "$t")" = "test_landing_variations.gd" ]; then test_timeout=180; fi
   # Seven catalog aircraft rebuild and crash twice: measured 82.90 s in PT1-rc9.
   if [ "$(basename "$t")" = "test_crash_integration.gd" ]; then test_timeout=180; fi
   # Wreck lifecycle checks include timed scene updates: measured 65.46 s in PT1-rc9.
