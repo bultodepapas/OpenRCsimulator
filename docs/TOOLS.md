@@ -15,7 +15,7 @@ cd OpenRCsimulator
 
 Import before standalone scripts on a fresh checkout. Test and capture runners import automatically. Interactive runs need a display. Captures also need Xvfb, Mesa/OpenGL, Python venv support and pip 22.3+; `app/tests/visual-env.sh` installs the hashed CPython 3.12 visual environment. Export needs `zip` and verified Godot export templates; the initial template download is about 1.28 GB.
 
-**Windows:** use WSL2 Ubuntu on its Linux filesystem for the Bash test/capture/export scripts. Clone with the command above; copying a CRLF checkout can break Bash scripts. For native Windows, install the matching official Godot build:
+**Windows:** use WSL2 Ubuntu with a clone in its Linux home directory (`~/...`) for the Bash test/capture/export scripts. Clone with the command above; copying a CRLF checkout can break Bash scripts. For native Windows, install the matching official Godot build:
 
 ```powershell
 $GodotWindows = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe'
