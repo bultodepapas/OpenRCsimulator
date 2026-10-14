@@ -32,6 +32,15 @@ def throw_degrees(displacement_mm, radius):
     return math.degrees(2 * math.asin(displacement_mm / 2000 / radius))
 
 
+def _sequential_float_sum(values):
+    # Python 3.12 changed sum(float) to compensated accumulation. Keep the
+    # generated result rounding stable with explicit left-to-right accumulation.
+    total = 0.0
+    for value in values:
+        total += value
+    return total
+
+
 def tensor(items, cg):
     j = [0.0] * 6
     for it in items:
@@ -69,16 +78,16 @@ def derive(inputs=None):
         if item["name"] == "4S 3200 mAh battery":
             item["energy_source"] = "lipo"
     mass = g["manual"]["mass_flying_kg"]["value"]
-    residue = mass - sum(it["mass"]["value"] for it in items)
+    residue = mass - _sequential_float_sum(it["mass"]["value"] for it in items)
     if residue < 0.001:
         raise ValueError("Inventory leaves no positive balancing mass")
-    xb = (mass*cg_x - sum(it["mass"]["value"]*it["position"]["value"][0] for it in items))/residue
+    xb = (mass*cg_x - _sequential_float_sum(it["mass"]["value"]*it["position"]["value"][0] for it in items))/residue
     if not -0.2835 <= xb <= 0.8331:
         raise ValueError("Virtual balancing station outside the airframe")
     items.append(dict(name="virtual reference-build balancing mass", mass=q(residue,"kg", source=SOURCE+": residual of manual 2.190 kg minus estimated component inventory; NOT measured hardware"),
                       position=q([xb,0,0],"m",source=SOURCE+": residual moment needed for manual 60 mm CG; NOT measured ballast"),
                       size=q([0.04,0.04,0.04],"m","estimated","TT-07 virtual ballast envelope")))
-    cg = [sum(it["mass"]["value"]*it["position"]["value"][k] for it in items)/mass for k in range(3)]
+    cg = [_sequential_float_sum(it["mass"]["value"]*it["position"]["value"][k] for it in items)/mass for k in range(3)]
     j = tensor(items,cg)
     sh, bh = gv("tail","area"), gv("tail","span")
     sv = gv("fin","area_above_fuselage")

@@ -45,7 +45,7 @@ func _test_manifest_rejections() -> void:
 	var rejected: Dictionary = Registry.validate_manifest(unknown_field)
 	_check("unknown manifest fields reject", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_FIELD_UNKNOWN"), str(rejected.diagnostics))
 	var unknown_version := valid.duplicate(true)
-	unknown_version.version = 2
+	unknown_version.version = 3
 	rejected = Registry.validate_manifest(unknown_version)
 	_check("unknown model manifest versions reject", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_VERSION_UNSUPPORTED"))
 	var bad_hash := valid.duplicate(true)
@@ -130,6 +130,10 @@ func _test_construction_rejections() -> void:
 	duplicate_wrapper.construction.gear[1].wrapper = duplicate_wrapper.construction.gear[0].wrapper
 	rejected = Registry.validate_manifest(duplicate_wrapper)
 	_check("duplicate construction wrapper rejects", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_NODE_COLLISION"), str(rejected.diagnostics))
+	var generated_mount_collision := valid.duplicate(true)
+	generated_mount_collision.construction.gear[1].node = generated_mount_collision.construction.gear[0].wrapper + "_mount"
+	rejected = Registry.validate_manifest(generated_mount_collision)
+	_check("generated gear mount cannot collide with an authored pivot", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_NODE_COLLISION"), str(rejected.diagnostics))
 	var wrapper_mount_collision := valid.duplicate(true)
 	wrapper_mount_collision.construction.gear[2].node = wrapper_mount_collision.construction.gear[1].wrapper + "_mount"
 	rejected = Registry.validate_manifest(wrapper_mount_collision)

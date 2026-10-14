@@ -100,6 +100,8 @@ The wreck's fixed section mass shares looked reasonable section by section, yet 
 
 `tt07/derive_physics.py --check` already failed on the Linux host at HEAD, under Python 3.12 and 3.13. Regenerating there changed four floats in their last digit, a platform-only physics change hidden inside an unrelated edit. Check freshness before editing a generator. If HEAD is already stale, keep the committed values, insert only the intended change, prove the remaining difference is that drift, and have the reference machine confirm. [CR-01d](docs/research/crash-damage-investigations/CR-01d/README.md#timber-platform-drift)
 
+PT1-rc9 traced this drift to Python 3.12's changed floating-point `sum()`. Explicit left-to-right accumulation preserves the existing generated values on both Windows and Linux. Reproducible generators must also specify path ordering: `Path` comparison differs across platforms, even when every source byte matches. Fix deterministic generation before replacing valid reference artifacts. [Cause and verification](docs/research/release-readiness/PT1-rc9/README.md#release-repairs).
+
 ## 2026-10-13 · CR-08b — effective mass grades the first contact, not the whole impact
 
 Effective mass at the struck point fixes whole-mass overrating: a level wingtip engages about 7 %. It also underrates oblique hits on long-nosed airframes. In a 45° Ventage Jet dive the nose engages 20 % of the mass and grades C2, yet the CG keeps most of its normal energy and slams the belly down next. Grade the first contact and also bound what the CG still carries into the surface; do not count sliding speed as impact energy. [CR-08b](docs/research/crash-damage-investigations/CR-08b/README.md)

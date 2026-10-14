@@ -52,7 +52,16 @@ IGNORED_NAMES = {".DS_Store", "Thumbs.db"}
 def file_table() -> list:
     """Every delivery file, except caches and editor leftovers that running the delivery's own scripts can create."""
     rows = []
-    for path in sorted(p for p in DELIVERY.rglob("*") if p.is_file()):
+    paths = (path for path in DELIVERY.rglob("*") if path.is_file())
+    # pathlib sorts case-insensitively on Windows but case-sensitively on POSIX.
+    # Sort relative path components explicitly to preserve the frozen order.
+    for path in sorted(
+        paths,
+        key=lambda item: (
+            tuple(part.casefold() for part in item.relative_to(DELIVERY).parts),
+            item.relative_to(DELIVERY).as_posix(),
+        ),
+    ):
         rel = path.relative_to(DELIVERY)
         if IGNORED_DIRS & set(rel.parts[:-1]) or path.suffix in IGNORED_SUFFIXES or path.name in IGNORED_NAMES or path.name.endswith("~"):
             continue

@@ -20,7 +20,7 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "bfea781386dbf097116bc426b22410a269958914894c67bf3c611f9893ace39e",
+    "sha256": "c53cf272ae3087ee83112909f8d8f625c0110387fb2514acc903cc4dbcda382b",
     "hash_mode": "lf_text"
   },
   "geometry": {
@@ -233,7 +233,7 @@
         "role": "tail",
         "node": "tailwheel_axle",
         "geometry_ref": "articulations.tailwheel_axle",
-        "wrapper": "tailwheel_spin"
+        "wrapper": "wheel_tail_spin"
       }
     ],
     "material_grow": [

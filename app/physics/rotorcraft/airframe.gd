@@ -47,7 +47,16 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 static func evaluate(model: Dictionary, cg_air: PackedFloat64Array, rates: PackedFloat64Array,
 		fuselage_wake: PackedFloat64Array, fin_wake: PackedFloat64Array, tail_wake: PackedFloat64Array,
 		diagnostics: bool = true) -> Dictionary:
-	if not _prepared(model) or not _vector(cg_air) or not _vector(rates) \
+	if not _prepared(model):
+		return {"ok": false}
+	return _evaluate_prepared(model, cg_air, rates, fuselage_wake, fin_wake, tail_wake, diagnostics)
+
+
+# Internal stage entry after its immutable stage context was prepared.
+static func _evaluate_prepared(model: Dictionary, cg_air: PackedFloat64Array, rates: PackedFloat64Array,
+		fuselage_wake: PackedFloat64Array, fin_wake: PackedFloat64Array, tail_wake: PackedFloat64Array,
+		diagnostics: bool = true) -> Dictionary:
+	if not _vector(cg_air) or not _vector(rates) \
 		or not _vector(fuselage_wake) or not _vector(fin_wake) or not _vector(tail_wake):
 		return {"ok": false}
 	var fuselage: Dictionary = _piece(model, "fuselage", cg_air, rates, fuselage_wake, diagnostics)
@@ -178,7 +187,7 @@ static func _vector6(value: PackedFloat64Array) -> bool:
 
 
 static func _prepared(model: Dictionary) -> bool:
-	if not model.is_read_only() or model.get("law") != LAW or model.size() != PREPARED_KEYS.size() or not model.has_all(PREPARED_KEYS):
+	if not _prepared_header(model):
 		return false
 	var numbers: Array = model.values()
 	numbers.erase(LAW)
@@ -189,3 +198,8 @@ static func _prepared(model: Dictionary) -> bool:
 		and model.fuselage_area_z_m2 >= 0.0 and model.vertical_fin_area_m2 >= 0.0 \
 		and model.vertical_fin_lift_curve_slope_per_rad >= 0.0 and model.horizontal_tail_area_m2 >= 0.0 \
 		and model.horizontal_tail_lift_curve_slope_per_rad >= 0.0
+
+
+static func _prepared_header(model: Dictionary) -> bool:
+	return model.is_read_only() and model.get("law") == LAW and model.size() == PREPARED_KEYS.size() \
+		and model.has_all(PREPARED_KEYS)

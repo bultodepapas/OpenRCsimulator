@@ -48,7 +48,16 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 static func evaluate(model: Dictionary, omega_main: float, main_vi: float,
 		cg_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
 		collective: float, diagnostics: bool = true) -> Dictionary:
-	if not _prepared(model) or not _vector(cg_air_velocity) or not _vector(body_rates) \
+	if not _prepared(model):
+		return {"ok": false}
+	return _evaluate_prepared(model, omega_main, main_vi, cg_air_velocity, body_rates, collective, diagnostics)
+
+
+# Internal stage entry after its immutable stage context was prepared.
+static func _evaluate_prepared(model: Dictionary, omega_main: float, main_vi: float,
+		cg_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
+		collective: float, diagnostics: bool = true) -> Dictionary:
+	if not _vector(cg_air_velocity) or not _vector(body_rates) \
 		or not _finite([omega_main, main_vi, collective]) or omega_main < 0.0 or absf(collective) > PI / 2.0:
 		return {"ok": false}
 	var u: float = cg_air_velocity[0]
@@ -175,7 +184,7 @@ static func _vector(value: PackedFloat64Array) -> bool:
 
 
 static func _prepared(model: Dictionary) -> bool:
-	if not model.is_read_only() or model.get("law") != LAW or model.size() != PREPARED_KEYS.size() or not model.has_all(PREPARED_KEYS):
+	if not _prepared_header(model):
 		return false
 	var numbers: Array = model.values()
 	numbers.erase(LAW)
@@ -191,3 +200,8 @@ static func _prepared(model: Dictionary) -> bool:
 		and model.wake_efficiency > 0.0 and model.wake_efficiency <= 1.0 and model.wake_gf > model.wake_gi \
 		and model.trim_collective_rad > 0.0 and model.trim_collective_rad <= PI / 2.0 \
 		and model.rotor_blade_count == 2.0 and absf(model.rotation_sense) == 1.0
+
+
+static func _prepared_header(model: Dictionary) -> bool:
+	return model.is_read_only() and model.get("law") == LAW and model.size() == PREPARED_KEYS.size() \
+		and model.has_all(PREPARED_KEYS)

@@ -2,6 +2,7 @@
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -41,7 +42,7 @@ class CheckoutBindings(unittest.TestCase):
             for mode in ("false", "true"):
                 clone = work / ("clone-" + mode)
                 git(work, "-c", "core.autocrlf=" + mode, "clone", "--quiet", str(source), str(clone))
-                result = subprocess.run(["python", "research/aircraft-editor/build_descriptors.py", "--check"],
+                result = subprocess.run([sys.executable, "research/aircraft-editor/build_descriptors.py", "--check"],
                                         cwd=clone, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 # This companion is part of every variant's dependency manifest.

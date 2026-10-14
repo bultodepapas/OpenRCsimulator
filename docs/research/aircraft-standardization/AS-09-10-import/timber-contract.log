@@ -1,5 +1,4 @@
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
 timber preview r2-d75ae605aa3a: 21 meshes, 49 surfaces, 42519 triangles, extent 1.5455 x 0.4340 x 1.1155 m
-FAIL data is the generated geometry 
-FAIL 1 of 452 checks
+PASS 452 checks

@@ -1,12 +1,20 @@
 """Independent geometric and source guards for the Timber authoring pipeline."""
 import copy
 import json
+import math
 import unittest
-from derive_physics import derive, throw_degrees, HERE
+from derive_physics import derive, throw_degrees, HERE, _sequential_float_sum
 from sensitivity import summary
 
 
 class TimberAuthoring(unittest.TestCase):
+    def test_sequential_float_sum_preserves_frozen_balance_rounding(self):
+        values = [1e16, 1.0, -1e16]
+        self.assertEqual(_sequential_float_sum(values), 0.0)
+        self.assertEqual(math.fsum(values), 1.0)
+        model, _ = derive()
+        self.assertEqual(model["inventory"][-1]["mass"]["value"], 0.24999999999999978)
+
     def test_hinge_circle(self):
         self.assertAlmostEqual(throw_degrees(100, .1), 60, places=12)
         self.assertAlmostEqual(throw_degrees(200, .1), 180, places=12)

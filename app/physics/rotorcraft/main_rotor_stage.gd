@@ -13,10 +13,32 @@ static func evaluate(model: Dictionary, state: PackedFloat64Array, omega: float,
 		collective_75: float, cyclic_forward: float, cyclic_right: float, flow_floor: float,
 		height_over_radius: float = -1.0, loss: float = 1.0, instability: float = 1.0,
 		diagnostics: bool = false) -> Dictionary:
+	return _evaluate(model, state, omega, hub_air_velocity, body_rates, collective_75,
+		cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss, instability, diagnostics, false)
+
+
+# Internal joint-stage entry. Its caller already validated the frozen component
+# models once when it created the aerodynamic performance context.
+static func _evaluate_prepared(model: Dictionary, state: PackedFloat64Array, omega: float,
+		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
+		collective_75: float, cyclic_forward: float, cyclic_right: float, flow_floor: float,
+		height_over_radius: float = -1.0, loss: float = 1.0, instability: float = 1.0,
+		diagnostics: bool = false) -> Dictionary:
+	return _evaluate(model, state, omega, hub_air_velocity, body_rates, collective_75,
+		cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss, instability, diagnostics, true)
+
+
+static func _evaluate(model: Dictionary, state: PackedFloat64Array, omega: float,
+		hub_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
+		collective_75: float, cyclic_forward: float, cyclic_right: float, flow_floor: float,
+		height_over_radius: float, loss: float, instability: float, diagnostics: bool,
+		prepared: bool) -> Dictionary:
 	if state.size() != 3:
 		return {"ok": false}
-	var rotor: Dictionary = Rotor.evaluate(model, omega, state[2], hub_air_velocity, body_rates,
-		collective_75, cyclic_forward, cyclic_right, state[0], state[1], diagnostics)
+	var rotor: Dictionary = Rotor._evaluate_prepared(model, omega, state[2], hub_air_velocity, body_rates,
+		collective_75, cyclic_forward, cyclic_right, state[0], state[1], diagnostics) if prepared else Rotor.evaluate(
+		model, omega, state[2], hub_air_velocity, body_rates, collective_75, cyclic_forward, cyclic_right,
+		state[0], state[1], diagnostics)
 	if not rotor.ok:
 		return rotor
 	# Match the paper's shaft/body-frame inflow approximation. Projecting this

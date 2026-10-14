@@ -1,0 +1,25 @@
+python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check
+Visual geometry source/runtime: identical
+python3 assets/aircraft/extra-300s-60/compile_geometry.py --check
+211 measured values match metrology.json (max difference 0.050 mm)
+Extra visual geometry source/runtime: identical
+python3 assets/aircraft/extra-300s-60/compile_appearance.py --check
+Extra appearance source/runtime: identical
+python3 assets/aircraft/avanti-s-a200/compile_geometry.py --check
+Avanti S visual geometry source/runtime: identical
+python3 assets/aircraft/p51d-mustang-120/build_geometry.py --check
+geometry.json is up to date with source.json
+python3 assets/aircraft/p51d-mustang-120/compile_geometry.py --check
+P-51D visual geometry source/runtime: identical
+python3 research/extra-300/ex05/derive_physics.py --check
+gp_extra_300s_60.json and derivation.md are up to date
+python3 research/p51/p51-05/derive_physics.py --check
+p51d_mustang_120.json and derivation.md are up to date
+python3 research/timber/tt01/manifest.py --check
+Timber r2 delivery: 144 files, 19438463 bytes, visual revision r2-d75ae605aa3a: identical to the manifest
+python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py --check
+Timber geometry.json is up to date (revision r2-d75ae605aa3a)
+python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py --check
+Timber geometry source/runtime: identical
+python3 research/timber/tt07/derive_physics.py --check
+TT-07 Timber physics current

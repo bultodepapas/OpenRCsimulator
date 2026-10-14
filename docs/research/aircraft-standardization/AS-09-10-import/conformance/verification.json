@@ -1,6 +1,6 @@
 {
   "format": "openrc-aircraft-verification v1",
-  "ok": false,
+  "ok": true,
   "commands": [
     {
       "name": "aircraft_model_manifest",
@@ -14,11 +14,11 @@
         "--script",
         "res://tests/test_aircraft_model_manifest.gd"
       ],
-      "exit_code": 1,
-      "ok": false,
-      "seconds": 7.781999999999243,
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 28.218999999997322,
       "log": "aircraft_model_manifest.log",
-      "log_sha256": "62ae52b5c005349f3d785ec23c4ca31a9d5f24c906d9f84d276078b630e75e2e"
+      "log_sha256": "7e1e9d2dcd414c61c9828f72c34d9cd60bd25946d72e6182780cdf2eee114dfc"
     },
     {
       "name": "aircraft_modules",
@@ -34,7 +34,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 8.109000000004016,
+      "seconds": 9.125,
       "log": "aircraft_modules.log",
       "log_sha256": "73aa3341c5cb94f2c6416e0091a36422904aa75e2514515e117da4ea1808e19a"
     },
@@ -52,7 +52,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 80.42199999999866,
+      "seconds": 70.04700000000594,
       "log": "aircraft_package_proofs.log",
       "log_sha256": "dc0c15f33159329247341d4ad14a684d49ca95f0e5c144a27c81777f55f3b1e6"
     },
@@ -70,7 +70,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 8.469000000004598,
+      "seconds": 12.609000000004016,
       "log": "aircraft_render_contract.log",
       "log_sha256": "621df8bc3d50917a6dbeba10c9d18ffbdb9ec7960ea40bbacef0f700e298c792"
     },
@@ -82,9 +82,9 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 6.625,
+      "seconds": 2.2030000000013388,
       "log": "descriptor-checkout.log",
-      "log_sha256": "3062bd2780bc32d9f5121afc599d2235e150857c6559a837bdeb260549ab5509"
+      "log_sha256": "f3a23d53994077751d5fd2a61ee052e8f13c870c6e76ec9d643b73fc0abaf104"
     },
     {
       "name": "descriptors-current",
@@ -95,7 +95,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 0.125,
+      "seconds": 0.17199999999866122,
       "log": "descriptors-current.log",
       "log_sha256": "27446d8a3dffa3acb6a429a0f308b9a9d9b6b85750dd25914805c05dd3ddfb93"
     },
@@ -114,9 +114,9 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 8.485000000000582,
+      "seconds": 6.186999999998079,
       "log": "export-pack.log",
-      "log_sha256": "1a1b92b299b63b5b5b8567e81c3510b7b486901714323020df9e0d15a2bd20ac"
+      "log_sha256": "8a0f6584149683eefc59f5618270bc022a6b91a2359646a603c92a3be922fbdf"
     },
     {
       "name": "import",
@@ -131,7 +131,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 6.436999999998079,
+      "seconds": 10.797000000005937,
       "log": "import.log",
       "log_sha256": "f15ffd4c558b01611d562c8c257508942bdc2dc542124f423ae2a592a46edfa6"
     },
@@ -149,7 +149,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 9.343999999997322,
+      "seconds": 17.92199999999866,
       "log": "imported_aircraft_model.log",
       "log_sha256": "569c28dc13d73f6f01cb7adaa7231fa552940064a2759cd9316a534a99202be1"
     },
@@ -162,7 +162,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 0.2190000000045984,
+      "seconds": 0.17200000000593718,
       "log": "migration.log",
       "log_sha256": "fc81fbed664edb653399f57d50145ce9c653316b0a486bda00af684e95ec8957"
     },
@@ -175,7 +175,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 0.21899999999732245,
+      "seconds": 0.3899999999994179,
       "log": "models-current.log",
       "log_sha256": "59e2026db8477aa4e7b35a531f9ba817af511d1fb2a8c0f81877e3bda8441295"
     },
@@ -187,9 +187,9 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 11.703000000001339,
+      "seconds": 5.406999999999243,
       "log": "models-python.log",
-      "log_sha256": "6501aef8530427930ffb23c4ea76789ce8009f092f0b3f8571fd2cb969393df8"
+      "log_sha256": "77d68704288f01e2f5e9afb18efd85e38091b9d9bde21de4be306fd2006d30de"
     },
     {
       "name": "modules-python",
@@ -199,9 +199,9 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 30.375,
+      "seconds": 18.98399999999674,
       "log": "modules-python.log",
-      "log_sha256": "a515d57217e2041366c911aa170eb80e9fa46f5417a8ec62777edae7c366eb5c"
+      "log_sha256": "f59a245b32e395e03b6d9c45748dba58f754defaa9b6907687370fc972ff4fe3"
     },
     {
       "name": "package-preflight",
@@ -219,7 +219,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 17.875,
+      "seconds": 16.56300000000192,
       "log": "package-preflight.log",
       "log_sha256": "e0d1138e24bfa70a8ce859389a07515f2a4feb527eaf849eed41b3ca2139799d"
     },
@@ -232,7 +232,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 0.125,
+      "seconds": 0.14099999999598367,
       "log": "parameters.log",
       "log_sha256": "dce936fd7bfc13c7b99125164e95e49237cab3f313089cbe258bb5f0bc2aff25"
     },
@@ -252,7 +252,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 11.264999999999418,
+      "seconds": 12.202999999994063,
       "log": "preflight.log",
       "log_sha256": "e0d1138e24bfa70a8ce859389a07515f2a4feb527eaf849eed41b3ca2139799d"
     },
@@ -265,7 +265,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 0.15600000000267755,
+      "seconds": 0.1569999999992433,
       "log": "schema.log",
       "log_sha256": "3c700854bdc83285bb6edfb53e811dad3c7345d6bedd2e0975d92b5fd36a54fd"
     },
@@ -283,7 +283,7 @@
       ],
       "exit_code": 0,
       "ok": true,
-      "seconds": 23.952999999994063,
+      "seconds": 14.110000000000582,
       "log": "workshop_descriptor.log",
       "log_sha256": "db3dd9264c5d3c22bab8ddc2d3ba37de7097bbf14ac734c83f6939f558122cae"
     }

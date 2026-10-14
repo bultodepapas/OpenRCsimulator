@@ -1,0 +1,4 @@
+AS-09/10 imported aircraft builder test\nexecutable: C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64.exe\ncommand: C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --script res://tests/test_imported_aircraft_model.gd\ntest script sha256: 9c4e694686e86b29119181dd4a4fceeb5ae415bf7cbda8b984d61e8f5371f17a\nTimber manifest sha256: ceaa0bd0dc35fa72735eff727c9698435c1c3e798b601475f607d47552b512c4\nreturn code: 0\n\n--- stdout ---\nGodot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Imported aircraft model: 68 checks, 0 failures
+\n--- stderr ---\n

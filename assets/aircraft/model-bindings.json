@@ -587,7 +587,7 @@
             "role": "tail",
             "node": "tailwheel_axle",
             "geometry_ref": "articulations.tailwheel_axle",
-            "wrapper": "tailwheel_spin"
+            "wrapper": "wheel_tail_spin"
           }
         ],
         "material_grow": [

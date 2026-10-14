@@ -1,0 +1,44 @@
+AS-09/10 imported Timber pose probe
+executable: C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64.exe
+command: C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --script C:\DEVELOPMENT\OpenRCsimulator\research\aircraft-standardization\imported_pose_probe.gd -- --out=C:\DEVELOPMENT\OpenRCsimulator\.tools\as-import\pose-candidate.json --baseline=C:\DEVELOPMENT\OpenRCsimulator\docs\research\aircraft-standardization\AS-09-10-import\pose-baseline.json
+return code: 0
+current timber_model.gd sha256: 0f27b1cecd358b86fd06d260a824dbbb2f2b7b6a1b878fb0dc43847ec5f36fe1
+legacy snapshot sha256: a36e1251da54d6b0af9f37eb741ef1dc480452e600dde666168af7f07d120675
+
+--- exact pose parity summary ---
+{
+  "ok": true,
+  "comparison_difference_count": 0,
+  "tolerance": 1e-06,
+  "state_count": 6,
+  "tree_rows_per_state": {
+    "combined_full": 47,
+    "full_conventional": 47,
+    "full_flaps": 47,
+    "gear_spin_and_steer": 47,
+    "neutral": 47,
+    "propeller_spin": 47
+  },
+  "tree_metadata_mismatches": 0,
+  "section_metadata_mismatches": 0,
+  "material_rows_per_state": {
+    "combined_full": 2,
+    "full_conventional": 2,
+    "full_flaps": 2,
+    "gear_spin_and_steer": 2,
+    "neutral": 2,
+    "propeller_spin": 2
+  },
+  "material_value_mismatches": 0,
+  "root_relative_matrix_max_abs_error": 0.0,
+  "local_matrix_max_abs_error": 0.0,
+  "root_relative_matrices_exact": true,
+  "local_matrices_exact": true
+}
+
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AS_IMPORT_POSE_PROBE ok=C:\DEVELOPMENT\OpenRCsimulator\.tools\as-import\pose-candidate.json
+
+--- stderr ---
