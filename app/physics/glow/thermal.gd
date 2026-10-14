@@ -58,9 +58,9 @@ static func _evaluate_prepared(source: Dictionary, temperature_k: float, ambient
 	var cooling: float = conductance * (temperature_k - ambient_k)
 	var stored_heat: float = combustion_to_head + mechanical_heat - evaporation - cooling
 	var rate: float = stored_heat / parameters.heat_capacity_j_k
-	for value: float in [exhaust_heat, evaporation, cooling, stored_heat, rate]:
-		if not is_finite(value):
-			return {ok = false, message = "Nonfinite thermal balance"}
+	if not is_finite(exhaust_heat) or not is_finite(evaporation) or not is_finite(cooling) \
+			or not is_finite(stored_heat) or not is_finite(rate):
+		return {ok = false, message = "Nonfinite thermal balance"}
 	return {ok = true, temperature_rate_k_s = rate, stored_heat_w = stored_heat,
 		exhaust_heat_w = exhaust_heat, evaporation_heat_w = evaporation, cooling_heat_w = cooling,
 		combustion_head_heat_w = combustion_to_head, mechanical_heat_w = mechanical_heat}

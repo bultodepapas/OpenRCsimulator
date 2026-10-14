@@ -21,7 +21,7 @@ func _initialize() -> void:
 
 func _test_catalog_descriptors() -> void:
 	var entries: Array = Catalog.airplane_flyable_entries()
-	_check("every fixed-wing flyable catalog aircraft is discovered", entries.size() == 7 and not entries.is_empty(), str(entries))
+	_check("every fixed-wing flyable catalog aircraft is discovered", entries.size() == 8 and not entries.is_empty(), str(entries))
 	for entry_variant: Variant in entries:
 		var entry: Dictionary = entry_variant
 		var id: String = str(entry.get("id", ""))

@@ -188,5 +188,29 @@
       "kind": "estimated",
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; loss coefficient constrained to exceed ideal actuator-disk power by at least 5% over positive-thrust forward flow for both assumed geometries; not measured induced flow; NITRO-02 momentum-bound audit"
     }
+  },
+  "fuel_feed": {
+    "carburetor_position": {
+      "value": [
+        -0.2,
+        0.0,
+        0.045
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "NITRO-05 estimate from the engine layout (2T front-housing carburetor, 4T head-fed intake); not measured"
+    },
+    "idle_drive_pressure_pa": {
+      "value": 1000.0,
+      "unit": "Pa",
+      "kind": "estimated",
+      "source": "NITRO-05 estimate: fuel-feed pressure at the spray bar (carburetor suction plus tank pressurization); order of magnitude from modeler practice, no measured pressure for this engine"
+    },
+    "wot_drive_pressure_pa": {
+      "value": 4000.0,
+      "unit": "Pa",
+      "kind": "estimated",
+      "source": "NITRO-05 estimate: fuel-feed pressure at the spray bar (carburetor suction plus tank pressurization); order of magnitude from modeler practice, no measured pressure for this engine"
+    }
   }
 }

@@ -26,7 +26,7 @@ class GlowInstallationSchemaTests(unittest.TestCase):
         self.assertEqual(self.schema, installation_schema.schema_document())
 
     def test_all_generated_installations_validate(self) -> None:
-        self.assertEqual(len(self.installations), 4)
+        self.assertEqual(len(self.installations), 5)  # 55AX, FS-64V, their APC 13x6 alternatives, MAX-61FX
         for value in self.installations:
             with self.subTest(family=value["family"], profile=value["profile"]):
                 self.assertEqual(installation_schema.validate_instance(value, self.schema), [])

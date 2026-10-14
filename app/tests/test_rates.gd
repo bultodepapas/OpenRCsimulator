@@ -2,7 +2,7 @@
 # profile loaded from the aircraft data, and the session: "full" (the default of every FlightSession, so scripted
 # maneuvers and goldens are untouched) flies the maximum throws; "normal" shapes the keyboard sticks by the manual's
 # travel fractions and expo, adds the trims in maximum-throw units afterwards, and aircraft without controls.rates
-# (the Timber, the glow Stiks) are unaffected under either name. The Stik flies the Durafly Ugly Stik V2 low/high
+# (the Timber) are unaffected under either name. The Stik flies the Durafly Ugly Stik V2 low/high
 # ratios (D6e-S).
 # Run: godot --headless --path . --script res://tests/test_rates.gd
 extends SceneTree
@@ -62,10 +62,11 @@ func _initialize() -> void:
 		var thr: Dictionary = stik.model.controls.throw_rad
 		_check("Stik full keyboard pull on normal rates is %.1f° of elevator (half the 20° maximum)" % rad_to_deg(thr.elevator * s.elevator),
 			absf(rad_to_deg(thr.elevator * s.elevator) - 10.0) < 1e-9)
-	# The glow variants stay byte-bound to NITRO's recorded flight evidence; their generator leaves the profile out.
-	for id in ["stik-glow-55ax-2t", "stik-glow-fs64v-4t"]:
+	# The glow variants fly the same airframe and inherit the profile through their generator (NITRO-05 re-recorded).
+	for id in ["stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t"]:
 		var glow: Dictionary = AD.load_file(Catalog.entry(id).data)
-		_check("%s keeps its recorded bytes (no rates yet)" % id, glow.ok and not glow.model.controls.has("rates"))
+		_check("%s inherits the Stik's rates" % id, glow.ok and glow.model.controls.has("rates")
+			and stik.ok and glow.model.controls.rates.normal == stik.model.controls.rates.normal)
 	var timber: Dictionary = AD.load_file(Catalog.entry("turbo-lumber-evolution").data)
 	_check("Timber declares no rates", timber.ok and not timber.model.controls.has("rates"))
 	# Loader rejects an incomplete profile.
@@ -109,8 +110,11 @@ func _initialize() -> void:
 	root.add_child(timber_session)
 	timber_session.input_enabled = false
 	timber_session.rate_profile = "normal"
-	timber_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = timber_session.start.throttle }
-	_check("Timber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
-		and timber_session.flown_commands().pitch == clampf(1.0 + timber_session.trims.pitch, -1.0, 1.0))
+	if not timber_session.is_flyable():
+		_check("Timber under 'normal': no profile, so the maximum throws", false, "Timber data does not load")
+	else:
+		timber_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = timber_session.start.throttle }
+		_check("Timber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
+			and timber_session.flown_commands().pitch == clampf(1.0 + timber_session.trims.pitch, -1.0, 1.0))
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

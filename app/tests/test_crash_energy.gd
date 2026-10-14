@@ -118,9 +118,9 @@ func _fleet_tags() -> void:
 	var expected := {
 		"jensen_ugly_stik_60": "glow_fuel", "gp_extra_300s_60": "glow_fuel", "p51d_mustang_120": "gasoline",
 		"sebart_avanti_s_a200": "kerosene", "turbo_lumber_evolution": "lipo",
-		# Stik airframe with the measured glow engines (55AX two-stroke, FS-64V four-stroke), stock and APC 13x6 props.
+		# Stik airframe with the glow engines (55AX two-stroke, FS-64V four-stroke, stock and APC 13x6 props; MAX-61FX).
 		"stik_glow_55ax_2t": "glow_fuel", "stik_glow_55ax_2t_apc_13x6": "glow_fuel",
-		"stik_glow_fs64v_4t": "glow_fuel", "stik_glow_fs64v_4t_apc_13x6": "glow_fuel",
+		"stik_glow_fs64v_4t": "glow_fuel", "stik_glow_fs64v_4t_apc_13x6": "glow_fuel", "stik_glow_61fx_2t": "glow_fuel",
 	}
 	for file: String in DirAccess.get_files_at("res://data/aircraft/"):
 		if not file.ends_with(".json"):

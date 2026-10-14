@@ -19,6 +19,8 @@
 /app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json text eol=crlf
 /app/data/aircraft/stik_glow_fs64v_4t.json text eol=crlf
 /app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json text eol=crlf
+/app/data/glow/stik_61fx_2t.json text eol=crlf
+/app/data/aircraft/stik_glow_61fx_2t.json text eol=crlf
 
 # Model manifests are exact-byte Workshop dependencies. Source-script hashes normalize text to LF.
 /app/data/aircraft_models/*.json text eol=lf

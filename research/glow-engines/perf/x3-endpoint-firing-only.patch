@@ -1,0 +1,85 @@
+--- a/app/physics/glow/flight.gd
++++ b/app/physics/glow/flight.gd
+@@ -215,11 +215,22 @@
+ 	if not owner.engine_running:
+ 		before=Life.cut(before).state
+ 	var candidate: Dictionary=unpack(values,install)
+-	var endpoint: Dictionary=point(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
+-	if not endpoint.ok: return PackedFloat64Array([NAN])
+ 	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
++	var prepared: bool=evaluator is Life.PreparedEvaluator and owner.get_meta(EVALUATOR_IDENTITY_META,{})==install.identity
++	var endpoint: Dictionary
++	if prepared:
++		# Only the endpoint firing fraction is committed. It depends on the lifecycle
++		# state, RPM, mixture and charge density, not on airflow or propeller load.
++		var end_state: Dictionary=unpack(values,install)
++		if end_state.is_empty(): return PackedFloat64Array([NAN])
++		if end_state.fuel_kg<0.0: end_state.fuel_kg=1e-30
++		if not owner.engine_running: end_state.running=false
++		endpoint=Life.firing_fraction_prepared(evaluator,end_state,maxf(0.0,values[0]),values[12],1.225*owner.engine_charge_ratio())
++	else:
++		endpoint=point(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
++	if not endpoint.ok: return PackedFloat64Array([NAN])
+ 	var accepted: Dictionary
+-	if evaluator is Life.PreparedEvaluator and owner.get_meta(EVALUATOR_IDENTITY_META,{})==install.identity:
++	if prepared:
+ 		accepted=Life.accepted_prepared(evaluator,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
+ 	else:
+ 		accepted=Life.accepted(install.profile,install.settings,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
+--- a/app/physics/glow/lifecycle.gd
++++ b/app/physics/glow/lifecycle.gd
+@@ -219,6 +219,54 @@
+ 		evaluator._source)
+ 
+ 
++## Accepted-endpoint firing fraction over a prepared evaluator. It applies the same
++## state/query checks, fuel-flow scale and firing law as evaluate_prepared(), but
++## omits the source torque, thermal balance and rates that the endpoint discards.
++static func firing_fraction_prepared(
++		evaluator: PreparedEvaluator,
++		state: Dictionary,
++		rpm: float,
++		mixture: float,
++		dry_density_kg_m3: float
++) -> Dictionary:
++	if not evaluator is PreparedEvaluator:
++		return _fail("A prepared lifecycle evaluator is required")
++	var state_error: String = _state_error(state, true)
++	if not state_error.is_empty():
++		return _fail(state_error)
++	var model: Dictionary = evaluator._model
++	var settings: Dictionary = evaluator._settings
++	if str(state.family) != str(model.family):
++		return _fail("Profile family does not match lifecycle state")
++	var operation: Dictionary = model.operation
++	if not _finite_number(rpm) or rpm < 0.0 or rpm > float(operation.max_rpm):
++		return _fail("RPM is outside the profile envelope")
++	if not _finite_number(mixture) or mixture < 0.0:
++		return _fail("Mixture command must be finite and nonnegative")
++	if not _finite_number(dry_density_kg_m3) or dry_density_kg_m3 <= 0.0:
++		return _fail("Dry-air density must be finite and positive")
++	var admission: float = clampf(float(state.air_fraction), 0.0, 1.0)
++	var active: bool = bool(state.running) and float(state.fuel_kg) > 0.0
++	var actual_mixture: float = mixture
++	var current_transport: float = maxf(0.0, float(state.fuel_transport_kg_s))
++	if active and admission > 0.0:
++		var baseline_mixture: float = mixture if mixture > 0.0 else float(operation.nominal_mixture)
++		var flow_result: Dictionary = Source.unit_fuel_flow_prepared(
++			evaluator._source, rpm, admission, baseline_mixture, dry_density_kg_m3
++		)
++		if not flow_result.get("ok", false):
++			return _fail("Fuel-flow target failed: " + str(flow_result.get("message", "unknown source error")))
++		var unit_flow: float = float(flow_result.unit_fuel_flow_kg_s_per_mixture)
++		if unit_flow > LOW_FLOW:
++			actual_mixture = current_transport / unit_flow
++	var firing_fraction: float = 0.0
++	if active:
++		firing_fraction = _firing_fraction(
++			settings, float(operation.nominal_mixture), actual_mixture, float(state.temperature_k)
++		)
++	return {ok = true, firing_fraction = firing_fraction}
++
++
+ static func _evaluate_validated(
+ 		model: Dictionary,
+ 		settings: Dictionary,

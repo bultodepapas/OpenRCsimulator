@@ -40,7 +40,7 @@ class InstallationLineEndingTests(unittest.TestCase):
 
     def test_checked_in_installation_and_aircraft_outputs_are_crlf(self) -> None:
         generated = build_installations.outputs()
-        self.assertEqual(len(generated), 8)
+        self.assertEqual(len(generated), 10)  # five installations and their five aircraft
         for path, value in generated.items():
             with self.subTest(path=path.relative_to(ROOT)):
                 self.assertEqual(path.read_bytes(), expected_crlf(value))

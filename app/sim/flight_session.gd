@@ -345,7 +345,7 @@ const START_RUNWAY := "runway"
 const START_HALF_POWER := "airborne_half_power"
 const PowerTrim := preload("res://physics/cruise_trim.gd")
 ## Aircraft whose runway starts have passed the ground qualification gate (TT-11).
-const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t"]
+const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t"]
 const RUNWAY_FIELD_ID := "default"
 
 

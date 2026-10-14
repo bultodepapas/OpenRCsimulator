@@ -19,7 +19,7 @@ Status: current documentation and ownership index, checked 2026-10-12. Runtime c
 | Published build contents | [Release notes](releases/); fixed per tag |
 | README images and licenses | [Media provenance](media/README.md) |
 
-The rc8 download is described by its release notes and FIRST-LAUNCH; historical reports are not current operating instructions.
+The v0.1.0 download is described by its release notes and FIRST-LAUNCH; historical reports are not current operating instructions.
 
 ## Tracks, plans and step IDs
 
@@ -57,7 +57,7 @@ This registry owns file boundaries and prefixes. Each linked guide/plan owns its
 | RC monster truck and physics laboratory | [RC vehicle plan and Blender letter](plans/rc-monster-truck.md), [operating and research guide](../research/rc-monster-truck/README.md) | RCV-00…34; experimental runtime integrated; qualification gates in plan §11 | Main physics/GP for float64 contact and state; UI/HELI/DR/AE for catalog/session boundaries; CAM/HUD/AUD/CR/LU/FW for presentation and terrain | `app/physics/ground_vehicle/`, `app/sim/ground_vehicle/`, `app/vehicles/ground/`, vehicle/course data and bundled MT8 assets, RCV tests and `research/rc-monster-truck/` | [Source investigation](research/rc-monster-truck/README.md), [suspension](research/rc-monster-truck/RCV-04a/README.md), [coupled support](research/rc-monster-truck/RCV-04b/README.md), [visual intake](research/rc-monster-truck/RCV-14a/README.md), [runtime verification](research/rc-monster-truck/RCV-runtime/README.md) |
 | Desktop delivery | [Active desktop plan](DESKTOP-DELIVERY-PLAN.md) | DT-00…13; Gate DT | Export/CI maintainer; UI-23 implements display | Desktop-delivery research; installers and delivery tooling remain proposed | [Desktop research](research/README.md#desktop-delivery) |
 | Smoke | [Integrated feature and remaining acceptance](SMOKE-PLAN.md) | SM-00…09 | Model exhaust anchor, controls and wind | `app/render/smoke/`, optional AUX profile/UI, smoke tests and `tools/smoke/` | [Implementation evidence](research/smoke-investigations/SM-00-09/README.md) |
-| Releases | [Notes by tag](releases/) | v* tags; PT1 | CI/export maintainers | `docs/releases/`, export build identity and packaging | [rc8 qualification](research/release-readiness/PT1-rc8/README.md) |
+| Releases | [Notes by tag](releases/) | v* tags; PT1 | CI/export maintainers | `docs/releases/`, export build identity and packaging | [v0.1.0 qualification](research/release-readiness/PT1-v0.1.0/README.md) |
 
 ## Step-ID namespaces
 

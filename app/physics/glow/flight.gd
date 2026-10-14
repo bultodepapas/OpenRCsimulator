@@ -13,6 +13,7 @@ const Dynamics := preload("res://physics/dynamics.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Coupling := preload("res://physics/rotor_coupling.gd")
 const Boundary := preload("res://physics/electric_battery_step.gd")
+const FuelFeed := preload("res://physics/glow/fuel_feed.gd")
 const SIZE := 17
 const LAW := "glow-mean-cycle-finite-tank-hub-inflow-v2"
 const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat"]
@@ -120,22 +121,58 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 		load=Blade.evaluate(rpm,M.dot(hub_air,prop.axis),owner.air_density(),install.propeller)
 	if not load.ok: return {ok=false}
 	local_cooling += M.sqrt_(maxf(0.0,load.thrust_n)/(2.0*owner.air_density()*PI*prop.diameter*prop.diameter/4.0))
+	# NITRO-05: the feed pressure needs this stage's apparent gravity, so an installation with a fuel_feed block
+	# evaluates the airframe loads first (evaluate() then reuses them).
+	var feed_factor: float=1.0
+	var airframe: Dictionary={}
+	var feed: Dictionary={}
+	var feed_mass: Dictionary={}
+	if install.has("fuel_feed"):
+		airframe=_airframe(owner,body,values,air,hub_air,rpm,load)
+		if airframe.is_empty(): return {ok=false}
+		feed_mass=properties(owner,values[1])
+		if not feed_mass.ok: return {ok=false}
+		feed=FuelFeed.evaluate(install.fuel_feed,airframe.external.slice(0,3),feed_mass.mass_kg,
+			clampf(state.fuel_kg/install.initial_fuel_kg,0.0,1.0),clampf(state.air_fraction,0.0,1.0),rpm,
+			install.tank_position,install.tank_size,owner.sim.gravity)
+		feed_factor=feed.factor
 	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
 	var evaluation: Dictionary
 	if evaluator is Life.PreparedEvaluator and identity_matches:
 		evaluation=Life.evaluate_prepared(evaluator,state,rpm,_throttle(owner),values[12],
-			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
+			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling,feed_factor)
 	else:
 		# Standalone fixtures may run before initialization; a failed reload can
 		# restore a different installation. Both use the fully validated path.
 		evaluation=Life.evaluate(install.profile,install.settings,state,rpm,_throttle(owner),values[12],
-			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
+			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling,feed_factor)
 	if not evaluation.ok: return evaluation
 	evaluation.air=air
 	evaluation.hub_air_velocity_body_m_s=hub_air
 	evaluation.propeller=load
 	evaluation.state=state
+	if not airframe.is_empty():
+		evaluation.airframe=airframe
+		evaluation.fuel_feed=feed
+		evaluation.mass=feed_mass
 	return evaluation
+
+
+## Aerodynamic, propeller and ground loads on the airframe for one stage: {external (body force and moment about
+## the datum), ground (the ground evaluation, for its wheel derivatives)}, or {} when the ground refuses the stage.
+static func _airframe(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, air: Dictionary,
+		hub_air: PackedFloat64Array, rpm: float, load: Dictionary) -> Dictionary:
+	var model: Dictionary=owner.aircraft.model
+	var prop: Dictionary=model.propulsion
+	var lag: int=owner.downwash_index()
+	var propeller_loads: PackedFloat64Array=Propulsion.loads_from_thrust_torque(hub_air,rpm,prop,
+		owner.air_density(),load.thrust_n,load.torque_nm)
+	var external: PackedFloat64Array=Dynamics.loads_from_air(body,model,owner._deflections(owner.sim.aux),rpm,
+		owner.air_density(),air,owner.sim.aux[lag] if lag>=0 else NAN,PackedFloat64Array(),owner._ground_up(body),propeller_loads)
+	var ground: Dictionary=owner._ground_evaluation(body,owner.sim.aux,values)
+	if not ground.get("ok",false): return {}
+	for i in ground.loads.size(): external[i]+=ground.loads[i]
+	return {external=external,ground=ground}
 
 static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float, owner: Node) -> Dictionary:
 	if values.size()!=SIZE+owner.wheel_count(): return {}
@@ -143,17 +180,16 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 	if not result.ok: return {}
 	var model: Dictionary=owner.aircraft.model
 	var prop: Dictionary=model.propulsion
-	var mass: Dictionary=properties(owner,values[1])
+	var mass: Dictionary=result.get("mass",{})
+	if mass.is_empty(): mass=properties(owner,values[1])
 	if not mass.ok: return {}
 	var rpm: float=maxf(0.0,values[0])
-	var lag: int=owner.downwash_index()
-	var propeller_loads: PackedFloat64Array=Propulsion.loads_from_thrust_torque(result.hub_air_velocity_body_m_s,rpm,prop,
-		owner.air_density(),result.propeller.thrust_n,result.propeller.torque_nm)
-	var external: PackedFloat64Array=Dynamics.loads_from_air(body,model,owner._deflections(owner.sim.aux),rpm,
-		owner.air_density(),result.air,owner.sim.aux[lag] if lag>=0 else NAN,PackedFloat64Array(),owner._ground_up(body),propeller_loads)
-	var ground: Dictionary=owner._ground_evaluation(body,owner.sim.aux,values)
-	if not ground.get("ok",false): return {}
-	for i in ground.loads.size(): external[i]+=ground.loads[i]
+	var airframe: Dictionary=result.get("airframe",{})
+	if airframe.is_empty():
+		airframe=_airframe(owner,body,values,result.air,result.hub_air_velocity_body_m_s,rpm,result.propeller)
+	if airframe.is_empty(): return {}
+	var external: PackedFloat64Array=airframe.external
+	var ground: Dictionary=airframe.ground
 	var force: PackedFloat64Array=external.slice(0,3)
 	var torque: PackedFloat64Array=M.sub(external.slice(3,6),M.cross(mass.cg_body_m,force))
 	var w: PackedFloat64Array=body.slice(RB.RATE,RB.RATE+3)
@@ -221,7 +257,12 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 	var candidate: Dictionary=unpack(values,install)
 	var endpoint: Dictionary=point(owner,bounded.state.slice(0,RB.SIZE),values,time_s+dt)
 	if not endpoint.ok: return PackedFloat64Array([NAN])
-	var accepted: Dictionary=Life.accepted(install.profile,install.settings,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
+	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
+	var accepted: Dictionary
+	if evaluator is Life.PreparedEvaluator and owner.get_meta(EVALUATOR_IDENTITY_META,{})==install.identity:
+		accepted=Life.accepted_prepared(evaluator,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
+	else:
+		accepted=Life.accepted(install.profile,install.settings,before,candidate,dt,combined[RB.SIZE],values[0],endpoint.firing_fraction)
 	if not accepted.ok: return PackedFloat64Array([NAN])
 	values=put_state(values,accepted.state)
 	var out: PackedFloat64Array=bounded.state.slice(0,RB.SIZE)
@@ -237,6 +278,7 @@ static func telemetry(owner: Node) -> Dictionary:
 	out.merge(result.state,true)
 	out.merge(result.source,true)
 	out.ok=true
+	if result.has("fuel_feed"): out.fuel_feed=result.fuel_feed.duplicate()
 	out.rpm=values[0]
 	out.running=result.state.running and result.state.fuel_kg>0.0
 	out.blade_count=owner.aircraft.model.propulsion.glow.propeller.blades
