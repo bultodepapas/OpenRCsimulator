@@ -150,7 +150,7 @@ func _run() -> void:
 
 	# Exercise the actual app-root direct CLI branch: it must create and initialize the rotorcraft route.
 	var helicopter_app: Node = load("res://app_root.tscn").instantiate()
-	helicopter_app.user_args = PackedStringArray(["--aircraft=xcell-60-research"])
+	helicopter_app.user_args = PackedStringArray(["--aircraft=xcell-60-research", "--field-lighting=airfield", "--campfire=on"])
 	helicopter_app.preferences_path = PREFS
 	root.add_child(helicopter_app)
 	await process_frame
@@ -159,6 +159,20 @@ func _run() -> void:
 		helicopter_flight != null and helicopter_flight.get_script().resource_path == "res://helicopter_main.gd"
 		and helicopter_flight.aircraft_id == "xcell-60-research"
 		and helicopter_flight._user_args().get("aircraft", "") == "xcell-60-research")
+	var direct_night := {"field_lighting": "airfield", "campfire": true}
+	_check("direct helicopter night arguments reach the validated world startup",
+		helicopter_flight != null and helicopter_flight.night_options == direct_night
+		and helicopter_flight.get_meta("night_options", {}) == direct_night)
+	if helicopter_flight != null:
+		var updated_night := {"field_lighting": "off", "campfire": false}
+		_check("helicopter night setter applies options to the live world",
+			helicopter_flight.set_night_options("off", false)
+			and helicopter_flight.night_options == updated_night
+			and helicopter_flight.get_meta("night_options", {}) == updated_night)
+		_check("helicopter night setter rejects an unknown profile without changing it",
+			not helicopter_flight.set_night_options("bright", true)
+			and helicopter_flight.night_options == updated_night
+			and helicopter_flight.get_meta("night_options", {}) == updated_night)
 	var helicopter_session: Node = helicopter_flight.get("session") if helicopter_flight != null else null
 	_check("direct helicopter route completes setup and starts in a flyable hover",
 		helicopter_flight != null and helicopter_flight.startup_error.is_empty()
@@ -172,6 +186,8 @@ func _run() -> void:
 	# Home owns the rotorcraft selection and its complete pause-menu lifecycle.
 	var saved_home_preferences: Dictionary = Preferences.DEFAULTS.duplicate(true)
 	saved_home_preferences.weather_config = WeatherSettings.GENTLE_PRACTICE.duplicate(true)
+	saved_home_preferences.night_field_lighting = "airfield"
+	saved_home_preferences.night_campfire = true
 	_check("saved fixed-wing weather fixture starts with turbulence", WeatherSettings.has_turbulence(saved_home_preferences.weather_config))
 	_check("test settings fixture saves", Preferences.save_to(PREFS, saved_home_preferences) == OK)
 	var home_helicopter_app: Node = load("res://app_root.tscn").instantiate()
@@ -218,6 +234,10 @@ func _run() -> void:
 		and home_helicopter_flight.aircraft_id == "xcell-60-research"
 		and home_helicopter_flight.startup_error.is_empty()
 		and home_helicopter_flight.session.is_flyable())
+	var home_night := {"field_lighting": "airfield", "campfire": true}
+	_check("Home helicopter startup validates and applies its saved night options",
+		home_helicopter_flight != null and home_helicopter_flight.night_options == home_night
+		and home_helicopter_flight.get_meta("night_options", {}) == home_night)
 	if home_helicopter_flight != null:
 		var home_helicopter_session: Node = home_helicopter_flight.session
 		var helicopter_hint: Node = home_helicopter_flight.get_node_or_null("FirstFlightHint")

@@ -6,6 +6,7 @@ extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const ModelRegistry := preload("res://aircraft/model_registry.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Frames := preload("res://render/frames.gd")
 const Shadow := preload("res://render/shadow.gd")
@@ -37,6 +38,21 @@ func _initialize() -> void:
 	_check("default is the Ugly Stik and it is in the catalog", Catalog.DEFAULT_ID == AirplaneBuilder.STIK_ID and Catalog.has(Catalog.DEFAULT_ID))
 	_check("nine catalog entries, unique IDs", Catalog.ids().size() == 9 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 9, str(Catalog.ids()))
 	_check("eight airplane configurations remain available to airplane solvers", Catalog.airplane_flyable_ids().size() == 8 and Catalog.airplane_flyable_ids().has(AirplaneBuilder.TIMBER_ID))
+	var expected_airplane_families := PackedStringArray([
+		AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID,
+		AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID,
+	])
+	var airplane_families := Catalog.airplane_visual_families()
+	var all_airplane_families_registered := true
+	for family in airplane_families:
+		if not ModelRegistry.describe(family).get("ok", false):
+			all_airplane_families_registered = false
+	_check("airplane visual families are unique, complete, registered, include Timber, and exclude HX-700",
+		airplane_families == expected_airplane_families
+		and airplane_families.has(Catalog.visual_family(AirplaneBuilder.TIMBER_ID))
+		and not airplane_families.has("hx-700")
+		and all_airplane_families_registered,
+		str(airplane_families))
 	_check("nine simulated entries include the experimental helicopter", Catalog.flyable_ids().size() == 9 and Catalog.flyable_ids().has("xcell-60-research")
 		and Catalog.flyable_entries().all(func(e): return e.data != "" and e.status != Catalog.PREVIEW), str(Catalog.flyable_ids()))
 	var helicopter_entry: Dictionary = Catalog.entry("xcell-60-research")

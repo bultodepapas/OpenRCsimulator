@@ -20,14 +20,27 @@ func _check(label: String, ok: bool, detail := "") -> void:
 		printerr("FAIL %s %s" % [label, detail])
 
 
+func _float64_bits(value: float) -> int:
+	var encoded := PackedByteArray()
+	encoded.resize(8)
+	encoded.encode_double(0, value)
+	return encoded.decode_u64(0)
+
+
+func _float64_from_bits(bits: int) -> float:
+	var encoded := PackedByteArray()
+	encoded.resize(8)
+	encoded.encode_u64(0, bits)
+	return encoded.decode_double(0)
+
+
 func _coupled_trace_meta() -> Dictionary:
 	return {
 		"propulsion_model": "propeller-shaft-coupled-rk4-v1",
 		"shaft_integrator": "coupled-rk4",
 		"rotor_coupling": "relative-spin-locked-inertia-reaction-v1",
 		"continuous_layout": "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled",
-		# This is the JSON-decoded trim value from the hot-high P51 trace that exposed
-		# a sub-picorpm round-trip difference at the first recorded sample.
+		# JSON-decoded initial RPM for the hot-high P-51 trace boundary regression.
 		"recording_start_continuous": "[3618.1583849604676]",
 		"recording_start_aux": "[3618.1583849604676,0.0,0.0,0.0]",
 	}
@@ -55,21 +68,30 @@ func _initialize() -> void:
 		time_ok = time_ok and absf(trace.value(r, "t_s") - trace.value(r, "tick") * sim.dt()) < 1e-12
 	_check("t_s = tick · dt", time_ok)
 
-	# JSON metadata preserves a nearby but not bit-identical decimal for the initial
-	# shaft speed. Accept that serialization noise while retaining a strict mismatch gate.
-	var fractional_rpm := 3618.15838496047
+	# JSON metadata is allowed one adjacent positive float64 and must reject two ULPs.
+	var header_rpm := 3618.1583849604676
 	var coupled_trace := Trace.new()
 	coupled_trace.meta = _coupled_trace_meta()
+	var fractional_rpm := _float64_from_bits(_float64_bits(header_rpm) + 1)
 	coupled_trace.record(0, 0.0, sim.state, sim.last_loads, sim.inputs,
 		PackedFloat64Array([fractional_rpm, 0.0, 0.0, 0.0]))
-	_check("coupled trace accepts fractional RPM JSON round-trip", coupled_trace.row_count() == 1
+	_check("coupled trace fixture is one ULP above decoded JSON RPM",
+		_float64_bits(fractional_rpm) - _float64_bits(coupled_trace._coupled_start_rpm) == 1)
+	_check("coupled trace accepts one-ULP JSON RPM round-trip", coupled_trace.row_count() == 1
 		and not coupled_trace._invalid_weather
-		and absf(fractional_rpm - 3618.1583849604676) <= 1e-9,
-		str("rows=", coupled_trace.row_count(), " delta=", absf(fractional_rpm - 3618.1583849604676)))
+		and Trace._positive_float64_within_one_ulp(fractional_rpm, coupled_trace._coupled_start_rpm))
+	var two_ulp_trace := Trace.new()
+	two_ulp_trace.meta = _coupled_trace_meta()
+	var two_ulp_rpm := _float64_from_bits(_float64_bits(header_rpm) + 2)
+	two_ulp_trace.record(0, 0.0, sim.state, sim.last_loads, sim.inputs,
+		PackedFloat64Array([two_ulp_rpm, 0.0, 0.0, 0.0]))
+	_check("coupled trace rejects two-ULP RPM mismatch",
+		_float64_bits(two_ulp_rpm) - _float64_bits(two_ulp_trace._coupled_start_rpm) == 2
+		and two_ulp_trace.row_count() == 0 and two_ulp_trace._invalid_weather)
 	var mismatched_trace := Trace.new()
 	mismatched_trace.meta = _coupled_trace_meta()
 	mismatched_trace.record(0, 0.0, sim.state, sim.last_loads, sim.inputs,
-		PackedFloat64Array([3618.15838596047, 0.0, 0.0, 0.0]))
+		PackedFloat64Array([header_rpm + 1e-6, 0.0, 0.0, 0.0]))
 	_check("coupled trace rejects a 1e-6 RPM start mismatch", mismatched_trace.row_count() == 0
 		and mismatched_trace._invalid_weather)
 

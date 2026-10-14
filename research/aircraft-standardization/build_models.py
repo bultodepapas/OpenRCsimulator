@@ -649,7 +649,7 @@ def generate(root: Path, check: bool) -> int:
     for family_id, manifest in manifests.items():
         path = output_dir / f"{family_id}.json"
         rendered = json.dumps(manifest, indent=2, ensure_ascii=False) + "\n"
-        if not path.is_file() or path.read_text(encoding="utf-8") != rendered:
+        if not path.is_file() or path.read_bytes() != rendered.encode("utf-8"):
             changed.append((path, rendered))
     if check:
         if changed:

@@ -53,7 +53,7 @@ The frozen prototype's separate CI job runs `npm ci`, `npm run typecheck`, `npm 
 1. Review the selected diff and retain proof beside the owning research evidence.
 2. Run applicable schema/generator, offline, app and visual checks. Export from an isolated Linux checkout; keep unrelated files out of `dist/`.
 3. Add `docs/releases/<tag>.md`. A `vX.Y.Z` tag must match `app/project.godot`; `git describe` supplies package identity. `app/export.sh` takes no version argument.
-4. Push the reviewed commit and tag. CI exports on `main`, `v*` tags and manual dispatch; tags publish prereleases after checks and release notes pass.
+4. Push the reviewed commit and tag. CI exports on `main`, `v*` tags and manual dispatch. After checks and release notes pass, `vX.Y.Z` tags publish official releases; suffixed tags publish prereleases.
 5. Verify all three archives and checksums. Linux execution and structural pack checks do not replace native OS, GPU, radio or pilot acceptance.
 
 [Exported runway smoke and pilot card](research/menu-investigations/UI-06c/README.md) cover the Linux/Xvfb keyboard route, recorded traces, CLI parity and isolated preferences.

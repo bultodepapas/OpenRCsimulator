@@ -34,6 +34,26 @@ def fixture(name: str) -> dict:
 
 
 class AircraftMigration(unittest.TestCase):
+    def test_legacy_projection_removes_v2_physical_identity_metadata(self) -> None:
+        source = json.loads(
+            (ROOT / "app/data/aircraft/turbo_lumber_evolution.json").read_text(encoding="utf-8")
+        )
+        original = deepcopy(source)
+        self.assertEqual(source["physical_identity_version"], 1)
+        self.assertIn("id", source["propulsion"])
+        self.assertIn("id", source["inventory"][0])
+
+        legacy = legacy_input(source)
+
+        self.assertEqual(source, original, "legacy projection must not mutate its v2 source")
+        self.assertEqual(legacy["format"], FORMAT_V1)
+        self.assertNotIn("physical_identity_version", legacy)
+        self.assertNotIn("crash_hull_ids", legacy)
+        self.assertNotIn("id", legacy["propulsion"])
+        self.assertTrue(all("id" not in item for item in legacy["inventory"]))
+        self.assertTrue(all("id" not in contact for contact in legacy["landing_gear"]["contacts"]))
+        self.assertNotIn("surface_ids", legacy["controls"])
+
     def test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity(self) -> None:
         for name in KNOWN_FILES:
             with self.subTest(name=name):

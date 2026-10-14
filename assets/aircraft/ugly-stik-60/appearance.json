@@ -1,10 +1,10 @@
 {
   "id": "jensen-61-classic-red-v4",
   "kind": "artistic_estimate",
-  "source": "Owner reference photos A/B; docs/research/ugly-stik-visual-photo-brief.md",
+  "source": "Owner reference photos A/B; docs/research/ugly-stik-visual-photo-brief.md. RGB values are display-calibrated against fixed L1b captures, not measured paint.",
   "palette": {
-    "red": "#c8102e",
-    "white": "#f7f6f1",
+    "red": "#b00e28",
+    "white": "#b8b7b3",
     "black": "#111216"
   },
   "atlas_size_px": 2048,

@@ -125,7 +125,7 @@
   "dependencies": [
     {
       "path": "res://aircraft/ugly_stik_appearance.gd",
-      "sha256": "77c04c7bd288e91451a9390177b56cd1563660663a78ae0abeeb8592ef944ba7",
+      "sha256": "894a80a94b30b8cf68247a4b89c4d780af7f18cba426d39a4458d4374197cbe5",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },

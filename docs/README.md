@@ -20,7 +20,7 @@ Status: current documentation and ownership index, checked 2026-10-14. Runtime c
 | Published build contents | [Release notes](releases/); fixed per tag |
 | README images and licenses | [Media provenance](media/README.md) |
 
-The v0.1.0 download is described by its release notes and FIRST-LAUNCH; historical reports are not current operating instructions.
+Each download is described by its tagged release notes and FIRST-LAUNCH; historical reports are not current operating instructions.
 
 ## Tracks, plans and step IDs
 

@@ -1,6 +1,8 @@
 # L5 export smoke. Run from an EMPTY project root so a missing pack resource cannot fall back to the source tree.
 extends SceneTree
 
+const EXPECTED_GRASS_ASSETS: Array[String] = ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]
+
 
 func _initialize() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
@@ -146,6 +148,8 @@ func _grass_error(grass: Node3D, imported: bool) -> String:
 		return "missing root or wrong field/scenery grass branch"
 	if grass.get_child_count() < 1 or grass.get_child_count() > (3 if imported else 4):
 		return "invalid number of nonempty source batches/quadrants"
+	if imported and grass.get_child_count() != EXPECTED_GRASS_ASSETS.size():
+		return "missing downloaded grass source batch"
 	var adapter: Script = load("res://scenery/imported_vegetation.gd") if imported else null
 	var clumps := 0
 	var triangles := 0
@@ -163,7 +167,7 @@ func _grass_error(grass: Node3D, imported: bool) -> String:
 		var source: Mesh
 		if imported:
 			var asset_id := str(node.name).get_slice("_Part_", 0)
-			if not asset_id in ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]:
+			if not EXPECTED_GRASS_ASSETS.has(asset_id):
 				return "unknown imported grass source"
 			var parts: Array = adapter.get_parts(asset_id)
 			var part_index := int(str(node.name).get_slice("_Part_", 1))
@@ -180,6 +184,10 @@ func _grass_error(grass: Node3D, imported: bool) -> String:
 			if mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES or mesh.surface_get_material(surface) == null:
 				return "missing triangle surface/material"
 			if imported:
+				var material := mesh.surface_get_material(surface) as BaseMaterial3D
+				if material == null or material.albedo_texture == null \
+						or material.albedo_texture.get_width() <= 0 or material.albedo_texture.get_height() <= 0:
+					return "missing imported grass texture"
 				var original := source.surface_get_arrays(surface)
 				if arrays[Mesh.ARRAY_VERTEX] != original[Mesh.ARRAY_VERTEX] or arrays[Mesh.ARRAY_INDEX] != original[Mesh.ARRAY_INDEX] \
 						or mesh.surface_get_material(surface) != source.surface_get_material(surface):
@@ -190,7 +198,8 @@ func _grass_error(grass: Node3D, imported: bool) -> String:
 		clumps += mm.instance_count
 	if clumps <= 0 or clumps > 6000 or int(grass.get_meta("clumps", -1)) != clumps:
 		return "clump metadata/count mismatch"
-	if imported and (triangles <= 0 or triangles > 50000 or int(grass.get_meta("triangles", -1)) != triangles \
+	if imported and (clumps > 150 or assets.size() != EXPECTED_GRASS_ASSETS.size() \
+			or triangles <= 0 or triangles > 50000 or int(grass.get_meta("triangles", -1)) != triangles \
 			or int(grass.get_meta("asset_batches", -1)) != assets.size()):
 		return "imported triangle budget or batch metadata mismatch"
 	return ""

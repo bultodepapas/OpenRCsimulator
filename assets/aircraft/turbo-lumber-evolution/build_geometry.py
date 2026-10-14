@@ -455,7 +455,7 @@ def main():
     }
     text = json.dumps(out, ensure_ascii=False, indent=2) + "\n"
     if "--check" in sys.argv:
-        if not TARGET.exists() or TARGET.read_text(encoding="utf-8") != text:
+        if not TARGET.exists() or TARGET.read_bytes() != text.encode("utf-8"):
             sys.exit("stale geometry.json: run build_geometry.py")
         print("Timber geometry.json is up to date (revision %s)" % revision)
     else:
