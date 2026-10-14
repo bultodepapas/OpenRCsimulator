@@ -110,8 +110,11 @@ func _initialize() -> void:
 	root.add_child(timber_session)
 	timber_session.input_enabled = false
 	timber_session.rate_profile = "normal"
-	timber_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = timber_session.start.throttle }
-	_check("Timber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
-		and timber_session.flown_commands().pitch == clampf(1.0 + timber_session.trims.pitch, -1.0, 1.0))
+	if not timber_session.is_flyable():
+		_check("Timber under 'normal': no profile, so the maximum throws", false, "Timber data does not load")
+	else:
+		timber_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = timber_session.start.throttle }
+		_check("Timber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
+			and timber_session.flown_commands().pitch == clampf(1.0 + timber_session.trims.pitch, -1.0, 1.0))
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
