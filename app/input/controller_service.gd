@@ -128,9 +128,29 @@ func attach_session(target: Node, initial_start := true) -> void:
 	session.persist_controller_profile = save_calibration
 	session.persist_full_controller_profile = save_profile_and_apply
 	var id: int = registry.selected_device_id("flight")
+	_bind_gamepad_confirmation(id)
 	# A fresh keyboard flight retains its declared launch state.
 	if id >= 0:
 		session.apply_controller_selection(id, registry.device_for_id(id), profile_for_device(id), initial_start)
+
+
+## A polled zero is trustworthy only for the current selected SDL gamepad while
+## the app is focused. Never certify raw joystick layouts or a reused handle.
+func _confirmed_gamepad_connection(id: int, expected_id: int, expected_generation: int) -> bool:
+	if id != expected_id or registry.connection_generation(id) != expected_generation \
+		or not is_inside_tree() or not get_window().has_focus() or registry.selected_device_id("flight") != id:
+		return false
+	var info: Dictionary = registry.device_for_id(id)
+	if not bool(info.get("connected", false)) or not bool(info.get("known", false)) or info.get("kind", "") != "gamepad":
+		return false
+	return Input.get_connected_joypads().has(id) and Input.is_joy_known(id) \
+		and Input.get_joy_guid(id) == str(info.get("guid", "")) \
+		and Input.get_joy_name(id) == str(info.get("name", ""))
+
+
+func _bind_gamepad_confirmation(id: int) -> void:
+	if is_instance_valid(session) and session.radio is RcInput:
+		session.radio.confirmed_gamepad_connection = _confirmed_gamepad_connection.bind(id, registry.connection_generation(id))
 
 
 func select_devices(flight_id: int, ui_id: int) -> bool:
@@ -249,6 +269,7 @@ func _selection_changed(role: String, id: int) -> void:
 			session.controller_disconnected()
 			continuity_lost.emit()
 		else:
+			_bind_gamepad_confirmation(id)
 			applied = bool(session.apply_controller_selection(id, registry.device_for_id(id), profile_for_device(id), false))
 	_last_flight_selection_result = applied
 	if not _settings_save_transaction:

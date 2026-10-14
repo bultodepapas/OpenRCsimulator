@@ -1,0 +1,120 @@
+{
+  "scope": "Verified resting-gamepad pause and restart recovery; native Windows synthetic-device regression verification.",
+  "runs": [
+    {
+      "test": "test_controller_conditioning",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 0.38,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController conditioning: 30 checks, 0 failed\n"
+    },
+    {
+      "test": "test_rc_input",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 0.38,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n41 checks, 0 failed\n"
+    },
+    {
+      "test": "test_controller_integration",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 1.77,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nController integration: 27/27 checks passed\n"
+    },
+    {
+      "test": "test_ui_pause",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 37.0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   flying with engine sound\nok   Esc opens the pause menu, focus on Continue\nok   the session is held and paused\nok   simulation frozen (tick 109)\nok   propeller frozen\nok   engine sound paused and silent (-200.0 dB)\nok   Down navigates the menu -> Restart\nok   navigation keys never reach the flight commands\nok   R, T and P do nothing behind the menu\nok   Esc again: back to the flight\nok   flying again: ticks, sound\nok   a key held through Continue does not fly\nok   pressed again after release, it flies\nCRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 3), point speed 0.0 m/s at detected tick) - [R] restart\nCRASH CAUSE: Prop strike on the ground at 1.7 m/s, pitch -1°, bank -0° (throttle closed, low airspeed)\nok   crash shown\nok   menu explains the crash\nok   crash countdown frozen under the menu (360 ticks left)\nok   Continue does not fly through the crash\nok   wreck persists after Continue until explicit restart\nok   menu Restart clears the wreck and resumes flight\nok   focus lost -> paused with the menu open\nok   Enter on Continue resumes\nok   Esc in the calibration wizard cancels it, no menu\nok   fault: Continue disabled, focus on Restart, reason shown\nok   fault: Continue refused, menu stays\nok   Restart: a fresh trimmed flight\nok   failure settings are reachable by keyboard\nok   End flight reachable by keyboard\ntrace saved: C:/DEVELOPMENT/OpenRCsimulator/.tools/controller-menu-ui/pause-recovery-checks/appdata/Godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-14T21-19-01.csv (75 rows)\nok   End flight saved the trace\nok   back on Home, flight freed\nok   focus on Fly again\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   failed save: still in the flight, the menu explains\nok   End again: Home, without the trace\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   5 cycles: same node count on Home every time [549.0, 549.0, 549.0, 549.0, 549.0, 549.0]\nok   5 cycles: no session, engine sound or pause menu left\nall UI pause checks passed\n"
+    },
+    {
+      "test": "test_controller_actions",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 0.42,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   default semantic actions have recovery and no overlapping conflicts\nok   same button on another device is ignored\nok   selected-device A resolves to menu accept\nok   button release produces no semantic action\nok   menu navigation is not routed as flight trim\nok   menu navigation resolves only in menu context\nok   axis threshold resolves matching sign on selected device\nok   axis value below threshold does not resolve\nok   keyboard remap resolves without a gamepad id\nok   keyboard release produces no semantic action\nok   duplicate back/pause recovery binding is rejected\nok   the sentinel button index is rejected\nok   semantic action labels translate to Spanish\nok   controller binding labels translate to Spanish\nok   pause recovery notice translates to Spanish\nok   controller form and axis controls are translated\nok   rate and absolute throttle presets are distinguished in Spanish\nok   radio recovery, profile type and safety prompts translate\nok   controller setup and arming prompts translate\nall controller action checks passed\n"
+    },
+    {
+      "test": "test_controller_setup_safety",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 0.88,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   successful recovery still displays its warning\nok   initial focus lands on the flight controller choice\nok   captured joypad press does not escape to unhandled input\nok   matching joypad release is consumed after capture ends\nok   matching keyboard release is consumed after capture ends\nok   matching release stays consumed when the logical keycode changes\nok   captured axis stays consumed until it returns to neutral\nok   Escape cancels remapping without closing the screen\nok   Escape release stays inside remapping recovery\nok   changing flight controller cancels its pending capture\nok   new device cannot finish capture started for the old device\nok   switching profiles preserves unsaved channel edits\nok   switching profiles preserves unsaved name edits\nok   switching devices preserves unsaved channel edits\nok   switching devices preserves unsaved name edits\nok   AUX suppresses only a colliding inherited flight action\nok   explicit action remains visible and is rejected on AUX conflict\nok   disconnecting the captured controller cancels remapping\nok   runtime rejection leaves profile setup open\nok   runtime rejection does not fall through to storage\nok   runtime rejection preserves the editable draft\nok   gamepad preset popup is open while focused\nok   Escape dismisses the focused option popup without closing setup\nok   Save does not persist an in-progress remap\nok   Cancel exits and discards while capture is active\ncontroller setup audit passed\n"
+    },
+    {
+      "test": "test_controller_persistence",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 2.28,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nController persistence: 25 checks, 0 failures\n"
+    },
+    {
+      "test": "test_controller_pause_recovery",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 17.53,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nController pause recovery: 22/22 checks passed\n"
+    },
+    {
+      "test": "test_controller_menu",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 26.5,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: calibrating radio\nController menu: 29/29 checks passed\n"
+    },
+    {
+      "test": "test_controller_profile_hardening",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 1.25,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile hardening: 30 checks, 0 failures\n"
+    },
+    {
+      "test": "test_controller_settings_save",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 1.02,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController settings save: 25/25 checks passed\n"
+    }
+  ],
+  "parse_checks": [
+    {
+      "path": "app/input/rc_input.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/input/controller_service.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/ui/pause_menu.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/app_root.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/tests/test_controller_pause_recovery.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "docs/research/controller-support-2026-10-14/probe_pause_recovery.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    }
+  ]
+}

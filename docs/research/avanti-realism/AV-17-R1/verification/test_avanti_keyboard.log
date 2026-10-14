@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+V 29 hold -1.00 alpha 7.83 g 3.10 stall 0.00 recovered 2.221 complete true
+V 45 hold -1.00 alpha 6.60 g 5.10 stall 0.00 recovered 1.787 complete true
+V 60 hold -1.00 alpha 6.32 g 7.92 stall 0.00 recovered 1.546 complete true
+V 45 hold 0.50 alpha 7.28 g 5.21 stall 0.00 recovered -1.000 complete true
+V 45 hold 2.00 alpha 24.83 g 6.67 stall 1.00 recovered -1.000 complete true
+AV-17-R1 keyboard and dive recovery: 38 checks, 0 failed

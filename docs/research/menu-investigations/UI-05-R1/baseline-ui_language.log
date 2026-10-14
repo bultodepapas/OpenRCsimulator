@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no file -> English, writable
+ok   save
+ok   load what was saved
+ok   diagnostic marker opt-out persists
+ok   diagnostic preference rejects the wrong type
+ok   unsupported language -> English
+ok   wrong type -> English (ConfigFile keeps the file's type)
+ok   unreadable file -> defaults, kept as .bad
+ok   newer schema: valid values read, file marked read-only
+ok   newer schema: never overwritten
+ok   Spanish catalog: 792 texts, none untranslated
+ok   language en has a catalog or is the source
+ok   language es has a catalog or is the source
+FIELD DATA INVALID: objects[0].positions.value[271]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[272]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[273]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[274]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip)

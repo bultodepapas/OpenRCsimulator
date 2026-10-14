@@ -9,12 +9,14 @@ const LakeSurface := preload("res://physics/lake_surface.gd")
 
 const SURFACE_STRIDE := 6
 const ROLLING_RUNWAY := 2.5
+const ROLLING_ROTORPAD := 0.5
 const ROLLING_MOWN := 5.0
 const ROLLING_ROUGH := 7.5
 
 # Estimated GP-00 engineering envelope, not measured RC turf. It represents load-bearing soil relief,
 # not blade height: 1 mm runway, 4 mm mown, 7 mm rough; smooth amplitude transitions span 0.5 m.
 const RELIEF_RUNWAY_M := 0.001
+const RELIEF_ROTORPAD_M := 0.0
 const RELIEF_MOWN_M := 0.004
 const RELIEF_ROUGH_M := 0.007
 const EDGE_BLEND_M := 0.5
@@ -177,6 +179,8 @@ static func is_valid_surface_table(surfaces: PackedFloat64Array) -> bool:
 ## add a surface-class channel at the GroundSurfaces boundary before changing this mapping.
 ## Linear interpolation preserves a useful intermediate if a field uses another validated factor.
 static func amplitude_for_rolling_factor(factor: float) -> float:
+	if factor == ROLLING_ROTORPAD:
+		return RELIEF_ROTORPAD_M
 	var t: float = clampf((factor - ROLLING_RUNWAY) / (ROLLING_ROUGH - ROLLING_RUNWAY), 0.0, 1.0)
 	return lerpf(RELIEF_RUNWAY_M, RELIEF_ROUGH_M, t)
 
@@ -186,6 +190,7 @@ static func amplitude_for_rolling_factor(factor: float) -> float:
 static func renderer_profile() -> Dictionary:
 	return {
 		"runway_amplitude_m": amplitude_for_rolling_factor(ROLLING_RUNWAY),
+		"rotorpad_amplitude_m": amplitude_for_rolling_factor(ROLLING_ROTORPAD),
 		"mown_amplitude_m": amplitude_for_rolling_factor(ROLLING_MOWN),
 		"rough_amplitude_m": amplitude_for_rolling_factor(ROLLING_ROUGH),
 		"edge_blend_m": EDGE_BLEND_M,

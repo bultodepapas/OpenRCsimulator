@@ -32,10 +32,10 @@ func zoom(factor: float) -> void:
 func update(camera: Camera3D, target: Vector3, body: Basis, dt: float, menu: bool, terrain: Callable) -> void:
 	var position: Vector3
 	if mode == 3:
-		position = track_center + Vector3(-14.0, 27.0, 29.0)
+		position = track_center + Vector3(-6.0, 27.0, 26.0)
 		camera.global_position = position
-		camera.global_basis = CameraMath.look_basis(position, track_center + Vector3(2.0 if menu else 0.0, 0.0, 0.0))
-		camera.fov = 62.0
+		camera.global_basis = CameraMath.look_basis(position, track_center + Vector3(4.0 if menu else 0.0, 0.0, 4.0))
+		camera.fov = 48.0
 	elif mode == 0 and not menu:
 		var pose: Dictionary = chase.update(target, body, dt, false, terrain)
 		camera.global_position = pose.position

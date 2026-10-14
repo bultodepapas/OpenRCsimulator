@@ -10,6 +10,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const Sim := preload("res://sim/simulation.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
+const Terrain := preload("res://physics/ground_terrain.gd")
 const AD := preload("res://physics/aircraft_data.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
@@ -56,7 +57,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var table: Dictionary = t.table
-	_check("runway (mown strip) 0.8 / 2.5, mown 0.7 / 5, rough 0.7 / 7.5", table.runway.friction_factor == 0.8 and table.runway.rolling_factor == 2.5
+	_check("runway, zero-relief rotorpad, mown and rough material factors load", table.runway.friction_factor == 0.8 and table.runway.rolling_factor == 2.5
+		and table.rotorpad.friction_factor == 0.7 and table.rotorpad.rolling_factor == 0.5
 		and table.mown.friction_factor == 0.7 and table.mown.rolling_factor == 5.0 and table.rough.friction_factor == 0.7 and table.rough.rolling_factor == 7.5, str(table))
 	_rejects("wrong format", func(d): d.format = "openrc-surfaces v0", "format")
 	_rejects("a missing surface type", func(d): d.surfaces.erase("mown"), "surfaces.mown: missing")
@@ -84,19 +86,23 @@ func _initialize() -> void:
 		var i := Ground.surface_at(rects, n, e)
 		return PackedFloat64Array([rects[i + 4], rects[i + 5]])
 	var on_runway := PackedFloat64Array([0.8, 2.5])
+	var on_rotorpad := PackedFloat64Array([0.7, 0.5])
 	var on_rough := PackedFloat64Array([0.7, 7.5])
 	_check("runway centre, threshold and edge are runway", at.call(rn, re) == on_runway and at.call(rn, re + half_e - 0.01) == on_runway and at.call(rn + half_n, re) == on_runway)
 	_check("just past the runway's end and side is rough", at.call(rn, re + half_e + 0.01) == on_rough and at.call(rn + half_n + 0.01, re) == on_rough)
 	_check("the pilot station and 30 km away are rough (beyond every rectangle: rough)", at.call(field.pilot.north, field.pilot.east) == on_rough and at.call(30000.0, 0.0) == on_rough)
-	# Precedence: a runway inside a mown area inside the rough, listed in the worst order.
+	_check("default rotorcraft pad uses its dedicated flat-support material", at.call(6.0, 0.0) == on_rotorpad
+		and Terrain.sample_validated(6.0, 0.0, rects) == PackedFloat64Array([0.0, 0.0, 0.0]))
+	# Precedence: runway, rotorpad, mown and rough, listed in the worst order.
 	var nested := { surfaces = [
 		{ id = "r", type = "rough", center_north = 0.0, center_east = 0.0, length_east_west = 1000.0, width_north_south = 1000.0 },
 		{ id = "m", type = "mown", center_north = 0.0, center_east = 0.0, length_east_west = 200.0, width_north_south = 60.0 },
+		{ id = "p", type = "rotorpad", center_north = 0.0, center_east = 0.0, length_east_west = 60.0, width_north_south = 40.0 },
 		{ id = "w", type = "runway", center_north = 0.0, center_east = 0.0, length_east_west = 100.0, width_north_south = 12.0 }] }
 	var nr: PackedFloat64Array = GroundSurfaces.build(table, nested).rects
 	var fac := func(n: float, e: float) -> float: return nr[Ground.surface_at(nr, n, e) + 5]
-	_check("precedence: runway over mown over rough, whatever the field's order", fac.call(0, 0) == 2.5 and fac.call(20, 0) == 5.0 and fac.call(100, 0) == 7.5 and fac.call(900, 0) == 7.5,
-		"%s %s %s %s" % [fac.call(0, 0), fac.call(20, 0), fac.call(100, 0), fac.call(900, 0)])
+	_check("precedence: runway over rotorpad over mown over rough, whatever the field's order", fac.call(0, 0) == 2.5 and fac.call(20, 0) == 0.5 and fac.call(25, 0) == 5.0 and fac.call(100, 0) == 7.5 and fac.call(900, 0) == 7.5,
+		"%s %s %s %s %s" % [fac.call(0, 0), fac.call(20, 0), fac.call(25, 0), fac.call(100, 0), fac.call(900, 0)])
 
 	# Hand-computed: N = 100 N, C_rr 0.04, μ 0.8.
 	var one := _one_contact()

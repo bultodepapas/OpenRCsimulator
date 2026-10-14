@@ -94,6 +94,9 @@ func _run() -> void:
 	custom.id = "rcv-menu-shifted-field"
 	custom.objects = []
 	custom.erase("flight_cues")
+	# This fixture isolates a translated runway; the optional rotorcraft site's absolute keepouts do not belong to it.
+	custom.erase("rotorcraft_pad")
+	custom.surfaces = custom.surfaces.filter(func(surface: Dictionary) -> bool: return surface.type != "rotorpad")
 	custom.pilot.north.value = 120.0
 	custom.pilot.east.value = -90.0
 	for surface: Dictionary in custom.surfaces:

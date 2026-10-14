@@ -1,0 +1,9 @@
+{
+  "app/ui/home.gd": false,
+  "app/ui/key_cap.gd": false,
+  "app/ui/key_labels.gd": false,
+  "app/ui/controls_reference.gd": false,
+  "app/app_state/aircraft_catalog.gd": false,
+  "app/ui/ui_theme.gd": false,
+  "app/i18n/es.po": false
+}

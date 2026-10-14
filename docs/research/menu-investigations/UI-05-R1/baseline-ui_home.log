@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   airplane selection preserves the current flight scene
+ok   research helicopter selects the dedicated flight script
+ok   direct CLI selector finds a helicopter catalog ID
+ok   airplane Home keeps the existing stick labels
+ok   Home switches the legend to cyclic, yaw and collective
+ok   research helicopter Home offers Fly from the pad
+ok   helicopter Home explains startup sequence
+ok   explicit practice hover remains selectable
+ok   airplane Workshop and Natural Random are disabled for the rotorcraft
+FIELD DATA INVALID: objects[0].positions.value[271]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[272]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[273]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[274]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip)

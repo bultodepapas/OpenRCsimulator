@@ -45,11 +45,12 @@ func _run() -> void:
 	helicopter_home.set_aircraft("xcell-60-research")
 	_check("Home switches the legend to cyclic, yaw and collective",
 		_legend_descriptions(helicopter_home) == PackedStringArray(["Cyclic roll", "Cyclic pitch", "Yaw", "Collective"]))
-	_check("research helicopter Home offers Fly with hover-only start",
-		helicopter_home.fly_button.disabled == false and helicopter_home.start_choice == "airborne"
-		and helicopter_home.start_button.disabled and helicopter_home.start_button.text == "Start: hover")
-	_check("helicopter Home explains its turbulence limit",
-		helicopter_home.limits_label.text.contains("Turbulence is not qualified"))
+	_check("research helicopter Home offers Fly from the pad",
+		helicopter_home.fly_button.disabled == false and helicopter_home.start_choice == "runway"
+		and not helicopter_home.start_button.disabled and helicopter_home.start_button.text == "Start: helicopter pad")
+	_check("helicopter Home explains startup sequence", helicopter_home.limits_label.text.contains("arm, release hold"))
+	helicopter_home.set_start_choice("airborne")
+	_check("explicit practice hover remains selectable",helicopter_home.start_choice=="airborne" and helicopter_home.start_button.text=="Start: hover")
 	_check("airplane Workshop and Natural Random are disabled for the rotorcraft",
 		helicopter_home.workshop_button.disabled and helicopter_home.natural_random_button.disabled)
 	helicopter_home.free()

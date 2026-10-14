@@ -2,15 +2,46 @@
 extends RefCounted
 const M = preload("res://physics/math3d.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
+const GroundContact = preload("res://physics/ground_contact.gd")
+## Unloaded bristles lose their stored strain without applying an adhesive ground force.
+## The bounded 0.2 s decay remains stable at the simulator's 240 Hz base tick.
+const UNLOADED_BRISTLE_DECAY_S := 0.2
+const ROTORPAD_ROLLING_FACTOR := 0.5
+const CONTACT_FORCE_EPSILON_N := 1.0e-8
 
-static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: PackedFloat64Array) -> Dictionary:
+static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: PackedFloat64Array,
+  diagnostics: bool = false, bristles: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
  var loads: PackedFloat64Array = PackedFloat64Array([0,0,0,0,0,0])
+ var normal_forces: PackedFloat64Array = PackedFloat64Array()
+ var compressions: PackedFloat64Array = PackedFloat64Array()
+ var bristle_derivative: PackedFloat64Array = PackedFloat64Array()
+ var bristle_force_world: PackedFloat64Array = PackedFloat64Array()
+ var has_bristles: bool = not bristles.is_empty()
+ if has_bristles and bristles.size() != 8: return {ok=false}
+ if has_bristles:
+  for value: float in bristles:
+   if not is_finite(value): return {ok=false}
+  bristle_derivative.resize(8)
+  if diagnostics: bristle_force_world.resize(8)
+ if diagnostics:
+  normal_forces.resize(4)
+  compressions.resize(4)
+ var contact_count: int = 0
  var max_depth: float = 0.0
  if state.size() < 13: return {ok=false}
- if -state[2] > cfg.reach_m+Terrain.max_height_validated(surfaces): return {ok=true,loads=loads,max_depth_m=0.0}
+ if -state[2] > cfg.reach_m+Terrain.max_height_validated(surfaces):
+  var no_contact: Dictionary = {ok=true,loads=loads,max_depth_m=0.0}
+  if diagnostics:
+   no_contact.merge({normal_forces_n=normal_forces,compressions_m=compressions,contact_count=0}, true)
+  if has_bristles:
+   for index: int in 8: bristle_derivative[index] = -bristles[index] / UNLOADED_BRISTLE_DECAY_S
+   no_contact["bristle_derivative"] = bristle_derivative
+   if diagnostics: no_contact["bristle_force_world_n"] = bristle_force_world
+  return no_contact
  var q: PackedFloat64Array = M.q_normalized(state.slice(6,10))
  var inverse: PackedFloat64Array = M.quat(q[0],-q[1],-q[2],-q[3])
  var points: PackedFloat64Array = cfg.points_body_frd_m
+ var point_index: int = 0
  for i: int in range(0,12,3):
   var arm: PackedFloat64Array = points.slice(i,i+3)
   var offset: PackedFloat64Array = M.q_rotate(q,arm)
@@ -19,23 +50,90 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
   var up: PackedFloat64Array = M.v3(-terrain[1]/norm,-terrain[2]/norm,-1.0/norm)
   var normal: PackedFloat64Array = M.q_rotate(inverse,up)
   var depth: float = (state[2]+offset[2]+terrain[0])/norm
+  if diagnostics: compressions[point_index] = maxf(depth, 0.0)
   max_depth=maxf(max_depth,depth)
-  if depth <= 0.0: continue
+  if depth <= 0.0:
+   if has_bristles:
+    _decay_bristle_pair(bristles, bristle_derivative, point_index * 2)
+   point_index += 1
+   continue
+  if diagnostics: contact_count += 1
   var point_velocity: PackedFloat64Array = M.cross(state.slice(10,13),arm)
   for axis: int in 3: point_velocity[axis]+=state[3+axis]
   var v_up: float = M.dot(normal,point_velocity)
   var force_n: float = maxf(0.0,cfg.spring_n_m*depth-cfg.damping_n_s_m*v_up)
-  var tangent: PackedFloat64Array = M.v3(point_velocity[0]-v_up*normal[0],point_velocity[1]-v_up*normal[1],point_velocity[2]-v_up*normal[2])
-  var slip: float = M.norm(tangent)
-  var drag: float = cfg.friction*force_n/maxf(cfg.slip_m_s,slip)
-  var force: PackedFloat64Array = M.v3(force_n*normal[0]-drag*tangent[0],force_n*normal[1]-drag*tangent[1],force_n*normal[2]-drag*tangent[2])
+  if diagnostics: normal_forces[point_index] = force_n
+  var world_north: float = state[0] + offset[0]
+  var world_east: float = state[1] + offset[1]
+  var flat_rotorpad: bool = has_bristles and _is_flat_rotorpad(surfaces, world_north, world_east, terrain)
+  var tangent_force_body := PackedFloat64Array([0.0, 0.0, 0.0])
+  if flat_rotorpad and force_n > CONTACT_FORCE_EPSILON_N:
+   var surface_index: int = GroundContact.surface_at(surfaces, world_north, world_east)
+   var friction_factor: float = surfaces[surface_index + 4]
+   var mu: float = float(cfg.friction) * friction_factor
+   var stiffness: float = float(cfg.spring_n_m)
+   var damping: float = float(cfg.damping_n_s_m)
+   var world_velocity: PackedFloat64Array = M.q_rotate(q, point_velocity)
+   var speed: float = M.sqrt_(world_velocity[0] * world_velocity[0] + world_velocity[1] * world_velocity[1])
+   var capacity: float = mu * force_n
+   var z_max: float = capacity / stiffness if stiffness > 0.0 else 0.0
+   var z_north: float = bristles[point_index * 2]
+   var z_east: float = bristles[point_index * 2 + 1]
+   if is_finite(mu) and mu > 0.0 and is_finite(damping) and damping >= 0.0 and z_max > 0.0:
+    var raw_north: float = -stiffness * z_north - damping * world_velocity[0]
+    var raw_east: float = -stiffness * z_east - damping * world_velocity[1]
+    var raw_magnitude: float = M.sqrt_(raw_north * raw_north + raw_east * raw_east)
+    var scale: float = minf(1.0, capacity / raw_magnitude) if raw_magnitude > 0.0 else 1.0
+    var force_north: float = scale * raw_north
+    var force_east: float = scale * raw_east
+    var z_rate_north: float = scale * world_velocity[0] - speed * z_north / z_max
+    var z_rate_east: float = scale * world_velocity[1] - speed * z_east / z_max
+    bristle_derivative[point_index * 2] = z_rate_north
+    bristle_derivative[point_index * 2 + 1] = z_rate_east
+    if diagnostics:
+     bristle_force_world[point_index * 2] = force_north
+     bristle_force_world[point_index * 2 + 1] = force_east
+    tangent_force_body = M.q_rotate(inverse, M.v3(force_north, force_east, 0.0))
+   else:
+    _decay_bristle_pair(bristles, bristle_derivative, point_index * 2)
+  else:
+   if has_bristles:
+    _decay_bristle_pair(bristles, bristle_derivative, point_index * 2)
+   var tangent: PackedFloat64Array = M.v3(point_velocity[0]-v_up*normal[0],point_velocity[1]-v_up*normal[1],point_velocity[2]-v_up*normal[2])
+   var slip: float = M.norm(tangent)
+   var drag: float = cfg.friction*force_n/maxf(cfg.slip_m_s,slip)
+   tangent_force_body = M.scale(tangent, -drag)
+  var force: PackedFloat64Array = M.v3(force_n*normal[0]+tangent_force_body[0],force_n*normal[1]+tangent_force_body[1],force_n*normal[2]+tangent_force_body[2])
   var moment: PackedFloat64Array = M.cross(arm,force)
   for axis: int in 3:
    loads[axis]+=force[axis]
    loads[axis+3]+=moment[axis]
+  point_index += 1
  for value: float in loads:
   if not is_finite(value): return {ok=false}
- return {ok=true,loads=loads,max_depth_m=max_depth}
+ var result: Dictionary = {ok=true,loads=loads,max_depth_m=max_depth}
+ if diagnostics:
+  result.merge({normal_forces_n=normal_forces,compressions_m=compressions,contact_count=contact_count}, true)
+ if has_bristles:
+  result["bristle_derivative"] = bristle_derivative
+  if diagnostics: result["bristle_force_world_n"] = bristle_force_world
+ return result
+
+
+static func _is_flat_rotorpad(surfaces: PackedFloat64Array, north: float, east: float,
+		terrain: PackedFloat64Array) -> bool:
+ if surfaces.is_empty() or terrain.size() != 3:
+  return false
+ var surface_index: int = GroundContact.surface_at(surfaces, north, east)
+ return surface_index >= 0 and surface_index + 5 < surfaces.size() \
+  and surfaces[surface_index + 5] == ROTORPAD_ROLLING_FACTOR \
+  and absf(terrain[1]) <= 1.0e-12 and absf(terrain[2]) <= 1.0e-12
+
+
+static func _decay_bristle_pair(bristles: PackedFloat64Array, derivative: PackedFloat64Array,
+  index: int) -> void:
+ derivative[index] = -bristles[index] / UNLOADED_BRISTLE_DECAY_S
+ derivative[index + 1] = -bristles[index + 1] / UNLOADED_BRISTLE_DECAY_S
 
 static func strike(state: PackedFloat64Array, main: Dictionary, tail: Dictionary, surfaces: PackedFloat64Array) -> String:
  if not _strike_inputs_valid(state, main, tail, surfaces): return "invalid rotor strike input"

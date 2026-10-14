@@ -1325,6 +1325,7 @@ func restart_flight() -> void:
 	flight.session.reset() # the selected launch; the recorder closes its file on reset
 	if controllers != null and flight.session.radio.connected:
 		open_pause()
+		pause_menu.set_note(tr("Flight restarted. Select Continue when the controls are ready."))
 
 
 ## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again

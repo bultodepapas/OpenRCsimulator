@@ -124,10 +124,10 @@ func _run() -> void:
 	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
 	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before Timber.
 	await ui.tap(KEY_ENTER)
-	_check("helicopter is last in the catalog with the HX-700 preview and hover-only start",
+	_check("helicopter is last in the catalog with the HX-700 preview and pad start",
 		home.aircraft_id == HELI and home.aircraft_count_label.text == _aircraft_counter(HELI)
-		and app.home_scene.airplane.visual_family == "hx-700" and home.start_choice == "airborne"
-		and home.start_button.text == "Start: hover" and home.workshop_button.disabled
+		and app.home_scene.airplane.visual_family == "hx-700" and home.start_choice == "runway"
+		and home.start_button.text == "Start: helicopter pad" and home.workshop_button.disabled
 		and home.natural_random_button.disabled, "%s / %s" % [home.aircraft_id, home.aircraft_count_label.text])
 	_check("helicopter selection is saved without starting a session",
 		Preferences.load_from(PREFS).aircraft == HELI and app.flight == null)

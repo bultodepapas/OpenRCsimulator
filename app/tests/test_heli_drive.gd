@@ -35,6 +35,13 @@ func _initialize() -> void:
 		0.9 * nominal.engine_power_w)
 	close("main torque includes gear ratio and efficiency", nominal.main_drive_torque_nm,
 		0.9 * 8.3 * nominal.engine_torque_nm)
+	var ramped: Dictionary = Drive.evaluate(model, 167.0, 0.85, true, false, 0.25)
+	check("startup ramp applies after the governor", ramped.ok and ramped.drive_scale == 0.25)
+	close("ramp scales delivered engine torque", ramped.engine_torque_nm, 0.25 * nominal.engine_torque_nm)
+	close("ramp scales geared main torque", ramped.main_drive_torque_nm, 0.25 * nominal.main_drive_torque_nm)
+	var disarmed: Dictionary = Drive.evaluate(model, 0.0, 0.0, true, false, 0.0)
+	check("zero ramp suppresses governor startup torque", disarmed.ok and disarmed.engine_torque_nm == 0.0
+		and disarmed.main_drive_torque_nm == 0.0)
 	var capped_params: Dictionary = parameters.duplicate(true)
 	capped_params.engine_power_max_w = 500.0
 	var capped_model: Dictionary = Drive.prepare(capped_params).model
@@ -42,6 +49,9 @@ func _initialize() -> void:
 	check("power limited state evaluates and reports active cap", capped.ok and capped.power_limited)
 	close("engine shaft power reaches but does not exceed cap", capped.engine_power_w, 500.0)
 	check("engine torque obeys its independent maximum", capped.engine_torque_nm <= capped_model.engine_torque_max_nm)
+	var capped_ramp: Dictionary = Drive.evaluate(capped_model, 167.0, 1.0, false, false, 0.5)
+	check("soft-start ramp remains downstream of the power cap", capped_ramp.ok and capped_ramp.power_limited)
+	close("ramped engine power is half the capped output", capped_ramp.engine_power_w, 250.0)
 	var stopped: Dictionary = Drive.evaluate(model, 0.0, 1.0, false)
 	check("stopped rotor uses finite startup torque with no omega floor", stopped.ok
 		and is_finite(stopped.engine_torque_nm) and stopped.engine_power_w == 0.0)

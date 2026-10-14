@@ -56,7 +56,7 @@ const TREE_CARD_MAX_HORIZONTAL_RADIUS_M: float = 15.0 # Estimated visible card e
 const TREE_FLIGHT_CORRIDOR_HALF_WIDTH_M: float = 35.0 # Estimated approach and low-flight clearance.
 const MAX_PILOT_HORIZONTAL_COORDINATE_M: float = 1000000.0 # Keeps absolute tree coordinates stable for render/hash bounds.
 const ROOT_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects"]
-const ROOT_ALLOWED_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects", "flight_cues"]
+const ROOT_ALLOWED_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects", "flight_cues", "rotorcraft_pad"]
 const FLIGHT_CUE_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "pole_height", "length", "throat_diameter", "tail_diameter"]
 const PILOT_STATION_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "width", "depth", "height"]
 const FLIGHTLINE_BARRIER_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "width", "height", "gap_width"]
@@ -66,7 +66,10 @@ const PILOT_KEYS: Array[String] = ["id", "north", "east", "down", "eye_height"]
 const SURFACE_KEYS: Array[String] = ["id", "type", "center_north", "center_east", "length_east_west", "width_north_south"]
 const OBJECT_KEYS: Array[String] = ["id", "type", "collides", "positions"]
 const QUANTITY_KEYS: Array[String] = ["value", "unit", "kind", "source"]
-const SURFACE_TYPES: Array[String] = ["rough", "mown", "runway"]
+const SURFACE_TYPES: Array[String] = ["rough", "mown", "runway", "rotorpad"]
+const ROTORCRAFT_PAD_KEYS: Array[String] = ["id", "north", "east", "heading", "surface_id", "material", "clearance_margin", "aircraft_envelopes", "keepouts", "provenance"]
+const ROTORCRAFT_ENVELOPE_KEYS: Array[String] = ["aircraft_id", "radius", "max_takeoff_tilt"]
+const ROTORCRAFT_KEEPOUT_KEYS: Array[String] = ["id", "north", "east", "length_east_west", "width_north_south", "source"]
 const EVIDENCE_KINDS: Array[String] = ["manual", "measured", "borrowed", "estimated", "derived"]
 
 
@@ -115,6 +118,7 @@ static func validate(raw: Variant) -> Dictionary:
 	var normalized_surfaces: Array = []
 	var validated_surfaces: Array = []
 	var surface_index_by_id: Dictionary = {}
+	var surface_by_id: Dictionary = {}
 	for index: int in range(surfaces.size()):
 		var surface_path: String = "surfaces[%d]" % index
 		var surface: Dictionary = _object(errors, surface_path, surfaces[index])
@@ -160,6 +164,7 @@ static func validate(raw: Variant) -> Dictionary:
 		})
 		if not surface_id.is_empty():
 			surface_index_by_id[surface_id] = surface_type
+			surface_by_id[surface_id] = normalized_surface
 
 	var objects: Array = _array(errors, "objects", root.get("objects"))
 	var normalized_objects: Array = []
@@ -209,6 +214,23 @@ static func validate(raw: Variant) -> Dictionary:
 				validated_surfaces,
 				runway_id
 			))
+	var normalized_rotorcraft_pad: Dictionary = {}
+	if root.has("rotorcraft_pad"):
+		normalized_rotorcraft_pad = _validate_rotorcraft_pad(
+		errors, ids, root.get("rotorcraft_pad"), surface_by_id, normalized_flight_cues
+	)
+	var rotorpad_surface_count: int = 0
+	for surface_value: Variant in normalized_surfaces:
+		var normalized_surface: Dictionary = surface_value
+		if str(normalized_surface.get("type", "")) != "rotorpad":
+			continue
+		rotorpad_surface_count += 1
+		if not root.has("rotorcraft_pad"):
+			errors.append("surfaces: rotorpad material requires an authored rotorcraft_pad record")
+		elif str(normalized_rotorcraft_pad.get("surface_id", "")) != str(normalized_surface.get("id", "")):
+			errors.append("surfaces: rotorcraft_pad must be the only rotorpad surface")
+	if rotorpad_surface_count > 1:
+		errors.append("surfaces: at most one rotorpad surface is supported")
 
 	var selected_runway_type: String = str(surface_index_by_id.get(runway_id, ""))
 	if runway_id.is_empty():
@@ -239,7 +261,164 @@ static func validate(raw: Variant) -> Dictionary:
 	}
 	if root.has("flight_cues"):
 		normalized_field["flight_cues"] = normalized_flight_cues
+	if root.has("rotorcraft_pad"):
+		normalized_field["rotorcraft_pad"] = normalized_rotorcraft_pad
 	return {"ok": true, "errors": errors, "field": normalized_field}
+
+
+static func _validate_rotorcraft_pad(
+	errors: PackedStringArray,
+	ids: Dictionary,
+	node: Variant,
+	surfaces_by_id: Dictionary,
+	cues: Array
+) -> Dictionary:
+	const PATH := "rotorcraft_pad"
+	var pad: Dictionary = _object(errors, PATH, node)
+	_check_keys(errors, PATH, pad, ROTORCRAFT_PAD_KEYS, ROTORCRAFT_PAD_KEYS)
+	var identifier: String = _register_id(errors, ids, PATH + ".id", pad.get("id"))
+	var north: float = _quantity_or_zero(errors, PATH + ".north", pad.get("north"), false)
+	var east: float = _quantity_or_zero(errors, PATH + ".east", pad.get("east"), false)
+	var heading: float = _angle_quantity_or_zero(errors, PATH + ".heading", pad.get("heading"))
+	if is_finite(heading):
+		heading = fposmod(heading + PI, TAU) - PI
+	var surface_id: String = _read_string(errors, PATH + ".surface_id", pad.get("surface_id"), true)
+	var material: String = _read_string(errors, PATH + ".material", pad.get("material"), true)
+	if material != "rotorpad":
+		errors.append("%s.material: expected 'rotorpad' for a flat, grass-masked support surface" % PATH)
+	var surface: Dictionary = surfaces_by_id.get(surface_id, {})
+	if surface.is_empty():
+		errors.append("%s.surface_id: unknown surface ID '%s'" % [PATH, surface_id])
+	elif str(surface.get("type", "")) != material:
+		errors.append("%s.surface_id: referenced surface must have type '%s'" % [PATH, material])
+	var margin: float = _quantity_or_zero(errors, PATH + ".clearance_margin", pad.get("clearance_margin"), true)
+	if surface.is_empty():
+		surface = {"center_north": north, "center_east": east, "length_east_west": 0.0, "width_north_south": 0.0}
+	var surface_north: float = float(surface.get("center_north", 0.0))
+	var surface_east: float = float(surface.get("center_east", 0.0))
+	var surface_length: float = float(surface.get("length_east_west", 0.0))
+	var surface_width: float = float(surface.get("width_north_south", 0.0))
+	if absf(surface_north - north) > 1.0e-9 or absf(surface_east - east) > 1.0e-9:
+		errors.append("%s: pad position must match the referenced surface centre" % PATH)
+	var envelopes: Array = _array(errors, PATH + ".aircraft_envelopes", pad.get("aircraft_envelopes"))
+	if envelopes.is_empty() or envelopes.size() > 16:
+		errors.append("%s.aircraft_envelopes: expected 1 to 16 explicit aircraft envelopes" % PATH)
+	var normalized_envelopes: Array = []
+	var envelope_ids: Dictionary = {}
+	var maximum_radius: float = 0.0
+	for index: int in envelopes.size():
+		var envelope_path: String = "%s.aircraft_envelopes[%d]" % [PATH, index]
+		var envelope: Dictionary = _object(errors, envelope_path, envelopes[index])
+		_check_keys(errors, envelope_path, envelope, ROTORCRAFT_ENVELOPE_KEYS, ROTORCRAFT_ENVELOPE_KEYS)
+		var aircraft_id: String = _read_string(errors, envelope_path + ".aircraft_id", envelope.get("aircraft_id"), true)
+		if not aircraft_id.is_empty() and envelope_ids.has(aircraft_id):
+			errors.append("%s.aircraft_id: duplicate aircraft envelope '%s'" % [envelope_path, aircraft_id])
+		envelope_ids[aircraft_id] = true
+		var radius: float = _quantity_or_zero(errors, envelope_path + ".radius", envelope.get("radius"), true)
+		var tilt: float = _angle_quantity_or_zero(errors, envelope_path + ".max_takeoff_tilt", envelope.get("max_takeoff_tilt"))
+		if tilt < 0.0 or tilt > 0.6:
+			errors.append("%s.max_takeoff_tilt.value: expected 0..0.6 rad" % envelope_path)
+		maximum_radius = maxf(maximum_radius, radius)
+		normalized_envelopes.append({"aircraft_id": aircraft_id, "radius": radius, "max_takeoff_tilt": tilt})
+	if surface_length > 0.0 and surface_width > 0.0 and maximum_radius + margin > minf(surface_length, surface_width) / 2.0:
+		errors.append("%s: largest aircraft envelope plus clearance margin must fit inside the pad footprint" % PATH)
+	var keepouts: Array = _array(errors, PATH + ".keepouts", pad.get("keepouts"))
+	if keepouts.size() > 128:
+		errors.append("%s.keepouts: at most 128 placement keepouts are supported" % PATH)
+	var normalized_keepouts: Array = []
+	var keepout_ids: Dictionary = {}
+	var count_to_check: int = mini(keepouts.size(), 128)
+	for index: int in count_to_check:
+		var keepout_path: String = "%s.keepouts[%d]" % [PATH, index]
+		var keepout: Dictionary = _object(errors, keepout_path, keepouts[index])
+		_check_keys(errors, keepout_path, keepout, ROTORCRAFT_KEEPOUT_KEYS, ROTORCRAFT_KEEPOUT_KEYS)
+		var keepout_id: String = _register_id(errors, ids, keepout_path + ".id", keepout.get("id"))
+		if not keepout_id.is_empty() and keepout_ids.has(keepout_id):
+			errors.append("%s.id: duplicate keepout '%s'" % [keepout_path, keepout_id])
+		keepout_ids[keepout_id] = true
+		var keepout_north: float = _quantity_or_zero(errors, keepout_path + ".north", keepout.get("north"), false)
+		var keepout_east: float = _quantity_or_zero(errors, keepout_path + ".east", keepout.get("east"), false)
+		var keepout_length: float = _quantity_or_zero(errors, keepout_path + ".length_east_west", keepout.get("length_east_west"), true)
+		var keepout_width: float = _quantity_or_zero(errors, keepout_path + ".width_north_south", keepout.get("width_north_south"), true)
+		var keepout_source: String = _read_string(errors, keepout_path + ".source", keepout.get("source"), true)
+		var normalized_keepout: Dictionary = {"id": keepout_id, "north": keepout_north, "east": keepout_east,
+			"length_east_west": keepout_length, "width_north_south": keepout_width, "source": keepout_source}
+		normalized_keepouts.append(normalized_keepout)
+		if _circle_overlaps_rect(north, east, maximum_radius + margin, keepout_north, keepout_east, keepout_width, keepout_length):
+			errors.append("%s: aircraft envelope plus margin intersects keepout '%s'" % [PATH, keepout_id])
+	# The runway, flightline barrier and pilot station are field geometry too. Derive their placement tests
+	# from the same normalized records instead of relying on duplicated obstacle dimensions in the pad.
+	for surface_value: Variant in surfaces_by_id.values():
+		var candidate_surface: Dictionary = surface_value
+		if str(candidate_surface.get("type", "")) != "runway" or str(candidate_surface.get("id", "")) == surface_id:
+			continue
+		if _circle_overlaps_rect(north, east, maximum_radius + margin,
+			float(candidate_surface.center_north), float(candidate_surface.center_east),
+			float(candidate_surface.width_north_south), float(candidate_surface.length_east_west)):
+			errors.append("%s: aircraft envelope plus margin intersects runway '%s'" % [PATH, candidate_surface.get("id", "")])
+	for cue_value: Variant in cues:
+		if typeof(cue_value) != TYPE_DICTIONARY:
+			continue
+		var cue: Dictionary = cue_value
+		var cue_type: String = str(cue.get("type", ""))
+		if cue_type == "pilot_station":
+			if _circle_overlaps_rect(north, east, maximum_radius + margin, float(cue.north), float(cue.east), float(cue.depth), float(cue.width)):
+				errors.append("%s: aircraft envelope plus margin intersects pilot station" % PATH)
+		elif cue_type == "flightline_barrier":
+			var barrier_north: float = float(cue.north)
+			var barrier_east: float = float(cue.east)
+			var half_width: float = float(cue.width) / 2.0
+			var half_gap: float = float(cue.gap_width) / 2.0
+			for interval: PackedFloat64Array in [PackedFloat64Array([barrier_east - half_width, barrier_east - half_gap]), PackedFloat64Array([barrier_east + half_gap, barrier_east + half_width])]:
+				var closest_east: float = clampf(east, interval[0], interval[1])
+				if _distance_2d(north - barrier_north, east - closest_east) <= maximum_radius + margin:
+					errors.append("%s: aircraft envelope plus margin intersects flightline barrier" % PATH)
+					break
+		elif cue_type == "windsock":
+			var sock_radius: float = float(cue.length) / 2.0 + float(cue.throat_diameter) / 2.0
+			if _distance_2d(north - float(cue.north), east - float(cue.east)) <= maximum_radius + margin + sock_radius:
+				errors.append("%s: aircraft envelope plus margin intersects windsock" % PATH)
+	return {"id": identifier, "north": north, "east": east, "heading": heading, "surface_id": surface_id,
+		"material": material, "length_east_west": surface_length, "width_north_south": surface_width,
+		"clearance_margin": margin, "aircraft_envelopes": normalized_envelopes,
+		"keepouts": normalized_keepouts, "provenance": _read_string(errors, PATH + ".provenance", pad.get("provenance"), true)}
+
+
+static func _circle_overlaps_rect(north: float, east: float, radius: float,
+	center_north: float, center_east: float, width_north_south: float, length_east_west: float) -> bool:
+	var dn: float = maxf(absf(north - center_north) - width_north_south / 2.0, 0.0)
+	var de: float = maxf(absf(east - center_east) - length_east_west / 2.0, 0.0)
+	return _distance_2d(dn, de) <= radius
+
+
+static func _distance_2d(a: float, b: float) -> float:
+	return sqrt(a * a + b * b)
+
+
+static func _angle_quantity_or_zero(errors: PackedStringArray, path: String, node: Variant) -> float:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("%s: expected a quantity object" % path)
+		return 0.0
+	var quantity: Dictionary = node
+	_check_keys(errors, path, quantity, QUANTITY_KEYS, QUANTITY_KEYS)
+	if quantity.get("unit") != "rad":
+		errors.append("%s.unit: expected 'rad'" % path)
+	var kind: Variant = quantity.get("kind")
+	if typeof(kind) != TYPE_STRING or not EVIDENCE_KINDS.has(kind):
+		errors.append("%s.kind: expected one of %s" % [path, EVIDENCE_KINDS])
+	var source: Variant = quantity.get("source")
+	if typeof(source) != TYPE_STRING or String(source).strip_edges().is_empty():
+		errors.append("%s.source: must be a nonempty string" % path)
+	var value: Variant = quantity.get("value")
+	if typeof(value) != TYPE_FLOAT and typeof(value) != TYPE_INT:
+		errors.append("%s.value: expected a number" % path)
+		return 0.0
+	var numeric: float = float(value)
+	if not is_finite(numeric):
+		errors.append("%s.value: must be finite" % path)
+	elif absf(numeric) > 1000000.0:
+		errors.append("%s.value: exceeds the supported angle range" % path)
+	return numeric
 
 
 static func _validate_flight_cue(
@@ -424,7 +603,7 @@ static func _validate_flightline_barrier(
 		errors.append("%s.east.value: must equal pilot.east.value exactly" % path)
 	if is_finite(north) and is_finite(pilot_north) and north < pilot_north + FLIGHTLINE_BARRIER_MIN_PILOT_NORTH_M:
 		errors.append("%s.north.value: must be at least %.1f m north of pilot.north.value" % [path, FLIGHTLINE_BARRIER_MIN_PILOT_NORTH_M])
-	_validate_flightline_barrier_placement(errors, path, north, east, width, height, pilot_north, eye_height, surfaces, runway_id)
+	_validate_flightline_barrier_placement(errors, path, north, east, width, height, gap_width, pilot_north, eye_height, surfaces, runway_id)
 	return {
 		"id": identifier,
 		"type": cue_type,
@@ -444,6 +623,7 @@ static func _validate_flightline_barrier_placement(
 	east: float,
 	width: float,
 	height: float,
+	gap_width: float,
 	pilot_north: float,
 	eye_height: float,
 	surfaces: Array,
@@ -495,6 +675,18 @@ static func _validate_flightline_barrier_placement(
 							if sqrt(north_delta * north_delta + east_delta * east_delta) >= FLIGHT_CUE_HORIZON_RELIEF_RADIUS_M:
 								corner_clear = false
 					exact_rough_envelopes_within_relief = exact_rough_envelopes_within_relief and corner_clear
+		elif surface_type == "rotorpad":
+			var pad_overlaps_solid_barrier: bool = false
+			var barrier_intervals: Array[PackedFloat64Array] = [
+				PackedFloat64Array([east - width / 2.0, east - gap_width / 2.0]),
+				PackedFloat64Array([east + gap_width / 2.0, east + width / 2.0]),
+			]
+			for interval: PackedFloat64Array in barrier_intervals:
+				var intersects_north: bool = maxf(north - FLIGHTLINE_BARRIER_HALF_DEPTH_M, north_min) < minf(north + FLIGHTLINE_BARRIER_HALF_DEPTH_M, north_max)
+				var intersects_east: bool = maxf(interval[0], east_min) < minf(interval[1], east_max)
+				pad_overlaps_solid_barrier = pad_overlaps_solid_barrier or (intersects_north and intersects_east)
+			if pad_overlaps_solid_barrier:
+				errors.append("%s: rotorpad intersects a solid flightline barrier segment" % path)
 		elif surface_type == "runway" or surface_type == "mown":
 			var overlaps_surface: bool = (
 				north + half_north >= north_min
@@ -639,7 +831,7 @@ static func _validate_cue_ground_envelope(
 					var rough_distance: float = sqrt(north_delta * north_delta + east_delta * east_delta)
 					if rough_distance + envelope_radius < FLIGHT_CUE_HORIZON_RELIEF_RADIUS_M:
 						within_rough_relief_policy = true
-		elif surface_type == "runway" or surface_type == "mown":
+		elif surface_type == "runway" or surface_type == "mown" or surface_type == "rotorpad":
 			var nearest_north: float = clampf(north, north_min, north_max)
 			var nearest_east: float = clampf(east, east_min, east_max)
 			var north_delta: float = north - nearest_north
@@ -841,6 +1033,16 @@ static func _validate_tree_placement(errors: PackedStringArray, path: String, ce
 				and center_east + TREE_CARD_MAX_HORIZONTAL_RADIUS_M <= float(bounds["east_max"])
 			):
 				has_rough_envelope = true
+		elif surface_type == "rotorpad":
+			# A helipad has a finite clearance region, not an infinite runway approach strip.
+			var pad_bounds: Dictionary = surface["bounds"]
+			if _circle_overlaps_rect(center_north, center_east,
+					TREE_FLIGHT_CORRIDOR_HALF_WIDTH_M + TREE_CARD_MAX_HORIZONTAL_RADIUS_M,
+					(float(pad_bounds.north_min) + float(pad_bounds.north_max)) * 0.5,
+					(float(pad_bounds.east_min) + float(pad_bounds.east_max)) * 0.5,
+					float(pad_bounds.north_max) - float(pad_bounds.north_min),
+					float(pad_bounds.east_max) - float(pad_bounds.east_min)):
+				errors.append("%s: tree center is inside the rotorpad clearance region" % path)
 		elif surface_type == "runway" or surface_type == "mown":
 			var strip_center_north: float = float(surface["center_north"])
 			var strip_width: float = float(surface["width_north_south"])

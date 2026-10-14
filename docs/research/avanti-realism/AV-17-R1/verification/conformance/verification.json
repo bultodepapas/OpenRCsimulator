@@ -1,0 +1,266 @@
+{
+  "format": "openrc-aircraft-verification v1",
+  "ok": true,
+  "commands": [
+    {
+      "name": "aircraft_model_manifest",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_model_manifest.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 2.0460000000020955,
+      "log": "aircraft_model_manifest.log",
+      "log_sha256": "0468721e2b85a35478f45d91b60e8fe9384b4ba082343cf0c5ffea8930ff369c"
+    },
+    {
+      "name": "aircraft_modules",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_modules.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.40700000000651926,
+      "log": "aircraft_modules.log",
+      "log_sha256": "eb2760b4131fe2cc505fa458b77bae131e31e7c2769ede1562e6741e8af74af4"
+    },
+    {
+      "name": "aircraft_package_proofs",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_package_proofs.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 2.3429999999934807,
+      "log": "aircraft_package_proofs.log",
+      "log_sha256": "dc0c15f33159329247341d4ad14a684d49ca95f0e5c144a27c81777f55f3b1e6"
+    },
+    {
+      "name": "aircraft_render_contract",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_render_contract.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.0939999999973224,
+      "log": "aircraft_render_contract.log",
+      "log_sha256": "faaf0467d8329992725aa7ab6a95f3d33c12a91432cf3edd331c713b2e58413e"
+    },
+    {
+      "name": "descriptor-checkout",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\test_descriptor_checkout.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 1.562999999994645,
+      "log": "descriptor-checkout.log",
+      "log_sha256": "89e5b792efd9faf51559ae3d590418676fca25581b3f5227c4d4d4819a49010f"
+    },
+    {
+      "name": "descriptors-current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\build_descriptors.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.14100000000325963,
+      "log": "descriptors-current.log",
+      "log_sha256": "e228758c0b8f8735552db5b6975e55b2c42a34809b80202f58d30fa972f0f492"
+    },
+    {
+      "name": "import",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 9.265999999988708,
+      "log": "import.log",
+      "log_sha256": "c7ca66ddb47402a8d86281e73f9f8e7d470a5b5b872f77208790c9b93e87428d"
+    },
+    {
+      "name": "imported_aircraft_model",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_imported_aircraft_model.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.4850000000005821,
+      "log": "imported_aircraft_model.log",
+      "log_sha256": "569c28dc13d73f6f01cb7adaa7231fa552940064a2759cd9316a534a99202be1"
+    },
+    {
+      "name": "migration",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\migrate.py",
+        "--check-known"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.125,
+      "log": "migration.log",
+      "log_sha256": "fc81fbed664edb653399f57d50145ce9c653316b0a486bda00af684e95ec8957"
+    },
+    {
+      "name": "models-current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\build_models.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.15600000000267755,
+      "log": "models-current.log",
+      "log_sha256": "59e2026db8477aa4e7b35a531f9ba817af511d1fb2a8c0f81877e3bda8441295"
+    },
+    {
+      "name": "models-python",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\test_models.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 3.0930000000080327,
+      "log": "models-python.log",
+      "log_sha256": "19937de9d978a62fe600f5ad84037daff5a0628d4e963c127e64c9dbc02ad690"
+    },
+    {
+      "name": "modules-python",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\test_modules.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.45300000000861473,
+      "log": "modules-python.log",
+      "log_sha256": "d74f9c24b987fff60e7b362c83336b7f654b48dd7a45cc12a1ea49749d33cb86"
+    },
+    {
+      "name": "parameters",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\parameter_register.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.09399999999732245,
+      "log": "parameters.log",
+      "log_sha256": "dce936fd7bfc13c7b99125164e95e49237cab3f313089cbe258bb5f0bc2aff25"
+    },
+    {
+      "name": "physical-identity-sources",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\test_physical_identity_sources.py"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.15600000000267755,
+      "log": "physical-identity-sources.log",
+      "log_sha256": "3cd02e884955c8b49b809ce57755ae46aacba4d9ef1382b84e081568bb3f04a5"
+    },
+    {
+      "name": "preflight",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\preflight.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\avanti-pullup\\conformance\\preflight.json"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 4.547000000005937,
+      "log": "preflight.log",
+      "log_sha256": "e01d6b417171ce4c451a87ef22f740e11766280bcfec61584d4dac92172d4174"
+    },
+    {
+      "name": "schema",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\build_schema.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.11000000000058208,
+      "log": "schema.log",
+      "log_sha256": "3c700854bdc83285bb6edfb53e811dad3c7345d6bedd2e0975d92b5fd36a54fd"
+    },
+    {
+      "name": "workshop_descriptor",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_descriptor.gd"
+      ],
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.5629999999946449,
+      "log": "workshop_descriptor.log",
+      "log_sha256": "81c69c3f5bb6c6544db9029803b67412b9fb382ac77c356cd03c99f87bb58972"
+    }
+  ],
+  "flight_comparison": null,
+  "contact_comparison": null
+}

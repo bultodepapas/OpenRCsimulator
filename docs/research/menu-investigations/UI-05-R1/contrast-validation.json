@@ -1,0 +1,152 @@
+[
+  {
+    "name": "baseline-ui_home_layout",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend\\baseline-ui_home_layout.gd",
+      "--"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": [
+      "FAIL es xcell-60-research 720p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research 1080p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research defaults 720p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research defaults 1080p: sidebar exactly 440 px wide 444"
+    ]
+  },
+  {
+    "name": "baseline-ui_language",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend\\baseline-ui_language.gd",
+      "--"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": [
+      "FIELD DATA INVALID: objects[0].positions.value[271]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[272]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[273]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[274]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip)"
+    ]
+  },
+  {
+    "name": "baseline-ui_home",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend\\baseline-ui_home.gd",
+      "--"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": [
+      "FIELD DATA INVALID: objects[0].positions.value[271]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[272]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[273]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[274]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip)"
+    ]
+  },
+  {
+    "name": "baseline-ui_aircraft",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend\\baseline-ui_aircraft.gd",
+      "--"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": [
+      "FIELD DATA INVALID: objects[0].positions.value[271]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[272]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[273]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[274]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip)"
+    ]
+  },
+  {
+    "name": "baseline-controller_menu",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend\\baseline-controller_menu.gd",
+      "--"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": [
+      "FIELD DATA INVALID: objects[0].positions.value[271]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[272]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[273]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip); objects[0].positions.value[274]: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip)"
+    ]
+  },
+  {
+    "name": "capture",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1920x1080",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend\\capture.gd",
+      "--",
+      "--directory=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "failures": []
+  },
+  {
+    "name": "mutation-keyboard-layout",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend\\test_ui_home_legend.gd",
+      "--",
+      "--home=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-legend\\mutant.gd"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": [
+      "FAIL changed physical labels rebuild the legend",
+      "FAIL AZERTY labels follow physical A/W positions"
+    ]
+  }
+]

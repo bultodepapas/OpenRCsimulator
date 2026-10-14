@@ -113,8 +113,9 @@ static func _evaluate_models(main_model: Dictionary, tail_model: Dictionary, air
 		inflow = main.inflow
 		derivative = main.derivative
 	var tail: Dictionary = Tail._evaluate_prepared(tail_model, omega, state[2], cg_air, rates,
-		tail_collective, diagnostics) if prepared else Tail.evaluate(
-		tail_model, omega, state[2], cg_air, rates, tail_collective, diagnostics)
+		tail_collective, diagnostics, main_model.omega_nominal_rad_s) if prepared else Tail.evaluate(
+		tail_model, omega, state[2], cg_air, rates, tail_collective, diagnostics,
+		main_model.omega_nominal_rad_s)
 	if not tail.ok:
 		return tail
 	# Positive main vi is downward AIR motion in FRD. The tail's source Kλ

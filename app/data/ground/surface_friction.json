@@ -1,6 +1,6 @@
 {
   "format": "openrc-surfaces v1",
-  "description": "E3a: how each field surface type (app/data/fields/*.json: runway, mown, rough) changes the tyre forces of physics/ground_contact.gd. Like JSBSim/FlightGear, the aircraft's landing_gear coefficients are for a tyre on dry pavement and the surface multiplies them: mu_eff = side_friction x friction_factor, C_rr_eff = rolling_resistance x rolling_factor. Our field's runway is a mown grass strip (LANDSCAPE-PLAN L9c: runway with mown stripes).",
+  "description": "E3a: field surfaces runway, rotorpad, mown and rough scale tyre forces in physics/ground_contact.gd. Rotorpad friction is an estimated mown-like value; its reserved 0.5 rolling factor selects zero-relief terrain for helicopter support and is not a rolling-resistance measurement.",
   "surfaces": {
     "runway": {
       "friction_factor": {
@@ -14,6 +14,20 @@
         "unit": "1",
         "kind": "borrowed",
         "source": "FlightGear grass_rwy rolling-friction 0.05 over the 0.02 of dry asphalt (Docs/README.materials default), the way FlightGear scales JSBSim's rolling friction. Stik: 0.04 x 2.5 = 0.10, so 2.8 N of rolling resistance against 2.6 N of idle thrust"
+      }
+    },
+    "rotorpad": {
+      "friction_factor": {
+        "value": 0.7,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "HELI-20a mown-like ground-contact factor reused as an explicit simulator estimate; no rotorpad surface measurement is available."
+      },
+      "rolling_factor": {
+        "value": 0.5,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Reserved rotorpad terrain selector in GroundTerrain: a flat, zero-relief support patch; not a rolling-resistance measurement."
       }
     },
     "mown": {

@@ -18,7 +18,7 @@ const Scenery = preload("res://scenery/scenery.gd") # SC-02a: on by default; exp
 const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
 const DistantRidges = preload("res://render/landscape_upgrade/ridges.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
-const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
+const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
 const GROUND_SUBDIVISIONS := 63
 
 

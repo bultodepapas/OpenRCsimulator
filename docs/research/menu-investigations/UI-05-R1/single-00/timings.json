@@ -1,0 +1,1891 @@
+{
+	"counts": [
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": true,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"nodes": 28,
+			"reused": false,
+			"variant": "reference",
+			"workload": "focus_regain"
+		}
+	],
+	"display": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"samples": [
+		{
+			"calls": 1,
+			"pair": 0,
+			"usec": 2613,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 0,
+			"usec": 3058,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 0,
+			"usec": 2230,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 0,
+			"usec": 96,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 0,
+			"usec": 729,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 0,
+			"usec": 121,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 1,
+			"usec": 90,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 1,
+			"usec": 718,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 1,
+			"usec": 106,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 1,
+			"usec": 2752,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 1,
+			"usec": 3331,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 1,
+			"usec": 2604,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 2,
+			"usec": 2775,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 2,
+			"usec": 3453,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 2,
+			"usec": 2481,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 2,
+			"usec": 103,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 2,
+			"usec": 755,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 2,
+			"usec": 131,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 3,
+			"usec": 98,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 3,
+			"usec": 737,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 3,
+			"usec": 121,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 3,
+			"usec": 2591,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 3,
+			"usec": 3504,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 3,
+			"usec": 3068,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 4,
+			"usec": 2803,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 4,
+			"usec": 3481,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 4,
+			"usec": 2912,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 4,
+			"usec": 187,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 4,
+			"usec": 868,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 4,
+			"usec": 131,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 5,
+			"usec": 97,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 5,
+			"usec": 736,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 5,
+			"usec": 114,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 5,
+			"usec": 2809,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 5,
+			"usec": 3141,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 5,
+			"usec": 2570,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 6,
+			"usec": 2865,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 6,
+			"usec": 3278,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 6,
+			"usec": 2539,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 6,
+			"usec": 136,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 6,
+			"usec": 791,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 6,
+			"usec": 97,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 7,
+			"usec": 107,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 7,
+			"usec": 853,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 7,
+			"usec": 118,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 7,
+			"usec": 2911,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 7,
+			"usec": 3191,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 7,
+			"usec": 2802,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 8,
+			"usec": 2877,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 8,
+			"usec": 3323,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 8,
+			"usec": 2522,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 8,
+			"usec": 108,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 8,
+			"usec": 837,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 8,
+			"usec": 104,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 9,
+			"usec": 96,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 9,
+			"usec": 698,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 9,
+			"usec": 89,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 9,
+			"usec": 2707,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 9,
+			"usec": 3152,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 9,
+			"usec": 2656,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 10,
+			"usec": 2720,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 10,
+			"usec": 3068,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 10,
+			"usec": 2769,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 10,
+			"usec": 107,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 10,
+			"usec": 682,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 10,
+			"usec": 104,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 11,
+			"usec": 99,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 11,
+			"usec": 761,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 11,
+			"usec": 112,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 11,
+			"usec": 2731,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 11,
+			"usec": 3165,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 11,
+			"usec": 2973,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 12,
+			"usec": 2572,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 12,
+			"usec": 2923,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 12,
+			"usec": 2756,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 12,
+			"usec": 101,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 12,
+			"usec": 672,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 12,
+			"usec": 106,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 13,
+			"usec": 92,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 13,
+			"usec": 746,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 13,
+			"usec": 127,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 13,
+			"usec": 2737,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 13,
+			"usec": 3459,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 13,
+			"usec": 2791,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 14,
+			"usec": 2702,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 14,
+			"usec": 3033,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 14,
+			"usec": 3017,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 14,
+			"usec": 88,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 14,
+			"usec": 675,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 14,
+			"usec": 680,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 15,
+			"usec": 95,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 15,
+			"usec": 696,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 15,
+			"usec": 109,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 15,
+			"usec": 3559,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 15,
+			"usec": 3287,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 15,
+			"usec": 2470,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 16,
+			"usec": 3841,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 16,
+			"usec": 3345,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 16,
+			"usec": 2924,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 16,
+			"usec": 113,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 16,
+			"usec": 822,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 16,
+			"usec": 103,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 17,
+			"usec": 88,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 17,
+			"usec": 813,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 17,
+			"usec": 108,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 17,
+			"usec": 2822,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 17,
+			"usec": 2899,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 17,
+			"usec": 3268,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 18,
+			"usec": 2459,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 18,
+			"usec": 3071,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 18,
+			"usec": 2886,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 18,
+			"usec": 90,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 18,
+			"usec": 619,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 18,
+			"usec": 127,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 19,
+			"usec": 105,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 19,
+			"usec": 751,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 19,
+			"usec": 113,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 19,
+			"usec": 3578,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 19,
+			"usec": 3555,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 19,
+			"usec": 2968,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 20,
+			"usec": 3042,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 20,
+			"usec": 3371,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 20,
+			"usec": 2835,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 20,
+			"usec": 112,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 20,
+			"usec": 926,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 20,
+			"usec": 106,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 21,
+			"usec": 80,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 21,
+			"usec": 827,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 21,
+			"usec": 118,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 21,
+			"usec": 2117,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 21,
+			"usec": 2594,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 21,
+			"usec": 1594,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 22,
+			"usec": 2743,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 22,
+			"usec": 6744,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 22,
+			"usec": 2898,
+			"variant": "reference",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 22,
+			"usec": 88,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 22,
+			"usec": 1016,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 22,
+			"usec": 122,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 23,
+			"usec": 84,
+			"variant": "candidate",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 23,
+			"usec": 884,
+			"variant": "candidate",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 23,
+			"usec": 134,
+			"variant": "candidate",
+			"workload": "focus_regain"
+		},
+		{
+			"calls": 1,
+			"pair": 23,
+			"usec": 1906,
+			"variant": "reference",
+			"workload": "legend"
+		},
+		{
+			"calls": 1,
+			"pair": 23,
+			"usec": 3033,
+			"variant": "reference",
+			"workload": "same_aircraft"
+		},
+		{
+			"calls": 1,
+			"pair": 23,
+			"usec": 2381,
+			"variant": "reference",
+			"workload": "focus_regain"
+		}
+	],
+	"scope": "Home UI only; one call per sample, frame boundary between workloads; no aircraft backdrop rebuild or total Home/FPS claim"
+}

@@ -1,0 +1,206 @@
+{
+  "format": "openrc-avanti-pullup-comparison v1",
+  "scenario": "500 m AGL, -45 deg path, clean gear-up, trimmed turbine demand; four seconds",
+  "pulse_policy": "0.45 s up / 0.15 s release until path gamma first reaches zero; then release",
+  "stall_event": "first time any wing strip reaches separation blend weight >= 0.5",
+  "body_normal_g": "-accepted body-Z nongravitational force / (model mass * gravity)",
+  "records": {
+    "baseline-240.json": "29da04966e928c3f4790cf577eaeab0ad386c6c9e3e852b4e55f58891c78527a",
+    "candidate-240.json": "9049d1da064b6237bcc351ddf1a9f24aa6d787328f00c1b3766c9826401a8b28",
+    "candidate-480.json": "c46cb5b942fbcfdb7eca14ab5f65c0db4f2b7e14b473d889b2bb198b0c36e460",
+    "legacy-pulses-240.json": "56c03cff122b330423d7805b548454a532ae0f15dac73b621416945f9462167a"
+  },
+  "completed_cases": {
+    "original_baseline_240": 18,
+    "legacy_pulses_240": 3,
+    "candidate_240": 21,
+    "candidate_480": 21
+  },
+  "half_second_pull": [
+    {
+      "before": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": 0.333333333333333,
+        "hold_s": 0.5,
+        "peak_alpha_deg": 19.8894226087156,
+        "peak_g": 2.85152923466497,
+        "peak_stall_weight": 1.0,
+        "recovered_s": -1.0,
+        "speed_mps": 29.0
+      },
+      "after": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": -1.0,
+        "hold_s": 0.5,
+        "peak_alpha_deg": 8.10107296723242,
+        "peak_g": 2.66392728733453,
+        "peak_stall_weight": 0.0,
+        "recovered_s": -1.0,
+        "speed_mps": 29.0
+      }
+    },
+    {
+      "before": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": 0.295833333333333,
+        "hold_s": 0.5,
+        "peak_alpha_deg": 19.1035780312434,
+        "peak_g": 5.91016013852853,
+        "peak_stall_weight": 1.0,
+        "recovered_s": -1.0,
+        "speed_mps": 45.0
+      },
+      "after": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": -1.0,
+        "hold_s": 0.5,
+        "peak_alpha_deg": 7.2848400250342,
+        "peak_g": 5.21436250074461,
+        "peak_stall_weight": 0.0,
+        "recovered_s": -1.0,
+        "speed_mps": 45.0
+      }
+    },
+    {
+      "before": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": 0.266666666666667,
+        "hold_s": 0.5,
+        "peak_alpha_deg": 18.579618208407,
+        "peak_g": 10.2214705996215,
+        "peak_stall_weight": 1.0,
+        "recovered_s": -1.0,
+        "speed_mps": 60.0
+      },
+      "after": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": -1.0,
+        "hold_s": 0.5,
+        "peak_alpha_deg": 7.18405999603429,
+        "peak_g": 8.66429735498771,
+        "peak_stall_weight": 0.0,
+        "recovered_s": -1.0,
+        "speed_mps": 60.0
+      }
+    }
+  ],
+  "pulsed_recovery": [
+    {
+      "before": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": 0.333333333333333,
+        "hold_s": -1.0,
+        "peak_alpha_deg": 20.5875745428707,
+        "peak_g": 3.07499123490822,
+        "peak_stall_weight": 1.0,
+        "recovered_s": 2.95833333333333,
+        "speed_mps": 29.0
+      },
+      "after": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": -1.0,
+        "hold_s": -1.0,
+        "peak_alpha_deg": 7.82574489659948,
+        "peak_g": 3.09819077305345,
+        "peak_stall_weight": 0.0,
+        "recovered_s": 2.22083333333333,
+        "speed_mps": 29.0
+      }
+    },
+    {
+      "before": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": 0.295833333333333,
+        "hold_s": -1.0,
+        "peak_alpha_deg": 19.2661286254338,
+        "peak_g": 5.96449461061109,
+        "peak_stall_weight": 1.0,
+        "recovered_s": 1.34583333333333,
+        "speed_mps": 45.0
+      },
+      "after": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": -1.0,
+        "hold_s": -1.0,
+        "peak_alpha_deg": 6.59548669568245,
+        "peak_g": 5.10410326809375,
+        "peak_stall_weight": 0.0,
+        "recovered_s": 1.7875,
+        "speed_mps": 45.0
+      }
+    },
+    {
+      "before": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": 0.266666666666667,
+        "hold_s": -1.0,
+        "peak_alpha_deg": 18.579618208407,
+        "peak_g": 10.2214705996215,
+        "peak_stall_weight": 1.0,
+        "recovered_s": 0.858333333333333,
+        "speed_mps": 60.0
+      },
+      "after": {
+        "completed": true,
+        "fault": "",
+        "first_stall_s": -1.0,
+        "hold_s": -1.0,
+        "peak_alpha_deg": 6.3157465282848,
+        "peak_g": 7.91975783564056,
+        "peak_stall_weight": 0.0,
+        "recovered_s": 1.54583333333333,
+        "speed_mps": 60.0
+      }
+    }
+  ],
+  "held_overpull_45_mps": {
+    "completed": true,
+    "fault": "",
+    "first_stall_s": 0.716666666666667,
+    "hold_s": 2.0,
+    "peak_alpha_deg": 24.8255281451999,
+    "peak_g": 6.66770901307333,
+    "peak_stall_weight": 1.0,
+    "recovered_s": -1.0,
+    "speed_mps": 45.0
+  },
+  "240_to_480_hz": {
+    "peak_alpha_deg": {
+      "max_abs_delta": 0.03662336295963975,
+      "speed_mps": 45.0,
+      "hold_s": -1.0
+    },
+    "peak_g": {
+      "max_abs_delta": 0.028815065946940166,
+      "speed_mps": 45.0,
+      "hold_s": -1.0
+    },
+    "peak_stall_weight": {
+      "max_abs_delta": 0.0,
+      "speed_mps": 60.0,
+      "hold_s": 2.0
+    },
+    "first_stall_s": {
+      "max_abs_delta": 0.0,
+      "speed_mps": 60.0,
+      "hold_s": 2.0
+    },
+    "recovered_s": {
+      "max_abs_delta": 0.0020833333333398762,
+      "speed_mps": 29.0,
+      "hold_s": -1.0
+    }
+  },
+  "refinement_scope": "Observed differences, not a predeclared physical-validation tolerance."
+}

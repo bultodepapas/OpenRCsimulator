@@ -1,0 +1,7 @@
+{
+  "script": "baseline-home-test.gd.gz",
+  "runner": "baseline.py.gz",
+  "timeout_seconds": 180,
+  "result": "timeout after helicopter dependency compilation and null-session errors",
+  "comparison": "inconclusive; not accepted as baseline parity"
+}

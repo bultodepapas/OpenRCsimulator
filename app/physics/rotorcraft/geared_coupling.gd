@@ -53,11 +53,12 @@ static func prepare(elements: Array) -> Dictionary:
 static func response(body_rate: PackedFloat64Array, external_moment: PackedFloat64Array,
 		inertia: PackedFloat64Array, inertia_inverse: PackedFloat64Array,
 		b_body_frd: PackedFloat64Array, spin_inertia: float, relative_speed: float,
-		generalized_torque: float) -> Dictionary:
+		generalized_torque: float, enforce_zero_speed_stop: bool = false,
+		zero_speed_static_friction_nm: float = 0.0) -> Dictionary:
 	if not _vector(body_rate) or not _vector(external_moment) or not _vector(b_body_frd) \
 			or not _tensor(inertia) or not _tensor(inertia_inverse) \
-			or not _finite([spin_inertia, relative_speed, generalized_torque]) \
-			or spin_inertia <= 0.0 or relative_speed < 0.0:
+			or not _finite([spin_inertia, relative_speed, generalized_torque, zero_speed_static_friction_nm]) \
+			or spin_inertia <= 0.0 or relative_speed < 0.0 or zero_speed_static_friction_nm < 0.0:
 		return {"ok": false, "message": "invalid geared-coupling state or context"}
 	var inverse_b: PackedFloat64Array = _inertia_mul(inertia_inverse, b_body_frd)
 	var denominator: float = 1.0 - M.dot(b_body_frd, inverse_b) / spin_inertia
@@ -69,7 +70,31 @@ static func response(body_rate: PackedFloat64Array, external_moment: PackedFloat
 	var gyroscopic: PackedFloat64Array = M.cross(body_rate, total_momentum)
 	var unreacted_moment: PackedFloat64Array = M.sub(external_moment, gyroscopic)
 	var unreacted_acceleration: PackedFloat64Array = _inertia_mul(inertia_inverse, unreacted_moment)
-	var spin_acceleration: float = (generalized_torque - M.dot(b_body_frd, unreacted_acceleration)) \
+	var generalized_demand: float = generalized_torque - M.dot(b_body_frd, unreacted_acceleration)
+	if enforce_zero_speed_stop and relative_speed == 0.0 and generalized_demand <= zero_speed_static_friction_nm:
+		# Static shaft friction resists weak positive coupling/drive demands, while
+		# the unilateral stop absorbs any demand that would reverse the shaft.
+		# Both reactions do zero work at Ω=0; their signs separate the two cases.
+		var generalized_reaction: float = -generalized_demand
+		if not is_finite(generalized_reaction):
+			return {"ok": false, "message": "zero-speed shaft reaction is nonfinite"}
+		var stopped: Dictionary = {"ok": true, "spin_acceleration_rad_s2": 0.0,
+			"body_acceleration_rad_s2": unreacted_acceleration,
+			"coupling_reaction_nm": M.v3(0.0, 0.0, 0.0),
+			"rotor_momentum_body_frd_nms": rotor_momentum,
+			"total_angular_momentum_body_frd_nms": total_momentum,
+			"effective_inertia_factor": denominator,
+			"shaft_stop_active": generalized_demand <= 0.0,
+			"shaft_stop_reaction_nm": maxf(0.0, generalized_reaction),
+			"zero_speed_static_friction_active": generalized_demand > 0.0,
+			"zero_speed_static_friction_reaction_nm": minf(0.0, generalized_reaction)}
+		return stopped
+	var effective_torque: float = generalized_torque
+	if enforce_zero_speed_stop and relative_speed == 0.0:
+		# Breakaway exceeds the Coulomb holding bound. Once moving in the positive
+		# direction, use the authored dry loss as the kinetic friction torque.
+		effective_torque -= zero_speed_static_friction_nm
+	var spin_acceleration: float = (effective_torque - M.dot(b_body_frd, unreacted_acceleration)) \
 		/ (spin_inertia * denominator)
 	if not is_finite(spin_acceleration):
 		return {"ok": false, "message": "geared spin acceleration is nonfinite"}

@@ -63,6 +63,8 @@ func _initialize() -> void:
 		var normalized_root_keys: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects"]
 		if raw_default.has("flight_cues"):
 			normalized_root_keys.append("flight_cues")
+		if raw_default.has("rotorcraft_pad"):
+			normalized_root_keys.append("rotorcraft_pad")
 		_check("normalized root layout preserves optional cue presence", field.keys().size() == normalized_root_keys.size() and field.has_all(normalized_root_keys))
 		_check("normalized identity and runway reference", field["format"] == "openrc-field v1" and field["id"] == "default" and field["runway"] == "runway")
 		_check("pilot layout uses float metres", pilot.keys().size() == 5 and typeof(pilot["north"]) == TYPE_FLOAT and typeof(pilot["eye_height"]) == TYPE_FLOAT)
@@ -70,6 +72,16 @@ func _initialize() -> void:
 		_check("rough rectangle keeps the historical 40 km visual ground", rough["id"] == "rough" and rough["type"] == "rough" and rough["center_north"] == 0.0 and rough["center_east"] == 0.0 and rough["length_east_west"] == 40000.0 and rough["width_north_south"] == 40000.0)
 		_check("runway keeps Spec geometry", runway["id"] == "runway" and runway["type"] == "runway" and runway["center_north"] == 15.0 and runway["center_east"] == 0.0 and runway["length_east_west"] == 100.0 and runway["width_north_south"] == 12.0)
 		_check("normalized surfaces contain only data fields", rough.keys().size() == 6 and runway.keys().size() == 6)
+		var pad: Dictionary = field["rotorcraft_pad"]
+		_check("default rotorcraft pad is N=6, E=0, nose-east with a matching 6 m zero-relief surface",
+			pad["id"] == "default-helicopter-pad" and pad["north"] == 6.0 and pad["east"] == 0.0
+			and is_equal_approx(float(pad["heading"]), PI / 2.0) and pad["material"] == "rotorpad"
+			and pad["surface_id"] == "helicopter-pad-surface" and pad["length_east_west"] == 6.0
+			and pad["width_north_south"] == 6.0 and pad["clearance_margin"] == 0.75,
+			str(pad))
+		_check("rotorcraft envelope and named scenery keepouts remain explicit",
+			pad["aircraft_envelopes"].size() == 1 and pad["aircraft_envelopes"][0]["aircraft_id"] == "xcell-60-research"
+			and pad["keepouts"].size() >= 5 and pad["provenance"].contains("not measured field geometry"))
 		_check("default objects normalize without changing their count", objects.size() == raw_objects.size() and objects.size() <= 1)
 		if objects.size() == 1:
 			var treeline: Dictionary = objects[0]
@@ -113,6 +125,11 @@ func _initialize() -> void:
 	_rejects("unknown surface key", func(data: Dictionary) -> void: (data["surfaces"] as Array)[0]["material"] = "grass", "unknown key 'material'")
 	_rejects("missing rectangle dimension", func(data: Dictionary) -> void: (data["surfaces"] as Array)[0].erase("width_north_south"), "missing 'width_north_south'")
 	_rejects("unknown surface type", func(data: Dictionary) -> void: (data["surfaces"] as Array)[0]["type"] = "water", "type: expected one of")
+	_rejects("flat rotorpad surface without its authored pad record", func(data: Dictionary) -> void: data.erase("rotorcraft_pad"), "rotorpad material requires")
+	_rejects("rotorpad cannot use the ordinary mown material", func(data: Dictionary) -> void: data["rotorcraft_pad"]["material"] = "mown", "material: expected 'rotorpad'")
+	_rejects("rotorcraft pad requires rad heading", func(data: Dictionary) -> void: data["rotorcraft_pad"]["heading"]["unit"] = "deg", "heading.unit: expected 'rad'")
+	_rejects("rotorcraft envelope and margin must fit the surface", func(data: Dictionary) -> void: data["rotorcraft_pad"]["clearance_margin"]["value"] = 2.0, "must fit inside the pad footprint")
+	_rejects("rotorcraft pad cannot intersect the runway", func(data: Dictionary) -> void: data["rotorcraft_pad"]["north"]["value"] = 9.0, "intersects runway")
 	_rejects("empty surface ID", func(data: Dictionary) -> void: (data["surfaces"] as Array)[0]["id"] = "", "surfaces[0].id: must not be empty")
 	_rejects("surface ID cannot become a node path", func(data: Dictionary) -> void: (data["surfaces"] as Array)[0]["id"] = "rough/path", "not a valid Godot node name")
 	_rejects("surface ID cannot be silently renamed", func(data: Dictionary) -> void: (data["surfaces"] as Array)[0]["id"] = "rough.detail", "not a valid Godot node name")
@@ -177,6 +194,10 @@ func _default_sources_are_clear() -> bool:
 		for key: String in ["center_north", "center_east", "length_east_west", "width_north_south"]:
 			var quantity: Dictionary = surface[key]
 			var source: String = quantity["source"]
+			if surface["type"] == "rotorpad":
+				if quantity["unit"] != "m" or quantity["kind"] != "estimated" or not source.contains("HELI-"):
+					return false
+				continue
 			if quantity["unit"] != "m" or quantity["kind"] != "estimated" or not source.contains("Historical Spec") or not source.contains("not an AMA"):
 				return false
 	return true

@@ -1,0 +1,19 @@
+--- a/app/ui/home.gd
++++ b/app/ui/home.gd
+@@ -189,6 +189,8 @@
+ 	card_lines.add_child(limits_label)
+ 	start_button = _button("", "")
+ 	start_button.name = "StartChoice"
++	# Long translated launch names wrap inside the card instead of widening the sidebar.
++	start_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ 	start_button.pressed.connect(_cycle_start_choice)
+ 	card_lines.add_child(start_button)
+ 	card.add_child(card_lines)
+@@ -486,6 +488,7 @@
+ 
+ func _notification(what: int) -> void:
+ 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
++		set_start_choice(start_choice) # Rotorcraft launch labels are translated when assigned.
+ 		_update_texts()
+ 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN and is_node_ready():
+ 		_fill_legend() # the player may have switched keyboard layout meanwhile (no engine signal for it, research 25)

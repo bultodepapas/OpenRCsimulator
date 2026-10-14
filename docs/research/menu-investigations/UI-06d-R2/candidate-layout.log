@@ -1,0 +1,366 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 720p: sidebar exactly 440 px wide
+ok   en jensen-das-ugly-stik-60 720p: Fly visible at the top, focus on Fly
+ok   en jensen-das-ugly-stik-60 720p: opens at the top, title visible
+ok   en jensen-das-ugly-stik-60 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 1080p: sidebar exactly 440 px wide
+ok   en jensen-das-ugly-stik-60 1080p: Fly visible at the top, focus on Fly
+ok   en jensen-das-ugly-stik-60 1080p: opens at the top, title visible
+ok   en jensen-das-ugly-stik-60 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 defaults 720p: sidebar exactly 440 px wide
+ok   en jensen-das-ugly-stik-60 defaults 720p: Fly visible at the top, focus on Fly
+ok   en jensen-das-ugly-stik-60 defaults 720p: opens at the top, title visible
+ok   en jensen-das-ugly-stik-60 defaults 720p: the legend is reachable by scrolling
+ok   en jensen-das-ugly-stik-60 defaults 720p: the first-run Home fits completely
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 defaults 1080p: sidebar exactly 440 px wide
+ok   en jensen-das-ugly-stik-60 defaults 1080p: Fly visible at the top, focus on Fly
+ok   en jensen-das-ugly-stik-60 defaults 1080p: opens at the top, title visible
+ok   en jensen-das-ugly-stik-60 defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t 720p: sidebar exactly 440 px wide
+ok   en stik-glow-61fx-2t 720p: Fly visible at the top, focus on Fly
+ok   en stik-glow-61fx-2t 720p: opens at the top, title visible
+ok   en stik-glow-61fx-2t 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-61fx-2t 1080p: Fly visible at the top, focus on Fly
+ok   en stik-glow-61fx-2t 1080p: opens at the top, title visible
+ok   en stik-glow-61fx-2t 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t defaults 720p: sidebar exactly 440 px wide
+ok   en stik-glow-61fx-2t defaults 720p: Fly visible at the top, focus on Fly
+ok   en stik-glow-61fx-2t defaults 720p: opens at the top, title visible
+ok   en stik-glow-61fx-2t defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t defaults 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-61fx-2t defaults 1080p: Fly visible at the top, focus on Fly
+ok   en stik-glow-61fx-2t defaults 1080p: opens at the top, title visible
+ok   en stik-glow-61fx-2t defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t 720p: sidebar exactly 440 px wide
+ok   en stik-glow-55ax-2t 720p: Fly visible at the top, focus on Fly
+ok   en stik-glow-55ax-2t 720p: opens at the top, title visible
+ok   en stik-glow-55ax-2t 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-55ax-2t 1080p: Fly visible at the top, focus on Fly
+ok   en stik-glow-55ax-2t 1080p: opens at the top, title visible
+ok   en stik-glow-55ax-2t 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t defaults 720p: sidebar exactly 440 px wide
+ok   en stik-glow-55ax-2t defaults 720p: Fly visible at the top, focus on Fly
+ok   en stik-glow-55ax-2t defaults 720p: opens at the top, title visible
+ok   en stik-glow-55ax-2t defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t defaults 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-55ax-2t defaults 1080p: Fly visible at the top, focus on Fly
+ok   en stik-glow-55ax-2t defaults 1080p: opens at the top, title visible
+ok   en stik-glow-55ax-2t defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t 720p: sidebar exactly 440 px wide
+ok   en stik-glow-fs64v-4t 720p: Fly visible at the top, focus on Fly
+ok   en stik-glow-fs64v-4t 720p: opens at the top, title visible
+ok   en stik-glow-fs64v-4t 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-fs64v-4t 1080p: Fly visible at the top, focus on Fly
+ok   en stik-glow-fs64v-4t 1080p: opens at the top, title visible
+ok   en stik-glow-fs64v-4t 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t defaults 720p: sidebar exactly 440 px wide
+ok   en stik-glow-fs64v-4t defaults 720p: Fly visible at the top, focus on Fly
+ok   en stik-glow-fs64v-4t defaults 720p: opens at the top, title visible
+ok   en stik-glow-fs64v-4t defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t defaults 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-fs64v-4t defaults 1080p: Fly visible at the top, focus on Fly
+ok   en stik-glow-fs64v-4t defaults 1080p: opens at the top, title visible
+ok   en stik-glow-fs64v-4t defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 720p: sidebar exactly 440 px wide
+ok   en gp-extra-300s-60 720p: Fly visible at the top, focus on Fly
+ok   en gp-extra-300s-60 720p: opens at the top, title visible
+ok   en gp-extra-300s-60 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 1080p: sidebar exactly 440 px wide
+ok   en gp-extra-300s-60 1080p: Fly visible at the top, focus on Fly
+ok   en gp-extra-300s-60 1080p: opens at the top, title visible
+ok   en gp-extra-300s-60 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 defaults 720p: sidebar exactly 440 px wide
+ok   en gp-extra-300s-60 defaults 720p: Fly visible at the top, focus on Fly
+ok   en gp-extra-300s-60 defaults 720p: opens at the top, title visible
+ok   en gp-extra-300s-60 defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 defaults 1080p: sidebar exactly 440 px wide
+ok   en gp-extra-300s-60 defaults 1080p: Fly visible at the top, focus on Fly
+ok   en gp-extra-300s-60 defaults 1080p: opens at the top, title visible
+ok   en gp-extra-300s-60 defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 720p: sidebar exactly 440 px wide
+ok   en p51d-mustang-120 720p: Fly visible at the top, focus on Fly
+ok   en p51d-mustang-120 720p: opens at the top, title visible
+ok   en p51d-mustang-120 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 1080p: sidebar exactly 440 px wide
+ok   en p51d-mustang-120 1080p: Fly visible at the top, focus on Fly
+ok   en p51d-mustang-120 1080p: opens at the top, title visible
+ok   en p51d-mustang-120 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 defaults 720p: sidebar exactly 440 px wide
+ok   en p51d-mustang-120 defaults 720p: Fly visible at the top, focus on Fly
+ok   en p51d-mustang-120 defaults 720p: opens at the top, title visible
+ok   en p51d-mustang-120 defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 defaults 1080p: sidebar exactly 440 px wide
+ok   en p51d-mustang-120 defaults 1080p: Fly visible at the top, focus on Fly
+ok   en p51d-mustang-120 defaults 1080p: opens at the top, title visible
+ok   en p51d-mustang-120 defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx 720p: sidebar exactly 440 px wide
+ok   en sebart-avanti-s-a200-p100rx 720p: Fly visible at the top, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx 720p: opens at the top, title visible
+ok   en sebart-avanti-s-a200-p100rx 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx 1080p: sidebar exactly 440 px wide
+ok   en sebart-avanti-s-a200-p100rx 1080p: Fly visible at the top, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx 1080p: opens at the top, title visible
+ok   en sebart-avanti-s-a200-p100rx 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: sidebar exactly 440 px wide
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: Fly visible at the top, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: opens at the top, title visible
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: sidebar exactly 440 px wide
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: Fly visible at the top, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: opens at the top, title visible
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution 720p: sidebar exactly 440 px wide
+ok   en turbo-lumber-evolution 720p: Fly visible at the top, focus on Fly
+ok   en turbo-lumber-evolution 720p: opens at the top, title visible
+ok   en turbo-lumber-evolution 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution 1080p: sidebar exactly 440 px wide
+ok   en turbo-lumber-evolution 1080p: Fly visible at the top, focus on Fly
+ok   en turbo-lumber-evolution 1080p: opens at the top, title visible
+ok   en turbo-lumber-evolution 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution defaults 720p: sidebar exactly 440 px wide
+ok   en turbo-lumber-evolution defaults 720p: Fly visible at the top, focus on Fly
+ok   en turbo-lumber-evolution defaults 720p: opens at the top, title visible
+ok   en turbo-lumber-evolution defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution defaults 1080p: sidebar exactly 440 px wide
+ok   en turbo-lumber-evolution defaults 1080p: Fly visible at the top, focus on Fly
+ok   en turbo-lumber-evolution defaults 1080p: opens at the top, title visible
+ok   en turbo-lumber-evolution defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research 720p: sidebar exactly 440 px wide
+ok   en xcell-60-research 720p: Fly visible at the top, focus on Fly
+ok   en xcell-60-research 720p: opens at the top, title visible
+ok   en xcell-60-research 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research 1080p: sidebar exactly 440 px wide
+ok   en xcell-60-research 1080p: Fly visible at the top, focus on Fly
+ok   en xcell-60-research 1080p: opens at the top, title visible
+ok   en xcell-60-research 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research defaults 720p: sidebar exactly 440 px wide
+ok   en xcell-60-research defaults 720p: Fly visible at the top, focus on Fly
+ok   en xcell-60-research defaults 720p: opens at the top, title visible
+ok   en xcell-60-research defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research defaults 1080p: sidebar exactly 440 px wide
+ok   en xcell-60-research defaults 1080p: Fly visible at the top, focus on Fly
+ok   en xcell-60-research defaults 1080p: opens at the top, title visible
+ok   en xcell-60-research defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 720p: sidebar exactly 440 px wide
+ok   es jensen-das-ugly-stik-60 720p: Fly visible at the top, focus on Fly
+ok   es jensen-das-ugly-stik-60 720p: opens at the top, title visible
+ok   es jensen-das-ugly-stik-60 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 1080p: sidebar exactly 440 px wide
+ok   es jensen-das-ugly-stik-60 1080p: Fly visible at the top, focus on Fly
+ok   es jensen-das-ugly-stik-60 1080p: opens at the top, title visible
+ok   es jensen-das-ugly-stik-60 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 defaults 720p: sidebar exactly 440 px wide
+ok   es jensen-das-ugly-stik-60 defaults 720p: Fly visible at the top, focus on Fly
+ok   es jensen-das-ugly-stik-60 defaults 720p: opens at the top, title visible
+ok   es jensen-das-ugly-stik-60 defaults 720p: the legend is reachable by scrolling
+ok   es jensen-das-ugly-stik-60 defaults 720p: the first-run Home fits completely
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 defaults 1080p: sidebar exactly 440 px wide
+ok   es jensen-das-ugly-stik-60 defaults 1080p: Fly visible at the top, focus on Fly
+ok   es jensen-das-ugly-stik-60 defaults 1080p: opens at the top, title visible
+ok   es jensen-das-ugly-stik-60 defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t 720p: sidebar exactly 440 px wide
+ok   es stik-glow-61fx-2t 720p: Fly visible at the top, focus on Fly
+ok   es stik-glow-61fx-2t 720p: opens at the top, title visible
+ok   es stik-glow-61fx-2t 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-61fx-2t 1080p: Fly visible at the top, focus on Fly
+ok   es stik-glow-61fx-2t 1080p: opens at the top, title visible
+ok   es stik-glow-61fx-2t 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t defaults 720p: sidebar exactly 440 px wide
+ok   es stik-glow-61fx-2t defaults 720p: Fly visible at the top, focus on Fly
+ok   es stik-glow-61fx-2t defaults 720p: opens at the top, title visible
+ok   es stik-glow-61fx-2t defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t defaults 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-61fx-2t defaults 1080p: Fly visible at the top, focus on Fly
+ok   es stik-glow-61fx-2t defaults 1080p: opens at the top, title visible
+ok   es stik-glow-61fx-2t defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t 720p: sidebar exactly 440 px wide
+ok   es stik-glow-55ax-2t 720p: Fly visible at the top, focus on Fly
+ok   es stik-glow-55ax-2t 720p: opens at the top, title visible
+ok   es stik-glow-55ax-2t 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-55ax-2t 1080p: Fly visible at the top, focus on Fly
+ok   es stik-glow-55ax-2t 1080p: opens at the top, title visible
+ok   es stik-glow-55ax-2t 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t defaults 720p: sidebar exactly 440 px wide
+ok   es stik-glow-55ax-2t defaults 720p: Fly visible at the top, focus on Fly
+ok   es stik-glow-55ax-2t defaults 720p: opens at the top, title visible
+ok   es stik-glow-55ax-2t defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t defaults 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-55ax-2t defaults 1080p: Fly visible at the top, focus on Fly
+ok   es stik-glow-55ax-2t defaults 1080p: opens at the top, title visible
+ok   es stik-glow-55ax-2t defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t 720p: sidebar exactly 440 px wide
+ok   es stik-glow-fs64v-4t 720p: Fly visible at the top, focus on Fly
+ok   es stik-glow-fs64v-4t 720p: opens at the top, title visible
+ok   es stik-glow-fs64v-4t 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-fs64v-4t 1080p: Fly visible at the top, focus on Fly
+ok   es stik-glow-fs64v-4t 1080p: opens at the top, title visible
+ok   es stik-glow-fs64v-4t 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t defaults 720p: sidebar exactly 440 px wide
+ok   es stik-glow-fs64v-4t defaults 720p: Fly visible at the top, focus on Fly
+ok   es stik-glow-fs64v-4t defaults 720p: opens at the top, title visible
+ok   es stik-glow-fs64v-4t defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t defaults 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-fs64v-4t defaults 1080p: Fly visible at the top, focus on Fly
+ok   es stik-glow-fs64v-4t defaults 1080p: opens at the top, title visible
+ok   es stik-glow-fs64v-4t defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 720p: sidebar exactly 440 px wide
+ok   es gp-extra-300s-60 720p: Fly visible at the top, focus on Fly
+ok   es gp-extra-300s-60 720p: opens at the top, title visible
+ok   es gp-extra-300s-60 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 1080p: sidebar exactly 440 px wide
+ok   es gp-extra-300s-60 1080p: Fly visible at the top, focus on Fly
+ok   es gp-extra-300s-60 1080p: opens at the top, title visible
+ok   es gp-extra-300s-60 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 defaults 720p: sidebar exactly 440 px wide
+ok   es gp-extra-300s-60 defaults 720p: Fly visible at the top, focus on Fly
+ok   es gp-extra-300s-60 defaults 720p: opens at the top, title visible
+ok   es gp-extra-300s-60 defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 defaults 1080p: sidebar exactly 440 px wide
+ok   es gp-extra-300s-60 defaults 1080p: Fly visible at the top, focus on Fly
+ok   es gp-extra-300s-60 defaults 1080p: opens at the top, title visible
+ok   es gp-extra-300s-60 defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 720p: sidebar exactly 440 px wide
+ok   es p51d-mustang-120 720p: Fly visible at the top, focus on Fly
+ok   es p51d-mustang-120 720p: opens at the top, title visible
+ok   es p51d-mustang-120 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 1080p: sidebar exactly 440 px wide
+ok   es p51d-mustang-120 1080p: Fly visible at the top, focus on Fly
+ok   es p51d-mustang-120 1080p: opens at the top, title visible
+ok   es p51d-mustang-120 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 defaults 720p: sidebar exactly 440 px wide
+ok   es p51d-mustang-120 defaults 720p: Fly visible at the top, focus on Fly
+ok   es p51d-mustang-120 defaults 720p: opens at the top, title visible
+ok   es p51d-mustang-120 defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 defaults 1080p: sidebar exactly 440 px wide
+ok   es p51d-mustang-120 defaults 1080p: Fly visible at the top, focus on Fly
+ok   es p51d-mustang-120 defaults 1080p: opens at the top, title visible
+ok   es p51d-mustang-120 defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx 720p: sidebar exactly 440 px wide
+ok   es sebart-avanti-s-a200-p100rx 720p: Fly visible at the top, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx 720p: opens at the top, title visible
+ok   es sebart-avanti-s-a200-p100rx 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx 1080p: sidebar exactly 440 px wide
+ok   es sebart-avanti-s-a200-p100rx 1080p: Fly visible at the top, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx 1080p: opens at the top, title visible
+ok   es sebart-avanti-s-a200-p100rx 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: sidebar exactly 440 px wide
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: Fly visible at the top, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: opens at the top, title visible
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: sidebar exactly 440 px wide
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: Fly visible at the top, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: opens at the top, title visible
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution 720p: sidebar exactly 440 px wide
+ok   es turbo-lumber-evolution 720p: Fly visible at the top, focus on Fly
+ok   es turbo-lumber-evolution 720p: opens at the top, title visible
+ok   es turbo-lumber-evolution 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution 1080p: sidebar exactly 440 px wide
+ok   es turbo-lumber-evolution 1080p: Fly visible at the top, focus on Fly
+ok   es turbo-lumber-evolution 1080p: opens at the top, title visible
+ok   es turbo-lumber-evolution 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution defaults 720p: sidebar exactly 440 px wide
+ok   es turbo-lumber-evolution defaults 720p: Fly visible at the top, focus on Fly
+ok   es turbo-lumber-evolution defaults 720p: opens at the top, title visible
+ok   es turbo-lumber-evolution defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution defaults 1080p: sidebar exactly 440 px wide
+ok   es turbo-lumber-evolution defaults 1080p: Fly visible at the top, focus on Fly
+ok   es turbo-lumber-evolution defaults 1080p: opens at the top, title visible
+ok   es turbo-lumber-evolution defaults 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research 720p: sidebar exactly 440 px wide
+ok   es xcell-60-research 720p: Fly visible at the top, focus on Fly
+ok   es xcell-60-research 720p: opens at the top, title visible
+ok   es xcell-60-research 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research 1080p: sidebar exactly 440 px wide
+ok   es xcell-60-research 1080p: Fly visible at the top, focus on Fly
+ok   es xcell-60-research 1080p: opens at the top, title visible
+ok   es xcell-60-research 1080p: everything fits without scrolling
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research defaults 720p: sidebar exactly 440 px wide
+ok   es xcell-60-research defaults 720p: Fly visible at the top, focus on Fly
+ok   es xcell-60-research defaults 720p: opens at the top, title visible
+ok   es xcell-60-research defaults 720p: the legend is reachable by scrolling
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research defaults 1080p: sidebar exactly 440 px wide
+ok   es xcell-60-research defaults 1080p: Fly visible at the top, focus on Fly
+ok   es xcell-60-research defaults 1080p: opens at the top, title visible
+ok   es xcell-60-research defaults 1080p: everything fits without scrolling
+worst 720p overflow: 164 px (es xcell-60-research defaults 720p)
+all UI home layout checks passed

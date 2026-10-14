@@ -4,6 +4,7 @@ extends RefCounted
 
 const M = preload("res://physics/math3d.gd")
 const LAW: String = "openrc-xcell-linearized-tail-v1"
+const LOW_RPM_BLEND_MU: float = 0.15
 const PARAMETER_KEYS: Array = [
 	"rho_kg_m3", "main_rotor_radius_m", "tail_rotor_radius_m", "blade_chord_m", "rotor_blade_count",
 	"blade_lift_curve_slope_per_rad", "blade_section_cd0", "thrust_coefficient_max", "tail_to_main_speed_ratio",
@@ -47,18 +48,22 @@ static func prepare(parameters: Dictionary) -> Dictionary:
 # wake model. Relative air velocity is evaluated at CG; source omits -h*q in u.
 static func evaluate(model: Dictionary, omega_main: float, main_vi: float,
 		cg_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
-		collective: float, diagnostics: bool = true) -> Dictionary:
+		collective: float, diagnostics: bool = true,
+		main_nominal_omega_rad_s: float = 0.0) -> Dictionary:
 	if not _prepared(model):
 		return {"ok": false}
-	return _evaluate_prepared(model, omega_main, main_vi, cg_air_velocity, body_rates, collective, diagnostics)
+	return _evaluate_prepared(model, omega_main, main_vi, cg_air_velocity, body_rates,
+		collective, diagnostics, main_nominal_omega_rad_s)
 
 
 # Internal stage entry after its immutable stage context was prepared.
 static func _evaluate_prepared(model: Dictionary, omega_main: float, main_vi: float,
 		cg_air_velocity: PackedFloat64Array, body_rates: PackedFloat64Array,
-		collective: float, diagnostics: bool = true) -> Dictionary:
+		collective: float, diagnostics: bool = true,
+		main_nominal_omega_rad_s: float = 0.0) -> Dictionary:
 	if not _vector(cg_air_velocity) or not _vector(body_rates) \
-		or not _finite([omega_main, main_vi, collective]) or omega_main < 0.0 or absf(collective) > PI / 2.0:
+		or not _finite([omega_main, main_vi, collective, main_nominal_omega_rad_s]) \
+		or omega_main < 0.0 or main_nominal_omega_rad_s < 0.0 or absf(collective) > PI / 2.0:
 		return {"ok": false}
 	var u: float = cg_air_velocity[0]
 	var v: float = cg_air_velocity[1]
@@ -88,6 +93,27 @@ static func _evaluate_prepared(model: Dictionary, omega_main: float, main_vi: fl
 		return stopped
 	if tip <= 0.0:
 		return {"ok": false}
+	var low_speed: float = M.sqrt_(in_plane * in_plane + normal * normal)
+	var low_weight: float = 0.0
+	if main_nominal_omega_rad_s > 0.0:
+		var nominal_tail_omega: float = main_nominal_omega_rad_s * model.tail_to_main_speed_ratio
+		var startup_upper_omega: float = maxf(0.08 * nominal_tail_omega,
+			low_speed / (LOW_RPM_BLEND_MU * model.tail_rotor_radius_m))
+		startup_upper_omega = minf(0.20 * nominal_tail_omega, startup_upper_omega)
+		var startup_lower_omega: float = 0.5 * startup_upper_omega
+		if omega <= startup_lower_omega:
+			low_weight = 1.0
+		elif omega < startup_upper_omega:
+			var blend: float = (omega - startup_lower_omega) / (startup_upper_omega - startup_lower_omega)
+			low_weight = 1.0 - blend * blend * (3.0 - 2.0 * blend)
+	var low_result: Dictionary = {}
+	if low_weight > 0.0:
+		low_result = _evaluate_low_rpm(model, omega, tip, in_plane, normal, wake,
+			collective, low_weight >= 1.0)
+		if not low_result.get("ok", false):
+			return low_result
+		if low_weight >= 1.0:
+			return low_result
 	var mu: float = in_plane / tip
 	var mu_z: float = normal / tip
 	if not _finite([mu, mu_z]) or mu > 1e6 or absf(mu_z) > 1e6:
@@ -131,6 +157,94 @@ static func _evaluate_prepared(model: Dictionary, omega_main: float, main_vi: fl
 			"thrust_coefficient_ideal": ct_ideal, "thrust_coefficient": ct, "torque_coefficient": cq,
 			"blockage_factor": model.blockage_factor, "force_body_frd_n": M.v3(0.0, fy, 0.0),
 			"moment_body_frd_nm": M.v3(mx, my, mz)})
+	return _blend_low_rpm(low_result, result, low_weight)
+
+
+## The source's linearized trim is not a startup/windmilling model. At high
+## crossflow relative to tip speed, use a bounded mean-rotor estimate whose
+## loads fade to zero with shaft speed; parked-blade wind loads are omitted.
+static func _evaluate_low_rpm(model: Dictionary, omega: float, tip: float,
+		in_plane: float, normal: float, wake: float, collective: float,
+		diagnostics: bool) -> Dictionary:
+	var mu: float = minf(in_plane / tip, LOW_RPM_BLEND_MU)
+	var mu_z: float = clampf(normal / tip, -1.0, 1.0)
+	var a_sigma: float = model.blade_lift_curve_slope_per_rad * model.solidity
+	var k: float = a_sigma / 2.0
+	var pitch_factor: float = 1.0 / 3.0 + mu * mu / 2.0
+	var trim: Dictionary = _trim(mu, k, pitch_factor, model.trim_collective_rad, model.wake_efficiency)
+	if not trim.ok:
+		return {"ok": false}
+	var s: float = M.sqrt_(mu * mu + trim.lambda0 * trim.lambda0)
+	var momentum_slope: float = 2.0 * model.wake_efficiency \
+		* (mu * mu + 2.0 * trim.lambda0 * trim.lambda0) / s
+	var slope_collective: float = k * pitch_factor * momentum_slope / (momentum_slope + k / 2.0)
+	var slope_normal: float = k / 2.0 * (2.0 * model.wake_efficiency * s) / (momentum_slope + k / 2.0)
+	var ct_ideal: float = slope_collective * collective + slope_normal * mu_z
+	var ct: float = clampf(ct_ideal, -model.thrust_coefficient_max, model.thrust_coefficient_max)
+	var radius: float = model.tail_rotor_radius_m
+	var scale: float = model.rho_kg_m3 * tip * tip * PI * radius * radius
+	var speed_activity: float = 1.0
+	if in_plane > 0.0 or absf(normal) > 0.0:
+		var flow: float = M.sqrt_(in_plane * in_plane + normal * normal)
+		speed_activity = tip * tip / (tip * tip + flow * flow)
+	var thrust: float = model.blockage_factor * scale * ct * speed_activity
+	var lambda0: float = mu_z - 2.0 * (2.0 * ct / a_sigma - collective * pitch_factor)
+	var induced_cq: float = maxf(0.0, ct * (lambda0 - mu_z))
+	var profile_cq: float = model.blade_section_cd0 * model.solidity / 8.0 \
+		* (1.0 + 7.0 * mu * mu / 3.0)
+	var torque: float = scale * radius * (induced_cq + profile_cq) * speed_activity
+	var induced_velocity: float = lambda0 * tip * speed_activity
+	var fy: float = -thrust
+	var mx: float = model.hub_height_above_cg_m * fy
+	var my: float = -model.rotation_sense * torque
+	var mz: float = -model.hub_distance_aft_m * fy
+	var loads: PackedFloat64Array = PackedFloat64Array([0.0, fy, 0.0, mx, my, mz])
+	if not _finite([mu, mu_z, s, momentum_slope, slope_collective, slope_normal,
+		ct_ideal, ct, scale, speed_activity, thrust, torque, induced_velocity, mx, my, mz]):
+		return {"ok": false}
+	var result: Dictionary = {"ok": true, "rotor_active": true, "thrust_n": thrust,
+		"torque_nm": torque, "induced_velocity_m_s": induced_velocity, "wake_factor": wake,
+		"thrust_limited": ct != ct_ideal, "loads": loads,
+		"estimated_regime": "bounded_low_rpm_tail_startup", "estimated_low_rpm_weight": 1.0,
+		"within_identified_advance_ratio": false, "low_rpm_activity": speed_activity}
+	if diagnostics:
+		result.merge({"tail_omega_rad_s": omega, "tip_speed_m_s": tip, "wake_factor": wake,
+			"in_plane_velocity_m_s": in_plane, "normal_velocity_m_s": normal,
+			"advance_ratio": in_plane / tip if is_finite(in_plane / tip) else null,
+			"normal_flow_ratio": normal / tip if is_finite(normal / tip) else null,
+			"trim_lambda": trim.lambda0, "trim_ct": trim.ct,
+			"thrust_collective_slope_per_rad": slope_collective,
+			"thrust_normal_flow_slope": slope_normal,
+			"thrust_coefficient_ideal": ct_ideal, "thrust_coefficient": ct,
+			"torque_coefficient": induced_cq + profile_cq,
+			"blockage_factor": model.blockage_factor,
+			"force_body_frd_n": M.v3(0.0, fy, 0.0),
+			"moment_body_frd_nm": M.v3(mx, my, mz)})
+	return result
+
+
+static func _blend_low_rpm(low: Dictionary, standard: Dictionary, low_weight: float) -> Dictionary:
+	if low_weight <= 0.0:
+		return standard
+	var result: Dictionary = standard.duplicate()
+	for key: String in ["thrust_n", "torque_nm", "induced_velocity_m_s"]:
+		result[key] = lerpf(float(standard[key]), float(low[key]), low_weight)
+	var values: PackedFloat64Array = standard.loads.duplicate()
+	for index: int in range(values.size()):
+		values[index] = lerpf(values[index], low.loads[index], low_weight)
+	result["loads"] = values
+	result["estimated_regime"] = "blended_low_rpm_tail_startup"
+	result["estimated_low_rpm_weight"] = low_weight
+	result["within_identified_advance_ratio"] = false
+	result["force_body_frd_n"] = M.v3(values[0], values[1], values[2])
+	result["moment_body_frd_nm"] = M.v3(values[3], values[4], values[5])
+	# These trim derivatives and coefficient limits belong to the linearized
+	# end-member. The startup estimate has its own bounded activity correction.
+	for key: String in ["trim_lambda", "trim_ct", "thrust_collective_slope_per_rad",
+		"thrust_normal_flow_slope", "thrust_coefficient_ideal", "thrust_coefficient",
+		"torque_coefficient", "thrust_limited"]:
+		if result.has(key):
+			result[key] = null
 	return result
 
 

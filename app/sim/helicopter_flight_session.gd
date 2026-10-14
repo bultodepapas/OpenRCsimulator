@@ -6,6 +6,10 @@ const ControllerProfile = preload("res://input/controller_profile.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
 const Hover = preload("res://physics/rotorcraft/trim.gd")
 const Skids = preload("res://physics/rotorcraft/skid_contact.gd")
+const GroundStart = preload("res://physics/rotorcraft/ground_start.gd")
+const Lifecycle = preload("res://physics/rotorcraft/lifecycle.gd")
+const StepAdapter = preload("res://physics/rotorcraft/simulation_step_adapter.gd")
+const Swash = preload("res://physics/rotorcraft/swash.gd")
 const M = preload("res://physics/math3d.gd")
 const Commands = preload("res://input/commands.gd")
 const Keyboard = preload("res://input/keyboard.gd")
@@ -48,31 +52,43 @@ var flight_mode: String = "normal"
 var trainer_enabled: bool = true
 var zero_drive_hold: bool = false
 var start_choice: String = "airborne"
+var power: Dictionary = Lifecycle.initial(true)
+var startup_collective: float = 0.0
+var pending_mode: String = ""
+var shaft_phase := PackedFloat64Array([0.0,0.0])
+var _phase_omega := PackedFloat64Array([0.0,0.0])
+var _field: Dictionary = {}
+var _ground_start: Dictionary = {}
 var _weather: RefCounted = WeatherField.new()
 var _start: PackedFloat64Array = PackedFloat64Array([12,4,-3])
 var _hover: Dictionary = {}
 var _trim: Dictionary = {}
 var _ready_to_fly: bool = false
 var _stage_failure: String = ""
-const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v2"
+const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v3"
 
 func _init() -> void:
  sim.name="Simulation"
  sim.process_physics_priority=10
  add_child(sim)
  sim.continuous_evaluate=_stage
+ sim.continuous_step=StepAdapter.step
  sim.continuous_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
  sim.faulted.connect(func(reason: String) -> void: pause_reason=reason+(" · "+_stage_failure if not _stage_failure.is_empty() else ""))
  sim.stepped.connect(_on_stepped)
 
-func setup(path: String=aircraft_path,_id: String="") -> bool:
+func setup(path: String=aircraft_path,selected_id: String="") -> bool:
  if sim.tick>0:
   start_error="Aircraft configuration changes require a new helicopter flight."
   pause_reason=start_error
   return false
  var loaded: Dictionary=Data.load_file(path,air_density())
- if not loaded.ok:
-  start_error="; ".join(loaded.errors)
+ if not loaded.ok or (not selected_id.is_empty() and loaded.get("id","")!=selected_id):
+  start_error="; ".join(loaded.errors) if not loaded.ok else "Selected aircraft and rotorcraft data identity disagree."
+  pause_reason=start_error
+  return false
+ if loaded.get("release_gate",{}).get("state","")=="laboratory_only":
+  start_error="This rotorcraft profile is laboratory-only: "+", ".join(loaded.release_gate.missing_capabilities)
   pause_reason=start_error
   return false
  aircraft_path=path
@@ -133,6 +149,7 @@ func set_field(field: Dictionary) -> bool:
   return false
  var changed: bool=ground_surfaces.to_byte_array()!=built.rects.to_byte_array() or _start.to_byte_array()!=candidate_start.to_byte_array()
  ground_surfaces=built.rects
+ _field=field.duplicate(true)
  _start=candidate_start
  surface_error=""
  if changed and _ready_to_fly:
@@ -169,23 +186,51 @@ func set_start_altitude(altitude: float) -> void:
   sim.set_paused(true)
   pause_reason="Start altitude changed; reset helicopter before continuing."
 
+func set_start_choice(choice: String) -> bool:
+ if sim.tick>0:
+  start_error="Start selection changes require a new helicopter flight."
+  return false
+ if choice not in ["airborne","ground","runway"]:
+  start_error="Unknown helicopter start; choose ground or airborne."
+  return false
+ var selected: String="ground" if choice in ["ground","runway"] else "airborne"
+ if selected!=start_choice and _ready_to_fly:
+  _ready_to_fly=false
+  sim.set_paused(true)
+  pause_reason="Start selection changed; reset helicopter before continuing."
+ start_choice=selected
+ return true
+
 func reset() -> bool:
  cancel_calibration()
  resetting.emit()
  _ready_to_fly=false
  _stage_failure=""
  if not aircraft.ok: return false
- var ground: float=Terrain.sample_validated(_start[0],_start[1],ground_surfaces)[0]
  var solved: Dictionary={ok=false}
- # Match trim to the same terrain sample used by each live RK stage, including hub offset.
- for iteration: int in 5:
-  solved=Hover.solve_hover(aircraft.context,0.0,_start,wind_at(0.0),{"ground_height_up_m":ground})
-  if not solved.ok: break
-  var actual_ground: float=_ground_under_hub(solved.state)
-  if absf(actual_ground-ground)<1e-10: break
-  ground=actual_ground
+ if start_choice=="ground":
+  _ground_start=GroundStart.resolve(_field,aircraft)
+  var pickup: Dictionary=Lifecycle.collective_for_pitch(aircraft.context.electronics_model,"normal",0.0)
+  if _ground_start.ok and pickup.ok:
+   var state: PackedFloat64Array=_ground_start.state.duplicate()
+   state.append_array(PackedFloat64Array([0,0,0,0,_ground_start.pad.heading,0]))
+   # Four N/E elastic friction pairs are integrated and checkpointed with the rotor.
+   state.append_array(PackedFloat64Array([0,0,0,0,0,0,0,0]))
+   solved={ok=true,state=state,trim={},sticks=PackedFloat64Array([0,0,0,pickup.stick])}
+   startup_collective=pickup.collective
+  else:
+   solved={ok=false,message=_ground_start.get("reason","") if not _ground_start.ok else pickup.reason}
+ else:
+  var ground: float=Terrain.sample_validated(_start[0],_start[1],ground_surfaces)[0]
+  # Match trim to the same terrain sample used by each live RK stage, including hub offset.
+  for iteration: int in 5:
+   solved=Hover.solve_hover(aircraft.context,0.0,_start,wind_at(0.0),{"ground_height_up_m":ground})
+   if not solved.ok: break
+   var actual_ground: float=_ground_under_hub(solved.state)
+   if absf(actual_ground-ground)<1e-10: break
+   ground=actual_ground
  if not solved.ok:
-  start_error="Helicopter hover trim refused: "+str(solved.get("fault",solved.get("message","no equilibrium")))
+  start_error="Helicopter start refused: "+str(solved.get("fault",solved.get("message","no equilibrium")))
   pause_reason=start_error
   sim.set_paused(true)
   return false
@@ -196,7 +241,11 @@ func reset() -> bool:
  raw=Commands.neutral_raw()
  flight_mode="normal"
  trainer_enabled=true
- zero_drive_hold=false
+ zero_drive_hold=start_choice=="ground"
+ power=Lifecycle.initial(start_choice!="ground")
+ pending_mode=""
+ shaft_phase=PackedFloat64Array([0.0,0.0])
+ _phase_omega=PackedFloat64Array([0.0,0.0])
  crash={}
  sim.inputs=PackedFloat64Array([0,0,0,commands.throttle])
  sim.continuous=solved.state.slice(13)
@@ -214,14 +263,19 @@ func reset() -> bool:
 
 func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) -> Dictionary:
  var state: PackedFloat64Array=body.duplicate()
- state.append_array(continuous)
- var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces)
+ state.append_array(continuous.slice(0,6))
+ var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,false,continuous.slice(6) if continuous.size()==14 else PackedFloat64Array())
  if not contact.ok: return {}
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
- var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold,wind_at(t),false,contact.loads,_trim,_height_over_radius(state))
+ var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(t),false,contact.loads,_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,t))
  if not result.ok:
   _stage_failure=str(result.get("message","flight equation refused state"))
   return {}
+ # Do not accumulate heading-hold I error against constrained skids during startup.
+ # Existing airborne/contact trajectories retain their original control law.
+ if start_choice=="ground" and contact.max_depth_m>0.0 and state[13]<.5*aircraft.context.drive_model.governor_target_main_rad_s:
+  result.derivative[5]=0.0
+ if continuous.size()==14: result.derivative.append_array(contact.bristle_derivative)
  return {loads=result.loads,body_derivative=result.body_derivative,derivative=result.derivative,rotor_momentum=result.rotor_momentum}
 
 func _hub_offset(state: PackedFloat64Array) -> PackedFloat64Array:
@@ -278,9 +332,15 @@ func _physics_process(_dt: float) -> void:
  sim.inputs=PackedFloat64Array([commands.roll,commands.pitch,commands.yaw,commands.throttle])
 
 func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFloat64Array,_inputs: PackedFloat64Array,_aux: PackedFloat64Array) -> void:
+ if _tick==0: shaft_phase=PackedFloat64Array([0.0,0.0])
+ if sim.continuous.size() in [6,14] and aircraft.get("ok",false):
+  var omega := PackedFloat64Array([sim.continuous[0]*aircraft.context.main_model.rotation_sense,sim.continuous[0]*aircraft.context.tail_model.tail_to_main_speed_ratio*aircraft.context.tail_model.rotation_sense])
+  if _tick>0:
+   for i: int in 2: shaft_phase[i]+=.5*(_phase_omega[i]+omega[i])*sim.dt()
+  _phase_omega=omega
  if not _ready_to_fly or body.is_empty(): return
  var state: PackedFloat64Array=body.duplicate()
- state.append_array(sim.continuous)
+ state.append_array(sim.continuous.slice(0,6))
  var reason: String=Skids.strike(state,aircraft.context.main_model,aircraft.context.tail_model,ground_surfaces)
  var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces)
  if reason.is_empty() and contact.ok and contact.max_depth_m>.04: reason="hard landing: skid travel exceeded"
@@ -306,6 +366,7 @@ func _on_joy_connection_changed(id: int,connected: bool) -> void:
   pause_reason="radio disconnected"
 
 func hold(reason: String) -> void:
+ pending_mode=""
  radio.set_auxiliary_enabled(false)
  if external_controller_selection and not holds.has(reason) and radio.connected: radio.require_neutral(true)
  holds[reason]=true
@@ -370,6 +431,7 @@ func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_in
  return true
 
 func controller_disconnected() -> void:
+ pending_mode=""
  radio.disconnect_device()
  calibration=null
  _controller_lost=true
@@ -377,6 +439,7 @@ func controller_disconnected() -> void:
  pause_reason="Controller lost. Select controls and review collective before continuing."
 
 func controller_focus_lost() -> void:
+ pending_mode=""
  if external_controller_selection and radio.connected:
   radio.set_auxiliary_enabled(false)
   radio.require_neutral(true,true)
@@ -386,15 +449,80 @@ func controller_focus_lost() -> void:
 func air_density() -> float: return _weather.air_density()
 func wind_at(t: float) -> PackedFloat64Array: return _weather.sample(t)
 func weather_configuration() -> Dictionary: return _weather.configuration()
+func collective_pitch(mode: String="") -> float:
+ var model: Dictionary=aircraft.context.electronics_model
+ var curve: Dictionary=Swash.sample_mode_curve(model.curves_by_mode,flight_mode if mode.is_empty() else mode,"pitch",2.0*commands.throttle-1.0)
+ return float(curve.value)*model.linkage.collective_rad_per_unit if curve.ok else NAN
+
+func toggle_motor_arm() -> bool:
+ if power.armed:
+  power.armed=false
+  zero_drive_hold=true
+  pending_mode=""
+  return true
+ if not is_flyable() or not holds.is_empty() or sim.paused or calibration!=null or _controller_lost \
+ or (radio.connected and not radio.armed):
+  pause_reason="Resume with controls released before arming."
+  return false
+ if not zero_drive_hold or absf(collective_pitch())>Lifecycle.PICKUP_TOLERANCE_RAD \
+ or absf(commands.roll)>.05 or absf(commands.pitch)>.05 or absf(commands.yaw)>.05:
+  pause_reason="Arm: hold ON, cyclic/yaw centered, collective within 1 degree of zero pitch."
+  return false
+ power.armed=true
+ power.spool_start_s=sim.time()
+ pause_reason="Armed in hold. Release hold to start the rotor."
+ return true
+
+func set_drive_hold(enabled: bool) -> bool:
+ if enabled:
+  zero_drive_hold=true
+  pending_mode=""
+  return true
+ if not power.armed:
+  pause_reason="Motor is disarmed. Arm at zero collective pitch first."
+  return false
+ if sim.paused or not holds.is_empty() or _controller_lost or (radio.connected and not radio.armed):
+  pause_reason="Resume explicitly before releasing rotor hold."
+  return false
+ if zero_drive_hold:
+  power.spool_start_s=sim.time()
+ zero_drive_hold=false
+ pause_reason="Soft start: wait for governed RPM, then raise collective."
+ return true
+
+# The standard cut control always enters a latched hold; releasing it never starts a motor.
+func set_controller_cut(enabled: bool) -> void:
+ if enabled: set_drive_hold(true)
+
+func request_flight_mode() -> bool:
+ var next: String="idle_up" if flight_mode=="normal" else "normal"
+ var old_pitch: float=collective_pitch()
+ var new_pitch: float=collective_pitch(next)
+ if pending_mode!=next and absf(new_pitch-old_pitch)>.5*PI/180.0:
+  pending_mode=next
+  pause_reason=tr("Mode changes pitch %.1f to %.1f deg. Press mode again to apply.")%[old_pitch*180.0/PI,new_pitch*180.0/PI]
+  return false
+ flight_mode=next
+ pending_mode=""
+ pause_reason=""
+ return true
+
+func power_phase() -> String:
+ if sim.continuous.size() not in [6,14]: return "DISARMED"
+ return Lifecycle.phase(power,zero_drive_hold,sim.time(),sim.continuous[0],aircraft.context.drive_model.governor_target_main_rad_s)
+
+func trace_controls() -> PackedFloat64Array:
+ return PackedFloat64Array([1.0 if power.armed else 0.0,1.0 if zero_drive_hold else 0.0,0.0 if flight_mode=="normal" else 1.0,Lifecycle.scale(power,zero_drive_hold,sim.time()),shaft_phase[0],shaft_phase[1]])
+
 func telemetry() -> Dictionary:
- if sim.continuous.size()!=6: return {}
+ if sim.continuous.size() not in [6,14]: return {}
  var state: PackedFloat64Array=sim.state.duplicate()
- state.append_array(sim.continuous)
+ state.append_array(sim.continuous.slice(0,6))
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
- var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold,wind_at(sim.time()),false,PackedFloat64Array(),_trim,_height_over_radius(state))
+ var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(sim.time()),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,sim.time()))
  return out
 func trace_meta() -> Dictionary:
- return {aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-xcell-hx700-v1",continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator",qualification=aircraft.qualification,weather=weather_configuration()}
+ return {aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
 func checkpoint() -> Dictionary:
  if not _ready_to_fly or not aircraft.get("ok",false) or not crash.is_empty() \
  or not Terrain.is_valid_surface_table(ground_surfaces) or _start.size()!=3:
@@ -402,14 +530,14 @@ func checkpoint() -> Dictionary:
  for value: float in _start:
   if not is_finite(value): return {}
  var saved_simulation: Dictionary=sim.checkpoint()
- if saved_simulation.is_empty() or not _simulation_configuration_matches(saved_simulation) \
- or not _checkpoint_flight_state_is_valid(saved_simulation,commands,flight_mode,trainer_enabled,zero_drive_hold): return {}
- return {format=CHECKPOINT_FORMAT,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold}
+ if saved_simulation.is_empty() or not Lifecycle.valid(power,sim.time()) or (not power.armed and not zero_drive_hold) or not _simulation_configuration_matches(saved_simulation) \
+ or not _checkpoint_flight_state_is_valid(saved_simulation,commands,flight_mode,trainer_enabled,zero_drive_hold,power): return {}
+ return {format=CHECKPOINT_FORMAT,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate()}
 
 func _simulation_configuration_matches(saved: Dictionary) -> bool:
  if not aircraft.get("ok",false) or not saved.has_all(["mass","gravity","inertia","aux","continuous"]): return false
  if not saved.aux is PackedFloat64Array or saved.aux.size()!=1 \
- or not saved.continuous is PackedFloat64Array or saved.continuous.size()!=6: return false
+ or not saved.continuous is PackedFloat64Array or saved.continuous.size()!=(14 if start_choice=="ground" else 6): return false
  var projected_rpm: PackedFloat64Array=PackedFloat64Array([saved.continuous[0]*60.0/(2.0*PI)])
  if projected_rpm.to_byte_array()!=saved.aux.to_byte_array(): return false
  var context: Dictionary=aircraft.context
@@ -418,7 +546,7 @@ func _simulation_configuration_matches(saved: Dictionary) -> bool:
  and typeof(saved.gravity) in [TYPE_FLOAT,TYPE_INT] and float(saved.gravity)==float(context.gravity_m_s2) \
  and saved.inertia is PackedFloat64Array and saved.inertia.to_byte_array()==expected_inertia.to_byte_array()
 
-func _checkpoint_flight_state_is_valid(saved: Dictionary,saved_commands: Dictionary,saved_mode: String,saved_trainer: bool,saved_zero_drive: bool) -> bool:
+func _checkpoint_flight_state_is_valid(saved: Dictionary,saved_commands: Dictionary,saved_mode: String,saved_trainer: bool,saved_zero_drive: bool,saved_power: Dictionary) -> bool:
  if saved_commands.size()!=4 or saved_mode not in ["normal","idle_up"]: return false
  var expected: PackedFloat64Array=PackedFloat64Array()
  for key: String in ["roll","pitch","yaw","throttle"]:
@@ -429,17 +557,19 @@ func _checkpoint_flight_state_is_valid(saved: Dictionary,saved_commands: Diction
   expected.append(float(value))
  if saved.inputs.to_byte_array()!=expected.to_byte_array(): return false
  var state: PackedFloat64Array=saved.state.duplicate()
- state.append_array(saved.continuous)
+ state.append_array(saved.continuous.slice(0,6))
  var sticks: PackedFloat64Array=PackedFloat64Array([-expected[1],expected[0],expected[2],2.0*expected[3]-1.0])
- var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,saved_mode,saved_trainer,saved_zero_drive,wind_at(saved.tick*saved.dt),false,PackedFloat64Array(),_trim,_height_over_radius(state))
+ var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,saved_mode,saved_trainer,saved_zero_drive or not saved_power.armed,wind_at(saved.tick*saved.dt),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(saved_power,saved_zero_drive,saved.tick*saved.dt))
  return evaluated.ok
 
 func restore_checkpoint(candidate: Variant) -> Dictionary:
+ if not _ready_to_fly:
+  return {ok=false,errors=["Reset the selected start before restoring a helicopter checkpoint."]}
  if not candidate is Dictionary:
   return {ok=false,errors=["malformed helicopter checkpoint"]}
- if candidate.get("format")=="openrc-helicopter-checkpoint v1":
-  return {ok=false,errors=["helicopter checkpoint v1 has no field or start identity; regenerate it with v2"]}
- if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=11 or not candidate.has_all(["format","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold"]):
+ if candidate.get("format") in ["openrc-helicopter-checkpoint v1","openrc-helicopter-checkpoint v2"]:
+  return {ok=false,errors=["helicopter checkpoint v1/v2 lacks power lifecycle and rotor phase; regenerate with v3"]}
+ if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=15 or not candidate.has_all(["format","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","pad","shaft_phase"]):
   return {ok=false,errors=["malformed or unsupported helicopter checkpoint"]}
  if not aircraft.get("ok",false) or candidate.aircraft_sha256!=aircraft.input_identity.sha256 or candidate.weather!=weather_configuration() or candidate.trim!=_trim:
   return {ok=false,errors=["helicopter checkpoint configuration mismatch"]}
@@ -460,7 +590,15 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
  if not candidate.simulation is Dictionary or not sim.can_restore_checkpoint(candidate.simulation,1,0) or not _simulation_configuration_matches(candidate.simulation):
   return {ok=false,errors=["invalid saved simulation"]}
  var saved: Dictionary=candidate.simulation
- if not _checkpoint_flight_state_is_valid(saved,candidate.commands,candidate.flight_mode,candidate.trainer_enabled,candidate.zero_drive_hold):
+ if not Lifecycle.valid(candidate.power,saved.tick*saved.dt) or candidate.start_choice!=start_choice or candidate.pad!=_field.get("rotorcraft_pad",{}):
+  return {ok=false,errors=["helicopter start or power lifecycle mismatch"]}
+ if not candidate.shaft_phase is PackedFloat64Array or candidate.shaft_phase.size()!=2:
+  return {ok=false,errors=["invalid rotor phase"]}
+ for value: float in candidate.shaft_phase:
+  if not is_finite(value) or absf(value)>1e12: return {ok=false,errors=["invalid rotor phase"]}
+ if not candidate.power.armed and not candidate.zero_drive_hold:
+  return {ok=false,errors=["disarmed checkpoint must retain hold"]}
+ if not _checkpoint_flight_state_is_valid(saved,candidate.commands,candidate.flight_mode,candidate.trainer_enabled,candidate.zero_drive_hold,candidate.power):
   return {ok=false,errors=["saved commands or flight state are outside the rotorcraft domain"]}
  # Simulation restoration revalidates its candidate; emit only after the state commit succeeds.
  if not sim.restore_checkpoint(candidate.simulation): return {ok=false,errors=["simulation restore refused"]}
@@ -468,6 +606,10 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
  flight_mode=candidate.flight_mode
  trainer_enabled=candidate.trainer_enabled
  zero_drive_hold=candidate.zero_drive_hold
+ power=candidate.power.duplicate()
+ pending_mode=""
+ shaft_phase=candidate.shaft_phase.duplicate()
+ _phase_omega=PackedFloat64Array([sim.continuous[0]*aircraft.context.main_model.rotation_sense,sim.continuous[0]*aircraft.context.tail_model.tail_to_main_speed_ratio*aircraft.context.tail_model.rotation_sense])
  crash={}
  _ready_to_fly=true
  start_error=""

@@ -1,0 +1,42 @@
+[
+  {
+    "argv": [
+      "python",
+      "research/avanti-s/av06/derive_physics.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "sebart_avanti_s_a200.json and derivation.md are up to date\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "python",
+      "research/aircraft-standardization/build_schema.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "Schema is current: C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\schema\\openrc-aircraft-v2.schema.json\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "python",
+      "research/aircraft-standardization/parameter_register.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "parameter register is current\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "python",
+      "research/aircraft-editor/build_descriptors.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "8 Workshop descriptors are current.\n",
+    "stderr": ""
+  }
+]

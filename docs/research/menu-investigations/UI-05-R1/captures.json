@@ -1,0 +1,46 @@
+{
+	"cases": [
+		{
+			"case": "en-plane-keyboard",
+			"pixels_equal": true,
+			"size": "(1920, 1080)"
+		},
+		{
+			"case": "en-plane-controller",
+			"pixels_equal": true,
+			"size": "(1920, 1080)"
+		},
+		{
+			"case": "en-heli-keyboard",
+			"pixels_equal": true,
+			"size": "(1920, 1080)"
+		},
+		{
+			"case": "en-heli-controller",
+			"pixels_equal": true,
+			"size": "(1920, 1080)"
+		},
+		{
+			"case": "es-plane-keyboard",
+			"pixels_equal": true,
+			"size": "(1920, 1080)"
+		},
+		{
+			"case": "es-plane-controller",
+			"pixels_equal": true,
+			"size": "(1920, 1080)"
+		},
+		{
+			"case": "es-heli-keyboard",
+			"pixels_equal": true,
+			"size": "(1920, 1080)"
+		},
+		{
+			"case": "es-heli-controller",
+			"pixels_equal": true,
+			"size": "(1920, 1080)"
+		}
+	],
+	"complete": true,
+	"scope": "Home UI on the same plain viewport; EN/ES, airplane/helicopter, keyboard/controller; no 3D backdrop"
+}

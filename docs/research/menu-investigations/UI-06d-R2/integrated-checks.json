@@ -1,0 +1,142 @@
+[
+  {
+    "name": "capture",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\capture.gd",
+      "--",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width"
+    ],
+    "exit_code": 0,
+    "checks": 0,
+    "issues": []
+  },
+  {
+    "name": "launch",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_home_start_layout.gd",
+      "--"
+    ],
+    "exit_code": 0,
+    "checks": 0,
+    "issues": []
+  },
+  {
+    "name": "layout",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_home_layout.gd",
+      "--"
+    ],
+    "exit_code": 0,
+    "checks": 362,
+    "issues": []
+  },
+  {
+    "name": "legend",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_home_legend.gd",
+      "--"
+    ],
+    "exit_code": 0,
+    "checks": 0,
+    "issues": []
+  },
+  {
+    "name": "language",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_language.gd",
+      "--"
+    ],
+    "exit_code": 0,
+    "checks": 25,
+    "issues": []
+  },
+  {
+    "name": "home",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_home.gd",
+      "--"
+    ],
+    "exit_code": 1,
+    "checks": 57,
+    "issues": [
+      "FAIL direct helicopter route completes setup and starts in a flyable hover ",
+      "FAIL first-flight hint accepts the rotorcraft session and shows collective ",
+      "FAIL Restart returns the helicopter to a flyable hover "
+    ]
+  },
+  {
+    "name": "input",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_input.gd",
+      "--"
+    ],
+    "exit_code": 0,
+    "checks": 17,
+    "issues": []
+  },
+  {
+    "name": "controller",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_controller_menu.gd",
+      "--"
+    ],
+    "exit_code": 0,
+    "checks": 0,
+    "issues": []
+  }
+]

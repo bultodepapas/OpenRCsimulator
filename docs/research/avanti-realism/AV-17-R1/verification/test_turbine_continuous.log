@@ -1,0 +1,49 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok authored aircraft explicitly selects RK4 
+ok absent integration preserves historical sampled branch 
+ok unsupported integration is refused: RK4 
+ok unsupported integration is refused: rk45 
+ok unsupported integration is refused: true 
+ok unsupported integration is refused: 0 
+ok unsupported integration is refused: <null> 
+ok unsupported integration is refused: {  } 
+ok turbine selection rejected on a combustion propeller 
+ok continuous aircraft prepares and has one evolving RPM 
+ok stiff schedule refused before accepted flight changes 
+ok minimum authored governor supports 240 Hz envelope 
+ok coarse governor step refused 
+ok stage force uses stage RPM rather than sampled mirror 
+ok stage gyro uses stage RPM 
+ok stage observation cannot advance committed state 
+ok malformed or out-of-domain state rejected 
+ok endpoint telemetry exposes flow without changing prescribed mass 
+ok analytic fixture resets at 120 Hz 
+ok governor/impulse/displacement analytic agreement at 120 Hz [0.00000032781099, 0.0000000000112, 0.00000000000448]
+ok k1 load uses old RPM while aux mirrors accepted endpoint at 120 Hz 
+ok analytic fixture resets at 240 Hz 
+ok governor/impulse/displacement analytic agreement at 240 Hz [0.00000002032903, 0.00000000000069, 0.00000000000028]
+ok k1 load uses old RPM while aux mirrors accepted endpoint at 240 Hz 
+ok analytic fixture resets at 480 Hz 
+ok governor/impulse/displacement analytic agreement at 480 Hz [0.00000000125146, 0.00000000000003, 0.00000000000002]
+ok k1 load uses old RPM while aux mirrors accepted endpoint at 480 Hz 
+ok smooth RPM refinement exhibits fourth-order error reduction [0.00000032781099, 0.00000002032903, 0.00000000125146]
+ok turbine checkpoint identifies continuous law 
+ok checkpoint restore succeeds 
+ok full body/RPM/aux/modes continuation exactly repeats 
+ok inconsistent endpoint mirror refused transactionally 
+ok historical sampled snapshot cannot masquerade as continuous 
+ok wrong model-law snapshot refused 
+ok unsupported hot off-state snapshot refused 
+ok session hold freezes all turbine state 
+ok failed RK stage rolls back complete turbine/body transaction 
+ok explicit reset clears fault and rebuilds settled RPM 
+ok unsupported hot mode switch refuses an instantaneous RPM cut 
+ok trace retains 13 fresh complete finite rows 
+ok writer refuses invalid turbine metadata 
+ok calm writer refuses null servo in turbine header 
+ok calm writer refuses nonfinite servo row 
+ok physical turbine metadata freezes at first sample 
+ok calm turbine writer refuses a missing tick 
+ok all planned checks executed 
+46 checks, 0 failed

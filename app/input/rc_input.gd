@@ -37,6 +37,9 @@ var device_id := -1
 var device_key := ""
 var device_name := ""
 var profile_source := "default"
+## Optional engine proof for a live, focused, standardized gamepad connection.
+## Pure readers and radios still require axis events; a zero alone proves nothing.
+var confirmed_gamepad_connection: Callable
 ## A rejected draft is not an active-profile fault; existing controls stay live.
 var profile_rejection_error := ""
 var profile_error := ""
@@ -140,6 +143,16 @@ func disconnect_device() -> void:
 
 func is_gamepad() -> bool:
 	return _profile_ready and profile.get("kind", "radio") == "gamepad"
+
+
+## Only standard mapped axes can use the engine's verified stationary sample.
+func can_confirm_gamepad_poll() -> bool:
+	if not connected or not is_gamepad() or not confirmed_gamepad_connection.is_valid():
+		return false
+	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
+		if int(profile[channel_name].axis) > JOY_AXIS_TRIGGER_RIGHT:
+			return false
+	return bool(confirmed_gamepad_connection.call(device_id))
 
 
 func is_rate_throttle() -> bool:
@@ -265,6 +278,13 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			if bool(read_button.call(device_id, button)):
 				held_buttons.append(button)
 		observe_pressed_buttons(held_buttons)
+	# SDL may emit no motion event for an axis already resting at neutral. Only
+	# the engine bridge may confirm that these polled standard axes are present.
+	# This supplies sample evidence, never bypasses neutral/release time or resumes.
+	if not integrate and not armed and input_error.is_empty() and read_button.is_valid() and can_confirm_gamepad_poll():
+		for channel_name in ["roll", "pitch", "yaw", "throttle"]:
+			var axis: int = int(profile[channel_name].axis)
+			_seen[axis] = true
 	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
 		for channel in [smoke_aux, _extra_aux.flaps, _extra_aux.gear]:
 			var binding: Dictionary = channel.binding

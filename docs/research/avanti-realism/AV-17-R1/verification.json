@@ -1,0 +1,94 @@
+{
+  "format": "openrc-avanti-keyboard-verification v1",
+  "date_utc": "2026-10-14T21:18:06.363899+00:00",
+  "engine": "Godot 4.7.2 stable official ed1daf0bf",
+  "scope": "Focused software regression and conformance; no full app/test.sh claim or physical validation. Shared working tree, not an immutable candidate checkout. Source hashes captured after final checks.",
+  "baseline_head": "86a9911ef4b0683c9b24fa8073ba17bb9554ad95",
+  "baseline_sha256": {
+    "baseline-aircraft.json": "e81fc726459086dbd821c1ffa44878ff11fd848cec800101a30f572d947eb498",
+    "baseline-commands.gd": "9a9e97b152828631a6e3dc6903b0e2bf14a6751bb5436f7e0ba9ca7003e50594",
+    "baseline-flight-session.gd": "e99d422ef2f0d53ddac6c2e7f63318700847caa384b60b292cfae6059192ef08"
+  },
+  "aircraft_data_comparison": {
+    "equal_excluding": [
+      "/controls/keyboard"
+    ],
+    "all_other_values_and_provenance_equal": true,
+    "added_policy": {
+      "pitch_press_time": {
+        "value": 1.0,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "AV-17-R1 keyboard device tuning: neutral-to-full virtual pitch stick in 1.0 s before manual normal rates/expo. Reproduced 0.25 s legacy ramp over-pulled a 45 m/s dive. Not servo timing or manufacturer data; docs/research/avanti-realism/AV-17-R1/README.md."
+      },
+      "pitch_release_time": {
+        "value": 0.25,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "AV-17-R1 keyboard device tuning: retain legacy full-stick-to-neutral 0.25 s to unload promptly; reversal centers first. Not physical servo timing; docs/research/avanti-realism/AV-17-R1/README.md."
+      }
+    }
+  },
+  "source_sha256": {
+    "app/input/commands.gd": "b8ef80393c7e1472b85f3a1b4f397abfd4a505243d554143fdad318c6a61dddc",
+    "app/sim/flight_session.gd": "0db6ab4755a473b33069db3488e868d2707d8536010c39078b450fdaaf45aa7b",
+    "app/physics/aircraft_data.gd": "6e25d7e2d4cbf4a773d2a60fccf1f8fee63c5363a023c4c0ee9781e5f89581bb",
+    "app/tests/avanti_pullup_base.gd": "7e5e66bb1007d99a977a4a5409666a4307a7df38940bcf14e48b1169aed8455a",
+    "app/tests/test_avanti_keyboard.gd": "c4e2ac92409d8bd9106c7254833d42068b88694290eb1f3af5dbd877fbbbc568",
+    "app/tests/test_controller_flight_actions.gd": "8111cd9c54eef8fbc7a1db24193e47331333142aca7d9b5c619bce39c62b8050",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "88d5d82552dc9d16b44a4e12bf1e344cdb5608d575f6e4f6383a4d3eeb6ef3a5",
+    "app/data/schema/aircraft-contract-v2.json": "b27bbfadf3fad50b3bf8ed161a592211f8568f9c5fac80ed33665e1c9f7cf641",
+    "app/data/schema/openrc-aircraft-v2.schema.json": "f4b2201cd2835dd15de7aa672772215231babc590a5d18ebdd2d5a52092cc2d1",
+    "research/aircraft-standardization/build_schema.py": "4fc6be616b8df33130a5f376fb4ed8cb43757331f165c22514e919845d81d74e",
+    "research/aircraft-standardization/parameter_register.py": "6c2ca7791e24acffe4a699f0120c2834e0465647daf2f6b993e34117dd9ccfa6",
+    "research/aircraft-editor/build_descriptors.py": "c9b5c0fa0f5dc0088726bf026a74562e4e9fe8bb1b647716fbb902d90a818e4c",
+    "research/avanti-s/av06/inputs.json": "951077472b7f2215fee94e4a3542d52ac7dbc656c927aef98e73dd0a9a53579a",
+    "research/avanti-s/av06/derive_physics.py": "6219d61b95c519beafff96fba90312a6c449356a99dcbbaef561308c4d4b11be",
+    "research/avanti-s/av06/derivation.md": "f7d4e474f9bd418f794f08821e00b71bbd2490383c336bb7b9e9a062028523da",
+    "research/avanti-s/av17-r1/pullup_probe.gd": "7d13d854cea07ca8c5352824d8e41395114b753eaa8cf3d80dcb4a7393a30f91",
+    "research/avanti-s/av17-r1/spanwise_probe.gd": "aa9273ce3cb159cb2fae8a0bb624a098c227cb27f766df07aa80c62f2bf72d9e",
+    "research/avanti-s/av17-r1/compare_pullup.py": "7d4e8e84d2c343e30d7b8015faec5b7bf96424bfc947e89ed96bc6b1fcf44f95"
+  },
+  "evidence_sha256": {
+    "aerodynamic-audit.md": "26258103e523e277696b89ce031b7671db0ae541beebfd058454d3240b06aa98",
+    "baseline-240.json": "29da04966e928c3f4790cf577eaeab0ad386c6c9e3e852b4e55f58891c78527a",
+    "candidate-240.json": "9049d1da064b6237bcc351ddf1a9f24aa6d787328f00c1b3766c9826401a8b28",
+    "candidate-480.json": "c46cb5b942fbcfdb7eca14ab5f65c0db4f2b7e14b473d889b2bb198b0c36e460",
+    "comparison.json": "29fa932699c75941fcc7b9f87ab0dac514df73c2f97a29437bbedcb70694d3cc",
+    "legacy-pulses-240.json": "56c03cff122b330423d7805b548454a532ae0f15dac73b621416945f9462167a",
+    "manufacturer-audit.md": "94446b9841b5abeb0ce4e1edf2f27b2cc3c27b7238b0b6061f832d986bddbb95",
+    "pullup-comparison.png": "52b44a7b25acf8e2b32e483845ab4576ebc2ab76ce20dbd9f60f9d3f6a85ab9e",
+    "README.md": "0454520b142a03f9b9ee45b282b5ebb8b5652340754aec1ae73cf9a5c493fa22",
+    "verification/conformance/aircraft_model_manifest.log": "0468721e2b85a35478f45d91b60e8fe9384b4ba082343cf0c5ffea8930ff369c",
+    "verification/conformance/aircraft_modules.log": "eb2760b4131fe2cc505fa458b77bae131e31e7c2769ede1562e6741e8af74af4",
+    "verification/conformance/aircraft_package_proofs.log": "dc0c15f33159329247341d4ad14a684d49ca95f0e5c144a27c81777f55f3b1e6",
+    "verification/conformance/aircraft_render_contract.log": "faaf0467d8329992725aa7ab6a95f3d33c12a91432cf3edd331c713b2e58413e",
+    "verification/conformance/descriptor-checkout.log": "89e5b792efd9faf51559ae3d590418676fca25581b3f5227c4d4d4819a49010f",
+    "verification/conformance/descriptors-current.log": "e228758c0b8f8735552db5b6975e55b2c42a34809b80202f58d30fa972f0f492",
+    "verification/conformance/import.log": "c7ca66ddb47402a8d86281e73f9f8e7d470a5b5b872f77208790c9b93e87428d",
+    "verification/conformance/imported_aircraft_model.log": "569c28dc13d73f6f01cb7adaa7231fa552940064a2759cd9316a534a99202be1",
+    "verification/conformance/migration.log": "fc81fbed664edb653399f57d50145ce9c653316b0a486bda00af684e95ec8957",
+    "verification/conformance/models-current.log": "59e2026db8477aa4e7b35a531f9ba817af511d1fb2a8c0f81877e3bda8441295",
+    "verification/conformance/models-python.log": "19937de9d978a62fe600f5ad84037daff5a0628d4e963c127e64c9dbc02ad690",
+    "verification/conformance/modules-python.log": "d74f9c24b987fff60e7b362c83336b7f654b48dd7a45cc12a1ea49749d33cb86",
+    "verification/conformance/parameters.log": "dce936fd7bfc13c7b99125164e95e49237cab3f313089cbe258bb5f0bc2aff25",
+    "verification/conformance/physical-identity-sources.log": "3cd02e884955c8b49b809ce57755ae46aacba4d9ef1382b84e081568bb3f04a5",
+    "verification/conformance/preflight.json": "a1fd34c2343918ad221ea1c6a0d15394a1312cc263837e04cbb2eef969123f55",
+    "verification/conformance/preflight.log": "e01d6b417171ce4c451a87ef22f740e11766280bcfec61584d4dac92172d4174",
+    "verification/conformance/schema.log": "3c700854bdc83285bb6edfb53e811dad3c7345d6bedd2e0975d92b5fd36a54fd",
+    "verification/conformance/verification.json": "86d7cb7e53e639d4a2a856d9b2eed42ff412cf2874d04827bf6f86d2e2275377",
+    "verification/conformance/workshop_descriptor.log": "81c69c3f5bb6c6544db9029803b67412b9fb382ac77c356cd03c99f87bb58972",
+    "verification/freshness.json": "aab98abf30bf50aa97674b1ff9a847e465191da0e2bb0e9ac12d39c92e27481e",
+    "verification/test-rates.log": "c9d8fb2cc5f90a800ca7a5989ca31cfdf2904bbb7cdf58f1fe0573080abc6a87",
+    "verification/test_aircraft_contract.log": "b524abe31f19816f8d811ef4e75c971e447448d4a10946323c5d3f0d6d2b1980",
+    "verification/test_avanti_handling.log": "063462137d130ce09393524883e6235c24daf36c378424c4b435972bfdaa75d8",
+    "verification/test_avanti_keyboard.log": "6e233b03b450e5527c51d4b37f98e1aefeca3d6bc2b098560bb4d8f292134b07",
+    "verification/test_checkpoint.log": "e68cd3aa894eb19471686520c1fb64b582acd85c88b1e0caed72e9d9ddd1b593",
+    "verification/test_controller_flight_actions.log": "c01fc3ff5b750ed07a92c834c355334f3f41f689c1254aad173ae4d4c84e7add",
+    "verification/test_controls.log": "79d2aeb7bc214cf9981fa0d642d15e2e5a9cbdb2d708c1fc100c15cce2817cdc",
+    "verification/test_e2e_input.log": "14627fe2d4a92ec3d1ad49e5cc5e958ea3f3490d0d8b73803b1301a8fd2515d1",
+    "verification/test_replay_integrity.log": "19cbae88f03d2ca087d841ed407cd0be0dba377d1f257c402be8a8a3eb1369f2",
+    "verification/test_retractable_gear.log": "02976ab32366dbfe364913ce6d939bbd16308cdf28c9c1cd99ac6c23338b594e",
+    "verification/test_turbine_continuous.log": "dae17a1dcd31ba184d31d37240aad415418c04900abc5fcbbfab4780193a6db8"
+  }
+}

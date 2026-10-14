@@ -98,16 +98,19 @@ func _test_renderer_uses_field_rectangles() -> void:
 	var node: Node3D = FieldBuilder.build(field.field)
 	var rough: MeshInstance3D = node.get_node_or_null("rough") as MeshInstance3D
 	var material: ShaderMaterial = rough.material_override as ShaderMaterial if rough != null else null
-	_check("ground shader terrain hook receives the same default runway rectangle",
+	_check("ground shader terrain hook receives the default rotorpad and runway rectangles",
 		material != null
 		and material.get_shader_parameter("terrain_relief_enabled") == true
-		and material.get_shader_parameter("terrain_surface_count") == 1
-		and _terrain_rect_at(material, 0) == Vector4(0.0, -15.0, 50.0, 6.0)
-		and _terrain_kind_at(material, 0) == 2,
+		and material.get_shader_parameter("terrain_surface_count") == 2
+		and _terrain_rect_at(material, 0) == Vector4(0.0, -6.0, 3.0, 3.0)
+		and _terrain_kind_at(material, 0) == 3
+		and _terrain_rect_at(material, 1) == Vector4(0.0, -15.0, 50.0, 6.0)
+		and _terrain_kind_at(material, 1) == 2,
 		str(material.get_shader_parameter("terrain_surface_rects")) if material != null else "no ground material")
 	_check("renderer terrain profile matches physics estimates",
 		material != null
 		and is_equal_approx(float(material.get_shader_parameter("terrain_runway_amplitude_m")), 0.001)
+		and is_equal_approx(float(material.get_shader_parameter("terrain_rotorpad_amplitude_m")), 0.0)
 		and is_equal_approx(float(material.get_shader_parameter("terrain_mown_amplitude_m")), 0.004)
 		and is_equal_approx(float(material.get_shader_parameter("terrain_rough_amplitude_m")), 0.007)
 		and is_equal_approx(float(material.get_shader_parameter("terrain_edge_blend_m")), 0.5)

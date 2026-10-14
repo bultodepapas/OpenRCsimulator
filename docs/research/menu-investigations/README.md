@@ -1,5 +1,9 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+2026-10-14 layout follow-up: [UI-06d-R2 — launch captions and live language](UI-06d-R2/README.md) closes the reproduced sidebar-width defect and stale helicopter launch translations, with native captures and input regressions.
+
+2026-10-14 implementation follow-up: [UI-05-R1 — unchanged Home legend reuse](UI-05-R1/README.md), with native measurements, keyboard-layout regression coverage and reference/candidate visual comparisons. Remaining baseline layout and field-validation failures are recorded separately from the optimization's passing checks.
+
 **Fecha:** 2026-10-05. Investigación en internet y contraste con el repositorio para mejorar [MENU-PLAN.md](../../MENU-PLAN.md). Los informes separan documentación, código observado, inferencias de diseño y pruebas todavía pendientes.
 
 **Resultado:** ronda 2, diez informes (01–10) incorporados a la revisión 2 del plan; ronda 3, doce informes más (11–22) con sondas ejecutadas en el Godot 4.7.2 fijado, incorporados a la revisión 3. [sources.json](sources.json) indexa las fuentes de los 22 informes por página y por informe (se regenera con `python3 docs/research/menu-investigations/build_sources.py`); los enlaces explicativos permanecen junto a cada afirmación, no solo en el inventario.

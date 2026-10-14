@@ -30,7 +30,7 @@ def main():
         ('float64-guard', [sys.executable, 'app/tests/check_transcendentals.py']),
     ]
     scripts = ['test_rcv_vehicle_data', 'test_rcv_course', 'test_rcv_airfield_course',
-               'test_rcv_airfield_track', 'test_rcv_obstacle_contacts', 'test_rcv_input',
+               'test_rcv_airfield_track', 'test_rcv_obstacle_contacts', 'test_rcv_track_view', 'test_rcv_input',
                'test_rcv_vehicle_dynamics', 'test_rcv_session', 'test_rcv_activity',
                'test_rcv_presentation', 'test_rcv_menu']
     if args.include_menu:
@@ -46,6 +46,11 @@ def main():
     def source_identity():
         source_paths = [ROOT / 'app/app_root.gd', ROOT / 'app/ui/home.gd',
                         ROOT / 'app/input/ground_vehicle_input.gd']
+        source_paths += [ROOT / path for path in [
+            'app/data/field_loader.gd', 'app/data/fields/default.json',
+            'app/data/ground/surface_friction.json', 'app/render/field.gd',
+            'app/physics/ground_surfaces.gd', 'app/physics/ground_terrain.gd',
+            'app/physics/ground_contact.gd', 'app/physics/lake_surface.gd']]
         for folder in ['app/physics/ground_vehicle', 'app/sim/ground_vehicle',
                        'app/vehicles/ground', 'app/data/vehicles/ground', 'app/data/ground_vehicle',
                        'app/native/ground_vehicle']:

@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL es pad caption follows live locale
+FAIL es startup instructions follow live locale
+FAIL es launch tooltip follows live locale
+FAIL es pad sidebar remains 440 px
+FAIL en pad caption follows live locale
+FAIL en startup instructions follow live locale
+FAIL en launch tooltip follows live locale
+FAIL en pad sidebar remains 440 px
+FAIL es airplane sidebar remains 440 px
+Home launch layout: 44 checks, 9 failed

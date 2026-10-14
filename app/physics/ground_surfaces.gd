@@ -11,7 +11,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const FORMAT := "openrc-surfaces v1"
 const DEFAULT_PATH := "res://data/ground/surface_friction.json"
 ## Surface types, highest precedence first (the field loader allows exactly these).
-const TYPES := ["runway", "mown", "rough"]
+const TYPES := ["runway", "rotorpad", "mown", "rough"]
 ## The ground beyond every rectangle.
 const OUTSIDE := "rough"
 ## The flat table's layout and the lookup live in physics/ground_contact.gd (SURFACE_STRIDE, surface_at), which
@@ -49,6 +49,8 @@ static func validate(raw: Dictionary) -> Dictionary:
 		var rf = AircraftData._q(errors, "surfaces.%s.rolling_factor" % type, node.get("rolling_factor"), "1", 0.5, 20.0)
 		if ff != null and rf != null:
 			table[type] = { friction_factor = float(ff), rolling_factor = float(rf) }
+	if table.has("rotorpad") and float(table.rotorpad.rolling_factor) != 0.5:
+		errors.append("surfaces.rotorpad.rolling_factor: must remain 0.5; this reserved value selects zero-relief rotorpad terrain")
 	for type in surfaces:
 		if not (type in TYPES):
 			errors.append("surfaces.%s: unknown surface type (expected %s)" % [type, TYPES])

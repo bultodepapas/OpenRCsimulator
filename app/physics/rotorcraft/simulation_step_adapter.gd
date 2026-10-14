@@ -55,11 +55,8 @@ static func step(state: PackedFloat64Array, time: float, dt: float, f: Callable,
 						continue
 					if not event.get("ok", false):
 						return PackedFloat64Array()
-				# The derivative changed before the predicted stop. Fall through to a
-				# full remaining interval; guarded RK stages will reduce it if needed.
-			else:
 				# Keep all RK stages on the positive-speed side while approaching a
-				# finite stop. The bounded halvings below bring it into the event solver.
+				# finite stop. Once in the terminal band, the event locator handles root.
 				remaining = minf(remaining, 0.5 * stop_estimate)
 		var h: float = remaining
 		var trial: Dictionary = {}
@@ -116,13 +113,14 @@ static func _rk4_guarded(state: PackedFloat64Array, time: float, h: float,
 	return {"ok": true, "state": RK.normalize_attitude(result)}
 
 
-## Midpoint event localization evaluates only at t+h/2, which remains on the
-## positive side at the physical root. Bisection is on the integrated Ω(t+h),
-## not on whether a four-stage trial happened to pass its stage-domain checks.
+## Bisection locates the integrated Ω(t+h)=0 root with an explicit-midpoint
+## candidate. Its only callback stage is at t+h/2, which stays on the positive
+## side around the root; a negative predicted endpoint is used only as a scalar
+## bracket and is never returned to Simulation or passed to the callback.
 static func _locate_stop_midpoint(state: PackedFloat64Array, time: float, remaining: float,
 		f: Callable, first: PackedFloat64Array, estimate: float) -> Dictionary:
 	var low: float = 0.0
-	var high: float = minf(remaining, maxf(2.0 * estimate, EVENT_TIME_TOLERANCE_S))
+	var high: float = minf(remaining, maxf(1.5 * estimate, EVENT_TIME_TOLERANCE_S))
 	var bracketed: bool = false
 	for _expand: int in range(24):
 		var upper: Dictionary = _midpoint_candidate(state, time, high, f, first)
@@ -152,8 +150,7 @@ static func _locate_stop_midpoint(state: PackedFloat64Array, time: float, remain
 		else:
 			high = middle
 	var event_time: float = 0.5 * (low + high)
-	var final: Dictionary = _midpoint_candidate(state, time, event_time, f, first)
-	var event_state: PackedFloat64Array = final.state if final.get("ok", false) else low_state
+	var event_state: PackedFloat64Array = low_state
 	if event_state.size() != state.size():
 		return {"ok": false}
 	return {"ok": true, "event": true, "state": event_state, "elapsed_s": event_time,
@@ -172,8 +169,6 @@ static func _midpoint_candidate(state: PackedFloat64Array, time: float, h: float
 	if not _finite(result):
 		return {"ok": false, "crossing": false}
 	return {"ok": true, "state": RK.normalize_attitude(result)}
-
-
 static func _axpy(base: PackedFloat64Array, scale: float, direction: PackedFloat64Array) -> PackedFloat64Array:
 	var result: PackedFloat64Array = base.duplicate()
 	for index: int in range(result.size()):

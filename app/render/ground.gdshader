@@ -75,6 +75,7 @@ uniform vec4 surface_bounds = vec4(0.0);
 // field's current rolling factors; terrain rectangles below use the same NED field layout and order.
 uniform bool terrain_relief_enabled = false;
 uniform float terrain_runway_amplitude_m = 0.001;
+uniform float terrain_rotorpad_amplitude_m = 0.0;
 uniform float terrain_mown_amplitude_m = 0.004;
 uniform float terrain_rough_amplitude_m = 0.007;
 uniform float terrain_edge_blend_m = 0.5;
@@ -222,7 +223,9 @@ vec3 terrain_amplitude(vec2 p) {
 	for (int i = 0; i < min(terrain_surface_count, 32); i++) {
 		vec3 mask = terrain_rect_mask(p, terrain_surface_rects[i]);
 		int kind = terrain_surface_kinds[i];
-		float target = kind == 2 ? terrain_runway_amplitude_m : terrain_mown_amplitude_m;
+		float target = terrain_mown_amplitude_m;
+		if (kind == 2) target = terrain_runway_amplitude_m;
+	else if (kind == 3) target = terrain_rotorpad_amplitude_m;
 		float difference = target - amplitude;
 		gradient = gradient * (1.0 - mask.x) + difference * mask.yz;
 		amplitude += difference * mask.x;

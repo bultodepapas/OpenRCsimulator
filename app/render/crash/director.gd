@@ -545,10 +545,10 @@ func _touch_feedback() -> void:
 			_touch_marks[contact.index] = now
 
 static func surface_at(field: Dictionary, north: float, east: float) -> String:
-	for kind: String in ["runway","mown","rough"]:
+	for kind: String in ["runway","rotorpad","mown","rough"]:
 		for surface: Dictionary in field.get("surfaces",[]):
 			if surface.get("type","") == kind and absf(north-float(surface.center_north)) <= float(surface.width_north_south)*0.5 and absf(east-float(surface.center_east)) <= float(surface.length_east_west)*0.5:
-				return kind
+				return "mown" if kind == "rotorpad" else kind
 	return "rough"
 
 func _secondary(point: Vector3, strength: float) -> void:

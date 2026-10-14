@@ -6,10 +6,14 @@ const PATH := "res://data/ground_vehicle/airfield_track.json"
 const FORMAT := "openrc-airfield-track v1"
 
 static func load_default() -> Dictionary:
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(PATH))
+	var bytes := FileAccess.get_file_as_bytes(PATH)
+	var parsed: Variant = JSON.parse_string(bytes.get_string_from_utf8())
 	if typeof(parsed) != TYPE_DICTIONARY or not valid(parsed):
 		return {"ok": false, "errors": PackedStringArray(["Invalid airfield obstacle track definition"])}
-	return {"ok": true, "track": parsed, "sha256": FileAccess.get_sha256(PATH)}
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(bytes)
+	return {"ok": true, "track": parsed, "sha256": hash.finish().hex_encode()}
 
 static func valid(track: Dictionary) -> bool:
 	if track.get("format") != FORMAT or str(track.get("id", "")).is_empty(): return false

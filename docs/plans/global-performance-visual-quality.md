@@ -1,6 +1,8 @@
 # Global performance and visual-quality implementation plan
 
-2026-10-14 · Revision 15 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
+2026-10-14 · Revision 17 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
+
+**Menu-focused follow-up:** [UI-05-R1](../research/menu-investigations/UI-05-R1/README.md) reuses unchanged Home legend controls, preserving physical-keyboard label refresh. [UI-06d-R2](../research/menu-investigations/UI-06d-R2/README.md) repairs long launch-caption overflow and live-language updates, with refreshed regression evidence. Native UI-call measurements remain separate from the loading campaigns below; UI-22…29 remain open.
 
 **Execution decision:** baseline → visibility reference → measured CPU/loading repairs → texture audit → ground and foliage comparisons → targeted aircraft/weather repairs → qualified quality profiles → native acceptance. Implementation has started with **VQ-01c / DT-01 / DT-10a** measurement tools and a read-only texture inventory. [First evidence and unresolved gates](../research/visual-quality-implementation/VQ-01c/README.md) now include an attributed **DT-11a lake geometry reuse repair** with exact buffer parity and faster Home/Fly transitions. Native flight, cold-loading and visual-change acceptance remain open. Current step status stays in the owning VQ plan.
 

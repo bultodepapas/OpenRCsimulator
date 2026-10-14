@@ -185,6 +185,11 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 		return _failure("aerodynamic shaft torque is absent or nonfinite", "invalid_aerodynamic_torque")
 	var tail_ratio: float = float(context.tail_model.tail_to_main_speed_ratio)
 	var generalized_torque: float = drive.net_main_torque_nm - main_torque - tail_ratio * tail_torque
+	if state[OMEGA] == 0.0:
+		# Drive includes the authored static/kinetic shaft loss in its net torque.
+		# Restore that finite loss here so the geared stop can balance the complete
+		# drive/aero/body demand at Ω=0 rather than only the drive's scalar request.
+		generalized_torque += float(drive.get("shaft_loss_torque_nm", 0.0))
 	if not is_finite(generalized_torque):
 		return _failure("net geared torque is nonfinite", "nonfinite_drive_balance")
 	var loads: PackedFloat64Array = aero.loads.duplicate()
@@ -196,7 +201,8 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 	var moment_body: PackedFloat64Array = loads.slice(3, 6)
 	var coupling: Dictionary = Coupling.response(body_rates, moment_body, context.inertia_kg_m2,
 		context.inertia_inverse_kg_m2, context.b_body_frd_kg_m2,
-		context.spin_inertia_kg_m2, state[OMEGA], generalized_torque)
+		context.spin_inertia_kg_m2, state[OMEGA], generalized_torque, state[OMEGA] == 0.0,
+		float(context.drive_model.shaft_loss_torque_nm))
 	if not coupling.get("ok", false):
 		return _failure(str(coupling.get("message", "geared coupling refused the flight state")), "coupling_refused")
 	var effective_moment: PackedFloat64Array = M.add(moment_body, coupling.coupling_reaction_nm)

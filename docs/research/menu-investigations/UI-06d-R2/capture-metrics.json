@@ -1,0 +1,62 @@
+[
+	{
+		"button_size": "(324.0, 44.0)",
+		"case": "reference-en-720",
+		"fly_bottom": 555.0,
+		"focus": "Fly",
+		"legend_bottom_scrolled": 712.0,
+		"sidebar_width": 440.0
+	},
+	{
+		"button_size": "(328.0, 44.0)",
+		"case": "reference-es-720",
+		"fly_bottom": 555.0,
+		"focus": "Fly",
+		"legend_bottom_scrolled": 712.0,
+		"sidebar_width": 444.0
+	},
+	{
+		"button_size": "(324.0, 44.0)",
+		"case": "reference-en-1080",
+		"fly_bottom": 647.0,
+		"focus": "Fly",
+		"sidebar_width": 440.0
+	},
+	{
+		"button_size": "(328.0, 44.0)",
+		"case": "reference-es-1080",
+		"fly_bottom": 647.0,
+		"focus": "Fly",
+		"sidebar_width": 444.0
+	},
+	{
+		"button_size": "(324.0, 44.0)",
+		"case": "candidate-en-720",
+		"fly_bottom": 555.0,
+		"focus": "Fly",
+		"legend_bottom_scrolled": 712.0,
+		"sidebar_width": 440.0
+	},
+	{
+		"button_size": "(324.0, 71.0)",
+		"case": "candidate-es-720",
+		"fly_bottom": 582.0,
+		"focus": "Fly",
+		"legend_bottom_scrolled": 712.0,
+		"sidebar_width": 440.0
+	},
+	{
+		"button_size": "(324.0, 44.0)",
+		"case": "candidate-en-1080",
+		"fly_bottom": 647.0,
+		"focus": "Fly",
+		"sidebar_width": 440.0
+	},
+	{
+		"button_size": "(324.0, 71.0)",
+		"case": "candidate-es-1080",
+		"fly_bottom": 661.0,
+		"focus": "Fly",
+		"sidebar_width": 440.0
+	}
+]

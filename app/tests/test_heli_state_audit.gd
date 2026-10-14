@@ -34,7 +34,7 @@ func _run() -> void:
 	var initial_bytes: PackedByteArray = var_to_bytes(initial_checkpoint)
 	var initial_surfaces: PackedFloat64Array = session.ground_surfaces.duplicate()
 	var initial_start: PackedFloat64Array = session._start.duplicate()
-	check("checkpoint v2 records field and start identity", initial_checkpoint.get("format", "") == "openrc-helicopter-checkpoint v2" and initial_checkpoint.ground_surfaces.to_byte_array() == initial_surfaces.to_byte_array() and initial_checkpoint.start_position.to_byte_array() == initial_start.to_byte_array())
+	check("checkpoint v3 records field, start and power identity", initial_checkpoint.get("format", "") == "openrc-helicopter-checkpoint v3" and initial_checkpoint.ground_surfaces.to_byte_array() == initial_surfaces.to_byte_array() and initial_checkpoint.start_position.to_byte_array() == initial_start.to_byte_array() and initial_checkpoint.has("power") and initial_checkpoint.has("shaft_phase"))
 
 	var failed_setup_weather: Dictionary = session.weather_configuration()
 	session.aircraft_path = "res://data/aircraft/__heli_state_audit_missing__.json"

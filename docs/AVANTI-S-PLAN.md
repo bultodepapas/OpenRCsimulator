@@ -1,6 +1,6 @@
 # Ventage Jet turbine jet: plan
 
-2026-10-14 · Revision 10 · **Status: AV-31 integrates the supplied Blender model and AV-09 now enables retracts, wheel contact, nose steering, main brakes and runway starts. AV-20 continuous turbine response remains integrated. The catalog aircraft remains experimental: calibrated planform/installation, flap aerodynamics, finite fuel and independent physical validation remain open.**
+2026-10-14 · Revision 11 · **Status: AV-17-R1 improves keyboard pitch progression and verifies dive recovery while retaining accelerated stalls. AV-31 integrates the supplied Blender model; AV-09 enables retracts, wheel contact, nose steering, main brakes and runway starts. AV-20 continuous turbine response remains integrated. The catalog aircraft remains experimental: calibrated planform/installation, flap aerodynamics, finite fuel and independent physical validation remain open.**
 
 Step-ID prefix `AV-`. Owned paths: `assets/aircraft/avanti-s-a200/`, `app/aircraft/avanti_s_*`, `app/aircraft/verify_avanti.gd`, `app/physics/turbine.gd`, `app/data/aircraft/sebart_avanti_s_a200.json` (generated), `app/tests/test_turbine.gd`, `app/tests/test_avanti_handling.gd`, `research/avanti-s/`, `docs/research/avanti-s-*`.
 
@@ -37,11 +37,12 @@ Same flow as the other aircraft: declarative geometry → generated data with `{
 | AV-11 | Independent contrast | comparable flight observations, sensitivity, envelope limits | pending: no Avanti telemetry exists publicly |
 | AV-12 | Delivery | clean clone, export smoke per ID, full suite, renderer captures | pending |
 | AV-13 | Extended ground/propulsion behavior | AV-09 covers point-contact gear and main brakes; vectoring and extended ECU remain separate | future extensions |
+| AV-17-R1 | Keyboard pitch and dive-recovery follow-up | [Audit and evidence](research/avanti-realism/AV-17-R1/README.md): manufacturer/parameter review, 63 complete pullouts, 240/480 Hz comparison, real-key and contract regressions | Implemented: gradual keyboard normal-mode pitch, prompt release, full authority and accelerated stalls retained; physical aircraft validation remains open |
 | AV-31 | Supplied Blender jet integration | reproducible source exporter, common model contract, 340 model checks, focused flight/crash/audio/Workshop tests, native Windows package and capture | Complete for the admitted gear-up/clean configuration; [evidence](research/avanti-blender/AV-31/README.md), [authoring guide](../assets/aircraft/avanti-s-a200/README.md) |
 
 ## 4. Known limits of the experimental model
 
-The physical geometry remains the estimated AV-02 surrogate (wing 0.702 m², no published area); AV-31's Blender presentation supplies contact witnesses only. Its planform and turbine height differ and are not calibrated physical inputs. The neutral point is anchored on the manual's aft CG (260 mm at 3 % MAC); 0.345 kg of virtual tail weight balances the corrected estimated inventory (AV-15); spool constants are ±40 %; the P100 rotation sense is assumed. The [AV-14…17 report](research/avanti-realism/README.md), [AV-20 response evidence](research/turbine-realism/AV-20/README.md) and [AV-31 model evidence](research/avanti-blender/AV-31/README.md) distinguish implemented behavior from physical validation; the [AV-05…07 report](research/avanti-s-av06-physics-model.md) is historical.
+The physical geometry remains the estimated AV-02 surrogate (wing 0.702 m², no published area); AV-31's Blender presentation supplies contact witnesses only. Its planform and turbine height differ and are not calibrated physical inputs. The neutral point is anchored on the manual's aft CG (260 mm at 3 % MAC); 0.345 kg of virtual tail weight balances the corrected estimated inventory (AV-15); spool constants are ±40 %; the P100 rotation sense is assumed. The [AV-14…17 report](research/avanti-realism/README.md), [AV-17-R1 keyboard and stall audit](research/avanti-realism/AV-17-R1/README.md), [AV-20 response evidence](research/turbine-realism/AV-20/README.md) and [AV-31 model evidence](research/avanti-blender/AV-31/README.md) distinguish implemented behavior from physical validation; the [AV-05…07 report](research/avanti-s-av06-physics-model.md) is historical.
 
 ## 5. Next actions
 

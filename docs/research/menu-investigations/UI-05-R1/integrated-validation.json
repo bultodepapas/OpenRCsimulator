@@ -1,0 +1,168 @@
+[
+  {
+    "name": "home_legend",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_home_legend.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "failures": []
+  },
+  {
+    "name": "native-home_legend",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_home_legend.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "failures": []
+  },
+  {
+    "name": "home_layout",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_home_layout.gd"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": [
+      "FAIL es xcell-60-research 720p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research 1080p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research defaults 720p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research defaults 1080p: sidebar exactly 440 px wide 444"
+    ]
+  },
+  {
+    "name": "language",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_language.gd"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": []
+  },
+  {
+    "name": "input",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_input.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "failures": []
+  },
+  {
+    "name": "home",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_home.gd"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": []
+  },
+  {
+    "name": "aircraft",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_ui_aircraft.gd"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": []
+  },
+  {
+    "name": "controls-reference",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_controls_reference.gd"
+    ],
+    "exit_code": 0,
+    "errors": false,
+    "failures": []
+  },
+  {
+    "name": "controller-menu",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--script",
+      "res://tests/test_controller_menu.gd"
+    ],
+    "exit_code": 1,
+    "errors": false,
+    "failures": []
+  }
+]

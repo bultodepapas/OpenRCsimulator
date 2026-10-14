@@ -802,6 +802,15 @@ msgstr "MODELO EXPERIMENTAL"
 msgid "Keyboard"
 msgstr "Teclado"
 
+msgid "Release the sticks, triggers and buttons, then select Continue."
+msgstr "Suelta las palancas, los gatillos y los botones; después pulsa Continuar."
+
+msgid "Controls ready. Select Continue to fly."
+msgstr "Controles listos. Pulsa Continuar para volar."
+
+msgid "Flight restarted. Select Continue when the controls are ready."
+msgstr "Vuelo reiniciado. Pulsa Continuar cuando los controles estén listos."
+
 msgid "Gamepad"
 msgstr "Mando"
 

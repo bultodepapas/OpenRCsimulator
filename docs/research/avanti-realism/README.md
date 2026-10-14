@@ -2,6 +2,8 @@
 
 2026-10-12 · AV-14…17 · Status: audit, bounded corrections and engine verification recorded; a reproduced baseline failure prevents a green full suite. Original SebArt A200, 2.00 m span, 2017 JetCat P100-RX non-BL. The aircraft remains experimental and has no matched-build flight validation.
 
+2026-10-14 follow-up: [AV-17-R1 keyboard pitch and dive recovery](AV-17-R1/README.md) records the accelerated-stall reproduction, manufacturer/parameter audit, implemented input response and 240/480 Hz verification. The snapshot below predates [continuous turbine integration](../turbine-realism/AV-20/README.md) and [working landing gear](../avanti-gear/AV-09/README.md); its historical system limits are not current feature status.
+
 The [pre-implementation plan](../../AVANTI-S-PLAN.md#6-av-1417-realism-investigation-and-correction) owns scope and acceptance. Three Luna/max audits were reviewed before source changes: [airframe and geometry](AV-14/airframe-audit.md), [turbine and force consumers](AV-14/propulsion-audit.md), [controls, animation and lifecycle](AV-14/coverage-audit.md). Reproduction tools: [AV-14 scripts](../../../research/avanti-s/av14/README.md).
 
 ## Corrections and their effects

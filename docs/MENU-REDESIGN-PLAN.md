@@ -4,6 +4,8 @@
 
 This plan is a scoped revision of [MENU-PLAN](MENU-PLAN.md): it keeps its principles and its delivered steps (UI-00…06c) and replaces the undelivered UI-07/08/09a/09b/09c rows with the steps below, which absorb them. The desktop track's fullscreen acceptance (DT-03…05) stays where it is; UI-23 is the implementation it accepts.
 
+2026-10-14 maintenance follow-ups: [UI-05-R1](research/menu-investigations/UI-05-R1/README.md) removes redundant Home legend reconstruction with native timing and visual parity evidence. [UI-06d-R2](research/menu-investigations/UI-06d-R2/README.md) closes the Spanish launch-caption overflow and stale live-language text, and records refreshed route checks. These repairs do not advance UI-22…29 or establish complete menu/release acceptance.
+
 ## 1. What "modern, mature, professional, useful and ready for the future" means here
 
 Measurable targets, so that "done" is not a matter of taste:

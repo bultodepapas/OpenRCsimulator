@@ -98,6 +98,11 @@ static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
   "shaft_elements":shafts, "drive":parts.drive, "electronics":parts.electronics})
  var prepared: Dictionary = Flight.prepare(cfg)
  if not prepared.ok: return {ok=false,errors=["invalid coupled flight configuration: "+str(prepared.get("message","unknown module failure"))]}
+ if profile_id == "xcell-60-research" \
+   and prepared.context.electronics_model.get("law") != "openrc-four-stick-electronics-v1":
+  return {ok=false,errors=["X-Cell trainer identity cannot use an alternate controller law"]}
+ if profile_id == HX700_ID and not _hx700_identity_is_consistent(raw, prepared.context):
+  return {ok=false,errors=["HX-700 data mixes an unsupported identity, source, ratio or controller law"]}
  var skids: Dictionary = parts.skids
  if skids.size() != 5 or not skids.get("points_body_frd_m") is PackedFloat64Array or skids.points_body_frd_m.size() != 12:
   return {ok=false,errors=["skids require four FRD contact points"]}
@@ -152,3 +157,36 @@ static func _quantity(node: Variant, key: String, errors: PackedStringArray) -> 
 
 static func _number(value: Variant) -> bool:
  return typeof(value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(value))
+
+static func _hx700_identity_is_consistent(raw: Dictionary, context: Dictionary) -> bool:
+ if raw.get("release_state") != "laboratory_only" or raw.get("capabilities") != HX700_CAPABILITIES:
+  return false
+ if context.electronics_model.get("law") != "openrc-fbl-body-rate-electronics-v1":
+  return false
+ if absf(float(context.mass_kg) - 5.2) > 1.0e-9 \
+   or absf(float(context.main_model.omega_nominal_rad_s) - 219.9114857512855) > 1.0e-9 \
+   or absf(float(context.tail_model.tail_to_main_speed_ratio) - 4.92307710647583) > 1.0e-9 \
+   or absf(float(context.drive_model.engine_speed_ratio_to_main) - 9.636364) > 1.0e-9:
+  return false
+ if raw.body.mass_kg.kind != "estimated" or not str(raw.body.mass_kg.source).contains("HELI-25b") \
+   or raw.main_rotor.omega_nominal_rad_s.kind != "derived" \
+   or not str(raw.main_rotor.omega_nominal_rad_s.source).contains("2100 rpm") \
+   or raw.tail_rotor.tail_to_main_speed_ratio.kind != "estimated" \
+   or not str(raw.tail_rotor.tail_to_main_speed_ratio.source).contains("HELI-25b"):
+  return false
+ return _has_independent_hx700_sources(raw)
+
+static func _has_independent_hx700_sources(node: Variant) -> bool:
+ if node is Dictionary:
+  if node.size() == 4 and node.has_all(["value", "unit", "kind", "source"]):
+   var source: String = str(node.source).to_lower()
+   return node.kind not in ["borrowed", "measured"] and not source.contains("xcell") \
+    and not source.contains("x-cell") and not source.contains("gavrilets")
+  for value: Variant in node.values():
+   if not _has_independent_hx700_sources(value):
+    return false
+ elif node is Array:
+  for value: Variant in node:
+   if not _has_independent_hx700_sources(value):
+    return false
+ return true

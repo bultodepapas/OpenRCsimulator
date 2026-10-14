@@ -1,0 +1,52 @@
+[
+  {
+    "name": "reference-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\test_ui_home_start_layout.gd",
+      "--",
+      "--home=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\reference.gd"
+    ],
+    "exit_code": 1,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nFAIL es pad caption follows live locale\nFAIL es startup instructions follow live locale\nFAIL es launch tooltip follows live locale\nFAIL es pad sidebar remains 440 px\nFAIL en pad caption follows live locale\nFAIL en startup instructions follow live locale\nFAIL en launch tooltip follows live locale\nFAIL en pad sidebar remains 440 px\nFAIL es airplane sidebar remains 440 px\nHome launch layout: 44 checks, 9 failed\n"
+  },
+  {
+    "name": "candidate-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\test_ui_home_start_layout.gd",
+      "--",
+      "--home=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\candidate.gd"
+    ],
+    "exit_code": 0,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nHome launch layout: 44 checks, 0 failed\n"
+  },
+  {
+    "name": "candidate-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\test_ui_home_start_layout.gd",
+      "--",
+      "--home=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\candidate.gd"
+    ],
+    "exit_code": 0,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nOpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090\n\nHome launch layout: 44 checks, 0 failed\n"
+  }
+]

@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: default airplane airfield validates
+PASS: airfield bridge builds from normalized field bytes
+PASS: course identity is content-addressed
+PASS: start is runway centerline at the aircraft field origin
+PASS: runway-end spawn keeps a two-metre runway margin
+PASS: both spawn points use the runway surface
+PASS: airfield road height is the GroundTerrain result
+PASS: airfield road normal uses the GroundTerrain gradient
+PASS: runway material uses dry-pavement truck estimates times field factors
+PASS: rough surface retains its own field friction factors
+PASS: custom field translation builds
+PASS: custom start follows the translated runway
+PASS: field content changes the course identity
+PASS: session prepares directly on the airplane airfield
+PASS: airfield initialization keeps float64 state at runway center
+PASS: airfield startup has finite terrain-supported CG altitude
+PASS: airfield session identity matches the bridge
+PASS: runway-end reset uses the second airfield spawn
+PASS: airfield tick-zero checkpoint survives JSON byte roundtrip
+PASS: airfield JSON checkpoint restores the exact supported float64 state
+PASS: second airfield session prepares on a different field identity
+PASS: checkpoint from a different field is rejected atomically
+PASS: airfield suspension experiment prepares from immutable baseline
+PASS: airfield experiment changes model identity and resets support
+PASS: experiment checkpoint JSON roundtrip restores same airfield support
+PASS: experiment reset returns to a supported named runway spawn
+PASS: driving session prepares on the airfield
+PASS: drive starts at runway end
+PASS: airfield session resumes after neutral arming
+PASS: short powered drive leaves runway and samples existing rough field
+PASS: resolved lake joins the airfield terrain source
+PASS: lake-aware road still samples the shared GroundTerrain path
+RCV airfield course: 0 failed

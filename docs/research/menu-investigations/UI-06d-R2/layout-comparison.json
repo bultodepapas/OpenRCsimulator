@@ -1,0 +1,39 @@
+[
+  {
+    "variant": "reference",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\reference-layout.gd"
+    ],
+    "exit_code": 1,
+    "checks": 358,
+    "failures": [
+      "FAIL es xcell-60-research 720p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research 1080p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research defaults 720p: sidebar exactly 440 px wide 444",
+      "FAIL es xcell-60-research defaults 1080p: sidebar exactly 440 px wide 444"
+    ]
+  },
+  {
+    "variant": "candidate",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui06-menu-width\\candidate-layout.gd"
+    ],
+    "exit_code": 0,
+    "checks": 362,
+    "failures": []
+  }
+]

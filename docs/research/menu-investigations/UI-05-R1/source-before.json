@@ -1,0 +1,12 @@
+{
+  "head": "3bb2405242ec557d1bc3efb58671f016b5f72a42",
+  "hashes": {
+    "app/ui/home.gd": "55ae31342f732dd14f2e4cc5a7a7c0c81d2977fcdf34702a61b2a6394d7f9dd4",
+    "app/ui/key_cap.gd": "d9276be77f30a30271e8085fcce7187f073809ff1e6141f4ac326052e9071aaf",
+    "app/ui/key_labels.gd": "e351ab06c42cbfb4e965ad9b3e6e63764c8d4f62d3a89f8f8371360b146eb20e",
+    "app/ui/controls_reference.gd": "846db399f125ef59513d282b94ba7ea681f2b41750ce944238c82b9ad3e12028",
+    "app/app_state/aircraft_catalog.gd": "ddc427ef77eb3d70b00021e1f36026552c4262f81e1da78f5f6ffcef9d91c0ad",
+    "app/ui/ui_theme.gd": "4a1e44a410f31e1232e22bd8dca65118788199f9c6cad89e6334878b4dd44cd7",
+    "app/i18n/es.po": "ed9c4055888f6ad18de444e3bd0168f01d85f6a6e9470eccf69c881e86f5843c"
+  }
+}

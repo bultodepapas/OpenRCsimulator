@@ -1,0 +1,35 @@
+{
+  "connection_verified": true,
+  "continue_after_restart_succeeded": true,
+  "continue_succeeded": true,
+  "device": {
+    "kind": "gamepad",
+    "known": true,
+    "name": "XInput Controller"
+  },
+  "fixed_neutral_armed": true,
+  "fixed_still_paused": true,
+  "focused": true,
+  "passed": true,
+  "previous_continue_blocked": true,
+  "previous_event_only_armed": false,
+  "previous_seen_axes": [
+    1
+  ],
+  "probe": "Actual connected native gamepad at rest; isolated preferences; automated UI Enter presses.",
+  "restart_acknowledged": true,
+  "restart_neutral_armed": true,
+  "resting_axes": [
+    0.0,
+    0.0304112434387207,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "synthetic_axis_events": false
+}

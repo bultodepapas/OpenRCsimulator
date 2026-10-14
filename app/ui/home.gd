@@ -13,6 +13,7 @@ extends "res://ui/screen.gd"
 const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
+const KeyLabels := preload("res://ui/key_labels.gd")
 const Reference := preload("res://ui/controls_reference.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const Conditions := preload("res://render/world/conditions.gd")
@@ -94,6 +95,7 @@ var _scroll: ScrollContainer
 var _flight_device_name := ""
 var _menu_device_name := ""
 var _controller_state_received := false
+var _legend_rows: Array = []
 
 
 func _init() -> void:
@@ -187,6 +189,8 @@ func _init() -> void:
 	card_lines.add_child(limits_label)
 	start_button = _button("", "")
 	start_button.name = "StartChoice"
+	# Long translated launch names wrap inside the card instead of widening the sidebar.
+	start_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	start_button.pressed.connect(_cycle_start_choice)
 	card_lines.add_child(start_button)
 	card.add_child(card_lines)
@@ -383,7 +387,9 @@ func _process(_delta: float) -> void:
 ## Shows `id` on the card and enables Fly only for an aircraft that can fly. Unknown IDs fall back to the default
 ## (a stale preference must never leave Home without a valid airplane).
 func set_aircraft(id: String) -> void:
+	var entering_rotorcraft: bool=Catalog.is_rotorcraft(id) and not Catalog.is_rotorcraft(aircraft_id)
 	aircraft_id = id if Catalog.has(id) else Catalog.DEFAULT_ID
+	if entering_rotorcraft: start_choice="runway"
 	set_start_choice(start_choice)
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
@@ -482,26 +488,38 @@ func reject_start(message: String) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		set_start_choice(start_choice) # Rotorcraft launch labels are translated when assigned.
 		_update_texts()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN and is_node_ready():
 		_fill_legend() # the player may have switched keyboard layout meanwhile (no engine signal for it, research 25)
 
 
 ## The keyboard legend from the shared table (ui/controls_reference.gd), keys named as the current layout prints them.
-func _fill_legend() -> void:
+func _fill_legend(mapper := Callable()) -> void:
+	# Resolve physical labels on every request, including focus regain after a layout change.
+	# Keep only strings, never a mapper or detached controls. Translation of action Labels stays live.
+	var rows: Array = []
+	var vehicle_type := Reference.ROTORCRAFT if Catalog.is_rotorcraft(aircraft_id) else Reference.AIRPLANE
+	for entry in Reference.flight_table(vehicle_type):
+		var keys := PackedStringArray()
+		for key in entry[0]:
+			keys.append(KeyCap.ARROW_KEYS[key] if KeyCap.ARROW_KEYS.has(key) else KeyLabels.label(key, mapper))
+		rows.append([keys, entry[1]])
+	if rows == _legend_rows:
+		return
+	_legend_rows = rows
 	for c in keys_legend.get_children():
 		keys_legend.remove_child(c)
 		c.queue_free()
-	var vehicle_type := Reference.ROTORCRAFT if Catalog.is_rotorcraft(aircraft_id) else Reference.AIRPLANE
-	for k in Reference.flight_table(vehicle_type):
+	for row in rows:
 		var caps := HBoxContainer.new()
 		caps.add_theme_constant_override("separation", 4)
-		for key in k[0]:
-			caps.add_child(KeyCap.for_key(key))
+		for key: String in row[0]:
+			caps.add_child(KeyCap.make(key))
 		var pair := HBoxContainer.new()
 		pair.add_theme_constant_override("separation", 10)
 		pair.add_child(caps)
-		pair.add_child(_label(k[1], "SecondaryLabel"))
+		pair.add_child(_label(row[1], "SecondaryLabel"))
 		keys_legend.add_child(pair)
 
 

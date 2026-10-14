@@ -11,7 +11,7 @@ const SIZE := 256
 ## DT-11a: one default RGB8 tile including mips (262,143 bytes); never retain scene resources.
 static var _default_grass_bytes := PackedByteArray()
 ## Field surface types as the ground shader's surface_kind (Phase 4).
-const SURFACE_KIND: Dictionary = {"rough": 0, "mown": 1, "runway": 2}
+const SURFACE_KIND: Dictionary = {"rough": 0, "mown": 1, "runway": 2, "rotorpad": 3}
 # L9c: a bounded shader batch, not a field-format limit. Unsupported layouts keep the legacy planes.
 const MAX_SURFACES: int = 32
 const HORIZON_FLAT_RADIUS_M: float = 1500.0
@@ -100,7 +100,7 @@ static func _default_grass_image() -> Image:
 ## when the existing field contract needs independent planes (uncontained rectangles, hills, large batches).
 static func configure_surfaces(material: ShaderMaterial, surfaces: Array) -> bool:
 	var ordered: Array[Dictionary] = []
-	for kind: String in ["mown", "runway"]: # Priority is independent of JSON order.
+	for kind: String in ["mown", "rotorpad", "runway"]: # Priority is independent of JSON order.
 		for surface: Dictionary in surfaces:
 			if surface.type == kind:
 				ordered.append(surface)
@@ -151,7 +151,7 @@ static func configure_surfaces(material: ShaderMaterial, surfaces: Array) -> boo
 ## This stays useful for legacy plane layouts, where colour overlays remain separate meshes.
 static func _configure_terrain_surfaces(material: ShaderMaterial, surfaces: Array) -> void:
 	var ordered: Array[Dictionary] = []
-	for kind: String in ["mown", "runway"]:
+	for kind: String in ["mown", "rotorpad", "runway"]:
 		for surface: Dictionary in surfaces:
 			if surface.get("type", "") == kind:
 				ordered.append(surface)
@@ -176,6 +176,7 @@ static func _configure_terrain_surfaces(material: ShaderMaterial, surfaces: Arra
 	material.set_shader_parameter("terrain_surface_kinds", kinds)
 	material.set_shader_parameter("terrain_surface_count", size)
 	material.set_shader_parameter("terrain_runway_amplitude_m", profile.runway_amplitude_m)
+	material.set_shader_parameter("terrain_rotorpad_amplitude_m", profile.rotorpad_amplitude_m)
 	material.set_shader_parameter("terrain_mown_amplitude_m", profile.mown_amplitude_m)
 	material.set_shader_parameter("terrain_rough_amplitude_m", profile.rough_amplitude_m)
 	material.set_shader_parameter("terrain_edge_blend_m", profile.edge_blend_m)

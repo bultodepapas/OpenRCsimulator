@@ -213,8 +213,10 @@ static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity
 	return _blend_low_rpm(low_result, full, low_weight)
 
 
-## End points use the estimated law through μ>=0.30 and the original law by
-## μ<=0.15. With no crossflow, retain a short startup band at 4–8% nominal RPM.
+## The upper endpoint corresponds to μ=0.15 until the 20%-nominal-speed cap
+## is reached. Above that crossflow, the estimated/legacy blend ends at the cap;
+## the legacy algebra domain remains authoritative and identified μ is false.
+## With no crossflow, retain a short startup band at 4–8% nominal RPM.
 static func low_rpm_transition(model: Dictionary, crossflow_m_s: float) -> PackedFloat64Array:
 	var upper: float = maxf(0.08 * model.omega_nominal_rad_s,
 		crossflow_m_s / (0.15 * model.rotor_radius_m))
@@ -281,7 +283,7 @@ static func _evaluate_low_rpm(model: Dictionary, omega: float, induced_velocity:
 	var speed_ratio: float = omega / model.omega_nominal_rad_s
 	var gain_scale: float = speed_ratio * speed_ratio
 	var a_rate: float = angle_activity * (-body_rates[1]
-		+ (-a1 + model.cyclic_longitudinal_gain_nominal_rad_per_rad * gain_scale * cyclic_forward) * tau_rate)
+		+ (-a1 - model.cyclic_longitudinal_gain_nominal_rad_per_rad * gain_scale * cyclic_forward) * tau_rate)
 	var b_rate: float = angle_activity * (-body_rates[0]
 		+ (-b1 + model.cyclic_lateral_gain_nominal_rad_per_rad * gain_scale * cyclic_right) * tau_rate)
 	var flap_rate: PackedFloat64Array = PackedFloat64Array([a_rate, b_rate])
@@ -310,8 +312,21 @@ static func _blend_low_rpm(low: Dictionary, standard: Dictionary, low_weight: fl
 		for index: int in range(values.size()):
 			values[index] = lerpf(values[index], low[key][index], low_weight)
 		result[key] = values
+	var blended_loads: PackedFloat64Array = result.loads
+	result["force_body_frd_n"] = M.v3(blended_loads[0], blended_loads[1], blended_loads[2])
+	result["moment_body_frd_nm"] = M.v3(blended_loads[3], blended_loads[4], blended_loads[5])
+	# These describe the legacy end-member, not the weighted physical output.
+	# Its scalar coefficient/decomposition cannot be inferred from the bounded
+	# startup estimate, which includes separate drag and activity terms.
+	for key: String in ["lambda0", "thrust_coefficient_ideal", "thrust_coefficient",
+		"torque_coefficient", "thrust_normal_body_frd", "hub_arm_moment_body_frd_nm",
+		"flap_spring_moment_body_frd_nm", "reaction_torque_moment_body_frd_nm",
+		"effective_flap_time_constant_s"]:
+		if result.has(key):
+			result[key] = null
 	result["estimated_regime"] = "blended_low_rpm_startup"
 	result["estimated_low_rpm_weight"] = low_weight
+	result["within_identified_advance_ratio"] = false
 	return result
 
 

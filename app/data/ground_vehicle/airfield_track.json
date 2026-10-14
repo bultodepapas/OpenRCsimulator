@@ -25,9 +25,9 @@
       "north_m": 39.0,
       "east_m": -4.0,
       "height_m": 0.48,
-      "approach_m": 0.85,
-      "deck_m": 0.1,
-      "descent_m": 1.25,
+      "approach_m": 1.0,
+      "deck_m": 0.45,
+      "descent_m": 1.8,
       "width_m": 3.2
     },
     {

@@ -7,6 +7,7 @@ const Model = preload("res://vehicles/ground/mt8_model.gd")
 const Dashboard = preload("res://vehicles/ground/ground_dashboard.gd")
 const CameraRig = preload("res://vehicles/ground/ground_camera.gd")
 const CourseView = preload("res://vehicles/ground/course_view.gd")
+const TrackView = preload("res://vehicles/ground/airfield_track_view.gd")
 const Course = preload("res://physics/ground_vehicle/course.gd")
 const AirfieldCourse = preload("res://physics/ground_vehicle/airfield_course.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
@@ -162,6 +163,8 @@ func _build_airfield() -> void:
 		exclusions.append(GrassMask._record("rc-access", "dirt_track", points))
 		camera_rig.track_center = Vector3(track.center_east_m, 0.0, -float(track.center_north_m))
 	add_child(FieldBuilder.build(field, _lighting, exclusions))
+	if _course.has("track"):
+		add_child(TrackView.build(_course, _render_road))
 
 func _prepare_airfield() -> bool:
 	var loaded := FieldLoader.load_from(field_path)
