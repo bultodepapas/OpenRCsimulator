@@ -1,0 +1,18 @@
+test_moving_capture_packages_as_exact_apng_and_keeps_duplicate_frame (research.performance.test_visibility_pack.VisibilityApngPackagingTests.test_moving_capture_packages_as_exact_apng_and_keeps_duplicate_frame) ... ok
+test_packager_refuses_an_existing_output_directory (research.performance.test_visibility_pack.VisibilityApngPackagingTests.test_packager_refuses_an_existing_output_directory) ... ok
+test_absolute_and_parent_path_forms_are_rejected (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_absolute_and_parent_path_forms_are_rejected) ... ok
+test_cg_screen_center_must_be_inside_image_bounds (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_cg_screen_center_must_be_inside_image_bounds) ... ok
+test_distance_fov_and_projected_span_must_be_in_valid_ranges (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_distance_fov_and_projected_span_must_be_in_valid_ranges) ... ok
+test_frame_time_must_match_index_over_fps (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_frame_time_must_match_index_over_fps) ... ok
+test_identical_frames_are_rejected_for_lack_of_pixel_motion (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_identical_frames_are_rejected_for_lack_of_pixel_motion) ... ok
+test_manifest_dimensions_must_match_png_dimensions (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_manifest_dimensions_must_match_png_dimensions) ... ok
+test_manifest_frame_hash_mismatch_is_rejected (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_manifest_frame_hash_mismatch_is_rejected) ... ok
+test_missing_frame_file_is_rejected (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_missing_frame_file_is_rejected) ... ok
+test_moving_capture_validates_with_configured_count (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_moving_capture_validates_with_configured_count) ... ok
+test_non_finite_json_value_is_rejected (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_non_finite_json_value_is_rejected) ... ok
+test_optional_bbox_accepts_edge_tolerance_and_rejects_invalid_bounds (research.performance.test_visibility_pack.VisibilityCaptureValidationTests.test_optional_bbox_accepts_edge_tolerance_and_rejects_invalid_bounds) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.299s
+
+OK

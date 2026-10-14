@@ -1,6 +1,6 @@
 # Xbox, DualSense and general controller qualification plan
 
-Status: source implementation delivered; software audit in progress, 2026-10-14. Physical qualification remains open. The owner prioritizes Xbox and/or DualSense on Windows. The [current player guide](../FIRST-LAUNCH.md#controller-settings-current-source) describes implemented behavior; [dated research and evidence](../research/controller-support-2026-10-14/README.md) retain the original defects, primary references, implementation checks and audit results.
+Status: source implementation and focused software audit delivered, 2026-10-14. Physical qualification remains open. The owner prioritizes Xbox and/or DualSense on Windows. The [current player guide](../FIRST-LAUNCH.md#controller-settings-current-source) describes implemented behavior; [dated research and evidence](../research/controller-support-2026-10-14/README.md#software-audit-and-corrections) retain the original defects, primary references, implementation checks and audit results.
 
 This plan now tracks remaining work and acceptance. It does not count implemented classes as future work or treat synthetic tests as controller certification. Godot stays pinned to 4.7.2; engine upgrades require a separate change and qualification.
 
@@ -29,7 +29,7 @@ The input path is registry -> selected profile -> scalar conditioning/neutral ga
 
 | Priority / step | Concrete work | Completion evidence |
 | --- | --- | --- |
-| P0 / existing D6-GP-02, F3-GP-02, UI-15-GP-01 | Close the software audit: preserve calibration settings, reject corrupt stores, preflight activity compatibility, keep draft/capture ownership stable, revoke stale neutral readiness, validate key chords consistently | Reproducing regression tests plus relevant existing suites, whole-app parse and inspected error logs; findings recorded in the existing research report |
+| Ongoing regression gate / D6-GP-02, F3-GP-02, UI-15-GP-01 | Preserve the completed audit fixes: calibration settings, corrupt-store rejection, activation rollback, stable draft/capture ownership, fresh neutral readiness and key-chord validation | Focused audit tests and existing suites pass; whole-app parse and final changed-file parses pass. Recheck these contracts on later input changes; dated evidence records the limits of repository-wide testing. |
 | P1 / F1-GP-01 + D6-GP-03 | Inspect each available physical device and record all expected axes/buttons. Test RT/LT individually and together at 0/50/100%, stick direction/range and 30-second idle drift | Native F1 report, exact model/firmware/transport, profile revision and observed range table |
 | P1 / UI-12-GP-01 | Complete Home -> Controls -> select/configure/test -> aircraft -> launch -> pause -> settings -> resume -> Home -> quit without keyboard/mouse | EN/ES focus/scroll/cancel record on each primary controller; slider, selector, popup and remap cases included |
 | P1 / F3-GP-02 + F4-GP-01 | Run the fault protocol below on Windows source and exported package | Ten reconnect cycles per primary path; focus, suspend, stale device ID and two-device isolation results; no automatic resume or thrust |

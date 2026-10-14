@@ -1,0 +1,34 @@
+[
+  {
+    "clip": "01",
+    "case": "trees-knife_left-off",
+    "pose": "knife_left",
+    "auto_zoom": false,
+    "clip_sha256": "ff9edd5705c584223f686a98c4b301df5da15f2c1ce5ba51164e7f0a35682528",
+    "manifest_sha256": "67ee541a04d052f99f0537a8d9e6ee4323aa7bbcb9905e2dc3e8f334435b913f"
+  },
+  {
+    "clip": "02",
+    "case": "sky-inverted-on",
+    "pose": "inverted",
+    "auto_zoom": true,
+    "clip_sha256": "c80df3f3afeeadb3b00d74e03a30744d2a42636248d8343062c1a34446e8da85",
+    "manifest_sha256": "23d3764336ff3ca5e5211517ac7f36b9a071b9a19f144ccaca2c3fa08ae2e532"
+  },
+  {
+    "clip": "03",
+    "case": "trees-knife_left-on",
+    "pose": "knife_left",
+    "auto_zoom": true,
+    "clip_sha256": "bdc6c3a501d7f0916fd522040f64cc874545f475c210690b8ed84efa43b00737",
+    "manifest_sha256": "332288473c1e8ce6ad1cdb580448488884ff130b8887cf2cd0a8f9f0fbbe9fcf"
+  },
+  {
+    "clip": "04",
+    "case": "sky-inverted-off",
+    "pose": "inverted",
+    "auto_zoom": false,
+    "clip_sha256": "771f5caf8076e8c6f8e062d4277ede165daafe574b1f622d7217297755f1d541",
+    "manifest_sha256": "3d274817dcfb91f2301062b4a07412b202258ad27c1b1e160e34dedf7520e1ee"
+  }
+]

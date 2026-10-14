@@ -27,6 +27,7 @@ class FakeSession extends Node:
 	var external_controller_selection := false
 	var persist_controller_profile: Callable
 	var persist_full_controller_profile: Callable
+	var last_profile_id := ""
 	var radio := {"connected": true}
 
 	func controller_profile_rejection(profile: Dictionary) -> String:
@@ -36,6 +37,7 @@ class FakeSession extends Node:
 
 	func apply_controller_selection(_id: int, _info: Dictionary, profile: Dictionary, _initial_start := false) -> bool:
 		apply_count += 1
+		last_profile_id = str(profile.get("profile_id", ""))
 		return str(profile.get("name", "")) != reject_name
 
 	func controller_disconnected() -> void:
@@ -166,6 +168,27 @@ func _run() -> void:
 	check("unexpected session refusal reports save failure", not unexpected_result.get("ok", false))
 	check("unexpected session refusal restores the prior stored profile set", save_after_apply.ok and save_after_apply.profiles == save_before_apply.profiles)
 	check("unexpected session refusal preserves the previously active profile", calibration_service.profile_for_device(83).get("profile_id", "") == active_before_unexpected.get("profile_id", ""))
+
+	# A newly configured unknown device has no prior runtime profile. The post-write
+	# lookup must not mistake the candidate itself for that baseline during rollback.
+	var unknown_device := {"id": 84, "name": "Unknown audit stick", "raw_name": "Unknown audit stick", "guid": "unknown-stick", "kind": "joystick", "known": false, "vendor_id": 202, "product_id": 2, "serial_number": "unknown-serial"}
+	calibration_service.enumerate_devices = func() -> Array: return [calibration_device, reject_device, unknown_device]
+	calibration_service.refresh()
+	var observed_profile_ids: Array[String] = []
+	calibration_service.flight_selection_changed.connect(func() -> void:
+		observed_profile_ids.append(str(calibration_service.profile_for_device(84).get("profile_id", "")))
+	)
+	check("unknown device selection succeeds before profile configuration", calibration_service.select_devices(84, -1) and calibration_service.profile_for_device(84).is_empty())
+	var first_profile := Profile.defaults("joystick", "radio_custom")
+	first_profile.name = "First configured unknown stick"
+	calibration_session.reject_name = first_profile.name
+	var first_save_before: Dictionary = calibration_service.store.load_all()
+	var first_rejected: Dictionary = calibration_service.save_profile_from_setup(first_profile, 84)
+	var first_save_after: Dictionary = calibration_service.store.load_all()
+	check("first setup save can be refused by runtime after persistence", not first_rejected.get("ok", false))
+	check("first-save refusal restores storage and leaves no cached candidate", first_save_after.ok and first_save_after.profiles == first_save_before.profiles and calibration_service.profile_for_device(84).is_empty())
+	check("first-save refusal restores the unconfigured runtime route", calibration_session.last_profile_id.is_empty())
+	check("selection observers see the restored profile after rejection", not observed_profile_ids.is_empty() and observed_profile_ids.back().is_empty())
 
 	var bytes_before_disconnect: PackedByteArray = FileAccess.get_file_as_bytes(CALIBRATION_PATH)
 	calibration_service.enumerate_devices = func() -> Array: return []

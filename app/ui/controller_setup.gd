@@ -592,14 +592,8 @@ func _input(event: InputEvent) -> void:
 func _event_release_token(event: InputEvent) -> String:
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
-		return "key:%d:%d:%d" % [key_event.device, key_event.physical_keycode, key_event.keycode]
-	if event is InputEventJoypadButton:
-		var button_event := event as InputEventJoypadButton
-		return "button:%d:%d" % [button_event.device, button_event.button_index]
-	if event is InputEventJoypadMotion:
-		var motion := event as InputEventJoypadMotion
-		return "axis:%d:%d" % [motion.device, motion.axis]
-	return ""
+		return "keyboard:%d:%s" % [key_event.device, ControllerActions.event_source(key_event)]
+	return ControllerActions.event_source(event)
 
 
 func _track_capture_release(event: InputEvent) -> void:
@@ -654,6 +648,8 @@ func _load_profiles() -> void:
 	if not bool(result.get("ok", false)):
 		var errors: Array = result.get("errors", [])
 		_set_status(tr("Could not load controller profiles: %s") % "; ".join(errors), true)
+	elif not result.get("errors", []).is_empty():
+		_set_status(tr("Controller profiles recovered: %s") % "; ".join(result.errors), false)
 
 
 func _refresh_devices() -> void:

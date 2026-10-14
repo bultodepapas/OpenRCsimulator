@@ -1,6 +1,6 @@
 # Ventage Jet turbine jet: plan
 
-2026-10-12 · Revision 8 · **Status: AV-14…16 audit and bounded corrections complete; AV-17 integration evidence recorded, with the uninterrupted suite still failing a reproduced baseline atmosphere test. The catalog aircraft remains experimental. Planform metrology, turbine presentation, flap/gear simulation, fuel burn, independent validation and delivery remain open.**
+2026-10-14 · Revision 9 · **Status: AV-31 replaces the visual blockout with the supplied Blender model, including turbine/pipe, seven control hinges and measured gear-up contact witnesses. Native Windows export and focused software qualification pass. AV-20 continuous turbine response is integrated. The catalog aircraft remains experimental: calibrated planform/installation, flap/gear simulation, finite fuel and independent physical validation remain open. AV-17's historical full-suite result is retained below; AV-31 does not claim a new full-suite or release acceptance.**
 
 Step-ID prefix `AV-`. Owned paths: `assets/aircraft/avanti-s-a200/`, `app/aircraft/avanti_s_*`, `app/aircraft/verify_avanti.gd`, `app/physics/turbine.gd`, `app/data/aircraft/sebart_avanti_s_a200.json` (generated), `app/tests/test_turbine.gd`, `app/tests/test_avanti_handling.gd`, `research/avanti-s/`, `docs/research/avanti-s-*`.
 
@@ -20,27 +20,28 @@ Same flow as the other aircraft: declarative geometry → generated data with `{
 
 ## 3. Steps
 
-| ID | Step | Proof | Status / next evidence (checked 2026-10-12) |
+| ID | Step | Proof | Status / next evidence (checked 2026-10-14) |
 | --- | --- | --- | --- |
 | AV-00 | Choose the variant and archive evidence | sources, hashes, git exclusion | ✅ 2026-10-05 |
 | AV-01 | Datum and minimum geometry | traceable dimensions; discrepancies shown | provisional: no calibrated planform exists; root LE station, root chord, stab and fuselage width still to measure (they decide the neutral point) |
-| AV-02 | Visual model and app preview | inspector views, scale, joints and contour comparisons (revisions 2–4) | Integrated as a blockout; planform and hidden geometry remain estimated |
-| AV-03 | Catalog and propeller-free adapter | `verify_avanti.gd`, catalog and UI tests | ✅ 2026-10-06 |
-| AV-04 | Rig, manual throws and surface clearance | `verify_avanti.gd` checks the seven surface pivots, signs, travel and reset; handling tests check 30° up/25° down aileron differential | Software implementation complete; installed servo response is unmeasured |
+| AV-02 | Visual model and app preview | historical blockout revisions 2–4; AV-31 imported Blender views | Visual blockout superseded by AV-31; AV-02 remains the estimated physical surrogate |
+| AV-03 | Catalog and propeller-free adapter | common v2 `imported_glb` builder, model/Workshop manifests and catalog tests | Updated and qualified in AV-31; stable catalog ID and compatibility facade |
+| AV-04 | Rig, manual throws and surface clearance | AV-31: 340 scene checks; seven measured rest transforms, signs, full travel and reset; 30° up/25° down aileron differential | Imported rig qualified; installed servo response and physical clearance under load remain unmeasured |
 | AV-05a | Turbine propulsion branch: thrust, ram drag, throttle map, spool | `test_turbine.gd` (27): loader refusals, thrust and ram drag, ram recovery, inlet normal force, spool limits without overshoot, 240/480 Hz split, gyro sign; Stik goldens unchanged | ✅ 2026-10-06 |
 | AV-05b | ECU states: start, stop, fuel cut, flameout ([roadmap research 05](research/roadmap-investigations/05-propulsion-engines-motors.md)) | state machine unit tests; residual energy and source-backed cooling | Detailed work/status in [turbine realism plan](plans/turbine-realism.md#13-incremental-implementation-sequence) (G2) |
 | AV-06 | Mass, aero references, trim | `derive_physics.py --check` in `test.sh`; sensitivity table; trim from 20 to 73 m/s | ✅ 2026-10-06 (experimental) |
 | AV-07 | First experimental flight | `test_avanti_handling.gd` (30): hands-off 30 s, spool times, roll vs prediction, Vmax, glide, idle energy, loop, stall, stall-rotation recovery; app `--trace` checked | ✅ 2026-10-06 (headless; pilot evaluation at Gate 2 pending) |
-| AV-08 | Finish and turbine sound | comparable captures, stable pause, owner reading | Pending; current generic sound is not a P100 turbine model |
+| AV-08 | Finish and turbine sound | AV-31 native/imported/exported captures; existing turbine whine/roar telemetry route | Blender finish and turbine presentation integrated; acoustic identification against this P100 installation remains open |
 | AV-09 | Flaps and retracts | input channel and state, actuator limits, flap aero (ΔCLmax +0.18/+0.33, ΔCD +0.016/+0.070, elevator mix), gear drag and contacts per state | pending: shared input and aero change |
 | AV-10 | Fuel burn | mass, CG and inertia move together for one fixed build; reproducible reset | Detailed AV-10a/b/c work/status in [turbine realism plan](plans/turbine-realism.md#13-incremental-implementation-sequence) (G4); historical CG endpoints are not a measured travel range |
 | AV-11 | Independent contrast | comparable flight observations, sensitivity, envelope limits | pending: no Avanti telemetry exists publicly |
 | AV-12 | Delivery | clean clone, export smoke per ID, full suite, renderer captures | pending |
 | AV-13 | Contact, brakes, vectoring, extended ECU | own tests | future |
+| AV-31 | Supplied Blender jet integration | reproducible source exporter, common model contract, 340 model checks, focused flight/crash/audio/Workshop tests, native Windows package and capture | Complete for the admitted gear-up/clean configuration; [evidence](research/avanti-blender/AV-31/README.md), [authoring guide](../assets/aircraft/avanti-s-a200/README.md) |
 
 ## 4. Known limits of the experimental model
 
-The geometry is a photo blockout (wing 0.702 m², no published area); the neutral point is anchored on the manual's aft CG (260 mm at 3 % MAC); 0.345 kg of virtual tail weight balances the corrected estimated inventory (AV-15); spool constants are ±40 %; the P100 rotation sense is assumed. The current limits and evidence are in the [AV-14…17 report](research/avanti-realism/README.md); the [AV-05…07 report](research/avanti-s-av06-physics-model.md) is historical.
+The physical geometry remains the estimated AV-02 surrogate (wing 0.702 m², no published area); AV-31's Blender presentation supplies contact witnesses only. Its planform and turbine height differ and are not calibrated physical inputs. The neutral point is anchored on the manual's aft CG (260 mm at 3 % MAC); 0.345 kg of virtual tail weight balances the corrected estimated inventory (AV-15); spool constants are ±40 %; the P100 rotation sense is assumed. The [AV-14…17 report](research/avanti-realism/README.md), [AV-20 response evidence](research/turbine-realism/AV-20/README.md) and [AV-31 model evidence](research/avanti-blender/AV-31/README.md) distinguish implemented behavior from physical validation; the [AV-05…07 report](research/avanti-s-av06-physics-model.md) is historical.
 
 ## 5. Next actions
 
@@ -48,7 +49,7 @@ The [fuel-turbine realism plan](plans/turbine-realism.md) now owns detailed AV-0
 
 AV-20 now explicitly selects continuous turbine RPM in the generated experimental aircraft: stage-local governor/thrust/gyro, accepted RPM mirror, prescribed fuel mass and checkpoint v8. [Implementation evidence](research/turbine-realism/AV-20/README.md) records the numerical delta and remaining ECU, fuel and physical-validation gates. Historical sampled integration remains available when the optional selector is absent or `sampled`.
 
-Keep AV-01 geometry provisional until calibrated A200 planform, tail and equipment locations are available. Coordinate AV-09's flap/gear input and aerodynamics with the physics and input owners; the current `set_flaps()` method only poses the visual hinges. AV-10 fuel burn, AV-05b ECU states, AV-08 sound/finish, independent physical validation (AV-11), and clean export acceptance (AV-12) remain separate steps.
+Keep AV-01 geometry provisional until calibrated A200 planform, tail and equipment locations are available. Coordinate AV-09's flap/gear input and aerodynamics with the physics and input owners; the current `set_flaps()` method only poses the visual hinges. AV-10 fuel burn, AV-05b ECU states, AV-08 acoustic identification, independent physical validation (AV-11), and fleet-wide release acceptance (AV-12) remain separate steps. AV-31 closes this model replacement and records its isolated Windows export proof.
 
 ## 6. AV-14…17 realism investigation and correction
 

@@ -17,8 +17,9 @@ class FakeRegistry extends RefCounted:
 class FakeStore extends RefCounted:
 	var profiles: Array[Dictionary] = []
 	var saved: Array[Dictionary] = []
+	var recovery_errors: Array[String] = []
 	func load_all() -> Dictionary:
-		return {"ok": true, "profiles": profiles.duplicate(true)}
+		return {"ok": true, "profiles": profiles.duplicate(true), "errors": recovery_errors.duplicate()}
 	func match_profile(_device: Dictionary, _devices: Array) -> Dictionary:
 		return {}
 	func save_profile(profile: Dictionary) -> Dictionary:
@@ -89,6 +90,13 @@ func _key_event(key: Key, pressed: bool) -> InputEventKey:
 	event.pressed = pressed
 	return event
 
+func _key_event_with_codes(physical_key: Key, logical_key: Key, pressed: bool) -> InputEventKey:
+	var event := InputEventKey.new()
+	event.keycode = logical_key
+	event.physical_keycode = physical_key
+	event.pressed = pressed
+	return event
+
 func _axis_event(device: int, axis: JoyAxis, value: float) -> InputEventJoypadMotion:
 	var event := InputEventJoypadMotion.new()
 	event.device = device
@@ -117,6 +125,10 @@ func _run() -> void:
 	var probe := InputProbe.new()
 	root.add_child(probe)
 	var setup := await _new_setup()
+	store.recovery_errors = ["Recovered from rollback"]
+	setup._load_profiles()
+	_check("successful recovery still displays its warning", setup.status_label.text.contains("Recovered from rollback"))
+	store.recovery_errors.clear()
 	setup.close_requested.connect(probe.on_closed)
 	setup.profile_saved.connect(probe.on_saved)
 	await process_frame
@@ -132,6 +144,14 @@ func _run() -> void:
 	await _dispatch(_key_event(KEY_Q, true))
 	await _dispatch(_key_event(KEY_Q, false))
 	_check("matching keyboard release is consumed after capture ends", probe.releases.is_empty(), str(probe.releases))
+	setup._start_capture("camera_cycle", remap)
+	var physical_press := _key_event_with_codes(KEY_Q, KEY_Q, true)
+	var layout_changed_release := _key_event_with_codes(KEY_Q, KEY_A, false)
+	setup._input(physical_press)
+	setup._input(layout_changed_release)
+	_check("matching release stays consumed when the logical keycode changes",
+		setup._event_release_token(physical_press) == setup._event_release_token(layout_changed_release)
+		and not setup._capture_release_tokens.has(setup._event_release_token(physical_press)))
 	setup._start_capture("camera_cycle", remap)
 	await _dispatch(_axis_event(15, JOY_AXIS_TRIGGER_RIGHT, 0.8))
 	await _dispatch(_axis_event(15, JOY_AXIS_TRIGGER_RIGHT, 0.0))

@@ -1,0 +1,2234 @@
+{
+  "schema": "openrc-rotorcraft-construction",
+  "version": 1,
+  "profile_id": "hx-700-articulated-r1",
+  "purpose": "neutral-mechanical-preview",
+  "source": {
+    "path": "NEW HELI/HX-700_Helicoptero_RC_1.blend",
+    "sha256": "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f",
+    "blender_version": "5.2.2 LTS"
+  },
+  "asset": {
+    "path": "res://assets/aircraft/hx-700/articulated/hx-700.glb",
+    "sha256": "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47"
+  },
+  "coordinates": "gltf-y-up-metres",
+  "bindings": [
+    {
+      "id": "actuator.cyclic.front_left",
+      "role": "actuator_output",
+      "node": "Brazo_Servo_Delantero_Izq",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.03800000250339508,
+        0.2175000011920929,
+        -0.030000001192092896
+      ]
+    },
+    {
+      "id": "actuator.cyclic.front_right",
+      "role": "actuator_output",
+      "node": "Brazo_Servo_Delantero_Der",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.03800000250339508,
+        0.2175000011920929,
+        0.030000001192092896
+      ]
+    },
+    {
+      "id": "actuator.cyclic.rear",
+      "role": "actuator_output",
+      "node": "Brazo_Servo_Trasero",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.04649999737739563,
+        0.2175000011920929,
+        -0.017999999225139618
+      ]
+    },
+    {
+      "id": "actuator.tail",
+      "role": "actuator_output",
+      "node": "Brazo_Servo_Cola",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.12800000607967377,
+        0.14499999582767487,
+        0.015500000678002834
+      ]
+    },
+    {
+      "id": "anchor.rosca_bieleta_cabeza_a_varilla",
+      "role": "frame",
+      "node": "Rosca_Bieleta_Cabeza_A_Varilla",
+      "parent_id": "linkage.bieleta_cabeza_a.b",
+      "rest_transform": [
+        2.028159258316009e-07,
+        -1.0640650316418032e-07,
+        -0.9999999403953552,
+        1.0640650316418032e-07,
+        -0.9999999403953552,
+        1.064065244804624e-07,
+        -0.9999999403953552,
+        -1.064065244804624e-07,
+        -1.3435885648505064e-07,
+        0.0,
+        0.008999942801892757,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rosca_bieleta_cabeza_b_varilla",
+      "role": "frame",
+      "node": "Rosca_Bieleta_Cabeza_B_Varilla",
+      "parent_id": "linkage.bieleta_cabeza_b.b",
+      "rest_transform": [
+        2.028159258316009e-07,
+        -1.0640650316418032e-07,
+        -0.9999999403953552,
+        1.0640650316418032e-07,
+        -0.9999999403953552,
+        1.064065244804624e-07,
+        -0.9999999403953552,
+        -1.064065244804624e-07,
+        -1.3435885648505064e-07,
+        0.0,
+        0.008999940939247608,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rosca_bieleta_palanca_cola_varilla",
+      "role": "frame",
+      "node": "Rosca_Bieleta_Palanca_Cola_Varilla",
+      "parent_id": "linkage.bieleta_palanca_cola.b",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.24791699647903442,
+        0.9687812924385071,
+        0.0,
+        -0.9687812924385071,
+        -0.24791699647903442,
+        0.0,
+        0.005499992519617081,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rosca_bieleta_paso_cola_a_varilla",
+      "role": "frame",
+      "node": "Rosca_Bieleta_Paso_Cola_A_Varilla",
+      "parent_id": "linkage.bieleta_paso_cola_a.b",
+      "rest_transform": [
+        0.9992620348930359,
+        -0.027165165171027184,
+        -0.02715514414012432,
+        0.027165165171027184,
+        -1.4115369140199618e-07,
+        0.9996309876441956,
+        -0.02715514414012432,
+        -0.9996309876441956,
+        0.0007378050941042602,
+        0.0,
+        0.003999996930360794,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rosca_bieleta_paso_cola_b_varilla",
+      "role": "frame",
+      "node": "Rosca_Bieleta_Paso_Cola_B_Varilla",
+      "parent_id": "linkage.bieleta_paso_cola_b.b",
+      "rest_transform": [
+        0.9992620348930359,
+        0.027165161445736885,
+        0.027155138552188873,
+        -0.027165161445736885,
+        -1.4086745636632259e-07,
+        0.9996309876441956,
+        0.027155138552188873,
+        -0.9996309876441956,
+        0.0007378050941042602,
+        0.0,
+        0.0040000006556510925,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rosca_varilla_cola_varilla",
+      "role": "frame",
+      "node": "Rosca_Varilla_Cola_Varilla",
+      "parent_id": "linkage.varilla_cola.b",
+      "rest_transform": [
+        -0.006666532717645168,
+        0.9999778270721436,
+        0.0,
+        -0.9999778270721436,
+        -0.006666532717645168,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.01199998427182436,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rosca_varilla_servo_delantera_der_varilla",
+      "role": "frame",
+      "node": "Rosca_Varilla_Servo_Delantera_Der_Varilla",
+      "parent_id": "linkage.varilla_servo_delantera_der.b",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.9708118438720703,
+        0.2398439347743988,
+        0.0,
+        -0.2398439347743988,
+        -0.9708118438720703,
+        0.0,
+        0.008999990299344063,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rosca_varilla_servo_delantera_izq_varilla",
+      "role": "frame",
+      "node": "Rosca_Varilla_Servo_Delantera_Izq_Varilla",
+      "parent_id": "linkage.varilla_servo_delantera_izq.b",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -0.9708118438720703,
+        -0.2398439347743988,
+        0.0,
+        0.2398439347743988,
+        -0.9708118438720703,
+        0.0,
+        0.008999990299344063,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rosca_varilla_servo_trasera_varilla",
+      "role": "frame",
+      "node": "Rosca_Varilla_Servo_Trasera_Varilla",
+      "parent_id": "linkage.varilla_servo_trasera.b",
+      "rest_transform": [
+        -0.999997615814209,
+        0.0021976535208523273,
+        0.0,
+        -0.0021976535208523273,
+        -0.999997615814209,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.009000027552247047,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_cabeza_a_terminal_plato",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Cabeza_A_Terminal_Plato",
+      "parent_id": "main.grip.a",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.026999998837709427,
+        -0.000499994377605617,
+        0.009000003337860107
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_cabeza_a_terminal_portapalas",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Cabeza_A_Terminal_Portapalas",
+      "parent_id": "swash.rotating",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.027000000700354576,
+        0.0,
+        -0.035999998450279236
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_cabeza_b_terminal_plato",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Cabeza_B_Terminal_Plato",
+      "parent_id": "main.grip.b",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.027000000700354576,
+        -0.000499994377605617,
+        -0.009000003337860107
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_cabeza_b_terminal_portapalas",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Cabeza_B_Terminal_Portapalas",
+      "parent_id": "swash.rotating",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.027000004425644875,
+        0.0,
+        0.03599999472498894
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_palanca_cola_terminal_corredera",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Palanca_Cola_Terminal_Corredera",
+      "parent_id": "tail.bellcrank",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.0139999995008111,
+        -0.0051000118255615234,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_palanca_cola_terminal_palanca",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Palanca_Cola_Terminal_Palanca",
+      "parent_id": "tail.slider",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.010000050067901611,
+        -0.02709999680519104,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_paso_cola_a_terminal_portapalas",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Paso_Cola_A_Terminal_Portapalas",
+      "parent_id": "tail.yoke",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.014599955640733242,
+        0.014000020921230316,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_paso_cola_a_terminal_yugo",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Paso_Cola_A_Terminal_Yugo",
+      "parent_id": "tail.grip.a",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.015099707990884781,
+        0.013999965973198414,
+        -0.008100003935396671
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_paso_cola_b_terminal_portapalas",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Paso_Cola_B_Terminal_Portapalas",
+      "parent_id": "tail.yoke",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.014600121416151524,
+        -0.013999931514263153,
+        0.0
+      ]
+    },
+    {
+      "id": "anchor.rotula_bieleta_paso_cola_b_terminal_yugo",
+      "role": "frame",
+      "node": "Rotula_Bieleta_Paso_Cola_B_Terminal_Yugo",
+      "parent_id": "tail.grip.b",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.015100016258656979,
+        -0.013999971561133862,
+        -0.008100004866719246
+      ]
+    },
+    {
+      "id": "anchor.rotula_varilla_cola_terminal_palanca",
+      "role": "frame",
+      "node": "Rotula_Varilla_Cola_Terminal_Palanca",
+      "parent_id": "actuator.tail",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.012999999336898327,
+        0.0065999990329146385
+      ]
+    },
+    {
+      "id": "anchor.rotula_varilla_cola_terminal_servo",
+      "role": "frame",
+      "node": "Rotula_Varilla_Cola_Terminal_Servo",
+      "parent_id": "tail.bellcrank",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.0051000118255615234,
+        0.018000002950429916
+      ]
+    },
+    {
+      "id": "anchor.rotula_varilla_servo_delantera_der_terminal_plato",
+      "role": "frame",
+      "node": "Rotula_Varilla_Servo_Delantera_Der_Terminal_Plato",
+      "parent_id": "actuator.cyclic.front_right",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.01799999736249447,
+        0.0,
+        -0.006600001826882362
+      ]
+    },
+    {
+      "id": "anchor.rotula_varilla_servo_delantera_der_terminal_servo",
+      "role": "frame",
+      "node": "Rotula_Varilla_Servo_Delantera_Der_Terminal_Servo",
+      "parent_id": "swash.fixed",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.019999999552965164,
+        0.0,
+        0.03464101627469063
+      ]
+    },
+    {
+      "id": "anchor.rotula_varilla_servo_delantera_izq_terminal_plato",
+      "role": "frame",
+      "node": "Rotula_Varilla_Servo_Delantera_Izq_Terminal_Plato",
+      "parent_id": "actuator.cyclic.front_left",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.01799999736249447,
+        0.0,
+        0.006600001826882362
+      ]
+    },
+    {
+      "id": "anchor.rotula_varilla_servo_delantera_izq_terminal_servo",
+      "role": "frame",
+      "node": "Rotula_Varilla_Servo_Delantera_Izq_Terminal_Servo",
+      "parent_id": "swash.fixed",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.019999999552965164,
+        0.0,
+        -0.03464101627469063
+      ]
+    },
+    {
+      "id": "anchor.rotula_varilla_servo_trasera_terminal_plato",
+      "role": "frame",
+      "node": "Rotula_Varilla_Servo_Trasera_Terminal_Plato",
+      "parent_id": "actuator.cyclic.rear",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.006599996238946915,
+        0.0,
+        0.017999999225139618
+      ]
+    },
+    {
+      "id": "anchor.rotula_varilla_servo_trasera_terminal_servo",
+      "role": "frame",
+      "node": "Rotula_Varilla_Servo_Trasera_Terminal_Servo",
+      "parent_id": "swash.fixed",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.03999999910593033,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "linkage.bieleta_cabeza_a.a",
+      "role": "link_endpoint",
+      "node": "Bieleta_Cabeza_A_Terminal_Plato",
+      "parent_id": "swash.rotating",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.027000000700354576,
+        0.0,
+        -0.035999998450279236
+      ]
+    },
+    {
+      "id": "linkage.bieleta_cabeza_a.b",
+      "role": "link_endpoint",
+      "node": "Bieleta_Cabeza_A_Terminal_Portapalas",
+      "parent_id": "main.grip.a",
+      "rest_transform": [
+        2.028159258316009e-07,
+        1.0640650316418032e-07,
+        -0.9999999403953552,
+        -1.0640650316418032e-07,
+        -0.9999999403953552,
+        -1.064065244804624e-07,
+        -0.9999999403953552,
+        1.064065244804624e-07,
+        -1.3435885648505064e-07,
+        0.026999998837709427,
+        -0.000499994377605617,
+        0.009000003337860107
+      ]
+    },
+    {
+      "id": "linkage.bieleta_cabeza_b.a",
+      "role": "link_endpoint",
+      "node": "Bieleta_Cabeza_B_Terminal_Plato",
+      "parent_id": "swash.rotating",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.027000004425644875,
+        0.0,
+        0.03599999472498894
+      ]
+    },
+    {
+      "id": "linkage.bieleta_cabeza_b.b",
+      "role": "link_endpoint",
+      "node": "Bieleta_Cabeza_B_Terminal_Portapalas",
+      "parent_id": "main.grip.b",
+      "rest_transform": [
+        2.028159258316009e-07,
+        -7.801587997846582e-08,
+        -0.9999999403953552,
+        7.801587997846582e-08,
+        -0.9999999403953552,
+        7.801588708389318e-08,
+        -0.9999999403953552,
+        -7.801588708389318e-08,
+        -1.3435885648505064e-07,
+        -0.027000000700354576,
+        -0.000499994377605617,
+        -0.009000003337860107
+      ]
+    },
+    {
+      "id": "linkage.bieleta_palanca_cola.a",
+      "role": "link_endpoint",
+      "node": "Bieleta_Palanca_Cola_Terminal_Palanca",
+      "parent_id": "tail.bellcrank",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.24791638553142548,
+        0.9687814712524414,
+        0.0,
+        -0.9687814712524414,
+        0.24791638553142548,
+        -0.0139999995008111,
+        -0.0051000118255615234,
+        0.0
+      ]
+    },
+    {
+      "id": "linkage.bieleta_palanca_cola.b",
+      "role": "link_endpoint",
+      "node": "Bieleta_Palanca_Cola_Terminal_Corredera",
+      "parent_id": "tail.slider",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -0.24791643023490906,
+        -0.9687814712524414,
+        0.0,
+        0.9687814712524414,
+        -0.24791643023490906,
+        -0.010000050067901611,
+        -0.02709999680519104,
+        0.0
+      ]
+    },
+    {
+      "id": "linkage.bieleta_paso_cola_a.a",
+      "role": "link_endpoint",
+      "node": "Bieleta_Paso_Cola_A_Terminal_Yugo",
+      "parent_id": "tail.yoke",
+      "rest_transform": [
+        0.9992621541023254,
+        -0.027162887156009674,
+        -0.027152979746460915,
+        0.027162887156009674,
+        -4.402028480399167e-06,
+        0.9996311664581299,
+        -0.027152979746460915,
+        -0.9996311664581299,
+        0.000733423454221338,
+        0.014599955640733242,
+        0.014000020921230316,
+        0.0
+      ]
+    },
+    {
+      "id": "linkage.bieleta_paso_cola_a.b",
+      "role": "link_endpoint",
+      "node": "Bieleta_Paso_Cola_A_Terminal_Portapalas",
+      "parent_id": "tail.grip.a",
+      "rest_transform": [
+        0.9992620944976807,
+        0.027164001017808914,
+        -0.02715385891497135,
+        -0.027164001017808914,
+        4.307043582230108e-06,
+        -0.9996309876441956,
+        -0.02715385891497135,
+        0.9996309876441956,
+        0.0007421867339871824,
+        0.015099707990884781,
+        0.013999965973198414,
+        -0.008100003935396671
+      ]
+    },
+    {
+      "id": "linkage.bieleta_paso_cola_b.a",
+      "role": "link_endpoint",
+      "node": "Bieleta_Paso_Cola_B_Terminal_Yugo",
+      "parent_id": "tail.yoke",
+      "rest_transform": [
+        0.9992620944976807,
+        0.0271646436303854,
+        0.027154676616191864,
+        -0.0271646436303854,
+        -2.136551529474673e-06,
+        0.9996309876441956,
+        0.027154676616191864,
+        -0.9996309876441956,
+        0.0007357827853411436,
+        -0.014600121416151524,
+        -0.013999931514263153,
+        0.0
+      ]
+    },
+    {
+      "id": "linkage.bieleta_paso_cola_b.b",
+      "role": "link_endpoint",
+      "node": "Bieleta_Paso_Cola_B_Terminal_Portapalas",
+      "parent_id": "tail.grip.b",
+      "rest_transform": [
+        0.9992620348930359,
+        -0.02716575376689434,
+        0.027155663818120956,
+        0.02716575376689434,
+        2.356524873903254e-06,
+        -0.9996309280395508,
+        0.027155663818120956,
+        0.9996309280395508,
+        0.0007403329946100712,
+        -0.015100016258656979,
+        -0.013999971561133862,
+        -0.008100004866719246
+      ]
+    },
+    {
+      "id": "linkage.varilla_cola.a",
+      "role": "link_endpoint",
+      "node": "Varilla_Cola_Terminal_Servo",
+      "parent_id": "actuator.tail",
+      "rest_transform": [
+        0.006668649148195982,
+        0.9999778270721436,
+        0.0,
+        -0.9999778270721436,
+        0.006668649148195982,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.012999999336898327,
+        0.0065999990329146385
+      ]
+    },
+    {
+      "id": "linkage.varilla_cola.b",
+      "role": "link_endpoint",
+      "node": "Varilla_Cola_Terminal_Palanca",
+      "parent_id": "tail.bellcrank",
+      "rest_transform": [
+        -0.006666701752692461,
+        -0.9999778866767883,
+        -0.0,
+        0.9999778866767883,
+        -0.006666701752692461,
+        0.0,
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        -0.0051000118255615234,
+        0.018000002950429916
+      ]
+    },
+    {
+      "id": "linkage.varilla_servo_delantera_der.a",
+      "role": "link_endpoint",
+      "node": "Varilla_Servo_Delantera_Der_Terminal_Servo",
+      "parent_id": "actuator.cyclic.front_right",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9708114266395569,
+        0.23984414339065552,
+        0.0,
+        -0.23984414339065552,
+        0.9708114266395569,
+        -0.01799999736249447,
+        0.0,
+        -0.006600001826882362
+      ]
+    },
+    {
+      "id": "linkage.varilla_servo_delantera_der.b",
+      "role": "link_endpoint",
+      "node": "Varilla_Servo_Delantera_Der_Terminal_Plato",
+      "parent_id": "swash.fixed",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -0.9708113670349121,
+        -0.23984412848949432,
+        0.0,
+        0.23984412848949432,
+        -0.9708113670349121,
+        0.019999999552965164,
+        0.0,
+        0.03464101627469063
+      ]
+    },
+    {
+      "id": "linkage.varilla_servo_delantera_izq.a",
+      "role": "link_endpoint",
+      "node": "Varilla_Servo_Delantera_Izq_Terminal_Servo",
+      "parent_id": "actuator.cyclic.front_left",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        0.9708114266395569,
+        -0.23984414339065552,
+        0.0,
+        0.23984414339065552,
+        0.9708114266395569,
+        -0.01799999736249447,
+        0.0,
+        0.006600001826882362
+      ]
+    },
+    {
+      "id": "linkage.varilla_servo_delantera_izq.b",
+      "role": "link_endpoint",
+      "node": "Varilla_Servo_Delantera_Izq_Terminal_Plato",
+      "parent_id": "swash.fixed",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.9708113670349121,
+        0.23984412848949432,
+        0.0,
+        -0.23984412848949432,
+        -0.9708113670349121,
+        0.019999999552965164,
+        0.0,
+        -0.03464101627469063
+      ]
+    },
+    {
+      "id": "linkage.varilla_servo_trasera.a",
+      "role": "link_endpoint",
+      "node": "Varilla_Servo_Trasera_Terminal_Servo",
+      "parent_id": "actuator.cyclic.rear",
+      "rest_transform": [
+        0.9999975562095642,
+        0.002197753405198455,
+        0.0,
+        -0.002197753405198455,
+        0.9999975562095642,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.006599996238946915,
+        0.0,
+        0.017999999225139618
+      ]
+    },
+    {
+      "id": "linkage.varilla_servo_trasera.b",
+      "role": "link_endpoint",
+      "node": "Varilla_Servo_Trasera_Terminal_Plato",
+      "parent_id": "swash.fixed",
+      "rest_transform": [
+        -0.999997615814209,
+        -0.0021976535208523273,
+        -0.0,
+        0.0021976535208523273,
+        -0.999997615814209,
+        0.0,
+        0.0,
+        -0.0,
+        1.0,
+        -0.03999999910593033,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "main.blade.a",
+      "role": "main_blade",
+      "node": "Pala_Principal_A",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        -0.08799999952316284
+      ]
+    },
+    {
+      "id": "main.blade.b",
+      "role": "main_blade",
+      "node": "Pala_Principal_B",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.08799999952316284
+      ]
+    },
+    {
+      "id": "main.grip.a",
+      "role": "main_grip",
+      "node": "Portapalas_A",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        -0.04500000178813934
+      ]
+    },
+    {
+      "id": "main.grip.b",
+      "role": "main_grip",
+      "node": "Portapalas_B",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.04500000178813934
+      ]
+    },
+    {
+      "id": "main.shaft",
+      "role": "main_shaft",
+      "node": "Pivote_Rotor_Principal",
+      "parent_id": "root",
+      "rest_transform": [
+        0.8480480909347534,
+        0.0,
+        -0.5299192667007446,
+        0.0,
+        1.0,
+        0.0,
+        0.5299192667007446,
+        0.0,
+        0.8480480909347534,
+        0.0,
+        0.3449999988079071,
+        0.0
+      ]
+    },
+    {
+      "id": "root",
+      "role": "root",
+      "node": "HX-700",
+      "parent_id": "",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "swash.fixed",
+      "role": "fixed_swash",
+      "node": "Plato_Exterior",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.2630000114440918,
+        0.0
+      ]
+    },
+    {
+      "id": "swash.rotating",
+      "role": "rotating_swash",
+      "node": "Plato_Interior",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.07400000095367432,
+        0.0
+      ]
+    },
+    {
+      "id": "tail.bellcrank",
+      "role": "tail_bellcrank",
+      "node": "Palanca_Acodada_Cola",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.9380000233650208,
+        0.16850000619888306,
+        0.00409999955445528
+      ]
+    },
+    {
+      "id": "tail.blade.a",
+      "role": "tail_blade",
+      "node": "Pala_Cola_A",
+      "parent_id": "tail.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -1.3435885648505064e-07,
+        -1.0000001192092896,
+        0.0,
+        1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.06199999898672104,
+        -0.036000050604343414
+      ]
+    },
+    {
+      "id": "tail.blade.b",
+      "role": "tail_blade",
+      "node": "Pala_Cola_B",
+      "parent_id": "tail.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -1.3435885648505064e-07,
+        -1.0000001192092896,
+        0.0,
+        1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.06199999898672104,
+        0.03599996119737625
+      ]
+    },
+    {
+      "id": "tail.grip.a",
+      "role": "tail_grip",
+      "node": "Portapalas_Cola_A",
+      "parent_id": "tail.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -1.3435885648505064e-07,
+        -1.0000001192092896,
+        0.0,
+        1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.06199999898672104,
+        0.0
+      ]
+    },
+    {
+      "id": "tail.grip.b",
+      "role": "tail_grip",
+      "node": "Portapalas_Cola_B",
+      "parent_id": "tail.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -1.3435885648505064e-07,
+        -1.0000001192092896,
+        0.0,
+        1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.06199999898672104,
+        0.0
+      ]
+    },
+    {
+      "id": "tail.shaft",
+      "role": "tail_shaft",
+      "node": "Pivote_Rotor_Cola",
+      "parent_id": "root",
+      "rest_transform": [
+        0.8191520571708679,
+        -0.5735764503479004,
+        1.4848561491476175e-08,
+        -6.554376597023293e-08,
+        -9.967054381831986e-08,
+        1.0,
+        -0.5735764503479004,
+        -0.8191520571708679,
+        -1.2501814694587665e-07,
+        -0.9419999718666077,
+        0.19699999690055847,
+        0.0
+      ]
+    },
+    {
+      "id": "tail.slider",
+      "role": "tail_slider",
+      "node": "Corredera_Cola",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.9419999718666077,
+        0.19699999690055847,
+        0.029500005766749382
+      ]
+    },
+    {
+      "id": "tail.yoke",
+      "role": "tail_yoke",
+      "node": "Yugo_Cola",
+      "parent_id": "tail.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -1.3435885648505064e-07,
+        -1.0000001192092896,
+        0.0,
+        1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.03550000488758087,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.aleta_vertical",
+      "role": "mesh",
+      "node": "Aleta_Vertical",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.9574829936027527,
+        0.14553344249725342,
+        -0.01645750179886818
+      ]
+    },
+    {
+      "id": "visual.arrastrador_plato",
+      "role": "mesh",
+      "node": "Arrastrador_Plato",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.046999990940093994,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.bateria_12s",
+      "role": "mesh",
+      "node": "Bateria_12S",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.07199999690055847,
+        0.10164999961853027,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.bieleta_cabeza_a_varilla",
+      "role": "mesh",
+      "node": "Bieleta_Cabeza_A_Varilla",
+      "parent_id": "linkage.bieleta_cabeza_a.a",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.3435885648505064e-07,
+        1.0000001192092896,
+        0.0,
+        -1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.009000003337860107,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.bieleta_cabeza_b_varilla",
+      "role": "mesh",
+      "node": "Bieleta_Cabeza_B_Varilla",
+      "parent_id": "linkage.bieleta_cabeza_b.a",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.3435885648505064e-07,
+        1.0000001192092896,
+        0.0,
+        -1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.009000003337860107,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.bieleta_palanca_cola_varilla",
+      "role": "mesh",
+      "node": "Bieleta_Palanca_Cola_Varilla",
+      "parent_id": "linkage.bieleta_palanca_cola.a",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -8.087085916486103e-07,
+        1.0000001192092896,
+        0.0,
+        -1.0000001192092896,
+        -8.087085916486103e-07,
+        0.0,
+        0.005499997176229954,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.bieleta_paso_cola_a_varilla",
+      "role": "mesh",
+      "node": "Bieleta_Paso_Cola_A_Varilla",
+      "parent_id": "linkage.bieleta_paso_cola_a.a",
+      "rest_transform": [
+        -0.9996311068534851,
+        1.0002646376960911e-05,
+        0.027165133506059647,
+        -0.027165133506059647,
+        -4.3076538531749975e-06,
+        -0.9996310472488403,
+        -9.88359079201473e-06,
+        -1.0000028610229492,
+        4.458094281289959e-06,
+        0.0,
+        0.0040000006556510925,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.bieleta_paso_cola_b_varilla",
+      "role": "mesh",
+      "node": "Bieleta_Paso_Cola_B_Varilla",
+      "parent_id": "linkage.bieleta_paso_cola_b.a",
+      "rest_transform": [
+        -0.9996311068534851,
+        -1.1269693459325936e-05,
+        -0.027165129780769348,
+        0.0271651279181242,
+        9.36319736410951e-07,
+        -0.9996310472488403,
+        1.1292594535916578e-05,
+        -1.0000001192092896,
+        -7.49398680000013e-07,
+        0.0,
+        0.004000001586973667,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.botalon_carbono",
+      "role": "mesh",
+      "node": "Botalon_Carbono",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.10999999940395355,
+        0.19699999690055847,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.cabeza_buje_central",
+      "role": "mesh",
+      "node": "Cabeza_Buje_Central",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.caja_cola",
+      "role": "mesh",
+      "node": "Caja_Cola",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.9390000104904175,
+        0.1937749981880188,
+        0.0012500006705522537
+      ]
+    },
+    {
+      "id": "visual.carenado",
+      "role": "mesh",
+      "node": "Carenado",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.carenado_gomas",
+      "role": "mesh",
+      "node": "Carenado_Gomas",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.carenado_postes",
+      "role": "mesh",
+      "node": "Carenado_Postes",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.055000003427267075,
+        0.1744999885559082,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.carter_transmision",
+      "role": "mesh",
+      "node": "Carter_Transmision",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.1550000011920929,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.chasis_bloques_aluminio",
+      "role": "mesh",
+      "node": "Chasis_Bloques_Aluminio",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.18474999070167542,
+        -0.00039999932050704956
+      ]
+    },
+    {
+      "id": "visual.chasis_placas_carbono",
+      "role": "mesh",
+      "node": "Chasis_Placas_Carbono",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.004999995231628418,
+        0.15600000321865082,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.corona_interna_54t",
+      "role": "mesh",
+      "node": "Corona_Interna_54T",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.14499999582767487,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.correa_cola_htd_1965_3m_6",
+      "role": "mesh",
+      "node": "Correa_Cola_HTD_1965_3M_6",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.2004999965429306,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.correa_motor_htd_333_3m",
+      "role": "mesh",
+      "node": "Correa_Motor_HTD_333_3M",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.002533332910388708,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.eje_cola_6mm",
+      "role": "mesh",
+      "node": "Eje_Cola_6mm",
+      "parent_id": "tail.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -1.3435885648505064e-07,
+        -1.0000001192092896,
+        0.0,
+        1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.eje_principal",
+      "role": "mesh",
+      "node": "Eje_Principal",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.14499999582767487,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.electronica",
+      "role": "mesh",
+      "node": "Electronica",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.05579037964344025,
+        0.1815970540046692,
+        -0.005249999463558197
+      ]
+    },
+    {
+      "id": "visual.guias_varilla",
+      "role": "mesh",
+      "node": "Guias_Varilla",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.5199999809265137,
+        0.18608999252319336,
+        0.0032999999821186066
+      ]
+    },
+    {
+      "id": "visual.motor_base_estator",
+      "role": "mesh",
+      "node": "Motor_Base_Estator",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.10924575477838516,
+        0.1581999957561493,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.motor_campana_y_polea_22t",
+      "role": "mesh",
+      "node": "Motor_Campana_y_Polea_22T",
+      "parent_id": "root",
+      "rest_transform": [
+        0.6206502318382263,
+        0.0,
+        0.784087598323822,
+        -0.0,
+        1.0,
+        0.0,
+        -0.784087598323822,
+        -0.0,
+        0.6206502318382263,
+        0.10924575477838516,
+        0.1599999964237213,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.polea_53t_rueda_libre",
+      "role": "mesh",
+      "node": "Polea_53T_Rueda_Libre",
+      "parent_id": "root",
+      "rest_transform": [
+        -0.6156612634658813,
+        0.0,
+        -0.7880108952522278,
+        0.0,
+        1.0,
+        0.0,
+        0.7880108952522278,
+        0.0,
+        -0.6156612634658813,
+        0.0,
+        0.1899999976158142,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.porta_satelites",
+      "role": "mesh",
+      "node": "Porta_Satelites",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.20000000298023224,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.rotor_cola_buje",
+      "role": "mesh",
+      "node": "Rotor_Cola_Buje",
+      "parent_id": "tail.shaft",
+      "rest_transform": [
+        1.0,
+        0.0,
+        -0.0,
+        -0.0,
+        -1.3435885648505064e-07,
+        -1.0000001192092896,
+        0.0,
+        1.0000001192092896,
+        -1.3435885648505064e-07,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.satelite_1",
+      "role": "mesh",
+      "node": "Satelite_1",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        -0.10452859848737717,
+        0.0,
+        0.9945219159126282,
+        -0.0,
+        1.0,
+        0.0,
+        -0.9945219159126282,
+        -0.0,
+        -0.10452859848737717,
+        0.017999999225139618,
+        -0.20000000298023224,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.satelite_2",
+      "role": "mesh",
+      "node": "Satelite_2",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        -0.10452859848737717,
+        0.0,
+        0.9945219159126282,
+        -0.0,
+        1.0,
+        0.0,
+        -0.9945219159126282,
+        -0.0,
+        -0.10452859848737717,
+        -0.009000001475214958,
+        -0.20000000298023224,
+        -0.015588456764817238
+      ]
+    },
+    {
+      "id": "visual.satelite_3",
+      "role": "mesh",
+      "node": "Satelite_3",
+      "parent_id": "main.shaft",
+      "rest_transform": [
+        -0.10452859848737717,
+        0.0,
+        0.9945219159126282,
+        -0.0,
+        1.0,
+        0.0,
+        -0.9945219159126282,
+        -0.0,
+        -0.10452859848737717,
+        -0.008999999612569809,
+        -0.20000000298023224,
+        0.015588458627462387
+      ]
+    },
+    {
+      "id": "visual.servo_cola",
+      "role": "mesh",
+      "node": "Servo_Cola",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.10361261665821075,
+        0.15664266049861908,
+        -0.006515000946819782
+      ]
+    },
+    {
+      "id": "visual.servos_ciclicos",
+      "role": "mesh",
+      "node": "Servos_Ciclicos",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.016714997589588165,
+        0.20208662748336792,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.sol_18t_y_polea_cola_32t",
+      "role": "mesh",
+      "node": "Sol_18T_y_Polea_Cola_32T",
+      "parent_id": "root",
+      "rest_transform": [
+        -0.6156612634658813,
+        0.0,
+        -0.7880108952522278,
+        0.0,
+        1.0,
+        0.0,
+        0.7880108952522278,
+        0.0,
+        -0.6156612634658813,
+        0.0,
+        0.14499999582767487,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.soportes_botalon",
+      "role": "mesh",
+      "node": "Soportes_Botalon",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.3349791169166565,
+        0.15164914727210999,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.tornilleria_botalon",
+      "role": "mesh",
+      "node": "Tornilleria_Botalon",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        -0.3330000042915344,
+        0.13725000619888306,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.tornilleria_chasis",
+      "role": "mesh",
+      "node": "Tornilleria_Chasis",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.004810988903045654,
+        0.15599849820137024,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.tren_de_aterrizaje",
+      "role": "mesh",
+      "node": "Tren_de_Aterrizaje",
+      "parent_id": "root",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.006515733897686005,
+        0.04609999805688858,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.varilla_cola_varilla",
+      "role": "mesh",
+      "node": "Varilla_Cola_Varilla",
+      "parent_id": "linkage.varilla_cola.a",
+      "rest_transform": [
+        0.006666539236903191,
+        -8.890976488373781e-08,
+        -0.9999778866767883,
+        0.9999778866767883,
+        3.514627522349656e-08,
+        0.006666653323918581,
+        1.4871277187467058e-07,
+        -1.0000001192092896,
+        -2.4259357189748698e-08,
+        0.0,
+        0.012000007554888725,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.varilla_servo_delantera_der_varilla",
+      "role": "mesh",
+      "node": "Varilla_Servo_Delantera_Der_Varilla",
+      "parent_id": "linkage.varilla_servo_delantera_der.a",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        5.399906513048336e-07,
+        1.0000001192092896,
+        0.0,
+        -1.0000001192092896,
+        5.399906513048336e-07,
+        0.0,
+        0.00899999774992466,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.varilla_servo_delantera_izq_varilla",
+      "role": "mesh",
+      "node": "Varilla_Servo_Delantera_Izq_Varilla",
+      "parent_id": "linkage.varilla_servo_delantera_izq.a",
+      "rest_transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -8.087085916486103e-07,
+        1.0000001192092896,
+        0.0,
+        -1.0000001192092896,
+        -8.087085916486103e-07,
+        0.0,
+        0.00899999774992466,
+        0.0
+      ]
+    },
+    {
+      "id": "visual.varilla_servo_trasera_varilla",
+      "role": "mesh",
+      "node": "Varilla_Servo_Trasera_Varilla",
+      "parent_id": "linkage.varilla_servo_trasera.a",
+      "rest_transform": [
+        0.9999975562095642,
+        -1.1014149947641272e-07,
+        -0.0021977515425533056,
+        0.0021977515425533056,
+        6.689500509082791e-09,
+        0.9999975562095642,
+        -1.1014149947641272e-07,
+        -1.0,
+        6.931564655587863e-09,
+        0.0,
+        0.008999998681247234,
+        0.0
+      ]
+    }
+  ],
+  "linkages": [
+    {
+      "id": "linkage.varilla_servo_delantera_izq",
+      "endpoint_a": "linkage.varilla_servo_delantera_izq.a",
+      "endpoint_b": "linkage.varilla_servo_delantera_izq.b",
+      "length_m": 0.046868020925181615
+    },
+    {
+      "id": "linkage.varilla_servo_delantera_der",
+      "endpoint_a": "linkage.varilla_servo_delantera_der.a",
+      "endpoint_b": "linkage.varilla_servo_delantera_der.b",
+      "length_m": 0.046868020925181615
+    },
+    {
+      "id": "linkage.varilla_servo_trasera",
+      "endpoint_a": "linkage.varilla_servo_trasera.a",
+      "endpoint_b": "linkage.varilla_servo_trasera.b",
+      "length_m": 0.04550012000582548
+    },
+    {
+      "id": "linkage.bieleta_cabeza_a",
+      "endpoint_a": "linkage.bieleta_cabeza_a.a",
+      "endpoint_b": "linkage.bieleta_cabeza_a.b",
+      "length_m": 0.07350000780090953
+    },
+    {
+      "id": "linkage.bieleta_cabeza_b",
+      "endpoint_a": "linkage.bieleta_cabeza_b.a",
+      "endpoint_b": "linkage.bieleta_cabeza_b.b",
+      "length_m": 0.07350000780090953
+    },
+    {
+      "id": "linkage.varilla_cola",
+      "endpoint_a": "linkage.varilla_cola.a",
+      "endpoint_b": "linkage.varilla_cola.b",
+      "length_m": 0.8100179844484681
+    },
+    {
+      "id": "linkage.bieleta_palanca_cola",
+      "endpoint_a": "linkage.bieleta_palanca_cola.a",
+      "endpoint_b": "linkage.bieleta_palanca_cola.b",
+      "length_m": 0.02621850810595456
+    },
+    {
+      "id": "linkage.bieleta_paso_cola_a",
+      "endpoint_a": "linkage.bieleta_paso_cola_a.a",
+      "endpoint_b": "linkage.bieleta_paso_cola_a.b",
+      "length_m": 0.01840679126077791
+    },
+    {
+      "id": "linkage.bieleta_paso_cola_b",
+      "endpoint_a": "linkage.bieleta_paso_cola_b.a",
+      "endpoint_b": "linkage.bieleta_paso_cola_b.b",
+      "length_m": 0.01840679126077791
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "aircraft_id": "jensen-das-ugly-stik-60",
+  "auto_zoom": true,
+  "build_options": {
+    "landscape_upgrade": true,
+    "scenery": {
+      "audio": false,
+      "birds": false,
+      "enabled": true,
+      "file": "res://data/scenery/default.json",
+      "file_explicit": false,
+      "quality": "high",
+      "theme": ""
+    }
+  },
+  "camera_script_sha256": "383d80da7103f09016af9f906c504bff3c52fa4634d1332500e533e58591581c",
+  "case_id": "trees-level-on",
+  "elevation_deg": 2.3,
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "field": "default",
+  "fps": 30,
+  "frame_count": 6,
+  "frames": [
+    {
+      "bbox_px": [
+        622.289306640625,
+        355.759033203125,
+        26.3331909179688,
+        9.7850341796875
+      ],
+      "camera_transform": [
+        0.998629510402679,
+        0.0,
+        0.0523359552025795,
+        -0.00210033566690981,
+        0.999194383621216,
+        0.0400767922401428,
+        -0.0522937923669815,
+        -0.0401317924261093,
+        0.997825026512146,
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "cg_screen_px": [
+        640.0,
+        360.0
+      ],
+      "distance_m": 100.0,
+      "fov_deg": 20.7054100036621,
+      "index": 0,
+      "pitch_deg": 0.0,
+      "png": "frames/frame-0000.png",
+      "position_ned": [
+        99.7825033922517,
+        5.22937941409044,
+        -5.71317925325597
+      ],
+      "projected_span_px": 29.9999988065429,
+      "roll_deg": 0.0,
+      "sha256": "f95f492e138fadd335a76dc90a94dbdcde032c9aee5e8ae188fadad93182b2b9",
+      "time_s": 0.0,
+      "yaw_deg": 93.0
+    },
+    {
+      "bbox_px": [
+        622.289306640625,
+        355.759033203125,
+        26.3331909179688,
+        9.7850341796875
+      ],
+      "camera_transform": [
+        0.995561957359314,
+        0.0,
+        0.0941083133220673,
+        -0.00377673539333045,
+        0.999194383621216,
+        0.0399536862969399,
+        -0.094032496213913,
+        -0.0401317924261093,
+        0.994759917259216,
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "cg_screen_px": [
+        640.0,
+        360.0
+      ],
+      "distance_m": 99.9999923706055,
+      "fov_deg": 20.7054100036621,
+      "index": 1,
+      "pitch_deg": 0.0,
+      "png": "frames/frame-0001.png",
+      "position_ned": [
+        99.4759935020524,
+        9.40324992015337,
+        -5.71317925325597
+      ],
+      "projected_span_px": 30.0000010953613,
+      "roll_deg": 0.0,
+      "sha256": "6fde8138fae3e12c2df0cc2ef1738a48410a45d03977cf463f239397ff0a9e34",
+      "time_s": 0.0333333333333333,
+      "yaw_deg": 95.4
+    },
+    {
+      "bbox_px": [
+        622.289306640625,
+        355.759033203125,
+        26.333251953125,
+        9.7850341796875
+      ],
+      "camera_transform": [
+        0.99074786901474,
+        0.0,
+        0.135715574026108,
+        -0.00544650852680206,
+        0.999194383621216,
+        0.039760485291481,
+        -0.135606244206429,
+        -0.040131788700819,
+        0.989949703216553,
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "cg_screen_px": [
+        640.0,
+        360.0
+      ],
+      "distance_m": 100.000007629395,
+      "fov_deg": 20.7054080963135,
+      "index": 2,
+      "pitch_deg": 0.0,
+      "png": "frames/frame-0002.png",
+      "position_ned": [
+        98.9949689170808,
+        13.5606239306106,
+        -5.71317925325597
+      ],
+      "projected_span_px": 29.9999993423555,
+      "roll_deg": 0.0,
+      "sha256": "534f860777570b1aa53dcc822fb7f1c9588cfd12bb2a3a20e6369953150f57d5",
+      "time_s": 0.0666666666666667,
+      "yaw_deg": 97.8
+    },
+    {
+      "bbox_px": [
+        622.289306640625,
+        355.759002685547,
+        26.3331909179688,
+        9.78506469726563
+      ],
+      "camera_transform": [
+        0.984195590019226,
+        0.0,
+        0.177084743976593,
+        -0.00710672838613391,
+        0.999194383621216,
+        0.0394975319504738,
+        -0.176942080259323,
+        -0.0401317924261093,
+        0.983402729034424,
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "cg_screen_px": [
+        640.0,
+        360.0
+      ],
+      "distance_m": 99.9999923706055,
+      "fov_deg": 20.7054100036621,
+      "index": 3,
+      "pitch_deg": 0.0,
+      "png": "frames/frame-0003.png",
+      "position_ned": [
+        98.3402735179121,
+        17.6942079987625,
+        -5.71317925325597
+      ],
+      "projected_span_px": 30.0000010953613,
+      "roll_deg": 0.0,
+      "sha256": "21f80207ef3db35bd74adba4b088cd37fa503e94a40dd0c2d07d478d3434ef9b",
+      "time_s": 0.1,
+      "yaw_deg": 100.2
+    },
+    {
+      "bbox_px": [
+        622.289367675781,
+        355.759002685547,
+        26.3331909179688,
+        9.78506469726563
+      ],
+      "camera_transform": [
+        0.975916743278503,
+        0.0,
+        0.218143239617348,
+        -0.00875447876751423,
+        0.999194383621216,
+        0.0391652882099152,
+        -0.217967495322227,
+        -0.0401317924261093,
+        0.975130558013916,
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "cg_screen_px": [
+        640.0,
+        360.0
+      ],
+      "distance_m": 100.0,
+      "fov_deg": 20.7054100036621,
+      "index": 4,
+      "pitch_deg": 0.0,
+      "png": "frames/frame-0004.png",
+      "position_ned": [
+        97.5130558627436,
+        21.7967504135523,
+        -5.71317925325597
+      ],
+      "projected_span_px": 29.9999988065429,
+      "roll_deg": 0.0,
+      "sha256": "23e51ca1d580a6223d1406c123f1bc9430009a29461a2ea0b104f472071d01a8",
+      "time_s": 0.133333333333333,
+      "yaw_deg": 102.6
+    },
+    {
+      "bbox_px": [
+        622.289245605469,
+        355.759002685547,
+        26.333251953125,
+        9.78506469726563
+      ],
+      "camera_transform": [
+        0.965925812721252,
+        0.0,
+        0.258819043636322,
+        -0.0103868711739779,
+        0.999194383621216,
+        0.0387643314898014,
+        -0.258610546588898,
+        -0.040131788700819,
+        0.96514767408371,
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "cg_screen_px": [
+        639.999938964844,
+        360.0
+      ],
+      "distance_m": 100.0,
+      "fov_deg": 20.7054100036621,
+      "index": 5,
+      "pitch_deg": 0.0,
+      "png": "frames/frame-0005.png",
+      "position_ned": [
+        96.5147671724327,
+        25.8610539215312,
+        -5.71317925325597
+      ],
+      "projected_span_px": 29.9999988065429,
+      "roll_deg": 0.0,
+      "sha256": "a5629d08fdd70cf94b4342c125a0fb35468d68b1ec547ea9374daf0866223346",
+      "time_s": 0.166666666666667,
+      "yaw_deg": 105.0
+    }
+  ],
+  "height": 720,
+  "manual_zoom": 1.0,
+  "model_manifest_sha256": "85bb44b3672d228f21d792becd2b54ac296ca6880f102af1d943d70630a3f231",
+  "msaa": 4,
+  "pilot_script_sha256": "9b1e9e1c02313aa22f346e25cb93a76ce634beb14f48668f046a2c1877a85033",
+  "pose": "level",
+  "renderer": "gl_compatibility",
+  "requested_background": "trees",
+  "route": "synthetic-visibility-motion",
+  "schema_version": 1,
+  "scope": {
+    "background_classification": "requested elevation only; not pixel-qualified",
+    "excluded": [
+      "simulation",
+      "aircraft shadow",
+      "propeller motion/blur",
+      "HUD",
+      "night",
+      "weather motion",
+      "node processing"
+    ],
+    "human_acceptance": "pending",
+    "physical_wind": "not simulated",
+    "projected_span": "face-on reference span; bbox is a geometry envelope, neither is visible pixel area",
+    "shader_clock_s": 0.0,
+    "synthetic_not_flight": true,
+    "timing": "offline fixed samples; not native frame pacing or response-time evidence"
+  },
+  "source_commit": "5f7f4ad529940743bdc16e3d9691243a8a1c6cd8",
+  "source_identity_note": "Caller label; archive/import hashes must be retained separately",
+  "span_m": 1.5223433971405,
+  "view": "pilot",
+  "width": 1280
+}

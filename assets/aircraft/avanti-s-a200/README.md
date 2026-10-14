@@ -53,8 +53,10 @@ Import precedes manifest generation so the `.glb.import` dependency is included.
 python assets/aircraft/avanti-s-a200/compile_blender.py --check
 python research/avanti-s/av06/derive_physics.py --check
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --script res://aircraft/verify_avanti.gd
-python research/aircraft-standardization/conformance.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out .tools/av31-conformance --models-only --package
+python research/aircraft-standardization/conformance.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out .tools/av31-conformance --models-only
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --path app --script ../research/avanti-s/av31/capture.gd -- --out=C:/DEVELOPMENT/OpenRCsimulator/.tools/av31-new-captures
 ```
 
 Capture output must be fresh. Inspect the real rendered rest/full-travel views and turbine cutaway. Select **Ventage Jet** in the aircraft catalog, or launch with `-- --aircraft=sebart-avanti-s-a200-p100rx --quick-flight`. Source hash changes require regeneration of model manifests and Workshop descriptors; an already frozen trial refuses a changed visual dependency.
+
+For package qualification, use the project's full Windows export, retaining its external `openrc_ground_vehicle.dll` beside the executable. A bare `--export-pack` result omits that native sidecar: `conformance.py --package` must run with the matching DLL beside its Godot executable. AV-31's [package evidence](../../../docs/research/avanti-blender/AV-31/README.md#package-qualification) records both the initial omission and successful isolated reruns; the native dependency is shared by the project, not supplied by this aircraft.

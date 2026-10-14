@@ -117,12 +117,18 @@ static func _add_key(action: String, keycode: int, physical_keycode: int, bindin
 	if not InputMap.has_action(action):
 		return
 	var event := InputEventKey.new()
-	event.keycode = keycode as Key
+	# InputMap prefers logical keys when both are set. Match the semantic router's
+	# physical-first contract for captured bindings across keyboard layouts.
+	event.keycode = (0 if physical_keycode != 0 else keycode) as Key
 	event.physical_keycode = physical_keycode as Key
 	event.ctrl_pressed = bool(binding.get("ctrl", false))
 	event.alt_pressed = bool(binding.get("alt", false))
 	event.shift_pressed = bool(binding.get("shift", false))
 	event.meta_pressed = bool(binding.get("meta", false))
+	# Only own newly inserted events: cleanup must not erase keyboard recovery
+	# bindings that were already present before this controller was selected.
+	if InputMap.action_has_event(action, event):
+		return
 	InputMap.action_add_event(action, event)
 	var events: Array = _generated_key_events.get(action, [])
 	events.append(event)

@@ -1,0 +1,28 @@
+{
+	"asset_sha256": "ad9c0c4daf1dd1882b59c8a1344f3cc7a1f51507e998349653d399d52a880d6e",
+	"captures": [
+		"front-quarter",
+		"side",
+		"top",
+		"front",
+		"rear-quarter",
+		"underside",
+		"full-controls-inspector",
+		"turbine-installation-inspector"
+	],
+	"format": "openrc-av31-captures-v1",
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"model_sha256": "ce9c5e33a74e137220feadb7c0aca3f34dda317a2d719409de3e64b490262a01",
+	"physical_validation": false,
+	"renderer": "gl_compatibility"
+}

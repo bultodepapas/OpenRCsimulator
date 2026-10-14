@@ -1,6 +1,5 @@
-# AV-31 scratch qualification for the imported VentageJet Avanti GLB.
-# Copy into app/aircraft/verify_avanti.gd only after the generated model is accepted.
-# Run from app with: godot --headless --path app --script res://aircraft/verify_avanti.gd
+# AV-31 qualification for the imported Ventage Jet Avanti GLB.
+# Run from the repository root: godot --headless --path app --script res://aircraft/verify_avanti.gd
 extends SceneTree
 
 const AD := preload("res://physics/aircraft_data.gd")

@@ -1,0 +1,346 @@
+{
+  "step": "HELI-25c",
+  "source_sha256": "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f",
+  "source_unchanged": true,
+  "blender_version": "5.2.2 LTS",
+  "glb_sha256": "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47",
+  "profile_sha256": "e3a045e3da856cac11c53bb4a417b020d6737769d9c67a0f7370035bd01539d2",
+  "size_bytes": 10961424,
+  "node_count": 108,
+  "mesh_count": 78,
+  "material_surface_count": 208,
+  "image_count": 3,
+  "triangle_count": 345236,
+  "omitted_decorative_modifiers": [
+    {
+      "node": "Tren_de_Aterrizaje",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Tren_de_Aterrizaje",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Tornilleria_Chasis",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Tornilleria_Chasis",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Tornilleria_Botalon",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Tornilleria_Botalon",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Soportes_Botalon",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Soportes_Botalon",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Sol_18T_y_Polea_Cola_32T",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Sol_18T_y_Polea_Cola_32T",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Servos_Ciclicos",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Servos_Ciclicos",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Servo_Cola",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Servo_Cola",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Polea_53T_Rueda_Libre",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Polea_53T_Rueda_Libre",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Plato_Exterior",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Plato_Exterior",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Satelite_3",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Satelite_3",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Satelite_2",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Satelite_2",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Satelite_1",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Satelite_1",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Portapalas_B",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Portapalas_B",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Portapalas_A",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Portapalas_A",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Porta_Satelites",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Porta_Satelites",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Plato_Interior",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Plato_Interior",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Eje_Principal",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Eje_Principal",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Cabeza_Buje_Central",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Cabeza_Buje_Central",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Arrastrador_Plato",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Arrastrador_Plato",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Yugo_Cola",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Yugo_Cola",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Rotor_Cola_Buje",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Rotor_Cola_Buje",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Portapalas_Cola_B",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Portapalas_Cola_B",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Portapalas_Cola_A",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Portapalas_Cola_A",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Eje_Cola_6mm",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Eje_Cola_6mm",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Palanca_Acodada_Cola",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Palanca_Acodada_Cola",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Motor_Campana_y_Polea_22T",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Motor_Campana_y_Polea_22T",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Motor_Base_Estator",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Motor_Base_Estator",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Guias_Varilla",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Guias_Varilla",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Electronica",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Electronica",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Corredera_Cola",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Corredera_Cola",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Corona_Interna_54T",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Corona_Interna_54T",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Chasis_Placas_Carbono",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Chasis_Placas_Carbono",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Chasis_Bloques_Aluminio",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Chasis_Bloques_Aluminio",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Carter_Transmision",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Carter_Transmision",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Caja_Cola",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Caja_Cola",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Brazo_Servo_Trasero",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Brazo_Servo_Trasero",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Brazo_Servo_Delantero_Izq",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Brazo_Servo_Delantero_Izq",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Brazo_Servo_Delantero_Der",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Brazo_Servo_Delantero_Der",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Brazo_Servo_Cola",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Brazo_Servo_Cola",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Bateria_12S",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Bateria_12S",
+      "modifier": "WEIGHTED_NORMAL"
+    },
+    {
+      "node": "Aleta_Vertical",
+      "modifier": "BEVEL"
+    },
+    {
+      "node": "Aleta_Vertical",
+      "modifier": "WEIGHTED_NORMAL"
+    }
+  ],
+  "geometry_policy": "evaluated functional modifiers, no decorative bevel/weighted-normal modifiers",
+  "flight_admitted": false
+}

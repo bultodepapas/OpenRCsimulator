@@ -1,0 +1,78 @@
+{
+  "source_commit": "5f7f4ad529940743bdc16e3d9691243a8a1c6cd8",
+  "source_archive_sha256": "a049b991e7e5a71e134a31b6c4362213ea026eb50cffd32815aea403ffb7fa78",
+  "import_identity_reference": "../VQ-02a/coverage/verification.json",
+  "all_archived_inputs_match_expected_imported_identity": true,
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "pillow_version": "12.3.0",
+  "tools": {
+    "visibility_capture.gd": "a59c703c3faa14119c966180de4d9008da8a829af7d0d211b06d0e38fc377f8b",
+    "run_visibility_capture.py": "9074868098be738c37a5ce43e4ab652724010a3af5c2aebca5b23dc7194aa76b",
+    "visibility_pack.py": "f07e2b55f56cc45e30736f534eb4fd9d7e9b83206ef942817df50738d9b4c0de",
+    "test_visibility_pack.py": "51dc8649d48cfe4149d950dcefbe03a3bde1826b8d6cd53ef3ffd341c771bdac"
+  },
+  "repeat_six_frames_exact": true,
+  "minimized_six_frames_exact": true,
+  "native_guards": [
+    {
+      "case": "existing-output",
+      "exit": 2
+    },
+    {
+      "case": "headless",
+      "exit": 2
+    },
+    {
+      "case": "bad-count",
+      "exit": 2
+    },
+    {
+      "case": "bad-pose",
+      "exit": 2
+    }
+  ],
+  "python_tests_passed": 13,
+  "accepted_clips": 4,
+  "accepted_frames": 240,
+  "human_acceptance": "pending",
+  "incomplete_run": {
+    "frames_written": 35,
+    "exit": 0,
+    "accepted": false,
+    "reason": "No completion marker or manifest; early termination cause not established"
+  },
+  "clips": [
+    {
+      "clip": "01",
+      "case": "trees-knife_left-off",
+      "pose": "knife_left",
+      "auto_zoom": false,
+      "clip_sha256": "ff9edd5705c584223f686a98c4b301df5da15f2c1ce5ba51164e7f0a35682528",
+      "manifest_sha256": "67ee541a04d052f99f0537a8d9e6ee4323aa7bbcb9905e2dc3e8f334435b913f"
+    },
+    {
+      "clip": "02",
+      "case": "sky-inverted-on",
+      "pose": "inverted",
+      "auto_zoom": true,
+      "clip_sha256": "c80df3f3afeeadb3b00d74e03a30744d2a42636248d8343062c1a34446e8da85",
+      "manifest_sha256": "23d3764336ff3ca5e5211517ac7f36b9a071b9a19f144ccaca2c3fa08ae2e532"
+    },
+    {
+      "clip": "03",
+      "case": "trees-knife_left-on",
+      "pose": "knife_left",
+      "auto_zoom": true,
+      "clip_sha256": "bdc6c3a501d7f0916fd522040f64cc874545f475c210690b8ed84efa43b00737",
+      "manifest_sha256": "332288473c1e8ce6ad1cdb580448488884ff130b8887cf2cd0a8f9f0fbbe9fcf"
+    },
+    {
+      "clip": "04",
+      "case": "sky-inverted-off",
+      "pose": "inverted",
+      "auto_zoom": false,
+      "clip_sha256": "771f5caf8076e8c6f8e062d4277ede165daafe574b1f622d7217297755f1d541",
+      "manifest_sha256": "3d274817dcfb91f2301062b4a07412b202258ad27c1b1e160e34dedf7520e1ee"
+    }
+  ]
+}

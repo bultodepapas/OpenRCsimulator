@@ -1,0 +1,8 @@
+{
+  "godot": "4.7.2-stable",
+  "platform": "Windows",
+  "scripts": 768,
+  "passed": 768,
+  "elapsed_s": 297.17,
+  "failures": []
+}

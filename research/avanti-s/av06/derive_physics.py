@@ -664,7 +664,7 @@ same = lambda key: dict(surf[key], source="same provisional value as the Ugly St
 eng = IN["turbine"]
 tq = lambda key, unit: q(eng[key]["value"], unit, eng[key]["kind"], eng[key]["source"])
 intake = g["installation"]["intake_stations"][0]
-EXHAUST_Z = 1.1685 + DZ  # app/aircraft/avanti_s_model.gd: the fixed exhaust ring at the tail cone (model z)
+EXHAUST_Z = 1.1685 + DZ  # Preserved AV-02 physical-surrogate nozzle station; not the AV-31 visual outlet.
 engine_c = g["installation"]["engine_center"]
 CRASH_HULL_IDS = (
     "probe_wing_left_le", "probe_wing_right_le", "probe_wing_left_te", "probe_wing_right_te",

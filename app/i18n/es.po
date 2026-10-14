@@ -1886,6 +1886,9 @@ msgstr "El almacenamiento de perfiles de control no está disponible."
 msgid "Could not load controller profiles: %s"
 msgstr "No se pudieron cargar los perfiles de control: %s"
 
+msgid "Controller profiles recovered: %s"
+msgstr "Perfiles de control recuperados: %s"
+
 msgid "This profile is not a gamepad preset. Use legacy recovery to change its controller semantics."
 msgstr "Este perfil no es un preajuste de gamepad. Usa la recuperación para cambiar el tipo de control."
 

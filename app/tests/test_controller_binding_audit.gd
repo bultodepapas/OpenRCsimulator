@@ -1,4 +1,5 @@
 extends SceneTree
+const UiInput := preload("res://ui/ui_input.gd")
 const Actions := preload("res://input/controller_actions.gd")
 var checks := 0
 var failures := 0
@@ -40,5 +41,21 @@ func _initialize() -> void:
 	check("nonfinite motion cannot be captured", Actions.binding_from_event(motion).is_empty())
 	var chord := {"type": "key", "physical_keycode": KEY_K, "ctrl": true, "shift": true}
 	check("prompt describes actual modifiers", Actions.binding_text(chord).contains("Ctrl") and Actions.binding_text(chord).contains("Shift"))
+	InputMap.load_from_project_settings()
+	UiInput.set_gamepad(15, {"accept": physical})
+	event.physical_keycode = KEY_A
+	event.keycode = KEY_Q
+	check("native GUI uses the same physical binding after layout change", InputMap.event_is_action(event, "ui_accept", true))
+	event.physical_keycode = KEY_Q
+	event.keycode = KEY_A
+	check("native GUI rejects logical aliases from a different physical key", not InputMap.event_is_action(event, "ui_accept", true))
+	UiInput.isolate_joypads()
+	var existing := InputEventKey.new()
+	existing.physical_keycode = KEY_Z
+	InputMap.action_add_event("ui_accept", existing)
+	UiInput.set_gamepad(15, {"accept": {"type": "key", "physical_keycode": KEY_Z}})
+	UiInput.isolate_joypads()
+	check("remap cleanup preserves a matching pre-existing keyboard recovery binding", InputMap.action_has_event("ui_accept", existing))
+	InputMap.load_from_project_settings()
 	print("controller binding audit: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)

@@ -1,0 +1,28 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq02a-completion\\source\\app",
+    "--audio-driver",
+    "Dummy",
+    "--rendering-method",
+    "gl_compatibility",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\visibility_capture.gd",
+    "--",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01d-campaign\\verified-sky-inverted-on\\capture",
+    "--source-commit=5f7f4ad529940743bdc16e3d9691243a8a1c6cd8",
+    "--background=sky",
+    "--pose=inverted",
+    "--autozoom=on",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--frames=60"
+  ],
+  "returncode": 0,
+  "completed_without_engine_warnings": true,
+  "diagnostics": [],
+  "elapsed_s_not_performance_evidence": 18.906999999991967,
+  "capture_validation_errors": [],
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "script_sha256": "a59c703c3faa14119c966180de4d9008da8a829af7d0d211b06d0e38fc377f8b"
+}

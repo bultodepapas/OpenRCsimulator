@@ -206,12 +206,12 @@ func on_motion(id: int, axis: int, value: float) -> void:
 			else:
 				_throttle_low_seen = false
 				armed = false
-		elif not armed and throttle_is_low:
-			_throttle_low_seen = true
+		elif not armed:
+			_throttle_low_seen = throttle_is_low
 
 
 func on_button(id: int, button: int, pressed: bool) -> void:
-	if not connected or id != device_id or button < 0:
+	if not connected or id != device_id or button < 0 or button >= JOY_BUTTON_MAX:
 		return
 	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
 		smoke_aux.on_button(id, button, pressed)
@@ -227,7 +227,7 @@ func on_button(id: int, button: int, pressed: bool) -> void:
 func observe_pressed_buttons(buttons: Array) -> void:
 	_pressed_buttons.clear()
 	for button in buttons:
-		if typeof(button) == TYPE_INT and int(button) >= 0:
+		if typeof(button) == TYPE_INT and int(button) >= 0 and int(button) < JOY_BUTTON_MAX:
 			_pressed_buttons[int(button)] = true
 	_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
 

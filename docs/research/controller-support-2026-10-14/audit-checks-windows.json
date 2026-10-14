@@ -5,7 +5,7 @@
     "test_controller_binding_audit": {
       "passed": true,
       "exit_code": 0,
-      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\ncontroller binding audit: 11 checks, 0 failures\n"
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\ncontroller binding audit: 14 checks, 0 failures\n"
     },
     "test_controller_routing_audit": {
       "passed": true,
@@ -43,9 +43,9 @@
       "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nradio connected: sm-gamepad|0000:0000|SM fake gamepad (gamepad profile)\nSM engine smoke: 56 checks, 0 failures\n"
     },
     "test_controller_menu": {
-      "passed": false,
-      "exit_code": 1,
-      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: calibrating radio\nController menu: 19/23 checks passed\nFAIL paused initial flight shows declared resume power\nFAIL mapped axis evidence arms selected pad while menu holds flight\nFAIL A Continue resumes only after arming\nFAIL selected controller changes camera\n"
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: calibrating radio\nController menu: 23/23 checks passed\n"
     },
     "test_controller_integration": {
       "passed": true,
@@ -80,7 +80,7 @@
     "test_controller_setup_safety": {
       "passed": true,
       "exit_code": 0,
-      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   initial focus lands on the flight controller choice\nok   captured joypad press does not escape to unhandled input\nok   matching joypad release is consumed after capture ends\nok   matching keyboard release is consumed after capture ends\nok   captured axis stays consumed until it returns to neutral\nok   Escape cancels remapping without closing the screen\nok   Escape release stays inside remapping recovery\nok   changing flight controller cancels its pending capture\nok   new device cannot finish capture started for the old device\nok   switching profiles preserves unsaved channel edits\nok   switching profiles preserves unsaved name edits\nok   switching devices preserves unsaved channel edits\nok   switching devices preserves unsaved name edits\nok   AUX suppresses only a colliding inherited flight action\nok   explicit action remains visible and is rejected on AUX conflict\nok   disconnecting the captured controller cancels remapping\nok   runtime rejection leaves profile setup open\nok   runtime rejection does not fall through to storage\nok   runtime rejection preserves the editable draft\nok   gamepad preset popup is open while focused\nok   Escape dismisses the focused option popup without closing setup\nok   Save does not persist an in-progress remap\nok   Cancel exits and discards while capture is active\ncontroller setup audit passed\n"
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   successful recovery still displays its warning\nok   initial focus lands on the flight controller choice\nok   captured joypad press does not escape to unhandled input\nok   matching joypad release is consumed after capture ends\nok   matching keyboard release is consumed after capture ends\nok   matching release stays consumed when the logical keycode changes\nok   captured axis stays consumed until it returns to neutral\nok   Escape cancels remapping without closing the screen\nok   Escape release stays inside remapping recovery\nok   changing flight controller cancels its pending capture\nok   new device cannot finish capture started for the old device\nok   switching profiles preserves unsaved channel edits\nok   switching profiles preserves unsaved name edits\nok   switching devices preserves unsaved channel edits\nok   switching devices preserves unsaved name edits\nok   AUX suppresses only a colliding inherited flight action\nok   explicit action remains visible and is rejected on AUX conflict\nok   disconnecting the captured controller cancels remapping\nok   runtime rejection leaves profile setup open\nok   runtime rejection does not fall through to storage\nok   runtime rejection preserves the editable draft\nok   gamepad preset popup is open while focused\nok   Escape dismisses the focused option popup without closing setup\nok   Save does not persist an in-progress remap\nok   Cancel exits and discards while capture is active\ncontroller setup audit passed\n"
     },
     "test_controller_setup": {
       "passed": true,
@@ -136,7 +136,172 @@
       "passed": true,
       "exit_code": 0,
       "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nhelicopter trace saved: user://heli-session-test.csv (4 rows)\nHELI-16 generated preset/session: 42 checks, 0 failed\n"
+    },
+    "test_controller_profile_hardening": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile hardening: 30 checks, 0 failures\n"
+    },
+    "test_controller_store": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile store: 36 checks, 0 failed\n"
+    },
+    "test_ui_language": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   no file -> English, writable\nok   save\nok   load what was saved\nok   diagnostic marker opt-out persists\nok   diagnostic preference rejects the wrong type\nok   unsupported language -> English\nok   wrong type -> English (ConfigFile keeps the file's type)\nok   unreadable file -> defaults, kept as .bad\nok   newer schema: valid values read, file marked read-only\nok   newer schema: never overwritten\nok   Spanish catalog: 718 texts, none untranslated\nok   language en has a catalog or is the source\nok   language es has a catalog or is the source\nok   English by default, even on a Spanish OS\nok   language button names the language in itself\nok   Enter on Language -> Spanish at once\nok   dynamic texts rebuilt in Spanish\nok   AUX profile errors translate\nok   focus stays on Language\nok   every translatable Home text has a Spanish translation\nok   choice saved\nok   next start remembers Spanish\nok   and cycles back to English\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   direct flight: English, no settings file created\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   direct flight ignores a saved Spanish preference and leaves the file alone\nall UI language checks passed\n"
+    },
+    "test_ui_pause": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   flying with engine sound\nok   Esc opens the pause menu, focus on Continue\nok   the session is held and paused\nok   simulation frozen (tick 120)\nok   propeller frozen\nok   engine sound paused and silent (-200.0 dB)\nok   Down navigates the menu -> Restart\nok   navigation keys never reach the flight commands\nok   R, T and P do nothing behind the menu\nok   Esc again: back to the flight\nok   flying again: ticks, sound\nok   a key held through Continue does not fly\nok   pressed again after release, it flies\nCRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 3), point speed 0.0 m/s at detected tick) - [R] restart\nCRASH CAUSE: Prop strike on the ground at 1.7 m/s, pitch -1°, bank -0° (throttle closed, low airspeed)\nok   crash shown\nok   menu explains the crash\nok   crash countdown frozen under the menu (360 ticks left)\nok   Continue does not fly through the crash\nok   wreck persists after Continue until explicit restart\nok   menu Restart clears the wreck and resumes flight\nok   focus lost -> paused with the menu open\nok   Enter on Continue resumes\nok   Esc in the calibration wizard cancels it, no menu\nok   fault: Continue disabled, focus on Restart, reason shown\nok   fault: Continue refused, menu stays\nok   Restart: a fresh trimmed flight\nok   failure settings are reachable by keyboard\nok   End flight reachable by keyboard\ntrace saved: C:/DEVELOPMENT/OpenRCsimulator/.tools/controller-audit/appdata/Godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-14T19-43-03.csv (85 rows)\nok   End flight saved the trace\nok   back on Home, flight freed\nok   focus on Fly again\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   failed save: still in the flight, the menu explains\nok   End again: Home, without the trace\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   5 cycles: same node count on Home every time [549.0, 549.0, 549.0, 549.0, 549.0, 549.0]\nok   5 cycles: no session, engine sound or pause menu left\nall UI pause checks passed\n"
+    },
+    "test_camera_views": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   pilot view (auto-zoom true) is exactly PilotCamera.aim\nok   pilot view (auto-zoom false) is exactly PilotCamera.aim\nok   close-up view is exactly PilotCamera.aim(inspect)\nok   landscape look view is exactly PilotCamera.look\nok   far airplane: the auto-zoom law is narrower than the base FOV\nok   Z: the first frame after the toggle keeps the FOV (no jump)\nok   Z: settles on the base FOV within 2 s\nok   Z: no frame changes the FOV by more than 3°\nok   Z back on: the law's exact FOV again after 3 s\nok   two zoom-in steps narrow tan(fov/2) by √2\nok   pilot zoom stops at its limit\nok   Backspace: back to the law's exact FOV\nok   C cycles pilot → chase → orbit → close-up → pilot\nok   Shift+C goes back\nok   unknown view refused\nok   names keep the historical panel text\nok   chase: first frame is settled behind and above (south of a northbound airplane)\nok   chase: looks at the airplane\nok   chase: no roll (world up stays up)\nok   chase: straight flight, same camera offset at 30/60/144 fps (≤ 1 cm)\nok   chase: straight flight, exactly one boom behind and above (no speed lag)\nok   chase: 12 s circle stays finite and within 0.5–2.5 booms\nok   chase: circle keeps the airplane near the centre (look-ahead ≤ 10°)\nok   chase: vertical climb holds the last heading, no NaN\nok   chase: sliding backwards follows the nose\nok   chase: slow (taxi) follows the nose\nok   chase: fast track wins over the nose (crab)\nok   chase: clearance above terrain\nok   chase: unknown terrain reads as flat, never NaN\nok   chase: a teleport snaps behind the new position\nok   chase: frozen while paused\nok   orbit: starts exactly where the previous view was\nok   orbit: elevation clamps below the zenith\nok   orbit: near the zenith the basis stays finite and aimed\nok   orbit: distance limit\nok   orbit: low airplane, camera kept above the ground\nok   rig: pilot → orbit keeps the eye when within reach\nok   rig: pilot → orbit from far keeps the direction at the default distance\nok   rig: a flight that starts in orbit sees it from behind-left, above\nall 39 camera view checks passed\n"
+    },
+    "test_rc_fault_boundaries": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nRC fault boundaries: 26/26 checks passed\n"
+    },
+    "@input/controller_actions.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@input/controller_profile.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@input/controller_profile_store.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@input/controller_service.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@input/rc_input.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@input/rc_calibration.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@ui/controller_setup.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@app_root.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@sim/flight_session.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@sim/helicopter_flight_session.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@tests/test_controller_profile_hardening.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@tests/test_controller_setup_safety.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@tests/test_rc_fault_boundaries.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@ui/ui_input.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@tests/test_controller_binding_audit.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
     }
   },
-  "date": "2026-10-14T19:39:21.489325+00:00"
+  "date": "2026-10-14T19:50:46.253459+00:00",
+  "verified_at_utc": "2026-10-14T19:53:40.775231+00:00",
+  "source": {
+    "audit_started_at_revision": "5f7f4ad5",
+    "head_at_verification": "47788f686234e0fe30edcf70b1f962d357e605c6",
+    "working_tree_included": true,
+    "sha256": {
+      "app/app_root.gd": "24a7f53d74b41b5cb182d5670c0018097046a6ec6cf22a4ed54823b874195ca5",
+      "app/input/controller_actions.gd": "c03789c14b8fd3db30ee267347e39d4c57411f00c36c644c5d98d7fc1f78e443",
+      "app/input/controller_profile.gd": "98de55e098d66e811bd4dfbed12debbbf7131ea7b7c8f0d94108c9a2aebc8d4b",
+      "app/input/controller_profile_store.gd": "76dc5220b73fd09869620622c6571dd66b51cd2d4a62f5143bc95ded42e33458",
+      "app/input/controller_service.gd": "c21cb4af6edb10db926b6146fd8ba30b84debb527a968d3bffbe2ee481b104ce",
+      "app/input/rc_calibration.gd": "6f0eac083c6eb207784e1198ce5bab1d80970b9812d177757506aa087021758c",
+      "app/input/rc_input.gd": "0474df36603d7aac9268fa331cd3308f3f6651488e0b8e90af4747f2d9edb196",
+      "app/sim/flight_session.gd": "f93d92ee24640ce428ad61b3dcd23e5a8972fcb0ca8036363b97cac7f62145a1",
+      "app/sim/helicopter_flight_session.gd": "595630804a5fa96cc4d0635b664583e60c57dff0b00b994bb68cc2dd3157ef03",
+      "app/tests/test_camera_views.gd": "9a68570a2b0108b0ed31bf0a022eba2088e3fa1a26aaa2b65c0318e921a97879",
+      "app/tests/test_controller_actions.gd": "413e1e8bb93b25496d30f891b6621e718db97ef92243fa3286fe0a28f524129c",
+      "app/tests/test_controller_aux_runtime.gd": "dac25bd79b03cbf69accbda9cc1cd25f444f150d11f82a08fef63020d7a621f2",
+      "app/tests/test_controller_aux_setup.gd": "8eadae14af22b09a2f412a363c27baad083715339fa0c90c2a9cca9bc2f86475",
+      "app/tests/test_controller_binding_audit.gd": "d26b3788a5c084f5760ab88e2ccff1a05071f0e233e6f6674d5fdddf862a6948",
+      "app/tests/test_controller_conditioning.gd": "970d2e1796400b415abcd121c3366be38630ced04edfd4fd20aa259683c9b08c",
+      "app/tests/test_controller_extended_actions.gd": "826833a481b77260edf9f12e5c6b3fe7b696a38085d7a80807f2e4c581a42b26",
+      "app/tests/test_controller_flight_actions.gd": "855d8825985285b1ef46e7e8b28f21f555af17a2494fee502e3bfaf38b12f0d3",
+      "app/tests/test_controller_integration.gd": "add2cdbcb67e7bae44f7c340e2641add0ef2425c9bcd35fc3d90a88742ed6674",
+      "app/tests/test_controller_menu.gd": "61500f7e293ccd09920d6afa88e4007912b5f4c56a9b62b9b025faeae40a46d1",
+      "app/tests/test_controller_persistence.gd": "c72ea9241a3d20a8d4a12e41b1c1e1e98ce07044a7979765dabf220a553ca072",
+      "app/tests/test_controller_profile.gd": "eefd79aafdfaac7bec330a73beb6d9ce772c8271c4a71e0e8da1b9dcc65c3f45",
+      "app/tests/test_controller_profile_hardening.gd": "883dd7edb677492a09c890666820a01d363d23192baad79df450d82e831ac490",
+      "app/tests/test_controller_prompts.gd": "d0ca75ea0bfdae4a8bd883f3b21d5166c30686dbc7fb3fdd883a57d39377a202",
+      "app/tests/test_controller_registry.gd": "174d4b2c5116bd29248d759f8e2557c2fbbc851c2e7d2fbd125d593959ffd756",
+      "app/tests/test_controller_routing_audit.gd": "9e9c6c25105891e2502902f988298023d920f5cf5dad7c61e1e2e15fceba68f7",
+      "app/tests/test_controller_setup.gd": "8623d0007bca8f9b686a79132f764d1fcf362b3637fcf1165e5cdf972f6f75b0",
+      "app/tests/test_controller_setup_safety.gd": "ea12b48fabdd22bf9a9960167655860259c0d2210ec968060afd115b44d1b6cf",
+      "app/tests/test_controller_store.gd": "f3d607ba3021b39a4e956eb40f9123bb41d00c88cf3f68e9deeb334a4bf25901",
+      "app/tests/test_e2e_input.gd": "92cfd08475fb2fc3ef1d3ebc0b6f65bf58dcfbd2ed4a1acede33b9eb88e276b6",
+      "app/tests/test_e2e_radio.gd": "f6ce55710640310d2654f7c9d763963c5e5a23bf5ea1cd3792c7f3a2609372f8",
+      "app/tests/test_engine_smoke.gd": "dcbafe991f63d71404235982421b9511e44b5142d2e1440c9c51b00b43361602",
+      "app/tests/test_heli_session.gd": "5600172bb2bf1d282bc8cdb718773057d400ca47056539c402efc5b33ca3b347",
+      "app/tests/test_rates.gd": "0f8f2adc845da3113520f4b1aba870e1559a57713ed4a5aac5a7788ef105b4ba",
+      "app/tests/test_rc_calibration.gd": "f5518af64b8cef7ced01773b73e9b4c94eea64205460ceca65b56ce4350c87b2",
+      "app/tests/test_rc_fault_boundaries.gd": "94162bbcf250f2bc45f2671ff6fbbeb57123b98ddd5b48702edf26aaeef07800",
+      "app/tests/test_rc_input.gd": "b66fcc365f977be14d711e5cf375eaacbeee6548abbfb6232354100524d97e3d",
+      "app/tests/test_rc_profile_validation.gd": "8d6d84cda76625b52f160615a397e8c7879bef455724f7ade762f34201f36eb9",
+      "app/tests/test_rc_rearm.gd": "1266fa1d7a90d6502829072645a79a2d8fcc52a5b6100eda3acf5e8276a7ed79",
+      "app/tests/test_smoke_aux.gd": "7df90c31dab21cec48a6fc5f4ad296c820fd37858f12257bb2b1b4cb695ccbf0",
+      "app/tests/test_ui_input.gd": "4b2707b9d7fa72f6b106757d520cbdd15a50a4652c755895eae0c1f1fbbf1563",
+      "app/tests/test_ui_language.gd": "42b9c1b6cd3f6fe141649611403774ad44d2d71814bb51256e20755c53636008",
+      "app/tests/test_ui_pause.gd": "f55965c0fe1b7953c9d584cb1ce79ce2bb30dece5059a3f0889cb8fcffd99eaa",
+      "app/ui/controller_setup.gd": "f493d2667780389eff7f9c8e6844fd084dd5fa633f6df3c4e8142d4e00f8faf7",
+      "app/ui/ui_input.gd": "7eb60f27cf60cb5125ca3a888540f82c67cf4eb634f88d3b02ba58207519485a"
+    }
+  },
+  "menu_shutdown_probe": {
+    "command": "Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --verbose --script res://tests/test_controller_menu.gd",
+    "result": "23/23 menu checks passed; audio shutdown leak remains",
+    "leaked_instances": [
+      "AudioStreamMP3:9223372400987473431 - Reference count: 1",
+      "AudioStreamPlaybackMP3:9223372427998792188 - Reference count: 1"
+    ]
+  }
 }

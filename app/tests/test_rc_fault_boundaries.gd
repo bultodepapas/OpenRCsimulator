@@ -18,6 +18,7 @@ func _initialize() -> void:
 	_test_focus_rearm_requires_fresh_low()
 	_test_paused_gamepad_rearm_is_revoked_by_movement()
 	_test_calibration_rejects_bad_samples()
+	_test_button_bounds()
 	print("RC fault boundaries: %d/%d checks passed" % [_checks - _failures, _checks])
 	quit(1 if _failures else 0)
 
@@ -139,3 +140,12 @@ func _test_calibration_rejects_bad_samples() -> void:
 	outside[4] = 1.1
 	_check("out-of-range sweep sample is rejected", not calibration.advance(outside) and not calibration.error.is_empty())
 	_check("bad calibration sample cannot create a valid profile", not Calibration.valid(calibration.profile))
+
+
+func _test_button_bounds() -> void:
+	var radio := RcInput.new()
+	radio.connect_device(0, {"name": "Synthetic gamepad", "known": true})
+	radio.on_button(0, JOY_BUTTON_MAX, true)
+	_check("out-of-range button events cannot add held state", radio._pressed_buttons.is_empty())
+	radio.observe_pressed_buttons([-1, JOY_BUTTON_MAX, 0.5, "0", JOY_BUTTON_MAX - 1])
+	_check("observed held buttons retain only valid bounded indices", radio._pressed_buttons == {JOY_BUTTON_MAX - 1: true})

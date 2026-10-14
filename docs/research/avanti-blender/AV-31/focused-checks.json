@@ -1,0 +1,123 @@
+[
+  {
+    "script": "aircraft/verify_avanti.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 5.203000000008615,
+    "last_lines": [
+      "",
+      "AV-31 Avanti imported model av31-blender-flight-1: 19 meshes, 7 articulations, 340 checks, 0 failures",
+      "PASS AV-31 340 checks"
+    ]
+  },
+  {
+    "script": "tests/test_turbine.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 3.75,
+    "last_lines": [
+      "ok   spool split 240/480 Hz within 0.5 % of the rpm range  worst 0.0 rpm",
+      "ok   rotor momentum −I·ω along x (counter-clockwise)  -1.57080 N·m·s",
+      "27 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "tests/test_turbine_continuous.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 7.014999999999418,
+    "last_lines": [
+      "ok calm turbine writer refuses a missing tick ",
+      "ok all planned checks executed ",
+      "46 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "tests/test_avanti_handling.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 18.25,
+    "last_lines": [
+      "ok   spool angular momentum 0.3–1.0 N·m·s at full rpm (AV-05 estimate 0.56)  0.564 N·m·s",
+      "ok   trace guard rejects an empty trace  ",
+      "47 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "tests/test_checkpoint.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 2.9539999999979045,
+    "last_lines": [
+      "aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value",
+      "aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value",
+      "H8 checkpoints: 92 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "tests/test_checkpoint_integrity.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 0.4210000000020955,
+    "last_lines": [
+      "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+      "",
+      "H8-R1 checkpoint integrity: 149 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "tests/test_crash_pose.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 20.781999999991967,
+    "last_lines": [
+      "ok   turbo-lumber-evolution manual reset restores ordinary pose",
+      "ok   turbo-lumber-evolution ordinary pose retains interpolation",
+      "170 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "tests/test_crash_integration.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 37.187000000005355,
+    "last_lines": [
+      "ok   turbo-lumber-evolution: a second hull crash reuses the prepared wreck body and mesh pools",
+      "ok   turbo-lumber-evolution: cleanup leaves no production scene orphan or audio bus",
+      "152 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "tests/test_soundscape.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 1.110000000000582,
+    "last_lines": [
+      "ok   glow_4t reattachment restarts its generator on a live bus",
+      "ok   glow_4t reattachment leaves no buses after disposal",
+      "124 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "tests/test_aircraft_catalog.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 15.031000000002678,
+    "last_lines": [
+      "98 checks, 0 failed",
+      "WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "   at: cleanup (core/object/object.cpp:2536)"
+    ]
+  },
+  {
+    "script": "tests/test_workshop_integration.gd",
+    "ok": true,
+    "exit_code": 0,
+    "seconds": 32.796999999991385,
+    "last_lines": [
+      "ok   return restores original sky presentation",
+      "ok   Pause editor draft preserved",
+      "Workshop integration: 0 failed"
+    ]
+  }
+]

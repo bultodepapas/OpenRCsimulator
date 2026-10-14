@@ -26,7 +26,7 @@ Embedded `LEEME`, `RIG_JUNTAS.json` and `RIG_BIELETAS.json` describe three cycli
 | Tracking adjustment | A +1 mm head-A link adjustment gives about 2.12182° tracking difference and changes mean pitch. |
 | Tail adjustment | A +1.5 mm tail rod adjustment gives about −4.5042° tail pitch at zero requested tail command. |
 | Servo limits | Reduced cyclic travel saturates front-left/rear; reduced tail travel saturates tail. The achieved geometry differs from command and remains closed. |
-| Negative control | +100 mm on a cyclic rod is outside the source's declared ±3 mm adjustment range. It produces an 88.04 mm maximum closure residual; the general alert rises but `bloqueo_mecanico` stays zero. Reject invalid ranges and check every closure independently; that flag alone is not a complete admission test. |
+| Negative control | +100 mm on a cyclic rod is outside the source's declared ±3 mm adjustment range. It produces an 88.04 mm maximum closure residual and one invalid `ALF` driver on `Mezclador_15_Plato_Real`; the general alert rises but `bloqueo_mecanico` stays zero. Reject invalid ranges and check driver validity and every closure independently; that flag alone is not a complete admission test. |
 
 The source solver uses inverse trigonometric clamping and two swash reconstruction passes. Preserve its branch choices as oracle data, but require convergence/residual and reachability checks before admitting a runtime solver. Runtime admission must reject the +100 mm negative control against the source's ±3 mm cyclic-rod bound; a raised LED is insufficient. Never stretch a rigid rod to hide a failed closure.
 

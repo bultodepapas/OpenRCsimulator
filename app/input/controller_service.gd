@@ -141,7 +141,7 @@ func profile_for_device(id: int) -> Dictionary:
 	return profile
 
 
-func apply_profile(profile: Dictionary, device_id := -1) -> bool:
+func apply_profile(profile: Dictionary, device_id := -1, runtime_snapshot: Variant = null, defer_rollback_signal := false) -> bool:
 	var id: int = registry.selected_device_id("flight") if device_id < 0 else device_id
 	if id < 0 or not registry.device_for_id(id).get("connected", false): return false
 	var prepared := validate_profile_for_session(profile)
@@ -150,6 +150,8 @@ func apply_profile(profile: Dictionary, device_id := -1) -> bool:
 	var active_profile: Dictionary = prepared.profile
 	var key := "%d:%d" % [id, registry.connection_generation(id)]
 	var previous_profile: Dictionary = profile_for_device(id)
+	if typeof(runtime_snapshot) == TYPE_DICTIONARY:
+		previous_profile = runtime_snapshot.duplicate(true)
 	_profiles[key] = active_profile.duplicate(true)
 	if registry.selected_device_id("flight") == id:
 		_last_flight_selection_result = true
@@ -160,8 +162,15 @@ func apply_profile(profile: Dictionary, device_id := -1) -> bool:
 			else:
 				_profiles[key] = previous_profile.duplicate(true)
 			var previous_check := validate_profile_for_session(previous_profile)
-			if is_instance_valid(session) and bool(previous_check.get("ok", false)) and previous_profile != active_profile:
-				session.apply_controller_selection(id, registry.device_for_id(id), previous_check.profile, false)
+			if is_instance_valid(session):
+				if previous_profile.is_empty():
+					session.apply_controller_selection(id, registry.device_for_id(id), {}, false)
+				elif bool(previous_check.get("ok", false)) and previous_profile != active_profile:
+					session.apply_controller_selection(id, registry.device_for_id(id), previous_check.profile, false)
+			# Transactional saves wait until storage is restored before notifying observers;
+			# otherwise a read from the signal handler could reload the rejected candidate.
+			if not defer_rollback_signal:
+				flight_selection_changed.emit()
 			return false
 	return true
 
@@ -258,18 +267,25 @@ func save_profile_from_setup(candidate: Dictionary, flight_device_id := -1) -> D
 
 
 func _save_and_apply(profile: Dictionary, id: int) -> Dictionary:
+	# Capture runtime selection before the write: afterwards profile_for_device()
+	# may find the candidate we just associated with this previously unknown device.
+	var previous_runtime_profile: Dictionary = profile_for_device(id)
 	var previous_store: Dictionary = store.load_all()
 	if not bool(previous_store.get("ok", false)):
 		return {"ok": false, "profile": {}, "error": "Existing controller profile storage is unreadable: " + "; ".join(previous_store.get("errors", []))}
 	var saved: Dictionary = store.save_profile(profile)
 	if not bool(saved.get("ok", false)):
 		return saved
-	if apply_profile(saved.profile, id):
+	if apply_profile(saved.profile, id, previous_runtime_profile, true):
 		return saved
 	var restored: Dictionary = store.restore_snapshot(previous_store)
-	var error := "The active session rejected this controller profile; previous stored profiles were restored."
-	if not bool(restored.get("ok", false)):
-		error += " Storage rollback also failed: " + str(restored.get("error", "unknown storage error"))
+	if bool(restored.get("ok", false)) and registry.selected_device_id("flight") == id:
+		flight_selection_changed.emit()
+	var error := "The active session rejected this controller profile."
+	if bool(restored.get("ok", false)):
+		error += " Previous stored profiles were restored."
+	else:
+		error += " Previous stored profiles could not be restored: " + str(restored.get("error", "unknown storage error"))
 	return {"ok": false, "profile": {}, "error": error}
 
 
